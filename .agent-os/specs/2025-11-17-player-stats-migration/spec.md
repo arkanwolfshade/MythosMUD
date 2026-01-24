@@ -14,6 +14,7 @@ Migrate all player statistics from the 1-20 range to a 1-100 range to provide gr
 As a game developer, I want player stats to use a 1-100 range instead of 1-20, so that I can provide more nuanced character progression and finer-grained stat differences between players.
 
 **Workflow:**
+
 1. All existing player stats are reset to new defaults (50 for all core attributes)
 2. New character creation generates stats in the 15-90 range (scaled from previous 3-18)
 3. All formulas and calculations are updated to work with the new range
@@ -26,6 +27,7 @@ As a game developer, I want player stats to use a 1-100 range instead of 1-20, s
 As a player, I want my character stats to be displayed and calculated using the new 1-100 range, so that I can see more detailed stat information and experience more granular character progression.
 
 **Workflow:**
+
 1. Player views character stats in the UI and sees values in 1-100 range
 2. Player creates a new character and receives stats rolled in 15-90 range
 3. Player's max health and lucidity are calculated directly from constitution and wisdom stats
@@ -51,7 +53,8 @@ As a player, I want my character stats to be displayed and calculated using the 
 
 ## Out of Scope
 
-- Migration of existing player stats by scaling (all stats will be reset to defaults)
+Migration of existing player stats by scaling (all stats will be reset to defaults)
+
 - Changes to lucidity, occult_knowledge, fear, corruption, or cult_affiliation ranges (these remain 0-100)
 - Changes to current_health calculation or health regeneration formulas
 - UI redesign for stat display (existing UI should handle the range correctly)

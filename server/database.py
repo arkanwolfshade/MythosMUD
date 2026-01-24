@@ -88,7 +88,7 @@ class DatabaseManager:
             raise RuntimeError("Use DatabaseManager.get_instance()")
 
         self.engine: AsyncEngine | None = None
-        self.session_maker: async_sessionmaker | None = None
+        self.session_maker: async_sessionmaker[AsyncSession] | None = None
         self.database_url: str | None = None
         self._initialized: bool = False
         self._creation_loop_id: int | None = None  # Track which loop created the engine
@@ -282,7 +282,7 @@ class DatabaseManager:
             raise RuntimeError("Database engine not initialized")
         return self.engine
 
-    def get_session_maker(self) -> async_sessionmaker:
+    def get_session_maker(self) -> async_sessionmaker[AsyncSession]:
         """
         Get the async session maker, initializing if necessary.
 
@@ -380,7 +380,7 @@ class DatabaseManager:
 
                     # Step 2: Shield disposal from cancellation to ensure cleanup completes
                     # This prevents Connection._cancel coroutines from being interrupted during cleanup
-                    async def _dispose_engine():
+                    async def _dispose_engine() -> None:
                         await engine.dispose()
                         # Wait a bit more to ensure all asyncpg cleanup coroutines complete
                         # This helps prevent Connection._cancel coroutines from being garbage collected
@@ -424,7 +424,7 @@ class DatabaseManager:
 # Module-level utility functions for backward compatibility
 
 
-def get_session_maker() -> async_sessionmaker:
+def get_session_maker() -> async_sessionmaker[AsyncSession]:
     """
     Get the async session maker from DatabaseManager.
 
@@ -562,3 +562,15 @@ def get_database_url() -> str | None:
         str | None: The database URL
     """
     return DatabaseManager.get_instance().get_database_url()
+
+
+__all__ = [
+    "DatabaseManager",
+    "ValidationError",
+    "get_async_session",
+    "get_session_maker",
+    "get_engine",
+    "reset_database",
+    "get_database_path",
+    "get_database_url",
+]

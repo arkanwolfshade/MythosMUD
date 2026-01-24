@@ -8,11 +8,11 @@ can create accounts.
 
 import uuid
 from datetime import UTC, datetime, timedelta
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, String
+from sqlalchemy import Boolean, DateTime, ForeignKey, String
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import Mapped, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base  # ARCHITECTURE FIX Phase 3.1: Use shared Base
 
@@ -27,16 +27,22 @@ class Invite(Base):
 
     __tablename__ = "invites"
 
-    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    invite_code = Column(String, unique=True, nullable=False, index=True)
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    invite_code: Mapped[str] = mapped_column(String, unique=True, nullable=False, index=True)
     # Add indexes on foreign keys for query performance
-    created_by_user_id = Column(UUID(as_uuid=False), ForeignKey("users.id"), nullable=True, index=True)
-    used_by_user_id = Column(UUID(as_uuid=False), ForeignKey("users.id"), nullable=True, index=True)
+    created_by_user_id: Mapped[str | None] = mapped_column(
+        UUID(as_uuid=False), ForeignKey("users.id"), nullable=True, index=True
+    )
+    used_by_user_id: Mapped[str | None] = mapped_column(
+        UUID(as_uuid=False), ForeignKey("users.id"), nullable=True, index=True
+    )
     # is_active: True means invite is available, False means used
-    is_active = Column(Boolean, default=True, nullable=False)
-    expires_at = Column(DateTime, nullable=False)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=lambda: True, nullable=False)
+    expires_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     # Store datetimes in database as naive UTC for PostgreSQL TIMESTAMP WITHOUT TIME ZONE compatibility.
-    created_at = Column(DateTime, default=lambda: datetime.now(UTC).replace(tzinfo=None), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime, default=lambda: datetime.now(UTC).replace(tzinfo=None), nullable=False
+    )
 
     # ARCHITECTURE FIX Phase 3.1: Relationships defined directly in model (no circular imports)
     # Using simple string references - SQLAlchemy resolves via registry after all models imported
@@ -46,6 +52,15 @@ class Invite(Base):
     used_by_user: Mapped["User | None"] = relationship(
         "User", foreign_keys=[used_by_user_id], back_populates="used_invite", uselist=False
     )
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        """Initialize Invite with defaults."""
+        super().__init__(*args, **kwargs)
+        # Apply defaults if not provided (SQLAlchemy may set to None initially)
+        _sentinel = object()
+        is_active_val = getattr(self, "is_active", _sentinel)
+        if is_active_val is _sentinel or is_active_val is None:
+            object.__setattr__(self, "is_active", True)
 
     def __repr__(self) -> str:
         return f"<Invite(id='{self.id}', code='{self.invite_code}', is_active={self.is_active})>"
@@ -66,8 +81,8 @@ class Invite(Base):
 
     def use_invite(self, user_id: str) -> None:
         """Mark this invite as used by a specific user."""
-        self.is_active = False  # type: ignore[assignment]  # Mark as used (inactive)
-        self.used_by_user_id = user_id  # type: ignore[assignment]  # SQLAlchemy Column type compatibility - UUID column accepts string assignment
+        self.is_active = False
+        self.used_by_user_id = user_id
 
     @classmethod
     def create_invite(cls, created_by_user_id: str | None = None, expires_in_days: int = 30) -> "Invite":

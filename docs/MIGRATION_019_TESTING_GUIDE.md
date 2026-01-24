@@ -22,6 +22,7 @@ This guide provides step-by-step instructions for testing Migration 019 before a
 
 ```powershell
 # Backup using pg_dump
+
 pg_dump -h localhost -U postgres -d mythos_dev -F c -f backup_before_019_$(Get-Date -Format 'yyyyMMdd_HHmmss').dump
 ```
 
@@ -57,6 +58,7 @@ ORDER BY table_name;
 ```
 
 **Expected before migration:**
+
 - `data_type` = `integer`
 - `is_identity` = `NO` (or NULL)
 
@@ -66,12 +68,15 @@ ORDER BY table_name;
 
 ```powershell
 # Apply to development database
+
 .\scripts\apply_019_postgresql_anti_patterns_fixes.ps1 -Database "mythos_dev"
 
 # Apply to unit test database
+
 .\scripts\apply_019_postgresql_anti_patterns_fixes.ps1 -Database "mythos_unit"
 
 # Dry run (no changes)
+
 .\scripts\apply_019_postgresql_anti_patterns_fixes.ps1 -Database "mythos_dev" -DryRun
 ```
 
@@ -79,9 +84,11 @@ ORDER BY table_name;
 
 ```powershell
 # Set password
+
 $env:PGPASSWORD = "Cthulhu1"
 
 # Apply migration
+
 psql -h localhost -U postgres -d mythos_dev -f db\migrations\019_postgresql_anti_patterns_fixes.sql
 ```
 
@@ -115,6 +122,7 @@ ORDER BY table_name;
 ```
 
 **Expected after migration:**
+
 - `data_type` = `bigint`
 - `is_identity` = `YES`
 - `identity_generation` = `ALWAYS`
@@ -149,6 +157,7 @@ ORDER BY tc.table_name, kcu.column_name;
 ```
 
 **Expected:**
+
 - All foreign keys should be `bigint` to match their referenced `bigint` primary keys
 
 ### Step 6: Verify Text Column Conversions
@@ -173,6 +182,7 @@ ORDER BY table_name, column_name;
 ```
 
 **Expected:**
+
 - `data_type` = `text` (not `character varying`)
 
 ### Step 7: Verify Comments
@@ -223,11 +233,13 @@ ORDER BY table_name, column_name;
 After migration, test that the application still works:
 
 1. **Start the server:**
+
    ```powershell
    .\scripts\start_local.ps1
    ```
 
 2. **Test key functionality:**
+
    - Create a new profession
    - Create NPC definitions
    - Record lucidity adjustments
@@ -235,6 +247,7 @@ After migration, test that the application still works:
    - Query professions by ID
 
 3. **Run tests:**
+
    ```powershell
    make test-server
    ```
@@ -245,10 +258,12 @@ The migration should be idempotent (safe to run multiple times):
 
 ```powershell
 # Run migration again
+
 .\scripts\apply_019_postgresql_anti_patterns_fixes.ps1 -Database "mythos_dev"
 
 # Should complete without errors
 # All checks should show migration already applied
+
 ```
 
 ### Step 10: Verify Data Integrity
@@ -309,10 +324,12 @@ If migration fails or causes issues:
 
 ```powershell
 # Drop and recreate database
+
 dropdb -h localhost -U postgres mythos_dev
 createdb -h localhost -U postgres mythos_dev
 
 # Restore from backup
+
 pg_restore -h localhost -U postgres -d mythos_dev backup_before_019_*.dump
 ```
 
@@ -335,11 +352,13 @@ The migration converts columns to identity, which cannot be easily reversed. If 
 
 ### Issue: "cannot alter type of column because there is a default"
 
-**Solution:** The migration handles this by dropping the default first. If this error occurs, check that the migration function ran correctly.
+**Solution:** The migration handles this by dropping the default first. If this error occurs, check that the migration
+function ran correctly.
 
 ### Issue: Foreign key constraint violations
 
-**Solution:** The migration updates foreign key types automatically. If errors occur, verify that all referenced tables were migrated.
+**Solution:** The migration updates foreign key types automatically. If errors occur, verify that all referenced tables
+were migrated.
 
 ## Success Criteria
 
@@ -366,7 +385,8 @@ Before applying to production:
 
 ## Related Documentation
 
-- [Migration 019 README](../db/migrations/019_POSTGRESQL_ANTI_PATTERNS_FIXES_README.md)
+[Migration 019 README](../db/migrations/019_POSTGRESQL_ANTI_PATTERNS_FIXES_README.md)
+
 - [PostgreSQL Anti-Patterns Review](../docs/POSTGRESQL_ANTI_PATTERNS_REVIEW.md)
 - [Python Model Updates](../docs/PYTHON_MODEL_UPDATES_REQUIRED.md)
 - [Migration Verification](../docs/MIGRATION_019_VERIFICATION.md)

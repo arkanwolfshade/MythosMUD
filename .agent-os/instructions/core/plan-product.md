@@ -27,19 +27,29 @@ Use the context-fetcher subagent to collect all required inputs from the user in
 <data_sources>
   <primary>user_direct_input</primary>
   <fallback_sequence>
+
     1. @.agent-os/standards/tech-stack.md
+
     2. @.claude/CLAUDE.md
+
     3. Cursor User Rules
+
   </fallback_sequence>
 </data_sources>
 
 <error_template>
   Please provide the following missing information:
+
   1. Main idea for the product
+
   2. List of key features (minimum 3)
+
   3. Target users and use cases (minimum 1)
+
   4. Tech stack preferences
+
   5. Has the new application been initialized yet and we're inside the project folder? (yes/no)
+
 </error_template>
 
 </step>
@@ -70,13 +80,20 @@ Use the file-creator subagent to create the file: .agent-os/product/mission.md a
 <file_template>
   <header>
     # Product Mission
+
   </header>
   <required_sections>
+
     - Pitch
+
     - Users
+
     - The Problem
+
     - Differentiators
+
     - Key Features
+
   </required_sections>
 </file_template>
 
@@ -87,8 +104,11 @@ Use the file-creator subagent to create the file: .agent-os/product/mission.md a
     [PRODUCT_NAME] is a [PRODUCT_TYPE] that helps [TARGET_USERS] [SOLVE_PROBLEM] by providing [KEY_VALUE_PROPOSITION].
   </template>
   <constraints>
+
     - length: 1-2 sentences
+
     - style: elevator pitch
+
   </constraints>
 </section>
 
@@ -99,23 +119,36 @@ Use the file-creator subagent to create the file: .agent-os/product/mission.md a
     ### Primary Customers
 
     - [CUSTOMER_SEGMENT_1]: [DESCRIPTION]
+
     - [CUSTOMER_SEGMENT_2]: [DESCRIPTION]
 
     ### User Personas
 
     **[USER_TYPE]** ([AGE_RANGE])
-    - **Role:** [JOB_TITLE]
-    - **Context:** [BUSINESS_CONTEXT]
-    - **Pain Points:** [PAIN_POINT_1], [PAIN_POINT_2]
-    - **Goals:** [GOAL_1], [GOAL_2]
+
+    **Role:** [JOB_TITLE]
+
+    **Context:** [BUSINESS_CONTEXT]
+
+    **Pain Points:** [PAIN_POINT_1], [PAIN_POINT_2]
+
+    **Goals:** [GOAL_1], [GOAL_2]
+
   </template>
   <schema>
+
     - name: string
+
     - age_range: "XX-XX years old"
+
     - role: string
+
     - context: string
+
     - pain_points: array[string]
+
     - goals: array[string]
+
   </schema>
 </section>
 
@@ -130,10 +163,15 @@ Use the file-creator subagent to create the file: .agent-os/product/mission.md a
     **Our Solution:** [SOLUTION_DESCRIPTION]
   </template>
   <constraints>
+
     - problems: 2-4
+
     - description: 1-3 sentences
+
     - impact: include metrics
+
     - solution: 1 sentence
+
   </constraints>
 </section>
 
@@ -146,9 +184,13 @@ Use the file-creator subagent to create the file: .agent-os/product/mission.md a
     Unlike [COMPETITOR_OR_ALTERNATIVE], we provide [SPECIFIC_ADVANTAGE]. This results in [MEASURABLE_BENEFIT].
   </template>
   <constraints>
+
     - count: 2-3
+
     - focus: competitive advantages
+
     - evidence: required
+
   </constraints>
 </section>
 
@@ -158,16 +200,20 @@ Use the file-creator subagent to create the file: .agent-os/product/mission.md a
 
     ### Core Features
 
-    - **[FEATURE_NAME]:** [USER_BENEFIT_DESCRIPTION]
+    **[FEATURE_NAME]:** [USER_BENEFIT_DESCRIPTION]
 
     ### Collaboration Features
 
-    - **[FEATURE_NAME]:** [USER_BENEFIT_DESCRIPTION]
+    **[FEATURE_NAME]:** [USER_BENEFIT_DESCRIPTION]
   </template>
   <constraints>
+
     - total: 8-10 features
+
     - grouping: by category
+
     - description: user-benefit focused
+
   </constraints>
 </section>
 
@@ -182,23 +228,38 @@ Use the file-creator subagent to create the file: .agent-os/product/tech-stack.m
 <file_template>
   <header>
     # Technical Stack
+
   </header>
 </file_template>
 
 <required_items>
-  - application_framework: string + version
-  - database_system: string
-  - javascript_framework: string
-  - import_strategy: ["importmaps", "node"]
-  - css_framework: string + version
-  - ui_component_library: string
-  - fonts_provider: string
-  - icon_library: string
-  - application_hosting: string
-  - database_hosting: string
-  - asset_hosting: string
-  - deployment_solution: string
-  - code_repository_url: string
+
+- application_framework: string + version
+
+- database_system: string
+
+- javascript_framework: string
+
+- import_strategy: ["importmaps", "node"]
+
+- css_framework: string + version
+
+- ui_component_library: string
+
+- fonts_provider: string
+
+- icon_library: string
+
+- application_hosting: string
+
+- database_hosting: string
+
+- asset_hosting: string
+
+- deployment_solution: string
+
+- code_repository_url: string
+
 </required_items>
 
 <data_resolution>
@@ -214,9 +275,13 @@ Use the file-creator subagent to create the file: .agent-os/product/tech-stack.m
     <for_each item="required_items">
       <if_not_in>user_input</if_not_in>
       <then_check>
+
         1. @.agent-os/standards/tech-stack.md
+
         2. @.claude/CLAUDE.md
+
         3. Cursor User Rules
+
       </then_check>
       <else>add_to_missing_list</else>
     </for_each>
@@ -229,7 +294,6 @@ Use the file-creator subagent to create the file: .agent-os/product/tech-stack.m
 
   You can respond with the technology choice or "n/a" for each item.
 </missing_items_template>
-
 
 </step>
 
@@ -244,18 +308,26 @@ Use the following template:
 <file_template>
   <header>
     # Product Mission (Lite)
+
   </header>
 </file_template>
 
 <content_structure>
   <elevator_pitch>
+
     - source: Step 3 mission.md pitch section
+
     - format: single sentence
+
   </elevator_pitch>
   <value_summary>
+
     - length: 1-3 sentences
+
     - includes: value proposition, target users, key differentiator
+
     - excludes: secondary users, secondary differentiators
+
   </value_summary>
 </content_structure>
 
@@ -282,6 +354,7 @@ Use the file-creator subagent to create the following file: .agent-os/product/ro
 <file_template>
   <header>
     # Product Roadmap
+
   </header>
 </file_template>
 
@@ -296,28 +369,40 @@ Use the file-creator subagent to create the following file: .agent-os/product/ro
 
     ### Features
 
-    - [ ] [FEATURE] - [DESCRIPTION] `[EFFORT]`
+    [ ] [FEATURE] - [DESCRIPTION] `[EFFORT]`
 
     ### Dependencies
 
-    - [DEPENDENCY]
+    [DEPENDENCY]
   </phase_template>
 </phase_structure>
 
 <phase_guidelines>
-  - Phase 1: Core MVP functionality
-  - Phase 2: Key differentiators
-  - Phase 3: Scale and polish
-  - Phase 4: Advanced features
-  - Phase 5: Enterprise features
+
+- Phase 1: Core MVP functionality
+
+- Phase 2: Key differentiators
+
+- Phase 3: Scale and polish
+
+- Phase 4: Advanced features
+
+- Phase 5: Enterprise features
+
 </phase_guidelines>
 
 <effort_scale>
-  - XS: 1 day
-  - S: 2-3 days
-  - M: 1 week
-  - L: 2 weeks
-  - XL: 3+ weeks
+
+- XS: 1 day
+
+- S: 2-3 days
+
+- M: 1 week
+
+- L: 2 weeks
+
+- XL: 3+ weeks
+
 </effort_scale>
 
 </step>

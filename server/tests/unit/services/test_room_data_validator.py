@@ -66,7 +66,8 @@ def test_is_valid_room_id():
     assert RoomDataValidator.is_valid_room_id("room_001") is True
     assert RoomDataValidator.is_valid_room_id("invalid room") is False  # Contains space
     assert RoomDataValidator.is_valid_room_id("") is False
-    assert RoomDataValidator.is_valid_room_id(None) is False
+    # Reason: Intentionally passing None to test error handling
+    assert RoomDataValidator.is_valid_room_id(None) is False  # type: ignore[arg-type]
 
 
 def test_check_occupant_count_consistency():

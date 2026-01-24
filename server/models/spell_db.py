@@ -7,11 +7,12 @@ separate from the Pydantic Spell model used for validation.
 
 # pylint: disable=too-few-public-methods  # Reason: SQLAlchemy models are data classes, no instance methods needed
 
-from typing import TYPE_CHECKING
+from datetime import datetime
+from typing import TYPE_CHECKING, Any
 
-from sqlalchemy import Column, DateTime, Integer, String, Text, text
+from sqlalchemy import DateTime, Integer, String, Text, text
 from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.orm import Mapped, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
 
@@ -30,21 +31,23 @@ class SpellDB(Base):
     __tablename__ = "spells"
     __table_args__ = {"extend_existing": True}
 
-    spell_id = Column(String(255), primary_key=True)
-    name = Column(String(100), nullable=False, unique=True)
-    description = Column(Text, nullable=False)
-    school = Column(String(50), nullable=False)
-    mp_cost = Column(Integer, nullable=False)
-    lucidity_cost = Column(Integer, nullable=False, default=0, server_default=text("0"))
-    corruption_on_learn = Column(Integer, nullable=False, default=0, server_default=text("0"))
-    corruption_on_cast = Column(Integer, nullable=False, default=0, server_default=text("0"))
-    casting_time_seconds = Column(Integer, nullable=False, default=0, server_default=text("0"))
-    target_type = Column(String(50), nullable=False)
-    range_type = Column(String(50), nullable=False)
-    effect_type = Column(String(50), nullable=False)
-    effect_data = Column(JSONB, nullable=False, default={}, server_default=text("'{}'::jsonb"))
-    materials = Column(JSONB, nullable=False, default=[], server_default=text("'[]'::jsonb"))
-    created_at = Column(DateTime(timezone=True), nullable=False, server_default=text("NOW()"))
+    spell_id: Mapped[str] = mapped_column(String(255), primary_key=True)
+    name: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
+    description: Mapped[str] = mapped_column(Text, nullable=False)
+    school: Mapped[str] = mapped_column(String(50), nullable=False)
+    mp_cost: Mapped[int] = mapped_column(Integer, nullable=False)
+    lucidity_cost: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default=text("0"))
+    corruption_on_learn: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default=text("0"))
+    corruption_on_cast: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default=text("0"))
+    casting_time_seconds: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default=text("0"))
+    target_type: Mapped[str] = mapped_column(String(50), nullable=False)
+    range_type: Mapped[str] = mapped_column(String(50), nullable=False)
+    effect_type: Mapped[str] = mapped_column(String(50), nullable=False)
+    effect_data: Mapped[dict[str, Any]] = mapped_column(
+        JSONB, nullable=False, default={}, server_default=text("'{}'::jsonb")
+    )
+    materials: Mapped[list[Any]] = mapped_column(JSONB, nullable=False, default=[], server_default=text("'[]'::jsonb"))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, server_default=text("NOW()"))
 
     # Relationships
     player_spells: Mapped[list["PlayerSpell"]] = relationship("PlayerSpell", back_populates="spell")

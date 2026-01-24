@@ -16,6 +16,7 @@ Before starting, query the database for 10 active invite codes:
 ```python
 # Use server/scripts/list_active_invites.py or similar tool
 # Store the 10 invite codes for use in registration
+
 ```
 
 ## Step 2: Registration Phase (Concurrent)
@@ -23,6 +24,7 @@ Before starting, query the database for 10 active invite codes:
 For each of the 10 players, open a new browser tab and register:
 
 ### Player 1 (Tramp)
+
 ```javascript
 // Open new tab
 await mcp_playwright_browser_tabs({action: "new"});
@@ -53,6 +55,7 @@ Repeat for players 2-10 with their respective usernames and invite codes.
 For each player, select their assigned profession and complete character creation:
 
 ### Player 1 (Tramp - profession_id: 0)
+
 ```javascript
 // Select Tramp profession
 await mcp_playwright_browser_click({element: "Tramp profession card", ref: "profession-0"});
@@ -71,6 +74,7 @@ await mcp_playwright_browser_wait_for({text: "Enter the Realm"});
 ```
 
 ### Player 2 (Antiquarian - profession_id: 1)
+
 ```javascript
 // Select Antiquarian profession
 await mcp_playwright_browser_click({element: "Antiquarian profession card", ref: "profession-1"});
@@ -78,6 +82,7 @@ await mcp_playwright_browser_click({element: "Antiquarian profession card", ref:
 ```
 
 Continue for all 10 players with their assigned professions:
+
 - Player 3: Author (profession_id: 2)
 - Player 4: Dilettante (profession_id: 3)
 - Player 5: Doctor of Medicine (profession_id: 4)
@@ -107,6 +112,7 @@ await mcp_playwright_browser_wait_for({text: "Command input"});
 Execute actions sequentially for each player:
 
 ### Player 1: look, say Hello everyone
+
 ```javascript
 await mcp_playwright_browser_tabs({action: "select", index: 0});
 await mcp_playwright_browser_type({element: "Command input", ref: "command-input", text: "look"});
@@ -117,6 +123,7 @@ await mcp_playwright_browser_press_key({key: "Enter"});
 ```
 
 ### Player 2: go north, who
+
 ```javascript
 await mcp_playwright_browser_tabs({action: "select", index: 1});
 await mcp_playwright_browser_type({element: "Command input", ref: "command-input", text: "go north"});
@@ -146,6 +153,7 @@ After idle period, shut down the server:
 
 ```powershell
 # Run from terminal
+
 ./scripts/stop_server.ps1
 ```
 
@@ -155,9 +163,11 @@ Analyze the log files:
 
 ```powershell
 # Read errors.log
+
 Get-Content logs/local/errors.log
 
 # Read warnings.log
+
 Get-Content logs/local/warnings.log
 ```
 
@@ -165,7 +175,8 @@ Document all errors and warnings found.
 
 ## Notes
 
-- All registrations should happen concurrently (use Promise.all() pattern)
+All registrations should happen concurrently (use Promise.all() pattern)
+
 - All logins should happen concurrently
 - Actions should be executed sequentially per player to avoid race conditions
 - Monitor for connection issues during the 5-minute idle period

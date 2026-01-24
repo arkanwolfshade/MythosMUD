@@ -28,6 +28,8 @@ from .movement_monitor import get_movement_monitor
 
 if TYPE_CHECKING:
     from ..async_persistence import AsyncPersistenceLayer
+    from ..models.player import Player
+    from ..services.player_combat_service import PlayerCombatService
 
 
 class MovementService:
@@ -46,9 +48,9 @@ class MovementService:
     def __init__(
         self,
         event_bus: EventBus | None = None,
-        player_combat_service=None,
+        player_combat_service: "PlayerCombatService | None" = None,
         async_persistence: "AsyncPersistenceLayer | None" = None,
-        exploration_service: Any = None,
+        exploration_service: Any | None = None,
     ):
         """
         Initialize the movement service.
@@ -74,7 +76,7 @@ class MovementService:
             has_exploration_service=bool(exploration_service),
         )
 
-    def set_player_combat_service(self, player_combat_service) -> None:
+    def set_player_combat_service(self, player_combat_service: "PlayerCombatService") -> None:
         """
         Set the player combat service after initialization.
 
@@ -366,7 +368,7 @@ class MovementService:
                 self._handle_movement_error(e, player_id, from_room_id, to_room_id, start_time, timing_breakdown)
                 return False
 
-    def _extract_player_id(self, player_obj, from_room_id: str, to_room_id: str) -> uuid.UUID | None:
+    def _extract_player_id(self, player_obj: "Player | Any", from_room_id: str, to_room_id: str) -> uuid.UUID | None:
         """Extract and validate player ID from player object."""
         if not player_obj:
             self._logger.error(
@@ -419,7 +421,9 @@ class MovementService:
             )
             return True
 
-    def _check_player_posture(self, player_obj, player_id: uuid.UUID, from_room_id: str, to_room_id: str) -> bool:
+    def _check_player_posture(
+        self, player_obj: "Player | Any", player_id: uuid.UUID, from_room_id: str, to_room_id: str
+    ) -> bool:
         """Check if player posture allows movement (only standing allowed)."""
         posture = "standing"
         if hasattr(player_obj, "get_stats"):
@@ -486,7 +490,7 @@ class MovementService:
             )
             return False
 
-    async def _validate_movement(self, player_obj, from_room_id: str, to_room_id: str) -> bool:
+    async def _validate_movement(self, player_obj: "Player | Any", from_room_id: str, to_room_id: str) -> bool:
         """
         Validate that a movement operation is allowed.
 

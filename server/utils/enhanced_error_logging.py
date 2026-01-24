@@ -12,7 +12,7 @@ essential for understanding the deeper mysteries of our digital realm.
 # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Error logging requires many parameters for complete error context
 
 import traceback
-from typing import Any, NoReturn
+from typing import Any, NoReturn, cast
 
 from fastapi import HTTPException, Request
 from fastapi.websockets import WebSocket
@@ -74,7 +74,7 @@ def log_and_raise_enhanced(  # pylint: disable=too-many-arguments,too-many-posit
     details: dict[str, Any] | None = None,
     user_friendly: str | None = None,
     logger_name: str | None = None,
-    **kwargs,
+    **kwargs: Any,
 ) -> NoReturn:
     """
     Enhanced log and raise function with proper structured logging.
@@ -125,7 +125,7 @@ def log_and_raise_enhanced(  # pylint: disable=too-many-arguments,too-many-posit
 
 
 def log_and_raise_http_enhanced(
-    status_code: int, detail: str, context: ErrorContext | None = None, logger_name: str | None = None, **kwargs
+    status_code: int, detail: str, context: ErrorContext | None = None, logger_name: str | None = None, **kwargs: Any
 ) -> None:
     """
     Enhanced HTTP error logging with structured logging.
@@ -171,7 +171,7 @@ def log_structured_error(
     context: ErrorContext | None = None,
     logger_name: str | None = None,
     level: str = "error",
-    **kwargs,
+    **kwargs: Any,
 ) -> None:
     """
     Log an error with structured context information.
@@ -207,7 +207,7 @@ def log_structured_error(
 
 
 def wrap_third_party_exception_enhanced(
-    exc: Exception, context: ErrorContext | None = None, logger_name: str | None = None, **kwargs
+    exc: Exception, context: ErrorContext | None = None, logger_name: str | None = None, **kwargs: Any
 ) -> MythosMUDError:
     """
     Enhanced wrapper for third-party exceptions with structured logging.
@@ -273,12 +273,16 @@ def wrap_third_party_exception_enhanced(
     )
 
     # Create and return the MythosMUD error
-    return mythos_error_class(
-        message=f"Third-party exception: {str(exc)}",
-        context=context,
-        details=details,
-        user_friendly="An internal error occurred. Please try again.",
+    result: MythosMUDError = cast(
+        MythosMUDError,
+        mythos_error_class(
+            message=f"Third-party exception: {str(exc)}",
+            context=context,
+            details=details,
+            user_friendly="An internal error occurred. Please try again.",
+        ),
     )
+    return result
 
 
 def create_enhanced_error_context(
@@ -286,7 +290,7 @@ def create_enhanced_error_context(
     websocket: WebSocket | None = None,
     user_id: str | None = None,
     session_id: str | None = None,
-    **kwargs,
+    **kwargs: Any,
 ) -> ErrorContext:
     """
     Create enhanced error context with structured information.
@@ -353,7 +357,7 @@ def log_performance_metric(
     success: bool = True,
     context: ErrorContext | None = None,
     logger_name: str | None = None,
-    **kwargs,
+    **kwargs: Any,
 ) -> None:
     """
     Log performance metrics with structured data.
@@ -391,7 +395,7 @@ def log_security_event_enhanced(
     user_id: str | None = None,
     context: ErrorContext | None = None,
     logger_name: str | None = None,
-    **kwargs,
+    **kwargs: Any,
 ) -> None:
     """
     Log security events with structured data.
@@ -423,3 +427,6 @@ def log_security_event_enhanced(
     level = "critical" if severity == "critical" else "warning"
 
     log_with_context(security_logger, level, "Security event logged", **log_data)
+
+
+__all__ = ["create_error_context", "log_and_raise_enhanced", "log_and_raise_http_enhanced"]

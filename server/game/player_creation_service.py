@@ -6,7 +6,7 @@ This module handles player character creation operations.
 
 import datetime
 import uuid
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, cast
 
 from ..exceptions import ValidationError
 from ..models import Stats
@@ -24,7 +24,7 @@ logger = get_logger(__name__)
 class PlayerCreationService:
     """Service for player creation operations."""
 
-    def __init__(self, persistence, schema_converter):
+    def __init__(self, persistence: Any, schema_converter: Any) -> None:
         """Initialize with persistence layer and schema converter."""
         self.persistence = persistence
         self._schema_converter = schema_converter
@@ -101,7 +101,7 @@ class PlayerCreationService:
         logger.info("Player created successfully", player_id=player.player_id)
 
         # Convert to schema format
-        return await self._schema_converter.convert_player_to_schema(player)
+        return cast(PlayerRead, await self._schema_converter.convert_player_to_schema(player))
 
     async def create_player_with_stats(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Player creation requires many parameters for stats and configuration
         self,
@@ -209,4 +209,4 @@ class PlayerCreationService:
         logger.info("Player created successfully with stats", player_id=player.player_id)
 
         # Convert to schema format
-        return await self._schema_converter.convert_player_to_schema(player)
+        return cast(PlayerRead, await self._schema_converter.convert_player_to_schema(player))

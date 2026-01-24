@@ -35,7 +35,8 @@ Admins can configure NPC types, population limits per zone, required vs. optiona
 
 ## Out of Scope
 
-- Quest system implementation (separate spec)
+Quest system implementation (separate spec)
+
 - Inventory system implementation (separate spec)
 - NPC state persistence between server restarts
 - Complex AI behaviors (MVP uses deterministic rules only)

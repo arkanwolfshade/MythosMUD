@@ -2,11 +2,12 @@
 
 ## Tasks
 
-- [x] 1. Fix Event Processing Race Condition
-  - [x] 1.1 Write tests for room_occupants event handler race condition scenarios
-  - [x] 1.2 Modify room_occupants event handler to preserve room data from room_update events
-  - [x] 1.3 Add state validation logic to prevent stale room data overwrites
-  - [x] 1.4 Verify all tests pass for event processing fixes
+[x] 1. Fix Event Processing Race Condition
+
+- [x] 1.1 Write tests for room_occupants event handler race condition scenarios
+- [x] 1.2 Modify room_occupants event handler to preserve room data from room_update events
+- [x] 1.3 Add state validation logic to prevent stale room data overwrites
+- [x] 1.4 Verify all tests pass for event processing fixes
 
 - [ ] 2. Implement State Synchronization Improvements
   - [ ] 2.1 Write tests for event processing order and state merging logic

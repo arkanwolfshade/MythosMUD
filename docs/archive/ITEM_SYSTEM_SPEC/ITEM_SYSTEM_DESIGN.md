@@ -2,16 +2,20 @@
 
 ## Document Purpose
 
-- Provide Prof. Wolfshade and design stakeholders with a lore-conscious overview of the forthcoming item system.
+Provide Prof. Wolfshade and design stakeholders with a lore-conscious overview of the forthcoming item system.
+
 - Supply the engineering faculty with a concrete blueprint for data models, services, and integration surfaces.
 - Establish implementation phases that respect existing inventory mechanics and monitoring tooling.
 
 ## Audience & Scope
 
-- **Stakeholders**: Senior designers, lore archivists, narrative writers; focus on pillars, gameplay goals, extensibility.
-- **Engineering Faculty**: Backend and client developers, test automation specialists, observability engineers; focus on schema,
+**Stakeholders**: Senior designers, lore archivists, narrative writers; focus on pillars, gameplay goals, extensibility.
+
+**Engineering Faculty**: Backend and client developers, test automation specialists, observability engineers; focus on schema,
+
   service boundaries, concurrency, and validation pathways. UI presentation details.
-- **Out of Scope**: Drop-rate balancing, economy tuning, procedural generation rules.
+
+**Out of Scope**: Drop-rate balancing, economy tuning, procedural generation rules.
 
 ## Lore Alignment
 
@@ -21,14 +25,20 @@ granting modern extensibility akin to Evennia-style component stacks.
 
 ## Foundational Design Principles
 
-- **Prototype & Instance Split**: Immutable prototypes define canonical attributes; lightweight instances carry mutable runtime
+**Prototype & Instance Split**: Immutable prototypes define canonical attributes; lightweight instances carry mutable runtime
   state (condition, attunement, binding).
-- **Component-Based Augmentation**: Behaviors (e.g., lucidity effects, light emission) attach via reusable components inspired by
+
+**Component-Based Augmentation**: Behaviors (e.g., lucidity effects, light emission) attach via reusable components inspired by
+
   Diku/ROM affects and Evennia mixins.
-- **Bitvector Flag Encoding**: Performance-oriented representation of wear locations, usage permissions, and effect toggles.
-- **Data-Driven Extensibility**: Prototypes stored in structured data (JSON or YAML) with schema validation before promotion to
+
+**Bitvector Flag Encoding**: Performance-oriented representation of wear locations, usage permissions, and effect toggles.
+
+**Data-Driven Extensibility**: Prototypes stored in structured data (JSON or YAML) with schema validation before promotion to
+
   production catalogs.
-- **Inventory Mutation Guard Compatibility**: All mutations must pass through the existing guard for idempotency and monitoring.
+
+**Inventory Mutation Guard Compatibility**: All mutations must pass through the existing guard for idempotency and monitoring.
 
 ## Item Lifecycle Overview
 
@@ -41,9 +51,11 @@ granting modern extensibility akin to Evennia-style component stacks.
 
 ## Item Taxonomy (Stakeholder View)
 
-- **Consumables**: Potions, scrolls, ritual reagents; typically single-use with scripted effects.
-- **Equipment**: Weapons, armor, talismans; support wear locations, durability, attribute modifiers.
-- **Artifacts & Relics**: Unique lore-bound items with lucidity effects or progression gating.
+**Consumables**: Potions, scrolls, ritual reagents; typically single-use with scripted effects.
+
+**Equipment**: Weapons, armor, talismans; support wear locations, durability, attribute modifiers.
+
+**Artifacts & Relics**: Unique lore-bound items with lucidity effects or progression gating.
 - **Containers**: Bags, chests, cosmic reliquaries; may modify inventory capacity or apply dimensional effects.
 - **Quest Items**: Progression-critical objects, often soulbound and tracked via journal metadata.
 - **Environmental Objects**: Placeable or interactive props (torches, glyphs, wards) with scripted world hooks.
@@ -62,11 +74,11 @@ granting modern extensibility akin to Evennia-style component stacks.
 | `base_value`         | Economic valuation                                                                           | int            | Subject to faction modifiers      |
 | `durability`         | Max structural integrity                                                                     | int            | `None` when not applicable        |
 | `current_condition`  | Runtime condition (instances only)                                                           | int            | 0..durability                     |
-| `stat_modifiers`     | Mapping of stat → delta                                                                      | dict[str, int] | Includes lucidity modifiers         |
+| `stat_modifiers`     | Mapping of stat → delta                                                                      | dict[str, int] | Includes lucidity modifiers       |
 | `effect_components`  | List of component IDs                                                                        | list[str]      | e.g., `component.fear_aura`       |
 | `flags`              | Bitvector encoding for properties                                                            | int            | Defined in central registry       |
 | `wear_locations`     | Bitvector or list referencing allowed slots                                                  | int            | Mask for compatibility checks     |
-| `usage_restrictions` | Structured rules (class, faction, lucidity thresholds)                                         | dict           | Evaluated server-side             |
+| `usage_restrictions` | Structured rules (class, faction, lucidity thresholds)                                       | dict           | Evaluated server-side             |
 | `stacking_rules`     | Max stack size, merge policy                                                                 | dict           | Instances track `quantity`        |
 | `binding`            | Binding type: `unbind`, `pickup`, `equip`, `quest`                                           | str            | Instances store bound player      |
 | `lifecycle_hooks`    | Script references executed on events                                                         | dict[str, str] | e.g., `on_use`, `on_tick`         |
@@ -77,7 +89,7 @@ granting modern extensibility akin to Evennia-style component stacks.
 | Component                 | Purpose                            | Notes                                       |
 | ------------------------- | ---------------------------------- | ------------------------------------------- |
 | `DurabilityComponent`     | Applies wear and break mechanics   | Integrates with crafting repairs            |
-| `LucidityComponent`       | Adjusts lucidity on use/equip        | Pulls tables from Arkham Psychiatry ledger  |
+| `LucidityComponent`       | Adjusts lucidity on use/equip      | Pulls tables from Arkham Psychiatry ledger  |
 | `LightEmitterComponent`   | Provides illumination radius       | Coordinates with room lighting system       |
 | `AuraComponent`           | Broadcasts passive effects         | Reuses monitoring hooks for anomalies       |
 | `ChargeComponent`         | Tracks limited charges             | Works with `Rechargeable` trait             |
@@ -88,9 +100,10 @@ granting modern extensibility akin to Evennia-style component stacks.
 
 ## Flag & Enumeration Strategy
 
-- Central registry `server/game/items/item_flags.py` (to be created) enumerates:
-  - Wear slots (`HEAD`, `TORSO`, `OFF_HAND`, etc.) using bit positions.
-  - Property flags (`MAGICAL`, `CURSED`, `NO_DROP`, `NO_SALE`, `SOULBOUND`).
+Central registry `server/game/items/item_flags.py` (to be created) enumerates:
+
+- Wear slots (`HEAD`, `TORSO`, `OFF_HAND`, etc.) using bit positions.
+- Property flags (`MAGICAL`, `CURSED`, `NO_DROP`, `NO_SALE`, `SOULBOUND`).
 - Provide helper utilities for:
   - `has_flag(flags, ItemFlag.NO_DROP)`
   - `combine_flags([ItemFlag.MAGICAL, ItemFlag.GLOW])`
@@ -100,42 +113,51 @@ granting modern extensibility akin to Evennia-style component stacks.
 
 ### Prototype Registry Service
 
-- Loads validated prototype definitions from `data/prototypes/items/*.json`.
+Loads validated prototype definitions from `data/prototypes/items/*.json`.
+
 - Offers lookup by `prototype_id` and supports tag-based queries.
 - Exposes API for administrative hot-reload (Phase 2).
 - Validates against Pydantic model ensuring 120 char limits, required attributes, flag resolution.
 
 ### Item Factory & Instance Service
 
-- `ItemFactory.create_instance(prototype_id, *, quantity=1, overrides=None, source=None)` returns `ItemInstance`.
+`ItemFactory.create_instance(prototype_id, *, quantity=1, overrides=None, source=None)` returns `ItemInstance`.
+
 - Generates unique `item_instance_id` (UUID v7 preferred).
 - Applies overrides for dynamic attributes (e.g., randomized damage rolls).
 - Integrates with `InventoryMutationGuard` by emitting tokens for multi-step transactions.
 
 ### Persistence Layer
 
-- SQLAlchemy models:
-  - `ItemPrototype` (optional, if storing in DB) or rely on JSON.
-  - `ItemInstance` with fields: `id`, `prototype_id`, `owner_type`, `owner_id`, `location_context`, `quantity`, `condition`,
+SQLAlchemy models:
+
+- `ItemPrototype` (optional, if storing in DB) or rely on JSON.
+
+- `ItemInstance` with fields: `id`, `prototype_id`, `owner_type`, `owner_id`, `location_context`, `quantity`, `condition`,
+
     `flags`, `metadata`, timestamps.
-  - `ItemComponentState` for components requiring persistence (e.g., charges).
+
+- `ItemComponentState` for components requiring persistence (e.g., charges).
 - Migration strategy: create new tables under `/data/players/` schema; ensure test fixtures isolate to `/server/tests/data/...`.
 
 ### Inventory Integration
 
-- Extend existing inventory services to reference `item_instance_id` rather than raw payload dicts.
+Extend existing inventory services to reference `item_instance_id` rather than raw payload dicts.
+
 - Provide facade methods: `inventory_service.add_item(player_id, item_instance, *, token=None)`.
 - Equip/unequip pipelines validate wear slots using flag masks and component hooks.
 
 ### Scripting & Event Hooks
 
-- Define `ItemEventBus` that emits domain events (`item.used`, `item.equipped`, `item.broken`, `item.bound`).
+Define `ItemEventBus` that emits domain events (`item.used`, `item.equipped`, `item.broken`, `item.bound`).
+
 - NATS subjects follow existing naming pattern `inventory.item.*`.
 - Hooks trigger Playwright E2E scenarios for regression coverage.
 
 ### Observability & Monitoring
 
-- Structured logging via `logger.info("Item instance created", item_instance_id=..., prototype_id=..., player_id=...)`.
+Structured logging via `logger.info("Item instance created", item_instance_id=..., prototype_id=..., player_id=...)`.
+
 - Monitoring dashboard alert for:
   - Duplicate mutation tokens (already integrated).
   - Rapid durability loss (potential exploit).
@@ -143,12 +165,13 @@ granting modern extensibility akin to Evennia-style component stacks.
 
 ## Administrative Interfaces
 
-- **Summon Command (Concept)**
-  - `/summon <prototype_id> [quantity] [item|npc]`: administrative-only ritual for conjuring prototypes into the active room. Provides modern slash UX while keeping legacy telnet compatibility.
-  - Validation chain: extend command parser and security validator to recognise the verb, enforce optional quantity (default `1`, bounded to a safe ceiling), and accept hints for target classification (item vs. NPC). Non-admins receive a lore-aware rejection.
-  - Item flow: resolve caller, assert admin privilege, look up the prototype via the registry, create runtime instances through the factory, insert stacks into the room-drop ledger (or directly into inventory in future variants), and emit an `admin_summon` event with metadata such as `source=admin_summon` and `summoned_by`.
-  - NPC flow (Phase 2+): bridge into the `NPCInstanceService` so the same command can spawn alphabetical horrors when NPC lifecycles support admin conjuration; until then, produce a graceful stub response guiding administrators to `npc spawn`.
-  - Safeguards: respect mutation tokens when touching inventories, cap mass summons to avoid griefing, and log every invocation through the admin action logger for subsequent inquests by the Senate.
+**Summon Command (Concept)**
+
+- `/summon <prototype_id> [quantity] [item|npc]`: administrative-only ritual for conjuring prototypes into the active room. Provides modern slash UX while keeping legacy telnet compatibility.
+- Validation chain: extend command parser and security validator to recognise the verb, enforce optional quantity (default `1`, bounded to a safe ceiling), and accept hints for target classification (item vs. NPC). Non-admins receive a lore-aware rejection.
+- Item flow: resolve caller, assert admin privilege, look up the prototype via the registry, create runtime instances through the factory, insert stacks into the room-drop ledger (or directly into inventory in future variants), and emit an `admin_summon` event with metadata such as `source=admin_summon` and `summoned_by`.
+- NPC flow (Phase 2+): bridge into the `NPCInstanceService` so the same command can spawn alphabetical horrors when NPC lifecycles support admin conjuration; until then, produce a graceful stub response guiding administrators to `npc spawn`.
+- Safeguards: respect mutation tokens when touching inventories, cap mass summons to avoid griefing, and log every invocation through the admin action logger for subsequent inquests by the Senate.
 
 ## Data Model Proposal
 
@@ -194,10 +217,11 @@ ItemComponentState
 
 ## API Surface (Draft)
 
-- **Pydantic Models**
-  - `ItemPrototypeModel`: Validation for prototype ingestion.
-  - `ItemInstanceModel`: Serialization for network transport.
-  - `InventoryEntryModel`: Combines instance data with container metadata.
+**Pydantic Models**
+
+- `ItemPrototypeModel`: Validation for prototype ingestion.
+- `ItemInstanceModel`: Serialization for network transport.
+- `InventoryEntryModel`: Combines instance data with container metadata.
 - **Service Interface**
   - `ItemService.get_instance(item_instance_id)`
   - `ItemService.list_instances(owner_type, owner_id)`
@@ -206,7 +230,8 @@ ItemComponentState
 
 ## Persistence & Migration Plan
 
-- Create Alembic migration introducing `item_instances` and `item_component_states` tables.
+Create Alembic migration introducing `item_instances` and `item_component_states` tables.
+
 - Update test fixtures in `server/tests/conftest.py` to seed minimal exemplar prototypes.
 - Provide CLI tools under `scripts/items/` for:
   - `load_prototypes.ps1`: Validate and load prototypes.
@@ -219,16 +244,19 @@ ItemComponentState
 
 ## Validation & Security
 
-- Enforce COPPA compliance: no item metadata captures personal data.
+Enforce COPPA compliance: no item metadata captures personal data.
+
 - Input validation via Pydantic and service-level guards.
 - Path security: prototype loader sanitizes file paths and rejects traversal.
 - Rate limiting: throttle administrative prototype mutations and item duplication commands.
 
 ## Testing Strategy
 
-- **Unit Tests**: Prototype parsing, component behaviors, binding rules (`pytest`).
-- **Property Tests**: Ensure flag masks remain invertible and collision-free.
-- **Integration Tests**: Inventory command coverage (`server/tests/unit/commands/test_inventory_commands.py` extensions).
+**Unit Tests**: Prototype parsing, component behaviors, binding rules (`pytest`).
+
+**Property Tests**: Ensure flag masks remain invertible and collision-free.
+
+**Integration Tests**: Inventory command coverage (`server/tests/unit/commands/test_inventory_commands.py` extensions).
 - **Playwright Scenarios**: Multi-client equipment flows, lucidity effect propagation.
 - **Load Tests**: Monitor mutation guard pressure during mass loot events.
 
@@ -241,14 +269,16 @@ ItemComponentState
 
 ## Open Questions
 
-- Should prototype sources remain JSON/YAML or migrate to database-backed content authoring?
+Should prototype sources remain JSON/YAML or migrate to database-backed content authoring?
+
 - What governance process promotes prototype drafts to canonical circulation?
 - Do we need real-time prototype diff broadcast to connected clients for GM tooling?
 - How do we sequence lucidity effects with broader mental health systems still in design?
 
 ## Next Steps
 
-- Finalize prototype schema definition (`schemas/items/item_prototype.schema.json`).
+Finalize prototype schema definition (`schemas/items/item_prototype.schema.json`).
+
 - Draft Pydantic models and services per blueprint.
 - Coordinate with narrative team on initial catalog (target: 25 baseline prototypes).
 - Align monitoring team on new alert thresholds for item anomalies.

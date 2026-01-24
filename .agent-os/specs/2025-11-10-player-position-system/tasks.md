@@ -2,11 +2,12 @@
 
 ## Tasks
 
-- [x] 1. Implement position persistence and data plumbing
-  - [x] 1.1 Write tests covering `stats.position` persistence across login/logout cycles
-  - [x] 1.2 Update player stats JSON schema/defaults to include `position`
-  - [x] 1.3 Load and store in-memory position from persisted stats on login/logout
-  - [x] 1.4 Verify all tests pass
+[x] 1. Implement position persistence and data plumbing
+
+- [x] 1.1 Write tests covering `stats.position` persistence across login/logout cycles
+- [x] 1.2 Update player stats JSON schema/defaults to include `position`
+- [x] 1.3 Load and store in-memory position from persisted stats on login/logout
+- [x] 1.4 Verify all tests pass
 
 - [x] 2. Add position command handling and alias wiring
   - [x] 2.1 Write command handler tests for `/sit`, `/stand`, `/lie` including alias resolution

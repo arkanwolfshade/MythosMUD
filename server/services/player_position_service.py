@@ -129,7 +129,7 @@ class PlayerPositionService:
         if not isinstance(stats, dict):
             stats = {}
 
-        return stats.get("position", "standing")
+        return cast(str, stats.get("position", "standing"))
 
     async def _update_player_position(
         self, player: Any, stats: dict[str, Any], normalized_position: str, player_name: str

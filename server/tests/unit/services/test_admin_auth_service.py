@@ -59,17 +59,17 @@ def superuser():
 
 def test_admin_role_enum():
     """Test AdminRole enum values."""
-    assert AdminRole.SUPERUSER == "superuser"
-    assert AdminRole.ADMIN == "admin"
-    assert AdminRole.MODERATOR == "moderator"
-    assert AdminRole.VIEWER == "viewer"
+    assert AdminRole.SUPERUSER.value == "superuser"
+    assert AdminRole.ADMIN.value == "admin"
+    assert AdminRole.MODERATOR.value == "moderator"
+    assert AdminRole.VIEWER.value == "viewer"
 
 
 def test_admin_action_enum():
     """Test AdminAction enum values."""
-    assert AdminAction.CREATE_NPC_DEFINITION == "create_npc_definition"
-    assert AdminAction.SPAWN_NPC == "spawn_npc"
-    assert AdminAction.GET_POPULATION_STATS == "get_population_stats"
+    assert AdminAction.CREATE_NPC_DEFINITION.value == "create_npc_definition"
+    assert AdminAction.SPAWN_NPC.value == "spawn_npc"
+    assert AdminAction.GET_POPULATION_STATS.value == "get_population_stats"
 
 
 def test_admin_session_init():

@@ -12,7 +12,7 @@ entity management systems.
 # pylint: disable=too-many-return-statements  # Reason: Behavior engine requires multiple return statements for different behavior rule evaluations and action selection
 
 from collections.abc import Callable
-from typing import Any
+from typing import Any, cast
 
 from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -30,7 +30,7 @@ class BehaviorEngine:
     def __init__(self) -> None:
         """Initialize the behavior engine."""
         self.rules: list[dict[str, Any]] = []
-        self.action_handlers: dict[str, Callable] = {}
+        self.action_handlers: dict[str, Callable[..., Any]] = {}
         self.state: dict[str, Any] = {}
 
         logger.debug("Behavior engine initialized", engine_id=id(self))
@@ -280,7 +280,7 @@ class BehaviorEngine:
         applicable_rules.sort(key=lambda r: r["priority"], reverse=True)
         return applicable_rules
 
-    def register_action_handler(self, action_name: str, handler: Callable) -> bool:
+    def register_action_handler(self, action_name: str, handler: Callable[..., Any]) -> bool:
         """
         Register an action handler for a specific action.
 
@@ -319,7 +319,8 @@ class BehaviorEngine:
                 return False
 
             handler = self.action_handlers[action_name]
-            result = handler(context)
+            handler_result = handler(context)
+            result: bool = cast(bool, handler_result)
             logger.debug("Executed action", action_name=action_name, result=result)
             return result
 

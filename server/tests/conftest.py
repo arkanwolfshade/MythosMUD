@@ -20,6 +20,11 @@ if not os.environ.get("MYTHOSMUD_ADMIN_PASSWORD"):
 # Fix MYTHOSMUD_JWT_SECRET: handle empty strings (setdefault only sets if key doesn't exist)
 if not os.environ.get("MYTHOSMUD_JWT_SECRET"):
     os.environ["MYTHOSMUD_JWT_SECRET"] = "test-jwt-secret-key-for-testing-only"
+# Set token secrets for UserManager tests (must not start with 'dev-' per validation)
+if not os.environ.get("MYTHOSMUD_RESET_TOKEN_SECRET"):
+    os.environ["MYTHOSMUD_RESET_TOKEN_SECRET"] = "test-reset-token-secret-for-testing-only-secure-value"
+if not os.environ.get("MYTHOSMUD_VERIFICATION_TOKEN_SECRET"):
+    os.environ["MYTHOSMUD_VERIFICATION_TOKEN_SECRET"] = "test-verification-token-secret-for-testing-only-secure-value"
 os.environ.setdefault("SERVER_PORT", "54731")
 os.environ.setdefault("SERVER_HOST", "127.0.0.1")
 os.environ.setdefault("LOGGING_ENVIRONMENT", "unit_test")
@@ -31,11 +36,11 @@ if not os.environ.get("DATABASE_NPC_URL"):
 os.environ.setdefault("GAME_ALIASES_DIR", "data/unit_test/players/aliases")
 
 # Imports must come after environment variables to prevent config loading failures
-from server.config import (
-    reset_config,  # noqa: E402  # Reason: Import must come after environment variables to prevent config loading failures during test setup
+from server.config import (  # pylint: disable=wrong-import-position  # noqa: E402  # Reason: Import must come after environment variables to prevent config loading failures during test setup
+    reset_config,
 )
-from server.structured_logging.enhanced_logging_config import (
-    get_logger,  # noqa: E402  # Reason: Import must come after environment variables to prevent config loading failures during test setup
+from server.structured_logging.enhanced_logging_config import (  # pylint: disable=wrong-import-position  # noqa: E402  # Reason: Import must come after environment variables to prevent config loading failures during test setup
+    get_logger,
 )
 
 logger = get_logger(__name__)

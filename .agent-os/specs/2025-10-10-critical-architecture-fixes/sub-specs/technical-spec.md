@@ -8,9 +8,11 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 
 **Frontend (React/TypeScript):**
 
-- **State Machine Library:** XState 4.x (adds ~50KB to bundle)
-- **Implementation Location:** `client/src/hooks/useGameConnection.ts` (refactor)
-- **State Definition:** Create explicit FSM with states:
+**State Machine Library:** XState 4.x (adds ~50KB to bundle)
+
+**Implementation Location:** `client/src/hooks/useGameConnection.ts` (refactor)
+
+**State Definition:** Create explicit FSM with states:
 
   ```typescript
   type ConnectionState =
@@ -23,16 +25,20 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
     | 'failed'
   ```
 
-- **Transition Guards:** Implement timeout guards (30s connection timeout, 5s reconnection timeout)
-- **State Persistence:** Use XState context for connection metadata (attempts, session_id, last_error)
-- **Visualization:** Enable XState inspector for debugging (dev mode only)
+**Transition Guards:** Implement timeout guards (30s connection timeout, 5s reconnection timeout)
+
+**State Persistence:** Use XState context for connection metadata (attempts, session_id, last_error)
+
+**Visualization:** Enable XState inspector for debugging (dev mode only)
 - **Error Handling:** Map all connection errors to state transitions
 
 **Backend (Python/FastAPI):**
 
-- **State Machine Library:** python-statemachine 2.x
-- **Implementation Location:** New module `server/realtime/connection_state_machine.py`
-- **Use Cases:**
+**State Machine Library:** python-statemachine 2.x
+
+**Implementation Location:** New module `server/realtime/connection_state_machine.py`
+
+**Use Cases:**
   - NATS connection lifecycle
   - WebSocket health tracking
   - Circuit breaker state management
@@ -43,6 +49,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Refactoring Strategy:**
 
 1. Extract connection logic from 750-line `useGameConnection.ts` into:
+
    - `useConnectionStateMachine.ts` - XState machine definition
    - `useWebSocketConnection.ts` - WebSocket-specific logic
    - `useSSEConnection.ts` - SSE-specific logic
@@ -77,6 +84,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 
 ```python
 # server/config/models.py
+
 from pydantic import BaseSettings, Field, validator
 
 class ServerConfig(BaseSettings):
@@ -155,6 +163,7 @@ class AppConfig(BaseSettings):
 
 ```python
 # server/config/__init__.py
+
 from functools import lru_cache
 from .models import AppConfig
 
@@ -167,6 +176,7 @@ def get_config() -> AppConfig:
     return AppConfig()
 
 # Export for compatibility
+
 __all__ = ['get_config', 'AppConfig']
 ```
 
@@ -187,9 +197,11 @@ __all__ = ['get_config', 'AppConfig']
 
 **Breaking Changes:**
 
-- **YAML config files no longer supported** - Must use `.env` files
-- **No hardcoded defaults for security fields** - Must provide `MYTHOSMUD_ADMIN_PASSWORD`, `DATABASE_URL`, etc.
-- **Environment must be explicit** - Must set `LOGGING_ENVIRONMENT`
+**YAML config files no longer supported** - Must use `.env` files
+
+**No hardcoded defaults for security fields** - Must provide `MYTHOSMUD_ADMIN_PASSWORD`, `DATABASE_URL`, etc.
+
+**Environment must be explicit** - Must set `LOGGING_ENVIRONMENT`
 
 **Testing Requirements:**
 
@@ -215,6 +227,7 @@ __all__ = ['get_config', 'AppConfig']
 
 ```python
 # server/utils/alias_graph.py
+
 from typing import Dict, Set, List
 import networkx as nx
 
@@ -234,6 +247,7 @@ class AliasGraph:
         for alias in aliases:
             self.graph.add_node(alias.name)
             # Parse alias command to find referenced aliases
+
             referenced = self._extract_alias_references(alias.command)
             for ref in referenced:
                 self.graph.add_edge(alias.name, ref)
@@ -271,10 +285,12 @@ async def process_command_unified(
     # ... existing code ...
 
     # Step 6: Check for alias expansion with safety validation
+
     if alias_storage:
         alias = alias_storage.get_alias(player_name, cmd)
         if alias:
             # NEW: Check for circular dependencies
+
             alias_graph = AliasGraph(alias_storage)
             alias_graph.build_graph(player_name)
 
@@ -291,6 +307,7 @@ async def process_command_unified(
                 }
 
             # NEW: Validate expanded command length
+
             expanded_command = alias.get_expanded_command(args)
             if len(expanded_command) > MAX_EXPANDED_COMMAND_LENGTH:
                 logger.warning(
@@ -304,6 +321,7 @@ async def process_command_unified(
                 }
 
             # Proceed with expansion
+
             result = await handle_expanded_command(...)
             return result
 ```
@@ -312,6 +330,7 @@ async def process_command_unified(
 
 ```python
 # server/middleware/rate_limiter.py
+
 from collections import defaultdict
 from datetime import datetime, timedelta
 from typing import Dict
@@ -333,16 +352,19 @@ class CommandRateLimiter:
         cutoff = now - self.window
 
         # Remove old timestamps
+
         self.player_timestamps[player_name] = [
             ts for ts in self.player_timestamps[player_name]
             if ts > cutoff
         ]
 
         # Check limit
+
         if len(self.player_timestamps[player_name]) >= self.max_commands:
             return False
 
         # Record new command
+
         self.player_timestamps[player_name].append(now)
         return True
 
@@ -356,6 +378,7 @@ class CommandRateLimiter:
         return max(0.0, wait)
 
 # Global rate limiter instance
+
 command_rate_limiter = CommandRateLimiter(max_commands=10, window_seconds=1)
 ```
 
@@ -365,6 +388,7 @@ command_rate_limiter = CommandRateLimiter(max_commands=10, window_seconds=1)
 # server/command_handler_unified.py (add at start of process_command_unified)
 
 # Check rate limit
+
 if not command_rate_limiter.is_allowed(player_name):
     wait_time = command_rate_limiter.get_wait_time(player_name)
     logger.warning("Command rate limit exceeded", player=player_name, wait_time=wait_time)
@@ -377,6 +401,7 @@ if not command_rate_limiter.is_allowed(player_name):
 
 ```python
 # server/validators/command_validator.py
+
 import re
 from typing import Set
 
@@ -402,15 +427,18 @@ class CommandValidator:
         Returns (is_valid, error_message).
         """
         # Check for dangerous patterns
+
         for pattern in cls.DANGEROUS_PATTERNS:
             if re.search(pattern, command, re.IGNORECASE):
                 return False, f"Command contains potentially dangerous pattern: {pattern}"
 
         # Check for null bytes
+
         if '\x00' in command:
             return False, "Command contains null bytes"
 
         # Check for excessive length
+
         if len(command) > 10000:
             return False, "Command exceeds maximum length"
 
@@ -429,6 +457,7 @@ class CommandValidator:
 
 ```python
 # server/utils/audit_logger.py
+
 from datetime import datetime
 import json
 
@@ -489,6 +518,7 @@ audit_logger = AuditLogger()
 
 ```python
 # server/realtime/nats_retry_handler.py
+
 from typing import Callable, Any
 import asyncio
 from functools import wraps
@@ -545,6 +575,7 @@ class NATSRetryHandler:
 
 ```python
 # server/realtime/dead_letter_queue.py
+
 from datetime import datetime
 from typing import Any, Dict
 import json
@@ -594,6 +625,7 @@ class DeadLetterQueue:
 
 ```python
 # server/realtime/circuit_breaker.py
+
 from enum import Enum
 from datetime import datetime, timedelta
 from typing import Callable, Any
@@ -695,6 +727,7 @@ class NATSMessageHandler:
         """Enhanced message handling with error boundaries."""
         try:
             # Process through circuit breaker
+
             await self.circuit_breaker.call(
                 self._process_message_with_retry,
                 message_data
@@ -702,6 +735,7 @@ class NATSMessageHandler:
         except CircuitBreakerOpen:
             logger.error("Circuit breaker open, rejecting message")
             # Add to DLQ immediately when circuit is open
+
             await self.dead_letter_queue.enqueue(
                 message_data,
                 Exception("Circuit breaker open"),
@@ -719,6 +753,7 @@ class NATSMessageHandler:
 
         if not success:
             # All retries exhausted, add to DLQ
+
             await self.dead_letter_queue.enqueue(
                 message_data,
                 result,  # This is the exception
@@ -728,16 +763,19 @@ class NATSMessageHandler:
     async def _process_single_message(self, message_data: dict[str, Any]):
         """Process a single message (can raise exceptions)."""
         # Validate required fields
+
         if not all([message_data.get("channel"), message_data.get("sender_id")]):
             raise ValueError("Missing required message fields")
 
         # ... existing processing logic ...
+
 ```
 
 **5. FastAPI Metrics Integration:**
 
 ```python
 # server/middleware/metrics_middleware.py
+
 from fastapi import Request
 from starlette.middleware.base import BaseHTTPMiddleware
 from collections import Counter
@@ -778,9 +816,11 @@ class MetricsCollector:
         }
 
 # Global metrics instance
+
 metrics_collector = MetricsCollector()
 
 # Add metrics endpoint to FastAPI
+
 @app.get("/api/metrics")
 async def get_metrics():
     """Expose metrics for monitoring."""
@@ -805,24 +845,32 @@ async def get_metrics():
 
 **Frontend:**
 
-- **xstate** (4.38.x) - State machine library for connection management
-  - **Justification:** Industry-standard FSM library with excellent TypeScript support, visualization tools, and testing utilities. Provides robust connection state management with timeout guards and transition logging.
-  - **Bundle Impact:** ~50KB gzipped (acceptable for reliability gains)
-  - **Installation:** `npm install xstate@^4.38.0`
+**xstate** (4.38.x) - State machine library for connection management
 
-- **@xstate/react** (3.2.x) - React hooks for XState
-  - **Justification:** Official React integration providing hooks for state machine usage
-  - **Installation:** `npm install @xstate/react@^3.2.0`
+**Justification:** Industry-standard FSM library with excellent TypeScript support, visualization tools, and testing utilities. Provides robust connection state management with timeout guards and transition logging.
+
+**Bundle Impact:** ~50KB gzipped (acceptable for reliability gains)
+- **Installation:** `npm install xstate@^4.38.0`
+
+**@xstate/react** (3.2.x) - React hooks for XState
+
+**Justification:** Official React integration providing hooks for state machine usage
+
+**Installation:** `npm install @xstate/react@^3.2.0`
 
 **Backend:**
 
-- **python-statemachine** (2.1.x) - Python state machine library
-  - **Justification:** Native async/await support, excellent type hints, cleaner API than alternatives, aligns with project's modern Python patterns
-  - **Installation:** `pip install python-statemachine==2.1.*` or add to `pyproject.toml`
+**python-statemachine** (2.1.x) - Python state machine library
 
-- **networkx** (3.x) - Graph analysis library for alias cycle detection
-  - **Justification:** Industry-standard graph library with efficient cycle detection algorithms (DFS-based). Required for circular alias dependency detection.
-  - **Installation:** `pip install networkx>=3.0,<4.0`
+**Justification:** Native async/await support, excellent type hints, cleaner API than alternatives, aligns with project's modern Python patterns
+
+**Installation:** `pip install python-statemachine==2.1.*` or add to `pyproject.toml`
+
+**networkx** (3.x) - Graph analysis library for alias cycle detection
+
+**Justification:** Industry-standard graph library with efficient cycle detection algorithms (DFS-based). Required for circular alias dependency detection.
+
+**Installation:** `pip install networkx>=3.0,<4.0`
 
 **Note:** All other functionality uses existing dependencies (Pydantic, FastAPI, asyncio, etc.)
 
@@ -834,16 +882,20 @@ async def get_metrics():
 
 **Positive Impacts:**
 
-- **Connection Reliability:** 50% reduction in connection-related support tickets
-- **Server Stability:** Elimination of alias bomb DoS vulnerability
-- **Message Delivery:** 99.9% message delivery success rate (up from ~95%)
+**Connection Reliability:** 50% reduction in connection-related support tickets
+
+**Server Stability:** Elimination of alias bomb DoS vulnerability
+
+**Message Delivery:** 99.9% message delivery success rate (up from ~95%)
 - **Configuration Startup:** Faster startup with early validation failures
 
 **Potential Performance Costs:**
 
-- **Alias Expansion:** +5-10ms per alias command (graph cycle detection)
-- **Command Rate Limiting:** +1-2ms per command (timestamp checking)
-- **NATS Message Processing:** +10-20ms per message (retry logic overhead)
+**Alias Expansion:** +5-10ms per alias command (graph cycle detection)
+
+**Command Rate Limiting:** +1-2ms per command (timestamp checking)
+
+**NATS Message Processing:** +10-20ms per message (retry logic overhead)
 - **Frontend Bundle Size:** +50KB gzipped (XState)
 
 **Mitigation Strategies:**
@@ -875,25 +927,30 @@ async def get_metrics():
 ### Security Improvements
 
 1. **Command Injection Prevention:**
+
    - Circular dependency detection prevents alias bombs
    - Command validation blocks shell injection patterns
    - Rate limiting prevents DoS attacks
 
 2. **Configuration Security:**
+
    - No hardcoded secrets in code
    - Explicit validation catches misconfigurations
    - Environment-specific configs prevent production leaks
 
 3. **Audit Trail:**
+
    - All admin commands logged with timestamps
    - Failed authentication attempts tracked
    - Dead letter queue preserves failed messages for forensics
 
 ### Security Testing Requirements
 
-- **Penetration Testing:** Attempt alias bomb creation, command injection
-- **Fuzz Testing:** Random command generation to find validation bypasses
-- **Load Testing:** Verify rate limiting under attack conditions
+**Penetration Testing:** Attempt alias bomb creation, command injection
+
+**Fuzz Testing:** Random command generation to find validation bypasses
+
+**Load Testing:** Verify rate limiting under attack conditions
 - **Audit Testing:** Verify all security-sensitive commands are logged
 
 ---
@@ -932,23 +989,27 @@ async def get_metrics():
 ### Required Documentation Updates
 
 1. **Architecture Decision Records (ADRs):**
+
    - ADR: Connection State Machine Selection (XState vs alternatives)
    - ADR: Configuration Management Strategy (Pydantic BaseSettings)
    - ADR: Command Security Implementation (graph-based cycle detection)
    - ADR: Error Boundary Pattern (circuit breaker + DLQ)
 
 2. **Developer Documentation:**
+
    - XState debugging guide (using @xstate/inspect)
    - Configuration validation guide
    - Command security testing guide
    - NATS metrics interpretation guide
 
 3. **Deployment Documentation:**
+
    - Updated `.env` file requirements
    - Configuration validation checklist
    - Monitoring setup for new metrics endpoint
 
 4. **User Documentation:**
+
    - Connection status indicator explanations (for players)
    - Alias limitation documentation (preventing circular aliases)
 

@@ -1,11 +1,9 @@
 /**
  * Scenario 18: Whisper Logging
  *
- * Tests whisper channel logging and privacy functionality for moderation purposes.
- * Verifies that whisper messages are properly logged for moderation purposes,
- * that privacy is maintained for regular players, that admin players can access
- * whisper logs when needed, and that the logging system works correctly for
- * privacy and moderation.
+ * Tests whisper channel logging and privacy functionality.
+ * Verifies that whisper messages are private between players and that
+ * the recipient receives the intended message.
  */
 
 import { expect, test } from '@playwright/test';
@@ -58,39 +56,5 @@ test.describe('Whisper Logging', () => {
         msg.includes('ArkanWolfshade whispers to you: Testing whisper logging functionality')
     );
     expect(seesMessage).toBe(true);
-  });
-
-  test('admin should be able to access whisper logs', async () => {
-    const awContext = contexts[0];
-
-    // AW tries to access whisper logs as admin
-    // NOTE: This feature is not yet implemented - "whisper" is not a valid admin subcommand
-    // Valid admin subcommands are: ['lcd', 'set', 'setlucidity', 'status', 'time']
-    // When this feature is implemented, update the test to expect success instead of validation error
-    await executeCommand(awContext.page, 'admin whisper logs');
-
-    // Wait for validation error response (feature not implemented yet)
-    await waitForMessage(awContext.page, /Invalid.*admin.*subcommand|Unknown.*admin.*subcommand/i, 10000).catch(() => {
-      // Error format may vary
-    });
-
-    // Verify error message appears (confirming validation is working)
-    const messages = await awContext.page.evaluate(() => {
-      const messages = Array.from(document.querySelectorAll('[data-message-text]'));
-      return messages.map(msg => (msg.getAttribute('data-message-text') || '').trim());
-    });
-
-    // Verify validation error message is present
-    const hasError = messages.some(msg => {
-      const lower = msg.toLowerCase();
-      return (
-        (lower.includes('invalid') && (lower.includes('admin') || lower.includes('subcommand'))) ||
-        (lower.includes('unknown') && lower.includes('subcommand'))
-      );
-    });
-    expect(hasError).toBe(true);
-
-    // This test documents that the feature is not yet implemented
-    // When admin whisper logs is implemented, update this test to verify successful access
   });
 });

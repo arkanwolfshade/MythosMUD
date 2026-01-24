@@ -1,10 +1,12 @@
 # Structured Concurrency Patterns
 
-This document outlines the structured concurrency patterns used in the MythosMUD codebase, based on AnyIO best practices adapted for asyncio.
+This document outlines the structured concurrency patterns used in the MythosMUD codebase, based on AnyIO best practices
+adapted for asyncio.
 
 ## Overview
 
-Structured concurrency ensures that all async tasks are properly managed, tracked, and cleaned up. This prevents resource leaks, orphaned tasks, and difficult-to-debug issues.
+Structured concurrency ensures that all async tasks are properly managed, tracked, and cleaned up. This prevents
+resource leaks, orphaned tasks, and difficult-to-debug issues.
 
 ## Core Principles
 
@@ -25,6 +27,7 @@ Structured concurrency ensures that all async tasks are properly managed, tracke
 
 ```python
 # Process async subscribers with structured concurrency
+
 if async_subscribers:
     tasks: list[asyncio.Task] = []
     subscriber_names: dict[asyncio.Task, str] = {}
@@ -36,15 +39,18 @@ if async_subscribers:
         self._active_tasks.add(task)
 
     # Wait for all tasks with structured concurrency pattern
+
     results = await asyncio.gather(*tasks, return_exceptions=True)
 
     # Log any exceptions from subscribers
+
     for task, result in zip(tasks, results):
         if isinstance(result, Exception):
             self._logger.error("Error in async subscriber", ...)
 ```
 
 **Benefits**:
+
 - All tasks complete even if some fail
 - Exceptions are properly logged
 - Tasks are tracked for cleanup
@@ -71,6 +77,7 @@ def _create_tracked_task(
         self._background_tasks.add(task)
 
         # Remove from tracking when complete
+
         def remove_task(t: asyncio.Task) -> None:
             self._background_tasks.discard(t)
 
@@ -82,6 +89,7 @@ def _create_tracked_task(
 ```
 
 **Benefits**:
+
 - All background tasks are tracked
 - Automatic cleanup on completion
 - Proper error handling
@@ -106,17 +114,20 @@ async def _cancel_background_tasks(self):
         return
 
     # Cancel all background tasks
+
     for task in list(self._background_tasks):
         if not task.done():
             task.cancel()
 
     # Wait for tasks to complete with timeout
+
     if self._background_tasks:
         done, pending = await asyncio.wait(
             self._background_tasks, timeout=2.0, return_when=asyncio.ALL_COMPLETED
         )
 
         # Force cancel any remaining tasks
+
         if pending:
             for task in pending:
                 if not task.done():
@@ -129,6 +140,7 @@ async def _cancel_background_tasks(self):
 ```
 
 **Benefits**:
+
 - All tasks are properly cancelled
 - Timeout prevents hanging
 - Clean state after shutdown
@@ -146,6 +158,7 @@ if asyncio.iscoroutine(result):
     try:
         task = asyncio.create_task(result)
         # Add a callback to log if it fails
+
         def log_failover_error(t: asyncio.Task) -> None:
             try:
                 t.result()  # This will raise if task failed
@@ -157,29 +170,38 @@ if asyncio.iscoroutine(result):
 ```
 
 **Benefits**:
+
 - Tasks run independently
 - Errors are logged
 - No blocking of main flow
 
 ## When to Use Each Pattern
 
-### Use Pattern 1 (Structured Concurrency) when:
-- You have multiple async operations that should all complete
+### Use Pattern 1 (Structured Concurrency) when
+
+You have multiple async operations that should all complete
+
 - You want to ensure all operations run even if some fail
 - You need to aggregate results or exceptions
 
-### Use Pattern 2 (Tracked Background Tasks) when:
-- You have long-running background tasks
+### Use Pattern 2 (Tracked Background Tasks) when
+
+You have long-running background tasks
+
 - Tasks need lifecycle management
 - You need to cancel tasks during shutdown
 
-### Use Pattern 3 (Structured Cleanup) when:
-- You're implementing service shutdown
+### Use Pattern 3 (Structured Cleanup) when
+
+You're implementing service shutdown
+
 - You need to ensure all tasks are cancelled
 - You want to prevent resource leaks
 
-### Use Pattern 4 (Fire-and-Forget) when:
-- Tasks should run independently
+### Use Pattern 4 (Fire-and-Forget) when
+
+Tasks should run independently
+
 - Tasks are intentionally decoupled
 - You still want error logging
 
@@ -189,6 +211,7 @@ if asyncio.iscoroutine(result):
 
 ```python
 # BAD: Task is not tracked
+
 asyncio.create_task(background_operation())
 ```
 
@@ -196,6 +219,7 @@ asyncio.create_task(background_operation())
 
 ```python
 # BAD: Tasks created without proper coordination
+
 for item in items:
     asyncio.create_task(process_item(item))
 ```
@@ -204,15 +228,18 @@ for item in items:
 
 ```python
 # BAD: Tasks may be orphaned
+
 async def shutdown(self):
     self._running = False
     # Missing: Cancel and wait for tasks
+
 ```
 
 ### ❌ Blocking operations in async context
 
 ```python
 # BAD: Blocks event loop
+
 async def process_data(self):
     time.sleep(1)  # Should use asyncio.sleep() or asyncio.to_thread()
 ```
@@ -235,16 +262,20 @@ async def test_structured_concurrency_task_cleanup(self):
     service = MyService()
 
     # Create tasks
+
     task1 = service._create_tracked_task(background_task1())
     task2 = service._create_tracked_task(background_task2())
 
     # Verify tasks are tracked
+
     assert len(service._background_tasks) == 2
 
     # Shutdown should clean up
+
     await service.shutdown()
 
     # Verify cleanup
+
     assert len(service._background_tasks) == 0
     assert task1.done()
     assert task2.done()
@@ -252,13 +283,17 @@ async def test_structured_concurrency_task_cleanup(self):
 
 ## References
 
-- [AnyIO Best Practices](.cursor/rules/anyio.mdc)
+[AnyIO Best Practices](.cursor/rules/anyio.mdc)
+
 - [Python asyncio.TaskGroup](https://docs.python.org/3/library/asyncio-task.html#asyncio.TaskGroup) (Python 3.11+)
 - [Structured Concurrency](https://en.wikipedia.org/wiki/Structured_concurrency)
 
 ## Implementation Status
 
-- ✅ EventBus: Uses structured concurrency for async subscribers
-- ✅ NATS Service: Tracks all background tasks with proper cleanup
-- ✅ Connection Manager: Health check tasks properly managed
-- ✅ Catatonia Registry: Fire-and-forget tasks with error logging
+✅ EventBus: Uses structured concurrency for async subscribers
+
+✅ NATS Service: Tracks all background tasks with proper cleanup
+
+✅ Connection Manager: Health check tasks properly managed
+
+✅ Catatonia Registry: Fire-and-forget tasks with error logging

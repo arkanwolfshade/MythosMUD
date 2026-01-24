@@ -151,7 +151,7 @@ def validate_expanded_command(
 
 async def handle_expanded_command(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Alias expansion requires many parameters for context and expansion logic
     command_line: str,
-    current_user: dict,
+    current_user: dict[str, Any],
     request: "Request",
     alias_storage: "AliasStorage",
     player_name: str,

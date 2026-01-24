@@ -39,7 +39,8 @@ A regular player attempts to issue `/shutdown 10` or `/shutdown cancel`. The com
 
 ## Out of Scope
 
-- Scheduling shutdowns for future times
+Scheduling shutdowns for future times
+
 - Different shutdown types (restart vs full shutdown)
 - Configuring notification intervals
 - Per-player shutdown notifications beyond Announcements channel

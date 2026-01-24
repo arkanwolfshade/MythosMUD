@@ -17,16 +17,19 @@ Implement a comprehensive chat channel system that provides players with multipl
 
 ### 1.2 Scope
 
-- **Local Channel**: Sub-zone based communication
-- **Global Channel**: Server-wide communication with level restrictions
-- **Whisper Channel**: Player-to-player private communication with reply functionality
+**Local Channel**: Sub-zone based communication
+
+**Global Channel**: Server-wide communication with level restrictions
+
+**Whisper Channel**: Player-to-player private communication with reply functionality
 - **System Channel**: Admin announcements (unmutable)
 - **Integration**: Extends existing NATS-based "say" system
 - **UI Support**: Both command-line and graphical interface options
 
 ### 1.3 Success Criteria
 
-- All channels function reliably with real-time messaging
+All channels function reliably with real-time messaging
+
 - Player preferences persist across sessions
 - Admin moderation tools are effective
 - System integrates seamlessly with existing chat infrastructure
@@ -60,9 +63,11 @@ Extend existing NATS subject patterns for new channels:
 
 ```python
 # Existing patterns
+
 "chat.say.{room_id}"           # Room-based say messages
 
 # New patterns
+
 "chat.local.{sub_zone_id}"     # Sub-zone based local messages
 "chat.global"                  # Global server messages
 "chat.whisper.{receiver_id}"   # Whisper messages to specific player
@@ -92,6 +97,7 @@ CREATE TABLE player_channel_preferences (
 
 ```python
 # Log file structure
+
 chat/
 ├── local_<subzone>.log    # Local channel messages per sub-zone
 ├── global.log             # Global channel messages
@@ -99,10 +105,11 @@ chat/
 ├── system.log             # System announcements
 └── combined.log           # All channel messages (for moderation)
 
-# Example sub-zone log files:
+# Example sub-zone log files
 # local_arkhamcity.log
 # local_sanitarium.log
 # local_miskatonic_university.log
+
 ```
 
 #### Admin Channel Mutes Table
@@ -134,9 +141,11 @@ chat/
 
 #### 3.1.1 Scope
 
-- **Range**: Sub-zone based (all players in the same sub-zone)
-- **Dynamic**: Automatically updates as players move between sub-zones
-- **Subscription**: Players automatically subscribe to local channel of current sub-zone
+**Range**: Sub-zone based (all players in the same sub-zone)
+
+**Dynamic**: Automatically updates as players move between sub-zones
+
+**Subscription**: Players automatically subscribe to local channel of current sub-zone
 
 #### 3.1.2 Implementation
 
@@ -157,21 +166,25 @@ class LocalChannelStrategy:
 
 #### 3.1.3 Commands
 
-- `/local <message>` - Send message to local channel
+`/local <message>` - Send message to local channel
+
 - `/l <message>` - Short form for local channel
 
 ### 3.2 Global Channel
 
 #### 3.2.1 Scope
 
-- **Range**: Server-wide (all online players)
-- **Access**: Minimum level requirement (configurable, default: level 1)
-- **Rate Limiting**: Stricter than local channel
+**Range**: Server-wide (all online players)
+
+**Access**: Minimum level requirement (configurable, default: level 1)
+
+**Rate Limiting**: Stricter than local channel
 
 #### 3.2.2 Configuration
 
 ```yaml
 # server_config.yaml additions
+
 chat:
   global:
     min_level: 1  # Configurable minimum level
@@ -200,16 +213,19 @@ class GlobalChannelStrategy:
 
 #### 3.2.4 Commands
 
-- `/global <message>` - Send message to global channel
+`/global <message>` - Send message to global channel
+
 - `/g <message>` - Short form for global channel
 
 ### 3.3 Whisper Channel
 
 #### 3.3.1 Scope
 
-- **Range**: Player-to-player only
-- **Distance**: No distance limitations
-- **Reply**: Support for `/reply` command to respond to last whisper
+**Range**: Player-to-player only
+
+**Distance**: No distance limitations
+
+**Reply**: Support for `/reply` command to respond to last whisper
 
 #### 3.3.2 Implementation
 
@@ -222,13 +238,16 @@ class WhisperChannelStrategy:
             return {"success": False, "error": "You whisper into the aether."}
 
         # Check if receiver has muted sender
+
         if user_manager.is_player_muted(receiver.id, sender_id):
             return {"success": True, "message": "Message sent."}  # No error indicator
 
         # Store last whisper for reply functionality
+
         self.store_last_whisper(sender_id, receiver.id)
 
         # Send via NATS
+
         subject = f"chat.whisper.{receiver.id}"
         return self.publish_whisper(subject, sender_id, receiver.id, message)
 
@@ -243,7 +262,8 @@ class WhisperChannelStrategy:
 
 #### 3.3.3 Commands
 
-- `/whisper <player> <message>` - Whisper to specific player
+`/whisper <player> <message>` - Whisper to specific player
+
 - `/w <player> <message>` - Short form for whisper
 - `/reply <message>` - Reply to last whisper received
 
@@ -251,9 +271,11 @@ class WhisperChannelStrategy:
 
 #### 3.4.1 Scope
 
-- **Range**: Server-wide (all online players)
-- **Access**: Admin-only for sending, all players receive
-- **Muting**: Players cannot mute system channel
+**Range**: Server-wide (all online players)
+
+**Access**: Admin-only for sending, all players receive
+
+**Muting**: Players cannot mute system channel
 
 #### 3.4.2 Implementation
 
@@ -274,7 +296,7 @@ class SystemChannelStrategy:
 
 #### 3.4.3 Commands
 
-- `/system <message>` - Send system announcement (admin only)
+`/system <message>` - Send system announcement (admin only)
 
 ## 4. User Interface
 
@@ -284,19 +306,23 @@ class SystemChannelStrategy:
 
 ```bash
 # Local channel
+
 /local <message>    # Send to local channel
 /l <message>        # Short form
 
 # Global channel
+
 /global <message>   # Send to global channel
 /g <message>        # Short form
 
 # Whisper channel
+
 /whisper <player> <message>  # Whisper to player
 /w <player> <message>        # Short form
 /reply <message>             # Reply to last whisper
 
 # System channel (admin only)
+
 /system <message>   # Send system announcement
 ```
 
@@ -315,21 +341,24 @@ class SystemChannelStrategy:
 
 #### 4.2.1 Channel Selector
 
-- Dropdown menu for channel selection
+Dropdown menu for channel selection
+
 - Visual indicators for active channel
 - Mute/unmute toggles for each channel
 - Channel-specific color coding
 
 #### 4.2.2 Message Display
 
-- Color-coded messages by channel type
+Color-coded messages by channel type
+
 - Channel prefixes: `[Local]`, `[Global]`, `[Whisper]`, `[System]`
 - Whisper format: `<playername> whispers to you: <message>`
 - Real-time streaming with backscrolling for limited history
 
 #### 4.2.3 Preferences Panel
 
-- Default channel selection
+Default channel selection
+
 - Channel subscription toggles
 - Mute management interface
 - Visual feedback for rate limiting
@@ -384,6 +413,7 @@ const ErrorMessages = {
 
 ```yaml
 # server_config.yaml
+
 chat:
   rate_limiting:
     local: 20      # messages per minute
@@ -410,19 +440,22 @@ class RateLimiter:
 
 ### 7.1 Default Channel
 
-- Players can set their preferred default channel
+Players can set their preferred default channel
+
 - Stored in database and persists across sessions
 - Default: "local" for new players
 
 ### 7.2 Channel Subscriptions
 
-- Players can subscribe/unsubscribe from channels
+Players can subscribe/unsubscribe from channels
+
 - Local channel automatically updates based on sub-zone
 - Preferences stored in database
 
 ### 7.3 Mute Management
 
-- Channel-level muting (except system channel) - using existing JSON mute system
+Channel-level muting (except system channel) - using existing JSON mute system
+
 - Player-level muting (existing functionality)
 - Admin channel mutes (using existing UserManager)
 
@@ -438,6 +471,7 @@ class AdminModerationService:
             return {"success": False, "error": "Admin access required."}
 
         # Use existing UserManager to handle channel muting
+
         expires_at = None
         if duration:
             expires_at = datetime.now() + timedelta(minutes=duration)
@@ -590,20 +624,23 @@ class TestChannelUI:
 
 ### 11.1 Message Volume
 
-- Local channel: Moderate volume (sub-zone limited)
+Local channel: Moderate volume (sub-zone limited)
+
 - Global channel: High volume (server-wide)
 - Whisper channel: Low volume (player-to-player)
 - System channel: Very low volume (admin only)
 
 ### 11.2 NATS Optimization
 
-- Use appropriate NATS subjects for message routing
+Use appropriate NATS subjects for message routing
+
 - Implement message filtering on client side
 - Consider message compression for high-volume channels
 
 ### 11.3 Log File Management
 
-- Implement log rotation for chat files
+Implement log rotation for chat files
+
 - Archive old chat logs with timestamps
 - Maintain log file size limits
 - Implement log cleanup for old history
@@ -612,19 +649,22 @@ class TestChannelUI:
 
 ### 12.1 Input Validation
 
-- All message content validated for length and content
+All message content validated for length and content
+
 - Channel names validated against allowed list
 - Player names validated for whisper commands
 
 ### 12.2 Access Control
 
-- Level-based access for global channel
+Level-based access for global channel
+
 - Admin-only access for system channel
 - Player mute checks for all channels
 
 ### 12.3 Rate Limiting
 
-- Per-channel rate limiting to prevent spam
+Per-channel rate limiting to prevent spam
+
 - Exponential backoff for repeated violations
 - Admin override capabilities
 
@@ -632,28 +672,32 @@ class TestChannelUI:
 
 ### 13.1 API Documentation
 
-- New endpoint specifications
+New endpoint specifications
+
 - Message format documentation
 - Error code documentation
 - Rate limiting documentation
 
 ### 13.2 User Guide
 
-- Channel usage instructions
+Channel usage instructions
+
 - Command reference
 - UI navigation guide
 - Troubleshooting section
 
 ### 13.3 Admin Guide
 
-- Moderation tool usage
+Moderation tool usage
+
 - System announcement procedures
 - Channel management procedures
 - Security best practices
 
 ### 13.4 Technical Implementation Notes
 
-- Architecture decisions
+Architecture decisions
+
 - Integration patterns
 - Performance considerations
 - Future enhancement possibilities
@@ -662,25 +706,29 @@ class TestChannelUI:
 
 ### 14.1 Party Channel
 
-- Group-based communication
+Group-based communication
+
 - Party formation and management
 - Shared party features
 
 ### 14.2 Combat Channel
 
-- Combat-specific messaging
+Combat-specific messaging
+
 - Automatic combat notifications
 - Tactical communication
 
 ### 14.3 Advanced Moderation
 
-- Automated content filtering
+Automated content filtering
+
 - AI-powered moderation
 - Advanced reporting system
 
 ### 14.4 Channel Customization
 
-- Custom channel creation
+Custom channel creation
+
 - Channel-specific permissions
 - Advanced channel management
 
@@ -694,7 +742,9 @@ The implementation will provide players with multiple communication options whil
 
 **Document Control**
 
-- **Version**: 1.0
-- **Last Updated**: 2025-01-27
-- **Next Review**: After Phase 1 completion
+**Version**: 1.0
+
+**Last Updated**: 2025-01-27
+
+**Next Review**: After Phase 1 completion
 - **Approval**: Pending Professor Wolfshade review

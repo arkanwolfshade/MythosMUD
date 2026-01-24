@@ -253,7 +253,7 @@ async def apply_migration(database_url: str) -> bool:
         await engine.dispose()
 
 
-async def main():
+async def main() -> None:
     """Main entry point for the migration script."""
     # Get database URL from environment or config
     database_url = os.getenv("DATABASE_URL")

@@ -12,7 +12,7 @@ must reach all who bear witness to the cosmic horror unfolding.
 
 # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Messaging integration requires many parameters for context and message routing
 
-from typing import Any
+from typing import Any, cast
 
 from server.realtime.envelope import build_event
 from server.services.combat_messaging_service import CombatMessagingService
@@ -29,7 +29,7 @@ class CombatMessagingIntegration:
     using the existing real-time messaging infrastructure.
     """
 
-    def __init__(self, connection_manager=None):
+    def __init__(self, connection_manager: Any = None) -> None:
         """
         Initialize the combat messaging integration service.
 
@@ -43,7 +43,7 @@ class CombatMessagingIntegration:
         if connection_manager is not None:
             self.connection_manager = connection_manager
 
-    def _resolve_connection_manager_from_container(self):
+    def _resolve_connection_manager_from_container(self) -> Any:
         """
         Lazily resolve the connection manager from the application container.
 
@@ -141,7 +141,8 @@ class CombatMessagingIntegration:
             broadcast_stats=broadcast_stats,
         )
 
-        return broadcast_stats
+        result: dict[str, Any] = cast(dict[str, Any], broadcast_stats)
+        return result
 
     async def broadcast_combat_attack(
         self,
@@ -204,32 +205,33 @@ class CombatMessagingIntegration:
             room_id, attack_event, exclude_player=attacker_id
         )
 
-        # Send personal message to the attacker
-        personal_message = messages.get(
-            "attack_attacker",
-            f"You {action_type} {target_name} for {damage} damage.",
-        )
-        personal_event = build_event(
-            "combat_attack_personal",
-            {
-                "combat_id": combat_id,
-                "target_name": target_name,
-                "damage": damage,
-                "action_type": action_type,
-                "message": personal_message,
-            },
-            room_id=room_id,
-            player_id=attacker_id,
-        )
-
-        try:
-            await self.connection_manager.send_personal_message(attacker_id, personal_event)
-        except (ConnectionError, OSError, RuntimeError, ValueError) as e:
-            logger.warning(
-                "Failed to send personal combat message to attacker",
-                attacker_id=attacker_id,
-                error=str(e),
+        # Send personal message to the attacker (if attacker_id is provided)
+        if attacker_id:
+            personal_message = messages.get(
+                "attack_attacker",
+                f"You {action_type} {target_name} for {damage} damage.",
             )
+            personal_event = build_event(
+                "combat_attack_personal",
+                {
+                    "combat_id": combat_id,
+                    "target_name": target_name,
+                    "damage": damage,
+                    "action_type": action_type,
+                    "message": personal_message,
+                },
+                room_id=room_id,
+                player_id=attacker_id,
+            )
+
+            try:
+                await self.connection_manager.send_personal_message(attacker_id, personal_event)
+            except (ConnectionError, OSError, RuntimeError, ValueError) as e:
+                logger.warning(
+                    "Failed to send personal combat message to attacker",
+                    attacker_id=attacker_id,
+                    error=str(e),
+                )
 
         logger.debug(
             "Combat attack broadcast completed",
@@ -238,7 +240,8 @@ class CombatMessagingIntegration:
             broadcast_stats=broadcast_stats,
         )
 
-        return broadcast_stats
+        result: dict[str, Any] = cast(dict[str, Any], broadcast_stats)
+        return result
 
     async def broadcast_combat_death(
         self,
@@ -295,7 +298,8 @@ class CombatMessagingIntegration:
             broadcast_stats=broadcast_stats,
         )
 
-        return broadcast_stats
+        result: dict[str, Any] = cast(dict[str, Any], broadcast_stats)
+        return result
 
     async def broadcast_combat_end(
         self,
@@ -347,7 +351,8 @@ class CombatMessagingIntegration:
             broadcast_stats=broadcast_stats,
         )
 
-        return broadcast_stats
+        result: dict[str, Any] = cast(dict[str, Any], broadcast_stats)
+        return result
 
     async def broadcast_combat_error(
         self,
@@ -384,7 +389,15 @@ class CombatMessagingIntegration:
         )
 
         # Send personal message to the player
-        delivery_status = await self.connection_manager.send_personal_message(player_id, error_event)
+        try:
+            delivery_status = await self.connection_manager.send_personal_message(player_id, error_event)
+        except (ConnectionError, OSError, RuntimeError, ValueError) as e:
+            logger.warning(
+                "Failed to send combat error message to player",
+                player_id=player_id,
+                error=str(e),
+            )
+            delivery_status = {"success": False, "error": str(e)}
 
         logger.debug(
             "Combat error broadcast completed",
@@ -393,7 +406,8 @@ class CombatMessagingIntegration:
             delivery_status=delivery_status,
         )
 
-        return delivery_status
+        result: dict[str, Any] = cast(dict[str, Any], delivery_status)
+        return result
 
     async def broadcast_player_mortally_wounded(
         self,
@@ -468,7 +482,8 @@ class CombatMessagingIntegration:
 
         logger.debug("Player mortally wounded broadcast completed", room_id=room_id, broadcast_stats=broadcast_stats)
 
-        return broadcast_stats
+        result: dict[str, Any] = cast(dict[str, Any], broadcast_stats)
+        return result
 
     async def broadcast_player_death(
         self,
@@ -536,7 +551,8 @@ class CombatMessagingIntegration:
 
         logger.debug("Player death broadcast completed", room_id=room_id, broadcast_stats=broadcast_stats)
 
-        return broadcast_stats
+        result: dict[str, Any] = cast(dict[str, Any], broadcast_stats)
+        return result
 
     async def broadcast_player_respawn(
         self,
@@ -595,7 +611,8 @@ class CombatMessagingIntegration:
 
         logger.debug("Player respawn broadcast completed", room_id=room_id, broadcast_stats=broadcast_stats)
 
-        return broadcast_stats
+        result: dict[str, Any] = cast(dict[str, Any], broadcast_stats)
+        return result
 
     async def send_dp_decay_message(
         self,
@@ -637,7 +654,8 @@ class CombatMessagingIntegration:
 
         logger.debug("DP decay message sent", player_id=player_id, delivery_status=delivery_status)
 
-        return delivery_status
+        result: dict[str, Any] = cast(dict[str, Any], delivery_status)
+        return result
 
 
 # Global combat messaging integration instance

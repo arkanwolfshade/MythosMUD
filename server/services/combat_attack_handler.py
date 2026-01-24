@@ -4,6 +4,7 @@ Combat attack processing logic.
 Handles attack validation, damage application, and attack event publishing.
 """
 
+from typing import Any
 from uuid import UUID
 
 from server.config import get_config
@@ -17,7 +18,7 @@ logger = get_logger(__name__)
 class CombatAttackHandler:
     """Handles combat attack processing and damage application."""
 
-    def __init__(self, combat_service):
+    def __init__(self, combat_service: Any) -> None:
         """
         Initialize the attack handler.
 
@@ -26,15 +27,14 @@ class CombatAttackHandler:
         """
         self._combat_service = combat_service
 
-    def _validate_attack(self, combat: CombatInstance, attacker_id: UUID, is_initial_attack: bool) -> None:
+    def _validate_attack(self, combat: CombatInstance, is_initial_attack: bool) -> None:  # pylint: disable=unused-argument  # Reason: is_initial_attack kept for backward compatibility
         """Validate that attack is allowed."""
         if combat.status != CombatStatus.ACTIVE:
             raise ValueError("Combat is not active")
 
-        if not is_initial_attack:
-            current_participant = combat.get_current_turn_participant()
-            if not current_participant or current_participant.participant_id != attacker_id:
-                raise ValueError("It is not the attacker's turn")
+        # In round-based combat, all participants act each round, so turn validation
+        # is not needed. Attacks can happen anytime during a round.
+        # Note: is_initial_attack flag is kept for backward compatibility but not used for validation
 
     def _apply_damage(self, target: CombatParticipant, damage: int) -> tuple[int, bool, bool]:
         """
@@ -117,7 +117,7 @@ class CombatAttackHandler:
         if not combat:
             raise ValueError("Attacker is not in combat")
 
-        self._validate_attack(combat, attacker_id, is_initial_attack)
+        self._validate_attack(combat, is_initial_attack)
 
         target = combat.participants.get(target_id)
         if not target:

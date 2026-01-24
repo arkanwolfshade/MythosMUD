@@ -1,6 +1,7 @@
 # 🐙 MythosMUD AI Development Workflow
 
-*"The boundaries between human and artificial intelligence blur in the pursuit of eldritch knowledge."* - Dr. Herbert West, Miskatonic University
+*"The boundaries between human and artificial intelligence blur in the pursuit of eldritch knowledge."* - Dr. Herbert
+West, Miskatonic University
 
 ---
 
@@ -22,23 +23,33 @@
 
 ## Overview
 
-AI tools can significantly accelerate MythosMUD command development when used effectively. This guide provides strategies for leveraging AI to write better code, catch bugs, and maintain consistency with project patterns.
+AI tools can significantly accelerate MythosMUD command development when used effectively. This guide provides
+strategies for leveraging AI to write better code, catch bugs, and maintain consistency with project patterns.
 
 ### Benefits of AI-Assisted Development
 
-- **Faster Implementation**: Generate boilerplate code and common patterns
-- **Consistency**: Ensure adherence to project conventions
-- **Bug Prevention**: Catch common errors and security issues
-- **Learning**: Understand patterns and best practices
-- **Documentation**: Generate comprehensive documentation
+**Faster Implementation**: Generate boilerplate code and common patterns
+
+**Consistency**: Ensure adherence to project conventions
+
+**Bug Prevention**: Catch common errors and security issues
+
+**Learning**: Understand patterns and best practices
+
+**Documentation**: Generate comprehensive documentation
 
 ### When to Use AI
 
-- **New Command Implementation**: Generate initial structure and patterns
-- **Code Review**: Identify potential issues and improvements
-- **Testing**: Generate test cases and edge case scenarios
-- **Documentation**: Create or update documentation
-- **Refactoring**: Improve existing code structure
+**New Command Implementation**: Generate initial structure and patterns
+
+**Code Review**: Identify potential issues and improvements
+
+**Testing**: Generate test cases and edge case scenarios
+
+**Documentation**: Create or update documentation
+
+**Refactoring**: Improve existing code structure
+
 - **Debugging**: Analyze error patterns and suggest fixes
 
 ---
@@ -58,6 +69,7 @@ AI tools can significantly accelerate MythosMUD command development when used ef
 
 ```python
 # Use descriptive comments to guide Copilot
+
 async def handle_whisper_command(
     command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage, player_name: str
 ) -> dict[str, str]:
@@ -68,6 +80,7 @@ async def handle_whisper_command(
     Only the target player should see the message.
     """
     # Copilot will suggest the implementation based on the comment
+
 ```
 
 #### Claude/GPT
@@ -151,6 +164,7 @@ Please provide:
 ### Step 1: Planning with AI
 
 **Prompt:**
+
 ```
 I want to implement a new command called "whisper" for MythosMUD.
 Can you help me plan the implementation?
@@ -165,6 +179,7 @@ What components do I need to implement and what should I consider?
 ```
 
 **Expected Response:**
+
 - Command model structure
 - Handler function requirements
 - Integration points
@@ -174,6 +189,7 @@ What components do I need to implement and what should I consider?
 ### Step 2: Model Generation
 
 **Prompt:**
+
 ```
 Based on the MythosMUD command patterns, create a Pydantic model for a whisper command.
 
@@ -187,6 +203,7 @@ Include proper validation and follow the project's patterns.
 ### Step 3: Handler Implementation
 
 **Prompt:**
+
 ```
 Create a command handler for the whisper command following these patterns:
 
@@ -203,6 +220,7 @@ The handler should:
 ### Step 4: Integration
 
 **Prompt:**
+
 ```
 I have implemented the whisper command model and handler.
 What other files do I need to update to integrate this command?
@@ -216,6 +234,7 @@ Please show me the specific changes needed for:
 ### Step 5: Testing
 
 **Prompt:**
+
 ```
 Generate comprehensive test cases for the whisper command handler.
 
@@ -288,19 +307,23 @@ Check for:
 
 ```
 ## Security Issues
-- [Issue 1]: Description and fix
+
+[Issue 1]: Description and fix
 - [Issue 2]: Description and fix
 
 ## Code Quality
-- [Issue 1]: Description and improvement
+
+[Issue 1]: Description and improvement
 - [Issue 2]: Description and improvement
 
 ## Performance
-- [Issue 1]: Description and optimization
+
+[Issue 1]: Description and optimization
 - [Issue 2]: Description and optimization
 
 ## Recommendations
-- [Recommendation 1]
+
+[Recommendation 1]
 - [Recommendation 2]
 ```
 
@@ -550,6 +573,7 @@ Always review AI-generated code for:
 #### Step 1: Planning
 
 **Prompt:**
+
 ```
 I want to implement a "whisper" command for MythosMUD.
 Can you help me plan the implementation?
@@ -566,6 +590,7 @@ What components do I need to implement?
 #### Step 2: Model Creation
 
 **Prompt:**
+
 ```
 Create a Pydantic model for the whisper command following these patterns:
 
@@ -580,6 +605,7 @@ Requirements:
 #### Step 3: Handler Implementation
 
 **Prompt:**
+
 ```
 Create a command handler for the whisper command:
 
@@ -592,6 +618,7 @@ send the message only to the target, and handle all error cases.
 #### Step 4: Integration
 
 **Prompt:**
+
 ```
 What files do I need to update to integrate the whisper command?
 
@@ -603,6 +630,7 @@ Please show the specific changes needed.
 #### Step 5: Testing
 
 **Prompt:**
+
 ```
 Generate comprehensive tests for the whisper command:
 
@@ -614,6 +642,7 @@ Include tests for all success and error scenarios.
 #### Step 6: Review
 
 **Prompt:**
+
 ```
 Please review this complete whisper command implementation:
 
@@ -627,6 +656,7 @@ Check for security, performance, and adherence to project patterns.
 #### Step 1: Error Analysis
 
 **Prompt:**
+
 ```
 I'm getting this error in my command handler:
 
@@ -638,6 +668,7 @@ Can you help me understand what's causing this?
 #### Step 2: Solution Generation
 
 **Prompt:**
+
 ```
 Based on the error analysis, can you suggest a fix?
 
@@ -649,6 +680,7 @@ Please provide the corrected implementation.
 #### Step 3: Testing the Fix
 
 **Prompt:**
+
 ```
 I've implemented the fix. Can you help me create tests to verify it works?
 
@@ -662,6 +694,7 @@ Generate tests that would have caught this bug.
 #### Step 1: Code Review
 
 **Prompt:**
+
 ```
 Please review this command handler for improvement opportunities:
 
@@ -678,6 +711,7 @@ Focus on:
 #### Step 2: Refactoring
 
 **Prompt:**
+
 ```
 Based on the review, can you help me refactor this code?
 
@@ -689,6 +723,7 @@ Please provide an improved version that addresses the issues.
 #### Step 3: Validation
 
 **Prompt:**
+
 ```
 I've refactored the code. Can you help me verify the changes are correct?
 
@@ -781,13 +816,18 @@ Requirements:
 
 AI tools can be powerful allies in MythosMUD development when used thoughtfully and responsibly. Remember:
 
-- **AI is a tool, not a replacement** for understanding and critical thinking
-- **Always review and validate** AI-generated code
-- **Provide sufficient context** for better results
-- **Focus on security and testing** when using AI assistance
-- **Learn from AI suggestions** to improve your own skills
+**AI is a tool, not a replacement** for understanding and critical thinking
 
-By following these guidelines, you can leverage AI to accelerate development while maintaining code quality and security.
+**Always review and validate** AI-generated code
+
+**Provide sufficient context** for better results
+
+**Focus on security and testing** when using AI assistance
+
+**Learn from AI suggestions** to improve your own skills
+
+By following these guidelines, you can leverage AI to accelerate development while maintaining code quality and
+security.
 
 ---
 

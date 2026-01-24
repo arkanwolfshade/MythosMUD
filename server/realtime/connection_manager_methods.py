@@ -7,7 +7,7 @@ to reduce file complexity and improve maintainability.
 
 # pylint: disable=too-many-lines  # Reason: Connection manager methods require extensive method implementations for comprehensive connection management operations
 
-from typing import Any
+from typing import Any, cast
 from uuid import UUID
 
 from fastapi import WebSocket
@@ -29,46 +29,63 @@ logger = get_logger(__name__)
 
 def get_memory_stats_impl(manager: Any) -> dict[str, Any]:
     """Get comprehensive memory and connection statistics."""
-    return manager.statistics_aggregator.get_memory_stats(
-        active_websockets=manager.active_websockets,
-        player_websockets=manager.player_websockets,
-        connection_timestamps=manager.connection_timestamps,
-        cleanup_stats=manager.cleanup_stats,
-        player_sessions=manager.player_sessions,
-        session_connections=manager.session_connections,
-        online_players=manager.online_players,
-        last_seen=manager.last_seen,
-        closed_websockets_count=manager.get_closed_websockets_count(),
-        connection_metadata=manager.connection_metadata,
+    result: dict[str, Any] = cast(
+        dict[str, Any],
+        manager.statistics_aggregator.get_memory_stats(
+            active_websockets=manager.active_websockets,
+            player_websockets=manager.player_websockets,
+            connection_timestamps=manager.connection_timestamps,
+            cleanup_stats=manager.cleanup_stats,
+            player_sessions=manager.player_sessions,
+            session_connections=manager.session_connections,
+            online_players=manager.online_players,
+            last_seen=manager.last_seen,
+            closed_websockets_count=manager.get_closed_websockets_count(),
+            connection_metadata=manager.connection_metadata,
+        ),
     )
+    return result
 
 
 def get_dual_connection_stats_impl(manager: Any) -> dict[str, Any]:
     """Get comprehensive connection statistics."""
-    return manager.statistics_aggregator.get_connection_stats(
-        player_websockets=manager.player_websockets,
-        connection_metadata=manager.connection_metadata,
-        session_connections=manager.session_connections,
-        player_sessions=manager.player_sessions,
+    result: dict[str, Any] = cast(
+        dict[str, Any],
+        manager.statistics_aggregator.get_connection_stats(
+            player_websockets=manager.player_websockets,
+            connection_metadata=manager.connection_metadata,
+            session_connections=manager.session_connections,
+            player_sessions=manager.player_sessions,
+        ),
     )
+    return result
 
 
 def get_performance_stats_impl(manager: Any) -> dict[str, Any]:
     """Get connection performance statistics."""
-    return manager.performance_tracker.get_stats()
+    result: dict[str, Any] = cast(dict[str, Any], manager.performance_tracker.get_stats())
+    return result
 
 
 def get_connection_health_stats_impl(manager: Any) -> dict[str, Any]:
     """Get comprehensive connection health statistics."""
-    return manager.statistics_aggregator.get_connection_health_stats(connection_metadata=manager.connection_metadata)
+    result: dict[str, Any] = cast(
+        dict[str, Any],
+        manager.statistics_aggregator.get_connection_health_stats(connection_metadata=manager.connection_metadata),
+    )
+    return result
 
 
 def get_memory_alerts_impl(manager: Any) -> list[str]:
     """Get memory-related alerts."""
-    return manager.statistics_aggregator.get_memory_alerts(
-        connection_timestamps=manager.connection_timestamps,
-        max_connection_age=manager.memory_monitor.max_connection_age,
+    result: list[str] = cast(
+        list[str],
+        manager.statistics_aggregator.get_memory_alerts(
+            connection_timestamps=manager.connection_timestamps,
+            max_connection_age=manager.memory_monitor.max_connection_age,
+        ),
     )
+    return result
 
 
 def get_error_statistics_impl(manager: Any) -> dict[str, Any]:
@@ -76,14 +93,19 @@ def get_error_statistics_impl(manager: Any) -> dict[str, Any]:
     if manager.error_handler is None:
         logger.error("Error handler not initialized")
         return {}
-    return manager.error_handler.get_error_statistics(
-        online_players=manager.online_players, player_websockets=manager.player_websockets
+    result: dict[str, Any] = cast(
+        dict[str, Any],
+        manager.error_handler.get_error_statistics(
+            online_players=manager.online_players, player_websockets=manager.player_websockets
+        ),
     )
+    return result
 
 
 def get_rate_limit_info_impl(manager: Any, player_id: UUID) -> dict[str, Any]:
     """Get rate limit information for a player."""
-    return manager.rate_limiter.get_rate_limit_info(str(player_id))
+    result: dict[str, Any] = cast(dict[str, Any], manager.rate_limiter.get_rate_limit_info(str(player_id)))
+    return result
 
 
 def get_message_delivery_stats_impl(manager: Any, player_id: UUID) -> dict[str, Any]:
@@ -131,17 +153,20 @@ def get_online_player_by_display_name_method(manager: Any, display_name: str) ->
 
 def get_player_session_impl(manager: Any, player_id: UUID) -> str | None:
     """Get the current session ID for a player."""
-    return manager.player_sessions.get(player_id)
+    result: str | None = cast(str | None, manager.player_sessions.get(player_id))
+    return result
 
 
 def get_session_connections_impl(manager: Any, session_id: str) -> list[str]:
     """Get all connection IDs for a session."""
-    return manager.session_connections.get(session_id, [])
+    result: list[str] = cast(list[str], manager.session_connections.get(session_id, []))
+    return result
 
 
 def validate_session_impl(manager: Any, player_id: UUID, session_id: str) -> bool:
     """Validate that a session ID matches the player's current session."""
-    return manager.player_sessions.get(player_id) == session_id
+    result: bool = cast(bool, manager.player_sessions.get(player_id) == session_id)
+    return result
 
 
 def get_connection_count_impl(manager: Any, player_id: UUID) -> dict[str, int]:
@@ -158,7 +183,8 @@ def has_websocket_connection_impl(manager: Any, player_id: UUID) -> bool:
 def get_player_websocket_connection_id_impl(manager: Any, player_id: UUID) -> str | None:
     """Get the first WebSocket connection ID for a player (backward compatibility)."""
     if player_id in manager.player_websockets and manager.player_websockets[player_id]:
-        return manager.player_websockets[player_id][0]
+        result: str = cast(str, manager.player_websockets[player_id][0])
+        return result
     return None
 
 
@@ -166,7 +192,8 @@ def get_connection_id_from_websocket_impl(manager: Any, websocket: WebSocket) ->
     """Get connection ID from a WebSocket instance."""
     for conn_id, ws in manager.active_websockets.items():
         if ws is websocket:
-            return conn_id
+            result: str = cast(str, conn_id)
+            return result
     return None
 
 
@@ -286,7 +313,8 @@ async def disconnect_websocket_connection_impl(manager: Any, player_id: UUID, co
                 player_id=player_id,
             )
             return False
-        return await manager.disconnect_connection_by_id(connection_id)
+        result: bool = cast(bool, await manager.disconnect_connection_by_id(connection_id))
+        return result
     except (DatabaseError, AttributeError) as e:
         logger.error(
             "Error disconnecting WebSocket connection",
@@ -309,11 +337,15 @@ async def check_connection_health_impl(manager: Any, player_id: UUID) -> dict[st
         logger.error("Health monitor not initialized")
         return {"player_id": player_id, "overall_health": "error"}
     method = manager.health_monitor.check_player_connection_health
-    return await method(
-        player_id=player_id,
-        player_websockets=manager.player_websockets,
-        active_websockets=manager.active_websockets,
+    result: dict[str, Any] = cast(
+        dict[str, Any],
+        await method(
+            player_id=player_id,
+            player_websockets=manager.player_websockets,
+            active_websockets=manager.active_websockets,
+        ),
     )
+    return result
 
 
 async def _check_connection_health_impl(manager: Any) -> None:
@@ -468,32 +500,52 @@ async def get_players_batch_impl(manager: Any, player_ids: list[UUID]) -> dict[U
     """Get multiple players from the persistence layer in a single batch operation."""
     from .connection_delegates import delegate_game_state_provider
 
-    return await delegate_game_state_provider(manager.game_state_provider, "get_players_batch", {}, player_ids)
+    result: dict[UUID, Any] = cast(
+        dict[UUID, Any],
+        await delegate_game_state_provider(manager.game_state_provider, "get_players_batch", {}, player_ids),
+    )
+    return result
 
 
 async def convert_room_players_uuids_to_names_impl(manager: Any, room_data: dict[str, Any]) -> dict[str, Any]:
     """Convert player UUIDs and NPC IDs in room_data to names."""
     from .connection_delegates import delegate_game_state_provider
 
-    return await delegate_game_state_provider(
-        manager.game_state_provider, "convert_room_uuids_to_names", room_data, room_data
+    result: dict[str, Any] = cast(
+        dict[str, Any],
+        await delegate_game_state_provider(
+            manager.game_state_provider, "convert_room_uuids_to_names", room_data, room_data
+        ),
     )
+    return result
 
 
 def get_npcs_batch_impl(manager: Any, npc_ids: list[str]) -> dict[str, str]:
     """Get NPC names for multiple NPCs in a batch operation."""
     from .connection_delegates import delegate_game_state_provider_sync
 
-    return delegate_game_state_provider_sync(manager.game_state_provider, "get_npcs_batch", {}, npc_ids)
+    result: dict[str, str] = cast(
+        dict[str, str],
+        delegate_game_state_provider_sync(manager.game_state_provider, "get_npcs_batch", {}, npc_ids),
+    )
+    return result
 
 
 async def get_room_occupants_impl(manager: Any, room_id: str) -> list[dict[str, Any]]:
     """Get list of occupants in a room."""
     from .connection_delegates import delegate_game_state_provider
 
-    return await delegate_game_state_provider(
-        manager.game_state_provider, "get_room_occupants", [], room_id=room_id, online_players=manager.online_players
+    result: list[dict[str, Any]] = cast(
+        list[dict[str, Any]],
+        await delegate_game_state_provider(
+            manager.game_state_provider,
+            "get_room_occupants",
+            [],
+            room_id=room_id,
+            online_players=manager.online_players,
+        ),
     )
+    return result
 
 
 async def send_initial_game_state_impl(manager: Any, player_id: UUID, player: Any, room_id: str) -> None:
@@ -674,13 +726,15 @@ async def safe_close_websocket_impl(
 async def subscribe_to_room_impl(manager: Any, player_id: UUID, room_id: str) -> None:
     """Subscribe a player to a room (compatibility method)."""
     canonical_id = manager.canonical_room_id(room_id) or room_id
-    return manager.room_manager.subscribe_to_room(str(player_id), canonical_id)
+    result: None = cast(None, manager.room_manager.subscribe_to_room(str(player_id), canonical_id))
+    return result
 
 
 async def unsubscribe_from_room_impl(manager: Any, player_id: UUID, room_id: str) -> None:
     """Unsubscribe a player from a room (compatibility method)."""
     canonical_id = manager.canonical_room_id(room_id) or room_id
-    return manager.room_manager.unsubscribe_from_room(str(player_id), canonical_id)
+    result: None = cast(None, manager.room_manager.unsubscribe_from_room(str(player_id), canonical_id))
+    return result
 
 
 def canonical_room_id_public_impl(manager: Any, room_id: str | None) -> str | None:
@@ -697,7 +751,8 @@ def canonical_room_id_public_impl(manager: Any, room_id: str | None) -> str | No
 
 def get_pending_messages_impl(manager: Any, player_id: UUID) -> list[dict[str, Any]]:
     """Get pending messages for a player."""
-    return manager.message_queue.get_messages(str(player_id))
+    result: list[dict[str, Any]] = cast(list[dict[str, Any]], manager.message_queue.get_messages(str(player_id)))
+    return result
 
 
 def convert_uuids_to_strings_impl(_manager: Any, obj: Any) -> Any:
@@ -710,7 +765,8 @@ def convert_uuids_to_strings_impl(_manager: Any, obj: Any) -> Any:
 def get_next_sequence_impl(manager: Any) -> int:
     """Get the next sequence number for events."""
     manager.sequence_counter += 1
-    return manager.sequence_counter
+    result: int = cast(int, manager.sequence_counter)
+    return result
 
 
 # ============================================================================

@@ -4,6 +4,8 @@ SQLAlchemy models for world data (zones, subzones, rooms, and links).
 
 # pylint: disable=too-few-public-methods  # Reason: SQLAlchemy models are data classes, no instance methods needed
 
+from typing import Any
+
 from sqlalchemy import Boolean, CheckConstraint, ForeignKey, Numeric, Text, UniqueConstraint
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -32,8 +34,8 @@ class Zone(Base):
     zone_type: Mapped[str | None] = mapped_column(Text, nullable=True)
     environment: Mapped[str | None] = mapped_column(Text, nullable=True)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
-    weather_patterns: Mapped[list | None] = mapped_column(JSONB, nullable=True, default=list)
-    special_rules: Mapped[dict | None] = mapped_column(JSONB, nullable=True, default=dict)
+    weather_patterns: Mapped[list[Any] | None] = mapped_column(JSONB, nullable=True, default=list)
+    special_rules: Mapped[dict[str, Any] | None] = mapped_column(JSONB, nullable=True, default=dict)
 
     subzones: Mapped[list["Subzone"]] = relationship("Subzone", back_populates="zone", cascade="all, delete-orphan")
 
@@ -57,7 +59,7 @@ class Subzone(Base):
     name: Mapped[str] = mapped_column(Text, nullable=False)
     environment: Mapped[str | None] = mapped_column(Text, nullable=True)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
-    special_rules: Mapped[dict | None] = mapped_column(JSONB, nullable=True, default=dict)
+    special_rules: Mapped[dict[str, Any] | None] = mapped_column(JSONB, nullable=True, default=dict)
 
     zone: Mapped["Zone"] = relationship("Zone", back_populates="subzones")
     rooms: Mapped[list["RoomModel"]] = relationship("RoomModel", back_populates="subzone", cascade="all, delete-orphan")
@@ -94,7 +96,7 @@ class RoomModel(Base):
     stable_id: Mapped[str] = mapped_column(Text, nullable=False)
     name: Mapped[str] = mapped_column(Text, nullable=False)
     description: Mapped[str] = mapped_column(Text, nullable=False)
-    attributes: Mapped[dict] = mapped_column(JSONB, nullable=False, default=dict)
+    attributes: Mapped[dict[str, Any]] = mapped_column(JSONB, nullable=False, default=dict)
     map_x: Mapped[float | None] = mapped_column(Numeric(10, 2), nullable=True)
     map_y: Mapped[float | None] = mapped_column(Numeric(10, 2), nullable=True)
     map_origin_zone: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
@@ -120,4 +122,4 @@ class RoomLink(Base):
         UUID(as_uuid=False), ForeignKey("rooms.id", ondelete="RESTRICT"), nullable=False
     )
     direction: Mapped[str] = mapped_column(Text, nullable=False)
-    attributes: Mapped[dict] = mapped_column(JSONB, nullable=False, default=dict)
+    attributes: Mapped[dict[str, Any]] = mapped_column(JSONB, nullable=False, default=dict)

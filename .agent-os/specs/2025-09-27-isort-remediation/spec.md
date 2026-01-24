@@ -14,6 +14,7 @@ Implement comprehensive import organization and isort configuration improvements
 As a developer, I want all imports to be properly organized and free of duplicates, so that the codebase is clean, maintainable, and follows Python best practices.
 
 **Detailed Workflow:**
+
 - Remove duplicate imports in main.py and world_loader.py
 - Optimize import statements for better performance
 - Establish consistent import ordering across all server modules
@@ -23,6 +24,7 @@ As a developer, I want all imports to be properly organized and free of duplicat
 As a system administrator, I want import statements to be optimized for security and performance, so that the server starts faster and is less vulnerable to import-related security issues.
 
 **Detailed Workflow:**
+
 - Replace complex dynamic import logic with cleaner, more secure alternatives
 - Optimize import placement to reduce startup time
 - Ensure all imports follow security best practices
@@ -32,6 +34,7 @@ As a system administrator, I want import statements to be optimized for security
 As a developer working on the MythosMUD codebase, I want consistent import organization and clear isort configuration, so that I can easily understand and maintain the code structure.
 
 **Detailed Workflow:**
+
 - Add explicit isort configuration to pyproject.toml
 - Ensure all imports follow the same organizational pattern
 - Provide clear documentation for import standards
@@ -46,7 +49,8 @@ As a developer working on the MythosMUD codebase, I want consistent import organ
 
 ## Out of Scope
 
-- Major refactoring of import structure (only cleanup and optimization)
+Major refactoring of import structure (only cleanup and optimization)
+
 - Changes to external dependencies or package structure
 - Modification of core functionality (only import organization)
 

@@ -5,6 +5,7 @@ This is the database schema implementation for the spec detailed in @.agent-os/s
 ## Changes
 
 1. **containers table (SQLite + PostgreSQL)**
+
    - `container_instance_id TEXT PRIMARY KEY`
    - `source_type TEXT NOT NULL` (`environment`, `equipment`, `corpse`)
    - `owner_id TEXT NULL` (player/npc id or null for shared props)
@@ -19,10 +20,13 @@ This is the database schema implementation for the spec detailed in @.agent-os/s
    - `metadata_json TEXT NULL`
 
 2. **inventory payload schema updates**
+
    - Add optional `inner_container` object with `capacity_slots`, `items`, and metadata to `InventoryItem` records stored inside player inventory rows.
 
 3. **Room definition augmentations**
+
    - For JSON-defined room objects, add `container` block:
+
      ```json
      "container": {
        "enabled": true,
@@ -31,11 +35,13 @@ This is the database schema implementation for the spec detailed in @.agent-os/s
        "key_item_id": "arkham_library_key"
      }
      ```
+
    - World loader migrates this block into the `containers` table on startup.
 
 ## Specifications
 
-- **SQLite migration script**
+**SQLite migration script**
+
   ```sql
   CREATE TABLE IF NOT EXISTS containers (
       container_instance_id TEXT PRIMARY KEY,
@@ -55,7 +61,8 @@ This is the database schema implementation for the spec detailed in @.agent-os/s
   CREATE INDEX IF NOT EXISTS idx_containers_entity ON containers(entity_id);
   ```
 
-- **PostgreSQL migration (future)**
+**PostgreSQL migration (future)**
+
   ```sql
   CREATE TABLE containers (
       container_instance_id UUID PRIMARY KEY,
@@ -75,8 +82,10 @@ This is the database schema implementation for the spec detailed in @.agent-os/s
   CREATE INDEX idx_containers_entity ON containers(entity_id);
   ```
 
-- **JSON schema**
-  - Update `PLAYER_INVENTORY_SCHEMA.$defs.itemStack` to include:
+**JSON schema**
+
+- Update `PLAYER_INVENTORY_SCHEMA.$defs.itemStack` to include:
+
     ```json
     "inner_container": {
       "type": "object",
@@ -93,7 +102,8 @@ This is the database schema implementation for the spec detailed in @.agent-os/s
 
 ## Rationale
 
-- Centralizing containers enables corpse, environmental, and wearable storage to share lifecycle code while preserving transactional integrity.
+Centralizing containers enables corpse, environmental, and wearable storage to share lifecycle code while preserving transactional integrity.
+
 - Indexes on `room_id` and `entity_id` speed lookups during room load and player login.
 - JSONB fields (PostgreSQL) provide flexible metadata without new columns, while SQLite stores canonical JSON strings for compatibility.
 - Schema validation ensures nested containers cannot exceed slot limits, protecting inventory invariants.

@@ -20,7 +20,7 @@ class HelpCommand(BaseCommand):
 
     @field_validator("topic")
     @classmethod
-    def validate_topic(cls, v):
+    def validate_topic(cls: type["HelpCommand"], v: str | None) -> str | None:
         """Validate help topic format using centralized validation."""
         if v is None:
             return v
@@ -35,7 +35,7 @@ class WhoCommand(BaseCommand):
 
     @field_validator("filter_name")
     @classmethod
-    def validate_filter_name_field(cls, v):
+    def validate_filter_name_field(cls: type["WhoCommand"], v: str | None) -> str | None:
         """Validate filter name format using centralized validation."""
         if v is None:
             return v

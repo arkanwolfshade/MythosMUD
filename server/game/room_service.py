@@ -279,7 +279,8 @@ class RoomService:
                 player_count=len(players) if hasattr(room, "get_players") else 0,
                 npc_count=len(npcs) if hasattr(room, "get_npcs") else 0,
             )
-            return occupants
+            result: list[str] = cast(list[str], occupants)
+            return result
 
         # If room_cache is not available, fall back to persistence
         logger.debug("Room cache not available, falling back to persistence", room_id=room_id)
@@ -303,7 +304,8 @@ class RoomService:
             room_id=room_id,
             occupant_count=len(occupants),
         )
-        return occupants
+        result2: list[str] = cast(list[str], occupants)
+        return result2
 
     async def validate_player_in_room(self, player_id: str, room_id: str) -> bool:
         """
@@ -333,7 +335,8 @@ class RoomService:
                 is_in_room = player_id in occupants
 
             logger.debug("Player room validation", player_id=player_id, room_id=room_id, is_in_room=is_in_room)
-            return is_in_room
+            result: bool = cast(bool, is_in_room)
+            return result
 
         # If room_cache is not available, fall back to persistence
         logger.debug("Room cache not available, falling back to persistence", player_id=player_id, room_id=room_id)
@@ -374,7 +377,8 @@ class RoomService:
 
         exits = room.get("exits", {})
         logger.debug("Room exits retrieved", room_id=room_id, exit_count=len(exits))
-        return exits
+        result: dict[str, str] = cast(dict[str, str], exits)
+        return result
 
     async def list_rooms(
         self,

@@ -6,7 +6,7 @@ ensuring that stale data is detected and refreshed appropriately.
 """
 
 import time
-from typing import Any
+from typing import Any, cast
 
 from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -53,7 +53,7 @@ class RoomDataCache:
                 return False
 
             # Check if data is within freshness threshold
-            data_age = current_time - room_data["timestamp"]
+            data_age = current_time - cast(float, room_data["timestamp"])
             is_fresh = data_age < threshold_seconds
 
             logger.debug(
@@ -202,7 +202,8 @@ class RoomDataCache:
 
             # If both have timestamps, compare them
             if "timestamp" in new_data and "timestamp" in old_data:
-                return new_data["timestamp"] > old_data["timestamp"]
+                result: bool = cast(bool, new_data["timestamp"] > old_data["timestamp"])
+                return result
 
             # For non-timestamp fields, assume new data is newer
             return True

@@ -249,9 +249,11 @@ useEffect(() => {
 
 #### **Task 1.1: Fix Message Type Categorization**
 
-- **Estimated Time**: 2-3 hours
-- **Dependencies**: None
-- **Files to Modify**: `client/src/components/GameTerminalWithPanels.tsx`
+**Estimated Time**: 2-3 hours
+
+**Dependencies**: None
+
+**Files to Modify**: `client/src/components/GameTerminalWithPanels.tsx`
 
 **Steps**:
 
@@ -270,9 +272,11 @@ useEffect(() => {
 
 #### **Task 1.2: Fix ChatPanel Message Filtering**
 
-- **Estimated Time**: 2-3 hours
-- **Dependencies**: Task 1.1
-- **Files to Modify**: `client/src/components/panels/ChatPanel.tsx`
+**Estimated Time**: 2-3 hours
+
+**Dependencies**: Task 1.1
+
+**Files to Modify**: `client/src/components/panels/ChatPanel.tsx`
 
 **Steps**:
 
@@ -291,9 +295,11 @@ useEffect(() => {
 
 #### **Task 1.3: Add Comprehensive Logging**
 
-- **Estimated Time**: 1-2 hours
-- **Dependencies**: Tasks 1.1, 1.2
-- **Files to Modify**: Multiple
+**Estimated Time**: 1-2 hours
+
+**Dependencies**: Tasks 1.1, 1.2
+
+**Files to Modify**: Multiple
 
 **Steps**:
 
@@ -312,9 +318,11 @@ useEffect(() => {
 
 #### **Task 2.1: Add Chat Event Handling**
 
-- **Estimated Time**: 3-4 hours
-- **Dependencies**: Phase 1 completion
-- **Files to Modify**: `client/src/components/GameTerminalWithPanels.tsx`
+**Estimated Time**: 3-4 hours
+
+**Dependencies**: Phase 1 completion
+
+**Files to Modify**: `client/src/components/GameTerminalWithPanels.tsx`
 
 **Steps**:
 
@@ -334,9 +342,11 @@ useEffect(() => {
 
 #### **Task 2.2: Implement Message Stream Separation**
 
-- **Estimated Time**: 4-5 hours
-- **Dependencies**: Task 2.1
-- **Files to Modify**: Multiple
+**Estimated Time**: 4-5 hours
+
+**Dependencies**: Task 2.1
+
+**Files to Modify**: Multiple
 
 **Steps**:
 
@@ -355,9 +365,11 @@ useEffect(() => {
 
 #### **Task 2.3: Add Channel Management**
 
-- **Estimated Time**: 3-4 hours
-- **Dependencies**: Task 2.2
-- **Files to Modify**: Multiple
+**Estimated Time**: 3-4 hours
+
+**Dependencies**: Task 2.2
+
+**Files to Modify**: Multiple
 
 **Steps**:
 
@@ -378,9 +390,11 @@ useEffect(() => {
 
 #### **Task 3.1: Comprehensive Testing**
 
-- **Estimated Time**: 4-5 hours
-- **Dependencies**: Phase 2 completion
-- **Files to Modify**: Test files
+**Estimated Time**: 4-5 hours
+
+**Dependencies**: Phase 2 completion
+
+**Files to Modify**: Test files
 
 **Steps**:
 
@@ -399,9 +413,11 @@ useEffect(() => {
 
 #### **Task 3.2: Performance Optimization**
 
-- **Estimated Time**: 3-4 hours
-- **Dependencies**: Task 3.1
-- **Files to Modify**: Multiple
+**Estimated Time**: 3-4 hours
+
+**Dependencies**: Task 3.1
+
+**Files to Modify**: Multiple
 
 **Steps**:
 
@@ -491,37 +507,48 @@ const routeMessage = (message: ChatMessage, gameState: GameState): Partial<GameS
 ### **Technical Risks**
 
 1. **Message Loss**: Risk of losing messages during the transition
-   - **Mitigation**: Maintain backward compatibility and comprehensive logging
-   - **Impact**: High
+
+   **Mitigation**: Maintain backward compatibility and comprehensive logging
+
+   **Impact**: High
    - **Probability**: Medium
 
 2. **Performance Degradation**: Risk of slower message processing
-   - **Mitigation**: Implement efficient algorithms and performance monitoring
-   - **Impact**: Medium
+
+   **Mitigation**: Implement efficient algorithms and performance monitoring
+
+   **Impact**: Medium
    - **Probability**: Low
 
 3. **Channel Confusion**: Risk of messages appearing in wrong channels
-   - **Mitigation**: Thorough testing and clear channel extraction logic
-   - **Impact**: Medium
+
+   **Mitigation**: Thorough testing and clear channel extraction logic
+
+   **Impact**: Medium
    - **Probability**: Medium
 
 ### **Timeline Risks**
 
 1. **Scope Creep**: Risk of adding too many features
-   - **Mitigation**: Strict adherence to task definitions
-   - **Impact**: Medium
+
+   **Mitigation**: Strict adherence to task definitions
+
+   **Impact**: Medium
    - **Probability**: Medium
 
 2. **Integration Issues**: Risk of breaking existing functionality
-   - **Mitigation**: Comprehensive testing and gradual rollout
-   - **Impact**: High
+
+   **Mitigation**: Comprehensive testing and gradual rollout
+
+   **Impact**: High
    - **Probability**: Low
 
 ## 📊 **Success Metrics**
 
 ### **Functional Metrics**
 
-- [ ] Chat messages appear in ChatPanel: 100%
+[ ] Chat messages appear in ChatPanel: 100%
+
 - [ ] Game messages appear in GameLogPanel: 100%
 - [ ] Message type categorization accuracy: >95%
 - [ ] Channel extraction accuracy: >90%
@@ -529,14 +556,16 @@ const routeMessage = (message: ChatMessage, gameState: GameState): Partial<GameS
 
 ### **Performance Metrics**
 
-- [ ] Message processing time: <10ms per message
+[ ] Message processing time: <10ms per message
+
 - [ ] Memory usage: <50MB for 1000 messages
 - [ ] UI responsiveness: <100ms for panel updates
 - [ ] Channel switching: <50ms
 
 ### **Quality Metrics**
 
-- [ ] Test coverage: >80%
+[ ] Test coverage: >80%
+
 - [ ] Code review completion: 100%
 - [ ] Documentation updates: 100%
 - [ ] User acceptance: >90%
@@ -559,9 +588,11 @@ The proposed solution involves:
 
 The implementation plan is divided into three phases:
 
-- **Phase 1**: Critical fixes to resolve immediate issues
-- **Phase 2**: Enhanced features for better functionality
-- **Phase 3**: Testing and optimization for production readiness
+**Phase 1**: Critical fixes to resolve immediate issues
+
+**Phase 2**: Enhanced features for better functionality
+
+**Phase 3**: Testing and optimization for production readiness
 
 This plan ensures a systematic approach to fixing the issues while maintaining backward compatibility and preventing regressions. The phased approach allows for incremental testing and validation at each step.
 

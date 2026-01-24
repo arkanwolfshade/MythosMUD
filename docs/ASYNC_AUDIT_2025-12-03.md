@@ -5,6 +5,7 @@
 **Audit Date**: December 3, 2025
 **Audit Scope**: Full codebase async/await patterns against AnyIO and asyncio best practices
 **Referenced Guidelines**:
+
 - `.cursor/rules/anyio.mdc`
 - `.cursor/rules/asyncio.mdc`
 - Previous code reviews (ASYNCIO_CODE_REVIEW.md, NATS_CODE_REVIEW.md)
@@ -23,9 +24,13 @@ This comprehensive audit identified **27 findings** across four severity levels:
 | 🟢 **Medium Priority**   | 7     | Plan for next sprint          |
 | ✅ **Positive Findings** | 6     | Good patterns to maintain     |
 
-**Overall Assessment**: The codebase demonstrates strong architectural patterns (task tracking, structured concurrency, error boundaries) but has several critical anti-patterns that significantly impact performance and reliability. Progressive performance degradation in passive lucidity flux processing (3.4s → 17.4s over 4 ticks) indicates severe blocking operations in async contexts.
+**Overall Assessment**: The codebase demonstrates strong architectural patterns (task tracking, structured concurrency,
+error boundaries) but has several critical anti-patterns that significantly impact performance and reliability.
+Progressive performance degradation in passive lucidity flux processing (3.4s → 17.4s over 4 ticks) indicates severe
+blocking operations in async contexts.
 
-**Risk Level**: ⚠️ **HIGH** - Blocking operations causing 1,639% overhead, progressive degradation, and potential event loop starvation.
+**Risk Level**: ⚠️ **HIGH** - Blocking operations causing 1,639% overhead, progressive degradation, and potential event
+loop starvation.
 
 ---
 
@@ -34,43 +39,58 @@ This comprehensive audit identified **27 findings** across four severity levels:
 ### 1. Synchronous Blocking Operations in Async Context (CONFIRMED PERFORMANCE ISSUE)
 
 **Location**: Multiple files
+
 - `server/services/passive_lucidity_flux_service.py` line 242
 - `server/persistence.py` (partially mitigated with asyncio.to_thread)
 - `server/realtime/nats_message_handler.py` lines 605-633
 
-**Issue**: Synchronous database and I/O operations called directly from async functions without asyncio.to_thread(), blocking the event loop.
+**Issue**: Synchronous database and I/O operations called directly from async functions without asyncio.to_thread(),
+blocking the event loop.
 
 **Evidence**:
+
 - Performance investigation shows 17.4s delays in passive lucidity flux processing
 - Root cause: `self._persistence.get_room()` called synchronously from async function
 - Progressive degradation: 3.4s → 6.4s → 15.1s → 17.4s (1,639% overhead)
 
 **Code Example**:
+
 ```python
 # ❌ WRONG - Blocks event loop
+
 async def _resolve_context(self, player, timestamp):
     room = self._persistence.get_room(player.room_id)  # SYNCHRONOUS BLOCKING CALL
     # ...
+
 ```
 
 **Impact**:
-- **Event Loop Blocking**: Each synchronous call blocks ALL async operations
-- **Progressive Degradation**: Performance degrades over time (resource accumulation)
-- **Cascading Delays**: One slow operation delays all concurrent operations
-- **User Experience**: 17-second lags during game ticks
-- **Scalability**: Issue worsens linearly with player count
+**Event Loop Blocking**: Each synchronous call blocks ALL async operations
+
+**Progressive Degradation**: Performance degrades over time (resource accumulation)
+
+**Cascading Delays**: One slow operation delays all concurrent operations
+
+**User Experience**: 17-second lags during game ticks
+
+**Scalability**: Issue worsens linearly with player count
 
 **Fix**:
+
 ```python
 # ✅ CORRECT - Non-blocking
+
 async def _resolve_context(self, player, timestamp):
     room = await self._persistence.async_get_room(player.room_id)
     # OR if async method not available:
+
     room = await asyncio.to_thread(self._persistence.get_room, player.room_id)
     # ...
+
 ```
 
 **Files Requiring Immediate Fixes**:
+
 1. `server/services/passive_lucidity_flux_service.py` - Replace sync room lookups
 2. `server/realtime/nats_message_handler.py` - Replace sync mute data loading
 3. Any other service calling sync persistence methods from async contexts
@@ -84,39 +104,48 @@ async def _resolve_context(self, player, timestamp):
 ### 2. asyncio.run() Called from Existing Event Loop Context
 
 **Location**:
+
 - `server/services/exploration_service.py` line 379
 - Previously in `server/realtime/connection_manager.py` (may be fixed)
 
 **Issue**: `asyncio.run()` creates a new event loop, which fails if called from within an existing event loop context.
 
 **Code**:
+
 ```python
 # ❌ DANGEROUS - Can cause RuntimeError
+
 try:
     loop = asyncio.get_running_loop()
     loop.create_task(_mark_explored_async())
 except RuntimeError:
     # No running loop - run in a new event loop
+
     asyncio.run(_mark_explored_async())  # ❌ MAY STILL BE IN LOOP CONTEXT
 ```
 
 **Impact**:
+
 - RuntimeError: "asyncio.run() cannot be called from a running event loop"
 - Unpredictable behavior if error handling is inadequate
 - Potential deadlocks or nested event loop issues
 
 **Fix**:
+
 ```python
 # ✅ CORRECT - Handle all cases
+
 try:
     loop = asyncio.get_running_loop()
     loop.create_task(_mark_explored_async())
 except RuntimeError:
     # No running loop - defer execution or use thread-safe scheduling
+
     logger.warning("No event loop available, deferring operation")
     # Option 1: Use a queue for deferred execution
     # Option 2: Use asyncio.run_coroutine_threadsafe if you have loop reference
     # Option 3: Make calling code fully async
+
 ```
 
 **Priority**: 🔴 **CRITICAL** - Can cause crashes
@@ -132,6 +161,7 @@ except RuntimeError:
 **Issue**: asyncpg connection pool created but no guarantee it's closed during shutdown or error conditions.
 
 **Code**:
+
 ```python
 async def _get_pool(self) -> asyncpg.Pool:
     if self._pool is None:
@@ -145,23 +175,28 @@ async def close(self) -> None:
 ```
 
 **Impact**:
+
 - Connection pools may not close during application shutdown
 - Database connections exhausted over time
 - Memory leaks from unclosed pools
 - "too many connections" errors from PostgreSQL
 
 **Fix**:
+
 ```python
 # In server/app/container.py shutdown method
+
 async def shutdown(self):
     """Cleanup resources on shutdown."""
     if hasattr(self, 'async_persistence') and self.async_persistence:
         logger.info("Closing async persistence connection pool")
         await self.async_persistence.close()
     # ... other shutdown operations
+
 ```
 
 **Verification Required**:
+
 - Check that `ApplicationContainer.shutdown()` calls `async_persistence.close()`
 - Check that lifespan manager calls `container.shutdown()`
 - Add tests to verify pool closure
@@ -178,6 +213,7 @@ async def shutdown(self):
 **Issue**: `asyncpg.create_pool()` can raise exceptions that aren't caught, causing unhandled exceptions.
 
 **Code**:
+
 ```python
 async def _get_pool(self) -> asyncpg.Pool:
     if self._pool is None:
@@ -188,12 +224,14 @@ async def _get_pool(self) -> asyncpg.Pool:
 ```
 
 **Impact**:
+
 - Unhandled exceptions crash the application
 - No retry logic for transient connection failures
 - Poor error messages for debugging
 - Application won't start if database is temporarily unavailable
 
 **Fix**:
+
 ```python
 async def _get_pool(self) -> asyncpg.Pool:
     """Get or create connection pool for async database operations."""
@@ -236,29 +274,35 @@ async def _get_pool(self) -> asyncpg.Pool:
 **Issue**: Synchronous database operations in message handlers cause message processing delays and queue buildup.
 
 **Code**:
+
 ```python
 # ❌ WRONG - Synchronous operation in async handler
+
 for receiver_id in receiver_ids:
     try:
         user_manager.load_player_mutes(receiver_id)  # SYNCHRONOUS DATABASE CALL
 ```
 
 **Impact**:
+
 - Message processing delays under high traffic
 - Message queue buildup
 - Violates NATS best practice: "Don't use blocking operations in message handlers"
 - Cascading delays across all NATS subscribers
 
 **Fix**:
+
 ```python
 # ✅ CORRECT - Async batch loading with caching
 # Option 1: Batch load all mute data at once
+
 mute_data = await asyncio.gather(
     *[asyncio.to_thread(user_manager.load_player_mutes, rid) for rid in receiver_ids],
     return_exceptions=True
 )
 
 # Option 2: Cache mute data with TTL (better)
+
 async def _get_player_mutes_cached(self, player_id: str) -> set:
     if player_id in self._mute_cache and not self._is_cache_expired(player_id):
         return self._mute_cache[player_id]
@@ -280,31 +324,41 @@ async def _get_player_mutes_cached(self, player_id: str) -> set:
 **Issue**: Using f-strings in logging calls destroys structured logging benefits.
 
 **Code**:
+
 ```python
 # ❌ WRONG - Destroys structured logging
+
 logger.info(f"Starting combat between {attacker} and {target}")
 logger.error(f"Failed to process: {error}")
 logger.debug(f"Message data: {message_data}")
 ```
 
 **Impact**:
-- **Cannot search by specific fields**: Logs become plain text
-- **Cannot create alerts**: No structured data for monitoring
-- **Cannot correlate events**: Lost relationships between log entries
-- **Reduced performance**: String formatting slower than structured data
-- **Breaks log aggregation**: Cannot analyze or filter effectively
+**Cannot search by specific fields**: Logs become plain text
+
+**Cannot create alerts**: No structured data for monitoring
+
+**Cannot correlate events**: Lost relationships between log entries
+
+**Reduced performance**: String formatting slower than structured data
+
+**Breaks log aggregation**: Cannot analyze or filter effectively
 
 **Fix**:
+
 ```python
 # ✅ CORRECT - Structured logging
+
 logger.info("Starting combat", attacker=attacker, target=target, room_id=room_id)
 logger.error("Failed to process", error=str(error), operation="combat_start")
 logger.debug("NATS message received", message_data=message_data, message_type=type(message_data))
 ```
 
 **Detection**:
+
 ```bash
 # Find all f-string logging (requires manual review)
+
 rg 'logger\.(debug|info|warning|error|critical)\(f"' server/
 ```
 
@@ -321,18 +375,22 @@ rg 'logger\.(debug|info|warning|error|critical)\(f"' server/
 **Location**: `server/services/passive_lucidity_flux_service.py`
 
 **Issue**: Room data looked up for every player on every tick, even if:
+
 - Players are in the same room
 - Room data hasn't changed
 - Room was recently looked up
 
 **Impact**:
+
 - Unnecessary database/IO operations
 - Contributes to 17-second tick delays
 - Scales poorly with player count
 
 **Fix**:
+
 ```python
 # Add room cache with TTL
+
 class PassiveLucidityFluxService:
     def __init__(self, ...):
         self._room_cache: dict[str, tuple[Room, float]] = {}
@@ -358,14 +416,17 @@ class PassiveLucidityFluxService:
 
 **Location**: Throughout codebase
 
-**Issue**: Many async functions still call synchronous `PersistenceLayer` methods instead of `AsyncPersistenceLayer` methods.
+**Issue**: Many async functions still call synchronous `PersistenceLayer` methods instead of `AsyncPersistenceLayer`
+methods.
 
 **Impact**:
+
 - Event loop blocking across application
 - Degraded performance
 - Confusion about which layer to use
 
 **Fix**:
+
 1. Audit all async functions for sync persistence calls
 2. Migrate to `async_persistence.method()` or wrap with `asyncio.to_thread()`
 3. Add deprecation warnings to sync methods when called from async contexts
@@ -382,24 +443,30 @@ class PassiveLucidityFluxService:
 **Issue**: Each `apply_lucidity_adjustment()` calls `flush()` before the final `commit()`.
 
 **Impact**:
+
 - Multiple round-trips to database
 - Potential lock contention
 - Increased transaction overhead
 - Contributes to progressive degradation
 
 **Fix**:
+
 ```python
 # Batch all adjustments, flush once before commit
+
 async with session.begin():
     for player in players:
         # Apply adjustments (don't flush)
+
         await lucidity_service.apply_lucidity_adjustment(
             ...,
             auto_flush=False  # Add parameter
         )
     # Flush once before commit
+
     await session.flush()
     # Commit happens automatically
+
 ```
 
 **Priority**: 🟡 **HIGH** - Performance optimization
@@ -414,11 +481,13 @@ async with session.begin():
 **Issue**: `_load_players()` loads ALL players, not just active/online players.
 
 **Impact**:
+
 - Unnecessary data loading
 - Memory overhead
 - Processing inactive players wastes CPU
 
 **Fix**:
+
 ```python
 async def _load_players(self, session: AsyncSession) -> list[Player]:
     """Load only active/online players for processing."""
@@ -442,15 +511,18 @@ async def _load_players(self, session: AsyncSession) -> list[Player]:
 **Issue**: `publish()` method uses single connection instead of connection pool.
 
 **Impact**:
+
 - Connection pooling benefits not realized
 - Single connection becomes bottleneck
 - Pool initialization overhead wasted
 
 **Fix**:
+
 ```python
 async def publish(self, subject: str, message: dict[str, Any], **kwargs) -> bool:
     """Publish message using connection pool by default."""
     # Use connection pool for better performance
+
     return await self.publish_with_pool(subject, message, **kwargs)
 ```
 
@@ -466,15 +538,18 @@ async def publish(self, subject: str, message: dict[str, Any], **kwargs) -> bool
 **Issue**: `NATSConfig` class lacks TLS/SSL configuration options.
 
 **Impact**:
+
 - Messages transmitted in plaintext
 - Vulnerable to man-in-the-middle attacks
 - Security compliance violation
 
 **Fix**:
+
 ```python
 class NATSConfig(BaseSettings):
     url: str = Field(default="nats://localhost:4222", ...)
     # Add TLS fields
+
     tls_cert: str | None = Field(default=None, description="Path to TLS certificate")
     tls_key: str | None = Field(default=None, description="Path to TLS private key")
     tls_ca: str | None = Field(default=None, description="Path to TLS CA certificate")
@@ -493,6 +568,7 @@ class NATSConfig(BaseSettings):
 **Issue**: Complex logic for detecting event loop changes may miss edge cases.
 
 **Impact**:
+
 - asyncpg connections tied to specific event loops
 - Using connections from wrong loop causes errors
 
@@ -510,6 +586,7 @@ class NATSConfig(BaseSettings):
 **Issue**: `save_players()` continues loop on individual errors, but transaction may not rollback properly.
 
 **Impact**:
+
 - Partial failures may violate atomicity
 - Some players saved, others not
 
@@ -530,7 +607,8 @@ class NATSConfig(BaseSettings):
 
 **Fix**: Make configurable via config system
 
-**Priority**: 🟢 **MEDIUM**
+### Priority**: 🟢**MEDIUM
+
 **Estimated Effort**: 2-3 hours
 
 ---
@@ -538,6 +616,7 @@ class NATSConfig(BaseSettings):
 ### 16. Deprecated asyncio.get_event_loop() Usage
 
 **Location**:
+
 - `server/services/nats_service.py` line 827
 - `server/npc/lifecycle_manager.py` line 476
 
@@ -545,7 +624,8 @@ class NATSConfig(BaseSettings):
 
 **Fix**: Use `asyncio.get_running_loop()` instead
 
-**Priority**: 🟢 **MEDIUM**
+### Priority**: 🟢**MEDIUM
+
 **Estimated Effort**: 1-2 hours
 
 ---
@@ -558,7 +638,8 @@ class NATSConfig(BaseSettings):
 
 **Fix**: Standardize on exception-based error handling
 
-**Priority**: 🟢 **MEDIUM**
+### Priority**: 🟢**MEDIUM
+
 **Estimated Effort**: 8-12 hours
 
 ---
@@ -571,7 +652,8 @@ class NATSConfig(BaseSettings):
 
 **Fix**: Use `collections.deque` with `maxlen` for automatic rotation
 
-**Priority**: 🟢 **MEDIUM**
+### Priority**: 🟢**MEDIUM
+
 **Estimated Effort**: 1-2 hours
 
 ---
@@ -584,7 +666,8 @@ class NATSConfig(BaseSettings):
 
 **Fix**: Add `msg.ack()` after successful processing
 
-**Priority**: 🟢 **MEDIUM**
+### Priority**: 🟢**MEDIUM
+
 **Estimated Effort**: 3-4 hours
 
 ---
@@ -597,7 +680,8 @@ class NATSConfig(BaseSettings):
 
 **Fix**: Complete migration to `NATSSubjectManager` patterns
 
-**Priority**: 🟢 **MEDIUM**
+### Priority**: 🟢**MEDIUM
+
 **Estimated Effort**: 4-6 hours
 
 ---
@@ -610,7 +694,8 @@ class NATSConfig(BaseSettings):
 
 **Fix**: Add periodic health checks (ping/pong)
 
-**Priority**: 🟢 **MEDIUM**
+### Priority**: 🟢**MEDIUM
+
 **Estimated Effort**: 4-6 hours
 
 ---
@@ -622,6 +707,7 @@ class NATSConfig(BaseSettings):
 **Location**: `server/realtime/` directory
 
 **Finding**: Exemplary implementation of:
+
 - `NATSRetryHandler`: Exponential backoff with jitter
 - `CircuitBreaker`: Three-state pattern with proper transitions
 - `DeadLetterQueue`: File-based storage with metadata
@@ -637,9 +723,11 @@ class NATSConfig(BaseSettings):
 **Finding**: Structured concurrency pattern ensures all tasks complete even if some fail.
 
 **Code**:
+
 ```python
 results = await asyncio.gather(*tasks, return_exceptions=True)
 # Log any exceptions from subscribers
+
 for task, result in zip(tasks, results, strict=False):
     if isinstance(result, Exception):
         self._logger.error("Error in async subscriber", ...)
@@ -652,6 +740,7 @@ for task, result in zip(tasks, results, strict=False):
 ### 3. Task Tracking and Lifecycle Management
 
 **Location**:
+
 - `server/app/task_registry.py`
 - `server/app/tracked_task_manager.py`
 
@@ -698,70 +787,125 @@ for task, result in zip(tasks, results, strict=False):
 **Goal**: Eliminate event loop blocking and critical resource leaks
 
 #### Task 1.1: Fix Synchronous Blocking in Passive Lucidity Flux Service
-- **Issue**: #1 - Synchronous blocking operations
-- **Files**: `server/services/passive_lucidity_flux_service.py`
-- **Actions**:
+
+**Issue**: #1 - Synchronous blocking operations
+
+**Files**: `server/services/passive_lucidity_flux_service.py`
+
+**Actions**:
+
   1. Replace `self._persistence.get_room()` with `await self._persistence.async_get_room()`
+
   2. Add room caching (combines with #7)
+
   3. Test performance improvements
-- **Success Criteria**: Tick processing < 1 second
-- **Estimated Effort**: 8 hours
+
+**Success Criteria**: Tick processing < 1 second
+
+**Estimated Effort**: 8 hours
+
 - **Owner**: TBD
 
 #### Task 1.2: Eliminate asyncio.run() from Library Code
-- **Issue**: #2 - asyncio.run() in event loop context
-- **Files**: `server/services/exploration_service.py`
-- **Actions**:
+
+**Issue**: #2 - asyncio.run() in event loop context
+
+**Files**: `server/services/exploration_service.py`
+
+**Actions**:
+
   1. Remove `asyncio.run()` fallback
+
   2. Make calling code fully async
+
   3. Test edge cases
-- **Success Criteria**: No `asyncio.run()` in library code
-- **Estimated Effort**: 4 hours
+
+**Success Criteria**: No `asyncio.run()` in library code
+
+**Estimated Effort**: 4 hours
+
 - **Owner**: TBD
 
 #### Task 1.3: Ensure Connection Pool Cleanup
-- **Issue**: #3 - Connection pool resource leaks
-- **Files**: `server/app/container.py`, `server/async_persistence.py`
-- **Actions**:
+
+**Issue**: #3 - Connection pool resource leaks
+
+**Files**: `server/app/container.py`, `server/async_persistence.py`
+
+**Actions**:
+
   1. Verify `container.shutdown()` calls `async_persistence.close()`
+
   2. Add tests for pool closure
+
   3. Test shutdown scenarios
-- **Success Criteria**: All pools closed during shutdown
-- **Estimated Effort**: 4 hours
+
+**Success Criteria**: All pools closed during shutdown
+
+**Estimated Effort**: 4 hours
+
 - **Owner**: TBD
 
 #### Task 1.4: Add Exception Handling to Pool Creation
-- **Issue**: #4 - Missing exception handling
-- **Files**: `server/async_persistence.py`
-- **Actions**:
+
+**Issue**: #4 - Missing exception handling
+
+**Files**: `server/async_persistence.py`
+
+**Actions**:
+
   1. Wrap `create_pool()` in try-except
+
   2. Add proper error context
+
   3. Test connection failure scenarios
-- **Success Criteria**: Graceful handling of connection failures
-- **Estimated Effort**: 3 hours
+
+**Success Criteria**: Graceful handling of connection failures
+
+**Estimated Effort**: 3 hours
+
 - **Owner**: TBD
 
 #### Task 1.5: Fix Blocking Operations in NATS Message Handlers
-- **Issue**: #5 - Synchronous database operations
-- **Files**: `server/realtime/nats_message_handler.py`
-- **Actions**:
+
+**Issue**: #5 - Synchronous database operations
+
+**Files**: `server/realtime/nats_message_handler.py`
+
+**Actions**:
+
   1. Implement mute data caching with TTL
+
   2. Replace sync calls with async/cached versions
+
   3. Benchmark message processing time
-- **Success Criteria**: Message processing < 100ms
-- **Estimated Effort**: 6 hours
+
+**Success Criteria**: Message processing < 100ms
+
+**Estimated Effort**: 6 hours
+
 - **Owner**: TBD
 
 #### Task 1.6: Audit and Fix F-String Logging
-- **Issue**: #6 - Destroys structured logging
-- **Files**: Entire codebase
-- **Actions**:
+
+**Issue**: #6 - Destroys structured logging
+
+**Files**: Entire codebase
+
+**Actions**:
+
   1. Search for `logger.(debug|info|warning|error|critical)(f"`
+
   2. Replace with structured key-value pairs
+
   3. Update coding standards documentation
+
   4. Add pre-commit hook to prevent f-string logging
-- **Success Criteria**: Zero f-string logging calls
-- **Estimated Effort**: 24 hours (widespread)
+
+**Success Criteria**: Zero f-string logging calls
+
+**Estimated Effort**: 24 hours (widespread)
+
 - **Owner**: TBD
 
 **Phase 1 Total Effort**: ~49 hours (~1.25 weeks for 1 person)
@@ -773,44 +917,68 @@ for task, result in zip(tasks, results, strict=False):
 **Goal**: Optimize performance and complete async migration
 
 #### Task 2.1: Add Room Lookup Caching
-- **Issue**: #7 - Missing caching
-- **Actions**: Implement room cache with TTL
-- **Estimated Effort**: 4 hours
+
+**Issue**: #7 - Missing caching
+
+**Actions**: Implement room cache with TTL
+
+**Estimated Effort**: 4 hours
 
 #### Task 2.2: Complete Async Persistence Migration
-- **Issue**: #8 - Incomplete migration
-- **Actions**: Audit and migrate all async functions
-- **Estimated Effort**: 40 hours
+
+**Issue**: #8 - Incomplete migration
+
+**Actions**: Audit and migrate all async functions
+
+**Estimated Effort**: 40 hours
 
 #### Task 2.3: Optimize Database Flush Operations
-- **Issue**: #9 - Multiple flushes
-- **Actions**: Batch adjustments, flush once
-- **Estimated Effort**: 6 hours
+
+**Issue**: #9 - Multiple flushes
+
+**Actions**: Batch adjustments, flush once
+
+**Estimated Effort**: 6 hours
 
 #### Task 2.4: Load Only Active Players
-- **Issue**: #10 - Loading all players
-- **Actions**: Filter by active/online status
-- **Estimated Effort**: 3 hours
+
+**Issue**: #10 - Loading all players
+
+**Actions**: Filter by active/online status
+
+**Estimated Effort**: 3 hours
 
 #### Task 2.5: Use NATS Connection Pool by Default
-- **Issue**: #11 - Pool not used
-- **Actions**: Make publish() use pool
-- **Estimated Effort**: 3 hours
+
+**Issue**: #11 - Pool not used
+
+**Actions**: Make publish() use pool
+
+**Estimated Effort**: 3 hours
 
 #### Task 2.6: Add TLS Configuration
-- **Issue**: #12 - No TLS
-- **Actions**: Add TLS config fields
-- **Estimated Effort**: 6 hours
+
+**Issue**: #12 - No TLS
+
+**Actions**: Add TLS config fields
+
+**Estimated Effort**: 6 hours
 
 #### Task 2.7: Improve Event Loop Change Detection
-- **Issue**: #13 - Edge cases
-- **Actions**: Add defensive checks
-- **Estimated Effort**: 6 hours
+
+**Issue**: #13 - Edge cases
+
+**Actions**: Add defensive checks
+
+**Estimated Effort**: 6 hours
 
 #### Task 2.8: Review Transaction Error Handling
-- **Issue**: #14 - Rollback issues
-- **Actions**: Ensure proper rollback
-- **Estimated Effort**: 6 hours
+
+**Issue**: #14 - Rollback issues
+
+**Actions**: Ensure proper rollback
+
+**Estimated Effort**: 6 hours
 
 **Phase 2 Total Effort**: ~74 hours (~2 weeks for 1 person)
 
@@ -821,7 +989,9 @@ for task, result in zip(tasks, results, strict=False):
 **Goal**: Address remaining issues and improve code quality
 
 #### Tasks 3.1-3.7: Medium Priority Fixes
-- Configurable pool sizes
+
+Configurable pool sizes
+
 - Fix deprecated get_event_loop()
 - Standardize error handling
 - Optimize metrics collection
@@ -870,16 +1040,19 @@ for task, result in zip(tasks, results, strict=False):
 ### Phase 1 Testing (Critical)
 
 1. **Performance Testing**:
+
    - Measure passive lucidity flux tick time (target: <1s)
    - Measure NATS message processing time (target: <100ms)
    - Run load tests with 10+ concurrent players
 
 2. **Resource Leak Testing**:
+
    - Start/stop server 100 times, verify no connection leaks
    - Monitor database connection count during operation
    - Check for orphaned tasks after shutdown
 
 3. **Exception Handling Testing**:
+
    - Simulate database connection failures
    - Test graceful degradation
    - Verify error messages and logging
@@ -887,16 +1060,19 @@ for task, result in zip(tasks, results, strict=False):
 ### Phase 2 Testing (Performance)
 
 1. **Caching Testing**:
+
    - Verify cache hit rates >80%
    - Test cache invalidation
    - Test concurrent cache access
 
 2. **Async Migration Testing**:
+
    - Verify no blocking operations remain
    - Test all async paths end-to-end
    - Benchmark performance improvements
 
 3. **Transaction Testing**:
+
    - Test rollback on errors
    - Test partial failure scenarios
    - Verify data integrity
@@ -904,11 +1080,13 @@ for task, result in zip(tasks, results, strict=False):
 ### Phase 3 Testing (Polish)
 
 1. **Configuration Testing**:
+
    - Test pool size configurations
    - Test TLS connections
    - Test connection health monitoring
 
 2. **Error Handling Testing**:
+
    - Test consistent error patterns
    - Test message acknowledgment
    - Test subject name resolution
@@ -963,7 +1141,8 @@ for task, result in zip(tasks, results, strict=False):
 
 ### Pre-Deployment Checklist
 
-- [ ] All Phase 1 tasks complete
+[ ] All Phase 1 tasks complete
+
 - [ ] Performance tests pass (<1s tick time)
 - [ ] No connection leaks detected
 - [ ] No event loop blocking detected
@@ -981,12 +1160,14 @@ for task, result in zip(tasks, results, strict=False):
 ### Monitoring Post-Deployment
 
 1. **Key Metrics**:
+
    - Game tick processing time
    - NATS message queue depth
    - Database connection count
    - Error rates
 
 2. **Alerts**:
+
    - Tick time >2s (warning), >5s (critical)
    - Database connections >80% of max (warning)
    - Event loop blocking detected (critical)
@@ -1008,28 +1189,35 @@ for task, result in zip(tasks, results, strict=False):
 
 Professor Wolfshade,
 
-This audit reveals a codebase with **strong architectural foundations** (structured concurrency, error boundaries, task tracking) but **critical execution issues** (blocking operations, resource leaks). The progressive performance degradation (17.4 second tick delays) is a clear indicator of synchronous blocking in async contexts.
+This audit reveals a codebase with **strong architectural foundations** (structured concurrency, error boundaries, task
+tracking) but **critical execution issues** (blocking operations, resource leaks). The progressive performance
+degradation (17.4 second tick delays) is a clear indicator of synchronous blocking in async contexts.
 
 **Immediate Action Required**:
+
 1. Phase 1 tasks block production deployment
 2. Estimated 1-2 weeks to resolve critical issues
 3. Full remediation: 4-5 weeks total effort
 
 **Positive Assessment**:
+
 - Error boundary implementation is exemplary
 - Task tracking prevents most resource leaks
 - Structured logging (when not using f-strings) is excellent
 - Team understands async patterns, just needs consistent application
 
-**Recommendation**: Prioritize Phase 1 (critical fixes) before any new feature work. The performance issues will only worsen with more users.
+**Recommendation**: Prioritize Phase 1 (critical fixes) before any new feature work. The performance issues will only
+worsen with more users.
 
-*adjusts spectacles grimly*
+### adjusts spectacles grimly
 
-As the Pnakotic Manuscripts warn: "That which blocks the flow of time shall bring madness to all who wait." Our event loop blocking is indeed bringing madness in the form of 17-second delays.
+As the Pnakotic Manuscripts warn: "That which blocks the flow of time shall bring madness to all who wait." Our event
+loop blocking is indeed bringing madness in the form of 17-second delays.
 
 ---
 
-**Audit Status**: ✅ **COMPLETE**
+### Audit Status**: ✅**COMPLETE
+
 **Next Steps**: Review with Professor Wolfshade, assign ownership, begin Phase 1
 
 **Date**: December 3, 2025

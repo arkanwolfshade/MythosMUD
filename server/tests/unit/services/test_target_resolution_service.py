@@ -53,6 +53,7 @@ async def test_resolve_target_persistence_no_methods(mock_player_service):
     service = TargetResolutionService(mock_persistence, mock_player_service)
     result = await service.resolve_target(uuid.uuid4(), "target")
     assert result.success is False
+    assert result.error_message is not None
     assert "error" in result.error_message.lower() or "not configured" in result.error_message.lower()
 
 
@@ -65,6 +66,7 @@ async def test_resolve_target_player_not_found(mock_persistence, mock_player_ser
     service = TargetResolutionService(mock_persistence, mock_player_service)
     result = await service.resolve_target(uuid.uuid4(), "target")
     assert result.success is False
+    assert result.error_message is not None
     assert "not found" in result.error_message.lower() or "error" in result.error_message.lower()
 
 
@@ -78,6 +80,7 @@ async def test_resolve_target_player_no_room_id(mock_persistence, mock_player_se
     result = await service.resolve_target(uuid.uuid4(), "target")
     assert isinstance(result, TargetResolutionResult)
     assert result.success is False
+    assert result.error_message is not None
     assert "not in a room" in result.error_message.lower()
 
 
@@ -87,7 +90,7 @@ async def test_search_players_in_room_empty_list(mock_persistence, mock_player_s
     from server.services.target_resolution_service import TargetResolutionService
 
     service = TargetResolutionService(mock_persistence, mock_player_service)
-    result = await service._search_players_in_room("room_001", "target", [])
+    result = await service._search_players_in_room("room_001", "target", [])  # type: ignore[arg-type]  # Test intentionally passes empty list to test edge case behavior
     assert len(result) == 0
 
 
@@ -100,7 +103,7 @@ async def test_search_players_in_room_no_match(mock_persistence, mock_player_ser
     mock_player1.name = "Alice"
     mock_player1.player_id = uuid.uuid4()
     service = TargetResolutionService(mock_persistence, mock_player_service)
-    result = await service._search_players_in_room("room_001", "Bob", [mock_player1])
+    result = await service._search_players_in_room("room_001", "Bob", [mock_player1])  # type: ignore[arg-type]
     assert len(result) == 0
 
 
@@ -110,7 +113,7 @@ async def test_search_npcs_in_room_empty_list(mock_persistence, mock_player_serv
     from server.services.target_resolution_service import TargetResolutionService
 
     service = TargetResolutionService(mock_persistence, mock_player_service)
-    result = await service._search_npcs_in_room("room_001", "target", [])
+    result = await service._search_npcs_in_room("room_001", "target", [])  # type: ignore[arg-type]
     assert len(result) == 0
 
 
@@ -123,7 +126,7 @@ async def test_search_npcs_in_room_no_match(mock_persistence, mock_player_servic
     mock_npc.name = "Goblin"
     mock_npc.npc_id = "npc_001"
     service = TargetResolutionService(mock_persistence, mock_player_service)
-    result = await service._search_npcs_in_room("room_001", "Orc", [mock_npc])
+    result = await service._search_npcs_in_room("room_001", "Orc", [mock_npc])  # type: ignore[arg-type]
     assert len(result) == 0
 
 
@@ -160,6 +163,7 @@ async def test_resolve_target_no_persistence_methods(target_service, mock_persis
         delattr(mock_persistence, "get_player")
     result = await target_service.resolve_target(uuid.uuid4(), "target")
     assert result.success is False
+    assert result.error_message is not None
     assert "error" in result.error_message.lower() or "not configured" in result.error_message.lower()
 
 
@@ -171,6 +175,7 @@ async def test_resolve_target_no_room(target_service, mock_persistence):
     mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
     result = await target_service.resolve_target(uuid.uuid4(), "target")
     assert result.success is False
+    assert result.error_message is not None
     assert "not in a room" in result.error_message.lower() or "room" in result.error_message.lower()
 
 

@@ -16,8 +16,9 @@ def test_cast_command_required_fields():
     """Test CastCommand requires spell_name."""
     command = CastCommand(spell_name="fireball")
 
-    assert command.command_type == "cast"
-    assert command.spell_name == "fireball"
+    assert command.command_type == "cast"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+    # Reason: Testing field assignment - mypy may see as unreachable but validates at runtime
+    assert command.spell_name == "fireball"  # type: ignore[unreachable]
     assert command.target is None
 
 
@@ -96,8 +97,9 @@ def test_spell_command_required_fields():
     """Test SpellCommand requires spell_name."""
     command = SpellCommand(spell_name="fireball")
 
-    assert command.command_type == "spell"
-    assert command.spell_name == "fireball"
+    assert command.command_type == "spell"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+    # Reason: Testing field assignment - mypy may see as unreachable but validates at runtime
+    assert command.spell_name == "fireball"  # type: ignore[unreachable]
 
 
 def test_spell_command_validate_spell_name_valid():
@@ -139,7 +141,8 @@ def test_spells_command_no_fields():
     """Test SpellsCommand has no required fields."""
     command = SpellsCommand()
 
-    assert command.command_type == "spells"
+    # Reason: Testing str enum direct comparison - valid at runtime for str enums, but mypy sees as non-overlapping
+    assert command.command_type == "spells"  # type: ignore[comparison-overlap]
 
 
 # --- Tests for LearnCommand ---
@@ -149,8 +152,9 @@ def test_learn_command_required_fields():
     """Test LearnCommand requires spell_name."""
     command = LearnCommand(spell_name="fireball")
 
-    assert command.command_type == "learn"
-    assert command.spell_name == "fireball"
+    assert command.command_type == "learn"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+    # Reason: Testing field assignment - mypy may see as unreachable but validates at runtime
+    assert command.spell_name == "fireball"  # type: ignore[unreachable]
 
 
 def test_learn_command_validate_spell_name_valid():

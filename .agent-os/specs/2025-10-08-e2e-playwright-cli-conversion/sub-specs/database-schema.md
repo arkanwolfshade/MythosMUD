@@ -8,15 +8,18 @@ The test database will use the existing `data/` directory structure with dedicat
 
 ### Database Files
 
-- **Test Player Database**: `data/players/unit_test_players.db`
-- **Test NPC Database**: `data/npcs/test_npcs.db`
-- **Test Rooms**: `data/rooms/` (shared with development, no modifications needed)
+**Test Player Database**: `data/players/unit_test_players.db`
+
+**Test NPC Database**: `data/npcs/test_npcs.db`
+
+**Test Rooms**: `data/rooms/` (shared with development, no modifications needed)
 
 ### Baseline Test Players
 
 The test database will be seeded with the following baseline players for test execution:
 
 #### Test Player 1: ArkanWolfshade (Admin)
+
 ```sql
 -- User record
 INSERT INTO users (id, email, username, hashed_password, is_active, is_superuser, is_verified, created_at, updated_at)
@@ -51,6 +54,7 @@ VALUES (
 ```
 
 #### Test Player 2: Ithaqua (Regular Player)
+
 ```sql
 -- User record
 INSERT INTO users (id, email, username, hashed_password, is_active, is_superuser, is_verified, created_at, updated_at)
@@ -85,6 +89,7 @@ VALUES (
 ```
 
 #### Test Player 3: TestAdmin (Admin for Testing)
+
 ```sql
 -- User record
 INSERT INTO users (id, email, username, hashed_password, is_active, is_superuser, is_verified, created_at, updated_at)
@@ -374,26 +379,41 @@ test.afterEach(async () => {
 ## Rationale
 
 ### Database Isolation
-- **Separate Test Database**: Using `unit_test_players.db` instead of the development database ensures complete isolation
-- **No Development Data Contamination**: Tests cannot affect development or production data
-- **Predictable Test Environment**: Every test run starts with known baseline data
+
+**Separate Test Database**: Using `unit_test_players.db` instead of the development database ensures complete isolation
+
+**No Development Data Contamination**: Tests cannot affect development or production data
+
+**Predictable Test Environment**: Every test run starts with known baseline data
 
 ### Seeding Strategy
-- **Argon2 Password Hashing**: Use same hashing algorithm as production for realistic authentication testing
-- **Baseline Players**: Three core test players cover all test scenarios (admin, regular, superuser)
-- **Shared Room Data**: Reuse existing `data/rooms/` structure to avoid duplication and maintenance overhead
+
+**Argon2 Password Hashing**: Use same hashing algorithm as production for realistic authentication testing
+
+**Baseline Players**: Three core test players cover all test scenarios (admin, regular, superuser)
+
+**Shared Room Data**: Reuse existing `data/rooms/` structure to avoid duplication and maintenance overhead
 
 ### Cleanup Strategy
-- **Global Setup/Teardown**: One-time seeding and cleanup for entire test suite
-- **Per-Test Cleanup**: Reset player state between tests to prevent test interdependencies
-- **Backup Mechanism**: Preserve previous test database for debugging if needed
+
+**Global Setup/Teardown**: One-time seeding and cleanup for entire test suite
+
+**Per-Test Cleanup**: Reset player state between tests to prevent test interdependencies
+
+**Backup Mechanism**: Preserve previous test database for debugging if needed
 
 ### Performance Considerations
-- **SQLite Speed**: In-memory or file-based SQLite is fast enough for test data operations
-- **Minimal Seeding**: Only seed data required for tests, not full production-like dataset
-- **Index Optimization**: Create indexes matching production for realistic query performance
+
+**SQLite Speed**: In-memory or file-based SQLite is fast enough for test data operations
+
+**Minimal Seeding**: Only seed data required for tests, not full production-like dataset
+
+**Index Optimization**: Create indexes matching production for realistic query performance
 
 ### Maintenance Considerations
-- **Schema Alignment**: Test database schema matches production schema exactly
-- **Migration Compatibility**: Test seeding works with same migration scripts as production
-- **Future-Proof**: Easy to add new test players or modify baseline data as tests evolve
+
+**Schema Alignment**: Test database schema matches production schema exactly
+
+**Migration Compatibility**: Test seeding works with same migration scripts as production
+
+**Future-Proof**: Easy to add new test players or modify baseline data as tests evolve

@@ -14,7 +14,8 @@
 
 ## 🔬 Type of Change
 
-- [ ] ✨ Feature
+[ ] ✨ Feature
+
 - [ ] 🐛 Bug Fix
 - [ ] 📝 Documentation
 - [ ] 🔧 Refactoring
@@ -25,7 +26,8 @@
 
 ## 🧪 Testing
 
-- [ ] Added/updated unit tests
+[ ] Added/updated unit tests
+
 - [ ] All tests pass (`make test`)
 - [ ] Test coverage ≥80%
 - [ ] Manually tested in local environment
@@ -37,7 +39,8 @@
 
 ## 🔒 Security Checklist
 
-- [ ] No secrets/credentials committed
+[ ] No secrets/credentials committed
+
 - [ ] Input validation & sanitization implemented
 - [ ] SQL queries use parameterized statements
 - [ ] Enhanced logging used (no f-strings, no `context=`)
@@ -49,7 +52,8 @@
 
 ## ✅ Pre-Submission
 
-- [ ] Tests pass (`make test`)
+[ ] Tests pass (`make test`)
+
 - [ ] Linting passes (`make lint`)
 - [ ] Code follows style guides (ruff, ESLint)
 - [ ] Documentation updated

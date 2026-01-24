@@ -131,8 +131,8 @@ async def _complete_debrief(
 
 
 async def handle_debrief_command(
-    command_data: dict,
-    current_user: dict,
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
     request: Any,
     _alias_storage: AliasStorage | None,
     player_name: str,

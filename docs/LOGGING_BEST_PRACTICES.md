@@ -1,85 +1,111 @@
 # Enhanced Logging Best Practices for MythosMUD
 
-*As documented in the restricted archives of Miskatonic University, proper logging is the foundation upon which all system observability and debugging capabilities rest. Without comprehensive logging, we are blind to the inner workings of our digital realm.*
+*As documented in the restricted archives of Miskatonic University, proper logging is the foundation upon which all
+system observability and debugging capabilities rest. Without comprehensive logging, we are blind to the inner workings
+of our digital realm.*
 
 ## 🚨 CRITICAL ANTI-PATTERNS - DO NOT USE
 
-**WARNING**: These patterns will cause system failures, security vulnerabilities, and debugging difficulties. They are strictly forbidden in the MythosMUD codebase.
+**WARNING**: These patterns will cause system failures, security vulnerabilities, and debugging difficulties. They are
+strictly forbidden in the MythosMUD codebase.
 
 ### ❌ FORBIDDEN IMPORT PATTERNS
+
 ```python
 # ❌ WRONG - Will cause import failures and system crashes
+
 import logging
 logger = logging.getLogger(__name__)
 
 # ❌ WRONG - Standard library logging bypasses enhanced features
+
 from logging import getLogger
 logger = getLogger(__name__)
 ```
 
 ### ❌ FORBIDDEN LOGGING PATTERNS
+
 ```python
 # ❌ WRONG - Deprecated context parameter (causes TypeError)
+
 logger.info("message", context={"key": "value"})
 
 # ❌ WRONG - String formatting breaks structured logging
+
 logger.info(f"User {user_id} performed {action}")
 
 # ❌ WRONG - Unstructured messages provide no debugging value
+
 logger.info("Error occurred")
 
 # ❌ WRONG - Logging sensitive data (security violation)
+
 logger.info("Login attempt", username=user, password=password)
 
 # ❌ WRONG - Wrong log levels
+
 logger.error("User logged in successfully")  # Should be INFO
 logger.info("Critical system failure")      # Should be CRITICAL
 ```
 
 ### ✅ MANDATORY CORRECT PATTERNS
+
 ```python
 # ✅ CORRECT - Enhanced logging import (REQUIRED)
+
 from server.logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 
 # ✅ CORRECT - Structured logging with key-value pairs
+
 logger.info("User action completed", user_id=user.id, action="login", success=True)
 
 # ✅ CORRECT - Error logging with rich context
+
 logger.error("Operation failed", operation="user_creation", error=str(e), retry_count=3)
 
 # ✅ CORRECT - Performance logging
+
 with measure_performance("database_query", user_id=user.id):
     result = database.query("SELECT * FROM players")
 
 # ✅ CORRECT - Request context binding
+
 bind_request_context(correlation_id=req_id, user_id=user.id, session_id=session.id)
 ```
 
 ## Overview
 
-This document outlines the best practices for the enhanced logging system implemented in MythosMUD. Our advanced structured logging system provides comprehensive observability with MDC (Mapped Diagnostic Context), correlation IDs, security sanitization, and performance monitoring while maintaining security and performance.
+This document outlines the best practices for the enhanced logging system implemented in MythosMUD. Our advanced
+structured logging system provides comprehensive observability with MDC (Mapped Diagnostic Context), correlation IDs,
+security sanitization, and performance monitoring while maintaining security and performance.
 
 ## Core Logging Principles
 
 ### 1. **Structured Logging**
+
 All log entries must be structured with consistent fields and formats. This enables automated analysis and monitoring.
 
 ### 2. **Context is Everything**
+
 Every log entry should include sufficient context to understand what was happening when the event occurred.
 
 ### 3. **Security First**
+
 Never log sensitive information such as passwords, tokens, or personal data.
 
 ### 4. **Performance Aware**
+
 Logging should not significantly impact system performance.
 
 ### 5. **Actionable Information**
+
 Log entries should provide information that can be acted upon by developers or operators.
 
 ## Log Levels and Usage
 
 ### DEBUG
+
 Use for detailed diagnostic information that is typically only of interest when diagnosing problems.
 
 ```python
@@ -88,6 +114,7 @@ from server.logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 
 # Good: Detailed debugging information with enhanced logging
+
 logger.debug(
     "Processing player movement",
     player_id=player.id,
@@ -98,14 +125,17 @@ logger.debug(
 )
 
 # Bad: Too verbose for production
+
 logger.debug(f"Variable x = {x}, y = {y}, z = {z}")  # Too detailed
 ```
 
 ### INFO
+
 Use for general information about system operation.
 
 ```python
 # Good: Important system events
+
 logger.info(
     "Player connected",
     player_id=player.id,
@@ -122,14 +152,17 @@ logger.info(
 )
 
 # Bad: Too frequent or not meaningful
+
 logger.info(f"Processing request {request_id}")  # Too frequent
 ```
 
 ### WARNING
+
 Use for potentially harmful situations or unexpected conditions that don't prevent the system from functioning.
 
 ```python
 # Good: Warning about potential issues
+
 logger.warning(
     "High memory usage detected",
     memory_usage_percent=85.5,
@@ -145,14 +178,17 @@ logger.warning(
 )
 
 # Bad: Using warning for normal conditions
+
 logger.warning("Player moved to room X")  # This is normal operation
 ```
 
 ### ERROR
+
 Use for error events that might still allow the application to continue running.
 
 ```python
 # Good: Error conditions that are handled
+
 logger.error(
     "Database connection failed, retrying",
     database_url=db_url,
@@ -170,14 +206,17 @@ logger.error(
 )
 
 # Bad: Using error for handled exceptions
+
 logger.error("Caught expected exception")  # If it's expected, use info or debug
 ```
 
 ### CRITICAL
+
 Use for very severe error events that will presumably lead the application to abort.
 
 ```python
 # Good: Critical system failures
+
 logger.critical(
     "Database connection pool exhausted",
     active_connections=pool_size,
@@ -193,6 +232,7 @@ logger.critical(
 )
 
 # Bad: Using critical for recoverable errors
+
 logger.critical("Failed to load player preferences")  # This is recoverable
 ```
 
@@ -206,6 +246,7 @@ import structlog
 logger = structlog.get_logger(__name__)
 
 # Good: Structured logging with context
+
 logger.info(
     "Player action completed",
     player_id=player.id,
@@ -217,6 +258,7 @@ logger.info(
 )
 
 # Bad: String formatting
+
 logger.info(f"Player {player.id} moved from {old_room} to {new_room}")
 ```
 
@@ -224,6 +266,7 @@ logger.info(f"Player {player.id} moved from {old_room} to {new_room}")
 
 ```python
 # Good: Comprehensive error context
+
 try:
     result = risky_operation()
 except Exception as e:
@@ -239,6 +282,7 @@ except Exception as e:
     raise
 
 # Bad: Minimal error information
+
 try:
     result = risky_operation()
 except Exception as e:
@@ -278,6 +322,7 @@ def log_performance(operation_name: str, **context):
         )
 
 # Usage
+
 with log_performance("player_movement", player_id=player.id, direction="north"):
     movement_service.move_player(player, "north")
 ```
@@ -294,6 +339,7 @@ from server.middleware.correlation_middleware import CorrelationMiddleware
 async def add_request_context(request: Request, call_next):
     """Add request context to all log entries using enhanced logging."""
     # Bind request context using enhanced logging
+
     bind_request_context(
         correlation_id=str(uuid.uuid4()),
         user_id=getattr(request.state, 'user_id', None),
@@ -325,6 +371,7 @@ def log_user_action(action: str, **kwargs):
     )
 
 # Usage
+
 log_user_action("player_created", player_name=name, starting_room=room_id)
 log_user_action("movement", direction=direction, room_id=room_id)
 ```
@@ -343,6 +390,7 @@ def log_system_event(event: str, **kwargs):
     )
 
 # Usage
+
 log_system_event("database_connected", component="database", connection_count=5)
 log_system_event("cache_cleared", component="cache", entries_cleared=1000)
 ```
@@ -350,6 +398,7 @@ log_system_event("cache_cleared", component="cache", entries_cleared=1000)
 ## Enhanced Logging Features
 
 ### MDC (Mapped Diagnostic Context)
+
 The enhanced logging system automatically includes context variables in all log entries:
 
 ```python
@@ -358,6 +407,7 @@ from server.logging.enhanced_logging_config import bind_request_context, get_log
 logger = get_logger(__name__)
 
 # Bind context for the current request
+
 bind_request_context(
     correlation_id="req-123",
     user_id="user-456",
@@ -365,11 +415,15 @@ bind_request_context(
 )
 
 # All subsequent logs automatically include this context
+
 logger.info("User action completed", action="login", success=True)
-# Logs: {"correlation_id": "req-123", "user_id": "user-456", "session_id": "session-789", "action": "login", "success": true}
+# Logs: {"correlation_id": "req-123", "user_id": "user-456", "session_id": "session-789", "action": "login", "success":
+true}
+
 ```
 
 ### Correlation IDs
+
 All requests automatically receive correlation IDs for tracing:
 
 ```python
@@ -377,17 +431,21 @@ from server.middleware.correlation_middleware import CorrelationMiddleware
 
 app.add_middleware(CorrelationMiddleware)
 # All requests now have correlation IDs in headers and logs
+
 ```
 
 ### Security Sanitization
+
 Sensitive data is automatically redacted:
 
 ```python
 logger.info("User login", username="john", password="secret123")
 # Logs: {"username": "john", "password": "[REDACTED]"}
+
 ```
 
 ### Performance Monitoring
+
 Built-in performance tracking:
 
 ```python
@@ -396,9 +454,11 @@ from server.monitoring.performance_monitor import measure_performance
 with measure_performance("database_query"):
     result = database.query("SELECT * FROM players")
 # Automatically logs performance metrics
+
 ```
 
 ### Exception Tracking
+
 100% exception coverage with context:
 
 ```python
@@ -409,6 +469,7 @@ try:
 except Exception as e:
     track_exception(e, user_id=current_user.id, severity="error")
 # Automatically logs exception with full context
+
 ```
 
 ## Security Considerations
@@ -417,6 +478,7 @@ except Exception as e:
 
 ```python
 # Good: Logging without sensitive data
+
 logger.info(
     "User authentication attempt",
     username=username,  # OK - username is not sensitive
@@ -426,6 +488,7 @@ logger.info(
 )
 
 # Bad: Logging sensitive data
+
 logger.info(
     "User authentication attempt",
     username=username,
@@ -454,9 +517,11 @@ def sanitize_for_logging(data: dict) -> dict:
     return sanitized
 
 # Usage
+
 user_data = {"username": "john", "password": "secret123", "email": "john@example.com"}
 logger.info("User data processed", **sanitize_for_logging(user_data))
 # Logs: {"username": "john", "password": "[REDACTED]", "email": "john@example.com"}
+
 ```
 
 ## Performance Logging
@@ -476,6 +541,7 @@ def log_database_query(query: str, params: dict, duration: float, rows_affected:
     )
 
 # Usage in database operations
+
 start_time = time.time()
 result = db.execute(query, params)
 duration = time.time() - start_time
@@ -491,6 +557,7 @@ async def log_api_requests(request: Request, call_next):
     start_time = time.time()
 
     # Log request
+
     logger.info(
         "API request started",
         method=request.method,
@@ -505,6 +572,7 @@ async def log_api_requests(request: Request, call_next):
     duration = time.time() - start_time
 
     # Log response
+
     logger.info(
         "API request completed",
         method=request.method,
@@ -523,12 +591,15 @@ async def log_api_requests(request: Request, call_next):
 
 ```bash
 # Generate comprehensive error report
+
 python scripts/analyze_error_logs.py --log-dir logs/development --report
 
 # Monitor errors in real-time
+
 python scripts/error_monitoring.py --log-dir logs/development --monitor --interval 30
 
 # Analyze error patterns
+
 python scripts/analyze_error_logs.py --log-dir logs/development --patterns
 ```
 
@@ -553,23 +624,28 @@ def analyze_log_file(log_file: Path) -> dict:
         for line in f:
             try:
                 # Parse structured log entry
+
                 entry = json.loads(line)
                 stats["total_entries"] += 1
 
                 # Count by level
+
                 level = entry.get("level", "unknown")
                 stats["by_level"][level] = stats["by_level"].get(level, 0) + 1
 
                 # Count by component
+
                 component = entry.get("component", "unknown")
                 stats["by_component"][component] = stats["by_component"].get(component, 0) + 1
 
                 # Track error patterns
+
                 if level in ["ERROR", "CRITICAL"]:
                     error_msg = entry.get("event", "")
                     stats["error_patterns"][error_msg] = stats["error_patterns"].get(error_msg, 0) + 1
 
                 # Track performance metrics
+
                 if "duration_ms" in entry:
                     stats["performance_metrics"].append({
                         "operation": entry.get("event", ""),
@@ -579,6 +655,7 @@ def analyze_log_file(log_file: Path) -> dict:
 
             except json.JSONDecodeError:
                 # Skip malformed log entries
+
                 continue
 
     return stats
@@ -589,95 +666,123 @@ def analyze_log_file(log_file: Path) -> dict:
 ### Step-by-Step Migration Process
 
 #### 1. Update Import Statements
+
 ```python
 # ❌ OLD - Default Python logging
+
 import logging
 logger = logging.getLogger(__name__)
 
 # ✅ NEW - Enhanced logging
+
 from server.logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 ```
 
 #### 2. Migrate Context Parameters
+
 ```python
 # ❌ OLD - Deprecated context parameter
+
 logger.info("User action", context={"user_id": user_id, "action": action})
 
 # ✅ NEW - Direct key-value pairs
+
 logger.info("User action", user_id=user_id, action=action)
 ```
 
 #### 3. Convert String Formatting to Structured Logging
+
 ```python
 # ❌ OLD - String formatting
+
 logger.info(f"User {user_id} performed action {action} in room {room_id}")
 
 # ✅ NEW - Structured logging
+
 logger.info("User action performed", user_id=user_id, action=action, room_id=room_id)
 ```
 
 #### 4. Add Rich Context to Error Messages
+
 ```python
 # ❌ OLD - Minimal context
+
 logger.error("Database connection failed")
 
 # ✅ NEW - Rich context
+
 logger.error("Database connection failed", database_url=db_url, retry_count=retry_count, error=str(e))
 ```
 
 ### Common Mistakes and How to Fix Them
 
 #### Mistake 1: Forgetting to Update Imports
+
 ```python
 # ❌ MISTAKE: Using old import
+
 import logging
 logger = logging.getLogger(__name__)
 
 # ✅ FIX: Use enhanced logging
+
 from server.logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 ```
 
 #### Mistake 2: Using Deprecated Context Parameter
+
 ```python
 # ❌ MISTAKE: Deprecated context parameter
+
 logger.info("Operation completed", context={"result": result})
 
 # ✅ FIX: Direct key-value pairs
+
 logger.info("Operation completed", result=result)
 ```
 
 #### Mistake 3: String Formatting in Log Messages
+
 ```python
 # ❌ MISTAKE: String formatting
+
 logger.info(f"Processing request {request_id} for user {user_id}")
 
 # ✅ FIX: Structured logging
+
 logger.info("Processing request", request_id=request_id, user_id=user_id)
 ```
 
 #### Mistake 4: Missing Context in Error Logs
+
 ```python
 # ❌ MISTAKE: No context
+
 logger.error("Operation failed")
 
 # ✅ FIX: Rich context
+
 logger.error("Operation failed", operation="user_creation", error=str(e), retry_count=retry_count)
 ```
 
 #### Mistake 5: Wrong Log Levels
+
 ```python
 # ❌ MISTAKE: Wrong log level
+
 logger.error("User logged in successfully")  # Should be info
 
 # ✅ FIX: Correct log level
+
 logger.info("User logged in successfully", user_id=user.id, login_method="password")
 ```
 
 ### Validation Checklist for Code Reviews
 
 When reviewing code, ensure:
+
 - [ ] Uses `from server.logging.enhanced_logging_config import get_logger`
 - [ ] No `import logging` or `logging.getLogger()` statements
 - [ ] No `context={"key": "value"}` parameters
@@ -690,20 +795,25 @@ When reviewing code, ensure:
 ### Troubleshooting Common Issues
 
 #### Issue 1: ImportError when using enhanced logging
+
 **Problem**: `ImportError: cannot import name 'get_logger' from 'server.logging.enhanced_logging_config'`
 **Solution**: Ensure you're using the correct import path and that the enhanced logging system is properly initialized.
 
 #### Issue 2: TypeError with context parameter
+
 **Problem**: `TypeError: get_logger() got an unexpected keyword argument 'context'`
 **Solution**: Remove the `context=` parameter and use direct key-value pairs instead.
 
 #### Issue 3: Logs not appearing in files
+
 **Problem**: Log messages not showing up in log files
 **Solution**: Check that the logging system is properly configured and that log levels are appropriate.
 
 #### Issue 4: Sensitive data appearing in logs
+
 **Problem**: Passwords or tokens visible in log files
-**Solution**: The enhanced logging system automatically sanitizes sensitive data, but ensure you're not using string formatting that bypasses this protection.
+**Solution**: The enhanced logging system automatically sanitizes sensitive data, but ensure you're not using string
+formatting that bypasses this protection.
 
 ## Common Anti-Patterns
 
@@ -711,22 +821,28 @@ When reviewing code, ensure:
 
 ```python
 # Bad: String formatting in logs
+
 logger.info(f"User {user_id} performed action {action}")
 
 # Bad: Logging sensitive data
+
 logger.info("User login", username=username, password=password)
 
 # Bad: Too verbose logging
+
 logger.debug(f"Variable x = {x}, y = {y}, z = {z}, a = {a}, b = {b}")
 
 # Bad: Inconsistent log levels
+
 logger.error("Normal operation completed")  # Should be info
 logger.info("Critical system failure")      # Should be critical
 
 # Bad: No context in logs
+
 logger.error("Error occurred")
 
 # Bad: Logging in tight loops
+
 for i in range(10000):
     logger.debug(f"Processing item {i}")  # Too frequent
 ```
@@ -735,19 +851,24 @@ for i in range(10000):
 
 ```python
 # Good: Structured logging
+
 logger.info("User action performed", user_id=user_id, action=action)
 
 # Good: Sanitized data
+
 logger.info("User login", username=username, success=True)
 
 # Good: Appropriate detail level
+
 logger.debug("Processing batch", batch_size=len(items), batch_id=batch_id)
 
 # Good: Correct log levels
+
 logger.info("Operation completed successfully")
 logger.critical("System failure detected")
 
 # Good: Rich context
+
 logger.error(
     "Operation failed",
     operation="user_creation",
@@ -758,6 +879,7 @@ logger.error(
 )
 
 # Good: Batched logging
+
 logger.info("Batch processing completed", items_processed=len(items), batch_id=batch_id)
 ```
 
@@ -812,15 +934,18 @@ def test_api_request_logging():
         response = client.get("/api/players")
 
         # Check that request was logged
+
         assert mock_logger.call_count >= 2  # Request start and completion
 
         # Check request logging
+
         request_call = mock_logger.call_args_list[0]
         assert "API request started" in request_call[0][0]
         assert request_call[1]["method"] == "GET"
         assert request_call[1]["path"] == "/api/players"
 
         # Check response logging
+
         response_call = mock_logger.call_args_list[1]
         assert "API request completed" in response_call[0][0]
         assert response_call[1]["status_code"] == 200
@@ -833,6 +958,7 @@ def test_api_request_logging():
 
 ```python
 # In logging configuration
+
 LOGGING_CONFIG = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -886,6 +1012,7 @@ def cleanup_old_logs(log_dir: Path, days_to_keep: int = 30):
             log_file.unlink()
 
 # Usage
+
 cleanup_old_logs(Path("logs"), days_to_keep=30)
 ```
 
@@ -900,8 +1027,11 @@ Proper logging is essential for maintaining a robust and observable system. By f
 - Test logging behavior
 - Manage log files properly
 
-You ensure that your system is observable, debuggable, and maintainable. Remember: *As the restricted archives teach us, the proper documentation of system behavior is not merely a technical requirement, but a fundamental aspect of understanding the deeper patterns that govern our digital realm.*
+You ensure that your system is observable, debuggable, and maintainable. Remember: *As the restricted archives teach us,
+the proper documentation of system behavior is not merely a technical requirement, but a fundamental aspect of
+understanding the deeper patterns that govern our digital realm.*
 
 ---
 
-*This guide is maintained by the Department of Occult Studies, Miskatonic University. For questions or clarifications, consult the restricted archives or contact the system administrators.*
+*This guide is maintained by the Department of Occult Studies, Miskatonic University. For questions or clarifications,
+consult the restricted archives or contact the system administrators.*

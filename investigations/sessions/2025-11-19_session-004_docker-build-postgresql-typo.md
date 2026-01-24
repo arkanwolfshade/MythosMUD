@@ -16,6 +16,7 @@ The `make test-comprehensive` command is failing during Docker image build with 
 ## Bug Description
 
 **User-Reported Issue**:
+
 ```
 ERROR: failed to build: failed to solve: process "/bin/sh -c service postgresql start && ...
 su postgres -c \"psql -c '\\\\l'\" | grep -q \"mythos_unitql\" && ...
@@ -35,6 +36,7 @@ Typo in database name verification: `"mythos_unitql"` instead of `"mythos_unit"`
 ### Phase 1: Error Message Analysis
 
 **Error Message Parsing**:
+
 - The error shows a very long RUN command with multiple PostgreSQL operations
 - The critical failure point is: `su postgres -c "psql -c '\\l'" | grep -q "mythos_unitql"`
 - The typo `"mythos_unitql"` would never match the actual database name `"mythos_unit"`
@@ -42,6 +44,7 @@ Typo in database name verification: `"mythos_unitql"` instead of `"mythos_unit"`
 
 **Command Structure Analysis**:
 The error shows the command includes:
+
 1. PostgreSQL service startup
 2. Database creation and schema application
 3. Data loading for both `mythos_unit` and `mythos_e2e` databases
@@ -59,18 +62,23 @@ The error shows the command includes:
 **Finding**: The current Dockerfile contains the **correct** text `"mythos_unit"` on line 116.
 
 **Verification Commands Executed**:
+
 ```powershell
 # Searched for typo in codebase
+
 grep -r "mythos_unitql" .  # Result: No matches found
 
 # Verified current Dockerfile content
+
 Select-String -Path "Dockerfile.github-runner" -Pattern "mythos_unit"
 # Result: All instances show correct "mythos_unit" spelling
+
 ```
 
 ### Phase 3: Docker Image State
 
 **Current Docker Image**:
+
 ```
 mythosmud-gha-runner:latest       0f2ee5043787   5 hours ago    5.24GB
 ```
@@ -80,6 +88,7 @@ mythosmud-gha-runner:latest       0f2ee5043787   5 hours ago    5.24GB
 ### Phase 4: Git History Analysis
 
 **Recent Dockerfile Changes**:
+
 ```
 79b38fb Refactor database initialization and migration scripts for MythosMUD
 837d3c3 Enhance PostgreSQL configuration and diagnostic scripts for MythosMUD
@@ -106,6 +115,7 @@ d0c6e91 Enhance Dockerfile for PostgreSQL integration and initialization
 ### Technical Analysis
 
 **Why the Error Occurs**:
+
 - The grep command `grep -q "mythos_unitql"` searches for a database name that doesn't exist
 - The actual database is named `"mythos_unit"` (without the "ql" suffix)
 - When grep doesn't find a match, it returns exit code 1
@@ -113,6 +123,7 @@ d0c6e91 Enhance Dockerfile for PostgreSQL integration and initialization
 - This causes the Docker RUN command to fail, which fails the entire image build
 
 **Why Current File is Correct**:
+
 - The current `Dockerfile.github-runner` line 116 shows: `grep -q "mythos_unit"`
 - This is the correct database name
 - The file appears to have been fixed, but the Docker image wasn't rebuilt
@@ -124,17 +135,21 @@ d0c6e91 Enhance Dockerfile for PostgreSQL integration and initialization
 ### Severity: **HIGH**
 
 **Impact Scope**:
-- **Build System**: Complete failure of `make test-comprehensive` command
-- **CI/CD Pipeline**: Would fail in GitHub Actions if the same cached image is used
-- **Development Workflow**: Blocks comprehensive testing locally using act
+**Build System**: Complete failure of `make test-comprehensive` command
+
+**CI/CD Pipeline**: Would fail in GitHub Actions if the same cached image is used
+
+**Development Workflow**: Blocks comprehensive testing locally using act
 
 **Affected Systems**:
+
 - Docker image build process
 - PostgreSQL database initialization in Docker
 - Comprehensive test suite execution
 - CI/CD workflow simulation (act)
 
 **User Impact**:
+
 - Developers cannot run comprehensive tests locally
 - May block CI/CD pipeline if same issue exists in GitHub Actions
 - Requires Docker image rebuild to resolve
@@ -146,6 +161,7 @@ d0c6e91 Enhance Dockerfile for PostgreSQL integration and initialization
 ### Error Message Evidence
 
 **Full Error Excerpt**:
+
 ```
 ERROR: failed to build: failed to solve: process "/bin/sh -c service postgresql start &&     sleep 3 &&     pg_isready -U postgres &&     su postgres -c \"psql -c \\\"ALTER USER postgres PASSWORD 'Cthulhu1';\\\"\" &&     su postgres -c \"psql -f /workspace/db/roles/roles.sql\" &&     su postgres -c \"psql -f /workspace/db/databases/databases.sql\" &&     su postgres -c \"psql -d mythos_unit -f /workspace/db/authoritative_schema.sql\" &&     su postgres -c \"psql -d mythos_e2e -f /workspace/db/authoritative_schema.sql\" &&     su postgres -c \"psql -d mythos_unit -f /workspace/data/db/00_world_and_emotes.sql\" &&     su postgres -c \"psql -d mythos_unit -f /workspace/data/db/01_professions.sql\" &&     su postgres -c \"psql -d mythos_unit -f /workspace/data/db/02_item_prototypes.sql\" &&     su postgres -c \"psql -d mythos_unit -f /workspace/data/db/03_npc_definitions.sql\" &&     su postgres -c \"psql -d mythos_e2e -f /workspace/data/db/00_world_and_emotes.sql\" &&     su postgres -c \"psql -d mythos_e2e -f /workspace/data/db/01_professions.sql\" &&     su postgres -c \"psql -d mythos_e2e -f /workspace/data/db/02_item_prototypes.sql\" &&     su postgres -c \"psql -d mythos_e2e -f /workspace/data/db/03_npc_definitions.sql\" &&     su postgres -c \"psql -c '\\\\l'\" | grep -q \"mythos_unitql\" && ...
 ```
@@ -155,6 +171,7 @@ ERROR: failed to build: failed to solve: process "/bin/sh -c service postgresql 
 ### Current File State Evidence
 
 **Dockerfile.github-runner Line 116**:
+
 ```dockerfile
     su postgres -c "psql -c '\\l'" | grep -q "mythos_unit" && \
 ```
@@ -207,17 +224,21 @@ mythosmud-gha-runner    latest    0f2ee5043787   5 hours ago    5.24GB
 **Implementation Approach**:
 
 1. **Option 1: Rebuild Docker Image Without Cache**
+
    ```powershell
    docker build --no-cache -t mythosmud-gha-runner:latest -f Dockerfile.github-runner .
    ```
 
 2. **Option 2: Update Makefile to Force Rebuild**
+
    Modify `Makefile` line 118 to include `--no-cache` flag:
+
    ```makefile
    cd $(PROJECT_ROOT) && docker build --no-cache -t $(ACT_RUNNER_IMAGE) -f $(ACT_RUNNER_DOCKERFILE) .
    ```
 
 3. **Option 3: Add Cache-Busting Layer**
+
    Add a comment or ARG to the Dockerfile that changes when rebuild is needed, forcing cache invalidation.
 
 ### Verification After Fix
@@ -232,6 +253,7 @@ mythosmud-gha-runner    latest    0f2ee5043787   5 hours ago    5.24GB
 **Low Risk**: The fix is straightforward - rebuild the Docker image. The current Dockerfile is correct, so no code changes are needed.
 
 **Potential Issues**:
+
 - Rebuild will take significant time (5+ minutes)
 - May need to update Makefile if cache issues persist
 - Should verify GitHub Actions doesn't have same caching issue
@@ -247,6 +269,7 @@ The root cause is a **Docker layer caching issue**. The current `Dockerfile.gith
 **Confidence Level**: **HIGH**
 
 The evidence clearly shows:
+
 1. Current Dockerfile has correct text
 2. Error message shows typo in executed command
 3. Docker image was built 5 hours ago (potentially before fix)
@@ -258,9 +281,11 @@ The evidence clearly shows:
 
 ## Investigation Metadata
 
-- **Investigation Method**: Systematic code analysis, file examination, Docker state verification
-- **Tools Used**: grep, file reading, Docker commands, git history
-- **Files Examined**: `Dockerfile.github-runner`, `Makefile`, `.github/workflows/ci.yml`
+**Investigation Method**: Systematic code analysis, file examination, Docker state verification
+
+**Tools Used**: grep, file reading, Docker commands, git history
+
+**Files Examined**: `Dockerfile.github-runner`, `Makefile`, `.github/workflows/ci.yml`
 - **Commands Executed**: Docker image listing, file content searches, git log
 - **Time Spent**: ~15 minutes
 - **Investigation Status**: ✅ **COMPLETE** - Root cause identified

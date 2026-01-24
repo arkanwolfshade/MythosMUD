@@ -603,6 +603,7 @@ export default defineConfig({
 
 ```yaml
 # .github/workflows/e2e-runtime-tests.yml
+
 name: E2E Runtime Tests
 
 on:
@@ -652,6 +653,7 @@ jobs:
           ./scripts/start_local.ps1 &
           sleep 10
           # Wait for server to be ready
+
           timeout 60 bash -c 'until curl -f http://localhost:54731/health; do sleep 2; done'
 
       - name: Run Playwright runtime tests
@@ -695,11 +697,13 @@ jobs:
 .PHONY: test-client-runtime test-server-runtime test-runtime
 
 # Run client runtime E2E tests (no server required)
+
 test-client-runtime:
  @echo "Running client runtime E2E tests..."
  cd client && npm run test:e2e:runtime
 
 # Run server runtime E2E tests (starts server automatically)
+
 test-server-runtime:
  @echo "Starting server and running runtime E2E tests..."
  @./scripts/start_local.ps1 &
@@ -710,10 +714,12 @@ test-server-runtime:
  @./scripts/stop_server.ps1
 
 # Run all runtime E2E tests
+
 test-runtime: test-client-runtime
  @echo "All runtime E2E tests complete"
 
 # Update main test target to include runtime tests
+
 test: test-server test-client test-runtime
  @echo "✅ All tests (unit + integration + E2E runtime) complete"
 
@@ -829,9 +835,11 @@ test.describe('[Feature] Integration', () => {
 
 ## Test Naming Conventions
 
-- **File Names**: `[feature]-[aspect].spec.ts` (e.g., `local-channel-errors.spec.ts`)
-- **Test Suite Names**: `[Feature] [Aspect]` (e.g., `Local Channel Error Handling`)
-- **Test Names**: `should [expected behavior]` (e.g., `should reject empty local messages`)
+**File Names**: `[feature]-[aspect].spec.ts` (e.g., `local-channel-errors.spec.ts`)
+
+**Test Suite Names**: `[Feature] [Aspect]` (e.g., `Local Channel Error Handling`)
+
+**Test Names**: `should [expected behavior]` (e.g., `should reject empty local messages`)
 - **Use kebab-case for directories**: `error-handling/`, `accessibility/`
 - **Use PascalCase for test data types**: `TestPlayer`, `TestMessage`
 

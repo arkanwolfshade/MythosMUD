@@ -27,7 +27,7 @@ if TYPE_CHECKING:
 class MessageFilteringHelper:
     """Helper class for message filtering operations."""
 
-    def __init__(self, connection_manager, user_manager=None):
+    def __init__(self, connection_manager: Any, user_manager: Any = None) -> None:
         """
         Initialize message filtering helper.
 
@@ -41,7 +41,8 @@ class MessageFilteringHelper:
     def _get_user_manager(self) -> "UserManager":
         """Return the user manager instance to use for mute lookups."""
         if self.user_manager is not None:
-            return self.user_manager
+            result: UserManager = cast("UserManager", self.user_manager)
+            return result
 
         from ..services.user_manager import user_manager as global_user_manager
 
@@ -124,7 +125,9 @@ class MessageFilteringHelper:
                 error=str(e),
             )
 
-    def extract_chat_event_info(self, chat_event: dict) -> tuple[str | None, dict, str | None, bool]:
+    def extract_chat_event_info(
+        self, chat_event: dict[str, Any]
+    ) -> tuple[str | None, dict[str, Any], str | None, bool]:
         """
         Extract information from chat event.
 
@@ -585,7 +588,7 @@ class MessageFilteringHelper:
         player_id: str,
         sender_id: str,
         channel: str,
-        chat_event_data: dict,
+        chat_event_data: dict[str, Any],
         handler_instance: Any,  # NATSMessageHandler instance for patched methods
     ) -> bool:
         """
@@ -621,7 +624,8 @@ class MessageFilteringHelper:
                 sender_id=sender_id,
                 is_muted=is_muted,
             )
-            return is_muted
+            result: bool = cast(bool, is_muted)
+            return result
 
         logger.info(
             "=== MUTE FILTERING: Calling is_player_muted_by_receiver_with_user_manager ===",
@@ -656,7 +660,7 @@ class MessageFilteringHelper:
         channel: str,
         message_id: str | None,
         user_manager: "UserManager",
-        chat_event_data: dict,
+        chat_event_data: dict[str, Any],
         handler_instance: Any,  # NATSMessageHandler instance for patched methods
     ) -> list[str]:
         """

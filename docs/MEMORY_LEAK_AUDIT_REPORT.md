@@ -2,11 +2,14 @@
 
 **Date**: 2026-01-15
 **Auditor**: AI Agent
-**Scope**: Comprehensive memory leak audit focusing on resource lifecycle management, event subscriptions, caches, connections, and async task tracking
+**Scope**: Comprehensive memory leak audit focusing on resource lifecycle management, event subscriptions, caches,
+connections, and async task tracking
 
 ## Executive Summary
 
-This report documents the findings from a systematic audit of the MythosMUD codebase for potential memory leaks and unbounded memory growth patterns. The audit focuses on identifying resources that accumulate over time without proper cleanup, even when system load remains constant.
+This report documents the findings from a systematic audit of the MythosMUD codebase for potential memory leaks and
+unbounded memory growth patterns. The audit focuses on identifying resources that accumulate over time without proper
+cleanup, even when system load remains constant.
 
 ## Audit Methodology
 
@@ -37,11 +40,15 @@ The audit follows a systematic approach examining:
 
 **Findings**:
 
-- ✅ All database connections use context managers (`with` statements)
-- ✅ `PostgresConnectionPool.get_connection()` properly returns connections to pool in `finally` block
-- ✅ `get_async_session()` properly closes sessions in exception handling
-- ✅ NPC database sessions properly closed in `finally` blocks
-- ✅ Connection pool size is bounded by configuration (1-10 connections)
+✅ All database connections use context managers (`with` statements)
+
+✅ `PostgresConnectionPool.get_connection()` properly returns connections to pool in `finally` block
+
+✅ `get_async_session()` properly closes sessions in exception handling
+
+✅ NPC database sessions properly closed in `finally` blocks
+
+✅ Connection pool size is bounded by configuration (1-10 connections)
 
 **Risk**: **None** - Proper resource management with context managers
 
@@ -60,25 +67,36 @@ The audit follows a systematic approach examining:
 
 **Finding 1.2.1**: Unbounded `_closed_websockets` set growth
 
-- **Location**: `server/realtime/connection_manager.py:236`
-- **Issue**: The `_closed_websockets: set[int]` set is used to track closed WebSocket IDs to prevent duplicate closes, but entries are never removed from this set. Over time, this set will grow unbounded.
-- **Code Reference**:
+**Location**: `server/realtime/connection_manager.py:236`
+
+**Issue**: The `_closed_websockets: set[int]` set is used to track closed WebSocket IDs to prevent duplicate closes,
+  but entries are never removed from this set. Over time, this set will grow unbounded.
+
+**Code Reference**:
 
   ```python
   # Track safely closed websocket objects to avoid duplicate closes
+
   self._closed_websockets: set[int] = set()
   ```
 
-- **Impact**: Each closed WebSocket adds an integer ID to this set. With thousands of reconnections over time, this set could grow to significant size.
-- **Recommendation**: Implement periodic cleanup of old entries, or use a bounded structure (e.g., LRU cache) to limit growth.
-- **Risk**: **Medium** - Unbounded growth over long-running servers
+**Impact**: Each closed WebSocket adds an integer ID to this set. With thousands of reconnections over time, this set
+could grow to significant size.
+
+**Recommendation**: Implement periodic cleanup of old entries, or use a bounded structure (e.g., LRU cache) to limit
+  growth.
+
+**Risk**: **Medium** - Unbounded growth over long-running servers
 
 **Other Findings**:
 
-- ✅ WebSocket connections properly removed from `active_websockets` dict on disconnect
-- ✅ Connection metadata properly cleaned up on disconnect
-- ✅ Player websocket mappings properly cleaned up
-- ✅ Dead connection cleanup implemented in `_cleanup_dead_connections()`
+✅ WebSocket connections properly removed from `active_websockets` dict on disconnect
+
+✅ Connection metadata properly cleaned up on disconnect
+
+✅ Player websocket mappings properly cleaned up
+
+✅ Dead connection cleanup implemented in `_cleanup_dead_connections()`
 
 #### 1.3 NATS Connection and Subscription Leaks
 
@@ -91,9 +109,12 @@ The audit follows a systematic approach examining:
 
 **Findings**:
 
-- ✅ NATS service has `disconnect()` method that cancels background tasks
-- ✅ Background tasks properly cancelled on service shutdown
-- ✅ Subscriptions tracked in `self.subscriptions` dict
+✅ NATS service has `disconnect()` method that cancels background tasks
+
+✅ Background tasks properly cancelled on service shutdown
+
+✅ Subscriptions tracked in `self.subscriptions` dict
+
 - ⚠️ **Note**: Need to verify all services call `unsubscribe()` on shutdown in actual implementation
 
 **Risk**: **Low** - Proper cleanup exists, but depends on services calling it
@@ -115,26 +136,34 @@ The audit follows a systematic approach examining:
 
 **Finding 2.1.1**: Event subscribers not unsubscribed on service shutdown
 
-- **Location**: `server/events/event_bus.py:53`
-- **Issue**: Services subscribe to events via `EventBus.subscribe()`, but there's no systematic mechanism to ensure all subscribers are unsubscribed when services shut down. The `_subscribers` dict could accumulate subscribers over time if services don't explicitly unsubscribe.
-- **Code Reference**:
+**Location**: `server/events/event_bus.py:53`
+
+**Issue**: Services subscribe to events via `EventBus.subscribe()`, but there's no systematic mechanism to ensure all
+  subscribers are unsubscribed when services shut down. The `_subscribers` dict could accumulate subscribers over time
+  if services don't explicitly unsubscribe.
+
+**Code Reference**:
 
   ```python
   self._subscribers: dict[type[BaseEvent], list[Callable[[BaseEvent], Any]]] = defaultdict(list)
   ```
 
-- **Impact**: Subscribers holding references to services or large objects could prevent garbage collection.
-- **Recommendation**:
-  - Implement automatic cleanup on service shutdown
-  - Use weak references for subscribers where appropriate
-  - Add monitoring to track subscriber count growth
+**Impact**: Subscribers holding references to services or large objects could prevent garbage collection.
+
+**Recommendation**:
+
+- Implement automatic cleanup on service shutdown
+- Use weak references for subscribers where appropriate
+- Add monitoring to track subscriber count growth
 - **Risk**: **Medium** - Depends on service lifecycle management
 
 **Other Findings**:
 
-- ✅ Async subscriber tasks properly tracked in `_active_tasks` set
-- ✅ Task completion callbacks properly remove tasks from tracking
-- ✅ Event queue uses bounded operations
+✅ Async subscriber tasks properly tracked in `_active_tasks` set
+
+✅ Task completion callbacks properly remove tasks from tracking
+
+✅ Event queue uses bounded operations
 
 #### 2.2 Client-Side Event Handler Leaks
 
@@ -147,9 +176,11 @@ The audit follows a systematic approach examining:
 
 **Findings**:
 
-- ✅ React hooks have proper cleanup functions in `useEffect`
-- ✅ ResourceManager properly cleans up timers, intervals, and WebSockets on unmount
-- ✅ WebSocket connections properly closed in cleanup effects
+✅ React hooks have proper cleanup functions in `useEffect`
+
+✅ ResourceManager properly cleans up timers, intervals, and WebSockets on unmount
+
+✅ WebSocket connections properly closed in cleanup effects
 
 **Risk**: **None** - Proper React cleanup patterns
 
@@ -168,10 +199,13 @@ The audit follows a systematic approach examining:
 
 **Findings**:
 
-- ✅ Tasks properly tracked in `_active_tasks` dict
-- ✅ Completion callbacks automatically remove tasks from tracking
-- ✅ Task metadata cleaned up in completion callbacks
-- ✅ TaskRegistry properly removes completed tasks
+✅ Tasks properly tracked in `_active_tasks` dict
+
+✅ Completion callbacks automatically remove tasks from tracking
+
+✅ Task metadata cleaned up in completion callbacks
+
+✅ TaskRegistry properly removes completed tasks
 
 **Risk**: **None** - Proper task lifecycle management
 
@@ -186,9 +220,11 @@ The audit follows a systematic approach examining:
 
 **Findings**:
 
-- ✅ Background tasks cancelled in `_cancel_background_tasks()` methods
-- ✅ Health check tasks properly cancelled on service shutdown
-- ✅ Task tracking uses done callbacks for automatic cleanup
+✅ Background tasks cancelled in `_cancel_background_tasks()` methods
+
+✅ Health check tasks properly cancelled on service shutdown
+
+✅ Task tracking uses done callbacks for automatic cleanup
 
 **Risk**: **None** - Proper task cancellation and cleanup
 
@@ -209,32 +245,44 @@ The audit follows a systematic approach examining:
 
 **Finding 4.1.1**: Expired cache entries not proactively cleaned
 
-- **Location**: `server/caching/lru_cache.py:81-107`
-- **Issue**: The LRU cache checks TTL expiration on `get()` operations, but not during `put()` operations. Expired entries remain in the cache taking up memory until they're accessed, rather than being cleaned up proactively when space is needed.
-- **Code Reference**:
+**Location**: `server/caching/lru_cache.py:81-107`
+
+**Issue**: The LRU cache checks TTL expiration on `get()` operations, but not during `put()` operations. Expired
+  entries remain in the cache taking up memory until they're accessed, rather than being cleaned up proactively when
+  space is needed.
+
+**Code Reference**:
 
   ```python
   def put(self, key: K, value: V) -> None:
       # ... existing code ...
       # If cache is full, remove least recently used item
+
       if len(self._cache) >= self.max_size:
           oldest_key, _ = self._cache.popitem(last=False)
           # Does not check if oldest_key is expired before evicting
+
   ```
 
-- **Impact**: Caches with TTL enabled could accumulate expired entries that waste memory until accessed. This is particularly relevant for the player data cache (5-minute TTL).
-- **Recommendation**:
-  - Before evicting LRU item in `put()`, check if cache has expired entries and remove those first
-  - Alternatively, implement a background task to periodically clean expired entries
-  - Or use lazy eviction that checks expiration when cache is full
+**Impact**: Caches with TTL enabled could accumulate expired entries that waste memory until accessed. This is
+particularly relevant for the player data cache (5-minute TTL).
+
+**Recommendation**:
+
+- Before evicting LRU item in `put()`, check if cache has expired entries and remove those first
+- Alternatively, implement a background task to periodically clean expired entries
+- Or use lazy eviction that checks expiration when cache is full
 - **Risk**: **Medium** - Memory waste from expired entries, especially for caches with short TTL
 
 **Other Findings**:
 
-- ✅ Cache max_size properly enforced
-- ✅ TTL expiration checked on `get()` operations
-- ✅ LRU eviction works correctly
-- ✅ Cache statistics tracking implemented
+✅ Cache max_size properly enforced
+
+✅ TTL expiration checked on `get()` operations
+
+✅ LRU eviction works correctly
+
+✅ Cache statistics tracking implemented
 
 #### 4.2 Dictionary and Set Growth
 
@@ -248,9 +296,11 @@ The audit follows a systematic approach examining:
 
 **Findings**:
 
-- ✅ Connection dictionaries properly cleaned up on disconnect
-- ✅ Message queues have size limits enforced
-- ✅ Dead letter queue processing exists (needs verification of periodic processing)
+✅ Connection dictionaries properly cleaned up on disconnect
+
+✅ Message queues have size limits enforced
+
+✅ Dead letter queue processing exists (needs verification of periodic processing)
 
 **Risk**: **Low** - Proper cleanup exists, but DLQ processing frequency should be verified
 
@@ -269,10 +319,13 @@ The audit follows a systematic approach examining:
 
 **Findings**:
 
-- ✅ All useEffect hooks have cleanup functions
-- ✅ ResourceManager properly tracks and cleans up resources
-- ✅ WebSocket connections closed on unmount
-- ✅ Timers and intervals properly cleared
+✅ All useEffect hooks have cleanup functions
+
+✅ ResourceManager properly tracks and cleans up resources
+
+✅ WebSocket connections closed on unmount
+
+✅ Timers and intervals properly cleared
 
 **Risk**: **None** - Proper React cleanup patterns
 
@@ -306,10 +359,13 @@ The audit follows a systematic approach examining:
 
 **Findings**:
 
-- ✅ All file operations use `with` statements (line 120)
-- ✅ File handles automatically closed by context managers
-- ✅ Writer thread properly joined on shutdown (line 136)
-- ✅ Log queue properly drained on shutdown
+✅ All file operations use `with` statements (line 120)
+
+✅ File handles automatically closed by context managers
+
+✅ Writer thread properly joined on shutdown (line 136)
+
+✅ Log queue properly drained on shutdown
 
 **Risk**: **None** - Proper file handle management with context managers
 
@@ -334,12 +390,16 @@ The audit follows a systematic approach examining:
 
 ## Risk Assessment Summary
 
-- **High Risk**: 0 findings
-- **Medium Risk**: 3 findings
+**High Risk**: 0 findings
+
+**Medium Risk**: 3 findings
+
   1. `_closed_websockets` set unbounded growth (1.2.1)
   2. Event subscribers not systematically unsubscribed (2.1.1)
   3. Expired cache entries not proactively cleaned (4.1.1)
-- **Low Risk**: 2 findings
+
+**Low Risk**: 2 findings
+
   1. NATS subscriptions cleanup depends on service lifecycle (1.3)
   2. Zustand store cleanup needs verification (5.2)
 
@@ -352,17 +412,20 @@ None - No high-risk memory leaks identified.
 ### Medium Priority Fixes
 
 1. **Fix `_closed_websockets` unbounded growth** (Finding 1.2.1)
+
    - Implement periodic cleanup (e.g., every 1000 connections, remove entries older than 1 hour)
    - Or use a bounded LRU structure instead of a set
    - File: `server/realtime/connection_manager.py:236`
 
 2. **Implement systematic event subscriber cleanup** (Finding 2.1.1)
+
    - Add cleanup mechanism in service shutdown lifecycle
    - Use weak references for subscribers where appropriate
    - Add monitoring to track subscriber count over time
    - File: `server/events/event_bus.py:53`
 
 3. **Proactively clean expired cache entries** (Finding 4.1.1)
+
    - Check for expired entries before evicting LRU item in `put()` method
    - Implement background task for periodic expiration cleanup
    - Or implement lazy expiration check when cache reaches 90% capacity
@@ -371,9 +434,13 @@ None - No high-risk memory leaks identified.
 ### Low Priority Improvements
 
 1. **Verify NATS subscription cleanup** - Ensure all services properly unsubscribe on shutdown
+
 2. **Verify Zustand store cleanup** - Check component unmount patterns in client code
+
 3. **Consider weak references** - Review circular reference patterns for optimization opportunities
+
 4. **Add monitoring** - Implement metrics for tracking:
+
    - `_closed_websockets` set size
    - EventBus subscriber counts per event type
    - Cache sizes and expiration rates
@@ -383,45 +450,62 @@ None - No high-risk memory leaks identified.
 
 ### ✅ Good Patterns (No Leaks)
 
-1. **Context Manager Usage**: Database connections, file handles, and session management consistently use Python context managers (`with` statements), ensuring proper cleanup even on exceptions.
+1. **Context Manager Usage**: Database connections, file handles, and session management consistently use Python context
 
-2. **Task Lifecycle Tracking**: Async tasks are properly tracked with completion callbacks that automatically remove them from tracking structures.
+   managers (`with` statements), ensuring proper cleanup even on exceptions.
 
-3. **Resource Cleanup Hooks**: React hooks have proper cleanup functions, and ResourceManager provides centralized resource tracking.
+2. **Task Lifecycle Tracking**: Async tasks are properly tracked with completion callbacks that automatically remove
+
+   them from tracking structures.
+
+3. **Resource Cleanup Hooks**: React hooks have proper cleanup functions, and ResourceManager provides centralized
+
+   resource tracking.
 
 4. **Connection Pooling**: Database connections use bounded pools with proper connection return mechanisms.
 
 ### ⚠️ Patterns to Watch
 
-1. **Tracking Sets Without Cleanup**: The `_closed_websockets` set pattern (tracking closed connections) could be applied elsewhere - verify no other unbounded tracking sets exist.
+1. **Tracking Sets Without Cleanup**: The `_closed_websockets` set pattern (tracking closed connections) could be
 
-2. **Event Subscriptions**: Event subscription patterns should always include corresponding unsubscribe logic in service shutdown.
+   applied elsewhere - verify no other unbounded tracking sets exist.
 
-3. **TTL Cache Expiration**: Caches with TTL should have proactive expiration cleanup, not just lazy expiration on access.
+2. **Event Subscriptions**: Event subscription patterns should always include corresponding unsubscribe logic in service
+
+   shutdown.
+
+3. **TTL Cache Expiration**: Caches with TTL should have proactive expiration cleanup, not just lazy expiration on
+
+   access.
 
 ## Monitoring Recommendations
 
 Add metrics to track:
 
 1. **Connection Management**:
+
    - `connection_manager._closed_websockets` set size
    - `active_websockets` dict size vs active player count
    - `connection_metadata` dict size
 
 2. **Event System**:
+
    - EventBus subscriber count per event type
    - `_active_tasks` set size in EventBus
 
 3. **Caches**:
+
    - Cache sizes and hit rates
    - Expired entry counts (for TTL caches)
 
 4. **Task Management**:
+
    - TaskRegistry active task count
    - Background task counts by service
 
 5. **Client-Side**:
-   - ResourceManager resource counts (timers, intervals, WebSockets)
+
+   ResourceManager resource counts (timers, intervals, WebSockets)
 
 ## Audit Completion Summary
 
@@ -431,12 +515,19 @@ Add metrics to track:
 
 **Categories Reviewed**:
 
-- ✅ Connection Management (Database, WebSocket, NATS)
-- ✅ Event System (EventBus, client-side handlers)
-- ✅ Async Task Management (TaskRegistry, background tasks)
-- ✅ Cache Management (LRU caches, data structures)
-- ✅ Client-Side Resource Management (React hooks, stores)
+✅ Connection Management (Database, WebSocket, NATS)
+
+✅ Event System (EventBus, client-side handlers)
+
+✅ Async Task Management (TaskRegistry, background tasks)
+
+✅ Cache Management (LRU caches, data structures)
+
+✅ Client-Side Resource Management (React hooks, stores)
+
 - ✅ File Handle Management
 - ✅ Circular References (static analysis)
 
-**Overall Assessment**: The codebase demonstrates good resource management practices overall. The identified issues are moderate and can be addressed with targeted fixes. No critical memory leaks were found that would cause immediate production issues.
+**Overall Assessment**: The codebase demonstrates good resource management practices overall. The identified issues are
+moderate and can be addressed with targeted fixes. No critical memory leaks were found that would cause immediate
+production issues.

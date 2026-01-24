@@ -5,6 +5,7 @@ Tests the PlayerPositionService for coordinating player posture transitions.
 """
 
 import uuid
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -277,7 +278,7 @@ async def test_change_position_updates_connection_manager():
     player.get_stats = MagicMock(return_value={"position": "standing"})
     player.set_stats = MagicMock()
 
-    online_players = {}
+    online_players: dict[str, dict[str, Any]] = {}
     connection_manager = MagicMock()
     connection_manager.online_players = online_players
     connection_manager.get_online_player_by_display_name = MagicMock(return_value=None)
@@ -308,7 +309,7 @@ async def test_change_position_updates_existing_connection_info():
     player.set_stats = MagicMock()
 
     player_key = str(player.player_id)
-    online_players = {
+    online_players: dict[str, dict[str, Any]] = {
         player_key: {
             "player_id": player_key,
             "player_name": "TestPlayer",
@@ -390,7 +391,7 @@ def test_update_connection_manager_updates_by_display_name():
     player.player_id = uuid.uuid4()
     player.name = "TestPlayer"
 
-    player_info = {"position": "standing"}
+    player_info: dict[str, Any] = {"position": "standing"}
     connection_manager = MagicMock()
     connection_manager.online_players = {}
     connection_manager.get_online_player_by_display_name = MagicMock(return_value=player_info)

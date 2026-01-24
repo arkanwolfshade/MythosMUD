@@ -7,6 +7,7 @@ and mastery tracking using SQLAlchemy ORM with PostgreSQL.
 
 import uuid
 from datetime import UTC, datetime
+from typing import cast
 
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
@@ -27,7 +28,7 @@ class PlayerSpellRepository:
     Handles player spell learning, mastery tracking, and queries.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the player spell repository."""
         self._logger = get_logger(__name__)
 
@@ -203,7 +204,8 @@ class PlayerSpellRepository:
                 self._logger.debug(
                     "Updated spell mastery", player_id=str(player_id), spell_id=spell_id, mastery=new_mastery
                 )
-                return player_spell
+                result_spell: PlayerSpell | None = cast(PlayerSpell | None, player_spell)
+                return result_spell
         except (SQLAlchemyError, OSError) as e:
             log_and_raise(
                 DatabaseError,
@@ -250,7 +252,8 @@ class PlayerSpellRepository:
                 await session.commit()
                 await session.refresh(player_spell)
                 self._logger.debug("Recorded spell cast", player_id=str(player_id), spell_id=spell_id)
-                return player_spell
+                result_spell: PlayerSpell | None = cast(PlayerSpell | None, player_spell)
+                return result_spell
         except (SQLAlchemyError, OSError) as e:
             log_and_raise(
                 DatabaseError,

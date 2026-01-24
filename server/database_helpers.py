@@ -54,7 +54,7 @@ def get_engine() -> AsyncEngine:
     return DatabaseManager.get_instance().get_engine()
 
 
-def get_session_maker() -> async_sessionmaker:
+def get_session_maker() -> async_sessionmaker[AsyncSession]:
     """
     Get the async session maker, initializing if necessary.
 
@@ -244,7 +244,13 @@ def get_database_path() -> Path | None:
     from .database import _get_database_url_state
 
     # Check dict-based storage first, then fall back to direct attribute for backward compatibility
-    test_url = _get_database_url_state() or getattr(db_module, "_database_url", None) or get_test_database_url()
+    # Handle empty string explicitly (empty string is falsy but we want to treat it as None)
+    url_state = _get_database_url_state()
+    # Empty string should be treated as None for validation.
+    # Must use == "" (not "not url_state"): None means "not set" and we fall back to other sources.
+    if url_state == "":  # pylint: disable=use-implicit-booleaness-not-comparison-to-string
+        raise ValidationError("Database URL is None")
+    test_url = url_state or getattr(db_module, "_database_url", None) or get_test_database_url()
     if test_url is not None:
         url = test_url
         if not url:

@@ -2,15 +2,16 @@
 
 ## Tasks
 
-- [x] 1. Implement NATSSubjectManager Core System
-  - [x] 1.1 Write comprehensive unit tests for NATSSubjectManager class
-  - [x] 1.2 Create `server/services/nats_subject_manager.py` with pattern registry infrastructure
-  - [x] 1.3 Implement `build_subject()` method with parameter validation
-  - [x] 1.4 Implement `validate_subject()` method with pattern matching
-  - [x] 1.5 Implement `register_pattern()` and `get_pattern_info()` methods
-  - [x] 1.6 Add predefined subject patterns (chat_say_room, chat_local_subzone, etc.)
-  - [x] 1.7 Implement comprehensive error handling for validation failures
-  - [x] 1.8 Verify all tests pass with 90%+ coverage (achieved 96%)
+[x] 1. Implement NATSSubjectManager Core System
+
+- [x] 1.1 Write comprehensive unit tests for NATSSubjectManager class
+- [x] 1.2 Create `server/services/nats_subject_manager.py` with pattern registry infrastructure
+- [x] 1.3 Implement `build_subject()` method with parameter validation
+- [x] 1.4 Implement `validate_subject()` method with pattern matching
+- [x] 1.5 Implement `register_pattern()` and `get_pattern_info()` methods
+- [x] 1.6 Add predefined subject patterns (chat_say_room, chat_local_subzone, etc.)
+- [x] 1.7 Implement comprehensive error handling for validation failures
+- [x] 1.8 Verify all tests pass with 90%+ coverage (achieved 96%)
 
 - [x] 2. Integrate Subject Manager with Chat Services
   - [x] 2.1 Write integration tests for ChatService migration
@@ -53,6 +54,7 @@
   - [x] 5.8 Verify all tests pass, performance targets met, and documentation complete
 
 - [x] 6. Migrate Remaining Deprecated Subject Patterns
+
   - [x] 6.1 Migrate EventPublisher to use subject manager (HIGH PRIORITY)
     - [x] 6.1.1 Update `publish_player_entered_event()` to use `event_player_entered` pattern
     - [x] 6.1.2 Update `publish_player_left_event()` to use `event_player_left` pattern
@@ -83,7 +85,8 @@
 
 ## Test Fixes (Completed)
 
-- [x] test-fix-1: Fix player muting issues in test setup
+[x] test-fix-1: Fix player muting issues in test setup
+
 - [x] test-fix-2: Fix missing extract_subzone_from_room_id import
 - [x] test-fix-3: Fix missing send_pose_message method
 - [x] test-fix-4: Fix whisper test target ID mismatch

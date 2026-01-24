@@ -9,7 +9,9 @@
 
 ## Executive Summary
 
-Scenario 15 (Whisper Rate Limiting) cannot be effectively tested via Playwright MCP due to **inherent timing limitations** in the interactive testing environment. The rate limiter **is working correctly**, but the test methodology cannot trigger it.
+Scenario 15 (Whisper Rate Limiting) cannot be effectively tested via Playwright MCP due to **inherent timing
+limitations** in the interactive testing environment. The rate limiter **is working correctly**, but the test
+methodology cannot trigger it.
 
 ---
 
@@ -19,12 +21,14 @@ Scenario 15 (Whisper Rate Limiting) cannot be effectively tested via Playwright 
 
 The whisper system enforces:
 
-- **3 messages per 60-second sliding window** (per recipient)
+**3 messages per 60-second sliding window** (per recipient)
+
 - Window resets as old messages age out
 
 ### Test Requirement
 
-To trigger the rate limit, messages must be sent **within 5 seconds of each other** to ensure all 3 messages remain within the 60-second window when the 4th message is sent.
+To trigger the rate limit, messages must be sent **within 5 seconds of each other** to ensure all 3 messages remain
+within the 60-second window when the 4th message is sent.
 
 ### Actual Test Execution
 
@@ -116,15 +120,18 @@ def test_whisper_rate_limit_per_recipient():
     recipient_id = "recipient-1"
 
     # Send 3 messages in quick succession
+
     now = datetime.utcnow()
     assert limiter.check_rate_limit(sender_id, recipient_id, now) == True
     assert limiter.check_rate_limit(sender_id, recipient_id, now + timedelta(seconds=1)) == True
     assert limiter.check_rate_limit(sender_id, recipient_id, now + timedelta(seconds=2)) == True
 
     # 4th message should be blocked
+
     assert limiter.check_rate_limit(sender_id, recipient_id, now + timedelta(seconds=3)) == False
 
     # After 60 seconds, first message expires from window
+
     assert limiter.check_rate_limit(sender_id, recipient_id, now + timedelta(seconds=61)) == True
 
 def test_whisper_rate_limit_sliding_window():
@@ -137,14 +144,17 @@ def test_whisper_rate_limit_sliding_window():
     now = datetime.utcnow()
 
     # Send 3 messages
+
     limiter.check_rate_limit(sender_id, recipient_id, now)
     limiter.check_rate_limit(sender_id, recipient_id, now + timedelta(seconds=10))
     limiter.check_rate_limit(sender_id, recipient_id, now + timedelta(seconds=20))
 
     # 4th message blocked at 30s
+
     assert limiter.check_rate_limit(sender_id, recipient_id, now + timedelta(seconds=30)) == False
 
     # At 61s, first message (at 0s) expires
+
     assert limiter.check_rate_limit(sender_id, recipient_id, now + timedelta(seconds=61)) == True
 
 def test_whisper_rate_limit_per_recipient_isolation():
@@ -158,14 +168,17 @@ def test_whisper_rate_limit_per_recipient_isolation():
     now = datetime.utcnow()
 
     # Send 3 messages to recipient 1
+
     limiter.check_rate_limit(sender_id, recipient_1, now)
     limiter.check_rate_limit(sender_id, recipient_1, now + timedelta(seconds=1))
     limiter.check_rate_limit(sender_id, recipient_1, now + timedelta(seconds=2))
 
     # 4th message to recipient 1 blocked
+
     assert limiter.check_rate_limit(sender_id, recipient_1, now + timedelta(seconds=3)) == False
 
     # But messages to recipient 2 are allowed
+
     assert limiter.check_rate_limit(sender_id, recipient_2, now + timedelta(seconds=3)) == True
 ```
 
@@ -186,6 +199,7 @@ async def test_whisper_rate_limiting():
     base_url = "http://localhost:54731"
 
     # Login as sender
+
     response = requests.post(f"{base_url}/auth/login", json={
         "username": "ArkanWolfshade",
         "password": "Cthulhu1"
@@ -194,6 +208,7 @@ async def test_whisper_rate_limiting():
     headers = {"Authorization": f"Bearer {token}"}
 
     # Send 3 messages rapidly
+
     for i in range(3):
         response = requests.post(f"{base_url}/chat/whisper", json={
             "recipient": "Ithaqua",
@@ -203,6 +218,7 @@ async def test_whisper_rate_limiting():
         await asyncio.sleep(0.5)  # 500ms between messages
 
     # 4th message should be rate limited
+
     response = requests.post(f"{base_url}/chat/whisper", json={
         "recipient": "Ithaqua",
         "message": "Rate limit test 4"
@@ -225,10 +241,13 @@ Update scenario documentation to note:
 
 ### Test Status: ⚠️ LIMITATION - NOT A FAILURE
 
-- **Rate Limiter:** ✅ Working correctly
-- **Test Methodology:** ❌ Inadequate for this specific scenario
-- **Action Required:** Implement unit tests for rate limiting
-- **Whisper System:** ✅ Still fully functional
+**Rate Limiter:** ✅ Working correctly
+
+**Test Methodology:** ❌ Inadequate for this specific scenario
+
+**Action Required:** Implement unit tests for rate limiting
+
+**Whisper System:** ✅ Still fully functional
 
 ### Next Steps
 
@@ -240,9 +259,11 @@ Update scenario documentation to note:
 
 ## References
 
-- **Scenario File:** `e2e-tests/scenarios/scenario-15-whisper-rate-limiting.md`
-- **Rate Limiter Implementation:** `server/game/chat_service.py`
-- **Related Scenarios:** Scenario 13 (Basic Whisper), Scenario 14 (Whisper Errors)
+**Scenario File:** `e2e-tests/scenarios/scenario-15-whisper-rate-limiting.md`
+
+**Rate Limiter Implementation:** `server/game/chat_service.py`
+
+**Related Scenarios:** Scenario 13 (Basic Whisper), Scenario 14 (Whisper Errors)
 
 ---
 

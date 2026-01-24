@@ -1,6 +1,7 @@
 # Test Value Distribution Chart
 
-> *"As mapped in the Dimensional Cartography of Test Quality, we visualize the distribution of value across the test suite to identify regions of concentrated protection and areas of ceremonial inefficiency."*
+> *"As mapped in the Dimensional Cartography of Test Quality, we visualize the distribution of value across the test
+suite to identify regions of concentrated protection and areas of ceremonial inefficiency."*
 
 ---
 
@@ -122,8 +123,10 @@ TOTAL                 │ 30 min  │   100%     │
 
 ### Optimization Targets
 
-**Highest Impact (Remove):**
-- Infrastructure Tests: 3 min → 1 min (save 2 min, remove 300 tests)
+### Highest Impact (Remove)
+
+Infrastructure Tests: 3 min → 1 min (save 2 min, remove 300 tests)
+
 - Coverage Tests: 1 min → 0.4 min (save 0.6 min, remove 60 tests)
 - Model Tests: Part of "Others": 0.5 min → 0.2 min (save 0.3 min, remove 50 tests)
 
@@ -151,11 +154,15 @@ Impact        │              │              │ E2E          │ Regression 
               └──────────────┴──────────────┴──────────────┴───────────────┘
 ```
 
-**Target Quadrants:**
-- **Top-Right (Critical):** Maintain 100% of these tests
-- **Top-Center/Right (High):** Maintain 90-95% of these tests
-- **Bottom-Left (Low):** Prune 80-90% of these tests
-- **Bottom-Center (Medium-Low):** Prune 50-60% of these tests
+### Target Quadrants
+
+**Top-Right (Critical):** Maintain 100% of these tests
+
+**Top-Center/Right (High):** Maintain 90-95% of these tests
+
+**Bottom-Left (Low):** Prune 80-90% of these tests
+
+**Bottom-Center (Medium-Low):** Prune 50-60% of these tests
 
 ---
 
@@ -194,7 +201,7 @@ Verification         │ 0.36 sec      │ ★★☆☆☆     │ PRUNE 40%
 Performance          │ 0.38 sec      │ ★★☆☆☆     │ REVIEW
 ```
 
-**Efficiency = Value per Second of Execution**
+### Efficiency = Value per Second of Execution
 
 ---
 
@@ -389,11 +396,16 @@ BEFORE                          AFTER
 750 low-value tests            550 low-value tests (-27%)
 ```
 
-**Net Benefit:**
-- ✅ 6% fewer tests
-- ✅ 13% faster execution
-- ✅ 3% better critical coverage
-- ✅ 3% higher quality score
+### Net Benefit
+
+✅ 6% fewer tests
+
+✅ 13% faster execution
+
+✅ 3% better critical coverage
+
+✅ 3% higher quality score
+
 - ✅ 27% reduction in low-value tests
 - ✅ Improved maintainability
 - ✅ More meaningful test failures
@@ -404,26 +416,34 @@ BEFORE                          AFTER
 
 ### Month 1: Pruning Phase
 
-**Week 1: Quick Wins**
-- Remove placeholder tests (40 tests)
+### Week 1: Quick Wins
+
+Remove placeholder tests (40 tests)
+
 - Remove trivial assertions (15 tests)
 - Remove duplicates (5 tests)
 - **Total:** -60 tests, -0.9 min
 
-**Week 2: Infrastructure Reduction**
-- Reduce DI tests (25 tests)
+### Week 2: Infrastructure Reduction
+
+Reduce DI tests (25 tests)
+
 - Consolidate DI files (35 tests)
 - Reduce app factory tests (5 tests)
 - **Total:** -65 tests, -1.2 min
 
-**Week 3: Coverage Test Optimization**
-- Reduce command coverage tests (20 tests)
+### Week 3: Coverage Test Optimization
+
+Reduce command coverage tests (20 tests)
+
 - Reduce logging coverage tests (15 tests)
 - Merge coverage tests (45 tests)
 - **Total:** -80 tests, -1.5 min
 
-**Week 4: Verification and Validation**
-- Run full test suite
+### Week 4: Verification and Validation
+
+Run full test suite
+
 - Verify coverage maintained
 - Document changes
 - **Total:** 0 tests, verification only
@@ -434,23 +454,31 @@ BEFORE                          AFTER
 
 ### Month 2: Consolidation + Gap Filling
 
-**Week 5: Parametrization (Part 1)**
-- Parametrize command validation (70 consolidated)
+### Week 5: Parametrization (Part 1)
+
+Parametrize command validation (70 consolidated)
+
 - Parametrize error responses (55 consolidated)
 - **Total:** -125 test count, SAME coverage
 
-**Week 6: Parametrization (Part 2)**
-- Parametrize permission tests (35 consolidated)
+### Week 6: Parametrization (Part 2)
+
+Parametrize permission tests (35 consolidated)
+
 - Review and consolidate integration tests (10 consolidated)
 - **Total:** -45 test count, SAME coverage
 
-**Week 7: Critical Gap Tests (Part 1)**
-- Add MessageBroker tests (+15)
+### Week 7: Critical Gap Tests (Part 1)
+
+Add MessageBroker tests (+15)
+
 - Add Container lifecycle tests (+10)
 - **Total:** +25 tests, +0.9 min
 
-**Week 8: Critical Gap Tests (Part 2)**
-- Add Database migration tests (+10)
+### Week 8: Critical Gap Tests (Part 2)
+
+Add Database migration tests (+10)
+
 - Add WebSocket edge cases (+15)
 - Add error recovery tests (+20)
 - **Total:** +45 tests, +1.3 min
@@ -461,8 +489,10 @@ BEFORE                          AFTER
 
 ### Month 3+: Continuous Improvement
 
-**Ongoing Tasks:**
-- Implement test quality gates
+### Ongoing Tasks
+
+Implement test quality gates
+
 - Monthly test quality reviews
 - Performance optimization of slowest tests
 - Investigate parallel test execution
@@ -475,24 +505,28 @@ BEFORE                          AFTER
 
 ### Risks by Phase
 
-| Phase | Risk Level | Mitigation Strategy |
-|-------|-----------|---------------------|
-| Quick Wins | 🟢 LOW | Tests have no real assertions, safe to remove |
-| Infrastructure | 🟡 MEDIUM | Run coverage before/after, verify no loss |
-| Coverage Tests | 🟡 MEDIUM | Keep tests with meaningful assertions |
-| Consolidation | 🟢 LOW | Parametrization maintains same coverage |
-| Gap Filling | 🟢 LOW | Adding tests, no removal risk |
+| Phase          | Risk Level | Mitigation Strategy                           |
+| -------------- | ---------- | --------------------------------------------- |
+| Quick Wins     | 🟢 LOW      | Tests have no real assertions, safe to remove |
+| Infrastructure | 🟡 MEDIUM   | Run coverage before/after, verify no loss     |
+| Coverage Tests | 🟡 MEDIUM   | Keep tests with meaningful assertions         |
+| Consolidation  | 🟢 LOW      | Parametrization maintains same coverage       |
+| Gap Filling    | 🟢 LOW      | Adding tests, no removal risk                 |
 
 ### Rollback Triggers
 
-**Automatic Rollback If:**
-- Coverage drops below 80%
+### Automatic Rollback If
+
+Coverage drops below 80%
+
 - Critical coverage drops below 95%
 - More than 5 new bugs discovered that removed tests would have caught
 - Test execution time increases
 
-**Review and Reconsider If:**
-- Team reports reduced confidence in test suite
+### Review and Reconsider If
+
+Team reports reduced confidence in test suite
+
 - More than 10% increase in production bugs
 - Test failures become less actionable
 
@@ -502,35 +536,44 @@ BEFORE                          AFTER
 
 ### Before Starting Optimization
 
-**Capture Baseline:**
+### Capture Baseline
+
 ```bash
 # Test count
+
 uv run pytest server/tests --collect-only -q > baseline_test_count.txt
 
 # Execution time
+
 make test-comprehensive 2>&1 | tee baseline_time.log
 
 # Coverage
+
 make coverage > baseline_coverage.txt
 
 # Critical file coverage (identify critical files first)
+
 uv run pytest server/tests --cov=server --cov-report=term-missing | grep "server.*\.py" > baseline_detailed_coverage.txt
 ```
 
 ### After Each Phase
 
-**Verify Metrics:**
+### Verify Metrics
+
 ```bash
 # Test count delta
+
 diff baseline_test_count.txt current_test_count.txt
 
 # Time delta
 # Compare execution times in logs
 
 # Coverage delta
+
 diff baseline_coverage.txt current_coverage.txt
 
 # Critical coverage maintained
+
 diff baseline_detailed_coverage.txt current_detailed_coverage.txt | grep -E "(server/command_handler|server/game|server/realtime)"
 ```
 
@@ -538,15 +581,15 @@ diff baseline_detailed_coverage.txt current_detailed_coverage.txt | grep -E "(se
 
 Track these metrics in a dashboard or spreadsheet:
 
-| Week | Tests | Time | Coverage | Critical Cov | Removed | Added | Net |
-|------|-------|------|----------|--------------|---------|-------|-----|
-| W0 (Baseline) | 4,965 | 30m | 82% | 95% | 0 | 0 | 0 |
-| W1 | 4,905 | 29.1m | 82% | 95% | 60 | 0 | -60 |
-| W2 | 4,840 | 27.9m | 81.8% | 95% | 65 | 0 | -65 |
-| W3 | 4,760 | 26.4m | 81.5% | 95% | 80 | 0 | -80 |
-| W4 | 4,760 | 26.4m | 81.5% | 95% | 0 | 0 | 0 |
-| W5-6 | 4,590 | 24.2m | 81.5% | 95% | 170 | 0 | -170 |
-| W7-8 | 4,665 | 26m | 82.5% | 98% | 0 | 70 | +70 |
+| Week          | Tests | Time  | Coverage | Critical Cov | Removed | Added | Net  |
+| ------------- | ----- | ----- | -------- | ------------ | ------- | ----- | ---- |
+| W0 (Baseline) | 4,965 | 30m   | 82%      | 95%          | 0       | 0     | 0    |
+| W1            | 4,905 | 29.1m | 82%      | 95%          | 60      | 0     | -60  |
+| W2            | 4,840 | 27.9m | 81.8%    | 95%          | 65      | 0     | -65  |
+| W3            | 4,760 | 26.4m | 81.5%    | 95%          | 80      | 0     | -80  |
+| W4            | 4,760 | 26.4m | 81.5%    | 95%          | 0       | 0     | 0    |
+| W5-6          | 4,590 | 24.2m | 81.5%    | 95%          | 170     | 0     | -170 |
+| W7-8          | 4,665 | 26m   | 82.5%    | 98%          | 0       | 70    | +70  |
 
 **Final Target:** 4,665 tests, 26 minutes, 82.5% coverage, 98% critical coverage
 
@@ -554,7 +597,7 @@ Track these metrics in a dashboard or spreadsheet:
 
 ## Success Celebration Criteria
 
-**Declare Success When:**
+### Declare Success When
 
 ✅ Test count reduced by ≥200 (achieved)
 ✅ Execution time reduced by ≥4 minutes (achieved)
@@ -573,24 +616,31 @@ Track these metrics in a dashboard or spreadsheet:
 
 ```bash
 # Count tests by directory
+
 find server/tests/<directory> -name "test_*.py" | wc -l
 
 # Collect tests in directory
+
 uv run pytest server/tests/<directory> --collect-only -q
 
 # Find slowest tests
+
 uv run pytest server/tests/<directory> --durations=20
 
 # Coverage by directory
+
 uv run pytest server/tests/<directory> --cov=server --cov-report=term-missing
 
 # Find mocking patterns
+
 grep -r "Mock\(|patch\(" server/tests/<directory> | wc -l
 
 # Find trivial assertions
+
 grep -r "assert isinstance\|assert hasattr\|assert callable" server/tests/<directory>
 
 # Find placeholder tests
+
 grep -r "assert True.*# Placeholder\|pass.*# Placeholder" server/tests
 ```
 
@@ -598,18 +648,22 @@ grep -r "assert True.*# Placeholder\|pass.*# Placeholder" server/tests
 
 ```bash
 # 1. Create feature branch
+
 git checkout -b test-optimization-phase1
 
 # 2. Remove tests
 # (edit files)
 
 # 3. Run tests
+
 make test-comprehensive
 
 # 4. Check coverage
+
 make coverage
 
 # 5. Commit with justification
+
 git add .
 git commit -m "Remove low-value infrastructure tests
 
@@ -619,11 +673,12 @@ git commit -m "Remove low-value infrastructure tests
 - Time saved: 0.7 minutes"
 
 # 6. Create PR for review
+
 gh pr create --title "Test Optimization Phase 1" --body "..."
 ```
 
 ---
 
-*"The optimization of tests is not destruction, but refinement — removing the dross to reveal the gold beneath."*
+#### "The optimization of tests is not destruction, but refinement — removing the dross to reveal the gold beneath."
 
 — Professor of Occult Software Engineering, Miskatonic University

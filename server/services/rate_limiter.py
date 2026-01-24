@@ -72,7 +72,7 @@ class RateLimiter:
 
         logger.info("RateLimiter initialized", limits=self.limits, enabled=self.enabled)
 
-    def set_limit(self, channel: str, limit: int):
+    def set_limit(self, channel: str, limit: int) -> None:
         """
         Set a custom rate limit for a channel.
 
@@ -95,7 +95,7 @@ class RateLimiter:
         """
         return self.limits.get(channel, 10)  # Default to 10 if not configured
 
-    def _cleanup_old_entries(self, player_id: str, channel: str):
+    def _cleanup_old_entries(self, player_id: str, channel: str) -> None:
         """
         Remove timestamps older than the window size.
 
@@ -165,7 +165,7 @@ class RateLimiter:
             # On error, allow the message (fail open)
             return True
 
-    def record_message(self, player_id: str, channel: str, player_name: str | None = None):
+    def record_message(self, player_id: str, channel: str, player_name: str | None = None) -> None:
         """
         Record a message for rate limiting.
 
@@ -227,7 +227,7 @@ class RateLimiter:
 
         return stats
 
-    def reset_player_limits(self, player_id: str, channel: str | None = None):
+    def reset_player_limits(self, player_id: str, channel: str | None = None) -> None:
         """
         Reset rate limiting for a player.
 

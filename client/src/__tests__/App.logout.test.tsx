@@ -59,9 +59,8 @@ vi.mock('../components/EldritchEffectsDemo', () => ({
 // Mock fetch for authentication using vi.spyOn for proper cleanup
 const fetchSpy = vi.spyOn(global, 'fetch');
 
-// SKIPPED: This is an E2E test that should use Playwright, not Vitest
-// These tests require full App flows and should be in client/tests/
-describe.skip('App.tsx Logout State Management', () => {
+// Un-skipped: runs with mocked fetch/logout; E2E in Playwright.
+describe('App.tsx Logout State Management', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     fetchSpy.mockClear();

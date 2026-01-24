@@ -19,18 +19,22 @@
 ## Bug Description
 
 ### Reported Behavior
-- Player logs into game successfully
+
+Player logs into game successfully
+
 - Location panel shows correct room information
 - Character Info panel displays "No character information available"
 - Player name appears in header bar correctly
 
 ### Expected Behavior
-- Character Info panel should display:
-  - Health and Lucidity meters
-  - Level and XP
-  - Core attributes (STR, DEX, CON, INT, WIS, CHA)
-  - Horror stats (Occult Knowledge, Fear, Corruption)
-  - Combat posture and status
+
+Character Info panel should display:
+
+- Health and Lucidity meters
+- Level and XP
+- Core attributes (STR, DEX, CON, INT, WIS, CHA)
+- Horror stats (Occult Knowledge, Fear, Corruption)
+- Combat posture and status
 
 ---
 
@@ -49,6 +53,7 @@ Generated 5 hypotheses to test:
 ### Phase 2: Client-Side Instrumentation
 
 Added debug logs to trace:
+
 1. `game_state` event reception
 2. Player data extraction
 3. State updates
@@ -57,6 +62,7 @@ Added debug logs to trace:
 ### Phase 3: Server-Side Instrumentation
 
 Added debug logs to trace:
+
 1. PlayerService availability
 2. Schema conversion
 3. model_dump output
@@ -68,6 +74,7 @@ Added debug logs to trace:
 ### Evidence from Runtime Logs
 
 **Initial Investigation - Client Logs (Line 12 of debug.log):**
+
 ```json
 {
   "playerData": {
@@ -83,6 +90,7 @@ Added debug logs to trace:
 ```
 
 **Server Logs Analysis:**
+
 ```
 'data': {'player': {
   'player_id': 'cf5e2f68-7d99-4760-a28b-d0f2c8c256d6',
@@ -100,6 +108,7 @@ Located bug in `server/realtime/connection_manager.py::_send_initial_game_state(
 
 ```python
 # ❌ BUG: Manually constructed player data WITHOUT stats
+
 game_state_data = {
     "player": {
         "player_id": str(getattr(player, "player_id", player_id)),
@@ -108,6 +117,7 @@ game_state_data = {
         "xp": getattr(player, "experience_points", 0),
         "current_room_id": room_id,
         # ❌ Missing: stats, profession, inventory, status_effects, etc.
+
     },
     "room": room_data,
     "occupants": occupants,
@@ -117,6 +127,7 @@ game_state_data = {
 ### Why This Happened
 
 Two different code paths for sending player data:
+
 1. **`websocket_handler.py`** (lines 231-279): ✅ Uses PlayerService correctly
 2. **`connection_manager.py`** (lines 3425-3435): ❌ Manual construction without stats
 
@@ -132,6 +143,7 @@ Updated `connection_manager.py::_send_initial_game_state()` to use the same Play
 
 ```python
 # ✅ FIX: Use PlayerService to get complete schema
+
 player_data_for_client = {}
 try:
     app_state = getattr(self.app, "state", None) if hasattr(self, "app") and self.app else None
@@ -139,9 +151,11 @@ try:
 
     if player_service:
         # Use PlayerService for complete player data with stats
+
         complete_player_data = await player_service._convert_player_to_schema(player)
 
         # Convert to dictionary for JSON
+
         player_data_for_client = (
             complete_player_data.model_dump(mode="json")
             if hasattr(complete_player_data, "model_dump")
@@ -149,10 +163,12 @@ try:
         )
 
         # Map experience_points to xp
+
         if "experience_points" in player_data_for_client:
             player_data_for_client["xp"] = player_data_for_client["experience_points"]
     else:
         # Fallback WITH stats included
+
         stats_data = player.get_stats() if hasattr(player, "get_stats") else {}
         player_data_for_client = {
             "player_id": str(getattr(player, "player_id", player_id)),
@@ -165,14 +181,17 @@ try:
 except Exception as e:
     logger.error("Error getting complete player data", error=str(e), exc_info=True)
     # Final fallback with empty stats
+
     player_data_for_client = {
         # ... basic fields ...
+
         "stats": {},  # ✅ Prevent client errors
     }
 ```
 
 ### Files Modified
-- `server/realtime/connection_manager.py` - Fixed `_send_initial_game_state()`
+
+`server/realtime/connection_manager.py` - Fixed `_send_initial_game_state()`
 
 ---
 
@@ -181,6 +200,7 @@ except Exception as e:
 ### Post-Fix Logs Analysis
 
 **Game State Event NOW Includes Stats:**
+
 ```json
 {
   "playerData": {
@@ -207,6 +227,7 @@ except Exception as e:
 ```
 
 **CharacterInfoPanel Receives Complete Data:**
+
 ```json
 {
   "player": { /* full data with stats */ },
@@ -234,15 +255,21 @@ except Exception as e:
 ## Impact Assessment
 
 ### Before Fix
-- ❌ Character Info panel completely non-functional
-- ❌ No health/lucidity display
-- ❌ No attribute display
+
+❌ Character Info panel completely non-functional
+
+❌ No health/lucidity display
+
+❌ No attribute display
 - ❌ Poor user experience - looks broken
 
 ### After Fix
-- ✅ Character Info panel fully functional
-- ✅ Health and Lucidity meters displayed
-- ✅ All character attributes visible
+
+✅ Character Info panel fully functional
+
+✅ Health and Lucidity meters displayed
+
+✅ All character attributes visible
 - ✅ Profession information included
 - ✅ Complete character sheet available
 
@@ -264,8 +291,10 @@ except Exception as e:
 ### Code Quality Review
 
 **Compliance with Best Practices:**
-- ✅ **Consistent Patterns**: Now uses same PlayerService pattern as websocket_handler
-- ✅ **Proper Error Handling**: Multiple fallback levels with logging
+
+✅ **Consistent Patterns**: Now uses same PlayerService pattern as websocket_handler
+
+✅ **Proper Error Handling**: Multiple fallback levels with logging
 - ✅ **Complete Data**: Includes stats, profession, inventory, status_effects
 - ✅ **Type Safety**: Proper schema conversion via Pydantic
 - ✅ **Maintainability**: Single source of truth for player data conversion
@@ -279,10 +308,12 @@ except Exception as e:
 **Finding**: Two separate code paths for same functionality led to inconsistent behavior
 
 **Code Locations**:
+
 - `websocket_handler.py::handle_websocket_connection()` - ✅ Had correct implementation
 - `connection_manager.py::_send_initial_game_state()` - ❌ Had incomplete implementation
 
 **Prevention Strategy**:
+
 - Consolidate player data conversion into single reusable method
 - Add integration tests to verify game_state event structure
 - Document data requirements for game_state events
@@ -292,6 +323,7 @@ except Exception as e:
 **Finding**: No integration test verified that initial game_state includes all required fields
 
 **Recommendation**: Add test case:
+
 ```python
 async def test_initial_game_state_includes_stats():
     """Verify game_state event includes player stats for Character Info panel."""
@@ -299,6 +331,7 @@ async def test_initial_game_state_includes_stats():
     # Capture game_state event
     # Assert event.data.player.stats exists
     # Assert stats includes required fields
+
 ```
 
 ---
@@ -306,12 +339,16 @@ async def test_initial_game_state_includes_stats():
 ## Recommendations
 
 ### Immediate
-- ✅ **COMPLETE**: Fix deployed and verified
-- ✅ **COMPLETE**: Instrumentation removed
+
+✅ **COMPLETE**: Fix deployed and verified
+
+✅ **COMPLETE**: Instrumentation removed
+
 - ⏭️ **TODO**: Add integration test for game_state structure
 - ⏭️ **TODO**: Update game_state event documentation
 
 ### Future Improvements
+
 1. **Consolidate Player Conversion**: Extract player-to-dict conversion into shared utility
 2. **Type Definitions**: Add TypeScript type for expected game_state event structure
 3. **Server-Side Validation**: Add validation to ensure game_state always includes required fields

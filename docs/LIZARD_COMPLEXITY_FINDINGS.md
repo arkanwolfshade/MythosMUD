@@ -10,7 +10,8 @@
 
 **Location**: `server/app/factory.py:46-187`
 **NLOC**: 102
-**Issue**: Application factory function with high complexity due to multiple conditional branches for CORS configuration and environment variable parsing.
+**Issue**: Application factory function with high complexity due to multiple conditional branches for CORS configuration
+and environment variable parsing.
 
 **Recommendations**:
 
@@ -75,20 +76,24 @@ These functions are close to the threshold and should be monitored:
 
 ### Functions with CCN = 10
 
-- `respawn_player_from_delirium` - `server/api/player_respawn.py:29-114` (CCN: 10, NLOC: 63)
+`respawn_player_from_delirium` - `server/api/player_respawn.py:29-114` (CCN: 10, NLOC: 63)
+
 - `_process_player_status_effects` - `server/app/game_tick_processing.py:183-220` (CCN: 10, NLOC: 28)
 - `_process_mp_regeneration` - `server/app/game_tick_processing.py:320-349` (CCN: 10, NLOC: 24)
 
 ### Functions with CCN = 9
 
-- `loot_all_items` - `server/api/container_endpoints_loot.py:51-194` (CCN: 9, NLOC: 97)
+`loot_all_items` - `server/api/container_endpoints_loot.py:51-194` (CCN: 9, NLOC: 97)
+
 - `respawn_player` - `server/api/player_respawn.py:118-199` (CCN: 9, NLOC: 59)
 - `websocket_endpoint_route` - `server/api/real_time.py:345-406` (CCN: 9, NLOC: 42)
 - `list_rooms` - `server/api/rooms.py:94-193` (CCN: 9, NLOC: 78)
 - `cleanup_decayed_corpses` - `server/app/game_tick_processing.py:414-492` (CCN: 10, NLOC: 69)
 - `game_tick_loop` - `server/app/game_tick_processing.py:511-549` (CCN: 6, NLOC: 30)
 
-**Note**: The `loot_all_items` function we recently worked on has CCN: 9, which is acceptable but could benefit from extracting exception handling into a dedicated handler function (similar to the pattern used in `container_endpoints_basic.py`).
+**Note**: The `loot_all_items` function we recently worked on has CCN: 9, which is acceptable but could benefit from
+extracting exception handling into a dedicated handler function (similar to the pattern used in
+`container_endpoints_basic.py`).
 
 ---
 
@@ -103,13 +108,17 @@ These functions are close to the threshold and should be monitored:
 
 ### Phase 2: High-Priority Near-Threshold (CCN 9-10)
 
-1. **`loot_all_items`** - Extract exception handling into `handle_loot_all_exceptions()` (follow pattern from `container_endpoints_basic.py`)
+1. **`loot_all_items`** - Extract exception handling into `handle_loot_all_exceptions()` (follow pattern from
+
+   `container_endpoints_basic.py`)
+
 2. **`respawn_player_from_delirium`** - Extract validation and state management logic
 3. **`_process_player_status_effects`** - Extract effect processing into smaller functions
 
 ### Phase 3: Monitoring
 
-- Monitor functions with CCN 8-9 during future development
+Monitor functions with CCN 8-9 during future development
+
 - Add complexity checks to pre-commit hooks if not already present
 
 ---
@@ -120,19 +129,24 @@ These functions are close to the threshold and should be monitored:
 
 ```python
 # Before: Exception handling inline (increases complexity)
+
 async def endpoint():
     try:
         # ... logic ...
+
     except SpecificError1:
         # ... handle ...
+
     except SpecificError2:
         # ... handle ...
     # ... more exceptions ...
 
 # After: Extract to handler function
+
 async def endpoint():
     try:
         # ... logic ...
+
     except Exception as e:
         handle_endpoint_exceptions(e, request, current_user, context)
         raise AssertionError("handler should always raise") from e
@@ -142,34 +156,41 @@ async def endpoint():
 
 ```python
 # Before: Configuration inline
+
 def create_app():
     if condition1:
         if condition2:
             # ... config ...
+
         else:
             # ... config ...
     # ... more conditions ...
 
 # After: Extract configuration
+
 def create_app():
     cors_config = _configure_cors()
     # ... use config ...
+
 ```
 
 ### Pattern 3: Extract Data Processing
 
 ```python
 # Before: Complex data processing inline
+
 async def load_data():
     for item in items:
         if condition1:
             if condition2:
                 # ... process ...
+
             else:
                 # ... process ...
         # ... more conditions ...
 
 # After: Extract processing
+
 async def load_data():
     processed_items = [_process_item(item) for item in items]
     return processed_items
@@ -179,11 +200,15 @@ async def load_data():
 
 ## 📊 Summary Statistics
 
-- **Total functions analyzed**: ~200+ (truncated output)
-- **Functions exceeding threshold (CCN > 10)**: 4
-- **Functions near threshold (CCN 9-10)**: 9
-- **Most complex function**: `create_app` (CCN: 22)
-- **Average complexity**: ~4-5 (estimated from visible output)
+**Total functions analyzed**: ~200+ (truncated output)
+
+**Functions exceeding threshold (CCN > 10)**: 4
+
+**Functions near threshold (CCN 9-10)**: 9
+
+**Most complex function**: `create_app` (CCN: 22)
+
+**Average complexity**: ~4-5 (estimated from visible output)
 
 ---
 

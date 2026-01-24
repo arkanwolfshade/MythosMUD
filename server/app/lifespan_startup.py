@@ -3,10 +3,12 @@
 This module handles all startup logic for the MythosMUD server,
 including container initialization, service setup, and dependency wiring.
 """
+# pylint: disable=too-many-lines  # Reason: Startup logic requires comprehensive initialization - splitting would reduce cohesion
 
 import asyncio
 import uuid as uuid_lib
 from collections.abc import Iterable
+from typing import Any
 
 from anyio import sleep
 from fastapi import FastAPI
@@ -35,7 +37,7 @@ from ..time.time_service import get_mythos_chronicle
 logger = get_logger("server.lifespan.startup")
 
 
-async def _get_item_prototype_count(registry) -> int:
+async def _get_item_prototype_count(registry: Any) -> int:
     """Get count of item prototypes from registry."""
     prototype_count = 0
     if registry is not None:
@@ -323,6 +325,24 @@ async def initialize_npc_startup_spawning(_app: FastAPI) -> None:
     """Initialize and run NPC startup spawning."""
     logger.info("Starting NPC startup spawning process")
     try:
+        # Ensure room cache is loaded before NPC startup (required after lazy loading refactor)
+        # NPC startup needs rooms to be available in cache for spawn room validation
+        container = ApplicationContainer.get_instance()
+        if container and hasattr(container, "async_persistence") and container.async_persistence:
+            logger.debug("Ensuring room cache is loaded before NPC startup")
+            # warmup_room_cache is idempotent - safe to call multiple times
+            await container.async_persistence.warmup_room_cache()
+            # Verify cache was loaded successfully - if empty, NPC spawning will fail
+            cache_size = len(container.async_persistence._room_cache)  # pylint: disable=protected-access  # Reason: Need to verify cache was loaded for NPC startup
+            if not cache_size:
+                logger.error(
+                    "Room cache is empty after warmup - NPC spawning may fail",
+                    cache_size=cache_size,
+                    cache_loaded=container.async_persistence._room_cache_loaded,  # pylint: disable=protected-access  # Reason: Need to check cache load status
+                )
+            else:
+                logger.debug("Room cache loaded successfully", cache_size=cache_size)
+
         startup_service = get_npc_startup_service()
         startup_results = await startup_service.spawn_npcs_on_startup()
 

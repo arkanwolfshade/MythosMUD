@@ -5,6 +5,10 @@ This module contains handlers for exploration-related commands like look and go.
 This is a thin wrapper that imports and re-exports command handlers from separate modules.
 """
 
+from typing import Any
+
+from ..alias_storage import AliasStorage
+
 # Import go command handler
 from .go_command import handle_go_command
 
@@ -13,12 +17,12 @@ from .look_command import handle_look_command
 
 
 async def handle_explore_command(
-    command_data: dict,
-    current_user: dict,
-    request,
-    _alias_storage,
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
+    request: Any,
+    _alias_storage: AliasStorage | None,
     player_name: str,
-) -> dict:
+) -> dict[str, str]:
     """
     Handle exploration requests by returning a simple message.
 

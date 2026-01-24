@@ -17,7 +17,8 @@ This document outlines the comprehensive plan to fix the NPC duplication bug whe
 
 ### Current Issue
 
-- Dr. Francis Morgan NPC spawns twice in sanitarium foyer entrance
+Dr. Francis Morgan NPC spawns twice in sanitarium foyer entrance
+
 - Database shows `max_population = 1` (correct)
 - Only one NPC record exists in database (no corruption)
 - Issue occurs consistently on every server restart and player login
@@ -25,9 +26,11 @@ This document outlines the comprehensive plan to fix the NPC duplication bug whe
 
 ### Impact Assessment
 
-- **Scope:** Affects all NPCs, not just Dr. Francis Morgan
-- **Severity:** HIGH - Population limits being violated
-- **User Experience:** Breaks immersion and game balance
+**Scope:** Affects all NPCs, not just Dr. Francis Morgan
+
+**Severity:** HIGH - Population limits being violated
+
+**User Experience:** Breaks immersion and game balance
 - **Performance:** Double NPC instances consume unnecessary resources
 
 ---
@@ -37,23 +40,27 @@ This document outlines the comprehensive plan to fix the NPC duplication bug whe
 ### Root Cause Details
 
 1. **Dual Event Subscription:**
+
    - `NPCPopulationController` subscribes to `PlayerEnteredRoom`
    - `NPCSpawningService` also subscribes to `PlayerEnteredRoom`
    - Both systems trigger spawn logic independently
 
 2. **Population Tracking Race Condition:**
+
    - Population stats updated AFTER spawning, not before validation
    - First spawn: `current_count = 0` → spawns
    - Second spawn: `current_count = 0` (not yet updated) → spawns again
 
 3. **Architectural Design Flaw:**
+
    - Spawning service designed to work WITH population controller
    - Both systems independently responding to same events
    - No coordination between the two spawning mechanisms
 
 ### Affected Files
 
-- `server/npc/population_control.py` (lines 274-275, 400-435)
+`server/npc/population_control.py` (lines 274-275, 400-435)
+
 - `server/npc/spawning_service.py` (lines 149-150, 176-199)
 - Event subscription and handling logic
 
@@ -67,16 +74,20 @@ This document outlines the comprehensive plan to fix the NPC duplication bug whe
 
 #### 1.1 Remove Duplicate Event Subscription
 
-- **Target:** `server/npc/spawning_service.py:149-150`
-- **Action:** Remove `PlayerEnteredRoom` event subscription from spawning service
-- **Rationale:** Population controller should be sole authority for spawn decisions
+**Target:** `server/npc/spawning_service.py:149-150`
+
+**Action:** Remove `PlayerEnteredRoom` event subscription from spawning service
+
+**Rationale:** Population controller should be sole authority for spawn decisions
 - **Risk:** Low - spawning service still handles NPC creation when called
 
 #### 1.2 Verify Population Controller Authority
 
-- **Target:** `server/npc/population_control.py`
-- **Action:** Ensure population controller properly delegates to spawning service
-- **Verification:** Confirm `_spawn_npc()` method calls spawning service correctly
+**Target:** `server/npc/population_control.py`
+
+**Action:** Ensure population controller properly delegates to spawning service
+
+**Verification:** Confirm `_spawn_npc()` method calls spawning service correctly
 
 ### Phase 2: Population Tracking Fix (HIGH - 2 hours)
 
@@ -84,22 +95,28 @@ This document outlines the comprehensive plan to fix the NPC duplication bug whe
 
 #### 2.1 Atomic Population Updates
 
-- **Target:** `server/npc/population_control.py:_spawn_npc()`
-- **Action:** Update population stats BEFORE spawning, not after
-- **Implementation:**
+**Target:** `server/npc/population_control.py:_spawn_npc()`
+
+**Action:** Update population stats BEFORE spawning, not after
+
+**Implementation:**
 
   ```python
   # Update stats first
+
   stats.add_npc(definition.npc_type, room_id, definition.is_required(), definition.id)
   # Then spawn
+
   npc_instance = self.spawning_service._spawn_npc_from_request(spawn_request)
   ```
 
 #### 2.2 Add Spawn Validation Lock
 
-- **Target:** `server/npc/population_control.py:_should_spawn_npc()`
-- **Action:** Add thread-safe validation with proper locking
-- **Implementation:** Use threading.Lock for spawn validation
+**Target:** `server/npc/population_control.py:_should_spawn_npc()`
+
+**Action:** Add thread-safe validation with proper locking
+
+**Implementation:** Use threading.Lock for spawn validation
 
 ### Phase 3: Architectural Cleanup (MEDIUM - 3 hours)
 
@@ -107,16 +124,20 @@ This document outlines the comprehensive plan to fix the NPC duplication bug whe
 
 #### 3.1 Consolidate Spawn Logic
 
-- **Target:** Spawning service responsibilities
-- **Action:** Remove spawn decision logic from spawning service
-- **Keep:** NPC instance creation and management
+**Target:** Spawning service responsibilities
+
+**Action:** Remove spawn decision logic from spawning service
+
+**Keep:** NPC instance creation and management
 - **Remove:** Independent spawn requirement evaluation
 
 #### 3.2 Improve Service Integration
 
-- **Target:** Population controller ↔ Spawning service integration
-- **Action:** Ensure clean separation of concerns
-- **Population Controller:** Spawn decisions, population tracking
+**Target:** Population controller ↔ Spawning service integration
+
+**Action:** Ensure clean separation of concerns
+
+**Population Controller:** Spawn decisions, population tracking
 - **Spawning Service:** NPC instance creation, lifecycle management
 
 ### Phase 4: Testing & Validation (MEDIUM - 2 hours)
@@ -125,8 +146,10 @@ This document outlines the comprehensive plan to fix the NPC duplication bug whe
 
 #### 4.1 Unit Tests
 
-- **Target:** Population limit enforcement
-- **Test Cases:**
+**Target:** Population limit enforcement
+
+**Test Cases:**
+
   - Single NPC spawn with max_population=1
   - Multiple spawn attempts for same NPC
   - Population tracking accuracy
@@ -134,16 +157,20 @@ This document outlines the comprehensive plan to fix the NPC duplication bug whe
 
 #### 4.2 Integration Tests
 
-- **Target:** End-to-end spawning scenarios
-- **Test Cases:**
+**Target:** End-to-end spawning scenarios
+
+**Test Cases:**
+
   - Player enters room → NPC spawns once
   - Multiple players enter → proper population management
   - Server restart → clean spawn state
 
 #### 4.3 Manual Testing
 
-- **Target:** Dr. Francis Morgan duplication
-- **Test Steps:**
+**Target:** Dr. Francis Morgan duplication
+
+**Test Steps:**
+
   1. Start server
   2. Login to game
   3. Navigate to sanitarium foyer entrance
@@ -156,19 +183,22 @@ This document outlines the comprehensive plan to fix the NPC duplication bug whe
 
 ### Day 1 (Immediate)
 
-- [ ] **Hour 1:** Remove duplicate event subscription (Phase 1.1)
+[ ] **Hour 1:** Remove duplicate event subscription (Phase 1.1)
+
 - [ ] **Hour 2:** Test immediate fix with manual verification
 - [ ] **Hour 3:** Fix population tracking race condition (Phase 2.1)
 
 ### Day 2 (Architecture)
 
-- [ ] **Hour 1:** Add spawn validation locking (Phase 2.2)
+[ ] **Hour 1:** Add spawn validation locking (Phase 2.2)
+
 - [ ] **Hour 2:** Consolidate spawn logic (Phase 3.1)
 - [ ] **Hour 3:** Improve service integration (Phase 3.2)
 
 ### Day 3 (Testing)
 
-- [ ] **Hour 1:** Write unit tests (Phase 4.1)
+[ ] **Hour 1:** Write unit tests (Phase 4.1)
+
 - [ ] **Hour 2:** Write integration tests (Phase 4.2)
 - [ ] **Hour 3:** Manual testing and validation (Phase 4.3)
 
@@ -178,18 +208,21 @@ This document outlines the comprehensive plan to fix the NPC duplication bug whe
 
 ### High Risk
 
-- **Event System Changes:** Modifying event subscriptions could break other systems
-- **Mitigation:** Thorough testing of all NPC-related functionality
+**Event System Changes:** Modifying event subscriptions could break other systems
+
+**Mitigation:** Thorough testing of all NPC-related functionality
 
 ### Medium Risk
 
-- **Population Tracking Changes:** Race condition fixes could introduce new issues
-- **Mitigation:** Use proper locking and atomic operations
+**Population Tracking Changes:** Race condition fixes could introduce new issues
+
+**Mitigation:** Use proper locking and atomic operations
 
 ### Low Risk
 
-- **Code Cleanup:** Architectural improvements are low-risk
-- **Mitigation:** Incremental changes with testing at each step
+**Code Cleanup:** Architectural improvements are low-risk
+
+**Mitigation:** Incremental changes with testing at each step
 
 ---
 
@@ -197,14 +230,16 @@ This document outlines the comprehensive plan to fix the NPC duplication bug whe
 
 ### Immediate Fix Success
 
-- [ ] Dr. Francis Morgan spawns exactly once
+[ ] Dr. Francis Morgan spawns exactly once
+
 - [ ] No other NPCs show duplication
 - [ ] Server starts without errors
 - [ ] Player can enter sanitarium foyer without issues
 
 ### Complete Fix Success
 
-- [ ] All unit tests pass
+[ ] All unit tests pass
+
 - [ ] All integration tests pass
 - [ ] Manual testing confirms single spawn
 - [ ] Code review approves architectural changes
@@ -217,11 +252,13 @@ This document outlines the comprehensive plan to fix the NPC duplication bug whe
 ### If Immediate Fix Fails
 
 1. **Revert Event Subscription Changes**
+
    - Restore spawning service event subscription
    - Document why fix didn't work
    - Investigate alternative approaches
 
 2. **Emergency Workaround**
+
    - Temporarily set `max_population = 0` for Dr. Francis Morgan
    - Prevents duplication until proper fix implemented
    - Notify users of temporary NPC unavailability
@@ -229,6 +266,7 @@ This document outlines the comprehensive plan to fix the NPC duplication bug whe
 ### If Population Tracking Changes Cause Issues
 
 1. **Revert Population Updates**
+
    - Restore original population tracking logic
    - Investigate thread safety issues
    - Implement alternative locking strategy
@@ -239,15 +277,19 @@ This document outlines the comprehensive plan to fix the NPC duplication bug whe
 
 ### During Implementation
 
-- **Server Logs:** Monitor for spawn-related errors
-- **Database Queries:** Verify population tracking accuracy
-- **Game Testing:** Manual verification of NPC counts
+**Server Logs:** Monitor for spawn-related errors
+
+**Database Queries:** Verify population tracking accuracy
+
+**Game Testing:** Manual verification of NPC counts
 
 ### Post-Implementation
 
-- **Automated Tests:** Run full test suite
-- **Performance Monitoring:** Check for memory/resource issues
-- **User Feedback:** Monitor for any remaining duplication reports
+**Automated Tests:** Run full test suite
+
+**Performance Monitoring:** Check for memory/resource issues
+
+**User Feedback:** Monitor for any remaining duplication reports
 
 ---
 
@@ -255,13 +297,15 @@ This document outlines the comprehensive plan to fix the NPC duplication bug whe
 
 ### Code Documentation
 
-- [ ] Update spawning service comments
+[ ] Update spawning service comments
+
 - [ ] Document population controller responsibilities
 - [ ] Add event handling documentation
 
 ### User Documentation
 
-- [ ] Update NPC system documentation
+[ ] Update NPC system documentation
+
 - [ ] Document population management rules
 - [ ] Update troubleshooting guides
 

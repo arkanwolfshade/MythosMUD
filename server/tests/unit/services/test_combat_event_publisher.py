@@ -11,6 +11,9 @@ import pytest
 
 from server.services.combat_event_publisher import CombatEventPublisher
 
+# pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
+# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
+
 
 @pytest.fixture
 def mock_nats_service():
@@ -24,7 +27,6 @@ def mock_nats_service():
 @pytest.fixture
 def mock_subject_manager():
     """Create a mock subject manager."""
-    return MagicMock()
     manager = MagicMock()
     manager.build_subject = MagicMock(return_value="combat.started.room.room_001")
     return manager
@@ -56,12 +58,20 @@ def test_create_event_message(combat_event_publisher):
 @pytest.mark.asyncio
 async def test_publish_combat_started_success(combat_event_publisher, mock_nats_service):
     """Test publish_combat_started() successfully publishes."""
+    from typing import Any
+
     from server.events.combat_events import CombatStartedEvent
 
     combat_id = uuid.uuid4()
     room_id = "room_001"
-    participants = ["player_001", "npc_001"]
-    event = CombatStartedEvent(combat_id=combat_id, room_id=room_id, participants=participants, turn_order=participants)
+    participants: dict[str, Any] = {"player_001": {}, "npc_001": {}}
+    turn_order = ["player_001", "npc_001"]
+    event = CombatStartedEvent(
+        combat_id=combat_id,
+        room_id=room_id,
+        participants=participants,
+        turn_order=turn_order,
+    )
     result = await combat_event_publisher.publish_combat_started(event)
     assert result is True
     mock_nats_service.publish.assert_awaited_once()
@@ -73,7 +83,12 @@ async def test_publish_combat_started_not_connected(combat_event_publisher, mock
     from server.events.combat_events import CombatStartedEvent
 
     combat_id = uuid.uuid4()
-    event = CombatStartedEvent(combat_id=combat_id, room_id="room_001", participants=[], turn_order=[])
+    event = CombatStartedEvent(
+        combat_id=combat_id,
+        room_id="room_001",
+        participants={},
+        turn_order=[],
+    )
     mock_nats_service.is_connected = MagicMock(return_value=False)
     result = await combat_event_publisher.publish_combat_started(event)
     assert result is False
@@ -130,7 +145,12 @@ async def test_publish_combat_started_no_nats_service():
 
     publisher = CombatEventPublisher(nats_service=None)
     combat_id = uuid.uuid4()
-    event = CombatStartedEvent(combat_id=combat_id, room_id="room_001", participants=[], turn_order=[])
+    event = CombatStartedEvent(
+        combat_id=combat_id,
+        room_id="room_001",
+        participants={},
+        turn_order=[],
+    )
     result = await publisher.publish_combat_started(event)
     assert result is False
 
@@ -142,7 +162,12 @@ async def test_publish_combat_started_nats_error(combat_event_publisher, mock_na
     from server.services.nats_exceptions import NATSPublishError
 
     combat_id = uuid.uuid4()
-    event = CombatStartedEvent(combat_id=combat_id, room_id="room_001", participants=[], turn_order=[])
+    event = CombatStartedEvent(
+        combat_id=combat_id,
+        room_id="room_001",
+        participants={},
+        turn_order=[],
+    )
     mock_nats_service.publish = AsyncMock(side_effect=NATSPublishError("Publish failed"))
     result = await combat_event_publisher.publish_combat_started(event)
     assert result is False
@@ -155,7 +180,11 @@ async def test_publish_combat_ended_success(combat_event_publisher, mock_nats_se
 
     combat_id = uuid.uuid4()
     event = CombatEndedEvent(
-        combat_id=combat_id, room_id="room_001", reason="victory", duration_seconds=60, participants=[]
+        combat_id=combat_id,
+        room_id="room_001",
+        reason="victory",
+        duration_seconds=60,
+        participants=[],  # type: ignore[arg-type]
     )
     result = await combat_event_publisher.publish_combat_ended(event)
     assert result is True
@@ -169,7 +198,11 @@ async def test_publish_combat_ended_not_connected(combat_event_publisher, mock_n
 
     combat_id = uuid.uuid4()
     event = CombatEndedEvent(
-        combat_id=combat_id, room_id="room_001", reason="victory", duration_seconds=60, participants=[]
+        combat_id=combat_id,
+        room_id="room_001",
+        reason="victory",
+        duration_seconds=60,
+        participants=[],  # type: ignore[arg-type]
     )
     mock_nats_service.is_connected = MagicMock(return_value=False)
     result = await combat_event_publisher.publish_combat_ended(event)
@@ -214,7 +247,7 @@ async def test_publish_npc_attacked_success(combat_event_publisher, mock_nats_se
         room_id="room_001",
         attacker_id=attacker_id,
         attacker_name="Attacker",
-        npc_id=npc_id,
+        npc_id=npc_id,  # type: ignore[arg-type]
         npc_name="NPC",
         damage=10,
         action_type="attack",
@@ -234,7 +267,13 @@ async def test_publish_npc_took_damage_success(combat_event_publisher, mock_nats
     combat_id = uuid.uuid4()
     npc_id = "npc_001"
     event = NPCTookDamageEvent(
-        combat_id=combat_id, room_id="room_001", npc_id=npc_id, npc_name="NPC", damage=10, current_dp=90, max_dp=100
+        combat_id=combat_id,
+        room_id="room_001",
+        npc_id=npc_id,  # type: ignore[arg-type]
+        npc_name="NPC",
+        damage=10,
+        current_dp=90,
+        max_dp=100,
     )
     result = await combat_event_publisher.publish_npc_took_damage(event)
     assert result is True
@@ -274,7 +313,12 @@ async def test_publish_combat_timeout_success(combat_event_publisher, mock_nats_
     from server.events.combat_events import CombatTimeoutEvent
 
     combat_id = uuid.uuid4()
-    event = CombatTimeoutEvent(combat_id=combat_id, room_id="room_001", timeout_minutes=5, last_activity=None)
+    event = CombatTimeoutEvent(
+        combat_id=combat_id,
+        room_id="room_001",
+        timeout_minutes=5,
+        last_activity=None,  # type: ignore[arg-type]
+    )
     result = await combat_event_publisher.publish_combat_timeout(event)
     assert result is True
     mock_nats_service.publish.assert_awaited_once()
@@ -288,7 +332,11 @@ async def test_publish_combat_ended_no_nats_service():
     publisher = CombatEventPublisher(nats_service=None)
     combat_id = uuid.uuid4()
     event = CombatEndedEvent(
-        combat_id=combat_id, room_id="room_001", reason="victory", duration_seconds=60, participants=[]
+        combat_id=combat_id,
+        room_id="room_001",
+        reason="victory",
+        duration_seconds=60,
+        participants=[],  # type: ignore[arg-type]
     )
     result = await publisher.publish_combat_ended(event)
     assert result is False

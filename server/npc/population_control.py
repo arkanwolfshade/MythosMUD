@@ -14,7 +14,7 @@ configurations reflect the inherent mystical properties of different locations.
 # pylint: disable=too-many-lines  # Reason: Population control requires extensive population management logic for comprehensive NPC population tracking and control
 
 import time
-from typing import Any
+from typing import Any, cast
 
 from server.events.event_bus import EventBus
 from server.events.event_types import (
@@ -64,10 +64,10 @@ class NPCPopulationController:  # pylint: disable=too-many-instance-attributes  
     def __init__(
         self,
         event_bus: EventBus,
-        spawning_service=None,
-        lifecycle_manager=None,
-        async_persistence=None,
-    ):
+        spawning_service: Any | None = None,
+        lifecycle_manager: Any | None = None,
+        async_persistence: Any | None = None,
+    ) -> None:
         """
         Initialize the NPC population controller.
 
@@ -171,7 +171,8 @@ class NPCPopulationController:  # pylint: disable=too-many-instance-attributes  
         """
         if not self.lifecycle_manager or not hasattr(self.lifecycle_manager, "active_npcs"):
             return {}
-        return self.lifecycle_manager.active_npcs
+        result: dict[str, Any] = cast(dict[str, Any], self.lifecycle_manager.active_npcs)
+        return result
 
     def _update_player_count(self) -> None:
         """Update the current player count in game state."""
@@ -409,7 +410,8 @@ class NPCPopulationController:  # pylint: disable=too-many-instance-attributes  
                     room_id=room_id,
                     zone_key=zone_key,
                 )
-                return npc_id
+                result: str = cast(str, npc_id)
+                return result
 
             # NPC spawn failed or returned None
             # Use getattr to avoid potential lazy loading issues
@@ -560,3 +562,6 @@ class NPCPopulationController:  # pylint: disable=too-many-instance-attributes  
             logger.info("Cleaned up inactive NPCs", count=len(npcs_to_remove))
 
         return len(npcs_to_remove)
+
+
+__all__ = ["NPCPopulationController", "PopulationStats", "ZoneConfiguration"]

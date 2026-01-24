@@ -1,4 +1,5 @@
 # BUG INVESTIGATION REPORT: Combat Client Crash
+
 **Investigation Date**: 2025-11-19 20:59:53 UTC
 **Investigator**: AI Assistant
 **Session ID**: 2025-11-19_session-002_combat-client-crash
@@ -20,6 +21,7 @@ The client crashed when initiating combat with an NPC (`/attack dr`) while in th
 **Error Timestamps**: 2025-11-19 20:59:53 UTC
 
 **Affected Systems**:
+
 - Combat messaging system
 - NATS message processing
 - WebSocket connection management
@@ -32,12 +34,14 @@ The client crashed when initiating combat with an NPC (`/attack dr`) while in th
 **Key Error Messages Identified**:
 
 1. **Connection Manager Errors** (Lines 1-2, 3-4):
+
    ```
    ERROR - error='Application container does not have an initialized connection_manager'
    event='Failed to resolve connection manager from container'
    ```
 
 2. **Combat Messaging Integration Errors** (Lines 3-4):
+
    ```
    ERROR - player_id='<ArkanWolfshade>' npc_id='dr._francis_morgan_earth_arkhamcity_sanitarium_room_foyer_001'
    error='Connection manager is not available'
@@ -45,6 +49,7 @@ The client crashed when initiating combat with an NPC (`/attack dr`) while in th
    ```
 
 3. **NATS Message Validation Errors** (Lines 6-17):
+
    ```
    CRITICAL - error="4 validation errors for EventMessageSchema
    message_id: Field required
@@ -55,6 +60,7 @@ The client crashed when initiating combat with an NPC (`/attack dr`) while in th
    ```
 
 4. **Dead Letter Queue Errors** (Lines 8-9, 12-13, 16-17):
+
    ```
    ERROR - filepath='.../dlq_20251119_205954_*.json'
    error="4 validation errors for EventMessageSchema..."
@@ -62,6 +68,7 @@ The client crashed when initiating combat with an NPC (`/attack dr`) while in th
    ```
 
 5. **Performance Warning** (Line 5):
+
    ```
    WARNING - operation='passive_lucidity_flux_tick' duration_ms=1350.564
    threshold_ms=1000.0
@@ -75,15 +82,19 @@ The client crashed when initiating combat with an NPC (`/attack dr`) while in th
 **Location**: `server/services/combat_messaging_integration.py`
 
 **Problem**:
+
 1. In `server/services/npc_combat_integration_service.py` line 111:
+
    ```python
    self._messaging_integration = CombatMessagingIntegration()
    ```
+
    The `CombatMessagingIntegration` is created **without** a connection manager.
 
 2. When combat happens and `broadcast_combat_attack()` is called (line 304 in `npc_combat_integration_service.py`), it tries to access `self.connection_manager` property.
 
 3. The `connection_manager` property (lines 68-74 in `combat_messaging_integration.py`) tries to lazy-load from the container:
+
    ```python
    @property
    def connection_manager(self):
@@ -101,7 +112,9 @@ The client crashed when initiating combat with an NPC (`/attack dr`) while in th
 **Location**: `server/services/combat_event_publisher.py`
 
 **Problem**:
+
 1. Combat events are published to NATS with an incorrect message structure (lines 301-316):
+
    ```python
    message_data = {
        "event_type": "player_attacked",
@@ -109,11 +122,13 @@ The client crashed when initiating combat with an NPC (`/attack dr`) while in th
            "combat_id": str(event.combat_id),
            "room_id": event.room_id,
            # ... other fields
+
        },
    }
    ```
 
 2. However, the `EventMessageSchema` in `server/schemas/nats_messages.py` (lines 57-71) requires:
+
    - `message_id`: str (required) - **MISSING**
    - `timestamp`: str (required) - **MISSING**
    - `event_type`: str (required) - ✓ Present
@@ -121,6 +136,7 @@ The client crashed when initiating combat with an NPC (`/attack dr`) while in th
    - No extra fields (`extra="forbid"`) - **VIOLATED** (has `data` field)
 
 3. When NATS messages are processed by `NATSMessageHandler._handle_nats_message()` (line 311 in `nats_message_handler.py`), the validation fails:
+
    ```python
    validate_message(message_data, message_type=message_type)
    ```
@@ -134,6 +150,7 @@ The client crashed when initiating combat with an NPC (`/attack dr`) while in th
 #### Severity: **CRITICAL**
 
 **Impact Scope**:
+
 1. **Combat System**: All combat events fail to be broadcast to clients
 2. **Player Experience**: Players cannot see combat messages or updates
 3. **Client Stability**: Client crashes when combat is initiated
@@ -141,6 +158,7 @@ The client crashed when initiating combat with an NPC (`/attack dr`) while in th
 5. **Real-time Updates**: Combat status updates are not delivered to players
 
 **Affected Components**:
+
 - `CombatMessagingIntegration` service
 - `CombatEventPublisher` service
 - `NPCCombatIntegrationService` service
@@ -156,6 +174,7 @@ The client crashed when initiating combat with an NPC (`/attack dr`) while in th
 #### Error Log Evidence
 
 **Connection Manager Errors** (Timestamp: 2025-11-19T20:59:53.340755Z):
+
 ```
 ERROR - error='Application container does not have an initialized connection_manager'
 event='Failed to resolve connection manager from container'
@@ -164,6 +183,7 @@ logger='server.services.combat_messaging_integration'
 ```
 
 **Combat Messaging Integration Errors** (Timestamp: 2025-11-19T20:59:53.407205Z):
+
 ```
 ERROR - player_id='<ArkanWolfshade>' npc_id='dr._francis_morgan_earth_arkhamcity_sanitarium_room_foyer_001'
 error='Connection manager is not available'
@@ -172,6 +192,7 @@ correlation_id='1bc37b73-7c4f-40da-88df-1b1181c86b19'
 ```
 
 **NATS Message Validation Errors** (Timestamp: 2025-11-19T20:59:54.043342Z):
+
 ```
 CRITICAL - error="4 validation errors for EventMessageSchema
 message_id: Field required [type=missing, input_value={'event_type': 'combat_st...}]
@@ -183,6 +204,7 @@ correlation_id='98a1aef9-609c-4bff-832b-28bf9336b6c7'
 ```
 
 **Affected Event Types**:
+
 - `combat_started` (correlation_id: 98a1aef9-609c-4bff-832b-28bf9336b6c7)
 - `player_attacked` (correlation_id: 95e62658-203b-4899-bbea-ed801d94fc21)
 - `npc_took_damage` (correlation_id: d72d6fcb-4338-41a3-9f7d-76fbeb042666)
@@ -190,12 +212,15 @@ correlation_id='98a1aef9-609c-4bff-832b-28bf9336b6c7'
 #### Code Evidence
 
 **CombatMessagingIntegration Initialization** (`server/services/npc_combat_integration_service.py:111`):
+
 ```python
 self._messaging_integration = CombatMessagingIntegration()
 # Missing connection_manager parameter
+
 ```
 
 **Connection Manager Resolution** (`server/services/combat_messaging_integration.py:42-65`):
+
 ```python
 def _resolve_connection_manager_from_container(self):
     try:
@@ -211,22 +236,26 @@ def _resolve_connection_manager_from_container(self):
 ```
 
 **Incorrect NATS Message Structure** (`server/services/combat_event_publisher.py:301-316`):
+
 ```python
 message_data = {
     "event_type": "player_attacked",
     "data": {  # Should be "event_data"
         "combat_id": str(event.combat_id),
         # ... missing message_id, timestamp
+
     },
 }
 ```
 
 **EventMessageSchema Requirements** (`server/schemas/nats_messages.py:57-71`):
+
 ```python
 class EventMessageSchema(BaseMessageSchema):
     event_type: str = Field(..., description="Event type identifier")
     event_data: dict[str, Any] = Field(..., description="Event-specific data")  # Not "data"
     # ... inherits message_id, timestamp from BaseMessageSchema
+
 ```
 
 ### Phase 5: Root Cause Analysis
@@ -240,6 +269,7 @@ class EventMessageSchema(BaseMessageSchema):
 3. The container singleton pattern may not guarantee that `connection_manager` is accessible when `CombatMessagingIntegration` tries to resolve it
 
 **Contributing Factors**:
+
 - Dependency injection not properly configured for `CombatMessagingIntegration`
 - Timing issue: container initialization vs. service instantiation
 - Missing connection manager propagation from application container to combat services
@@ -253,6 +283,7 @@ class EventMessageSchema(BaseMessageSchema):
 3. Schema mismatch: The published message structure doesn't match the expected `EventMessageSchema` format
 
 **Contributing Factors**:
+
 - `CombatEventPublisher` was implemented before or without awareness of the `EventMessageSchema` requirements
 - No validation testing to catch schema mismatches
 - Different message structures used by different publishers (e.g., `EventPublisher._create_event_message` uses `data`, but schema expects `event_data`)
@@ -262,11 +293,13 @@ class EventMessageSchema(BaseMessageSchema):
 #### Priority 1: CRITICAL - Connection Manager Initialization
 
 **Immediate Actions**:
+
 1. Ensure `CombatMessagingIntegration` receives a connection manager instance during initialization
 2. Verify application container properly initializes `connection_manager` before combat services are created
 3. Update `NPCCombatIntegrationService` to pass connection manager to `CombatMessagingIntegration`
 
 **Investigation Areas**:
+
 1. Check application container initialization order in `server/app/lifespan.py`
 2. Verify connection manager is properly added to container before combat services
 3. Review dependency injection patterns for combat services
@@ -274,11 +307,13 @@ class EventMessageSchema(BaseMessageSchema):
 #### Priority 2: CRITICAL - NATS Message Schema Compliance
 
 **Immediate Actions**:
+
 1. Update `CombatEventPublisher` to use correct message structure matching `EventMessageSchema`
 2. Add required fields: `message_id` and `timestamp` to all combat event messages
 3. Rename `data` field to `event_data` in all combat event messages
 
 **Investigation Areas**:
+
 1. Review all event publishers to ensure consistent message structure
 2. Add validation tests for NATS message schema compliance
 3. Document message structure requirements for event publishers
@@ -286,6 +321,7 @@ class EventMessageSchema(BaseMessageSchema):
 #### Priority 3: MEDIUM - Performance Monitoring
 
 **Investigation Areas**:
+
 1. Review `passive_lucidity_flux_tick` operation performance (exceeded 1000ms threshold)
 2. Investigate if performance degradation is related to combat system issues
 3. Monitor system performance during combat scenarios
@@ -315,7 +351,8 @@ Test that combat messages are properly broadcast and NATS messages pass validati
 
 ## INVESTIGATION COMPLETION CHECKLIST
 
-- [x] All investigation steps completed as written
+[x] All investigation steps completed as written
+
 - [x] Comprehensive evidence collected and documented
 - [x] Root cause analysis completed
 - [x] System impact assessed

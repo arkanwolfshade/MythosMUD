@@ -2,27 +2,31 @@
 
 ## Overview
 
-Tests the character selection flow when a user has multiple characters. Verifies that users with multiple characters see the selection screen, can select a character, and that the selected character is used for game connection.
+Tests the character selection flow when a user has multiple characters. Verifies that users with multiple characters see
+the selection screen, can select a character, and that the selected character is used for game connection.
 
 **MULTI-CHARACTER**: This scenario tests the new multi-character support system.
 
 ## Prerequisites
 
-**BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY:**
+### BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY
 
 1. **Database State**: Test user has at least 2 active characters
 2. **Server Running**: Development server is running on port 54731
 3. **Client Accessible**: Client is accessible on port 5173
 4. **No Previous Sessions**: Browser is clean with no existing game sessions
 
-**⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE**
+### ⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE
 
 ## Test Configuration
 
-- **Test Player**: ArkanWolfshade (with multiple characters)
-- **Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
-- **Testing Approach**: Playwright MCP (multi-tab interaction required)
-- **Timeout Settings**: Use configurable timeouts from master rules
+**Test Player**: ArkanWolfshade (with multiple characters)
+
+**Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
+
+**Testing Approach**: Playwright MCP (multi-tab interaction required)
+
+**Timeout Settings**: Use configurable timeouts from master rules
 
 ## Execution Steps
 
@@ -131,14 +135,18 @@ const snapshot = await mcp_playwright_browser_snapshot();
 
 ## Failure Modes
 
-- **Character selection screen doesn't appear**: User may not have multiple characters, or login failed
-- **Character list is empty**: User has no active characters (should show creation flow instead)
-- **Character selection fails**: API endpoint may be failing, check server logs
-- **Wrong character selected**: Character selection logic may have issues
+**Character selection screen doesn't appear**: User may not have multiple characters, or login failed
+
+**Character list is empty**: User has no active characters (should show creation flow instead)
+
+**Character selection fails**: API endpoint may be failing, check server logs
+
+**Wrong character selected**: Character selection logic may have issues
 
 ## Notes
 
-- This scenario requires a user with at least 2 active characters
+This scenario requires a user with at least 2 active characters
+
 - Character names are case-insensitive unique
 - Soft-deleted characters are not shown in the selection list
 - Maximum 3 active characters per user

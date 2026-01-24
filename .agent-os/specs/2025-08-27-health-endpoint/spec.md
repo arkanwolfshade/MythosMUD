@@ -14,6 +14,7 @@ Implement a comprehensive `/health` endpoint for the MythosMUD server that provi
 As a system administrator, I want to check the server health status through a simple HTTP endpoint, so that I can quickly determine if the server is operational and identify any issues that need attention.
 
 **Detailed Workflow:**
+
 1. Administrator makes GET request to `/health` endpoint
 2. Server responds with comprehensive health status including uptime, memory usage, active connections, and database status
 3. Administrator can use this information to make operational decisions
@@ -23,6 +24,7 @@ As a system administrator, I want to check the server health status through a si
 As a monitoring system, I want to poll the health endpoint at regular intervals, so that I can track server performance over time and trigger alerts when health metrics fall below acceptable thresholds.
 
 **Detailed Workflow:**
+
 1. Monitoring system makes periodic GET requests to `/health` endpoint
 2. Server returns structured health data with timestamps
 3. Monitoring system analyzes response and triggers alerts if needed
@@ -32,6 +34,7 @@ As a monitoring system, I want to poll the health endpoint at regular intervals,
 As a developer, I want to access detailed health information during development and testing, so that I can identify performance bottlenecks and system issues quickly.
 
 **Detailed Workflow:**
+
 1. Developer accesses `/health` endpoint during development
 2. Server provides detailed metrics including memory usage, connection counts, and performance data
 3. Developer uses this information to optimize system performance
@@ -46,7 +49,8 @@ As a developer, I want to access detailed health information during development 
 
 ## Out of Scope
 
-- Authentication requirements for health endpoint access
+Authentication requirements for health endpoint access
+
 - Historical health data storage or trending
 - Complex health scoring algorithms
 - Integration with external monitoring services

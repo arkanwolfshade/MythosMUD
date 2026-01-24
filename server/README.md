@@ -6,15 +6,19 @@ The backend server for MythosMUD, a Lovecraftian horror MUD game.
 
 ### Core Systems
 
-- **World Loading**: Loads room data from JSON files organized by zones (now
+**World Loading**: Loads room data from JSON files organized by zones (now
   in `data/local/rooms/`)
-- **Player Management**: Complete player character system with stats and persistence
-- **Real-time Game Loop**: Tick-based game loop for processing game events
-- **Status Effects**: Dynamic status effect system for horror mechanics
+
+**Player Management**: Complete player character system with stats and persistence
+
+**Real-time Game Loop**: Tick-based game loop for processing game events
+
+**Status Effects**: Dynamic status effect system for horror mechanics
 
 ### Player Data Storage (NEW)
 
-- Player data is stored as individual files in `data/local/players/player_<GUID>.json`.
+Player data is stored as individual files in `data/local/players/player_<GUID>.json`.
+
 - There is no longer a single `players.json` file.
 - The server dynamically loads player data from these files after authentication.
 - Example: `data/local/players/player_3ff4b997-1bed-42b9-a96e-0892c9e25357.json`
@@ -26,23 +30,32 @@ The game features a comprehensive stats system with Lovecraftian horror elements
 
 #### Core Attributes (1-20 scale)
 
-- **Physical**: Strength, Dexterity, Constitution
-- **Mental**: Intelligence, Wisdom, Charisma
+**Physical**: Strength, Dexterity, Constitution
+
+**Mental**: Intelligence, Wisdom, Charisma
 
 #### Horror-Specific Attributes (0-100 scale)
 
-- **Lucidity**: Mental stability (0 = complete madness)
-- **Occult Knowledge**: Forbidden lore knowledge (causes lucidity loss)
-- **Fear**: Susceptibility to terror and panic
-- **Corruption**: Taint from dark forces
+**Lucidity**: Mental stability (0 = complete madness)
+
+**Occult Knowledge**: Forbidden lore knowledge (causes lucidity loss)
+
+**Fear**: Susceptibility to terror and panic
+
+**Corruption**: Taint from dark forces
+
 - **Cult Affiliation**: Ties to cults and secret societies
 
 #### Status Effects
 
-- **Stunned**: Unable to act
-- **Poisoned**: Damage over time
-- **Hallucinating**: Visual/auditory disturbances
-- **Paranoid**: Mental instability
+**Stunned**: Unable to act
+
+**Poisoned**: Damage over time
+
+**Hallucinating**: Visual/auditory disturbances
+
+**Paranoid**: Mental instability
+
 - **Trembling**: Reduced dexterity
 - **Corrupted**: Physical/mental changes
 - **Delirious**: Complete mental breakdown
@@ -51,12 +64,15 @@ The game features a comprehensive stats system with Lovecraftian horror elements
 
 ### System Health & Monitoring
 
-- `GET /monitoring/health` - Get comprehensive system health status
-  - Returns server status, uptime, memory usage, database connectivity, and
+`GET /monitoring/health` - Get comprehensive system health status
+
+- Returns server status, uptime, memory usage, database connectivity, and
+
     active connections
-  - HTTP 200: System is healthy or degraded (with status in response body)
-  - HTTP 503: System is unhealthy
-  - HTTP 500: Health check itself failed
+
+- HTTP 200: System is healthy or degraded (with status in response body)
+- HTTP 503: System is unhealthy
+- HTTP 500: Health check itself failed
 
 #### Health Endpoint Response Examples
 
@@ -173,12 +189,16 @@ The game features a comprehensive stats system with Lovecraftian horror elements
 
 #### Health Endpoint Usage Guidelines
 
-- **Monitoring**: Use this endpoint for load balancer health checks and
+**Monitoring**: Use this endpoint for load balancer health checks and
   monitoring systems
-- **Performance**: Response time is optimized to be under 100ms for healthy
+
+**Performance**: Response time is optimized to be under 100ms for healthy
   systems
-- **Rate Limiting**: No rate limiting applied - designed for frequent health checks
-- **Authentication**: No authentication required - public endpoint for monitoring
+
+**Rate Limiting**: No rate limiting applied - designed for frequent health checks
+
+**Authentication**: No authentication required - public endpoint for monitoring
+
 - **Alert Thresholds**:
   - Memory usage: Warning at 1GB, critical at 1.5GB
   - CPU usage: Warning at 80%, critical at 96%
@@ -187,11 +207,12 @@ The game features a comprehensive stats system with Lovecraftian horror elements
 
 ### World
 
-- `GET /rooms/{room_id}` - Get room information
+`GET /rooms/{room_id}` - Get room information
 
 ### Player Management
 
-- `POST /players` - Create a new player
+`POST /players` - Create a new player
+
 - `GET /players` - List all players
 - `GET /players/{player_id}` - Get player by ID
 - `GET /players/name/{player_name}` - Get player by name
@@ -203,10 +224,11 @@ The server provides comprehensive memory leak monitoring endpoints for detecting
 
 #### Memory Leak Metrics Endpoints
 
-- `GET /monitoring/memory-leaks` - Get comprehensive memory leak metrics from all sources
-  - Returns aggregated metrics from connections, events, caches, tasks, and NATS
-  - Includes growth rates, alerts, and trend data
-  - Response includes: connection metrics, event metrics, cache metrics, task metrics, NATS metrics, growth rates, and alerts
+`GET /monitoring/memory-leaks` - Get comprehensive memory leak metrics from all sources
+
+- Returns aggregated metrics from connections, events, caches, tasks, and NATS
+- Includes growth rates, alerts, and trend data
+- Response includes: connection metrics, event metrics, cache metrics, task metrics, NATS metrics, growth rates, and alerts
 
 - `GET /monitoring/eventbus` - Get EventBus subscriber and task metrics
   - Returns subscriber counts by event type, active task count, subscription churn rate
@@ -344,7 +366,8 @@ The server provides comprehensive memory leak monitoring endpoints for detecting
 
 ### Player Stats & Effects
 
-- `POST /players/{player_id}/lucidity-loss` - Apply lucidity loss
+`POST /players/{player_id}/lucidity-loss` - Apply lucidity loss
+
 - `POST /players/{player_id}/fear` - Apply fear
 - `POST /players/{player_id}/corruption` - Apply corruption
 - `POST /players/{player_id}/occult-knowledge` - Gain occult knowledge
@@ -363,6 +386,7 @@ The server provides comprehensive memory leak monitoring endpoints for detecting
 
    ```bash
    # Note: Hot reloading is disabled due to client compatibility issues
+
    uv run uvicorn main:app
    ```
 
@@ -378,7 +402,8 @@ python test_player_stats.py
 
 ## Data Storage
 
-- Player data is stored as individual files in `data/local/players/player_<GUID>.json`.
+Player data is stored as individual files in `data/local/players/player_<GUID>.json`.
+
 - Room data is stored in `data/local/rooms/`.
 - The system automatically creates these directories and handles data persistence.
 
@@ -386,27 +411,33 @@ python test_player_stats.py
 
 ### Lucidity System
 
-- Players start with 100 lucidity
+Players start with 100 lucidity
+
 - Encountering horrors, reading forbidden texts, or learning occult knowledge
+
   reduces lucidity
+
 - Low lucidity triggers status effects (paranoia, hallucinations, delirium)
 - Lucidity can be recovered through rest, therapy, or certain items
 
 ### Fear System
 
-- Fear accumulates from terrifying encounters
+Fear accumulates from terrifying encounters
+
 - High fear levels cause trembling and reduced effectiveness
 - Fear can be reduced through courage, experience, or certain items
 
 ### Corruption System
 
-- Corruption represents taint from dark forces
+Corruption represents taint from dark forces
+
 - High corruption can lead to physical/mental changes
 - Corruption is difficult to remove and may be permanent
 
 ### Occult Knowledge
 
-- Learning forbidden lore increases occult knowledge
+Learning forbidden lore increases occult knowledge
+
 - Each point of occult knowledge gained costs 0.5 lucidity
 - High occult knowledge provides access to powerful abilities but increases vulnerability
 
@@ -414,14 +445,18 @@ python test_player_stats.py
 
 The server uses:
 
-- **FastAPI** for the web framework
-- **Pydantic** for data validation and serialization
-- **JSON** for data persistence (can be upgraded to database later)
-- **Asyncio** for the game loop
+**FastAPI** for the web framework
+
+**Pydantic** for data validation and serialization
+
+**JSON** for data persistence (can be upgraded to database later)
+
+**Asyncio** for the game loop
 
 ## Future Enhancements
 
-- Database integration (PostgreSQL/DynamoDB)
+Database integration (PostgreSQL/DynamoDB)
+
 - WebSocket support for real-time communication
 - Combat system integration
 - NPC AI and behavior

@@ -2,13 +2,14 @@
 
 ## Tasks
 
-- [ ] 1. Import Organization Analysis and Audit
-  - [ ] 1.1 Write tests for import organization validation
-  - [ ] 1.2 Run comprehensive isort analysis across all server files
-  - [ ] 1.3 Identify files with import organization issues and antipatterns
-  - [ ] 1.4 Detect circular dependency patterns using dependency analysis
-  - [ ] 1.5 Catalog complex import patterns and create remediation list
-  - [ ] 1.6 Verify all tests pass
+[ ] 1. Import Organization Analysis and Audit
+
+- [ ] 1.1 Write tests for import organization validation
+- [ ] 1.2 Run comprehensive isort analysis across all server files
+- [ ] 1.3 Identify files with import organization issues and antipatterns
+- [ ] 1.4 Detect circular dependency patterns using dependency analysis
+- [ ] 1.5 Catalog complex import patterns and create remediation list
+- [ ] 1.6 Verify all tests pass
 
 - [ ] 2. Configuration Enhancement
   - [ ] 2.1 Write tests for isort configuration validation

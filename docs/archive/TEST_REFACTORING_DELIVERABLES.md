@@ -126,15 +126,19 @@ A comprehensive plan to refactor the MythosMUD test suite from 204 files in a fl
 
 ```bash
 # Show summary
+
 python server/tests/scripts/track_migration.py
 
 # Show details
+
 python server/tests/scripts/track_migration.py --detailed
 
 # Validate completeness
+
 python server/tests/scripts/track_migration.py --validate
 
 # Generate report
+
 python server/tests/scripts/track_migration.py --report
 ```
 
@@ -144,16 +148,20 @@ python server/tests/scripts/track_migration.py --report
 
 ### Current State
 
-- **Files:** 204 test files
-- **Tests:** 519+ test functions/classes
-- **Structure:** Flat with minimal organization
+**Files:** 204 test files
+
+**Tests:** 519+ test functions/classes
+
+**Structure:** Flat with minimal organization
 - **Issues:** Difficult to navigate, inconsistent naming
 
 ### Target State
 
-- **Files:** ~168 test files (18% reduction)
-- **Tests:** 519+ (same tests, better organized)
-- **Structure:** Hierarchical with 9 categories, 23+ subdirectories
+**Files:** ~168 test files (18% reduction)
+
+**Tests:** 519+ (same tests, better organized)
+
+**Structure:** Hierarchical with 9 categories, 23+ subdirectories
 - **Benefits:** Easy navigation, consistent patterns
 
 ### Categories Defined
@@ -216,7 +224,8 @@ python server/tests/scripts/track_migration.py --report
 
 ### Quantitative
 
-- [ ] All 204 test files successfully migrated
+[ ] All 204 test files successfully migrated
+
 - [ ] Test coverage maintained or improved (85%+)
 - [ ] All tests passing after migration
 - [ ] CI/CD pipeline updated and passing
@@ -224,7 +233,8 @@ python server/tests/scripts/track_migration.py --report
 
 ### Qualitative
 
-- [ ] Clear, logical organization
+[ ] Clear, logical organization
+
 - [ ] Easy test discoverability
 - [ ] Consistent naming conventions
 - [ ] Better separation of concerns
@@ -299,20 +309,24 @@ python server/tests/scripts/track_migration.py --report
 
 ### Week 1
 
-- ✅ Documentation complete
-- ✅ Directory structure created
-- ✅ CI/CD updated
+✅ Documentation complete
+
+✅ Directory structure created
+
+✅ CI/CD updated
 - ✅ Team onboarded
 
 ### Week 3
 
-- ⏳ 50% of tests migrated
+⏳ 50% of tests migrated
+
 - ⏳ Unit tests organized
 - ⏳ No test failures
 
 ### Week 6
 
-- ⏳ 100% of tests migrated
+⏳ 100% of tests migrated
+
 - ⏳ All validation passing
 - ⏳ Documentation updated
 - ⏳ Team using new structure
@@ -323,14 +337,16 @@ python server/tests/scripts/track_migration.py --report
 
 ### Questions?
 
-- Check the [Organization Guide](../server/tests/TEST_ORGANIZATION_GUIDE.md)
+Check the [Organization Guide](../server/tests/TEST_ORGANIZATION_GUIDE.md)
+
 - Review the [Refactoring Plan](./TEST_SUITE_REFACTORING_PLAN.md)
 - Use the migration tracking script
 - Ask during code review
 
 ### Updates?
 
-- Update [Migration Mapping](./TEST_MIGRATION_MAPPING.md) as you work
+Update [Migration Mapping](./TEST_MIGRATION_MAPPING.md) as you work
+
 - Run tracking script for current status
 - Document any issues or improvements
 

@@ -21,13 +21,13 @@ class AliasCommand(BaseCommand):
 
     @field_validator("alias_name")
     @classmethod
-    def validate_alias_name_field(cls, v):
+    def validate_alias_name_field(cls: type["AliasCommand"], v: str) -> str:
         """Validate alias name format using centralized validation."""
         return validate_alias_name(v)
 
     @field_validator("command")
     @classmethod
-    def validate_command(cls, v):
+    def validate_command(cls: type["AliasCommand"], v: str | None) -> str | None:
         """Validate command content for security using centralized validation."""
         if v is None:
             return v
@@ -48,6 +48,6 @@ class UnaliasCommand(BaseCommand):
 
     @field_validator("alias_name")
     @classmethod
-    def validate_alias_name_field(cls, v):
+    def validate_alias_name_field(cls: type["UnaliasCommand"], v: str) -> str:
         """Validate alias name format using centralized validation."""
         return validate_alias_name(v)

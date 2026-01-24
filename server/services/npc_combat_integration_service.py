@@ -19,6 +19,8 @@ from typing import TYPE_CHECKING, Any
 from uuid import UUID, uuid4
 
 if TYPE_CHECKING:
+    from ..async_persistence import AsyncPersistenceLayer
+    from ..realtime.connection_manager import ConnectionManager
     from .combat_service import CombatService
 
 from sqlalchemy.exc import SQLAlchemyError
@@ -56,10 +58,10 @@ class NPCCombatIntegrationService:  # pylint: disable=too-many-instance-attribut
         self,
         event_bus: EventBus | None = None,
         combat_service: "CombatService | None" = None,
-        player_combat_service=None,
-        connection_manager=None,
-        async_persistence=None,
-    ):
+        player_combat_service: PlayerCombatService | None = None,
+        connection_manager: "ConnectionManager | None" = None,
+        async_persistence: "AsyncPersistenceLayer | None" = None,
+    ) -> None:
         """
         Initialize the NPC combat integration service.
 
@@ -134,12 +136,17 @@ class NPCCombatIntegrationService:  # pylint: disable=too-many-instance-attribut
 
         # Enable auto-progression features
         self._combat_service.auto_progression_enabled = True
-        self._combat_service.turn_interval_seconds = 6
+        # CRITICAL FIX: Use config value instead of hardcoded 6 seconds
+        # Get combat_tick_interval from config (default 10 seconds)
+        # Note: get_config is imported at module level (line 26)
+        combat_config = get_config()  # pylint: disable=used-before-assignment  # Reason: get_config is imported at module level, not redefined
+        self._combat_service.turn_interval_seconds = combat_config.game.combat_tick_interval
 
         # CRITICAL FIX: Pass connection_manager to CombatMessagingIntegration
         # If not provided, it will try to lazy-load from container (for backward compatibility)
         self._messaging_integration = CombatMessagingIntegration(connection_manager=connection_manager)
-        self._event_publisher = CombatEventPublisher(event_bus)
+        # CombatEventPublisher expects NATSService, not EventBus. Pass None to use global NATSService.
+        self._event_publisher = CombatEventPublisher(nats_service=None)
 
         # Initialize combat handlers
         self._handlers = NPCCombatHandlers(
@@ -445,7 +452,38 @@ class NPCCombatIntegrationService:  # pylint: disable=too-many-instance-attribut
         # Check if combat already exists, if not start new combat
         existing_combat = await self._combat_service.get_combat_by_participant(attacker_uuid)
         if existing_combat:
-            # Use existing combat
+            # Queue action for next round instead of executing immediately
+            queued = await self._combat_service.queue_combat_action(
+                combat_id=existing_combat.combat_id,
+                participant_id=attacker_uuid,
+                action_type="attack",
+                target_id=target_uuid,
+                damage=damage,
+            )
+            if queued:
+                logger.info(
+                    "Combat action queued",
+                    combat_id=existing_combat.combat_id,
+                    participant_id=attacker_uuid,
+                    target_id=target_uuid,
+                    round=existing_combat.combat_round + 1,
+                )
+                # Return a success result indicating action was queued
+                from server.models.combat import (
+                    CombatResult,  # noqa: PLC0415  # Reason: Local import to avoid circular dependency
+                )
+
+                return CombatResult(
+                    success=True,
+                    damage=0,  # Damage will be applied when action executes
+                    target_died=False,
+                    combat_ended=False,
+                    message="Action queued for next round",
+                    combat_id=existing_combat.combat_id,
+                )
+
+            # Fallback to immediate execution if queuing failed
+            logger.warning("Failed to queue action, executing immediately", participant_id=attacker_uuid)
             return await self._combat_service.process_attack(
                 attacker_id=attacker_uuid, target_id=target_uuid, damage=damage
             )

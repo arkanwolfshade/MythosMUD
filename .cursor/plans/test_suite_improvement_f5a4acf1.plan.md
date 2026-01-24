@@ -2,73 +2,120 @@
 name: Test Suite Improvement
 overview: Comprehensive remediation plan with detailed step-by-step instructions for addressing anti-patterns, best practice violations, and structural issues in the test suite.
 todos:
+
   - id: audit-autouse-fixtures
+
     content: Run grep to find all autouse fixtures and document which modify global state
     status: completed
+
   - id: add-remaining-serial-markers
+
     content: Add @pytest.mark.serial and @pytest.mark.xdist_group to tests missing them
     status: completed
     dependencies:
+
       - audit-autouse-fixtures
+
   - id: verify-worker-stability
+
     content: Run parallel tests to verify no worker crashes after serial marker fixes
     status: completed
     dependencies:
+
       - add-remaining-serial-markers
+
   - id: delete-weak-coverage-tests
+
     content: Delete weak tests in test_error_logging_coverage.py that only raise exceptions
     status: completed
+
   - id: fix-assert-true-movement
+
     content: Fix assert True in test_movement_service.py line ~782
     status: completed
+
   - id: fix-assert-true-error-logging
+
     content: Fix assert True in test_error_logging.py line ~342
     status: completed
+
   - id: fix-assert-true-event-system
+
     content: Fix assert True in test_event_system.py line ~437
     status: completed
+
   - id: fix-assert-true-health-monitor
+
     content: Fix assert True in test_health_monitor.py line ~737
     status: completed
+
   - id: fix-assert-true-security-middleware
+
     content: Fix assert True in test_security_middleware.py line ~539
     status: completed
+
   - id: define-test-markers
+
     content: Add slow/integration/security/e2e markers to pyproject.toml
     status: completed
+
   - id: apply-integration-markers
+
     content: Add pytestmark = pytest.mark.integration to all files in integration/
     status: completed
     dependencies:
+
       - define-test-markers
+
   - id: apply-security-markers
+
     content: Add pytestmark = pytest.mark.security to all files in security/
     status: completed
     dependencies:
+
       - define-test-markers
+
   - id: apply-performance-markers
+
     content: Add @pytest.mark.slow to all files in performance/
     status: completed
     dependencies:
+
       - define-test-markers
+
   - id: move-fixtures-tests
+
     content: Move test_error_logging.py from fixtures/ to unit/utils/
     status: completed
+
   - id: final-verification
+
     content: Run make test to verify all changes work correctly
     status: completed
     dependencies:
+
       - verify-worker-stability
+
       - delete-weak-coverage-tests
+
       - fix-assert-true-movement
+
       - fix-assert-true-error-logging
+
       - fix-assert-true-event-system
+
       - fix-assert-true-health-monitor
+
       - fix-assert-true-security-middleware
+
       - apply-integration-markers
+
       - apply-security-markers
+
       - apply-performance-markers
+
       - move-fixtures-tests
+
 ---
 
 # Test Suite Improvement Plan - Detailed Implementation Guide
@@ -146,6 +193,7 @@ with pytest.raises(SomeError):
 ```python
 # Verify that the service handled movements correctly
 # (no exceptions should have been raised)
+
 assert True  # If we get here, no exceptions were raised
 ```
 
@@ -155,6 +203,7 @@ assert True  # If we get here, no exceptions were raised
 # Verify the service completed without exceptions
 # The test implicitly passes if no exception was raised during execution
 # No explicit assertion needed - pytest will fail on any uncaught exception
+
 ```
 
 Or add a meaningful assertion like:
@@ -167,6 +216,7 @@ assert result is not None, "Movement service should return a result"
 
 ```python
 # If we get here without memory issues, the test passes
+
 assert True
 ```
 
@@ -193,8 +243,6 @@ markers = [
     "performance: marks performance benchmark tests",
 ]
 ```
-
-
 
 ### Task 3.2: Apply Markers to Existing Tests
 
@@ -237,13 +285,16 @@ pytestmark = pytest.mark.integration  # Marks all tests in this file
 **Goal:** Move test files from fixtures/ to proper test directories.**File to move:** [`server/tests/fixtures/test_error_logging.py`](server/tests/fixtures/test_error_logging.py)**Steps:**
 
 1. Read the file to understand what it tests
+
 2. Move to [`server/tests/unit/utils/test_error_logging_fixtures.py`](server/tests/unit/utils/) (or merge with existing test file)
+
 3. Update any imports if necessary
+
 4. Run tests to verify nothing broke:
+
 ```powershell
 uv run pytest server/tests/unit/utils/ -v 2>&1 | Select-Object -Last 20
 ```
-
 
 ---
 

@@ -38,6 +38,11 @@ export const CharacterSelectionScreen: React.FC<CharacterSelectionScreenProps> =
       });
 
       if (!response.ok) {
+        // Check for server unavailability (5xx errors)
+        if (response.status >= 500 && response.status < 600) {
+          throw new Error('Server is unavailable. Please try again later.');
+        }
+
         let errorMessage = 'Failed to load characters';
         try {
           const rawData: unknown = await response.json();
@@ -67,9 +72,35 @@ export const CharacterSelectionScreen: React.FC<CharacterSelectionScreenProps> =
       logger.info('CharacterSelectionScreen', 'Characters refreshed', { count: rawData.length });
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+
+      // Check if error indicates server unavailability
+      const errorLower = errorMessage.toLowerCase();
+      const serverUnavailablePatterns = [
+        'failed to fetch',
+        'network error',
+        'network request failed',
+        'connection refused',
+        'connection reset',
+        'connection closed',
+        'connection timeout',
+        'server is unavailable',
+        'service unavailable',
+        'bad gateway',
+        'gateway timeout',
+      ];
+
+      if (serverUnavailablePatterns.some(pattern => errorLower.includes(pattern))) {
+        // Pass server unavailability error to parent
+        onError('Server is unavailable. Please try again later.');
+        logger.error('CharacterSelectionScreen', 'Server unavailable when refreshing characters', {
+          error: errorMessage,
+        });
+        return;
+      }
+
       logger.error('CharacterSelectionScreen', 'Failed to refresh characters', { error: errorMessage });
     }
-  }, [baseUrl, authToken]);
+  }, [baseUrl, authToken, onError]);
 
   const handleDeleteClick = (characterId: string) => {
     setDeleteConfirm(characterId);

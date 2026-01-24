@@ -7,7 +7,9 @@
 
 ## Executive Summary
 
-This review identified **4 critical issues**, **3 high-priority issues**, and **2 medium-priority improvements** in the asyncio code patterns. The migration from SQLite to PostgreSQL has introduced several async/await anti-patterns that need immediate attention.
+This review identified **4 critical issues**, **3 high-priority issues**, and **2 medium-priority improvements** in the
+asyncio code patterns. The migration from SQLite to PostgreSQL has introduced several async/await anti-patterns that
+need immediate attention.
 
 ---
 
@@ -17,7 +19,8 @@ This review identified **4 critical issues**, **3 high-priority issues**, and **
 
 **Location**: `server/persistence.py` lines 1312-1351
 
-**Issue**: The async wrapper methods (`async_damage_player`, `async_heal_player`, `async_gain_experience`) directly call synchronous methods without using `asyncio.to_thread()`, which blocks the event loop.
+**Issue**: The async wrapper methods (`async_damage_player`, `async_heal_player`, `async_gain_experience`) directly call
+synchronous methods without using `asyncio.to_thread()`, which blocks the event loop.
 
 **Code**:
 
@@ -26,6 +29,7 @@ async def async_damage_player(self, player: Player, amount: int, damage_type: st
     """..."""
     # Since the underlying operations are synchronous (psycopg2),
     # we call the sync version directly
+
     self.damage_player(player, amount, damage_type)  # ❌ BLOCKS EVENT LOOP
 ```
 
@@ -42,6 +46,7 @@ async def async_damage_player(self, player: Player, amount: int, damage_type: st
 async def async_damage_player(self, player: Player, amount: int, damage_type: str = "physical") -> None:
     """Async wrapper for damage_player."""
     # Use asyncio.to_thread() to run blocking operations in thread pool
+
     await asyncio.to_thread(self.damage_player, player, amount, damage_type)
 ```
 
@@ -55,7 +60,8 @@ async def async_damage_player(self, player: Player, amount: int, damage_type: st
 
 **Location**: `server/realtime/connection_manager.py` line 1156
 
-**Issue**: `asyncio.run()` is called as a fallback when no event loop is detected, but this can fail if called from within an existing event loop context.
+**Issue**: `asyncio.run()` is called as a fallback when no event loop is detected, but this can fail if called from
+within an existing event loop context.
 
 **Code**:
 
@@ -65,6 +71,7 @@ try:
     loop.create_task(self._check_and_process_disconnect(player_id))
 except RuntimeError:
     # No running loop in this thread; execute synchronously
+
     asyncio.run(self._check_and_process_disconnect(player_id))  # ❌ DANGEROUS
 ```
 
@@ -83,11 +90,13 @@ try:
 except RuntimeError:
     # No running loop - schedule for execution when loop is available
     # Or use a thread-safe queue to defer execution
+
     logger.warning(
         "No event loop available for disconnect processing",
         player_id=player_id
     )
     # Schedule for later execution via a background task or queue
+
 ```
 
 **Alternative Fix**: Use `asyncio.run_coroutine_threadsafe()` if you have access to the loop from another thread.
@@ -98,7 +107,8 @@ except RuntimeError:
 
 **Location**: `server/async_persistence.py` lines 125-143
 
-**Issue**: The asyncpg connection pool is created but there's no guarantee it's properly closed during application shutdown or error conditions.
+**Issue**: The asyncpg connection pool is created but there's no guarantee it's properly closed during application
+shutdown or error conditions.
 
 **Code**:
 
@@ -135,6 +145,7 @@ async def close(self) -> None:
 
 ```python
 # In server/app/lifespan.py or ApplicationContainer
+
 async def shutdown(self):
     """Cleanup resources on shutdown."""
     if hasattr(self, 'async_persistence') and self.async_persistence:
@@ -149,7 +160,8 @@ async def shutdown(self):
 
 **Location**: `server/async_persistence.py` line 129
 
-**Issue**: `asyncpg.create_pool()` can raise exceptions (connection errors, authentication failures) that aren't caught, causing unhandled exceptions.
+**Issue**: `asyncpg.create_pool()` can raise exceptions (connection errors, authentication failures) that aren't caught,
+causing unhandled exceptions.
 
 **Code**:
 
@@ -204,19 +216,23 @@ async def _get_pool(self) -> asyncpg.Pool:
 
 **Location**: `server/database.py` lines 205-241
 
-**Issue**: Complex logic for detecting event loop changes and recreating the engine, but edge cases may exist where the engine is used in a different loop without detection.
+**Issue**: Complex logic for detecting event loop changes and recreating the engine, but edge cases may exist where the
+engine is used in a different loop without detection.
 
 **Code**:
 
 ```python
 # CRITICAL: Check if we're in a different event loop than when engine was created
+
 try:
     current_loop = asyncio.get_running_loop()
     current_loop_id = id(current_loop)
     if self._creation_loop_id is not None and current_loop_id != self._creation_loop_id:
         # Dispose and recreate...
+
 except RuntimeError:
     # No running loop - that's okay, engine will be created when needed
+
     pass
 ```
 
@@ -234,7 +250,8 @@ except RuntimeError:
 
 **Location**: `server/persistence.py` throughout
 
-**Issue**: The synchronous `PersistenceLayer` uses `psycopg2` (blocking driver) but is called from async contexts via wrapper methods.
+**Issue**: The synchronous `PersistenceLayer` uses `psycopg2` (blocking driver) but is called from async contexts via
+wrapper methods.
 
 **Impact**:
 
@@ -254,7 +271,8 @@ except RuntimeError:
 
 **Location**: `server/async_persistence.py` lines 403-461
 
-**Issue**: `save_players()` uses explicit transaction, but error handling may not properly rollback on all failure paths.
+**Issue**: `save_players()` uses explicit transaction, but error handling may not properly rollback on all failure
+paths.
 
 **Code**:
 
@@ -264,6 +282,7 @@ async with pool.acquire() as conn:
         for player in players:
             try:
                 # ... save player ...
+
             except (ValueError, TypeError, KeyError) as e:
                 self._logger.warning(...)
                 continue  # ⚠️ Continues loop but transaction still active
@@ -315,9 +334,11 @@ self._pool = await asyncpg.create_pool(
 row = await conn.fetchrow(f"SELECT {PLAYER_COLUMNS} FROM players WHERE name = $1", name)
 ```
 
-**Note**: This is actually safe because `PLAYER_COLUMNS` is a constant, not user input. However, the pattern could be clearer.
+**Note**: This is actually safe because `PLAYER_COLUMNS` is a constant, not user input. However, the pattern could be
+clearer.
 
-**Recommendation**: Consider using SQLAlchemy Core or a query builder for better type safety, or at least document that column names are constants.
+**Recommendation**: Consider using SQLAlchemy Core or a query builder for better type safety, or at least document that
+column names are constants.
 
 ---
 
@@ -342,14 +363,14 @@ row = await conn.fetchrow(f"SELECT {PLAYER_COLUMNS} FROM players WHERE name = $1
 
 ### Short-term (High Priority)
 
-5. Review event loop change detection logic
-6. Plan migration from sync to async persistence
-7. Review transaction error handling
+1. Review event loop change detection logic
+2. Plan migration from sync to async persistence
+3. Review transaction error handling
 
 ### Long-term (Medium Priority)
 
-8. Make connection pool sizes configurable
-9. Consider query builder for type safety
+1. Make connection pool sizes configurable
+2. Consider query builder for type safety
 
 ---
 
@@ -364,7 +385,8 @@ row = await conn.fetchrow(f"SELECT {PLAYER_COLUMNS} FROM players WHERE name = $1
 
 ## 📚 REFERENCES
 
-- [asyncio Best Practices](./.cursor/rules/asyncio.mdc)
+[asyncio Best Practices](./.cursor/rules/asyncio.mdc)
+
 - [PostgreSQL asyncpg Documentation](https://magicstack.github.io/asyncpg/)
 - [Python asyncio Documentation](https://docs.python.org/3/library/asyncio.html)
 

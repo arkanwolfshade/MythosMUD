@@ -22,12 +22,15 @@ NPC death messages are not appearing in the Game Info panel because the client-s
 ### Phase 1: Bug Report Analysis
 
 **Bug Description Parsed**:
-- **Symptom**: NPC death messages not displaying in Game Info panel
-- **Affected Component**: Client-side UI (Game Info Panel)
-- **Expected Behavior**: NPC death messages should appear in Game Info panel when NPCs die
+**Symptom**: NPC death messages not displaying in Game Info panel
+
+**Affected Component**: Client-side UI (Game Info Panel)
+
+**Expected Behavior**: NPC death messages should appear in Game Info panel when NPCs die
 - **Actual Behavior**: No NPC death messages appear in Game Info panel
 
 **Affected Systems Identified**:
+
 1. Server-side: NPC death event broadcasting (`CombatService`, `NATSMessageHandler`)
 2. Server-side: Combat messaging integration (`CombatMessagingIntegration`)
 3. Client-side: Event processing (`GameClientV2Container`)
@@ -40,6 +43,7 @@ NPC death messages are not appearing in the Game Info panel because the client-s
 **Server Status**: No server errors related to NPC death event broadcasting found in recent logs.
 
 **Log Analysis**:
+
 - No specific errors for NPC death message broadcasting
 - Server appears to be broadcasting events successfully (no broadcast errors found)
 - Error logs contain unrelated issues (UUID serialization errors, WebSocket connection errors)
@@ -58,6 +62,7 @@ NPC death messages are not appearing in the Game Info panel because the client-s
             # Publish death event if target died
             # BUGFIX: Enhanced logging and defensive exception handling to prevent disconnections
             # during NPC death event publishing. See: investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md
+
             if target_died and target.participant_type == CombatParticipantType.NPC:
                 logger.info(
                     "NPC died in combat - starting death event handling",
@@ -92,11 +97,13 @@ NPC death messages are not appearing in the Game Info panel because the client-s
                 return
 
             # Import here to avoid circular imports
+
             from server.events.event_types import NPCDied
 
             # Broadcast death event to room clients using injected connection_manager
             # AI: Room state mutation is handled by NPCLeftRoom event from lifecycle manager
             # AI: This prevents duplicate removal attempts and maintains single source of truth
+
             await self.connection_manager.broadcast_room_event("npc_died", room_id, data)
             logger.debug("NPC died event broadcasted", room_id=room_id, npc_id=npc_id, npc_name=npc_name)
 ```
@@ -126,12 +133,14 @@ NPC death messages are not appearing in the Game Info panel because the client-s
         )
 
         # Generate death messages
+
         messages = {
             "death_message": f"{npc_name} dies.",
             "xp_reward": f"You gain {xp_reward} experience points.",
         }
 
         # Create death event
+
         death_event = build_event(
             "combat_death",
             {
@@ -144,6 +153,7 @@ NPC death messages are not appearing in the Game Info panel because the client-s
         )
 
         # Broadcast to all players in the room
+
         broadcast_stats = await self.connection_manager.broadcast_to_room(room_id, death_event)
 
         logger.debug(
@@ -165,6 +175,7 @@ NPC death messages are not appearing in the Game Info panel because the client-s
 The client processes events in `processEventQueue()` function with a switch statement. **CRITICAL FINDING**: No handler exists for `combat_death` or `npc_died` event types.
 
 **Handled Event Types**:
+
 - `game_state`
 - `room_update` / `room_state`
 - `lucidity_change`
@@ -183,8 +194,9 @@ The client processes events in `processEventQueue()` function with a switch stat
 - `player_respawned`
 
 **Missing Event Handlers**:
-- ❌ `combat_death` - **NOT HANDLED**
-- ❌ `npc_died` - **NOT HANDLED**
+❌ `combat_death` - **NOT HANDLED**
+
+❌ `npc_died` - **NOT HANDLED**
 
 **Default Case Behavior** (`client/src/components/ui-v2/GameClientV2Container.tsx:866-872`):
 
@@ -229,9 +241,11 @@ The `GameInfoPanel` correctly receives and displays messages from the `messages`
 
 #### Code References
 
-- **Server NPC Death Broadcast**: `server/realtime/nats_message_handler.py:1986` - broadcasts `"npc_died"` events
-- **Server Combat Death Event**: `server/services/combat_messaging_integration.py:273-274` - creates `"combat_death"` events (currently unused)
-- **Client Event Processing**: `client/src/components/ui-v2/GameClientV2Container.tsx:866-872` - default case for unhandled events
+**Server NPC Death Broadcast**: `server/realtime/nats_message_handler.py:1986` - broadcasts `"npc_died"` events
+
+**Server Combat Death Event**: `server/services/combat_messaging_integration.py:273-274` - creates `"combat_death"` events (currently unused)
+
+**Client Event Processing**: `client/src/components/ui-v2/GameClientV2Container.tsx:866-872` - default case for unhandled events
 - **Client Message Display**: `client/src/components/ui-v2/panels/GameInfoPanel.tsx:37-38` - supports combat message type
 
 ---
@@ -243,11 +257,13 @@ The `GameInfoPanel` correctly receives and displays messages from the `messages`
 **PRIMARY ROOT CAUSE**: Missing client-side event handlers for NPC death events.
 
 The server correctly broadcasts NPC death events to clients:
+
 1. `NPCDiedEvent` is published to NATS by `CombatService`
 2. `NATSMessageHandler` receives the NATS message and broadcasts `"npc_died"` room events via WebSocket
 3. Events are successfully sent to connected clients
 
 However, the client-side event processing in `GameClientV2Container.tsx` does not include handlers for:
+
 - `npc_died` events (currently broadcast by server)
 - `combat_death` events (available in codebase but not currently used)
 
@@ -256,15 +272,18 @@ When these events arrive at the client, they fall through to the default case wh
 #### Why This Happened
 
 Based on code comments and architecture:
+
 1. The system migrated from `broadcast_combat_death()` to NATS-based `NPCDiedEvent` publishing
 2. Client-side handlers were not updated to handle the new `npc_died` event type
 3. The old `combat_death` event handler was never implemented on the client side
 
 #### Related Systems
 
-- **Combat System**: Correctly detects NPC death and publishes events
-- **NATS Message System**: Correctly routes NPC death events to clients
-- **WebSocket Broadcasting**: Successfully delivers events to connected clients
+**Combat System**: Correctly detects NPC death and publishes events
+
+**NATS Message System**: Correctly routes NPC death events to clients
+
+**WebSocket Broadcasting**: Successfully delivers events to connected clients
 - **Client Event Queue**: Successfully receives events but doesn't process NPC death types
 
 ---
@@ -273,18 +292,22 @@ Based on code comments and architecture:
 
 ### Scope
 
-- **Affected Component**: Client-side Game Info Panel message display
-- **Affected Users**: All players engaging in NPC combat
-- **Severity**: Medium - Reduces game feedback and immersion but does not break core functionality
+**Affected Component**: Client-side Game Info Panel message display
+
+**Affected Users**: All players engaging in NPC combat
+
+**Severity**: Medium - Reduces game feedback and immersion but does not break core functionality
 
 ### Impact
 
 **User Experience**:
+
 - Players do not see NPC death messages in the Game Info panel
 - Reduced combat feedback and immersion
 - Players may be uncertain if NPCs actually died
 
 **System Functionality**:
+
 - NPC death detection works correctly on server
 - NPC respawning system works correctly
 - XP awards work correctly
@@ -292,7 +315,8 @@ Based on code comments and architecture:
 
 ### Dependencies
 
-- No other systems depend on NPC death messages being displayed
+No other systems depend on NPC death messages being displayed
+
 - Combat system functions independently of message display
 - NPC lifecycle management functions independently
 
@@ -303,11 +327,13 @@ Based on code comments and architecture:
 ### Server-Side Evidence
 
 **1. NPC Death Event Broadcasting**:
+
 - File: `server/realtime/nats_message_handler.py`
 - Lines: 1986
 - Evidence: `await self.connection_manager.broadcast_room_event("npc_died", room_id, data)`
 
 **2. Combat Death Event Creation**:
+
 - File: `server/services/combat_messaging_integration.py`
 - Lines: 273-274
 - Evidence: `death_event = build_event("combat_death", {...}, room_id=room_id)`
@@ -315,16 +341,19 @@ Based on code comments and architecture:
 ### Client-Side Evidence
 
 **1. Missing Event Handlers**:
+
 - File: `client/src/components/ui-v2/GameClientV2Container.tsx`
 - Lines: 289-872
 - Evidence: Switch statement contains no cases for `combat_death` or `npc_died`
 
 **2. Default Case Behavior**:
+
 - File: `client/src/components/ui-v2/GameClientV2Container.tsx`
 - Lines: 866-872
 - Evidence: Unhandled events only logged, no messages created
 
 **3. Message Type Support**:
+
 - File: `client/src/components/ui-v2/panels/GameInfoPanel.tsx`
 - Lines: 37-38
 - Evidence: `case 'combat': return 'text-mythos-terminal-warning font-bold';`
@@ -338,12 +367,14 @@ Based on code comments and architecture:
 **Action Required**: Add event handlers for NPC death events in `GameClientV2Container.tsx`
 
 **Recommended Implementation**:
+
 1. Add handler for `npc_died` events that extracts NPC name and creates death message
 2. Optionally add handler for `combat_death` events for future compatibility
 3. Format messages consistently with existing combat messages
 4. Add messages to the messages array using `appendMessage()` function
 
 **Investigation Notes**:
+
 - Server broadcasts `npc_died` events with data: `{room_id, npc_id, npc_name, ...}`
 - `combat_death` events contain structured messages: `{death_message, xp_reward}`
 - Follow existing patterns from `npc_attacked` and `player_attacked` handlers
@@ -353,6 +384,7 @@ Based on code comments and architecture:
 **Action Required**: Confirm exact structure of `npc_died` event data from server
 
 **Investigation Notes**:
+
 - Check what fields are included in `npc_died` events
 - Verify XP reward information is available
 - Ensure message formatting matches player expectations
@@ -362,6 +394,7 @@ Based on code comments and architecture:
 **Action Required**: Create test scenarios to verify NPC death messages display correctly
 
 **Test Scenarios**:
+
 1. NPC dies from player attack - verify death message appears
 2. NPC dies with XP reward - verify XP message appears
 3. Multiple NPCs die in sequence - verify all messages display
@@ -409,7 +442,8 @@ REFERENCE IMPLEMENTATION:
 
 ## INVESTIGATION COMPLETION CHECKLIST
 
-- [x] All investigation steps completed as written
+[x] All investigation steps completed as written
+
 - [x] Comprehensive evidence collected and documented
 - [x] Root cause analysis completed
 - [x] System impact assessed

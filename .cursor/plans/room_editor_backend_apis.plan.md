@@ -6,9 +6,10 @@ Based on the frontend implementation in `client/src/components/map/utils/saveMap
 
 ### Already Implemented
 
-- `POST /api/rooms/{room_id}/position` - Updates room map coordinates (map_x, map_y)
-  - Location: `server/api/rooms.py`
-  - Status: ✅ Fully functional
+`POST /api/rooms/{room_id}/position` - Updates room map coordinates (map_x, map_y)
+
+- Location: `server/api/rooms.py`
+- Status: ✅ Fully functional
 
 ### Missing APIs
 
@@ -167,7 +168,8 @@ The frontend is already calling these APIs (or will call them) through:
 
 ## Testing Considerations
 
-- Unit tests for repository methods
+Unit tests for repository methods
+
 - Integration tests for API endpoints
 - Test admin authentication
 - Test validation (non-existent rooms, invalid directions, etc.)

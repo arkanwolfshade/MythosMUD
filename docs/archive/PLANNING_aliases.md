@@ -21,13 +21,16 @@ class Alias(BaseModel):
     # parameters: dict = Field(default_factory=dict, description="Parameter definitions for future use")
     # conditions: dict = Field(default_factory=dict, description="Conditional logic for future use")
     # metadata: dict = Field(default_factory=dict, description="Additional metadata")
+
 ```
 
 ### Storage Structure
 
-- **Location**: `data/players/aliases/` (production)
-- **Format**: One JSON file per player: `{player_name}_aliases.json`
-- **Schema**: Validated JSON structure with version tracking
+**Location**: `data/players/aliases/` (production)
+
+**Format**: One JSON file per player: `{player_name}_aliases.json`
+
+**Schema**: Validated JSON structure with version tracking
 
 ### JSON Schema
 
@@ -79,31 +82,41 @@ class Alias(BaseModel):
 ### Phase 1: MVP Core (Priority: High)
 
 #### 1.1 Data Model and Storage
-- [ ] Create `Alias` model in `server/models.py`
+
+[ ] Create `Alias` model in `server/models.py`
+
 - [ ] Implement alias storage in `data/players/aliases/` (production)
 - [ ] Add JSON schema validation
 - [ ] Create alias loading/saving utilities
 
 #### 1.2 Command Integration
-- [ ] Add alias management commands to `server/command_handler.py`
+
+[ ] Add alias management commands to `server/command_handler.py`
+
 - [ ] Implement alias expansion in command processing pipeline
 - [ ] Add server-side caching for alias lookups
 
 #### 1.3 Client Integration
-- [ ] Add visual indicators for alias usage in `client/src/components/GameTerminal.tsx`
+
+[ ] Add visual indicators for alias usage in `client/src/components/GameTerminal.tsx`
+
 - [ ] Implement expanded command display
 - [ ] Add success/error message handling
 
 ### Phase 2: Security & Polish (Priority: Medium)
 
 #### 2.1 Security Implementation
-- [ ] Implement reserved command blocking
+
+[ ] Implement reserved command blocking
+
 - [ ] Add infinite loop detection
 - [ ] Implement spam prevention (rate limiting)
 - [ ] Add communication command blocking
 
 #### 2.2 User Experience
-- [ ] Add confirmation prompts for overwrite/delete
+
+[ ] Add confirmation prompts for overwrite/delete
+
 - [ ] Implement comprehensive error handling
 - [ ] Add user feedback messages
 - [ ] Format alias list display
@@ -111,13 +124,17 @@ class Alias(BaseModel):
 ### Phase 3: Testing & Documentation (Priority: Medium)
 
 #### 3.1 Testing
-- [ ] Create comprehensive test suite
+
+[ ] Create comprehensive test suite
+
 - [ ] Add integration tests for command processing
 - [ ] Test client-side visual indicators
 - [ ] Performance testing with multiple aliases
 
 #### 3.2 Documentation
-- [ ] Create user help commands
+
+[ ] Create user help commands
+
 - [ ] Document JSON storage format
 - [ ] Add developer documentation
 - [ ] Create troubleshooting guides
@@ -136,27 +153,33 @@ class Alias(BaseModel):
 
 ```python
 # Create/update alias
+
 alias <name> <command>
 
 # Remove alias
+
 unalias <name>
 
 # List all aliases
+
 aliases
 
 # Show specific alias
+
 alias <name>
 ```
 
 ### Reserved Commands
 
-- `alias`, `aliases`, `unalias` (management commands)
+`alias`, `aliases`, `unalias` (management commands)
+
 - `help` (system command)
 - Future: Communication commands for spam prevention
 
 ### Error Handling
 
-- Invalid alias names (must start with letter)
+Invalid alias names (must start with letter)
+
 - Reserved command attempts
 - Non-existent target commands
 - Maximum alias limits (50 per player, 200 chars)
@@ -165,7 +188,8 @@ alias <name>
 
 ### Performance Considerations
 
-- Hash table lookup for O(1) alias resolution
+Hash table lookup for O(1) alias resolution
+
 - Server-side caching of alias data
 - Efficient JSON parsing and validation
 - Minimal impact on command processing time
@@ -175,7 +199,8 @@ alias <name>
 ### Parameter-Based Aliases (Future)
 
 ```python
-# Example future syntax:
+# Example future syntax
+
 alias heal cast 'heal' $1
 alias attack wield sword;kill $1
 ```
@@ -183,14 +208,16 @@ alias attack wield sword;kill $1
 ### Multi-Command Aliases (Future)
 
 ```python
-# Example future syntax:
+# Example future syntax
+
 alias combat k $1;f
 alias gohome recall;quit
 ```
 
 ### Extensible Design
 
-- Version field for schema evolution
+Version field for schema evolution
+
 - Placeholder fields for future features
 - Modular alias processor interface
 - Backward compatibility for simple aliases
@@ -198,26 +225,33 @@ alias gohome recall;quit
 ## Testing Strategy
 
 ### Unit Tests
-- Alias model validation
+
+Alias model validation
+
 - JSON schema validation
 - Command parsing and expansion
 - Error handling scenarios
 
 ### Integration Tests
-- End-to-end alias creation and usage
+
+End-to-end alias creation and usage
+
 - WebSocket communication with aliases
 - Client-side visual indicators
 - Performance with multiple aliases
 
 ### Security Tests
-- Reserved command bypass attempts
+
+Reserved command bypass attempts
+
 - Infinite loop creation attempts
 - Spam prevention effectiveness
 - Rate limiting validation
 
 ## Success Metrics
 
-- [ ] Players can successfully create and use aliases
+[ ] Players can successfully create and use aliases
+
 - [ ] No performance impact on command processing
 - [ ] 80%+ test coverage
 - [ ] Clear user documentation
@@ -238,7 +272,8 @@ When implementing this feature:
 
 ## Related Files
 
-- `server/models.py` - Alias model definition
+`server/models.py` - Alias model definition
+
 - `server/command_handler.py` - Command processing and alias management
 - `client/src/components/GameTerminal.tsx` - Client-side visual indicators
 - `data/players/aliases/` - Alias storage directory (production)

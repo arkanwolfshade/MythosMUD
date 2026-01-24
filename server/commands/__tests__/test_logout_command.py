@@ -54,7 +54,7 @@ class TestLogoutCommand:
             command_data={"args": []},
             current_user=mock_current_user,
             request=mock_request,
-            alias_storage=mock_alias_storage,
+            _alias_storage=mock_alias_storage,
             player_name="testplayer",
         )
 
@@ -93,7 +93,7 @@ class TestLogoutCommand:
             command_data={"args": []},
             current_user=mock_current_user,
             request=mock_request,
-            alias_storage=mock_alias_storage,
+            _alias_storage=mock_alias_storage,
             player_name="testplayer",
         )
 
@@ -111,7 +111,7 @@ class TestLogoutCommand:
             command_data={"args": []},
             current_user=mock_current_user,
             request=mock_request,
-            alias_storage=mock_alias_storage,
+            _alias_storage=mock_alias_storage,
             player_name="testplayer",
         )
 
@@ -139,7 +139,7 @@ class TestLogoutCommand:
             command_data={"args": []},
             current_user=mock_current_user,
             request=mock_request,
-            alias_storage=mock_alias_storage,
+            _alias_storage=mock_alias_storage,
             player_name="testplayer",
         )
 
@@ -173,7 +173,7 @@ class TestLogoutCommand:
             command_data={"args": []},
             current_user=mock_current_user,
             request=mock_request,
-            alias_storage=mock_alias_storage,
+            _alias_storage=mock_alias_storage,
             player_name="testplayer",
         )
 
@@ -204,7 +204,7 @@ class TestLogoutCommand:
             command_data={"args": ["force", "now"]},
             current_user=mock_current_user,
             request=mock_request,
-            alias_storage=mock_alias_storage,
+            _alias_storage=mock_alias_storage,
             player_name="testplayer",
         )
 
@@ -230,7 +230,7 @@ class TestLogoutCommand:
             command_data={"args": []},
             current_user=mock_current_user,
             request=mock_request,
-            alias_storage=mock_alias_storage,
+            _alias_storage=mock_alias_storage,
             player_name="testplayer",
         )
 
@@ -261,7 +261,7 @@ class TestLogoutCommand:
             command_data={"args": []},
             current_user=mock_current_user,
             request=mock_request,
-            alias_storage=mock_alias_storage,
+            _alias_storage=mock_alias_storage,
             player_name="testplayer",
         )
 

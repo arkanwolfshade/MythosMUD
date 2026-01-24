@@ -10,7 +10,7 @@ understanding the deeper mysteries of our digital realm.
 # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Error logging requires many parameters for complete error context
 
 import traceback
-from typing import Any, NoReturn
+from typing import Any, NoReturn, cast
 
 from fastapi import HTTPException, Request
 from fastapi.websockets import WebSocket
@@ -113,9 +113,9 @@ def log_and_raise(  # pylint: disable=too-many-arguments,too-many-positional-arg
     # Increment exception counter for monitoring
     try:
         increment_exception(exception_class.__name__)
-    except Exception:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Monitoring errors must never break error propagation
-        # Monitoring must never break error propagation
-        pass
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Monitoring errors must never break error propagation
+        # nosec B110 - Intentional silent handling: Monitoring errors must never break error propagation
+        logger.debug("Failed to increment exception counter, continuing with error propagation", exc_info=e)
 
     # Raise the exception
     raise exception_class(
@@ -322,12 +322,16 @@ def wrap_third_party_exception(
     )
 
     # Create and return the MythosMUD error
-    return mythos_error_class(
-        message=f"Third-party exception: {str(exc)}",
-        context=context,
-        details=details,
-        user_friendly="An internal error occurred. Please try again.",
+    result: MythosMUDError = cast(
+        MythosMUDError,
+        mythos_error_class(
+            message=f"Third-party exception: {str(exc)}",
+            context=context,
+            details=details,
+            user_friendly="An internal error occurred. Please try again.",
+        ),
     )
+    return result
 
 
 def log_error_with_context(
@@ -370,8 +374,9 @@ def log_error_with_context(
     # Increment exception counter for monitoring
     try:
         increment_exception(error.__class__.__name__)
-    except Exception:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Monitoring errors must never break error propagation
-        pass
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Monitoring errors must never break error propagation
+        # nosec B110 - Intentional silent handling: Monitoring errors must never break error propagation
+        logger.debug("Failed to increment exception counter, continuing with error propagation", exc_info=e)
 
 
 def create_logged_http_exception(
@@ -414,3 +419,6 @@ def create_logged_http_exception(
 
     # Create and return the HTTPException
     return HTTPException(status_code=status_code, detail=detail)
+
+
+__all__ = ["create_error_context", "log_and_raise", "log_and_raise_http"]

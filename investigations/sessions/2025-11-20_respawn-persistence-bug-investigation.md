@@ -76,6 +76,7 @@ The persistence log shows no errors during respawn operations, suggesting the co
 def set_stats(self, stats: dict[str, Any]) -> None:
     """Set player stats from dictionary."""
     # With JSONB, SQLAlchemy accepts dict directly
+
     self.stats = stats  # type: ignore[assignment]
 ```
 
@@ -101,6 +102,7 @@ stats = Column(
         "strength": 10,
         "dexterity": 10,
         # ... default stats
+
     },
 )
 ```
@@ -123,11 +125,14 @@ def get_stats(self) -> dict[str, Any]:
     try:
         if isinstance(self.stats, dict):
             # JSONB column returns dict directly
+
             stats = cast(dict[str, Any], self.stats)
         elif isinstance(self.stats, str):
             # Fallback for TEXT column (backward compatibility)
+
             stats = cast(dict[str, Any], json.loads(self.stats))
         # ...
+
         return stats
 ```
 
@@ -144,16 +149,20 @@ def get_stats(self) -> dict[str, Any]:
 
 **File**: `server/services/player_respawn_service.py`
 
-- **Line 163**: `stats = player.get_stats()` - Returns dict reference
-- **Line 165**: `stats["current_health"] = 100` - In-place mutation
-- **Line 173**: `player.set_stats(stats)` - Reassignment of same object
+**Line 163**: `stats = player.get_stats()` - Returns dict reference
+
+**Line 165**: `stats["current_health"] = 100` - In-place mutation
+
+**Line 173**: `player.set_stats(stats)` - Reassignment of same object
 - **Line 193**: `await session.commit()` - Commit without explicit change flagging
 
 **File**: `server/models/player.py`
 
-- **Line 54-72**: Plain JSONB column (no mutation tracking)
-- **Line 146-149**: `set_stats()` simply reassigns dict
-- **Line 104-144**: `get_stats()` returns same dict object reference
+**Line 54-72**: Plain JSONB column (no mutation tracking)
+
+**Line 146-149**: `set_stats()` simply reassigns dict
+
+**Line 104-144**: `get_stats()` returns same dict object reference
 
 **Missing Pattern**: No use of `flag_modified()` or `MutableDict` for stats column mutation tracking.
 
@@ -228,9 +237,11 @@ The persistence fails because:
 
 **Impact Scope**:
 
-- **All players** affected when they respawn
-- **Critical game mechanic** (death/respawn) completely broken
-- **Player experience** severely degraded (can't progress after death)
+**All players** affected when they respawn
+
+**Critical game mechanic** (death/respawn) completely broken
+
+**Player experience** severely degraded (can't progress after death)
 
 **Affected Functionality**:
 
@@ -256,6 +267,7 @@ The persistence fails because:
 ```136:223:server/services/player_respawn_service.py
 async def respawn_player(self, player_id: uuid.UUID, session: AsyncSession) -> bool:
     # ... code that modifies stats in-place
+
     stats = player.get_stats()
     stats["current_health"] = 100
     player.set_stats(stats)
@@ -270,6 +282,7 @@ stats = Column(
     nullable=False,
     default=lambda: {
         # ... default stats
+
     },
 )
 ```
@@ -280,6 +293,7 @@ stats = Column(
 def set_stats(self, stats: dict[str, Any]) -> None:
     """Set player stats from dictionary."""
     # With JSONB, SQLAlchemy accepts dict directly
+
     self.stats = stats  # type: ignore[assignment]
 ```
 
@@ -289,6 +303,7 @@ def set_stats(self, stats: dict[str, Any]) -> None:
 def get_stats(self) -> dict[str, Any]:
     """Get player stats as dictionary."""
     # ... returns same dict object reference
+
     if isinstance(self.stats, dict):
         stats = cast(dict[str, Any], self.stats)
     return stats
@@ -342,6 +357,7 @@ In `server/services/player_respawn_service.py`, after calling `player.set_stats(
 from sqlalchemy.orm.attributes import flag_modified
 
 # After line 173: player.set_stats(stats)
+
 flag_modified(player, 'stats')
 ```
 
@@ -355,11 +371,13 @@ Update the Player model to use `MutableDict.as_mutable(JSONB)` for the stats col
 from sqlalchemy.ext.mutable import MutableDict
 
 # In server/models/player.py, update the stats column definition
+
 stats = Column(
     MutableDict.as_mutable(JSONB),
     nullable=False,
     default=lambda: {
         # ... default stats
+
     },
 )
 ```
@@ -371,11 +389,13 @@ This automatically tracks all mutations to the stats dict, making it the proper 
 Instead of modifying the dict in-place, create a new dict object:
 
 ```python
-# In respawn_player(), instead of:
+# In respawn_player(), instead of
+
 stats = player.get_stats()
 stats["current_health"] = 100
 
-# Do:
+# Do
+
 stats = player.get_stats().copy()  # Create new dict
 stats["current_health"] = 100
 player.set_stats(stats)  # Now SQLAlchemy detects new object reference
@@ -401,7 +421,8 @@ After implementing the fix:
 
 ## INVESTIGATION COMPLETION CHECKLIST
 
-- [x] All investigation steps completed as written
+[x] All investigation steps completed as written
+
 - [x] Comprehensive evidence collected and documented
 - [x] Root cause analysis completed
 - [x] System impact assessed

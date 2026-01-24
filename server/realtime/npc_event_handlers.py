@@ -107,7 +107,8 @@ class NPCEventHandler:
         import json
 
         try:
-            return json.loads(behavior_config)
+            result: dict[str, Any] | None = cast(dict[str, Any] | None, json.loads(behavior_config))
+            return result
         except (json.JSONDecodeError, ValueError):
             return None
 
@@ -209,7 +210,8 @@ class NPCEventHandler:
             # Check each exit to find the one that leads to to_room_id
             for direction, target_room_id in from_room.exits.items():
                 if target_room_id == to_room_id:
-                    return direction
+                    result: str = cast(str, direction)
+                    return result
 
             return None
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Direction determination errors unpredictable, must return None

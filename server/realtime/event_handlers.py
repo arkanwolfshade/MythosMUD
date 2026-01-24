@@ -19,7 +19,7 @@ logger = get_logger("communications.event_handlers")
 class EventHandler:
     """Handler for NATS event messages."""
 
-    def __init__(self, connection_manager):
+    def __init__(self, connection_manager: Any) -> None:
         """
         Initialize event handler.
 
@@ -63,7 +63,7 @@ class EventHandler:
             return False
         return True
 
-    async def handle_event_message(self, message_data: dict[str, Any]):
+    async def handle_event_message(self, message_data: dict[str, Any]) -> None:
         """
         Handle incoming event messages from NATS.
 
@@ -104,7 +104,7 @@ class EventHandler:
         except NATSError as e:
             logger.error("Error handling event message", error=str(e), message_data=message_data)
 
-    async def handle_player_entered_event(self, data: dict[str, Any]):
+    async def handle_player_entered_event(self, data: dict[str, Any]) -> None:
         """
         Handle player_entered event.
 
@@ -129,7 +129,7 @@ class EventHandler:
         except NATSError as e:
             logger.error("Error handling player entered event", error=str(e), data=data)
 
-    async def handle_player_left_event(self, data: dict[str, Any]):
+    async def handle_player_left_event(self, data: dict[str, Any]) -> None:
         """
         Handle player_left event.
 
@@ -154,7 +154,7 @@ class EventHandler:
         except NATSError as e:
             logger.error("Error handling player left event", error=str(e), data=data)
 
-    async def handle_game_tick_event(self, data: dict[str, Any]):
+    async def handle_game_tick_event(self, data: dict[str, Any]) -> None:
         """
         Handle game_tick event.
 
@@ -173,7 +173,7 @@ class EventHandler:
         except NATSError as e:
             logger.error("Error handling game tick event", error=str(e), data=data)
 
-    async def handle_combat_started_event(self, data: dict[str, Any]):
+    async def handle_combat_started_event(self, data: dict[str, Any]) -> None:
         """Handle combat_started event."""
         try:
             room_id = data.get("room_id")
@@ -215,7 +215,7 @@ class EventHandler:
         except NATSError as e:
             logger.error("Error handling combat started event", error=str(e), data=data)
 
-    async def handle_combat_ended_event(self, data: dict[str, Any]):
+    async def handle_combat_ended_event(self, data: dict[str, Any]) -> None:
         """Handle combat_ended event."""
         try:
             room_id = data.get("room_id")
@@ -257,7 +257,7 @@ class EventHandler:
         except NATSError as e:
             logger.error("Error handling combat ended event", error=str(e), data=data)
 
-    async def handle_player_attacked_event(self, data: dict[str, Any]):
+    async def handle_player_attacked_event(self, data: dict[str, Any]) -> None:
         """Handle player_attacked event."""
         try:
             room_id = data.get("room_id")
@@ -272,7 +272,7 @@ class EventHandler:
         except NATSError as e:
             logger.error("Error handling player attacked event", error=str(e), data=data)
 
-    async def handle_npc_attacked_event(self, data: dict[str, Any]):
+    async def handle_npc_attacked_event(self, data: dict[str, Any]) -> None:
         """Handle npc_attacked event."""
         try:
             room_id = data.get("room_id")
@@ -287,7 +287,7 @@ class EventHandler:
         except NATSError as e:
             logger.error("Error handling NPC attacked event", error=str(e), data=data)
 
-    async def handle_npc_took_damage_event(self, data: dict[str, Any]):
+    async def handle_npc_took_damage_event(self, data: dict[str, Any]) -> None:
         """Handle npc_took_damage event."""
         try:
             room_id = data.get("room_id")
@@ -302,7 +302,7 @@ class EventHandler:
         except NATSError as e:
             logger.error("Error handling NPC took damage event", error=str(e), data=data)
 
-    async def handle_npc_died_event(self, data: dict[str, Any]):
+    async def handle_npc_died_event(self, data: dict[str, Any]) -> None:
         """
         Handle npc_died event - NATS to EventBus bridge pattern.
 

@@ -17,46 +17,38 @@ mysteries. This dependency injection system provides that separation.
 
 # pylint: disable=too-many-lines  # Reason: This file serves as the central dependency injection registry for all services. It contains 20+ getter functions and their corresponding Depends aliases, each following a consistent pattern with proper documentation. Splitting this file would fragment the DI system and reduce discoverability. The line count is justified by the architectural requirement to centralize all DI providers in one location.
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from fastapi import Depends, Request
 
 from .container import ApplicationContainer
+from .game.chat_service import ChatService
+from .game.magic.mp_regeneration_service import MPRegenerationService
 from .game.player_service import PlayerService
 from .game.profession_service import ProfessionService
 from .game.room_service import RoomService
 from .game.stats_generator import StatsGenerator
+from .npc.lifecycle_manager import NPCLifecycleManager
+from .npc.population_control import NPCPopulationController
+from .npc.spawning_service import NPCSpawningService
+from .services.catatonia_registry import CatatoniaRegistry
+from .services.combat_service import CombatService
+from .services.passive_lucidity_flux_service import PassiveLucidityFluxService
+from .services.player_combat_service import PlayerCombatService
+from .services.player_death_service import PlayerDeathService
+from .services.player_respawn_service import PlayerRespawnService
 from .structured_logging.enhanced_logging_config import get_logger
+from .time.time_event_consumer import MythosTimeEventConsumer
 
 if TYPE_CHECKING:
     from .async_persistence import AsyncPersistenceLayer
-    from .game.chat_service import ChatService
-
-    # Magic services
     from .game.magic.magic_service import MagicService
-    from .game.magic.mp_regeneration_service import MPRegenerationService
     from .game.magic.spell_effects import SpellEffects
     from .game.magic.spell_learning_service import SpellLearningService
     from .game.magic.spell_registry import SpellRegistry
     from .game.magic.spell_targeting import SpellTargetingService
-
-    # NPC services
-    from .npc.lifecycle_manager import NPCLifecycleManager
-    from .npc.population_control import NPCPopulationController
-    from .npc.spawning_service import NPCSpawningService
     from .realtime.connection_manager import ConnectionManager
-
-    # Other services
-    from .services.catatonia_registry import CatatoniaRegistry
-    from .services.combat_service import CombatService
     from .services.exploration_service import ExplorationService
-    from .services.passive_lucidity_flux_service import PassiveLucidityFluxService
-
-    # Combat services
-    from .services.player_combat_service import PlayerCombatService
-    from .services.player_death_service import PlayerDeathService
-    from .services.player_respawn_service import PlayerRespawnService
-    from .time.time_event_consumer import MythosTimeEventConsumer
 
 logger = get_logger(__name__)
 
@@ -80,7 +72,7 @@ def get_container(request: Request) -> ApplicationContainer:
         raise RuntimeError(
             "ApplicationContainer not found in app.state - ensure container is initialized in lifespan context"
         )
-    return request.app.state.container
+    return cast(ApplicationContainer, request.app.state.container)
 
 
 def get_player_service(request: Request) -> PlayerService:
@@ -267,7 +259,7 @@ def get_player_respawn_service(request: Request) -> "PlayerRespawnService":
     if container.player_respawn_service is None:
         raise RuntimeError("PlayerRespawnService not initialized in container")
 
-    return container.player_respawn_service
+    return cast(PlayerRespawnService, container.player_respawn_service)
 
 
 # Dependency injection type aliases for use in route handlers
@@ -319,7 +311,7 @@ def get_player_combat_service(request: Request) -> "PlayerCombatService":
     if container.player_combat_service is None:
         raise RuntimeError("PlayerCombatService not initialized in container")
 
-    return container.player_combat_service
+    return cast(PlayerCombatService, container.player_combat_service)
 
 
 def get_player_death_service(request: Request) -> "PlayerDeathService":
@@ -338,7 +330,7 @@ def get_player_death_service(request: Request) -> "PlayerDeathService":
     if container.player_death_service is None:
         raise RuntimeError("PlayerDeathService not initialized in container")
 
-    return container.player_death_service
+    return cast(PlayerDeathService, container.player_death_service)
 
 
 def get_combat_service(request: Request) -> "CombatService":
@@ -359,7 +351,7 @@ def get_combat_service(request: Request) -> "CombatService":
     if container.combat_service is None:
         raise RuntimeError("CombatService not initialized in container")
 
-    return container.combat_service
+    return cast(CombatService, container.combat_service)
 
 
 # Magic service dependency injection functions
@@ -379,7 +371,10 @@ def get_magic_service(request: Request) -> "MagicService":
     if container.magic_service is None:
         raise RuntimeError("MagicService not initialized in container")
 
-    return container.magic_service
+    # Import here to avoid circular dependency
+    from .game.magic.magic_service import MagicService  # noqa: PLC0415
+
+    return cast(MagicService, container.magic_service)
 
 
 def get_spell_registry(request: Request) -> "SpellRegistry":
@@ -398,7 +393,10 @@ def get_spell_registry(request: Request) -> "SpellRegistry":
     if container.spell_registry is None:
         raise RuntimeError("SpellRegistry not initialized in container")
 
-    return container.spell_registry
+    # Import here to avoid circular dependency
+    from .game.magic.spell_registry import SpellRegistry  # noqa: PLC0415
+
+    return cast(SpellRegistry, container.spell_registry)
 
 
 def get_spell_targeting_service(request: Request) -> "SpellTargetingService":
@@ -417,7 +415,10 @@ def get_spell_targeting_service(request: Request) -> "SpellTargetingService":
     if container.spell_targeting_service is None:
         raise RuntimeError("SpellTargetingService not initialized in container")
 
-    return container.spell_targeting_service
+    # Import here to avoid circular dependency
+    from .game.magic.spell_targeting import SpellTargetingService  # noqa: PLC0415
+
+    return cast(SpellTargetingService, container.spell_targeting_service)
 
 
 def get_spell_effects(request: Request) -> "SpellEffects":
@@ -436,7 +437,10 @@ def get_spell_effects(request: Request) -> "SpellEffects":
     if container.spell_effects is None:
         raise RuntimeError("SpellEffects not initialized in container")
 
-    return container.spell_effects
+    # Import here to avoid circular dependency
+    from .game.magic.spell_effects import SpellEffects  # noqa: PLC0415
+
+    return cast(SpellEffects, container.spell_effects)
 
 
 def get_spell_learning_service(request: Request) -> "SpellLearningService":
@@ -455,7 +459,10 @@ def get_spell_learning_service(request: Request) -> "SpellLearningService":
     if container.spell_learning_service is None:
         raise RuntimeError("SpellLearningService not initialized in container")
 
-    return container.spell_learning_service
+    # Import here to avoid circular dependency
+    from .game.magic.spell_learning_service import SpellLearningService  # noqa: PLC0415
+
+    return cast(SpellLearningService, container.spell_learning_service)
 
 
 def get_mp_regeneration_service(request: Request) -> "MPRegenerationService":
@@ -474,7 +481,7 @@ def get_mp_regeneration_service(request: Request) -> "MPRegenerationService":
     if container.mp_regeneration_service is None:
         raise RuntimeError("MPRegenerationService not initialized in container")
 
-    return container.mp_regeneration_service
+    return cast(MPRegenerationService, container.mp_regeneration_service)
 
 
 # NPC service dependency injection functions
@@ -494,7 +501,7 @@ def get_npc_lifecycle_manager(request: Request) -> "NPCLifecycleManager":
     if container.npc_lifecycle_manager is None:
         raise RuntimeError("NPCLifecycleManager not initialized in container")
 
-    return container.npc_lifecycle_manager
+    return cast(NPCLifecycleManager, container.npc_lifecycle_manager)
 
 
 def get_npc_spawning_service(request: Request) -> "NPCSpawningService":
@@ -513,7 +520,7 @@ def get_npc_spawning_service(request: Request) -> "NPCSpawningService":
     if container.npc_spawning_service is None:
         raise RuntimeError("NPCSpawningService not initialized in container")
 
-    return container.npc_spawning_service
+    return cast(NPCSpawningService, container.npc_spawning_service)
 
 
 def get_npc_population_controller(request: Request) -> "NPCPopulationController":
@@ -532,7 +539,7 @@ def get_npc_population_controller(request: Request) -> "NPCPopulationController"
     if container.npc_population_controller is None:
         raise RuntimeError("NPCPopulationController not initialized in container")
 
-    return container.npc_population_controller
+    return cast(NPCPopulationController, container.npc_population_controller)
 
 
 # Other service dependency injection functions
@@ -552,7 +559,7 @@ def get_catatonia_registry(request: Request) -> "CatatoniaRegistry":
     if container.catatonia_registry is None:
         raise RuntimeError("CatatoniaRegistry not initialized in container")
 
-    return container.catatonia_registry
+    return cast(CatatoniaRegistry, container.catatonia_registry)
 
 
 def get_passive_lucidity_flux_service(request: Request) -> "PassiveLucidityFluxService":
@@ -571,7 +578,7 @@ def get_passive_lucidity_flux_service(request: Request) -> "PassiveLucidityFluxS
     if container.passive_lucidity_flux_service is None:
         raise RuntimeError("PassiveLucidityFluxService not initialized in container")
 
-    return container.passive_lucidity_flux_service
+    return cast(PassiveLucidityFluxService, container.passive_lucidity_flux_service)
 
 
 def get_mythos_time_consumer(request: Request) -> "MythosTimeEventConsumer":
@@ -592,7 +599,7 @@ def get_mythos_time_consumer(request: Request) -> "MythosTimeEventConsumer":
     if container.mythos_time_consumer is None:
         raise RuntimeError("MythosTimeEventConsumer not initialized in container")
 
-    return container.mythos_time_consumer
+    return cast(MythosTimeEventConsumer, container.mythos_time_consumer)
 
 
 def get_chat_service(request: Request) -> "ChatService":
@@ -611,7 +618,7 @@ def get_chat_service(request: Request) -> "ChatService":
     if container.chat_service is None:
         raise RuntimeError("ChatService not initialized in container")
 
-    return container.chat_service
+    return cast(ChatService, container.chat_service)
 
 
 # Dependency injection type aliases for combat services

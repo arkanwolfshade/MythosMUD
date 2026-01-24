@@ -20,7 +20,7 @@ class AttackCommand(BaseCommand):
 
     @field_validator("target")
     @classmethod
-    def validate_target(cls, v):
+    def validate_target(cls: type["AttackCommand"], v: str | None) -> str | None:
         """Validate combat target name format using centralized validation."""
         if v is None:
             return None
@@ -35,7 +35,7 @@ class PunchCommand(BaseCommand):
 
     @field_validator("target")
     @classmethod
-    def validate_target(cls, v):
+    def validate_target(cls: type["PunchCommand"], v: str | None) -> str | None:
         """Validate combat target name format using centralized validation."""
         if v is None:
             return None
@@ -50,7 +50,7 @@ class KickCommand(BaseCommand):
 
     @field_validator("target")
     @classmethod
-    def validate_target(cls, v):
+    def validate_target(cls: type["KickCommand"], v: str | None) -> str | None:
         """Validate combat target name format using centralized validation."""
         if v is None:
             return None
@@ -65,7 +65,7 @@ class StrikeCommand(BaseCommand):
 
     @field_validator("target")
     @classmethod
-    def validate_target(cls, v):
+    def validate_target(cls: type["StrikeCommand"], v: str | None) -> str | None:
         """Validate combat target name format using centralized validation."""
         if v is None:
             return None

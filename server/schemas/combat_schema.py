@@ -5,10 +5,13 @@ This module provides JSON schema validation for combat data stored in
 NPC definition JSON fields (base_stats and behavior_config).
 """
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from jsonschema import Draft7Validator
 from jsonschema import ValidationError as JSONSchemaValidationError
+
+if TYPE_CHECKING:
+    from server.models.npc import NPCDefinition
 
 
 class CombatSchemaValidationError(Exception):
@@ -320,7 +323,7 @@ def add_default_combat_data_to_config(config: dict[str, Any]) -> dict[str, Any]:
     return updated_config
 
 
-def validate_npc_combat_data(npc_definition) -> None:
+def validate_npc_combat_data(npc_definition: "NPCDefinition") -> None:
     """
     Validate combat data for an NPC definition.
 
@@ -350,7 +353,7 @@ def validate_npc_combat_data(npc_definition) -> None:
         raise CombatSchemaValidationError(f"NPC {npc_definition.name} behavior config validation failed: {e}") from e
 
 
-def get_combat_stats_summary(npc_definition) -> dict[str, Any]:
+def get_combat_stats_summary(npc_definition: "NPCDefinition") -> dict[str, Any]:
     """
     Get a summary of combat stats for an NPC definition.
 

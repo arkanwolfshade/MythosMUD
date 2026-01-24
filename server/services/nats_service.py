@@ -11,9 +11,9 @@ and Windows-native solution.
 import asyncio
 import json
 import ssl
-from collections.abc import Callable
+from collections.abc import Callable, Coroutine
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import nats
 from anyio import sleep
@@ -58,7 +58,9 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
               on top of our application-level pooling for optimal performance.
     """
 
-    def __init__(self, config: NATSConfig | dict[str, Any] | None = None, subject_manager=None):
+    def __init__(
+        self, config: NATSConfig | dict[str, Any] | None = None, subject_manager: NATSSubjectManager | None = None
+    ) -> None:
         """
         Initialize NATS service with state machine and connection pooling.
 
@@ -87,7 +89,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
         self.message_batch: list[tuple[str, dict[str, Any]]] = []
         self.batch_size = getattr(self.config, "batch_size", 100)
         self.batch_timeout = getattr(self.config, "batch_timeout", 0.1)  # 100ms
-        self._batch_task: asyncio.Task | None = None
+        self._batch_task: asyncio.Task[Any] | None = None
         # Failed batch queue for messages that couldn't be flushed after retries
         self._failed_batch_queue: list[tuple[str, dict[str, Any]]] = []
         self._max_batch_retries = getattr(self.config, "max_batch_retries", 3)
@@ -103,14 +105,14 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
         self._max_retries = self.config.max_reconnect_attempts
 
         # Health monitoring
-        self._health_check_task: asyncio.Task | None = None
+        self._health_check_task: asyncio.Task[Any] | None = None
         self._last_health_check: float = 0.0
         self._consecutive_health_failures = 0
         self._health_check_timeout = 5.0  # seconds
 
         # Tracked background tasks for proper lifecycle management
         # AnyIO Pattern: Track all background tasks for proper cleanup
-        self._background_tasks: set[asyncio.Task] = set()
+        self._background_tasks: set[asyncio.Task[Any]] = set()
 
         # NEW: Connection state machine (CRITICAL-1)
         # AI: FSM provides robust connection management with automatic recovery
@@ -332,7 +334,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
 
         logger.info("Disconnected from NATS server", state=self.state_machine.current_state.id)
 
-    async def disconnect(self):
+    async def disconnect(self) -> None:
         """
         Disconnect from NATS with graceful shutdown and message draining.
 
@@ -379,7 +381,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Disconnect errors unpredictable, must handle gracefully
             logger.error("Error disconnecting from NATS server", error=str(e))
 
-    async def _start_health_monitoring(self):
+    async def _start_health_monitoring(self) -> None:
         """Start periodic health check monitoring task."""
         health_check_interval = getattr(self.config, "health_check_interval", 30)
         if health_check_interval <= 0:
@@ -401,7 +403,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
         )
         logger.info("Health monitoring started", interval_seconds=health_check_interval)
 
-    async def _cancel_background_tasks(self):
+    async def _cancel_background_tasks(self) -> None:
         """
         Cancel all tracked background tasks for proper cleanup.
 
@@ -443,7 +445,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
 
         logger.debug("Background tasks cancelled")
 
-    async def _stop_health_monitoring(self):
+    async def _stop_health_monitoring(self) -> None:
         """Stop health check monitoring task."""
         if self._health_check_task and not self._health_check_task.done():
             self._health_check_task.cancel()
@@ -454,7 +456,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             self._health_check_task = None
         logger.debug("Health monitoring stopped")
 
-    async def _health_check_loop(self):
+    async def _health_check_loop(self) -> None:
         """Periodic health check loop using ping/pong."""
         health_check_interval = getattr(self.config, "health_check_interval", 30)
 
@@ -766,7 +768,8 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
                 response_size=len(response.data),
             )
 
-            return response_json
+            result: dict[str, Any] = cast(dict[str, Any], response_json)
+            return result
 
         except TimeoutError as e:
             error_msg = f"Request timeout after {timeout}s"
@@ -852,8 +855,8 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
         return len(self.subscriptions)
 
     def _create_tracked_task(
-        self, coro, task_name: str = "nats_background", task_type: str = "background"
-    ) -> asyncio.Task:
+        self, coro: Coroutine[Any, Any, Any], task_name: str = "nats_background", task_type: str = "background"
+    ) -> asyncio.Task[Any]:
         """
         Create a tracked background task with proper lifecycle management.
 
@@ -873,7 +876,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             self._background_tasks.add(task)
 
             # Remove from tracking when complete
-            def remove_task(t: asyncio.Task) -> None:
+            def remove_task(t: asyncio.Task[Any]) -> None:
                 self._background_tasks.discard(t)
 
             task.add_done_callback(remove_task)
@@ -901,7 +904,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             # No event loop available - this should not happen in normal operation
             logger.error("NATS connection error handler called without event loop", error=str(error))
 
-    async def _handle_error_async(self, error):
+    async def _handle_error_async(self, error: Any) -> None:
         """Async handler for NATS connection errors."""
         try:
             logger.error("NATS connection error", error=str(error), state=self.state_machine.current_state.id)
@@ -930,7 +933,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             logger.error("NATS disconnect handler called without event loop")
             self._running = False
 
-    async def _handle_disconnect_async(self):
+    async def _handle_disconnect_async(self) -> None:
         """Async handler for NATS disconnection events."""
         try:
             logger.warning("NATS client disconnected", state=self.state_machine.current_state.id)
@@ -962,7 +965,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             self._running = True
             self._connection_retries = 0
 
-    async def _handle_reconnect_async(self):
+    async def _handle_reconnect_async(self) -> None:
         """Async handler for NATS reconnection events."""
         try:
             logger.info("NATS client reconnected", state=self.state_machine.current_state.id)
@@ -1125,7 +1128,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             raise NATSPublishError("No available connections in pool", subject="")
         return await self.available_connections.get()
 
-    async def _return_connection(self, connection: nats.NATS):
+    async def _return_connection(self, connection: nats.NATS) -> None:
         """Return connection to pool."""
         if self._pool_initialized and connection in self.connection_pool:
             await self.available_connections.put(connection)
@@ -1210,7 +1213,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             processing_time = asyncio.get_running_loop().time() - start_time
             self.metrics.record_publish(success, processing_time)
 
-    async def _cleanup_connection_pool(self):
+    async def _cleanup_connection_pool(self) -> None:
         """Clean up connection pool during shutdown."""
         try:
             # Close all connections in pool
@@ -1296,7 +1299,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             )
             return False
 
-    async def _batch_timeout(self):
+    async def _batch_timeout(self) -> None:
         """Handle batch timeout for low-traffic scenarios."""
         try:
             await sleep(self.batch_timeout)

@@ -89,7 +89,8 @@ def test_reset_database():
 
     assert db_module._database_url is None
     # Verify singleton is reset
-    instance1 = DatabaseManager.get_instance()
+    # Reason: Testing singleton pattern - mypy sees as unreachable but valid at runtime
+    instance1 = DatabaseManager.get_instance()  # type: ignore[unreachable]
     DatabaseManager.reset_instance()
     instance2 = DatabaseManager.get_instance()
     assert instance1 is not instance2
@@ -196,7 +197,8 @@ async def test_database_manager_close_with_engine():
         await manager.close()
 
     assert manager.engine is None
-    assert manager._initialized is False
+    # Reason: Testing field value - mypy sees as unreachable but valid at runtime
+    assert manager._initialized is False  # type: ignore[unreachable]
 
 
 @pytest.mark.asyncio
@@ -231,7 +233,8 @@ async def test_database_manager_close_dispose_error():
         await manager.close()
 
     assert manager.engine is None
-    assert manager._initialized is False
+    # Reason: Testing field value - mypy sees as unreachable but valid at runtime
+    assert manager._initialized is False  # type: ignore[unreachable]
 
 
 @pytest.mark.asyncio
@@ -291,8 +294,9 @@ async def test_get_async_session_rollback_on_error():
         gen = get_async_session()
         _session = await gen.__anext__()
         # Exception must be sent back to generator using athrow (single-arg signature)
+        # Reason: get_async_session returns AsyncIterator but is actually an async generator at runtime which supports athrow
         try:
-            await gen.athrow(ValueError("Test error"))
+            await gen.athrow(ValueError("Test error"))  # type: ignore[attr-defined]
         except ValueError:
             # Exception was re-raised after rollback
             pass

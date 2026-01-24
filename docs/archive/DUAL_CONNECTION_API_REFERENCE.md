@@ -21,20 +21,24 @@ This document provides comprehensive API documentation for the dual WebSocket/SS
 **Preferred Endpoint**: `/api/ws`
 
 **Authentication (Recommended)**: WebSocket subprotocols
+
 - Send `Sec-WebSocket-Protocol: bearer, <JWT>`
 
 **Query Parameters**:
+
 - `session_id` (optional): Unique session identifier for the game session
 
 **Example**:
+
 ```
 new WebSocket('/api/ws?session_id=session_123', ['bearer', accessToken])
 ```
 
 **Backward Compatibility**:
-- Legacy path param endpoint `/api/ws/{player_id}` is deprecated and will be removed in a future release.
+Legacy path param endpoint `/api/ws/{player_id}` is deprecated and will be removed in a future release.
 
 **Connection Behavior**:
+
 - Multiple WebSocket connections per player are supported
 - Each connection receives all messages sent to the player
 - Connections persist until explicitly disconnected or session changes
@@ -44,14 +48,17 @@ new WebSocket('/api/ws?session_id=session_123', ['bearer', accessToken])
 **Endpoint**: `http://localhost:8000/sse/{player_id}`
 
 **Query Parameters**:
+
 - `session_id` (optional): Unique session identifier for the game session
 
 **Example**:
+
 ```
 http://localhost:8000/sse/test_player?session_id=session_123
 ```
 
 **Connection Behavior**:
+
 - Multiple SSE connections per player are supported
 - Each connection receives all messages sent to the player
 - Connections persist until explicitly disconnected or session changes
@@ -63,6 +70,7 @@ http://localhost:8000/sse/test_player?session_id=session_123
 **Endpoint**: `POST /api/connections/{player_id}/session`
 
 **Request Body**:
+
 ```json
 {
   "session_id": "new_session_456"
@@ -70,6 +78,7 @@ http://localhost:8000/sse/test_player?session_id=session_123
 ```
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -81,6 +90,7 @@ http://localhost:8000/sse/test_player?session_id=session_123
 ```
 
 **Behavior**:
+
 - Disconnects all existing connections for the player
 - Establishes new session tracking
 - Player must reconnect with new session ID
@@ -90,6 +100,7 @@ http://localhost:8000/sse/test_player?session_id=session_123
 **Endpoint**: `GET /api/connections/{player_id}/session`
 
 **Response**:
+
 ```json
 {
   "player_id": "test_player",
@@ -107,6 +118,7 @@ http://localhost:8000/sse/test_player?session_id=session_123
 **Endpoint**: `GET /api/connections/{player_id}`
 
 **Response**:
+
 ```json
 {
   "player_id": "test_player",
@@ -141,6 +153,7 @@ http://localhost:8000/sse/test_player?session_id=session_123
 **Endpoint**: `GET /api/connections/stats`
 
 **Response**:
+
 ```json
 {
   "total_players": 25,
@@ -169,6 +182,7 @@ http://localhost:8000/sse/test_player?session_id=session_123
 **Endpoint**: `GET /monitoring/dual-connections`
 
 **Response**:
+
 ```json
 {
   "connection_distribution": {
@@ -197,6 +211,7 @@ http://localhost:8000/sse/test_player?session_id=session_123
 **Endpoint**: `GET /monitoring/performance`
 
 **Response**:
+
 ```json
 {
   "connection_establishment": {
@@ -223,6 +238,7 @@ http://localhost:8000/sse/test_player?session_id=session_123
 **Endpoint**: `GET /monitoring/connection-health`
 
 **Response**:
+
 ```json
 {
   "overall_health": {
@@ -274,7 +290,8 @@ All API endpoints return errors in the following format:
 
 ### Common Error Types
 
-- `connection_error`: Connection establishment or maintenance issues
+`connection_error`: Connection establishment or maintenance issues
+
 - `session_error`: Session management problems
 - `authentication_error`: Authentication or authorization failures
 - `validation_error`: Request validation failures
@@ -283,6 +300,7 @@ All API endpoints return errors in the following format:
 ### Error Recovery
 
 The system implements automatic error recovery for:
+
 - Temporary connection failures
 - Network interruptions
 - Server restarts
@@ -324,6 +342,7 @@ function GameComponent() {
 ### Connection State Management
 
 The client automatically manages:
+
 - Dual connection establishment
 - Session tracking
 - Connection health monitoring
@@ -402,19 +421,22 @@ console.log(`Health percentage: ${stats.overall_health.health_percentage}%`);
 
 ### Authentication
 
-- All connections require valid player authentication
+All connections require valid player authentication
+
 - Session IDs should be cryptographically secure
 - Implement rate limiting for connection attempts
 
 ### Authorization
 
-- Players can only access their own connections
+Players can only access their own connections
+
 - Session validation prevents unauthorized access
 - Connection metadata is protected from external access
 
 ### Data Protection
 
-- Connection logs exclude sensitive information
+Connection logs exclude sensitive information
+
 - Session data is encrypted in transit
 - Implement proper cleanup of connection metadata
 
@@ -423,32 +445,38 @@ console.log(`Health percentage: ${stats.overall_health.health_percentage}%`);
 ### Common Issues
 
 1. **Connection Failures**
+
    - Check network connectivity
    - Verify server status
    - Validate session ID format
 
 2. **Message Delivery Issues**
+
    - Check connection health status
    - Verify player authentication
    - Review server logs for errors
 
 3. **Session Management Problems**
+
    - Ensure session ID uniqueness
    - Check session validation logic
    - Verify connection cleanup
 
 ### Debugging Tools
 
-- Use monitoring endpoints for system health
+Use monitoring endpoints for system health
+
 - Check connection statistics for patterns
 - Review performance metrics for bottlenecks
 - Monitor error logs for recurring issues
 
 ## Version History
 
-- **v1.0.0**: Initial dual connection system implementation
-- **v1.1.0**: Added comprehensive monitoring and health checks
-- **v1.2.0**: Enhanced session management and error recovery
+**v1.0.0**: Initial dual connection system implementation
+
+**v1.1.0**: Added comprehensive monitoring and health checks
+
+**v1.2.0**: Enhanced session management and error recovery
 - **v1.3.0**: Improved performance monitoring and optimization
 
 ## Support

@@ -21,14 +21,18 @@ class TestRoomDataFixer:
 
     def test_fix_missing_name_no_error(self):
         """Test fix_missing_name does nothing when no error."""
-        fixed_data = {"id": "test_room_1", "name": "Existing Name"}
-        errors = []
+        from typing import Any
+
+        fixed_data: dict[str, Any] = {"id": "test_room_1", "name": "Existing Name"}
+        errors: list[str] = []
         RoomDataFixer.fix_missing_name(fixed_data, errors)
         assert fixed_data["name"] == "Existing Name"
 
     def test_fix_missing_name_unknown_id(self):
         """Test fix_missing_name with unknown ID."""
-        fixed_data = {}
+        from typing import Any
+
+        fixed_data: dict[str, Any] = {}
         errors = ["Missing required field: name"]
         RoomDataFixer.fix_missing_name(fixed_data, errors)
         assert fixed_data["name"] == "Room unknown"
@@ -42,28 +46,36 @@ class TestRoomDataFixer:
 
     def test_fix_missing_description_no_error(self):
         """Test fix_missing_description does nothing when no error."""
-        fixed_data = {"id": "test_room_1", "description": "Existing Description"}
-        errors = []
+        from typing import Any
+
+        fixed_data: dict[str, Any] = {"id": "test_room_1", "description": "Existing Description"}
+        errors: list[str] = []
         RoomDataFixer.fix_missing_description(fixed_data, errors)
         assert fixed_data["description"] == "Existing Description"
 
     def test_fix_occupant_count_mismatch(self):
         """Test fix_occupant_count_mismatch fixes count."""
-        fixed_data = {"occupants": ["player1", "player2", "player3"]}
+        from typing import Any
+
+        fixed_data: dict[str, Any] = {"occupants": ["player1", "player2", "player3"]}
         errors = ["Occupant count mismatch: expected 3, got 5"]
         RoomDataFixer.fix_occupant_count_mismatch(fixed_data, errors)
         assert fixed_data["occupant_count"] == 3
 
     def test_fix_occupant_count_mismatch_no_error(self):
         """Test fix_occupant_count_mismatch does nothing when no error."""
-        fixed_data = {"occupants": ["player1"], "occupant_count": 1}
-        errors = []
+        from typing import Any
+
+        fixed_data: dict[str, Any] = {"occupants": ["player1"], "occupant_count": 1}
+        errors: list[str] = []
         RoomDataFixer.fix_occupant_count_mismatch(fixed_data, errors)
         assert fixed_data["occupant_count"] == 1
 
     def test_fix_occupant_count_mismatch_no_occupants(self):
         """Test fix_occupant_count_mismatch with no occupants field."""
-        fixed_data = {}
+        from typing import Any
+
+        fixed_data: dict[str, Any] = {}
         errors = ["Occupant count mismatch: expected 0, got 1"]
         RoomDataFixer.fix_occupant_count_mismatch(fixed_data, errors)
         assert "occupant_count" not in fixed_data
@@ -71,7 +83,9 @@ class TestRoomDataFixer:
     def test_fix_missing_timestamp(self):
         """Test fix_missing_timestamp adds timestamp."""
         with patch("time.time", return_value=1234567890.0):
-            fixed_data = {}
+            from typing import Any
+
+            fixed_data: dict[str, Any] = {}
             RoomDataFixer.fix_missing_timestamp(fixed_data)
             assert fixed_data["timestamp"] == 1234567890.0
 
@@ -116,8 +130,10 @@ class TestRoomDataFixer:
     def test_apply_room_data_fixes_no_errors(self):
         """Test apply_room_data_fixes with no errors."""
         with patch("time.time", return_value=1234567890.0):
-            room_data = {"id": "test_room_1", "name": "Test Room", "description": "A description"}
-            errors = []
+            from typing import Any
+
+            room_data: dict[str, Any] = {"id": "test_room_1", "name": "Test Room", "description": "A description"}
+            errors: list[str] = []
             fixed = RoomDataFixer.apply_room_data_fixes(room_data, errors)
             assert fixed["name"] == "Test Room"
             assert fixed["description"] == "A description"
@@ -133,7 +149,8 @@ class TestRoomDataFixer:
 
     def test_apply_room_data_fixes_invalid_input(self):
         """Test apply_room_data_fixes handles invalid input."""
-        result = RoomDataFixer.apply_room_data_fixes(None, [])
+        # Reason: Intentionally passing None to test error handling
+        result = RoomDataFixer.apply_room_data_fixes(None, [])  # type: ignore[arg-type]
         assert result is None
 
     def test_apply_room_data_fixes_exception_handling(self):

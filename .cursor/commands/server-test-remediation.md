@@ -10,9 +10,11 @@
 
 ## Project Test Configuration
 
-- **Test Runner**: pytest with uv for Python dependency management
-- **Test Database**: SQLite test database in `server/tests/data/players/`
-- **Test Environment**: Isolated test environment with test-specific configuration
+**Test Runner**: pytest with uv for Python dependency management
+
+**Test Database**: SQLite test database in `server/tests/data/players/`
+
+**Test Environment**: Isolated test environment with test-specific configuration
 - **Command**: `make test-server` (runs server-side Python tests only)
 - **Coverage Target**: Minimum 80% code coverage
 - **Test Execution**: Serial execution (not parallel) for database tests
@@ -68,37 +70,47 @@ Test failures typically fall into these categories:
 
 #### A. Database-Related Failures
 
-- **Connection Issues**: Database connection failures or timeouts
-- **Data Integrity**: Corrupted or inconsistent test data
-- **Migration Issues**: Schema mismatch or migration failures
+**Connection Issues**: Database connection failures or timeouts
+
+**Data Integrity**: Corrupted or inconsistent test data
+
+**Migration Issues**: Schema mismatch or migration failures
 - **Transaction Issues**: Rollback failures or transaction conflicts
 
 #### B. Authentication/Security Failures
 
-- **JWT Token Issues**: Token generation, validation, or expiration
-- **Password Hashing**: Argon2 hashing failures or mismatches
-- **Session Management**: Session creation, validation, or cleanup
+**JWT Token Issues**: Token generation, validation, or expiration
+
+**Password Hashing**: Argon2 hashing failures or mismatches
+
+**Session Management**: Session creation, validation, or cleanup
 - **Authorization**: Permission checks or access control failures
 
 #### C. WebSocket/Connection Failures
 
-- **Connection Management**: WebSocket connection establishment or cleanup
-- **Message Handling**: Message parsing, routing, or delivery failures
-- **Event Broadcasting**: Event system failures or message propagation
+**Connection Management**: WebSocket connection establishment or cleanup
+
+**Message Handling**: Message parsing, routing, or delivery failures
+
+**Event Broadcasting**: Event system failures or message propagation
 - **Connection Stability**: Connection drops or timeout issues
 
 #### D. Game Logic Failures
 
-- **Movement System**: Room transitions, location validation, or movement commands
-- **Chat System**: Message broadcasting, channel management, or whisper functionality
-- **Command Processing**: Command parsing, validation, or execution
+**Movement System**: Room transitions, location validation, or movement commands
+
+**Chat System**: Message broadcasting, channel management, or whisper functionality
+
+**Command Processing**: Command parsing, validation, or execution
 - **Player State**: Player data persistence, stats, or state management
 
 #### E. Integration Test Failures
 
-- **API Endpoints**: HTTP endpoint failures or response validation
-- **Real-time Features**: SSE (Server-Sent Events) or WebSocket integration
-- **Multiplayer Scenarios**: Concurrent user interactions or race conditions
+**API Endpoints**: HTTP endpoint failures or response validation
+
+**Real-time Features**: SSE (Server-Sent Events) or WebSocket integration
+
+**Multiplayer Scenarios**: Concurrent user interactions or race conditions
 - **External Dependencies**: Third-party service integration failures
 
 ## MANDATORY VERIFICATION CHECKPOINTS
@@ -146,6 +158,7 @@ DOCUMENT: Record findings before proceeding
 
    ```bash
    # Clean and reinitialize test database
+
    python scripts/clean_test_db.py
    python server/tests/init_test_db.py
    ```
@@ -154,6 +167,7 @@ DOCUMENT: Record findings before proceeding
 
    ```bash
    # Check database integrity
+
    sqlite3 server/tests/data/players/unit_test_players.db "PRAGMA integrity_check;"
    sqlite3 server/tests/data/players/unit_test_players.db ".schema"
    ```
@@ -162,6 +176,7 @@ DOCUMENT: Record findings before proceeding
 
    ```bash
    # Verify test data consistency
+
    sqlite3 server/tests/data/players/unit_test_players.db "SELECT COUNT(*) FROM players;"
    sqlite3 server/tests/data/players/unit_test_players.db "SELECT * FROM players LIMIT 5;"
    ```
@@ -172,6 +187,7 @@ DOCUMENT: Record findings before proceeding
 
    ```bash
    # Verify JWT secret and expiration settings
+
    grep -r "JWT_SECRET\|JWT_EXPIRATION" server/tests/
    ```
 
@@ -179,6 +195,7 @@ DOCUMENT: Record findings before proceeding
 
    ```python
    # Test Argon2 hashing functionality
+
    python -c "
    from server.auth.utils import hash_password, verify_password
    test_password = 'testpass123'
@@ -193,6 +210,7 @@ DOCUMENT: Record findings before proceeding
 
    ```bash
    # Look for connection-related test failures
+
    grep -A 10 -B 10 "ConnectionError\|WebSocketError" server/tests/logs/
    ```
 
@@ -200,6 +218,7 @@ DOCUMENT: Record findings before proceeding
 
    ```bash
    # Check event broadcasting tests
+
    grep -r "broadcast\|event" server/tests/ | grep -i "fail\|error"
    ```
 
@@ -209,6 +228,7 @@ DOCUMENT: Record findings before proceeding
 
    ```bash
    # Test room loading and movement
+
    python -c "
    from server.world.loader import WorldLoader
    loader = WorldLoader('server/tests/data/rooms/')
@@ -221,6 +241,7 @@ DOCUMENT: Record findings before proceeding
 
    ```bash
    # Check command handler tests
+
    grep -r "CommandHandler\|command" server/tests/ | grep -i "fail\|error"
    ```
 
@@ -230,18 +251,22 @@ DOCUMENT: Record findings before proceeding
 
 ```python
 # Proper test database cleanup
+
 @pytest.fixture(autouse=True)
 def cleanup_test_db():
     """Clean up test database after each test"""
     yield
     # Cleanup code here
+
     pass
 
 # Proper async test setup
+
 @pytest.mark.asyncio
 async def test_database_operation():
     """Test database operations with proper async handling"""
     # Test implementation
+
     pass
 ```
 
@@ -249,6 +274,7 @@ async def test_database_operation():
 
 ```python
 # JWT token testing
+
 def test_jwt_token_generation():
     """Test JWT token creation and validation"""
     from server.auth.utils import create_access_token, verify_token
@@ -257,6 +283,7 @@ def test_jwt_token_generation():
     assert payload["sub"] == "testuser"
 
 # Password hashing tests
+
 def test_password_hashing():
     """Test password hashing and verification"""
     from server.auth.utils import hash_password, verify_password
@@ -270,14 +297,17 @@ def test_password_hashing():
 
 ```python
 # WebSocket connection testing
+
 @pytest.mark.asyncio
 async def test_websocket_connection():
     """Test WebSocket connection establishment"""
     # Mock WebSocket connection
     # Test connection handling
+
     pass
 
 # Message handling tests
+
 def test_message_parsing():
     """Test message parsing and validation"""
     from server.websocket.message_handler import parse_message
@@ -290,19 +320,23 @@ def test_message_parsing():
 
 ```python
 # Movement system tests
+
 def test_room_transition():
     """Test player movement between rooms"""
     from server.movement.service import MovementService
     service = MovementService()
     # Test movement logic
+
     pass
 
 # Command processing tests
+
 def test_command_validation():
     """Test command input validation"""
     from server.commands.handler import CommandHandler
     handler = CommandHandler()
     # Test command validation
+
     pass
 ```
 
@@ -312,6 +346,7 @@ def test_command_validation():
 
 ```bash
 # Set test environment variables
+
 export MYTHOSMUD_ENV=test
 export MYTHOSMUD_TEST_MODE=true
 export DATABASE_URL=sqlite+aiosqlite:///server/tests/data/players/unit_test_players.db
@@ -323,6 +358,7 @@ export ALIASES_DIR=server/tests/data/players/aliases
 
 ```yaml
 # server/tests/test_server_config.yaml
+
 database:
   url: "sqlite+aiosqlite:///server/tests/data/players/unit_test_players.db"
   echo: false
@@ -336,7 +372,8 @@ logging:
 
 ### 6. Quality Assurance Checklist
 
-- [ ] All test failures resolved (run `make test` again)
+[ ] All test failures resolved (run `make test` again)
+
 - [ ] Test database properly cleaned and initialized
 - [ ] Environment variables correctly set for test mode
 - [ ] Test coverage maintained above 80%
@@ -350,11 +387,14 @@ logging:
 
 ```python
 # Ensure proper database URL configuration
+
 DATABASE_URL = "sqlite+aiosqlite:///server/tests/data/players/unit_test_players.db"
 
 # Use proper async database session handling
+
 async with get_db_session() as session:
     # Database operations
+
     pass
 ```
 
@@ -362,11 +402,13 @@ async with get_db_session() as session:
 
 ```python
 # Mock JWT secret for tests
+
 @pytest.fixture
 def test_jwt_secret():
     return "test-secret-key"
 
 # Use test-specific password hashing
+
 @pytest.fixture
 def test_password_hash():
     from server.auth.utils import hash_password
@@ -377,14 +419,18 @@ def test_password_hash():
 
 ```python
 # Mock WebSocket connections for tests
+
 @pytest.fixture
 async def mock_websocket():
     # Mock WebSocket implementation
+
     pass
 
 # Test message handling without real connections
+
 def test_message_handler_without_connection():
     # Test message parsing and validation
+
     pass
 ```
 
@@ -394,12 +440,15 @@ def test_message_handler_without_connection():
 
 ```bash
 # Run specific test with verbose output
+
 uv run pytest server/tests/test_specific.py::test_function -v -s
 
 # Run tests with debugging output
+
 uv run pytest server/tests/ -v --tb=long --capture=no
 
 # Run tests with coverage report
+
 uv run pytest server/tests/ --cov=server --cov-report=html
 ```
 
@@ -407,13 +456,16 @@ uv run pytest server/tests/ --cov=server --cov-report=html
 
 ```bash
 # Check test database state
+
 sqlite3 server/tests/data/players/unit_test_players.db ".tables"
 sqlite3 server/tests/data/players/unit_test_players.db "SELECT * FROM players;"
 
 # Check test logs
+
 tail -f server/tests/logs/test.log
 
 # Verify test environment
+
 echo $MYTHOSMUD_ENV
 echo $DATABASE_URL
 ```
@@ -422,21 +474,24 @@ echo $DATABASE_URL
 
 #### Test Data Management
 
-- Use isolated test databases for each test run
+Use isolated test databases for each test run
+
 - Clean up test data after each test case
 - Use deterministic test data for consistent results
 - Avoid hardcoded values in tests
 
 #### Test Isolation
 
-- Ensure tests don't depend on external services
+Ensure tests don't depend on external services
+
 - Mock external dependencies appropriately
 - Use proper fixtures for test setup and teardown
 - Avoid test interdependencies
 
 #### Performance Considerations
 
-- Keep tests fast and focused
+Keep tests fast and focused
+
 - Use appropriate test data sizes
 - Avoid unnecessary database operations
 - Mock expensive operations when possible
@@ -465,15 +520,19 @@ echo $DATABASE_URL
 
 ```bash
 # Verify all tests pass
+
 make test
 
 # Check test coverage
+
 make coverage
 
 # Run linting to ensure code quality
+
 make lint
 
 # Verify no regressions in other tests
+
 make test
 ```
 
@@ -578,15 +637,18 @@ run_terminal_cmd: make test
 
 ## Troubleshooting
 
-- **Database Issues**: Check test database initialization and cleanup
-- **Authentication Issues**: Verify JWT configuration and password hashing
-- **WebSocket Issues**: Check connection management and message handling
+**Database Issues**: Check test database initialization and cleanup
+
+**Authentication Issues**: Verify JWT configuration and password hashing
+
+**WebSocket Issues**: Check connection management and message handling
 - **Game Logic Issues**: Verify room data and command processing
 - **Environment Issues**: Ensure proper test environment configuration
 
 ## Success Criteria
 
-- `make test` exits with code 0
+`make test` exits with code 0
+
 - All test cases pass with proper assertions
 - Test coverage maintained above 80%
 - No test data leakage or interdependencies
@@ -596,33 +658,43 @@ run_terminal_cmd: make test
 
 ### 1. Database Test Failures
 
-- **Symptoms**: Connection errors, schema mismatches, data corruption
-- **Common Causes**: Improper test database setup, migration issues, transaction problems
-- **Solutions**: Clean database initialization, proper async handling, transaction management
+**Symptoms**: Connection errors, schema mismatches, data corruption
+
+**Common Causes**: Improper test database setup, migration issues, transaction problems
+
+**Solutions**: Clean database initialization, proper async handling, transaction management
 
 ### 2. Authentication Test Failures
 
-- **Symptoms**: JWT validation errors, password hash mismatches, session failures
-- **Common Causes**: Incorrect secret configuration, hash algorithm changes, token expiration
-- **Solutions**: Proper test configuration, consistent hashing, mock authentication
+**Symptoms**: JWT validation errors, password hash mismatches, session failures
+
+**Common Causes**: Incorrect secret configuration, hash algorithm changes, token expiration
+
+**Solutions**: Proper test configuration, consistent hashing, mock authentication
 
 ### 3. WebSocket Test Failures
 
-- **Symptoms**: Connection drops, message parsing errors, event broadcasting failures
-- **Common Causes**: Connection management issues, message format changes, event system problems
-- **Solutions**: Proper connection mocking, message validation, event system testing
+**Symptoms**: Connection drops, message parsing errors, event broadcasting failures
+
+**Common Causes**: Connection management issues, message format changes, event system problems
+
+**Solutions**: Proper connection mocking, message validation, event system testing
 
 ### 4. Game Logic Test Failures
 
-- **Symptoms**: Movement failures, command processing errors, state inconsistencies
-- **Common Causes**: Room data issues, command validation problems, state management errors
-- **Solutions**: Proper room loading, command testing, state validation
+**Symptoms**: Movement failures, command processing errors, state inconsistencies
+
+**Common Causes**: Room data issues, command validation problems, state management errors
+
+**Solutions**: Proper room loading, command testing, state validation
 
 ### 5. Integration Test Failures
 
-- **Symptoms**: API endpoint failures, real-time feature problems, multiplayer issues
-- **Common Causes**: Service integration problems, race conditions, configuration issues
-- **Solutions**: Proper service mocking, race condition handling, integration testing
+**Symptoms**: API endpoint failures, real-time feature problems, multiplayer issues
+
+**Common Causes**: Service integration problems, race conditions, configuration issues
+
+**Solutions**: Proper service mocking, race condition handling, integration testing
 
 ---
 

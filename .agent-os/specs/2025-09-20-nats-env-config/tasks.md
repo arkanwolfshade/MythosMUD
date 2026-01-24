@@ -2,11 +2,12 @@
 
 ## Tasks
 
-- [x] 1. Environment Variable Integration
-  - [x] 1.1 Write tests for environment variable loading in PowerShell scripts
-  - [x] 1.2 Implement `Get-NatsServerPath` function with environment variable support
-  - [x] 1.3 Update `nats_manager.ps1` to use new path detection function
-  - [x] 1.4 Verify all tests pass
+[x] 1. Environment Variable Integration
+
+- [x] 1.1 Write tests for environment variable loading in PowerShell scripts
+- [x] 1.2 Implement `Get-NatsServerPath` function with environment variable support
+- [x] 1.3 Update `nats_manager.ps1` to use new path detection function
+- [x] 1.4 Verify all tests pass
 
 - [x] 2. Path Validation and Error Handling
   - [x] 2.1 Write tests for path validation and error handling scenarios

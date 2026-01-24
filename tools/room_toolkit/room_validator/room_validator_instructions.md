@@ -2,7 +2,8 @@
 
 ## Project Overview
 
-Create a Python-based room pathing validator for a text-based game world. The validator checks room connectivity, validates JSON structure, and ensures proper pathing between game rooms organized in zones.
+Create a Python-based room pathing validator for a text-based game world. The validator checks room connectivity,
+validates JSON structure, and ensures proper pathing between game rooms organized in zones.
 
 ## Project Structure
 
@@ -177,34 +178,41 @@ class ValidationRule(ABC):
 #### Structure Rules (rules/structure_rules.py)
 
 1. **Schema Validation Rule**
+
    - Validate each room against JSON schema
    - Report file path and specific schema violations
 
 2. **Duplicate ID Rule**
+
    - Check for duplicate room IDs across zones
    - Flag naming convention violations (e.g., `earth_arkhamcity_intersection_derby_high` in `dungeon` zone)
 
 3. **Exit Reference Rule**
+
    - Verify all exit targets exist or are null
    - Handle both string and object exit formats
 
 #### Connectivity Rules (rules/connectivity_rules.py)
 
 1. **Bidirectional Connection Rule**
+
    - Check that room A → room B implies room B → room A
    - Respect `one_way` flag to skip bidirectional check
    - Provide suggestions for adding missing return paths
 
 2. **Unreachable Room Rule**
+
    - Use graph traversal from `earth_arkhamcity_intersection_derby_high` as starting point
    - Report rooms that cannot be reached
    - Suggest connection points
 
 3. **Dead End Rule**
+
    - Find rooms with zero exits
    - Generate warnings (not errors) for rooms with only one exit
 
 4. **Self Reference Rule**
+
    - Detect rooms that reference themselves
    - Allow if `self_reference` flag is present
    - Report as error otherwise
@@ -225,26 +233,31 @@ Use Click framework for command-line interface:
 @click.option('--base-path', default='./data/local/rooms', help='Base directory for room files')
 def main(zone, verbose, schema_only, ignore, format, base_path):
     # Implementation here
+
 ```
 
 ### Validation Flow
 
 1. **Discovery Phase**
+
    - Scan directory structure
    - Report zones found
    - Show progress for large datasets
 
 2. **Loading Phase**
+
    - Parse all JSON files
    - Build room database
    - Report parsing errors
 
 3. **Validation Phase**
+
    - Run enabled validation rules
    - Collect errors and warnings
    - Respect zone filters and ignore flags
 
 4. **Reporting Phase**
+
    - Format and display results
    - Show summary statistics
    - Return appropriate exit code
@@ -265,7 +278,8 @@ def main(zone, verbose, schema_only, ignore, format, base_path):
 ❌ ERRORS FOUND:
 
 🏠 arkham_002.json (Miskatonic University Gates)
-  ❌ Bidirectional: Exit 'south' → earth_arkhamcity_intersection_derby_high, but earth_arkhamcity_intersection_derby_high has no 'north' return
+  ❌ Bidirectional: Exit 'south' → earth_arkhamcity_intersection_derby_high, but
+   earth_arkhamcity_intersection_derby_high has no 'north' return
      💡 Suggestion: Add "north": "arkham_002" to earth_arkhamcity_intersection_derby_high or flag as one_way
 
 🏠 arkham_006.json (Clock Tower)
@@ -301,7 +315,8 @@ def main(zone, verbose, schema_only, ignore, format, base_path):
       "type": "bidirectional",
       "file": "arkham_002.json",
       "room_id": "arkham_002",
-      "message": "Exit 'south' → earth_arkhamcity_intersection_derby_high, but earth_arkhamcity_intersection_derby_high has no 'north' return",
+      "message": "Exit 'south' → earth_arkhamcity_intersection_derby_high, but
+       earth_arkhamcity_intersection_derby_high has no 'north' return",
       "suggestion": "Add \"north\": \"arkham_002\" to earth_arkhamcity_intersection_derby_high or flag as one_way"
     }
   ],
@@ -320,21 +335,24 @@ def main(zone, verbose, schema_only, ignore, format, base_path):
 
 ### Error Handling
 
-- Continue processing after malformed JSON files
+Continue processing after malformed JSON files
+
 - Provide specific file paths in all error messages
 - Use try-catch blocks around file operations
 - Log but don't crash on unexpected errors
 
 ### Performance Considerations
 
-- Use progress bars for operations > 1 second
+Use progress bars for operations > 1 second
+
 - Lazy load room data when possible
 - Efficient graph algorithms (BFS/DFS)
 - Cache schema validation results
 
 ### Extensibility Design
 
-- Plugin-style rule system
+Plugin-style rule system
+
 - Easy to add new validation rules
 - Support for zone-specific rules in future
 - Configuration file support for ignored rules
@@ -351,4 +369,5 @@ Create test cases for:
 
 ## Migration Support
 
-The validator must support gradual migration from legacy string exits to new object exits with flags. Always maintain backward compatibility while encouraging adoption of the new format in suggestions.
+The validator must support gradual migration from legacy string exits to new object exits with flags. Always maintain
+backward compatibility while encouraging adoption of the new format in suggestions.

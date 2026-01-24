@@ -183,11 +183,13 @@ def test_command_message_rejects_extra_fields():
     """Test CommandMessage rejects extra fields (extra='forbid')."""
     data = CommandMessageData(command="look")
     with pytest.raises(ValidationError):
-        CommandMessage(data=data, extra_field="should_fail")
+        # Reason: Intentionally testing Pydantic validation with extra='forbid' - extra fields should be rejected
+        CommandMessage(data=data, extra_field="should_fail")  # type: ignore[call-arg]
 
 
 def test_chat_message_rejects_extra_fields():
     """Test ChatMessage rejects extra fields (extra='forbid')."""
     data = ChatMessageData(message="Hello")
     with pytest.raises(ValidationError):
-        ChatMessage(data=data, extra_field="should_fail")
+        # Reason: Intentionally testing Pydantic validation with extra='forbid' - extra fields should be rejected
+        ChatMessage(data=data, extra_field="should_fail")  # type: ignore[call-arg]

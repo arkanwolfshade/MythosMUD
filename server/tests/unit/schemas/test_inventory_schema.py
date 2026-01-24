@@ -4,6 +4,8 @@ Unit tests for inventory_schema validation functions.
 Tests the validation functions in inventory_schema.py module.
 """
 
+from typing import Any
+
 import pytest
 
 from server.schemas.inventory_schema import (
@@ -26,7 +28,7 @@ def test_validate_inventory_payload_valid():
 
 def test_validate_inventory_payload_missing_required():
     """Test validate_inventory_payload() raises error for missing required fields."""
-    payload = {
+    payload: dict[str, Any] = {
         "inventory": [],
     }
 

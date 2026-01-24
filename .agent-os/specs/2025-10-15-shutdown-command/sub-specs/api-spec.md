@@ -155,7 +155,7 @@ app.state.server_shutdown_pending: bool
 
 app.state.shutdown_data: dict | None
 # Contains shutdown countdown information
-# Structure:
+# Structure
 # {
 #   "countdown_seconds": int,
 #   "start_time": float,  # time.time() when initiated
@@ -166,17 +166,21 @@ app.state.shutdown_data: dict | None
 # Default: None
 # Created on shutdown initiation
 # Cleared on cancellation or completion
+
 ```
 
 **State Access Pattern:**
 
 ```python
 # Check if shutdown is pending
+
 if getattr(app.state, 'server_shutdown_pending', False):
     # Shutdown is active
+
     return error_response("Server is shutting down")
 
 # Get shutdown data
+
 shutdown_data = getattr(app.state, 'shutdown_data', None)
 if shutdown_data:
     remaining = shutdown_data['end_time'] - time.time()
@@ -224,7 +228,8 @@ if getattr(app.state, 'server_shutdown_pending', False):
 **Required Change:**
 
 ```python
-# In handle_websocket_connection, before allowing MOTD progression:
+# In handle_websocket_connection, before allowing MOTD progression
+
 if getattr(request.app.state, 'server_shutdown_pending', False):
     await websocket.send_json({
         "type": "error",
@@ -244,8 +249,10 @@ if getattr(request.app.state, 'server_shutdown_pending', False):
 
 ```python
 # In CommandService.__init__
+
 self.command_handlers = {
     # ... existing handlers ...
+
     "shutdown": handle_shutdown_command,
 }
 ```

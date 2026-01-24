@@ -16,6 +16,7 @@ import uuid
 from typing import Any
 
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import JSONResponse
 from pydantic import ValidationError
 from starlette.types import ASGIApp, Receive, Scope, Send
 
@@ -199,7 +200,7 @@ class ErrorHandlingMiddleware:
             self._log_exception(request, exc, response.status_code)
             return response
 
-    def _log_exception(self, request: Request, exc: Exception, status_code: int):
+    def _log_exception(self, request: Request, exc: Exception, status_code: int) -> None:
         """
         Log the exception with full context information.
 
@@ -261,7 +262,7 @@ class ErrorHandlingMiddleware:
             )
 
 
-def add_error_handling_middleware(app: FastAPI, include_details: bool = False):
+def add_error_handling_middleware(app: FastAPI, include_details: bool = False) -> None:
     """
     Add error handling middleware to FastAPI application.
 
@@ -284,7 +285,7 @@ def add_error_handling_middleware(app: FastAPI, include_details: bool = False):
 
 
 # Additional error handlers for FastAPI exception handlers
-def register_error_handlers(app: FastAPI, include_details: bool = False):
+def register_error_handlers(app: FastAPI, include_details: bool = False) -> None:
     """
     Register error handlers for FastAPI application.
 
@@ -306,31 +307,31 @@ def register_error_handlers(app: FastAPI, include_details: bool = False):
     """
 
     @app.exception_handler(MythosMUDError)
-    async def mythos_error_handler(request: Request, exc: MythosMUDError):
+    async def mythos_error_handler(request: Request, exc: MythosMUDError) -> JSONResponse:
         """Handle MythosMUDError exceptions."""
         handler = StandardizedErrorResponse(request=request)
         return handler.handle_exception(exc, include_details=include_details)
 
     @app.exception_handler(ValidationError)
-    async def pydantic_validation_error_handler(request: Request, exc: ValidationError):
+    async def pydantic_validation_error_handler(request: Request, exc: ValidationError) -> JSONResponse:
         """Handle Pydantic ValidationError exceptions."""
         handler = StandardizedErrorResponse(request=request)
         return handler.handle_exception(exc, include_details=include_details)
 
     @app.exception_handler(HTTPException)
-    async def http_exception_handler(request: Request, exc: HTTPException):
+    async def http_exception_handler(request: Request, exc: HTTPException) -> JSONResponse:
         """Handle FastAPI HTTPException exceptions."""
         handler = StandardizedErrorResponse(request=request)
         return handler.handle_exception(exc, include_details=include_details)
 
     @app.exception_handler(LoggedHTTPException)
-    async def logged_http_exception_handler(request: Request, exc: LoggedHTTPException):
+    async def logged_http_exception_handler(request: Request, exc: LoggedHTTPException) -> JSONResponse:
         """Handle LoggedHTTPException exceptions."""
         handler = StandardizedErrorResponse(request=request)
         return handler.handle_exception(exc, include_details=include_details)
 
     @app.exception_handler(Exception)
-    async def generic_exception_handler(request: Request, exc: Exception):
+    async def generic_exception_handler(request: Request, exc: Exception) -> JSONResponse:
         """Handle all other exceptions."""
         handler = StandardizedErrorResponse(request=request)
         return handler.handle_exception(exc, include_details=include_details)
@@ -338,7 +339,7 @@ def register_error_handlers(app: FastAPI, include_details: bool = False):
     logger.info("Error handlers registered for FastAPI application")
 
 
-def setup_error_handling(app: FastAPI, include_details: bool = False):
+def setup_error_handling(app: FastAPI, include_details: bool = False) -> None:
     """
     Setup complete error handling for FastAPI application.
 

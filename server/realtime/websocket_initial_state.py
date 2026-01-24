@@ -7,9 +7,10 @@ This module handles sending initial game state to connecting players.
 # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Initial state preparation requires many parameters for complete game state context
 
 import uuid
-from typing import Any
+from typing import TYPE_CHECKING, Any, cast
 
 from fastapi import WebSocket
+from starlette.websockets import WebSocketDisconnect
 
 from ..structured_logging.enhanced_logging_config import get_logger
 from .envelope import build_event
@@ -20,11 +21,15 @@ from .websocket_helpers import (
     prepare_player_data,
 )
 
+if TYPE_CHECKING:
+    from ..models.room import Room
+    from .connection_manager import ConnectionManager
+
 logger = get_logger(__name__)
 
 
 async def prepare_room_data_with_occupants(
-    room, canonical_room_id: str, connection_manager
+    room: "Room | dict[str, Any]", canonical_room_id: str, connection_manager: "ConnectionManager"
 ) -> tuple[dict[str, Any], list[str]]:
     """Prepare room data and get occupant names."""
     room_occupants = await connection_manager.get_room_occupants(str(canonical_room_id))
@@ -58,7 +63,7 @@ async def send_game_state_event_safely(
     try:
         await websocket.send_json(game_state_event)
         return False
-    except RuntimeError as send_err:
+    except (RuntimeError, WebSocketDisconnect) as send_err:
         error_message = str(send_err)
         if "close message has been sent" in error_message or "Cannot call" in error_message:
             logger.warning(
@@ -67,11 +72,15 @@ async def send_game_state_event_safely(
                 error=error_message,
             )
             return True
+        # WebSocketDisconnect means connection is closed
+        if isinstance(send_err, WebSocketDisconnect):
+            logger.debug("WebSocket disconnected during game state send", player_id=player_id_str)
+            return True
         raise
 
 
 async def send_initial_game_state(
-    websocket: WebSocket, player_id: uuid.UUID, player_id_str: str, connection_manager
+    websocket: WebSocket, player_id: uuid.UUID, player_id_str: str, connection_manager: "ConnectionManager"
 ) -> tuple[str | None, bool]:
     """
     Send initial game state to connecting player.
@@ -106,30 +115,58 @@ async def send_initial_game_state(
         return None, False
 
 
-async def check_and_send_death_notification(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Death notification requires many parameters for context and notification logic
-    websocket: WebSocket, player_id: uuid.UUID, player_id_str: str, canonical_room_id: str, room, connection_manager
-) -> None:
-    """Check if player is dead and send death notification if needed."""
+def _get_death_location_name(room: "Room | dict[str, Any]") -> str:
+    """Extract death location name from room object or dict."""
+    if isinstance(room, dict):
+        name = room.get("name")
+        return str(name) if name is not None else "Unknown Location"
+    if hasattr(room, "name"):
+        name = getattr(room, "name", None)
+        return str(name) if name is not None else "Unknown Location"
+    return "Unknown Location"
+
+
+async def _get_player_for_death_check(
+    player_id: uuid.UUID, connection_manager: "ConnectionManager"
+) -> tuple[Any, str | None] | None:
+    """Get player and updated room ID for death check."""
     from ..async_persistence import get_async_persistence
-    from ..services.player_respawn_service import LIMBO_ROOM_ID
 
     async_persistence = get_async_persistence()
     fresh_player = await async_persistence.get_player_by_id(player_id)
     if fresh_player:
-        player = fresh_player
-        canonical_room_id = str(player.current_room_id) if hasattr(player, "current_room_id") else canonical_room_id
-    else:
-        player = await connection_manager.get_player(player_id)
-        if not player:
-            return
+        canonical_room_id = str(fresh_player.current_room_id) if hasattr(fresh_player, "current_room_id") else None
+        return fresh_player, canonical_room_id
+
+    player_result = await connection_manager.get_player(player_id)
+    if not player_result:
+        return None
+    return player_result, None
+
+
+async def check_and_send_death_notification(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Death notification requires many parameters for context and notification logic
+    websocket: WebSocket,
+    player_id: uuid.UUID,
+    player_id_str: str,
+    canonical_room_id: str,
+    room: "Room | dict[str, Any]",
+    connection_manager: "ConnectionManager",
+) -> None:
+    """Check if player is dead and send death notification if needed."""
+    from ..services.player_respawn_service import LIMBO_ROOM_ID
+
+    player_result = await _get_player_for_death_check(player_id, connection_manager)
+    if not player_result:
+        return
+    player, updated_room_id = player_result
+    if updated_room_id:
+        canonical_room_id = updated_room_id
 
     stats = player.get_stats() if hasattr(player, "get_stats") else {}
-    current_dp = stats.get("current_dp", 20)  # current_dp represents DP
-    if not isinstance(current_dp, int):
-        current_dp = 20
+    current_dp = stats.get("current_dp", 20) if isinstance(stats.get("current_dp"), int) else 20
 
     if current_dp <= -10 or str(canonical_room_id) == LIMBO_ROOM_ID:
-        death_location_name = room.name if room else "Unknown Location"
+        death_location_name = _get_death_location_name(room)
         death_event = build_event(
             "player_died",
             {
@@ -150,7 +187,7 @@ async def check_and_send_death_notification(  # pylint: disable=too-many-argumen
 
 
 async def add_npc_occupants_to_list(
-    room, occupant_names: list[str], canonical_room_id: str, connection_manager
+    room: "Room", occupant_names: list[str], canonical_room_id: str, connection_manager: "ConnectionManager"
 ) -> None:
     """Add NPC occupants to the occupant names list."""
     if not hasattr(connection_manager, "app"):
@@ -178,15 +215,17 @@ async def add_npc_occupants_to_list(
             )
 
 
-async def prepare_initial_room_data(room, connection_manager) -> dict[str, Any]:
+async def prepare_initial_room_data(
+    room: "Room | dict[str, Any]", connection_manager: "ConnectionManager"
+) -> dict[str, Any]:
     """Prepare room data for initial state event."""
     room_data_for_update = room.to_dict() if hasattr(room, "to_dict") else room
     if isinstance(room_data_for_update, dict):
         room_data_for_update = await connection_manager.convert_room_players_uuids_to_names(room_data_for_update)
-    return room_data_for_update
+    return cast(dict[str, Any], room_data_for_update)
 
 
-def get_event_handler_for_initial_state(connection_manager, websocket: WebSocket) -> Any:
+def get_event_handler_for_initial_state(connection_manager: "ConnectionManager", websocket: WebSocket) -> Any:
     """Get event handler from connection manager or websocket app state."""
     # Prefer container, fallback to app.state for backward compatibility
     event_handler = None
@@ -204,7 +243,7 @@ def get_event_handler_for_initial_state(connection_manager, websocket: WebSocket
 
 
 async def send_occupants_snapshot_if_needed(
-    event_handler: Any, room, player_id: uuid.UUID, player_id_str: str, canonical_room_id: str
+    event_handler: Any, room: "Room", player_id: uuid.UUID, player_id_str: str, canonical_room_id: str
 ) -> None:
     """Send occupants snapshot if event handler is available and player is in room."""
     if not event_handler:
@@ -225,7 +264,11 @@ async def send_occupants_snapshot_if_needed(
 
 
 async def send_initial_room_state(
-    websocket: WebSocket, player_id: uuid.UUID, player_id_str: str, canonical_room_id: str, connection_manager
+    websocket: WebSocket,
+    player_id: uuid.UUID,
+    player_id_str: str,
+    canonical_room_id: str,
+    connection_manager: "ConnectionManager",
 ) -> None:
     """Send initial room state and occupants snapshot to connecting player."""
     try:

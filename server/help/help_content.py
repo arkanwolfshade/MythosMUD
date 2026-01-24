@@ -903,7 +903,7 @@ def get_command_categories() -> list[str]:
     return sorted(categories)
 
 
-def get_commands_by_category(category: str) -> list[tuple[str, dict]]:
+def get_commands_by_category(category: str) -> list[tuple[str, dict[str, Any]]]:
     """Get all commands in a specific category."""
     commands = []
     for cmd_name, cmd_info in COMMANDS.items():

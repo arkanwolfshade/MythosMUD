@@ -2,27 +2,32 @@
 
 ## Overview
 
-Tests whisper channel error handling and validation. This scenario verifies that the whisper system properly handles invalid commands, non-existent players, empty messages, long messages, and other error conditions, while maintaining system stability and providing appropriate error messages.
+Tests whisper channel error handling and validation. This scenario verifies that the whisper system properly handles
+invalid commands, non-existent players, empty messages, long messages, and other error conditions, while maintaining
+system stability and providing appropriate error messages.
 
 ## Prerequisites
 
-**BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY:**
+### BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY
 
 1. **Database State**: Both players are in `earth_arkhamcity_sanitarium_room_foyer_001`
 2. **Server Running**: Development server is running on port 54731
 3. **Client Accessible**: Client is accessible on port 5173
 4. **Both Players Connected**: AW and Ithaqua are both logged in and in the same room
 
-**⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE**
+### ⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE
 
 **Reference**: See @MULTIPLAYER_TEST_RULES.md for complete prerequisite verification procedures.
 
 ## Test Configuration
 
-- **Test Players**: ArkanWolfshade (AW) and Ithaqua
-- **Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
-- **Testing Approach**: Playwright MCP (multi-tab interaction required)
-- **Timeout Settings**: Use configurable timeouts from master rules
+**Test Players**: ArkanWolfshade (AW) and Ithaqua
+
+**Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
+
+**Testing Approach**: Playwright MCP (multi-tab interaction required)
+
+**Timeout Settings**: Use configurable timeouts from master rules
 
 ## Execution Steps
 
@@ -31,6 +36,7 @@ Tests whisper channel error handling and validation. This scenario verifies that
 **Purpose**: Ensure both players are ready for whisper error testing
 
 **Commands**:
+
 ```javascript
 // Ensure both players are logged in from previous scenario
 // AW should be on tab 0, Ithaqua on tab 1
@@ -44,12 +50,14 @@ Tests whisper channel error handling and validation. This scenario verifies that
 **Purpose**: Test error handling for whispering to non-existent players
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
 
 // Send whisper to non-existent player
-await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "whisper NonExistentPlayer Hello there"});
+await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "whisper
+NonExistentPlayer Hello there"});
 await mcp_playwright_browser_press_key({key: "Enter"});
 
 // Wait for error message
@@ -69,6 +77,7 @@ console.log('AW messages:', awMessages);
 **Purpose**: Test error handling for empty whisper messages
 
 **Commands**:
+
 ```javascript
 // Send empty whisper message
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "whisper Ithaqua"});
@@ -90,6 +99,7 @@ console.log('AW sees empty message error:', seesEmptyMessageError);
 **Purpose**: Test error handling for invalid whisper command syntax
 
 **Commands**:
+
 ```javascript
 // Test invalid whisper command syntax
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "whisper"});
@@ -111,6 +121,7 @@ console.log('AW sees syntax error:', seesSyntaxError);
 **Purpose**: Test error handling for excessively long whisper messages
 
 **Commands**:
+
 ```javascript
 // Create a very long message (over 500 characters)
 const longMessage = "This is a very long whisper message that exceeds the maximum allowed length for whisper messages. ".repeat(10);
@@ -133,6 +144,7 @@ console.log('AW sees long message error:', seesLongMessageError);
 **Purpose**: Test error handling for whispering to oneself
 
 **Commands**:
+
 ```javascript
 // Test whispering to self
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "whisper ArkanWolfshade Hello myself"});
@@ -154,6 +166,7 @@ console.log('AW sees self error:', seesSelfError);
 **Purpose**: Test that special characters work correctly in whisper messages
 
 **Commands**:
+
 ```javascript
 // Test special characters
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "whisper Ithaqua Message with special chars: !@#$%^&*()"});
@@ -163,7 +176,8 @@ await mcp_playwright_browser_press_key({key: "Enter"});
 await mcp_playwright_browser_wait_for({text: "You whisper to Ithaqua: Message with special chars: !@#$%^&*()"});
 
 // Verify message appears
-const awMessagesSpecial = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
+const awMessagesSpecial = await mcp_playwright_browser_evaluate({function: "() =>
+Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
 const seesSpecialCharsMessage = awMessagesSpecial.some(msg => msg.includes('You whisper to Ithaqua: Message with special chars: !@#$%^&*()'));
 console.log('AW sees special chars message:', seesSpecialCharsMessage);
 ```
@@ -175,6 +189,7 @@ console.log('AW sees special chars message:', seesSpecialCharsMessage);
 **Purpose**: Test that special characters are properly handled in message delivery
 
 **Commands**:
+
 ```javascript
 // Switch to Ithaqua's tab
 await mcp_playwright_browser_tab_select({index: 1});
@@ -196,6 +211,7 @@ console.log('Ithaqua messages:', ithaquaMessages);
 **Purpose**: Test that Unicode characters work correctly in whisper messages
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -232,6 +248,7 @@ if (awMessagesUnicode.length === 0) {
 **Purpose**: Test error handling for whisper with whitespace only
 
 **Commands**:
+
 ```javascript
 // Test whisper with whitespace only
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "whisper Ithaqua   "});
@@ -253,6 +270,7 @@ console.log('AW sees whitespace error:', seesWhitespaceError);
 **Purpose**: Test that valid whisper messages work after error conditions
 
 **Commands**:
+
 ```javascript
 // Send valid whisper message after errors
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "whisper Ithaqua Valid message after errors"});
@@ -274,6 +292,7 @@ console.log('AW sees valid message:', seesValidMessage);
 **Purpose**: Test that valid messages work after error conditions
 
 **Commands**:
+
 ```javascript
 // Switch to Ithaqua's tab
 await mcp_playwright_browser_tab_select({index: 1});
@@ -296,6 +315,7 @@ console.log('✅ All verification steps completed successfully');
 console.log('✅ System functionality verified as working correctly');
 console.log('✅ Test results documented and validated');
 console.log('📋 PROCEEDING TO SCENARIO 15: Whisper Spam Prevention');
+
 ```
 
 **Expected Result**:  AW sees confirmation of valid whisper message
@@ -328,20 +348,24 @@ console.log('➡️ READY FOR SCENARIO 15: Whisper Spam Prevention');
 **Purpose**: Test that the system remains stable after error conditions
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
 
 // Send another valid message to test stability
-await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "whisper Ithaqua System stability test"});
+await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "whisper Ithaqua System
+stability test"});
 await mcp_playwright_browser_press_key({key: "Enter"});
 
 // Wait for confirmation
 await mcp_playwright_browser_wait_for({text: "You whisper to Ithaqua: System stability test"});
 
 // Verify message appears
-const awMessagesStability = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
-const seesStabilityMessage = awMessagesStability.some(msg => msg.includes('You whisper to Ithaqua: System stability test'));
+const awMessagesStability = await mcp_playwright_browser_evaluate({function: "() =>
+Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
+const seesStabilityMessage = awMessagesStability.some(msg => msg.includes('You whisper to Ithaqua: System stability
+test'));
 console.log('AW sees stability message:', seesStabilityMessage);
 ```
 
@@ -349,11 +373,16 @@ console.log('AW sees stability message:', seesStabilityMessage);
 
 ## Expected Results
 
-- ✅ Whisper to non-existent player is properly rejected with error message
-- ✅ Empty whisper messages are properly rejected with error message
-- ✅ Invalid whisper command syntax is properly rejected
-- ✅ Long whisper messages are properly rejected with error message
-- ✅ Whispering to self is properly rejected with error message
+✅ Whisper to non-existent player is properly rejected with error message
+
+✅ Empty whisper messages are properly rejected with error message
+
+✅ Invalid whisper command syntax is properly rejected
+
+✅ Long whisper messages are properly rejected with error message
+
+✅ Whispering to self is properly rejected with error message
+
 - ✅ Special characters in whisper messages work correctly
 - ✅ Unicode characters in whisper messages work correctly
 - ✅ Whisper with whitespace only is properly rejected
@@ -362,7 +391,8 @@ console.log('AW sees stability message:', seesStabilityMessage);
 
 ## Success Criteria Checklist
 
-- [ ] Whisper to non-existent player is properly rejected
+[ ] Whisper to non-existent player is properly rejected
+
 - [ ] Empty whisper messages are properly rejected
 - [ ] Invalid whisper command syntax is properly rejected
 - [ ] Long whisper messages are properly rejected
@@ -381,20 +411,25 @@ console.log('AW sees stability message:', seesStabilityMessage);
 ## Cleanup
 
 Execute standard cleanup procedures from @CLEANUP.md:
+
 1. Close all browser tabs
 2. Stop development server
 3. Verify clean shutdown
 
 ## Status
 
-**✅ SCENARIO COMPLETION LOGIC FIXED**
+### ✅ SCENARIO COMPLETION LOGIC FIXED
 
 The whisper errors system is working correctly. The scenario now includes proper completion logic to prevent infinite loops:
 
-- **Fixed**: Added completion step with explicit scenario completion and cleanup procedures
-- **Fixed**: Added clear decision points for handling verification results
-- **Fixed**: Added explicit progression to next scenario
-- **Verified**: System functionality works as expected and meets all requirements
+**Fixed**: Added completion step with explicit scenario completion and cleanup procedures
+
+**Fixed**: Added clear decision points for handling verification results
+
+**Fixed**: Added explicit progression to next scenario
+
+**Verified**: System functionality works as expected and meets all requirements
+
 ---
 
 **Document Version**: 1.0 (Modular E2E Test Suite)

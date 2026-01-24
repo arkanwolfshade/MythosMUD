@@ -31,7 +31,8 @@ The system will support configuration options to control startup spawning behavi
 
 ## Out of Scope
 
-- Dynamic spawning during gameplay (already implemented)
+Dynamic spawning during gameplay (already implemented)
+
 - NPC behavior modifications (already implemented)
 - Admin API changes (already implemented)
 - Database schema changes (already implemented)

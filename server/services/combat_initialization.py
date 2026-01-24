@@ -40,13 +40,16 @@ class CombatInitializer:  # pylint: disable=too-few-public-methods  # Reason: In
             The initialized CombatInstance
         """
         # Create combat instance with auto-progression configuration
+        # turn_interval_seconds is the round interval in seconds (default 10 seconds = 100 ticks)
+        # Convert seconds to ticks: 1 tick = 0.1 seconds, so multiply by 10
+        turn_interval_ticks = turn_interval_seconds * 10
         combat = CombatInstance(
             room_id=room_id,
             auto_progression_enabled=auto_progression_enabled,
-            turn_interval_ticks=turn_interval_seconds,  # Convert seconds to ticks (1:1 for now)
+            turn_interval_ticks=turn_interval_ticks,  # Round interval in ticks (100 ticks = 10 seconds)
             start_tick=current_tick,
             last_activity_tick=current_tick,
-            next_turn_tick=current_tick + turn_interval_seconds,
+            next_turn_tick=current_tick + turn_interval_ticks,  # Next round starts in turn_interval_ticks ticks
         )
 
         # Create participant objects

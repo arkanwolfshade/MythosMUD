@@ -2,11 +2,13 @@
 
 ## Overview
 
-This document outlines best practices for using SQLAlchemy in async contexts within the MythosMUD project to prevent `ObjectNotExecutableError` and other async-related database issues.
+This document outlines best practices for using SQLAlchemy in async contexts within the MythosMUD project to prevent
+`ObjectNotExecutableError` and other async-related database issues.
 
 ## The Problem
 
-When using SQLAlchemy 2.0+ in async contexts, raw SQL strings cannot be passed directly to `execute()` methods. This causes the following error:
+When using SQLAlchemy 2.0+ in async contexts, raw SQL strings cannot be passed directly to `execute()` methods. This
+causes the following error:
 
 ```
 sqlalchemy.exc.ObjectNotExecutableError: Not an executable object: 'PRAGMA foreign_keys = ON'
@@ -23,6 +25,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 async def correct_usage():
     async with async_session() as session:
         # Wrap raw SQL strings with text()
+
         await session.execute(text("PRAGMA foreign_keys = ON"))
         await session.execute(text("SELECT * FROM users WHERE id = :user_id"), {"user_id": user_id})
 ```
@@ -33,6 +36,7 @@ async def correct_usage():
 async def incorrect_usage():
     async with async_session() as session:
         # DON'T do this - causes ObjectNotExecutableError
+
         await session.execute("PRAGMA foreign_keys = ON")
         await session.execute("SELECT * FROM users WHERE id = :user_id", {"user_id": user_id})
 ```
@@ -41,10 +45,13 @@ async def incorrect_usage():
 
 Use `text()` wrapper for:
 
-- **Raw SQL strings** in async contexts
-- **PRAGMA statements** (SQLite-specific commands)
-- **Complex queries** not easily expressed with SQLAlchemy ORM
-- **Database-specific SQL** that doesn't have ORM equivalents
+**Raw SQL strings** in async contexts
+
+**PRAGMA statements** (SQLite-specific commands)
+
+**Complex queries** not easily expressed with SQLAlchemy ORM
+
+**Database-specific SQL** that doesn't have ORM equivalents
 
 ### Examples
 
@@ -52,16 +59,20 @@ Use `text()` wrapper for:
 from sqlalchemy import text
 
 # PRAGMA statements
+
 await conn.execute(text("PRAGMA foreign_keys = ON"))
 await conn.execute(text("PRAGMA journal_mode = WAL"))
 
 # Raw SELECT queries
+
 result = await session.execute(text("SELECT COUNT(*) FROM players WHERE level > :level"), {"level": 10})
 
 # Raw INSERT/UPDATE/DELETE
+
 await session.execute(text("DELETE FROM temp_data WHERE created_at < :cutoff"), {"cutoff": cutoff_date})
 
 # Complex queries with database-specific features
+
 await session.execute(text("SELECT * FROM players ORDER BY RANDOM() LIMIT 1"))
 ```
 
@@ -69,21 +80,26 @@ await session.execute(text("SELECT * FROM players ORDER BY RANDOM() LIMIT 1"))
 
 Don't use `text()` for:
 
-- **ORM queries** (use SQLAlchemy ORM methods)
-- **Synchronous connections** (like `sqlite3.connect()`)
-- **Non-SQLAlchemy database libraries** (like `aiosqlite`)
+**ORM queries** (use SQLAlchemy ORM methods)
+
+**Synchronous connections** (like `sqlite3.connect()`)
+
+**Non-SQLAlchemy database libraries** (like `aiosqlite`)
 
 ### Examples
 
 ```python
 # ✅ Use ORM for standard queries
+
 users = await session.execute(select(User).where(User.is_active == True))
 
 # ✅ Use sqlite3 directly (synchronous)
+
 with sqlite3.connect(db_path) as conn:
     conn.execute("PRAGMA foreign_keys = ON")  # No text() needed
 
 # ✅ Use aiosqlite directly
+
 async with aiosqlite.connect(db_path) as db:
     await db.execute("PRAGMA foreign_keys = ON")  # No text() needed
 ```
@@ -96,9 +112,11 @@ We have a custom linter to catch these issues:
 
 ```bash
 # Run the SQLAlchemy async pattern linter
+
 make lint-sqlalchemy
 
 # Or run directly
+
 python scripts/lint_sqlalchemy_async.py [file_or_directory]
 ```
 
@@ -119,12 +137,14 @@ Consider adding these patterns to your IDE's code inspection rules:
 
 ```python
 # server/database.py
+
 from sqlalchemy import text
 
 async def init_db():
     async with engine.begin() as conn:
         await conn.run_sync(metadata.create_all)
         # Enable foreign key constraints for SQLite
+
         await conn.execute(text("PRAGMA foreign_keys = ON"))
 ```
 
@@ -132,6 +152,7 @@ async def init_db():
 
 ```python
 # server/npc_database.py
+
 from sqlalchemy import text
 
 async def init_npc_database():
@@ -144,6 +165,7 @@ async def init_npc_database():
 
 ```python
 # In test files
+
 from sqlalchemy import text
 
 async def cleanup_test_data():
@@ -158,11 +180,14 @@ async def cleanup_test_data():
 **Cause**: Raw SQL string passed to async `execute()` without `text()` wrapper.
 
 **Fix**: Wrap the SQL string with `text()`:
+
 ```python
 # Before
+
 await session.execute("SELECT * FROM users")
 
 # After
+
 from sqlalchemy import text
 await session.execute(text("SELECT * FROM users"))
 ```
@@ -172,22 +197,30 @@ await session.execute(text("SELECT * FROM users"))
 **Cause**: Missing import for `text` function.
 
 **Fix**: Add the import:
+
 ```python
 from sqlalchemy import text
 ```
 
 ### Performance Considerations
 
-- `text()` wrapper adds minimal overhead
+`text()` wrapper adds minimal overhead
+
 - Prefer ORM queries when possible for better performance
 - Use `text()` only when necessary for complex or database-specific SQL
 
 ## References
 
-- [SQLAlchemy 2.0 Async Documentation](https://docs.sqlalchemy.org/en/20/orm/extensions/asyncio.html)
-- [SQLAlchemy Core Text Constructs](https://docs.sqlalchemy.org/en/20/core/sqlelement.html#sqlalchemy.sql.expression.text)
+[SQLAlchemy 2.0 Async Documentation](https://docs.sqlalchemy.org/en/20/orm/extensions/asyncio.html)
+
+- [SQLAlchemy Core Text
+
+  Constructs](<https://docs.sqlalchemy.org/en/20/core/sqlelement.html#sqlalchemy.sql.expression.text>)
+
 - [SQLAlchemy 2.0 Migration Guide](https://docs.sqlalchemy.org/en/20/changelog/migration_20.html)
 
 ---
 
-*"In the restricted archives of Miskatonic University, we learn that proper incantations are essential when working with dimensional gateways. The `text()` ritual must be performed whenever raw SQL strings cross the threshold of async execution, lest the ObjectNotExecutableError consume the unwary developer's code."*
+*"In the restricted archives of Miskatonic University, we learn that proper incantations are essential when working with
+dimensional gateways. The `text()` ritual must be performed whenever raw SQL strings cross the threshold of async
+execution, lest the ObjectNotExecutableError consume the unwary developer's code."*

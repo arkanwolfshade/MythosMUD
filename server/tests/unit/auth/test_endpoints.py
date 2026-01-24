@@ -1,9 +1,11 @@
 """
 Unit tests for authentication endpoints.
+
+# pylint: disable=too-many-lines  # Reason: Comprehensive test coverage requires many test cases for all endpoint scenarios
 """
 
 import uuid
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -13,6 +15,10 @@ from sqlalchemy.exc import IntegrityError
 from server.auth.endpoints import LoginRequest, UserCreate, login_user, register_user
 from server.exceptions import LoggedHTTPException
 from server.models.user import User
+
+# pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
+# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
+# pylint: disable=too-many-lines  # Reason: Comprehensive test suite for authentication endpoints requires extensive test coverage for login, registration, invite management, and validation scenarios - splitting would reduce cohesion
 
 
 @pytest.fixture
@@ -108,7 +114,7 @@ async def test_register_user_integrity_error(mock_request, mock_session):
     )
 
     # Mock IntegrityError
-    integrity_error = IntegrityError("statement", "params", "orig")
+    integrity_error = IntegrityError("statement", "params", Exception("duplicate key value violates unique constraint"))
     integrity_error.orig = Exception("duplicate key value violates unique constraint")
 
     from sqlalchemy.engine import Result
@@ -170,11 +176,16 @@ async def test_login_user_success(mock_request, mock_session):
                     # Mock user_manager.authenticate to return the user
                     mock_user_manager.authenticate = AsyncMock(return_value=user)
 
+                    # Mock container with async_persistence
+                    mock_container = MagicMock()
+                    mock_container.async_persistence = mock_async_persistence
+
                     response = await login_user(
                         request=login_request,
                         http_request=mock_request,
                         user_manager=mock_user_manager,
                         session=mock_session,
+                        container=mock_container,
                     )
 
     assert response.access_token == "test_token"
@@ -235,8 +246,6 @@ async def test_login_user_not_found(mock_request, mock_session):
 @pytest.mark.asyncio
 async def test_register_user_success(mock_request, mock_session):
     """Test successful user registration."""
-    from datetime import UTC, datetime
-
     user_create = UserCreate(
         username="newuser",
         password="testpass123",
@@ -288,8 +297,9 @@ async def test_register_user_success(mock_request, mock_session):
             with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence):
                 with patch("fastapi_users.jwt.generate_jwt", return_value="test_token"):
                     # register_user creates User directly, so we need to mock session.add to set the user
-                    def mock_add(user):
+                    def mock_add(_user):
                         # Simulate user being added and committed
+                        # Parameter prefixed with _ to indicate intentionally unused
                         pass
 
                     mock_session.add = MagicMock(side_effect=mock_add)
@@ -573,11 +583,16 @@ async def test_login_user_with_characters(mock_request, mock_session):
     with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
         with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence):
             with patch("fastapi_users.jwt.generate_jwt", return_value="test_token"):
+                # Mock container with async_persistence
+                mock_container = MagicMock()
+                mock_container.async_persistence = mock_async_persistence
+
                 response = await login_user(
                     request=login_request,
                     http_request=mock_request,
                     user_manager=mock_user_manager,
                     session=mock_session,
+                    container=mock_container,
                 )
 
                 assert response.access_token == "test_token"
@@ -631,11 +646,16 @@ async def test_login_user_profession_lookup_success(mock_request, mock_session):
     with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
         with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence):
             with patch("fastapi_users.jwt.generate_jwt", return_value="test_token"):
+                # Mock container with async_persistence
+                mock_container = MagicMock()
+                mock_container.async_persistence = mock_async_persistence
+
                 response = await login_user(
                     request=login_request,
                     http_request=mock_request,
                     user_manager=mock_user_manager,
                     session=mock_session,
+                    container=mock_container,
                 )
 
                 assert response.access_token == "test_token"
@@ -689,11 +709,16 @@ async def test_login_user_profession_lookup_error(mock_request, mock_session):
     with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
         with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence):
             with patch("fastapi_users.jwt.generate_jwt", return_value="test_token"):
+                # Mock container with async_persistence
+                mock_container = MagicMock()
+                mock_container.async_persistence = mock_async_persistence
+
                 response = await login_user(
                     request=login_request,
                     http_request=mock_request,
                     user_manager=mock_user_manager,
                     session=mock_session,
+                    container=mock_container,
                 )
 
                 # Should still succeed, just without profession name
@@ -745,11 +770,16 @@ async def test_login_user_profession_lookup_none(mock_request, mock_session):
     with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
         with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence):
             with patch("fastapi_users.jwt.generate_jwt", return_value="test_token"):
+                # Mock container with async_persistence
+                mock_container = MagicMock()
+                mock_container.async_persistence = mock_async_persistence
+
                 response = await login_user(
                     request=login_request,
                     http_request=mock_request,
                     user_manager=mock_user_manager,
                     session=mock_session,
+                    container=mock_container,
                 )
 
                 assert response.access_token == "test_token"
@@ -800,11 +830,16 @@ async def test_login_user_player_no_profession_id(mock_request, mock_session):
     with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
         with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence):
             with patch("fastapi_users.jwt.generate_jwt", return_value="test_token"):
+                # Mock container with async_persistence
+                mock_container = MagicMock()
+                mock_container.async_persistence = mock_async_persistence
+
                 response = await login_user(
                     request=login_request,
                     http_request=mock_request,
                     user_manager=mock_user_manager,
                     session=mock_session,
+                    container=mock_container,
                 )
 
                 assert response.access_token == "test_token"
@@ -814,7 +849,7 @@ async def test_login_user_player_no_profession_id(mock_request, mock_session):
 
 
 @pytest.mark.asyncio
-async def test_get_current_user_info(mock_request, mock_session):
+async def test_get_current_user_info():
     """Test getting current user info."""
     from server.auth.endpoints import get_current_user_info
 
@@ -838,10 +873,8 @@ async def test_get_current_user_info(mock_request, mock_session):
 
 
 @pytest.mark.asyncio
-async def test_list_invites(mock_request, mock_session):
+async def test_list_invites():
     """Test listing invites."""
-    from datetime import UTC, datetime
-
     from server.auth.endpoints import list_invites
 
     mock_invite_manager = MagicMock()
@@ -876,10 +909,8 @@ async def test_list_invites(mock_request, mock_session):
 
 
 @pytest.mark.asyncio
-async def test_create_invite(mock_request, mock_session):
+async def test_create_invite():
     """Test creating an invite."""
-    from datetime import UTC, datetime
-
     from server.auth.endpoints import create_invite
 
     mock_invite_manager = MagicMock()
@@ -927,8 +958,8 @@ async def test_register_user_email_constraint_violation(mock_request, mock_sessi
     mock_invite_manager = MagicMock()
 
     # Mock IntegrityError with email constraint
-    integrity_error = IntegrityError("statement", "params", "orig")
-    integrity_error.orig = Exception("duplicate key value violates unique constraint users_email_key")
+    orig_exception = Exception("duplicate key value violates unique constraint users_email_key")
+    integrity_error = IntegrityError("statement", "params", orig_exception)
 
     from sqlalchemy.engine import Result
 
@@ -1096,8 +1127,8 @@ async def test_register_user_username_constraint_violation(mock_request, mock_se
     mock_invite_manager = MagicMock()
 
     # Mock IntegrityError with username constraint
-    integrity_error = IntegrityError("statement", "params", "orig")
-    integrity_error.orig = Exception("duplicate key value violates unique constraint users_username_key")
+    orig_exception = Exception("duplicate key value violates unique constraint users_username_key")
+    integrity_error = IntegrityError("statement", "params", orig_exception)
 
     from sqlalchemy.engine import Result
 
@@ -1131,8 +1162,8 @@ async def test_register_user_generic_constraint_violation(mock_request, mock_ses
     mock_invite_manager = MagicMock()
 
     # Mock IntegrityError with generic constraint
-    integrity_error = IntegrityError("statement", "params", "orig")
-    integrity_error.orig = Exception("duplicate key value violates unique constraint")
+    orig_exception = Exception("duplicate key value violates unique constraint")
+    integrity_error = IntegrityError("statement", "params", orig_exception)
 
     from sqlalchemy.engine import Result
 
@@ -1156,7 +1187,7 @@ async def test_register_user_generic_constraint_violation(mock_request, mock_ses
 
 
 @pytest.mark.asyncio
-async def test_register_user_password_validation_empty(mock_request, mock_session):
+async def test_register_user_password_validation_empty():
     """Test registration with empty password (should be rejected by Pydantic)."""
     # This should be caught by Pydantic validation before reaching the endpoint
     from pydantic import ValidationError
@@ -1169,7 +1200,7 @@ async def test_register_user_password_validation_empty(mock_request, mock_sessio
 
 
 @pytest.mark.asyncio
-async def test_register_user_password_validation_whitespace(mock_request, mock_session):
+async def test_register_user_password_validation_whitespace():
     """Test registration with whitespace-only password (should be rejected by Pydantic)."""
     # This should be caught by Pydantic validation before reaching the endpoint
     from pydantic import ValidationError
@@ -1295,7 +1326,7 @@ async def test_login_user_http_exception_re_raised(mock_request, mock_session):
 
 
 @pytest.mark.asyncio
-async def test_list_invites_empty_list(mock_request, mock_session):
+async def test_list_invites_empty_list():
     """Test listing invites when list is empty."""
     from server.auth.endpoints import list_invites
 
@@ -1322,10 +1353,8 @@ async def test_list_invites_empty_list(mock_request, mock_session):
 
 
 @pytest.mark.asyncio
-async def test_list_invites_with_used_invite(mock_request, mock_session):
+async def test_list_invites_with_used_invite():
     """Test listing invites with a used invite."""
-    from datetime import UTC, datetime
-
     from server.auth.endpoints import list_invites
 
     mock_invite_manager = MagicMock()
@@ -1359,10 +1388,8 @@ async def test_list_invites_with_used_invite(mock_request, mock_session):
 
 
 @pytest.mark.asyncio
-async def test_list_invites_with_expired_invite(mock_request, mock_session):
+async def test_list_invites_with_expired_invite():
     """Test listing invites with an expired invite."""
-    from datetime import UTC, datetime, timedelta
-
     from server.auth.endpoints import list_invites
 
     mock_invite_manager = MagicMock()
@@ -1396,10 +1423,8 @@ async def test_list_invites_with_expired_invite(mock_request, mock_session):
 
 
 @pytest.mark.asyncio
-async def test_create_invite_success(mock_request, mock_session):
+async def test_create_invite_success():
     """Test creating an invite successfully."""
-    from datetime import UTC, datetime
-
     from server.auth.endpoints import create_invite
 
     mock_invite_manager = MagicMock()

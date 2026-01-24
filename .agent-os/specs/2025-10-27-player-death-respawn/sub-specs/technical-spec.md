@@ -148,6 +148,7 @@ You died at: [DEATH_LOCATION_NAME]
 **File:** `server/services/combat_service.py`
 
 - Update `process_attack()` flow:
+
   1. Apply damage
   2. Cap HP at -10 if player
   3. Check if player became mortally wounded (HP reached 0)
@@ -158,21 +159,24 @@ You died at: [DEATH_LOCATION_NAME]
 
 ### Performance Considerations
 
-- HP decay processing should be O(n) where n = number of mortally wounded players
+HP decay processing should be O(n) where n = number of mortally wounded players
+
 - Death location storage should use simple string (room_id + timestamp)
 - Limbo room should not process normal room logic (optimized no-op)
 - UI state transitions should debounce to prevent flickering
 
 ### Security Considerations
 
-- Validate respawn room exists before teleporting player
+Validate respawn room exists before teleporting player
+
 - Prevent respawn exploitation (e.g., respawning mid-combat)
 - Ensure dead players cannot execute commands via API
 - Sanitize death location data in interstitial screen (prevent XSS)
 
 ### Testing Requirements
 
-- Unit tests for HP capping at -10
+Unit tests for HP capping at -10
+
 - Unit tests for mortally wounded state detection
 - Unit tests for HP decay logic
 - Unit tests for threat queue management

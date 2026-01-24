@@ -101,7 +101,7 @@ class CharacterCreationService:
                 user_friendly="Invalid parameters provided",
             )
 
-    def validate_character_stats(self, stats: dict, class_name: str | None = None) -> dict[str, Any]:
+    def validate_character_stats(self, stats: dict[str, Any], class_name: str | None = None) -> dict[str, Any]:
         """
         Validate character stats against class prerequisites.
 
@@ -153,7 +153,7 @@ class CharacterCreationService:
     def create_character_with_stats(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Character creation requires many parameters for stats and configuration
         self,
         name: str,
-        stats: dict,
+        stats: dict[str, Any],
         profession_id: int = 0,
         starting_room_id: str = "earth_arkhamcity_sanitarium_room_foyer_001",
         user_id: uuid.UUID | None = None,

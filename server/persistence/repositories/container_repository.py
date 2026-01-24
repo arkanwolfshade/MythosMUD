@@ -45,7 +45,7 @@ class ContainerRepository:
     for gradual async migration.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Initialize the container repository.
 

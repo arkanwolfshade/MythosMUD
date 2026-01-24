@@ -14,7 +14,11 @@ logger = get_logger(__name__)
 
 
 async def handle_time_command(
-    _command_data: dict, _current_user: dict, request: Any, _alias_storage: AliasStorage | None, player_name: str
+    _command_data: dict[str, Any],
+    _current_user: dict[str, Any],
+    request: Any,
+    _alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """Handle the time command, exposing the current Mythos time and active holidays."""
 

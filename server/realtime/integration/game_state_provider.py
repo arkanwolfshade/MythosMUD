@@ -11,7 +11,7 @@ Game state generation is now a focused, independently testable component.
 import json
 import uuid
 from collections.abc import Callable
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from ...models import Player
 from ...services.npc_instance_service import get_npc_instance_service
@@ -78,49 +78,41 @@ class GameStateProvider:
         """
         async_persistence = self.get_async_persistence()
         player = await async_persistence.get_player_by_id(player_id)
-        return player
+        return cast("Player | None", player)
 
     async def get_players_batch(self, player_ids: list[uuid.UUID]) -> dict[uuid.UUID, Player]:
         """
         Get multiple players from the persistence layer in a single batch operation.
 
-        This method optimizes room occupant lookups by reducing N+1 queries to a single
-        batch operation.
+        This method optimizes room occupant lookups by using a single database query
+        with IN clause instead of N individual queries, eliminating N+1 query pattern.
 
         Args:
             player_ids: List of player IDs to retrieve (UUIDs)
 
         Returns:
             dict: Mapping of player_id to Player object (only includes found players)
-
-        AI: Batch loading eliminates N+1 queries when getting room occupants.
         """
         async_persistence = self.get_async_persistence()
         if async_persistence is None:
             logger.warning("Persistence layer not initialized for batch player lookup", player_count=len(player_ids))
             return {}
 
-        players: dict[uuid.UUID, Player] = {}
         if not player_ids:
-            return players
+            return {}
 
-        # Load players in batch - iterate through IDs and get each one
-        # Note: If persistence layer supports batch operations in the future, this can be optimized further
-        for player_id in player_ids:
-            try:
-                player = await async_persistence.get_player_by_id(player_id)
-                if player:
-                    players[player_id] = player
-            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Player batch loading errors unpredictable, must continue processing
-                # Structlog handles UUID objects automatically, no need to convert to string
-                logger.debug("Error loading player in batch", player_id=player_id, error=str(e))
-
-        logger.debug(
-            "Batch loaded players",
-            requested_count=len(player_ids),
-            loaded_count=len(players),
-        )
-        return players
+        # Use async_persistence batch method which uses single query with IN clause
+        try:
+            players = await async_persistence.get_players_batch(player_ids)
+            logger.debug(
+                "Batch loaded players",
+                requested_count=len(player_ids),
+                loaded_count=len(players),
+            )
+            return cast("dict[uuid.UUID, Player]", players)
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Player batch loading errors unpredictable, must continue processing
+            logger.debug("Error loading players in batch", player_count=len(player_ids), error=str(e))
+            return {}
 
     def get_npcs_batch(self, npc_ids: list[str]) -> dict[str, str]:
         """
@@ -179,8 +171,10 @@ class GameStateProvider:
                     user = getattr(player_obj, "user", None)
                     if user:
                         player_name = getattr(user, "username", None) or getattr(user, "display_name", None)
-                except Exception:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: User attribute access errors unpredictable, graceful fallback if user attributes are unavailable, must continue processing
-                    pass
+                except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: User attribute access errors unpredictable, graceful fallback if user attributes are unavailable, must continue processing
+                    # nosec B110 - Intentional silent handling: User attribute access errors are unpredictable,
+                    # and we must gracefully fallback if user attributes are unavailable
+                    logger.debug("Failed to access user attributes, using fallback", exc_info=e)
 
         # Validate name is not UUID
         if player_name and isinstance(player_name, str) and player_name.strip():
@@ -408,7 +402,7 @@ class GameStateProvider:
                 )
                 if "experience_points" in player_data_for_client:
                     player_data_for_client["xp"] = player_data_for_client["experience_points"]
-                return player_data_for_client
+                return cast(dict[str, Any], player_data_for_client)
             logger.warning(
                 "PlayerService not available in game_state_provider, using basic player data",
                 player_id=player_id,

@@ -60,11 +60,11 @@ class AlertsResponse(BaseModel):
 class MemoryStatsResponse(BaseModel):
     """Response model for memory statistics."""
 
-    memory: dict
-    connections: dict
-    data_structures: dict
-    cleanup_stats: dict
-    memory_monitor: dict
+    memory: dict[str, Any]
+    connections: dict[str, Any]
+    data_structures: dict[str, Any]
+    cleanup_stats: dict[str, Any]
+    memory_monitor: dict[str, Any]
     timestamp: str
 
 
@@ -79,33 +79,33 @@ class MemoryAlertsResponse(BaseModel):
 class DualConnectionStatsResponse(BaseModel):
     """Response model for dual connection statistics."""
 
-    connection_distribution: dict
-    connection_health: dict
-    session_metrics: dict
-    connection_lifecycle: dict
-    performance_metrics: dict
+    connection_distribution: dict[str, Any]
+    connection_health: dict[str, Any]
+    session_metrics: dict[str, Any]
+    connection_lifecycle: dict[str, Any]
+    performance_metrics: dict[str, Any]
     timestamp: float
 
 
 class PerformanceStatsResponse(BaseModel):
     """Response model for connection performance statistics."""
 
-    connection_establishment: dict
-    message_delivery: dict
-    disconnections: dict
-    session_management: dict
-    health_monitoring: dict
+    connection_establishment: dict[str, Any]
+    message_delivery: dict[str, Any]
+    disconnections: dict[str, Any]
+    session_management: dict[str, Any]
+    health_monitoring: dict[str, Any]
     timestamp: float
 
 
 class ConnectionHealthStatsResponse(BaseModel):
     """Response model for connection health statistics."""
 
-    overall_health: dict
-    connection_type_health: dict
-    connection_lifecycle: dict
-    session_health: dict
-    health_trends: dict
+    overall_health: dict[str, Any]
+    connection_type_health: dict[str, Any]
+    connection_lifecycle: dict[str, Any]
+    session_health: dict[str, Any]
+    health_trends: dict[str, Any]
     timestamp: float
 
 
@@ -115,7 +115,7 @@ class EventBusMetricsResponse(BaseModel):
     subscriber_counts_by_type: dict[str, int]
     total_subscribers: int
     active_task_count: int
-    task_details: list[dict]
+    task_details: list[dict[str, Any]]
     subscription_churn_rate: float
     subscription_count: int
     unsubscription_count: int
@@ -132,7 +132,7 @@ class CacheMetricsResponse(BaseModel):
     expired_entry_counts: dict[str, int]
     expiration_rates: dict[str, float]
     capacity_utilization: dict[str, float]
-    cache_stats: dict[str, dict]
+    cache_stats: dict[str, dict[str, Any]]
     timestamp: str
 
 

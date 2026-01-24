@@ -21,7 +21,7 @@ logger = get_logger(__name__)
 
 
 async def _validate_recovery_context(
-    request: Any, current_user: dict, action_code: str, player_name: str
+    request: Any, current_user: dict[str, Any], action_code: str, player_name: str
 ) -> tuple[Any, Any, Any, dict[str, str] | None]:
     """Validate persistence and player for recovery action."""
     app = getattr(request, "app", None)
@@ -107,8 +107,8 @@ def _format_recovery_success_message(action_code: str, delta: int, new_total: in
 
 async def _perform_recovery_action(
     action_code: str,
-    _command_data: dict,
-    current_user: dict,
+    _command_data: dict[str, Any],
+    current_user: dict[str, Any],
     request: Any,
     _alias_storage: AliasStorage | None,
     player_name: str,
@@ -165,8 +165,8 @@ async def _perform_recovery_action(
 
 
 async def handle_pray_command(
-    command_data: dict,
-    current_user: dict,
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
     request: Any,
     alias_storage: AliasStorage | None,
     player_name: str,
@@ -177,8 +177,8 @@ async def handle_pray_command(
 
 
 async def handle_meditate_command(
-    command_data: dict,
-    current_user: dict,
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
     request: Any,
     alias_storage: AliasStorage | None,
     player_name: str,
@@ -189,8 +189,8 @@ async def handle_meditate_command(
 
 
 async def handle_group_solace_command(
-    command_data: dict,
-    current_user: dict,
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
     request: Any,
     alias_storage: AliasStorage | None,
     player_name: str,
@@ -203,8 +203,8 @@ async def handle_group_solace_command(
 
 
 async def handle_therapy_command(
-    command_data: dict,
-    current_user: dict,
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
     request: Any,
     alias_storage: AliasStorage | None,
     player_name: str,
@@ -215,8 +215,8 @@ async def handle_therapy_command(
 
 
 async def handle_folk_tonic_command(
-    command_data: dict,
-    current_user: dict,
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
     request: Any,
     alias_storage: AliasStorage | None,
     player_name: str,

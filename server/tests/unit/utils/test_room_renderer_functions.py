@@ -28,7 +28,9 @@ def test_format_room_drop_lines():
 
 def test_format_room_drop_lines_empty():
     """Test format_room_drop_lines() returns empty message for empty drops."""
-    drops = []
+    from typing import Any
+
+    drops: list[Any] = []
 
     result = format_room_drop_lines(drops)
 

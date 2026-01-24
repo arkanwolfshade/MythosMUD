@@ -16,7 +16,8 @@ This specification outlines the implementation of advanced panel layout and posi
 
 ### Root Causes
 
-- Circular dependency in `useEffect` hook with `calculateNonOverlappingPositions`
+Circular dependency in `useEffect` hook with `calculateNonOverlappingPositions`
+
 - Insufficient collision detection in positioning algorithm
 - Lack of robust layout management system
 - CSS class conflicts between global and component-specific styles
@@ -27,14 +28,17 @@ This specification outlines the implementation of advanced panel layout and posi
 
 #### Why React Grid Layout?
 
-- **Direct Problem Solving**: Built-in overlap prevention algorithms
-- **Mathematical Precision**: Grid-based positioning eliminates positioning errors
-- **Responsive Design**: Automatic breakpoint handling for different screen sizes
+**Direct Problem Solving**: Built-in overlap prevention algorithms
+
+**Mathematical Precision**: Grid-based positioning eliminates positioning errors
+
+**Responsive Design**: Automatic breakpoint handling for different screen sizes
 - **Professional Grade**: Used by major applications (Grafana, Kibana)
 
 #### Technical Benefits
 
-- Automatic collision detection and resolution
+Automatic collision detection and resolution
+
 - Responsive breakpoints (lg, md, sm, xs)
 - Drag-and-drop with constraints
 - Resize with minimum/maximum bounds
@@ -44,18 +48,22 @@ This specification outlines the implementation of advanced panel layout and posi
 
 #### Why CSS Grid?
 
-- **Native Browser Support**: No additional dependencies
-- **Performance**: Hardware-accelerated layout calculations
-- **Fallback Strategy**: Works even if JavaScript fails
+**Native Browser Support**: No additional dependencies
+
+**Performance**: Hardware-accelerated layout calculations
+
+**Fallback Strategy**: Works even if JavaScript fails
 - **Learning Foundation**: Understanding grid concepts for future development
 
 ### Enhancement: React DnD (react-dnd)
 
 #### Why React DnD?
 
-- **Improved UX**: Better drag-and-drop experience
-- **Customization**: Tailored drag handles and drop zones
-- **Animation Control**: Smooth transitions and visual feedback
+**Improved UX**: Better drag-and-drop experience
+
+**Customization**: Tailored drag handles and drop zones
+
+**Animation Control**: Smooth transitions and visual feedback
 - **Integration**: Works seamlessly with React Grid Layout
 
 ## Implementation Plan
@@ -67,18 +75,21 @@ This specification outlines the implementation of advanced panel layout and posi
 #### Tasks
 
 1. **CSS Grid Implementation**
+
    - Create CSS Grid container for panel layout
    - Define grid areas for each panel type
    - Implement responsive grid templates
    - Test overlap prevention
 
 2. **Panel Container Refactoring**
+
    - Wrap panels in CSS Grid container
    - Remove current positioning logic
    - Implement grid-area assignments
    - Test responsive behavior
 
 3. **Font Size Resolution**
+
    - Audit all CSS files for font size conflicts
    - Resolve specificity issues
    - Ensure consistent typography application
@@ -86,7 +97,8 @@ This specification outlines the implementation of advanced panel layout and posi
 
 #### Success Criteria
 
-- All panels visible without overlap
+All panels visible without overlap
+
 - Font sizes properly applied (2 points larger)
 - Responsive layout working on different screen sizes
 - No console errors or infinite recursion
@@ -98,18 +110,21 @@ This specification outlines the implementation of advanced panel layout and posi
 #### Tasks
 
 1. **Library Installation & Setup**
+
    - Install `react-grid-layout` and dependencies
    - Configure TypeScript types
    - Set up responsive breakpoints
    - Create layout configuration
 
 2. **Panel Component Migration**
+
    - Migrate from `DraggablePanel` to React Grid Layout
    - Implement grid item configuration
    - Add resize and drag constraints
    - Test panel interactions
 
 3. **Layout State Management**
+
    - Implement layout state persistence
    - Add layout change handlers
    - Create layout reset functionality
@@ -117,7 +132,8 @@ This specification outlines the implementation of advanced panel layout and posi
 
 #### Success Criteria
 
-- Professional-grade panel management
+Professional-grade panel management
+
 - Drag-and-drop working smoothly
 - Resize constraints properly enforced
 - Layout state persists across sessions
@@ -129,18 +145,21 @@ This specification outlines the implementation of advanced panel layout and posi
 #### Tasks
 
 1. **React DnD Integration**
+
    - Install and configure `react-dnd`
    - Implement custom drag handles
    - Add drop zone indicators
    - Test drag-and-drop interactions
 
 2. **Animation & Transitions**
+
    - Smooth panel movement animations
    - Resize transition effects
    - Layout change animations
    - Performance optimization
 
 3. **Advanced Features**
+
    - Panel docking system
    - Tabbed panel support
    - Panel grouping
@@ -148,7 +167,8 @@ This specification outlines the implementation of advanced panel layout and posi
 
 #### Success Criteria
 
-- Smooth, professional animations
+Smooth, professional animations
+
 - Intuitive user interactions
 - Advanced panel management features
 - Performance meets 60fps target
@@ -237,16 +257,19 @@ const getFontSizeClass = (size: keyof typeof fontSizes = 'base') => {
 ### Primary Files
 
 1. **`client/src/components/GameTerminal.tsx`**
+
    - Replace positioning logic with React Grid Layout
    - Remove infinite recursion code
    - Implement grid-based panel management
 
 2. **`client/src/components/DraggablePanel.tsx`**
+
    - Adapt for React Grid Layout integration
    - Maintain existing API compatibility
    - Add grid-specific props
 
 3. **`client/src/theme/mythosTheme.ts`**
+
    - Resolve font size conflicts
    - Ensure consistent typography application
    - Clean up commented code
@@ -254,11 +277,13 @@ const getFontSizeClass = (size: keyof typeof fontSizes = 'base') => {
 ### CSS Files
 
 1. **`client/src/index.css`**
+
    - Add CSS Grid fallback styles
    - Resolve font size specificity issues
    - Ensure consistent styling
 
 2. **`client/src/App.css`**
+
    - Update component-specific styles
    - Align with new layout system
    - Maintain visual consistency
@@ -266,11 +291,13 @@ const getFontSizeClass = (size: keyof typeof fontSizes = 'base') => {
 ### New Files
 
 1. **`client/src/components/layout/GridLayoutManager.tsx`**
+
    - React Grid Layout configuration
    - Layout state management
    - Responsive breakpoint handling
 
 2. **`client/src/hooks/useGridLayout.ts`**
+
    - Custom hook for layout management
    - State persistence logic
    - Layout change handlers
@@ -279,21 +306,24 @@ const getFontSizeClass = (size: keyof typeof fontSizes = 'base') => {
 
 ### Unit Testing
 
-- Layout calculation functions
+Layout calculation functions
+
 - Grid configuration validation
 - State management logic
 - Font size application
 
 ### Integration Testing
 
-- Panel interaction workflows
+Panel interaction workflows
+
 - Layout persistence
 - Responsive behavior
 - Drag-and-drop functionality
 
 ### User Experience Testing
 
-- Panel positioning accuracy
+Panel positioning accuracy
+
 - Font size visibility
 - Responsive layout behavior
 - Performance metrics
@@ -302,71 +332,91 @@ const getFontSizeClass = (size: keyof typeof fontSizes = 'base') => {
 
 ### High Risk
 
-- **Breaking Changes**: Major refactoring of panel system
-- **Performance Impact**: Additional library dependencies
-- **User Experience**: Potential disruption to existing workflows
+**Breaking Changes**: Major refactoring of panel system
+
+**Performance Impact**: Additional library dependencies
+
+**User Experience**: Potential disruption to existing workflows
 
 ### Mitigation Strategies
 
-- **Incremental Implementation**: Phase-by-phase rollout
-- **Fallback Systems**: CSS Grid as backup
-- **Comprehensive Testing**: Extensive validation at each phase
+**Incremental Implementation**: Phase-by-phase rollout
+
+**Fallback Systems**: CSS Grid as backup
+
+**Comprehensive Testing**: Extensive validation at each phase
 - **Rollback Plan**: Ability to revert to previous system
 
 ### Medium Risk
 
-- **Library Compatibility**: React version conflicts
-- **Bundle Size**: Increased JavaScript payload
-- **Learning Curve**: Team adaptation to new system
+**Library Compatibility**: React version conflicts
+
+**Bundle Size**: Increased JavaScript payload
+
+**Learning Curve**: Team adaptation to new system
 
 ### Mitigation Strategies
 
-- **Version Compatibility**: Thorough dependency analysis
-- **Code Splitting**: Lazy loading of layout components
-- **Documentation**: Comprehensive implementation guides
+**Version Compatibility**: Thorough dependency analysis
+
+**Code Splitting**: Lazy loading of layout components
+
+**Documentation**: Comprehensive implementation guides
 
 ## Success Metrics
 
 ### Technical Metrics
 
-- **Zero Overlaps**: 100% panel separation
-- **Performance**: <16ms layout calculations
-- **Responsiveness**: <100ms resize/drag response
+**Zero Overlaps**: 100% panel separation
+
+**Performance**: <16ms layout calculations
+
+**Responsiveness**: <100ms resize/drag response
 - **Reliability**: 99.9% uptime for layout system
 
 ### User Experience Metrics
 
-- **Visibility**: All panel content fully visible
-- **Typography**: Font sizes properly applied
-- **Interaction**: Smooth drag-and-drop operations
+**Visibility**: All panel content fully visible
+
+**Typography**: Font sizes properly applied
+
+**Interaction**: Smooth drag-and-drop operations
 - **Responsiveness**: Proper behavior across screen sizes
 
 ### Development Metrics
 
-- **Code Quality**: 90%+ test coverage
-- **Maintainability**: Reduced complexity in positioning logic
-- **Documentation**: Complete API documentation
+**Code Quality**: 90%+ test coverage
+
+**Maintainability**: Reduced complexity in positioning logic
+
+**Documentation**: Complete API documentation
 - **Performance**: No memory leaks or infinite loops
 
 ## Timeline & Milestones
 
 ### Week 1: Foundation
 
-- **Day 1-2**: CSS Grid implementation and testing
-- **Day 3-4**: Panel container refactoring
-- **Day 5**: Font size resolution and testing
+**Day 1-2**: CSS Grid implementation and testing
+
+**Day 3-4**: Panel container refactoring
+
+**Day 5**: Font size resolution and testing
 
 ### Week 2: React Grid Layout
 
-- **Day 1-2**: Library setup and configuration
-- **Day 3-4**: Component migration and testing
-- **Day 5**: Layout state management
+**Day 1-2**: Library setup and configuration
+
+**Day 3-4**: Component migration and testing
+
+**Day 5**: Layout state management
 
 ### Week 3: Enhancement
 
-- **Day 1-2**: React DnD integration
-- **Day 3-4**: Animation and performance optimization
-- **Day 5**: Final testing and documentation
+**Day 1-2**: React DnD integration
+
+**Day 3-4**: Animation and performance optimization
+
+**Day 5**: Final testing and documentation
 
 ## Dependencies & Requirements
 
@@ -391,7 +441,8 @@ const getFontSizeClass = (size: keyof typeof fontSizes = 'base') => {
 
 ### Browser Support
 
-- Chrome 60+
+Chrome 60+
+
 - Firefox 55+
 - Safari 12+
 - Edge 79+

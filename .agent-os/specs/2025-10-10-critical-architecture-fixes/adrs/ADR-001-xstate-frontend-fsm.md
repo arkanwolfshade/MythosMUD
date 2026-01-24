@@ -22,9 +22,11 @@ The frontend connection management in `useGameConnection.ts` had grown to 750+ l
 
 ## Decision Drivers
 
-- **Type Safety**: Must provide TypeScript support and type-safe state definitions
-- **Testability**: Must enable comprehensive unit testing of state transitions
-- **Visualization**: Should support visual debugging of state machines
+**Type Safety**: Must provide TypeScript support and type-safe state definitions
+
+**Testability**: Must enable comprehensive unit testing of state transitions
+
+**Visualization**: Should support visual debugging of state machines
 - **React Integration**: Must integrate cleanly with React hooks
 - **Bundle Size**: Should be reasonable (<100KB added to bundle)
 - **Maintainability**: Must be actively maintained with good documentation
@@ -34,13 +36,15 @@ The frontend connection management in `useGameConnection.ts` had grown to 750+ l
 ## Considered Options
 
 ### Option 1: XState
-- **Pros**:
-  - Industry-standard FSM library (used by Microsoft, Amazon, etc.)
-  - Excellent TypeScript support
-  - Visual debugging with XState Inspector
-  - Comprehensive testing utilities
-  - Official React integration (`@xstate/react`)
-  - Extensive documentation and community
+
+**Pros**:
+
+- Industry-standard FSM library (used by Microsoft, Amazon, etc.)
+- Excellent TypeScript support
+- Visual debugging with XState Inspector
+- Comprehensive testing utilities
+- Official React integration (`@xstate/react`)
+- Extensive documentation and community
 - **Cons**:
   - ~50KB bundle size impact
   - Learning curve for team members unfamiliar with FSMs
@@ -48,10 +52,12 @@ The frontend connection management in `useGameConnection.ts` had grown to 750+ l
 - **Bundle Impact**: ~50KB
 
 ### Option 2: Manual State Machine
-- **Pros**:
-  - Zero bundle size impact
-  - Complete control over implementation
-  - No external dependencies
+
+**Pros**:
+
+- Zero bundle size impact
+- Complete control over implementation
+- No external dependencies
 - **Cons**:
   - Must implement all FSM logic manually
   - No visual debugging tools
@@ -61,10 +67,12 @@ The frontend connection management in `useGameConnection.ts` had grown to 750+ l
 - **Bundle Impact**: 0KB
 
 ### Option 3: Robot (State Machine Library)
-- **Pros**:
-  - Lightweight (~5KB)
-  - Simple API
-  - Functional approach
+
+**Pros**:
+
+- Lightweight (~5KB)
+- Simple API
+- Functional approach
 - **Cons**:
   - Limited TypeScript support
   - No visual debugging
@@ -89,6 +97,7 @@ The frontend connection management in `useGameConnection.ts` had grown to 750+ l
 7. **Bundle Size**: 50KB is acceptable given the benefits
 
 **Trade-offs Accepted**:
+
 - 50KB bundle increase (acceptable for improved reliability and developer experience)
 - Learning curve for team (offset by better long-term maintainability)
 
@@ -163,9 +172,11 @@ export function useConnectionState(options?: {
 
 ## Validation
 
-- ✅ All 13 frontend state machine tests passing
-- ✅ No TypeScript compilation errors
-- ✅ No linting errors
+✅ All 13 frontend state machine tests passing
+
+✅ No TypeScript compilation errors
+
+✅ No linting errors
 - ✅ Bundle size increase within acceptable limits (<100KB)
 - ✅ React 19 compatibility verified (with --legacy-peer-deps)
 
@@ -173,7 +184,8 @@ export function useConnectionState(options?: {
 
 ## References
 
-- [XState Documentation](https://xstate.js.org/)
+[XState Documentation](https://xstate.js.org/)
+
 - [XState Inspector](https://stately.ai/docs/inspector)
 - [Martin Fowler on State Machines](https://martinfowler.com/articles/state-machine.html)
 - Implementation: `client/src/hooks/useConnectionStateMachine.ts`
@@ -183,6 +195,7 @@ export function useConnectionState(options?: {
 
 ## Related ADRs
 
-- ADR-002: python-statemachine for Backend Connection FSM
+ADR-002: python-statemachine for Backend Connection FSM
+
 - ADR-003: Pydantic Configuration Management
 - ADR-004: Circuit Breaker + Dead Letter Queue for NATS

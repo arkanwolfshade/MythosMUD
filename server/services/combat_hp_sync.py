@@ -10,6 +10,7 @@ coordination between in-memory combat state and persistent database storage.
 
 # pylint: disable=too-few-public-methods,too-many-arguments,too-many-positional-arguments  # Reason: HP sync module has focused responsibility with minimal public interface, and requires many parameters for synchronization logic
 
+from typing import TYPE_CHECKING, Any
 from uuid import UUID
 
 from ..events.event_bus import EventBus
@@ -18,13 +19,16 @@ from ..exceptions import DatabaseError
 from ..models.game import PositionState
 from ..structured_logging.enhanced_logging_config import get_logger
 
+if TYPE_CHECKING:
+    from ..async_persistence import AsyncPersistenceLayer
+
 logger = get_logger(__name__)
 
 
 class CombatDPSync:  # pylint: disable=too-few-public-methods  # Reason: DP sync class with focused responsibility, minimal public interface
     """Handles DP synchronization for combat operations."""
 
-    def __init__(self, combat_service):
+    def __init__(self, combat_service: Any) -> None:
         """Initialize DP sync with reference to parent combat service."""
         self._combat_service = combat_service
         self._nats_service = getattr(combat_service, "_nats_service", None)
@@ -133,7 +137,7 @@ class CombatDPSync:  # pylint: disable=too-few-public-methods  # Reason: DP sync
                 error_type=type(e).__name__,
             )
 
-    def _get_persistence(self, player_id: UUID):
+    def _get_persistence(self, player_id: UUID) -> "AsyncPersistenceLayer | None":
         """
         Get persistence layer from application container.
 
@@ -153,7 +157,7 @@ class CombatDPSync:  # pylint: disable=too-few-public-methods  # Reason: DP sync
             return None
 
     def _update_player_position(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Position update requires many parameters for context and position updates
-        self, stats: dict, current_dp: int, old_dp: int, player_id: UUID, player_name: str
+        self, stats: dict[str, Any], current_dp: int, old_dp: int, player_id: UUID, player_name: str
     ) -> None:
         """
         Update player position based on DP threshold.
@@ -177,7 +181,7 @@ class CombatDPSync:  # pylint: disable=too-few-public-methods  # Reason: DP sync
             stats["position"] = PositionState.LYING
 
     async def _verify_player_save(
-        self, persistence, player_id: UUID, player_name: str, old_dp: int, current_dp: int
+        self, persistence: "AsyncPersistenceLayer", player_id: UUID, player_name: str, old_dp: int, current_dp: int
     ) -> None:
         """
         Verify that player DP was successfully saved to database.
@@ -235,7 +239,9 @@ class CombatDPSync:  # pylint: disable=too-few-public-methods  # Reason: DP sync
                 dp=current_dp,
             )
 
-    async def _update_and_save_player_dp(self, persistence, player_id: UUID, current_dp: int) -> tuple | None:
+    async def _update_and_save_player_dp(
+        self, persistence: "AsyncPersistenceLayer", player_id: UUID, current_dp: int
+    ) -> tuple[Any, int] | None:
         """
         Update player DP and save to database.
 

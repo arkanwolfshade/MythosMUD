@@ -6,6 +6,7 @@ of messages to players who may be temporarily disconnected.
 """
 
 import time
+from collections import deque
 from typing import Any
 
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -19,17 +20,22 @@ class MessageQueue:
 
     This class handles pending messages for players who may be temporarily
     disconnected, with automatic cleanup of old messages.
+
+    Uses collections.deque with maxlen for O(1) append operations and
+    automatic size limiting, reducing memory growth compared to list slicing.
     """
 
-    def __init__(self, max_messages_per_player: int = 1000) -> None:
+    def __init__(self, max_messages_per_player: int = 100) -> None:
         """
         Initialize the message queue.
 
         Args:
             max_messages_per_player: Maximum number of pending messages per player
+                                    (reduced from 1000 to 100 for better memory efficiency)
         """
         # Pending messages for guaranteed delivery
-        self.pending_messages: dict[str, list[dict[str, Any]]] = {}
+        # Use deque with maxlen for O(1) operations and automatic size limiting
+        self.pending_messages: dict[str, deque[dict[str, Any]]] = {}
         self.max_messages_per_player = max_messages_per_player
 
     def add_message(self, player_id: str, message: dict[str, Any]) -> bool:
@@ -45,18 +51,21 @@ class MessageQueue:
         """
         try:
             if player_id not in self.pending_messages:
-                self.pending_messages[player_id] = []
+                # Create deque with maxlen for automatic size limiting (O(1) operations)
+                self.pending_messages[player_id] = deque(maxlen=self.max_messages_per_player)
 
             # Add timestamp if not present
             if "timestamp" not in message:
                 message["timestamp"] = time.time()
 
+            # Append to deque - automatically drops oldest if maxlen reached (O(1) operation)
             self.pending_messages[player_id].append(message)
 
-            # Limit queue size
-            if len(self.pending_messages[player_id]) > self.max_messages_per_player:
-                self.pending_messages[player_id] = self.pending_messages[player_id][-self.max_messages_per_player :]
-                logger.warning("Message queue limit reached, dropping oldest messages", player_id=player_id)
+            # Log if we're at capacity (deque automatically handles overflow)
+            if len(self.pending_messages[player_id]) == self.max_messages_per_player:
+                logger.debug(
+                    "Message queue at capacity, oldest messages will be dropped automatically", player_id=player_id
+                )
 
             logger.debug("Added message to queue", player_id=player_id)
             return True
@@ -78,7 +87,12 @@ class MessageQueue:
             List[Dict[str, Any]]: List of pending messages
         """
         try:
-            messages = self.pending_messages.get(player_id, [])
+            messages_deque = self.pending_messages.get(player_id)
+            if messages_deque is None:
+                return []
+
+            # Convert deque to list for return value
+            messages = list(messages_deque)
             if player_id in self.pending_messages:
                 del self.pending_messages[player_id]
                 logger.debug("Retrieved and cleared messages", message_count=len(messages), player_id=player_id)
@@ -144,18 +158,21 @@ class MessageQueue:
             orphaned_players = []
             total_removed = 0
 
-            for player_id, messages in list(self.pending_messages.items()):
+            for player_id, messages_deque in list(self.pending_messages.items()):
                 # Remove messages older than max_age_seconds
-                original_count = len(messages)
-                self.pending_messages[player_id] = [
-                    msg for msg in messages if self._is_message_recent(msg, current_time, max_age_seconds)
-                ]
+                # Create new deque with filtered messages, preserving maxlen
+                original_count = len(messages_deque)
+                filtered_messages = deque(
+                    (msg for msg in messages_deque if self._is_message_recent(msg, current_time, max_age_seconds)),
+                    maxlen=self.max_messages_per_player,
+                )
+                self.pending_messages[player_id] = filtered_messages
 
-                removed_count = original_count - len(self.pending_messages[player_id])
+                removed_count = original_count - len(filtered_messages)
                 total_removed += removed_count
 
                 # Remove empty entries
-                if not self.pending_messages[player_id]:
+                if not filtered_messages:
                     orphaned_players.append(player_id)
 
             for player_id in orphaned_players:
@@ -176,18 +193,22 @@ class MessageQueue:
                 exc_info=True,
             )
 
-    def cleanup_large_structures(self, max_entries: int = 1000) -> None:
+    def cleanup_large_structures(self, max_entries: int = 100) -> None:
         """
         Clean up large data structures to prevent memory bloat.
 
         Args:
-            max_entries: Maximum number of entries per player to keep (default: 1000)
+            max_entries: Maximum number of entries per player to keep (default: 100)
+                         Note: With deque maxlen, this is mostly redundant but kept for compatibility
         """
         try:
-            for player_id, messages in list(self.pending_messages.items()):
-                if len(messages) > max_entries:
-                    # Keep only the most recent messages
-                    self.pending_messages[player_id] = messages[-max_entries:]
+            for player_id, messages_deque in list(self.pending_messages.items()):
+                if len(messages_deque) > max_entries:
+                    # Create new deque with only the most recent messages, preserving maxlen
+                    # Convert to list, slice, then create new deque
+                    messages_list = list(messages_deque)
+                    recent_messages = messages_list[-max_entries:]
+                    self.pending_messages[player_id] = deque(recent_messages, maxlen=self.max_messages_per_player)
                     logger.debug(
                         "Cleaned up large message queue structure for player",
                         player_id=player_id,

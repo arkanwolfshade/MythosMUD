@@ -2,49 +2,79 @@
 name: Pydantic Anti-Patterns Remediation
 overview: Remediate Pydantic anti-patterns, semantic issues, and bad code across the codebase based on the Pydantic best practices rules. Focus on mutable defaults, unsafe Any types, missing model configurations, and inconsistent security settings.
 todos:
+
   - id: fix-mutable-defaults
+
     content: Fix mutable default values in server/schemas/player.py (Field(default=[]) -> Field(default_factory=list))
     status: completed
+
   - id: standardize-model-config
+
     content: Convert old dict-style model_config to ConfigDict in server/schemas/nats_messages.py and server/api/admin/npc.py
     status: completed
+
   - id: add-security-config
+
     content: Add security model_config (extra=forbid, validate_assignment=True, etc.) to all models missing it
     status: completed
+
   - id: create-typed-stats-model
+
     content: Create PlayerStatsModel and replace dict[str, Any] stats in server/schemas/player.py
     status: completed
+
   - id: replace-inventory-any
+
     content: Replace list[dict[str, Any]] inventory with list[InventoryItem] in server/schemas/player.py
     status: completed
+
   - id: replace-status-effects-any
+
     content: Replace list[dict[str, Any]] status_effects with list[StatusEffect] in server/schemas/player.py
     status: completed
+
   - id: create-npc-typed-models
+
     content: Create typed models for NPC base_stats, behavior_config, ai_integration_stub, spawn_conditions in server/api/admin/npc.py
     status: completed
+
   - id: fix-profession-types
+
     content: Replace dict[str, Any] with proper types in server/schemas/profession.py ProfessionResponse
     status: completed
+
   - id: fix-websocket-types
+
     content: Use CommandMessageData and ChatMessageData instead of dict[str, Any] in server/schemas/websocket_messages.py
     status: completed
+
   - id: update-tests
+
     content: Update unit and integration tests to work with new typed models
     status: completed
+
   - id: run-type-checking
+
     content: Run mypy to verify type safety after all changes
     status: completed
+
   - id: verify-validation
+
     content: Test that extra fields are rejected and validation works correctly
     status: completed
+
   - id: add-field-validators
+
     content: Add @field_validator and @model_validator where needed for custom validation logic following Pydantic v2 patterns
     status: completed
+
   - id: create-base-model-classes
+
     content: Create SecureBaseModel and ResponseBaseModel base classes with standard security configuration, then refactor existing models to inherit from them
     status: completed
+
   - id: consolidate-duplicate-patterns
+
     content: Review validation logic for duplication, extract common validators to shared utilities, and ensure consistent naming conventions
     status: completed
 ---
@@ -132,9 +162,11 @@ This plan addresses Pydantic anti-patterns identified across the codebase, focus
 
 ```python
 # OLD (BAD)
+
 model_config = {"extra": "forbid", "strict": True}
 
 # NEW (GOOD)
+
 model_config = ConfigDict(extra="forbid", strict=True)
 ```
 
@@ -189,7 +221,7 @@ model_config = ConfigDict(
 5. **Profession Data** (`server/schemas/profession.py`)
 
    - Already has `StatRequirement` and `MechanicalEffect` models
-   - Replace `dict[str, Any] `in `ProfessionResponse` with proper types
+   - Replace `dict[str, Any]`in `ProfessionResponse` with proper types
 
 6. **NATS Event Data** (`server/schemas/nats_messages.py`)
 
@@ -203,7 +235,8 @@ model_config = ConfigDict(
 
 #### Task 2.2: Add Field Validators Where Needed
 
-- Add `@field_validator` for fields that need custom validation
+Add `@field_validator` for fields that need custom validation
+
 - Add `@model_validator` for cross-field validation
 - Ensure all validators follow Pydantic v2 patterns
 
@@ -211,13 +244,15 @@ model_config = ConfigDict(
 
 #### Task 3.1: Create Base Model Classes
 
-- Create `SecureBaseModel` with standard security configuration
+Create `SecureBaseModel` with standard security configuration
+
 - Create `ResponseBaseModel` for API response models
 - Refactor existing models to inherit from appropriate base classes
 
 #### Task 3.2: Consolidate Duplicate Patterns
 
-- Review validation logic for duplication
+Review validation logic for duplication
+
 - Extract common validators to shared utilities
 - Ensure consistent naming conventions
 
@@ -256,27 +291,32 @@ model_config = ConfigDict(
 
 #### `server/schemas/calendar.py`
 
-- Already follows best practices (uses default_factory correctly)
+Already follows best practices (uses default_factory correctly)
+
 - Verify model_config is present and secure
 
 #### `server/models/game.py`
 
-- Already follows best practices
+Already follows best practices
+
 - Verify all models have proper model_config
 
 #### `server/models/container.py`
 
-- Already follows best practices
+Already follows best practices
+
 - No changes needed
 
 #### `server/models/alias.py`
 
-- Already follows best practices
+Already follows best practices
+
 - No changes needed
 
 #### `server/models/command_base.py`
 
-- Already follows best practices
+Already follows best practices
+
 - No changes needed
 
 ## Testing Strategy

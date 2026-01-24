@@ -4,7 +4,7 @@ Player schema conversion utilities.
 This module handles conversion of Player objects and dictionaries to PlayerRead schemas.
 """
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from ..exceptions import DatabaseError
 from ..models import Stats
@@ -25,7 +25,7 @@ if TYPE_CHECKING:
 class PlayerSchemaConverter:
     """Utility class for converting Player objects to PlayerRead schemas."""
 
-    def __init__(self, persistence, player_combat_service=None):
+    def __init__(self, persistence: Any, player_combat_service: Any = None) -> None:
         """Initialize the converter with persistence and optional combat service."""
         self.persistence = persistence
         self.player_combat_service = player_combat_service
@@ -121,7 +121,7 @@ class PlayerSchemaConverter:
                 exc_info=True,
             )
 
-    def get_position_state(self, position_value: str | int, player_id: Any = None) -> PositionState:
+    def get_position_state(self, position_value: str | int, player_id: Any | None = None) -> PositionState:
         """Get PositionState from position value, with fallback to STANDING."""
         try:
             # PositionState is a str Enum, so convert int to str if needed
@@ -258,5 +258,5 @@ class PlayerSchemaConverter:
         # Check if player is a Mock by checking for MagicMock type
         if "Mock" in str(type(player).__name__):
             # In tests, return the Mock directly
-            return player
+            return cast(PlayerRead, player)
         return self.create_player_read_from_dict(player, in_combat, profession_data)

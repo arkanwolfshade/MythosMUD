@@ -129,7 +129,7 @@ async def _handle_special_command_routing(  # pylint: disable=too-many-arguments
     command_line: str,
     alias_storage: AliasStorage | None,
     player_name: str,
-    current_user: dict,
+    current_user: dict[str, Any],
     request: Request,
 ) -> dict[str, Any] | None:
     """Handle special command routing (alias management, alias expansion, emote). Returns result if handled, None otherwise."""
@@ -353,7 +353,7 @@ async def _process_alias_expansion(  # pylint: disable=too-many-arguments,too-ma
     args: list[str],
     alias_storage: AliasStorage | None,
     player_name: str,
-    current_user: dict,
+    current_user: dict[str, Any],
     request: Request,
 ) -> dict[str, Any] | None:
     """Process alias expansion if applicable. Returns result if alias processed."""
@@ -421,7 +421,7 @@ async def _process_alias_expansion(  # pylint: disable=too-many-arguments,too-ma
 async def handle_command(
     req: CommandRequest,
     request: Request,
-    current_user: dict = Depends(get_current_user),
+    current_user: dict[str, Any] = Depends(get_current_user),
 ) -> dict[str, Any]:
     """Handle incoming HTTP command requests."""
     command_line = req.command
@@ -449,7 +449,7 @@ async def handle_command(
 async def process_command(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Command processing requires many parameters for context and routing
     cmd: str,
     args: list[str],
-    current_user: dict,
+    current_user: dict[str, Any],
     request: Request,
     alias_storage: AliasStorage,
     player_name: str,

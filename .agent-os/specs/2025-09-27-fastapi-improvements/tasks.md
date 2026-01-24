@@ -2,13 +2,14 @@
 
 ## Tasks
 
-- [x] 1. Fix Critical Security Issues
-  - [x] 1.1 Write tests for security headers middleware functionality
-  - [x] 1.2 Remove duplicate ErrorLoggingMiddleware registration from main.py
-  - [x] 1.3 Implement SecurityHeadersMiddleware with comprehensive security headers
-  - [x] 1.4 Update CORS configuration to use environment variables and restrict methods/headers
-  - [x] 1.5 Add environment variable configuration for security settings
-  - [x] 1.6 Verify all tests pass and security headers are properly applied
+[x] 1. Fix Critical Security Issues
+
+- [x] 1.1 Write tests for security headers middleware functionality
+- [x] 1.2 Remove duplicate ErrorLoggingMiddleware registration from main.py
+- [x] 1.3 Implement SecurityHeadersMiddleware with comprehensive security headers
+- [x] 1.4 Update CORS configuration to use environment variables and restrict methods/headers
+- [x] 1.5 Add environment variable configuration for security settings
+- [x] 1.6 Verify all tests pass and security headers are properly applied
 
 - [x] 2. Consolidate Logging Middleware
   - [x] 2.1 Write tests for comprehensive logging middleware functionality

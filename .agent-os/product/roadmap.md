@@ -7,7 +7,8 @@
 
 ### Features
 
-- [x] **Dead Code Cleanup** - Remove unused files and legacy code for improved maintainability `S` ✅ **COMPLETED**
+[x] **Dead Code Cleanup** - Remove unused files and legacy code for improved maintainability `S` ✅ **COMPLETED**
+
 - [ ] **Advanced Chat Channels** - Implement local, global, party, and whisper channels `M`
 - [ ] **Performance Optimization** - Database connection pooling and query optimization `M`
 - [ ] **Error Handling Standardization** - Consistent error formats and comprehensive logging `S`
@@ -16,7 +17,8 @@
 
 ### Dependencies
 
-- Current multiplayer messaging system (✅ completed)
+Current multiplayer messaging system (✅ completed)
+
 - Existing authentication and user management (✅ completed)
 - NATS real-time communication infrastructure (✅ completed)
 
@@ -27,7 +29,8 @@
 
 ### Features
 
-- [ ] **Combat System** - Real-time combat mechanics with Lovecraftian themes `L`
+[ ] **Combat System** - Real-time combat mechanics with Lovecraftian themes `L`
+
 - [ ] **Magic/Spellcasting** - Spell system with lucidity costs and eldritch effects `L`
 - [ ] **Quest System** - Dynamic quest generation and tracking `M`
 - [ ] **NPC Interactions** - Advanced NPC behavior and dialogue systems `M`
@@ -37,7 +40,8 @@
 
 ### Dependencies
 
-- Phase 1 completion
+Phase 1 completion
+
 - Enhanced chat system
 - Improved performance infrastructure
 
@@ -48,7 +52,8 @@
 
 ### Features
 
-- [ ] **Room Editor** - Visual room creation and editing tools `L`
+[ ] **Room Editor** - Visual room creation and editing tools `L`
+
 - [ ] **NPC Creation** - NPC creation and management interface `M`
 - [ ] **Item Creation** - Item creation and management tools `M`
 - [ ] **Quest Creation** - Quest creation and management system `M`
@@ -58,7 +63,8 @@
 
 ### Dependencies
 
-- Phase 2 completion
+Phase 2 completion
+
 - Database migration to PostgreSQL
 - Enhanced security infrastructure
 
@@ -69,7 +75,8 @@
 
 ### Features
 
-- [ ] **Database Migration** - Migrate from SQLite to PostgreSQL `M`
+[ ] **Database Migration** - Migrate from SQLite to PostgreSQL `M`
+
 - [ ] **Caching Layer** - Implement Redis for session management `M`
 - [ ] **Load Balancing** - Horizontal scaling with load balancing `L`
 - [ ] **Monitoring & Alerting** - Comprehensive monitoring and alerting systems `M`
@@ -79,7 +86,8 @@
 
 ### Dependencies
 
-- Phase 3 completion
+Phase 3 completion
+
 - AWS infrastructure setup
 - Production environment configuration
 
@@ -90,7 +98,8 @@
 
 ### Features
 
-- [ ] **Guild System** - Player organization and management `L`
+[ ] **Guild System** - Player organization and management `L`
+
 - [ ] **Trading System** - Player-to-player item trading `M`
 - [ ] **Mobile Support** - Enhanced mobile responsiveness and PWA features `M`
 - [ ] **Accessibility Improvements** - Better contrast ratios and keyboard navigation `S`
@@ -100,23 +109,28 @@
 
 ### Dependencies
 
-- Phase 4 completion
+Phase 4 completion
+
 - Production infrastructure stability
 - User feedback and testing
 
 ## Effort Scale
 
-- **XS:** 1 day
-- **S:** 2-3 days
-- **M:** 1 week
+**XS:** 1 day
+
+**S:** 2-3 days
+
+**M:** 1 week
 - **L:** 2 weeks
 - **XL:** 3+ weeks
 
 ## Current Status
 
 **Phase 1 Progress:** 60% complete
-- ✅ Multiplayer messaging system (completed)
-- ✅ Admin teleport system (completed)
+
+✅ Multiplayer messaging system (completed)
+
+✅ Admin teleport system (completed)
 - ✅ Enhanced who command (completed)
 - ✅ Dead code cleanup (completed)
 - ⏳ Advanced chat channels (planned)

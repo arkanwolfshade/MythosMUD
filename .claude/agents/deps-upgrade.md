@@ -43,6 +43,7 @@ class DependencyAnalyzer:
         deps = {}
 
         # NPM analysis
+
         if self._has_npm():
             npm_output = subprocess.run(
                 ['npm', 'outdated', '--json'],
@@ -65,6 +66,7 @@ class DependencyAnalyzer:
                     }
 
         # Python analysis
+
         if self._has_python():
             pip_output = subprocess.run(
                 ['pip', 'list', '--outdated', '--format=json'],
@@ -125,9 +127,11 @@ class BreakingChangeDetector:
         }
 
         # Fetch changelog
+
         changelog = self._fetch_changelog(package_name, current_version, target_version)
 
         # Parse for breaking changes
+
         breaking_patterns = [
             r'BREAKING CHANGE:',
             r'BREAKING:',
@@ -146,6 +150,7 @@ class BreakingChangeDetector:
                 breaking_changes['api_changes'].append(context)
 
         # Check for specific patterns
+
         if package_name == 'react':
             breaking_changes.update(self._check_react_breaking_changes(
                 current_version, target_version
@@ -156,6 +161,7 @@ class BreakingChangeDetector:
             ))
 
         # Estimate migration effort
+
         breaking_changes['estimated_effort'] = self._estimate_effort(breaking_changes)
 
         return breaking_changes
@@ -168,6 +174,7 @@ class BreakingChangeDetector:
         }
 
         # React 15 to 16
+
         if current.startswith('15') and target.startswith('16'):
             changes['api_changes'].extend([
                 'PropTypes moved to separate package',
@@ -177,6 +184,7 @@ class BreakingChangeDetector:
             changes['migration_required'] = True
 
         # React 16 to 17
+
         elif current.startswith('16') and target.startswith('17'):
             changes['api_changes'].extend([
                 'Event delegation changes',
@@ -185,6 +193,7 @@ class BreakingChangeDetector:
             ])
 
         # React 17 to 18
+
         elif current.startswith('17') and target.startswith('18'):
             changes['api_changes'].extend([
                 'Automatic batching',
@@ -212,6 +221,7 @@ def generate_migration_guide(package_name, current_version, target_version, brea
 # Migration Guide: {package_name} {current_version} → {target_version}
 
 ## Overview
+
 This guide will help you upgrade {package_name} from version {current_version} to {target_version}.
 
 **Estimated time**: {estimate_migration_time(breaking_changes)}
@@ -220,7 +230,7 @@ This guide will help you upgrade {package_name} from version {current_version} t
 
 ## Pre-Migration Checklist
 
-- [ ] Current test suite passing
+[ ] Current test suite passing
 - [ ] Backup created / Git commit point marked
 - [ ] Dependencies compatibility checked
 - [ ] Team notified of upgrade
@@ -231,12 +241,15 @@ This guide will help you upgrade {package_name} from version {current_version} t
 
 ```bash
 # Create a new branch
+
 git checkout -b upgrade/{package_name}-{target_version}
 
 # Update package
+
 npm install {package_name}@{target_version}
 
 # Update peer dependencies if needed
+
 {generate_peer_deps_commands(package_name, target_version)}
 ```
 
@@ -256,15 +269,19 @@ npm install {package_name}@{target_version}
 
 ```bash
 # Run linter to catch issues
+
 npm run lint
 
 # Run tests
+
 npm test
 
 # Run type checking
+
 npm run type-check
 
 # Manual testing checklist
+
 ```
 
 {generate_test_checklist(package_name, breaking_changes)}
@@ -279,10 +296,12 @@ If issues arise, follow these steps to rollback:
 
 ```bash
 # Revert package version
+
 git checkout package.json package-lock.json
 npm install
 
 # Or use the backup branch
+
 git checkout main
 git branch -D upgrade/{package_name}-{target_version}
 ```
@@ -293,7 +312,8 @@ git branch -D upgrade/{package_name}-{target_version}
 
 ## Resources
 
-- [Official Migration Guide]({get_official_guide_url(package_name, target_version)})
+[Official Migration Guide]({get_official_guide_url(package_name, target_version)})
+
 - [Changelog]({get_changelog_url(package_name, target_version)})
 - [Community Discussions]({get_community_url(package_name)})
 """
@@ -314,19 +334,23 @@ class IncrementalUpgrader:
         Plan incremental upgrade path
         """
         # Get all versions between current and target
+
         all_versions = self._get_versions_between(package_name, current, target)
 
         # Identify safe stopping points
+
         safe_versions = self._identify_safe_versions(all_versions)
 
         # Create upgrade path
+
         upgrade_path = self._create_upgrade_path(current, target, safe_versions)
 
         plan = f"""
 ## Incremental Upgrade Plan: {package_name}
 
 ### Current State
-- Version: {current}
+
+Version: {current}
 - Target: {target}
 - Total steps: {len(upgrade_path)}
 
@@ -342,12 +366,15 @@ class IncrementalUpgrader:
 
 ```bash
 # Upgrade command
+
 npm install {package_name}@{step['version']}
 
 # Test command
+
 npm test -- --updateSnapshot
 
 # Verification
+
 npm run integration-tests
 ```
 
@@ -371,6 +398,7 @@ npm run integration-tests
             # - Last patch of each minor version
             # - Versions with long stability period
             # - Versions before major API changes
+
             if (self._is_last_patch(v, versions) or
                 self._has_stability_period(v) or
                 self._is_pre_breaking_change(v)):
@@ -468,11 +496,12 @@ def generate_compatibility_matrix(dependencies):
         }
 
     # Generate report
+
     report = """
 ## Dependency Compatibility Matrix
 
 | Package | Current | Target | Compatible With | Conflicts | Action Required |
-|---------|---------|--------|-----------------|-----------|-----------------|
+| ------- | ------- | ------ | --------------- | --------- | --------------- |
 """
 
     for pkg, info in matrix.items():
@@ -487,6 +516,7 @@ def generate_compatibility_matrix(dependencies):
 def check_compatibility(package_name, version):
     """Check what this package is compatible with"""
     # Check package.json or requirements.txt
+
     peer_deps = get_peer_dependencies(package_name, version)
     compatible_packages = []
 
@@ -510,17 +540,21 @@ Implement safe rollback procedures:
 # rollback-dependencies.sh
 
 # Create rollback point
+
 create_rollback_point() {
     echo "📌 Creating rollback point..."
 
     # Save current state
+
     cp package.json package.json.backup
     cp package-lock.json package-lock.json.backup
 
     # Git tag
+
     git tag -a "pre-upgrade-$(date +%Y%m%d-%H%M%S)" -m "Pre-upgrade snapshot"
 
     # Database snapshot if needed
+
     if [ -f "database-backup.sh" ]; then
         ./database-backup.sh
     fi
@@ -529,31 +563,38 @@ create_rollback_point() {
 }
 
 # Perform rollback
+
 rollback() {
     echo "🔄 Performing rollback..."
 
     # Restore package files
+
     mv package.json.backup package.json
     mv package-lock.json.backup package-lock.json
 
     # Reinstall dependencies
+
     rm -rf node_modules
     npm ci
 
     # Run post-rollback tests
+
     npm test
 
     echo "✅ Rollback complete"
 }
 
 # Verify rollback
+
 verify_rollback() {
     echo "🔍 Verifying rollback..."
 
     # Check critical functionality
+
     npm run test:critical
 
     # Check service health
+
     curl -f http://localhost:3000/health || exit 1
 
     echo "✅ Rollback verified"
@@ -572,6 +613,7 @@ def plan_batch_updates(dependencies):
     Plan efficient batch updates
     """
     # Group by update type
+
     groups = {
         'patch': [],
         'minor': [],
@@ -586,9 +628,11 @@ def plan_batch_updates(dependencies):
             groups[info['update_type']].append(dep)
 
     # Create update batches
+
     batches = []
 
     # Batch 1: Security updates (immediate)
+
     if groups['security']:
         batches.append({
             'priority': 'CRITICAL',
@@ -599,6 +643,7 @@ def plan_batch_updates(dependencies):
         })
 
     # Batch 2: Patch updates (safe)
+
     if groups['patch']:
         batches.append({
             'priority': 'HIGH',
@@ -609,6 +654,7 @@ def plan_batch_updates(dependencies):
         })
 
     # Batch 3: Minor updates (careful)
+
     if groups['minor']:
         batches.append({
             'priority': 'MEDIUM',
@@ -619,6 +665,7 @@ def plan_batch_updates(dependencies):
         })
 
     # Batch 4: Major updates (planned)
+
     if groups['major']:
         batches.append({
             'priority': 'LOW',

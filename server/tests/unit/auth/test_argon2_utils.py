@@ -90,7 +90,8 @@ def test_create_hasher_with_params_invalid_hash_len():
 def test_hash_password_invalid_type():
     """Test hashing password with invalid type."""
     with pytest.raises(AuthenticationError):
-        hash_password(None)
+        # Reason: Intentionally testing error handling with None input
+        hash_password(None)  # type: ignore[arg-type]
 
 
 def test_verify_password_invalid_hash():
@@ -102,19 +103,22 @@ def test_verify_password_invalid_hash():
 def test_hash_password_non_string_type():
     """Test hashing password with non-string type raises AuthenticationError."""
     with pytest.raises(AuthenticationError, match="Password must be a string"):
-        hash_password(123)
+        # Reason: Intentionally testing error handling with invalid type (int instead of str)
+        hash_password(123)  # type: ignore[arg-type]
 
 
 def test_verify_password_non_string_password():
     """Test verifying password with non-string password returns False."""
     hashed = hash_password("test_password")
-    result = verify_password(123, hashed)
+    # Reason: Intentionally testing error handling with non-string input
+    result = verify_password(123, hashed)  # type: ignore[arg-type]
     assert result is False
 
 
 def test_verify_password_non_string_hash():
     """Test verifying password with non-string hash returns False."""
-    result = verify_password("password", 123)
+    # Reason: Intentionally testing error handling with invalid type (int instead of str)
+    result = verify_password("password", 123)  # type: ignore[arg-type]
     assert result is False
 
 
@@ -152,7 +156,8 @@ def test_is_argon2_hash_non_string():
     """Test is_argon2_hash with non-string type."""
     from server.auth.argon2_utils import is_argon2_hash
 
-    assert is_argon2_hash(123) is False
+    # Reason: Intentionally testing error handling with invalid type (int instead of str | None)
+    assert is_argon2_hash(123) is False  # type: ignore[arg-type]
 
 
 def test_needs_rehash_valid_hash():

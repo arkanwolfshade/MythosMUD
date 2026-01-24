@@ -6,6 +6,7 @@ using SQLAlchemy ORM with PostgreSQL.
 """
 
 import uuid
+from typing import Any
 
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
@@ -43,7 +44,7 @@ class ExperienceRepository:
         "charisma": "ARRAY['charisma']::text[]",
     }
 
-    def __init__(self, event_bus=None):
+    def __init__(self, event_bus: Any = None) -> None:
         """
         Initialize the experience repository.
 
@@ -144,7 +145,7 @@ class ExperienceRepository:
 
                 result = await session.execute(update_query, {"player_id": str(player_id), "delta": delta})
 
-                if not result.rowcount:
+                if not result.rowcount:  # type: ignore[attr-defined]  # mypy: CursorResult has rowcount; stubs use Result[Any]
                     raise ValueError(f"Player {player_id} not found")
 
                 await session.commit()
@@ -229,7 +230,7 @@ class ExperienceRepository:
                     update_query, {"field_name": field_name, "delta": delta, "player_id": str(player_id)}
                 )
 
-                if not result.rowcount:
+                if not result.rowcount:  # type: ignore[attr-defined]  # mypy: CursorResult has rowcount; stubs use Result[Any]
                     raise ValueError(f"Player {player_id} not found")
 
                 await session.commit()

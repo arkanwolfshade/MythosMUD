@@ -322,7 +322,7 @@ describe('ProfessionSelectionScreen', () => {
       render(<ProfessionSelectionScreen {...defaultProps} />);
 
       await waitFor(() => {
-        expect(defaultProps.onError).toHaveBeenCalledWith('Failed to load professions: Internal server error');
+        expect(defaultProps.onError).toHaveBeenCalledWith('Server is unavailable. Please try again later.');
       });
     });
 
@@ -332,7 +332,7 @@ describe('ProfessionSelectionScreen', () => {
       render(<ProfessionSelectionScreen {...defaultProps} />);
 
       await waitFor(() => {
-        expect(defaultProps.onError).toHaveBeenCalledWith('Failed to load professions: Network error');
+        expect(defaultProps.onError).toHaveBeenCalledWith('Server is unavailable. Please try again later.');
       });
     });
   });

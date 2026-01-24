@@ -269,7 +269,8 @@ def test_alias_rejects_extra_fields():
     from pydantic import ValidationError
 
     with pytest.raises(ValidationError) as exc_info:
-        Alias(name="test", command="look", unknown_field="value")
+        # Reason: Intentionally testing Pydantic validation with extra='forbid' - extra fields should be rejected
+        Alias(name="test", command="look", unknown_field="value")  # type: ignore[call-arg]
 
     error_str = str(exc_info.value).lower()
     assert "extra" in error_str and ("not permitted" in error_str or "forbidden" in error_str)

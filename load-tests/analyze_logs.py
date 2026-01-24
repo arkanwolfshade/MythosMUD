@@ -188,7 +188,7 @@ def generate_report(errors_data: dict[str, Any], warnings_data: dict[str, Any]) 
     return "\n".join(report_lines)
 
 
-def main():
+def main() -> None:
     """Main entry point."""
     # Determine log directory (default: logs/local)
     log_base = Path("logs")

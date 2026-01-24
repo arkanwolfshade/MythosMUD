@@ -2,36 +2,43 @@
 
 ## Overview
 
-Tests whisper message delivery between players in real-time. This scenario verifies that whisper messages are properly delivered to the intended recipient and that the whisper system maintains privacy across player sessions.
+Tests whisper message delivery between players in real-time. This scenario verifies that whisper messages are properly
+delivered to the intended recipient and that the whisper system maintains privacy across player sessions.
 
-**⚠️ AUTOMATED TESTS AVAILABLE**: Whisper integration points are tested in automated Playwright CLI tests. See `client/tests/e2e/runtime/integration/whisper-integration.spec.ts` for:
+**⚠️ AUTOMATED TESTS AVAILABLE**: Whisper integration points are tested in automated Playwright CLI tests. See
+`client/tests/e2e/runtime/integration/whisper-integration.spec.ts` for:
+
 - Player management integration
 - Authentication integration
 - Rate limiting integration
 - Error handling integration
 - Performance testing
 
-This MCP scenario focuses ONLY on cross-player message delivery verification that requires real-time multi-player coordination.
+This MCP scenario focuses ONLY on cross-player message delivery verification that requires real-time multi-player
+coordination.
 
 ## Prerequisites
 
-**BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY:**
+### BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY
 
 1. **Database State**: Both players are in `earth_arkhamcity_sanitarium_room_foyer_001`
 2. **Server Running**: Development server is running on port 54731
 3. **Client Accessible**: Client is accessible on port 5173
 4. **Both Players Connected**: AW and Ithaqua are both logged in and in the same room
 
-**⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE**
+### ⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE
 
 **Reference**: See @MULTIPLAYER_TEST_RULES.md for complete prerequisite verification procedures.
 
 ## Test Configuration
 
-- **Test Players**: ArkanWolfshade (AW) and Ithaqua
-- **Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
-- **Testing Approach**: Playwright MCP (multi-tab interaction required)
-- **Timeout Settings**: Use configurable timeouts from master rules
+**Test Players**: ArkanWolfshade (AW) and Ithaqua
+
+**Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
+
+**Testing Approach**: Playwright MCP (multi-tab interaction required)
+
+**Timeout Settings**: Use configurable timeouts from master rules
 
 ## Execution Steps
 
@@ -40,6 +47,7 @@ This MCP scenario focuses ONLY on cross-player message delivery verification tha
 **Purpose**: Ensure both players are ready for whisper integration testing
 
 **Commands**:
+
 ```javascript
 // Ensure both players are logged in from previous scenario
 // AW should be on tab 0, Ithaqua on tab 1
@@ -53,12 +61,14 @@ This MCP scenario focuses ONLY on cross-player message delivery verification tha
 **Purpose**: Test whisper integration with player management system
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
 
 // Send whisper message to test player management integration
-await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "whisper Ithaqua Testing player management integration"});
+await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "whisper Ithaqua Testing
+player management integration"});
 await mcp_playwright_browser_press_key({key: "Enter"});
 
 // Wait for confirmation
@@ -77,6 +87,7 @@ console.log('AW sees player management message:', seesPlayerMgmtMessage);
 **Purpose**: Test whisper integration with location tracking system
 
 **Commands**:
+
 ```javascript
 // Switch to Ithaqua's tab
 await mcp_playwright_browser_tab_select({index: 1});
@@ -85,7 +96,8 @@ await mcp_playwright_browser_tab_select({index: 1});
 await mcp_playwright_browser_wait_for({text: "ArkanWolfshade whispers to you: Testing player management integration"});
 
 // Verify message appears
-const ithaquaMessages = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
+const ithaquaMessages = await mcp_playwright_browser_evaluate({function: "() =>
+Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
 const seesPlayerMgmtMessage = ithaquaMessages.some(msg => msg.includes('ArkanWolfshade whispers to you: Testing player management integration'));
 console.log('Ithaqua sees player management message:', seesPlayerMgmtMessage);
 
@@ -101,6 +113,7 @@ console.log('Ithaqua location:', ithaquaLocation);
 **Purpose**: Test whisper integration with message broadcasting system
 
 **Commands**:
+
 ```javascript
 // Send whisper message to test message broadcasting integration
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "whisper ArkanWolfshade Testing message broadcasting integration"});
@@ -128,6 +141,7 @@ console.log('AW sees broadcast message:', seesBroadcastMessage);
 **Purpose**: Test whisper integration with movement system
 
 **Commands**:
+
 ```javascript
 // Move AW to test movement system integration
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "go east"});
@@ -162,6 +176,7 @@ console.log('Ithaqua sees movement message:', seesMovementMessage);
 **Purpose**: Test whisper integration with session management system
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -199,6 +214,7 @@ console.log('Ithaqua sees session message:', seesSessionMessage);
 **Purpose**: Test whisper integration with database system
 
 **Commands**:
+
 ```javascript
 // Send whisper message to test database integration
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "whisper ArkanWolfshade Testing database integration"});
@@ -238,6 +254,7 @@ if (awMessagesDatabase.length === 0) {
 **Purpose**: Test whisper integration with authentication system
 
 **Commands**:
+
 ```javascript
 // Send whisper message to test authentication integration
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "whisper Ithaqua Testing authentication integration"});
@@ -265,6 +282,7 @@ console.log('Ithaqua sees auth message:', seesAuthMessage);
 **Purpose**: Test whisper integration with error handling system
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -289,6 +307,7 @@ console.log('AW sees error message:', seesErrorMessage);
 **Purpose**: Test whisper integration with performance monitoring system
 
 **Commands**:
+
 ```javascript
 // Send multiple whisper messages to test performance integration
 for (let i = 1; i <= 3; i++) {
@@ -319,6 +338,7 @@ console.log('Expected: 3, Received:', performanceMessages.length);
 **Purpose**: Test whisper integration with logging system
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -343,6 +363,7 @@ console.log('AW sees logging message:', seesLoggingMessage);
 **Purpose**: Test whisper integration with rate limiting system
 
 **Commands**:
+
 ```javascript
 // Send multiple whisper messages to test rate limiting integration
 for (let i = 1; i <= 3; i++) {
@@ -371,6 +392,7 @@ console.log('AW sees rate limit error:', seesRateLimitError);
 **Purpose**: Verify that all system integrations are working correctly
 
 **Commands**:
+
 ```javascript
 // Check final message counts and integration status
 const awFinalMessages = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
@@ -396,6 +418,7 @@ console.log('✅ All verification steps completed successfully');
 console.log('✅ System functionality verified as working correctly');
 console.log('✅ Test results documented and validated');
 console.log('📋 PROCEEDING TO SCENARIO 18: Whisper Privacy and Moderation');
+
 ```
 
 **Expected Result**:  All system integrations are working correctly
@@ -425,11 +448,16 @@ console.log('➡️ READY FOR SCENARIO 18: Whisper Privacy and Moderation');
 
 ## Expected Results
 
-- ✅ Whisper integrates with player management system
-- ✅ Whisper integrates with location tracking system
-- ✅ Whisper integrates with message broadcasting system
-- ✅ Whisper integrates with movement system
-- ✅ Whisper integrates with session management system
+✅ Whisper integrates with player management system
+
+✅ Whisper integrates with location tracking system
+
+✅ Whisper integrates with message broadcasting system
+
+✅ Whisper integrates with movement system
+
+✅ Whisper integrates with session management system
+
 - ✅ Whisper integrates with database system
 - ✅ Whisper integrates with authentication system
 - ✅ Whisper integrates with error handling system
@@ -439,7 +467,8 @@ console.log('➡️ READY FOR SCENARIO 18: Whisper Privacy and Moderation');
 
 ## Success Criteria Checklist
 
-- [ ] Whisper integrates with player management system
+[ ] Whisper integrates with player management system
+
 - [ ] Whisper integrates with location tracking system
 - [ ] Whisper integrates with message broadcasting system
 - [ ] Whisper integrates with movement system
@@ -459,20 +488,25 @@ console.log('➡️ READY FOR SCENARIO 18: Whisper Privacy and Moderation');
 ## Cleanup
 
 Execute standard cleanup procedures from @CLEANUP.md:
+
 1. Close all browser tabs
 2. Stop development server
 3. Verify clean shutdown
 
 ## Status
 
-**✅ SCENARIO COMPLETION LOGIC FIXED**
+### ✅ SCENARIO COMPLETION LOGIC FIXED
 
 The whisper integration system is working correctly. The scenario now includes proper completion logic to prevent infinite loops:
 
-- **Fixed**: Added completion step with explicit scenario completion and cleanup procedures
-- **Fixed**: Added clear decision points for handling verification results
-- **Fixed**: Added explicit progression to next scenario
-- **Verified**: System functionality works as expected and meets all requirements
+**Fixed**: Added completion step with explicit scenario completion and cleanup procedures
+
+**Fixed**: Added clear decision points for handling verification results
+
+**Fixed**: Added explicit progression to next scenario
+
+**Verified**: System functionality works as expected and meets all requirements
+
 ---
 
 **Document Version**: 1.0 (Modular E2E Test Suite)

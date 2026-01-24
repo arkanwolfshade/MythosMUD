@@ -39,7 +39,7 @@ def test_process_command_string_success(command_processor):
         assert cmd_type == "look"
 
 
-def test_process_command_string_pydantic_validation_error(command_processor) -> None:
+def test_process_command_string_pydantic_validation_error(command_processor: CommandProcessor) -> None:
     """Test process_command_string handles Pydantic validation errors."""
     # Create a Pydantic validation error by actually triggering validation
     from pydantic import BaseModel

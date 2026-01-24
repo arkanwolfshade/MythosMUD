@@ -7,7 +7,7 @@ custom invite code validation.
 """
 
 import uuid
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi_users import schemas
@@ -16,6 +16,7 @@ from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..database import get_async_session
+from ..dependencies import get_container
 from ..exceptions import LoggedHTTPException
 from ..models.user import User
 from ..schemas.invite import InviteRead
@@ -25,6 +26,9 @@ from .dependencies import get_current_active_user, get_current_superuser
 from .invites import InviteManager, get_invite_manager
 from .users import UserManager, get_user_manager
 
+if TYPE_CHECKING:
+    from ..async_persistence import AsyncPersistenceLayer
+    from ..container import ApplicationContainer
 logger = get_logger("auth.endpoints")
 
 # Maximum password length to prevent DoS attacks (matches argon2_utils.py)
@@ -98,13 +102,13 @@ class LoginResponse(BaseModel):
     characters: list[dict[str, Any]] = Field(default_factory=list, description="List of active characters")
 
 
-def _check_shutdown_status(request: Request) -> None:
+def _check_shutdown_status(request: Request, operation: str = "register_user") -> None:
     """Check if server is shutting down and raise exception if so."""
     from ..commands.admin_shutdown_command import get_shutdown_blocking_message, is_shutdown_pending
 
     if is_shutdown_pending(request.app):
         context = create_context_from_request(request)
-        context.metadata["operation"] = "register_user"
+        context.metadata["operation"] = operation
         context.metadata["reason"] = "server_shutdown"
         raise LoggedHTTPException(status_code=503, detail=get_shutdown_blocking_message("login"), context=context)
 
@@ -236,14 +240,26 @@ def _generate_jwt_token(user: User) -> str:
     from fastapi_users.jwt import generate_jwt
 
     data = {"sub": str(user.id), "aud": ["fastapi-users:auth"]}
-    jwt_secret = os.getenv("MYTHOSMUD_JWT_SECRET", "dev-jwt-secret")
+    jwt_secret = os.getenv("MYTHOSMUD_JWT_SECRET")
+    if not jwt_secret:
+        raise ValueError(
+            "MYTHOSMUD_JWT_SECRET environment variable must be set. "
+            "Generate a secure random key for production deployment."
+        )
+    if jwt_secret.startswith("dev-"):
+        raise ValueError(
+            "MYTHOSMUD_JWT_SECRET must not start with 'dev-'. "
+            "This indicates an insecure development secret. "
+            "Generate a secure random key for production deployment."
+        )
     access_token = generate_jwt(data, jwt_secret, lifetime_seconds=3600)
-
-    logger.debug("JWT token generated for user", username=user.username)
-    logger.debug("JWT data", data=data)
-    logger.debug("JWT secret", jwt_secret=jwt_secret)
-    logger.debug("JWT token preview", token_preview=access_token[:50])
-
+    logger.debug(
+        "JWT token generated for user",
+        username=user.username,
+        data=data,
+        jwt_secret=jwt_secret,
+        token_preview=access_token[:50],
+    )
     return access_token
 
 
@@ -308,17 +324,6 @@ async def register_user(
         user_id=str(user.id),
         characters=[],
     )
-
-
-def _check_login_shutdown_status(http_request: Request) -> None:
-    """Check if server is shutting down and raise exception if so."""
-    from ..commands.admin_shutdown_command import get_shutdown_blocking_message, is_shutdown_pending
-
-    if is_shutdown_pending(http_request.app):
-        context = create_context_from_request(http_request)
-        context.metadata["operation"] = "login_user"
-        context.metadata["reason"] = "server_shutdown"
-        raise LoggedHTTPException(status_code=503, detail=get_shutdown_blocking_message("login"), context=context)
 
 
 async def _find_user_by_username(session: AsyncSession, username: str, http_request: Request) -> User:
@@ -393,23 +398,10 @@ async def _authenticate_user_credentials(
         raise LoggedHTTPException(status_code=401, detail="Invalid credentials", context=context) from None
 
 
-def _generate_login_jwt_token(user: User) -> str:
-    """Generate JWT token for logged-in user."""
-    import os
-
-    from fastapi_users.jwt import generate_jwt
-
-    data = {"sub": str(user.id), "aud": ["fastapi-users:auth"]}
-    jwt_secret = os.getenv("MYTHOSMUD_JWT_SECRET", "dev-jwt-secret")
-    return generate_jwt(data, jwt_secret, lifetime_seconds=3600)
-
-
-async def _get_user_characters(user: User) -> list[dict[str, Any]]:
+async def _get_user_characters(user: User, async_persistence: "AsyncPersistenceLayer") -> list[dict[str, Any]]:
     """Get all active characters for user."""
-    from ..async_persistence import get_async_persistence
     from ..schemas.player import CharacterInfo
 
-    async_persistence = get_async_persistence()
     active_players = await async_persistence.get_active_players_by_user_id(str(user.id))
 
     characters = []
@@ -443,6 +435,7 @@ async def login_user(
     http_request: Request,
     user_manager: UserManager = Depends(get_user_manager),
     session: AsyncSession = Depends(get_async_session),
+    container: "ApplicationContainer" = Depends(get_container),
 ) -> LoginResponse:
     """
     Authenticate a user and return an access token.
@@ -450,7 +443,7 @@ async def login_user(
     This endpoint validates user credentials and returns a JWT token
     for authenticated requests.
     """
-    _check_login_shutdown_status(http_request)
+    _check_shutdown_status(http_request, "login_user")
 
     logger.info("Login attempt", username=request.username)
 
@@ -458,9 +451,13 @@ async def login_user(
 
     await _authenticate_user_credentials(user, request.password, request.username, user_manager, http_request)
 
-    access_token = _generate_login_jwt_token(user)
+    access_token = _generate_jwt_token(user)
 
-    characters = await _get_user_characters(user)
+    if container.async_persistence is None:
+        logger.error("Async persistence layer not available during login", username=user.username)
+        raise RuntimeError("Database connection not available")
+
+    characters = await _get_user_characters(user, container.async_persistence)
 
     logger.info("Login successful for user", username=user.username, character_count=len(characters))
 
@@ -492,7 +489,7 @@ async def get_current_user_info(
 async def list_invites(
     _current_user: User = Depends(get_current_superuser),
     invite_manager: InviteManager = Depends(get_invite_manager),
-) -> list[dict]:
+) -> list[dict[str, Any]]:
     """
     List all invite codes.
 

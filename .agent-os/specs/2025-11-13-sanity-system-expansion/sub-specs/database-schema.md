@@ -6,7 +6,8 @@ This is the database schema implementation for the spec detailed in @.agent-os/s
 
 ### Table: `player_lucidity`
 
-- `player_id` INTEGER PRIMARY KEY REFERENCES `players(id)` ON DELETE CASCADE
+`player_id` INTEGER PRIMARY KEY REFERENCES `players(id)` ON DELETE CASCADE
+
 - `current_san` INTEGER NOT NULL DEFAULT 100 CHECK (current_san BETWEEN -100 AND 100)
 - `current_tier` TEXT NOT NULL CHECK (current_tier IN ('lucid','uneasy','fractured','deranged','catatonic'))
 - `liabilities` JSON NOT NULL DEFAULT '[]'
@@ -16,7 +17,8 @@ This is the database schema implementation for the spec detailed in @.agent-os/s
 
 ### Table: `lucidity_adjustment_log`
 
-- `id` INTEGER PRIMARY KEY AUTOINCREMENT
+`id` INTEGER PRIMARY KEY AUTOINCREMENT
+
 - `player_id` INTEGER NOT NULL REFERENCES `players(id)` ON DELETE CASCADE
 - `delta` INTEGER NOT NULL
 - `reason_code` TEXT NOT NULL
@@ -27,7 +29,8 @@ This is the database schema implementation for the spec detailed in @.agent-os/s
 
 ### Table: `lucidity_exposure_state`
 
-- `id` INTEGER PRIMARY KEY AUTOINCREMENT
+`id` INTEGER PRIMARY KEY AUTOINCREMENT
+
 - `player_id` INTEGER NOT NULL REFERENCES `players(id)` ON DELETE CASCADE
 - `entity_archetype` TEXT NOT NULL
 - `encounter_count` INTEGER NOT NULL DEFAULT 0
@@ -36,7 +39,8 @@ This is the database schema implementation for the spec detailed in @.agent-os/s
 
 ### Table: `lucidity_cooldowns`
 
-- `id` INTEGER PRIMARY KEY AUTOINCREMENT
+`id` INTEGER PRIMARY KEY AUTOINCREMENT
+
 - `player_id` INTEGER NOT NULL REFERENCES `players(id)` ON DELETE CASCADE
 - `action_code` TEXT NOT NULL
 - `cooldown_expires_at` DATETIME NOT NULL
@@ -44,12 +48,14 @@ This is the database schema implementation for the spec detailed in @.agent-os/s
 
 ## Migration Notes
 
-- Populate `player_lucidity` with existing players (`current_san = 100`, `current_tier = 'lucid'`).
+Populate `player_lucidity` with existing players (`current_san = 100`, `current_tier = 'lucid'`).
+
 - Backfill `lucidity_exposure_state` only when encounters occur; no initial data required.
 - Ensure migrations run under a transaction; create indexes after data backfill to minimize lock duration.
 
 ## Rationale
 
-- Separate logs allow telemetry without bloating core player table.
+Separate logs allow telemetry without bloating core player table.
+
 - Exposure state supports first-time/repeat loss rules with efficient lookups.
 - Cooldowns table unifies recovery actions and hallucination timers, keeping logic server-driven.

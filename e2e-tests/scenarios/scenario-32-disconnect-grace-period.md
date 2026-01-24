@@ -2,13 +2,16 @@
 
 ## Overview
 
-Tests the 30-second grace period system for unintentional disconnects. This scenario verifies that when a player loses connection, their character remains in-game for 30 seconds in a "zombie" state where they can be attacked and will auto-attack back, but cannot take other actions. Other players should see a "(linkdead)" indicator.
+Tests the 30-second grace period system for unintentional disconnects. This scenario verifies that when a player loses
+connection, their character remains in-game for 30 seconds in a "zombie" state where they can be attacked and will
+auto-attack back, but cannot take other actions. Other players should see a "(linkdead)" indicator.
 
-**⚠️ CRITICAL**: This scenario tests **unintentional disconnects only**. Intentional disconnects via `/rest` or `/quit` should NOT have grace period.
+**⚠️ CRITICAL**: This scenario tests **unintentional disconnects only**. Intentional disconnects via `/rest` or `/quit`
+should NOT have grace period.
 
 ## Prerequisites
 
-**BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY:**
+### BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY
 
 1. **Database State**: Both players are in `earth_arkhamcity_sanitarium_room_foyer_001`
 2. **Server Running**: Development server is running on port 54731
@@ -16,31 +19,40 @@ Tests the 30-second grace period system for unintentional disconnects. This scen
 4. **Both Players Connected**: AW and Ithaqua are both logged in and in the same room
 5. **No Active Grace Periods**: No players currently in grace period
 
-**⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE**
+### ⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE
 
 **Reference**: See @MULTIPLAYER_TEST_RULES.md for complete prerequisite verification procedures.
 
 ## Test Configuration
 
-- **Test Players**: ArkanWolfshade (AW) and Ithaqua
-- **Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
-- **Testing Approach**: Playwright MCP (multi-tab interaction required)
-- **Timeout Settings**: Use configurable timeouts from master rules
-- **Grace Period Duration**: 30 seconds
+**Test Players**: ArkanWolfshade (AW) and Ithaqua
+
+**Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
+
+**Testing Approach**: Playwright MCP (multi-tab interaction required)
+
+**Timeout Settings**: Use configurable timeouts from master rules
+
+**Grace Period Duration**: 30 seconds
 
 ## Testing Approach Rationale
 
-**Why Playwright MCP is Required:**
+### Why Playwright MCP is Required
 
-- **Multi-tab Coordination**: Requires 2+ browser tabs to test disconnect behavior and visual indicators
-- **Real-time Interaction**: Must verify "(linkdead)" indicator appears to other players in real-time
-- **Connection Simulation**: Must simulate unintentional disconnect (WebSocket close)
-- **State Verification**: Must verify zombie state (can be attacked, auto-attacks, cannot move/command)
-- **Timer Verification**: Must verify 30-second grace period timer
+**Multi-tab Coordination**: Requires 2+ browser tabs to test disconnect behavior and visual indicators
 
-**Standard Playwright Not Suitable:**
+**Real-time Interaction**: Must verify "(linkdead)" indicator appears to other players in real-time
 
-- Cannot handle multiple browser tabs simultaneously
+**Connection Simulation**: Must simulate unintentional disconnect (WebSocket close)
+
+**State Verification**: Must verify zombie state (can be attacked, auto-attacks, cannot move/command)
+
+**Timer Verification**: Must verify 30-second grace period timer
+
+### Standard Playwright Not Suitable
+
+Cannot handle multiple browser tabs simultaneously
+
 - Cannot simulate WebSocket disconnection properly
 - Cannot verify real-time state changes across players
 
@@ -64,7 +76,8 @@ await mcp_playwright_browser_tabs({action: "list"});
 // Check room occupants from Ithaqua's perspective
 await mcp_playwright_browser_tabs({action: "select", index: 1});
 const roomOccupants = await mcp_playwright_browser_evaluate({
-    function: "() => { const panel = document.querySelector('[data-testid=\"occupants-panel\"]'); return panel ? panel.textContent : ''; }"
+    function: "() => { const panel = document.querySelector('[data-testid=\"occupants-panel\"]'); return panel ?
+    panel.textContent : ''; }"
 });
 console.log('Room occupants:', roomOccupants);
 // Should include both AW and Ithaqua
@@ -318,7 +331,8 @@ console.log('AW visible after /rest:', hasAWAfterRest);
 
 ### Success Criteria Checklist
 
-- [ ] **Step 1**: Both players connected and in same room
+[ ] **Step 1**: Both players connected and in same room
+
 - [ ] **Step 2**: No "(linkdead)" indicators initially
 - [ ] **Step 3**: Unintentional disconnect detected
 - [ ] **Step 4**: AW shows "(linkdead)" indicator in room occupants
@@ -338,10 +352,13 @@ console.log('AW visible after /rest:', hasAWAfterRest);
 
 ## Notes
 
-- **Grace Period Only for Unintentional**: Only connection loss triggers grace period, not `/rest` or `/quit`
-- **Auto-Attack**: Grace period players use normal auto-attack (with weapons, no special abilities)
-- **Visual Feedback**: Other players see "(linkdead)" to understand why character isn't responding
-- **Reconnection**: If player reconnects during grace period, it cancels immediately
+**Grace Period Only for Unintentional**: Only connection loss triggers grace period, not `/rest` or `/quit`
+
+**Auto-Attack**: Grace period players use normal auto-attack (with weapons, no special abilities)
+
+**Visual Feedback**: Other players see "(linkdead)" to understand why character isn't responding
+
+**Reconnection**: If player reconnects during grace period, it cancels immediately
 
 ## Cleanup
 

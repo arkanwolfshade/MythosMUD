@@ -6,7 +6,8 @@
 
 ## Overview
 
-This migration fixes critical PostgreSQL best practices violations identified in the code review. It converts deprecated patterns to modern PostgreSQL standards and improves code consistency.
+This migration fixes critical PostgreSQL best practices violations identified in the code review. It converts deprecated
+patterns to modern PostgreSQL standards and improves code consistency.
 
 ## Changes Applied
 
@@ -24,7 +25,8 @@ Converts all `serial`/`SERIAL` columns to `bigint generated always as identity`:
 - `player_spells.id`
 - `professions.id` (INTEGER PRIMARY KEY → bigint generated always as identity)
 
-**Why:** `serial` is deprecated. `bigint generated always as identity` is the modern standard and provides better control over ID generation.
+**Why:** `serial` is deprecated. `bigint generated always as identity` is the modern standard and provides better
+control over ID generation.
 
 ### 2. Foreign Key Type Updates
 
@@ -47,9 +49,11 @@ Converts unnecessary `varchar(n)` columns to `text`:
 - `sanity_exposure_state.entity_archetype`: varchar(128) → text
 - `sanity_cooldowns.action_code`: varchar(64) → text
 
-**Why:** PostgreSQL best practices recommend `text` over `varchar(n)` unless there's a specific business requirement for length constraints.
+**Why:** PostgreSQL best practices recommend `text` over `varchar(n)` unless there's a specific business requirement for
+length constraints.
 
-**Note:** Some `varchar` columns are kept (e.g., `users.email`, `users.username`, `invites.invite_code`) because they may have business requirements for length limits. These can be converted later if needed.
+**Note:** Some `varchar` columns are kept (e.g., `users.email`, `users.username`, `invites.invite_code`) because they
+may have business requirements for length limits. These can be converted later if needed.
 
 ### 4. Table and Column Comments
 
@@ -84,7 +88,8 @@ end if;
 
 ### Data Preservation
 
-- Sequence values are preserved during conversion
+Sequence values are preserved during conversion
+
 - Identity columns start from the next value after the current maximum
 - No data loss occurs during type conversions
 
@@ -114,14 +119,15 @@ Before applying to production:
 
 ### Schema Files (Updated to Match Migration)
 
-- `db/schema/03_identity_and_moderation.sql`
+`db/schema/03_identity_and_moderation.sql`
+
 - `db/schema/04_runtime_tables.sql`
 - `db/migrations/015_add_magic_system_tables.sql`
 - `server/scripts/create_professions_table.sql`
 
 ### Migration File
 
-- `db/migrations/019_postgresql_anti_patterns_fixes.sql` (new)
+`db/migrations/019_postgresql_anti_patterns_fixes.sql` (new)
 
 ## Application Code Impact
 
@@ -137,9 +143,11 @@ If using SQLAlchemy models, ensure:
 
 ```python
 # Before
+
 id = Column(Integer, primary_key=True)
 
 # After
+
 id = Column(BigInteger, primary_key=True)
 ```
 
@@ -152,7 +160,8 @@ id = Column(BigInteger, primary_key=True)
 
 ## Related Documentation
 
-- [PostgreSQL Anti-Patterns Review](../docs/POSTGRESQL_ANTI_PATTERNS_REVIEW.md)
+[PostgreSQL Anti-Patterns Review](../docs/POSTGRESQL_ANTI_PATTERNS_REVIEW.md)
+
 - [PostgreSQL Best Practices](../../.cursor/rules/postgresql.mdc)
 
 ## Support

@@ -7,6 +7,7 @@ mock drift and catch interface mismatches.
 
 from collections.abc import Callable
 from typing import Any
+from unittest.mock import MagicMock
 
 import pytest
 from pytest_mock import MockerFixture
@@ -21,16 +22,16 @@ def strict_mocker(mocker: MockerFixture) -> Callable[..., Any]:
         patched_fn = strict_mocker("server.module.fn")
     """
 
-    def _patch(target: str, **kwargs: Any):
+    def _patch(target: str, **kwargs: Any) -> MagicMock:
         kwargs.setdefault("autospec", True)
-        return mocker.patch(target, **kwargs)
+        return mocker.patch(target, **kwargs)  # type: ignore[no-any-return]  # Reason: mocker.patch returns Any, but we declare MagicMock for type safety
 
     return _patch
 
 
-def strict_patch(mocker: MockerFixture, target: str, **kwargs: Any):
+def strict_patch(mocker: MockerFixture, target: str, **kwargs: Any) -> MagicMock:
     """
     Convenience helper for direct calls with autospec=True by default.
     """
     kwargs.setdefault("autospec", True)
-    return mocker.patch(target, **kwargs)
+    return mocker.patch(target, **kwargs)  # type: ignore[no-any-return]  # Reason: mocker.patch returns Any, but we declare MagicMock for type safety

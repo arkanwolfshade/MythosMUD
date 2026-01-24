@@ -1,39 +1,57 @@
 # Contributing to MythosMUD
 
-*"In the archives of Miskatonic University, we welcome those who seek knowledge, provided they understand the risks and respect the protocols."*
+> "In the archives of Miskatonic University, we welcome those who seek knowledge, provided they understand the risks and
+respect the protocols."
 
-Welcome, fellow researcher! This document serves as your guide to contributing to the MythosMUD project. Whether you're fixing bugs, implementing features, or documenting your findings, these guidelines will help ensure your contributions meet our academic standards.
+Welcome, fellow researcher! This document serves as your guide to contributing to the MythosMUD project. Whether you're
+fixing bugs, implementing features, or documenting your findings, these guidelines will help ensure your contributions
+meet our academic standards.
 
 ---
 
 ## Table of Contents
 
+[Contributing to MythosMUD](#contributing-to-mythosmud)
+
 - [Contributing to MythosMUD](#contributing-to-mythosmud)
+
   - [Table of Contents](#table-of-contents)
+
   - [Code of Conduct](#code-of-conduct)
+
     - [Project-Specific Values](#project-specific-values)
   - [Getting Started](#getting-started)
+
     - [Prerequisites](#prerequisites)
     - [Development Environment Setup](#development-environment-setup)
     - [Understanding the Codebase](#understanding-the-codebase)
   - [Development Workflow](#development-workflow)
+
     - [Finding Tasks](#finding-tasks)
     - [Creating a Branch](#creating-a-branch)
     - [Making Changes](#making-changes)
       - [1. **Security First**](#1-security-first)
+
       - [2. **Write Tests First (TDD)**](#2-write-tests-first-tdd)
+
       - [3. **Follow Coding Standards**](#3-follow-coding-standards)
+
       - [4. **Use Enhanced Logging**](#4-use-enhanced-logging)
+
       - [5. **Keep Changes Focused**](#5-keep-changes-focused)
+
     - [Testing Your Changes](#testing-your-changes)
     - [Committing Your Work](#committing-your-work)
     - [Submitting a Pull Request](#submitting-a-pull-request)
   - [Coding Standards](#coding-standards)
+
     - [Python Guidelines](#python-guidelines)
     - [TypeScript/React Guidelines](#typescriptreact-guidelines)
     - [Logging Best Practices](#logging-best-practices)
       - [✅ CORRECT Usage](#-correct-usage)
+
       - [❌ WRONG Usage (Will Cause Failures)](#-wrong-usage-will-cause-failures)
+
     - [Security Requirements](#security-requirements)
   - [Testing Requirements](#testing-requirements)
     - [Writing Tests](#writing-tests)
@@ -59,16 +77,22 @@ Welcome, fellow researcher! This document serves as your guide to contributing t
 
 ## Code of Conduct
 
-This project adheres to the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to [mythosmud-coc.destitute749@simplelogin.com](mailto:mythosmud-coc.destitute749@simplelogin.com).
+This project adheres to the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are
+expected to uphold this code. Please report unacceptable behavior to
+[mythosmud-coc.destitute749@simplelogin.com](mailto:mythosmud-coc.destitute749@simplelogin.com).
 
 ### Project-Specific Values
 
 As scholars of the Mythos, we particularly emphasize:
 
-- **Respectful Collaboration**: Treat all contributors with dignity and professionalism
-- **Constructive Feedback**: Provide helpful, actionable feedback on code reviews
-- **Open Communication**: Ask questions, share knowledge, and admit when you don't know something
-- **Security First**: Never compromise user privacy or data security
+**Respectful Collaboration**: Treat all contributors with dignity and professionalism
+
+**Constructive Feedback**: Provide helpful, actionable feedback on code reviews
+
+**Open Communication**: Ask questions, share knowledge, and admit when you don't know something
+
+**Security First**: Never compromise user privacy or data security
+
 - **Quality Over Speed**: Take time to write maintainable, well-tested code
 
 **Additional Project Standards**:
@@ -90,17 +114,23 @@ Before you begin your research, ensure you have the proper tools:
 
 **Required Software**:
 
-- **Python 3.12+** (managed via pyenv-win recommended)
-- **Node.js 22+** and npm (NVM for Windows recommended)
-- **uv** for Python dependency management ([installation guide](https://github.com/astral-sh/uv))
-- **Git** for version control
+**Python 3.12+** (managed via pyenv-win recommended)
+
+**Node.js 22+** and npm (NVM for Windows recommended)
+
+**uv** for Python dependency management ([installation guide](https://github.com/astral-sh/uv))
+
+**Git** for version control
+
 - **PowerShell** (for Windows development)
 
 **Recommended Tools**:
 
-- **Visual Studio Code** or **Cursor IDE** with Python and TypeScript extensions
-- **PostgreSQL** (for production testing, optional for development)
-- **Docker** (for containerized testing, optional)
+**Visual Studio Code** or **Cursor IDE** with Python and TypeScript extensions
+
+**PostgreSQL** (for production testing, optional for development)
+
+**Docker** (for containerized testing, optional)
 
 ### Development Environment Setup
 
@@ -108,12 +138,14 @@ Before you begin your research, ensure you have the proper tools:
 
    ```powershell
    # Option 1: Clone with submodules
+
    git clone --recursive https://github.com/arkanwolfshade/MythosMUD.git
    cd MythosMUD
    ```
 
    ```powershell
    # Option 2: Clone then fetch submodules
+
    git clone https://github.com/arkanwolfshade/MythosMUD.git
    cd MythosMUD
    git submodule update --init --recursive
@@ -140,6 +172,7 @@ Before you begin your research, ensure you have the proper tools:
 
    ```powershell
    # Copy example environment files
+
    Copy-Item env.local.example .env.local
    Copy-Item env.unit_test.example .env.unit_test
    ```
@@ -150,6 +183,7 @@ Before you begin your research, ensure you have the proper tools:
 
    ```powershell
    # Required before first test run
+
    make setup-test-env
    ```
 
@@ -157,9 +191,11 @@ Before you begin your research, ensure you have the proper tools:
 
    ```powershell
    # Run tests to verify everything works
+
    make test
 
    # Start the development server
+
    .\scripts\start_local.ps1
    ```
 
@@ -171,10 +207,14 @@ For detailed setup instructions, see [DEVELOPMENT.md](docs/DEVELOPMENT.md).
 
 Before making changes, familiarize yourself with the project structure:
 
-- **`/client`** - React 19 + TypeScript frontend (Vite)
-- **`/server`** - Python FastAPI backend
-- **`/data`** - Game data (git submodule) - rooms, NPCs, players
-- **`/docs`** - Comprehensive documentation
+**`/client`** - React 19 + TypeScript frontend (Vite)
+
+**`/server`** - Python FastAPI backend
+
+**`/data`** - Game data (git submodule) - rooms, NPCs, players
+
+**`/docs`** - Comprehensive documentation
+
 - **`/scripts`** - Utility scripts for development
 - **`/e2e-tests`** - End-to-end testing framework
 - **`/schemas`** - JSON schemas for validation
@@ -194,16 +234,20 @@ Key documentation to review:
 ### Finding Tasks
 
 1. **Review GitHub Issues**: Start by checking [GitHub Issues](https://github.com/arkanwolfshade/MythosMUD/issues)
+
    - Look for issues labeled `good first issue` or `help wanted`
    - Read issue descriptions and comments carefully
    - Ask questions if anything is unclear
 
 2. **Choose Appropriate Tasks**: Select tasks that match your skill level
-   - **Beginners**: Documentation, small bug fixes, test improvements
-   - **Intermediate**: Feature implementation, refactoring, performance improvements
+
+   **Beginners**: Documentation, small bug fixes, test improvements
+
+   **Intermediate**: Feature implementation, refactoring, performance improvements
    - **Advanced**: Architecture changes, security enhancements, complex features
 
 3. **Claim Your Task**: Comment on the issue to indicate you're working on it
+
    - Example: "I'd like to work on this. My approach will be..."
    - Wait for maintainer approval before starting significant work
 
@@ -213,12 +257,15 @@ Key documentation to review:
 
 ```powershell
 # Ensure you're on the latest dev branch
+
 git checkout dev
 git pull origin dev
 
 # Create a feature branch with descriptive name
+
 git checkout -b feature/your-feature-name
 # or
+
 git checkout -b fix/issue-number-description
 ```
 
@@ -236,39 +283,46 @@ Follow these guidelines when writing code:
 
 #### 1. **Security First**
 
-- Never commit secrets, API keys, or passwords
+Never commit secrets, API keys, or passwords
+
 - Always validate and sanitize user input
 - Use parameterized queries for database operations
 - Follow COPPA compliance for minor user data
 
 #### 2. **Write Tests First (TDD)**
 
-- Write tests before implementing features
+Write tests before implementing features
+
 - Ensure tests fail before implementation
 - Implement feature to make tests pass
 - Refactor while keeping tests green
 
 #### 3. **Follow Coding Standards**
 
-- Python: Follow PEP 8 via ruff (120 char line limit)
+Python: Follow PEP 8 via ruff (120 char line limit)
+
 - TypeScript: Follow project ESLint/Prettier config
 - Use meaningful variable and function names
 - Add comments for complex logic (see [Coding Standards](#coding-standards))
 
 #### 4. **Use Enhanced Logging**
 
-- **ALWAYS** use `from server.logging.enhanced_logging_config import get_logger`
-- **NEVER** use `import logging` or `logging.getLogger()`
+**ALWAYS** use `from server.logging.enhanced_logging_config import get_logger`
+
+**NEVER** use `import logging` or `logging.getLogger()`
+
 - Use structured logging with key-value pairs
 - **NEVER** use f-strings for logging (breaks structured logging)
 
    ```python
    # ✅ CORRECT
+
    from server.logging.enhanced_logging_config import get_logger
    logger = get_logger(__name__)
    logger.info("User action completed", user_id=user.id, action="login", success=True)
 
    # ❌ WRONG
+
    import logging
    logger = logging.getLogger(__name__)
    logger.info(f"User {user.id} completed login")
@@ -276,7 +330,8 @@ Follow these guidelines when writing code:
 
 #### 5. **Keep Changes Focused**
 
-- One feature or fix per pull request
+One feature or fix per pull request
+
 - Don't mix unrelated changes
 - Keep commits atomic and meaningful
 
@@ -286,18 +341,22 @@ Follow these guidelines when writing code:
 
 ```powershell
 # Run all tests
+
 make test
 
 # Run specific test categories
+
 make test        # Server tests only
 make test-client        # Client unit tests
 make test-client-runtime # Client E2E tests
 
 # Run with coverage
+
 cd server
 uv run pytest --cov=. --cov-report=html
 
 # Run linting
+
 make lint
 
 ```
@@ -368,11 +427,13 @@ If hooks fail, fix the issues and try again:
 
 ```powershell
 # Fix Python formatting issues
+
 cd server
 uv run ruff format .
 uv run ruff check . --fix
 
 # Fix TypeScript formatting issues
+
 cd client
 npm run format
 npm run lint:fix
@@ -387,6 +448,7 @@ npm run lint:fix
    ```
 
 2. **Create Pull Request on GitHub:**
+
    - Go to the repository on GitHub
    - Click "Compare & pull request"
    - Fill out the PR template completely
@@ -394,6 +456,7 @@ npm run lint:fix
    - Add screenshots/recordings for UI changes
 
 3. **PR Description Should Include:**
+
    - What problem does this solve?
    - How does it solve it?
    - What testing was performed?
@@ -401,12 +464,14 @@ npm run lint:fix
    - Screenshots/recordings (for UI changes)
 
 4. **Wait for Review:**
+
    - Maintainers will review your PR
    - Address feedback promptly and professionally
    - Update your PR as needed
    - Be patient - reviews may take a few days
 
 5. **After Approval:**
+
    - Maintainers will merge your PR
    - Your changes will be included in the next release
    - Celebrate your contribution! 🎉
@@ -493,14 +558,17 @@ class CombatSystem:
 
 ```python
 # Standard library imports
+
 import asyncio
 from typing import Optional, Dict, Any
 
 # Third-party imports
+
 from fastapi import HTTPException
 from pydantic import BaseModel
 
 # Local imports
+
 from server.models.player import Player
 from server.logging.enhanced_logging_config import get_logger
 from server.utils.validation import validate_command
@@ -605,12 +673,15 @@ from server.logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 
 # Structured logging with key-value pairs
+
 logger.info("User action completed", user_id=user.id, action="login", success=True)
 
 # Error logging with context
+
 logger.error("Operation failed", operation="user_creation", error=str(e), retry_count=3)
 
 # Performance monitoring
+
 from server.logging.enhanced_logging_config import measure_performance
 with measure_performance("database_query", user_id=user.id):
     result = database.query("SELECT * FROM players")
@@ -620,17 +691,21 @@ with measure_performance("database_query", user_id=user.id):
 
 ```python
 # ❌ WRONG - Will cause import failures
+
 import logging
 logger = logging.getLogger(__name__)
 
 # ❌ WRONG - F-string logging destroys structured logging
+
 logger.info(f"User {user_id} performed {action}")
 logger.error(f"Failed to process: {error}")
 
 # ❌ WRONG - Deprecated context parameter
+
 logger.info("message", context={"key": "value"})
 
 # ❌ WRONG - Unstructured messages
+
 logger.info("Error occurred")  # No context!
 ```
 
@@ -650,31 +725,37 @@ See [docs/LOGGING_BEST_PRACTICES.md](docs/LOGGING_BEST_PRACTICES.md) for compreh
 **CRITICAL SECURITY RULES** - Violation will result in PR rejection:
 
 1. **Never Commit Secrets**
+
    - No API keys, passwords, tokens, or credentials in code
    - Use environment variables for all sensitive configuration
    - Review changes carefully before committing
 
 2. **Input Validation**
+
    - Always validate and sanitize user input on the server side
    - Never trust client-side validation alone
    - Use Pydantic models for request validation
 
 3. **Database Security**
+
    - Always use parameterized queries (never string concatenation)
    - Implement proper access controls
    - Validate all file paths to prevent traversal attacks
 
 4. **Authentication & Authorization**
+
    - Always verify user permissions before allowing actions
    - Use JWT tokens properly (check expiration, validate signature)
    - Implement rate limiting for sensitive endpoints
 
 5. **COPPA Compliance**
+
    - Never collect personal information from minors
    - Implement parental consent where required
    - Minimize data collection to essential game functionality
 
 6. **Error Handling**
+
    - Never expose sensitive information in error messages
    - Log errors with context but sanitize sensitive data
    - Use generic error messages for users, detailed logs for debugging
@@ -795,14 +876,15 @@ class TestCombatSystem:
 
 **Requirements**:
 
-- **Critical Files**: 90% test coverage (security, authentication, data handling)
-  - `server/auth/*` - Authentication and password hashing
-  - `server/security_utils.py` - Security utilities
-  - `server/validators/security_validator.py` - Security validation
-  - `server/database.py` - Database initialization
-  - `server/persistence/*` - Data persistence
-  - `server/services/admin_auth_service.py` - Admin authentication
-  - `server/services/inventory_mutation_guard.py` - Inventory security
+**Critical Files**: 90% test coverage (security, authentication, data handling)
+
+- `server/auth/*` - Authentication and password hashing
+- `server/security_utils.py` - Security utilities
+- `server/validators/security_validator.py` - Security validation
+- `server/database.py` - Database initialization
+- `server/persistence/*` - Data persistence
+- `server/services/admin_auth_service.py` - Admin authentication
+- `server/services/inventory_mutation_guard.py` - Inventory security
 - **Normal Files**: 70% test coverage (all other code)
 - **CI Enforcement**: Coverage thresholds are enforced in CI/CD
 - **Pre-commit Hook**: Coverage thresholds checked before commit (if coverage.xml exists)
@@ -819,15 +901,18 @@ class TestCombatSystem:
 
 ```powershell
 # Run tests with coverage
+
 make test-server-coverage
 
 # View HTML report
 # Open htmlcov/index.html in browser
 
 # Check coverage thresholds
+
 python scripts/check_coverage_thresholds.py
 
 # Analyze coverage gaps and generate status document
+
 python scripts/analyze_coverage_gaps.py
 ```
 
@@ -855,43 +940,56 @@ TOTAL                                    1234     89    93%
 
 **CRITICAL RULES**:
 
-- **ALWAYS** use `make test` from project root
-- **NEVER** run tests from `/server/` directory
-- **NEVER** use `python -m pytest` directly
+**ALWAYS** use `make test` from project root
+
+**NEVER** run tests from `/server/` directory
+
+**NEVER** use `python -m pytest` directly
 
 ```powershell
 # Run all tests
+
 make test
 
 # Run server tests only
+
 make test
 
 # Run client unit tests (Vitest)
+
 make test-client
 
 # Run client E2E tests (Playwright)
+
 make test-client-runtime
 
 # Run tests with coverage
+
 make test-server-coverage
 
 # Check coverage thresholds (after running tests)
+
 python scripts/check_coverage_thresholds.py
 
 # Analyze coverage gaps
+
 python scripts/analyze_coverage_gaps.py
 
 # Run specific test file
+
 cd server
 uv run pytest tests/unit/game/test_combat.py -v
 
 # Run specific test function
+
 uv run pytest tests/unit/game/test_combat.py::TestCombatSystem::test_calculate_damage_basic -v
 
 # Run with verbose output
+
 make test PYTEST_ARGS="-v"
 
 # Run with debug output
+
 make test PYTEST_ARGS="-vv -s"
 ```
 
@@ -943,6 +1041,7 @@ See [server/tests/SETUP.md](server/tests/SETUP.md) for detailed testing guide.
    ```python
    # The Wilmarth Coefficient adjusts lucidity loss based on entity proximity
    # See: "The Whisperer in Darkness" correspondence, 1928
+
    proximity_factor = 1.0 / max(1, distance_to_entity)
    lucidity_loss = base_loss * proximity_factor * WILMARTH_COEFFICIENT
    ```
@@ -964,10 +1063,13 @@ See [server/tests/SETUP.md](server/tests/SETUP.md) for detailed testing guide.
 
 When making significant changes, update relevant documentation:
 
-- **README.md**: For project-wide changes
-- **PLANNING.md**: For feature status updates
-- **docs/**: For technical specifications and guides
-- **Code comments**: For implementation details
+**README.md**: For project-wide changes
+
+**PLANNING.md**: For feature status updates
+
+**docs/**: For technical specifications and guides
+
+**Code comments**: For implementation details
 
 ### Mythos References
 
@@ -983,6 +1085,7 @@ We encourage (but don't require) adding Lovecraftian flavor to documentation:
 ```python
 # Implementing player position tracking as described in
 # "Dimensional Mapping in Non-Euclidean Spaces" - Prof. Peaslee, 1932
+
 class PositionTracker:
     """Track player positions across interconnected rooms.
 
@@ -997,14 +1100,18 @@ class PositionTracker:
 
 ### Getting Help
 
-- **GitHub Issues**: Ask questions or report problems
-- **Pull Request Comments**: Discuss implementation details
-- **Documentation**: Check existing docs first
-- **Maintainers**: Reach out to @arkanwolfshade or @TylerWolfshade
+**GitHub Issues**: Ask questions or report problems
+
+**Pull Request Comments**: Discuss implementation details
+
+**Documentation**: Check existing docs first
+
+**Maintainers**: Reach out to @arkanwolfshade or @TylerWolfshade
 
 ### Communication Guidelines
 
-- Be respectful and professional
+Be respectful and professional
+
 - Provide context when asking questions
 - Share relevant code, logs, or screenshots
 - Be patient - maintainers are volunteers
@@ -1057,7 +1164,8 @@ We value all contributions, large and small. Contributors will be:
 
 ### Essential Reading
 
-- [README.md](README.md) - Project overview
+[README.md](README.md) - Project overview
+
 - [PLANNING.md](PLANNING.md) - Development roadmap
 - [SECURITY.md](SECURITY.md) - Security policies
 - [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) - Development guide
@@ -1065,20 +1173,23 @@ We value all contributions, large and small. Contributors will be:
 
 ### Technical Documentation
 
-- [docs/PRD.md](docs/PRD.md) - Product requirements
+[docs/PRD.md](docs/PRD.md) - Product requirements
+
 - [docs/REAL_TIME_ARCHITECTURE.md](docs/REAL_TIME_ARCHITECTURE.md) - Real-time system
 - [docs/LOGGING_BEST_PRACTICES.md](docs/LOGGING_BEST_PRACTICES.md) - Logging guide
 - [docs/E2E_TESTING_GUIDE.md](docs/E2E_TESTING_GUIDE.md) - E2E testing
 
 ### Testing Resources
 
-- [server/tests/SETUP.md](server/tests/SETUP.md) - Test setup guide
+[server/tests/SETUP.md](server/tests/SETUP.md) - Test setup guide
+
 - [e2e-tests/MULTIPLAYER_TEST_RULES.md](e2e-tests/MULTIPLAYER_TEST_RULES.md) - E2E scenarios
 - [docs/COMMAND_TESTING_GUIDE.md](docs/COMMAND_TESTING_GUIDE.md) - Command testing
 
 ### Style Guides
 
-- [PEP 8](https://pep8.org/) - Python style guide
+[PEP 8](https://pep8.org/) - Python style guide
+
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/intro.html) - TypeScript guide
 - [React Documentation](https://react.dev/) - React best practices
 
@@ -1095,9 +1206,11 @@ If you have questions about contributing:
 
 ---
 
-*"Together, we forge ahead into territories unknown, our tools our typewriters and terminals, our mission to chronicle and contain the Mythos within this digital realm. May your contributions be scholarly, your tests comprehensive, and your commits meaningful."*
-
-**— The Faculty of Miskatonic University's Department of Computer Sciences and Occult Studies**
+> "Together, we forge ahead into territories unknown, our tools our typewriters and terminals, our mission to chronicle
+and contain the Mythos within this digital realm. May your contributions be scholarly, your tests comprehensive, and
+your commits meaningful."
+>
+> — The Faculty of Miskatonic University's Department of Computer Sciences and Occult Studies
 
 ---
 

@@ -5,10 +5,13 @@
 
 ## Execution Summary
 
-- ✅ Tab management working correctly (Playwright MCP)
-- ✅ Both players successfully logged in
-- ❌ Players started in different rooms (BUG)
-- ❌ Connection message not broadcast (BUG - may be related to room issue)
+✅ Tab management working correctly (Playwright MCP)
+
+✅ Both players successfully logged in
+
+❌ Players started in different rooms (BUG)
+
+❌ Connection message not broadcast (BUG - may be related to room issue)
 
 ## Issues Found
 
@@ -16,16 +19,19 @@
 
 **Expected**: Both players should start in `earth_arkhamcity_sanitarium_room_foyer_001` (Main Foyer)
 **Actual**:
+
 - AW: `earth_arkhamcity_sanitarium_room_foyer_001` (Main Foyer) ✅
 - Ithaqua: `earth_arkhamcity_sanitarium_room_foyer_entrance` (Sanitarium Entrance) ❌
 
 **Database Update Performed**:
+
 ```sql
 UPDATE players SET current_room_id = 'earth_arkhamcity_sanitarium_room_foyer_001'
 WHERE name IN ('ArkanWolfshade', 'Ithaqua');
 ```
 
 **Analysis**: The database update was executed, but Ithaqua still spawned in a different room. This suggests:
+
 1. The player's room is being overridden during login/spawn
 2. There's logic that places players in a default/entrance room instead of using the database value
 3. The room assignment happens after the database check
@@ -36,6 +42,7 @@ WHERE name IN ('ArkanWolfshade', 'Ithaqua');
 **Actual**: No connection message appeared in AW's chat
 
 **Possible Causes**:
+
 1. Connection messages may only be broadcast to players in the same room
 2. Connection message broadcasting system may have a bug
 3. Room subscription timing issue (as mentioned in scenario comments)

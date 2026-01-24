@@ -7,7 +7,8 @@ for user authentication and management.
 
 import os
 import uuid
-from typing import Any
+from collections.abc import AsyncGenerator
+from typing import Any, cast
 
 from fastapi import Depends, HTTPException, Request
 from fastapi_users import BaseUserManager, FastAPIUsers, UUIDIDMixin
@@ -37,9 +38,21 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     user creation and validation logic with Argon2 password hashing.
     """
 
-    # Use environment variables for all secrets - CRITICAL: Must be set in production
-    reset_password_token_secret = os.getenv("MYTHOSMUD_RESET_TOKEN_SECRET", "dev-reset-secret")
-    verification_token_secret = os.getenv("MYTHOSMUD_VERIFICATION_TOKEN_SECRET", "dev-verification-secret")
+    def __init__(self, user_db: SQLAlchemyUserDatabase):
+        """Initialize UserManager with validated secrets."""
+        super().__init__(user_db)
+        # Validate and set token secrets from environment
+        reset_secret = os.getenv("MYTHOSMUD_RESET_TOKEN_SECRET")
+        if not reset_secret or reset_secret.startswith("dev-"):
+            raise ValueError("MYTHOSMUD_RESET_TOKEN_SECRET must be set to a secure value (not starting with 'dev-')")
+        self.reset_password_token_secret = reset_secret
+
+        verification_secret = os.getenv("MYTHOSMUD_VERIFICATION_TOKEN_SECRET")
+        if not verification_secret or verification_secret.startswith("dev-"):
+            raise ValueError(
+                "MYTHOSMUD_VERIFICATION_TOKEN_SECRET must be set to a secure value (not starting with 'dev-')"
+            )
+        self.verification_token_secret = verification_secret
 
     def _hash_password(self, password: str) -> str:
         """Hash password using Argon2 instead of bcrypt."""
@@ -49,7 +62,7 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         """Verify password using Argon2 instead of bcrypt."""
         return verify_password(plain_password, hashed_password)
 
-    async def on_after_register(self, user: User, request: Request | None = None):
+    async def on_after_register(self, user: User, request: Request | None = None) -> None:
         """Handle post-registration logic."""
         logger.info("User has registered", username=user.username)
 
@@ -58,11 +71,11 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
             user.is_verified = True
             logger.info("Auto-verified bogus email for user", username=user.username, email=user.email)
 
-    async def on_after_forgot_password(self, user: User, token: str, request: Request | None = None):
+    async def on_after_forgot_password(self, user: User, token: str, request: Request | None = None) -> None:
         """Handle forgot password logic."""
         logger.info("User has forgot their password", username=user.username, reset_token=token)
 
-    async def on_after_request_verify(self, user: User, token: str, request: Request | None = None):
+    async def on_after_request_verify(self, user: User, token: str, request: Request | None = None) -> None:
         """Handle username verification logic."""
         logger.info("Verification requested for user", username=user.username, verification_token=token)
 
@@ -82,43 +95,68 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
             raise InvalidID() from err
 
 
-async def get_user_db(session: AsyncSession = Depends(get_async_session)):
+async def get_user_db(
+    session: AsyncSession = Depends(get_async_session),
+) -> AsyncGenerator[SQLAlchemyUserDatabase, None]:
     """Get user database dependency."""
     yield SQLAlchemyUserDatabase(session, User)
 
 
-async def get_user_manager(user_db: SQLAlchemyUserDatabase = Depends(get_user_db)):
+async def get_user_manager(
+    user_db: SQLAlchemyUserDatabase = Depends(get_user_db),
+) -> AsyncGenerator[UserManager, None]:
     """Get user manager dependency."""
     yield UserManager(user_db)
 
 
-def get_auth_backend() -> AuthenticationBackend:
+def _validate_jwt_secret() -> str:
+    """
+    Validate and return JWT secret from environment.
+
+    Raises ValueError if secret is not set or starts with "dev-".
+    """
+    jwt_secret = os.getenv("MYTHOSMUD_JWT_SECRET")
+    if not jwt_secret:
+        raise ValueError(
+            "MYTHOSMUD_JWT_SECRET environment variable must be set. "
+            "Generate a secure random key for production deployment."
+        )
+    if jwt_secret.startswith("dev-"):
+        raise ValueError(
+            "MYTHOSMUD_JWT_SECRET must not start with 'dev-'. "
+            "This indicates an insecure development secret. "
+            "Generate a secure random key for production deployment."
+        )
+    return jwt_secret
+
+
+def get_auth_backend() -> AuthenticationBackend[User, uuid.UUID]:  # type: ignore[type-var]
     """Get authentication backend configuration."""
 
     # Bearer token transport
     bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
 
     # JWT strategy - return a function that creates the strategy
-    def get_jwt_strategy() -> JWTStrategy:
-        # Use environment variable for JWT secret - CRITICAL: Must be set in production
-        jwt_secret = os.getenv("MYTHOSMUD_JWT_SECRET", "dev-jwt-secret")
+    def get_jwt_strategy() -> JWTStrategy[User, uuid.UUID]:  # type: ignore[type-var]
+        # Validate JWT secret - CRITICAL: Must be set in production
+        jwt_secret = _validate_jwt_secret()
         return JWTStrategy(
             secret=jwt_secret,
             lifetime_seconds=3600,  # 1 hour
             token_audience=["fastapi-users:auth"],
         )
 
-    return AuthenticationBackend(
+    return AuthenticationBackend(  # type: ignore[type-var]
         name="jwt",
         transport=bearer_transport,
         get_strategy=get_jwt_strategy,
     )
 
 
-class UsernameAuthenticationBackend(AuthenticationBackend):
+class UsernameAuthenticationBackend(AuthenticationBackend):  # type: ignore[type-arg]
     """Custom authentication backend that uses username instead of email."""
 
-    def __init__(self, name: str, transport, get_strategy):
+    def __init__(self, name: str, transport: Any, get_strategy: Any) -> None:
         super().__init__(name, transport, get_strategy)
 
     async def login(self, strategy: Any, user: Any) -> Any:
@@ -134,9 +172,9 @@ def get_username_auth_backend() -> UsernameAuthenticationBackend:
     bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
 
     # JWT strategy - return a function that creates the strategy
-    def get_jwt_strategy() -> JWTStrategy:
-        # Use environment variable for JWT secret - CRITICAL: Must be set in production
-        jwt_secret = os.getenv("MYTHOSMUD_JWT_SECRET", "dev-jwt-secret")
+    def get_jwt_strategy() -> JWTStrategy[User, uuid.UUID]:  # type: ignore[type-var]
+        # Validate JWT secret - CRITICAL: Must be set in production
+        jwt_secret = _validate_jwt_secret()
         return JWTStrategy(
             secret=jwt_secret,
             lifetime_seconds=3600,  # 1 hour
@@ -168,7 +206,7 @@ get_current_active_user = fastapi_users.current_user(active=True)
 def get_current_user_with_logging():
     """Enhanced get_current_user with detailed logging."""
 
-    async def _get_current_user_with_logging(request: Request | None = None) -> dict | None:
+    async def _get_current_user_with_logging(request: Request | None = None) -> dict[str, Any] | None:
         try:
             # Log the request details
             auth_header = request.headers.get("Authorization", "Not provided") if request else "No request"
@@ -185,7 +223,8 @@ def get_current_user_with_logging():
             else:
                 logger.warning("Authentication failed: No user returned from get_current_user")
 
-            return user
+            result: dict[Any, Any] | None = cast(dict[Any, Any] | None, user)
+            return result
         except HTTPException as e:
             logger.warning("Authentication HTTP error", status_code=e.status_code, detail=e.detail)
             return None

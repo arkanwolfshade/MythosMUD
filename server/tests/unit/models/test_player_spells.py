@@ -9,7 +9,7 @@ import uuid
 from server.models.player_spells import PlayerSpell
 
 
-def test_player_spell_repr():
+def test_player_spell_repr() -> None:
     """Test __repr__ returns expected string format."""
     player_spell = PlayerSpell()
     player_spell.player_id = str(uuid.uuid4())

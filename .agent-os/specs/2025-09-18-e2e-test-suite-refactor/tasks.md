@@ -2,11 +2,12 @@
 
 ## Tasks
 
-- [x] 1. Create Master Rules and Supporting Documentation
-  - [x] 1.1 Create MULTIPLAYER_TEST_RULES.md with configurable timeout settings and common execution procedures
-  - [x] 1.2 Create CLEANUP.md with post-scenario cleanup procedures
-  - [x] 1.3 Create TROUBLESHOOTING.md with error handling and debugging procedures
-  - [x] 1.4 Verify all master documentation files are complete and properly cross-referenced
+[x] 1. Create Master Rules and Supporting Documentation
+
+- [x] 1.1 Create MULTIPLAYER_TEST_RULES.md with configurable timeout settings and common execution procedures
+- [x] 1.2 Create CLEANUP.md with post-scenario cleanup procedures
+- [x] 1.3 Create TROUBLESHOOTING.md with error handling and debugging procedures
+- [x] 1.4 Verify all master documentation files are complete and properly cross-referenced
 
 - [x] 2. Create Basic Connection and Game State Scenarios (1-2)
   - [x] 2.1 Create scenario-01-basic-connection.md with connection/disconnection flow testing

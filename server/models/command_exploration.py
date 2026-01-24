@@ -27,7 +27,7 @@ class LookCommand(BaseCommand):
 
     @field_validator("direction")
     @classmethod
-    def validate_direction(cls, v):
+    def validate_direction(cls: type["LookCommand"], v: Direction | None) -> Direction | None:
         """Validate direction is one of the allowed values."""
         if v is not None and v not in Direction:
             raise ValueError(f"Invalid direction: {v}. Must be one of: {list(Direction)}")
@@ -42,7 +42,7 @@ class GoCommand(BaseCommand):
 
     @field_validator("direction")
     @classmethod
-    def validate_direction(cls, v):
+    def validate_direction(cls: type["GoCommand"], v: Direction) -> Direction:
         """Validate direction is one of the allowed values."""
         if v not in Direction:
             raise ValueError(f"Invalid direction: {v}. Must be one of: {list(Direction)}")

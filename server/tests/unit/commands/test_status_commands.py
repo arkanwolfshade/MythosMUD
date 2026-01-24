@@ -4,6 +4,7 @@ Unit tests for status command handlers.
 Tests handlers for status and whoami commands.
 """
 
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -37,7 +38,7 @@ async def test_get_profession_info_no_profession_id():
 @pytest.mark.asyncio
 async def test_get_profession_info_player_dict_no_profession_id():
     """Test _get_profession_info handles player as dict with no profession_id."""
-    mock_player = {}
+    mock_player: dict[str, Any] = {}
     mock_persistence = MagicMock()
 
     result = await _get_profession_info(mock_player, mock_persistence)
@@ -199,7 +200,7 @@ def test_build_base_status_lines_in_combat():
 
 def test_add_profession_lines_with_profession():
     """Test _add_profession_lines adds profession info when available."""
-    status_lines = []
+    status_lines: list[str] = []
     profession_info = {
         "name": "Investigator",
         "description": "A seeker of truth",
@@ -216,7 +217,7 @@ def test_add_profession_lines_with_profession():
 
 def test_add_profession_lines_no_name():
     """Test _add_profession_lines does nothing when no profession name."""
-    status_lines = []
+    status_lines: list[str] = []
     profession_info = {"name": None, "description": "Some description", "flavor_text": "Some text"}
 
     _add_profession_lines(status_lines, profession_info)
@@ -226,7 +227,7 @@ def test_add_profession_lines_no_name():
 
 def test_add_profession_lines_partial_info():
     """Test _add_profession_lines handles partial profession info."""
-    status_lines = []
+    status_lines: list[str] = []
     profession_info = {"name": "Investigator", "description": None, "flavor_text": None}
 
     _add_profession_lines(status_lines, profession_info)
@@ -237,7 +238,7 @@ def test_add_profession_lines_partial_info():
 
 def test_add_additional_stats_lines_with_stats():
     """Test _add_additional_stats_lines adds stats when non-zero."""
-    status_lines = []
+    status_lines: list[str] = []
     stats = {"fear": 10, "corruption": 5, "occult_knowledge": 20}
 
     _add_additional_stats_lines(status_lines, stats)
@@ -250,7 +251,7 @@ def test_add_additional_stats_lines_with_stats():
 
 def test_add_additional_stats_lines_zero_stats():
     """Test _add_additional_stats_lines does nothing when stats are zero."""
-    status_lines = []
+    status_lines: list[str] = []
     stats = {"fear": 0, "corruption": 0, "occult_knowledge": 0}
 
     _add_additional_stats_lines(status_lines, stats)
@@ -260,8 +261,8 @@ def test_add_additional_stats_lines_zero_stats():
 
 def test_add_additional_stats_lines_missing_stats():
     """Test _add_additional_stats_lines handles missing stats."""
-    status_lines = []
-    stats = {}
+    status_lines: list[str] = []
+    stats: dict[str, Any] = {}
 
     _add_additional_stats_lines(status_lines, stats)
 

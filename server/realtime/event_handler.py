@@ -14,7 +14,7 @@ Refactored to delegate to specialized modules for better maintainability.
 # pylint: disable=too-many-instance-attributes  # Reason: Event handler requires many service and state tracking attributes
 
 import uuid
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from ..events import EventBus
 from ..events.event_types import (
@@ -38,6 +38,9 @@ from .player_event_handlers import PlayerEventHandler
 from .player_name_utils import PlayerNameExtractor
 from .room_occupant_manager import RoomOccupantManager
 
+if TYPE_CHECKING:
+    from .connection_manager import ConnectionManager
+
 
 class RealTimeEventHandler:
     """
@@ -53,7 +56,10 @@ class RealTimeEventHandler:
     """
 
     def __init__(
-        self, event_bus: EventBus | None = None, task_registry: Any | None = None, connection_manager=None
+        self,
+        event_bus: EventBus | None = None,
+        task_registry: Any | None = None,
+        connection_manager: "ConnectionManager | None" = None,
     ) -> None:
         """
         Initialize the real-time event handler.
@@ -231,7 +237,8 @@ class RealTimeEventHandler:
 
             # Build and send the message
             message = self.message_builder.build_occupants_update_message(room_id_str, players, npcs, all_occupants)
-            await self.connection_manager.broadcast_to_room(room_id, message, exclude_player=exclude_player)
+            if self.connection_manager is not None:
+                await self.connection_manager.broadcast_to_room(room_id, message, exclude_player=exclude_player)
 
         except (ValueError, TypeError, KeyError, AttributeError, RuntimeError) as e:
             self._logger.error("Error sending room occupants update", error=str(e), exc_info=True)

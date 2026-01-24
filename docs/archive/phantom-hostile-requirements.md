@@ -136,6 +136,7 @@ From `docs/lucidity-system.md` Section 5.1:
 ### ✅ Completed
 
 1. **PhantomHostileService Foundation** (`server/services/phantom_hostile_service.py`)
+
    - Service structure created
    - Phantom name generation (8 phantom names)
    - Spawn probability logic (Fractured: 15%, Deranged: always)
@@ -143,17 +144,20 @@ From `docs/lucidity-system.md` Section 5.1:
    - Active phantom tracking (in-memory dictionary)
 
 2. **Hallucination Event Integration** (`server/services/passive_lucidity_flux_service.py`)
+
    - Integrated into passive lucidity flux service
    - Calls `PhantomHostileService.should_spawn_phantom_hostile()` when hallucination triggers
    - Sends `phantom_hostile_spawn` hallucination events with metadata
 
 3. **Frequency System Integration**
+
    - Phantom spawning integrated with tier-based hallucination frequency system
    - Respects cooldowns (Fractured: 30s, Deranged: 20s)
 
 ### ❌ Not Yet Implemented
 
 1. **Combat Integration**
+
    - No combat instance creation for phantoms
    - No 1 HP phantom participant creation
    - No special dissipation logic in combat system
@@ -161,16 +165,19 @@ From `docs/lucidity-system.md` Section 5.1:
    - No handling of non-damaging combat for Fractured tier
 
 2. **Player-Specific Visibility System**
+
    - No player-specific NPC/entity system
    - Current NPC system is multi-player (all players see same NPCs)
    - Need architectural solution for player-specific entities
 
 3. **Client-Side Rendering**
+
    - No client handling for `phantom_hostile_spawn` events
    - No phantom entity rendering in room view
    - No player-specific occupant display logic
 
 4. **Attack Command Integration**
+
    - No integration with attack commands to detect phantom targets
    - No automatic combat instance creation when player attacks phantom
 
@@ -236,25 +243,30 @@ From `docs/lucidity-system.md` Section 5.1:
 **Implementation Approach**:
 
 1. **Add Phantom Flag to CombatParticipant**
+
    - Extend `CombatParticipant` with optional `is_phantom: bool = False`
    - Or use metadata dict for extensibility
 
 2. **Phantom Detection in Combat**
+
    - When creating combat instance, check if target is a phantom (via `phantom_id` in metadata)
    - Mark combat participant as phantom
    - Set max_dp and current_dp to 1
 
 3. **Special Death Handling**
+
    - Modify `CombatDeathHandler.handle_npc_death()` to check for phantom flag
    - Skip XP reward for phantoms
    - Send special dissipation message with `[Phantom]` tag
    - Immediately end combat
 
 4. **Combat Log Tagging**
+
    - Modify `CombatEventPublisher` to add `[Phantom]` tag when publishing NPC death events for phantoms
    - Or modify combat message formatting to include tag
 
 5. **Non-Damaging Combat (Fractured)**
+
    - Check `is_non_damaging` flag from phantom metadata
    - Skip damage application to player when phantom attacks
    - Still consume player resources (stamina, etc.)
@@ -272,17 +284,20 @@ From `docs/lucidity-system.md` Section 5.1:
 **Implementation Approach**:
 
 1. **Phantom Target Resolution**
+
    - Extend attack command to check for phantom targets
    - Query `PhantomHostileService.get_active_phantoms()` for player
    - Match target name/ID against active phantoms
    - Create phantom combat data structure
 
 2. **Combat Instance Creation**
+
    - When attacking phantom, create combat instance with phantom participant
    - Use `PhantomHostileService.create_phantom_hostile_data()` to get phantom properties
    - Set participant `is_phantom=True` and `max_dp=1`, `current_dp=1`
 
 3. **Combat Flow**
+
    - Normal combat flow (turns, attacks, damage)
    - Special handling on phantom death (dissipation, no XP, `[Phantom]` tag)
 
@@ -344,13 +359,15 @@ From `docs/lucidity-system.md` Section 5.1:
 
 ### Phase 1: Foundation (✅ COMPLETED)
 
-- [x] Create `PhantomHostileService`
+[x] Create `PhantomHostileService`
+
 - [x] Integrate with hallucination frequency system
 - [x] Send phantom spawn events
 
 ### Phase 2: Combat Integration (PENDING)
 
-- [ ] Add `is_phantom` flag to `CombatParticipant` (or metadata)
+[ ] Add `is_phantom` flag to `CombatParticipant` (or metadata)
+
 - [ ] Extend attack command to resolve phantom targets
 - [ ] Create combat instances with 1 HP phantom participants
 - [ ] Implement phantom dissipation logic (no XP, special message)
@@ -359,14 +376,16 @@ From `docs/lucidity-system.md` Section 5.1:
 
 ### Phase 3: Client-Side Rendering (PENDING)
 
-- [ ] Handle `phantom_hostile_spawn` events in client
+[ ] Handle `phantom_hostile_spawn` events in client
+
 - [ ] Render phantom entities in room view (player-specific)
 - [ ] Display phantoms in player's room occupants (filtered from others)
 - [ ] Handle phantom disappearance on dissipation
 
 ### Phase 4: Cleanup and Edge Cases (PENDING)
 
-- [ ] Cleanup phantoms on player disconnect
+[ ] Cleanup phantoms on player disconnect
+
 - [ ] Cleanup phantoms on tier change (no longer Fractured/Deranged)
 - [ ] Handle room leave (despawn phantoms)
 - [ ] Handle multiple phantoms (tracking, cleanup)
@@ -378,30 +397,35 @@ From `docs/lucidity-system.md` Section 5.1:
 ### Unit Tests Needed
 
 1. **PhantomHostileService**
+
    - Spawn probability calculation (Fractured: 15%, Deranged: always)
    - Phantom name generation
    - Active phantom tracking (add, remove, clear)
    - Phantom data structure creation
 
 2. **Combat Integration**
+
    - Combat instance creation with phantom participants
    - Phantom dissipation on death (no XP, special message)
    - `[Phantom]` tag in combat logs
    - Non-damaging combat for Fractured tier
 
 3. **Attack Command**
+
    - Phantom target resolution
    - Combat initiation with phantom targets
 
 ### Integration Tests Needed
 
 1. **End-to-End Flow**
+
    - Hallucination frequency triggers → Phantom spawns → Player attacks → Phantom dissipates
    - Multiple phantoms tracking
    - Cleanup on tier change
    - Cleanup on disconnect
 
 2. **Multi-Player Visibility**
+
    - Player A sees phantom, Player B in same room does not
    - Combat with phantom not visible to other players
 
@@ -411,7 +435,8 @@ From `docs/lucidity-system.md` Section 5.1:
 
 ### Server-Side
 
-- `server/services/phantom_hostile_service.py` - Phantom spawning and tracking
+`server/services/phantom_hostile_service.py` - Phantom spawning and tracking
+
 - `server/services/hallucination_frequency_service.py` - Frequency checks
 - `server/services/passive_lucidity_flux_service.py` - Integration point
 - `server/services/lucidity_event_dispatcher.py` - Event sending
@@ -423,7 +448,8 @@ From `docs/lucidity-system.md` Section 5.1:
 
 ### Client-Side
 
-- `client/src/utils/lucidityEventUtils.ts` - Hallucination event processing
+`client/src/utils/lucidityEventUtils.ts` - Hallucination event processing
+
 - `client/src/components/ui-v2/eventHandlers/` - Event handler for `phantom_hostile_spawn`
 - Room rendering components - Display phantom entities
 - Combat UI components - Display phantom combat
@@ -432,7 +458,8 @@ From `docs/lucidity-system.md` Section 5.1:
 
 ## Notes
 
-- Phantom hostiles are a **complex feature** requiring architectural decisions
+Phantom hostiles are a **complex feature** requiring architectural decisions
+
 - Current implementation provides foundation but needs combat integration and client rendering
 - Consider starting with simplified version (client-side rendering only) and iterating
 - Full implementation may require new entity system or extension of existing NPC system
@@ -442,7 +469,8 @@ From `docs/lucidity-system.md` Section 5.1:
 
 ## References
 
-- `docs/lucidity-system.md` - Section 5.1 (Hallucination & Phantom Event Tables)
+`docs/lucidity-system.md` - Section 5.1 (Hallucination & Phantom Event Tables)
+
 - `server/services/phantom_hostile_service.py` - Current implementation
 - `server/services/hallucination_frequency_service.py` - Frequency system
 - `server/services/combat_service.py` - Combat system architecture

@@ -5,6 +5,7 @@ Tests the RoomSyncService class for room synchronization and event processing.
 """
 
 import time
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -123,7 +124,7 @@ async def test_process_room_update_with_validation_valid_data(room_sync_service_
 @pytest.mark.asyncio
 async def test_process_room_update_with_validation_invalid_data(room_sync_service_with_room_service):
     """Test _process_room_update_with_validation() fixes invalid room data."""
-    invalid_room_data = {}  # Missing required fields
+    invalid_room_data: dict[str, Any] = {}  # Missing required fields
     result = await room_sync_service_with_room_service._process_room_update_with_validation(invalid_room_data)
     # Should return data (possibly fixed)
     assert result is not None

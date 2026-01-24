@@ -7,17 +7,23 @@
 
 ### `asyncio` (Python Standard Library)
 
-- **What**: Python's built-in asynchronous I/O library (since Python 3.4)
-- **Nature**: Low-level, event loop-based concurrency
-- **Backend**: Single backend (asyncio's event loop)
-- **Philosophy**: "Give developers control, even if they can shoot themselves in the foot"
+**What**: Python's built-in asynchronous I/O library (since Python 3.4)
+
+**Nature**: Low-level, event loop-based concurrency
+
+**Backend**: Single backend (asyncio's event loop)
+
+**Philosophy**: "Give developers control, even if they can shoot themselves in the foot"
 
 ### `anyio` (Third-Party Library)
 
-- **What**: Unified async API that works on top of asyncio OR Trio
-- **Nature**: High-level abstraction layer with structured concurrency
-- **Backend**: Backend-agnostic (can use asyncio, Trio, or uvloop)
-- **Philosophy**: "Enforce good practices, prevent common mistakes"
+**What**: Unified async API that works on top of asyncio OR Trio
+
+**Nature**: High-level abstraction layer with structured concurrency
+
+**Backend**: Backend-agnostic (can use asyncio, Trio, or uvloop)
+
+**Philosophy**: "Enforce good practices, prevent common mistakes"
 
 ## Core Architectural Differences
 
@@ -27,19 +33,23 @@
 
 ```python
 # Tasks can be "orphaned" - no guarantee they complete
+
 task = asyncio.create_task(some_coro())
 # If parent function exits, task might still be running
 # No automatic cleanup or cancellation
+
 ```
 
 **anyio**:
 
 ```python
 # Tasks are scoped - guaranteed cleanup
+
 async with create_task_group() as tg:
     tg.start_soon(some_coro)
 # When scope exits, all tasks are cancelled/waited for
 # No orphaned tasks possible
+
 ```
 
 **Impact**: AnyIO prevents resource leaks and orphaned tasks that can cause memory issues in long-running servers.
@@ -103,9 +113,11 @@ async with create_task_group() as tg:
 
 ```python
 # Fire-and-forget (can leak)
+
 task = asyncio.create_task(coro)
 
 # Gather (no automatic cancellation)
+
 results = await asyncio.gather(*tasks, return_exceptions=True)
 ```
 
@@ -113,12 +125,14 @@ results = await asyncio.gather(*tasks, return_exceptions=True)
 
 ```python
 # Structured (automatic cleanup)
+
 async with create_task_group() as tg:
     tg.start_soon(coro1)
     tg.start_soon(coro2)
 # All tasks guaranteed to complete/cancel when scope exits
 
 # Or for tracked tasks
+
 task = anyio.create_task(coro)  # Same as asyncio, but backend-agnostic
 ```
 
@@ -279,17 +293,23 @@ task = anyio.create_task(coro)  # Same as asyncio, but backend-agnostic
 
 ## My Academic Opinion (Mythos Persona)
 
-*Adjusts spectacles and peers at the codebase*
+### Adjusts spectacles and peers at the codebase
 
-The ancient texts (your `.cursor/rules/anyio.mdc`) are quite clear: "AnyIO is the definitive choice for modern asynchronous Python development." However, as with all forbidden knowledge, one must weigh the cost of acquisition against the benefits.
+The ancient texts (your `.cursor/rules/anyio.mdc`) are quite clear: "AnyIO is the definitive choice for modern
+asynchronous Python development." However, as with all forbidden knowledge, one must weigh the cost of acquisition
+against the benefits.
 
 **For MythosMUD specifically**:
 
 1. **You're already using anyio** (via httpx) - it's a transitive dependency. Making it explicit costs nothing.
 
-2. **Your EventBus and NATS service** would benefit significantly from structured concurrency - preventing orphaned tasks in a long-running MUD server is critical.
+2. **Your EventBus and NATS service** would benefit significantly from structured concurrency - preventing orphaned
 
-3. **The Queue → Streams migration** is the real challenge. Your EventBus is central to the architecture. This requires careful testing.
+   tasks in a long-running MUD server is critical.
+
+3. **The Queue → Streams migration** is the real challenge. Your EventBus is central to the architecture. This requires
+
+   careful testing.
 
 4. **Scripts migration is trivial** - 21 files, mostly find/replace. Do this regardless.
 
@@ -300,7 +320,8 @@ The ancient texts (your `.cursor/rules/anyio.mdc`) are quite clear: "AnyIO is th
 - Migrate simple primitives (low risk)
 - Leave Queue/gather for a dedicated refactoring sprint
 
-This gives you 80% of the benefits with 20% of the effort. The remaining 20% (Queue/Streams) can be tackled when you have time for proper testing.
+This gives you 80% of the benefits with 20% of the effort. The remaining 20% (Queue/Streams) can be tackled when you
+have time for proper testing.
 
 ## Decision Matrix
 

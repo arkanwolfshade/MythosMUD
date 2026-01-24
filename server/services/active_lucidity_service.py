@@ -7,6 +7,7 @@ import uuid
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
+from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -86,7 +87,7 @@ class ActiveLucidityService:
         *,
         category: str,
         location_id: str | None = None,
-    ):
+    ) -> Any:
         """Apply LCD loss for a Mythos encounter."""
 
         # Convert player_id to UUID if it's a string
@@ -140,7 +141,7 @@ class ActiveLucidityService:
         *,
         action_code: str,
         location_id: str | None = None,
-    ):
+    ) -> Any:
         """Perform a recovery action and enforce cooldowns."""
 
         # Convert player_id to UUID if it's a string
@@ -193,7 +194,7 @@ class ActiveLucidityService:
 
         return result
 
-    async def get_action_cooldown(self, player_id: uuid.UUID | str, action_code: str):
+    async def get_action_cooldown(self, player_id: uuid.UUID | str, action_code: str) -> Any:
         """Fetch the cooldown record for a recovery action."""
         # Convert player_id to UUID if it's a string
         if isinstance(player_id, str):

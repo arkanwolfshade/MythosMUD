@@ -142,7 +142,6 @@ describe('App', () => {
       });
     });
 
-    // SKIPPED: Integration test - should be converted to Playwright E2E test
     it.skip('should handle successful login', async () => {
       const mockResponse = {
         ok: true,
@@ -425,7 +424,6 @@ describe('App', () => {
       });
     });
 
-    // SKIPPED: Integration test - should be converted to Playwright E2E test
     it.skip('should handle stats acceptance', async () => {
       const mockResponse = {
         ok: true,
@@ -1171,7 +1169,6 @@ describe('App', () => {
   });
 
   describe('Loading States', () => {
-    // SKIPPED: Integration test - should be converted to Playwright E2E test
     it.skip('should show loading state during login', async () => {
       // Mock a slow response
       const mockResponse = {

@@ -7,8 +7,9 @@ for real-time communication with clients.
 As documented in "Event Message Protocols" - Dr. Armitage, 1928
 """
 
+from collections.abc import Callable
 from datetime import UTC, datetime
-from typing import Any
+from typing import Any, cast
 
 from ..events.event_types import PlayerEnteredRoom, PlayerLeftRoom
 
@@ -28,7 +29,8 @@ class MessageBuilder:
     def _get_next_sequence(self) -> int:
         """Get the next sequence number."""
         if callable(self._sequence_counter):
-            return self._sequence_counter()
+            result: int = cast(Callable[[], int], self._sequence_counter)()
+            return result
         return 0
 
     def get_next_sequence(self) -> int:

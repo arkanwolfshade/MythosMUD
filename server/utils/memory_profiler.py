@@ -45,7 +45,7 @@ class MemoryProfiler:
             return 0
         return self.get_current_memory_usage() - self.baseline_memory
 
-    def measure_model_instantiation(self, model_class: type, iterations: int = 1000, **kwargs) -> dict[str, Any]:
+    def measure_model_instantiation(self, model_class: type, iterations: int = 1000, **kwargs: Any) -> dict[str, Any]:
         """
         Measure memory usage for model instantiation.
 
@@ -135,7 +135,7 @@ class MemoryProfiler:
         }
 
     def measure_model_deserialization(
-        self, model_class: type[BaseModel], serialized_data: list[dict], iterations: int = 100
+        self, model_class: type[BaseModel], serialized_data: list[dict[str, Any]], iterations: int = 100
     ) -> dict[str, Any]:
         """
         Measure memory usage for model deserialization.
@@ -180,7 +180,7 @@ class MemoryProfiler:
         }
 
     def compare_models_memory_usage(
-        self, model_classes: list[type], iterations: int = 1000, **kwargs
+        self, model_classes: list[type], iterations: int = 1000, **kwargs: Any
     ) -> dict[str, Any]:
         """
         Compare memory usage across multiple model classes.

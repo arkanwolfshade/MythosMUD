@@ -6,7 +6,7 @@ listing items, NPCs, players, and exits in the room.
 """
 
 import uuid
-from typing import Any
+from typing import Any, cast
 
 from ..realtime.disconnect_grace_period import is_player_in_grace_period
 from ..realtime.login_grace_period import is_player_in_login_grace_period
@@ -125,7 +125,7 @@ def _get_room_description(room: Any) -> str:
 def _get_room_id(room: Any) -> str | None:
     """Get room ID safely."""
     if hasattr(room, "id"):
-        return room.id
+        return cast(str | None, room.id)
     return None
 
 

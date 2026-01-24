@@ -2,29 +2,35 @@
 
 ## Overview
 
-Tests whisper channel functionality across different player locations. This scenario verifies that whisper messages work correctly when players are in different rooms, that whisper delivery is not affected by player movement, and that the whisper system maintains privacy and proper message delivery regardless of player location.
+Tests whisper channel functionality across different player locations. This scenario verifies that whisper messages work
+correctly when players are in different rooms, that whisper delivery is not affected by player movement, and that the
+whisper system maintains privacy and proper message delivery regardless of player location.
 
-**This is a core multi-player scenario** that requires verifying cross-location whisper delivery between players in real-time. No automated alternative is available.
+**This is a core multi-player scenario** that requires verifying cross-location whisper delivery between players in
+real-time. No automated alternative is available.
 
 ## Prerequisites
 
-**BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY:**
+### BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY
 
 1. **Database State**: Both players are in `earth_arkhamcity_sanitarium_room_foyer_001`
 2. **Server Running**: Development server is running on port 54731
 3. **Client Accessible**: Client is accessible on port 5173
 4. **Both Players Connected**: AW and Ithaqua are both logged in and in the same room
 
-**⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE**
+### ⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE
 
 **Reference**: See @MULTIPLAYER_TEST_RULES.md for complete prerequisite verification procedures.
 
 ## Test Configuration
 
-- **Test Players**: ArkanWolfshade (AW) and Ithaqua
-- **Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
-- **Testing Approach**: Playwright MCP (multi-tab interaction required)
-- **Timeout Settings**: Use configurable timeouts from master rules
+**Test Players**: ArkanWolfshade (AW) and Ithaqua
+
+**Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
+
+**Testing Approach**: Playwright MCP (multi-tab interaction required)
+
+**Timeout Settings**: Use configurable timeouts from master rules
 
 ## Execution Steps
 
@@ -33,6 +39,7 @@ Tests whisper channel functionality across different player locations. This scen
 **Purpose**: Ensure both players start in the same room for baseline testing
 
 **Commands**:
+
 ```javascript
 // Ensure both players are logged in from previous scenario
 // AW should be on tab 0, Ithaqua on tab 1
@@ -46,12 +53,14 @@ Tests whisper channel functionality across different player locations. This scen
 **Purpose**: Test whisper functionality when both players are in the same room
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
 
 // Send whisper message in same room
-await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "whisper Ithaqua Testing whisper in same room"});
+await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "whisper Ithaqua Testing
+whisper in same room"});
 await mcp_playwright_browser_press_key({key: "Enter"});
 
 // Wait for confirmation
@@ -64,7 +73,8 @@ await mcp_playwright_browser_tab_select({index: 1});
 await mcp_playwright_browser_wait_for({text: "ArkanWolfshade whispers to you: Testing whisper in same room"});
 
 // Verify message appears
-const ithaquaMessages = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
+const ithaquaMessages = await mcp_playwright_browser_evaluate({function: "() =>
+Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
 const seesSameRoomMessage = ithaquaMessages.some(msg => msg.includes('ArkanWolfshade whispers to you: Testing whisper in same room'));
 console.log('Ithaqua sees same room message:', seesSameRoomMessage);
 ```
@@ -76,6 +86,7 @@ console.log('Ithaqua sees same room message:', seesSameRoomMessage);
 **Purpose**: Move AW to different room to test cross-location whispering
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -99,6 +110,7 @@ console.log('AW location after movement:', awLocation);
 **Purpose**: Test whisper functionality when players are in different rooms
 
 **Commands**:
+
 ```javascript
 // Send whisper message from different room
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "whisper Ithaqua Testing whisper from different room"});
@@ -126,6 +138,7 @@ console.log('Ithaqua sees different room message:', seesDifferentRoomMessage);
 **Purpose**: Move Ithaqua to different room to test bidirectional cross-location whispering
 
 **Commands**:
+
 ```javascript
 // Move Ithaqua to different room
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "go north"});
@@ -146,6 +159,7 @@ console.log('Ithaqua location after movement:', ithaquaLocation);
 **Purpose**: Test whisper functionality when both players are in different rooms
 
 **Commands**:
+
 ```javascript
 // Send whisper message from Ithaqua's different room
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "whisper ArkanWolfshade Testing whisper between different rooms"});
@@ -173,6 +187,7 @@ console.log('AW sees between rooms message:', seesBetweenRoomsMessage);
 **Purpose**: Test whisper functionality while players are moving
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -198,7 +213,8 @@ await mcp_playwright_browser_tab_select({index: 1});
 await mcp_playwright_browser_wait_for({text: "ArkanWolfshade whispers to you: Testing whisper after movement"});
 
 // Verify message appears
-const ithaquaMessagesMovement = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
+const ithaquaMessagesMovement = await mcp_playwright_browser_evaluate({function: "() =>
+Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
 // EXECUTION GUARD: Single verification attempt - do not retry
 const seesMovementMessage = ithaquaMessagesMovement.some(msg => msg.includes('ArkanWolfshade whispers to you: Testing whisper after movement'));
 
@@ -219,6 +235,7 @@ if (ithaquaMessagesMovement.length === 0) {
 **Purpose**: Test whisper functionality with multiple movement scenarios
 
 **Commands**:
+
 ```javascript
 // Switch to Ithaqua's tab
 await mcp_playwright_browser_tab_select({index: 1});
@@ -256,6 +273,7 @@ console.log('AW sees multiple movement message:', seesMultipleMovementMessage);
 **Purpose**: Test whisper functionality when players return to the same room
 
 **Commands**:
+
 ```javascript
 // Move AW back to original room
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "go south"});
@@ -297,6 +315,7 @@ console.log('Ithaqua sees return message:', seesReturnMessage);
 **Purpose**: Test that whisper messages remain private regardless of location
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -327,6 +346,7 @@ console.log('Ithaqua sees privacy message:', seesPrivacyMessage);
 **Purpose**: Verify that cross-location whispering works correctly
 
 **Commands**:
+
 ```javascript
 // Check final message counts and cross-location functionality
 const awFinalMessages = await mcp_playwright_browser_tab_select({index: 0});
@@ -353,6 +373,7 @@ console.log('✅ All verification steps completed successfully');
 console.log('✅ System functionality verified as working correctly');
 console.log('✅ Test results documented and validated');
 console.log('📋 PROCEEDING TO SCENARIO 17: Whisper System Integration');
+
 ```
 
 **Expected Result**:  Ithaqua receives AW's whisper message (privacy maintained across locations)
@@ -382,18 +403,24 @@ console.log('➡️ READY FOR SCENARIO 17: Whisper System Integration');
 
 ## Expected Results
 
-- ✅ Whisper messages work when both players are in same room
-- ✅ Whisper messages work when players are in different rooms
-- ✅ Whisper messages work when both players are in different rooms
-- ✅ Whisper messages work during and after player movement
-- ✅ Whisper messages work with multiple movement scenarios
+✅ Whisper messages work when both players are in same room
+
+✅ Whisper messages work when players are in different rooms
+
+✅ Whisper messages work when both players are in different rooms
+
+✅ Whisper messages work during and after player movement
+
+✅ Whisper messages work with multiple movement scenarios
+
 - ✅ Whisper messages work when players return to same room
 - ✅ Whisper messages remain private regardless of location
 - ✅ Cross-location whisper functionality works correctly
 
 ## Success Criteria Checklist
 
-- [ ] Whisper messages work when both players are in same room
+[ ] Whisper messages work when both players are in same room
+
 - [ ] Whisper messages work when players are in different rooms
 - [ ] Whisper messages work when both players are in different rooms
 - [ ] Whisper messages work during and after player movement
@@ -410,20 +437,25 @@ console.log('➡️ READY FOR SCENARIO 17: Whisper System Integration');
 ## Cleanup
 
 Execute standard cleanup procedures from @CLEANUP.md:
+
 1. Close all browser tabs
 2. Stop development server
 3. Verify clean shutdown
 
 ## Status
 
-**✅ SCENARIO COMPLETION LOGIC FIXED**
+### ✅ SCENARIO COMPLETION LOGIC FIXED
 
 The whisper movement system is working correctly. The scenario now includes proper completion logic to prevent infinite loops:
 
-- **Fixed**: Added completion step with explicit scenario completion and cleanup procedures
-- **Fixed**: Added clear decision points for handling verification results
-- **Fixed**: Added explicit progression to next scenario
-- **Verified**: System functionality works as expected and meets all requirements
+**Fixed**: Added completion step with explicit scenario completion and cleanup procedures
+
+**Fixed**: Added clear decision points for handling verification results
+
+**Fixed**: Added explicit progression to next scenario
+
+**Verified**: System functionality works as expected and meets all requirements
+
 ---
 
 **Document Version**: 1.0 (Modular E2E Test Suite)

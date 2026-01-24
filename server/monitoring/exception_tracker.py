@@ -82,8 +82,8 @@ class ExceptionTracker:
         )
 
         # Exception handlers
-        self.exception_handlers: dict[type[Exception], list[Callable]] = defaultdict(list)
-        self.global_handlers: list[Callable] = []
+        self.exception_handlers: dict[type[Exception], list[Callable[..., Any]]] = defaultdict(list)
+        self.global_handlers: list[Callable[..., Any]] = []
 
         logger.info("Exception tracker initialized", max_records=max_records)
 
@@ -264,7 +264,7 @@ class ExceptionTracker:
         """
         return self.exception_stats
 
-    def add_exception_handler(self, exception_type: type[Exception], handler: Callable) -> None:
+    def add_exception_handler(self, exception_type: type[Exception], handler: Callable[..., Any]) -> None:
         """
         Add an exception handler for a specific exception type.
 
@@ -274,7 +274,7 @@ class ExceptionTracker:
         """
         self.exception_handlers[exception_type].append(handler)
 
-    def add_global_exception_handler(self, handler: Callable) -> None:
+    def add_global_exception_handler(self, handler: Callable[..., Any]) -> None:
         """
         Add a global exception handler for all exceptions.
 
@@ -408,8 +408,8 @@ def track_exception(  # pylint: disable=too-many-arguments,too-many-positional-a
 
 def track_exception_with_context(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Exception tracking requires many parameters for complete exception context
     exception: Exception,
-    request=None,
-    websocket=None,
+    request: Any | None = None,
+    websocket: Any | None = None,
     user_id: str | None = None,
     session_id: str | None = None,
     severity: str = "error",

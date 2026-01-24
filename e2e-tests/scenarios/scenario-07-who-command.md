@@ -2,9 +2,13 @@
 
 ## Overview
 
-Tests the who command functionality for multi-player visibility and real-time updates. This scenario verifies that players can see OTHER online players in the who list and that the list updates correctly as players connect and disconnect.
+Tests the who command functionality for multi-player visibility and real-time updates. This scenario verifies that
+players can see OTHER online players in the who list and that the list updates correctly as players connect and
+disconnect.
 
-**⚠️ AUTOMATED TESTS AVAILABLE**: Single-player who command functionality is tested in automated Playwright CLI tests. See `client/tests/e2e/runtime/integration/who-command.spec.ts` for:
+**⚠️ AUTOMATED TESTS AVAILABLE**: Single-player who command functionality is tested in automated Playwright CLI tests.
+See `client/tests/e2e/runtime/integration/who-command.spec.ts` for:
+
 - Command output format verification
 - Location information display
 - Single player visibility
@@ -14,7 +18,7 @@ This MCP scenario focuses ONLY on multi-player aspects that cannot be automated.
 
 ## Prerequisites
 
-**BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY:**
+### BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY
 
 1. **Database State**: Both players are in `earth_arkhamcity_sanitarium_room_foyer_001`
 2. **Server Running**: Development server is running on port 54731
@@ -22,16 +26,19 @@ This MCP scenario focuses ONLY on multi-player aspects that cannot be automated.
 4. **Both Players Connected**: AW and Ithaqua are both logged in and in the same room
 5. **Admin Privileges**: AW has admin privileges, Ithaqua does not
 
-**⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE**
+### ⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE
 
 **Reference**: See @MULTIPLAYER_TEST_RULES.md for complete prerequisite verification procedures.
 
 ## Test Configuration
 
-- **Test Players**: ArkanWolfshade (AW - Admin) and Ithaqua (Non-Admin)
-- **Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
-- **Testing Approach**: Playwright MCP (multi-tab interaction required)
-- **Timeout Settings**: Use configurable timeouts from master rules
+**Test Players**: ArkanWolfshade (AW - Admin) and Ithaqua (Non-Admin)
+
+**Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
+
+**Testing Approach**: Playwright MCP (multi-tab interaction required)
+
+**Timeout Settings**: Use configurable timeouts from master rules
 
 ## Execution Steps
 
@@ -40,6 +47,7 @@ This MCP scenario focuses ONLY on multi-player aspects that cannot be automated.
 **Purpose**: Test basic who command functionality for admin player
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -59,13 +67,15 @@ await mcp_playwright_browser_wait_for({text: "Online Players:"});
 **Purpose**: Test that who command shows all online players
 
 **Commands**:
+
 ```javascript
 // Wait for player list to appear
 await mcp_playwright_browser_wait_for({text: "ArkanWolfshade"});
 await mcp_playwright_browser_wait_for({text: "Ithaqua"});
 
 // Verify both players appear in who list
-const awMessages = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
+const awMessages = await mcp_playwright_browser_evaluate({function: "() =>
+Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
 const seesBothPlayers = awMessages.some(msg => msg.includes('ArkanWolfshade')) && awMessages.some(msg => msg.includes('Ithaqua'));
 console.log('AW sees both players in who list:', seesBothPlayers);
 console.log('AW messages:', awMessages);
@@ -78,6 +88,7 @@ console.log('AW messages:', awMessages);
 **Purpose**: Test that who command shows proper location information
 
 **Commands**:
+
 ```javascript
 // Check for location information in who list
 const locationInfo = awMessages.some(msg => msg.includes('earth_arkhamcity_sanitarium_room_foyer_001'));
@@ -98,6 +109,7 @@ console.log('AW sees proper location format:', properLocationFormat);
 **Purpose**: Test who command functionality for non-admin player
 
 **Commands**:
+
 ```javascript
 // Switch to Ithaqua's tab
 await mcp_playwright_browser_tab_select({index: 1});
@@ -117,13 +129,15 @@ await mcp_playwright_browser_wait_for({text: "Online Players:"});
 **Purpose**: Test that non-admin players can see all online players
 
 **Commands**:
+
 ```javascript
 // Wait for player list to appear
 await mcp_playwright_browser_wait_for({text: "ArkanWolfshade"});
 await mcp_playwright_browser_wait_for({text: "Ithaqua"});
 
 // Verify both players appear in who list
-const ithaquaMessages = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
+const ithaquaMessages = await mcp_playwright_browser_evaluate({function: "() =>
+Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
 const ithaquaSeesBothPlayers = ithaquaMessages.some(msg => msg.includes('ArkanWolfshade')) && ithaquaMessages.some(msg => msg.includes('Ithaqua'));
 console.log('Ithaqua sees both players in who list:', ithaquaSeesBothPlayers);
 console.log('Ithaqua messages:', ithaquaMessages);
@@ -136,6 +150,7 @@ console.log('Ithaqua messages:', ithaquaMessages);
 **Purpose**: Test that who command updates location information after player movement
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -162,6 +177,7 @@ await mcp_playwright_browser_wait_for({text: "Online Players:"});
 **Purpose**: Test that who command shows updated location after movement
 
 **Commands**:
+
 ```javascript
 // Wait for updated player list
 await mcp_playwright_browser_wait_for({text: "ArkanWolfshade"});
@@ -185,6 +201,7 @@ console.log('AW updated messages:', awMessagesUpdated);
 **Purpose**: Verify that who command displays information in proper format
 
 **Commands**:
+
 ```javascript
 // EXECUTION GUARD: Single verification attempt - do not retry
 const whoCommandFormat = awMessagesUpdated.some(msg =>
@@ -215,6 +232,7 @@ if (awMessagesUpdated.length === 0) {
 **Purpose**: Test who command when only one player is online
 
 **Commands**:
+
 ```javascript
 // Switch to Ithaqua's tab
 await mcp_playwright_browser_tab_select({index: 1});
@@ -244,6 +262,7 @@ await mcp_playwright_browser_wait_for({text: "Online Players:"});
 **Purpose**: Test that who command works correctly with single player
 
 **Commands**:
+
 ```javascript
 // Wait for single player list
 await mcp_playwright_browser_wait_for({text: "ArkanWolfshade"});
@@ -263,6 +282,7 @@ console.log('✅ All verification steps completed successfully');
 console.log('✅ System functionality verified as working correctly');
 console.log('✅ Test results documented and validated');
 console.log('📋 PROCEEDING TO SCENARIO 8: Basic Local Channel Communication');
+
 ```
 
 **Expected Result**:  AW sees only himself in the who list
@@ -292,17 +312,23 @@ console.log('➡️ READY FOR SCENARIO 8: Basic Local Channel Communication');
 
 ## Expected Results
 
-- ✅ AW sees both players in who list
-- ✅ Ithaqua sees both players in who list
-- ✅ Location information is displayed properly
-- ✅ Who command updates after player movement
-- ✅ Who command format is consistent
+✅ AW sees both players in who list
+
+✅ Ithaqua sees both players in who list
+
+✅ Location information is displayed properly
+
+✅ Who command updates after player movement
+
+✅ Who command format is consistent
+
 - ✅ Who command works with single player
 - ✅ No duplicate entries in who list
 
 ## Success Criteria Checklist
 
-- [ ] AW successfully uses who command
+[ ] AW successfully uses who command
+
 - [ ] AW sees both players in who list
 - [ ] Location information is displayed in proper format
 - [ ] Ithaqua successfully uses who command
@@ -319,20 +345,25 @@ console.log('➡️ READY FOR SCENARIO 8: Basic Local Channel Communication');
 ## Cleanup
 
 Execute standard cleanup procedures from @CLEANUP.md:
+
 1. Close all browser tabs
 2. Stop development server
 3. Verify clean shutdown
 
 ## Status
 
-**✅ SCENARIO COMPLETION LOGIC FIXED**
+### ✅ SCENARIO COMPLETION LOGIC FIXED
 
 The who command system is working correctly. The scenario now includes proper completion logic to prevent infinite loops:
 
-- **Fixed**: Added completion step with explicit scenario completion and cleanup procedures
-- **Fixed**: Added clear decision points for handling verification results
-- **Fixed**: Added explicit progression to next scenario
-- **Verified**: System functionality works as expected and meets all requirements
+**Fixed**: Added completion step with explicit scenario completion and cleanup procedures
+
+**Fixed**: Added clear decision points for handling verification results
+
+**Fixed**: Added explicit progression to next scenario
+
+**Verified**: System functionality works as expected and meets all requirements
+
 ---
 
 **Document Version**: 1.0 (Modular E2E Test Suite)

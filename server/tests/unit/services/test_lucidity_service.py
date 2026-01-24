@@ -36,8 +36,9 @@ async def test_apply_lucidity_adjustment_positive_delta(mock_session, mock_lucid
     service = LucidityService(mock_session)
 
     # Mock repository
-    service._repo.get_or_create_player_lucidity = AsyncMock(return_value=mock_lucidity_record)
-    service._repo.add_adjustment_log = AsyncMock()
+    # Reason: Standard test mocking practice - replacing method with AsyncMock for testing
+    service._repo.get_or_create_player_lucidity = AsyncMock(return_value=mock_lucidity_record)  # type: ignore[method-assign]
+    service._repo.add_adjustment_log = AsyncMock()  # type: ignore[method-assign]
 
     player_id = uuid.uuid4()
     result = await service.apply_lucidity_adjustment(
@@ -57,8 +58,8 @@ async def test_apply_lucidity_adjustment_negative_delta(mock_session, mock_lucid
     service = LucidityService(mock_session)
 
     # Mock repository
-    service._repo.get_or_create_player_lucidity = AsyncMock(return_value=mock_lucidity_record)
-    service._repo.add_adjustment_log = AsyncMock()
+    service._repo.get_or_create_player_lucidity = AsyncMock(return_value=mock_lucidity_record)  # type: ignore[method-assign]
+    service._repo.add_adjustment_log = AsyncMock()  # type: ignore[method-assign]
 
     player_id = uuid.uuid4()
     result = await service.apply_lucidity_adjustment(
@@ -79,8 +80,8 @@ async def test_apply_lucidity_adjustment_clamps_to_max(mock_session, mock_lucidi
     mock_lucidity_record.current_lcd = 95
 
     service = LucidityService(mock_session)
-    service._repo.get_or_create_player_lucidity = AsyncMock(return_value=mock_lucidity_record)
-    service._repo.add_adjustment_log = AsyncMock()
+    service._repo.get_or_create_player_lucidity = AsyncMock(return_value=mock_lucidity_record)  # type: ignore[method-assign]
+    service._repo.add_adjustment_log = AsyncMock()  # type: ignore[method-assign]
 
     player_id = uuid.uuid4()
     result = await service.apply_lucidity_adjustment(
@@ -100,8 +101,8 @@ async def test_apply_lucidity_adjustment_clamps_to_min(mock_session, mock_lucidi
     mock_lucidity_record.current_lcd = -95
 
     service = LucidityService(mock_session)
-    service._repo.get_or_create_player_lucidity = AsyncMock(return_value=mock_lucidity_record)
-    service._repo.add_adjustment_log = AsyncMock()
+    service._repo.get_or_create_player_lucidity = AsyncMock(return_value=mock_lucidity_record)  # type: ignore[method-assign]
+    service._repo.add_adjustment_log = AsyncMock()  # type: ignore[method-assign]
 
     player_id = uuid.uuid4()
     result = await service.apply_lucidity_adjustment(

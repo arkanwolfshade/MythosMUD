@@ -80,7 +80,7 @@ def test_initialize_database_config_validation_error():
                 {
                     "type": "value_error",
                     "loc": ("database", "url"),
-                    "msg": "Field required",
+                    "msg": "Field required",  # type: ignore[typeddict-unknown-key]  # Pydantic's from_exception_data uses "msg" key, not "message"
                     "input": {},
                     "ctx": {"error": "Field required"},
                 }

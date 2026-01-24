@@ -18,6 +18,8 @@ from server.structured_logging.logging_utilities import (
     rotate_log_files,
 )
 
+# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
+
 
 @pytest.fixture
 def temp_dir(tmp_path):
@@ -52,7 +54,8 @@ def test_ensure_log_directory_no_parent(temp_dir):
 def test_ensure_log_directory_none_path():
     """Test ensure_log_directory() handles None path."""
     # Should not raise
-    ensure_log_directory(None)
+    # Reason: Intentionally passing None to test error handling
+    ensure_log_directory(None)  # type: ignore[arg-type]
 
 
 def test_ensure_log_directory_empty_path():
@@ -82,7 +85,7 @@ def test_ensure_log_directory_thread_safety(temp_dir):
     import threading
 
     log_file = temp_dir / "subdir" / "test.log"
-    results = []
+    results: list[bool] = []
 
     def create_dir():
         ensure_log_directory(log_file)

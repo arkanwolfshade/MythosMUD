@@ -17,7 +17,9 @@
 
 ## Executive Summary
 
-This review examines WebSocket-related code changes in the `feature/sqlite-to-postgresql` branch against WebSocket best practices. Overall, the codebase demonstrates good architectural patterns with dependency injection and modular design. However, several anti-patterns and potential issues were identified that should be addressed.
+This review examines WebSocket-related code changes in the `feature/sqlite-to-postgresql` branch against WebSocket best
+practices. Overall, the codebase demonstrates good architectural patterns with dependency injection and modular design.
+However, several anti-patterns and potential issues were identified that should be addressed.
 
 **Note**: Line numbers and specific code references below are now outdated due to the December 2025 refactoring.
 
@@ -25,27 +27,35 @@ This review examines WebSocket-related code changes in the `feature/sqlite-to-po
 
 ### 1. **Dependency Injection Pattern**
 
-- ✅ ConnectionManager is injected rather than using global singletons
-- ✅ Event handlers receive dependencies via constructor
-- ✅ No global WebSocket instances found
+✅ ConnectionManager is injected rather than using global singletons
+
+✅ Event handlers receive dependencies via constructor
+
+✅ No global WebSocket instances found
 
 ### 2. **Modern Async Patterns**
 
-- ✅ Uses `asyncio.get_running_loop()` instead of deprecated `get_event_loop()`
-- ✅ Proper async/await usage throughout
-- ✅ Task tracking for memory leak prevention
+✅ Uses `asyncio.get_running_loop()` instead of deprecated `get_event_loop()`
+
+✅ Proper async/await usage throughout
+
+✅ Task tracking for memory leak prevention
 
 ### 3. **Error Boundaries**
 
-- ✅ Circuit breaker pattern implemented in NATSMessageHandler
-- ✅ Dead letter queue for failed messages
-- ✅ Retry logic with exponential backoff
+✅ Circuit breaker pattern implemented in NATSMessageHandler
+
+✅ Dead letter queue for failed messages
+
+✅ Retry logic with exponential backoff
 
 ### 4. **Security**
 
-- ✅ Input sanitization on client side (`inputSanitizer.sanitizeCommand`)
-- ✅ Message validation in NATS handler (`validate_message`)
-- ✅ CSRF token structure in place (validation TODO noted)
+✅ Input sanitization on client side (`inputSanitizer.sanitizeCommand`)
+
+✅ Message validation in NATS handler (`validate_message`)
+
+✅ CSRF token structure in place (validation TODO noted)
 
 ## 🔴 Critical Issues
 
@@ -59,12 +69,14 @@ This review examines WebSocket-related code changes in the `feature/sqlite-to-po
 except RuntimeError:
     # No running loop - log warning and skip to avoid nested event loop errors
     # asyncio.run() cannot be called from within a running event loop
+
     logger.warning(
         "No event loop available for disconnect processing",
         player_id=player_id,
     )
     # Skip disconnect processing when no event loop is available
     # This is safe because force_disconnect already cleaned up the connection
+
 ```
 
 **Problem**: Skipping disconnect processing can lead to:
@@ -73,7 +85,8 @@ except RuntimeError:
 - Stale connection references
 - Inconsistent state between connection tracking and actual connections
 
-**Recommendation**: Use `asyncio.create_task()` or ensure the disconnect handler is always called from an async context. If truly no loop exists, use a background thread with proper synchronization.
+**Recommendation**: Use `asyncio.create_task()` or ensure the disconnect handler is always called from an async context.
+If truly no loop exists, use a background thread with proper synchronization.
 
 **Severity**: HIGH - Can cause memory leaks and connection state inconsistencies
 
@@ -90,11 +103,13 @@ data = await websocket.receive_text()
 message = json.loads(data)
 
 # CRITICAL FIX: Handle wrapped message format from useWebSocketConnection
+
 if "message" in message and isinstance(message["message"], str):
     try:
         inner_message = json.loads(message["message"])
         # Verify CSRF token if present
         # TODO: Implement CSRF validation
+
         message = inner_message
     except json.JSONDecodeError:
         pass
@@ -127,12 +142,16 @@ if "message" in message and isinstance(message["message"], str):
 
 ```python
 # Use async batch loading to prevent blocking the event loop
+
 load_results = await user_manager.load_player_mutes_batch(receiver_ids)
 ```
 
-**Problem**: While batch loading is async, the subsequent mute checks in the loop (`_is_player_muted_by_receiver_with_user_manager`) may still perform synchronous I/O operations that block the event loop.
+**Problem**: While batch loading is async, the subsequent mute checks in the loop
+(`_is_player_muted_by_receiver_with_user_manager`) may still perform synchronous I/O operations that block the event
+loop.
 
-**Recommendation**: Audit all mute checking methods to ensure they're fully async and don't perform blocking I/O. Use async database queries throughout.
+**Recommendation**: Audit all mute checking methods to ensure they're fully async and don't perform blocking I/O. Use
+async database queries throughout.
 
 **Severity**: MEDIUM - Performance degradation under load
 
@@ -280,6 +299,7 @@ for player_id in player_ids:
 for npc_id in npc_ids:
     npc_name = _get_npc_name_from_instance(npc_id)
     # ... process NPC
+
 ```
 
 **Problem**: N+1 query pattern - one lookup per player/NPC instead of batch loading.
@@ -352,43 +372,52 @@ for player_id in filtered_targets:
 ### Immediate Actions (High Priority)
 
 1. **Fix Event Loop Disconnect Handling** (Issue #1)
+
    - Ensure disconnect processing always occurs
    - Use proper async context management
 
 2. **Add Server-Side Input Validation** (Issue #2)
+
    - Implement message size limits
    - Add schema validation
    - Complete CSRF validation
 
 3. **Implement Connection Health Checks** (Issue #7)
+
    - Periodic connection validation
    - Automatic stale connection cleanup
 
 ### Short-Term Improvements (Medium Priority)
 
-4. **Refactor Complex Event Handlers** (Issue #5)
+1. **Refactor Complex Event Handlers** (Issue #5)
+
    - Break down large methods
    - Improve testability
 
-5. **Optimize Room Occupant Lookups** (Issue #9)
+2. **Optimize Room Occupant Lookups** (Issue #9)
+
    - Implement batch loading
    - Reduce N+1 queries
 
-6. **Add Rate Limiting** (Issue #11)
+3. **Add Rate Limiting** (Issue #11)
+
    - Per-connection message limits
    - Command throttling
 
 ### Long-Term Enhancements (Low Priority)
 
-7. **Payload Optimization** (Issue #4)
+1. **Payload Optimization** (Issue #4)
+
    - Incremental updates
    - Compression for large payloads
 
-8. **Message Batching** (Issue #10)
+2. **Message Batching** (Issue #10)
+
    - Batch broadcasts
    - Reduce individual send operations
 
-9. **Enhanced Error Handling** (Issue #8)
+3. **Enhanced Error Handling** (Issue #8)
+
    - Comprehensive error context
    - Better cleanup on errors
 
@@ -406,6 +435,10 @@ for player_id in filtered_targets:
 
 ## Conclusion
 
-The WebSocket implementation shows good architectural patterns with dependency injection and modular design. However, several critical issues need attention, particularly around event loop handling, input validation, and connection lifecycle management. Addressing the high-priority issues will significantly improve reliability, security, and performance.
+The WebSocket implementation shows good architectural patterns with dependency injection and modular design. However,
+several critical issues need attention, particularly around event loop handling, input validation, and connection
+lifecycle management. Addressing the high-priority issues will significantly improve reliability, security, and
+performance.
 
-**Overall Assessment**: ⚠️ **Needs Improvement** - Good foundation, but critical gaps need addressing before production deployment.
+**Overall Assessment**: ⚠️ **Needs Improvement** - Good foundation, but critical gaps need addressing before production
+deployment.

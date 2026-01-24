@@ -4,7 +4,7 @@ Emote command handlers for MythosMUD.
 This module contains handlers for the emote command.
 """
 
-from typing import Any
+from typing import Any, cast
 
 from ..alias_storage import AliasStorage
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -12,7 +12,7 @@ from ..structured_logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 
 
-def _extract_emote_action(command_data: dict) -> str | None:
+def _extract_emote_action(command_data: dict[str, Any]) -> str | None:
     """
     Extract action from command_data.
 
@@ -24,11 +24,11 @@ def _extract_emote_action(command_data: dict) -> str | None:
     """
     action = command_data.get("action")
     if action:
-        return action
+        return cast(str | None, action)
 
     parsed_command = command_data.get("parsed_command")
     if parsed_command is not None and hasattr(parsed_command, "action"):
-        return parsed_command.action
+        return cast(str | None, parsed_command.action)
 
     return None
 
@@ -110,7 +110,7 @@ def _format_emote_messages(action: str, player_name: str) -> tuple[str, str]:
 
 
 def _handle_emote_result(
-    result: dict, self_message: str, player_name: str, current_room_id: str | None
+    result: dict[str, Any], self_message: str, player_name: str, current_room_id: str | None
 ) -> dict[str, str]:
     """
     Handle the result from chat service after sending emote.
@@ -139,7 +139,11 @@ def _handle_emote_result(
 
 
 async def handle_emote_command(
-    command_data: dict, _current_user: dict, request: Any, _alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    _current_user: dict[str, Any],
+    request: Any,
+    _alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """
     Handle the emote command for performing emotes.

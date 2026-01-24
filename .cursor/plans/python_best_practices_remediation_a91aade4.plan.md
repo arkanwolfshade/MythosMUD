@@ -2,19 +2,29 @@
 name: Python Best Practices Remediation
 overview: Review and remediate Python code anti-patterns, semantic problems, and bad code practices based on the Python best practices rules document. Focus on missing type hints, import organization, and code quality improvements.
 todos:
+
   - id: "1"
+
     content: Add missing return type annotations to functions (starting with server/api/monitoring.py:_resolve_connection_manager_from_request)
     status: completed
+
   - id: "2"
+
     content: Review imports inside functions - only address those WITHOUT explicit linting suppressions (preserve all
     status: completed
+
   - id: "3"
+
     content: Verify all intentional imports inside functions are properly documented with suppression comments
     status: completed
+
   - id: "4"
+
     content: Run mypy type checker to verify all type annotations are correct
     status: completed
+
   - id: "5"
+
     content: Run test suite to ensure no regressions from changes
     status: completed
 ---
@@ -101,24 +111,26 @@ After reviewing the codebase against `.cursor/rules/python.mdc`, several categor
 
 - Add return type to `_resolve_connection_manager_from_request()`
 
-2. **server/events/event_bus.py**
+1. **server/events/event_bus.py**
 
 - Move `import inspect` to top of file (line 277)
 
-3. **server/api/metrics.py**
+1. **server/api/metrics.py**
 
 - Review `_get_nats_handler()` for return type (may need to handle circular import differently)
 
 ## Testing Considerations
 
-- Run mypy type checker after adding type annotations
+Run mypy type checker after adding type annotations
+
 - Run existing test suite to ensure no regressions
 - Verify imports still work correctly after reorganization
 - Check for any circular import issues introduced by moving imports
 
 ## Notes
 
-- Some patterns (like relative imports) are widespread and may require a separate migration effort
+Some patterns (like relative imports) are widespread and may require a separate migration effort
+
 - Focus on high-impact, low-risk changes first
 - **CRITICAL**: Preserve ALL imports that are explicitly suppressed with linting comments (`# noqa: E402`, `# pylint: disable=wrong-import-position`) - these indicate intentional placement
 - The codebase explicitly allows imports inside functions for valid reasons (circular dependencies, lazy loading, environment setup)

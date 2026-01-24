@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import uuid
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from sqlalchemy import BigInteger, CheckConstraint, DateTime, ForeignKey, Index, Integer, String, Text, UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID
@@ -41,9 +41,9 @@ class PlayerLucidity(Base):
         ForeignKey("players.player_id", ondelete="CASCADE"),
         primary_key=True,
     )
-    current_lcd: Mapped[int] = mapped_column(Integer(), nullable=False, default=100)
-    current_tier: Mapped[str] = mapped_column(String(length=32), nullable=False, default="lucid")
-    liabilities: Mapped[str] = mapped_column(Text(), nullable=False, default="[]")
+    current_lcd: Mapped[int] = mapped_column(Integer(), nullable=False, default=lambda: 100)
+    current_tier: Mapped[str] = mapped_column(String(length=32), nullable=False, default=lambda: "lucid")
+    liabilities: Mapped[str] = mapped_column(Text(), nullable=False, default=lambda: "[]")
     last_updated_at: Mapped[datetime] = mapped_column(DateTime(), nullable=False, default=_utc_now)
     catatonia_entered_at: Mapped[datetime | None] = mapped_column(DateTime(), nullable=True)
 
@@ -52,6 +52,24 @@ class PlayerLucidity(Base):
         back_populates="lucidity",
         uselist=False,
     )
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        """Initialize PlayerLucidity with defaults."""
+        super().__init__(*args, **kwargs)
+        # Apply defaults if not provided (SQLAlchemy may set to None initially)
+        _sentinel = object()
+        current_lcd_val = getattr(self, "current_lcd", _sentinel)
+        if current_lcd_val is _sentinel or current_lcd_val is None:
+            object.__setattr__(self, "current_lcd", 100)
+        current_tier_val = getattr(self, "current_tier", _sentinel)
+        if current_tier_val is _sentinel or current_tier_val is None:
+            object.__setattr__(self, "current_tier", "lucid")
+        liabilities_val = getattr(self, "liabilities", _sentinel)
+        if liabilities_val is _sentinel or liabilities_val is None:
+            object.__setattr__(self, "liabilities", "[]")
+        last_updated_at_val = getattr(self, "last_updated_at", _sentinel)
+        if last_updated_at_val is _sentinel or last_updated_at_val is None:
+            object.__setattr__(self, "last_updated_at", _utc_now())
 
 
 class LucidityAdjustmentLog(Base):
@@ -69,7 +87,7 @@ class LucidityAdjustmentLog(Base):
     )
     delta: Mapped[int] = mapped_column(Integer(), nullable=False)
     reason_code: Mapped[str] = mapped_column(Text(), nullable=False)
-    metadata_payload: Mapped[str] = mapped_column("metadata", Text(), nullable=False, default="{}")
+    metadata_payload: Mapped[str] = mapped_column("metadata", Text(), nullable=False, default=lambda: "{}")
     location_id: Mapped[str | None] = mapped_column(String(length=255), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(), nullable=False, default=_utc_now)
 
@@ -77,6 +95,18 @@ class LucidityAdjustmentLog(Base):
         "Player",
         back_populates="lucidity_adjustments",
     )
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        """Initialize LucidityAdjustmentLog with defaults."""
+        super().__init__(*args, **kwargs)
+        # Apply defaults if not provided (SQLAlchemy may set to None initially)
+        _sentinel = object()
+        metadata_payload_val = getattr(self, "metadata_payload", _sentinel)
+        if metadata_payload_val is _sentinel or metadata_payload_val is None:
+            object.__setattr__(self, "metadata_payload", "{}")
+        created_at_val = getattr(self, "created_at", _sentinel)
+        if created_at_val is _sentinel or created_at_val is None:
+            object.__setattr__(self, "created_at", _utc_now())
 
 
 class LucidityExposureState(Base):
@@ -93,13 +123,25 @@ class LucidityExposureState(Base):
         index=True,
     )
     entity_archetype: Mapped[str] = mapped_column(Text(), nullable=False)
-    encounter_count: Mapped[int] = mapped_column(Integer(), nullable=False, default=0)
+    encounter_count: Mapped[int] = mapped_column(Integer(), nullable=False, default=lambda: 0)
     last_encounter_at: Mapped[datetime] = mapped_column(DateTime(), nullable=False, default=_utc_now)
 
     player: Mapped[Player] = relationship(
         "Player",
         back_populates="lucidity_exposures",
     )
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        """Initialize LucidityExposureState with defaults."""
+        super().__init__(*args, **kwargs)
+        # Apply defaults if not provided (SQLAlchemy may set to None initially)
+        _sentinel = object()
+        encounter_count_val = getattr(self, "encounter_count", _sentinel)
+        if encounter_count_val is _sentinel or encounter_count_val is None:
+            object.__setattr__(self, "encounter_count", 0)
+        last_encounter_at_val = getattr(self, "last_encounter_at", _sentinel)
+        if last_encounter_at_val is _sentinel or last_encounter_at_val is None:
+            object.__setattr__(self, "last_encounter_at", _utc_now())
 
 
 class LucidityCooldown(Base):

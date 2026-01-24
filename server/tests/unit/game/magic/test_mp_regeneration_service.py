@@ -5,11 +5,15 @@ Tests the MPRegenerationService class for magic point regeneration.
 """
 
 import uuid
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
 from server.game.magic.mp_regeneration_service import MPRegenerationService
+
+# pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
+# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
 
 
 @pytest.fixture
@@ -137,7 +141,7 @@ def test_get_regen_multiplier_lying(mp_regeneration_service):
 
 def test_get_regen_multiplier_default_position(mp_regeneration_service):
     """Test _get_regen_multiplier() defaults to 1.0 when position not specified."""
-    stats = {}
+    stats: dict[str, Any] = {}
     multiplier = mp_regeneration_service._get_regen_multiplier(stats)
     assert multiplier == 1.0
 

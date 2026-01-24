@@ -4,6 +4,7 @@ Unit tests for world loader utility functions.
 Tests room ID generation, environment determination, and validation functions.
 """
 
+from typing import Any
 from unittest.mock import MagicMock, Mock, patch
 
 import pytest
@@ -51,22 +52,22 @@ class TestGetRoomEnvironment:
 
     def test_get_room_environment_from_subzone(self):
         """Test get_room_environment() returns subzone environment when room doesn't have one."""
-        room_data = {}
-        subzone_config = {"environment": "outdoors"}
+        room_data: dict[str, Any] = {}
+        subzone_config: dict[str, Any] = {"environment": "outdoors"}
         result = get_room_environment(room_data, subzone_config, None)
         assert result == "outdoors"
 
     def test_get_room_environment_from_zone(self):
         """Test get_room_environment() returns zone environment when room and subzone don't have one."""
-        room_data = {}
-        subzone_config = {}
+        room_data: dict[str, Any] = {}
+        subzone_config: dict[str, Any] = {}
         zone_config = {"environment": "underwater"}
         result = get_room_environment(room_data, subzone_config, zone_config)
         assert result == "underwater"
 
     def test_get_room_environment_default(self):
         """Test get_room_environment() returns default 'outdoors' when no environment specified."""
-        room_data = {}
+        room_data: dict[str, Any] = {}
         result = get_room_environment(room_data, None, None)
         assert result == "outdoors"
 
@@ -80,7 +81,7 @@ class TestGetRoomEnvironment:
 
     def test_get_room_environment_subzone_takes_priority_over_zone(self):
         """Test get_room_environment() prioritizes subzone environment over zone."""
-        room_data = {}
+        room_data: dict[str, Any] = {}
         subzone_config = {"environment": "outdoors"}
         zone_config = {"environment": "underwater"}
         result = get_room_environment(room_data, subzone_config, zone_config)
@@ -88,14 +89,14 @@ class TestGetRoomEnvironment:
 
     def test_get_room_environment_subzone_none(self):
         """Test get_room_environment() handles None subzone_config."""
-        room_data = {}
+        room_data: dict[str, Any] = {}
         zone_config = {"environment": "indoors"}
         result = get_room_environment(room_data, None, zone_config)
         assert result == "indoors"
 
     def test_get_room_environment_zone_none(self):
         """Test get_room_environment() handles None zone_config."""
-        room_data = {}
+        room_data: dict[str, Any] = {}
         subzone_config = {"environment": "outdoors"}
         result = get_room_environment(room_data, subzone_config, None)
         assert result == "outdoors"

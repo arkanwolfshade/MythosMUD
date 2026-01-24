@@ -5,6 +5,7 @@ Tests the helper functions for looking at NPCs in rooms.
 """
 
 from datetime import datetime
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -25,6 +26,9 @@ from server.commands.look_npc import (
     _should_include_npc,
     _try_lookup_npc_implicit,
 )
+
+# pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
+# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
 
 
 @pytest.fixture
@@ -86,9 +90,9 @@ def test_format_core_attributes_success():
 
 def test_format_core_attributes_empty():
     """Test formatting core attributes when none present."""
-    npc_stats = {}
+    npc_stats: dict[str, Any] = {}
     result = _format_core_attributes(npc_stats)
-    assert result == []
+    assert not result
 
 
 def test_format_other_stats_success():
@@ -104,7 +108,7 @@ def test_format_other_stats_empty():
     """Test formatting other stats when none present."""
     npc_stats = {"strength": 50}  # Only core attributes
     result = _format_other_stats(npc_stats)
-    assert result == []
+    assert not result
 
 
 def test_parse_stat_datetime_from_timestamp():
@@ -163,9 +167,9 @@ def test_format_lifecycle_info_success():
 
 def test_format_lifecycle_info_empty():
     """Test formatting lifecycle information when not present."""
-    stats = {}
+    stats: dict[str, Any] = {}
     result = _format_lifecycle_info(stats)
-    assert result == []
+    assert not result
 
 
 def test_format_npc_description_success(mock_npc):

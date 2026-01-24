@@ -4,9 +4,14 @@ A text-based, browser-accessible Multi-User Dungeon (MUD) inspired by the Cthulh
 
 ## Status Badges
 
-[![CI](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/ci.yml/badge.svg)](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/ci.yml) [![CodeQL](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/codeql.yml/badge.svg)](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/codeql.yml) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/0c361cf70a234b86b1b0f058ffd00549)](https://app.codacy.com/gh/arkanwolfshade/MythosMUD/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+[![CI](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/ci.yml/badge.svg)](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/codeql.yml/badge.svg)](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/codeql.yml)
+[![Codacy
+Badge](https://app.codacy.com/project/badge/Grade/0c361cf70a234b86b1b0f058ffd00549)](https://app.codacy.com/gh/arkanwolfshade/MythosMUD/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
 ## Table of Contents
+
+[🐙 MythosMUD](#-mythosmud)
 
 - [🐙 MythosMUD](#-mythosmud)
   - [Status Badges](#status-badges)
@@ -39,19 +44,24 @@ A text-based, browser-accessible Multi-User Dungeon (MUD) inspired by the Cthulh
 
 ## Overview
 
-**MythosMUD** is a persistent, multiplayer, text-based adventure game with a Lovecraftian horror theme. It is designed to be beginner-friendly for both players and contributors, with a focus on exploration, narrative, and light horror combat.
+**MythosMUD** is a persistent, multiplayer, text-based adventure game with a Lovecraftian horror theme. It is designed
+to be beginner-friendly for both players and contributors, with a focus on exploration, narrative, and light horror
+combat.
 
-- **Authors:** @arkanwolfshade & @TylerWolfshade
-- **Audience:** Friends, family, and invited contributors (not public)
-- **Tech Stack:**
-  - Frontend: React 19.1+ + TypeScript 5.9 (Vite 7.1+)
-  - Backend: Python 3.12+ (FastAPI 0.121+)
-  - Database: PostgreSQL (development, tests, and production)
-  - Real-time: WebSockets + NATS messaging
-  - Authentication: FastAPI Users + Argon2 + JWT
-  - Testing: pytest + Playwright + Vitest
-  - Dependency Management: uv for Python, npm for Node.js
-  - Code Quality: ruff (Python linter/formatter), ESLint + Prettier (JavaScript/TypeScript)
+**Authors:** @arkanwolfshade & @TylerWolfshade
+
+**Audience:** Friends, family, and invited contributors (not public)
+
+**Tech Stack:**
+
+- Frontend: React 19.1+ + TypeScript 5.9 (Vite 7.1+)
+- Backend: Python 3.12+ (FastAPI 0.121+)
+- Database: PostgreSQL (development, tests, and production)
+- Real-time: WebSockets + NATS messaging
+- Authentication: FastAPI Users + Argon2 + JWT
+- Testing: pytest + Playwright + Vitest
+- Dependency Management: uv for Python, npm for Node.js
+- Code Quality: ruff (Python linter/formatter), ESLint + Prettier (JavaScript/TypeScript)
 
 ---
 
@@ -61,33 +71,53 @@ A text-based, browser-accessible Multi-User Dungeon (MUD) inspired by the Cthulh
 
 ### ✅ Completed Systems
 
-- **Authentication & User Management** - Complete JWT-based auth with Argon2 password hashing and invite system
-- **Real-time Communication** - Dual connection system with NATS-based messaging and WebSocket/SSE clients
-- **Player Management** - Character creation, stats generation, and persistence with PostgreSQL
-- **Room System** - Hierarchical room structure with movement, navigation, and dynamic descriptions
-- **Chat System** - Multi-channel communication (say, local, whisper, system, emotes)
-- **Command Processing** - Unified command handler with alias system and help system
-- **Admin Tools** - Teleportation, player management, and monitoring commands
-- **NPC System** - Basic NPC spawning, behavior, and combat interactions
-- **Magic/Spellcasting System** - Complete spell system with MP (Magic Points), spell learning and mastery, material components, casting times, and integration with combat and lucidity systems
-- **Database Layer** - PostgreSQL persistence with async operations, connection pooling, and migration support
-- **Enhanced Logging** - Structured logging with MDC, correlation IDs, security sanitization, and performance monitoring
+**Authentication & User Management** - Complete JWT-based auth with Argon2 password hashing and invite system
+
+**Real-time Communication** - Dual connection system with NATS-based messaging and WebSocket/SSE clients
+
+**Player Management** - Character creation, stats generation, and persistence with PostgreSQL
+
+**Room System** - Hierarchical room structure with movement, navigation, and dynamic descriptions
+
+**Chat System** - Multi-channel communication (say, local, whisper, system, emotes)
+
+**Command Processing** - Unified command handler with alias system and help system
+
+**Admin Tools** - Teleportation, player management, and monitoring commands
+
+**NPC System** - Basic NPC spawning, behavior, and combat interactions
+
+**Magic/Spellcasting System** - Complete spell system with MP (Magic Points), spell learning and mastery, material
+
+  components, casting times, and integration with combat and lucidity systems
+
+**Database Layer** - PostgreSQL persistence with async operations, connection pooling, and migration support
+
+**Enhanced Logging** - Structured logging with MDC, correlation IDs, security sanitization, and performance monitoring
+
 - **Testing Framework** - Comprehensive test suite with 80%+ coverage, 304 test files, and automated E2E tests
 - **Security Framework** - Input validation, rate limiting, XSS protection, and COPPA compliance measures
 
 ### 🔄 In Progress
 
-- **Advanced Chat Channels** - Tab-based channel management and filtering
-- **Combat System** - Expanded combat mechanics with lucidity effects
-- **Performance Optimization** - Database connection pooling and query optimization
-- **Advanced NPC Behaviors** - Improved AI patterns and dialogue systems
+**Advanced Chat Channels** - Tab-based channel management and filtering
+
+**Combat System** - Expanded combat mechanics with lucidity effects
+
+**Performance Optimization** - Database connection pooling and query optimization
+
+**Advanced NPC Behaviors** - Improved AI patterns and dialogue systems
 
 ### 📋 Planned Features
 
-- **Quest System** - Dynamic quest generation and tracking
-- **Crafting System** - Item crafting and modification
-- **Advanced World Systems** - Dynamic events, weather, and time progression
-- **Player Housing** - Personal spaces and storage systems
+**Quest System** - Dynamic quest generation and tracking
+
+**Crafting System** - Item crafting and modification
+
+**Advanced World Systems** - Dynamic events, weather, and time progression
+
+**Player Housing** - Personal spaces and storage systems
+
 - **Achievement System** - Tracking player accomplishments
 
 ---
@@ -96,34 +126,59 @@ A text-based, browser-accessible Multi-User Dungeon (MUD) inspired by the Cthulh
 
 ### Core Gameplay
 
-- **Real-time Multiplayer** - Multiple players can interact simultaneously (100ms server tick rate for responsive gameplay)
-- **Character Creation** - Random stats generation with Lovecraftian investigator archetypes
-- **Room-based Exploration** - Navigate through a persistent world with exits and descriptions
-- **Chat Communication** - Multiple channels including say, local, whisper, and system messages
-- **Command System** - Text-based commands with alias support and help system
-- **Magic System** - Cast spells, learn new spells, track mastery, and manage MP (Magic Points) with automatic regeneration
+**Real-time Multiplayer** - Multiple players can interact simultaneously (100ms server tick rate for responsive
+  gameplay)
+
+**Character Creation** - Random stats generation with Lovecraftian investigator archetypes
+
+**Room-based Exploration** - Navigate through a persistent world with exits and descriptions
+
+**Chat Communication** - Multiple channels including say, local, whisper, and system messages
+
+**Command System** - Text-based commands with alias support and help system
+
+**Magic System** - Cast spells, learn new spells, track mastery, and manage MP (Magic Points) with automatic
+
+  regeneration
 
 ### Technical Features
 
-- **Browser Accessible** - No client installation required, runs in modern browsers
-- **Dual Connection System** - WebSocket for commands + Server-Sent Events for real-time updates
-- **Secure Authentication** - JWT tokens with Argon2 password hashing and invite-only system
-- **COPPA Compliant** - Privacy-first design for minor users with no personal data collection
-- **Comprehensive Testing** - 80%+ test coverage with automated CI/CD and comprehensive E2E test suite
-- **Enhanced Structured Logging** - Enterprise-grade logging with:
-  - MDC (Mapped Diagnostic Context) for automatic context propagation
-  - Correlation IDs for request tracing across service boundaries
-  - Automatic security sanitization of sensitive data
-  - Built-in performance monitoring and metrics collection
-  - 100% exception coverage with rich context
-- **Modular Test Framework** - Hierarchical test organization with 304 test files across unit, integration, E2E, security, and performance categories
+**Browser Accessible** - No client installation required, runs in modern browsers
+
+**Dual Connection System** - WebSocket for commands + Server-Sent Events for real-time updates
+
+**Secure Authentication** - JWT tokens with Argon2 password hashing and invite-only system
+
+**COPPA Compliant** - Privacy-first design for minor users with no personal data collection
+
+**Comprehensive Testing** - 80%+ test coverage with automated CI/CD and comprehensive E2E test suite
+
+**Enhanced Structured Logging** - Enterprise-grade logging with:
+
+- MDC (Mapped Diagnostic Context) for automatic context propagation
+
+- Correlation IDs for request tracing across service boundaries
+
+- Automatic security sanitization of sensitive data
+
+- Built-in performance monitoring and metrics collection
+
+- 100% exception coverage with rich context
+
+**Modular Test Framework** - Hierarchical test organization with 304 test files across unit, integration, E2E,
+
+  security, and performance categories
 
 ### Security & Privacy
 
-- **Security-First Design** - All features built with security in mind
-- **Input Validation** - Comprehensive server-side validation for all inputs
-- **Rate Limiting** - Per-user and per-endpoint rate limiting
-- **XSS Protection** - Complete client-side XSS vulnerability elimination
+**Security-First Design** - All features built with security in mind
+
+**Input Validation** - Comprehensive server-side validation for all inputs
+
+**Rate Limiting** - Per-user and per-endpoint rate limiting
+
+**XSS Protection** - Complete client-side XSS vulnerability elimination
+
 - **Privacy by Design** - Minimal data collection with easy deletion rights
 
 ---
@@ -135,6 +190,7 @@ See [DEVELOPMENT.md](docs/DEVELOPMENT.md) for full setup instructions.
 ### Quickstart
 
 1. **Prerequisites:**
+
    - Python 3.12+ (managed via pyenv-win recommended)
    - Node.js 22+ and npm (NVM for Windows recommended)
    - PostgreSQL 15+ (for database - required for tests and development)
@@ -145,12 +201,14 @@ See [DEVELOPMENT.md](docs/DEVELOPMENT.md) for full setup instructions.
 
    ```sh
    # Option 1: Clone with submodules in one command
+
    git clone --recursive <your-repo-url>
    cd MythosMUD
    ```
 
    ```sh
    # Option 2: Clone first, then fetch submodules
+
    git clone <your-repo-url>
    cd MythosMUD
    git submodule update --init --recursive
@@ -160,6 +218,7 @@ See [DEVELOPMENT.md](docs/DEVELOPMENT.md) for full setup instructions.
 
    ```powershell
    # Create test environment files (required before running tests)
+
    .\scripts\setup_test_environment.ps1
    ```
 
@@ -167,11 +226,13 @@ See [DEVELOPMENT.md](docs/DEVELOPMENT.md) for full setup instructions.
 
    ```sh
    # Python dependencies
+
    cd server
    uv sync
    uv run pre-commit install -f
 
    # Client dependencies
+
    cd ../client
    npm install
    ```
@@ -180,6 +241,7 @@ See [DEVELOPMENT.md](docs/DEVELOPMENT.md) for full setup instructions.
 
    ```powershell
    # Windows PowerShell - Start both server and client
+
    .\scripts\start_local.ps1
    ```
 
@@ -187,13 +249,16 @@ See [DEVELOPMENT.md](docs/DEVELOPMENT.md) for full setup instructions.
 
    ```powershell
    # Start server only
+
    .\scripts\start_server.ps1
 
    # Start client only (in another terminal)
+
    .\scripts\start_client.ps1
    ```
 
 6. **Visit:**
+
    - Frontend: <http://localhost:5173>
    - Backend API: <http://localhost:54731>
    - API Documentation: <http://localhost:54731/docs>
@@ -202,9 +267,11 @@ See [DEVELOPMENT.md](docs/DEVELOPMENT.md) for full setup instructions.
 
    ```sh
    # Run tests
+
    make test
 
    # Run linting
+
    make lint
    ```
 
@@ -354,9 +421,10 @@ See [scripts/README.md](scripts/README.md) for detailed documentation.
 
 ### Development Tools
 
-- **Linting and formatting:**
-  - Python: `ruff check .` and `ruff format .` in `/server` (120 char line limit)
-  - JS/TS: `npx prettier --check .` and `npx eslint .` in `/client`
+**Linting and formatting:**
+
+- Python: `ruff check .` and `ruff format .` in `/server` (120 char line limit)
+- JS/TS: `npx prettier --check .` and `npx eslint .` in `/client`
 - **Pre-commit hooks:**
   - Installed at the repository root to catch linting/formatting issues before commit
   - Includes ruff, prettier, eslint, and semgrep security analysis
@@ -388,37 +456,43 @@ See [scripts/README.md](scripts/README.md) for detailed documentation.
 
 ### Core Documentation
 
-- [Product Requirements Document (PRD)](docs/PRD.md) — Full game and technical design
+[Product Requirements Document (PRD)](docs/PRD.md) — Full game and technical design
+
 - [PLANNING.md](PLANNING.md) — Comprehensive project planning and current status
 - [GitHub Issues](https://github.com/arkanwolfshade/MythosMUD/issues) — Current tasks and development priorities
 
 ### Development Guides
 
-- [DEVELOPMENT.md](docs/DEVELOPMENT.md) — Dev environment setup with security guidelines
+[DEVELOPMENT.md](docs/DEVELOPMENT.md) — Dev environment setup with security guidelines
+
 - [DEVELOPMENT_AI.md](docs/DEVELOPMENT_AI.md) — AI agent development guide and workflow
 - [AI Development Workflow](docs/AI_DEVELOPMENT_WORKFLOW.md) — Detailed AI agent task management
 
 ### Testing Documentation
 
-- [E2E Testing Guide](docs/E2E_TESTING_GUIDE.md) — Comprehensive E2E testing documentation
+[E2E Testing Guide](docs/E2E_TESTING_GUIDE.md) — Comprehensive E2E testing documentation
+
 - [Multiplayer Test Rules](e2e-tests/MULTIPLAYER_TEST_RULES.md) — E2E testing framework and 21 scenarios
 - [Command Testing Guide](docs/COMMAND_TESTING_GUIDE.md) — Testing command implementations
 
 ### Architecture & Technical Specs
 
-- [Real-time Architecture](docs/REAL_TIME_ARCHITECTURE.md) — Dual connection system architecture
+[Real-time Architecture](docs/REAL_TIME_ARCHITECTURE.md) — Dual connection system architecture
+
 - [Advanced Chat Channels Spec](docs/ADVANCED_CHAT_CHANNELS_SPEC.md) — Communication system design
 - [Dual Connection System](docs/DUAL_CONNECTION_SYSTEM_SPEC.md) — WebSocket + SSE architecture
 
 ### Logging & Monitoring
 
-- [Enhanced Logging Guide](docs/LOGGING_BEST_PRACTICES.md) — Structured logging best practices and patterns
+[Enhanced Logging Guide](docs/LOGGING_BEST_PRACTICES.md) — Structured logging best practices and patterns
+
 - [Logging Quick Reference](docs/LOGGING_QUICK_REFERENCE.md) — One-page logging cheat sheet
 - [Enhanced Logging Implementation](docs/ENHANCED_LOGGING_GUIDE.md) — Detailed logging implementation guide
 
 ### Security & Error Handling
 
-- [Security Fixes](docs/SECURITY_FIXES.md) — Security implementation and fixes
+[Security Fixes](docs/SECURITY_FIXES.md) — Security implementation and fixes
+
 - [Error Handling Guide](docs/ERROR_HANDLING_GUIDE.md) — Error handling patterns and best practices
 - [Troubleshooting Guide](docs/TROUBLESHOOTING_GUIDE.md) — Common issues and solutions
 

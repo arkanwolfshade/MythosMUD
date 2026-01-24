@@ -646,7 +646,7 @@ class PassiveLucidityFluxService:  # pylint: disable=too-many-instance-attribute
             return profile[period]
         if "all" in profile:
             return profile["all"]
-        return self._environment_config["default"]
+        return cast(float, self._environment_config["default"])
 
     def _companion_modifier(
         self,
@@ -686,7 +686,7 @@ class PassiveLucidityFluxService:  # pylint: disable=too-many-instance-attribute
             return flux
 
         tracker["minutes"] += 1
-        minutes = tracker["minutes"]
+        minutes = cast(int, tracker["minutes"])
 
         if flux >= 0:
             return flux

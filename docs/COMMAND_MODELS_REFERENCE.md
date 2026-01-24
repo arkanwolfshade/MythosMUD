@@ -19,15 +19,20 @@
 
 ## Overview
 
-Command models in MythosMUD use Pydantic for type-safe validation and serialization. Each command is defined as a Pydantic model that inherits from `BaseCommand` and includes validation rules to ensure security and data integrity.
+Command models in MythosMUD use Pydantic for type-safe validation and serialization. Each command is defined as a
+Pydantic model that inherits from `BaseCommand` and includes validation rules to ensure security and data integrity.
 
 ### Key Benefits
 
-- **Type Safety**: Automatic type checking and conversion
-- **Security**: Built-in validation prevents injection attacks
-- **Documentation**: Self-documenting code with field descriptions
-- **Consistency**: Standardized structure across all commands
-- **Error Handling**: Clear error messages for invalid input
+**Type Safety**: Automatic type checking and conversion
+
+**Security**: Built-in validation prevents injection attacks
+
+**Documentation**: Self-documenting code with field descriptions
+
+**Consistency**: Standardized structure across all commands
+
+**Error Handling**: Clear error messages for invalid input
 
 ---
 
@@ -45,19 +50,24 @@ class BaseCommand(BaseModel):
 
     model_config = {
         # Security: reject unknown fields to prevent injection
+
         "extra": "forbid",
         # Use enum values for validation
+
         "use_enum_values": True,
         # Validate assignment
+
         "validate_assignment": True,
     }
 ```
 
 ### Configuration Options
 
-- **`extra: "forbid"`**: Prevents additional fields from being accepted, blocking injection attacks
-- **`use_enum_values: True`**: Uses enum values instead of enum objects for cleaner serialization
-- **`validate_assignment: True`**: Validates field assignments after object creation
+**`extra: "forbid"`**: Prevents additional fields from being accepted, blocking injection attacks
+
+**`use_enum_values: True`**: Uses enum values instead of enum objects for cleaner serialization
+
+**`validate_assignment: True`**: Validates field assignments after object creation
 
 ---
 
@@ -517,6 +527,7 @@ class HelpCommand(BaseCommand):
    ```python
    class CommandType(str, Enum):
        # ... existing commands ...
+
        YOUR_COMMAND = "your_command"
    ```
 
@@ -563,34 +574,42 @@ class HelpCommand(BaseCommand):
            optional_param = args[1] if len(args) > 1 else None
            return YourCommand(required_param=required_param, optional_param=optional_param)
        # ... existing commands ...
+
    ```
 
 ### Model Structure Guidelines
 
 #### Required Fields
 
-- **`command_type`**: Always required, must match the CommandType enum
-- **Required parameters**: Use `Field(..., description="...")` for mandatory fields
-- **Optional parameters**: Use `Field(None, description="...")` for optional fields
+**`command_type`**: Always required, must match the CommandType enum
+
+**Required parameters**: Use `Field(..., description="...")` for mandatory fields
+
+**Optional parameters**: Use `Field(None, description="...")` for optional fields
 
 #### Field Types
 
 ```python
 # String fields
+
 param: str = Field(..., description="Required string")
 optional_param: str | None = Field(None, description="Optional string")
 
 # Integer fields
+
 count: int = Field(..., description="Required integer")
 optional_count: int | None = Field(None, description="Optional integer")
 
 # Boolean fields
+
 flag: bool = Field(False, description="Boolean flag")
 
 # Enum fields
+
 direction: Direction = Field(..., description="Direction enum")
 
 # List fields
+
 items: list[str] = Field(default_factory=list, description="List of items")
 ```
 
@@ -611,6 +630,7 @@ def validate_field_name(cls, v):
         if len(v) > 100:
             raise ValueError("Field too long (max 100 characters)")
         # Custom validation
+
         if any(char in v for char in ["<", ">", "&", '"', "'"]):
             raise ValueError("Field contains invalid characters")
         return v.strip()
@@ -661,28 +681,32 @@ def validate_model(self):
 
 ### Common Field Types
 
-| Type | Description | Example |
-|------|-------------|---------|
-| `str` | String value | `Field(..., description="Name")` |
-| `int` | Integer value | `Field(1, description="Count")` |
-| `bool` | Boolean value | `Field(False, description="Flag")` |
-| `list[str]` | List of strings | `Field(default_factory=list, description="Items")` |
-| `dict[str, Any]` | Dictionary | `Field(default_factory=dict, description="Data")` |
-| `datetime` | Date/time | `Field(..., description="Timestamp")` |
+| Type             | Description     | Example                                            |
+| ---------------- | --------------- | -------------------------------------------------- |
+| `str`            | String value    | `Field(..., description="Name")`                   |
+| `int`            | Integer value   | `Field(1, description="Count")`                    |
+| `bool`           | Boolean value   | `Field(False, description="Flag")`                 |
+| `list[str]`      | List of strings | `Field(default_factory=list, description="Items")` |
+| `dict[str, Any]` | Dictionary      | `Field(default_factory=dict, description="Data")`  |
+| `datetime`       | Date/time       | `Field(..., description="Timestamp")`              |
 
 ### Field Constraints
 
 ```python
 # Length constraints
+
 field: str = Field(..., min_length=1, max_length=100)
 
 # Value constraints
+
 field: int = Field(..., ge=0, le=100)  # greater/less than or equal
 
 # Pattern constraints
+
 field: str = Field(..., pattern=r"^[a-zA-Z0-9_]+$")
 
 # Custom constraints
+
 field: str = Field(..., description="Custom field")
 ```
 
@@ -690,12 +714,15 @@ field: str = Field(..., description="Custom field")
 
 ```python
 # Simple default
+
 field: str = Field("default", description="Field with default")
 
 # Factory default (for mutable objects)
+
 field: list[str] = Field(default_factory=list, description="Empty list")
 
 # None default
+
 field: str | None = Field(None, description="Optional field")
 ```
 
@@ -707,9 +734,11 @@ field: str | None = Field(None, description="Optional field")
 
 ```python
 # Good
+
 field: str = Field(..., description="Player name to target")
 
 # Bad
+
 field: str = Field(...)
 ```
 
@@ -717,9 +746,11 @@ field: str = Field(...)
 
 ```python
 # Good - specific type
+
 direction: Direction = Field(..., description="Direction to move")
 
 # Bad - generic string
+
 direction: str = Field(..., description="Direction to move")
 ```
 
@@ -732,18 +763,22 @@ def validate_field_name(cls, v):
     """Comprehensive validation."""
     if v is not None:
         # Check for empty/whitespace
+
         if not v.strip():
             raise ValueError("Field cannot be empty")
 
         # Check length
+
         if len(v) > 100:
             raise ValueError("Field too long (max 100 characters)")
 
         # Check for dangerous characters
+
         if any(char in v for char in ["<", ">", "&", '"', "'"]):
             raise ValueError("Field contains invalid characters")
 
         # Custom business logic
+
         if v.lower() in ["admin", "root", "system"]:
             raise ValueError("Reserved name not allowed")
 
@@ -755,9 +790,11 @@ def validate_field_name(cls, v):
 
 ```python
 # Good - specific error message
+
 raise ValueError("Player name must be between 3 and 20 characters")
 
 # Bad - generic error message
+
 raise ValueError("Invalid input")
 ```
 
@@ -765,10 +802,12 @@ raise ValueError("Invalid input")
 
 ```python
 # Good - descriptive names
+
 player_name: str = Field(..., description="Target player name")
 duration_minutes: int = Field(..., description="Duration in minutes")
 
 # Bad - unclear names
+
 name: str = Field(..., description="Name")
 time: int = Field(..., description="Time")
 ```
@@ -790,6 +829,7 @@ def validate_complex_field(cls, v):
     """
     if v is not None:
         # Implementation...
+
         pass
     return v
 ```
@@ -802,9 +842,11 @@ def validate_complex_field(cls, v):
 
 ```python
 # Missing import
+
 from pydantic import BaseModel, Field, field_validator
 
 # Missing enum import
+
 from .command import CommandType, BaseCommand
 ```
 
@@ -812,10 +854,12 @@ from .command import CommandType, BaseCommand
 
 ```python
 # Wrong - validates after assignment
+
 def validate_field(self, v):
     return v
 
 # Correct - validates during assignment
+
 @field_validator("field")
 @classmethod
 def validate_field(cls, v):
@@ -826,6 +870,7 @@ def validate_field(cls, v):
 
 ```python
 # Wrong - assumes field is always present
+
 @field_validator("optional_field")
 @classmethod
 def validate_optional_field(cls, v):
@@ -834,6 +879,7 @@ def validate_optional_field(cls, v):
     return v
 
 # Correct - handles None values
+
 @field_validator("optional_field")
 @classmethod
 def validate_optional_field(cls, v):
@@ -848,11 +894,13 @@ def validate_optional_field(cls, v):
 
 ```python
 # Wrong - inconsistent formatting
+
 raise ValueError("Field too long")
 raise ValueError("Field cannot be empty")
 raise ValueError("Invalid characters in field")
 
 # Correct - consistent formatting
+
 raise ValueError("Field too long (max 100 characters)")
 raise ValueError("Field cannot be empty")
 raise ValueError("Field contains invalid characters")
@@ -861,13 +909,14 @@ raise ValueError("Field contains invalid characters")
 ### 5. Not Testing Edge Cases
 
 ```python
-# Test these scenarios:
+# Test these scenarios
 # - Empty strings
 # - Very long strings
 # - Special characters
 # - Unicode characters
 # - Whitespace-only strings
 # - None values (for optional fields)
+
 ```
 
 ---
@@ -905,6 +954,7 @@ class WhisperCommand(BaseCommand):
         if len(v) > 500:
             raise ValueError("Message too long (max 500 characters)")
         # Check for dangerous content
+
         dangerous_patterns = ["<script", "javascript:", "onload="]
         for pattern in dangerous_patterns:
             if pattern.lower() in v.lower():
@@ -913,6 +963,7 @@ class WhisperCommand(BaseCommand):
 ```
 
 This model includes:
+
 - Proper field definitions with descriptions
 - Comprehensive validation for both fields
 - Security checks for dangerous content

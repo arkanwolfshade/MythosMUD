@@ -10,7 +10,10 @@
 
 ## Executive Summary
 
-Scenario 15 (Whisper Rate Limiting) has been blocked due to the discovery that **per-recipient rate limiting is not implemented** in the current whisper system. While the global whisper rate limit (5 messages per minute) is functioning correctly, the per-recipient rate limit (3 whispers per minute to the same player) specified in the scenario documentation does not exist in the codebase.
+Scenario 15 (Whisper Rate Limiting) has been blocked due to the discovery that **per-recipient rate limiting is not
+implemented** in the current whisper system. While the global whisper rate limit (5 messages per minute) is functioning
+correctly, the per-recipient rate limit (3 whispers per minute to the same player) specified in the scenario
+documentation does not exist in the codebase.
 
 ---
 
@@ -18,10 +21,13 @@ Scenario 15 (Whisper Rate Limiting) has been blocked due to the discovery that *
 
 ### Test Setup
 
-- **Players:** ArkanWolfshade (AW) and Ithaqua
-- **Location:** Both in `earth_arkhamcity_sanitarium_room_foyer_001`
-- **Test Method:** Rapid message sending to trigger rate limits
-- **Testing Tool:** Playwright MCP (multi-tab interaction)
+**Players:** ArkanWolfshade (AW) and Ithaqua
+
+**Location:** Both in `earth_arkhamcity_sanitarium_room_foyer_001`
+
+**Test Method:** Rapid message sending to trigger rate limits
+
+**Testing Tool:** Playwright MCP (multi-tab interaction)
 
 ### Test Execution
 
@@ -35,7 +41,10 @@ Scenario 15 (Whisper Rate Limiting) has been blocked due to the discovery that *
 **Expected Behavior (Per Scenario):**
 
 - Messages 1-3 should succeed
-- Message 4 should be BLOCKED with error: `"Rate limit exceeded. You can only send 3 whispers per minute to the same player."`
+
+- Message 4 should be BLOCKED with error: `"Rate limit exceeded. You can only send 3 whispers per minute to the same
+
+  player."`
 
 **Actual Behavior:**
 
@@ -60,11 +69,16 @@ Scenario 15 (Whisper Rate Limiting) has been blocked due to the discovery that *
 
 **Global Whisper Rate Limit:**
 
-- **Location:** `server/config/models.py:313`
-- **Configuration:** `rate_limit_whisper: int = Field(default=5, description="Whisper channel rate limit")`
-- **Implementation:** `server/services/rate_limiter.py:110-163`
-- **Behavior:** Tracks total whispers sent by a player across ALL recipients
-- **Limit:** 5 whispers per minute (global)
+**Location:** `server/config/models.py:313`
+
+**Configuration:** `rate_limit_whisper: int = Field(default=5, description="Whisper channel rate limit")`
+
+**Implementation:** `server/services/rate_limiter.py:110-163`
+
+**Behavior:** Tracks total whispers sent by a player across ALL recipients
+
+**Limit:** 5 whispers per minute (global)
+
 - **Status:** ✅ WORKING CORRECTLY
 
 **Evidence from Logs:**
@@ -85,25 +99,32 @@ The logs show `limit=5`, confirming the global rate limit is active.
 
 **Per-Recipient Whisper Rate Limit:**
 
-- **Expected Behavior:** 3 whispers per minute to the same player
-- **Current Implementation:** **DOES NOT EXIST**
-- **Missing Logic:** No tracking of whisper counts per individual recipient
-- **Impact:** Players can send up to 5 whispers to a SINGLE recipient
+**Expected Behavior:** 3 whispers per minute to the same player
+
+**Current Implementation:** **DOES NOT EXIST**
+
+**Missing Logic:** No tracking of whisper counts per individual recipient
+
+**Impact:** Players can send up to 5 whispers to a SINGLE recipient
 
 **Expected Data Structure (Not Found):**
 
 ```python
 # Expected: Track whispers per target player
+
 self.whisper_windows: dict[str, dict[str, deque]] = {}
 # Format: {sender_id: {target_id: deque(timestamps)}}
+
 ```
 
 **Current Data Structure:**
 
 ```python
 # Current: Only tracks global whisper count
+
 self.windows: dict[str, dict[str, deque]] = {}
 # Format: {player_id: {channel: deque(timestamps)}}
+
 ```
 
 ---
@@ -144,7 +165,8 @@ self.windows: dict[str, dict[str, deque]] = {}
 
 ### Success Criteria Checklist
 
-- [x] Normal whisper rate works correctly
+[x] Normal whisper rate works correctly
+
 - [x] Multiple whispers within rate limit work correctly
 - [ ] **Rate limit is enforced when exceeded** (BLOCKED - per-recipient limit missing)
 - [ ] **Rate limit is per recipient, not global** (BLOCKED - not implemented)
@@ -175,12 +197,14 @@ class RateLimiter:
         # ... existing code ...
 
         # NEW: Per-recipient whisper tracking
+
         self.whisper_recipient_windows: dict[str, dict[str, deque]] = defaultdict(
             lambda: defaultdict(deque)
         )
         # Format: {sender_id: {target_id: deque(timestamps)}}
 
         # NEW: Per-recipient whisper limit (default 3/min)
+
         self.whisper_recipient_limit = 3
 ```
 
@@ -205,6 +229,7 @@ def check_whisper_recipient_limit(
         True if within limits, False if rate limited
     """
     # Implementation needed
+
 ```
 
 #### 2. Chat Service Integration
@@ -220,6 +245,7 @@ async def send_whisper_message(
     # ... existing validation code ...
 
     # Check GLOBAL rate limiting (existing)
+
     if not self.rate_limiter.check_rate_limit(sender_id, "whisper", sender_name):
         return {
             "success": False,
@@ -227,6 +253,7 @@ async def send_whisper_message(
         }
 
     # NEW: Check PER-RECIPIENT rate limiting
+
     if not self.rate_limiter.check_whisper_recipient_limit(
         sender_id, target_id, sender_name
     ):
@@ -239,8 +266,10 @@ async def send_whisper_message(
     # ... rest of existing code ...
 
     # Record for BOTH rate limits
+
     self.rate_limiter.record_message(sender_id, "whisper", sender_name)
     # NEW:
+
     self.rate_limiter.record_whisper_recipient(sender_id, target_id, sender_name)
 ```
 
@@ -256,6 +285,7 @@ class ChatConfig(BaseSettings):
 
     rate_limit_whisper: int = Field(default=5, description="Global whisper rate limit")
     # NEW:
+
     rate_limit_whisper_per_recipient: int = Field(
         default=3,
         description="Whisper rate limit per recipient"
@@ -295,30 +325,37 @@ class ChatConfig(BaseSettings):
 
 **Rationale:**
 
-- **Security Concern:** Without per-recipient limiting, harassment is easier
-- **User Experience:** Spam prevention is only partially effective
-- **Scenario Coverage:** Blocks complete E2E testing of whisper system
-- **Not Critical:** Global limit provides basic spam prevention
+**Security Concern:** Without per-recipient limiting, harassment is easier
+
+**User Experience:** Spam prevention is only partially effective
+
+**Scenario Coverage:** Blocks complete E2E testing of whisper system
+
+**Not Critical:** Global limit provides basic spam prevention
 
 ### Suggested Implementation Approach
 
 1. **Phase 1: Rate Limiter Enhancement (2-3 hours)**
+
    - Add per-recipient tracking data structure
    - Implement `check_whisper_recipient_limit()` method
    - Implement `record_whisper_recipient()` method
    - Add unit tests for new methods
 
 2. **Phase 2: Chat Service Integration (1-2 hours)**
+
    - Modify `send_whisper_message()` to check both limits
    - Implement differentiated error messages
    - Update existing tests
 
 3. **Phase 3: Configuration (30 minutes)**
+
    - Add `rate_limit_whisper_per_recipient` to config
    - Update documentation
    - Add configuration validation
 
 4. **Phase 4: Testing (2-3 hours)**
+
    - Write unit tests for per-recipient limiting
    - Update integration tests
    - Execute Scenario 15 to verify implementation
@@ -329,11 +366,16 @@ class ChatConfig(BaseSettings):
 
 ## Related Documentation
 
-- **Main Investigation Report:** `e2e-tests/WHISPER_SYSTEM_INVESTIGATION_REPORT.md`
-- **Remaining Work Summary:** `e2e-tests/REMAINING_WORK_SUMMARY.md`
-- **NATS Subject Patterns:** `docs/NATS_SUBJECT_PATTERNS.md`
-- **Rate Limiter Implementation:** `server/services/rate_limiter.py`
-- **Chat Service Implementation:** `server/game/chat_service.py`
+**Main Investigation Report:** `e2e-tests/WHISPER_SYSTEM_INVESTIGATION_REPORT.md`
+
+**Remaining Work Summary:** `e2e-tests/REMAINING_WORK_SUMMARY.md`
+
+**NATS Subject Patterns:** `docs/NATS_SUBJECT_PATTERNS.md`
+
+**Rate Limiter Implementation:** `server/services/rate_limiter.py`
+
+**Chat Service Implementation:** `server/game/chat_service.py`
+
 - **Chat Configuration:** `server/config/models.py`
 
 ---

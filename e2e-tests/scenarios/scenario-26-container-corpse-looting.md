@@ -2,7 +2,7 @@
 
 ## 🤖 MANDATORY AI EXECUTION CONTRACT 🤖
 
-**BEFORE EXECUTING THIS SCENARIO, YOU MUST:**
+### BEFORE EXECUTING THIS SCENARIO, YOU MUST
 
 1. ✅ Read this ENTIRE scenario file from start to finish
 2. ✅ Execute EVERY step in EXACT order (Step 1, 2, 3...)
@@ -13,23 +13,28 @@
 7. ✅ Never modify steps, even if you think there's a better way
 8. ✅ Stop IMMEDIATELY when you see "SCENARIO 26 COMPLETED"
 
-**EXECUTION AFFIRMATION (Type this before proceeding):**
-"I will execute Scenario 26: Corpse Looting with Grace Periods exactly as written without modification, addition, or omission"
+### EXECUTION AFFIRMATION (Type this before proceeding)
 
-**CONFIRMATION CHECKLIST:**
-- [ ] I have read the entire scenario file
+"I will execute Scenario 26: Corpse Looting with Grace Periods exactly as written without modification, addition, or
+omission"
+
+### CONFIRMATION CHECKLIST
+
+[ ] I have read the entire scenario file
+
 - [ ] I understand that I must execute every step exactly as written
 - [ ] I will not skip, add, or modify any steps
 - [ ] I will stop at scenario completion marker
 - [ ] I understand that VIOLATION = COMPLETE FAILURE
 
-**⚠️ VIOLATION = COMPLETE FAILURE**
+### ⚠️ VIOLATION = COMPLETE FAILURE
 
 ---
 
 ## Overview
 
 Tests corpse container looting with grace period enforcement including:
+
 - Corpse container creation on player death
 - Owner-only grace period enforcement
 - Corpse overlay UI with countdown timers
@@ -39,11 +44,12 @@ Tests corpse container looting with grace period enforcement including:
 - Looting after grace period expires
 - Corpse decay and cleanup
 
-**This is a core multi-player scenario** that requires real-time verification of corpse container state and grace period enforcement. No automated alternative is available.
+**This is a core multi-player scenario** that requires real-time verification of corpse container state and grace period
+enforcement. No automated alternative is available.
 
 ## Prerequisites
 
-**BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY:**
+### BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY
 
 1. **Database State**: Two players available for testing
 2. **Server Running**: Development server is running on port 54731
@@ -51,33 +57,44 @@ Tests corpse container looting with grace period enforcement including:
 4. **Death System**: Player death system functional
 5. **Both Players Connected**: Both players are logged in
 
-**⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE**
+### ⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE
 
 **Reference**: See @MULTIPLAYER_TEST_RULES.md for complete prerequisite verification procedures.
 
 ## Test Configuration
 
-- **Test Players**: ArkanWolfshade (AW) and Ithaqua
-- **Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
-- **Testing Approach**: Playwright MCP (multi-tab interaction required)
-- **Timeout Settings**: Use configurable timeouts from master rules
-- **Grace Period**: 5 minutes (configurable)
+**Test Players**: ArkanWolfshade (AW) and Ithaqua
+
+**Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
+
+**Testing Approach**: Playwright MCP (multi-tab interaction required)
+
+**Timeout Settings**: Use configurable timeouts from master rules
+
+**Grace Period**: 5 minutes (configurable)
+
 - **Decay Period**: 30 minutes (configurable)
 
 ## Testing Approach Rationale
 
-**Why Playwright MCP is Required:**
+### Why Playwright MCP is Required
 
-- **Multi-tab Coordination**: Requires 2+ browser tabs for multiplayer testing
-- **Real-time Interaction**: Must verify corpse container creation and state updates
-- **Time-based Testing**: Must test grace period and decay countdown timers
-- **UI Interaction**: Must test corpse overlay UI components
-- **State Synchronization**: Must verify corpse state across players
+**Multi-tab Coordination**: Requires 2+ browser tabs for multiplayer testing
+
+**Real-time Interaction**: Must verify corpse container creation and state updates
+
+**Time-based Testing**: Must test grace period and decay countdown timers
+
+**UI Interaction**: Must test corpse overlay UI components
+
+**State Synchronization**: Must verify corpse state across players
 
 ## Execution Steps
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ### STEP 1 of 10: Setup - Both Players Connected
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **🎯 Purpose**: Ensure both players are connected and in the same room
@@ -122,13 +139,17 @@ await mcp_playwright_browser_wait_for({time: 10});
 
 **Expected Result**: Both players logged in and in game
 
-**✅ Step 1 Completion Checklist:**
-- [ ] Both players logged in
+### ✅ Step 1 Completion Checklist
+
+[ ] Both players logged in
+
 - [ ] Both players in game interface
 - [ ] Ready to proceed to Step 2
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ### STEP 2 of 10: AW Dies (Trigger Corpse Creation)
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **🎯 Purpose**: Trigger player death to create corpse container
@@ -167,14 +188,18 @@ console.log('Corpse overlay:', JSON.stringify(corpseOverlay, null, 2));
 
 **Expected Result**: Player dies, corpse container created, corpse overlay appears
 
-**✅ Step 2 Completion Checklist:**
-- [ ] Death triggered
+### ✅ Step 2 Completion Checklist
+
+[ ] Death triggered
+
 - [ ] Death messages checked
 - [ ] Corpse overlay checked
 - [ ] Ready to proceed to Step 3
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ### STEP 3 of 10: Verify Corpse Overlay UI with Grace Period
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **🎯 Purpose**: Verify corpse overlay displays grace period countdown
@@ -204,13 +229,17 @@ console.log('✅ Proceeding to next step');
 
 **Expected Result**: Grace period countdown displayed in corpse overlay
 
-**✅ Step 3 Completion Checklist:**
-- [ ] Grace period countdown checked
+### ✅ Step 3 Completion Checklist
+
+[ ] Grace period countdown checked
+
 - [ ] Results documented
 - [ ] Ready to proceed to Step 4
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ### STEP 4 of 10: Ithaqua Attempts to Loot Corpse (Should Fail)
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **🎯 Purpose**: Verify grace period prevents non-owner looting
@@ -256,13 +285,17 @@ if (openButton.exists && !openButton.disabled) {
 
 **Expected Result**: Looting blocked with appropriate error message
 
-**✅ Step 4 Completion Checklist:**
-- [ ] Loot attempt made
+### ✅ Step 4 Completion Checklist
+
+[ ] Loot attempt made
+
 - [ ] Error message or disabled state verified
 - [ ] Ready to proceed to Step 5
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ### STEP 5 of 10: AW (Owner) Attempts to Loot Corpse (Should Succeed)
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **🎯 Purpose**: Verify owner can loot during grace period
@@ -307,13 +340,17 @@ if (openButtonAW.exists && !openButtonAW.disabled) {
 
 **Expected Result**: Owner can open corpse container during grace period
 
-**✅ Step 5 Completion Checklist:**
-- [ ] Owner loot attempt made
+### ✅ Step 5 Completion Checklist
+
+[ ] Owner loot attempt made
+
 - [ ] Container opened or error documented
 - [ ] Ready to proceed to Step 6
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ### STEP 6 of 10: Wait for Grace Period to Expire
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **🎯 Purpose**: Wait for grace period to expire (or simulate expiration)
@@ -341,13 +378,17 @@ console.log('Grace period expiration testing documented');
 
 **Expected Result**: Grace period expires (or simulated)
 
-**✅ Step 6 Completion Checklist:**
-- [ ] Grace period countdown checked
+### ✅ Step 6 Completion Checklist
+
+[ ] Grace period countdown checked
+
 - [ ] Expiration documented or simulated
 - [ ] Ready to proceed to Step 7
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ### STEP 7 of 10: Ithaqua Attempts to Loot Corpse After Grace Period
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **🎯 Purpose**: Verify non-owner can loot after grace period expires
@@ -390,13 +431,17 @@ if (openButtonAfter.exists && !openButtonAfter.disabled) {
 
 **Expected Result**: Non-owner can now loot corpse after grace period
 
-**✅ Step 7 Completion Checklist:**
-- [ ] Loot attempt made after grace period
+### ✅ Step 7 Completion Checklist
+
+[ ] Loot attempt made after grace period
+
 - [ ] Container opened or error documented
 - [ ] Ready to proceed to Step 8
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ### STEP 8 of 10: Verify Decay Countdown Display
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **🎯 Purpose**: Verify decay countdown is displayed in corpse overlay
@@ -426,13 +471,17 @@ console.log('✅ Proceeding to next step');
 
 **Expected Result**: Decay countdown displayed in corpse overlay
 
-**✅ Step 8 Completion Checklist:**
-- [ ] Decay countdown checked
+### ✅ Step 8 Completion Checklist
+
+[ ] Decay countdown checked
+
 - [ ] Results documented
 - [ ] Ready to proceed to Step 9
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ### STEP 9 of 10: Test Corpse Decay (Optional - Long Duration)
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **🎯 Purpose**: Verify corpse decay and cleanup (optional, may skip due to long duration)
@@ -453,12 +502,16 @@ console.log('Would test: Corpse removal, item redistribution');
 
 **Expected Result**: Corpse decays and is removed (or documented)
 
-**✅ Step 9 Completion Checklist:**
-- [ ] Decay testing documented or performed
+### ✅ Step 9 Completion Checklist
+
+[ ] Decay testing documented or performed
+
 - [ ] Ready to proceed to Step 10
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ### STEP 10 of 10: Scenario Completion
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **🎯 Purpose**: Finalize scenario execution
@@ -498,28 +551,36 @@ console.log('🧹 CLEANUP COMPLETE');
 
 **Expected Result**: Scenario completed, tabs closed
 
-**✅ Scenario Completion Verification:**
-- [ ] All browser tabs closed
+### ✅ Scenario Completion Verification
+
+[ ] All browser tabs closed
+
 - [ ] Scenario completion logged
 - [ ] Ready for cleanup procedures
 
-**🛑 EXECUTION ENDS HERE - DO NOT PROCEED FURTHER**
+### 🛑 EXECUTION ENDS HERE - DO NOT PROCEED FURTHER
 
 ---
 
 ## Expected Results
 
-- ✅ Corpse container created on player death
-- ✅ Grace period countdown displayed
-- ✅ Owner can loot during grace period
-- ✅ Non-owner blocked during grace period
-- ✅ Non-owner can loot after grace period
+✅ Corpse container created on player death
+
+✅ Grace period countdown displayed
+
+✅ Owner can loot during grace period
+
+✅ Non-owner blocked during grace period
+
+✅ Non-owner can loot after grace period
+
 - ✅ Decay countdown displayed
 - ✅ Corpse overlay UI functional
 
 ## Success Criteria Checklist
 
-- [ ] Both players successfully connected
+[ ] Both players successfully connected
+
 - [ ] Player death triggered
 - [ ] Corpse container created
 - [ ] Grace period countdown displayed
@@ -538,7 +599,7 @@ Execute standard cleanup procedures from @CLEANUP.md
 
 ## Status
 
-**✅ SCENARIO FILE CREATED**
+### ✅ SCENARIO FILE CREATED
 
 ---
 

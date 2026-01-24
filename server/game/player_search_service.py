@@ -4,6 +4,8 @@ Player search and validation service.
 This module handles player name resolution, search, and validation operations.
 """
 
+from typing import Any, cast
+
 from ..schemas.player import PlayerRead
 from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -13,7 +15,7 @@ logger = get_logger(__name__)
 class PlayerSearchService:
     """Service for player search and validation operations."""
 
-    def __init__(self, player_service):
+    def __init__(self, player_service: Any) -> None:
         """Initialize with a reference to the player service for data access."""
         self.player_service = player_service
 
@@ -43,7 +45,7 @@ class PlayerSearchService:
         player = await self.player_service.get_player_by_name(clean_name)
         if player:
             logger.debug("Exact match found", player_name=clean_name)
-            return player
+            return cast(PlayerRead, player)
 
         # Try case-insensitive exact match
         all_players = await self.player_service.list_players()
@@ -54,7 +56,7 @@ class PlayerSearchService:
                     input_name=clean_name,
                     actual_name=player_data.name,
                 )
-                return player_data
+                return cast(PlayerRead, player_data)
 
         # Try partial match (starts with)
         for player_data in all_players:
@@ -64,7 +66,7 @@ class PlayerSearchService:
                     input_name=clean_name,
                     actual_name=player_data.name,
                 )
-                return player_data
+                return cast(PlayerRead, player_data)
 
         # Try contains match (if no starts-with match found)
         for player_data in all_players:
@@ -74,7 +76,7 @@ class PlayerSearchService:
                     input_name=clean_name,
                     actual_name=player_data.name,
                 )
-                return player_data
+                return cast(PlayerRead, player_data)
 
         logger.debug("No player name match found", player_name=clean_name)
         return None
@@ -93,7 +95,7 @@ class PlayerSearchService:
         logger.debug("Getting online players")
         # For now, return all players. In a real implementation,
         # this would filter by connection status
-        return await self.player_service.list_players()
+        return cast(list[PlayerRead], await self.player_service.list_players())
 
     async def search_players_by_name(self, search_term: str, limit: int = 10) -> list[PlayerRead]:
         """

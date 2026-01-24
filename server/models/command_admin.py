@@ -68,13 +68,13 @@ class TeleportCommand(BaseCommand):
 
     @field_validator("player_name")
     @classmethod
-    def validate_player_name_field(cls, v):
+    def validate_player_name_field(cls: type["TeleportCommand"], v: str) -> str:
         """Validate player name format using centralized validation."""
         return validate_player_name(v)
 
     @field_validator("direction")
     @classmethod
-    def validate_direction_field(cls, v):
+    def validate_direction_field(cls: type["TeleportCommand"], v: Direction | None) -> Direction | None:
         """Ensure provided direction is part of the allowed set."""
         if v is None:
             return v
@@ -91,7 +91,7 @@ class GotoCommand(BaseCommand):
 
     @field_validator("player_name")
     @classmethod
-    def validate_player_name_field(cls, v):
+    def validate_player_name_field(cls: type["GotoCommand"], v: str) -> str:
         """Validate player name format using centralized validation."""
         return validate_player_name(v)
 

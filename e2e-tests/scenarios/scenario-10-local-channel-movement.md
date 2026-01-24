@@ -2,29 +2,35 @@
 
 ## Overview
 
-Tests local channel message routing based on player movement. This scenario verifies that local channel messages are properly routed when players move between sub-zones, that message delivery is updated in real-time based on player location, and that the movement-based routing system works correctly for local communication.
+Tests local channel message routing based on player movement. This scenario verifies that local channel messages are
+properly routed when players move between sub-zones, that message delivery is updated in real-time based on player
+location, and that the movement-based routing system works correctly for local communication.
 
-**This is a core multi-player scenario** that requires verifying movement-based message routing between players. No automated alternative is available.
+**This is a core multi-player scenario** that requires verifying movement-based message routing between players. No
+automated alternative is available.
 
 ## Prerequisites
 
-**BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY:**
+### BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY
 
 1. **Database State**: Both players are in `earth_arkhamcity_sanitarium_room_foyer_001`
 2. **Server Running**: Development server is running on port 54731
 3. **Client Accessible**: Client is accessible on port 5173
 4. **Both Players Connected**: AW and Ithaqua are both logged in and in the same room
 
-**⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE**
+### ⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE
 
 **Reference**: See @MULTIPLAYER_TEST_RULES.md for complete prerequisite verification procedures.
 
 ## Test Configuration
 
-- **Test Players**: ArkanWolfshade (AW) and Ithaqua
-- **Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
-- **Testing Approach**: Playwright MCP (multi-tab interaction required)
-- **Timeout Settings**: Use configurable timeouts from master rules
+**Test Players**: ArkanWolfshade (AW) and Ithaqua
+
+**Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
+
+**Testing Approach**: Playwright MCP (multi-tab interaction required)
+
+**Timeout Settings**: Use configurable timeouts from master rules
 
 ## Execution Steps
 
@@ -33,6 +39,7 @@ Tests local channel message routing based on player movement. This scenario veri
 **Purpose**: Ensure both players start in the same sub-zone for baseline testing
 
 **Commands**:
+
 ```javascript
 // Ensure both players are logged in from previous scenario
 // AW should be on tab 0, Ithaqua on tab 1
@@ -46,6 +53,7 @@ Tests local channel message routing based on player movement. This scenario veri
 **Purpose**: Verify local messages work within same sub-zone before movement
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -64,7 +72,8 @@ await mcp_playwright_browser_tab_select({index: 1});
 await mcp_playwright_browser_wait_for({text: "ArkanWolfshade says locally: Before movement test"});
 
 // Verify message appears
-const ithaquaMessagesBefore = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
+const ithaquaMessagesBefore = await mcp_playwright_browser_evaluate({function: "() =>
+Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
 const seesBeforeMovementMessage = ithaquaMessagesBefore.some(msg => msg.includes('ArkanWolfshade says locally: Before movement test'));
 console.log('Ithaqua sees before movement message:', seesBeforeMovementMessage);
 ```
@@ -76,6 +85,7 @@ console.log('Ithaqua sees before movement message:', seesBeforeMovementMessage);
 **Purpose**: Move AW to different sub-zone to test movement-based routing
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -99,6 +109,7 @@ console.log('AW location after movement:', awLocationAfter);
 **Purpose**: Test local message routing after player movement
 
 **Commands**:
+
 ```javascript
 // Send local message after movement
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "local After movement test"});
@@ -115,6 +126,7 @@ await mcp_playwright_browser_wait_for({text: "You say locally: After movement te
 **Purpose**: Test that local messages are not routed to different sub-zones
 
 **Commands**:
+
 ```javascript
 // Switch to Ithaqua's tab
 await mcp_playwright_browser_tab_select({index: 1});
@@ -123,7 +135,8 @@ await mcp_playwright_browser_tab_select({index: 1});
 await mcp_playwright_browser_wait_for({time: 2});
 
 // Check for AW's local message after movement
-const ithaquaMessagesAfter = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
+const ithaquaMessagesAfter = await mcp_playwright_browser_evaluate({function: "() =>
+Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
 const seesAfterMovementMessage = ithaquaMessagesAfter.some(msg => msg.includes('ArkanWolfshade says locally: After movement test'));
 console.log('Ithaqua sees after movement message (should be false):', !seesAfterMovementMessage);
 console.log('Ithaqua messages after movement:', ithaquaMessagesAfter);
@@ -136,6 +149,7 @@ console.log('Ithaqua messages after movement:', ithaquaMessagesAfter);
 **Purpose**: Test local message routing when player moves to join another player
 
 **Commands**:
+
 ```javascript
 // Move Ithaqua to join AW in different sub-zone
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "go east"});
@@ -156,6 +170,7 @@ console.log('Ithaqua location after movement:', ithaquaLocationAfter);
 **Purpose**: Test local message routing when both players are in same sub-zone
 
 **Commands**:
+
 ```javascript
 // Send local message now that both are in same sub-zone
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "local Now in same sub-zone"});
@@ -183,6 +198,7 @@ console.log('AW sees Ithaqua message after movement:', seesIthaquaMessage);
 **Purpose**: Test local message routing with multiple movement scenarios
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -228,6 +244,7 @@ if (ithaquaMessagesNorth.length === 0) {
 **Purpose**: Test local message routing when players return to same sub-zone
 
 **Commands**:
+
 ```javascript
 // Move AW back to join Ithaqua
 await mcp_playwright_browser_tab_select({index: 0});
@@ -265,6 +282,7 @@ console.log('Ithaqua sees return message:', seesReturnMessage);
 **Purpose**: Verify that movement-based routing is working correctly
 
 **Commands**:
+
 ```javascript
 // Check final message counts and routing
 const awFinalMessages = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
@@ -278,7 +296,8 @@ console.log('AW local messages:', awLocalMessages);
 console.log('Ithaqua local messages:', ithaquaLocalMessages);
 
 // Verify movement-based routing worked
-const routingWorking = !ithaquaFinalMessages.some(msg => msg.includes('ArkanWolfshade says locally: After movement test')) &&
+const routingWorking = !ithaquaFinalMessages.some(msg => msg.includes('ArkanWolfshade says locally: After movement
+test')) &&
                       !ithaquaFinalMessages.some(msg => msg.includes('ArkanWolfshade says locally: From north sub-zone')) &&
                       ithaquaFinalMessages.some(msg => msg.includes('ArkanWolfshade says locally: Before movement test')) &&
                       ithaquaFinalMessages.some(msg => msg.includes('ArkanWolfshade says locally: Back together again'));
@@ -294,6 +313,7 @@ console.log('✅ All verification steps completed successfully');
 console.log('✅ System functionality verified as working correctly');
 console.log('✅ Test results documented and validated');
 console.log('📋 PROCEEDING TO SCENARIO 11: Local Channel Error Handling');
+
 ```
 
 **Expected Result**:  Ithaqua sees AW's local message when both return to same sub-zone
@@ -323,15 +343,20 @@ console.log('➡️ READY FOR SCENARIO 11: Local Channel Error Handling');
 
 ## Expected Results
 
-- ✅ Local messages work within same sub-zone before movement
-- ✅ Local messages are not routed to different sub-zones after movement
-- ✅ Local messages work again when players move to same sub-zone
-- ✅ Movement-based routing updates in real-time
-- ✅ Multiple movement scenarios work correctly
+✅ Local messages work within same sub-zone before movement
+
+✅ Local messages are not routed to different sub-zones after movement
+
+✅ Local messages work again when players move to same sub-zone
+
+✅ Movement-based routing updates in real-time
+
+✅ Multiple movement scenarios work correctly
 
 ## Success Criteria Checklist
 
-- [ ] Local messages work within same sub-zone before movement
+[ ] Local messages work within same sub-zone before movement
+
 - [ ] AW successfully moves to different sub-zone
 - [ ] AW's local message after movement is not seen by Ithaqua
 - [ ] Ithaqua successfully moves to join AW
@@ -348,20 +373,25 @@ console.log('➡️ READY FOR SCENARIO 11: Local Channel Error Handling');
 ## Cleanup
 
 Execute standard cleanup procedures from @CLEANUP.md:
+
 1. Close all browser tabs
 2. Stop development server
 3. Verify clean shutdown
 
 ## Status
 
-**✅ SCENARIO COMPLETION LOGIC FIXED**
+### ✅ SCENARIO COMPLETION LOGIC FIXED
 
 The local channel movement system is working correctly. The scenario now includes proper completion logic to prevent infinite loops:
 
-- **Fixed**: Added completion step with explicit scenario completion and cleanup procedures
-- **Fixed**: Added clear decision points for handling verification results
-- **Fixed**: Added explicit progression to next scenario
-- **Verified**: System functionality works as expected and meets all requirements
+**Fixed**: Added completion step with explicit scenario completion and cleanup procedures
+
+**Fixed**: Added clear decision points for handling verification results
+
+**Fixed**: Added explicit progression to next scenario
+
+**Verified**: System functionality works as expected and meets all requirements
+
 ---
 
 **Document Version**: 1.0 (Modular E2E Test Suite)

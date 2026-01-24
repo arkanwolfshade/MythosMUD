@@ -84,12 +84,14 @@ def migrate_npc_combat_data():
 
     for npc in npcs:
         # Add default combat stats if not present
+
         if 'xp_value' not in npc.base_stats:
             npc.base_stats['xp_value'] = 1  # Default 1 XP
         if 'dexterity' not in npc.base_stats:
             npc.base_stats['dexterity'] = 10  # Default dexterity
 
         # Add default combat messages if not present
+
         if 'combat_messages' not in npc.behavior_config:
             npc.behavior_config['combat_messages'] = {
                 'attack_attacker': "You swing your fist at {target_name} and hit for {damage} damage ({target_hp}/{target_max_hp} HP remaining)",
@@ -104,6 +106,7 @@ def migrate_npc_combat_data():
             }
 
         # Add default combat behavior if not present
+
         if 'combat_behavior' not in npc.behavior_config:
             npc.behavior_config['combat_behavior'] = {
                 'aggression_level': 'passive',
@@ -171,14 +174,17 @@ No additional indexes required. Existing indexes on `npc_definitions` table will
 
 #### Health Persistence Strategy
 
-- **NPC Health**: Tracked only in memory during combat, resets to base values on combat end
-- **Player Health**: Persisted to database through existing player service
-- **Combat State**: In-memory combat state includes current health values for all participants
+**NPC Health**: Tracked only in memory during combat, resets to base values on combat end
+
+**Player Health**: Persisted to database through existing player service
+
+**Combat State**: In-memory combat state includes current health values for all participants
 - **Server Restart**: All in-memory health values reset to database base values
 
 #### Query Optimization
 
-- Combat data will be cached in memory during combat
+Combat data will be cached in memory during combat
+
 - Database queries will be minimized through in-memory state management
 - JSON field queries will use existing database JSON query capabilities
 
@@ -186,14 +192,16 @@ No additional indexes required. Existing indexes on `npc_definitions` table will
 
 #### Constraints
 
-- `xp_value` must be non-negative integer
+`xp_value` must be non-negative integer
+
 - `dexterity`, `strength`, `constitution` must be between 1-20
 - Combat message templates must contain required variable placeholders
 - Combat behavior settings must be within valid ranges
 
 #### Validation Rules
 
-- All combat messages must contain proper variable substitution syntax
+All combat messages must contain proper variable substitution syntax
+
 - Death messages must be non-empty strings
 - Combat behavior settings must be within defined ranges
 - XP values should be reasonable for NPC difficulty level
@@ -202,13 +210,15 @@ No additional indexes required. Existing indexes on `npc_definitions` table will
 
 #### Data Backup
 
-- Existing database backup procedures will cover combat data
+Existing database backup procedures will cover combat data
+
 - JSON field data will be included in standard database backups
 - No special backup procedures required for combat data
 
 #### Data Recovery
 
-- Combat data recovery follows existing database recovery procedures
+Combat data recovery follows existing database recovery procedures
+
 - JSON field data will be restored with standard database recovery
 - Migration script can be re-run to restore default combat data if needed
 
@@ -216,13 +226,15 @@ No additional indexes required. Existing indexes on `npc_definitions` table will
 
 #### Data Monitoring
 
-- Monitor JSON field size and complexity
+Monitor JSON field size and complexity
+
 - Track combat data usage patterns
 - Monitor database performance with extended JSON queries
 
 #### Maintenance Procedures
 
-- Regular validation of combat data integrity
+Regular validation of combat data integrity
+
 - Cleanup of orphaned combat state data
 - Performance monitoring of JSON field queries
 - Regular backup verification of combat data

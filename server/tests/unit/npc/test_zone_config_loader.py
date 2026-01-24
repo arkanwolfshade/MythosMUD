@@ -5,6 +5,7 @@ Tests the zone_config_loader module functions.
 """
 
 import json
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -93,7 +94,7 @@ async def test_process_zone_rows():
         }.get(key)
     )
     mock_conn.fetch = AsyncMock(return_value=[mock_row])
-    result_container = {"configs": {"zone": {}, "subzone": {}}}
+    result_container: dict[str, Any] = {"configs": {"zone": {}, "subzone": {}}}
     await process_zone_rows(mock_conn, result_container)
     assert "arkhamcity" in result_container["configs"]["zone"]
     assert isinstance(result_container["configs"]["zone"]["arkhamcity"], ZoneConfiguration)
@@ -104,7 +105,7 @@ async def test_process_zone_rows_empty():
     """Test process_zone_rows() handles empty result."""
     mock_conn = AsyncMock()
     mock_conn.fetch = AsyncMock(return_value=[])
-    result_container = {"configs": {"zone": {}, "subzone": {}}}
+    result_container: dict[str, Any] = {"configs": {"zone": {}, "subzone": {}}}
     await process_zone_rows(mock_conn, result_container)
     assert result_container["configs"]["zone"] == {}
 
@@ -125,7 +126,7 @@ async def test_process_zone_rows_json_strings():
         }.get(key)
     )
     mock_conn.fetch = AsyncMock(return_value=[mock_row])
-    result_container = {"configs": {"zone": {}, "subzone": {}}}
+    result_container: dict[str, Any] = {"configs": {"zone": {}, "subzone": {}}}
     await process_zone_rows(mock_conn, result_container)
     config = result_container["configs"]["zone"]["arkhamcity"]
     assert config.weather_patterns == ["fog", "rain"]
@@ -149,7 +150,7 @@ async def test_process_subzone_rows():
         }.get(key)
     )
     mock_conn.fetch = AsyncMock(return_value=[mock_row])
-    result_container = {"configs": {"zone": {}, "subzone": {}}}
+    result_container: dict[str, Any] = {"configs": {"zone": {}, "subzone": {}}}
     await process_subzone_rows(mock_conn, result_container)
     assert "arkhamcity/downtown" in result_container["configs"]["subzone"]
     assert isinstance(result_container["configs"]["subzone"]["arkhamcity/downtown"], ZoneConfiguration)
@@ -160,7 +161,7 @@ async def test_process_subzone_rows_empty():
     """Test process_subzone_rows() handles empty result."""
     mock_conn = AsyncMock()
     mock_conn.fetch = AsyncMock(return_value=[])
-    result_container = {"configs": {"zone": {}, "subzone": {}}}
+    result_container: dict[str, Any] = {"configs": {"zone": {}, "subzone": {}}}
     await process_subzone_rows(mock_conn, result_container)
     assert result_container["configs"]["subzone"] == {}
 
@@ -171,7 +172,7 @@ async def test_async_load_zone_configurations_success():
     mock_conn = AsyncMock()
     mock_conn.fetch = AsyncMock(return_value=[])
     mock_conn.close = AsyncMock()
-    result_container = {"configs": {"zone": {}, "subzone": {}}}
+    result_container: dict[str, Any] = {"configs": {"zone": {}, "subzone": {}}}
     with patch("server.npc.zone_config_loader.asyncpg.connect", new_callable=AsyncMock, return_value=mock_conn):
         with patch.dict("os.environ", {"DATABASE_URL": "postgresql://localhost/test"}):
             await async_load_zone_configurations(result_container)
@@ -184,7 +185,7 @@ async def test_async_load_zone_configurations_converts_url():
     mock_conn = AsyncMock()
     mock_conn.fetch = AsyncMock(return_value=[])
     mock_conn.close = AsyncMock()
-    result_container = {"configs": {"zone": {}, "subzone": {}}}
+    result_container: dict[str, Any] = {"configs": {"zone": {}, "subzone": {}}}
     with patch(
         "server.npc.zone_config_loader.asyncpg.connect", new_callable=AsyncMock, return_value=mock_conn
     ) as mock_connect:
@@ -198,7 +199,7 @@ async def test_async_load_zone_configurations_converts_url():
 @pytest.mark.asyncio
 async def test_async_load_zone_configurations_no_database_url():
     """Test async_load_zone_configurations() raises error when DATABASE_URL not set."""
-    result_container = {"configs": {"zone": {}, "subzone": {}}}
+    result_container: dict[str, Any] = {"configs": {"zone": {}, "subzone": {}}}
     with patch.dict("os.environ", {}, clear=True):
         with pytest.raises(ValueError, match="DATABASE_URL environment variable not set"):
             await async_load_zone_configurations(result_container)
@@ -207,7 +208,7 @@ async def test_async_load_zone_configurations_no_database_url():
 @pytest.mark.asyncio
 async def test_async_load_zone_configurations_error():
     """Test async_load_zone_configurations() handles database errors."""
-    result_container = {"configs": {"zone": {}, "subzone": {}}}
+    result_container: dict[str, Any] = {"configs": {"zone": {}, "subzone": {}}}
     with patch(
         "server.npc.zone_config_loader.asyncpg.connect",
         new_callable=AsyncMock,
@@ -225,7 +226,7 @@ async def test_async_load_zone_configurations_closes_connection():
     mock_conn = AsyncMock()
     mock_conn.fetch = AsyncMock(return_value=[])
     mock_conn.close = AsyncMock()
-    result_container = {"configs": {"zone": {}, "subzone": {}}}
+    result_container: dict[str, Any] = {"configs": {"zone": {}, "subzone": {}}}
     with patch("server.npc.zone_config_loader.asyncpg.connect", new_callable=AsyncMock, return_value=mock_conn):
         with patch.dict("os.environ", {"DATABASE_URL": "postgresql://localhost/test"}):
             await async_load_zone_configurations(result_container)

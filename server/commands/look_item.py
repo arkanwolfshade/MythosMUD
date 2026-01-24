@@ -202,7 +202,7 @@ async def _handle_item_look(  # pylint: disable=too-many-arguments,too-many-posi
     room_drops: list[dict[str, Any]],
     player: Any,
     prototype_registry: Any,
-    command_data: dict,
+    command_data: dict[str, Any],
     player_name: str,
 ) -> dict[str, Any] | None:
     """Handle looking at a specific item."""

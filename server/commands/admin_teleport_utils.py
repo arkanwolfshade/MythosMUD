@@ -7,7 +7,7 @@ including player lookup, teleport effect messages, and broadcasting.
 
 # pylint: disable=too-many-arguments,too-many-return-statements  # Reason: Teleport utilities require many parameters for context and validation and multiple return statements for early validation returns
 
-from typing import Any
+from typing import Any, cast
 
 from ..realtime.envelope import build_event
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -30,7 +30,10 @@ async def get_online_player_by_display_name(display_name: str, connection_manage
         logger.warning("Connection manager not available for online player lookup")
         return None
 
-    return connection_manager.get_online_player_by_display_name(display_name)
+    result: dict[str, Any] | None = cast(
+        dict[str, Any] | None, connection_manager.get_online_player_by_display_name(display_name)
+    )
+    return result
 
 
 def create_teleport_effect_message(

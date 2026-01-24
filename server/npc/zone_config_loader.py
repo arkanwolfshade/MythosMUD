@@ -178,7 +178,7 @@ def load_zone_configurations() -> dict[str, ZoneConfiguration]:
     """
     result_container: dict[str, Any] = {"configs": {"zone": {}, "subzone": {}}, "error": None}
 
-    def run_async():
+    def run_async() -> None:
         new_loop = asyncio.new_event_loop()
         asyncio.set_event_loop(new_loop)
         try:

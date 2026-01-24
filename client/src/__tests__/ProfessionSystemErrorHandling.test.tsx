@@ -181,15 +181,13 @@ describe('Profession System Error Handling and Edge Cases', () => {
       fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
       fireEvent.click(registerButton);
 
-      // Should show error message when profession API fails
-      // Wait for loading to complete and error to appear
-      // The component shows "Error Loading Professions" heading and the error message
+      // Should return to login screen when server unavailability is detected
+      // Wait for the app to navigate back to login
       await waitFor(
         () => {
-          // Check for the error heading first to ensure we're past loading state
-          expect(screen.getByText('Error Loading Professions')).toBeInTheDocument();
-          // Then check for the error message
-          expect(screen.getByText('Network error')).toBeInTheDocument();
+          // When server unavailability is detected, the app returns to login screen
+          expect(screen.getByText('MythosMUD')).toBeInTheDocument();
+          expect(screen.getByText('Server is unavailable. Please try again later.')).toBeInTheDocument();
         },
         { timeout: 3000 }
       );
@@ -334,10 +332,16 @@ describe('Profession System Error Handling and Edge Cases', () => {
       const nextButton = screen.getByText('Next');
       fireEvent.click(nextButton);
 
-      // Should show error when stat rolling fails
-      await waitFor(() => {
-        expect(screen.getByText('Failed to connect to server')).toBeInTheDocument();
-      });
+      // Should return to login when stat rolling fails
+      // "Stat rolling failed" doesn't match server unavailability patterns,
+      // so it calls onError('Failed to connect to server'), which triggers returnToLogin()
+      await waitFor(
+        () => {
+          expect(screen.getByText('MythosMUD')).toBeInTheDocument();
+          expect(screen.getByText('Server is unavailable. Please try again later.')).toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
     });
 
     it('should handle invalid profession ID in stat rolling', async () => {
@@ -460,9 +464,14 @@ describe('Profession System Error Handling and Edge Cases', () => {
       fireEvent.click(nextButton);
 
       // Should handle malformed response gracefully
-      await waitFor(() => {
-        expect(screen.getByText('Failed to load stats. Please try again.')).toBeInTheDocument();
-      });
+      // Validation error triggers onError('Failed to connect to server'), which returns to login
+      await waitFor(
+        () => {
+          expect(screen.getByText('MythosMUD')).toBeInTheDocument();
+          expect(screen.getByText('Server is unavailable. Please try again later.')).toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
     });
   });
 

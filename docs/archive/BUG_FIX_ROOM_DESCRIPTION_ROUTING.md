@@ -39,16 +39,27 @@ Because the room name appears first, these patterns never matched, and room desc
 ### The Chain of Failure
 
 1. **Server** sends room description: `"Sanitarium Entrance\nA grand portico...\n\nExits: south, north"`
+
 2. **Client** receives message in `GameTerminalWithPanels.tsx` → `command_response` handler
+
 3. **`determineMessageType()`** function checks patterns:
-   - ❌ Chat patterns → No match
-   - ❌ Error patterns → No match
-   - ❌ System patterns → **No match** (room name at start prevents `/^A /` from matching)
+
+   ❌ Chat patterns → No match
+
+   ❌ Error patterns → No match
+
+   ❌ System patterns → **No match** (room name at start prevents `/^A /` from matching)
+
    - ⚠️ Falls through to default → Returns `{ type: 'command' }`
+
 4. **Message object created** with `messageType: 'command'`, `channel: undefined`
+
 5. **`ChatPanel.tsx`** filter checks:
-   - ✅ `messageType === 'system'`? → NO (it's 'command'), so NOT excluded
-   - ✅ Filter allows it through
+
+   ✅ `messageType === 'system'`? → NO (it's 'command'), so NOT excluded
+
+   ✅ Filter allows it through
+
 6. **Result**: Room description appears in BOTH Chat Panel and Game Log Panel
 
 ## The Solution
@@ -62,9 +73,11 @@ Added a robust pattern that matches "Exits:" **anywhere** in the message, not ju
 ```
 
 This pattern:
-- ✅ Matches case-insensitively (`/i` flag)
-- ✅ Works regardless of room name
-- ✅ Works regardless of description text structure
+✅ Matches case-insensitively (`/i` flag)
+
+✅ Works regardless of room name
+
+✅ Works regardless of description text structure
 - ✅ Handles both "Exit:" and "Exits:"
 - ✅ No positional anchors (`^` or `$`) so it matches anywhere in the message
 
@@ -91,6 +104,7 @@ This pattern:
 ### `client/src/components/GameTerminalWithPanels.tsx`
 
 **Changed:** Removed all debug `console.log()` statements:
+
 - Lines 458-483: Removed CRITICAL DEBUG logging for message array state
 - Lines 486-494: Removed Message Processing Debug logging
 - Line 824-830: Removed CLIENT DEBUG logging for command submit
@@ -104,10 +118,12 @@ This pattern:
 **Test Command:** `look`
 
 **Before Fix:**
+
 - Chat Panel: Shows room description ❌
 - Game Log Panel: Shows room description ✅
 
 **After Fix:**
+
 - Chat Panel: "No messages yet. Start chatting to see messages here." ✅
 - Game Log Panel: Shows full room description ✅
 
@@ -155,9 +171,11 @@ GameLogPanel.tsx
 ### Pattern Matching Logic
 
 The `/Exits?:/i` pattern is:
-- **Simple**: No complex regex logic to maintain
-- **Reliable**: Definitive marker present in ALL room descriptions
-- **Flexible**: Works with any room name or description text
+**Simple**: No complex regex logic to maintain
+
+**Reliable**: Definitive marker present in ALL room descriptions
+
+**Flexible**: Works with any room name or description text
 - **Case-insensitive**: Handles "Exits:", "Exit:", "exits:", or "exit:"
 - **Position-independent**: Matches anywhere in the message
 
@@ -170,12 +188,14 @@ The `/Exits?:/i` pattern is:
 
 ## Related Code
 
-- **Server-side room description formatting**: `server/commands/exploration_commands.py` (line 82)
+**Server-side room description formatting**: `server/commands/exploration_commands.py` (line 82)
+
   ```python
   return {"result": f"{name}\n{desc}\n\nExits: {exit_list}"}
   ```
 
-- **Chat Panel system message exclusion**: `client/src/components/panels/ChatPanel.tsx`
+**Chat Panel system message exclusion**: `client/src/components/panels/ChatPanel.tsx`
+
   ```typescript
   if (message.messageType === 'system') {
     return false;  // Exclude from Chat Panel
@@ -184,15 +204,18 @@ The `/Exits?:/i` pattern is:
 
 ## Next Steps
 
-- ✅ Bug fixed and verified
-- ✅ Debug logging cleaned up
-- ✅ Code ready for commit
+✅ Bug fixed and verified
+
+✅ Debug logging cleaned up
+
+✅ Code ready for commit
 - ⏭️ Monitor for edge cases with different room descriptions
 - ⏭️ Consider adding unit tests for message categorization
 
 ## Notes
 
 This investigation followed the `@GAME_BUG_INVESTIGATION_PLAYBOOK.mdc` methodology, utilizing:
+
 - Systematic debugging with console logging
 - Pattern verification with actual server data
 - Visual confirmation via browser testing

@@ -6,14 +6,17 @@ This module contains the who command handler and related helper functions.
 
 # pylint: disable=too-many-locals,too-many-return-statements  # Reason: Who commands require many intermediate variables for complex player listing logic and multiple return statements for early validation returns
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from ..structured_logging.enhanced_logging_config import get_logger
+
+if TYPE_CHECKING:
+    from ..models.player import Player
 
 logger = get_logger(__name__)
 
 
-def filter_players_by_name(players: list, filter_term: str) -> list:
+def filter_players_by_name(players: list[Any], filter_term: str) -> list[Any]:
     """
     Filter players by case-insensitive partial name matching.
 
@@ -69,7 +72,7 @@ def format_player_location(room_id: str) -> str:
         return "Unknown Location"
 
 
-def format_player_entry(player) -> str:
+def format_player_entry(player: "Player") -> str:
     """
     Format a single player entry for the who command output.
 
@@ -134,7 +137,7 @@ def parse_last_active_datetime(last_active: Any) -> Any:
     return last_active
 
 
-async def filter_online_players(players: list, online_threshold: Any) -> list:
+async def filter_online_players(players: list[Any], online_threshold: Any) -> list[Any]:
     """
     Filter players to only those who are online (active within threshold).
 
@@ -161,7 +164,7 @@ async def filter_online_players(players: list, online_threshold: Any) -> list:
     return online_players
 
 
-def format_who_result(players: list, filter_term: str | None = None) -> str:
+def format_who_result(players: list[Any], filter_term: str | None = None) -> str:
     """
     Format the who command result message.
 
@@ -187,7 +190,7 @@ def format_who_result(players: list, filter_term: str | None = None) -> str:
     return f"Online Players ({len(players)}): {player_list}"
 
 
-def get_players_for_who(online_players: list, filter_term: str) -> tuple[list, str | None]:
+def get_players_for_who(online_players: list[Any], filter_term: str) -> tuple[list[Any], str | None]:
     """
     Get the list of players to show and the effective filter term.
 
@@ -205,7 +208,11 @@ def get_players_for_who(online_players: list, filter_term: str) -> tuple[list, s
 
 
 async def handle_who_command(
-    command_data: dict, _current_user: dict, request: Any, _alias_storage: Any | None, player_name: str
+    command_data: dict[str, Any],
+    _current_user: dict[str, Any],
+    request: Any,
+    _alias_storage: Any | None,
+    player_name: str,
 ) -> dict[str, str]:
     """
     Handle the who command for listing online players.

@@ -22,13 +22,13 @@ class MuteCommand(BaseCommand):
 
     @field_validator("player_name")
     @classmethod
-    def validate_player_name_field(cls, v):
+    def validate_player_name_field(cls: type["MuteCommand"], v: str) -> str:
         """Validate player name format using centralized validation."""
         return validate_player_name(v)
 
     @field_validator("reason")
     @classmethod
-    def validate_reason(cls, v):
+    def validate_reason(cls: type["MuteCommand"], v: str | None) -> str | None:
         """Validate mute reason for security using centralized validation."""
         if v is None:
             return v
@@ -43,7 +43,7 @@ class UnmuteCommand(BaseCommand):
 
     @field_validator("player_name")
     @classmethod
-    def validate_player_name_field(cls, v):
+    def validate_player_name_field(cls: type["UnmuteCommand"], v: str) -> str:
         """Validate player name format using centralized validation."""
         return validate_player_name(v)
 
@@ -58,13 +58,13 @@ class MuteGlobalCommand(BaseCommand):
 
     @field_validator("player_name")
     @classmethod
-    def validate_player_name_field(cls, v):
+    def validate_player_name_field(cls: type["MuteGlobalCommand"], v: str) -> str:
         """Validate player name format using centralized validation."""
         return validate_player_name(v)
 
     @field_validator("reason")
     @classmethod
-    def validate_reason(cls, v):
+    def validate_reason(cls: type["MuteGlobalCommand"], v: str | None) -> str | None:
         """Validate mute reason for security using centralized validation."""
         if v is None:
             return v
@@ -79,7 +79,7 @@ class UnmuteGlobalCommand(BaseCommand):
 
     @field_validator("player_name")
     @classmethod
-    def validate_player_name_field(cls, v):
+    def validate_player_name_field(cls: type["UnmuteGlobalCommand"], v: str) -> str:
         """Validate player name format using centralized validation."""
         return validate_player_name(v)
 
@@ -92,7 +92,7 @@ class AddAdminCommand(BaseCommand):
 
     @field_validator("player_name")
     @classmethod
-    def validate_player_name_field(cls, v):
+    def validate_player_name_field(cls: type["AddAdminCommand"], v: str) -> str:
         """Validate player name format using centralized validation."""
         return validate_player_name(v)
 

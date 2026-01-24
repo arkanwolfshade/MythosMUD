@@ -264,7 +264,7 @@ async def rollback_migration(session: AsyncSession) -> dict[str, Any]:
     return rollback_results
 
 
-async def main():
+async def main() -> None:
     """Main migration function."""
     import argparse
 

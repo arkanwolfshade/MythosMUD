@@ -11,16 +11,19 @@ This specification defines the comprehensive error logging system for MythosMUD,
 Our current system has several components in place:
 
 1. **StructLog Configuration** (`server/logging_config.py`)
+
    - Comprehensive logging setup with categorized log files
    - Automatic error logging in `MythosMUDError` base class
    - Proper log rotation and file management
 
 2. **Error Hierarchy** (`server/exceptions.py`)
+
    - `MythosMUDError` base class with automatic logging
    - Structured error context with metadata
    - Proper error categorization
 
 3. **Error Handlers** (`server/error_handlers.py`)
+
    - FastAPI exception handlers with logging
    - Error response standardization
    - Graceful degradation support
@@ -56,6 +59,7 @@ log_categories = {
 ### 2. Required Error Logging Patterns
 
 #### Pattern 1: MythosMUDError Usage (Preferred)
+
 ```python
 from server.exceptions import MythosMUDError, create_error_context
 from server.logging_config import get_logger
@@ -63,6 +67,7 @@ from server.logging_config import get_logger
 logger = get_logger(__name__)
 
 # Automatic logging via base class
+
 raise AuthenticationError(
     "Invalid credentials provided",
     context=create_error_context(
@@ -76,6 +81,7 @@ raise AuthenticationError(
 ```
 
 #### Pattern 2: Wrapped Exception Logging
+
 ```python
 from server.exceptions import handle_exception, create_error_context
 from server.logging_config import get_logger
@@ -84,9 +90,11 @@ logger = get_logger(__name__)
 
 try:
     # Some operation that might fail
+
     result = risky_operation()
 except Exception as e:
     # Convert and log the exception
+
     context = create_error_context(
         user_id=user_id,
         command="risky_operation",
@@ -97,6 +105,7 @@ except Exception as e:
 ```
 
 #### Pattern 3: HTTPException with Logging
+
 ```python
 from fastapi import HTTPException
 from server.logging_config import get_logger
@@ -104,6 +113,7 @@ from server.logging_config import get_logger
 logger = get_logger(__name__)
 
 # Log before raising HTTPException
+
 logger.warning(
     "Authentication failed",
     user_id=user_id,
@@ -132,9 +142,11 @@ class ErrorContext:
 
 ### 4. Logging Levels and Usage
 
-- **ERROR**: System errors, exceptions, failures
-- **WARNING**: Recoverable issues, deprecated usage, rate limiting
-- **INFO**: Normal operations, successful authentications
+**ERROR**: System errors, exceptions, failures
+
+**WARNING**: Recoverable issues, deprecated usage, rate limiting
+
+**INFO**: Normal operations, successful authentications
 - **DEBUG**: Detailed diagnostic information
 
 ## Implementation Tasks
@@ -142,113 +154,151 @@ class ErrorContext:
 ### Phase 1: Core Infrastructure Enhancement
 
 #### Task 1.1: Enhanced Exception Wrapper
-- [ ] Create `log_and_raise` utility function
+
+[ ] Create `log_and_raise` utility function
+
 - [ ] Implement automatic context detection
 - [ ] Add support for HTTPException logging
 
 #### Task 1.2: HTTPException Integration
-- [ ] Create custom HTTPException subclass with logging
+
+[ ] Create custom HTTPException subclass with logging
+
 - [ ] Update FastAPI handlers to use logged exceptions
 - [ ] Implement automatic context extraction
 
 #### Task 1.3: Third-party Exception Handling
-- [ ] Create wrapper for common third-party exceptions
+
+[ ] Create wrapper for common third-party exceptions
+
 - [ ] Implement automatic exception conversion
 - [ ] Add proper error categorization
 
 ### Phase 2: Codebase Integration
 
 #### Task 2.1: API Layer Updates
-- [ ] Update `server/api/real_time.py` error handling
+
+[ ] Update `server/api/real_time.py` error handling
+
 - [ ] Update `server/api/players.py` error handling
 - [ ] Update `server/api/rooms.py` error handling
 - [ ] Update `server/api/monitoring.py` error handling
 
 #### Task 2.2: Authentication Layer Updates
-- [ ] Update `server/auth/argon2_utils.py` error handling
+
+[ ] Update `server/auth/argon2_utils.py` error handling
+
 - [ ] Update `server/auth/endpoints.py` error handling
 - [ ] Update `server/auth/dependencies.py` error handling
 - [ ] Update `server/auth/invites.py` error handling
 
 #### Task 2.3: Game Logic Updates
-- [ ] Update `server/game/player_service.py` error handling
+
+[ ] Update `server/game/player_service.py` error handling
+
 - [ ] Update `server/game/movement_service.py` error handling
 - [ ] Update `server/game/emote_service.py` error handling
 
 #### Task 2.4: Utility Layer Updates
-- [ ] Update `server/utils/command_parser.py` error handling
+
+[ ] Update `server/utils/command_parser.py` error handling
+
 - [ ] Update `server/utils/rate_limiter.py` error handling
 - [ ] Update `server/security_utils.py` error handling
 
 #### Task 2.5: Persistence Layer Updates
-- [ ] Update `server/persistence.py` error handling
+
+[ ] Update `server/persistence.py` error handling
+
 - [ ] Update `server/database.py` error handling
 - [ ] Update `server/world_loader.py` error handling
 
 ### Phase 3: Testing and Validation
 
 #### Task 3.1: Test Coverage
-- [ ] Create tests for new error logging utilities
+
+[ ] Create tests for new error logging utilities
+
 - [ ] Update existing tests to verify logging behavior
 - [ ] Add integration tests for error flow
 
 #### Task 3.2: Log Analysis
-- [ ] Create log analysis tools
+
+[ ] Create log analysis tools
+
 - [ ] Implement error pattern detection
 - [ ] Add monitoring for error rates
 
 #### Task 3.3: Documentation
-- [ ] Update developer documentation
+
+[ ] Update developer documentation
+
 - [ ] Create error handling guidelines
 - [ ] Add troubleshooting guides
 
 ## Security Considerations
 
 ### COPPA Compliance
-- No personal information in error logs
+
+No personal information in error logs
+
 - Sanitized error messages for user-facing content
 - Secure log file storage and access controls
 
 ### Data Protection
-- Sensitive data exclusion from logs
+
+Sensitive data exclusion from logs
+
 - Proper log retention policies
 - Secure log transmission and storage
 
 ## Performance Considerations
 
 ### Logging Overhead
-- Minimal performance impact on error paths
+
+Minimal performance impact on error paths
+
 - Efficient context serialization
 - Proper log level filtering
 
 ### Storage Management
-- Automatic log rotation
+
+Automatic log rotation
+
 - Configurable retention policies
 - Efficient log file organization
 
 ## Monitoring and Alerting
 
 ### Error Metrics
-- Error rate tracking by category
+
+Error rate tracking by category
+
 - Response time impact measurement
 - User experience degradation detection
 
 ### Alerting Thresholds
-- Critical error rate thresholds
+
+Critical error rate thresholds
+
 - Performance degradation alerts
 - Security incident detection
 
 ## Implementation Guidelines
 
 ### Code Review Checklist
-- [ ] All exceptions include proper logging
+
+[ ] All exceptions include proper logging
+
 - [ ] Error context is complete and relevant
 - [ ] Log levels are appropriate
 - [ ] No sensitive data in logs
 - [ ] Proper error categorization
 
 ### Testing Requirements
-- [ ] Unit tests for error logging
+
+[ ] Unit tests for error logging
+
 - [ ] Integration tests for error flow
 - [ ] Performance tests for logging overhead
 - [ ] Security tests for data protection
@@ -256,13 +306,17 @@ class ErrorContext:
 ## Success Criteria
 
 ### Functional Requirements
-- All Python exceptions are properly logged
+
+All Python exceptions are properly logged
+
 - Error context is complete and structured
 - Log files are properly categorized
 - Error responses are user-friendly
 
 ### Non-Functional Requirements
-- Logging overhead < 5ms per error
+
+Logging overhead < 5ms per error
+
 - 100% error coverage in production code
 - Zero sensitive data leakage
 - Comprehensive test coverage (>90%)
@@ -270,13 +324,17 @@ class ErrorContext:
 ## Future Enhancements
 
 ### Advanced Features
-- Machine learning error pattern detection
+
+Machine learning error pattern detection
+
 - Automated error resolution suggestions
 - Real-time error dashboard
 - Predictive error analysis
 
 ### Integration Opportunities
-- External monitoring system integration
+
+External monitoring system integration
+
 - Error reporting to development teams
 - Automated incident response
 - Performance optimization recommendations

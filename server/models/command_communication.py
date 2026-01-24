@@ -25,7 +25,7 @@ class SayCommand(BaseCommand):
 
     @field_validator("message")
     @classmethod
-    def validate_message(cls, v):
+    def validate_message(cls: type["SayCommand"], v: str) -> str:
         """Validate message content for security using centralized validation."""
         return validate_message_content(v)
 
@@ -38,7 +38,7 @@ class LocalCommand(BaseCommand):
 
     @field_validator("message")
     @classmethod
-    def validate_message(cls, v):
+    def validate_message(cls: type["LocalCommand"], v: str) -> str:
         """Validate message content for security using centralized validation."""
         return validate_message_content(v)
 
@@ -51,7 +51,7 @@ class SystemCommand(BaseCommand):
 
     @field_validator("message")
     @classmethod
-    def validate_message(cls, v):
+    def validate_message(cls: type["SystemCommand"], v: str) -> str:
         """Validate system message content for security using centralized validation."""
         return validate_message_content(v)
 
@@ -64,7 +64,7 @@ class EmoteCommand(BaseCommand):
 
     @field_validator("action")
     @classmethod
-    def validate_action(cls, v):
+    def validate_action(cls: type["EmoteCommand"], v: str) -> str:
         """Validate emote action for security using centralized validation."""
         return validate_action_content(v)
 
@@ -77,7 +77,7 @@ class MeCommand(BaseCommand):
 
     @field_validator("action")
     @classmethod
-    def validate_action(cls, v):
+    def validate_action(cls: type["MeCommand"], v: str) -> str:
         """Validate me action for security using centralized validation."""
         return validate_action_content(v)
 
@@ -90,7 +90,7 @@ class PoseCommand(BaseCommand):
 
     @field_validator("pose")
     @classmethod
-    def validate_pose(cls, v):
+    def validate_pose(cls: type["PoseCommand"], v: str | None) -> str | None:
         """Validate pose description for security using centralized validation."""
         if v is None:
             return v
@@ -106,13 +106,13 @@ class WhisperCommand(BaseCommand):
 
     @field_validator("target")
     @classmethod
-    def validate_target(cls, v):
+    def validate_target(cls: type["WhisperCommand"], v: str) -> str:
         """Validate target player name format using centralized validation."""
         return validate_target_player(v)
 
     @field_validator("message")
     @classmethod
-    def validate_message(cls, v):
+    def validate_message(cls: type["WhisperCommand"], v: str) -> str:
         """Validate message content for security using centralized validation."""
         return validate_message_content(v)
 
@@ -125,6 +125,6 @@ class ReplyCommand(BaseCommand):
 
     @field_validator("message")
     @classmethod
-    def validate_message(cls, v):
+    def validate_message(cls: type["ReplyCommand"], v: str) -> str:
         """Validate message content for security using centralized validation."""
         return validate_message_content(v)

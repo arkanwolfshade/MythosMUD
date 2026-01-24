@@ -4,6 +4,7 @@ Unit tests for container look functionality.
 Tests the helper functions for looking at containers in rooms and equipped items.
 """
 
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock
 from uuid import UUID, uuid4
 
@@ -172,7 +173,7 @@ def test_format_container_contents_with_items():
 
 def test_format_container_contents_empty():
     """Test formatting container contents when empty."""
-    items = []
+    items: list[Any] = []
     result = _format_container_contents(items)
     assert len(result) == 1
     assert "(empty)" in result[0]
@@ -180,7 +181,7 @@ def test_format_container_contents_empty():
 
 def test_format_container_display_basic(sample_container):
     """Test formatting container display with basic info."""
-    command_data = {}
+    command_data: dict[str, Any] = {}
     result = _format_container_display(sample_container, None, command_data)
     assert "backpack" in result
     assert "Capacity:" in result
@@ -190,7 +191,7 @@ def test_format_container_display_with_description(sample_container, mock_protot
     """Test formatting container display with description."""
     prototype = mock_prototype_registry.get.return_value
     description = prototype.long_description
-    command_data = {}
+    command_data: dict[str, Any] = {}
     result = _format_container_display(sample_container, description, command_data)
     assert "backpack" in result
     assert "A sturdy backpack." in result
@@ -205,7 +206,7 @@ def test_format_container_display_locked():
         "capacity_slots": 10,
         "lock_state": "locked",
     }
-    command_data = {}
+    command_data: dict[str, Any] = {}
     result = _format_container_display(container, None, command_data)
     assert "Locked" in result
 
@@ -219,14 +220,14 @@ def test_format_container_display_sealed():
         "capacity_slots": 10,
         "lock_state": "sealed",
     }
-    command_data = {}
+    command_data: dict[str, Any] = {}
     result = _format_container_display(container, None, command_data)
     assert "Sealed" in result
 
 
 def test_format_container_display_with_contents(sample_container):
     """Test formatting container display with look_in flag."""
-    command_data = {"look_in": True}
+    command_data: dict[str, Any] = {"look_in": True}
     result = _format_container_display(sample_container, None, command_data)
     assert "Contents:" in result
     assert "sword" in result
@@ -234,14 +235,15 @@ def test_format_container_display_with_contents(sample_container):
 
 def test_format_container_display_with_target_type(sample_container):
     """Test formatting container display with target_type container."""
-    command_data = {"target_type": "container"}
+    command_data: dict[str, Any] = {"target_type": "container"}
     result = _format_container_display(sample_container, None, command_data)
     assert "Contents:" in result
 
 
 def test_get_container_description_from_item(mock_prototype_registry, sample_equipped_container):
     """Test getting container description from equipped item."""
-    result = _get_container_description(sample_container, sample_equipped_container, mock_prototype_registry)
+    # Reason: pytest fixtures are typed as FixtureFunctionDefinition by mypy, but return actual values at runtime
+    result = _get_container_description(sample_container, sample_equipped_container, mock_prototype_registry)  # type: ignore[arg-type]
     assert result == "A sturdy backpack."
 
 
@@ -327,7 +329,7 @@ async def test_handle_container_look_success(sample_container, mock_prototype_re
     player.get_equipped_items.return_value = {}
     mock_persistence = MagicMock()
     mock_request = MagicMock()
-    command_data = {}
+    command_data: dict[str, Any] = {}
 
     result = await _handle_container_look(
         "backpack",
@@ -355,7 +357,7 @@ async def test_handle_container_look_not_found(mock_prototype_registry):
     player.get_equipped_items.return_value = {}
     mock_persistence = MagicMock()
     mock_request = MagicMock()
-    command_data = {}
+    command_data: dict[str, Any] = {}
 
     result = await _handle_container_look(
         "chest",
@@ -434,7 +436,7 @@ def test_format_container_display_with_metadata_name():
         "capacity_slots": 10,
         "lock_state": "unlocked",
     }
-    command_data = {}
+    command_data: dict[str, Any] = {}
     result = _format_container_display(container, None, command_data)
     assert "Custom Backpack" in result
 
@@ -448,7 +450,7 @@ def test_format_container_display_fallback_name():
         "capacity_slots": 10,
         "lock_state": "unlocked",
     }
-    command_data = {}
+    command_data: dict[str, Any] = {}
     result = _format_container_display(container, None, command_data)
     assert "Container" in result
 

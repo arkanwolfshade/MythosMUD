@@ -8,18 +8,23 @@ source data.
 The `generate_sql.mjs` script reads JSON data files and generates PostgreSQL
 INSERT statements for:
 
-- **World data**: Zones, subzones, rooms, and room links
-- **Calendar data**: Holidays and NPC schedules
-- **Emotes**: Player emotes and aliases
-- **Zone configurations**: Zone and subzone configuration mappings
+**World data**: Zones, subzones, rooms, and room links
+
+**Calendar data**: Holidays and NPC schedules
+
+**Emotes**: Player emotes and aliases
+
+**Zone configurations**: Zone and subzone configuration mappings
 
 ## Output
 
 The script generates a single SQL file:
 
-- **Output location**: `data/db/00_world_and_emotes.sql`
-- **Format**: PostgreSQL-compatible INSERT statements with `ON CONFLICT` handling
-- **Structure**: Transaction-wrapped with proper dependency ordering
+**Output location**: `data/db/00_world_and_emotes.sql`
+
+**Format**: PostgreSQL-compatible INSERT statements with `ON CONFLICT` handling
+
+**Structure**: Transaction-wrapped with proper dependency ordering
 
 ## Usage
 
@@ -83,16 +88,21 @@ an error.
 
 All IDs are generated using UUID v5 with a deterministic namespace:
 
-- **Namespace UUID**: `c8e7f86d-b1c9-4074-8b2e-9f3c6c8a9f2a`
-- **Format**: `uuidv5("table_name:stable_id", NAMESPACE)`
-- **Deterministic**: Same input always produces same UUID
+**Namespace UUID**: `c8e7f86d-b1c9-4074-8b2e-9f3c6c8a9f2a`
+
+**Format**: `uuidv5("table_name:stable_id", NAMESPACE)`
+
+**Deterministic**: Same input always produces same UUID
 
 ## Files
 
-- **`generate_sql.mjs`** - Main generation script
-- **`validate.mjs`** - Standalone validation script (if needed)
-- **`package.json`** - Node.js dependencies
-- **`temp_debug.txt`** - Temporary debug output (can be deleted)
+**`generate_sql.mjs`** - Main generation script
+
+**`validate.mjs`** - Standalone validation script (if needed)
+
+**`package.json`** - Node.js dependencies
+
+**`temp_debug.txt`** - Temporary debug output (can be deleted)
 
 ## Integration
 
@@ -104,8 +114,12 @@ The generated SQL file (`data/db/00_world_and_emotes.sql`) is:
 
 ## Notes
 
-- The script automatically handles SQL escaping (single quotes, etc.)
+The script automatically handles SQL escaping (single quotes, etc.)
+
 - All INSERT statements use `ON CONFLICT DO NOTHING` for idempotency
+
 - Zone and subzone configurations are updated with `ON CONFLICT DO UPDATE` to
+
   allow config changes
+
 - Room links only include links where both endpoints exist in the dataset

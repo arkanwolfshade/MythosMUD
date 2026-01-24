@@ -37,7 +37,8 @@ Different scenarios have different complexity requirements - some can use standa
 
 ## Out of Scope
 
-- Modifying the actual test scenarios or expected behaviors
+Modifying the actual test scenarios or expected behaviors
+
 - Changing the server or client code being tested
 - Implementing new testing frameworks beyond Playwright
 - Creating CI/CD pipeline integration (separate task)

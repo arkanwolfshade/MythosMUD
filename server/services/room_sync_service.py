@@ -14,7 +14,7 @@ of our eldritch architecture.
 import asyncio
 import time
 from collections import defaultdict
-from typing import Any, TypeAlias, TypeVar
+from typing import Any, TypeAlias, TypeVar, cast
 
 from anyio import Lock
 
@@ -220,7 +220,8 @@ class RoomSyncService:  # pylint: disable=too-many-instance-attributes  # Reason
                     room_id=room_id,
                     room_name=fresh_room_data.get("name", "Unknown"),
                 )
-                return fresh_room_data
+                result: dict[str, Any] = cast(dict[str, Any], fresh_room_data)
+                return result
             logger.warning("Fresh room data not found", room_id=room_id)
             return None
         except (AttributeError, TypeError) as fetch_error:
@@ -316,7 +317,8 @@ class RoomSyncService:  # pylint: disable=too-many-instance-attributes  # Reason
                 return {"success": False, "errors": ["Missing required transition data"], "player_id": player_id}
 
             # Type guard for mypy
-            assert isinstance(to_room, str), "to_room must be str after validation"
+            if not isinstance(to_room, str):
+                raise TypeError("to_room must be str after validation")
 
             # Use room-specific lock to prevent race conditions
             async with self._room_update_locks[to_room]:

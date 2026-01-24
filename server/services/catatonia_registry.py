@@ -7,6 +7,7 @@ import uuid
 from collections.abc import Awaitable, Callable
 from datetime import UTC, datetime
 from threading import RLock
+from typing import Any
 
 from ..structured_logging.enhanced_logging_config import get_logger
 from .lucidity_service import CatatoniaObserverProtocol
@@ -84,7 +85,7 @@ class CatatoniaRegistry(CatatoniaObserverProtocol):
                     task = asyncio.create_task(result)
 
                     # Add a callback to log if it fails (defensive logging)
-                    def log_failover_error(t: asyncio.Task) -> None:
+                    def log_failover_error(t: asyncio.Task[Any]) -> None:
                         try:
                             t.result()  # This will raise if task failed
                         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Failover callback task errors unpredictable, must handle gracefully

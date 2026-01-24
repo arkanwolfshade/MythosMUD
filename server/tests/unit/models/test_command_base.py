@@ -16,16 +16,16 @@ from server.models.command_base import BaseCommand, CommandType, Direction
 
 def test_direction_enum_values():
     """Test Direction enum contains all expected values."""
-    assert Direction.NORTH == "north"
-    assert Direction.SOUTH == "south"
-    assert Direction.EAST == "east"
-    assert Direction.WEST == "west"
-    assert Direction.UP == "up"
-    assert Direction.DOWN == "down"
-    assert Direction.NORTHEAST == "northeast"
-    assert Direction.NORTHWEST == "northwest"
-    assert Direction.SOUTHEAST == "southeast"
-    assert Direction.SOUTHWEST == "southwest"
+    assert Direction.NORTH.value == "north"
+    assert Direction.SOUTH.value == "south"
+    assert Direction.EAST.value == "east"
+    assert Direction.WEST.value == "west"
+    assert Direction.UP.value == "up"
+    assert Direction.DOWN.value == "down"
+    assert Direction.NORTHEAST.value == "northeast"
+    assert Direction.NORTHWEST.value == "northwest"
+    assert Direction.SOUTHEAST.value == "southeast"
+    assert Direction.SOUTHWEST.value == "southwest"
 
 
 def test_direction_enum_all_directions():
@@ -48,8 +48,9 @@ def test_direction_enum_all_directions():
 
 def test_direction_enum_string_comparison():
     """Test Direction enum values can be compared to strings."""
-    assert Direction.NORTH == "north"
-    assert Direction.SOUTH != "north"
+    assert Direction.NORTH.value == "north"
+    # Reason: Testing inequality comparison - mypy sees as non-overlapping but valid at runtime
+    assert Direction.SOUTH.value != "north"  # type: ignore[comparison-overlap]
     assert Direction.EAST.value == "east"
 
 
@@ -58,29 +59,32 @@ def test_direction_enum_string_comparison():
 
 def test_command_type_enum_contains_look():
     """Test CommandType enum contains LOOK."""
-    assert CommandType.LOOK == "look"
-    assert CommandType.LOOK in CommandType
+    assert CommandType.LOOK == "look"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+    # Reason: Testing enum membership - always true but validates enum structure at runtime
+    assert CommandType.LOOK in CommandType  # type: ignore[unreachable]
 
 
 def test_command_type_enum_contains_communication_commands():
     """Test CommandType enum contains communication commands."""
-    assert CommandType.SAY == "say"
-    assert CommandType.LOCAL == "local"
-    assert CommandType.WHISPER == "whisper"
-    assert CommandType.REPLY == "reply"
-    assert CommandType.EMOTE == "emote"
+    assert CommandType.SAY.value == "say"
+    assert CommandType.LOCAL.value == "local"
+    assert CommandType.WHISPER.value == "whisper"
+    assert CommandType.REPLY.value == "reply"
+    assert CommandType.EMOTE.value == "emote"
 
 
 def test_command_type_enum_contains_exploration_commands():
     """Test CommandType enum contains exploration commands."""
-    assert CommandType.LOOK == "look"
-    assert CommandType.GO == "go"
+    assert CommandType.LOOK.value == "look"
+    assert CommandType.GO.value == "go"
 
 
 def test_command_type_enum_contains_admin_commands():
     """Test CommandType enum contains admin commands."""
-    assert CommandType.TELEPORT == "teleport"
-    assert CommandType.GOTO == "goto"
+    # Reason: Testing str enum direct comparison - valid at runtime for str enums, but mypy sees as non-overlapping
+    assert CommandType.TELEPORT == "teleport"  # type: ignore[comparison-overlap]
+    # Reason: Testing str enum - mypy sees as unreachable but valid at runtime
+    assert CommandType.GOTO == "goto"  # type: ignore[unreachable]
     assert CommandType.SUMMON == "summon"
     assert CommandType.SHUTDOWN == "shutdown"
     assert CommandType.NPC == "npc"
@@ -89,33 +93,36 @@ def test_command_type_enum_contains_admin_commands():
 
 def test_command_type_enum_contains_inventory_commands():
     """Test CommandType enum contains inventory commands."""
-    assert CommandType.INVENTORY == "inventory"
-    assert CommandType.PICKUP == "pickup"
-    assert CommandType.DROP == "drop"
-    assert CommandType.EQUIP == "equip"
-    assert CommandType.UNEQUIP == "unequip"
+    assert CommandType.INVENTORY.value == "inventory"
+    assert CommandType.PICKUP.value == "pickup"
+    assert CommandType.DROP.value == "drop"
+    assert CommandType.EQUIP.value == "equip"
+    assert CommandType.UNEQUIP.value == "unequip"
 
 
 def test_command_type_enum_contains_combat_commands():
     """Test CommandType enum contains combat commands."""
-    assert CommandType.ATTACK == "attack"
-    assert CommandType.PUNCH == "punch"
-    assert CommandType.KICK == "kick"
-    assert CommandType.STRIKE == "strike"
+    assert CommandType.ATTACK.value == "attack"
+    assert CommandType.PUNCH.value == "punch"
+    assert CommandType.KICK.value == "kick"
+    assert CommandType.STRIKE.value == "strike"
 
 
 def test_command_type_enum_contains_magic_commands():
     """Test CommandType enum contains magic commands."""
-    assert CommandType.CAST == "cast"
-    assert CommandType.SPELL == "spell"
+    # Reason: Testing str enum direct comparison - valid at runtime for str enums, but mypy sees as non-overlapping
+    assert CommandType.CAST == "cast"  # type: ignore[comparison-overlap]
+    # Reason: Testing str enum - mypy sees as unreachable but valid at runtime
+    assert CommandType.SPELL == "spell"  # type: ignore[unreachable]
     assert CommandType.SPELLS == "spells"
     assert CommandType.LEARN == "learn"
 
 
 def test_command_type_enum_string_comparison():
     """Test CommandType enum values can be compared to strings."""
-    assert CommandType.LOOK == "look"
-    assert CommandType.GO != "look"
+    assert CommandType.LOOK.value == "look"
+    # Reason: Testing inequality comparison - mypy sees as non-overlapping but valid at runtime
+    assert CommandType.GO.value != "look"  # type: ignore[comparison-overlap]
     assert CommandType.SAY.value == "say"
 
 
@@ -133,7 +140,8 @@ def test_base_command_instantiation():
 def test_base_command_rejects_extra_fields():
     """Test BaseCommand rejects unknown fields (extra='forbid')."""
     with pytest.raises(ValidationError) as exc_info:
-        BaseCommand(unknown_field="value")
+        # Reason: Intentionally testing Pydantic validation with extra='forbid' - extra fields should be rejected
+        BaseCommand(unknown_field="value")  # type: ignore[call-arg]
 
     error_str = str(exc_info.value).lower()
     assert "extra" in error_str and ("not permitted" in error_str or "forbidden" in error_str)

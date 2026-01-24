@@ -3,6 +3,7 @@
 ## Overview
 
 This document describes the improvements made to the E2E test suite to prevent common AI execution failures:
+
 - Infinite loops
 - Step skipping
 - Step addition
@@ -13,17 +14,20 @@ This document describes the improvements made to the E2E test suite to prevent c
 ### 1. Updated Cursor Rule (`.cursor/rules/run-multiplayer-playbook.mdc`)
 
 **What Changed:**
+
 - Renamed from "AI INVESTIGATOR" to "AI EXECUTOR" to emphasize execution role
 - Added mandatory execution protocol with 7 explicit rules
 - Added pre-execution affirmation requirement
 - Added comprehensive list of failure modes to avoid
 
 **Why:**
+
 - Makes it explicit that AI must execute, not interpret
 - Forces AI to acknowledge execution requirements before starting
 - Provides clear examples of what NOT to do
 
 **Key New Sections:**
+
 ```markdown
 ## 🛑 MANDATORY EXECUTION PROTOCOL 🛑
 
@@ -39,6 +43,7 @@ This document describes the improvements made to the E2E test suite to prevent c
 ### 2. Enhanced Execution Guards (`e2e-tests/EXECUTION_GUARDS.md`)
 
 **What Changed:**
+
 - Added 8 real-world AI execution failure patterns
 - Each failure pattern includes:
   - What AI did wrong
@@ -48,11 +53,13 @@ This document describes the improvements made to the E2E test suite to prevent c
 - Added "Golden Rule" principle
 
 **Why:**
+
 - Provides concrete examples of mistakes to avoid
 - Helps AI recognize anti-patterns in its own behavior
 - Makes consequences of deviations clear
 
 **Key New Failure Patterns:**
+
 1. "Helpful" Step Addition
 2. "Optimized" Step Skipping
 3. "Improved" Command Syntax
@@ -65,6 +72,7 @@ This document describes the improvements made to the E2E test suite to prevent c
 ### 3. Scenario Template (`e2e-tests/SCENARIO_TEMPLATE.md`)
 
 **What Changed:**
+
 - Created comprehensive template with all improvements
 - Added mandatory AI execution contract at top of every scenario
 - Added explicit step boundaries with visual separators
@@ -72,6 +80,7 @@ This document describes the improvements made to the E2E test suite to prevent c
 - Added unmissable scenario completion markers
 
 **Why:**
+
 - Provides consistent format for all scenarios
 - Makes requirements visible at every decision point
 - Prevents accidental continuation past completion
@@ -79,6 +88,7 @@ This document describes the improvements made to the E2E test suite to prevent c
 **Key Template Features:**
 
 #### A. Mandatory Execution Contract
+
 ```markdown
 ## 🤖 MANDATORY AI EXECUTION CONTRACT 🤖
 
@@ -100,9 +110,11 @@ This document describes the improvements made to the E2E test suite to prevent c
 ```
 
 #### B. Step Boundaries
+
 ```markdown
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ### STEP 1 of [N]: [Step Title]
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **🎯 Purpose**: [Why this step exists]
@@ -111,6 +123,7 @@ This document describes the improvements made to the E2E test suite to prevent c
 ```
 
 #### C. Execution Guards
+
 ```javascript
 // ═══════════════════════════════════════════════════════════════
 // EXECUTION GUARD: ONE ATTEMPT ONLY - DO NOT RETRY
@@ -122,6 +135,7 @@ This document describes the improvements made to the E2E test suite to prevent c
 ```
 
 #### D. Step Completion Checklists
+
 ```markdown
 **✅ Step 1 Completion Checklist:**
 - [ ] Commands executed exactly as written
@@ -134,6 +148,7 @@ Did you complete ALL items above?
 ```
 
 #### E. Unmissable Scenario Completion
+
 ```markdown
 ╔═══════════════════════════════════════════════════════════════╗
 ║              🎉 SCENARIO X COMPLETED 🎉                       ║
@@ -151,6 +166,7 @@ Did you complete ALL items above?
 **Problem**: AI retries steps when results are empty or unexpected
 
 **Solutions Implemented:**
+
 1. Explicit "ONE ATTEMPT ONLY" guards in code
 2. Decision points that explicitly say "NO RETRY"
 3. All verification steps document both empty and non-empty results as valid
@@ -158,6 +174,7 @@ Did you complete ALL items above?
 5. Failure Pattern #4 shows exact mistake and correction
 
 **Example:**
+
 ```javascript
 // ═══════════════════════════════════════════════════════════════
 // EXECUTION GUARD: ONE ATTEMPT ONLY - DO NOT RETRY
@@ -179,6 +196,7 @@ if (messages.length === 0) {
 **Problem**: AI skips steps it thinks are redundant or unnecessary
 
 **Solutions Implemented:**
+
 1. Mandatory execution contract requires executing ALL steps
 2. Pre-execution affirmation forces acknowledgment
 3. Each step has explicit purpose statement
@@ -186,6 +204,7 @@ if (messages.length === 0) {
 5. Failure Pattern #2 shows exact mistake and correction
 
 **Example:**
+
 ```markdown
 **🎯 Purpose**: Test that players don't see their own messages
 
@@ -200,6 +219,7 @@ different edge case that is critical for the system.
 **Problem**: AI adds "helpful" verification, debugging, or logging steps
 
 **Solutions Implemented:**
+
 1. Mandatory execution contract explicitly forbids adding steps
 2. "NO ENHANCEMENT" rule in execution protocol
 3. Each step says "execute exactly as written"
@@ -207,6 +227,7 @@ different edge case that is critical for the system.
 5. Golden Rule: "If it's not in the scenario, DON'T DO IT"
 
 **Example:**
+
 ```markdown
 **📋 Mandatory Commands** (execute exactly as written):
 
@@ -222,6 +243,7 @@ await mcp_playwright_browser_press_key({...});
 **Problem**: AI modifies commands for "clarity" or "improvement"
 
 **Solutions Implemented:**
+
 1. "NO MODIFICATION" rule in execution protocol
 2. "Character for character" requirement for commands
 3. Each command marked as "execute exactly as written"
@@ -229,6 +251,7 @@ await mcp_playwright_browser_press_key({...});
 5. Visual emphasis on exact parameter values
 
 **Example:**
+
 ```markdown
 **📋 Mandatory Commands** (execute exactly as written):
 
@@ -243,13 +266,17 @@ await mcp_playwright_browser_type({
 ## Implementation Roadmap
 
 ### Phase 1: Core Files (COMPLETED)
-- [x] Update `.cursor/rules/run-multiplayer-playbook.mdc`
+
+[x] Update `.cursor/rules/run-multiplayer-playbook.mdc`
+
 - [x] Update `e2e-tests/EXECUTION_GUARDS.md`
 - [x] Create `e2e-tests/SCENARIO_TEMPLATE.md`
 - [x] Create this documentation file
 
 ### Phase 2: High-Priority Scenarios (RECOMMENDED)
+
 Update these scenarios first as they're most commonly executed:
+
 - [ ] scenario-01-basic-connection.md
 - [ ] scenario-02-clean-game-state.md
 - [ ] scenario-05-chat-messages.md
@@ -257,7 +284,9 @@ Update these scenarios first as they're most commonly executed:
 - [ ] scenario-13-whisper-basic.md
 
 ### Phase 3: Medium-Priority Scenarios
+
 Update remaining scenarios in order:
+
 - [ ] scenario-03-movement-between-rooms.md
 - [ ] scenario-04-muting-system-emotes.md
 - [ ] scenario-06-admin-teleportation.md
@@ -276,7 +305,9 @@ Update remaining scenarios in order:
 - [ ] scenario-21-logout-accessibility.md
 
 ### Phase 4: Testing and Validation
-- [ ] Test updated scenarios with AI executor
+
+[ ] Test updated scenarios with AI executor
+
 - [ ] Document any new failure patterns discovered
 - [ ] Refine improvements based on results
 
@@ -285,26 +316,31 @@ Update remaining scenarios in order:
 ### Step-by-Step Process
 
 1. **Add Execution Contract** (top of file after title)
+
    - Copy from `SCENARIO_TEMPLATE.md` lines 3-22
    - Update scenario number and title
 
 2. **Add Step Boundaries** (for each step)
+
    - Add visual separator line before step
    - Add step number "STEP X of N"
    - Add purpose, duration, and restrictions
    - Change "Commands:" to "Mandatory Commands (execute exactly as written):"
 
 3. **Strengthen Execution Guards** (in verification steps)
+
    - Add visual separator comments
    - Add "ONE ATTEMPT ONLY" guard
    - Add "DECISION POINT" comment
    - Add explicit "DO NOT retry" messages
 
 4. **Add Step Completion Checklists** (after each step)
+
    - Copy checklist from template
    - Add "STOP! Before proceeding" section
 
 5. **Make Completion Unmissable** (final step)
+
    - Add box-drawing characters around completion message
    - Add explicit STOP instructions
    - Add cleanup commands in completion step
@@ -312,6 +348,7 @@ Update remaining scenarios in order:
 ### Example Transformation
 
 **Before:**
+
 ```markdown
 ### Step 3: Verify AW Sees Message
 
@@ -324,9 +361,11 @@ console.log('Messages:', messages);
 ```
 
 **After:**
+
 ```markdown
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ### STEP 3 of 5: Verify AW Sees Message
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **🎯 Purpose**: Test message broadcasting between players
@@ -355,6 +394,7 @@ if (messages.length === 0) {
 ```
 
 **✅ Step 3 Completion Checklist:**
+
 - [ ] Commands executed exactly as written
 - [ ] Expected result observed or documented
 - [ ] No errors encountered that require retry
@@ -362,13 +402,16 @@ if (messages.length === 0) {
 
 **🚫 STOP! Before proceeding:**
 Did you complete ALL items above?
+
 - If No: Document the issue and STOP
 - If Yes: Proceed IMMEDIATELY to Step 4
+
 ```
 
 ## Benefits of These Improvements
 
 ### For AI Executors
+
 1. **Clear Requirements**: No ambiguity about what to do
 2. **Explicit Boundaries**: Visual cues prevent mistakes
 3. **Decision Points**: Clear guidance at every verification
@@ -376,6 +419,7 @@ Did you complete ALL items above?
 5. **Completion Markers**: Impossible to miss when to stop
 
 ### For Developers
+
 1. **Consistent Format**: All scenarios follow same pattern
 2. **Easier Maintenance**: Template makes updates straightforward
 3. **Better Debugging**: Clear execution paths aid troubleshooting
@@ -383,6 +427,7 @@ Did you complete ALL items above?
 5. **Documentation**: Self-documenting execution requirements
 
 ### For Test Quality
+
 1. **Reproducibility**: Same results every time
 2. **Completeness**: All steps executed as designed
 3. **Accuracy**: No modifications or additions
@@ -392,6 +437,7 @@ Did you complete ALL items above?
 ## Monitoring and Continuous Improvement
 
 ### Tracking Metrics
+
 Monitor these metrics to assess improvement effectiveness:
 - Scenario completion rate (target: 100%)
 - Infinite loop incidents (target: 0)
@@ -400,6 +446,7 @@ Monitor these metrics to assess improvement effectiveness:
 - Step modification incidents (target: 0)
 
 ### Feedback Loop
+
 When new failure patterns are discovered:
 1. Document the failure in `EXECUTION_GUARDS.md`
 2. Update template with additional safeguards
@@ -407,7 +454,8 @@ When new failure patterns are discovered:
 4. Add to `.cursor/rules/run-multiplayer-playbook.mdc` if needed
 
 ### Regular Reviews
-- Monthly review of execution failure logs
+
+Monthly review of execution failure logs
 - Quarterly review of improvement effectiveness
 - Update documentation based on findings
 - Refine templates and guards as needed
@@ -422,7 +470,8 @@ These improvements create multiple layers of protection against common AI execut
 4. **Learning**: Failure patterns educate about mistakes
 5. **Enforcement**: Visual cues make deviations obvious
 
-The result is a more reliable, maintainable, and AI-friendly E2E test suite that produces consistent results while being easier to maintain and extend.
+The result is a more reliable, maintainable, and AI-friendly E2E test suite that produces consistent results while being
+easier to maintain and extend.
 
 ---
 

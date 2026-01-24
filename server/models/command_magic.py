@@ -20,7 +20,7 @@ class CastCommand(BaseCommand):
 
     @field_validator("spell_name")
     @classmethod
-    def validate_spell_name(cls, v):
+    def validate_spell_name(cls: type["CastCommand"], v: str) -> str:
         """Validate spell name format."""
         if not v or not v.strip():
             raise ValueError("Spell name cannot be empty")
@@ -28,7 +28,7 @@ class CastCommand(BaseCommand):
 
     @field_validator("target")
     @classmethod
-    def validate_target(cls, v):
+    def validate_target(cls: type["CastCommand"], v: str | None) -> str | None:
         """Validate target format."""
         if v is not None:
             v = v.strip() if isinstance(v, str) else v
@@ -45,7 +45,7 @@ class SpellCommand(BaseCommand):
 
     @field_validator("spell_name")
     @classmethod
-    def validate_spell_name(cls, v):
+    def validate_spell_name(cls: type["SpellCommand"], v: str) -> str:
         """Validate spell name format."""
         if not v or not v.strip():
             raise ValueError("Spell name cannot be empty")
@@ -66,7 +66,7 @@ class LearnCommand(BaseCommand):
 
     @field_validator("spell_name")
     @classmethod
-    def validate_spell_name(cls, v):
+    def validate_spell_name(cls: type["LearnCommand"], v: str) -> str:
         """Validate spell name format."""
         if not v or not v.strip():
             raise ValueError("Spell name cannot be empty")

@@ -2,11 +2,12 @@
 
 ## Tasks
 
-- [x] 1. Build MythosChronicle core service
-  - [x] 1.1 Write unit tests for time conversion, persistence, and freeze/resume behavior
-  - [x] 1.2 Implement singleton `MythosChronicle` with conversion helpers and persistence layer
-  - [x] 1.3 Integrate Prometheus metrics and structured logging for chronicle operations
-  - [x] 1.4 Verify all tests pass
+[x] 1. Build MythosChronicle core service
+
+- [x] 1.1 Write unit tests for time conversion, persistence, and freeze/resume behavior
+- [x] 1.2 Implement singleton `MythosChronicle` with conversion helpers and persistence layer
+- [x] 1.3 Integrate Prometheus metrics and structured logging for chronicle operations
+- [x] 1.4 Verify all tests pass
 
 - [x] 2. Implement hourly tick engine and scheduler integration
   - [x] 2.1 Write integration tests for hourly tick emissions and event payloads

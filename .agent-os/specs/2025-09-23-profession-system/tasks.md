@@ -2,14 +2,15 @@
 
 ## Tasks
 
-- [x] 1. Database Schema Implementation
-  - [x] 1.1 Write tests for profession model and database schema
-  - [x] 1.2 Create DDL script for professions table creation
-  - [x] 1.3 Add profession_id column to players table
-  - [x] 1.4 Seed MVP professions (Tramp and Gutter Rat) in database
-  - [x] 1.5 Add foreign key constraint after seeding
-  - [x] 1.6 Integrate schema changes into existing database initialization scripts
-  - [x] 1.7 Verify all database tests pass
+[x] 1. Database Schema Implementation
+
+- [x] 1.1 Write tests for profession model and database schema
+- [x] 1.2 Create DDL script for professions table creation
+- [x] 1.3 Add profession_id column to players table
+- [x] 1.4 Seed MVP professions (Tramp and Gutter Rat) in database
+- [x] 1.5 Add foreign key constraint after seeding
+- [x] 1.6 Integrate schema changes into existing database initialization scripts
+- [x] 1.7 Verify all database tests pass
 
 - [x] 2. Backend API Implementation
   - [x] 2.1 Write tests for profession API endpoints

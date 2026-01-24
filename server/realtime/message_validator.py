@@ -6,7 +6,7 @@ including size limits, schema validation, CSRF protection, and JSON depth limits
 """
 
 import json
-from typing import Any
+from typing import Any, cast
 
 from pydantic import BaseModel, ValidationError
 
@@ -329,7 +329,8 @@ class WebSocketMessageValidator:
 
         logger.debug("Message validation successful", player_id=player_id, message_type=message.get("type"))
 
-        return message
+        result: dict[str, Any] = cast(dict[str, Any], message)
+        return result
 
 
 # Global validator instance

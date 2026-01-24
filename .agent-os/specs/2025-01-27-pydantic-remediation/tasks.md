@@ -3,6 +3,7 @@
 ## Phase 1: Critical Security Fixes (High Priority)
 
 ### Task 1.1: Standardize Model Configuration
+
 **Priority**: Critical
 **Estimated Time**: 4 hours
 **Files Affected**: All Pydantic model files
@@ -10,6 +11,7 @@
 **Description**: Implement consistent `Config` classes with security settings across all models.
 
 **Subtasks**:
+
 - [ ] Create base `SecureBaseModel` class with standard security configuration
 - [ ] Update `server/models/command.py` - BaseCommand class
 - [ ] Update `server/models/game.py` - Stats class
@@ -21,6 +23,7 @@
 - [ ] Update `server/api/monitoring.py` - All monitoring models
 
 **Security Requirements**:
+
 ```python
 model_config = ConfigDict(
     extra="forbid",  # Prevent field injection
@@ -33,6 +36,7 @@ model_config = ConfigDict(
 ```
 
 ### Task 1.2: Replace Unsafe Any Types
+
 **Priority**: Critical
 **Estimated Time**: 6 hours
 **Files Affected**: `server/models.py`, `server/schemas/player.py`
@@ -40,6 +44,7 @@ model_config = ConfigDict(
 **Description**: Replace `dict[str, Any]` with proper typed models to prevent type confusion attacks.
 
 **Subtasks**:
+
 - [ ] Create `StatsModel` for player statistics
 - [ ] Create `InventoryItemModel` for inventory items
 - [ ] Create `StatusEffectModel` for status effects
@@ -50,11 +55,13 @@ model_config = ConfigDict(
 - [ ] Add validation for nested models
 
 **Security Requirements**:
+
 - All fields must have explicit types
 - No `Any` types allowed in public APIs
 - Proper validation for nested objects
 
 ### Task 1.3: Enhance Input Validation
+
 **Priority**: Critical
 **Estimated Time**: 8 hours
 **Files Affected**: `server/models/command.py`
@@ -62,6 +69,7 @@ model_config = ConfigDict(
 **Description**: Implement comprehensive input validation to prevent injection attacks.
 
 **Subtasks**:
+
 - [ ] Create `InputSanitizer` utility class
 - [ ] Implement regex-based validation for all text inputs
 - [ ] Add command injection detection
@@ -72,6 +80,7 @@ model_config = ConfigDict(
 - [ ] Test all validation scenarios
 
 **Security Requirements**:
+
 - Prevent SQL injection patterns
 - Prevent command injection patterns
 - Prevent XSS patterns
@@ -79,6 +88,7 @@ model_config = ConfigDict(
 - Sanitize all user inputs
 
 ### Task 1.4: Fix Validation Error Handling
+
 **Priority**: High
 **Estimated Time**: 4 hours
 **Files Affected**: All validation error handling code
@@ -86,6 +96,7 @@ model_config = ConfigDict(
 **Description**: Implement proper validation error handling and logging.
 
 **Subtasks**:
+
 - [ ] Create `ValidationErrorHandler` utility
 - [ ] Implement structured error responses
 - [ ] Add security logging for validation failures
@@ -95,6 +106,7 @@ model_config = ConfigDict(
 - [ ] Update all exception handling
 
 **Security Requirements**:
+
 - No sensitive information in error messages
 - Proper logging of security violations
 - Rate limiting on validation failures
@@ -102,6 +114,7 @@ model_config = ConfigDict(
 ## Phase 2: Code Organization (Medium Priority)
 
 ### Task 2.1: Create Base Model Classes
+
 **Priority**: Medium
 **Estimated Time**: 6 hours
 **Files Affected**: New base model files
@@ -109,6 +122,7 @@ model_config = ConfigDict(
 **Description**: Create proper base classes for common patterns.
 
 **Subtasks**:
+
 - [ ] Create `server/models/base.py` with base classes
 - [ ] Implement `SecureBaseModel` with security config
 - [ ] Implement `TimestampedModel` for time-based models
@@ -118,6 +132,7 @@ model_config = ConfigDict(
 - [ ] Create usage examples
 
 ### Task 2.2: Consolidate Validation Logic
+
 **Priority**: Medium
 **Estimated Time**: 8 hours
 **Files Affected**: `server/models/command.py`
@@ -125,6 +140,7 @@ model_config = ConfigDict(
 **Description**: Eliminate code duplication in validation logic.
 
 **Subtasks**:
+
 - [ ] Create `ValidationMixin` for common validations
 - [ ] Implement `MessageValidator` for text inputs
 - [ ] Implement `PlayerNameValidator` for player names
@@ -134,6 +150,7 @@ model_config = ConfigDict(
 - [ ] Add comprehensive tests
 
 ### Task 2.3: Standardize Schema Patterns
+
 **Priority**: Medium
 **Estimated Time**: 6 hours
 **Files Affected**: All schema files
@@ -141,6 +158,7 @@ model_config = ConfigDict(
 **Description**: Implement consistent patterns across all schemas.
 
 **Subtasks**:
+
 - [ ] Create `BaseSchema` with common patterns
 - [ ] Implement `CreateSchema`, `ReadSchema`, `UpdateSchema` base classes
 - [ ] Standardize field naming conventions
@@ -149,6 +167,7 @@ model_config = ConfigDict(
 - [ ] Update all schemas to use base classes
 
 ### Task 2.4: Improve Model Documentation
+
 **Priority**: Medium
 **Estimated Time**: 4 hours
 **Files Affected**: All model files
@@ -156,6 +175,7 @@ model_config = ConfigDict(
 **Description**: Add comprehensive documentation to all models.
 
 **Subtasks**:
+
 - [ ] Add detailed docstrings to all models
 - [ ] Include usage examples in docstrings
 - [ ] Add field descriptions with validation rules
@@ -166,6 +186,7 @@ model_config = ConfigDict(
 ## Phase 3: Performance Optimization (Lower Priority)
 
 ### Task 3.1: Optimize Validation Performance
+
 **Priority**: Low
 **Estimated Time**: 6 hours
 **Files Affected**: All model files
@@ -173,6 +194,7 @@ model_config = ConfigDict(
 **Description**: Optimize validation performance for hot paths.
 
 **Subtasks**:
+
 - [ ] Implement lazy validation where appropriate
 - [ ] Cache validation results for repeated inputs
 - [ ] Optimize regex patterns for performance
@@ -181,6 +203,7 @@ model_config = ConfigDict(
 - [ ] Add benchmarks for validation performance
 
 ### Task 3.2: Optimize Memory Usage
+
 **Priority**: Low
 **Estimated Time**: 4 hours
 **Files Affected**: All model files
@@ -188,6 +211,7 @@ model_config = ConfigDict(
 **Description**: Reduce memory footprint of models.
 
 **Subtasks**:
+
 - [ ] Implement `__slots__` for high-frequency models
 - [ ] Optimize field storage
 - [ ] Add memory usage monitoring
@@ -195,6 +219,7 @@ model_config = ConfigDict(
 - [ ] Add garbage collection optimization
 
 ### Task 3.3: Improve Serialization Performance
+
 **Priority**: Low
 **Estimated Time**: 4 hours
 **Files Affected**: All model files
@@ -202,6 +227,7 @@ model_config = ConfigDict(
 **Description**: Optimize JSON serialization performance.
 
 **Subtasks**:
+
 - [ ] Implement custom serializers for complex types
 - [ ] Add serialization caching
 - [ ] Optimize datetime serialization
@@ -211,6 +237,7 @@ model_config = ConfigDict(
 ## Testing Tasks
 
 ### Task T.1: Security Test Suite
+
 **Priority**: Critical
 **Estimated Time**: 8 hours
 **Files Affected**: New test files
@@ -218,6 +245,7 @@ model_config = ConfigDict(
 **Description**: Create comprehensive security tests for all models.
 
 **Subtasks**:
+
 - [ ] Create `test_model_security.py`
 - [ ] Test injection attack prevention
 - [ ] Test input validation edge cases
@@ -226,6 +254,7 @@ model_config = ConfigDict(
 - [ ] Add fuzzing tests for all inputs
 
 ### Task T.2: Validation Test Suite
+
 **Priority**: High
 **Estimated Time**: 6 hours
 **Files Affected**: New test files
@@ -233,6 +262,7 @@ model_config = ConfigDict(
 **Description**: Create comprehensive validation tests.
 
 **Subtasks**:
+
 - [ ] Create `test_model_validation.py`
 - [ ] Test all field validators
 - [ ] Test nested model validation
@@ -241,6 +271,7 @@ model_config = ConfigDict(
 - [ ] Add performance tests
 
 ### Task T.3: Integration Tests
+
 **Priority**: Medium
 **Estimated Time**: 4 hours
 **Files Affected**: Existing test files
@@ -248,6 +279,7 @@ model_config = ConfigDict(
 **Description**: Update integration tests for new models.
 
 **Subtasks**:
+
 - [ ] Update API tests for new schemas
 - [ ] Update command handler tests
 - [ ] Update persistence tests
@@ -257,6 +289,7 @@ model_config = ConfigDict(
 ## Documentation Tasks
 
 ### Task D.1: API Documentation
+
 **Priority**: Medium
 **Estimated Time**: 4 hours
 **Files Affected**: Documentation files
@@ -264,6 +297,7 @@ model_config = ConfigDict(
 **Description**: Create comprehensive API documentation.
 
 **Subtasks**:
+
 - [ ] Document all model schemas
 - [ ] Add validation rules documentation
 - [ ] Create security guidelines
@@ -271,6 +305,7 @@ model_config = ConfigDict(
 - [ ] Create troubleshooting guides
 
 ### Task D.2: Developer Guide
+
 **Priority**: Medium
 **Estimated Time**: 3 hours
 **Files Affected**: Documentation files
@@ -278,6 +313,7 @@ model_config = ConfigDict(
 **Description**: Create developer guide for Pydantic usage.
 
 **Subtasks**:
+
 - [ ] Create Pydantic best practices guide
 - [ ] Document common patterns
 - [ ] Add code examples
@@ -287,21 +323,27 @@ model_config = ConfigDict(
 ## Risk Mitigation
 
 ### Risk 1: Breaking Changes
+
 **Mitigation**:
+
 - Implement backward compatibility layers
 - Gradual migration strategy
 - Comprehensive testing
 - Clear migration documentation
 
 ### Risk 2: Performance Impact
+
 **Mitigation**:
+
 - Performance benchmarking
 - Gradual rollout
 - Monitoring and alerting
 - Rollback plan
 
 ### Risk 3: Security Vulnerabilities
+
 **Mitigation**:
+
 - Security review process
 - Penetration testing
 - Code review requirements

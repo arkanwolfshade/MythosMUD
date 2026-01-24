@@ -10,6 +10,7 @@ This document describes how enhanced logging validation is integrated into the C
 
 ```yaml
 # .github/workflows/ci.yml
+
 name: CI/CD Pipeline with Enhanced Logging Validation
 
 on:
@@ -99,6 +100,7 @@ jobs:
 
 ```yaml
 # .pre-commit-config.yaml
+
 repos:
   - repo: local
     hooks:
@@ -175,6 +177,7 @@ class LoggingPatternLinter(ast.NodeVisitor):
         if isinstance(node.func, ast.Attribute):
             if node.func.attr in ["info", "debug", "warning", "error", "critical"]:
                 # Check for context parameter (deprecated)
+
                 for keyword in node.keywords:
                     if keyword.arg == "context":
                         self.errors.append((node.lineno, "FORBIDDEN: context parameter - Use direct key-value pairs instead"))
@@ -206,6 +209,7 @@ def main():
 
     for file_path in python_files:
         # Skip __pycache__, test files, and virtual environment files
+
         if ("__pycache__" in str(file_path) or
             "test" in str(file_path).lower() or
             ".venv" in str(file_path) or
@@ -261,6 +265,7 @@ class SecurityScanner:
         self.issues: List[Tuple[str, int, str]] = []
 
         # Patterns to detect sensitive data
+
         self.sensitive_patterns = [
             (r'password\s*=\s*["\'][^"\']+["\']', "Potential hardcoded password"),
             (r'token\s*=\s*["\'][^"\']+["\']', "Potential hardcoded token"),
@@ -269,6 +274,7 @@ class SecurityScanner:
         ]
 
         # Patterns to detect logging of sensitive data
+
         self.logging_sensitive_patterns = [
             (r'logger\.(info|debug|warning|error|critical)\s*\(\s*[^)]*password[^)]*\)', "Logging sensitive data: password"),
             (r'logger\.(info|debug|warning|error|critical)\s*\(\s*[^)]*token[^)]*\)', "Logging sensitive data: token"),
@@ -286,11 +292,13 @@ class SecurityScanner:
 
             for line_num, line in enumerate(lines, 1):
                 # Check for sensitive data patterns
+
                 for pattern, message in self.sensitive_patterns:
                     if re.search(pattern, line, re.IGNORECASE):
                         issues.append((str(file_path), line_num, message))
 
                 # Check for logging sensitive data
+
                 for pattern, message in self.logging_sensitive_patterns:
                     if re.search(pattern, line, re.IGNORECASE):
                         issues.append((str(file_path), line_num, message))
@@ -366,6 +374,7 @@ class COPPAComplianceChecker:
         self.violations: List[Tuple[str, int, str]] = []
 
         # COPPA compliance patterns
+
         self.compliance_patterns = [
             (r'age\s*[<>=]\s*\d+', "Potential age-based logic - ensure COPPA compliance"),
             (r'birthdate|birth_date|date_of_birth', "Personal information collection - COPPA violation"),
@@ -376,6 +385,7 @@ class COPPAComplianceChecker:
         ]
 
         # Required COPPA compliance patterns
+
         self.required_patterns = [
             (r'coppa|COPPA', "COPPA compliance reference"),
             (r'parental.*consent|consent.*parental', "Parental consent mechanism"),
@@ -393,6 +403,7 @@ class COPPAComplianceChecker:
 
             for line_num, line in enumerate(lines, 1):
                 # Check for compliance violations
+
                 for pattern, message in self.compliance_patterns:
                     if re.search(pattern, line, re.IGNORECASE):
                         violations.append((str(file_path), line_num, message))
@@ -451,12 +462,14 @@ if __name__ == "__main__":
 
 ```python
 # server/config/production_logging.py
+
 from server.logging.enhanced_logging_config import configure_production_logging
 
 def setup_production_logging():
     """Configure enhanced logging for production environment."""
 
     # Configure structured logging for production
+
     configure_production_logging(
         log_level="INFO",
         enable_correlation_ids=True,
@@ -466,6 +479,7 @@ def setup_production_logging():
     )
 
     # Configure log rotation
+
     configure_log_rotation(
         max_file_size="100MB",
         backup_count=10,
@@ -473,6 +487,7 @@ def setup_production_logging():
     )
 
     # Configure security sanitization
+
     configure_security_sanitization(
         redact_fields=["password", "token", "secret", "key"],
         hash_sensitive_data=True,
@@ -484,23 +499,28 @@ def setup_production_logging():
 
 ```dockerfile
 # Dockerfile.production
+
 FROM python:3.12-slim
 
 # Install dependencies
+
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 # Copy application
+
 COPY . /app
 WORKDIR /app
 
 # Configure enhanced logging
+
 ENV LOG_LEVEL=INFO
 ENV ENABLE_CORRELATION_IDS=true
 ENV ENABLE_SECURITY_SANITIZATION=true
 ENV ENABLE_PERFORMANCE_MONITORING=true
 
 # Run application
+
 CMD ["uvicorn", "server.main:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
 
@@ -510,6 +530,7 @@ CMD ["uvicorn", "server.main:app", "--host", "0.0.0.0", "--port", "8000"]
 
 ```yaml
 # docker-compose.monitoring.yml
+
 version: '3.8'
 services:
   loki:
@@ -535,13 +556,14 @@ services:
       - ./monitoring/grafana-dashboards:/var/lib/grafana/dashboards
       - ./monitoring/grafana-provisioning:/etc/grafana/provisioning
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
+      GF_SECURITY_ADMIN_PASSWORD=admin
 ```
 
 ### Health Checks
 
 ```python
 # server/monitoring/health.py
+
 from fastapi import APIRouter, HTTPException
 from server.logging.enhanced_logging_config import get_logger, bind_request_context
 
@@ -552,6 +574,7 @@ router = APIRouter()
 async def health_check():
     """Comprehensive health check endpoint with enhanced logging."""
     # Bind request context for correlation tracking
+
     bind_request_context(
         correlation_id=f"health_check_{datetime.utcnow().timestamp()}",
         endpoint="/health",
@@ -560,15 +583,19 @@ async def health_check():
 
     try:
         # Check database connectivity
+
         db_status = await check_database_health()
 
         # Check WebSocket connections
+
         ws_status = await check_websocket_health()
 
         # Check SSE connections
+
         sse_status = await check_sse_health()
 
         # Enhanced structured logging
+
         logger.info("Health check completed",
                    db_status=db_status,
                    ws_status=ws_status,
@@ -585,6 +612,7 @@ async def health_check():
         }
     except Exception as e:
         # Enhanced error logging with context
+
         logger.error("Health check failed",
                     error=str(e),
                     error_type=type(e).__name__,
@@ -598,37 +626,49 @@ async def health_check():
 ### Common Issues
 
 #### Logging Pattern Violations
-- **Issue**: Enhanced logging pattern violations in CI/CD
-- **Solution**: Run `python scripts/lint_logging_patterns.py` locally before committing
+
+**Issue**: Enhanced logging pattern violations in CI/CD
+
+**Solution**: Run `python scripts/lint_logging_patterns.py` locally before committing
 
 #### Security Violations
-- **Issue**: Sensitive data detected in code
-- **Solution**: Use environment variables and enhanced logging security sanitization
+
+**Issue**: Sensitive data detected in code
+
+**Solution**: Use environment variables and enhanced logging security sanitization
 
 #### COPPA Compliance Issues
-- **Issue**: Potential COPPA violations detected
-- **Solution**: Review and implement proper consent mechanisms
+
+**Issue**: Potential COPPA violations detected
+
+**Solution**: Review and implement proper consent mechanisms
 
 ### Debugging Commands
 
 ```bash
 # Run enhanced logging pattern linter
+
 python scripts/lint_logging_patterns.py
 
 # Run security scan
+
 python scripts/security_scan.py
 
 # Run COPPA compliance check
+
 python scripts/coppa_compliance_check.py
 
 # Run all validation scripts
+
 make validate-all
 ```
 
 ## Documentation References
 
-- **Enhanced Logging Guide**: [LOGGING_BEST_PRACTICES.md](LOGGING_BEST_PRACTICES.md)
-- **Quick Reference**: [LOGGING_QUICK_REFERENCE.md](LOGGING_QUICK_REFERENCE.md)
-- **Pre-commit Validation**: [PRE_COMMIT_LOGGING_VALIDATION.md](PRE_COMMIT_LOGGING_VALIDATION.md)
+**Enhanced Logging Guide**: [LOGGING_BEST_PRACTICES.md](LOGGING_BEST_PRACTICES.md)
+
+**Quick Reference**: [LOGGING_QUICK_REFERENCE.md](LOGGING_QUICK_REFERENCE.md)
+
+**Pre-commit Validation**: [PRE_COMMIT_LOGGING_VALIDATION.md](PRE_COMMIT_LOGGING_VALIDATION.md)
 - **Security Guide**: [SECURITY.md](SECURITY.md)
 - **Testing Examples**: [docs/examples/logging/](examples/logging/)

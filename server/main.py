@@ -11,8 +11,25 @@ knowledge is essential for maintaining the delicate balance between order
 and chaos. This server implementation follows those ancient principles.
 """
 
+# Load environment variables from .env.local FIRST, before any other imports
+# This ensures environment variables are available regardless of how the server is started
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+project_root = Path(__file__).parent.parent  # server/main.py -> server/ -> project root
+env_local_path = project_root / ".env.local"
+if env_local_path.exists():
+    load_dotenv(env_local_path, override=False)  # override=False to respect already-set env vars
+
+# These imports must come after load_dotenv() to ensure environment variables are loaded first
+# This is necessary because some imported modules depend on environment variables being set
+# Note: E402 (module level import not at top of file) is ignored for this file via pyproject.toml
+# because these imports must come after load_dotenv() to ensure env vars are loaded first
+# pylint: disable=wrong-import-position,wrong-import-order  # Reason: Imports must come after load_dotenv() to ensure environment variables are loaded first
 import warnings
 from collections.abc import Callable
+from typing import Any
 
 from fastapi import Depends, FastAPI
 from fastapi.security import HTTPBearer
@@ -107,7 +124,8 @@ get_app = _create_get_app()
 app = get_app()
 
 # Add correlation middleware (CORS is already configured in factory)
-app.add_middleware(CorrelationMiddleware, correlation_header="X-Correlation-ID")
+# Starlette's add_middleware type annotation doesn't properly handle BaseHTTPMiddleware subclasses
+app.add_middleware(CorrelationMiddleware, correlation_header="X-Correlation-ID")  # type: ignore[arg-type]
 
 setup_monitoring_endpoints(app)
 
@@ -124,7 +142,7 @@ async def read_root() -> dict[str, str]:
 
 # Test endpoint for JWT validation
 @app.get("/test-auth")
-async def test_auth(current_user: dict = Depends(get_current_user)) -> dict[str, str]:
+async def test_auth(current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, str]:
     """Test endpoint to verify JWT authentication is working."""
     if current_user:
         return {"message": "Authentication successful", "user": str(current_user)}

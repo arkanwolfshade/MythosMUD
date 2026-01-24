@@ -2,7 +2,9 @@
 
 ## Overview
 
-This guide provides practical implementation examples and patterns for integrating comprehensive error logging throughout the MythosMUD codebase. As noted in the Pnakotic Manuscripts, the proper documentation of anomalous events requires both theoretical understanding and practical application.
+This guide provides practical implementation examples and patterns for integrating comprehensive error logging
+throughout the MythosMUD codebase. As noted in the Pnakotic Manuscripts, the proper documentation of anomalous events
+requires both theoretical understanding and practical application.
 
 ## Core Implementation Patterns
 
@@ -20,8 +22,10 @@ def authenticate_user(user_id: str, password: str) -> bool:
     """Authenticate user with proper error logging."""
     try:
         # Authentication logic here
+
         if not validate_credentials(user_id, password):
             # Automatic logging via base class
+
             raise AuthenticationError(
                 "Invalid credentials provided",
                 context=create_error_context(
@@ -42,6 +46,7 @@ def authenticate_user(user_id: str, password: str) -> bool:
         return True
     except Exception as e:
         # Convert and log any unexpected errors
+
         context = create_error_context(
             user_id=user_id,
             request_id=get_current_request_id(),
@@ -69,6 +74,7 @@ async def get_player(player_id: str, current_user: User = Depends(get_current_us
         player = persistence.get_player_by_id(player_id)
         if not player:
             # Log before raising HTTPException
+
             log_and_raise_http(
                 status_code=404,
                 detail=f"Player {player_id} not found",
@@ -87,9 +93,11 @@ async def get_player(player_id: str, current_user: User = Depends(get_current_us
         return {"player": player.to_dict()}
     except HTTPException:
         # Re-raise HTTPExceptions (already logged)
+
         raise
     except Exception as e:
         # Log and convert unexpected errors
+
         context = create_error_context(
             user_id=current_user.id,
             request_id=get_current_request_id(),
@@ -119,6 +127,7 @@ async def execute_database_query(query: str, params: tuple) -> list:
             return results
     except aiosqlite.Error as e:
         # Wrap third-party exception with proper logging
+
         context = create_error_context(
             request_id=get_current_request_id(),
             metadata={
@@ -131,6 +140,7 @@ async def execute_database_query(query: str, params: tuple) -> list:
         raise mythos_error
     except Exception as e:
         # Handle any other unexpected errors
+
         context = create_error_context(
             request_id=get_current_request_id(),
             metadata={"operation": "database_query"}
@@ -153,6 +163,7 @@ async def handle_websocket_message(websocket: WebSocket, player_id: str, message
     """Handle WebSocket message with proper error logging."""
     try:
         # Message processing logic
+
         if not validate_message(message):
             raise CommunicationError(
                 "Invalid message format",
@@ -170,13 +181,16 @@ async def handle_websocket_message(websocket: WebSocket, player_id: str, message
             )
 
         # Process the message
+
         await process_message(player_id, message)
 
     except CommunicationError:
         # Re-raise (already logged)
+
         raise
     except Exception as e:
         # Log and convert unexpected errors
+
         context = create_error_context(
             user_id=player_id,
             session_id=get_session_id(websocket),
@@ -200,6 +214,7 @@ async def process_game_command(player_id: str, command: str, args: list) -> dict
     """Process game command with proper error logging."""
     try:
         # Command validation
+
         if not validate_command(command):
             raise CommandError(
                 f"Unknown command: {command}",
@@ -217,14 +232,17 @@ async def process_game_command(player_id: str, command: str, args: list) -> dict
             )
 
         # Execute command
+
         result = await execute_command(player_id, command, args)
         return result
 
     except CommandError:
         # Re-raise (already logged)
+
         raise
     except Exception as e:
         # Log and convert unexpected errors
+
         context = create_error_context(
             user_id=player_id,
             command=command,
@@ -240,6 +258,7 @@ async def process_game_command(player_id: str, command: str, args: list) -> dict
 
 ```python
 # server/utils/error_logging.py
+
 from typing import Type, Any
 from fastapi import Request, WebSocket
 from server.exceptions import MythosMUDError, create_error_context, handle_exception
@@ -257,6 +276,7 @@ def log_and_raise(
     logger = get_logger(logger_name or __name__)
 
     # Log the error before raising
+
     logger.error(
         f"Raising {exception_class.__name__}",
         error_type=exception_class.__name__,
@@ -267,6 +287,7 @@ def log_and_raise(
     )
 
     # Raise the exception (which will also log via base class)
+
     raise exception_class(message, context, details, user_friendly)
 
 def log_and_raise_http(
@@ -279,6 +300,7 @@ def log_and_raise_http(
     logger = get_logger(logger_name or __name__)
 
     # Log the error before raising
+
     logger.warning(
         "Raising HTTPException",
         status_code=status_code,
@@ -287,6 +309,7 @@ def log_and_raise_http(
     )
 
     # Raise the HTTPException
+
     raise HTTPException(status_code=status_code, detail=detail)
 
 def create_context_from_request(request: Request) -> ErrorContext:
@@ -322,6 +345,7 @@ def wrap_third_party_exception(
     logger = get_logger(__name__)
 
     # Log the original exception
+
     logger.error(
         "Third-party exception occurred",
         original_type=type(exc).__name__,
@@ -330,6 +354,7 @@ def wrap_third_party_exception(
     )
 
     # Convert to MythosMUD error
+
     return handle_exception(exc, context)
 ```
 
@@ -339,6 +364,7 @@ def wrap_third_party_exception(
 
 ```python
 # server/utils/context_helpers.py
+
 from typing import Any
 from fastapi import Request
 from server.exceptions import create_error_context
@@ -346,6 +372,7 @@ from server.exceptions import create_error_context
 def get_current_request_id() -> str:
     """Get current request ID from context."""
     # Implementation depends on your request ID system
+
     return "req_" + str(uuid.uuid4())[:8]
 
 def get_client_ip(request: Request) -> str:
@@ -387,6 +414,7 @@ def create_api_context(
 
 ```python
 # server/tests/utils/test_error_logging.py
+
 import pytest
 from unittest.mock import patch, MagicMock
 from server.utils.error_logging import log_and_raise, log_and_raise_http
@@ -398,6 +426,7 @@ class ErrorLoggingTestMixin:
     def assert_error_logged(self, log_file: str, error_type: str, message: str):
         """Assert that an error was logged to the specified file."""
         # Implementation depends on your log testing setup
+
         pass
 
     def assert_error_context(self, context: ErrorContext, expected_fields: list[str]):
@@ -475,9 +504,10 @@ class TestErrorLogging(ErrorLoggingTestMixin):
 
 ## Migration Checklist
 
-### For Each File Being Updated:
+### For Each File Being Updated
 
 1. **Import Required Modules**
+
    ```python
    from server.exceptions import MythosMUDError, create_error_context, handle_exception
    from server.logging_config import get_logger
@@ -485,34 +515,40 @@ class TestErrorLogging(ErrorLoggingTestMixin):
    ```
 
 2. **Replace Direct Exception Raising**
+
    - Find all `raise SomeError(...)` statements
    - Replace with proper logging patterns
    - Add appropriate error context
 
 3. **Update HTTPException Usage**
+
    - Find all `raise HTTPException(...)` statements
    - Replace with `log_and_raise_http(...)`
    - Add proper error context
 
 4. **Add Error Context**
+
    - Include relevant user information
    - Add request/session context
    - Include operation metadata
 
 5. **Test Error Handling**
+
    - Verify errors are logged correctly
    - Check log file categorization
    - Validate error responses
 
-### Common Migration Patterns:
+### Common Migration Patterns
 
 **Before:**
+
 ```python
 if not player:
     raise HTTPException(status_code=404, detail="Player not found")
 ```
 
 **After:**
+
 ```python
 if not player:
     log_and_raise_http(
@@ -527,12 +563,14 @@ if not player:
 ```
 
 **Before:**
+
 ```python
 except ValueError as e:
     raise ValidationError(str(e))
 ```
 
 **After:**
+
 ```python
 except ValueError as e:
     context = create_error_context(
@@ -545,22 +583,28 @@ except ValueError as e:
 
 ## Best Practices
 
-### Do's:
-- Always include relevant context in errors
+### Do's
+
+Always include relevant context in errors
+
 - Use appropriate log levels (ERROR for exceptions, WARNING for recoverable issues)
 - Include user-friendly messages for client responses
 - Test error handling thoroughly
 - Monitor error rates and patterns
 
-### Don'ts:
-- Don't log sensitive information (passwords, tokens, secrets)
+### Don'ts
+
+Don't log sensitive information (passwords, tokens, secrets)
+
 - Don't raise exceptions without proper logging
 - Don't use generic error messages
 - Don't ignore error context
 - Don't skip error handling tests
 
-### Security Considerations:
-- Sanitize user input in error messages
+### Security Considerations
+
+Sanitize user input in error messages
+
 - Avoid logging sensitive data
 - Use appropriate error detail levels
 - Implement proper access controls for logs
@@ -568,4 +612,7 @@ except ValueError as e:
 
 ---
 
-*As the restricted archives of Miskatonic University teach us, the proper implementation of error handling is not merely a technical exercise, but a critical component of maintaining the delicate balance between order and chaos in our digital realm. This guide ensures that every error, every exception, and every anomaly is properly catalogued for posterity and analysis.*
+*As the restricted archives of Miskatonic University teach us, the proper implementation of error handling is not merely
+a technical exercise, but a critical component of maintaining the delicate balance between order and chaos in our
+digital realm. This guide ensures that every error, every exception, and every anomaly is properly catalogued for
+posterity and analysis.*

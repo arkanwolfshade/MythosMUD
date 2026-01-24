@@ -37,7 +37,8 @@ Subjects will follow a clear hierarchy: `{service}.{channel}.{scope}.{identifier
 
 ## Out of Scope
 
-- Changes to existing NATS message payload structure
+Changes to existing NATS message payload structure
+
 - Modifications to WebSocket communication protocols
 - Database schema changes for subject storage
 - Real-time subject pattern updates without server restart

@@ -1,15 +1,20 @@
 # Git Submodule Setup for MythosMUD
 
-This document explains the git submodule configuration for the MythosMUD project, specifically how the `data/` directory is managed as a separate repository.
+This document explains the git submodule configuration for the MythosMUD project, specifically how the `data/` directory
+is managed as a separate repository.
 
 ## Overview
 
-The `data/` directory is a git submodule pointing to the private repository `https://github.com/arkanwolfshade/mythosmud_data.git`. This separation allows:
+The `data/` directory is a git submodule pointing to the private repository
+`https://github.com/arkanwolfshade/mythosmud_data.git`. This separation allows:
 
-- **Independent versioning** of world data from game code
-- **Collaborative editing** of world data without affecting the main codebase
-- **Cleaner repository structure** with focused responsibilities
-- **Easier deployment** of data updates separate from code updates
+**Independent versioning** of world data from game code
+
+**Collaborative editing** of world data without affecting the main codebase
+
+**Cleaner repository structure** with focused responsibilities
+
+**Easier deployment** of data updates separate from code updates
 
 ## Repository Structure
 
@@ -45,6 +50,7 @@ git submodule update --init --recursive
 
 ```bash
 # From the main repository root
+
 git submodule update --remote data
 git add data
 git commit -m "Update data submodule to latest version"
@@ -54,19 +60,23 @@ git commit -m "Update data submodule to latest version"
 
 ```bash
 # Navigate to the submodule
+
 cd data
 
 # Make your changes
 # ... edit files ...
 
 # Commit changes in the submodule
+
 git add .
 git commit -m "Update world data: add new rooms"
 
 # Push changes to the submodule repository
+
 git push origin main
 
 # Return to main repository and update the submodule reference
+
 cd ..
 git add data
 git commit -m "Update data submodule reference"
@@ -76,6 +86,7 @@ git commit -m "Update data submodule reference"
 
 ```bash
 # From the main repository root
+
 cd data
 git checkout <commit-hash-or-branch>
 cd ..
@@ -90,29 +101,47 @@ Since the `mythosmud_data` repository is private, the GitHub Actions workflows n
 ### Required Configuration
 
 1. **Personal Access Token (PAT)**: Required for accessing private repositories
+
 2. **Token Configuration**: Use `${{ secrets.MYTHOSMUD_PAT }}` in checkout actions
+
 3. **Submodule checkout**: Configure `submodules: recursive` in checkout action
-4. **Use a PAT with checkout**: The simplest pattern is to create a fine-grained PAT (`PRIVATE_SUBMODULE_PAT`) that has read access to `arkanwolfshade/mythosmud_data` and pass it to `actions/checkout` via the `token` input. This lets checkout clone both the main repo and the private submodule in one step without hand-written rewrites.
+
+4. **Use a PAT with checkout**: The simplest pattern is to create a fine-grained PAT (`PRIVATE_SUBMODULE_PAT`) that has
+
+   read access to `arkanwolfshade/mythosmud_data` and pass it to `actions/checkout` via the `token` input. This lets
+   checkout clone both the main repo and the private submodule in one step without hand-written rewrites.
 
 ### PAT Requirements
 
 **Token Type**: Fine-grained Personal Access Token
 
 **Required Permissions:**
-- **Repository access**: `arkanwolfshade/mythosmud_data`
-- **Repository permissions**:
-  - Contents: `Read-only` (minimum required)
-  - Metadata: `Read-only` (automatically included)
+
+**Repository access**: `arkanwolfshade/mythosmud_data`
+
+**Repository permissions**:
+
+- Contents: `Read-only` (minimum required)
+- Metadata: `Read-only` (automatically included)
 
 **Steps to Create PAT:**
-1. Go to https://github.com/settings/tokens
+
+1. Go to <https://github.com/settings/tokens>
+
 2. Click "Generate new token" → "Fine-grained personal access tokens"
+
 3. Configure:
+
    - Token name: `MythosMUD-CI-Submodule-Access`
+
    - Expiration: [Choose appropriate duration]
+
    - Repository access: Only select repositories
+
    - Repository: `arkanwolfshade/mythosmud_data`
+
    - Permissions: Repository permissions → Contents → Read-only
+
 4. Generate and copy the token
 5. Add to repository secrets as `MYTHOSMUD_PAT`
 
@@ -137,16 +166,19 @@ jobs:
 
 ```bash
 # If you cloned without --recursive, fetch submodules manually
+
 git submodule update --init --recursive
 ```
 
 ### Permission denied accessing submodule
 
 **For local development:**
+
 - Ensure you have access to the `mythosmud_data` repository
 - Check that your SSH keys or GitHub token are properly configured
 
 **For GitHub Actions:**
+
 - Verify the workflow has the correct PAT configured
 - Ensure the `MYTHOSMUD_PAT` secret is set in repository settings
 - Check that the PAT has access to the private submodule repository
@@ -157,14 +189,17 @@ This error occurs when the submodule points to a commit that doesn't exist in th
 
 ```bash
 # Error: fatal: remote error: upload-pack: not our ref <commit-hash>
+
 ```
 
 **Resolution:**
+
 1. Navigate to the submodule directory: `cd data`
 2. Check if local changes need to be pushed: `git status`
 3. Push local changes: `git push origin main`
 4. If there are conflicts, resolve them and push again
 5. Update the main repository's submodule reference:
+
    ```bash
    cd ..
    git submodule update --remote data
@@ -178,12 +213,15 @@ This usually means the submodule is pointing to a different commit than what's r
 
 ```bash
 # To see what's different
+
 git submodule status
 
 # To update to the recorded version
+
 git submodule update
 
 # To update to the latest version
+
 git submodule update --remote
 ```
 
@@ -193,18 +231,22 @@ If you need to add more submodules in the future:
 
 ```bash
 # Add a new submodule
+
 git submodule add <repository-url> <path>
 
 # Initialize all submodules
+
 git submodule update --init --recursive
 
 # Update all submodules to latest
+
 git submodule update --remote
 ```
 
 ## Security Considerations
 
-- The PAT used in workflows should have minimal required permissions
+The PAT used in workflows should have minimal required permissions
+
 - Private submodules maintain data security while allowing controlled access
 - Repository access is managed through GitHub's permission system
 - All submodule changes are tracked in the main repository's commit history
@@ -222,7 +264,12 @@ git submodule update --remote
 
 ## Related Documentation
 
-- [Git Submodules Documentation](https://git-scm.com/book/en/v2/Git-Tools-Submodules)
+[Git Submodules Documentation](https://git-scm.com/book/en/v2/Git-Tools-Submodules)
+
 - [GitHub Actions Checkout Action](https://github.com/actions/checkout)
+
 - [GitHub Token Permissions](https://docs.github.com/en/actions/security-guides/automatic-token-authentication)
-- [Fine-grained Personal Access Tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token#creating-a-fine-grained-personal-access-token)
+
+- [Fine-grained Personal Access
+
+  Tokens](<https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token#creating-a-fine-grained-personal-access-token>)

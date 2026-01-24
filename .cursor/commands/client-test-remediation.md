@@ -10,6 +10,7 @@
 
 ```bash
 # Step 1: Run client tests to get current failure state
+
 make test-client
 ```
 
@@ -21,30 +22,38 @@ make test-client
 
 #### 🔴 CRITICAL (Fix First - Blocking Issues)
 
-- **TypeScript compilation errors** (prevents build)
-- **JSX syntax errors** (breaks rendering)
-- **Missing imports** (component crashes)
+**TypeScript compilation errors** (prevents build)
+
+**JSX syntax errors** (breaks rendering)
+
+**Missing imports** (component crashes)
 - **Hook rule violations** (React runtime errors)
 
 #### 🟡 HIGH PRIORITY (Fix Second - Core Functionality)
 
-- **Component rendering failures** (UI broken)
-- **Props validation errors** (runtime crashes)
-- **Context provider issues** (state not available)
+**Component rendering failures** (UI broken)
+
+**Props validation errors** (runtime crashes)
+
+**Context provider issues** (state not available)
 - **Element query failures** (tests can't find elements)
 
 #### 🟢 MEDIUM PRIORITY (Fix Third - Enhancement)
 
-- **Hook dependency warnings** (performance issues)
-- **Async operation timeouts** (test reliability)
-- **Mock implementation issues** (test isolation)
+**Hook dependency warnings** (performance issues)
+
+**Async operation timeouts** (test reliability)
+
+**Mock implementation issues** (test isolation)
 - **Type mismatches** (development experience)
 
 #### 🔵 LOW PRIORITY (Fix Last - Polish)
 
-- **Test coverage below thresholds** (quality metrics)
-- **ESLint warnings** (code style)
-- **Performance optimizations** (non-critical)
+**Test coverage below thresholds** (quality metrics)
+
+**ESLint warnings** (code style)
+
+**Performance optimizations** (non-critical)
 
 **AI RULE**: Fix ONE category at a time. Do not move to the next category until current one is resolved.
 
@@ -68,6 +77,7 @@ make test-client
 
 ```bash
 # REQUIRED: Check TypeScript compilation
+
 cd client && npx tsc --noEmit --strict
 ```
 
@@ -77,6 +87,7 @@ cd client && npx tsc --noEmit --strict
 
 ```bash
 # REQUIRED: Check for syntax errors
+
 cd client && npx tsc --noEmit
 ```
 
@@ -159,12 +170,15 @@ test('handles async data', async () => {
 
 ```bash
 # 1. Verify TypeScript compilation
+
 cd client && npx tsc --noEmit
 
 # 2. Run client tests
+
 make test-client
 
 # 3. Check ESLint
+
 cd client && npm run lint
 ```
 

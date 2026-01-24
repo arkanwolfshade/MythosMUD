@@ -67,9 +67,8 @@ vi.mock('../hooks/useGameConnectionRefactored', () => ({
 // Mock fetch for authentication using vi.spyOn for proper cleanup
 const fetchSpy = vi.spyOn(global, 'fetch');
 
-// SKIPPED: This is an E2E test that should use Playwright, not Vitest
-// These tests require full App logout flows and should be in client/tests/
-describe.skip('Complete Logout Flow Integration', () => {
+// Un-skipped: runs with mocked fetch/logout; E2E in Playwright.
+describe('Complete Logout Flow Integration', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     fetchSpy.mockClear();

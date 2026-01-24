@@ -28,11 +28,14 @@ compatibility by ensuring clients ignoring the field remain unaffected.
 
 ## Controllers
 
-- Update command execution controller to route new slash commands to posture-handling service functions.
+Update command execution controller to route new slash commands to posture-handling service functions.
+
 - Ensure movement controller checks `position` before room transitions and returns structured denial payload when not
+
   standing.
 
 ## Purpose
 
-- Provide consistent API exposure of posture for UI elements.
+Provide consistent API exposure of posture for UI elements.
+
 - Maintain real-time synchronization between command execution, server state, and client displays.

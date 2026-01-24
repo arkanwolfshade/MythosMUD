@@ -11,6 +11,7 @@ from __future__ import annotations
 import asyncio
 from collections.abc import Callable, Sequence
 from datetime import UTC, datetime, timedelta
+from typing import Any
 
 from anyio import Lock, sleep
 
@@ -49,7 +50,7 @@ class MythosTickScheduler:  # pylint: disable=too-many-instance-attributes  # Re
         self._holiday_resolver = holiday_resolver or (lambda _dt: ())
         self._logger = get_logger(__name__)
 
-        self._task: asyncio.Task | None = None
+        self._task: asyncio.Task[Any] | None = None
         self._running = False
         self._last_emitted_hour: datetime | None = None
         self._lock = Lock()

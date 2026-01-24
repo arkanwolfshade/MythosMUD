@@ -67,7 +67,9 @@ metadata={'command': 'spells',
 **Key Observations**:
 
 - The `valid_commands` list includes `learn` but does NOT include `cast`,
+
   `spell`, or `spells`
+
 - Errors originate from `server.utils.command_parser`
 - ValidationError is raised before command handlers are invoked
 
@@ -86,6 +88,7 @@ metadata={'command': 'spells',
 
 ```python
 # Magic commands
+
 "cast": handle_cast_command,
 "spells": handle_spells_command,
 "spell": handle_spell_command,
@@ -105,6 +108,7 @@ class CommandType(str, Enum):
     """Valid command types for MythosMUD."""
     # ... other commands ...
     # Magic commands
+
     LEARN = "learn"
 ```
 
@@ -129,8 +133,10 @@ class LearnCommand(BaseCommand):
 
 ```python
 # Import magic commands
+
 from .command_magic import LearnCommand
 # ...
+
 "LearnCommand",
 ```
 
@@ -142,6 +148,7 @@ from .command_magic import LearnCommand
 
 ```python
 # Magic commands
+
 CommandType.LEARN.value: self.factory.create_learn_command,
 ```
 
@@ -154,6 +161,7 @@ CommandType.LEARN.value: self.factory.create_learn_command,
 
 ```python
 # Validate command type (including aliases)
+
 valid_commands_with_aliases = self.valid_commands | {"l", "g"}  # Add aliases (no w for whisper)
 if command not in valid_commands_with_aliases:
     context = create_error_context()
@@ -171,6 +179,7 @@ are not in the enum, they fail validation here.
 
 ```python
 # Use our new command processor for validation
+
 validated_command, error_message, command_type = command_processor.process_command_string(
     command_line, player_name
 )
@@ -217,19 +226,26 @@ were implemented in `CommandService`, but the corresponding Pydantic
 validation infrastructure was never completed. This creates a situation where:
 
 1. **Command handlers exist** but are unreachable
+
 2. **Pydantic models are missing** (`CastCommand`, `SpellCommand`,
+
    `SpellsCommand`)
+
 3. **CommandType enum values are missing** (`CAST`, `SPELL`, `SPELLS`)
+
 4. **Parser factory methods are missing** (no factory methods to create
+
    these command objects)
 
 ### Why `/learn` Works
 
 `/learn` works because it has all required components:
 
-- ✅ Command handler: `handle_learn_command` in `CommandService`
-- ✅ CommandType enum: `CommandType.LEARN` in `command_base.py`
-- ✅ Pydantic model: `LearnCommand` in `command_magic.py`
+✅ Command handler: `handle_learn_command` in `CommandService`
+
+✅ CommandType enum: `CommandType.LEARN` in `command_base.py`
+
+✅ Pydantic model: `LearnCommand` in `command_magic.py`
 - ✅ Parser factory: `create_learn_command` in command parser
 
 ### Command Processing Flow
@@ -265,7 +281,9 @@ validation infrastructure was never completed. This creates a situation where:
 **Error Log Entries**:
 
 - `logs/local/errors.log` lines 1, 6, 8, 10, 12: Multiple "Unknown command"
+
   errors for `cast`, `spell`, `spells`
+
 - All errors show `valid_commands` list that excludes these three commands
 - All errors originate from `server.utils.command_parser`
 
@@ -278,28 +296,38 @@ validation infrastructure was never completed. This creates a situation where:
 **Missing Components:**
 
 1. **CommandType Enum** (`server/models/command_base.py` line 85):
+
    - Missing: `CAST = "cast"`, `SPELL = "spell"`, `SPELLS = "spells"`
 
 2. **Pydantic Models** (`server/models/command_magic.py`):
+
    - Missing: `CastCommand`, `SpellCommand`, `SpellsCommand` classes
 
 3. **Command Parser Factory** (`server/utils/command_parser.py` line 92):
+
    - Missing: Factory method mappings for `CAST`, `SPELL`, `SPELLS`
 
 4. **Command Model Exports** (`server/models/command.py`):
+
    - Missing: Imports and exports for `CastCommand`, `SpellCommand`, `SpellsCommand`
 
 **Existing Components:**
 
 1. **Command Handlers** (`server/commands/command_service.py` lines 156-158):
-   - ✅ `handle_cast_command` exists
-   - ✅ `handle_spell_command` exists
-   - ✅ `handle_spells_command` exists
+
+   ✅ `handle_cast_command` exists
+
+   ✅ `handle_spell_command` exists
+
+   ✅ `handle_spells_command` exists
 
 2. **Handler Functions** (`server/commands/magic_commands.py`):
-   - ✅ `handle_cast_command()` function exists (line 364)
-   - ✅ `handle_spell_command()` function exists (line 409)
-   - ✅ `handle_spells_command()` function exists (line 387)
+
+   ✅ `handle_cast_command()` function exists (line 364)
+
+   ✅ `handle_spell_command()` function exists (line 409)
+
+   ✅ `handle_spells_command()` function exists (line 387)
 
 ---
 
@@ -310,12 +338,19 @@ validation infrastructure was never completed. This creates a situation where:
 **Action Items:**
 
 1. Add `CAST`, `SPELL`, `SPELLS` to `CommandType` enum in
+
    `server/models/command_base.py`
+
 2. Create `CastCommand`, `SpellCommand`, `SpellsCommand` Pydantic models in
+
    `server/models/command_magic.py`
+
 3. Add factory methods for these commands in the command parser factory
+
 4. Export new command models in `server/models/command.py`
+
 5. Add new command types to the `Command` union type in
+
    `server/models/command.py`
 
 ### Priority 2: Verify Command Handler Compatibility
@@ -323,9 +358,12 @@ validation infrastructure was never completed. This creates a situation where:
 **Action Items:**
 
 1. Review `handle_cast_command`, `handle_spell_command`,
+
    `handle_spells_command` to ensure they accept the command data format from
    `CommandProcessor.extract_command_data()`
+
 2. Verify that spell_name and target parameters are correctly extracted from
+
    Pydantic models
 
 ### Priority 3: Testing
@@ -379,7 +417,8 @@ the new models.
 
 ## INVESTIGATION COMPLETION CHECKLIST
 
-- [x] All investigation steps completed as written
+[x] All investigation steps completed as written
+
 - [x] Comprehensive evidence collected and documented
 - [x] Root cause analysis completed
 - [x] System impact assessed

@@ -2,34 +2,54 @@
 name: Playwright Test Plan for DI Migration Validation
 overview: Create a comprehensive Playwright test suite to validate the app.state to dependency injection migration, testing both regression (existing functionality) and new service functionality for combat, magic, NPC, chat, and shutdown services.
 todos:
+
   - id: test-setup
+
     content: Create test file structure and configuration in client/tests/e2e/di-migration-validation.spec.ts
     status: completed
+
   - id: test-helpers
+
     content: Implement helper functions for service verification, API testing, command testing, and game tick testing
     status: completed
+
   - id: suite1-core-services
+
     content: "Implement Suite 1: Core Service Functionality Tests (container, combat, magic, NPC, chat, other services)"
     status: completed
+
   - id: suite2-api-endpoints
+
     content: "Implement Suite 2: API Endpoint Validation Tests (metrics API and dependency injection verification)"
     status: completed
+
   - id: suite3-commands
+
     content: "Implement Suite 3: Command Handler Validation Tests (status, communication, magic, combat, NPC admin, shutdown)"
     status: completed
+
   - id: suite4-game-tick
+
     content: "Implement Suite 4: Game Tick and Background Task Tests (tick processing, service access verification)"
     status: completed
+
   - id: suite5-websocket
+
     content: "Implement Suite 5: WebSocket and Real-time Communication Tests (connection, broadcasting, request context)"
     status: completed
+
   - id: suite6-integration
+
     content: "Implement Suite 6: Integration Tests (service interactions, multi-service workflows, backward compatibility)"
     status: completed
+
   - id: test-execution
+
     content: Run test suite and verify all tests pass
     status: completed
+
   - id: test-documentation
+
     content: Document test results and any issues found
     status: completed
 ---
@@ -378,14 +398,16 @@ const ADMIN_USERNAME = 'ArkanWolfshade'; // Admin account
 
 ### Test Isolation
 
-- Each test should be independent
+Each test should be independent
+
 - Clean up after each test
 - Use unique test data
 - Avoid test interdependencies
 
 ### Error Handling
 
-- Handle service unavailability gracefully
+Handle service unavailability gracefully
+
 - Log errors for debugging
 - Continue testing even if one test fails
 - Provide clear error messages
@@ -402,7 +424,8 @@ const ADMIN_USERNAME = 'ArkanWolfshade'; // Admin account
 
 ### Validation Checklist
 
-- [ ] All core services are accessible via container
+[ ] All core services are accessible via container
+
 - [ ] All API endpoints work with dependency injection
 - [ ] All command handlers work with dependency injection
 - [ ] Game tick processing works with container

@@ -5,13 +5,17 @@ This directory contains **DDL (Data Definition Language) migration scripts** for
 ## Purpose
 
 DDL migrations are used to modify the database schema for databases that already exist. These scripts are:
-- **Backwards compatible**: Can be safely applied to existing databases
-- **Idempotent**: Can be run multiple times without causing errors
-- **Safe**: Use `IF NOT EXISTS`, `IF EXISTS`, and other safety checks
+
+**Backwards compatible**: Can be safely applied to existing databases
+
+**Idempotent**: Can be run multiple times without causing errors
+
+**Safe**: Use `IF NOT EXISTS`, `IF EXISTS`, and other safety checks
 
 ## When to Use DDL Migrations
 
 Use DDL migrations when you need to:
+
 - Add new tables, columns, indexes, or constraints to existing databases
 - Modify existing table structures
 - Add or modify database functions, types, or sequences
@@ -19,9 +23,11 @@ Use DDL migrations when you need to:
 
 ## When NOT to Use DDL Migrations
 
-- **New database setups**: Use `db/authoritative_schema.sql` instead
-- **Data changes**: Use DML migrations in `data/db/migrations/` instead
-- **Seed data**: Use DML baseline scripts in `data/db/` instead
+**New database setups**: Use `db/authoritative_schema.sql` instead
+
+**Data changes**: Use DML migrations in `data/db/migrations/` instead
+
+**Seed data**: Use DML baseline scripts in `data/db/` instead
 
 ## Writing Idempotent Migration Scripts
 
@@ -89,7 +95,8 @@ Use descriptive names that indicate the change:
 
 ## Migration Execution Order
 
-Migrations should be designed to be independent and order-independent when possible. If a migration depends on another, document the dependency clearly in comments.
+Migrations should be designed to be independent and order-independent when possible. If a migration depends on another,
+document the dependency clearly in comments.
 
 ## Testing Migrations
 
@@ -121,7 +128,10 @@ COMMENT ON COLUMN professions.flavor_text IS
 
 ## Directory Convention
 
-- **Baseline DDL**: `/db/authoritative_schema.sql` - Complete schema for new databases
-- **DDL Migrations**: `/db/migrations/*.sql` - Schema changes for existing databases (this directory)
-- **DML Baseline**: `/data/db/*.sql` - Seed data for new databases
-- **DML Migrations**: `/data/db/migrations/*.sql` - Data changes for existing databases
+**Baseline DDL**: `/db/authoritative_schema.sql` - Complete schema for new databases
+
+**DDL Migrations**: `/db/migrations/*.sql` - Schema changes for existing databases (this directory)
+
+**DML Baseline**: `/data/db/*.sql` - Seed data for new databases
+
+**DML Migrations**: `/data/db/migrations/*.sql` - Data changes for existing databases

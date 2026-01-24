@@ -11,11 +11,13 @@ This directory contains PostgreSQL database creation scripts.
 ### `databases.sql`
 
 Creates PostgreSQL databases for different environments:
+
 - `mythos_dev` - Development database
 - `mythos_unit` - Unit test database
 - `mythos_e2e` - End-to-end test database
 
 For each database, the script:
+
 - Creates the database with UTF-8 encoding
 - Sets the database owner
 - Enables `pgcrypto` extension
@@ -33,6 +35,7 @@ This script is executed **after** role creation and **before** schema applicatio
 ## Execution Order
 
 The correct order is:
+
 1. `db/roles/roles.sql` - Create roles (users)
 2. `db/databases/databases.sql` - Create databases with owners
 3. `db/authoritative_schema.sql` - Apply schema
@@ -40,7 +43,8 @@ The correct order is:
 
 ## Security
 
-- Databases use least-privilege access control
+Databases use least-privilege access control
+
 - Public access is revoked
 - Only application roles can connect
 - Default privileges are configured for future objects

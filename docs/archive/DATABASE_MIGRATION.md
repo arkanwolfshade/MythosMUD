@@ -3,6 +3,7 @@
 ## 🗄️ Database Schema Analysis
 
 ### Current Situation
+
 We have two database files with different schemas:
 
 1. **`data/players/local_players.db`** - Old schema (68KB)
@@ -20,7 +21,7 @@ We have two database files with different schemas:
 
 ## ✅ **RECOMMENDATION: Use `players_new.db`**
 
-### Why `players_new.db` is the correct choice:
+### Why `players_new.db` is the correct choice
 
 1. **✅ Schema matches current models** - Uses UUIDs as expected by SQLAlchemy models
 2. **✅ Consistent naming** - All foreign keys use `user_id` pattern
@@ -28,37 +29,44 @@ We have two database files with different schemas:
 4. **✅ Simplified design** - Streamlined invite system
 5. **✅ Future-proof** - Aligned with modern database practices
 
-### Current Model Expectations:
+### Current Model Expectations
+
 ```python
-# User model expects:
+# User model expects
+
 user_id = Column(UUID(as_uuid=True), primary_key=True)
 
-# Player model expects:
+# Player model expects
+
 player_id = Column(UUID(as_uuid=True), primary_key=True)
 user_id = Column(UUID(as_uuid=True), ForeignKey("users.user_id"))
 ```
 
 ## 🔧 **Configuration Updates Made**
 
-### Files Updated:
+### Files Updated
+
 1. **`server/database.py`** - Updated default DATABASE_URL
 2. **`server/server_config.yaml`** - Updated db_path
 3. **`server/env.example`** - Updated DATABASE_URL example
 
-### New Default Configuration:
+### New Default Configuration
+
 ```python
 DATABASE_URL = "sqlite+aiosqlite:///../../data/players/players_new.db"
 ```
 
 ## 🚨 **Migration Actions Required**
 
-### For Production Deployment:
+### For Production Deployment
+
 1. **Backup old database** (already done: `local_players.db.backup`)
 2. **Verify data integrity** in `players_new.db`
 3. **Test all database operations** with new schema
 4. **Update any hardcoded references** to old database
 
-### For Development:
+### For Development
+
 1. **Use `players_new.db`** as the primary database
 2. **Keep `local_players.db`** as backup until migration is complete
 3. **Test all CRUD operations** with new schema
@@ -73,17 +81,20 @@ DATABASE_URL = "sqlite+aiosqlite:///../../data/players/players_new.db"
 
 ## 🔍 **Verification Commands**
 
-### Check current database path:
+### Check current database path
+
 ```bash
 python -c "from server.database import get_database_path; print(get_database_path())"
 ```
 
-### Verify schema compatibility:
+### Verify schema compatibility
+
 ```bash
 sqlite3 data/players/players_new.db ".schema"
 ```
 
-### Test database connection:
+### Test database connection
+
 ```bash
 python -c "import sys; sys.path.append('.'); from server.database import engine; print('Database connection successful')"
 ```
@@ -98,16 +109,19 @@ python -c "import sys; sys.path.append('.'); from server.database import engine;
 ## 🎯 **Next Steps**
 
 1. **Immediate (24 hours):**
+
    - Test all database operations with new schema
    - Verify authentication system works correctly
    - Run comprehensive test suite
 
 2. **Short-term (1 week):**
+
    - Monitor database performance
    - Verify data integrity
    - Consider removing old database files
 
 3. **Long-term (1 month):**
+
    - Archive old database files
    - Update documentation
    - Implement database migration scripts for future changes

@@ -9,7 +9,9 @@
 
 ## Executive Summary
 
-This review identified **8 CRITICAL violations**, **5 HIGH priority issues**, and **3 MEDIUM priority improvements** related to PostgreSQL best practices across the codebase. The issues range from deprecated sequence syntax (`serial`) to inconsistent formatting to missing documentation.
+This review identified **8 CRITICAL violations**, **5 HIGH priority issues**, and **3 MEDIUM priority improvements**
+related to PostgreSQL best practices across the codebase. The issues range from deprecated sequence syntax (`serial`) to
+inconsistent formatting to missing documentation.
 
 ---
 
@@ -22,7 +24,8 @@ This review identified **8 CRITICAL violations**, **5 HIGH priority issues**, an
 
 **Location:** Multiple schema files
 
-**Violation:** PostgreSQL best practices explicitly state: "Use `bigint generated always as identity` for primary keys. Never use `serial` or `bigserial`."
+**Violation:** PostgreSQL best practices explicitly state: "Use `bigint generated always as identity` for primary keys.
+Never use `serial` or `bigserial`."
 
 **Files Affected:**
 
@@ -101,7 +104,8 @@ CREATE TABLE IF NOT EXISTS professions (
 
 **Location:** Multiple schema files
 
-**Violation:** PostgreSQL best practices state: "SQL keywords must be lowercase." However, the codebase mixes uppercase (`CREATE TABLE`, `SERIAL`, `VARCHAR`) and lowercase (`create table`, `serial`, `varchar`).
+**Violation:** PostgreSQL best practices state: "SQL keywords must be lowercase." However, the codebase mixes uppercase
+(`CREATE TABLE`, `SERIAL`, `VARCHAR`) and lowercase (`create table`, `serial`, `varchar`).
 
 **Files Affected:**
 
@@ -146,7 +150,8 @@ create table if not exists professions (
 
 **Location:** Multiple schema files
 
-**Violation:** PostgreSQL best practices state: "Prefer `text` over `varchar(n)` unless there's a specific, strict length constraint."
+**Violation:** PostgreSQL best practices state: "Prefer `text` over `varchar(n)` unless there's a specific, strict
+length constraint."
 
 **Files Affected:**
 
@@ -170,7 +175,8 @@ email text not null unique,
 name varchar(50) not null unique,  -- Only if 50 char limit is business requirement
 ```
 
-**Analysis:** Some `varchar` usages may be justified (e.g., fixed-length codes), but many appear arbitrary (e.g., `varchar(255)` for emails, `varchar(50)` for room IDs).
+**Analysis:** Some `varchar` usages may be justified (e.g., fixed-length codes), but many appear arbitrary (e.g.,
+`varchar(255)` for emails, `varchar(50)` for room IDs).
 
 **Recommendation:**
 
@@ -190,7 +196,8 @@ name varchar(50) not null unique,  -- Only if 50 char limit is business requirem
 
 **Location:** All schema files except `db/authoritative_schema.sql`
 
-**Violation:** PostgreSQL best practices state: "Always add descriptive comments to tables and columns using `COMMENT ON`."
+**Violation:** PostgreSQL best practices state: "Always add descriptive comments to tables and columns using `COMMENT
+ON`."
 
 **Files Affected:**
 
@@ -200,7 +207,8 @@ name varchar(50) not null unique,  -- Only if 50 char limit is business requirem
 - `db/schema/04_runtime_tables.sql` - No comments
 - `server/scripts/create_professions_table.sql` - No comments
 
-**Note:** `db/authoritative_schema.sql` contains some comments (44 instances), but these appear to be generated from the database.
+**Note:** `db/authoritative_schema.sql` contains some comments (44 instances), but these appear to be generated from the
+database.
 
 **Recommendation:**
 
@@ -220,9 +228,11 @@ name varchar(50) not null unique,  -- Only if 50 char limit is business requirem
 
 **Location:** Multiple schema files
 
-**Violation:** PostgreSQL best practices state: "Always use `snake_case` for all database identifiers." However, the codebase uses mixed case in some places (e.g., `player_id` vs `PLAYER_ID`).
+**Violation:** PostgreSQL best practices state: "Always use `snake_case` for all database identifiers." However, the
+codebase uses mixed case in some places (e.g., `player_id` vs `PLAYER_ID`).
 
-**Analysis:** Most identifiers use `snake_case` correctly, but there may be inconsistencies in constraint names and index names.
+**Analysis:** Most identifiers use `snake_case` correctly, but there may be inconsistencies in constraint names and
+index names.
 
 **Recommendation:**
 
@@ -242,7 +252,8 @@ name varchar(50) not null unique,  -- Only if 50 char limit is business requirem
 
 **Location:** Multiple schema files
 
-**Violation:** While sometimes necessary, excessive use of quoted identifiers (`"name"`) creates case-sensitivity issues.
+**Violation:** While sometimes necessary, excessive use of quoted identifiers (`"name"`) creates case-sensitivity
+issues.
 
 **Examples:**
 
@@ -257,7 +268,8 @@ name varchar(50) not null unique,
 "name" text not null unique,  -- Only if necessary
 ```
 
-**Analysis:** The use of `"name"` appears in multiple places. This may be necessary if `name` is a reserved word in some contexts, but should be documented.
+**Analysis:** The use of `"name"` appears in multiple places. This may be necessary if `name` is a reserved word in some
+contexts, but should be documented.
 
 **Recommendation:**
 
@@ -387,7 +399,8 @@ current_luc integer not null default 100 check (
 
 **Location:** Multiple schema files
 
-**Analysis:** Some constraints use explicit names (e.g., `fk_players_profession`), others rely on PostgreSQL-generated names.
+**Analysis:** Some constraints use explicit names (e.g., `fk_players_profession`), others rely on PostgreSQL-generated
+names.
 
 **Recommendation:**
 
@@ -513,11 +526,15 @@ current_luc integer not null default 100 check (
 
 ## 📊 STATISTICS
 
-- **Files Reviewed:** 27 SQL files, multiple Python files
-- **Critical Issues Found:** 8
-- **High Priority Issues Found:** 5
-- **Medium Priority Issues Found:** 3
-- **Good Practices Found:** 6
+**Files Reviewed:** 27 SQL files, multiple Python files
+
+**Critical Issues Found:** 8
+
+**High Priority Issues Found:** 5
+
+**Medium Priority Issues Found:** 3
+
+**Good Practices Found:** 6
 
 ---
 
@@ -531,4 +548,5 @@ current_luc integer not null default 100 check (
 ---
 
 **Review Complete**
-*"In the archives of database design, we find that consistency and adherence to best practices are not mere suggestions, but the foundation upon which maintainable systems are built."*
+*"In the archives of database design, we find that consistency and adherence to best practices are not mere suggestions,
+but the foundation upon which maintainable systems are built."*

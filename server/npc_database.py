@@ -32,7 +32,7 @@ logger = get_logger(__name__)
 
 # LAZY INITIALIZATION: These are initialized on first use, not at import time
 _npc_engine: AsyncEngine | None = None  # pylint: disable=invalid-name  # Reason: Private module-level singleton, intentionally uses _ prefix
-_npc_async_session_maker: async_sessionmaker | None = None  # pylint: disable=invalid-name  # Reason: Private module-level singleton, intentionally uses _ prefix
+_npc_async_session_maker: async_sessionmaker[AsyncSession] | None = None  # pylint: disable=invalid-name  # Reason: Private module-level singleton, intentionally uses _ prefix
 _npc_database_url: str | None = None  # pylint: disable=invalid-name  # Reason: Private module-level variable, intentionally uses _ prefix
 _npc_creation_loop_id: int | None = None  # pylint: disable=invalid-name  # Reason: Private module-level variable, intentionally uses _ prefix  # Track which loop created the NPC engine
 
@@ -199,7 +199,7 @@ def get_npc_engine() -> AsyncEngine | None:
     return _npc_engine
 
 
-def get_npc_session_maker() -> async_sessionmaker:
+def get_npc_session_maker() -> async_sessionmaker[AsyncSession]:
     """
     Get the NPC async session maker, initializing if necessary.
 
@@ -267,7 +267,7 @@ async def get_npc_session() -> AsyncGenerator[AsyncSession, None]:
             logger.debug("NPC database session closed")
 
 
-async def init_npc_db():
+async def init_npc_db() -> None:
     """
     Initialize NPC database connection and verify configuration.
 
@@ -327,7 +327,7 @@ async def init_npc_db():
         raise
 
 
-async def close_npc_db():
+async def close_npc_db() -> None:
     """Close NPC database connections."""
     global _npc_engine, _npc_async_session_maker, _npc_creation_loop_id  # pylint: disable=global-statement  # Reason: Singleton pattern for database engine cleanup
 
@@ -364,7 +364,7 @@ async def close_npc_db():
 
                     # Step 2: Shield disposal from cancellation to ensure cleanup completes
                     # This prevents Connection._cancel coroutines from being interrupted during cleanup
-                    async def _dispose_engine():
+                    async def _dispose_engine() -> None:
                         await engine.dispose()
                         # Wait a bit more to ensure all asyncpg cleanup coroutines complete
                         # This helps prevent Connection._cancel coroutines from being garbage collected
@@ -464,7 +464,7 @@ def get_npc_database_path() -> Path | None:
     # Type checker understands this, but we keep the else branch for clarity
 
 
-def ensure_npc_database_directory():
+def ensure_npc_database_directory() -> None:
     """
     Ensure NPC database directory exists.
 

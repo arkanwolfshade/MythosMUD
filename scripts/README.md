@@ -24,9 +24,11 @@ Starts the MythosMUD FastAPI server with optional process cleanup.
 
 ```powershell
 # Start with default settings
+
 .\start_server.ps1
 
 # Start on all interfaces, port 8080, with auto-reload enabled
+
 .\start_server.ps1 -ServerHost "0.0.0.0" -Port 8080 -Reload
 ```
 
@@ -49,9 +51,11 @@ Stops MythosMUD server processes using multiple detection methods.
 
 ```powershell
 # Stop server processes gracefully
+
 .\stop_server.ps1
 
 # Force stop all Python processes with detailed output
+
 .\stop_server.ps1 -Force -Verbose
 ```
 
@@ -101,7 +105,6 @@ See `db/README.md` for database setup instructions.
 **Note:** SQLite database initialization scripts have been removed as the project
 now uses PostgreSQL exclusively.
 
-
 ### `build.py`
 
 Builds the project for production.
@@ -116,13 +119,15 @@ Cleans build artifacts and temporary files.
 
 ## Requirements
 
-- PowerShell 5.1 or higher (for PowerShell scripts)
+PowerShell 5.1 or higher (for PowerShell scripts)
+
 - Python 3.12+ (for Python scripts)
 - Node.js 18+ (for client development)
 
 ## Notes
 
-- All PowerShell scripts include comprehensive help documentation
+All PowerShell scripts include comprehensive help documentation
+
 - Use `Get-Help .\script_name.ps1 -Full` for detailed help
 - Scripts automatically handle process cleanup and port management
 - Error handling and logging are built into all scripts

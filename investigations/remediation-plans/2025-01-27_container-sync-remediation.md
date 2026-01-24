@@ -2,11 +2,17 @@
 
 ## Executive Summary
 
-**Problem**: Items picked up from the ground are incorrectly marked with `slot_type='backpack'` in inventory JSON, but are NOT added to the `container_contents` PostgreSQL table. This causes `slots_in_use` to show 0 instead of the correct count.
+**Problem**: Items picked up from the ground are incorrectly marked with `slot_type='backpack'` in inventory JSON,
+but are NOT added to the `container_contents` PostgreSQL table. This causes `slots_in_use` to show 0 instead of the
+ correct count.
 
-**Root Cause**: The `pickup` command incorrectly sets `slot_type='backpack'` (line 650), making items appear as if they're in a container when they're actually in general inventory. Items should only have `slot_type='backpack'` when explicitly placed into containers via the `put` command.
+**Root Cause**: The `pickup` command incorrectly sets `slot_type='backpack'` (line 650), making items appear as if
+ they're in a container when they're actually in general inventory. Items should only have `slot_type='backpack'`
+  when explicitly placed into containers via the `put` command.
 
-**Solution**: Remove the incorrect `slot_type='backpack'` assignment from the `pickup` command. Items picked up should go to general inventory (no `slot_type` or `slot_type=None`). Items should only get `slot_type='backpack'` when explicitly put into containers via the `put` command.
+**Solution**: Remove the incorrect `slot_type='backpack'` assignment from the `pickup` command. Items picked up
+ should go to general inventory (no `slot_type` or `slot_type=None`). Items should only get `slot_type='backpack'`
+  when explicitly put into containers via the `put` command.
 
 ## Current State Analysis
 
@@ -15,11 +21,13 @@
 The system uses **two storage locations** for container items:
 
 1. **Player Inventory JSON** (`players.inventory` JSONB):
+
    - Stores ALL player items, including those in containers
    - Items in containers have `slot_type='backpack'` (or other container slot)
    - Used for: Inventory capacity calculation, item ownership
 
 2. **Container Contents Table** (`container_contents` PostgreSQL):
+
    - Stores items that are physically inside containers
    - Used for: Container capacity display, container operations
    - Queried by: `WearableContainerService.get_wearable_containers_for_player()`
@@ -35,15 +43,18 @@ The system uses **two storage locations** for container items:
 
 ### Impact
 
-- **User Experience**: Container shows "0/20 slots" when it should show "1/20"
-- **Data Integrity**: Items exist in inventory JSON but not in container_contents (inconsistent state)
-- **System Reliability**: Container operations may fail or behave unexpectedly
+**User Experience**: Container shows "0/20 slots" when it should show "1/20"
+
+**Data Integrity**: Items exist in inventory JSON but not in container_contents (inconsistent state)
+
+**System Reliability**: Container operations may fail or behave unexpectedly
 
 ## Remediation Strategy
 
 ### Recommended Approach: Remove Incorrect slot_type Assignment
 
-**Principle**: Items picked up from the ground should go to general inventory (no `slot_type`). Items should only have `slot_type='backpack'` when explicitly placed into containers via the `put` command.
+**Principle**: Items picked up from the ground should go to general inventory (no `slot_type`). Items should only
+ have `slot_type='backpack'` when explicitly placed into containers via the `put` command.
 
 **Benefits**:
 
@@ -62,6 +73,7 @@ The system uses **two storage locations** for container items:
 **Changes**:
 
 1. **Remove incorrect `slot_type='backpack'` assignment** (line 650):
+
    - Items picked up should go to general inventory
    - Do NOT set `slot_type='backpack'` during pickup
    - Items should only get `slot_type='backpack'` when explicitly put into containers via `put` command
@@ -70,14 +82,17 @@ The system uses **two storage locations** for container items:
 
    ```python
    # BEFORE (line 650):
+
    extracted_stack["slot_type"] = "backpack"
 
    # AFTER:
    # Do NOT set slot_type - items go to general inventory
    # slot_type is only set when items are explicitly put into containers via 'put' command
+
    ```
 
 3. **Error Handling** (for `put` command, not pickup):
+
    - If container doesn't exist (player targets): Inform player there is no such container
    - If container doesn't exist (server targets): Raise exception with detailed error logs
    - If container is full (player targets): Inform player there is no remaining capacity
@@ -93,10 +108,15 @@ The system uses **two storage locations** for container items:
 **Logic**:
 
 1. Query all players
+
 2. For each player:
+
    - Get inventory items with `slot_type='backpack'`
+
    - Check if item is actually in container_contents table
+
    - If NOT in container_contents, remove slot_type (item is in general inventory)
+
 3. Log results and errors
 
 **Execution**:
@@ -111,31 +131,37 @@ The system uses **two storage locations** for container items:
 **Test Cases**:
 
 1. **Pickup with Equipped Backpack**:
+
    - Equip backpack
    - Pick up item
    - Verify: Item in container_contents, `slots_in_use` = 1
 
 2. **Pickup without Equipped Backpack**:
+
    - No backpack equipped
    - Pick up item
    - Verify: Item in inventory JSON with `slot_type='backpack'`, not in container_contents
 
 3. **Pickup when Backpack is Full**:
+
    - Fill backpack to capacity
    - Pick up item
    - Verify: Item in inventory JSON (fallback), error message shown
 
 4. **Pickup when Container Service Unavailable**:
+
    - Simulate container service failure
    - Pick up item
    - Verify: Exception raised, detailed error logs written, operation fails
 
 5. **Existing Put/Get Commands**:
+
    - Verify put command still works
    - Verify get command still works
    - Verify inventory display shows correct counts
 
 6. **Migration Script**:
+
    - Run on test data
    - Verify items synced correctly
    - Verify no duplicates created
@@ -153,19 +179,24 @@ The system uses **two storage locations** for container items:
 **Code Change**:
 
 ```python
-# BEFORE (line 650):
+# BEFORE (line 650)
+
 if isinstance(extracted_stack, dict):
     extracted_stack = dict(extracted_stack)  # Create a copy to avoid mutating the original
     extracted_stack["slot_type"] = "backpack"  # ❌ REMOVE THIS LINE
 
-# AFTER:
+# AFTER
+
 if isinstance(extracted_stack, dict):
     extracted_stack = dict(extracted_stack)  # Create a copy to avoid mutating the original
     # Do NOT set slot_type - items go to general inventory
     # slot_type is only set when items are explicitly put into containers via 'put' command
+
 ```
 
-**Rationale**: Items picked up from the ground should go to general inventory, not be marked as being in a container. Items should only have `slot_type='backpack'` when explicitly placed into containers via the `put` command.
+**Rationale**: Items picked up from the ground should go to general inventory, not be marked as being in a
+ container. Items should only have `slot_type='backpack'` when explicitly placed into containers via the `put`
+  command.
 
 #### 2. Create Migration Script
 
@@ -184,11 +215,13 @@ inventory JSON but not in container_contents table.
 def migrate_player_container_items(persistence, player_id: UUID) -> dict[str, Any]:
     """Migrate a single player's container items."""
     # Implementation here
+
     pass
 
 def run_migration(persistence) -> dict[str, Any]:
     """Run migration for all players."""
     # Implementation here
+
     pass
 ```
 
@@ -202,32 +235,48 @@ def run_migration(persistence) -> dict[str, Any]:
 **For Put Command** (items placed into containers):
 
 1. **Container Doesn't Exist (Player Targets)**:
-   - **Behavior**: Return user-friendly message: "You don't see any '{container_name}' here."
-   - **Rationale**: Player-initiated action - inform them the container doesn't exist
-   - **Logging**: Debug level log
+
+   **Behavior**: Return user-friendly message: "You don't see any '{container_name}' here."
+
+   **Rationale**: Player-initiated action - inform them the container doesn't exist
+
+   **Logging**: Debug level log
 
 2. **Container Doesn't Exist (Server Targets)**:
-   - **Behavior**: Raise ContainerNotFoundError with full error context
-   - **Rationale**: Server-initiated action - indicates data integrity issue
-   - **Logging**: Error level with full traceback
+
+   **Behavior**: Raise ContainerNotFoundError with full error context
+
+   **Rationale**: Server-initiated action - indicates data integrity issue
+
+   **Logging**: Error level with full traceback
 
 3. **Container is Full (Player Targets)**:
-   - **Behavior**: Return user-friendly message: "The {container_name} is full."
-   - **Rationale**: Player-initiated action - inform them there's no remaining capacity
-   - **Logging**: Info level log
+
+   **Behavior**: Return user-friendly message: "The {container_name} is full."
+
+   **Rationale**: Player-initiated action - inform them there's no remaining capacity
+
+   **Logging**: Info level log
 
 4. **Container is Full (Server Targets)**:
-   - **Behavior**: [NOT CURRENTLY APPLICABLE - No server-initiated container operations exist]
-   - **Rationale**: Investigation shows all container operations are player-initiated (via `put` command or API)
-   - **Future-Proofing**: If server-initiated operations are added later, raise ContainerCapacityError with full error context
+
+   **Behavior**: [NOT CURRENTLY APPLICABLE - No server-initiated container operations exist]
+
+   **Rationale**: Investigation shows all container operations are player-initiated (via `put` command or API)
+
+   **Future-Proofing**: If server-initiated operations are added later, raise ContainerCapacityError with full error context
    - **Logging**: Error level with container capacity details (if implemented)
 
 5. **Container Service Unavailable**:
-   - **Behavior**: Raise RuntimeError with full error context, terminate operation
-   - **Rationale**: Container service is REQUIRED - failure indicates system misconfiguration
-   - **Logging**: Error level with full traceback and system state
 
-**CRITICAL**: All server-initiated errors must be logged with full context (traceback, player_id, container_id, etc.) and operations must FAIL - no silent fallbacks that hide problems.
+   **Behavior**: Raise RuntimeError with full error context, terminate operation
+
+   **Rationale**: Container service is REQUIRED - failure indicates system misconfiguration
+
+   **Logging**: Error level with full traceback and system state
+
+**CRITICAL**: All server-initiated errors must be logged with full context (traceback, player_id, container_id,
+ etc.) and operations must FAIL - no silent fallbacks that hide problems.
 
 ## Testing Strategy
 
@@ -253,7 +302,8 @@ def run_migration(persistence) -> dict[str, Any]:
 
 ### Manual Testing Checklist
 
-- [ ] Pick up item → Verify item in general inventory (no slot_type)
+[ ] Pick up item → Verify item in general inventory (no slot_type)
+
 - [ ] Pick up item → Verify item does NOT have slot_type='backpack'
 - [ ] Put item into container → Verify item has slot_type='backpack' and is in container_contents
 - [ ] Run `/inventory` command → Verify correct slot counts
@@ -265,7 +315,8 @@ def run_migration(persistence) -> dict[str, Any]:
 
 ### Phase 1: Development (Current)
 
-- [x] Root cause analysis
+[x] Root cause analysis
+
 - [x] Remediation plan
 - [ ] Code implementation
 - [ ] Unit tests
@@ -273,21 +324,24 @@ def run_migration(persistence) -> dict[str, Any]:
 
 ### Phase 2: Testing
 
-- [ ] Run full test suite
+[ ] Run full test suite
+
 - [ ] Manual testing
 - [ ] Performance testing
 - [ ] Edge case testing
 
 ### Phase 3: Data Cleanup (Optional)
 
-- [ ] Create cleanup script (if needed)
+[ ] Create cleanup script (if needed)
+
 - [ ] Test cleanup on staging data
 - [ ] Run cleanup on production (if needed)
 - [ ] Verify cleanup results
 
 ### Phase 4: Deployment
 
-- [ ] Deploy code changes
+[ ] Deploy code changes
+
 - [ ] Monitor logs for errors
 - [ ] Verify user reports
 - [ ] Document changes
@@ -306,25 +360,30 @@ def run_migration(persistence) -> dict[str, Any]:
 
 ### Low Risk
 
-- Code changes are isolated to pickup command
+Code changes are isolated to pickup command
+
 - Migration script is idempotent
 - Errors are logged with full context for debugging
 
 ### Medium Risk
 
-- Container service dependency (fail-fast ensures we catch issues immediately)
+Container service dependency (fail-fast ensures we catch issues immediately)
+
 - Migration script may take time for large datasets (mitigated by batching)
 - Operations will fail if container service unavailable (by design - ensures we fix issues)
 
 ### High Risk
 
-- **No graceful degradation**: Operations will fail if container service unavailable
-- **Impact**: Players cannot pick up items if container service is down
-- **Mitigation**: This is intentional - ensures we fix infrastructure issues immediately
+**No graceful degradation**: Operations will fail if container service unavailable
+
+**Impact**: Players cannot pick up items if container service is down
+
+**Mitigation**: This is intentional - ensures we fix infrastructure issues immediately
 
 ### Mitigation Strategies
 
-- Comprehensive error logging with full tracebacks and context
+Comprehensive error logging with full tracebacks and context
+
 - Extensive testing before deployment
 - Migration script with dry-run mode
 - Rollback plan (revert code changes)
@@ -332,15 +391,19 @@ def run_migration(persistence) -> dict[str, Any]:
 
 ## Timeline Estimate
 
-- **Development**: 30 minutes (remove one line)
-- **Testing**: 1-2 hours
-- **Data Cleanup Script**: 1 hour (optional)
+**Development**: 30 minutes (remove one line)
+
+**Testing**: 1-2 hours
+
+**Data Cleanup Script**: 1 hour (optional)
+
 - **Data Cleanup Execution**: 15 minutes (optional)
 - **Total**: 2-4 hours
 
 ## Dependencies
 
-- Container service MUST be available (no fallback - operations fail if unavailable)
+Container service MUST be available (no fallback - operations fail if unavailable)
+
 - Wearable container service for finding equipped containers
 - Persistence layer for container operations
 - Migration requires database access
@@ -348,8 +411,10 @@ def run_migration(persistence) -> dict[str, Any]:
 ## Questions for Review
 
 1. **Question #4**: If the container is full and the server targets it (server-initiated action), what should happen?
-   - **Investigation Result**: No server-initiated container operations currently exist in the codebase
-   - **Current Status**: Not applicable - all container operations are player-initiated
+
+   **Investigation Result**: No server-initiated container operations currently exist in the codebase
+
+   **Current Status**: Not applicable - all container operations are player-initiated
    - **Future-Proofing**: If server-initiated operations are added, should we:
      - Option A: Raise ContainerCapacityError (fail-fast, operation fails)
      - Option B: Place item in general inventory instead (fallback, operation succeeds)

@@ -2,12 +2,13 @@
 
 ## Tasks
 
-- [x] 1. **Create EventPublisher Service Infrastructure**
-  - [x] 1.1 Write tests for EventPublisher service class
-  - [x] 1.2 Create EventPublisher class in `server/realtime/event_publisher.py`
-  - [x] 1.3 Implement NATS subject publishing methods (player_entered, player_left, game_tick)
-  - [x] 1.4 Add error handling and logging for NATS publishing failures
-  - [x] 1.5 Verify all tests pass
+[x] 1. **Create EventPublisher Service Infrastructure**
+
+- [x] 1.1 Write tests for EventPublisher service class
+- [x] 1.2 Create EventPublisher class in `server/realtime/event_publisher.py`
+- [x] 1.3 Implement NATS subject publishing methods (player_entered, player_left, game_tick)
+- [x] 1.4 Add error handling and logging for NATS publishing failures
+- [x] 1.5 Verify all tests pass
 
 - [x] 2. **Extend NATSMessageHandler for Event Routing**
   - [x] 2.1 Write tests for NATSMessageHandler event subscription capabilities

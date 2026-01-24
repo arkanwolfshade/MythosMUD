@@ -429,9 +429,10 @@ class LucidityService:
                         player_obj = attr_state.loaded_value
                     elif hasattr(attr_state, "value") and attr_state.value is not None:
                         player_obj = attr_state.value
-            except Exception:  # pylint: disable=broad-exception-caught  # Reason: inspect operations can fail in various ways (AttributeError, TypeError, etc.), and we need graceful fallback to explicit load
-                # If inspect fails (e.g., on new records), fall through to explicit load
-                pass
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: inspect operations can fail in various ways (AttributeError, TypeError, etc.), and we need graceful fallback to explicit load
+                # nosec B110 - Intentional silent handling: inspect operations can fail in various ways,
+                # and we need graceful fallback to explicit load if inspect fails (e.g., on new records)
+                logger.debug("Inspect operation failed, falling through to explicit load", exc_info=e)
 
             # Verify player_obj is actually a Player instance (not a LoaderCallableStatus)
             if player_obj is not None and hasattr(player_obj, "get_stats"):

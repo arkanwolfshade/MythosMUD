@@ -169,11 +169,13 @@ def test_player_update_all_optional():
 def test_player_base_rejects_extra_fields():
     """Test PlayerBase rejects extra fields (extra='forbid')."""
     with pytest.raises(ValidationError):
-        PlayerBase(name="TestPlayer", extra_field="should_fail")
+        # Reason: Intentionally testing Pydantic validation with extra='forbid' - extra fields should be rejected
+        PlayerBase(name="TestPlayer", extra_field="should_fail")  # type: ignore[call-arg]
 
 
 def test_player_create_rejects_extra_fields():
     """Test PlayerCreate rejects extra fields (extra='forbid')."""
     user_id = uuid.uuid4()
     with pytest.raises(ValidationError):
-        PlayerCreate(name="TestPlayer", user_id=user_id, extra_field="should_fail")
+        # Reason: Intentionally testing Pydantic validation with extra='forbid' - extra fields should be rejected
+        PlayerCreate(name="TestPlayer", user_id=user_id, extra_field="should_fail")  # type: ignore[call-arg]

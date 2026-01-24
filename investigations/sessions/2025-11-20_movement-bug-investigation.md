@@ -10,9 +10,11 @@
 
 ### 1. Game State
 
-- **Current Room**: Main Foyer (earth_arkhamcity_sanitarium_room_foyer_001)
-- **Displayed Exits**: East, West, South (capitalized in UI)
-- **Player Commands Attempted**: "go north", "go south" (per screenshot)
+**Current Room**: Main Foyer (earth_arkhamcity_sanitarium_room_foyer_001)
+
+**Displayed Exits**: East, West, South (capitalized in UI)
+
+**Player Commands Attempted**: "go north", "go south" (per screenshot)
 - **Error Message**: "You can't go that way"
 
 ### 2. Database Investigation
@@ -130,11 +132,13 @@ Exits found (3):
 ### Investigation Priorities (NOT fixes)
 
 1. **HIGH PRIORITY**: Verify player's `current_room_id` format matches room cache keys
+
    - Check player database record for `current_room_id` value
    - Compare with room cache keys in `exits_by_room` dictionary
    - Add debug logging to show both values during movement attempt
 
 2. **HIGH PRIORITY**: Verify room object's exits dictionary at runtime
+
    - Add debug logging in `handle_go_command()` to log:
      - Player's `current_room_id`
      - Room object's `id`
@@ -143,11 +147,13 @@ Exits found (3):
      - Result of `exits.get(direction)`
 
 3. **MEDIUM PRIORITY**: Verify room cache loading
+
    - Check if room cache is loaded when server starts
    - Verify room is in cache when player tries to move
    - Check for any errors during room cache loading
 
 4. **MEDIUM PRIORITY**: Check room ID generation logic
+
    - Verify `generate_room_id()` function produces consistent IDs
    - Check if room IDs match between room loading and player location storage
 
@@ -203,7 +209,8 @@ Results:
 
 ### Code References
 
-- Movement command: `server/commands/exploration_commands.py:161-273`
+Movement command: `server/commands/exploration_commands.py:161-273`
+
 - Room loading: `server/persistence.py:502-709`
 - Exit lookup: `server/commands/exploration_commands.py:231-235`
 
@@ -212,12 +219,14 @@ Results:
 ## RUNTIME VERIFICATION (2025-11-21)
 
 **Test Performed**:
+
 - Logged in as ArkanWolfshade/Cthulhu1
 - Respawned in Main Foyer (earth_arkhamcity_sanitarium_room_foyer_001)
 - Attempted "go south" command
 - **Result**: "You can't go that way" error message
 
 **Runtime Evidence**:
+
 - Room Info Panel shows: "Exits: East, West, South" (capitalized)
 - Player position: Standing
 - Player health: 100/150 (not incapacitated)
@@ -242,6 +251,7 @@ Results:
 2. **Exits Dictionary Validation** - Added a check to ensure the exits dictionary is not None and is properly initialized as an empty dictionary if missing.
 
 3. **Enhanced Debug Logging** - Added comprehensive debug logging to track:
+
    - Player's `current_room_id` (from database)
    - Room object's `id` attribute
    - Room ID used for lookup (after consistency check)
@@ -259,9 +269,13 @@ Results:
 ### Testing Required
 
 1. **Start the local server** and log in as `ArkanWolfshade/Cthulhu1`
+
 2. **Navigate to a room with valid exits** (e.g., Main Foyer in Sanitarium)
+
 3. **Attempt movement** in valid directions (e.g., "go south", "go east", "go west")
+
 4. **Verify**:
+
    - Movement commands succeed
    - Debug logs show consistent room IDs
    - Exit lookups find target rooms correctly
