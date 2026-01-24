@@ -29,9 +29,8 @@ vi.mock('../utils/security', () => ({
   },
 }));
 
-// SKIPPED: This is an E2E test that requires full App character creation flow
-// These tests should be converted to Playwright E2E tests in client/tests/
-describe.skip('Stat Rolling with Profession Requirements Validation', () => {
+// Un-skipped: runs with mocked fetch; E2E in Playwright.
+describe('Stat Rolling with Profession Requirements Validation', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     fetchSpy.mockClear();

@@ -57,42 +57,14 @@ export default defineConfig(({ mode }) => ({
     rollupOptions: {
       output: {
         // Manual chunk splitting for optimal bundle sizes
-        // Strategy: Split large libraries into separate chunks to keep chunks under 500KB
-        // Order matters: check most specific packages first
+        // Strategy: Split large, self-contained libraries into separate chunks.
+        // All other node_modules go into a single vendor chunk to avoid circular
+        // chunk dependencies (vendor-react <-> vendor) from shared deps (e.g. scheduler).
         manualChunks: id => {
-          // Vendor chunks - separate large dependencies
           if (id.includes('node_modules')) {
-            // Large icon library - split to reduce vendor chunk size
-            if (id.includes('lucide-react')) {
-              return 'vendor-icons';
-            }
-            // Large React libraries - split into separate chunks to reduce vendor-react size
-            if (id.includes('react-grid-layout')) {
-              return 'vendor-grid-layout';
-            }
-            if (id.includes('reactflow')) {
-              return 'vendor-reactflow';
-            }
-            // XState core library (separate from @xstate/react to reduce chunk size)
-            if (id.includes('xstate') && !id.includes('@xstate/react')) {
-              return 'vendor-xstate';
-            }
-            // React ecosystem: Core React packages and commonly used React libraries
-            // This includes react, react-dom, react-router, react-rnd, @xstate/react, zustand
-            // Keeping these together prevents circular dependencies while maintaining reasonable chunk sizes
-            if (
-              id.includes('/react/') ||
-              id.includes('/react-dom/') ||
-              id.includes('\\react\\') ||
-              id.includes('\\react-dom\\') ||
-              id.includes('react-router') ||
-              id.includes('react-rnd') ||
-              id.includes('@xstate/react') ||
-              id.includes('zustand')
-            ) {
-              return 'vendor-react';
-            }
-            // All other node_modules go into vendor chunk
+            if (id.includes('lucide-react')) return 'vendor-icons';
+            if (id.includes('react-grid-layout')) return 'vendor-grid-layout';
+            if (id.includes('reactflow')) return 'vendor-reactflow';
             return 'vendor';
           }
         },

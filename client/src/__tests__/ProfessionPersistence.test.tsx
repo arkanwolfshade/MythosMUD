@@ -28,9 +28,8 @@ vi.mock('../utils/security', () => ({
   },
 }));
 
-// SKIPPED: This is an E2E test that requires a running backend database
-// These tests should be converted to Playwright E2E tests in client/tests/
-describe.skip('Profession Choice Persistence to Database', () => {
+// Un-skipped: runs with mocked fetch; full E2E remains in Playwright.
+describe('Profession Choice Persistence to Database', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     fetchSpy.mockClear();
