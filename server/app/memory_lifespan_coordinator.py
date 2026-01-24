@@ -11,6 +11,7 @@ proper periodic investigation prevents computational entropy accumulating beyond
 
 import asyncio
 from datetime import UTC, datetime
+from typing import Any
 
 from anyio import sleep
 
@@ -46,7 +47,7 @@ class PeriodicOrphanAuditor:  # pylint: disable=too-many-instance-attributes  # 
         self.check_interval = check_interval_seconds
         self.auto_cleanup = auto_cleanup_enabled
         self.audit_running = False
-        self.coordinator_task: asyncio.Task | None = None
+        self.coordinator_task: asyncio.Task[Any] | None = None
 
         # Memory monitor for forensic evidence documentation
         self.memory_monitor = create_memory_cleanup_monitor(
@@ -151,7 +152,7 @@ class PeriodicOrphanAuditor:  # pylint: disable=too-many-instance-attributes  # 
                 "Audit cycle specifically endeavoured full persistence errors", error=str(audit_run_under_error)
             )
 
-    async def force_single_audit_cycle(self) -> dict:
+    async def force_single_audit_cycle(self) -> dict[str, Any]:
         """
         Execute a single investigation loop synchronously producing operator summary.
 

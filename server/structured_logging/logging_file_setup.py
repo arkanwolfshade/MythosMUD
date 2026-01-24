@@ -270,14 +270,16 @@ def _setup_async_logging_queue(handlers: list[logging.Handler]) -> None:
             _queue_listener = None
 
 
-def _get_handler_class(_WinSafeHandler: type, _BaseHandler: type) -> type:  # pylint: disable=invalid-name  # Reason: Parameter names match class names for type hints
+def _get_handler_class(
+    _WinSafeHandler: type[RotatingFileHandler], _BaseHandler: type[RotatingFileHandler]
+) -> type[RotatingFileHandler]:  # pylint: disable=invalid-name  # Reason: Parameter names match class names for type hints
     """Get the appropriate handler class (Windows-safe or base)."""
     handler_class = _BaseHandler
     try:
         if sys.platform == "win32":
             # Windows-safe handler also needs directory safety
             # Create a hybrid class that combines both features
-            class SafeWinHandlerCategory(_WinSafeHandler):  # pylint: disable=too-few-public-methods  # Reason: Handler class with focused responsibility, minimal public interface
+            class SafeWinHandlerCategory(_WinSafeHandler):  # type: ignore[valid-type,misc]  # mypy: parameter as base class; pylint: disable=too-few-public-methods  # Reason: Handler class with focused responsibility, minimal public interface
                 """Windows-safe rotating file handler with directory safety for categorized logs."""
 
                 def shouldRollover(self, record):  # noqa: N802  # pylint: disable=invalid-name  # Reason: Overrides parent class method, must match parent signature

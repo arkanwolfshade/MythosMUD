@@ -71,7 +71,7 @@ class NATSMessageBroker:  # pylint: disable=too-many-instance-attributes  # Reas
         self.subject_manager = subject_manager
 
         # Health monitoring
-        self._health_check_task: asyncio.Task | None = None
+        self._health_check_task: asyncio.Task[Any] | None = None
         self._last_health_check: float = 0.0
         self._consecutive_health_failures = 0
         self._health_check_timeout = 5.0  # seconds

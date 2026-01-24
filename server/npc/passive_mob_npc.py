@@ -31,7 +31,7 @@ class PassiveMobNPC(NPCBase):
         super().__init__(definition, npc_id, event_bus, event_reaction_system)
         self._setup_passive_mob_behavior_rules()
 
-    def _setup_passive_mob_behavior_rules(self):
+    def _setup_passive_mob_behavior_rules(self) -> None:
         """Setup passive mob-specific behavior rules."""
         # Note: Idle movement is handled by schedule_idle_movement() in execute_behavior(),
         # not through behavior rules, so we don't need a wander_periodically rule here.

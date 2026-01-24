@@ -4,6 +4,7 @@ Combat attack processing logic.
 Handles attack validation, damage application, and attack event publishing.
 """
 
+from typing import Any
 from uuid import UUID
 
 from server.config import get_config
@@ -17,7 +18,7 @@ logger = get_logger(__name__)
 class CombatAttackHandler:
     """Handles combat attack processing and damage application."""
 
-    def __init__(self, combat_service):
+    def __init__(self, combat_service: Any) -> None:
         """
         Initialize the attack handler.
 

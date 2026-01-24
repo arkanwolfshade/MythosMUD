@@ -126,7 +126,7 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
         )
 
     async def _check_and_interrupt_rest(
-        self, request_app: Any, player_name: str, current_user: dict
+        self, request_app: Any, player_name: str, current_user: dict[str, Any]
     ) -> dict[str, str] | None:
         """Check if player is resting or in login grace period, interrupt rest if needed."""
         if not request_app:
@@ -158,7 +158,7 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
 
         return None
 
-    def _extract_combat_command_data(self, command_data: dict) -> tuple[str, str | None]:
+    def _extract_combat_command_data(self, command_data: dict[str, Any]) -> tuple[str, str | None]:
         """Extract command type and target name from command_data."""
         command_type = command_data.get("command_type", "attack")
         # Convert enum to string if needed
@@ -182,7 +182,7 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
         return None
 
     async def _get_player_and_room(
-        self, request_app: Any, current_user: dict
+        self, request_app: Any, current_user: dict[str, Any]
     ) -> tuple[Any, Any, dict[str, str] | None]:
         """Get player data and room, returning error dict if any step fails."""
         # Prefer container, fallback to app.state for backward compatibility
@@ -241,8 +241,8 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
 
     async def handle_attack_command(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Combat command handling requires many parameters and intermediate variables for complex combat logic
         self,
-        command_data: dict,
-        current_user: dict,
+        command_data: dict[str, Any],
+        current_user: dict[str, Any],
         request: Any,
         alias_storage: AliasStorage | None,
         player_name: str,
@@ -344,7 +344,7 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
             logger.error("Error getting NPC instance", npc_id=npc_id, error=str(e))
             return None
 
-    async def _validate_combat_action(self, player_name: str, npc_id: str, command: str) -> dict:
+    async def _validate_combat_action(self, player_name: str, npc_id: str, command: str) -> dict[str, Any]:
         """Validate combat action."""
         # Simple validation for now
         if not player_name or not npc_id or not command:
@@ -465,8 +465,8 @@ def get_combat_command_handler(app: Any | None = None) -> CombatCommandHandler:
 
 # Individual command handler functions for the command service
 async def handle_attack_command(
-    command_data: dict,
-    current_user: dict,
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
     request: Any,
     alias_storage: AliasStorage | None,
     player_name: str,
@@ -478,8 +478,8 @@ async def handle_attack_command(
 
 
 async def handle_punch_command(
-    command_data: dict,
-    current_user: dict,
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
     request: Any,
     alias_storage: AliasStorage | None,
     player_name: str,
@@ -494,8 +494,8 @@ async def handle_punch_command(
 
 
 async def handle_kick_command(
-    command_data: dict,
-    current_user: dict,
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
     request: Any,
     alias_storage: AliasStorage | None,
     player_name: str,
@@ -510,8 +510,8 @@ async def handle_kick_command(
 
 
 async def handle_strike_command(
-    command_data: dict,
-    current_user: dict,
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
     request: Any,
     alias_storage: AliasStorage | None,
     player_name: str,

@@ -145,7 +145,7 @@ class NATSRetryHandler:
         """
         return message.attempt < self.max_retries
 
-    async def retry_async(self, func: Callable, message: RetryableMessage) -> None:
+    async def retry_async(self, func: Callable[..., Any], message: RetryableMessage) -> None:
         """
         Retry a function with exponential backoff.
 

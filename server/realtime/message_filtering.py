@@ -27,7 +27,7 @@ if TYPE_CHECKING:
 class MessageFilteringHelper:
     """Helper class for message filtering operations."""
 
-    def __init__(self, connection_manager, user_manager=None):
+    def __init__(self, connection_manager: Any, user_manager: Any = None) -> None:
         """
         Initialize message filtering helper.
 
@@ -125,7 +125,9 @@ class MessageFilteringHelper:
                 error=str(e),
             )
 
-    def extract_chat_event_info(self, chat_event: dict) -> tuple[str | None, dict, str | None, bool]:
+    def extract_chat_event_info(
+        self, chat_event: dict[str, Any]
+    ) -> tuple[str | None, dict[str, Any], str | None, bool]:
         """
         Extract information from chat event.
 
@@ -586,7 +588,7 @@ class MessageFilteringHelper:
         player_id: str,
         sender_id: str,
         channel: str,
-        chat_event_data: dict,
+        chat_event_data: dict[str, Any],
         handler_instance: Any,  # NATSMessageHandler instance for patched methods
     ) -> bool:
         """
@@ -658,7 +660,7 @@ class MessageFilteringHelper:
         channel: str,
         message_id: str | None,
         user_manager: "UserManager",
-        chat_event_data: dict,
+        chat_event_data: dict[str, Any],
         handler_instance: Any,  # NATSMessageHandler instance for patched methods
     ) -> list[str]:
         """

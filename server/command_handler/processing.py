@@ -30,7 +30,7 @@ command_processor = get_command_processor()
 
 async def process_command_with_validation(
     command_line: str,
-    current_user: dict,
+    current_user: dict[str, Any],
     request: "Request",
     alias_storage: "AliasStorage | None",
     player_name: str,

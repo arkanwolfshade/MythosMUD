@@ -86,7 +86,7 @@ async def _check_rate_limit(
 
 async def _validate_message(
     websocket: WebSocket, data: str, player_id_str: str, validator: "WebSocketMessageValidator"
-) -> dict | None:
+) -> dict[str, Any] | None:
     """
     Validate message and send error response if validation fails.
 
@@ -117,7 +117,7 @@ async def _validate_message(
 
 
 async def _send_error_response(
-    websocket: WebSocket, error_type: ErrorType, message: str, error_message: str, extra_data: dict
+    websocket: WebSocket, error_type: ErrorType, message: str, error_message: str, extra_data: dict[str, Any]
 ) -> bool:
     """
     Send error response to client.
@@ -390,7 +390,7 @@ async def handle_websocket_connection(
         await _cleanup_connection(player_id, player_id_str, connection_manager)
 
 
-async def handle_websocket_message(websocket: WebSocket, player_id: str, message: dict) -> None:
+async def handle_websocket_message(websocket: WebSocket, player_id: str, message: dict[str, Any]) -> None:
     """
     Handle a WebSocket message from a player.
 
@@ -552,8 +552,8 @@ def _resolve_and_setup_app_state_services(
 
 
 async def process_websocket_command(
-    cmd: str, args: list, player_id: str, connection_manager: "ConnectionManager | None" = None
-) -> dict:
+    cmd: str, args: list[Any], player_id: str, connection_manager: "ConnectionManager | None" = None
+) -> dict[str, Any]:
     """
     Process a command for WebSocket connections.
 

@@ -11,7 +11,7 @@ import threading
 from collections.abc import Sequence
 from datetime import datetime
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from server.schemas.calendar import ScheduleCollection, ScheduleEntry
 from server.structured_logging.enhanced_logging_config import get_logger
@@ -86,7 +86,7 @@ class ScheduleService:
 
         return result_container["entries"]
 
-    async def _async_load_from_database(self, result_container: dict) -> None:
+    async def _async_load_from_database(self, result_container: dict[str, Any]) -> None:
         """Async helper to load schedules from PostgreSQL database."""
         import os
 

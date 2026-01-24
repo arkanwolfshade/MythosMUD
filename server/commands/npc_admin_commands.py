@@ -72,7 +72,11 @@ def validate_npc_admin_permission(player: "Player | Any", player_name: str) -> b
 
 
 async def handle_npc_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
+    request: Any,
+    alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """
     Handle the main NPC admin command with subcommand routing.
@@ -199,7 +203,11 @@ NPC Types: shopkeeper, passive_mob, aggressive_mob, quest_giver, merchant
 
 
 async def handle_npc_create_command(
-    command_data: dict, _current_user: dict, request: Any, _alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    _current_user: dict[str, Any],
+    request: Any,
+    _alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """Handle NPC creation command."""
     logger.debug("Processing NPC create command", player_name=player_name)
@@ -251,7 +259,11 @@ async def handle_npc_create_command(
 
 
 async def handle_npc_edit_command(
-    command_data: dict, _current_user: dict, request: Any, _alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    _current_user: dict[str, Any],
+    request: Any,
+    _alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """Handle NPC editing command."""
     logger.debug("Processing NPC edit command", player_name=player_name)
@@ -307,7 +319,11 @@ async def handle_npc_edit_command(
 
 
 async def handle_npc_delete_command(
-    command_data: dict, _current_user: dict, request: Any, _alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    _current_user: dict[str, Any],
+    request: Any,
+    _alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """Handle NPC deletion command."""
     logger.debug("Processing NPC delete command", player_name=player_name)
@@ -345,7 +361,11 @@ async def handle_npc_delete_command(
 
 
 async def handle_npc_list_command(
-    _command_data: dict, _current_user: dict, request: Any, _alias_storage: AliasStorage | None, player_name: str
+    _command_data: dict[str, Any],
+    _current_user: dict[str, Any],
+    request: Any,
+    _alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """Handle NPC listing command."""
     logger.debug("Processing NPC list command", player_name=player_name)
@@ -383,7 +403,11 @@ async def handle_npc_list_command(
 
 
 async def handle_npc_spawn_command(
-    command_data: dict, _current_user: dict, _request: Any, _alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    _current_user: dict[str, Any],
+    _request: Any,
+    _alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """Handle NPC spawning command."""
     logger.debug("Processing NPC spawn command", player_name=player_name)
@@ -417,7 +441,11 @@ async def handle_npc_spawn_command(
 
 
 async def handle_npc_despawn_command(
-    command_data: dict, _current_user: dict, _request: Any, _alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    _current_user: dict[str, Any],
+    _request: Any,
+    _alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """Handle NPC despawning command."""
     logger.debug("Processing NPC despawn command", player_name=player_name)
@@ -449,7 +477,11 @@ async def handle_npc_despawn_command(
 
 
 async def handle_npc_move_command(
-    command_data: dict, _current_user: dict, _request: Any, _alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    _current_user: dict[str, Any],
+    _request: Any,
+    _alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """Handle NPC movement command."""
     logger.debug("Processing NPC move command", player_name=player_name)
@@ -482,7 +514,11 @@ async def handle_npc_move_command(
 
 
 async def handle_npc_stats_command(
-    command_data: dict, _current_user: dict, _request: Any, _alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    _current_user: dict[str, Any],
+    _request: Any,
+    _alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """Handle NPC stats command."""
     logger.debug("Processing NPC stats command", player_name=player_name)
@@ -522,7 +558,11 @@ async def handle_npc_stats_command(
 
 
 async def handle_npc_population_command(
-    _command_data: dict, _current_user: dict, _request: Any, _alias_storage: AliasStorage | None, player_name: str
+    _command_data: dict[str, Any],
+    _current_user: dict[str, Any],
+    _request: Any,
+    _alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """Handle NPC population stats command."""
     logger.debug("Processing NPC population command", player_name=player_name)
@@ -559,7 +599,11 @@ async def handle_npc_population_command(
 
 
 async def handle_npc_zone_command(
-    command_data: dict, _current_user: dict, _request: Any, _alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    _current_user: dict[str, Any],
+    _request: Any,
+    _alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """Handle NPC zone stats command."""
     logger.debug("Processing NPC zone command", player_name=player_name)
@@ -600,7 +644,11 @@ async def handle_npc_zone_command(
 
 
 async def handle_npc_status_command(
-    _command_data: dict, _current_user: dict, _request: Any, _alias_storage: AliasStorage | None, player_name: str
+    _command_data: dict[str, Any],
+    _current_user: dict[str, Any],
+    _request: Any,
+    _alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """Handle NPC system status command."""
     logger.debug("Processing NPC status command", player_name=player_name)
@@ -634,7 +682,11 @@ async def handle_npc_status_command(
 
 
 async def handle_npc_behavior_command(
-    command_data: dict, _current_user: dict, _request: Any, _alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    _current_user: dict[str, Any],
+    _request: Any,
+    _alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """Handle NPC behavior control command."""
     logger.debug("Processing NPC behavior command", player_name=player_name)
@@ -667,7 +719,11 @@ async def handle_npc_behavior_command(
 
 
 async def handle_npc_react_command(
-    command_data: dict, _current_user: dict, _request: Any, _alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    _current_user: dict[str, Any],
+    _request: Any,
+    _alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """Handle NPC reaction trigger command."""
     logger.debug("Processing NPC react command", player_name=player_name)
@@ -700,7 +756,11 @@ async def handle_npc_react_command(
 
 
 async def handle_npc_stop_command(
-    command_data: dict, _current_user: dict, _request: Any, _alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    _current_user: dict[str, Any],
+    _request: Any,
+    _alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """Handle NPC behavior stop command."""
     logger.debug("Processing NPC stop command", player_name=player_name)
@@ -727,7 +787,7 @@ async def handle_npc_stop_command(
 
 
 async def _get_room_id_for_test_occupants(
-    command_data: dict, player_obj: Any
+    command_data: dict[str, Any], player_obj: Any
 ) -> tuple[str | None, dict[str, str] | None]:
     """Get room_id from args or current room. Returns (room_id, error_result)."""
     args = command_data.get("args", [])
@@ -790,7 +850,11 @@ def _format_occupants_result(room_id: str, players: list[str], npcs: list[str]) 
 
 
 async def handle_npc_test_occupants_command(
-    command_data: dict, _current_user: dict, request: Any, _alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    _current_user: dict[str, Any],
+    request: Any,
+    _alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """
     Handle NPC test occupants command - manually trigger occupant query for debugging.

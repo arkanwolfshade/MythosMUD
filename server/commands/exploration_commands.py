@@ -17,8 +17,8 @@ from .look_command import handle_look_command
 
 
 async def handle_explore_command(
-    command_data: dict,
-    current_user: dict,
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
     request: Any,
     _alias_storage: AliasStorage | None,
     player_name: str,

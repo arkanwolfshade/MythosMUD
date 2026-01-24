@@ -53,15 +53,15 @@ class EventBus:  # pylint: disable=too-many-instance-attributes  # Reason: Event
         """Initialize the pure async event bus."""
         self._subscribers: dict[type[BaseEvent], list[Callable[[BaseEvent], Any]]] = defaultdict(list)
         # Pure asyncio.Queue replaces threading.Queue - Task 1.2: Replace queue
-        self._event_queue: asyncio.Queue = asyncio.Queue()
+        self._event_queue: asyncio.Queue[Any] = asyncio.Queue()
         self._running: bool = False
         self._logger = get_logger("EventBus")
         # Task references for proper lifecycle management - Task 1.5
-        self._active_tasks: set[asyncio.Task] = set()
+        self._active_tasks: set[asyncio.Task[Any]] = set()
         self._shutdown_event: Event = Event()
         self._main_loop: asyncio.AbstractEventLoop | None = None
         # Fix: Initialize on-demand rather than during __init__
-        self._processing_task: asyncio.Task | None = None
+        self._processing_task: asyncio.Task[Any] | None = None
         # Subscriber lifecycle tracking for metrics
         self._subscription_timestamps: list[float] = []
         self._unsubscription_timestamps: list[float] = []
@@ -319,7 +319,7 @@ class EventBus:  # pylint: disable=too-many-instance-attributes  # Reason: Event
 
     def _create_async_subscriber_tasks(
         self, async_subscribers: list[Callable[[BaseEvent], Any]], event: BaseEvent
-    ) -> tuple[list[asyncio.Task], dict[asyncio.Task, str]]:
+    ) -> tuple[list[asyncio.Task[Any]], dict[asyncio.Task[Any], str]]:
         """
         Create asyncio tasks for async event subscribers and track their lifecycle.
 
@@ -338,8 +338,8 @@ class EventBus:  # pylint: disable=too-many-instance-attributes  # Reason: Event
         Returns:
             Tuple of (list of created tasks, mapping of task to subscriber name for error reporting)
         """
-        tasks: list[asyncio.Task] = []
-        subscriber_names: dict[asyncio.Task, str] = {}
+        tasks: list[asyncio.Task[Any]] = []
+        subscriber_names: dict[asyncio.Task[Any], str] = {}
 
         for subscriber in async_subscribers:
             subscriber_name = getattr(subscriber, "__name__", "unknown")
@@ -349,7 +349,7 @@ class EventBus:  # pylint: disable=too-many-instance-attributes  # Reason: Event
                 subscriber_names[task] = subscriber_name
                 self._active_tasks.add(task)
 
-                def remove_task(t: asyncio.Task, _sn: str = subscriber_name) -> None:  # pylint: disable=unused-argument  # Reason: Parameter required for callback signature, subscriber_name captured in closure
+                def remove_task(t: asyncio.Task[Any], _sn: str = subscriber_name) -> None:  # pylint: disable=unused-argument  # Reason: Parameter required for callback signature, subscriber_name captured in closure
                     self._active_tasks.discard(t)
 
                 task.add_done_callback(remove_task)
@@ -362,7 +362,7 @@ class EventBus:  # pylint: disable=too-many-instance-attributes  # Reason: Event
         return tasks, subscriber_names
 
     async def _wait_for_async_subscribers(
-        self, tasks: list[asyncio.Task], subscriber_names: dict[asyncio.Task, str]
+        self, tasks: list[asyncio.Task[Any]], subscriber_names: dict[asyncio.Task[Any], str]
     ) -> None:
         """
         Wait for all async subscriber tasks to complete and handle their results.
@@ -436,7 +436,7 @@ class EventBus:  # pylint: disable=too-many-instance-attributes  # Reason: Event
             tasks, subscriber_names = self._create_async_subscriber_tasks(async_subscribers, event)
             await self._wait_for_async_subscribers(tasks, subscriber_names)
 
-    def _handle_task_result_async(self, task: asyncio.Task, subscriber_name: str) -> None:
+    def _handle_task_result_async(self, task: asyncio.Task[Any], subscriber_name: str) -> None:
         """Handle async task completion with proper exception extraction."""
         try:
             # Get the result to handle exceptions without threading/runtime scheduler crossing

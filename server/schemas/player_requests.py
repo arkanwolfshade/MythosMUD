@@ -4,6 +4,8 @@ Request models for player API endpoints.
 This module defines Pydantic request models used in player-related API endpoints.
 """
 
+from typing import Any
+
 from pydantic import BaseModel, Field, field_validator
 
 
@@ -13,7 +15,7 @@ class CreateCharacterRequest(BaseModel):
     __slots__ = ()  # Performance optimization
 
     name: str = Field(..., min_length=1, max_length=50, description="Character name")
-    stats: dict = Field(..., description="Character stats dictionary")
+    stats: dict[str, Any] = Field(..., description="Character stats dictionary")
     profession_id: int = Field(default=0, ge=0, description="Profession ID")
 
     @field_validator("name")

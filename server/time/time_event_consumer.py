@@ -97,7 +97,7 @@ class MythosTimeEventConsumer:  # pylint: disable=too-few-public-methods  # Reas
         ) as exc:  # pragma: no cover - defensive logging
             logger.error("Failed to broadcast Mythos time update", error=str(exc))
 
-    def describe_state(self) -> dict:
+    def describe_state(self) -> dict[str, Any]:
         """Helper for admin diagnostics."""
 
         return {

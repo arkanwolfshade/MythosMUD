@@ -10,6 +10,7 @@ AI: Uses sliding window algorithm for accurate rate limiting without fixed time 
 from collections import defaultdict
 from collections.abc import Callable
 from datetime import UTC, datetime, timedelta
+from typing import Any
 
 from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -167,7 +168,7 @@ class CommandRateLimiter:
         self.player_timestamps.clear()
         logger.debug("Rate limiter reset for all players")
 
-    def get_stats(self) -> dict:
+    def get_stats(self) -> dict[str, Any]:
         """
         Get system-wide rate limiting statistics.
 

@@ -5,8 +5,6 @@ This module provides async database operations for profession queries
 using SQLAlchemy ORM with PostgreSQL.
 """
 
-from typing import cast
-
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -26,7 +24,7 @@ class ProfessionRepository:
     Handles profession queries and data retrieval.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the profession repository."""
         self._logger = get_logger(__name__)
 
@@ -82,9 +80,7 @@ class ProfessionRepository:
             async with session_maker() as session:
                 stmt = select(Profession).where(Profession.id == profession_id)
                 result = await session.execute(stmt)
-                profession = result.scalar_one_or_none()
-                result_profession: Profession | None = cast(Profession | None, profession)
-                return result_profession
+                return result.scalar_one_or_none()
         except (SQLAlchemyError, OSError) as e:
             log_and_raise(
                 DatabaseError,

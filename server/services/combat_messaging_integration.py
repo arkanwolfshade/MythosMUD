@@ -29,7 +29,7 @@ class CombatMessagingIntegration:
     using the existing real-time messaging infrastructure.
     """
 
-    def __init__(self, connection_manager=None):
+    def __init__(self, connection_manager: Any = None) -> None:
         """
         Initialize the combat messaging integration service.
 
@@ -43,7 +43,7 @@ class CombatMessagingIntegration:
         if connection_manager is not None:
             self.connection_manager = connection_manager
 
-    def _resolve_connection_manager_from_container(self):
+    def _resolve_connection_manager_from_container(self) -> Any:
         """
         Lazily resolve the connection manager from the application container.
 

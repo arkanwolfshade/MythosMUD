@@ -157,7 +157,7 @@ class CombatDPSync:  # pylint: disable=too-few-public-methods  # Reason: DP sync
             return None
 
     def _update_player_position(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Position update requires many parameters for context and position updates
-        self, stats: dict, current_dp: int, old_dp: int, player_id: UUID, player_name: str
+        self, stats: dict[str, Any], current_dp: int, old_dp: int, player_id: UUID, player_name: str
     ) -> None:
         """
         Update player position based on DP threshold.
@@ -241,7 +241,7 @@ class CombatDPSync:  # pylint: disable=too-few-public-methods  # Reason: DP sync
 
     async def _update_and_save_player_dp(
         self, persistence: "AsyncPersistenceLayer", player_id: UUID, current_dp: int
-    ) -> tuple | None:
+    ) -> tuple[Any, int] | None:
         """
         Update player DP and save to database.
 

@@ -644,7 +644,9 @@ class NATSMessageHandler:
         """Pre-load mute data for all potential receivers."""
         await self._filtering_helper.preload_receiver_mute_data(user_manager, targets, sender_id)
 
-    def _extract_chat_event_info(self, chat_event: dict) -> tuple[str | None, dict, str | None, bool]:
+    def _extract_chat_event_info(
+        self, chat_event: dict[str, Any]
+    ) -> tuple[str | None, dict[str, Any], str | None, bool]:
         """Extract information from chat event."""
         return self._filtering_helper.extract_chat_event_info(chat_event)
 
@@ -653,7 +655,7 @@ class NATSMessageHandler:
         return self._filtering_helper.should_apply_mute_check(channel, message_id)
 
     async def _check_player_mute_status(
-        self, user_manager: "UserManager", player_id: str, sender_id: str, channel: str, chat_event_data: dict
+        self, user_manager: "UserManager", player_id: str, sender_id: str, channel: str, chat_event_data: dict[str, Any]
     ) -> bool:
         """Check if a player has muted the sender."""
         return await self._filtering_helper.check_player_mute_status(
@@ -668,7 +670,7 @@ class NATSMessageHandler:
         channel: str,
         message_id: str | None,
         user_manager: "UserManager",
-        chat_event_data: dict,
+        chat_event_data: dict[str, Any],
     ) -> list[str]:
         """Filter target players based on room location and mute status."""
         return await self._filtering_helper.filter_target_players(
@@ -676,7 +678,7 @@ class NATSMessageHandler:
         )
 
     async def _send_messages_to_players(
-        self, filtered_targets: list[str], chat_event: dict, room_id: str, sender_id: str, channel: str
+        self, filtered_targets: list[str], chat_event: dict[str, Any], room_id: str, sender_id: str, channel: str
     ) -> None:
         """
         Send messages to filtered target players, applying communication dampening per receiver.
@@ -786,10 +788,10 @@ class NATSMessageHandler:
     async def _echo_message_to_sender(
         self,
         sender_id: str,
-        chat_event: dict,
+        chat_event: dict[str, Any],
         room_id: str,
         channel: str,
-        chat_event_data: dict,
+        chat_event_data: dict[str, Any],
         message_id: str | None,
     ) -> None:
         """
@@ -917,7 +919,7 @@ class NATSMessageHandler:
         return format_message_content(channel, sender_name, content)
 
     async def _apply_dampening_and_send_message(
-        self, chat_event: dict, sender_id: str, receiver_id: str, channel: str
+        self, chat_event: dict[str, Any], sender_id: str, receiver_id: str, channel: str
     ) -> None:
         """
         Apply communication dampening and send message to a single receiver.

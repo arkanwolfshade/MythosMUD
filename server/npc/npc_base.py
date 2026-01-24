@@ -172,7 +172,7 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
             logger.warning("Invalid AI config JSON, using defaults", npc_id=self.npc_id)
             return {"ai_enabled": False, "ai_model": None}
 
-    def _setup_base_behavior_rules(self):
+    def _setup_base_behavior_rules(self) -> None:
         """Setup base behavior rules common to all NPCs."""
         base_rules = [
             {

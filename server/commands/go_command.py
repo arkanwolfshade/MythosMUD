@@ -20,7 +20,7 @@ logger = get_logger(__name__)
 
 
 async def _setup_go_command(
-    request: Any, current_user: dict, player_name: str
+    request: Any, current_user: dict[str, Any], player_name: str
 ) -> tuple[Any, Any, Any, Any, str] | None:
     """Setup and validate go command prerequisites."""
     app = request.app if request else None
@@ -175,7 +175,11 @@ async def _execute_movement(  # pylint: disable=too-many-arguments,too-many-posi
 
 
 async def handle_go_command(  # pylint: disable=too-many-arguments,too-many-locals  # Reason: Go command requires many parameters and intermediate variables for complex movement logic
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
+    request: Any,
+    alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, Any]:
     """
     Handle the go command for movement.

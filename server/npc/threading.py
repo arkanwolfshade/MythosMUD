@@ -201,7 +201,7 @@ class NPCThreadManager:
 
     def __init__(self) -> None:
         """Initialize the NPC thread manager."""
-        self.active_threads: dict[str, asyncio.Task] = {}
+        self.active_threads: dict[str, asyncio.Task[Any]] = {}
         self.npc_definitions: dict[str, NPCDefinition] = {}
         self.message_queue = NPCMessageQueue()
         self.is_running = False

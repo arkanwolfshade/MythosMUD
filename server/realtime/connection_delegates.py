@@ -161,9 +161,9 @@ async def validate_token_impl(token: str, player_id: Any, manager: Any) -> bool:
 async def delegate_health_monitor(
     health_monitor: Any,
     method_name: str,
-    active_websockets: dict,
-    connection_metadata: dict,
-    player_websockets: dict,
+    active_websockets: dict[str, Any],
+    connection_metadata: dict[str, Any],
+    player_websockets: dict[str, Any],
 ) -> None:
     """Generic delegate for health monitor methods."""
     if health_monitor is None:
@@ -180,9 +180,9 @@ async def delegate_health_monitor(
 def delegate_health_monitor_sync(
     health_monitor: Any,
     method_name: str,
-    active_websockets: dict,
-    connection_metadata: dict,
-    player_websockets: dict,
+    active_websockets: dict[str, Any],
+    connection_metadata: dict[str, Any],
+    player_websockets: dict[str, Any],
 ) -> None:
     """Generic delegate for synchronous health monitor methods."""
     if health_monitor is None:
@@ -302,7 +302,7 @@ async def delegate_message_broadcaster(
     message_broadcaster: Any,
     method_name: str,
     default_return: dict[str, Any],
-    player_websockets: dict,
+    player_websockets: dict[str, Any],
     *args: Any,
     **kwargs: Any,
 ) -> dict[str, Any]:
@@ -356,8 +356,8 @@ async def delegate_personal_message_sender(
     personal_message_sender: Any,
     method_name: str,
     default_return: dict[str, Any],
-    player_websockets: dict,
-    active_websockets: dict,
+    player_websockets: dict[str, Any],
+    active_websockets: dict[str, Any],
     *args: Any,
     **kwargs: Any,
 ) -> dict[str, Any]:
@@ -398,7 +398,7 @@ def delegate_personal_message_sender_sync(
     personal_message_sender: Any,
     method_name: str,
     default_return: dict[str, Any],
-    player_websockets: dict,
+    player_websockets: dict[str, Any],
     *args: Any,
     **kwargs: Any,
 ) -> dict[str, Any]:

@@ -21,7 +21,11 @@ logger = get_logger(__name__)
 
 
 async def handle_mute_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
+    request: Any,
+    alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """
     Handle the mute command for muting other players.
@@ -102,7 +106,11 @@ async def handle_mute_command(
 
 
 async def handle_unmute_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
+    request: Any,
+    alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """
     Handle the unmute command for unmuting other players.
@@ -171,7 +179,11 @@ async def handle_unmute_command(
 
 
 async def handle_mute_global_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
+    request: Any,
+    alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """
     Handle the mute_global command for global muting.
@@ -213,7 +225,11 @@ async def handle_mute_global_command(
 
 
 async def handle_unmute_global_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
+    request: Any,
+    alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """
     Handle the unmute_global command for removing global mute.
@@ -255,7 +271,11 @@ async def handle_unmute_global_command(
 
 
 async def handle_add_admin_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
+    request: Any,
+    alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """
     Handle the add_admin command for adding administrators.
@@ -272,7 +292,7 @@ async def handle_add_admin_command(
     """
     _ = alias_storage  # Intentionally unused - part of standard command handler interface
     # Extract args from command_data while supporting legacy and new validation payloads
-    args: list = command_data.get("args", [])
+    args: list[Any] = command_data.get("args", [])
     target_player = command_data.get("target_player")
     if not target_player and args:
         target_player = args[0]
@@ -304,7 +324,11 @@ async def handle_add_admin_command(
 
 
 async def handle_mutes_command(
-    command_data: dict, _current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    _current_user: dict[str, Any],
+    request: Any,
+    alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """
     Handle the mutes command for listing current mutes.

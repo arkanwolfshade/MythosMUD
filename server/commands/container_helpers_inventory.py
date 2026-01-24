@@ -341,7 +341,7 @@ async def transfer_item_to_container(  # pylint: disable=too-many-arguments,too-
 
 
 async def validate_put_command_inputs(
-    command_data: dict, request: Any, connection_manager: Any, player: Player
+    command_data: dict[str, Any], request: Any, connection_manager: Any, player: Player
 ) -> tuple[str, str, int | None, Any, Any, dict[str, Any] | None, int | None] | dict[str, str]:
     """Validate and extract inputs for put command."""
     item_name = command_data.get("item", "").strip()
@@ -782,7 +782,7 @@ async def transfer_item_from_container(  # pylint: disable=too-many-arguments,to
 
 
 async def validate_get_command_inputs(
-    command_data: dict, request: Any, connection_manager: Any
+    command_data: dict[str, Any], request: Any, connection_manager: Any
 ) -> tuple[str, str, int | None, Any, Any] | dict[str, str]:
     """Validate and extract inputs for get command."""
     item_name = command_data.get("item", "").strip()

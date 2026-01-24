@@ -130,14 +130,14 @@ def _validate_jwt_secret() -> str:
     return jwt_secret
 
 
-def get_auth_backend() -> AuthenticationBackend:
+def get_auth_backend() -> AuthenticationBackend[User, uuid.UUID]:  # type: ignore[type-var]
     """Get authentication backend configuration."""
 
     # Bearer token transport
     bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
 
     # JWT strategy - return a function that creates the strategy
-    def get_jwt_strategy() -> JWTStrategy:
+    def get_jwt_strategy() -> JWTStrategy[User, uuid.UUID]:  # type: ignore[type-var]
         # Validate JWT secret - CRITICAL: Must be set in production
         jwt_secret = _validate_jwt_secret()
         return JWTStrategy(
@@ -146,14 +146,14 @@ def get_auth_backend() -> AuthenticationBackend:
             token_audience=["fastapi-users:auth"],
         )
 
-    return AuthenticationBackend(
+    return AuthenticationBackend(  # type: ignore[type-var]
         name="jwt",
         transport=bearer_transport,
         get_strategy=get_jwt_strategy,
     )
 
 
-class UsernameAuthenticationBackend(AuthenticationBackend):
+class UsernameAuthenticationBackend(AuthenticationBackend):  # type: ignore[type-arg]
     """Custom authentication backend that uses username instead of email."""
 
     def __init__(self, name: str, transport: Any, get_strategy: Any) -> None:
@@ -172,7 +172,7 @@ def get_username_auth_backend() -> UsernameAuthenticationBackend:
     bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
 
     # JWT strategy - return a function that creates the strategy
-    def get_jwt_strategy() -> JWTStrategy:
+    def get_jwt_strategy() -> JWTStrategy[User, uuid.UUID]:  # type: ignore[type-var]
         # Validate JWT secret - CRITICAL: Must be set in production
         jwt_secret = _validate_jwt_secret()
         return JWTStrategy(
@@ -206,7 +206,7 @@ get_current_active_user = fastapi_users.current_user(active=True)
 def get_current_user_with_logging():
     """Enhanced get_current_user with detailed logging."""
 
-    async def _get_current_user_with_logging(request: Request | None = None) -> dict | None:
+    async def _get_current_user_with_logging(request: Request | None = None) -> dict[str, Any] | None:
         try:
             # Log the request details
             auth_header = request.headers.get("Authorization", "Not provided") if request else "No request"

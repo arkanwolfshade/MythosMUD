@@ -81,7 +81,7 @@ async def _get_combat_status(app: Any, player: Any) -> bool:
     return in_combat
 
 
-def _build_base_status_lines(player: Any, room_name: str, stats: dict, in_combat: bool) -> list[str]:
+def _build_base_status_lines(player: Any, room_name: str, stats: dict[str, Any], in_combat: bool) -> list[str]:
     """
     Build base status lines for the status command.
 
@@ -131,7 +131,7 @@ def _add_profession_lines(status_lines: list[str], profession_info: dict[str, An
         status_lines.append(f"Background: {profession_flavor_text}")
 
 
-def _add_additional_stats_lines(status_lines: list[str], stats: dict) -> None:
+def _add_additional_stats_lines(status_lines: list[str], stats: dict[str, Any]) -> None:
     """
     Add additional stats lines to status lines if they have non-zero values.
 
@@ -150,7 +150,11 @@ def _add_additional_stats_lines(status_lines: list[str], stats: dict) -> None:
 
 
 async def handle_status_command(
-    command_data: dict, current_user: dict, request: Any, _alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
+    request: Any,
+    _alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """
     Handle the status command for showing player status.
@@ -166,7 +170,7 @@ async def handle_status_command(
         dict: Status command result
     """
     # Extract args from command_data (not used in this command)
-    _args: list = command_data.get("args", [])
+    _args: list[Any] = command_data.get("args", [])
 
     logger.debug("Processing status command", player=player_name)
 
@@ -208,7 +212,11 @@ async def handle_status_command(
 
 
 async def handle_whoami_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
+    request: Any,
+    alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """
     Handle the whoami command as an alias for status.

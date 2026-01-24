@@ -14,6 +14,7 @@ import asyncio
 import time
 from collections.abc import Awaitable, Callable
 from datetime import UTC, datetime
+from typing import Any
 
 import psutil
 
@@ -95,7 +96,7 @@ class MemoryThresholdMonitor:
         except Exception as gc_operation_failure:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: GC operation errors unpredictable, must handle gracefully
             logger.error("Garbage collection optimization failed", error=str(gc_operation_failure))
 
-    async def get_memory_status_report(self) -> dict:
+    async def get_memory_status_report(self) -> dict[str, Any]:
         """
         Generate status report for diagnostic monitoring.
 

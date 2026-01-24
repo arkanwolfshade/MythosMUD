@@ -63,7 +63,9 @@ class RescueService:  # pylint: disable=too-few-public-methods  # Reason: Rescue
         )
         self.event_dispatcher = event_dispatcher
 
-    async def rescue(self, target_name: str, current_user: dict, player_name: str | None = None) -> dict[str, str]:  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Rescue operation requires many parameters and intermediate variables for complex rescue logic
+    async def rescue(
+        self, target_name: str, current_user: dict[str, Any], player_name: str | None = None
+    ) -> dict[str, str]:  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Rescue operation requires many parameters and intermediate variables for complex rescue logic
         """
         Perform a rescue for the given target.
 

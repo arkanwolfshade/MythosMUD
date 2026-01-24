@@ -19,7 +19,7 @@ logger = get_logger("communications.event_handlers")
 class EventHandler:
     """Handler for NATS event messages."""
 
-    def __init__(self, connection_manager):
+    def __init__(self, connection_manager: Any) -> None:
         """
         Initialize event handler.
 

@@ -489,7 +489,7 @@ async def get_current_user_info(
 async def list_invites(
     _current_user: User = Depends(get_current_superuser),
     invite_manager: InviteManager = Depends(get_invite_manager),
-) -> list[dict]:
+) -> list[dict[str, Any]]:
     """
     List all invite codes.
 

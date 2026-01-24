@@ -7,6 +7,9 @@ Processes queued actions and generates default actions for automatic combat prog
 
 # pylint: disable=too-few-public-methods  # Reason: Turn processor class with focused responsibility, minimal public interface
 
+import uuid
+from typing import Any
+
 from server.config import get_config
 from server.models.combat import CombatAction, CombatInstance, CombatParticipant, CombatParticipantType, CombatStatus
 from server.services.nats_exceptions import NATSError
@@ -18,7 +21,7 @@ logger = get_logger(__name__)
 class CombatTurnProcessor:
     """Handles combat turn processing and auto-progression."""
 
-    def __init__(self, combat_service):
+    def __init__(self, combat_service: Any) -> None:
         """
         Initialize the turn processor.
 
@@ -27,7 +30,9 @@ class CombatTurnProcessor:
         """
         self._combat_service = combat_service
 
-    async def process_game_tick(self, current_tick: int, active_combats: dict, auto_progression_enabled: bool) -> None:
+    async def process_game_tick(
+        self, current_tick: int, active_combats: dict[uuid.UUID, CombatInstance], auto_progression_enabled: bool
+    ) -> None:
         """
         Process game tick for combat auto-progression.
 

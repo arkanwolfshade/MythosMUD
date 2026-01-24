@@ -325,7 +325,7 @@ class LoggingConfig(BaseSettings):
 
     model_config = {"env_prefix": "LOGGING_", "case_sensitive": False, "extra": "ignore"}
 
-    def to_legacy_dict(self) -> dict:
+    def to_legacy_dict(self) -> dict[str, Any]:
         """
         Convert to legacy logging config dict format for backward compatibility.
 
@@ -780,7 +780,7 @@ class PlayerStatsConfig(BaseSettings):
 
     model_config = {"env_prefix": "DEFAULT_STATS_", "case_sensitive": False, "extra": "ignore"}
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary format expected by game code."""
         return {
             "strength": self.strength,
@@ -876,7 +876,7 @@ class AppConfig(BaseSettings):
                 os.environ["CORS_ORIGINS"] = serialized
                 os.environ["CORS_ALLOWED_ORIGINS"] = serialized
 
-    def to_legacy_dict(self) -> dict:
+    def to_legacy_dict(self) -> dict[str, Any]:
         """
         Convert to legacy dict format for backward compatibility.
 

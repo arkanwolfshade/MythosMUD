@@ -21,7 +21,7 @@ logger = get_logger(__name__)
 # Register UUID adapters for psycopg2
 # This allows psycopg2 to handle Python uuid.UUID objects directly
 # without manual string conversion
-register_uuid()
+register_uuid()  # type: ignore[no-untyped-call]  # mypy: psycopg2.extras.register_uuid has no stubs
 
 
 class PostgresRow:
@@ -67,7 +67,7 @@ class PostgresConnection:
         self._conn = conn
         self._conn.autocommit = False
 
-    def execute(self, query: str, params: tuple | None = None) -> "PostgresCursor":
+    def execute(self, query: str, params: tuple[Any, ...] | None = None) -> "PostgresCursor":
         """
         Execute a query and return a cursor.
 

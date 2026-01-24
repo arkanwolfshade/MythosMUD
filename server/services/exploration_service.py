@@ -359,7 +359,7 @@ class ExplorationService:
             This ensures exploration failures don't block movement operations.
         """
 
-        async def _mark_explored_async():
+        async def _mark_explored_async() -> None:
             """Inner async function to mark room as explored."""
             try:
                 await self.mark_room_as_explored(player_id, room_id)

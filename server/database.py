@@ -88,7 +88,7 @@ class DatabaseManager:
             raise RuntimeError("Use DatabaseManager.get_instance()")
 
         self.engine: AsyncEngine | None = None
-        self.session_maker: async_sessionmaker | None = None
+        self.session_maker: async_sessionmaker[AsyncSession] | None = None
         self.database_url: str | None = None
         self._initialized: bool = False
         self._creation_loop_id: int | None = None  # Track which loop created the engine
@@ -282,7 +282,7 @@ class DatabaseManager:
             raise RuntimeError("Database engine not initialized")
         return self.engine
 
-    def get_session_maker(self) -> async_sessionmaker:
+    def get_session_maker(self) -> async_sessionmaker[AsyncSession]:
         """
         Get the async session maker, initializing if necessary.
 
@@ -424,7 +424,7 @@ class DatabaseManager:
 # Module-level utility functions for backward compatibility
 
 
-def get_session_maker() -> async_sessionmaker:
+def get_session_maker() -> async_sessionmaker[AsyncSession]:
     """
     Get the async session maker from DatabaseManager.
 

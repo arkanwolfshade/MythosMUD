@@ -65,9 +65,9 @@ class PerformanceMonitor:
         """
         self.max_metrics = max_metrics
         self.alert_threshold_ms = alert_threshold_ms
-        self.metrics: deque = deque(maxlen=max_metrics)
+        self.metrics: deque[PerformanceMetric] = deque(maxlen=max_metrics)
         self.operation_stats: dict[str, list[PerformanceMetric]] = defaultdict(list)
-        self.alert_callbacks: list[Callable] = []
+        self.alert_callbacks: list[Callable[[PerformanceMetric, dict[str, Any]], None]] = []
 
         logger.info("Performance monitor initialized", max_metrics=max_metrics, alert_threshold_ms=alert_threshold_ms)
 
@@ -187,12 +187,12 @@ class PerformanceMonitor:
         """
         return [m for m in self.metrics if not m.success]
 
-    def add_alert_callback(self, callback: Callable) -> None:
+    def add_alert_callback(self, callback: Callable[[PerformanceMetric, dict[str, Any]], None]) -> None:
         """
         Add an alert callback function.
 
         Args:
-            callback: Function to call when performance alerts are triggered
+            callback: Function to call when performance alerts are triggered (metric, alert_data)
         """
         self.alert_callbacks.append(callback)
 

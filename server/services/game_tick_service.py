@@ -5,7 +5,7 @@ Handles the game tick system that runs at regular intervals.
 
 import asyncio
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from anyio import sleep
 
@@ -38,7 +38,7 @@ class GameTickService:
         self.tick_interval = tick_interval
         self.is_running = False
         self.tick_count = 0
-        self._tick_task: asyncio.Task | None = None
+        self._tick_task: asyncio.Task[Any] | None = None
 
     async def start(self) -> bool:
         """

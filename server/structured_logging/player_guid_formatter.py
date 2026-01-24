@@ -80,9 +80,9 @@ class PlayerGuidFormatter(logging.Formatter):
         if not isinstance(message, str):
             return ""
 
-        def replace_guid(match: re.Match) -> str:
+        def replace_guid(match: re.Match[str]) -> str:
             """Replace a single GUID with enhanced format."""
-            guid: str = cast(str, match.group(0))
+            guid = match.group(0)
 
             # Only process GUIDs that are likely to be player IDs
             if not self._is_likely_player_id(guid, message):

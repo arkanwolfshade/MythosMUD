@@ -26,7 +26,7 @@ class ItemRepository:
     for gradual async migration.
     """
 
-    def __init__(self, persistence_layer=None):
+    def __init__(self, persistence_layer: Any = None) -> None:
         """
         Initialize the item repository.
 

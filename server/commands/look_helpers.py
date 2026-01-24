@@ -76,7 +76,7 @@ def _parse_instance_number(target: str) -> tuple[str, int | None]:
     return (target, None)
 
 
-def _get_health_label(stats: dict) -> str:
+def _get_health_label(stats: dict[str, Any]) -> str:
     """
     Get descriptive health label based on health percentage.
 
@@ -107,7 +107,7 @@ def _get_health_label(stats: dict) -> str:
     return "mortally wounded"
 
 
-def _get_lucidity_label(stats: dict) -> str:
+def _get_lucidity_label(stats: dict[str, Any]) -> str:
     """
     Get descriptive lucidity label based on lucidity percentage.
 
@@ -133,7 +133,7 @@ def _get_lucidity_label(stats: dict) -> str:
     return "mad"
 
 
-def _get_visible_equipment(player: Any) -> dict[str, dict]:
+def _get_visible_equipment(player: Any) -> dict[str, dict[str, Any]]:
     """
     Get visible equipment from player, excluding internal/hidden slots.
 

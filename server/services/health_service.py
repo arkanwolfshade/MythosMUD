@@ -86,7 +86,9 @@ class HealthService:
             logger.warning("Failed to get CPU usage", error=str(e))
             return 0.0
 
-    def _create_health_response(self, status: HealthStatus, connection_count: int, query_time_ms: float | None) -> dict:
+    def _create_health_response(
+        self, status: HealthStatus, connection_count: int, query_time_ms: float | None
+    ) -> dict[str, Any]:
         """Create a standardized health check response dictionary.
 
         Args:
@@ -103,7 +105,7 @@ class HealthService:
             "last_query_time_ms": query_time_ms,
         }
 
-    async def check_database_health_async(self) -> dict:  # pylint: disable=too-many-return-statements  # Reason: Health check function requires multiple return paths for different failure scenarios (no container, no persistence, no pool, timeout, fallback, exception). Extracting all returns would reduce readability.
+    async def check_database_health_async(self) -> dict[str, Any]:  # pylint: disable=too-many-return-statements  # Reason: Health check function requires multiple return paths for different failure scenarios (no container, no persistence, no pool, timeout, fallback, exception). Extracting all returns would reduce readability.
         """
         Check database connectivity and health with actual query validation.
 
@@ -162,7 +164,7 @@ class HealthService:
             logger.warning("Database health check failed", error=str(e))
             return self._create_health_response(HealthStatus.UNHEALTHY, 0, None)
 
-    def check_database_health(self) -> dict:
+    def check_database_health(self) -> dict[str, Any]:
         """
         Check database connectivity and health (sync wrapper).
 
@@ -224,7 +226,7 @@ class HealthService:
                 "last_query_time_ms": None,
             }
 
-    def check_connections_health(self) -> dict:
+    def check_connections_health(self) -> dict[str, Any]:
         """Check connection manager health."""
         try:
             # AI Agent: Use injected connection_manager instead of global import

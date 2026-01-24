@@ -7,7 +7,7 @@ Handles publishing of combat-related events (attacks, deaths, XP awards, combat 
 # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Event publishing requires many parameters for complete event context
 
 from datetime import datetime
-from typing import cast
+from typing import Any, cast
 from uuid import UUID
 
 from server.events.combat_events import (
@@ -26,7 +26,7 @@ logger = get_logger(__name__)
 class CombatEventHandler:
     """Handles combat event publishing."""
 
-    def __init__(self, combat_service):
+    def __init__(self, combat_service: Any) -> None:
         """
         Initialize the event handler.
 

@@ -1117,7 +1117,7 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
             if mute_info["expires_at"] and mute_info["expires_at"] < current_time:
                 del self._global_mutes[player_id]
 
-    def _cleanup_expired_mutes(self):
+    def _cleanup_expired_mutes(self) -> None:
         """Clean up expired mutes from all storage."""
         try:
             current_time = datetime.now(UTC)

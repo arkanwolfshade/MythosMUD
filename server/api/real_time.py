@@ -233,7 +233,7 @@ async def _resolve_player_id(websocket: WebSocket, token: str | None, logger: An
     # Type narrowing: payload is guaranteed to be a dict with "sub" key at this point
     if payload is None or "sub" not in payload:
         raise ValueError("Invalid payload: missing 'sub' key")
-    return await _resolve_player_id_from_token(websocket, cast(dict[str, Any], payload))
+    return await _resolve_player_id_from_token(websocket, payload)
 
 
 @realtime_router.websocket("/ws")

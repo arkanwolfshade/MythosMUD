@@ -6,7 +6,7 @@ This module handles player character creation operations.
 
 import datetime
 import uuid
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from ..exceptions import ValidationError
 from ..models import Stats
@@ -24,7 +24,7 @@ logger = get_logger(__name__)
 class PlayerCreationService:
     """Service for player creation operations."""
 
-    def __init__(self, persistence, schema_converter):
+    def __init__(self, persistence: Any, schema_converter: Any) -> None:
         """Initialize with persistence layer and schema converter."""
         self.persistence = persistence
         self._schema_converter = schema_converter

@@ -135,7 +135,7 @@ class MemoryProfiler:
         }
 
     def measure_model_deserialization(
-        self, model_class: type[BaseModel], serialized_data: list[dict], iterations: int = 100
+        self, model_class: type[BaseModel], serialized_data: list[dict[str, Any]], iterations: int = 100
     ) -> dict[str, Any]:
         """
         Measure memory usage for model deserialization.

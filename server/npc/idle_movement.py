@@ -32,7 +32,7 @@ class IdleMovementHandler:
     boundary validation.
     """
 
-    def __init__(self, event_bus=None, persistence=None):
+    def __init__(self, event_bus: Any = None, persistence: Any = None) -> None:
         """
         Initialize the idle movement handler.
 

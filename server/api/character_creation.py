@@ -321,7 +321,7 @@ async def create_character_with_stats(
 
 @player_router.post("/validate-stats", response_model=ValidateStatsResponse)
 async def validate_character_stats(
-    stats: dict,
+    stats: dict[str, Any],
     class_name: str | None = None,
     current_user: User = Depends(get_current_user),
     stats_generator: StatsGenerator = StatsGeneratorDep,

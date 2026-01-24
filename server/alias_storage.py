@@ -76,7 +76,7 @@ class AliasStorage:
         """Get the file path for a player's aliases."""
         return self.storage_dir / f"{player_name}_aliases.json"
 
-    def _load_alias_data(self, player_name: str) -> dict:
+    def _load_alias_data(self, player_name: str) -> dict[str, Any]:
         """Load alias data from JSON file."""
         file_path = self._get_alias_file_path(player_name)
 
@@ -103,7 +103,7 @@ class AliasStorage:
             logger.error("Error loading alias data", player_name=player_name, error=str(e))
             return {"version": "1.0", "aliases": []}
 
-    def _save_alias_data(self, player_name: str, data: dict) -> bool:
+    def _save_alias_data(self, player_name: str, data: dict[str, Any]) -> bool:
         """Save alias data to JSON file."""
         file_path = self._get_alias_file_path(player_name)
 

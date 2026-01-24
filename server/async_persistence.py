@@ -69,7 +69,7 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
         _log_path: str | None = None,
         event_bus: EventBus | None = None,
         _skip_room_cache: bool = False,
-    ):
+    ) -> None:
         """
         Initialize the async persistence layer.
 

@@ -7,6 +7,7 @@ of API endpoints, particularly for stats rolling and other sensitive operations.
 
 import time
 from collections import defaultdict
+from typing import Any
 
 from ..exceptions import RateLimitError
 
@@ -56,7 +57,7 @@ class RateLimiter:
         self.requests[user_id].append(current_time)
         return True
 
-    def get_rate_limit_info(self, user_id: str) -> dict:
+    def get_rate_limit_info(self, user_id: str) -> dict[str, Any]:
         """
         Get rate limit information for a user.
 

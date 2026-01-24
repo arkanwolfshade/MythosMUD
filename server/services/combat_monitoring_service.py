@@ -142,7 +142,7 @@ class CombatMonitoringService:
 
         # Metrics tracking
         self._metrics = CombatMetrics()
-        self._metrics_history: deque = deque(maxlen=1000)  # Keep last 1000 data points
+        self._metrics_history: deque[Any] = deque(maxlen=1000)  # Keep last 1000 data points
         self._combat_start_times: dict[str, float] = {}
         self._turn_start_times: dict[str, float] = {}
 

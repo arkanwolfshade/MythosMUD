@@ -80,7 +80,12 @@ def _validate_app_state_for_status_effects(app: FastAPI) -> tuple[bool, "Applica
 
 
 async def _process_damage_over_time_effect(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Effect processing requires many parameters for game state and effect context
-    _app: FastAPI, container: "ApplicationContainer", player: "Player", effect: dict, remaining: int, player_id: str
+    _app: FastAPI,
+    container: "ApplicationContainer",
+    player: "Player",
+    effect: dict[str, Any],
+    remaining: int,
+    player_id: str,
 ) -> bool:
     """Process a damage over time effect.
 
@@ -114,7 +119,7 @@ async def _process_damage_over_time_effect(  # pylint: disable=too-many-argument
 
 
 async def _process_heal_over_time_effect(
-    container: "ApplicationContainer", player: "Player", effect: dict, remaining: int, player_id: str
+    container: "ApplicationContainer", player: "Player", effect: dict[str, Any], remaining: int, player_id: str
 ) -> bool:
     """Process a heal over time effect.
 
@@ -133,8 +138,8 @@ async def _process_heal_over_time_effect(
 
 
 async def _process_single_effect(
-    app: FastAPI, container: "ApplicationContainer", player: "Player", effect: dict, player_id: str
-) -> tuple[dict | None, bool]:
+    app: FastAPI, container: "ApplicationContainer", player: "Player", effect: dict[str, Any], player_id: str
+) -> tuple[dict[str, Any] | None, bool]:
     """Process a single status effect.
 
     Returns:
@@ -164,7 +169,7 @@ async def _process_single_effect(
 async def _update_player_status_effects(
     container: "ApplicationContainer",
     player: "Player",
-    updated_effects: list,
+    updated_effects: list[dict[str, Any]],
     original_count: int,
     effect_applied: bool,
 ) -> bool:
@@ -210,7 +215,7 @@ async def _validate_and_get_player(
 
 async def _process_all_status_effects(
     app: FastAPI, container: "ApplicationContainer", player: "Player", player_id: str
-) -> tuple[list[dict], bool, int]:
+) -> tuple[list[dict[str, Any]], bool, int]:
     """
     Process all status effects for a player.
 

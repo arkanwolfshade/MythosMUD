@@ -6,6 +6,7 @@ used for user authentication in the MythosMUD server.
 
 import os
 from datetime import UTC, datetime, timedelta
+from typing import Any
 
 from jose import JWTError, jwt
 
@@ -83,7 +84,7 @@ def verify_password(password: str, password_hash: str) -> bool:
 
 
 def create_access_token(
-    data: dict,
+    data: dict[str, Any],
     expires_delta: timedelta | None = None,
     secret_key: str | None = SECRET_KEY,
     algorithm: str = ALGORITHM,
@@ -116,7 +117,7 @@ def create_access_token(
 
 def decode_access_token(
     token: str | None, secret_key: str | None = SECRET_KEY, algorithm: str = ALGORITHM
-) -> dict | None:
+) -> dict[str, Any] | None:
     """Decode and validate a JWT access token."""
     if token is None:
         logger.debug("No token provided for decoding")

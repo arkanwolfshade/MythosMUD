@@ -186,13 +186,13 @@ class ConnectionManager:
         self.processed_disconnects: set[uuid.UUID] = set()
         self.processed_disconnect_lock = Lock()
         # Track players in grace period after unintentional disconnect
-        self.grace_period_players: dict[uuid.UUID, asyncio.Task] = {}
+        self.grace_period_players: dict[uuid.UUID, asyncio.Task[Any]] = {}
         # Track players in login grace period (10-second immunity after login)
-        self.login_grace_period_players: dict[uuid.UUID, asyncio.Task] = {}
+        self.login_grace_period_players: dict[uuid.UUID, asyncio.Task[Any]] = {}
         # Track login grace period start times for remaining time calculation
         self.login_grace_period_start_times: dict[uuid.UUID, float] = {}
         # Track players currently resting (for /rest command countdown)
-        self.resting_players: dict[uuid.UUID, asyncio.Task] = {}
+        self.resting_players: dict[uuid.UUID, asyncio.Task[Any]] = {}
         # Track players intentionally disconnecting (via /rest or /quit) - no grace period
         self.intentional_disconnects: set[uuid.UUID] = set()
 

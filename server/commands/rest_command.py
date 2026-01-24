@@ -205,8 +205,8 @@ async def _get_services_from_app(app: Any) -> tuple[Any, Any]:
 
 
 async def handle_rest_command(
-    command_data: dict,
-    _current_user: dict,  # Unused: player_name parameter is used instead
+    command_data: dict[str, Any],
+    _current_user: dict[str, Any],  # Unused: player_name parameter is used instead
     request: Any,
     alias_storage: AliasStorage | None,
     player_name: str,

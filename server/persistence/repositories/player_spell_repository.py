@@ -28,7 +28,7 @@ class PlayerSpellRepository:
     Handles player spell learning, mastery tracking, and queries.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the player spell repository."""
         self._logger = get_logger(__name__)
 
@@ -92,8 +92,7 @@ class PlayerSpellRepository:
                     PlayerSpell.player_id == str(player_id), PlayerSpell.spell_id == spell_id
                 )
                 result = await session.execute(stmt)
-                spell_result: PlayerSpell | None = cast(PlayerSpell | None, result.scalar_one_or_none())
-                return spell_result
+                return result.scalar_one_or_none()
         except (SQLAlchemyError, OSError) as e:
             log_and_raise(
                 DatabaseError,
@@ -136,8 +135,7 @@ class PlayerSpellRepository:
 
                 if existing:
                     self._logger.warning("Player already knows spell", player_id=str(player_id), spell_id=spell_id)
-                    result_existing: PlayerSpell = cast(PlayerSpell, existing)
-                    return result_existing
+                    return existing
 
                 # Create new player spell
                 player_spell = PlayerSpell(

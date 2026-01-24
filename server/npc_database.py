@@ -32,7 +32,7 @@ logger = get_logger(__name__)
 
 # LAZY INITIALIZATION: These are initialized on first use, not at import time
 _npc_engine: AsyncEngine | None = None  # pylint: disable=invalid-name  # Reason: Private module-level singleton, intentionally uses _ prefix
-_npc_async_session_maker: async_sessionmaker | None = None  # pylint: disable=invalid-name  # Reason: Private module-level singleton, intentionally uses _ prefix
+_npc_async_session_maker: async_sessionmaker[AsyncSession] | None = None  # pylint: disable=invalid-name  # Reason: Private module-level singleton, intentionally uses _ prefix
 _npc_database_url: str | None = None  # pylint: disable=invalid-name  # Reason: Private module-level variable, intentionally uses _ prefix
 _npc_creation_loop_id: int | None = None  # pylint: disable=invalid-name  # Reason: Private module-level variable, intentionally uses _ prefix  # Track which loop created the NPC engine
 
@@ -199,7 +199,7 @@ def get_npc_engine() -> AsyncEngine | None:
     return _npc_engine
 
 
-def get_npc_session_maker() -> async_sessionmaker:
+def get_npc_session_maker() -> async_sessionmaker[AsyncSession]:
     """
     Get the NPC async session maker, initializing if necessary.
 

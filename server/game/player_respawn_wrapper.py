@@ -25,7 +25,7 @@ logger = get_logger(__name__)
 class PlayerRespawnWrapper:
     """Wrapper service for player respawn operations."""
 
-    def __init__(self, persistence):
+    def __init__(self, persistence: Any) -> None:
         """Initialize with a persistence layer."""
         self.persistence = persistence
 

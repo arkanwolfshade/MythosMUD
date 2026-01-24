@@ -5,6 +5,8 @@ This module provides async database operations for spell queries
 using SQLAlchemy ORM with PostgreSQL.
 """
 
+from typing import Any
+
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -24,11 +26,11 @@ class SpellRepository:
     Handles spell queries and data retrieval from the database.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the spell repository."""
         self._logger = get_logger(__name__)
 
-    async def get_all_spells(self) -> list[dict]:
+    async def get_all_spells(self) -> list[dict[str, Any]]:
         """
         Get all spells from the database.
 
@@ -78,7 +80,7 @@ class SpellRepository:
                 user_friendly="Failed to retrieve spell list",
             )
 
-    async def get_spell_by_id(self, spell_id: str) -> dict | None:
+    async def get_spell_by_id(self, spell_id: str) -> dict[str, Any] | None:
         """
         Get a spell by ID.
 

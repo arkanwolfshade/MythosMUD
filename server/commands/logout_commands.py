@@ -179,7 +179,11 @@ async def _disconnect_player_connections(
 
 
 async def handle_quit_command(
-    command_data: dict, current_user: dict, request: Any, _alias_storage: AliasStorage | None, _player_name: str
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
+    request: Any,
+    _alias_storage: AliasStorage | None,
+    _player_name: str,
 ) -> dict[str, str]:
     """
     Handle the quit command for disconnecting from the game.
@@ -195,7 +199,7 @@ async def handle_quit_command(
         dict: Quit command result
     """
     # Extract args from command_data (not used in this command)
-    _args: list = command_data.get("args", [])
+    _args: list[Any] = command_data.get("args", [])
 
     logger.debug("Processing quit command")
 
@@ -238,7 +242,11 @@ async def handle_quit_command(
 
 
 async def handle_logout_command(
-    command_data: dict, current_user: dict, request: Any, _alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
+    request: Any,
+    _alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, Any]:
     """
     Handle the logout command for cleanly disconnecting from the game.
@@ -260,7 +268,7 @@ async def handle_logout_command(
         dict: Logout command result with success status and metadata
     """
     # Extract args from command_data (not used in this command)
-    _args: list = command_data.get("args", [])
+    _args: list[Any] = command_data.get("args", [])
 
     logger.debug("Processing logout command")
 

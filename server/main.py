@@ -29,6 +29,7 @@ if env_local_path.exists():
 # pylint: disable=wrong-import-position,wrong-import-order  # Reason: Imports must come after load_dotenv() to ensure environment variables are loaded first
 import warnings
 from collections.abc import Callable
+from typing import Any
 
 from fastapi import Depends, FastAPI
 from fastapi.security import HTTPBearer
@@ -141,7 +142,7 @@ async def read_root() -> dict[str, str]:
 
 # Test endpoint for JWT validation
 @app.get("/test-auth")
-async def test_auth(current_user: dict = Depends(get_current_user)) -> dict[str, str]:
+async def test_auth(current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, str]:
     """Test endpoint to verify JWT authentication is working."""
     if current_user:
         return {"message": "Authentication successful", "user": str(current_user)}

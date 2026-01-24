@@ -4,7 +4,7 @@ Player search and validation service.
 This module handles player name resolution, search, and validation operations.
 """
 
-from typing import cast
+from typing import Any, cast
 
 from ..schemas.player import PlayerRead
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -15,7 +15,7 @@ logger = get_logger(__name__)
 class PlayerSearchService:
     """Service for player search and validation operations."""
 
-    def __init__(self, player_service):
+    def __init__(self, player_service: Any) -> None:
         """Initialize with a reference to the player service for data access."""
         self.player_service = player_service
 

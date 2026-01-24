@@ -71,7 +71,7 @@ STAT_NAME_MAPPING: dict[str, str] = {
 }
 
 
-def _parse_set_stat_args(command_data: dict) -> tuple[str | None, str | None, str | int | None]:
+def _parse_set_stat_args(command_data: dict[str, Any]) -> tuple[str | None, str | None, str | int | None]:
     """Parse stat name, target player, and value from command data."""
     args = command_data.get("args", [])
     stat_name_input = command_data.get("stat_name")
@@ -288,7 +288,11 @@ def _log_admin_set_stat(  # pylint: disable=too-many-arguments,too-many-position
 
 
 async def _handle_admin_set_stat_command(  # pylint: disable=too-many-arguments,too-many-locals  # Reason: Admin command requires many parameters and intermediate variables for complex stat setting logic
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
+    request: Any,
+    alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """
     Handle the admin set command to set a player's statistic.

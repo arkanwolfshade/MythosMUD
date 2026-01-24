@@ -30,7 +30,7 @@ class BehaviorEngine:
     def __init__(self) -> None:
         """Initialize the behavior engine."""
         self.rules: list[dict[str, Any]] = []
-        self.action_handlers: dict[str, Callable] = {}
+        self.action_handlers: dict[str, Callable[..., Any]] = {}
         self.state: dict[str, Any] = {}
 
         logger.debug("Behavior engine initialized", engine_id=id(self))
@@ -280,7 +280,7 @@ class BehaviorEngine:
         applicable_rules.sort(key=lambda r: r["priority"], reverse=True)
         return applicable_rules
 
-    def register_action_handler(self, action_name: str, handler: Callable) -> bool:
+    def register_action_handler(self, action_name: str, handler: Callable[..., Any]) -> bool:
         """
         Register an action handler for a specific action.
 

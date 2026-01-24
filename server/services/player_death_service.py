@@ -294,7 +294,7 @@ class PlayerDeathService:
         return death_location
 
     def _publish_death_event(
-        self, player_id: uuid.UUID, player_name: str, death_location: str, killer_info: dict | None
+        self, player_id: uuid.UUID, player_name: str, death_location: str, killer_info: dict[str, Any] | None
     ) -> None:
         """
         Publish player died event if event bus is available.
@@ -321,7 +321,7 @@ class PlayerDeathService:
         self._event_bus.publish(event)
 
     async def handle_player_death(
-        self, player_id: uuid.UUID, death_location: str, killer_info: dict | None, session: AsyncSession
+        self, player_id: uuid.UUID, death_location: str, killer_info: dict[str, Any] | None, session: AsyncSession
     ) -> bool:
         """
         Handle player death when DP reaches 0.

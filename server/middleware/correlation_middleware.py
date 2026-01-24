@@ -47,7 +47,7 @@ class CorrelationMiddleware(BaseHTTPMiddleware):  # pylint: disable=too-few-publ
         self.correlation_header = correlation_header
         self.correlation_header = correlation_header
 
-    async def dispatch(self, request: Request, call_next: Callable) -> Response:
+    async def dispatch(self, request: Request, call_next: Callable[[Request], Any]) -> Response:
         """
         Process the request with correlation ID and context.
 

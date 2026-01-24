@@ -32,7 +32,7 @@ class ShopkeeperNPC(NPCBase):
         self._buyable_items: dict[str, int] = {}  # item_id -> base_price
         self._setup_shopkeeper_behavior_rules()
 
-    def _setup_shopkeeper_behavior_rules(self):
+    def _setup_shopkeeper_behavior_rules(self) -> None:
         """Setup shopkeeper-specific behavior rules."""
         shopkeeper_rules = [
             {

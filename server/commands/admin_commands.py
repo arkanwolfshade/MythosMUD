@@ -55,7 +55,11 @@ __all__ = [
 
 
 async def handle_admin_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
+    request: Any,
+    alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """
     Entry point for general admin commands that expose subcommands like `admin status`.
@@ -76,7 +80,11 @@ async def handle_admin_command(
 
 
 async def _handle_admin_status_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
+    request: Any,
+    alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """
     Provide contextual status information about the caller's administrative privileges.
@@ -184,7 +192,11 @@ async def _handle_admin_status_command(
 
 
 async def _handle_admin_time_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
+    request: Any,
+    alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """Expose current Mythos time metadata, active holidays, and freeze diagnostics."""
     _ = alias_storage  # Intentionally unused - part of standard command handler interface

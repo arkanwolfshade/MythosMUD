@@ -63,8 +63,8 @@ class MagicCommandHandler:
 
     async def handle_cast_command(
         self,
-        command_data: dict,
-        _current_user: dict,
+        command_data: dict[str, Any],
+        _current_user: dict[str, Any],
         _request: Any,
         _alias_storage: AliasStorage | None,
         player_name: str,
@@ -140,8 +140,8 @@ class MagicCommandHandler:
 
     async def handle_spells_command(
         self,
-        _command_data: dict,
-        _current_user: dict,
+        _command_data: dict[str, Any],
+        _current_user: dict[str, Any],
         _request: Any,
         _alias_storage: AliasStorage | None,
         player_name: str,
@@ -185,8 +185,8 @@ class MagicCommandHandler:
 
     async def handle_spell_command(
         self,
-        command_data: dict,
-        _current_user: dict,
+        command_data: dict[str, Any],
+        _current_user: dict[str, Any],
         _request: Any,
         _alias_storage: AliasStorage | None,
         player_name: str,
@@ -311,8 +311,8 @@ class MagicCommandHandler:
 
     async def handle_learn_command(
         self,
-        command_data: dict,
-        _current_user: dict,
+        command_data: dict[str, Any],
+        _current_user: dict[str, Any],
         _request: Any,
         _alias_storage: AliasStorage | None,
         player_name: str,
@@ -359,8 +359,8 @@ class MagicCommandHandler:
 
     async def handle_stop_command(
         self,
-        _command_data: dict,
-        _current_user: dict,
+        _command_data: dict[str, Any],
+        _current_user: dict[str, Any],
         _request: Any,
         _alias_storage: AliasStorage | None,
         player_name: str,
@@ -396,8 +396,8 @@ class MagicCommandHandler:
 
 # Command handler functions for integration with CommandService
 async def handle_cast_command(
-    command_data: dict,
-    current_user: dict,
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
     request: Any,
     alias_storage: AliasStorage | None,
     player_name: str,
@@ -419,8 +419,8 @@ async def handle_cast_command(
 
 
 async def handle_spells_command(
-    command_data: dict,
-    current_user: dict,
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
     request: Any,
     alias_storage: AliasStorage | None,
     player_name: str,
@@ -441,8 +441,8 @@ async def handle_spells_command(
 
 
 async def handle_spell_command(
-    command_data: dict,
-    current_user: dict,
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
     request: Any,
     alias_storage: AliasStorage | None,
     player_name: str,
@@ -463,8 +463,8 @@ async def handle_spell_command(
 
 
 async def handle_learn_command(
-    command_data: dict,
-    current_user: dict,
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
     request: Any,
     alias_storage: AliasStorage | None,
     player_name: str,
@@ -486,8 +486,8 @@ async def handle_learn_command(
 
 
 async def handle_stop_command(
-    command_data: dict,
-    current_user: dict,
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
     request: Any,
     alias_storage: AliasStorage | None,
     player_name: str,

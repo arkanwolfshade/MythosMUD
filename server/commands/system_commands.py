@@ -14,7 +14,11 @@ logger = get_logger(__name__)
 
 
 async def handle_system_command(
-    command_data: dict, _current_user: dict, request: Any, _alias_storage: AliasStorage | None, _player_name: str
+    command_data: dict[str, Any],
+    _current_user: dict[str, Any],
+    request: Any,
+    _alias_storage: AliasStorage | None,
+    _player_name: str,
 ) -> dict[str, str]:
     """
     Broadcast a system-level message via the chat service if available.
@@ -35,7 +39,11 @@ async def handle_system_command(
 
 
 async def handle_help_command(
-    command_data: dict, _current_user: dict, _request: Any, _alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    _current_user: dict[str, Any],
+    _request: Any,
+    _alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """
     Handle the help command.
@@ -51,7 +59,7 @@ async def handle_help_command(
         dict: Help content result
     """
     # Extract args from command_data
-    args: list = command_data.get("args", [])
+    args: list[Any] = command_data.get("args", [])
 
     logger.debug("Processing help command", player_name=player_name, args=args)
 

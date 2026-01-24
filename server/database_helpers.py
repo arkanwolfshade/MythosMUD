@@ -54,7 +54,7 @@ def get_engine() -> AsyncEngine:
     return DatabaseManager.get_instance().get_engine()
 
 
-def get_session_maker() -> async_sessionmaker:
+def get_session_maker() -> async_sessionmaker[AsyncSession]:
     """
     Get the async session maker, initializing if necessary.
 

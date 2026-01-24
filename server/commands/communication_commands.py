@@ -46,7 +46,11 @@ def _get_services_from_container(app: Any) -> tuple[Any, Any, Any]:
 
 
 async def handle_say_command(
-    command_data: dict, _current_user: dict, request: Any, _alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    _current_user: dict[str, Any],
+    request: Any,
+    _alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """
     Handle the say command for speaking to other players.
@@ -130,7 +134,11 @@ async def handle_say_command(
 
 
 async def handle_me_command(
-    command_data: dict, _current_user: dict, _request: Any, _alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    _current_user: dict[str, Any],
+    _request: Any,
+    _alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """
     Handle the me command for performing actions/emotes.
@@ -162,7 +170,11 @@ async def handle_me_command(
 
 
 async def handle_pose_command(
-    command_data: dict, current_user: dict, request: Any, _alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
+    request: Any,
+    _alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """
     Handle the pose command for setting character description.
@@ -217,7 +229,11 @@ async def handle_pose_command(
 
 
 async def handle_local_command(
-    command_data: dict, _current_user: dict, request: Any, _alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    _current_user: dict[str, Any],
+    request: Any,
+    _alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """
     Handle the local command for speaking in the local channel.
@@ -303,7 +319,11 @@ async def handle_local_command(
 
 
 async def handle_global_command(
-    command_data: dict, _current_user: dict, request: Any, _alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    _current_user: dict[str, Any],
+    request: Any,
+    _alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """
     Handle the global command for speaking in the global channel.
@@ -381,7 +401,11 @@ async def handle_global_command(
 
 
 async def handle_system_command(
-    command_data: dict, _current_user: dict, request: Any, _alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    _current_user: dict[str, Any],
+    request: Any,
+    _alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """
     Handle the system command for sending system messages (admin only).
@@ -461,7 +485,11 @@ async def handle_system_command(
 
 
 async def handle_whisper_command(
-    command_data: dict, _current_user: dict, request: Any, _alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    _current_user: dict[str, Any],
+    request: Any,
+    _alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """
     Handle the whisper command for private messaging between players.
@@ -547,7 +575,11 @@ async def handle_whisper_command(
 
 
 async def handle_reply_command(
-    command_data: dict, _current_user: dict, request: Any, _alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    _current_user: dict[str, Any],
+    request: Any,
+    _alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """
     Handle the reply command for responding to the last whisper received.

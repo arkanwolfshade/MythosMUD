@@ -25,7 +25,7 @@ if TYPE_CHECKING:
 class PlayerSchemaConverter:
     """Utility class for converting Player objects to PlayerRead schemas."""
 
-    def __init__(self, persistence, player_combat_service=None):
+    def __init__(self, persistence: Any, player_combat_service: Any = None) -> None:
         """Initialize the converter with persistence and optional combat service."""
         self.persistence = persistence
         self.player_combat_service = player_combat_service

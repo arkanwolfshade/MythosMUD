@@ -9,7 +9,7 @@ for real-time distribution to clients and other systems.
 
 import uuid
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from ..events.combat_events import (
     CombatEndedEvent,
@@ -68,11 +68,11 @@ class CombatEventPublisher:
     def _create_event_message(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Event message creation requires many parameters for complete event context
         self,
         event_type: str,
-        event_data: dict,
+        event_data: dict[str, Any],
         room_id: str | None = None,
         player_id: str | None = None,
         timestamp: str | None = None,
-    ) -> dict:
+    ) -> dict[str, Any]:
         """
         Create a standardized event message structure matching EventMessageSchema.
 

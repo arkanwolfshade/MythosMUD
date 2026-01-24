@@ -33,7 +33,7 @@ class AggressiveMobNPC(NPCBase):
         self._territory_center = getattr(definition, "room_id", None)
         self._setup_aggressive_mob_behavior_rules()
 
-    def _setup_aggressive_mob_behavior_rules(self):
+    def _setup_aggressive_mob_behavior_rules(self) -> None:
         """Setup aggressive mob-specific behavior rules."""
         aggressive_mob_rules = [
             {

@@ -42,7 +42,11 @@ logger = get_logger(__name__)
 
 
 async def handle_teleport_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
+    request: Any,
+    alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """
     Handle the teleport command for bringing a player to the admin's location.
@@ -170,7 +174,11 @@ async def handle_teleport_command(
 
 
 async def handle_goto_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
+    request: Any,
+    alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """
     Handle the goto command for teleporting the admin to a player's location.
@@ -224,7 +232,11 @@ async def handle_goto_command(
 
 
 async def handle_confirm_teleport_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
+    request: Any,
+    alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """
     Handle the confirm teleport command for executing the actual teleportation.
@@ -320,7 +332,11 @@ async def handle_confirm_teleport_command(
 
 
 async def handle_confirm_goto_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
+    request: Any,
+    alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """
     Handle the confirm goto command for executing the actual teleportation.

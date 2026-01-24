@@ -6,6 +6,8 @@ Handles player death, NPC death, mortally wounded states, and related events.
 
 # pylint: disable=too-many-locals,too-many-arguments,too-many-positional-arguments  # Reason: Death handling requires many intermediate variables and parameters for complex death processing logic
 
+from typing import Any
+
 from server.models.combat import CombatInstance, CombatParticipant, CombatParticipantType
 from server.services.nats_exceptions import NATSError
 from server.structured_logging.enhanced_logging_config import get_logger
@@ -16,7 +18,7 @@ logger = get_logger(__name__)
 class CombatDeathHandler:
     """Handles combat death events and state changes."""
 
-    def __init__(self, combat_service):
+    def __init__(self, combat_service: Any) -> None:
         """
         Initialize the death handler.
 
