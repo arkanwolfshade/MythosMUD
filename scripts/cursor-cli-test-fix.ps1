@@ -56,7 +56,8 @@ try {
         Write-Error "Cursor CLI is not installed or not in PATH. Install it with: irm 'https://cursor.com/install?win32=true' | iex"
         exit 1
     }
-} catch {
+}
+catch {
     Write-Error "Cursor CLI is not installed or not in PATH. Install it with: irm 'https://cursor.com/install?win32=true' | iex"
     exit 1
 }
@@ -70,13 +71,15 @@ if ($TestFile) {
         exit 1
     }
     $analysisPrompt += " in $TestFile"
-} elseif ($TestPath) {
+}
+elseif ($TestPath) {
     if (-not (Test-Path $TestPath)) {
         Write-Error "Test path not found: $TestPath"
         exit 1
     }
     $analysisPrompt += " in $TestPath"
-} else {
+}
+else {
     $analysisPrompt += " in the test suite"
 }
 
@@ -88,7 +91,8 @@ $analysisPrompt += ". "
 
 if ($AnalyzeOnly) {
     $analysisPrompt += "Analyze the failures, identify root causes, and provide detailed analysis. Do NOT suggest fixes."
-} else {
+}
+else {
     $analysisPrompt += "Analyze the failures, identify root causes, and suggest specific fixes. Focus on: "
     $analysisPrompt += "1. Understanding why tests are failing"
     $analysisPrompt += "2. Identifying the root cause"
@@ -115,7 +119,8 @@ $cursorArgs += "text"
 Write-Host "Starting test failure analysis..." -ForegroundColor Cyan
 if ($TestFile) {
     Write-Host "Test File: $TestFile" -ForegroundColor Gray
-} elseif ($TestPath) {
+}
+elseif ($TestPath) {
     Write-Host "Test Path: $TestPath" -ForegroundColor Gray
 }
 if ($TestName) {
@@ -128,7 +133,8 @@ try {
     if ($OutputReport) {
         Write-Host "Analysis output will be saved to: $ReportPath" -ForegroundColor Cyan
         & cursor agent @cursorArgs | Tee-Object -FilePath $ReportPath
-    } else {
+    }
+    else {
         & cursor agent @cursorArgs
     }
 
@@ -140,13 +146,15 @@ try {
         if ($OutputReport) {
             Write-Host "Analysis report saved to: $ReportPath" -ForegroundColor Green
         }
-    } else {
+    }
+    else {
         Write-Host ""
         Write-Host "Test failure analysis exited with code $exitCode." -ForegroundColor Yellow
     }
 
     exit $exitCode
-} catch {
+}
+catch {
     Write-Error "Failed to execute test failure analysis: $_"
     exit 1
 }
