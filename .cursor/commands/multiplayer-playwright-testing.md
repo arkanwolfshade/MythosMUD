@@ -4,6 +4,14 @@
 
 - Verify model capabilities include advanced instruction following and systematic analysis
 
+**SUBAGENT INTEGRATION:**
+
+This command can leverage the **Codebase Explorer** subagent for test discovery and analysis:
+- **Subagent**: `.cursor/agents/codebase-explorer.md`
+- **Purpose**: Deep codebase exploration for finding test files and understanding test structure
+- **When Used**: Automatically invoked when test discovery or architecture analysis is needed
+- **Benefits**: Parallel exploration of test scenarios, comprehensive test file mapping, dependency analysis
+
 ## 🛑 MANDATORY EXECUTION PROTOCOL 🛑
 
 **BEFORE EXECUTING ANY SCENARIO:**

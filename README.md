@@ -467,6 +467,7 @@ See [scripts/README.md](scripts/README.md) for detailed documentation.
 
 - [DEVELOPMENT_AI.md](docs/DEVELOPMENT_AI.md) — AI agent development guide and workflow
 - [AI Development Workflow](docs/AI_DEVELOPMENT_WORKFLOW.md) — Detailed AI agent task management
+- [Cursor Setup Guide](docs/CURSOR_SETUP_GUIDE.md) — Optimize Cursor IDE for subagents and CLI usage
 
 ### Testing Documentation
 

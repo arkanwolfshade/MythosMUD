@@ -1,0 +1,248 @@
+---
+description: Guidelines on when and how to use Cursor subagents, commands, and rules
+alwaysApply: true
+---
+
+# Subagent Usage Guidelines
+
+*"In the shadowed halls of Miskatonic University, we learn that different tools serve different purposes. Understanding when to use subagents, commands, and rules is essential for efficient research and development."*
+
+## Overview
+
+This rule provides guidance on when to use subagents versus commands versus rules, and best practices for subagent creation and usage.
+
+## When to Use Subagents
+
+Use subagents when:
+- **Context Isolation Needed**: Long research or exploration tasks that would consume significant context
+- **Parallel Execution**: Multiple workstreams that can run simultaneously
+- **Specialized Expertise**: Tasks requiring specialized knowledge across many steps
+- **Independent Verification**: Need for separate context window to verify work
+- **Complex Multi-Step Tasks**: Tasks that require multiple phases and deep analysis
+
+### Examples of Good Subagent Use Cases
+- Deep codebase exploration across multiple modules
+- Comprehensive test suite analysis with coverage reporting
+- Security audit requiring multiple vulnerability scans
+- Performance profiling with log analysis
+- Systematic bug investigation with evidence collection
+
+## When NOT to Use Subagents
+
+Do NOT use subagents for:
+- **Simple Single-Purpose Tasks**: Use commands instead (e.g., "format imports", "generate changelog")
+- **Quick Repeatable Actions**: Use skills instead
+- **Tasks Completing in One Shot**: Main agent is faster
+- **Simple File Operations**: Main agent handles these efficiently
+
+### Examples of Tasks Better Suited for Commands or Skills
+- Format code or imports (use skill)
+- Generate a changelog (use command)
+- Quick file lookup (use main agent)
+- Simple refactoring (use main agent)
+
+## Subagent vs Command vs Rule
+
+| Aspect        | Subagents                            | Commands                            | Rules                             |
+| ------------- | ------------------------------------ | ----------------------------------- | --------------------------------- |
+| **Purpose**   | Complex, multi-step tasks            | Single-purpose workflows            | Persistent guidance               |
+| **Context**   | Isolated context window              | Shared context                      | Always applied                    |
+| **Execution** | Parallel or sequential               | Sequential                          | Applied automatically             |
+| **Best For**  | Deep research, analysis              | Quick actions, workflows            | Best practices, standards         |
+| **Examples**  | Codebase exploration, security audit | Bug investigation, test remediation | Coding standards, framework rules |
+
+## Available Subagents
+
+### Codebase Explorer
+**File**: `.cursor/agents/codebase-explorer.md`
+- Deep codebase exploration
+- Pattern discovery
+- Architecture analysis
+- Dependency research
+
+### Test Suite Analyzer
+**File**: `.cursor/agents/test-analyzer.md`
+- Test coverage analysis
+- Test quality assessment
+- Gap identification
+- Test recommendations
+
+### Security Auditor
+**File**: `.cursor/agents/security-auditor.md`
+- Security vulnerability scanning
+- COPPA compliance verification
+- Input validation review
+- Authentication/authorization analysis
+
+### Performance Profiler
+**File**: `.cursor/agents/performance-profiler.md`
+- Performance bottleneck identification
+- Database query optimization
+- Memory leak detection
+- Optimization recommendations
+
+### Bug Investigator
+**File**: `.cursor/agents/bug-investigator.md`
+- Systematic bug investigation
+- Root cause analysis
+- Evidence collection
+- Regression analysis
+
+## Subagent Creation Guidelines
+
+### When Creating a New Subagent
+
+1. **Identify the Need**: Is this a complex, multi-step task requiring context isolation?
+2. **Define Purpose**: Clearly state what the subagent does and when to use it
+3. **Specify Capabilities**: List what the subagent can accomplish
+4. **Document Integration**: Explain how it integrates with existing commands/rules
+5. **Provide Examples**: Include example scenarios and usage patterns
+
+### Subagent File Structure
+
+```markdown
+---
+name: "Subagent Name"
+description: "Clear description of what this subagent does"
+---
+
+# Subagent Name
+
+## Purpose
+[Clear explanation of when to use this subagent]
+
+## Capabilities
+[List of what this subagent can do]
+
+## Usage
+[How to invoke this subagent]
+
+## Output Format
+[What kind of report/result to expect]
+
+## Integration
+[How this integrates with existing commands/rules]
+```
+
+### Best Practices
+
+- **Clear Naming**: Use descriptive names that indicate purpose
+- **Focused Purpose**: Each subagent should have a clear, focused purpose
+- **Reusable**: Design subagents to be reusable across projects
+- **Well Documented**: Include comprehensive documentation
+- **Integration**: Integrate with existing commands and rules
+
+## Performance and Cost Considerations
+
+### Token Usage
+- **Subagents consume tokens independently**: Each subagent has its own context window
+- **Parallel execution multiplies tokens**: Running 5 subagents uses ~5x tokens
+- **Evaluate overhead**: For simple tasks, main agent is faster and cheaper
+
+### Performance Trade-offs
+- **Context Isolation**: Benefit is isolation, not speed
+- **Startup Overhead**: Subagents gather their own context, adding latency
+- **Parallel Execution**: Can be faster for complex parallel work
+- **Model Flexibility**: Can use faster models for exploration tasks
+
+### When Subagents Are Worth It
+- Long-running research tasks (>10 minutes)
+- Multiple parallel workstreams
+- Tasks requiring specialized expertise
+- Independent verification needs
+
+### When Main Agent Is Better
+- Quick, simple tasks (<5 minutes)
+- Single workstream
+- Tasks requiring conversation context
+- Immediate feedback needed
+
+## Integration Patterns
+
+### Subagents with Commands
+Commands can delegate to subagents for complex work:
+- `investigate-bug.md` → Uses `bug-investigator` subagent
+- `server-test-remediation.md` → Uses `test-analyzer` subagent
+- `client-test-remediation.md` → Uses `test-analyzer` subagent
+
+### Subagents with Rules
+Rules provide guidance on when to use subagents:
+- This rule (`subagent-usage.mdc`) provides usage guidelines
+- Framework rules reference subagents for complex tasks
+- Best practice rules suggest subagent usage patterns
+
+### Subagents with CLI
+CLI can invoke subagents through commands:
+- CLI scripts can trigger subagent workflows
+- Non-interactive mode uses subagents for automation
+- CI/CD pipelines leverage subagents for analysis
+
+## Built-in Subagents
+
+Cursor includes three built-in subagents that handle context-heavy operations automatically:
+
+### Explore Subagent
+- Searches and analyzes codebases
+- Uses faster models for parallel searches
+- Generates large intermediate output (isolated from main context)
+
+### Bash Subagent
+- Runs series of shell commands
+- Isolates verbose command output
+- Keeps parent focused on decisions, not logs
+
+### Browser Subagent
+- Controls browser via MCP tools
+- Filters noisy DOM snapshots and screenshots
+- Returns relevant results only
+
+These are used automatically when appropriate - no configuration needed.
+
+## Decision Tree
+
+```
+Is this a complex, multi-step task?
+├─ NO → Use main agent or command
+└─ YES → Does it need context isolation?
+    ├─ NO → Use main agent with conversation context
+    └─ YES → Can it run in parallel with other work?
+        ├─ YES → Use subagent (background mode)
+        └─ NO → Use subagent (foreground mode)
+```
+
+## Examples
+
+### Good Subagent Usage
+```
+"Use the codebase explorer to find all authentication implementations"
+"Run the security auditor on the authentication module"
+"Analyze test coverage gaps using the test analyzer"
+```
+
+### Better Suited for Main Agent
+```
+"Find the Player class definition"
+"Add a comment to this function"
+"Rename this variable"
+```
+
+### Better Suited for Commands
+```
+"Run the bug investigation command"
+"Execute test remediation workflow"
+"Run multiplayer testing scenarios"
+```
+
+## References
+
+- [Cursor Subagents Documentation](https://cursor.com/docs/context/subagents)
+- Subagent definitions: `.cursor/agents/`
+- Command definitions: `.cursor/commands/`
+- Rule definitions: `.cursor/rules/`
+
+## Notes
+
+- Subagents are powerful but have overhead - use judiciously
+- Commands provide quick workflows - use for common tasks
+- Rules provide persistent guidance - always applied
+- All components work together: Rules guide → Commands execute → Subagents handle complex work

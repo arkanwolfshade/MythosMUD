@@ -25,6 +25,14 @@ This command activates and requires adherence to:
 1. **`.cursor/rules/MYTHOSMUD_DEBUGGING_AGENT.mdc`** - Investigation agent configuration and methodology
 2. **`.cursor/rules/GAME_BUG_INVESTIGATION_PLAYBOOK.mdc`** - Detailed investigation procedures and scenarios
 
+**SUBAGENT INTEGRATION:**
+
+This command delegates complex investigation tasks to the **Bug Investigator** subagent:
+- **Subagent**: `.cursor/agents/bug-investigator.md`
+- **Purpose**: Systematic bug investigation, root cause analysis, and evidence collection
+- **When Used**: Automatically invoked for deep bug investigations requiring context isolation
+- **Benefits**: Isolated context window, comprehensive evidence collection, systematic methodology
+
 **CRITICAL INSTRUCTION FOR AI INVESTIGATORS:**
 
 **BEFORE YOU DO ANYTHING ELSE:**

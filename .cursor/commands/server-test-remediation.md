@@ -1,5 +1,13 @@
 # Test Server Remediation Prompt - Cursor Executable Version
 
+**SUBAGENT INTEGRATION:**
+
+This command leverages the **Test Suite Analyzer** subagent for comprehensive test analysis:
+- **Subagent**: `.cursor/agents/test-analyzer.md`
+- **Purpose**: Test coverage analysis, test quality assessment, gap identification
+- **When Used**: Automatically invoked for test suite analysis and coverage reporting
+- **Benefits**: Isolated context for test analysis, comprehensive coverage reports, actionable recommendations
+
 ## CRITICAL: EXECUTION REQUIREMENTS
 
 **MANDATORY**: This prompt MUST be followed step-by-step. Do NOT skip sections or combine steps.

@@ -2,6 +2,14 @@
 
 *"In the digital realm of the client-side, we learn that proper testing requires systematic component validation, comprehensive hook testing, and thorough interaction simulation. The path to reliable user interfaces lies not in quick fixes, but in methodical test remediation and validation."*
 
+**SUBAGENT INTEGRATION:**
+
+This command leverages the **Test Suite Analyzer** subagent for comprehensive test analysis:
+- **Subagent**: `.cursor/agents/test-analyzer.md`
+- **Purpose**: Test coverage analysis, test quality assessment, gap identification
+- **When Used**: Automatically invoked for client test suite analysis and coverage reporting
+- **Benefits**: Isolated context for test analysis, comprehensive coverage reports, actionable recommendations
+
 ## 🎯 MANDATORY AI EXECUTION PROTOCOL
 
 **CRITICAL**: You MUST follow this exact sequence. Do not skip steps or deviate from the order.
