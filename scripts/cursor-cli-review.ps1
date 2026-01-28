@@ -48,7 +48,7 @@ $ErrorActionPreference = "Stop"
 
 # Check if Cursor CLI is installed
 try {
-    $cursorVersion = cursor --version 2>&1
+    $null = cursor --version 2>&1
     if ($LASTEXITCODE -ne 0) {
         Write-Error "Cursor CLI is not installed or not in PATH. Install it with: irm 'https://cursor.com/install?win32=true' | iex"
         exit 1
@@ -88,17 +88,17 @@ if ($GitChanges) {
 }
 
 # Build command arguments
-$args = @("-p", $targetPrompt)
+$cursorArgs = @("-p", $targetPrompt)
 
 # Model selection
 if ($Model) {
-    $args += "--model"
-    $args += $Model
+    $cursorArgs += "--model"
+    $cursorArgs += $Model
 }
 
 # Output format
-$args += "--output-format"
-$args += "text"
+$cursorArgs += "--output-format"
+$cursorArgs += "text"
 
 # Execute review
 Write-Host "Starting code review..." -ForegroundColor Cyan
@@ -113,9 +113,9 @@ Write-Host ""
 try {
     if ($OutputReport) {
         Write-Host "Review output will be saved to: $ReportPath" -ForegroundColor Cyan
-        & cursor agent @args | Tee-Object -FilePath $ReportPath
+        & cursor agent @cursorArgs | Tee-Object -FilePath $ReportPath
     } else {
-        & cursor agent @args
+        & cursor agent @cursorArgs
     }
 
     $exitCode = $LASTEXITCODE

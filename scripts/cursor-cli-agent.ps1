@@ -50,7 +50,7 @@ $ErrorActionPreference = "Stop"
 
 # Check if Cursor CLI is installed
 try {
-    $cursorVersion = cursor --version 2>&1
+    $null = cursor --version 2>&1
     if ($LASTEXITCODE -ne 0) {
         Write-Error "Cursor CLI is not installed or not in PATH. Install it with: irm 'https://cursor.com/install?win32=true' | iex"
         exit 1
@@ -62,14 +62,14 @@ catch {
 }
 
 # Build command arguments
-$args = @()
+$cursorArgs = @()
 
 # Determine mode
 if ($Plan) {
-    $args += "--mode=plan"
+    $cursorArgs += "--mode=plan"
 }
 elseif ($Ask) {
-    $args += "--mode=ask"
+    $cursorArgs += "--mode=ask"
 }
 
 # Non-interactive mode (print mode)
@@ -78,35 +78,35 @@ if ($NonInteractive) {
         Write-Error "Non-interactive mode requires a prompt. Use -Prompt parameter."
         exit 1
     }
-    $args += "-p"
-    $args += $Prompt
+    $cursorArgs += "-p"
+    $cursorArgs += $Prompt
 }
 else {
     # Interactive mode
     if ($Prompt) {
-        $args += $Prompt
+        $cursorArgs += $Prompt
     }
 }
 
 # Model selection
 if ($Model) {
-    $args += "--model"
-    $args += $Model
+    $cursorArgs += "--model"
+    $cursorArgs += $Model
 }
 
 # Output format
 if ($OutputFormat) {
-    $args += "--output-format"
-    $args += $OutputFormat
+    $cursorArgs += "--output-format"
+    $cursorArgs += $OutputFormat
 }
 
 # Execute Cursor CLI
 Write-Host "Executing Cursor CLI agent..." -ForegroundColor Cyan
-Write-Host "Command: cursor agent $($args -join ' ')" -ForegroundColor Gray
+Write-Host "Command: cursor agent $($cursorArgs -join ' ')" -ForegroundColor Gray
 Write-Host ""
 
 try {
-    & cursor agent @args
+    & cursor agent @cursorArgs
     $exitCode = $LASTEXITCODE
 
     if ($exitCode -eq 0) {
