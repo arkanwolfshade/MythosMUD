@@ -597,6 +597,7 @@ async def check_and_cleanup_impl(manager: Any) -> None:
         connection_timestamps=manager.connection_timestamps,
         cleanup_stats=manager.cleanup_stats,
         last_active_update_times=manager.last_active_update_times,
+        connection_metadata=manager.connection_metadata,
     )
 
 
@@ -650,6 +651,7 @@ async def cleanup_orphaned_data_impl(manager: Any) -> None:
         connection_timestamps=manager.connection_timestamps,
         active_websockets=manager.active_websockets,
         cleanup_stats=manager.cleanup_stats,
+        connection_metadata=manager.connection_metadata,
     )
 
 

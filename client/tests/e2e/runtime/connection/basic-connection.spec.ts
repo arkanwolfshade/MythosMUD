@@ -9,24 +9,24 @@
  */
 
 import { expect, test } from '@playwright/test';
-import { createMultiPlayerContexts, cleanupMultiPlayerContexts, getPlayerMessages } from '../fixtures/multiplayer';
+import {
+  createMultiPlayerContexts,
+  cleanupMultiPlayerContexts,
+  ensurePlayerInGame,
+  getPlayerMessages,
+  waitForAllPlayersInGame,
+} from '../fixtures/multiplayer';
 import { getMessages } from '../fixtures/auth';
 
 test.describe('Basic Connection/Disconnection Flow', () => {
   test('AW should see Ithaqua entered message when Ithaqua connects', async ({ browser }) => {
-    // Create context for AW first
     const awContexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade']);
     const awContext = awContexts[0];
+    await ensurePlayerInGame(awContext, 15000);
 
-    // Wait for AW to be fully in the game
-    await awContext.page.waitForTimeout(10000); // Wait for room subscription to stabilize
-
-    // Create context for Ithaqua
     const ithaquaContexts = await createMultiPlayerContexts(browser, ['Ithaqua']);
     const ithaquaContext = ithaquaContexts[0];
-
-    // Wait for Ithaqua to be fully in the game
-    await ithaquaContext.page.waitForTimeout(15000); // Wait for connection message broadcasting
+    await ensurePlayerInGame(ithaquaContext, 15000);
 
     // Check if AW sees Ithaqua entered message
     // Note: This may fail due to timing artifact (room subscription timing)
@@ -59,19 +59,15 @@ test.describe('Basic Connection/Disconnection Flow', () => {
   });
 
   test('AW should see Ithaqua left message when Ithaqua disconnects', async ({ browser }) => {
-    // Create contexts for both players
     const contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
+    await waitForAllPlayersInGame(contexts, 60000);
+    await ensurePlayerInGame(contexts[0], 15000);
+    await ensurePlayerInGame(contexts[1], 15000);
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    // Wait for both to be in the game
-    await awContext.page.waitForTimeout(10000);
-    await ithaquaContext.page.waitForTimeout(10000);
-
-    // Close Ithaqua's context (simulating disconnect)
     await ithaquaContext.context.close();
-
-    // Wait for disconnect message
+    await awContext.page.waitForTimeout(5000);
     await awContext.page.waitForTimeout(5000);
 
     // Check if AW sees Ithaqua left message

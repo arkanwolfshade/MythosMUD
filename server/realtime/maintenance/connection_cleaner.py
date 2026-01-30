@@ -10,6 +10,7 @@ Cleanup and maintenance is now a focused, independently testable component.
 
 # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Connection cleanup requires many parameters for context and cleanup operations
 
+import os
 import time
 import uuid
 from collections.abc import Callable
@@ -20,6 +21,13 @@ from sqlalchemy.exc import SQLAlchemyError
 from server.exceptions import DatabaseError
 
 from ...structured_logging.enhanced_logging_config import get_logger
+
+
+def _stale_prune_max_age_seconds() -> int:
+    """Stale-prune threshold (seconds). Higher in e2e/local to avoid mid-run drops."""
+    env = os.environ.get("LOGGING_ENVIRONMENT") or ""
+    return 300 if env in ("e2e_test", "local") else 90
+
 
 if TYPE_CHECKING:
     from collections.abc import Awaitable
@@ -163,7 +171,11 @@ class ConnectionCleaner:
                 )
 
             if stale_ids:
-                logger.info("Pruned stale players", stale_ids=[str(pid) for pid in stale_ids])
+                logger.info(
+                    "Pruned stale players (debug: mid-run drops)",
+                    disconnect_reason="stale_prune",
+                    stale_ids=[str(pid) for pid in stale_ids],
+                )
         except (DatabaseError, SQLAlchemyError) as e:
             logger.error("Error pruning stale players", error=str(e))
 
@@ -172,6 +184,7 @@ class ConnectionCleaner:
         connection_timestamps: dict[str, float],
         active_websockets: dict[str, "WebSocket"],
         cleanup_stats: dict[str, Any],
+        connection_metadata: dict[str, Any] | None = None,
     ) -> None:
         """Clean up orphaned data that might accumulate over time.
 
@@ -179,6 +192,7 @@ class ConnectionCleaner:
             connection_timestamps: Connection timestamp tracking
             active_websockets: Active WebSocket connections
             cleanup_stats: Cleanup statistics dictionary
+            connection_metadata: Optional connection_id -> metadata (for disconnect_reason logging).
         """
         try:
             now_ts = time.time()
@@ -212,21 +226,36 @@ class ConnectionCleaner:
                     stale_connections.append(connection_id)
 
             for connection_id in stale_connections:
-                if connection_id in active_websockets:
-                    try:
-                        websocket = active_websockets[connection_id]
-                        # Guard against None websocket (can happen during cleanup)
-                        # Type annotation says dict[str, WebSocket], but runtime can have None
-                        # values during cleanup/race conditions. This is defensive programming.
-                        if websocket is None:
-                            del active_websockets[connection_id]  # type: ignore[unreachable]  # Reason: Type annotation says dict[str, WebSocket], but runtime can have None values during cleanup/race conditions, mypy cannot verify this defensive check
-                            continue
-                        logger.info("DEBUG: Closing stale WebSocket due to timeout", connection_id=connection_id)
-                        await websocket.close(code=1000, reason="Connection timeout")
-                        logger.info("Successfully closed stale WebSocket", connection_id=connection_id)
-                    except (DatabaseError, SQLAlchemyError) as e:
-                        logger.warning("Error closing stale connection", connection_id=connection_id, error=str(e))
-                    del active_websockets[connection_id]
+                if connection_id not in active_websockets:
+                    del connection_timestamps[connection_id]
+                    cleanup_stats_local["stale_connections"] += 1
+                    continue
+                try:
+                    websocket = active_websockets[connection_id]
+                    # Guard against None websocket (can happen during cleanup)
+                    # Type annotation says dict[str, WebSocket], but runtime can have None
+                    # values during cleanup/race conditions. This is defensive programming.
+                    if websocket is None:
+                        del active_websockets[connection_id]  # type: ignore[unreachable]  # Reason: Type annotation says dict[str, WebSocket], but runtime can have None values during cleanup/race conditions, mypy cannot verify this defensive check
+                        del connection_timestamps[connection_id]
+                        cleanup_stats_local["stale_connections"] += 1
+                        continue
+                    player_id = None
+                    if connection_metadata and connection_id in connection_metadata:
+                        meta = connection_metadata.get(connection_id)
+                        if meta is not None and hasattr(meta, "player_id"):
+                            player_id = getattr(meta, "player_id", None)
+                    logger.info(
+                        "Closing WebSocket due to connection timeout (debug: mid-run drops)",
+                        disconnect_reason="connection_timeout",
+                        connection_id=connection_id,
+                        player_id=str(player_id) if player_id is not None else None,
+                    )
+                    await websocket.close(code=1000, reason="Connection timeout")
+                    logger.info("Successfully closed stale WebSocket", connection_id=connection_id)
+                except (DatabaseError, SQLAlchemyError) as e:
+                    logger.warning("Error closing stale connection", connection_id=connection_id, error=str(e))
+                del active_websockets[connection_id]
                 del connection_timestamps[connection_id]
                 cleanup_stats_local["stale_connections"] += 1
 
@@ -404,7 +433,7 @@ class ConnectionCleaner:
             # Cancel any running cleanup tasks - handled by caller if needed
 
             await cleanup_orphaned_data_callback()
-            prune_stale_players_callback(90)  # Default 90 seconds
+            prune_stale_players_callback(_stale_prune_max_age_seconds())
             self.memory_monitor.force_garbage_collection()
             cleanup_stats["cleanups_performed"] += 1
             self.memory_monitor.update_cleanup_time()
@@ -421,6 +450,7 @@ class ConnectionCleaner:
         connection_timestamps: dict[str, float],
         cleanup_stats: dict[str, Any],
         last_active_update_times: dict[uuid.UUID, float],
+        connection_metadata: dict[str, Any] | None = None,
     ) -> None:
         """
         Periodically check for cleanup conditions and perform cleanup if needed.
@@ -433,18 +463,22 @@ class ConnectionCleaner:
             connection_timestamps: Connection timestamp tracking
             cleanup_stats: Cleanup statistics dictionary
             last_active_update_times: Last active update times
+            connection_metadata: Optional connection metadata (for disconnect_reason logging).
         """
         if self.memory_monitor.should_cleanup():
             logger.info("MemoryMonitor triggered cleanup.")
             cleanup_stats["memory_cleanups"] += 1
             cleanup_stats["last_cleanup"] = time.time()
-            await self.cleanup_orphaned_data(connection_timestamps, active_websockets, cleanup_stats)
+            await self.cleanup_orphaned_data(
+                connection_timestamps, active_websockets, cleanup_stats, connection_metadata
+            )
             self.prune_stale_players(
                 last_seen,
                 online_players,
                 player_websockets,
                 active_websockets,
                 last_active_update_times,
+                max_age_seconds=_stale_prune_max_age_seconds(),
             )
             self.memory_monitor.force_garbage_collection()
             logger.info("Cleanup complete.")

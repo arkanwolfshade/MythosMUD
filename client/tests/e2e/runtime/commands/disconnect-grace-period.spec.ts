@@ -9,7 +9,11 @@
  */
 
 import { expect, test } from '@playwright/test';
-import { createMultiPlayerContexts, cleanupMultiPlayerContexts } from '../fixtures/multiplayer';
+import {
+  cleanupMultiPlayerContexts,
+  createMultiPlayerContexts,
+  waitForAllPlayersInGame,
+} from '../fixtures/multiplayer';
 
 test.describe('Disconnect Grace Period', () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
@@ -17,6 +21,7 @@ test.describe('Disconnect Grace Period', () => {
   test.beforeAll(async ({ browser }) => {
     // Create contexts for both players
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
+    await waitForAllPlayersInGame(contexts);
   });
 
   test.afterAll(async () => {
@@ -35,10 +40,11 @@ test.describe('Disconnect Grace Period', () => {
     await ithaquaContext.page.waitForTimeout(2000);
 
     // Check for linkdead indicator in room occupants
-    const occupants = await ithaquaContext.page.evaluate(() => {
+    const occupantsRaw = await ithaquaContext.page.evaluate(() => {
       const panel = document.querySelector('[data-testid="occupants-panel"]');
       return panel ? panel.textContent : '';
     });
+    const occupants = occupantsRaw ?? '';
 
     // Verify linkdead indicator appears (may not be implemented)
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

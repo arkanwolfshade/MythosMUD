@@ -1,7 +1,8 @@
 """
 Shared fixtures for realtime unit tests.
 
-Provides fixtures used by NATS message handler, WebSocket handler, and other realtime tests.
+Provides fixtures used by NATS message handler, WebSocket handler, player room event
+handler, and other realtime tests.
 """
 
 from unittest.mock import AsyncMock, MagicMock
@@ -9,6 +10,8 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 
 from server.realtime.nats_message_handler import NATSMessageHandler
+from server.realtime.player_event_handlers_room import PlayerRoomEventHandler
+from server.realtime.player_event_handlers_utils import PlayerEventHandlerUtils
 
 
 # pylint: disable=redefined-outer-name  # Reason: pytest fixture parameter names must match fixture names
@@ -65,4 +68,71 @@ def nats_message_handler(mock_nats_service, mock_subject_manager, mock_connectio
         subject_manager=mock_subject_manager,
         connection_manager=mock_connection_manager,
         user_manager=mock_user_manager,
+    )
+
+
+# Player room event handler fixtures (shared by test_player_event_handlers_room*.py)
+@pytest.fixture
+def mock_room_sync_service():
+    """Create a mock room sync service."""
+    return MagicMock()
+
+
+@pytest.fixture
+def mock_chat_logger():
+    """Create a mock chat logger."""
+    return MagicMock()
+
+
+@pytest.fixture
+def mock_message_builder():
+    """Create a mock message builder."""
+    return MagicMock()
+
+
+@pytest.fixture
+def mock_name_extractor():
+    """Create a mock name extractor."""
+    return MagicMock()
+
+
+@pytest.fixture
+def mock_occupant_manager():
+    """Create a mock occupant manager."""
+    return MagicMock()
+
+
+@pytest.fixture
+def mock_utils(mock_connection_manager):
+    """Create a mock PlayerEventHandlerUtils."""
+    return PlayerEventHandlerUtils(mock_connection_manager, MagicMock(), MagicMock())
+
+
+@pytest.fixture
+def mock_logger():
+    """Create a mock logger."""
+    return MagicMock()
+
+
+@pytest.fixture
+def player_room_event_handler(
+    mock_connection_manager,
+    mock_room_sync_service,
+    mock_chat_logger,
+    mock_message_builder,
+    mock_name_extractor,
+    mock_occupant_manager,
+    mock_utils,
+    mock_logger,
+):
+    """Create a PlayerRoomEventHandler instance."""
+    return PlayerRoomEventHandler(
+        connection_manager=mock_connection_manager,
+        room_sync_service=mock_room_sync_service,
+        chat_logger=mock_chat_logger,
+        message_builder=mock_message_builder,
+        name_extractor=mock_name_extractor,
+        occupant_manager=mock_occupant_manager,
+        utils=mock_utils,
+        logger=mock_logger,
     )

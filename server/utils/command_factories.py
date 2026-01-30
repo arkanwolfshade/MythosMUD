@@ -39,9 +39,16 @@ class CommandFactory:
         """Create SayCommand from arguments."""
         return self._communication.create_say_command(args)
 
-    def create_local_command(self, args: list[str]) -> BaseCommand:
+    def create_local_command(
+        self,
+        args: list[str],
+        raw_command: str | None = None,
+        original_command: str | None = None,
+    ) -> BaseCommand:
         """Create LocalCommand from arguments."""
-        return self._communication.create_local_command(args)
+        return self._communication.create_local_command(
+            args, raw_command=raw_command, original_command=original_command
+        )
 
     def create_system_command(self, args: list[str]) -> BaseCommand:
         """Create SystemCommand from arguments."""

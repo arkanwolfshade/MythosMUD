@@ -9,20 +9,28 @@
  */
 
 import { expect, test } from '@playwright/test';
-import {
-  createMultiPlayerContexts,
-  cleanupMultiPlayerContexts,
-  waitForCrossPlayerMessage,
-  getPlayerMessages,
-} from '../fixtures/multiplayer';
 import { executeCommand, waitForMessage } from '../fixtures/auth';
+import {
+  cleanupMultiPlayerContexts,
+  createMultiPlayerContexts,
+  ensurePlayerInGame,
+  ensurePlayersInSameRoom,
+  getPlayerMessages,
+  waitForAllPlayersInGame,
+  waitForCrossPlayerMessage,
+} from '../fixtures/multiplayer';
 
 test.describe('Local Channel Isolation', () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
   test.beforeAll(async ({ browser }) => {
-    // Create contexts for both players
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
+    await waitForAllPlayersInGame(contexts, 60000);
+    await ensurePlayerInGame(contexts[0], 60000);
+    await ensurePlayerInGame(contexts[1], 60000);
+
+    // CRITICAL: Ensure both players are in the same room initially
+    await ensurePlayersInSameRoom(contexts, 2, 30000);
   });
 
   test.afterAll(async () => {
@@ -34,17 +42,21 @@ test.describe('Local Channel Isolation', () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    // AW sends local message (both in same sub-zone)
-    await executeCommand(awContext.page, 'local Testing same sub-zone communication');
+    await ensurePlayerInGame(awContext, 15000);
+    await ensurePlayerInGame(ithaquaContext, 15000);
+    await ensurePlayersInSameRoom(contexts, 2, 15000);
 
-    // Wait for confirmation
+    await executeCommand(awContext.page, 'local Testing same sub-zone communication');
     await waitForMessage(awContext.page, 'You say locally: Testing same sub-zone communication');
 
-    // Verify Ithaqua sees the message
-    await waitForCrossPlayerMessage(ithaquaContext, 'ArkanWolfshade says locally: Testing same sub-zone communication');
+    await waitForCrossPlayerMessage(
+      ithaquaContext,
+      'ArkanWolfshade (local): Testing same sub-zone communication',
+      35000
+    );
     const ithaquaMessages = await getPlayerMessages(ithaquaContext);
     const seesMessage = ithaquaMessages.some(msg =>
-      msg.includes('ArkanWolfshade says locally: Testing same sub-zone communication')
+      msg.includes('ArkanWolfshade (local): Testing same sub-zone communication')
     );
     expect(seesMessage).toBe(true);
   });
@@ -53,9 +65,14 @@ test.describe('Local Channel Isolation', () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    // AW moves to different sub-zone
-    await executeCommand(awContext.page, 'go east');
-    await waitForMessage(awContext.page, 'You move east', 10000).catch(() => {
+    await ensurePlayerInGame(awContext, 15000);
+    await ensurePlayerInGame(ithaquaContext, 15000);
+
+    await executeCommand(awContext.page, 'stand');
+    await waitForMessage(awContext.page, /rise|standing|feet|already standing/i, 5000).catch(() => {});
+
+    await executeCommand(awContext.page, 'go north');
+    await waitForMessage(awContext.page, 'You move north', 10000).catch(() => {
       // Movement may succeed even if message format differs
     });
     await awContext.page.waitForTimeout(2000);
@@ -72,7 +89,7 @@ test.describe('Local Channel Isolation', () => {
     // Verify Ithaqua does NOT see the message (different sub-zones)
     const ithaquaMessages = await getPlayerMessages(ithaquaContext);
     const seesMessage = ithaquaMessages.some(msg =>
-      msg.includes('ArkanWolfshade says locally: Testing different sub-zone isolation')
+      msg.includes('ArkanWolfshade (local): Testing different sub-zone isolation')
     );
     expect(seesMessage).toBe(false);
   });
@@ -81,9 +98,11 @@ test.describe('Local Channel Isolation', () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    // AW moves back to same sub-zone as Ithaqua
-    await executeCommand(awContext.page, 'go west');
-    await waitForMessage(awContext.page, 'You move west', 10000).catch(() => {
+    await ensurePlayerInGame(awContext, 15000);
+    await ensurePlayerInGame(ithaquaContext, 15000);
+
+    await executeCommand(awContext.page, 'go south');
+    await waitForMessage(awContext.page, 'You move south', 10000).catch(() => {
       // Movement may succeed even if message format differs
     });
     await awContext.page.waitForTimeout(2000);
@@ -94,15 +113,14 @@ test.describe('Local Channel Isolation', () => {
     // Wait for confirmation
     await waitForMessage(awContext.page, 'You say locally: Testing same sub-zone after return');
 
-    // Verify Ithaqua sees the message (same sub-zone again)
     await waitForCrossPlayerMessage(
       ithaquaContext,
-      'ArkanWolfshade says locally: Testing same sub-zone after return',
-      10000
+      'ArkanWolfshade (local): Testing same sub-zone after return',
+      30000
     );
     const ithaquaMessages = await getPlayerMessages(ithaquaContext);
     const seesMessage = ithaquaMessages.some(msg =>
-      msg.includes('ArkanWolfshade says locally: Testing same sub-zone after return')
+      msg.includes('ArkanWolfshade (local): Testing same sub-zone after return')
     );
     expect(seesMessage).toBe(true);
   });

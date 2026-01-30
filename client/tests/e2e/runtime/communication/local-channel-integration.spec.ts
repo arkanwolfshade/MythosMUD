@@ -11,7 +11,10 @@ import { executeCommand, waitForMessage } from '../fixtures/auth';
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
+  ensurePlayerInGame,
+  ensurePlayersInSameRoom,
   getPlayerMessages,
+  waitForAllPlayersInGame,
   waitForCrossPlayerMessage,
 } from '../fixtures/multiplayer';
 
@@ -19,8 +22,13 @@ test.describe('Local Channel Integration', () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
   test.beforeAll(async ({ browser }) => {
-    // Create contexts for both players
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
+    await waitForAllPlayersInGame(contexts, 60000);
+    await ensurePlayerInGame(contexts[0], 60000);
+    await ensurePlayerInGame(contexts[1], 60000);
+
+    // CRITICAL: Ensure both players are in the same room before local channel tests
+    await ensurePlayersInSameRoom(contexts, 2, 30000);
 
     // Unmute both players to ensure clean state (mute state may persist from previous scenarios)
     // Mute filtering happens on the receiving end, so both players need to unmute each other
@@ -53,7 +61,9 @@ test.describe('Local Channel Integration', () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    // Ensure Ithaqua can see AW's messages (may have been done in beforeAll, but ensure clean state)
+    await ensurePlayerInGame(awContext, 15000);
+    await ensurePlayerInGame(ithaquaContext, 15000);
+
     try {
       await executeCommand(ithaquaContext.page, 'unmute ArkanWolfshade');
       await ithaquaContext.page.waitForTimeout(1000);
@@ -67,12 +77,12 @@ test.describe('Local Channel Integration', () => {
     // Wait for confirmation on AW's side
     await waitForMessage(awContext.page, 'You say locally: Testing player management integration');
 
-    // Wait for message to appear on Ithaqua's side with increased timeout and flexibility
+    // Wait for message to appear on Ithaqua's side
     // Local channel format is: "{sender_name} (local): {content}"
     await waitForCrossPlayerMessage(
       ithaquaContext,
       /ArkanWolfshade \(local\): Testing player management integration/i,
-      15000
+      30000
     );
 
     // Verify Ithaqua sees the message

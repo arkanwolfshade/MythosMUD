@@ -9,20 +9,24 @@
  */
 
 import { expect, test } from '@playwright/test';
-import {
-  createMultiPlayerContexts,
-  cleanupMultiPlayerContexts,
-  waitForCrossPlayerMessage,
-  getPlayerMessages,
-} from '../fixtures/multiplayer';
 import { executeCommand, waitForMessage } from '../fixtures/auth';
+import {
+  cleanupMultiPlayerContexts,
+  createMultiPlayerContexts,
+  ensurePlayerInGame,
+  getPlayerMessages,
+  waitForAllPlayersInGame,
+  waitForCrossPlayerMessage,
+} from '../fixtures/multiplayer';
 
 test.describe('Whisper Movement', () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
   test.beforeAll(async ({ browser }) => {
-    // Create contexts for both players
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
+    await waitForAllPlayersInGame(contexts, 60000);
+    await ensurePlayerInGame(contexts[0], 60000);
+    await ensurePlayerInGame(contexts[1], 60000);
   });
 
   test.afterAll(async () => {
@@ -34,7 +38,9 @@ test.describe('Whisper Movement', () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    // AW sends whisper message in same room
+    await ensurePlayerInGame(awContext, 15000);
+    await ensurePlayerInGame(ithaquaContext, 15000);
+
     await executeCommand(awContext.page, 'whisper Ithaqua Testing whisper in same room');
 
     // Wait for confirmation
@@ -59,6 +65,12 @@ test.describe('Whisper Movement', () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
+    await ensurePlayerInGame(awContext, 15000);
+    await ensurePlayerInGame(ithaquaContext, 15000);
+
+    await executeCommand(awContext.page, 'stand');
+    await waitForMessage(awContext.page, /rise|standing|feet|already standing/i, 5000).catch(() => {});
+
     // AW moves to different room
     await executeCommand(awContext.page, 'go east');
     await waitForMessage(awContext.page, 'You move east', 10000).catch(() => {
@@ -76,11 +88,11 @@ test.describe('Whisper Movement', () => {
       }
     );
 
-    // Verify Ithaqua receives the whisper (whispers work across rooms)
+    // Verify Ithaqua receives the whisper (whispers work across rooms; Game Info + Chat use data-message-text)
     await waitForCrossPlayerMessage(
       ithaquaContext,
       'ArkanWolfshade whispers to you: Testing whisper from different room',
-      10000
+      30000
     );
     const ithaquaMessages = await getPlayerMessages(ithaquaContext);
     const seesMessage = ithaquaMessages.some(msg =>

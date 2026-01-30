@@ -8,8 +8,12 @@
  */
 
 import { expect, test } from '@playwright/test';
-import { createMultiPlayerContexts, cleanupMultiPlayerContexts } from '../fixtures/multiplayer';
-import { executeCommand, waitForMessage, getMessages } from '../fixtures/auth';
+import { executeCommand, getMessages, waitForMessage } from '../fixtures/auth';
+import {
+  cleanupMultiPlayerContexts,
+  createMultiPlayerContexts,
+  waitForAllPlayersInGame,
+} from '../fixtures/multiplayer';
 
 test.describe('Whisper Rate Limiting', () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
@@ -17,6 +21,7 @@ test.describe('Whisper Rate Limiting', () => {
   test.beforeAll(async ({ browser }) => {
     // Create contexts for both players
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
+    await waitForAllPlayersInGame(contexts);
   });
 
   test.afterAll(async () => {

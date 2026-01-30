@@ -51,7 +51,12 @@ async def handle_player_disconnect_broadcast(
             {"player_id": player_id, "player_name": safe_player_name},
             room_id=room_id,
         )
-        logger.info("Broadcasting player_left_game", player_id=player_id, room_id=room_id)
+        logger.info(
+            "Broadcasting player_left_game (debug: mid-run drops)",
+            broadcast_event="player_left_game",
+            player_id=player_id,
+            room_id=room_id,
+        )
         await manager.broadcast_to_room(room_id, left_event, exclude_player=player_id)
 
 

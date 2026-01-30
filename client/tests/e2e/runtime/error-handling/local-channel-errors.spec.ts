@@ -7,20 +7,28 @@
  */
 
 import { expect, test } from '@playwright/test';
+import { executeCommand, getMessages, waitForMessage } from '../fixtures/auth';
 import {
-  createMultiPlayerContexts,
   cleanupMultiPlayerContexts,
-  waitForCrossPlayerMessage,
+  createMultiPlayerContexts,
+  ensurePlayerInGame,
+  ensurePlayersInSameRoom,
   getPlayerMessages,
+  waitForAllPlayersInGame,
+  waitForCrossPlayerMessage,
 } from '../fixtures/multiplayer';
-import { executeCommand, waitForMessage, getMessages } from '../fixtures/auth';
 
 test.describe('Local Channel Errors', () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
   test.beforeAll(async ({ browser }) => {
-    // Create contexts for both players
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
+    await waitForAllPlayersInGame(contexts, 60000);
+    await ensurePlayerInGame(contexts[0], 60000);
+    await ensurePlayerInGame(contexts[1], 60000);
+
+    // CRITICAL: Ensure both players are in the same room before local channel error tests
+    await ensurePlayersInSameRoom(contexts, 2, 30000);
   });
 
   test.afterAll(async () => {
@@ -90,6 +98,10 @@ test.describe('Local Channel Errors', () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
+    await ensurePlayerInGame(awContext, 15000);
+    await ensurePlayerInGame(ithaquaContext, 15000);
+    await ensurePlayersInSameRoom(contexts, 2, 15000);
+
     // Test special characters
     await executeCommand(awContext.page, 'local Message with special chars: !@#$%^&*()');
 
@@ -102,13 +114,10 @@ test.describe('Local Channel Errors', () => {
     expect(seesMessage).toBe(true);
 
     // Verify Ithaqua sees the message
-    await waitForCrossPlayerMessage(
-      ithaquaContext,
-      'ArkanWolfshade says locally: Message with special chars: !@#$%^&*()'
-    );
+    await waitForCrossPlayerMessage(ithaquaContext, 'ArkanWolfshade (local): Message with special chars: !@#$%^&*()');
     const ithaquaMessages = await getPlayerMessages(ithaquaContext);
     const ithaquaSeesMessage = ithaquaMessages.some(msg =>
-      msg.includes('ArkanWolfshade says locally: Message with special chars: !@#$%^&*()')
+      msg.includes('ArkanWolfshade (local): Message with special chars: !@#$%^&*()')
     );
     expect(ithaquaSeesMessage).toBe(true);
   });
@@ -167,6 +176,10 @@ test.describe('Local Channel Errors', () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
+    await ensurePlayerInGame(awContext, 15000);
+    await ensurePlayerInGame(ithaquaContext, 15000);
+    await ensurePlayersInSameRoom(contexts, 2, 15000);
+
     // Send valid local message after errors
     await executeCommand(awContext.page, 'local Valid message after errors');
 
@@ -179,10 +192,10 @@ test.describe('Local Channel Errors', () => {
     expect(seesMessage).toBe(true);
 
     // Verify Ithaqua sees the message
-    await waitForCrossPlayerMessage(ithaquaContext, 'ArkanWolfshade says locally: Valid message after errors');
+    await waitForCrossPlayerMessage(ithaquaContext, 'ArkanWolfshade (local): Valid message after errors');
     const ithaquaMessages = await getPlayerMessages(ithaquaContext);
     const ithaquaSeesMessage = ithaquaMessages.some(msg =>
-      msg.includes('ArkanWolfshade says locally: Valid message after errors')
+      msg.includes('ArkanWolfshade (local): Valid message after errors')
     );
     expect(ithaquaSeesMessage).toBe(true);
   });

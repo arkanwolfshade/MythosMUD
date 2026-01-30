@@ -112,8 +112,9 @@ def log_and_raise_enhanced(  # pylint: disable=too-many-arguments,too-many-posit
         **kwargs,
     }
 
-    # Log the error with structured data
-    log_with_context(error_logger, "error", "Error logged and exception raised", **log_data)
+    # ValidationError is expected user input error (e.g. empty local message); log as warning not error
+    log_level = "warning" if exception_class is ValidationError else "error"
+    log_with_context(error_logger, log_level, "Error logged and exception raised", **log_data)
 
     # Raise the exception
     raise exception_class(

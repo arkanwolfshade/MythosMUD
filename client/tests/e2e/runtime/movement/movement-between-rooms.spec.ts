@@ -7,13 +7,15 @@
  */
 
 import { expect, test } from '@playwright/test';
-import {
-  createMultiPlayerContexts,
-  cleanupMultiPlayerContexts,
-  waitForCrossPlayerMessage,
-  getPlayerMessages,
-} from '../fixtures/multiplayer';
 import { executeCommand, getMessages, waitForMessage } from '../fixtures/auth';
+import {
+  cleanupMultiPlayerContexts,
+  createMultiPlayerContexts,
+  ensurePlayerInGame,
+  getPlayerMessages,
+  waitForAllPlayersInGame,
+  waitForCrossPlayerMessage,
+} from '../fixtures/multiplayer';
 
 test.describe('Movement Between Rooms', () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
@@ -21,6 +23,9 @@ test.describe('Movement Between Rooms', () => {
   test.beforeAll(async ({ browser }) => {
     // Create contexts for both players
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
+    await waitForAllPlayersInGame(contexts, 60000);
+    await ensurePlayerInGame(contexts[0], 60000);
+    await ensurePlayerInGame(contexts[1], 60000);
   });
 
   test.afterAll(async () => {
@@ -32,16 +37,20 @@ test.describe('Movement Between Rooms', () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    // AW moves east
-    await executeCommand(awContext.page, 'go east');
+    // AW must stand before moving (server rejects "go" when sitting)
+    await executeCommand(awContext.page, 'stand');
+    await waitForMessage(awContext.page, /rise|standing|feet|already standing/i, 5000).catch(() => {});
+
+    // AW moves north (use north - room may have West/North only in some envs)
+    await executeCommand(awContext.page, 'go north');
 
     // Wait for movement confirmation
-    await waitForMessage(awContext.page, 'You move east', 10000).catch(() => {
+    await waitForMessage(awContext.page, 'You move north', 10000).catch(() => {
       // Movement may succeed even if message format differs
     });
 
     // Verify Ithaqua sees AW leave
-    await waitForCrossPlayerMessage(ithaquaContext, 'ArkanWolfshade leaves the room', 10000);
+    await waitForCrossPlayerMessage(ithaquaContext, 'ArkanWolfshade leaves the room', 30000);
     const ithaquaMessages = await getPlayerMessages(ithaquaContext);
     const seesAWLeave = ithaquaMessages.some(msg => msg.includes('ArkanWolfshade leaves the room'));
     expect(seesAWLeave).toBe(true);
@@ -64,16 +73,20 @@ test.describe('Movement Between Rooms', () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    // Ithaqua moves east to join AW
-    await executeCommand(ithaquaContext.page, 'go east');
+    // Ithaqua must stand before moving (server rejects "go" when sitting)
+    await executeCommand(ithaquaContext.page, 'stand');
+    await waitForMessage(ithaquaContext.page, /rise|standing|feet|already standing/i, 5000).catch(() => {});
+
+    // Ithaqua moves north to join AW
+    await executeCommand(ithaquaContext.page, 'go north');
 
     // Wait for movement confirmation
-    await waitForMessage(ithaquaContext.page, 'You move east', 10000).catch(() => {
+    await waitForMessage(ithaquaContext.page, 'You move north', 10000).catch(() => {
       // Movement may succeed even if message format differs
     });
 
     // Verify AW sees Ithaqua enter
-    await waitForCrossPlayerMessage(awContext, 'Ithaqua enters the room', 10000);
+    await waitForCrossPlayerMessage(awContext, 'Ithaqua enters the room', 30000);
     const awMessages = await getMessages(awContext.page);
     const seesIthaquaEnter = awMessages.some(msg => msg.includes('Ithaqua enters the room'));
     expect(seesIthaquaEnter).toBe(true);

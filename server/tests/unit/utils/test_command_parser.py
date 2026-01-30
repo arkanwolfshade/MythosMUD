@@ -200,22 +200,17 @@ def test_create_command_object_handles_alias_w(command_parser):
 
 def test_create_command_object_handles_alias_l(command_parser):
     """Test _create_command_object handles 'l' alias."""
-    # 'l' should be converted to 'local' before factory lookup
-    # The factory method is actually called, so we need to patch it in the factory dict
+    # 'l' is converted to 'local'; 'local' has special handling and calls
+    # factory.create_local_command directly (bypasses _command_factory lookup)
     mock_command = MagicMock(spec=Command)
-    original_method = command_parser._command_factory.get("local")
-
-    def mock_create_local(_args):
-        return mock_command
-
-    command_parser._command_factory["local"] = mock_create_local
-    result = command_parser._create_command_object("l", ["message"])
+    with patch.object(
+        command_parser.factory,
+        "create_local_command",
+        return_value=mock_command,
+    ):
+        result = command_parser._create_command_object("l", ["message"])
 
     assert result == mock_command
-
-    # Restore original (only if we successfully retrieved it)
-    if original_method is not None:
-        command_parser._command_factory["local"] = original_method
 
 
 def test_create_command_object_handles_alias_g(command_parser):

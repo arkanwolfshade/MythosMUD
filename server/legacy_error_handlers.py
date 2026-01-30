@@ -671,7 +671,7 @@ def sanitize_html_content(content: str, allow_tags: list[str] | None = None) -> 
         strip_comments=True,
     )
 
-    return sanitized
+    return str(sanitized)  # Explicit str for mypy no-any-return (bleach.clean returns str)
 
 
 def sanitize_text_content(content: str, max_length: int = 1000) -> str:
@@ -695,4 +695,4 @@ def sanitize_text_content(content: str, max_length: int = 1000) -> str:
     if len(sanitized) > max_length:
         sanitized = sanitized[:max_length] + "..."
 
-    return sanitized
+    return str(sanitized)  # Explicit str for mypy no-any-return (bleach.clean returns str)

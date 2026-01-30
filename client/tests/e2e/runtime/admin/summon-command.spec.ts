@@ -11,7 +11,10 @@ import { executeCommand, waitForMessage } from '../fixtures/auth';
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
+  ensurePlayerInGame,
+  ensurePlayersInSameRoom,
   getPlayerMessages,
+  waitForAllPlayersInGame,
   waitForCrossPlayerMessage,
 } from '../fixtures/multiplayer';
 
@@ -19,8 +22,13 @@ test.describe('Administrative Summon Command', () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
   test.beforeAll(async ({ browser }) => {
-    // Create contexts for both players (AW is admin, Ithaqua is not)
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
+    await waitForAllPlayersInGame(contexts, 60000);
+    await ensurePlayerInGame(contexts[0], 60000);
+    await ensurePlayerInGame(contexts[1], 60000);
+
+    // CRITICAL: Ensure both players are in the same room before summon command tests
+    await ensurePlayersInSameRoom(contexts, 2, 30000);
   });
 
   test.afterAll(async () => {
@@ -32,7 +40,10 @@ test.describe('Administrative Summon Command', () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    // AW summons item
+    await ensurePlayerInGame(awContext, 15000);
+    await ensurePlayerInGame(ithaquaContext, 15000);
+    await ensurePlayersInSameRoom(contexts, 2, 15000);
+
     await executeCommand(awContext.page, '/summon artifact.miskatonic.codex 2');
 
     // Wait for response message (success or failure) on AW's page

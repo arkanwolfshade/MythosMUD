@@ -49,10 +49,10 @@ dependencies = [
     "aiofiles>=24.1.0", # Async file I/O to prevent blocking the event loop
     "virtualenv==20.36.1",
     # Security patches for transitive dependencies (Dependabot alerts #11-21)
-    "urllib3>=2.6.0",  # Fixes alerts #15, #16, #18 - CVE-2025-66418, CVE-2025-66471
+    "urllib3>=2.6.3",  # Fixes alerts #15, #16, #18 - CVE-2025-66418, CVE-2025-66471
     "pyasn1>=0.6.2",  # Fixes alerts #11, #19 - CVE-2026-23490
     "starlette>=0.50.0",  # Fixes alert #14 - CVE-2025-62727, CVE-2025-54121, CVE-2024-47874
-    "python-multipart>=0.0.18",  # Fixes alert #12 - CVE-2024-53981, CVE-2024-24762
+    "python-multipart>=0.0.22",  # Fixes alert #12 - CVE-2024-53981, CVE-2024-24762
     "fonttools>=4.60.2",  # Fixes alert #21 - CVE-2025-66034, CVE-2023-45139
     # Note: ecdsa>=0.19.1 is already latest, but CVE-2024-23342 has no patch available
     # This is a transitive dependency of python-jose. Alert #13, #20 may remain open.
@@ -251,8 +251,8 @@ exclude = [
     "^monitoring/",
     "^server/alembic/",
     "^alembic/",  # Also exclude root-level alembic if it exists
-    "^server/tests/scripts/",
-    "^server/tests/data/",
+    "^server/tests/",
+    ".*[\\\\/]__tests__[\\\\/].*",
     "^server/time/",  # Exclude server/time to avoid conflict with stdlib time module
     ".*[\\\\/]time[\\\\/]__init__\\.py$",  # Also exclude time/__init__.py specifically (Windows and Unix paths)
     "^server/persistence/__init__\\.py$",  # Exclude to avoid duplicate module conflict (matches pre-commit exclude)
@@ -264,6 +264,8 @@ exclude = [
 # NOTE: prometheus_client is used in server.time which is excluded, so this override is unused but kept for future use
 [[tool.mypy.overrides]]
 module = [
+    "aiofiles",
+    "bleach",
     "strip_ansi.*",
     "asyncpg",
     "ftfy.*",
@@ -379,3 +381,5 @@ dev = [
 # Suppress hardlink warning on Windows when cache and project are on different filesystems
 # Using "copy" mode ensures files are always copied instead of hardlinked
 link-mode = "copy"
+# Force python-multipart>=0.0.22 for CVE-2024-53981/CVE-2024-24762; fastapi-users 15.0.3 pins ==0.0.21
+override-dependencies = ["python-multipart>=0.0.22"]

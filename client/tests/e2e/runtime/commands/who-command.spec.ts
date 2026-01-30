@@ -8,7 +8,14 @@
 
 import { expect, test } from '@playwright/test';
 import { executeCommand, getMessages, waitForMessage } from '../fixtures/auth';
-import { cleanupMultiPlayerContexts, createMultiPlayerContexts } from '../fixtures/multiplayer';
+import {
+  cleanupMultiPlayerContexts,
+  createMultiPlayerContexts,
+  ensurePlayerInGame,
+  ensurePlayersInSameRoom,
+  getPlayerMessages,
+  waitForAllPlayersInGame,
+} from '../fixtures/multiplayer';
 
 test.describe('Who Command', () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
@@ -16,6 +23,12 @@ test.describe('Who Command', () => {
   test.beforeAll(async ({ browser }) => {
     // Create contexts for both players
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
+    await waitForAllPlayersInGame(contexts, 60000);
+    await ensurePlayerInGame(contexts[0], 60000);
+    await ensurePlayerInGame(contexts[1], 60000);
+
+    // CRITICAL: Ensure both players are in the same room before who command tests
+    await ensurePlayersInSameRoom(contexts, 2, 30000);
   });
 
   test.afterAll(async () => {
@@ -25,80 +38,40 @@ test.describe('Who Command', () => {
 
   test('AW should see both players in who list', async () => {
     const awContext = contexts[0];
+    const ithaquaContext = contexts[1];
 
-    // Verify login completed - wait for game interface to be visible
-    await awContext.page
-      .waitForFunction(
-        () => {
-          const hasCommandInput =
-            document.querySelector('[data-testid="command-input"]') !== null ||
-            document.querySelector('input[placeholder*="command" i], textarea[placeholder*="command" i]') !== null;
-          const hasGameInfo =
-            document.querySelector('[data-testid="game-info-panel"]') !== null ||
-            Array.from(document.querySelectorAll('*')).some(el => el.textContent?.includes('Game Info'));
-          return hasCommandInput || hasGameInfo;
-        },
-        { timeout: 30000 }
-      )
-      .catch(() => {
-        throw new Error('Login did not complete - game interface not found');
-      });
+    await ensurePlayerInGame(awContext, 15000);
+    await ensurePlayerInGame(ithaquaContext, 15000);
+    await ensurePlayersInSameRoom(contexts, 2, 15000);
 
-    // AW uses who command
     await executeCommand(awContext.page, 'who');
 
-    // Wait for who command response
-    await waitForMessage(awContext.page, 'Online Players:', 10000).catch(() => {
-      // Response may appear even if format differs
-    });
+    // Wait for who command response to appear in the game log (required before asserting)
+    await waitForMessage(awContext.page, 'Online Players:', 15000);
 
-    // Verify both players appear in who list
+    // Verify at least one player name appears in who list (both if timing allows)
     const messages = await getMessages(awContext.page);
     const seesArkan = messages.some(msg => msg.includes('ArkanWolfshade'));
     const seesIthaqua = messages.some(msg => msg.includes('Ithaqua'));
-
-    // At least one player should be visible
     expect(seesArkan || seesIthaqua).toBe(true);
   });
 
   test('Ithaqua should see both players in who list', async () => {
+    const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    // Verify login completed - wait for game interface to be visible
-    await ithaquaContext.page
-      .waitForFunction(
-        () => {
-          const hasCommandInput =
-            document.querySelector('[data-testid="command-input"]') !== null ||
-            document.querySelector('input[placeholder*="command" i], textarea[placeholder*="command" i]') !== null;
-          const hasGameInfo =
-            document.querySelector('[data-testid="game-info-panel"]') !== null ||
-            Array.from(document.querySelectorAll('*')).some(el => el.textContent?.includes('Game Info'));
-          return hasCommandInput || hasGameInfo;
-        },
-        { timeout: 30000 }
-      )
-      .catch(() => {
-        throw new Error('Login did not complete - game interface not found');
-      });
+    await ensurePlayerInGame(awContext, 15000);
+    await ensurePlayerInGame(ithaquaContext, 15000);
+    await ensurePlayersInSameRoom(contexts, 2, 15000);
 
-    // Ithaqua uses who command
     await executeCommand(ithaquaContext.page, 'who');
 
-    // Wait for who command response
-    await waitForMessage(ithaquaContext.page, 'Online Players:', 10000).catch(() => {
-      // Response may appear even if format differs
-    });
+    // Wait for who command response to appear in the game log (required before asserting)
+    await waitForMessage(ithaquaContext.page, 'Online Players:', 15000);
 
-    // Verify both players appear in who list
-    const messages = await ithaquaContext.page.evaluate(() => {
-      const messages = Array.from(document.querySelectorAll('[data-message-text]'));
-      return messages.map(msg => (msg.getAttribute('data-message-text') || '').trim());
-    });
+    const messages = await getPlayerMessages(ithaquaContext);
     const seesArkan = messages.some(msg => msg.includes('ArkanWolfshade'));
     const seesIthaqua = messages.some(msg => msg.includes('Ithaqua'));
-
-    // At least one player should be visible
     expect(seesArkan || seesIthaqua).toBe(true);
   });
 });

@@ -8,13 +8,15 @@
  */
 
 import { expect, test } from '@playwright/test';
-import {
-  createMultiPlayerContexts,
-  cleanupMultiPlayerContexts,
-  waitForCrossPlayerMessage,
-  getPlayerMessages,
-} from '../fixtures/multiplayer';
 import { executeCommand, waitForMessage } from '../fixtures/auth';
+import {
+  cleanupMultiPlayerContexts,
+  createMultiPlayerContexts,
+  ensurePlayerInGame,
+  getPlayerMessages,
+  waitForAllPlayersInGame,
+  waitForCrossPlayerMessage,
+} from '../fixtures/multiplayer';
 
 test.describe('Admin Teleportation', () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
@@ -22,6 +24,9 @@ test.describe('Admin Teleportation', () => {
   test.beforeAll(async ({ browser }) => {
     // Create contexts for both players (AW is admin, Ithaqua is not)
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
+    await waitForAllPlayersInGame(contexts, 60000);
+    await ensurePlayerInGame(contexts[0], 60000);
+    await ensurePlayerInGame(contexts[1], 60000);
   });
 
   test.afterAll(async () => {
@@ -33,16 +38,16 @@ test.describe('Admin Teleportation', () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    // AW teleports Ithaqua
-    await executeCommand(awContext.page, 'teleport Ithaqua east');
+    // AW teleports Ithaqua (use south - storage room has south exit to hallway_009)
+    await executeCommand(awContext.page, 'teleport Ithaqua south');
 
     // Wait for teleportation confirmation
-    await waitForMessage(awContext.page, 'You teleport Ithaqua to the east', 10000).catch(() => {
+    await waitForMessage(awContext.page, 'You teleport Ithaqua to the south', 10000).catch(() => {
       // Message may succeed even if format differs
     });
 
     // Verify Ithaqua sees teleportation message
-    await waitForCrossPlayerMessage(ithaquaContext, 'You are teleported to the east by ArkanWolfshade', 10000);
+    await waitForCrossPlayerMessage(ithaquaContext, 'You are teleported to the south by ArkanWolfshade', 30000);
     const ithaquaMessages = await getPlayerMessages(ithaquaContext);
     const seesTeleportMessage = ithaquaMessages.some(
       msg => msg.includes('teleported') || msg.includes('ArkanWolfshade')

@@ -56,7 +56,8 @@ async def _disconnect_connection_for_session(connection_id: str, player_id: uuid
     try:
         if _is_websocket_connected(websocket):
             logger.info(
-                "Closing WebSocket due to new game session",
+                "Closing WebSocket due to new game session (debug: mid-run drops)",
+                disconnect_reason="new_game_session",
                 connection_id=connection_id,
                 player_id=player_id,
             )

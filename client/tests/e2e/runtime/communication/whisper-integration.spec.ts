@@ -7,20 +7,24 @@
  */
 
 import { expect, test } from '@playwright/test';
-import {
-  createMultiPlayerContexts,
-  cleanupMultiPlayerContexts,
-  waitForCrossPlayerMessage,
-  getPlayerMessages,
-} from '../fixtures/multiplayer';
 import { executeCommand, waitForMessage } from '../fixtures/auth';
+import {
+  cleanupMultiPlayerContexts,
+  createMultiPlayerContexts,
+  ensurePlayerInGame,
+  getPlayerMessages,
+  waitForAllPlayersInGame,
+  waitForCrossPlayerMessage,
+} from '../fixtures/multiplayer';
 
 test.describe('Whisper Integration', () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
   test.beforeAll(async ({ browser }) => {
-    // Create contexts for both players
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
+    await waitForAllPlayersInGame(contexts, 60000);
+    await ensurePlayerInGame(contexts[0], 60000);
+    await ensurePlayerInGame(contexts[1], 60000);
   });
 
   test.afterAll(async () => {
@@ -32,7 +36,9 @@ test.describe('Whisper Integration', () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    // AW sends whisper message
+    await ensurePlayerInGame(awContext, 15000);
+    await ensurePlayerInGame(ithaquaContext, 15000);
+
     await executeCommand(awContext.page, 'whisper Ithaqua Testing player management integration');
 
     // Wait for confirmation

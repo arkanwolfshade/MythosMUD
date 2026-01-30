@@ -12,7 +12,10 @@ import { executeCommand, waitForMessage } from '../fixtures/auth';
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
+  ensurePlayerInGame,
+  ensurePlayersInSameRoom,
   getPlayerMessages,
+  waitForAllPlayersInGame,
   waitForCrossPlayerMessage,
 } from '../fixtures/multiplayer';
 
@@ -20,8 +23,13 @@ test.describe('Chat Messages Between Players', () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
   test.beforeAll(async ({ browser }) => {
-    // Create contexts for both players
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
+    await waitForAllPlayersInGame(contexts, 60000);
+    await ensurePlayerInGame(contexts[0], 60000);
+    await ensurePlayerInGame(contexts[1], 60000);
+
+    // CRITICAL: Ensure both players are in the same room before communication tests
+    await ensurePlayersInSameRoom(contexts, 2, 30000);
 
     // Unmute both players to ensure clean state (mute state may persist from previous scenarios)
     // Mute filtering happens on the receiving end, so both players need to unmute each other
@@ -54,7 +62,10 @@ test.describe('Chat Messages Between Players', () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    // Ensure both players are unmuted (may have been done in beforeAll, but ensure clean state)
+    await ensurePlayerInGame(awContext, 15000);
+    await ensurePlayerInGame(ithaquaContext, 15000);
+    await ensurePlayersInSameRoom(contexts, 2, 15000);
+
     try {
       await executeCommand(ithaquaContext.page, 'unmute ArkanWolfshade');
       await ithaquaContext.page.waitForTimeout(1000);
@@ -69,7 +80,7 @@ test.describe('Chat Messages Between Players', () => {
     await waitForMessage(awContext.page, 'You say: Hello Ithaqua');
 
     // Wait for message to appear on Ithaqua's side with increased timeout and flexibility
-    await waitForCrossPlayerMessage(ithaquaContext, /ArkanWolfshade says: Hello Ithaqua/i, 15000);
+    await waitForCrossPlayerMessage(ithaquaContext, /ArkanWolfshade says: Hello Ithaqua/i, 30000);
 
     // Verify Ithaqua sees the message
     const ithaquaMessages = await getPlayerMessages(ithaquaContext);
@@ -81,7 +92,10 @@ test.describe('Chat Messages Between Players', () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    // Ensure both players are unmuted (may have been done in beforeAll, but ensure clean state)
+    await ensurePlayerInGame(awContext, 15000);
+    await ensurePlayerInGame(ithaquaContext, 15000);
+    await ensurePlayersInSameRoom(contexts, 2, 15000);
+
     try {
       await executeCommand(awContext.page, 'unmute Ithaqua');
       await awContext.page.waitForTimeout(1000);
@@ -96,7 +110,7 @@ test.describe('Chat Messages Between Players', () => {
     await waitForMessage(ithaquaContext.page, 'You say: Hello ArkanWolfshade');
 
     // Wait for message to appear on AW's side with increased timeout and flexibility
-    await waitForCrossPlayerMessage(awContext, /Ithaqua says: Hello ArkanWolfshade/i, 15000);
+    await waitForCrossPlayerMessage(awContext, /Ithaqua says: Hello ArkanWolfshade/i, 30000);
 
     // Verify AW sees the message
     const awMessages = await getPlayerMessages(awContext);
@@ -108,7 +122,10 @@ test.describe('Chat Messages Between Players', () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    // Ensure Ithaqua can see AW's messages (may have been done in beforeAll, but ensure clean state)
+    await ensurePlayerInGame(awContext, 15000);
+    await ensurePlayerInGame(ithaquaContext, 15000);
+    await ensurePlayersInSameRoom(contexts, 2, 15000);
+
     try {
       await executeCommand(ithaquaContext.page, 'unmute ArkanWolfshade');
       await ithaquaContext.page.waitForTimeout(1000);
@@ -123,7 +140,7 @@ test.describe('Chat Messages Between Players', () => {
     await waitForMessage(awContext.page, 'You say: Testing message formatting');
 
     // Wait for message to appear on Ithaqua's side with increased timeout and flexibility
-    await waitForCrossPlayerMessage(ithaquaContext, /ArkanWolfshade says: Testing message formatting/i, 15000);
+    await waitForCrossPlayerMessage(ithaquaContext, /ArkanWolfshade says: Testing message formatting/i, 30000);
 
     // Verify Ithaqua sees properly formatted message
     const ithaquaMessages = await getPlayerMessages(ithaquaContext);

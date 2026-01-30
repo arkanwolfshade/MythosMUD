@@ -22,6 +22,20 @@ const BASE_URL = 'http://localhost:5173';
  * @param password - Password to login with
  */
 export async function loginPlayer(page: Page, username: string, password: string): Promise<void> {
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      location: 'auth.ts:loginPlayer:entry',
+      message: 'loginPlayer started',
+      data: { username },
+      timestamp: Date.now(),
+      sessionId: 'debug-session',
+      hypothesisId: 'A',
+    }),
+  }).catch(() => {});
+  // #endregion
   // Navigate to base URL
   await page.goto(BASE_URL, { waitUntil: 'load' });
 
@@ -145,6 +159,21 @@ export async function loginPlayer(page: Page, username: string, password: string
   const isMOTDScreen =
     motdCheck.hasWelcomeText || motdCheck.hasMotdContent || motdCheck.hasMotdButton || motdCheck.hasEnterRealmButton;
 
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      location: 'auth.ts:loginPlayer:motdCheck',
+      message: 'MOTD check result',
+      data: { username, isMOTDScreen, ...motdCheck },
+      timestamp: Date.now(),
+      sessionId: 'debug-session',
+      hypothesisId: 'D',
+    }),
+  }).catch(() => {});
+  // #endregion
+
   if (isMOTDScreen) {
     // Click MOTD button - use direct DOM click since visibility checks are unreliable
     // Try multiple click strategies in order of preference
@@ -226,6 +255,29 @@ export async function loginPlayer(page: Page, username: string, password: string
       // Page might be closed, ignore
     }
   }
+
+  // #region agent log
+  const hasCmdInput = await page
+    .evaluate(() => {
+      const input =
+        document.querySelector('input[placeholder*="command" i], textarea[placeholder*="command" i]') ||
+        document.querySelector('[data-testid="command-input"]');
+      return input !== null && (input as HTMLElement).offsetParent !== null;
+    })
+    .catch(() => false);
+  fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      location: 'auth.ts:loginPlayer:exit',
+      message: 'loginPlayer finished',
+      data: { username, hasCommandInput: hasCmdInput },
+      timestamp: Date.now(),
+      sessionId: 'debug-session',
+      hypothesisId: 'A',
+    }),
+  }).catch(() => {});
+  // #endregion
 }
 
 /**
@@ -270,6 +322,8 @@ export async function executeCommand(page: Page, command: string): Promise<void>
   await expect(commandInput).toBeVisible({ timeout: TEST_TIMEOUTS.COMMAND });
   await commandInput.clear();
   await commandInput.fill(command);
+  // Wait for input to reflect full command (avoids submitting before React state updates)
+  await expect(commandInput).toHaveValue(command, { timeout: 5000 });
   await commandInput.press('Enter');
   // Small wait for command processing
   await page.waitForTimeout(1000);

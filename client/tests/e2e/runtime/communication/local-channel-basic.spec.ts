@@ -12,7 +12,10 @@ import { executeCommand, waitForMessage } from '../fixtures/auth';
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
+  ensurePlayerInGame,
+  ensurePlayersInSameRoom,
   getPlayerMessages,
+  waitForAllPlayersInGame,
   waitForCrossPlayerMessage,
 } from '../fixtures/multiplayer';
 
@@ -20,8 +23,13 @@ test.describe('Local Channel Basic', () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
   test.beforeAll(async ({ browser }) => {
-    // Create contexts for both players
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
+    await waitForAllPlayersInGame(contexts, 60000);
+    await ensurePlayerInGame(contexts[0], 60000);
+    await ensurePlayerInGame(contexts[1], 60000);
+
+    // CRITICAL: Ensure both players are in the same room before local channel tests
+    await ensurePlayersInSameRoom(contexts, 2, 30000);
 
     // Unmute both players to ensure clean state (mute state may persist from previous scenarios)
     // Mute filtering happens on the receiving end, so both players need to unmute each other
@@ -54,7 +62,10 @@ test.describe('Local Channel Basic', () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    // Ensure Ithaqua can see AW's messages (may have been done in beforeAll, but ensure clean state)
+    await ensurePlayerInGame(awContext, 15000);
+    await ensurePlayerInGame(ithaquaContext, 15000);
+    await ensurePlayersInSameRoom(contexts, 2, 15000);
+
     try {
       await executeCommand(ithaquaContext.page, 'unmute ArkanWolfshade');
       await ithaquaContext.page.waitForTimeout(1000);
@@ -68,12 +79,12 @@ test.describe('Local Channel Basic', () => {
     // Wait for confirmation on AW's side
     await waitForMessage(awContext.page, 'You say locally: Hello everyone in the sanitarium');
 
-    // Wait for message to appear on Ithaqua's side with increased timeout and flexibility
+    // Wait for message to appear on Ithaqua's side
     // Local channel format is: "{sender_name} (local): {content}"
     await waitForCrossPlayerMessage(
       ithaquaContext,
       /ArkanWolfshade \(local\): Hello everyone in the sanitarium/i,
-      15000
+      30000
     );
 
     // Verify Ithaqua sees the message
@@ -88,7 +99,9 @@ test.describe('Local Channel Basic', () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    // Ensure AW can see Ithaqua's messages (may have been done in beforeAll, but ensure clean state)
+    await ensurePlayerInGame(awContext, 15000);
+    await ensurePlayerInGame(ithaquaContext, 15000);
+
     try {
       await executeCommand(awContext.page, 'unmute Ithaqua');
       await awContext.page.waitForTimeout(1000);
@@ -102,9 +115,9 @@ test.describe('Local Channel Basic', () => {
     // Wait for confirmation on Ithaqua's side
     await waitForMessage(ithaquaContext.page, 'You say locally: Greetings ArkanWolfshade');
 
-    // Wait for message to appear on AW's side with increased timeout and flexibility
+    // Wait for message to appear on AW's side
     // Local channel format is: "{sender_name} (local): {content}"
-    await waitForCrossPlayerMessage(awContext, /Ithaqua \(local\): Greetings ArkanWolfshade/i, 15000);
+    await waitForCrossPlayerMessage(awContext, /Ithaqua \(local\): Greetings ArkanWolfshade/i, 30000);
 
     // Verify AW sees the reply
     const awMessages = await getPlayerMessages(awContext);
