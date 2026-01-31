@@ -110,6 +110,7 @@ if not rule.can_spawn_with_population(current_npc_count):
 ✅ Handles SQLite table recreation approach
 
 ✅ Includes rollback functionality
+
 - ✅ Preserves all data and indexes
 
 ## Migration Instructions

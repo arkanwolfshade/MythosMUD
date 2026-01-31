@@ -48,7 +48,7 @@
 
   - `server/tests/unit/infrastructure/test_dependency_injection_functions.py` (1 test)
   - `server/tests/unit/infrastructure/test_dependency_injection.py` (1 test)
-  - `server/tests/unit/infrastructure/test_dependency_functions.py` (1 test)
+- `server/tests/unit/infrastructure/test_dependency_functions.py` (1 test)
   - `server/tests/coverage/test_command_handler_coverage.py` (1 test)
   - `server/tests/unit/services/test_dependency_injection.py` (1 test)
   - `server/tests/unit/services/test_service_dependency_injection_simple.py` (1 test)

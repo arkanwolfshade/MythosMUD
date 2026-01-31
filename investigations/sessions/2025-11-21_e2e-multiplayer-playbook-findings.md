@@ -412,7 +412,7 @@ findings and remediation steps.
     - `_is_player_muted_by_receiver_with_user_manager`: Logs personal and global mute checks
     - `is_player_muted` (UserManager): Logs mute data loading, lookup, and result
     - All logs prefixed with `=== MUTE FILTERING:` or `=== USER MANAGER:` for easy filtering
-  - **Files Modified**:
+- **Files Modified**:
     - `server/commands/utility_commands.py` - Modified `handle_emote_command` to use `chat_service.send_emote_message()` instead of direct broadcast
     - `server/realtime/nats_message_handler.py` - Added detailed logging to mute filtering methods (for future debugging)
     - `server/services/user_manager.py` - Added detailed logging to `is_player_muted` method (for future debugging)

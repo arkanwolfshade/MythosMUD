@@ -59,7 +59,7 @@ ChatPanel renders with input field and send button
 [x] **1.2.1**: Rename ChatPanel.tsx to GameLogPanel.tsx
 
   - Update file name and component name
-  - Update all imports and references
+- Update all imports and references
   - Update component interface name
 
 - [x] **1.2.2**: Update GameLogPanel header and branding
@@ -182,7 +182,7 @@ All three panels render correctly in GameTerminal
   - Implement command type detection
   - Create routing logic for chat vs game commands
   - Add chat command handlers
-  - Add game command handlers
+- Add game command handlers
 
 - [x] **1.5.2**: Update command submission flow
   - Modify handleCommandSubmit to route commands

@@ -120,6 +120,7 @@ Component-based architecture with reusable hooks
 **SQL Injection**: Not applicable (using ORM)
 
 **DoS Prevention**: Rate limiting via `RateLimiter` class
+
 - **MitM Prevention**: HTTPS required, JWT token validation
 - **Unauthorized Access**: JWT authentication required
 
@@ -298,6 +299,7 @@ All code changes from the WebSocket-only migration align with the best practices
 ✅ Adherence to recommended patterns
 
 ✅ Avoidance of common anti-patterns
+
 - ✅ Comprehensive error handling
 - ✅ Security best practices
 - ✅ Performance optimizations

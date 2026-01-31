@@ -201,6 +201,7 @@ Subagent output typically includes:
 **Reason**: Subagents gather their own context, which adds latency
 
 **Solution**:
+
 - For quick tasks, use main agent directly
 - Subagents are optimized for complex, long-running tasks
 

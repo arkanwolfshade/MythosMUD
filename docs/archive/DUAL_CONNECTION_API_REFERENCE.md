@@ -477,6 +477,7 @@ Use monitoring endpoints for system health
 **v1.1.0**: Added comprehensive monitoring and health checks
 
 **v1.2.0**: Enhanced session management and error recovery
+
 - **v1.3.0**: Improved performance monitoring and optimization
 
 ## Support

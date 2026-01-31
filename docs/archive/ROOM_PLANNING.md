@@ -76,6 +76,7 @@
 ✅ `room_validator/schemas/zone_schema.json` - Zone configuration validation
 
 ✅ `room_validator/schemas/subzone_schema.json` - Sub-zone configuration validation
+
 - ✅ `room_validator/schemas/room_hierarchy_schema.json` - Hierarchical room validation
 - ✅ `room_validator/core/room_loader.py` - Room file discovery and parsing
 - ✅ `room_validator/core/schema_validator.py` - Schema validation system
@@ -220,6 +221,7 @@ data/rooms/
 ✅ `load_zone_config(zone_path)` - Load zone configuration
 
 ✅ `load_subzone_config(subzone_path)` - Load sub-zone configuration
+
 - ✅ `generate_room_id(plane, zone, sub_zone, room_file)` - Generate hierarchical room IDs
 - ✅ `resolve_room_reference(room_id)` - Resolve room references (both old and new formats)
 

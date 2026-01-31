@@ -91,7 +91,7 @@ This document contains the detailed task breakdown for implementing the NPC-Room
 
 **Implementation**:
   - Test NPC event handling
-  - Test room occupant tracking
+- Test room occupant tracking
   - Test NPC name resolution
   - Test error handling scenarios
 - **Dependencies**: All previous tasks

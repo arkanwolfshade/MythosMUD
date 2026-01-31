@@ -12,7 +12,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 
 **Key Methods**:
   - `build_subject(pattern_name: str, **params) -> str`: Build subject from pattern with parameters
-  - `validate_subject(subject: str) -> bool`: Validate subject against registered patterns
+- `validate_subject(subject: str) -> bool`: Validate subject against registered patterns
   - `register_pattern(name: str, pattern: str, required_params: list)`: Register new subject patterns
   - `get_pattern_info(pattern_name: str) -> dict`: Get pattern information and requirements
 

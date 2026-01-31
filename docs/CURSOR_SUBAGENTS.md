@@ -46,6 +46,7 @@ Custom subagents can be defined and used across projects.
 **Purpose**: Comprehensive test analysis and coverage reporting
 
 **Use Cases**:
+
 - Analyzing test coverage gaps
 - Finding untested code paths
 - Identifying test quality issues

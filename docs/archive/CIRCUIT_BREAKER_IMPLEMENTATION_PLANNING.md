@@ -244,7 +244,7 @@ circuit_breakers:
 **Metrics to Collect**:
 
   - Success/failure rates
-  - State transition counts
+- State transition counts
   - Response times
   - Error types
 

@@ -1,0 +1,144 @@
+diff --git a/docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md b/docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md
+--- a/docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md
++++ b/docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md
+@@ -247,1 +247,1 @@
+-  - State transition counts
++- State transition counts
+diff --git a/docs/archive/ARCHITECTURE_IMPLEMENTATION_SUMMARY.md b/docs/archive/ARCHITECTURE_IMPLEMENTATION_SUMMARY.md
+--- a/docs/archive/ARCHITECTURE_IMPLEMENTATION_SUMMARY.md
++++ b/docs/archive/ARCHITECTURE_IMPLEMENTATION_SUMMARY.md
+@@ -263,1 +263,1 @@
+-- â Easier to understand business rules
++
+- â Easier to understand business rules
+diff --git a/docs/CURSOR_SETUP_GUIDE.md b/docs/CURSOR_SETUP_GUIDE.md
+--- a/docs/CURSOR_SETUP_GUIDE.md
++++ b/docs/CURSOR_SETUP_GUIDE.md
+@@ -204,1 +204,1 @@
+-- For quick tasks, use main agent directly
++
+- For quick tasks, use main agent directly
+diff --git a/.agent-os/specs/2025-09-24-npc-room-integration/implementation-tasks.md b/.agent-os/specs/2025-09-24-npc-room-integration/implementation-tasks.md
+--- a/.agent-os/specs/2025-09-24-npc-room-integration/implementation-tasks.md
++++ b/.agent-os/specs/2025-09-24-npc-room-integration/implementation-tasks.md
+@@ -94,1 +94,1 @@
+-  - Test room occupant tracking
++- Test room occupant tracking
+diff --git a/investigations/sessions/2025-11-21_e2e-multiplayer-playbook-findings.md b/investigations/sessions/2025-11-21_e2e-multiplayer-playbook-findings.md
+--- a/investigations/sessions/2025-11-21_e2e-multiplayer-playbook-findings.md
++++ b/investigations/sessions/2025-11-21_e2e-multiplayer-playbook-findings.md
+@@ -415,1 +415,1 @@
+-  - **Files Modified**:
++- **Files Modified**:
+diff --git a/.cursor/websocket-compliance-verification.md b/.cursor/websocket-compliance-verification.md
+--- a/.cursor/websocket-compliance-verification.md
++++ b/.cursor/websocket-compliance-verification.md
+@@ -123,1 +123,1 @@
+-- **MitM Prevention**: HTTPS required, JWT token validation
++
+- **MitM Prevention**: HTTPS required, JWT token validation
+@@ -301,1 +301,1 @@
+-- â Comprehensive error handling
++
+- â Comprehensive error handling
+diff --git a/docs/archive/ROOM_PLANNING.md b/docs/archive/ROOM_PLANNING.md
+--- a/docs/archive/ROOM_PLANNING.md
++++ b/docs/archive/ROOM_PLANNING.md
+@@ -79,1 +79,1 @@
+-- â `room_validator/schemas/room_hierarchy_schema.json` - Hierarchical room validation
++
+- â `room_validator/schemas/room_hierarchy_schema.json` - Hierarchical room validation
+@@ -223,1 +223,1 @@
+-- â `generate_room_id(plane, zone, sub_zone, room_file)` - Generate hierarchical room IDs
++
+- â `generate_room_id(plane, zone, sub_zone, room_file)` - Generate hierarchical room IDs
+diff --git a/.agent-os/specs/2025-10-25-subject-naming-standardization/sub-specs/technical-spec.md b/.agent-os/specs/2025-10-25-subject-naming-standardization/sub-specs/technical-spec.md
+--- a/.agent-os/specs/2025-10-25-subject-naming-standardization/sub-specs/technical-spec.md
++++ b/.agent-os/specs/2025-10-25-subject-naming-standardization/sub-specs/technical-spec.md
+@@ -15,1 +15,1 @@
+-  - `validate_subject(subject: str) -> bool`: Validate subject against registered patterns
++- `validate_subject(subject: str) -> bool`: Validate subject against registered patterns
+diff --git a/docs/archive/TEST_OPTIMIZATION_STATUS.md b/docs/archive/TEST_OPTIMIZATION_STATUS.md
+--- a/docs/archive/TEST_OPTIMIZATION_STATUS.md
++++ b/docs/archive/TEST_OPTIMIZATION_STATUS.md
+@@ -51,1 +51,1 @@
+-  - `server/tests/unit/infrastructure/test_dependency_functions.py` (1 test)
++- `server/tests/unit/infrastructure/test_dependency_functions.py` (1 test)
+diff --git a/docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md b/docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md
+--- a/docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md
++++ b/docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md
+@@ -62,1 +62,1 @@
+-  - Update all imports and references
++- Update all imports and references
+@@ -185,1 +185,1 @@
+-  - Add game command handlers
++- Add game command handlers
+diff --git a/docs/archive/NPC_POPULATION_FIELD_RENAME.md b/docs/archive/NPC_POPULATION_FIELD_RENAME.md
+--- a/docs/archive/NPC_POPULATION_FIELD_RENAME.md
++++ b/docs/archive/NPC_POPULATION_FIELD_RENAME.md
+@@ -113,1 +113,1 @@
+-- â Preserves all data and indexes
++
+- â Preserves all data and indexes
+diff --git a/.cursor/plans/architecture_review_plan_7bcbc812.plan.md b/.cursor/plans/architecture_review_plan_7bcbc812.plan.md
+--- a/.cursor/plans/architecture_review_plan_7bcbc812.plan.md
++++ b/.cursor/plans/architecture_review_plan_7bcbc812.plan.md
+@@ -466,1 +466,1 @@
+-  - **Recommendation**: Migrate underlying code to async
++- **Recommendation**: Migrate underlying code to async
+diff --git a/docs/archive/PLANNING_redis_to_nats_migration.md b/docs/archive/PLANNING_redis_to_nats_migration.md
+--- a/docs/archive/PLANNING_redis_to_nats_migration.md
++++ b/docs/archive/PLANNING_redis_to_nats_migration.md
+@@ -862,1 +862,1 @@
+-- **â Message Volume**: 100-1000 messages per minute (rate limiting implemented)
++
+- **â Message Volume**: 100-1000 messages per minute (rate limiting implemented)
+diff --git a/.github/copilot-instructions.md b/.github/copilot-instructions.md
+--- a/.github/copilot-instructions.md
++++ b/.github/copilot-instructions.md
+@@ -16,1 +16,1 @@
+-- **Testing**: pytest with 80%+ coverage requirement
++
+- **Testing**: pytest with 80%+ coverage requirement
+diff --git a/investigations/sessions/2025-11-30_session-001_passive-sanity-flux-performance.md b/investigations/sessions/2025-11-30_session-001_passive-sanity-flux-performance.md
+--- a/investigations/sessions/2025-11-30_session-001_passive-sanity-flux-performance.md
++++ b/investigations/sessions/2025-11-30_session-001_passive-sanity-flux-performance.md
+@@ -365,1 +365,1 @@
+-- **Frequency**: Every game tick (depends on `ticks_per_minute` configuration)
++
+- **Frequency**: Every game tick (depends on `ticks_per_minute` configuration)
+diff --git a/docs/archive/IMPLEMENTATION_COMPLETE.md b/docs/archive/IMPLEMENTATION_COMPLETE.md
+--- a/docs/archive/IMPLEMENTATION_COMPLETE.md
++++ b/docs/archive/IMPLEMENTATION_COMPLETE.md
+@@ -136,1 +136,1 @@
+-- **Optimized Serialization**: Efficient JSON serialization
++
+- **Optimized Serialization**: Efficient JSON serialization
+diff --git a/docs/CURSOR_CLI.md b/docs/CURSOR_CLI.md
+--- a/docs/CURSOR_CLI.md
++++ b/docs/CURSOR_CLI.md
+@@ -170,1 +170,1 @@
+-### File Generation
++### File Generation
+
+diff --git a/docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md b/docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md
+--- a/docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md
++++ b/docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md
+@@ -20,1 +20,1 @@
+-- **Comprehensive validation**: 77.8% improvement (0.793s â 0.176s for 50,000 validations)
++
+- **Comprehensive validation**: 77.8% improvement (0.793s â 0.176s for 50,000 validations)
+diff --git a/docs/archive/DUAL_CONNECTION_API_REFERENCE.md b/docs/archive/DUAL_CONNECTION_API_REFERENCE.md
+--- a/docs/archive/DUAL_CONNECTION_API_REFERENCE.md
++++ b/docs/archive/DUAL_CONNECTION_API_REFERENCE.md
+@@ -480,1 +480,1 @@
+-- **v1.3.0**: Improved performance monitoring and optimization
++
+- **v1.3.0**: Improved performance monitoring and optimization
+diff --git a/docs/CURSOR_SUBAGENTS.md b/docs/CURSOR_SUBAGENTS.md
+--- a/docs/CURSOR_SUBAGENTS.md
++++ b/docs/CURSOR_SUBAGENTS.md
+@@ -49,1 +49,1 @@
+-- Analyzing test coverage gaps
++
+- Analyzing test coverage gaps

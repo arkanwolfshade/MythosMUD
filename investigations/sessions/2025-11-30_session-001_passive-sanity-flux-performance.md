@@ -362,6 +362,7 @@ The `passive_lucidity_flux_tick` operation calls `self._persistence.get_room()` 
 **Current**: Up to 17,391ms (17.4 seconds)
 
 **Overhead**: 1,639% over threshold
+
 - **Frequency**: Every game tick (depends on `ticks_per_minute` configuration)
 
 **Affected Components**:

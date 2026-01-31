@@ -463,7 +463,7 @@ WebSocket
 3. **Repository Wrappers**
   - **Issue**: ContainerRepository and ItemRepository use `asyncio.to_thread()` wrappers
   - **Impact**: Performance overhead, complexity
-  - **Recommendation**: Migrate underlying code to async
+- **Recommendation**: Migrate underlying code to async
 
 ### 6.2 Medium Priority
 

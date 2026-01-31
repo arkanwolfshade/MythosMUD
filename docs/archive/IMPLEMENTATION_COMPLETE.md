@@ -133,6 +133,7 @@ except Exception as e:
 **Context Variables**: Efficient context propagation
 
 **Queue-based Handling**: Non-blocking log processing
+
 - **Optimized Serialization**: Efficient JSON serialization
 
 ## 🧪 **Testing and Validation**

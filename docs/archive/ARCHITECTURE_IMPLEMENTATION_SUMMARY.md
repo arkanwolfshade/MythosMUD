@@ -260,6 +260,7 @@ Added relationships to `User`, `Player`, and `Invite` models
 ✅ Clear separation of business logic from infrastructure
 
 ✅ Framework-agnostic domain entities
+
 - ✅ Easier to understand business rules
 - ✅ Better testability of business logic
 - ✅ Foundation for clean architecture
