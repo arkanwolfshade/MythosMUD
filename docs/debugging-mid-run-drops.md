@@ -49,6 +49,40 @@ Select-String -Path "logs/local/*.log" -Pattern "disconnect_reason|Broadcasting 
 - Include relevant log snippets and timestamps.
 - Note configuration (e.g. `max_connection_age`, prune interval) and test setup (describe length, which player dropped).
 
+## Both players see linkdead (Occupants (1) with linkdead)
+
+When E2E instrumentation shows **both** players with `occupantsCount: 1` and `hasLinkdead: true`, each client sees the *other* player as linkdead. That implies both WebSockets have disconnected and entered the 30-second grace period.
+
+### Log evidence (2026-01-30)
+
+Server logs (`logs/local/server.log`) showed:
+
+- **9a2a5560** (ArkanWolfshade): Connected 22:58:00; **Unintentional disconnect, grace period** at 22:58:32.
+- **dd1ef0e8** (Ithaqua): Connected 22:58:11; **Unintentional disconnect, grace period** at 22:58:32 (~50ms later).
+- **Close code**: `CLOSE 1001 (going away)` for both—**client-initiated** close (browser/tab navigating away or closing).
+
+So both tabs/contexts were closed almost at the same time, which matches Playwright tearing down contexts when a test fails or times out.
+
+### Root cause (CONFIRMED from logs)
+
+The **client** closes the WebSocket with code 1001 (going away). Both connections close within ~50ms. That points to:
+
+1. **Playwright closing both contexts together** when a test fails or times out.
+2. **Test flow closing pages** before `ensurePlayersInSameRoom` finishes (e.g. timeout, navigation, or cleanup).
+
+### Possible mitigations
+
+1. **Increase `ensurePlayersInSameRoom` timeout** so it can succeed before Playwright tears down.
+2. **Avoid premature context teardown**—ensure `beforeAll`/fixtures keep contexts alive until the hook/test finishes.
+3. **Inspect Playwright config**—`fullyParallel: false`, `workers: 1`, and test timeouts can affect when contexts are closed.
+
+### Investigation steps for both-linkdead
+
+1. **Check server logs** for `Unintentional disconnect detected, starting grace period` and `disconnect_reason` to see why each WebSocket closed.
+2. **Check close reason** in server.log: `CLOSE 1001 (going away)` = client closed; `disconnect_reason=new_game_session` = server closed for new session.
+3. **Check ping behavior**: Ping interval is 30s (`useWebSocketConnection.ts`). If tabs are throttled, pings may not run; verify `last_seen` updates.
+4. **Run a single multiplayer spec** (e.g. who-command only) to reduce suite length and connection_age / stale_prune pressure.
+
 ## References
 
 - **GAME_BUG_INVESTIGATION_PLAYBOOK.mdc**: Use for full investigation methodology; this doc focuses on mid-run drops only.

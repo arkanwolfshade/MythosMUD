@@ -587,34 +587,65 @@ export async function ensurePlayersInSameRoom(
   // #endregion
 
   // Step 1: Wait for all players to see the expected number of occupants in their room
+  // Detection supports: OccupantsPanel title "Occupants (n)", content "Players (n)", or RoomInfoPanel "Occupants (n):"
   await Promise.all(
     contexts.map(({ page, player }) =>
       page
         .waitForFunction(
           (expected: number) => {
-            // Look for Occupants panel and count players
-            const occupantsText = Array.from(document.querySelectorAll('*')).find(
-              el => el.textContent?.includes('Occupants (') && el.textContent?.includes(')')
-            )?.textContent;
-
-            if (!occupantsText) return false;
-
-            // Extract count from "Occupants (2)" format
-            const match = occupantsText.match(/Occupants \((\d+)\)/);
-            if (!match) return false;
-
-            const occupantCount = parseInt(match[1], 10);
+            const bodyText = document.body?.innerText ?? '';
+            // Match "Occupants (2)" or "Occupants (2):" (panel title or RoomInfoPanel)
+            const occupantsMatch = bodyText.match(/Occupants\s*\((\d+)\)/);
+            // Match "Players (2)" (OccupantsPanel structured format - Players column header)
+            const playersMatch = bodyText.match(/Players\s*\((\d+)\)/);
+            const occupantCount = occupantsMatch
+              ? parseInt(occupantsMatch[1], 10)
+              : playersMatch
+                ? parseInt(playersMatch[1], 10)
+                : 0;
             return occupantCount >= expected;
           },
           expectedOccupants,
           { timeout: timeoutMs }
         )
-        .catch(err => {
+        .catch(async err => {
+          // Instrumentation: log what each player actually sees when timeout occurs
+          const snapshot = await page
+            .evaluate(() => {
+              const bodyText = document.body?.innerText ?? '';
+              const occupantsMatch = bodyText.match(/Occupants\s*\((\d+)\)/);
+              const playersMatch = bodyText.match(/Players\s*\((\d+)\)/);
+              const occupantsSection = bodyText
+                .split('\n')
+                .find(line => line.includes('Occupants') || line.includes('Players ('))
+                ?.slice(0, 200);
+              return {
+                hasOccupantsMatch: !!occupantsMatch,
+                occupantsCount: occupantsMatch ? parseInt(occupantsMatch[1], 10) : null,
+                hasPlayersMatch: !!playersMatch,
+                playersCount: playersMatch ? parseInt(playersMatch[1], 10) : null,
+                occupantsSnippet: occupantsSection ?? 'not found',
+                hasLinkdead: bodyText.includes('(linkdead)'),
+              };
+            })
+            .catch(() => ({ error: 'page closed or evaluate failed' }));
+
+          const snapshotStr = JSON.stringify(snapshot, null, 2);
+          console.error(
+            `[instrumentation] ensurePlayersInSameRoom Step 1 timeout - Player ${player.username} saw:`,
+            snapshotStr
+          );
+          const shortSnap =
+            typeof snapshot === 'object' && snapshot !== null && 'error' in snapshot
+              ? ((snapshot as { error?: string }).error ?? 'page closed or evaluate failed')
+              : typeof snapshot === 'object' && snapshot !== null
+                ? `occupants=${(snapshot as { occupantsCount?: number }).occupantsCount ?? '?'} ` +
+                  `players=${(snapshot as { playersCount?: number }).playersCount ?? '?'} ` +
+                  `linkdead=${(snapshot as { hasLinkdead?: boolean }).hasLinkdead ?? '?'}`
+                : String(snapshot);
           const msg =
             `[instrumentation] ensurePlayersInSameRoom failed: Player ${player.username} - ` +
-            `Step 1: occupants - did not see ${expectedOccupants} occupants within ${timeoutMs}ms ` +
-            '(players not co-located)';
-          console.error(msg, err);
+            `Step 1: occupants - did not see ${expectedOccupants} within ${timeoutMs}ms (saw: ${shortSnap})`;
           // #region agent log
           fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
             method: 'POST',
@@ -626,6 +657,7 @@ export async function ensurePlayersInSameRoom(
                 username: player.username,
                 expectedOccupants,
                 error: String(err?.message ?? err),
+                snapshot,
               },
               timestamp: Date.now(),
               sessionId: 'debug-session',
