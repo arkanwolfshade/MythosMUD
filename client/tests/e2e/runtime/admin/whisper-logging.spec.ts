@@ -12,6 +12,7 @@ import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
   getPlayerMessages,
+  waitForAllPlayersInGame,
   waitForCrossPlayerMessage,
 } from '../fixtures/multiplayer';
 
@@ -21,6 +22,7 @@ test.describe('Whisper Logging', () => {
   test.beforeAll(async ({ browser }) => {
     // Create contexts for both players (AW is admin, Ithaqua is not)
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
+    await waitForAllPlayersInGame(contexts);
   });
 
   test.afterAll(async () => {
@@ -43,17 +45,15 @@ test.describe('Whisper Logging', () => {
     );
 
     // Verify Ithaqua receives the whisper (privacy maintained)
-    // Whisper messages use format: "{sender_name} whispers: {content}" (not "whispers to you:")
+    // Recipient sees format: "{sender_name} whispers to you: {content}"
     await waitForCrossPlayerMessage(
       ithaquaContext,
-      'ArkanWolfshade whispers: Testing whisper logging functionality',
+      'ArkanWolfshade whispers to you: Testing whisper logging functionality',
       10000
     );
     const ithaquaMessages = await getPlayerMessages(ithaquaContext);
-    const seesMessage = ithaquaMessages.some(
-      msg =>
-        msg.includes('ArkanWolfshade whispers: Testing whisper logging functionality') ||
-        msg.includes('ArkanWolfshade whispers to you: Testing whisper logging functionality')
+    const seesMessage = ithaquaMessages.some(msg =>
+      msg.includes('ArkanWolfshade whispers to you: Testing whisper logging functionality')
     );
     expect(seesMessage).toBe(true);
   });

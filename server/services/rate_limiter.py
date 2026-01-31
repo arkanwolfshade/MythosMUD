@@ -61,6 +61,15 @@ class RateLimiter:
             self.limits = rate_limiting_config.get("limits", default_limits)
             self.enabled = rate_limiting_config.get("enabled", True)
 
+        # Relax whisper rate limit for local and e2e_test so e2e suites don't hit "sending messages too quickly"
+        if hasattr(config, "logging") and getattr(config.logging, "environment", None) in ("local", "e2e_test"):
+            self.limits["whisper"] = 30
+            logger.debug(
+                "Whisper rate limit relaxed for non-production environment",
+                environment=getattr(config.logging, "environment", None),
+                whisper_limit=self.limits["whisper"],
+            )
+
         # Sliding window storage: {player_id: {channel: deque(timestamps)}}
         self.windows: defaultdict[str, defaultdict[str, deque[float]]] = defaultdict(lambda: defaultdict(deque))
 

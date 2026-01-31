@@ -356,7 +356,8 @@ async def _disconnect_other_characters(
                         await connection_manager.disconnect_websocket(other_character_id, is_force_disconnect=True)
                         disconnected_count += 1
                         logger.info(
-                            "Disconnected existing character connection for user",
+                            "Disconnected existing character connection for user (debug: mid-run drops)",
+                            disconnect_reason="select_character_other",
                             user_id=str(current_user.id),
                             disconnected_character_id=str(other_character.id),
                             disconnected_character_name=other_character.name,

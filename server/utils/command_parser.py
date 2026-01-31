@@ -150,8 +150,8 @@ class CommandParser:
                 MythosValidationError, f"Unknown command: {command}", context=context, logger_name=__name__
             )
 
-        # Create and validate command object
-        return self._create_command_object(command, args)
+        # Create and validate command object (pass normalized + original for debug e.g. empty local)
+        return self._create_command_object(command, args, raw_command=normalized, original_command=command_string)
 
     def _normalize_command(self, command_string: str) -> str:
         """
@@ -209,13 +209,21 @@ class CommandParser:
         logger.debug("Command parsed", command=command, args=args)
         return command, args
 
-    def _create_command_object(self, command: str, args: list[str]) -> Command:
+    def _create_command_object(
+        self,
+        command: str,
+        args: list[str],
+        raw_command: str | None = None,
+        original_command: str | None = None,
+    ) -> Command:
         """
         Create and validate command object based on command type.
 
         Args:
             command: Command name
             args: Command arguments
+            raw_command: Normalized raw command string (for debug e.g. empty local)
+            original_command: Pre-normalized command string from client (for debug)
 
         Returns:
             Validated Command object
@@ -236,9 +244,23 @@ class CommandParser:
             # Use the factory to get the creation method
             create_method = self._command_factory.get(command)
             if create_method:
+                from collections.abc import Callable
                 from typing import cast
 
-                result: Command = cast(Command, create_method(args))
+                # Pass raw_command and original_command for local so empty-args debug log can include them
+                if command == "local":
+                    result = cast(
+                        Command,
+                        self.factory.create_local_command(
+                            args,
+                            raw_command=raw_command,
+                            original_command=original_command,
+                        ),
+                    )
+                else:
+                    # Dict values are heterogenous callables; cast to Callable for mypy operator
+                    fn = cast(Callable[..., Command], create_method)
+                    result = fn(args)  # fn returns Command after cast
                 return result
             context = create_error_context()
             context.metadata = {

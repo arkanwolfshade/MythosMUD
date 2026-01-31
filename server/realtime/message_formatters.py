@@ -10,7 +10,7 @@ from ..structured_logging.enhanced_logging_config import get_logger
 logger = get_logger("communications.message_formatters")
 
 
-def format_message_content(channel: str, sender_name: str, content: str) -> str:
+def format_message_content(channel: str, sender_name: str, content: str, *, for_recipient: bool = False) -> str:
     """
     Format message content based on channel type and sender name.
 
@@ -18,6 +18,8 @@ def format_message_content(channel: str, sender_name: str, content: str) -> str:
         channel: Channel type (say, local, emote, pose, global, party, whisper, system, admin)
         sender_name: Name of the message sender
         content: Raw message content
+        for_recipient: When True and channel is whisper, format as "X whispers to you: Y"
+            for the recipient. Ignored for other channels.
 
     Returns:
         Formatted message content with sender name
@@ -34,6 +36,8 @@ def format_message_content(channel: str, sender_name: str, content: str) -> str:
         if channel == "pose":
             return f"{sender_name} {content}"
         if channel == "whisper":
+            if for_recipient:
+                return f"{sender_name} whispers to you: {content}"
             return f"{sender_name} whispers: {content}"
         if channel == "system":
             return f"[SYSTEM] {content}"

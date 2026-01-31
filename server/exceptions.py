@@ -161,7 +161,7 @@ class DatabaseError(MythosMUDError):
 
 
 class ValidationError(MythosMUDError):
-    """Data validation errors."""
+    """Data validation errors (e.g. empty local/whisper message). Log at warning, not error."""
 
     def __init__(
         self,
@@ -178,6 +178,16 @@ class ValidationError(MythosMUDError):
             self.details["field"] = field_name
         if value is not None:
             self.details["value"] = str(value)
+
+    def _log_error(self) -> None:
+        """Log validation errors at warning so expected user-input errors do not flood error log."""
+        logger.warning(
+            "MythosMUD error occurred: " + str(self.message),
+            message=self.message,
+            error_type=self.__class__.__name__,
+            details=self.details,
+            timestamp=self.timestamp.isoformat(),
+        )
 
 
 class GameLogicError(MythosMUDError):

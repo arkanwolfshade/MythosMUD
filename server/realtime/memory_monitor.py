@@ -6,6 +6,7 @@ and memory-related statistics for the real-time connection system.
 """
 
 import gc
+import os
 import time
 from typing import Any
 
@@ -14,6 +15,12 @@ import psutil
 from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
+
+
+def _max_connection_age_seconds() -> int:
+    """Connection age threshold (seconds). Higher in e2e/local to avoid mid-run drops."""
+    env = os.environ.get("LOGGING_ENVIRONMENT") or ""
+    return 1800 if env in ("e2e_test", "local") else 300
 
 
 class MemoryMonitor:
@@ -29,7 +36,7 @@ class MemoryMonitor:
         self.last_cleanup_time = time.time()
         self.cleanup_interval = 300  # 5 minutes
         self.memory_threshold = 0.8  # 80% memory usage triggers cleanup
-        self.max_connection_age = 300  # 5 minutes
+        self.max_connection_age = _max_connection_age_seconds()
         self.max_pending_messages = 1000  # Max pending messages per player
         self.max_rate_limit_entries = 1000  # Max rate limit entries per player
 

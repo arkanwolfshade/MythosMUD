@@ -39,9 +39,19 @@ class CommunicationCommandFactory:
         return SayCommand(message=message)
 
     @staticmethod
-    def create_local_command(args: list[str]) -> LocalCommand:
+    def create_local_command(
+        args: list[str],
+        raw_command: str | None = None,
+        original_command: str | None = None,
+    ) -> LocalCommand:
         """Create LocalCommand from arguments."""
         if not args:
+            logger.debug(
+                "Local command invoked with empty args (trace empty local from client/e2e)",
+                args=args,
+                raw_command=raw_command,
+                original_command=original_command,
+            )
             context = create_error_context()
             context.metadata = {"args": args}
             log_and_raise_enhanced(
@@ -120,7 +130,10 @@ class CommunicationCommandFactory:
             context = create_error_context()
             context.metadata = {"args": args, "target": target}
             log_and_raise_enhanced(
-                MythosValidationError, "You must provide a message to whisper", context=context, logger_name=__name__
+                MythosValidationError,
+                "You must provide a message to whisper. Usage: whisper <player> <message>",
+                context=context,
+                logger_name=__name__,
             )
 
         if len(message) > 500:

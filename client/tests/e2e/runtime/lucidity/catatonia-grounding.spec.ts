@@ -8,8 +8,12 @@
  */
 
 import { expect, test } from '@playwright/test';
-import { createMultiPlayerContexts, cleanupMultiPlayerContexts } from '../fixtures/multiplayer';
 import { executeCommand, waitForMessage } from '../fixtures/auth';
+import {
+  cleanupMultiPlayerContexts,
+  createMultiPlayerContexts,
+  waitForAllPlayersInGame,
+} from '../fixtures/multiplayer';
 
 test.describe('Catatonia Grounding Ritual', () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
@@ -18,6 +22,7 @@ test.describe('Catatonia Grounding Ritual', () => {
     // Create contexts for both players
     // Note: ArkanWolfshade should be in catatonic state (requires database seeding)
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
+    await waitForAllPlayersInGame(contexts);
   });
 
   test.afterAll(async () => {

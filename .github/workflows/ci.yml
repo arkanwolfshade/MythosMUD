@@ -67,15 +67,13 @@ jobs:
           # UV_PROJECT_ENVIRONMENT tells uv venv to create .venv-ci instead of .venv
           uv venv
           source .venv-ci/bin/activate
-          # Install pip into venv explicitly using --python flag to ensure it goes into the venv
-          # uv venv doesn't install pip by default, and we need it for python -m pip to work
+          # Install pip into venv for scripts that expect python -m pip; uv venv doesn't install pip by default
           uv pip install --python .venv-ci/bin/python pip setuptools wheel
-          # Use python -m pip instead of uv pip to ensure packages install into venv's site-packages
-          # This is necessary when venv Python is a symlink - python -m pip respects VIRTUAL_ENV
-          python -m pip install --upgrade pip
-          python -m pip install -e .
-          python -m pip install -e ".[dev]"
-          python -m pip install "pytest-mock>=3.14.0" "pytest-xdist>=3.8.0"
+          # Use uv pip so [tool.uv] override-dependencies (e.g. python-multipart>=0.0.22 for CVE fixes) are applied.
+          # pip would ignore overrides and fail on fastapi-users vs python-multipart conflict.
+          uv pip install --python .venv-ci/bin/python -e .
+          uv pip install --python .venv-ci/bin/python -e ".[dev]"
+          uv pip install --python .venv-ci/bin/python "pytest-mock>=3.14.0" "pytest-xdist>=3.8.0"
           # Verify pytest was installed correctly and show where it's installed
           python -c "import pytest, sys, site; print(f'pytest {pytest.__version__}'); print(f'Python: {sys.executable}'); print(f'Site-packages: {site.getsitepackages()[0] if site.getsitepackages() else site.getusersitepackages()}')"
       - name: Install Playwright browsers

@@ -43,8 +43,11 @@ export default defineConfig({
     /* Video on failure */
     video: 'retain-on-failure',
   },
-  /* Timeout for each test (60 seconds) */
-  timeout: 60000,
+  /* Timeout for each test and beforeAll hooks.
+   * Multiplayer setup (createContexts + waitForAllPlayersInGame + ensurePlayersInSameRoom)
+   * can take 90-120s when server is cold. 3 min prevents premature teardown (CLOSE 1001).
+   */
+  timeout: 180000,
   /* Expect timeout (30 seconds) */
   expect: {
     timeout: 30000,

@@ -51,23 +51,11 @@ describe('saveMapChanges', () => {
     });
 
     it('should handle errors when saving positions', async () => {
-      // Mock debug logging calls to succeed, but API call to fail
-      vi.mocked(fetch).mockImplementation(url => {
-        const urlStr = typeof url === 'string' ? url : '';
-        // Debug logging calls succeed
-        if (urlStr.includes('127.0.0.1:7242')) {
-          return Promise.resolve({
-            ok: true,
-            json: () => Promise.resolve({}),
-          } as Response);
-        }
-        // API call fails
-        return Promise.resolve({
-          ok: false,
-          status: 500,
-          json: () => Promise.resolve({ detail: 'Server error' }),
-        } as Response);
-      });
+      vi.mocked(fetch).mockResolvedValue({
+        ok: false,
+        status: 500,
+        json: () => Promise.resolve({ detail: 'Server error' }),
+      } as Response);
 
       const nodePositions = new Map([['room1', { x: 100, y: 200 }]]);
 

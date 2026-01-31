@@ -125,15 +125,24 @@ class PersonalMessageSender:
             return True
         except (RuntimeError, ConnectionError, WebSocketDisconnect) as ws_error:
             error_message = str(ws_error)
-            if (
-                "close message has been sent" not in error_message.lower()
-                and "cannot call" not in error_message.lower()
-            ):
+            err_lower = error_message.lower()
+            # Expected when connection is closing: do not warn (log at debug only)
+            is_send_after_close = "websocket.send" in err_lower and (
+                "websocket.close" in err_lower or "response already completed" in err_lower
+            )
+            is_expected_close = "close message has been sent" in err_lower or "cannot call" in err_lower
+            if not is_send_after_close and not is_expected_close:
                 logger.warning(
                     "WebSocket send failed",
                     player_id=player_id,
                     connection_id=connection_id,
                     error=error_message,
+                )
+            else:
+                logger.debug(
+                    "WebSocket send skipped (connection closing)",
+                    player_id=player_id,
+                    connection_id=connection_id,
                 )
             delivery_status["websocket_failed"] += 1
             await self.cleanup_dead_websocket(player_id, connection_id)

@@ -10,6 +10,9 @@ import pytest
 
 from server.realtime.websocket_handler import _check_rate_limit
 
+# pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
+# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
+
 
 @pytest.fixture
 def mock_websocket():

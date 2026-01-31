@@ -8,8 +8,11 @@
  */
 
 import { expect, test } from '@playwright/test';
-import { getMessages } from '../fixtures/auth';
-import { cleanupMultiPlayerContexts, createMultiPlayerContexts } from '../fixtures/multiplayer';
+import {
+  cleanupMultiPlayerContexts,
+  createMultiPlayerContexts,
+  waitForAllPlayersInGame,
+} from '../fixtures/multiplayer';
 
 test.describe('Sanitarium Failover Escalation', () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
@@ -18,6 +21,7 @@ test.describe('Sanitarium Failover Escalation', () => {
     // Create contexts for both players
     // Note: ArkanWolfshade should be in catatonic state with low LCD (requires database seeding)
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
+    await waitForAllPlayersInGame(contexts);
   });
 
   test.afterAll(async () => {
@@ -29,18 +33,27 @@ test.describe('Sanitarium Failover Escalation', () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    // Wait for passive flux to trigger failover (may take time)
-    await awContext.page.waitForTimeout(60000); // Wait up to 60 seconds
+    // Note: Failover only triggers when LCD is seeded low and passive flux drives it below floor.
+    // Without DB seeding this may not trigger; the test still asserts game remains stable.
+    await awContext.page.waitForTimeout(5000);
 
-    // Check for sanitarium transfer message
-    const awMessages = await getMessages(awContext.page);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const _seesTransfer = awMessages.some(
-      msg => msg.includes('Sanitarium') || msg.includes('transferred') || msg.includes('failover')
-    );
-
-    // This test verifies failover exists (may or may not trigger depending on LCD state)
-    expect(awContext.page).toBeTruthy();
+    // Always assert: game UI still present (no crash). Test passes whether or not failover triggered.
+    const awGameUiVisible = await awContext.page
+      .waitForFunction(
+        () => {
+          const hasCommandInput =
+            document.querySelector('input[placeholder*="command" i], textarea[placeholder*="command" i]') !== null ||
+            document.querySelector('[data-testid="command-input"]') !== null;
+          const hasGameInfo = Array.from(document.querySelectorAll('*')).some(el =>
+            el.textContent?.includes('Game Info')
+          );
+          return hasCommandInput || hasGameInfo;
+        },
+        { timeout: 5000 }
+      )
+      .then(() => true)
+      .catch(() => false);
+    expect(awGameUiVisible).toBe(true);
     expect(ithaquaContext.page).toBeTruthy();
   });
 });

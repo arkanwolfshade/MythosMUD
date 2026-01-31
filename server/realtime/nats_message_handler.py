@@ -908,6 +908,9 @@ class NATSMessageHandler:
         """
         Format message content for a receiver (after dampening applied).
 
+        For whisper channel, formats as "X whispers to you: Y" so the recipient
+        sees a clear private-message format.
+
         Args:
             channel: Channel type
             sender_name: Name of the message sender
@@ -916,7 +919,7 @@ class NATSMessageHandler:
         Returns:
             Formatted message content with sender name
         """
-        return format_message_content(channel, sender_name, content)
+        return format_message_content(channel, sender_name, content, for_recipient=channel == "whisper")
 
     async def _apply_dampening_and_send_message(
         self, chat_event: dict[str, Any], sender_id: str, receiver_id: str, channel: str

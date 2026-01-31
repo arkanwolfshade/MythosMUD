@@ -56,19 +56,18 @@ else
     echo "Python executable: $(python -c 'import sys; print(sys.executable)')"
     echo "VIRTUAL_ENV: $VIRTUAL_ENV"
 
-    # Check if pip is available in the venv
+    # Install pip into venv if needed (uv venv does not install pip by default)
     if ! python -m pip --version >/dev/null 2>&1; then
         echo "Installing pip into venv..."
-        uv pip install --python "$PYTHON_EXE" pip
+        uv pip install --python "$PYTHON_EXE" pip setuptools wheel
     fi
 
-    # Use python -m pip to ensure packages install into the venv's site-packages
-    # This is more reliable when the venv Python is a symlink
-    python -m pip install --upgrade pip
-    python -m pip install -e .
-    python -m pip install -e ".[dev]"
+    # Use uv pip so [tool.uv] override-dependencies (e.g. python-multipart>=0.0.22 for CVE fixes) are applied.
+    # python -m pip would ignore overrides and fail on fastapi-users vs python-multipart conflict.
+    uv pip install --python "$PYTHON_EXE" -e .
+    uv pip install --python "$PYTHON_EXE" -e ".[dev]"
     # Quote version specifiers to prevent shell redirection interpretation
-    python -m pip install "pytest-mock>=3.14.0" "pytest-xdist>=3.8.0"
+    uv pip install --python "$PYTHON_EXE" "pytest-mock>=3.14.0" "pytest-xdist>=3.8.0"
     deactivate
 fi
 

@@ -46,10 +46,17 @@ def test_format_message_content_pose():
 
 
 def test_format_message_content_whisper():
-    """Test format_message_content() formats 'whisper' channel messages."""
+    """Test format_message_content() formats 'whisper' channel messages (default)."""
     result = format_message_content("whisper", "TestPlayer", "secret message")
 
     assert result == "TestPlayer whispers: secret message"
+
+
+def test_format_message_content_whisper_for_recipient():
+    """Test format_message_content() formats 'whisper' for recipient as 'X whispers to you: Y'."""
+    result = format_message_content("whisper", "TestPlayer", "secret message", for_recipient=True)
+
+    assert result == "TestPlayer whispers to you: secret message"
 
 
 def test_format_message_content_system():
