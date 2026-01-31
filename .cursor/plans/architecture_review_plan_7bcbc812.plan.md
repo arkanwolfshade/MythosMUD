@@ -4,7 +4,7 @@ overview: Comprehensive architectural review of MythosMUD codebase evaluating mo
 todos:
   - id: review-event-duplication
     content: Review and consolidate event duplication (EventBus vs direct WebSocket sends) per EVENT_OWNERSHIP_MATRIX.md
-    status: pending
+    status: completed
   - id: analyze-container-structure
     content: Analyze ApplicationContainer structure and propose domain-specific container split
     status: pending
@@ -162,13 +162,16 @@ This review evaluates MythosMUD's architecture against modern software architect
 **Dual Event Systems**:
 
 1. **EventBus** (Domain Events) - `server/events/event_bus.py`
-  - In-memory pub/sub for domain events
-  - Pure asyncio implementation
-  - Events: `PlayerEnteredRoom`, `CombatStartedEvent`, etc.
-2. **NATS** (Inter-Service Communication) - `server/services/nats_service.py`
-  - Distributed pub/sub for real-time events
-  - Subject-based routing (`chat.say.{room_id}`, `events.player_entered.{room_id}`)
-  - Used for chat, combat events, game ticks
+
+- In-memory pub/sub for domain events
+- Pure asyncio implementation
+- Events: `PlayerEnteredRoom`, `CombatStartedEvent`, etc.
+
+1. **NATS** (Inter-Service Communication) - `server/services/nats_service.py`
+
+- Distributed pub/sub for real-time events
+- Subject-based routing (`chat.say.{room_id}`, `events.player_entered.{room_id}`)
+- Used for chat, combat events, game ticks
 
 **Critical Issue Identified**: Event duplication documented in `EVENT_OWNERSHIP_MATRIX.md`
 
@@ -453,47 +456,62 @@ WebSocket
 ### 6.1 High Priority
 
 1. **Event Duplication** (Documented in `EVENT_OWNERSHIP_MATRIX.md`)
-  - **Issue**: Player movement events published to both EventBus and sent directly
-  - **Impact**: Potential inconsistencies, harder to maintain
-  - **Recommendation**: Consolidate to single path: EventBus → RealTimeEventHandler → WebSocket
-2. **ApplicationContainer Size**
-  - **Issue**: 1,200+ lines managing all dependencies
-  - **Impact**: Harder to maintain, test, and understand
-  - **Recommendation**: Split into domain-specific containers
-3. **Repository Wrappers**
-  - **Issue**: ContainerRepository and ItemRepository use `asyncio.to_thread()` wrappers
-  - **Impact**: Performance overhead, complexity
+
+- **Issue**: Player movement events published to both EventBus and sent directly
+- **Impact**: Potential inconsistencies, harder to maintain
+- **Recommendation**: Consolidate to single path: EventBus → RealTimeEventHandler → WebSocket
+
+1. **ApplicationContainer Size**
+
+- **Issue**: 1,200+ lines managing all dependencies
+- **Impact**: Harder to maintain, test, and understand
+- **Recommendation**: Split into domain-specific containers
+
+1. **Repository Wrappers**
+
+- **Issue**: ContainerRepository and ItemRepository use `asyncio.to_thread()` wrappers
+- **Impact**: Performance overhead, complexity
 - **Recommendation**: Migrate underlying code to async
 
 ### 6.2 Medium Priority
 
 1. **Service Boundaries**
-  - Define explicit bounded contexts
-  - Document service contracts
-  - Consider microservices boundaries (if scaling)
-2. **Event Sourcing Consideration**
-  - For critical game state (player actions, combat)
-  - Audit trail and replay capability
-  - Event store implementation
-3. **CQRS Pattern**
-  - Separate read/write models
-  - Optimize queries independently
-  - Consider read replicas for scaling
+
+- Define explicit bounded contexts
+- Document service contracts
+- Consider microservices boundaries (if scaling)
+
+1. **Event Sourcing Consideration**
+
+- For critical game state (player actions, combat)
+- Audit trail and replay capability
+- Event store implementation
+
+1. **CQRS Pattern**
+
+- Separate read/write models
+- Optimize queries independently
+- Consider read replicas for scaling
 
 ### 6.3 Low Priority
 
 1. **Architecture Decision Records (ADRs)**
-  - Document major architectural decisions
-  - Rationale and trade-offs
-  - Future reference
-2. **API Versioning**
-  - Plan for API evolution
-  - Versioning strategy
-  - Backward compatibility
-3. **Monitoring and Observability**
-  - Distributed tracing
-  - Performance metrics
-  - Business metrics
+
+- Document major architectural decisions
+- Rationale and trade-offs
+- Future reference
+
+1. **API Versioning**
+
+- Plan for API evolution
+- Versioning strategy
+- Backward compatibility
+
+1. **Monitoring and Observability**
+
+- Distributed tracing
+- Performance metrics
+- Business metrics
 
 ## 7. Implementation Plan
 

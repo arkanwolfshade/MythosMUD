@@ -4,7 +4,6 @@
 
 from typing import Any, cast
 
-from ..realtime.websocket_handler import broadcast_room_update
 from ..structured_logging.admin_actions_logger import get_admin_actions_logger
 from ..structured_logging.enhanced_logging_config import get_logger
 from .admin_teleport_utils import (
@@ -218,7 +217,6 @@ async def update_player_room_location(
 
 async def broadcast_teleport_updates(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Teleport helpers require many parameters for context and broadcasting
     connection_manager: Any,
-    current_player: Any,
     target_player_info: dict[str, Any],
     target_room_id: str,
     target_player_name: str,
@@ -227,13 +225,7 @@ async def broadcast_teleport_updates(  # pylint: disable=too-many-arguments,too-
     target_room_name: str | None,
     original_room_id: str,
 ) -> None:
-    """Broadcast room updates and teleport effects."""
-    await broadcast_room_update(str(target_player_info["player_id"]), target_room_id)
-
-    current_player_identifier = getattr(current_player, "player_id", getattr(current_player, "id", None))
-    if current_player_identifier:
-        await broadcast_room_update(str(current_player_identifier), current_player.current_room_id)
-
+    """Broadcast teleport effects. Room state is notified via EventBus (Room.player_entered/player_left)."""
     arrival_direction = DIRECTION_OPPOSITES.get(direction_value) if direction_value else None
     await broadcast_teleport_effects(
         connection_manager,
@@ -353,8 +345,9 @@ async def execute_confirm_teleport(  # pylint: disable=too-many-arguments,too-ma
     player_service: Any,
     connection_manager: Any,
     player_name: str,
+    persistence: Any | None = None,
 ) -> dict[str, str]:
-    """Execute the teleportation (update location, broadcast, effects, logging)."""
+    """Execute the teleportation (update location, room occupancy via EventBus, effects, logging)."""
     original_room_id = target_player.current_room_id
     target_room_id = current_player.current_room_id
 
@@ -366,7 +359,13 @@ async def execute_confirm_teleport(  # pylint: disable=too-many-arguments,too-ma
     if target_player_info:
         target_player_info["room_id"] = target_room_id
 
-    await broadcast_room_update(str(target_player_info["player_id"]), target_room_id)
+    await update_player_room_location(
+        connection_manager,
+        str(target_player_info["player_id"]),
+        original_room_id,
+        target_room_id,
+        persistence,
+    )
 
     await broadcast_teleport_effects(
         connection_manager,

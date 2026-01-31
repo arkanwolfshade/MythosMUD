@@ -122,7 +122,6 @@ async def handle_teleport_command(
 
             await broadcast_teleport_updates(
                 connection_manager,
-                current_player,
                 target_player_info,
                 target_room_id,
                 target_player_name,
@@ -221,10 +220,17 @@ async def handle_goto_command(
     if current_player.current_room_id == target_player.current_room_id:
         return {"result": f"You are already in the same location as {target_player_name}."}
 
+    persistence = getattr(app.state, "persistence", None) if app else None
     # Execute goto immediately without confirmation
     try:
         return await execute_goto_teleport(
-            player_service, connection_manager, current_player, target_player, target_player_name, player_name
+            player_service,
+            connection_manager,
+            current_player,
+            target_player,
+            target_player_name,
+            player_name,
+            persistence,
         )
     except (DatabaseError, SQLAlchemyError, ValueError, TypeError, AttributeError, OSError, KeyError) as e:
         log_goto_failure(player_name, target_player_name, current_player, target_player, e)
@@ -292,6 +298,7 @@ async def handle_confirm_teleport_command(
     if target_player.current_room_id == current_player.current_room_id:
         return {"result": f"{target_player_name} is already in your location."}
 
+    persistence = getattr(app.state, "persistence", None) if app else None
     try:
         return await execute_confirm_teleport(
             target_player_name,
@@ -301,6 +308,7 @@ async def handle_confirm_teleport_command(
             player_service,
             connection_manager,
             player_name,
+            persistence,
         )
 
     except (DatabaseError, SQLAlchemyError, ValueError, TypeError, AttributeError, OSError, KeyError) as e:
@@ -390,6 +398,7 @@ async def handle_confirm_goto_command(
     if current_player.current_room_id == target_player.current_room_id:
         return {"result": f"You are already in the same location as {target_player_name}."}
 
+    persistence = getattr(app.state, "persistence", None) if app else None
     try:
         return await execute_confirm_goto(
             player_name,
@@ -398,6 +407,7 @@ async def handle_confirm_goto_command(
             target_player,
             player_service,
             connection_manager,
+            persistence,
         )
 
     except (DatabaseError, SQLAlchemyError, ValueError, TypeError, AttributeError, OSError, KeyError) as e:
