@@ -16,13 +16,24 @@ export interface GameState {
   loginGracePeriodRemaining?: number;
 }
 
+// Helper: treat empty arrays/count as "no data" so we preserve existing (room_update sends empty; room_occupants is authoritative).
+function hasOccupantData(room: Room): boolean {
+  const hasPlayers = room.players != null && room.players.length > 0;
+  const hasNpcs = room.npcs != null && room.npcs.length > 0;
+  const hasOccupants = room.occupants != null && room.occupants.length > 0;
+  return hasPlayers || hasNpcs || hasOccupants;
+}
+
 // Helper function to merge occupant data from two room updates
 export const mergeOccupantData = (newRoom: Room, existingRoom: Room) => {
+  const useNewOccupants = hasOccupantData(newRoom);
   return {
-    players: newRoom.players ?? existingRoom.players,
-    npcs: newRoom.npcs ?? existingRoom.npcs,
-    occupants: newRoom.occupants ?? existingRoom.occupants,
-    occupant_count: newRoom.occupant_count ?? existingRoom.occupant_count,
+    players: useNewOccupants ? (newRoom.players ?? existingRoom.players) : (existingRoom.players ?? []),
+    npcs: useNewOccupants ? (newRoom.npcs ?? existingRoom.npcs) : (existingRoom.npcs ?? []),
+    occupants: useNewOccupants ? (newRoom.occupants ?? existingRoom.occupants) : (existingRoom.occupants ?? []),
+    occupant_count: useNewOccupants
+      ? (newRoom.occupant_count ?? existingRoom.occupant_count ?? 0)
+      : (existingRoom.occupant_count ?? 0),
   };
 };
 

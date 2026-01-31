@@ -269,6 +269,59 @@ describe('roomHandlers', () => {
       const result = handleRoomUpdate(event, mockContext, vi.fn());
       expect(result).toBeUndefined();
     });
+
+    it('should use payload occupants when room_update has occupants and existing room had empty (entering-player fix)', () => {
+      const existingRoom: Partial<Room> = {
+        id: 'room1',
+        name: 'Test Room',
+        description: 'Test Room Description',
+        exits: {},
+        players: [],
+        npcs: [],
+        occupants: [],
+        occupant_count: 0,
+      };
+      mockContext.currentRoomRef.current = existingRoom as Room;
+      const roomData = {
+        id: 'room1',
+        name: 'Updated Room',
+        description: 'Updated description',
+        players: ['OtherPlayer'],
+        npcs: [],
+        occupants: ['OtherPlayer'],
+        occupant_count: 1,
+      };
+      const event = {
+        event_type: 'room_update',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { room: roomData },
+      };
+      const result = handleRoomUpdate(event, mockContext, vi.fn());
+      expect(result).toBeDefined();
+      expect(result?.room?.id).toBe('room1');
+      expect(result?.room?.occupants).toEqual(['OtherPlayer']);
+      expect(result?.room?.players).toEqual(['OtherPlayer']);
+      expect(result?.room?.occupant_count).toBe(1);
+    });
+
+    it('should use top-level occupants when room_update has data.occupants (initial room state shape)', () => {
+      mockContext.currentRoomRef.current = null;
+      const event = {
+        event_type: 'room_update',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          room: { id: 'room1', name: 'Test Room', description: 'A room' },
+          entities: [],
+          occupants: ['Alice', 'Bob'],
+        },
+      };
+      const result = handleRoomUpdate(event, mockContext, vi.fn());
+      expect(result).toBeDefined();
+      expect(result?.room?.occupants).toEqual(['Alice', 'Bob']);
+      expect(result?.room?.occupant_count).toBe(2);
+    });
   });
 
   describe('handleRoomOccupants', () => {
@@ -367,17 +420,35 @@ describe('roomHandlers', () => {
       expect(result).toBeUndefined();
     });
 
-    it('should return undefined when no current room exists', () => {
+    it('should return undefined when no current room exists and no occupant data', () => {
       mockContext.currentRoomRef.current = null;
       const event = {
         event_type: 'room_occupants',
         timestamp: new Date().toISOString(),
         sequence_number: 1,
         room_id: 'room1',
-        data: { players: ['player1'] },
+        data: {},
       };
       const result = handleRoomOccupants(event, mockContext, vi.fn());
       expect(result).toBeUndefined();
+    });
+
+    it('should create minimal room from room_occupants when no current room (entering-player race fix)', () => {
+      mockContext.currentRoomRef.current = null;
+      const event = {
+        event_type: 'room_occupants',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        room_id: 'room1',
+        data: { players: ['player1', 'player2'], npcs: ['npc1'], count: 3 },
+      };
+      const result = handleRoomOccupants(event, mockContext, vi.fn());
+      expect(result).toBeDefined();
+      expect(result?.room?.id).toBe('room1');
+      expect(result?.room?.players).toEqual(['player1', 'player2']);
+      expect(result?.room?.npcs).toEqual(['npc1']);
+      expect(result?.room?.occupants).toEqual(['player1', 'player2', 'npc1']);
+      expect(result?.room?.occupant_count).toBe(3);
     });
 
     it('should preserve existing players when only npcs provided', () => {

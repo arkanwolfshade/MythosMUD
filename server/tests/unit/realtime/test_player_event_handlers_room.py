@@ -331,7 +331,9 @@ async def test_send_room_updates_to_entering_player_success(player_room_event_ha
     player_room_event_handler.send_occupants_snapshot_to_player = AsyncMock()
     with patch.object(player_room_event_handler.utils, "normalize_player_id", return_value=player_id):
         await player_room_event_handler.send_room_updates_to_entering_player(player_id, player_name, room_id)
-        player_room_event_handler.send_room_update_to_player.assert_awaited_once_with(player_id, room_id)
+        player_room_event_handler.send_room_update_to_player.assert_awaited_once_with(
+            player_id, room_id, include_occupants=True
+        )
         player_room_event_handler.send_occupants_snapshot_to_player.assert_awaited_once_with(player_id, room_id)
 
 
@@ -345,8 +347,10 @@ async def test_send_room_updates_to_entering_player_invalid_id(player_room_event
     player_room_event_handler.send_occupants_snapshot_to_player = AsyncMock()
     with patch.object(player_room_event_handler.utils, "normalize_player_id", return_value=None):
         await player_room_event_handler.send_room_updates_to_entering_player(player_id, player_name, room_id)
-        # Should use string fallback
-        player_room_event_handler.send_room_update_to_player.assert_awaited_once_with(player_id, room_id)
+        # Should use string fallback; include_occupants=True for entering player
+        player_room_event_handler.send_room_update_to_player.assert_awaited_once_with(
+            player_id, room_id, include_occupants=True
+        )
         player_room_event_handler.send_occupants_snapshot_to_player.assert_awaited_once_with(player_id, room_id)
 
 

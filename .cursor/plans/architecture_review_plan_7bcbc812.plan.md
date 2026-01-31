@@ -7,7 +7,7 @@ todos:
     status: completed
   - id: analyze-container-structure
     content: Analyze ApplicationContainer structure and propose domain-specific container split
-    status: pending
+    status: completed
   - id: review-repository-wrappers
     content: Review ContainerRepository and ItemRepository async wrappers and plan full async migration
     status: pending
@@ -110,6 +110,8 @@ This review evaluates MythosMUD's architecture against modern software architect
 ### 1.3 Dependency Injection Architecture
 
 **Implementation**: `ApplicationContainer` pattern in `server/container.py`
+
+**Analysis and proposal:** See `docs/APPLICATION_CONTAINER_ANALYSIS.md` for a full structure analysis, attribute inventory by domain, initialization order, and a proposed domain-specific split using internal bundles (Option A) with backward-compatible migration path.
 
 **Strengths**:
 
@@ -309,7 +311,7 @@ WebSocket
 - ✅ Repositories have focused responsibilities
 - ✅ Services are domain-specific
 - ⚠️ Some services are large (ConnectionManager was 3,653 lines, now refactored)
-- ⚠️ ApplicationContainer is large (consider splitting)
+- ⚠️ ApplicationContainer is large (split proposed in `docs/APPLICATION_CONTAINER_ANALYSIS.md`)
 
 **Open/Closed Principle (OCP)**:
 

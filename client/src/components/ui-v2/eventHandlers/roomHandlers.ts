@@ -12,30 +12,32 @@ export const handleGameState: EventHandler = (event, _context) => {
   const loginGracePeriodActive = event.data.login_grace_period_active as boolean | undefined;
   const loginGracePeriodRemaining = event.data.login_grace_period_remaining as number | undefined;
   if (playerData && roomData) {
+    const roomWithOccupants = {
+      ...(roomData as Room),
+      ...(occupants && { occupants, occupant_count: occupants.length }),
+    };
+    const occupantCount = roomWithOccupants.occupants?.length ?? roomWithOccupants.occupant_count ?? 0;
+    logger.info('roomHandlers', 'OCCUPANT_DEBUG: game_state setting room', {
+      occupants_from_payload: occupants?.length ?? 0,
+      result_occupant_count: occupantCount,
+    });
     // Validate that playerData has at least the required 'name' property
     const player = playerData as Player;
     if (typeof player === 'object' && player !== null && 'name' in player && typeof player.name === 'string') {
       return {
         player,
-        room: {
-          ...(roomData as Room),
-          ...(occupants && { occupants, occupant_count: occupants.length }),
-        },
-        ...(loginGracePeriodActive !== undefined && { loginGracePeriodActive }),
-        ...(loginGracePeriodRemaining !== undefined && { loginGracePeriodRemaining }),
-      };
-    } else {
-      logger.warn('roomHandlers', 'handleGameState: invalid player data, missing name property');
-      return {
-        player: null,
-        room: {
-          ...(roomData as Room),
-          ...(occupants && { occupants, occupant_count: occupants.length }),
-        },
+        room: roomWithOccupants,
         ...(loginGracePeriodActive !== undefined && { loginGracePeriodActive }),
         ...(loginGracePeriodRemaining !== undefined && { loginGracePeriodRemaining }),
       };
     }
+    logger.warn('roomHandlers', 'handleGameState: invalid player data, missing name property');
+    return {
+      player: null,
+      room: roomWithOccupants,
+      ...(loginGracePeriodActive !== undefined && { loginGracePeriodActive }),
+      ...(loginGracePeriodRemaining !== undefined && { loginGracePeriodRemaining }),
+    };
   }
 };
 
@@ -55,22 +57,40 @@ function extractRoomMetadata(roomData: Room): Omit<Room, 'players' | 'npcs' | 'o
   return roomMetadata;
 }
 
+/** True when room has at least one player, NPC, or occupant (used to prefer payload over existing). */
+function hasOccupantData(room: Room): boolean {
+  const hasPlayers = room.players != null && room.players.length > 0;
+  const hasNpcs = room.npcs != null && room.npcs.length > 0;
+  const hasOccupants = room.occupants != null && room.occupants.length > 0;
+  return hasPlayers || hasNpcs || hasOccupants;
+}
+
 /**
- * Creates a room update that preserves occupant data from existing room
+ * Creates a room update. When payloadRoom has occupant data (e.g. entering-player room_update),
+ * use it; otherwise preserve existing room occupants.
  */
 function createRoomUpdateWithPreservedOccupants(
   existingRoom: Room,
   roomMetadata: Omit<Room, 'players' | 'npcs' | 'occupants' | 'occupant_count'>,
-  roomIdChanged: boolean
+  roomIdChanged: boolean,
+  payloadRoom?: Room
 ): Room {
+  const usePayloadOccupants = payloadRoom != null && hasOccupantData(payloadRoom);
+  if (usePayloadOccupants) {
+    logger.debug('roomHandlers', 'room_update: using payload occupants (entering-player fix)', {
+      occupants: payloadRoom?.occupants?.length ?? 0,
+      players: payloadRoom?.players?.length ?? 0,
+    });
+  }
   const roomUpdate: Partial<Room> = {
     ...existingRoom,
     ...roomMetadata,
-    // Preserve ALL occupant data from existingRoom
-    players: existingRoom.players ?? [],
-    npcs: existingRoom.npcs,
-    occupants: existingRoom.occupants ?? [],
-    occupant_count: existingRoom.occupant_count ?? 0,
+    players: usePayloadOccupants ? (payloadRoom?.players ?? []) : (existingRoom.players ?? []),
+    npcs: usePayloadOccupants ? payloadRoom?.npcs : existingRoom.npcs,
+    occupants: usePayloadOccupants ? (payloadRoom?.occupants ?? []) : (existingRoom.occupants ?? []),
+    occupant_count: usePayloadOccupants
+      ? (payloadRoom?.occupant_count ?? 0)
+      : (existingRoom.occupant_count ?? 0),
   };
 
   // If room ID changed, clear occupants
@@ -85,33 +105,84 @@ function createRoomUpdateWithPreservedOccupants(
 }
 
 /**
- * Creates initial room state without occupants for first room_update
+ * Creates initial room state. Uses roomData.players/occupants when present (entering-player room_update with occupants).
  */
-function createInitialRoomState(roomMetadata: Omit<Room, 'players' | 'npcs' | 'occupants' | 'occupant_count'>): Room {
+function createInitialRoomState(
+  roomMetadata: Omit<Room, 'players' | 'npcs' | 'occupants' | 'occupant_count'>,
+  roomData?: Room
+): Room {
+  const players = roomData?.players ?? [];
+  const npcs = roomData?.npcs;
+  const occupants = roomData?.occupants ?? [];
+  const fallbackCount = occupants.length > 0 ? occupants.length : players.length + (npcs?.length ?? 0);
+  const occupant_count = roomData?.occupant_count ?? fallbackCount;
   return {
     ...roomMetadata,
-    players: [],
-    occupants: [],
-    occupant_count: 0,
+    players: Array.isArray(players) ? players : [],
+    npcs: Array.isArray(npcs) ? npcs : undefined,
+    occupants: Array.isArray(occupants) ? occupants : [],
+    occupant_count: Number(occupant_count) || 0,
   };
 }
 
+/** Build unified room from event: room may be in data.room or data.room_data; occupants may be top-level. */
+function getRoomDataFromEvent(event: { data: Record<string, unknown> }): Room | null {
+  const raw = (event.data.room || event.data.room_data) as Room | undefined;
+  if (!raw) return null;
+  const topOccupants = event.data.occupants as string[] | undefined;
+  const topPlayers = event.data.players as string[] | undefined;
+  const topNpcs = event.data.npcs as string[] | undefined;
+  const topCount = event.data.occupant_count as number | undefined;
+  if (
+    topOccupants === undefined &&
+    topPlayers === undefined &&
+    topNpcs === undefined &&
+    topCount === undefined
+  ) {
+    return raw as Room;
+  }
+  return {
+    ...(raw as Room),
+    ...(topOccupants != null && { occupants: topOccupants, occupant_count: topCount ?? topOccupants.length }),
+    ...(topPlayers != null && { players: topPlayers }),
+    ...(topNpcs != null && { npcs: topNpcs }),
+  } as Room;
+}
+
 export const handleRoomUpdate: EventHandler = (event, context) => {
-  const roomData = (event.data.room || event.data.room_data) as Room;
+  const roomData = getRoomDataFromEvent(event);
   if (!roomData) {
     return;
   }
 
   const roomMetadata = extractRoomMetadata(roomData);
   const existingRoom = context.currentRoomRef.current;
+  const payloadOccupantCount =
+    (roomData.occupants?.length ?? 0) || (roomData.occupant_count ?? 0);
+  const payloadHasOccupants = hasOccupantData(roomData);
 
   if (!existingRoom) {
-    // First room_update - initialize WITHOUT occupants
-    return { room: createInitialRoomState(roomMetadata) };
+    const room = createInitialRoomState(roomMetadata, roomData);
+    logger.info('roomHandlers', 'OCCUPANT_DEBUG: room_update branch=initial (no existingRoom)', {
+      payload_occupants: payloadOccupantCount,
+      result_occupants: room.occupants?.length ?? 0,
+    });
+    return { room };
   }
 
   const roomIdChanged = roomData.id !== existingRoom.id;
-  return { room: createRoomUpdateWithPreservedOccupants(existingRoom, roomMetadata, roomIdChanged) };
+  const room = createRoomUpdateWithPreservedOccupants(
+    existingRoom,
+    roomMetadata,
+    roomIdChanged,
+    roomData
+  );
+  logger.info('roomHandlers', 'OCCUPANT_DEBUG: room_update branch=merge (had existingRoom)', {
+    payload_occupants: payloadOccupantCount,
+    payload_has_occupants: payloadHasOccupants,
+    result_occupants: room.occupants?.length ?? 0,
+  });
+  return { room };
 };
 
 /**
@@ -209,6 +280,35 @@ function handleLegacyOccupantsFormat(currentRoom: Room, occupants: string[], occ
   };
 }
 
+/**
+ * Creates minimal room state from room_occupants event when no current room exists.
+ * Fixes race where room_occupants arrives before application of room_update for entering player.
+ */
+function createMinimalRoomFromOccupantsEvent(
+  eventRoomId: string,
+  players: string[] | undefined,
+  npcs: string[] | undefined,
+  occupants: string[] | undefined,
+  occupantCount: number | undefined
+): Room {
+  const finalPlayers = players ?? [];
+  const finalNpcs = npcs ?? [];
+  const finalOccupants =
+    occupants && Array.isArray(occupants) ? occupants : [...finalPlayers, ...finalNpcs];
+  const count =
+    occupantCount !== undefined ? occupantCount : finalOccupants.length;
+  return {
+    id: eventRoomId,
+    name: '',
+    description: '',
+    exits: {},
+    players: finalPlayers,
+    npcs: finalNpcs,
+    occupants: finalOccupants,
+    occupant_count: count,
+  };
+}
+
 export const handleRoomOccupants: EventHandler = (event, context) => {
   const players = event.data.players as string[] | undefined;
   const npcs = event.data.npcs as string[] | undefined;
@@ -218,6 +318,20 @@ export const handleRoomOccupants: EventHandler = (event, context) => {
 
   const currentRoom = context.currentRoomRef.current;
   if (!currentRoom) {
+    // room_occupants can arrive before room_update is applied (entering player race). Apply occupants by creating minimal room state.
+    if (eventRoomId && (players !== undefined || npcs !== undefined || (occupants && Array.isArray(occupants)))) {
+      const minimalRoom = createMinimalRoomFromOccupantsEvent(
+        eventRoomId,
+        players,
+        npcs,
+        occupants,
+        occupantCount
+      );
+      logger.info('roomHandlers', 'OCCUPANT_DEBUG: room_occupants branch=minimal (no currentRoom)', {
+        result_occupants: minimalRoom.occupants?.length ?? 0,
+      });
+      return { room: minimalRoom };
+    }
     logger.warn('roomHandlers', 'room_occupants event received but no room state available');
     return;
   }
@@ -229,11 +343,19 @@ export const handleRoomOccupants: EventHandler = (event, context) => {
 
   // Use structured format if available
   if (players !== undefined || npcs !== undefined) {
-    return { room: handleStructuredOccupantsFormat(currentRoom, players, npcs, occupantCount) };
+    const room = handleStructuredOccupantsFormat(currentRoom, players, npcs, occupantCount);
+    logger.info('roomHandlers', 'OCCUPANT_DEBUG: room_occupants branch=structured', {
+      result_occupants: room.occupants?.length ?? 0,
+    });
+    return { room };
   }
 
   // Legacy format
   if (occupants && Array.isArray(occupants)) {
-    return { room: handleLegacyOccupantsFormat(currentRoom, occupants, occupantCount) };
+    const room = handleLegacyOccupantsFormat(currentRoom, occupants, occupantCount);
+    logger.info('roomHandlers', 'OCCUPANT_DEBUG: room_occupants branch=legacy', {
+      result_occupants: room.occupants?.length ?? 0,
+    });
+    return { room };
   }
 };

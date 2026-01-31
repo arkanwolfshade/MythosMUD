@@ -67,6 +67,36 @@ describe('stateUpdateUtils', () => {
       expect(result.npcs).toEqual(['npc1']);
       expect(result.occupant_count).toBe(2);
     });
+
+    it('should preserve existing occupants when new room has empty arrays (room_update after room_occupants)', () => {
+      const newRoom: Room = {
+        id: 'room1',
+        name: 'Room 1',
+        description: 'A test room',
+        exits: {},
+        players: [],
+        npcs: [],
+        occupants: [],
+        occupant_count: 0,
+      };
+
+      const existingRoom: Room = {
+        id: 'room1',
+        name: 'Room 1',
+        description: 'A test room',
+        exits: {},
+        players: ['player1', 'player2'],
+        npcs: ['npc1'],
+        occupants: ['player1', 'player2', 'npc1'],
+        occupant_count: 3,
+      };
+
+      const result = mergeOccupantData(newRoom, existingRoom);
+      expect(result.players).toEqual(['player1', 'player2']);
+      expect(result.npcs).toEqual(['npc1']);
+      expect(result.occupants).toEqual(['player1', 'player2', 'npc1']);
+      expect(result.occupant_count).toBe(3);
+    });
   });
 
   describe('mergeRoomUpdate', () => {

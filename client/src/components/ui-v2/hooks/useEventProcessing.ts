@@ -47,10 +47,22 @@ export const useEventProcessing = ({ currentMessagesRef, setGameState, context }
         updates.messages.push(message);
       };
 
-      events.forEach(event => {
+      events.forEach((event, index) => {
+        logger.info('useEventProcessing', 'OCCUPANT_DEBUG: batch event', {
+          index,
+          event_type: event.event_type,
+          seq: event.sequence_number,
+          room_before: updates.room?.occupant_count ?? 'none',
+        });
         const eventUpdates = processGameEvent(event, context, appendMessage, lastProcessedEvent);
         // Convert null to undefined to match applyEventUpdates signature
         applyEventUpdates(eventUpdates ?? undefined, updates, currentMessagesRef.current);
+        logger.info('useEventProcessing', 'OCCUPANT_DEBUG: after apply', {
+          index,
+          event_type: event.event_type,
+          room_after: updates.room?.occupant_count ?? 'none',
+          room_occupants_len: updates.room?.occupants?.length ?? 0,
+        });
       });
 
       sanitizeAndApplyUpdates(updates, setGameState);
