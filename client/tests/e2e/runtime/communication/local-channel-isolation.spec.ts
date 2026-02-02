@@ -19,6 +19,7 @@ import {
   waitForAllPlayersInGame,
   waitForCrossPlayerMessage,
 } from '../fixtures/multiplayer';
+import { ensureStanding } from '../fixtures/player';
 
 test.describe('Local Channel Isolation', () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
@@ -29,8 +30,15 @@ test.describe('Local Channel Isolation', () => {
     await ensurePlayerInGame(contexts[0], 60000);
     await ensurePlayerInGame(contexts[1], 60000);
 
-    // CRITICAL: Ensure both players are in the same room initially
-    await ensurePlayersInSameRoom(contexts, 2, 30000);
+    // Local channel requires both players in same room. Force co-location: stand then move both north.
+    const [awContext, ithaquaContext] = contexts;
+    await ensureStanding(awContext.page, 10000);
+    await executeCommand(awContext.page, 'go north');
+    await new Promise(r => setTimeout(r, 2000));
+    await ensureStanding(ithaquaContext.page, 10000);
+    await executeCommand(ithaquaContext.page, 'go north');
+    await new Promise(r => setTimeout(r, 3000));
+    await ensurePlayersInSameRoom(contexts, 2, 60000);
   });
 
   test.afterAll(async () => {
@@ -68,25 +76,24 @@ test.describe('Local Channel Isolation', () => {
     await ensurePlayerInGame(awContext, 15000);
     await ensurePlayerInGame(ithaquaContext, 15000);
 
-    await executeCommand(awContext.page, 'stand');
-    await waitForMessage(awContext.page, /rise|standing|feet|already standing/i, 5000).catch(() => {});
-
-    await executeCommand(awContext.page, 'go north');
-    await waitForMessage(awContext.page, 'You move north', 10000).catch(() => {
-      // Movement may succeed even if message format differs
+    // Main Foyer has no north exit; use east to move AW to Eastern Hallway (different room)
+    await ensureStanding(awContext.page, 5000);
+    await executeCommand(awContext.page, 'go east');
+    await waitForMessage(awContext.page, /You move east|Eastern Hallway/i, 10000).catch(() => {
+      // If movement fails, test cannot verify isolation
     });
-    await awContext.page.waitForTimeout(2000);
+    await new Promise(r => setTimeout(r, 2000));
 
-    // AW sends local message from different sub-zone
+    // AW sends local message from different room (Eastern Hallway); Ithaqua stays in Main Foyer
     await executeCommand(awContext.page, 'local Testing different sub-zone isolation');
 
     // Wait for confirmation
     await waitForMessage(awContext.page, 'You say locally: Testing different sub-zone isolation');
 
     // Wait a bit for message routing
-    await ithaquaContext.page.waitForTimeout(3000);
+    await new Promise(r => setTimeout(r, 3000));
 
-    // Verify Ithaqua does NOT see the message (different sub-zones)
+    // Verify Ithaqua does NOT see the message (different rooms = different local scope)
     const ithaquaMessages = await getPlayerMessages(ithaquaContext);
     const seesMessage = ithaquaMessages.some(msg =>
       msg.includes('ArkanWolfshade (local): Testing different sub-zone isolation')
@@ -101,13 +108,20 @@ test.describe('Local Channel Isolation', () => {
     await ensurePlayerInGame(awContext, 15000);
     await ensurePlayerInGame(ithaquaContext, 15000);
 
-    await executeCommand(awContext.page, 'go south');
-    await waitForMessage(awContext.page, 'You move south', 10000).catch(() => {
+    // AW is in Eastern Hallway from previous test; go west to return to Main Foyer (same room as Ithaqua)
+    await ensureStanding(awContext.page, 5000);
+    await executeCommand(awContext.page, 'go west');
+    await waitForMessage(awContext.page, /You move west|Main Foyer/i, 10000).catch(() => {
       // Movement may succeed even if message format differs
     });
-    await awContext.page.waitForTimeout(2000);
+    await new Promise(r => setTimeout(r, 2000));
 
-    // AW sends local message after returning
+    // Re-ensure both in same room and receiver still in game before send (avoids timeout when second player left)
+    await ensurePlayerInGame(ithaquaContext, 10000);
+    await ensurePlayersInSameRoom(contexts, 2, 15000);
+    await new Promise(r => setTimeout(r, 2000));
+
+    // AW sends local message after returning to Main Foyer
     await executeCommand(awContext.page, 'local Testing same sub-zone after return');
 
     // Wait for confirmation

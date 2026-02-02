@@ -7,12 +7,11 @@
  */
 
 import { expect, test } from '@playwright/test';
-import { executeCommand, getMessages, waitForMessage } from '../fixtures/auth';
+import { executeCommand, getMessages } from '../fixtures/auth';
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
   ensurePlayerInGame,
-  ensurePlayersInSameRoom,
   getPlayerMessages,
   waitForAllPlayersInGame,
 } from '../fixtures/multiplayer';
@@ -26,9 +25,7 @@ test.describe('Who Command', () => {
     await waitForAllPlayersInGame(contexts, 60000);
     await ensurePlayerInGame(contexts[0], 60000);
     await ensurePlayerInGame(contexts[1], 60000);
-
-    // CRITICAL: Ensure both players are in the same room before who command tests
-    await ensurePlayersInSameRoom(contexts, 2, 30000);
+    // Who lists all online players; no co-location required.
   });
 
   test.afterAll(async () => {
@@ -38,16 +35,14 @@ test.describe('Who Command', () => {
 
   test('AW should see both players in who list', async () => {
     const awContext = contexts[0];
-    const ithaquaContext = contexts[1];
 
     await ensurePlayerInGame(awContext, 15000);
-    await ensurePlayerInGame(ithaquaContext, 15000);
-    await ensurePlayersInSameRoom(contexts, 2, 15000);
 
     await executeCommand(awContext.page, 'who');
 
-    // Wait for who command response to appear in the game log (required before asserting)
-    await waitForMessage(awContext.page, 'Online Players:', 15000);
+    // Wait for who command response (Game Info or game log). Use getByText so we match
+    // "Online Players (n):" regardless of data-message-text visibility or scroll.
+    await expect(awContext.page.getByText(/Online Players/)).toBeVisible({ timeout: 15000 });
 
     // Verify at least one player name appears in who list (both if timing allows)
     const messages = await getMessages(awContext.page);
@@ -57,17 +52,15 @@ test.describe('Who Command', () => {
   });
 
   test('Ithaqua should see both players in who list', async () => {
-    const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    await ensurePlayerInGame(awContext, 15000);
     await ensurePlayerInGame(ithaquaContext, 15000);
-    await ensurePlayersInSameRoom(contexts, 2, 15000);
 
     await executeCommand(ithaquaContext.page, 'who');
 
-    // Wait for who command response to appear in the game log (required before asserting)
-    await waitForMessage(ithaquaContext.page, 'Online Players:', 15000);
+    // Wait for who command response (Game Info or game log). Use getByText so we match
+    // "Online Players (n):" regardless of data-message-text visibility or scroll.
+    await expect(ithaquaContext.page.getByText(/Online Players/)).toBeVisible({ timeout: 15000 });
 
     const messages = await getPlayerMessages(ithaquaContext);
     const seesArkan = messages.some(msg => msg.includes('ArkanWolfshade'));

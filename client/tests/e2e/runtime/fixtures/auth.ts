@@ -97,14 +97,14 @@ export async function loginPlayer(page: Page, username: string, password: string
     if (await selectCharacterButton.isVisible({ timeout: 3000 }).catch(() => false)) {
       await selectCharacterButton.click();
       await page.waitForLoadState('domcontentloaded', { timeout: 5000 }).catch(() => {});
-      await page.waitForTimeout(1000); // Wait for character selection to process
+      await new Promise(r => setTimeout(r, 1000)); // Wait for character selection to process
     } else {
       // Fallback: try clicking first character card or button
       const firstCharacter = page.locator('.character-card, [data-character-id], button:has-text("Select")').first();
       if (await firstCharacter.isVisible({ timeout: 3000 }).catch(() => false)) {
         await firstCharacter.click();
         await page.waitForLoadState('domcontentloaded', { timeout: 5000 }).catch(() => {});
-        await page.waitForTimeout(1000); // Wait for character selection to process
+        await new Promise(r => setTimeout(r, 1000)); // Wait for character selection to process
       }
     }
     // After character selection, wait for MOTD screen to appear (it appears after character selection in App.tsx)

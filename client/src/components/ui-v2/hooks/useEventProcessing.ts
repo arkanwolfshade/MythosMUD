@@ -4,8 +4,8 @@
 import { useCallback, useRef } from 'react';
 import { logger } from '../../../utils/logger';
 import type { GameEvent } from '../eventHandlers/types';
-import type { GameState } from '../utils/stateUpdateUtils';
 import { EventStore, projectState } from '../eventLog';
+import type { GameState } from '../utils/stateUpdateUtils';
 
 interface UseEventProcessingParams {
   setGameState: React.Dispatch<React.SetStateAction<GameState>>;

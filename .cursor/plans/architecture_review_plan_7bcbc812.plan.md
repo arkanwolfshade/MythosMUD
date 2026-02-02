@@ -13,10 +13,10 @@ todos:
     status: completed
   - id: review-repository-wrappers
     content: Review ContainerRepository and ItemRepository async wrappers and plan full async migration
-    status: pending
+    status: completed
   - id: define-service-boundaries
     content: Define explicit bounded contexts and service boundaries with documentation
-    status: pending
+    status: completed
   - id: create-adrs
     content: Create Architecture Decision Records (ADRs) for major architectural decisions
     status: pending

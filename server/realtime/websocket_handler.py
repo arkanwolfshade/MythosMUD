@@ -358,7 +358,16 @@ async def _setup_initial_connection_state(
                     )
 
         return canonical_room_id, False
-    except (WebSocketDisconnect, RuntimeError) as e:
+    except WebSocketDisconnect as e:
+        # Client closed during setup (e.g. page close, React unmount). Expected in e2e and dev.
+        logger.debug(
+            "Client disconnected during initial connection setup",
+            player_id=player_id,
+            code=getattr(e, "code", None),
+            reason=getattr(e, "reason", None),
+        )
+        return None, True
+    except RuntimeError as e:
         logger.error("Error in initial connection setup", player_id=player_id, error=str(e), exc_info=True)
         return None, True
 
@@ -427,9 +436,11 @@ async def handle_websocket_connection(
 
     _, should_exit = await _setup_initial_connection_state(websocket, player_id, player_id_str, connection_manager)
     if should_exit:
+        await _cleanup_connection(player_id, player_id_str, connection_manager)
         return
 
     if not await _send_welcome_event(websocket, player_id, player_id_str):
+        await _cleanup_connection(player_id, player_id_str, connection_manager)
         return
 
     try:

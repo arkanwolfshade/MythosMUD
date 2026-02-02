@@ -146,7 +146,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
   useHallucinationFeedCleanup(setHallucinationFeed);
 
   // Event processing hook (event-sourced: EventStore + projector)
-  const { handleGameEvent, clearEventLog } = useEventProcessing({
+  const { handleGameEvent } = useEventProcessing({
     setGameState,
   });
 
@@ -185,7 +185,10 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
   });
 
   const handleLogout = async () => {
-    clearEventLog();
+    // Do not clear the event log here: clearing causes the next processEventQueue to
+    // project state from only the new post-/rest events, overwriting gameState with
+    // no player/room and blanking all panels. Keep the log so panels stay visible
+    // through the logout countdown. Clear on actual disconnect/unmount if needed.
     // Send /rest command instead of immediate disconnect
     // The /rest command will handle the countdown and disconnect automatically
     if (!isConnected) {

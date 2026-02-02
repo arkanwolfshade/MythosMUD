@@ -379,6 +379,8 @@ async def test_handle_websocket_connection_setup_fails(mock_websocket, mock_ws_c
     player_id = uuid.uuid4()
 
     mock_ws_connection_manager.connect_websocket = AsyncMock(return_value=True)
+    # Real _cleanup_connection is invoked on early exit; it awaits disconnect_websocket
+    mock_ws_connection_manager.disconnect_websocket = AsyncMock()
 
     with patch("server.realtime.websocket_handler.check_shutdown_and_reject", new_callable=AsyncMock) as mock_check:
         mock_check.return_value = False
@@ -403,6 +405,8 @@ async def test_handle_websocket_connection_welcome_fails(mock_websocket, mock_ws
     player_id = uuid.uuid4()
 
     mock_ws_connection_manager.connect_websocket = AsyncMock(return_value=True)
+    # Real _cleanup_connection is invoked when welcome fails; it awaits disconnect_websocket
+    mock_ws_connection_manager.disconnect_websocket = AsyncMock()
 
     with patch("server.realtime.websocket_handler.check_shutdown_and_reject", new_callable=AsyncMock) as mock_check:
         mock_check.return_value = False

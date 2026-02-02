@@ -11,6 +11,7 @@ import { executeCommand, waitForMessage } from '../fixtures/auth';
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
+  ensurePlayerInGame,
   getPlayerMessages,
   waitForAllPlayersInGame,
   waitForCrossPlayerMessage,
@@ -23,6 +24,8 @@ test.describe('Whisper Logging', () => {
     // Create contexts for both players (AW is admin, Ithaqua is not)
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
     await waitForAllPlayersInGame(contexts);
+    await ensurePlayerInGame(contexts[0], 60000);
+    await ensurePlayerInGame(contexts[1], 60000);
   });
 
   test.afterAll(async () => {
@@ -34,7 +37,10 @@ test.describe('Whisper Logging', () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    // AW sends whisper message
+    await ensurePlayerInGame(awContext, 15000);
+    await ensurePlayerInGame(ithaquaContext, 15000);
+
+    // AW sends whisper message (whisper works across rooms)
     await executeCommand(awContext.page, 'whisper Ithaqua Testing whisper logging functionality');
 
     // Wait for confirmation

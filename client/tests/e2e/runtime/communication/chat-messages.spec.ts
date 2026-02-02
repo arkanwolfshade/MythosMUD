@@ -18,6 +18,7 @@ import {
   waitForAllPlayersInGame,
   waitForCrossPlayerMessage,
 } from '../fixtures/multiplayer';
+import { ensureStanding } from '../fixtures/player';
 
 test.describe('Chat Messages Between Players', () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
@@ -28,25 +29,29 @@ test.describe('Chat Messages Between Players', () => {
     await ensurePlayerInGame(contexts[0], 60000);
     await ensurePlayerInGame(contexts[1], 60000);
 
-    // CRITICAL: Ensure both players are in the same room before communication tests
-    await ensurePlayersInSameRoom(contexts, 2, 30000);
+    // Room-based /say requires both players in the same room. Force co-location: stand then move both north.
+    const [awContext, ithaquaContext] = contexts;
+    await ensureStanding(awContext.page, 5000);
+    await executeCommand(awContext.page, 'go north');
+    await new Promise(r => setTimeout(r, 2000));
+    await ensureStanding(ithaquaContext.page, 5000);
+    await executeCommand(ithaquaContext.page, 'go north');
+    await new Promise(r => setTimeout(r, 3000));
+    await ensurePlayersInSameRoom(contexts, 2, 60000);
 
     // Unmute both players to ensure clean state (mute state may persist from previous scenarios)
     // Mute filtering happens on the receiving end, so both players need to unmute each other
-    const awContext = contexts[0];
-    const ithaquaContext = contexts[1];
-
     try {
       // Ithaqua unmutes AW (so Ithaqua can see AW's messages)
       await executeCommand(ithaquaContext.page, 'unmute ArkanWolfshade');
-      await ithaquaContext.page.waitForTimeout(1000);
+      await new Promise(r => setTimeout(r, 1000));
 
       // AW unmutes Ithaqua (so AW can see Ithaqua's messages)
       await executeCommand(awContext.page, 'unmute Ithaqua');
-      await awContext.page.waitForTimeout(1000);
+      await new Promise(r => setTimeout(r, 1000));
 
       // Small additional wait to ensure mute state is cleared
-      await awContext.page.waitForTimeout(1000);
+      await new Promise(r => setTimeout(r, 1000));
     } catch {
       // Ignore unmute errors - players may not be muted to begin with
       // This is expected if mute state doesn't persist between test runs
@@ -68,10 +73,16 @@ test.describe('Chat Messages Between Players', () => {
 
     try {
       await executeCommand(ithaquaContext.page, 'unmute ArkanWolfshade');
-      await ithaquaContext.page.waitForTimeout(1000);
+      await new Promise(r => setTimeout(r, 1000));
     } catch {
       // Ignore if already unmuted or command fails
     }
+
+    // Re-ensure receiver (Ithaqua) is in game and same room; brief stability wait so receiver is not
+    // linkdead when sender sends
+    await ensurePlayerInGame(ithaquaContext, 10000);
+    await ensurePlayersInSameRoom(contexts, 2, 10000);
+    await new Promise(r => setTimeout(r, 2000));
 
     // AW sends chat message
     await executeCommand(awContext.page, 'say Hello Ithaqua');
@@ -98,10 +109,16 @@ test.describe('Chat Messages Between Players', () => {
 
     try {
       await executeCommand(awContext.page, 'unmute Ithaqua');
-      await awContext.page.waitForTimeout(1000);
+      await new Promise(r => setTimeout(r, 1000));
     } catch {
       // Ignore if already unmuted or command fails
     }
+
+    // Re-ensure receiver (AW) is in game and same room; brief stability wait so receiver is not
+    // linkdead when sender sends
+    await ensurePlayerInGame(awContext, 10000);
+    await ensurePlayersInSameRoom(contexts, 2, 10000);
+    await new Promise(r => setTimeout(r, 2000));
 
     // Ithaqua sends chat message
     await executeCommand(ithaquaContext.page, 'say Hello ArkanWolfshade');
@@ -128,10 +145,16 @@ test.describe('Chat Messages Between Players', () => {
 
     try {
       await executeCommand(ithaquaContext.page, 'unmute ArkanWolfshade');
-      await ithaquaContext.page.waitForTimeout(1000);
+      await new Promise(r => setTimeout(r, 1000));
     } catch {
       // Ignore if already unmuted or command fails
     }
+
+    // Re-ensure receiver (Ithaqua) is in game and same room; brief stability wait so receiver is not
+    // linkdead when sender sends
+    await ensurePlayerInGame(ithaquaContext, 10000);
+    await ensurePlayersInSameRoom(contexts, 2, 10000);
+    await new Promise(r => setTimeout(r, 2000));
 
     // AW sends formatted message
     await executeCommand(awContext.page, 'say Testing message formatting');

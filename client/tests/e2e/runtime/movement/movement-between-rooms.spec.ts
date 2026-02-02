@@ -17,6 +17,7 @@ import {
   waitForAllPlayersInGame,
   waitForCrossPlayerMessage,
 } from '../fixtures/multiplayer';
+import { ensureStanding } from '../fixtures/player';
 
 test.describe('Movement Between Rooms', () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
@@ -27,8 +28,15 @@ test.describe('Movement Between Rooms', () => {
     await waitForAllPlayersInGame(contexts, 60000);
     await ensurePlayerInGame(contexts[0], 60000);
     await ensurePlayerInGame(contexts[1], 60000);
-    // Require both players in same room so movement broadcasts are visible
-    await ensurePlayersInSameRoom(contexts, 2, 30000);
+    // Movement broadcasts require both in same room. Force co-location: stand then move both north.
+    const [awContext, ithaquaContext] = contexts;
+    await ensureStanding(awContext.page, 10000);
+    await executeCommand(awContext.page, 'go north');
+    await new Promise(r => setTimeout(r, 2000));
+    await ensureStanding(ithaquaContext.page, 10000);
+    await executeCommand(ithaquaContext.page, 'go north');
+    await new Promise(r => setTimeout(r, 3000));
+    await ensurePlayersInSameRoom(contexts, 2, 60000);
   });
 
   test.afterAll(async () => {
@@ -40,15 +48,11 @@ test.describe('Movement Between Rooms', () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    // AW must stand before moving (server rejects "go" when sitting)
-    await executeCommand(awContext.page, 'stand');
-    await waitForMessage(awContext.page, /rise|standing|feet|already standing/i, 5000).catch(() => {});
+    // Main Foyer has no north exit; use east to move AW to Eastern Hallway so Ithaqua sees "leaves the room"
+    await ensureStanding(awContext.page, 5000);
+    await executeCommand(awContext.page, 'go east');
 
-    // AW moves north (use north - room may have West/North only in some envs)
-    await executeCommand(awContext.page, 'go north');
-
-    // Wait for movement confirmation
-    await waitForMessage(awContext.page, 'You move north', 10000).catch(() => {
+    await waitForMessage(awContext.page, /You move east|You go east|Eastern Hallway/i, 10000).catch(() => {
       // Movement may succeed even if message format differs
     });
 
@@ -76,15 +80,16 @@ test.describe('Movement Between Rooms', () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    // Ithaqua must stand before moving (server rejects "go" when sitting)
-    await executeCommand(ithaquaContext.page, 'stand');
-    await waitForMessage(ithaquaContext.page, /rise|standing|feet|already standing/i, 5000).catch(() => {});
+    // Re-ensure both in game before move (avoids timeout when second player left)
+    await ensurePlayerInGame(awContext, 10000);
+    await ensurePlayerInGame(ithaquaContext, 10000);
+    await new Promise(r => setTimeout(r, 2000));
 
-    // Ithaqua moves north to join AW
-    await executeCommand(ithaquaContext.page, 'go north');
+    // AW is in Eastern Hallway from previous test; Ithaqua is in Main Foyer - Ithaqua goes east to join AW
+    await ensureStanding(ithaquaContext.page, 5000);
+    await executeCommand(ithaquaContext.page, 'go east');
 
-    // Wait for movement confirmation
-    await waitForMessage(ithaquaContext.page, 'You move north', 10000).catch(() => {
+    await waitForMessage(ithaquaContext.page, /You move east|You go east|Eastern Hallway/i, 10000).catch(() => {
       // Movement may succeed even if message format differs
     });
 

@@ -17,6 +17,7 @@ import {
   waitForAllPlayersInGame,
   waitForCrossPlayerMessage,
 } from '../fixtures/multiplayer';
+import { ensureStanding } from '../fixtures/player';
 
 test.describe('Local Channel Errors', () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
@@ -27,8 +28,15 @@ test.describe('Local Channel Errors', () => {
     await ensurePlayerInGame(contexts[0], 60000);
     await ensurePlayerInGame(contexts[1], 60000);
 
-    // CRITICAL: Ensure both players are in the same room before local channel error tests
-    await ensurePlayersInSameRoom(contexts, 2, 30000);
+    // Local channel tests require both players in same room. Force co-location: stand then move both north.
+    const [awContext, ithaquaContext] = contexts;
+    await ensureStanding(awContext.page, 10000);
+    await executeCommand(awContext.page, 'go north');
+    await new Promise(r => setTimeout(r, 2000));
+    await ensureStanding(ithaquaContext.page, 10000);
+    await executeCommand(ithaquaContext.page, 'go north');
+    await new Promise(r => setTimeout(r, 3000));
+    await ensurePlayersInSameRoom(contexts, 2, 60000);
   });
 
   test.afterAll(async () => {
