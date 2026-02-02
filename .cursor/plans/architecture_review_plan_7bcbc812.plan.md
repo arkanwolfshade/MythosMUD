@@ -19,7 +19,7 @@ todos:
     status: completed
   - id: create-adrs
     content: Create Architecture Decision Records (ADRs) for major architectural decisions
-    status: pending
+    status: completed
   - id: evaluate-distributed-eventbus
     content: Evaluate distributed EventBus solution (Redis) for horizontal scalability
     status: pending
