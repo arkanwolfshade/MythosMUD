@@ -14,6 +14,7 @@ import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
   ensurePlayerInGame,
+  ensurePlayersInSameRoom,
   getPlayerMessages,
   waitForAllPlayersInGame,
   waitForCrossPlayerMessage,
@@ -27,6 +28,8 @@ test.describe('Local Channel Movement', () => {
     await waitForAllPlayersInGame(contexts, 60000);
     await ensurePlayerInGame(contexts[0], 60000);
     await ensurePlayerInGame(contexts[1], 60000);
+    // Require both players in same room so local broadcasts are visible
+    await ensurePlayersInSameRoom(contexts, 2, 30000);
   });
 
   test.afterAll(async () => {

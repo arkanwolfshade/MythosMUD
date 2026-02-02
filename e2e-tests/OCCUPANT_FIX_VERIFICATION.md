@@ -4,8 +4,8 @@ Verify that the entering player sees existing room occupants using the local ser
 
 ## Test Accounts (from MULTIPLAYER_TEST_RULES.md)
 
-- **ArkanWolfshade** (AW) – password: `Cthulhu1`, Character: ArkanWolfshade  
-- **Ithaqua** – password: `Cthulhu1`, Character: Ithaqua  
+- **ArkanWolfshade** (AW) – password: `Cthulhu1`, Character: ArkanWolfshade
+- **Ithaqua** – password: `Cthulhu1`, Character: Ithaqua
 
 **Note:** For local server, ensure these users exist in your DB (e.g. run DB verification from MULTIPLAYER_TEST_RULES Step 2 if using `mythos_e2e`).
 
@@ -35,11 +35,11 @@ Verify that the entering player sees existing room occupants using the local ser
 
 ### Verify the fix
 
-- **On Tab 2 (Ithaqua – entering player):** Open the **Occupants** panel.  
-  **Pass:** ArkanWolfshade is listed under Players.  
+- **On Tab 2 (Ithaqua – entering player):** Open the **Occupants** panel.
+  **Pass:** ArkanWolfshade is listed under Players.
   **Fail:** Occupants panel is empty or does not show ArkanWolfshade.
 
-- **On Tab 1 (ArkanWolfshade):** Open the **Occupants** panel.  
+- **On Tab 1 (ArkanWolfshade):** Open the **Occupants** panel.
   **Pass:** Ithaqua is listed (existing behavior).
 
 ## Playwright MCP verification (when browser launches)

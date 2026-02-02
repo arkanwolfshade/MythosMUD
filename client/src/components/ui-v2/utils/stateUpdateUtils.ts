@@ -2,6 +2,7 @@
 // Extracted from GameClientV2Container to reduce complexity
 // As documented in "State Management Patterns" - Dr. Armitage, 1928
 
+import type { MythosTimeState } from '../../../types/mythosTime';
 import type { GameStateUpdates } from '../eventHandlers/types';
 import type { ChatMessage, Player, Room } from '../types';
 import { sanitizeChatMessageForState } from './messageUtils';
@@ -14,9 +15,14 @@ export interface GameState {
   commandHistory: string[];
   loginGracePeriodActive?: boolean;
   loginGracePeriodRemaining?: number;
+  /** Derived from game_tick; used for Mythos time display. Bootstrap may set initial until first tick. */
+  mythosTime?: MythosTimeState | null;
+  /** Last quarter-hour minute projected (for deduplicating clock chime messages). */
+  lastQuarterHourForChime?: number | null;
 }
 
-// Helper: treat empty arrays/count as "no data" so we preserve existing (room_update sends empty; room_occupants is authoritative).
+// Helper: treat empty arrays/count as "no data" so we preserve existing
+// (room_update sends empty; room_occupants is authoritative).
 function hasOccupantData(room: Room): boolean {
   const hasPlayers = room.players != null && room.players.length > 0;
   const hasNpcs = room.npcs != null && room.npcs.length > 0;

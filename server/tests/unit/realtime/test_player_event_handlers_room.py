@@ -329,12 +329,15 @@ async def test_send_room_updates_to_entering_player_success(player_room_event_ha
     room_id = "room_001"
     player_room_event_handler.send_room_update_to_player = AsyncMock()
     player_room_event_handler.send_occupants_snapshot_to_player = AsyncMock()
+    player_room_event_handler.send_room_state_to_player = AsyncMock()
     with patch.object(player_room_event_handler.utils, "normalize_player_id", return_value=player_id):
         await player_room_event_handler.send_room_updates_to_entering_player(player_id, player_name, room_id)
         player_room_event_handler.send_room_update_to_player.assert_awaited_once_with(
             player_id, room_id, include_occupants=True
         )
-        player_room_event_handler.send_occupants_snapshot_to_player.assert_awaited_once_with(player_id, room_id)
+        # send_occupants_snapshot_to_player is called twice in the normal flow
+        assert player_room_event_handler.send_occupants_snapshot_to_player.await_count == 2
+        player_room_event_handler.send_room_state_to_player.assert_awaited_once_with(player_id, room_id)
 
 
 @pytest.mark.asyncio
@@ -362,9 +365,13 @@ async def test_send_room_updates_to_entering_player_error_handling(player_room_e
     room_id = "room_001"
     player_room_event_handler.send_occupants_snapshot_to_player = AsyncMock(side_effect=ValueError("Error"))
     player_room_event_handler.send_room_update_to_player = AsyncMock()
+    player_room_event_handler.send_room_state_to_player = AsyncMock()
     with patch.object(player_room_event_handler.utils, "normalize_player_id", return_value=player_id):
         await player_room_event_handler.send_room_updates_to_entering_player(player_id, player_name, room_id)
-        mock_logger.error.assert_called_once()
+        # Error is logged for first occupants snapshot attempt, second error is logged as debug
+        # First error at line 500-506 logs as error, second at line 513-519 logs as debug
+        assert mock_logger.error.call_count == 1
+        assert mock_logger.debug.call_count >= 1
 
 
 @pytest.mark.asyncio

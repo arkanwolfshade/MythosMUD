@@ -96,6 +96,23 @@ describe('roomMergeUtils', () => {
       expect(result?.npcs).toEqual(['npc1']);
     });
 
+    it('should preserve prev NPCs when updates explicitly clears NPCs (empty array)', () => {
+      const prevRoom: Room = {
+        id: 'room1',
+        name: 'Room 1',
+        npcs: ['npc1', 'npc2'],
+      } as Room;
+
+      const updatesRoom: Room = {
+        id: 'room1',
+        name: 'Room 1',
+        npcs: [],
+      } as Room;
+
+      const result = mergeRoomState(updatesRoom, prevRoom);
+      expect(result?.npcs).toEqual(['npc1', 'npc2']);
+    });
+
     it('should use new room players when room ID changes', () => {
       const prevRoom: Room = {
         id: 'room1',

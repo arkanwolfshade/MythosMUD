@@ -548,7 +548,7 @@ async def start_login_grace_period_endpoint(
             context = create_error_context(request, current_user, operation="start_login_grace_period")
             raise LoggedHTTPException(status_code=500, detail="Connection manager not available", context=context)
 
-        await _validate_player_for_grace_period(player_id, current_user, request, player_service)
+        character = await _validate_player_for_grace_period(player_id, current_user, request, player_service)
 
         # Check if already in grace period
         if is_player_in_login_grace_period(player_id, connection_manager):
@@ -566,7 +566,12 @@ async def start_login_grace_period_endpoint(
         # Start login grace period
         await start_login_grace_period(player_id, connection_manager)
         remaining = get_login_grace_period_remaining(player_id, connection_manager)
-        logger.info("Login grace period started", player_id=player_id, remaining=remaining)
+        logger.info(
+            "Login grace period started",
+            player_id=player_id,
+            player_name=character.name,
+            remaining=remaining,
+        )
 
         return LoginGracePeriodResponse(
             success=True,

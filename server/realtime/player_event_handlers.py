@@ -115,6 +115,22 @@ class PlayerEventHandler:
         """
         await self._room_handler.send_occupants_snapshot_to_player(player_id, room_id)
 
+    async def get_room_state_event(self, player_id: Any, room_id: str) -> dict[str, Any] | None:
+        """
+        Build authoritative room_state event for a room (for request/response enter-room).
+
+        Returns the same event dict that would be sent via send_room_state_to_player,
+        so it can be included in command_response when the player moves.
+
+        Args:
+            player_id: The player's ID (UUID or string)
+            room_id: The room ID
+
+        Returns:
+            room_state event dict or None if unavailable
+        """
+        return await self._room_handler.get_room_state_event(player_id, room_id)
+
     # State update methods (delegated to state handler)
     async def handle_player_xp_awarded(self, event: PlayerXPAwardEvent) -> None:
         """

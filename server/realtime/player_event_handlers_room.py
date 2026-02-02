@@ -359,6 +359,94 @@ class PlayerRoomEventHandler:
                 exc_info=True,
             )
 
+    async def send_room_state_to_player(self, player_id: uuid.UUID | str, room_id: str) -> None:
+        """
+        Send single authoritative room_state (room metadata + occupants) to a player.
+
+        Client treats room_state as authoritative for that room_id (replace, do not merge).
+        Sent to entering player and can be sent on room changes.
+
+        Args:
+            player_id: The player's ID (UUID or string)
+            room_id: The room ID
+        """
+        if not self.connection_manager:
+            return
+        player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
+        try:
+            room = (
+                self.connection_manager.async_persistence.get_room_by_id(room_id)
+                if self.connection_manager.async_persistence
+                else None
+            )
+            if not room:
+                return
+            occupants_info = await self.occupant_manager.get_room_occupants(room_id, ensure_player_included=player_id)
+            occupant_names = self.utils.extract_occupant_names(occupants_info)
+            room_data = await self._prepare_room_data(room, room_id)
+            occupants_data = self.utils.build_occupants_snapshot_data(occupants_info)
+            room_data["players"] = occupants_data.get("players", [])
+            room_data["npcs"] = occupants_data.get("npcs", [])
+            room_data["occupants"] = occupants_data.get("occupants", [])
+            room_data["occupant_count"] = occupants_data.get("count", 0)
+            room_state_event = self.message_builder.build_room_state_message(room_id, room_data)
+            await self.connection_manager.send_personal_message(player_id_uuid, room_state_event)
+            self._logger.debug(
+                "Sent room_state (authoritative) to player",
+                player_id=player_id_uuid,
+                room_id=room_id,
+                occupant_count=room_data.get("occupant_count", 0),
+                occupant_names=occupant_names,
+            )
+        except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError) as e:
+            self._logger.error(
+                "Error sending room_state to player",
+                player_id=str(player_id),
+                room_id=room_id,
+                error=str(e),
+            )
+
+    async def get_room_state_event(self, player_id: uuid.UUID | str, room_id: str) -> dict[str, Any] | None:
+        """
+        Build authoritative room_state event for a room (same as send_room_state_to_player, without sending).
+
+        Used for request/response: include in command_response when player enters a room so client
+        can set room state from the response and not rely on push event ordering.
+
+        Args:
+            player_id: The player's ID (UUID or string)
+            room_id: The room ID
+
+        Returns:
+            room_state event dict or None if room/occupants unavailable
+        """
+        if not self.connection_manager:
+            return None
+        try:
+            room = (
+                self.connection_manager.async_persistence.get_room_by_id(room_id)
+                if self.connection_manager.async_persistence
+                else None
+            )
+            if not room:
+                return None
+            occupants_info = await self.occupant_manager.get_room_occupants(room_id, ensure_player_included=player_id)
+            room_data = await self._prepare_room_data(room, room_id)
+            occupants_data = self.utils.build_occupants_snapshot_data(occupants_info)
+            room_data["players"] = occupants_data.get("players", [])
+            room_data["npcs"] = occupants_data.get("npcs", [])
+            room_data["occupants"] = occupants_data.get("occupants", [])
+            room_data["occupant_count"] = occupants_data.get("count", 0)
+            return self.message_builder.build_room_state_message(room_id, room_data)
+        except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError) as e:
+            self._logger.debug(
+                "get_room_state_event failed",
+                player_id=str(player_id),
+                room_id=room_id,
+                error=str(e),
+            )
+            return None
+
     async def send_room_updates_to_entering_player(
         self, player_id: uuid.UUID | str, player_name: str, room_id: str
     ) -> None:
@@ -383,6 +471,16 @@ class PlayerRoomEventHandler:
             await self.send_room_update_to_player(player_id, room_id, include_occupants=True)
             return
 
+        # Send room_state first (authoritative single source); client replaces room for this room_id.
+        try:
+            await self.send_room_state_to_player(player_id_uuid, room_id)
+        except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError) as room_state_err:
+            self._logger.debug(
+                "Send room_state to entering player failed (non-fatal)",
+                player_id=player_id_uuid,
+                room_id=room_id,
+                error=str(room_state_err),
+            )
         # Send room_occupants BEFORE room_update so the client always has occupants first.
         # This avoids race where room_update (empty occupants) can overwrite if order varies.
         self._logger.info(

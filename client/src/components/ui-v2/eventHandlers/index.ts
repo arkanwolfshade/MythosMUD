@@ -1,15 +1,17 @@
 // Event handler registry and processor
 // As documented in "Event Processing Architecture" - Dr. Armitage, 1928
+// State derivation is now in the event-sourced projector (eventLog/projector.ts).
+// processGameEvent and this registry are not used for state derivation; they are kept for
+// unit tests and optional validation/side effects.
 
-import type { GameEvent } from './types';
-import * as playerHandlers from './playerHandlers';
-import * as roomHandlers from './roomHandlers';
+import { logger } from '../../../utils/logger';
+import type { ChatMessage } from '../types';
 import * as combatHandlers from './combatHandlers';
 import * as messageHandlers from './messageHandlers';
+import * as playerHandlers from './playerHandlers';
+import * as roomHandlers from './roomHandlers';
 import * as systemHandlers from './systemHandlers';
-import type { EventHandler, EventHandlerContext, GameStateUpdates } from './types';
-import type { ChatMessage } from '../types';
-import { logger } from '../../../utils/logger';
+import type { EventHandler, EventHandlerContext, GameEvent, GameStateUpdates } from './types';
 
 // Event handler registry mapping event types to handlers
 const eventHandlers: Record<string, EventHandler> = {
@@ -53,7 +55,6 @@ const eventHandlers: Record<string, EventHandler> = {
   luciditychange: systemHandlers.handleLucidityChange,
   rescue_update: systemHandlers.handleRescueUpdate,
   mythos_time_update: systemHandlers.handleMythosTimeUpdate,
-  game_tick: systemHandlers.handleGameTick,
   intentional_disconnect: systemHandlers.handleIntentionalDisconnect,
 };
 

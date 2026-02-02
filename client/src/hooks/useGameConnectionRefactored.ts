@@ -7,6 +7,7 @@
  * AI: This refactored version uses XState for robust connection management.
  */
 
+import type { MutableRefObject } from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { logger } from '../utils/logger';
 import { inputSanitizer } from '../utils/security';
@@ -38,6 +39,13 @@ export interface UseGameConnectionOptions {
   onError?: (error: string) => void;
   onSessionChange?: (sessionId: string) => void;
   onConnectionHealthUpdate?: (health: { websocket: string }) => void;
+  /**
+   * When set and true at socket close, treat as intentional exit:
+   * skip reconnection and call onIntentionalDisconnect.
+   */
+  intentionalExitInProgressRef?: MutableRefObject<boolean>;
+  /** Called when socket closes during intentional exit (e.g. after /rest). */
+  onIntentionalDisconnect?: () => void;
 }
 
 /**
@@ -80,6 +88,8 @@ export function useGameConnection(options: UseGameConnectionOptions) {
     onError,
     onSessionChange,
     onConnectionHealthUpdate,
+    intentionalExitInProgressRef,
+    onIntentionalDisconnect,
   } = options;
 
   const [lastEvent, setLastEvent] = useState<GameEvent | null>(null);
@@ -214,10 +224,15 @@ export function useGameConnection(options: UseGameConnectionOptions) {
       onErrorRef.current?.('Connection failed');
     },
     onDisconnect: () => {
-      logger.info('GameConnection', 'WebSocket disconnected');
-      // Notify the connection state machine that WebSocket failed
-      connectionState.onWSFailed('Connection failed');
-      onDisconnectRef.current?.();
+      if (intentionalExitInProgressRef?.current) {
+        intentionalExitInProgressRef.current = false;
+        connectionState.disconnect();
+        onIntentionalDisconnect?.();
+      } else {
+        logger.info('GameConnection', 'WebSocket disconnected');
+        connectionState.onWSFailed('Connection failed');
+        onDisconnectRef.current?.();
+      }
     },
   });
 

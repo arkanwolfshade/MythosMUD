@@ -7,6 +7,7 @@ Depends on Core, Realtime (connection_manager), Game (movement_service).
 from __future__ import annotations
 
 import uuid as uuid_lib
+from collections.abc import Awaitable
 from typing import TYPE_CHECKING, Any
 
 from anyio import sleep
@@ -118,7 +119,7 @@ class CombatBundle:
         )
         logger.info("Player respawn service initialized")
 
-        def failover_cb(pid: str, lcd: Any):
+        def failover_cb(pid: str, lcd: int) -> Awaitable[None]:
             return self._sanitarium_failover_callback(container, pid, lcd)
 
         self.catatonia_registry = CatatoniaRegistry(failover_callback=failover_cb)

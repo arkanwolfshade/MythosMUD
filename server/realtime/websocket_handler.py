@@ -679,6 +679,24 @@ async def process_websocket_command(
     )
     if not isinstance(result, dict):
         raise TypeError("Command handler must return a dict")
+
+    # C3 enter-room request/response: include room_state in command_response when player moved
+    # so client can set room from response and not rely on push event ordering
+    if result.get("room_changed") and result.get("room_id"):
+        event_handler = getattr(app_state, "event_handler", None)
+        if event_handler and hasattr(event_handler, "player_handler"):
+            try:
+                room_state_event = await event_handler.player_handler.get_room_state_event(player_id, result["room_id"])
+                if room_state_event:
+                    result["room_state"] = room_state_event
+            except (TypeError, ValueError, AttributeError) as room_state_err:
+                logger.debug(
+                    "Could not attach room_state to command_response",
+                    player_id=player_id,
+                    room_id=result.get("room_id"),
+                    error=str(room_state_err),
+                )
+
     return result
 
 

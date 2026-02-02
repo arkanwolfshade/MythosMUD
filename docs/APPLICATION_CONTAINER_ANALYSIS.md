@@ -1,8 +1,8 @@
 # ApplicationContainer Structure Analysis and Domain-Specific Split Proposal
 
-**Document Version:** 1.1  
-**Date:** January 2026  
-**Status:** Implemented (Phase 1 and Phase 2 complete)  
+**Document Version:** 1.1
+**Date:** January 2026
+**Status:** Implemented (Phase 1 and Phase 2 complete)
 **Purpose:** Analyze `server/container.py` (ApplicationContainer) and propose a domain-specific container split per the Architecture Review Plan.
 
 ## 1. Executive Summary
@@ -135,7 +135,7 @@ Keep a single **ApplicationContainer** as the public facade and singleton. Split
 
 Introduce first-class **sub-containers** (e.g. `RealtimeContainer`, `GameContainer`) that are exposed as attributes: `container.realtime`, `container.game`. Consumers would use `container.game.player_service` instead of `container.player_service`.
 
-**Pros:** Stronger encapsulation, explicit domain boundaries.  
+**Pros:** Stronger encapsulation, explicit domain boundaries.
 **Cons:** Breaking change for all consumers; requires updates to lifespan, dependencies, tests, and any code that uses `get_container()` or `app.state.container`.
 
 **Recommendation:** Option A (internal bundles with flattened attributes) unless the team explicitly wants a breaking API change and is prepared to update all call sites.

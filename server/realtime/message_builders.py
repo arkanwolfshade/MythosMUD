@@ -171,3 +171,29 @@ class MessageBuilder:
                 # This prevents room_update from overwriting structured NPC/player data
             },
         }
+
+    def build_room_state_message(self, room_id: str, room_data: dict[str, Any]) -> dict[str, Any]:
+        """
+        Build a single authoritative room_state message (room metadata + occupants).
+
+        Used as single source for room on client; sent to entering player and on room changes.
+        Clients treat room_state as authoritative for that room_id (replace, do not merge).
+
+        Args:
+            room_id: The room ID
+            room_data: Full room data including players, npcs, occupants, occupant_count
+
+        Returns:
+            Message dictionary for room_state event
+        """
+        return {
+            "event_type": "room_state",
+            "timestamp": datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z"),
+            "sequence_number": self._get_next_sequence(),
+            "room_id": room_id,
+            "data": {
+                "room": room_data,
+                "occupants": room_data.get("occupants", []),
+                "occupant_count": room_data.get("occupant_count", 0),
+            },
+        }

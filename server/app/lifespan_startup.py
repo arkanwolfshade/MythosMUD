@@ -99,6 +99,12 @@ async def _set_legacy_services(app: FastAPI, container: ApplicationContainer) ->
     else:
         logger.warning("Connection manager not available in container during initialization")
 
+    if container.chat_service is not None:
+        app.state.chat_service = container.chat_service
+        logger.debug("Chat service set on app.state for backward compatibility")
+    else:
+        logger.warning("Chat service not available in container during initialization")
+
 
 async def initialize_container_and_legacy_services(app: FastAPI, container: ApplicationContainer) -> None:
     """Initialize container and set up container reference on app.state.
@@ -505,7 +511,7 @@ async def initialize_magic_services(app: FastAPI, container: ApplicationContaine
     # TargetResolutionService accepts both sync and async persistence layers
     # The protocol is too strict for mypy, but the service handles both at runtime
     target_resolution_service = TargetResolutionService(
-        persistence=container.async_persistence,  # type: ignore[arg-type]  # Reason: TargetResolutionService accepts both sync and async persistence at runtime, but mypy protocol is too strict
+        persistence=container.async_persistence,
         player_service=container.player_service,
     )
     spell_targeting_service = SpellTargetingService(

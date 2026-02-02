@@ -12,6 +12,7 @@ import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
   ensurePlayerInGame,
+  ensurePlayersInSameRoom,
   getPlayerMessages,
   waitForAllPlayersInGame,
   waitForCrossPlayerMessage,
@@ -26,6 +27,8 @@ test.describe('Movement Between Rooms', () => {
     await waitForAllPlayersInGame(contexts, 60000);
     await ensurePlayerInGame(contexts[0], 60000);
     await ensurePlayerInGame(contexts[1], 60000);
+    // Require both players in same room so movement broadcasts are visible
+    await ensurePlayersInSameRoom(contexts, 2, 30000);
   });
 
   test.afterAll(async () => {

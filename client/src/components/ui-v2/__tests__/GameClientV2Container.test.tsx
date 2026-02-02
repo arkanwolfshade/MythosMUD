@@ -83,6 +83,7 @@ vi.mock('./hooks/useCommandHandlers', () => ({
 vi.mock('./hooks/useEventProcessing', () => ({
   useEventProcessing: () => ({
     handleGameEvent: vi.fn(),
+    clearEventLog: vi.fn(),
   }),
 }));
 

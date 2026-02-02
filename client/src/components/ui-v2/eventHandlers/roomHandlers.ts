@@ -1,9 +1,18 @@
 // Room-related event handlers
 // As documented in "Room State Architecture" - Dr. Armitage, 1928
+// State derivation is now in the event-sourced projector (eventLog/projector.ts); these handlers
+// are kept for unit tests and optional validation/side effects.
 
 import { logger } from '../../../utils/logger';
 import type { Player, Room } from '../types';
 import type { EventHandler } from './types';
+
+/** Gate for occupant debug logs; set true only when debugging enter-room / occupant ordering. */
+let _occupantDebug = false;
+/** Test-only setter to exercise OCCUPANT_DEBUG branches; not used in production. */
+export function __setOccupantDebugForTests(value: boolean): void {
+  _occupantDebug = value;
+}
 
 export const handleGameState: EventHandler = (event, _context) => {
   const playerData = event.data.player as unknown;
@@ -17,10 +26,12 @@ export const handleGameState: EventHandler = (event, _context) => {
       ...(occupants && { occupants, occupant_count: occupants.length }),
     };
     const occupantCount = roomWithOccupants.occupants?.length ?? roomWithOccupants.occupant_count ?? 0;
-    logger.info('roomHandlers', 'OCCUPANT_DEBUG: game_state setting room', {
-      occupants_from_payload: occupants?.length ?? 0,
-      result_occupant_count: occupantCount,
-    });
+    if (_occupantDebug) {
+      logger.info('roomHandlers', 'OCCUPANT_DEBUG: game_state setting room', {
+        occupants_from_payload: occupants?.length ?? 0,
+        result_occupant_count: occupantCount,
+      });
+    }
     // Validate that playerData has at least the required 'name' property
     const player = playerData as Player;
     if (typeof player === 'object' && player !== null && 'name' in player && typeof player.name === 'string') {
@@ -88,9 +99,7 @@ function createRoomUpdateWithPreservedOccupants(
     players: usePayloadOccupants ? (payloadRoom?.players ?? []) : (existingRoom.players ?? []),
     npcs: usePayloadOccupants ? payloadRoom?.npcs : existingRoom.npcs,
     occupants: usePayloadOccupants ? (payloadRoom?.occupants ?? []) : (existingRoom.occupants ?? []),
-    occupant_count: usePayloadOccupants
-      ? (payloadRoom?.occupant_count ?? 0)
-      : (existingRoom.occupant_count ?? 0),
+    occupant_count: usePayloadOccupants ? (payloadRoom?.occupant_count ?? 0) : (existingRoom.occupant_count ?? 0),
   };
 
   // If room ID changed, clear occupants
@@ -105,7 +114,8 @@ function createRoomUpdateWithPreservedOccupants(
 }
 
 /**
- * Creates initial room state. Uses roomData.players/occupants when present (entering-player room_update with occupants).
+ * Creates initial room state. Uses roomData.players/occupants when present
+ * (entering-player room_update with occupants).
  */
 function createInitialRoomState(
   roomMetadata: Omit<Room, 'players' | 'npcs' | 'occupants' | 'occupant_count'>,
@@ -133,12 +143,7 @@ function getRoomDataFromEvent(event: { data: Record<string, unknown> }): Room | 
   const topPlayers = event.data.players as string[] | undefined;
   const topNpcs = event.data.npcs as string[] | undefined;
   const topCount = event.data.occupant_count as number | undefined;
-  if (
-    topOccupants === undefined &&
-    topPlayers === undefined &&
-    topNpcs === undefined &&
-    topCount === undefined
-  ) {
+  if (topOccupants === undefined && topPlayers === undefined && topNpcs === undefined && topCount === undefined) {
     return raw as Room;
   }
   return {
@@ -157,31 +162,29 @@ export const handleRoomUpdate: EventHandler = (event, context) => {
 
   const roomMetadata = extractRoomMetadata(roomData);
   const existingRoom = context.currentRoomRef.current;
-  const payloadOccupantCount =
-    (roomData.occupants?.length ?? 0) || (roomData.occupant_count ?? 0);
+  const payloadOccupantCount = (roomData.occupants?.length ?? 0) || (roomData.occupant_count ?? 0);
   const payloadHasOccupants = hasOccupantData(roomData);
 
   if (!existingRoom) {
     const room = createInitialRoomState(roomMetadata, roomData);
-    logger.info('roomHandlers', 'OCCUPANT_DEBUG: room_update branch=initial (no existingRoom)', {
-      payload_occupants: payloadOccupantCount,
-      result_occupants: room.occupants?.length ?? 0,
-    });
+    if (_occupantDebug) {
+      logger.info('roomHandlers', 'OCCUPANT_DEBUG: room_update branch=initial (no existingRoom)', {
+        payload_occupants: payloadOccupantCount,
+        result_occupants: room.occupants?.length ?? 0,
+      });
+    }
     return { room };
   }
 
   const roomIdChanged = roomData.id !== existingRoom.id;
-  const room = createRoomUpdateWithPreservedOccupants(
-    existingRoom,
-    roomMetadata,
-    roomIdChanged,
-    roomData
-  );
-  logger.info('roomHandlers', 'OCCUPANT_DEBUG: room_update branch=merge (had existingRoom)', {
-    payload_occupants: payloadOccupantCount,
-    payload_has_occupants: payloadHasOccupants,
-    result_occupants: room.occupants?.length ?? 0,
-  });
+  const room = createRoomUpdateWithPreservedOccupants(existingRoom, roomMetadata, roomIdChanged, roomData);
+  if (_occupantDebug) {
+    logger.info('roomHandlers', 'OCCUPANT_DEBUG: room_update branch=merge (had existingRoom)', {
+      payload_occupants: payloadOccupantCount,
+      payload_has_occupants: payloadHasOccupants,
+      result_occupants: room.occupants?.length ?? 0,
+    });
+  }
   return { room };
 };
 
@@ -293,10 +296,8 @@ function createMinimalRoomFromOccupantsEvent(
 ): Room {
   const finalPlayers = players ?? [];
   const finalNpcs = npcs ?? [];
-  const finalOccupants =
-    occupants && Array.isArray(occupants) ? occupants : [...finalPlayers, ...finalNpcs];
-  const count =
-    occupantCount !== undefined ? occupantCount : finalOccupants.length;
+  const finalOccupants = occupants && Array.isArray(occupants) ? occupants : [...finalPlayers, ...finalNpcs];
+  const count = occupantCount !== undefined ? occupantCount : finalOccupants.length;
   return {
     id: eventRoomId,
     name: '',
@@ -318,18 +319,14 @@ export const handleRoomOccupants: EventHandler = (event, context) => {
 
   const currentRoom = context.currentRoomRef.current;
   if (!currentRoom) {
-    // room_occupants can arrive before room_update is applied (entering player race). Apply occupants by creating minimal room state.
+    // room_occupants can arrive before room_update (entering player race). Apply occupants via minimal room state.
     if (eventRoomId && (players !== undefined || npcs !== undefined || (occupants && Array.isArray(occupants)))) {
-      const minimalRoom = createMinimalRoomFromOccupantsEvent(
-        eventRoomId,
-        players,
-        npcs,
-        occupants,
-        occupantCount
-      );
-      logger.info('roomHandlers', 'OCCUPANT_DEBUG: room_occupants branch=minimal (no currentRoom)', {
-        result_occupants: minimalRoom.occupants?.length ?? 0,
-      });
+      const minimalRoom = createMinimalRoomFromOccupantsEvent(eventRoomId, players, npcs, occupants, occupantCount);
+      if (_occupantDebug) {
+        logger.info('roomHandlers', 'OCCUPANT_DEBUG: room_occupants branch=minimal (no currentRoom)', {
+          result_occupants: minimalRoom.occupants?.length ?? 0,
+        });
+      }
       return { room: minimalRoom };
     }
     logger.warn('roomHandlers', 'room_occupants event received but no room state available');
@@ -344,18 +341,22 @@ export const handleRoomOccupants: EventHandler = (event, context) => {
   // Use structured format if available
   if (players !== undefined || npcs !== undefined) {
     const room = handleStructuredOccupantsFormat(currentRoom, players, npcs, occupantCount);
-    logger.info('roomHandlers', 'OCCUPANT_DEBUG: room_occupants branch=structured', {
-      result_occupants: room.occupants?.length ?? 0,
-    });
+    if (_occupantDebug) {
+      logger.info('roomHandlers', 'OCCUPANT_DEBUG: room_occupants branch=structured', {
+        result_occupants: room.occupants?.length ?? 0,
+      });
+    }
     return { room };
   }
 
   // Legacy format
   if (occupants && Array.isArray(occupants)) {
     const room = handleLegacyOccupantsFormat(currentRoom, occupants, occupantCount);
-    logger.info('roomHandlers', 'OCCUPANT_DEBUG: room_occupants branch=legacy', {
-      result_occupants: room.occupants?.length ?? 0,
-    });
+    if (_occupantDebug) {
+      logger.info('roomHandlers', 'OCCUPANT_DEBUG: room_occupants branch=legacy', {
+        result_occupants: room.occupants?.length ?? 0,
+      });
+    }
     return { room };
   }
 };

@@ -2,6 +2,9 @@
 name: Architecture Review Plan
 overview: Comprehensive architectural review of MythosMUD codebase evaluating modern architecture patterns, clean architecture principles, distributed systems design, and identifying areas for improvement.
 todos:
+  - id: implement-client-updates-plan
+    content: Implement Client Updates System (Option C) per client_updates_system_audit_628e3fef.plan.md before proceeding with remaining architecture review todos
+    status: completed
   - id: review-event-duplication
     content: Review and consolidate event duplication (EventBus vs direct WebSocket sends) per EVENT_OWNERSHIP_MATRIX.md
     status: completed
@@ -30,6 +33,14 @@ isProject: false
 ---
 
 # MythosMUD Architectural Review Plan
+
+## Implementation Order and Prerequisites
+
+**The Client Updates System Audit plan must be completed before continuing with any further todos in this architecture review plan.**
+
+- **Prerequisite plan:** [client_updates_system_audit_628e3fef.plan.md](client_updates_system_audit_628e3fef.plan.md) (Client Updates System Audit – Option C implementation).
+- **Gate todo:** `implement-client-updates-plan` – Implement the replacement client updates system (event-sourced derivation, single-source room/combat state, request/response for critical handoffs) as specified in that plan.
+- **Remaining architecture review todos** (review-repository-wrappers, define-service-boundaries, create-adrs, evaluate-distributed-eventbus, review-domain-models, document-api-contracts) should be started only after `implement-client-updates-plan` is completed.
 
 ## Executive Summary
 

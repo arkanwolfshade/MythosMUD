@@ -13,7 +13,6 @@ import { AsciiMinimap } from '../map/AsciiMinimap';
 import { GameClientV2 } from './GameClientV2';
 import { LoginGracePeriodBanner } from './LoginGracePeriodBanner';
 import { TabbedInterfaceOverlay } from './components/TabbedInterfaceOverlay';
-import type { EventHandlerContext } from './eventHandlers/types';
 import { useCommandHandlers } from './hooks/useCommandHandlers';
 import { useEventProcessing } from './hooks/useEventProcessing';
 import { useGameConnectionManagement } from './hooks/useGameConnectionManagement';
@@ -62,13 +61,13 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
 
   const [isMortallyWounded, setIsMortallyWounded] = useState(false);
   const [isDead, setIsDead] = useState(false);
-  const [deathLocation, setDeathLocation] = useState<string>('Unknown Location');
+  const [deathLocation] = useState<string>('Unknown Location');
   const [isRespawning, setIsRespawning] = useState(false);
   const [isDelirious, setIsDelirious] = useState(false);
   const [deliriumLocation, setDeliriumLocation] = useState<string>('Unknown Location');
   const [isDeliriumRespawning, setIsDeliriumRespawning] = useState(false);
-  const [lucidityStatus, setLucidityStatus] = useState<LucidityStatus | null>(null);
-  const [healthStatus, setDpStatus] = useState<HealthStatus | null>(null);
+  const [lucidityStatus] = useState<LucidityStatus | null>(null);
+  const [healthStatus] = useState<HealthStatus | null>(null);
   const [, setHallucinationFeed] = useState<HallucinationMessage[]>([]);
   const [rescueState, setRescueState] = useState<RescueState | null>(null);
   const [mythosTime, setMythosTime] = useState<MythosTimeState | null>(null);
@@ -113,12 +112,11 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
   const healthStatusRef = useRef<HealthStatus | null>(null);
   const rescueStateRef = useRef<RescueState | null>(null);
   const lastDaypartRef = useRef<string | null>(null);
-  const lastHourRef = useRef<number | null>(null);
-  const lastQuarterHourRef = useRef<number | null>(null);
   const lastHolidayIdsRef = useRef<string[]>([]);
   const rescueTimeoutRef = useRef<number | null>(null);
-  const lastRoomUpdateTime = useRef<number>(0);
   const sendCommandRef = useRef<((command: string, args?: string[]) => Promise<boolean>) | null>(null);
+  /** Set when user chose Exit (/rest); on socket close we skip reconnection and go to login. */
+  const intentionalExitInProgressRef = useRef(false);
 
   // Ref synchronization
   useRefSynchronization({
@@ -147,37 +145,9 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
   // Clean up hallucination feed
   useHallucinationFeedCleanup(setHallucinationFeed);
 
-  // Create event handler context
-  const context: EventHandlerContext = {
-    currentPlayerRef,
-    currentRoomRef,
-    currentMessagesRef,
-    healthStatusRef,
-    lucidityStatusRef,
-    lastDaypartRef,
-    lastHourRef,
-    lastQuarterHourRef,
-    lastHolidayIdsRef,
-    lastRoomUpdateTime,
-    setDpStatus: setDpStatus,
-    setLucidityStatus,
-    setMythosTime,
-    setIsDead,
-    setIsMortallyWounded,
-    setIsRespawning,
-    setIsDelirious,
-    setIsDeliriumRespawning,
-    setDeathLocation,
-    setDeliriumLocation,
-    setRescueState,
-    onLogout,
-  };
-
-  // Event processing hook
-  const { handleGameEvent } = useEventProcessing({
-    currentMessagesRef,
+  // Event processing hook (event-sourced: EventStore + projector)
+  const { handleGameEvent, clearEventLog } = useEventProcessing({
     setGameState,
-    context,
   });
 
   // Game connection management
@@ -188,6 +158,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
     onLogout,
     onGameEvent: handleGameEvent,
     setGameState,
+    intentionalExitInProgressRef,
   });
 
   useEffect(() => {
@@ -214,6 +185,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
   });
 
   const handleLogout = async () => {
+    clearEventLog();
     // Send /rest command instead of immediate disconnect
     // The /rest command will handle the countdown and disconnect automatically
     if (!isConnected) {
@@ -226,6 +198,8 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
       return;
     }
 
+    // Signal that this close is intentional so connection layer skips reconnection
+    intentionalExitInProgressRef.current = true;
     // Send the /rest command
     const success = await sendCommand('rest', []);
     if (!success) {
@@ -287,7 +261,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
           isConnecting={isConnecting}
           error={error}
           reconnectAttempts={reconnectAttempts}
-          mythosTime={mythosTime}
+          mythosTime={gameState.mythosTime ?? mythosTime}
           healthStatus={healthStatus}
           lucidityStatus={lucidityStatus}
           onSendCommand={handleCommandSubmit}
