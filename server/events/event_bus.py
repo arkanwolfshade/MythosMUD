@@ -520,6 +520,27 @@ class EventBus:  # pylint: disable=too-many-instance-attributes  # Reason: Event
             self._logger.warning("Event queue at capacity - dropping event", event_type=type(event).__name__)
             raise RuntimeError("Event bus overloaded") from exc
 
+    def inject(self, event: BaseEvent) -> None:
+        """
+        Inject event from remote source (e.g. NATS) for local dispatch.
+
+        Used by distributed EventBus when receiving events from other instances.
+        Does not trigger re-publish to NATS. Same processing path as publish.
+        """
+        if not isinstance(event, BaseEvent):
+            raise ValueError("Event must inherit from BaseEvent")
+        self._ensure_async_processing()
+        try:
+            self._event_queue.put_nowait(event)
+            self._logger.debug(
+                "Injected remote event",
+                event_type=type(event).__name__,
+                queue_size=self._event_queue.qsize(),
+            )
+        except asyncio.QueueFull as exc:
+            self._logger.warning("Event queue at capacity - dropping injected event", event_type=type(event).__name__)
+            raise RuntimeError("Event bus overloaded") from exc
+
     def subscribe(self, event_type: type[T], handler: Callable[[T], Any], service_id: str | None = None) -> None:
         """
         Subscribe to events of a specific type with pure async thread-safe patterns.

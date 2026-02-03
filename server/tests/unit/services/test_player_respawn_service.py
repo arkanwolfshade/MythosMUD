@@ -71,6 +71,7 @@ def sample_player():
     player.respawn_room_id = None
     player.get_stats = MagicMock(return_value={"current_dp": 50, "max_dp": 100, "position": PositionState.STANDING})
     player.set_stats = MagicMock()
+    player.restore_to_full_health = MagicMock(return_value=0)
     return player
 
 
@@ -192,7 +193,7 @@ async def test_get_respawn_room_database_error(respawn_service, mock_session):
 
 @pytest.mark.asyncio
 async def test_respawn_player_success(respawn_service, mock_session, sample_player, mock_event_bus):
-    """Test respawning player successfully."""
+    """Test respawning player successfully via Player.restore_to_full_health."""
     sample_player.current_room_id = LIMBO_ROOM_ID
     sample_player.get_stats.return_value = {"current_dp": 0, "max_dp": 100, "position": PositionState.LYING}
     mock_session.get.side_effect = [sample_player, sample_player]  # First for respawn, second for get_respawn_room
@@ -201,10 +202,7 @@ async def test_respawn_player_success(respawn_service, mock_session, sample_play
 
     assert result is True
     assert sample_player.current_room_id == DEFAULT_RESPAWN_ROOM
-    sample_player.set_stats.assert_called_once()
-    stats = sample_player.set_stats.call_args[0][0]
-    assert stats["current_dp"] == 100
-    assert stats["position"] == PositionState.STANDING
+    sample_player.restore_to_full_health.assert_called_once()
     mock_session.commit.assert_awaited_once()
     mock_event_bus.publish.assert_called_once()
     published_event = mock_event_bus.publish.call_args[0][0]

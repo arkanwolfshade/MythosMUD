@@ -16,6 +16,8 @@ interface UseGameConnectionManagementParams {
   onLogout?: () => void;
   onGameEvent: (event: GameEvent) => void;
   setGameState: React.Dispatch<React.SetStateAction<GameState>>;
+  /** When set, socket close is treated as intentional exit: skip reconnection and go to login. */
+  intentionalExitInProgressRef?: React.MutableRefObject<boolean>;
 }
 
 export const useGameConnectionManagement = ({
@@ -25,6 +27,7 @@ export const useGameConnectionManagement = ({
   onLogout,
   onGameEvent,
   setGameState,
+  intentionalExitInProgressRef,
 }: UseGameConnectionManagementParams) => {
   const hasAttemptedConnection = useRef(false);
 
@@ -76,6 +79,8 @@ export const useGameConnectionManagement = ({
     onConnect: handleConnect,
     onDisconnect: handleDisconnect,
     onError: handleError,
+    intentionalExitInProgressRef,
+    onIntentionalDisconnect: onLogout,
   });
 
   useEffect(() => {

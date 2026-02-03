@@ -54,28 +54,28 @@ def mock_attacker():
 
 @pytest.fixture
 def mock_target_player():
-    """Create mock target participant (player)."""
-    target = MagicMock(spec=CombatParticipant)
-    target.participant_id = uuid.uuid4()
-    target.name = "Target"
-    target.current_dp = 50
-    target.max_dp = 50
-    target.participant_type = CombatParticipantType.PLAYER
-    target.is_alive = MagicMock(return_value=True)
-    return target
+    """Create target participant (player) for damage tests - uses real CombatParticipant for domain logic."""
+    return CombatParticipant(
+        participant_id=uuid.uuid4(),
+        name="Target",
+        participant_type=CombatParticipantType.PLAYER,
+        current_dp=50,
+        max_dp=50,
+        dexterity=10,
+    )
 
 
 @pytest.fixture
 def mock_target_npc():
-    """Create mock target participant (NPC)."""
-    target = MagicMock(spec=CombatParticipant)
-    target.participant_id = uuid.uuid4()
-    target.name = "NPC"
-    target.current_dp = 30
-    target.max_dp = 30
-    target.participant_type = CombatParticipantType.NPC
-    target.is_alive = MagicMock(return_value=True)
-    return target
+    """Create target participant (NPC) for damage tests - uses real CombatParticipant for domain logic."""
+    return CombatParticipant(
+        participant_id=uuid.uuid4(),
+        name="NPC",
+        participant_type=CombatParticipantType.NPC,
+        current_dp=30,
+        max_dp=30,
+        dexterity=10,
+    )
 
 
 def test_attack_handler_init(attack_handler, mock_combat_service):
@@ -294,7 +294,7 @@ async def test_validate_and_get_combat_participants_target_dead(
     """Test validate_and_get_combat_participants raises when target is dead."""
     attacker_id = mock_attacker.participant_id
     target_id = mock_target_player.participant_id
-    mock_target_player.is_alive.return_value = False
+    mock_target_player.current_dp = -10  # Dead for player (DP <= -10)
     mock_combat.participants = {attacker_id: mock_attacker, target_id: mock_target_player}
     mock_combat_service.get_combat_by_participant = AsyncMock(return_value=mock_combat)
 

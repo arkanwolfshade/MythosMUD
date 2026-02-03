@@ -285,14 +285,13 @@ class NPCCombatIntegrationService:  # pylint: disable=too-many-instance-attribut
             )
             return None
 
-        npc_is_alive = getattr(npc_instance, "is_alive", True)
-        if not npc_is_alive:
+        if not npc_instance.is_alive:
             logger.warning(
                 "Player attacked dead NPC - NPC exists but is_alive is False",
                 player_id=player_id,
                 npc_id=npc_id,
                 npc_name=getattr(npc_instance, "name", "unknown"),
-                is_alive=npc_is_alive,
+                is_alive=npc_instance.is_alive,
                 npc_instance_provided=npc_instance_provided,
             )
             return None

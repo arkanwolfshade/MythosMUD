@@ -226,6 +226,270 @@ def test_combat_participant_is_alive_npc_inactive():
     assert participant.is_alive() is False
 
 
+# --- Tests for CombatParticipant is_dead and is_mortally_wounded ---
+
+
+def test_combat_participant_is_dead_player_positive_dp():
+    """Test is_dead returns False for player with positive DP."""
+    participant = CombatParticipant(
+        participant_id=uuid4(),
+        participant_type=CombatParticipantType.PLAYER,
+        name="TestPlayer",
+        current_dp=50,
+        max_dp=100,
+        dexterity=10,
+    )
+    assert participant.is_dead() is False
+
+
+def test_combat_participant_is_dead_player_at_zero():
+    """Test is_dead returns False for player at 0 DP (mortally wounded, not dead)."""
+    participant = CombatParticipant(
+        participant_id=uuid4(),
+        participant_type=CombatParticipantType.PLAYER,
+        name="TestPlayer",
+        current_dp=0,
+        max_dp=100,
+        dexterity=10,
+    )
+    assert participant.is_dead() is False
+
+
+def test_combat_participant_is_dead_player_at_negative_10():
+    """Test is_dead returns True for player at -10 DP."""
+    participant = CombatParticipant(
+        participant_id=uuid4(),
+        participant_type=CombatParticipantType.PLAYER,
+        name="TestPlayer",
+        current_dp=-10,
+        max_dp=100,
+        dexterity=10,
+    )
+    assert participant.is_dead() is True
+
+
+def test_combat_participant_is_mortally_wounded_player_at_zero():
+    """Test is_mortally_wounded returns True for player at 0 DP."""
+    participant = CombatParticipant(
+        participant_id=uuid4(),
+        participant_type=CombatParticipantType.PLAYER,
+        name="TestPlayer",
+        current_dp=0,
+        max_dp=100,
+        dexterity=10,
+    )
+    assert participant.is_mortally_wounded() is True
+
+
+def test_combat_participant_is_mortally_wounded_player_npc_always_false():
+    """Test is_mortally_wounded returns False for NPC (no mortal wound state)."""
+    participant = CombatParticipant(
+        participant_id=uuid4(),
+        participant_type=CombatParticipantType.NPC,
+        name="TestNPC",
+        current_dp=0,
+        max_dp=100,
+        dexterity=10,
+    )
+    assert participant.is_mortally_wounded() is False
+
+
+# --- Tests for CombatParticipant apply_damage ---
+
+
+def test_combat_participant_apply_damage_player_reduces_dp():
+    """Test apply_damage reduces player DP and returns correct states."""
+    participant = CombatParticipant(
+        participant_id=uuid4(),
+        participant_type=CombatParticipantType.PLAYER,
+        name="TestPlayer",
+        current_dp=50,
+        max_dp=100,
+        dexterity=10,
+    )
+    old_dp, target_died, target_mortally_wounded = participant.apply_damage(20)
+
+    assert old_dp == 50
+    assert participant.current_dp == 30
+    assert target_died is False
+    assert target_mortally_wounded is False
+
+
+def test_combat_participant_apply_damage_player_mortally_wounded():
+    """Test apply_damage marks mortally wounded when crossing to 0 DP."""
+    participant = CombatParticipant(
+        participant_id=uuid4(),
+        participant_type=CombatParticipantType.PLAYER,
+        name="TestPlayer",
+        current_dp=5,
+        max_dp=100,
+        dexterity=10,
+    )
+    old_dp, target_died, target_mortally_wounded = participant.apply_damage(5)
+
+    assert old_dp == 5
+    assert participant.current_dp == 0
+    assert target_died is False
+    assert target_mortally_wounded is True
+
+
+def test_combat_participant_apply_damage_player_dies():
+    """Test apply_damage marks dead when player reaches -10 DP."""
+    participant = CombatParticipant(
+        participant_id=uuid4(),
+        participant_type=CombatParticipantType.PLAYER,
+        name="TestPlayer",
+        current_dp=5,
+        max_dp=100,
+        dexterity=10,
+    )
+    old_dp, target_died, target_mortally_wounded = participant.apply_damage(15)
+
+    assert old_dp == 5
+    assert participant.current_dp == -10
+    assert target_died is True
+    assert target_mortally_wounded is False
+
+
+def test_combat_participant_apply_damage_player_caps_at_negative_10():
+    """Test apply_damage caps player DP at -10."""
+    participant = CombatParticipant(
+        participant_id=uuid4(),
+        participant_type=CombatParticipantType.PLAYER,
+        name="TestPlayer",
+        current_dp=5,
+        max_dp=100,
+        dexterity=10,
+    )
+    participant.apply_damage(100)
+
+    assert participant.current_dp == -10
+
+
+def test_combat_participant_apply_damage_npc_reduces_dp():
+    """Test apply_damage reduces NPC DP."""
+    participant = CombatParticipant(
+        participant_id=uuid4(),
+        participant_type=CombatParticipantType.NPC,
+        name="TestNPC",
+        current_dp=30,
+        max_dp=100,
+        dexterity=10,
+    )
+    old_dp, target_died, target_mortally_wounded = participant.apply_damage(15)
+
+    assert old_dp == 30
+    assert participant.current_dp == 15
+    assert target_died is False
+    assert target_mortally_wounded is False
+
+
+def test_combat_participant_apply_damage_npc_dies_at_zero():
+    """Test apply_damage kills NPC when reaching 0 DP."""
+    participant = CombatParticipant(
+        participant_id=uuid4(),
+        participant_type=CombatParticipantType.NPC,
+        name="TestNPC",
+        current_dp=5,
+        max_dp=100,
+        dexterity=10,
+    )
+    old_dp, target_died, target_mortally_wounded = participant.apply_damage(5)
+
+    assert old_dp == 5
+    assert participant.current_dp == 0
+    assert target_died is True
+    assert target_mortally_wounded is False
+
+
+def test_combat_participant_apply_damage_npc_caps_at_zero():
+    """Test apply_damage caps NPC DP at 0."""
+    participant = CombatParticipant(
+        participant_id=uuid4(),
+        participant_type=CombatParticipantType.NPC,
+        name="TestNPC",
+        current_dp=5,
+        max_dp=100,
+        dexterity=10,
+    )
+    participant.apply_damage(100)
+
+    assert participant.current_dp == 0
+
+
+# --- Tests for CombatParticipant can_act_in_combat ---
+
+
+def test_combat_participant_can_act_in_combat_player_positive_dp():
+    """Test can_act_in_combat returns True for active player with positive DP."""
+    participant = CombatParticipant(
+        participant_id=uuid4(),
+        participant_type=CombatParticipantType.PLAYER,
+        name="TestPlayer",
+        current_dp=50,
+        max_dp=100,
+        dexterity=10,
+        is_active=True,
+    )
+    assert participant.can_act_in_combat() is True
+
+
+def test_combat_participant_can_act_in_combat_player_zero_dp():
+    """Test can_act_in_combat returns False for player at 0 DP (unconscious)."""
+    participant = CombatParticipant(
+        participant_id=uuid4(),
+        participant_type=CombatParticipantType.PLAYER,
+        name="TestPlayer",
+        current_dp=0,
+        max_dp=100,
+        dexterity=10,
+        is_active=True,
+    )
+    assert participant.can_act_in_combat() is False
+
+
+def test_combat_participant_can_act_in_combat_player_inactive():
+    """Test can_act_in_combat returns False for inactive player."""
+    participant = CombatParticipant(
+        participant_id=uuid4(),
+        participant_type=CombatParticipantType.PLAYER,
+        name="TestPlayer",
+        current_dp=50,
+        max_dp=100,
+        dexterity=10,
+        is_active=False,
+    )
+    assert participant.can_act_in_combat() is False
+
+
+def test_combat_participant_can_act_in_combat_npc_positive_dp():
+    """Test can_act_in_combat returns True for active NPC with positive DP."""
+    participant = CombatParticipant(
+        participant_id=uuid4(),
+        participant_type=CombatParticipantType.NPC,
+        name="TestNPC",
+        current_dp=30,
+        max_dp=100,
+        dexterity=10,
+        is_active=True,
+    )
+    assert participant.can_act_in_combat() is True
+
+
+def test_combat_participant_can_act_in_combat_npc_zero_dp():
+    """Test can_act_in_combat returns False for NPC at 0 DP (dead)."""
+    participant = CombatParticipant(
+        participant_id=uuid4(),
+        participant_type=CombatParticipantType.NPC,
+        name="TestNPC",
+        current_dp=0,
+        max_dp=100,
+        dexterity=10,
+        is_active=True,
+    )
+    assert participant.can_act_in_combat() is False
+
+
 # --- Tests for CombatInstance dataclass ---
 
 

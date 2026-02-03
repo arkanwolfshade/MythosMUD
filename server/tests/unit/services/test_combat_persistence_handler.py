@@ -36,6 +36,7 @@ def mock_player():
     player.stats = {"current_dp": 50, "max_dp": 100, "position": "standing"}
     player.get_stats = MagicMock(return_value={"current_dp": 50, "max_dp": 100, "position": "standing"})
     player.set_stats = MagicMock()
+    player.apply_dp_change = MagicMock(return_value=(50, False, False))
     return player
 
 
@@ -78,49 +79,6 @@ def test_get_persistence_layer_no_async_persistence(persistence_handler):
         mock_container.get_instance.return_value = mock_instance
         result = persistence_handler._get_persistence_layer()
         assert result is None
-
-
-def test_update_player_dp_and_posture_drops_to_zero(persistence_handler, mock_player):
-    """Test _update_player_dp_and_posture changes posture when DP drops to 0."""
-    persistence_handler._update_player_dp_and_posture(mock_player, mock_player.player_id, 0, 50)
-    mock_player.set_stats.assert_called_once()
-    call_args = mock_player.set_stats.call_args[0][0]
-    assert call_args["current_dp"] == 0
-    assert call_args["position"] == "lying"
-
-
-def test_update_player_dp_and_posture_negative_dp(persistence_handler, mock_player):
-    """Test _update_player_dp_and_posture ensures lying when DP is already <= 0."""
-    mock_player.get_stats.return_value = {"current_dp": -5, "max_dp": 100, "position": "standing"}
-    persistence_handler._update_player_dp_and_posture(mock_player, mock_player.player_id, -5, -3)
-    call_args = mock_player.set_stats.call_args[0][0]
-    assert call_args["position"] == "lying"
-
-
-def test_update_player_dp_and_posture_no_posture_change(persistence_handler, mock_player):
-    """Test _update_player_dp_and_posture doesn't change posture when DP > 0."""
-    persistence_handler._update_player_dp_and_posture(mock_player, mock_player.player_id, 30, 50)
-    mock_player.set_stats.assert_called_once()
-    call_args = mock_player.set_stats.call_args[0][0]
-    assert call_args["current_dp"] == 30
-    # Position should not change when DP > 0
-    assert call_args.get("position") != "lying"
-
-
-def test_update_player_dp_and_posture_positive_to_positive(persistence_handler, mock_player):
-    """Test _update_player_dp_and_posture when DP stays positive."""
-    persistence_handler._update_player_dp_and_posture(mock_player, mock_player.player_id, 40, 50)
-    call_args = mock_player.set_stats.call_args[0][0]
-    assert call_args["current_dp"] == 40
-    # Position should remain unchanged
-
-
-def test_update_player_dp_and_posture_already_lying(persistence_handler, mock_player):
-    """Test _update_player_dp_and_posture when player already at <= 0 DP."""
-    mock_player.get_stats.return_value = {"current_dp": -5, "max_dp": 100, "position": "lying"}
-    persistence_handler._update_player_dp_and_posture(mock_player, mock_player.player_id, -5, -3)
-    call_args = mock_player.set_stats.call_args[0][0]
-    assert call_args["position"] == "lying"
 
 
 def test_log_death_state_changes_death_threshold(persistence_handler):

@@ -273,7 +273,7 @@ class MyService:
             self.pool = None
             logger.info("Closed connection pool")
 
-# In ApplicationContainer.shutdown()
+# In ApplicationContainer.shutdown() (server/container/main.py)
 
 async def shutdown(self):
     if self.my_service:

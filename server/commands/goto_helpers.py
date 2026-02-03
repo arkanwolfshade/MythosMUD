@@ -4,7 +4,6 @@
 
 from typing import Any
 
-from ..realtime.websocket_handler import broadcast_room_update
 from ..structured_logging.admin_actions_logger import get_admin_actions_logger
 from ..structured_logging.enhanced_logging_config import get_logger
 from .admin_teleport_utils import (
@@ -12,6 +11,7 @@ from .admin_teleport_utils import (
     get_online_player_by_display_name,
     notify_player_of_teleport,
 )
+from .teleport_helpers import update_player_room_location
 
 logger = get_logger(__name__)
 
@@ -71,8 +71,9 @@ async def execute_goto_teleport(  # pylint: disable=too-many-arguments,too-many-
     target_player: Any,
     target_player_name: str,
     player_name: str,
+    persistence: Any | None = None,
 ) -> dict[str, str]:
-    """Execute the goto teleport operation."""
+    """Execute the goto teleport operation. Room state is notified via EventBus (Room.player_entered/player_left)."""
     original_room_id = current_player.current_room_id
     target_room_id = target_player.current_room_id
 
@@ -86,12 +87,13 @@ async def execute_goto_teleport(  # pylint: disable=too-many-arguments,too-many-
     admin_player_info = connection_manager.get_online_player_by_display_name(player_name)
     if admin_player_info:
         admin_player_info["room_id"] = target_room_id
-
-    # Broadcast room updates
-    await broadcast_room_update(str(admin_player_info["player_id"]), target_room_id)
-    target_player_identifier = getattr(target_player, "player_id", getattr(target_player, "id", None))
-    if target_player_identifier:
-        await broadcast_room_update(str(target_player_identifier), target_room_id)
+        await update_player_room_location(
+            connection_manager,
+            str(admin_player_info["player_id"]),
+            original_room_id,
+            target_room_id,
+            persistence,
+        )
 
     # Broadcast visual effects
     await broadcast_teleport_effects(
@@ -216,8 +218,9 @@ async def execute_confirm_goto(  # pylint: disable=too-many-arguments,too-many-p
     target_player: Any,
     player_service: Any,
     connection_manager: Any,
+    persistence: Any | None = None,
 ) -> dict[str, str]:
-    """Execute the goto teleportation (update location, broadcast, effects, logging)."""
+    """Execute the goto teleportation (update location, room occupancy via EventBus, effects, logging)."""
     original_room_id = current_player.current_room_id
     target_room_id = target_player.current_room_id
 
@@ -229,7 +232,13 @@ async def execute_confirm_goto(  # pylint: disable=too-many-arguments,too-many-p
     admin_player_info = connection_manager.get_online_player_by_display_name(player_name)
     if admin_player_info:
         admin_player_info["room_id"] = target_room_id
-        await broadcast_room_update(str(admin_player_info["player_id"]), target_room_id)
+        await update_player_room_location(
+            connection_manager,
+            str(admin_player_info["player_id"]),
+            original_room_id,
+            target_room_id,
+            persistence,
+        )
 
     await broadcast_teleport_effects(
         connection_manager,

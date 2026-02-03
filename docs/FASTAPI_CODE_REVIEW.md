@@ -554,7 +554,7 @@ async def get_system_health() -> SystemHealthResponse:
 - `get_exploration_service()` → `ExplorationService` (was `Any`)
 - `get_player_respawn_service()` → `PlayerRespawnService` (was `Any`)
 - ✅ Updated endpoint type hints across **12 API files**:
-  - `server/api/game.py`: All 3 endpoints (`ConnectionManager`, `ApplicationContainer`)
+  - `server/api/game.py`: All 3 endpoints (`ConnectionManager`, container from `server/container/`)
   - `server/api/containers.py`: All 4 endpoints (`AsyncPersistenceLayer`, `ConnectionManager`)
   - `server/api/rooms.py`: 1 endpoint (`AsyncPersistenceLayer`)
   - `server/api/maps.py`: 2 endpoints + helper functions (`AsyncPersistenceLayer`, `ExplorationService`)

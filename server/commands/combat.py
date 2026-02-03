@@ -227,7 +227,7 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
             return None, {"result": "Target not found."}
 
         # Validate NPC is alive before proceeding
-        if not getattr(npc_instance, "is_alive", True):
+        if not npc_instance.is_alive:
             npc_name = getattr(npc_instance, "name", "target")
             logger.warning(
                 "Player attempted to attack dead NPC",

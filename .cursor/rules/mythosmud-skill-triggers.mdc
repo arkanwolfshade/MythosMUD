@@ -1,0 +1,23 @@
+---
+description: Maps MythosMUD situations to project skills so the agent applies the right skill automatically
+alwaysApply: true
+---
+
+# MythosMUD Skill Triggers
+
+When the context matches a situation below, apply the corresponding project skill (`.cursor/skills/<skill-name>/SKILL.md`).
+
+| Situation | Apply skill |
+|-----------|-------------|
+| Server start/stop, startup, "Press any key to exit", or ports 54731/5173 | **mythosmud-server-runbook** |
+| Commit message, write/amend commit, or review staged changes | **mythosmud-commit-messages** |
+| DB files, persistence, or database paths / player_id | **mythosmud-database-placement** |
+| Adding or editing Python logging, or user mentions logs/logging | **mythosmud-logging-standards** |
+| Finishing a change, before commit, or "am I done?" / definition of done | **mythosmud-pre-commit-checklist** |
+| Architectural decision, adding or updating an ADR | **mythosmud-adr-authoring** |
+| API routes/schemas changed, or update OpenAPI spec | **mythosmud-openapi-workflow** |
+| Implement a feature, add endpoint, or build new capability | **mythosmud-full-stack-feature** |
+| Adding tests, test failures, or test layout/coverage | **mythosmud-test-writing** |
+| Auth, user data, or features affecting minors / user info | **mythosmud-coppa-checklist** |
+
+Skills live in `.cursor/skills/`. Apply the skill by following its SKILL.md; do not duplicate content here.

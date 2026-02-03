@@ -1,61 +1,38 @@
-// Event processing hook
-// Extracted from GameClientV2Container to reduce complexity
+// Event processing hook: event-sourced derivation via EventStore + projector
 // As documented in "Event Processing Architecture" - Dr. Armitage, 1928
 
 import { useCallback, useRef } from 'react';
 import { logger } from '../../../utils/logger';
-import { processGameEvent } from '../eventHandlers';
-import type { EventHandlerContext, GameEvent } from '../eventHandlers/types';
-import type { ChatMessage } from '../types';
+import type { GameEvent } from '../eventHandlers/types';
+import { EventStore, projectState } from '../eventLog';
 import type { GameState } from '../utils/stateUpdateUtils';
-import { applyEventUpdates, sanitizeAndApplyUpdates } from '../utils/stateUpdateUtils';
 
 interface UseEventProcessingParams {
-  currentMessagesRef: React.MutableRefObject<ChatMessage[]>;
   setGameState: React.Dispatch<React.SetStateAction<GameState>>;
-  context: EventHandlerContext;
 }
 
-export const useEventProcessing = ({ currentMessagesRef, setGameState, context }: UseEventProcessingParams) => {
+export const useEventProcessing = ({ setGameState }: UseEventProcessingParams) => {
   const isProcessingEvent = useRef(false);
-  const lastProcessedEvent = useRef<string>('');
   const eventQueue = useRef<GameEvent[]>([]);
   const processingTimeout = useRef<number | null>(null);
+  const eventStoreRef = useRef<EventStore>(new EventStore());
 
   const processEventQueue = useCallback(() => {
-    // Defensive check for isProcessingEvent.current is effectively unreachable in normal operation
-    // because the code prevents processEventQueue from being called while processing is active.
-    // This branch exists as a safety measure but cannot be tested without refactoring to expose
-    // processEventQueue, which would break encapsulation.
-    /* v8 ignore start */
     if (isProcessingEvent.current || eventQueue.current.length === 0) {
       return;
     }
-    /* v8 ignore stop */
 
     isProcessingEvent.current = true;
 
     try {
       const events = [...eventQueue.current];
       eventQueue.current = [];
-      const updates: Partial<GameState> = {};
-
-      const appendMessage = (message: ChatMessage) => {
-        if (!updates.messages) {
-          updates.messages = [...currentMessagesRef.current];
-        }
-        updates.messages.push(message);
-      };
-
-      events.forEach(event => {
-        const eventUpdates = processGameEvent(event, context, appendMessage, lastProcessedEvent);
-        // Convert null to undefined to match applyEventUpdates signature
-        applyEventUpdates(eventUpdates ?? undefined, updates, currentMessagesRef.current);
-      });
-
-      sanitizeAndApplyUpdates(updates, setGameState);
+      const store = eventStoreRef.current;
+      store.append(events);
+      const derivedState = projectState(store.getLog());
+      setGameState(derivedState);
     } catch (error) {
-      logger.error('useEventProcessing', 'Error processing events', { error });
+      logger.error('useEventProcessing', 'Error projecting state from event log', { error });
     } finally {
       isProcessingEvent.current = false;
 
@@ -63,7 +40,7 @@ export const useEventProcessing = ({ currentMessagesRef, setGameState, context }
         processingTimeout.current = window.setTimeout(processEventQueue, 10);
       }
     }
-  }, [context, currentMessagesRef, setGameState]);
+  }, [setGameState]);
 
   const handleGameEvent = useCallback(
     (event: GameEvent) => {
@@ -78,5 +55,9 @@ export const useEventProcessing = ({ currentMessagesRef, setGameState, context }
     [processEventQueue]
   );
 
-  return { handleGameEvent };
+  const clearEventLog = useCallback(() => {
+    eventStoreRef.current.clear();
+  }, []);
+
+  return { handleGameEvent, clearEventLog };
 };

@@ -1302,6 +1302,9 @@ test.describe('Suite 6: Integration Tests', () => {
     await executeCommand(page, 'look');
     await safeWait(page, 2000);
 
+    // Stand before moving (server rejects "go" when sitting)
+    await executeCommand(page, 'stand');
+    await safeWait(page, 2000);
     await executeCommand(page, 'go north');
     await safeWait(page, 2000);
 

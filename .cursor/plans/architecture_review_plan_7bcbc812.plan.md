@@ -1,35 +1,47 @@
 ---
 name: Architecture Review Plan
 overview: Comprehensive architectural review of MythosMUD codebase evaluating modern architecture patterns, clean architecture principles, distributed systems design, and identifying areas for improvement.
+# Note: Container split described in this plan is implemented in server/container/ (main.py, bundles). See docs/architecture/decisions/ADR-002-application-container-dependency-injection.md and docs/APPLICATION_CONTAINER_ANALYSIS.md.
 todos:
+  - id: implement-client-updates-plan
+    content: Implement Client Updates System (Option C) per client_updates_system_audit_628e3fef.plan.md before proceeding with remaining architecture review todos
+    status: completed
   - id: review-event-duplication
     content: Review and consolidate event duplication (EventBus vs direct WebSocket sends) per EVENT_OWNERSHIP_MATRIX.md
-    status: pending
+    status: completed
   - id: analyze-container-structure
     content: Analyze ApplicationContainer structure and propose domain-specific container split
-    status: pending
+    status: completed
   - id: review-repository-wrappers
     content: Review ContainerRepository and ItemRepository async wrappers and plan full async migration
-    status: pending
+    status: completed
   - id: define-service-boundaries
     content: Define explicit bounded contexts and service boundaries with documentation
-    status: pending
+    status: completed
   - id: create-adrs
     content: Create Architecture Decision Records (ADRs) for major architectural decisions
-    status: pending
+    status: completed
   - id: evaluate-distributed-eventbus
-    content: Evaluate distributed EventBus solution (Redis) for horizontal scalability
-    status: pending
+    content: Evaluate distributed EventBus solution (NATS) for horizontal scalability
+    status: completed
   - id: review-domain-models
     content: Review domain models for anemic domain model anti-pattern and move logic from services to models
-    status: pending
+    status: completed
   - id: document-api-contracts
     content: Document API contracts and service interfaces with OpenAPI/Swagger specifications
-    status: pending
+    status: completed
 isProject: false
 ---
 
 # MythosMUD Architectural Review Plan
+
+## Implementation Order and Prerequisites
+
+**The Client Updates System Audit plan must be completed before continuing with any further todos in this architecture review plan.**
+
+- **Prerequisite plan:** [client_updates_system_audit_628e3fef.plan.md](client_updates_system_audit_628e3fef.plan.md) (Client Updates System Audit – Option C implementation).
+- **Gate todo:** `implement-client-updates-plan` – Implement the replacement client updates system (event-sourced derivation, single-source room/combat state, request/response for critical handoffs) as specified in that plan.
+- **Remaining architecture review todos** (review-repository-wrappers, define-service-boundaries, create-adrs, evaluate-distributed-eventbus, review-domain-models, document-api-contracts) should be started only after `implement-client-updates-plan` is completed.
 
 ## Executive Summary
 
@@ -109,7 +121,9 @@ This review evaluates MythosMUD's architecture against modern software architect
 
 ### 1.3 Dependency Injection Architecture
 
-**Implementation**: `ApplicationContainer` pattern in `server/container.py`
+**Implementation**: `ApplicationContainer` pattern in `server/container/` (main.py, bundles)
+
+**Analysis and proposal:** See `docs/APPLICATION_CONTAINER_ANALYSIS.md` for a full structure analysis, attribute inventory by domain, initialization order, and a proposed domain-specific split using internal bundles (Option A) with backward-compatible migration path.
 
 **Strengths**:
 
@@ -162,13 +176,16 @@ This review evaluates MythosMUD's architecture against modern software architect
 **Dual Event Systems**:
 
 1. **EventBus** (Domain Events) - `server/events/event_bus.py`
-  - In-memory pub/sub for domain events
-  - Pure asyncio implementation
-  - Events: `PlayerEnteredRoom`, `CombatStartedEvent`, etc.
-2. **NATS** (Inter-Service Communication) - `server/services/nats_service.py`
-  - Distributed pub/sub for real-time events
-  - Subject-based routing (`chat.say.{room_id}`, `events.player_entered.{room_id}`)
-  - Used for chat, combat events, game ticks
+
+- In-memory pub/sub for domain events
+- Pure asyncio implementation
+- Events: `PlayerEnteredRoom`, `CombatStartedEvent`, etc.
+
+1. **NATS** (Inter-Service Communication) - `server/services/nats_service.py`
+
+- Distributed pub/sub for real-time events
+- Subject-based routing (`chat.say.{room_id}`, `events.player_entered.{room_id}`)
+- Used for chat, combat events, game ticks
 
 **Critical Issue Identified**: Event duplication documented in `EVENT_OWNERSHIP_MATRIX.md`
 
@@ -306,7 +323,7 @@ WebSocket
 - ✅ Repositories have focused responsibilities
 - ✅ Services are domain-specific
 - ⚠️ Some services are large (ConnectionManager was 3,653 lines, now refactored)
-- ⚠️ ApplicationContainer is large (consider splitting)
+- ⚠️ ApplicationContainer is large (split proposed in `docs/APPLICATION_CONTAINER_ANALYSIS.md`)
 
 **Open/Closed Principle (OCP)**:
 
@@ -453,47 +470,62 @@ WebSocket
 ### 6.1 High Priority
 
 1. **Event Duplication** (Documented in `EVENT_OWNERSHIP_MATRIX.md`)
-  - **Issue**: Player movement events published to both EventBus and sent directly
-  - **Impact**: Potential inconsistencies, harder to maintain
-  - **Recommendation**: Consolidate to single path: EventBus → RealTimeEventHandler → WebSocket
-2. **ApplicationContainer Size**
-  - **Issue**: 1,200+ lines managing all dependencies
-  - **Impact**: Harder to maintain, test, and understand
-  - **Recommendation**: Split into domain-specific containers
-3. **Repository Wrappers**
-  - **Issue**: ContainerRepository and ItemRepository use `asyncio.to_thread()` wrappers
-  - **Impact**: Performance overhead, complexity
+
+- **Issue**: Player movement events published to both EventBus and sent directly
+- **Impact**: Potential inconsistencies, harder to maintain
+- **Recommendation**: Consolidate to single path: EventBus → RealTimeEventHandler → WebSocket
+
+1. **ApplicationContainer Size**
+
+- **Issue**: 1,200+ lines managing all dependencies
+- **Impact**: Harder to maintain, test, and understand
+- **Recommendation**: Split into domain-specific containers
+
+1. **Repository Wrappers**
+
+- **Issue**: ContainerRepository and ItemRepository use `asyncio.to_thread()` wrappers
+- **Impact**: Performance overhead, complexity
 - **Recommendation**: Migrate underlying code to async
 
 ### 6.2 Medium Priority
 
 1. **Service Boundaries**
-  - Define explicit bounded contexts
-  - Document service contracts
-  - Consider microservices boundaries (if scaling)
-2. **Event Sourcing Consideration**
-  - For critical game state (player actions, combat)
-  - Audit trail and replay capability
-  - Event store implementation
-3. **CQRS Pattern**
-  - Separate read/write models
-  - Optimize queries independently
-  - Consider read replicas for scaling
+
+- Define explicit bounded contexts
+- Document service contracts
+- Consider microservices boundaries (if scaling)
+
+1. **Event Sourcing Consideration**
+
+- For critical game state (player actions, combat)
+- Audit trail and replay capability
+- Event store implementation
+
+1. **CQRS Pattern**
+
+- Separate read/write models
+- Optimize queries independently
+- Consider read replicas for scaling
 
 ### 6.3 Low Priority
 
 1. **Architecture Decision Records (ADRs)**
-  - Document major architectural decisions
-  - Rationale and trade-offs
-  - Future reference
-2. **API Versioning**
-  - Plan for API evolution
-  - Versioning strategy
-  - Backward compatibility
-3. **Monitoring and Observability**
-  - Distributed tracing
-  - Performance metrics
-  - Business metrics
+
+- Document major architectural decisions
+- Rationale and trade-offs
+- Future reference
+
+1. **API Versioning**
+
+- Plan for API evolution
+- Versioning strategy
+- Backward compatibility
+
+1. **Monitoring and Observability**
+
+- Distributed tracing
+- Performance metrics
+- Business metrics
 
 ## 7. Implementation Plan
 

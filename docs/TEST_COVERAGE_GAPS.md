@@ -107,9 +107,9 @@ async def test_nats_broker_reconnects_on_connection_loss():
 
 ### Gap 3: ApplicationContainer Lifecycle
 
-**Location:** `server/container.py`
+**Location:** `server/container/` (main.py and bundles)
 **Current Coverage:** ~60% (mostly infrastructure tests)
-**Lines of Code:** ~400
+**Lines of Code:** ~400 (orchestrator + bundles)
 **Risk Level:** 🔴 HIGH
 
 ### Gap Description

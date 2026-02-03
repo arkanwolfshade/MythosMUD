@@ -69,13 +69,8 @@ class PlayerDeathService:
             result = await session.execute(select(Player))
             all_players = result.scalars().all()
 
-            # Filter for mortally wounded players (0 >= DP > -10)
-            mortally_wounded = []
-            for player in all_players:
-                stats = player.get_stats()
-                current_dp = stats.get("current_dp", 0)  # current_dp represents DP
-                if 0 >= current_dp > -10:
-                    mortally_wounded.append(player)
+            # Filter for mortally wounded players using Player domain logic
+            mortally_wounded = [p for p in all_players if p.is_mortally_wounded()]
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Player stats retrieval errors unpredictable, must return empty list
             logger.error("Error getting mortally wounded players", error=str(e), exc_info=True)
             return []
@@ -103,13 +98,8 @@ class PlayerDeathService:
             result = await session.execute(select(Player))
             all_players = result.scalars().all()
 
-            # Filter for dead players (DP <= -10)
-            dead_players = []
-            for player in all_players:
-                stats = player.get_stats()
-                current_dp = stats.get("current_dp", 0)  # current_dp represents DP
-                if current_dp <= -10:
-                    dead_players.append(player)
+            # Filter for dead players using Player domain logic
+            dead_players = [p for p in all_players if p.is_dead()]
 
             logger.debug(
                 "Found dead players",
@@ -154,33 +144,15 @@ class PlayerDeathService:
                 logger.debug("Player already dead, skipping DP decay", player_id=player_id)
                 return False
 
-            # Get current stats and apply decay
-            stats = player.get_stats()
-            current_dp = stats.get("current_dp", 0)  # current_dp represents DP
-            old_dp = current_dp
-
-            # Decrease DP by 1, cap at -10
-            new_dp = max(current_dp - 1, -10)
-
-            # Update player stats
-            stats["current_dp"] = new_dp
-
-            # BUGFIX: Automatically change posture to lying when DP drops to <= 0
-            # As documented in "Corporeal Collapse and Unconsciousness" - Dr. Armitage, 1928
-            # When a player's determination points drop to zero or below, their body automatically collapses
-            if new_dp <= 0 < old_dp:
-                stats["position"] = PositionState.LYING
+            # Delegate DP decay and posture updates to Player domain model
+            old_dp, new_dp, posture_changed = player.apply_dp_decay(amount=1)
+            if posture_changed:
                 logger.info(
                     "Player posture changed to lying (unconscious)",
                     player_id=player_id,
                     player_name=player.name,
                     dp=new_dp,
                 )
-            elif new_dp <= 0 and stats.get("position") != PositionState.LYING:
-                # Ensure player is lying if already at <= 0 DP
-                stats["position"] = PositionState.LYING
-
-            player.set_stats(stats)
 
             # Commit changes to database using async API
             await session.commit()

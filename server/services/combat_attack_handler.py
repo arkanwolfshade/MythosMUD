@@ -40,10 +40,13 @@ class CombatAttackHandler:
         """
         Apply damage to target and check death states.
 
+        Delegates domain logic to CombatParticipant.apply_damage; handles
+        infrastructure concerns (login grace period) here.
+
         Returns:
             Tuple of (old_dp, target_died, target_mortally_wounded)
         """
-        # Check if target is in login grace period - block damage if so
+        # Check if target is in login grace period - block damage if so (infrastructure concern)
         if target.participant_type == CombatParticipantType.PLAYER:
             try:
                 config = get_config()
@@ -66,16 +69,8 @@ class CombatAttackHandler:
                     "Could not check login grace period for damage", target_id=target.participant_id, error=str(e)
                 )
 
-        old_dp = target.current_dp
-        if target.participant_type == CombatParticipantType.PLAYER:
-            target.current_dp = max(-10, target.current_dp - damage)
-            target_died = target.current_dp <= -10
-            target_mortally_wounded = old_dp > 0 and not target.current_dp
-        else:
-            target.current_dp = max(0, target.current_dp - damage)
-            target_died = target.current_dp <= 0
-            target_mortally_wounded = False
-        return old_dp, target_died, target_mortally_wounded
+        # Delegate damage application and death-state logic to domain model
+        return target.apply_damage(damage)
 
     async def apply_attack_damage(
         self, combat: CombatInstance, target: CombatParticipant, damage: int

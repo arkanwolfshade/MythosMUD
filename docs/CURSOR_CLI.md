@@ -9,21 +9,25 @@ Cursor CLI lets you interact with AI agents directly from your terminal to write
 ## Installation
 
 ### Windows PowerShell
+
 ```powershell
 irm 'https://cursor.com/install?win32=true' | iex
 ```
 
 ### macOS/Linux/WSL
+
 ```bash
 curl https://cursor.com/install -fsS | bash
 ```
 
 ### Verification
+
 ```powershell
 cursor --version
 ```
 
 Expected output:
+
 ```
 2.4.22
 618c607a249dd7fd2ffc662c6531143833bebd40
@@ -33,23 +37,29 @@ x64
 ## Core Commands
 
 ### Interactive Mode
+
 Start a conversational session with the agent:
+
 ```powershell
 cursor agent
 ```
 
 Start with an initial prompt:
+
 ```powershell
 cursor agent "refactor the auth module to use JWT tokens"
 ```
 
 ### Non-Interactive Mode (Print Mode)
+
 Run with specific prompt and model:
+
 ```powershell
 cursor agent -p "find and fix performance issues" --model "gpt-5.2"
 ```
 
 Use with git changes included for review:
+
 ```powershell
 cursor agent -p "review these changes for security issues" --output-format text
 ```
@@ -67,11 +77,13 @@ The CLI supports the same modes as the editor:
 ### Using Modes
 
 **Plan Mode**:
+
 ```powershell
 cursor agent --mode=plan -p "refactor the persistence layer"
 ```
 
 **Ask Mode**:
+
 ```powershell
 cursor agent --mode=ask -p "explore the authentication flow"
 ```
@@ -81,7 +93,9 @@ cursor agent --mode=ask -p "explore the authentication flow"
 MythosMUD includes PowerShell scripts that wrap Cursor CLI for common workflows:
 
 ### cursor-cli-agent.ps1
+
 Wrapper script for common CLI agent tasks:
+
 ```powershell
 .\scripts\cursor-cli-agent.ps1 "analyze test failures in server/tests/unit"
 .\scripts\cursor-cli-agent.ps1 -NonInteractive -Prompt "review security of auth module"
@@ -89,7 +103,9 @@ Wrapper script for common CLI agent tasks:
 ```
 
 ### cursor-cli-review.ps1
+
 Automated code review:
+
 ```powershell
 .\scripts\cursor-cli-review.ps1 -GitChanges
 .\scripts\cursor-cli-review.ps1 -Path server/services/auth.py -Focus security
@@ -97,7 +113,9 @@ Automated code review:
 ```
 
 ### cursor-cli-test-fix.ps1
+
 Test failure remediation:
+
 ```powershell
 .\scripts\cursor-cli-test-fix.ps1 -TestPath server/tests/unit
 .\scripts\cursor-cli-test-fix.ps1 -TestFile server/tests/unit/test_auth.py
@@ -107,18 +125,21 @@ Test failure remediation:
 ## Common Options
 
 ### Model Selection
+
 ```powershell
 cursor agent -p "analyze code" --model "gpt-5.2"
 cursor agent -p "analyze code" --model "claude-4.5-opus"
 ```
 
 ### Output Format
+
 ```powershell
 cursor agent -p "review code" --output-format text
 cursor agent -p "review code" --output-format json
 ```
 
 ### Non-Interactive Mode
+
 ```powershell
 cursor agent -p "fix bugs"  # Print mode (non-interactive)
 ```
@@ -152,27 +173,32 @@ Pick up your Cloud Agent tasks on web or mobile at [cursor.com/agents](https://c
 ## Use Cases
 
 ### Code Writing/Review
+
 ```powershell
 cursor agent -p "review the authentication module for security issues"
 cursor agent -p "refactor the persistence layer to use dependency injection"
 ```
 
 ### Terminal Command Execution
+
 ```powershell
 cursor agent "run the test suite and analyze failures"
 ```
 
 ### Codebase Searching
+
 ```powershell
 cursor agent "find all implementations of the Player class"
 ```
 
 ### File Generation
+
 ```powershell
 cursor agent "generate a new API endpoint for user management"
 ```
 
 ### Automation Workflows
+
 ```powershell
 # In CI/CD pipeline
 cursor agent -p "review these changes for security issues" --output-format text > review.txt
@@ -181,16 +207,19 @@ cursor agent -p "review these changes for security issues" --output-format text 
 ## Integration with Project Workflows
 
 ### Test Failure Remediation
+
 ```powershell
 .\scripts\cursor-cli-test-fix.ps1 -TestPath server/tests/unit -OutputReport
 ```
 
 ### Security Review
+
 ```powershell
 .\scripts\cursor-cli-review.ps1 -GitChanges -Focus security
 ```
 
 ### Performance Analysis
+
 ```powershell
 .\scripts\cursor-cli-review.ps1 -Path server/services/ -Focus performance
 ```
@@ -198,21 +227,25 @@ cursor agent -p "review these changes for security issues" --output-format text 
 ## Best Practices
 
 ### Interactive vs Non-Interactive
+
 - **Interactive**: Use for exploratory work, complex refactoring, learning
 - **Non-Interactive**: Use for automation, CI/CD, scripts, quick reviews
 
 ### Model Selection
+
 - **Default**: Works well for most tasks
 - **GPT-5.2**: Good for code generation and refactoring
 - **Claude-4.5-Opus**: Good for analysis and review
 
 ### Output Format
+
 - **Text**: Human-readable output for reviews and reports
 - **JSON**: Structured output for automation and parsing
 
 ## Troubleshooting
 
 ### CLI Not Found
+
 ```powershell
 # Verify installation
 cursor --version
@@ -222,6 +255,7 @@ irm 'https://cursor.com/install?win32=true' | iex
 ```
 
 ### Permission Issues
+
 ```powershell
 # Check execution policy
 Get-ExecutionPolicy
@@ -231,6 +265,7 @@ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
 
 ### Model Not Available
+
 ```powershell
 # List available models
 cursor agent --help

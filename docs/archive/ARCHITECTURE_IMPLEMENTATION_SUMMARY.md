@@ -1,5 +1,7 @@
 # Architecture Remediation Implementation Summary
 
+> **Note:** This document describes the pre-architecture-cleanup state. For current container and bundle architecture, see [docs/architecture/](../architecture/) and [ADR-002](../architecture/decisions/ADR-002-application-container-dependency-injection.md).
+
 **Date:** November 3, 2025
 **Status:** Phase 1-3 Foundation Complete
 **Test Status:** Integration tests require updates (deferred per user request)
@@ -48,6 +50,7 @@ has been implemented, with test integration deferred to a future phase.
 ✅ Single source of truth for all service instances
 
 ✅ Proper shutdown sequence coordination
+
 - ✅ Better testability through dependency injection
 - ✅ Reduced coupling to global state
 - ✅ Easier to reason about service lifecycles
@@ -74,6 +77,7 @@ has been implemented, with test integration deferred to a future phase.
 ✅ No duplicate "player entered" messages
 
 ✅ Consistent event ordering guaranteed
+
 - ✅ Clear separation: EventBus for domain, NATS for chat
 - ✅ Performance improvement (fewer redundant broadcasts)
 - ✅ Easier to debug event flow
@@ -99,6 +103,7 @@ has been implemented, with test integration deferred to a future phase.
 ✅ True async database operations available
 
 ✅ No event loop blocking in async contexts
+
 - ✅ Gradual migration path established
 - ✅ Both patterns coexist during transition
 
@@ -128,6 +133,7 @@ has been implemented, with test integration deferred to a future phase.
 ✅ Single CORS implementation (reduced complexity)
 
 ✅ Clear configuration precedence rules
+
 - ✅ Easier to debug CORS issues
 - ✅ Security headers properly separated
 
@@ -153,6 +159,7 @@ has been implemented, with test integration deferred to a future phase.
 ✅ Domain layer independent of NATS
 
 ✅ Easy to swap message brokers (RabbitMQ, Redis, etc.)
+
 - ✅ Better testability (mock MessageBroker protocol)
 - ✅ Follows hexagonal architecture principles
 
@@ -171,6 +178,7 @@ has been implemented, with test integration deferred to a future phase.
 ✅ Modular error handling available
 
 ✅ Backward compatibility maintained
+
 - ✅ Gradual migration path established
 
 ---
@@ -203,6 +211,7 @@ Added relationships to `User`, `Player`, and `Invite` models
 ✅ No more circular import workarounds
 
 ✅ Relationships visible in model definitions
+
 - ✅ Better IDE autocomplete and type checking
 - ✅ Standard SQLAlchemy pattern
 - ✅ Cleaner code organization
@@ -228,6 +237,7 @@ Added relationships to `User`, `Player`, and `Invite` models
 ✅ Cleaner imports: `@hooks/useGameConnection` vs `../../../hooks/useGameConnection`
 
 ✅ Easier refactoring (imports don't break when moving files)
+
 - ✅ Better IDE autocomplete
 - ✅ Standard modern TypeScript practice
 
@@ -286,6 +296,7 @@ Added relationships to `User`, `Player`, and `Invite` models
 ✅ Clear, predictable configuration behavior
 
 ✅ Easier debugging of configuration issues
+
 - ✅ Better documentation of precedence rules
 
 ---
@@ -509,6 +520,7 @@ The implementation follows an **incremental migration strategy** to minimize dis
 ✅ Better testability
 
 ✅ Clearer lifecycle management
+
 - ⚠️ Requires test updates (deferred)
 
 ### ADR-002: EventBus as Single Source of Truth
@@ -520,6 +532,7 @@ The implementation follows an **incremental migration strategy** to minimize dis
 ✅ Consistent event ordering
 
 ✅ Easier debugging
+
 - ⚠️ Must train developers on new pattern
 
 ### ADR-003: MessageBroker Abstraction
@@ -531,6 +544,7 @@ The implementation follows an **incremental migration strategy** to minimize dis
 ✅ Framework independence
 
 ✅ Better testability
+
 - ⚠️ Requires service migration (gradual)
 
 ### ADR-004: Direct Model Relationships
@@ -542,6 +556,7 @@ The implementation follows an **incremental migration strategy** to minimize dis
 ✅ Cleaner code
 
 ✅ Better IDE support
+
 - ✅ No workarounds
 
 ### ADR-005: Domain Layer Introduction
@@ -553,6 +568,7 @@ The implementation follows an **incremental migration strategy** to minimize dis
 ✅ Clear separation of concerns
 
 ✅ Framework independence
+
 - ⚠️ Requires entity migration (future work)
 
 ---

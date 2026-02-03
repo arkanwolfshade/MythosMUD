@@ -557,7 +557,11 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
         loop = asyncio.get_running_loop()
         return await loop.run_in_executor(None, lambda: json.loads(msg.data.decode("utf-8")))
 
-    async def _call_callback(self, callback: Callable[[dict[str, Any]], None], message_data: dict[str, Any]) -> None:
+    async def _call_callback(
+        self,
+        callback: Callable[[dict[str, Any]], None | Coroutine[Any, Any, None]],
+        message_data: dict[str, Any],
+    ) -> None:
         """Call the registered callback, handling both async and sync callbacks."""
         if asyncio.iscoroutinefunction(callback):
             await callback(message_data)
@@ -608,13 +612,15 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
         except Exception as nak_error:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Message nak errors unpredictable, must log but continue
             logger.error("Failed to negatively acknowledge message", error=str(nak_error), subject=subject)
 
-    async def subscribe(self, subject: str, callback: Callable[[dict[str, Any]], None]) -> None:
+    async def subscribe(
+        self, subject: str, callback: Callable[[dict[str, Any]], None | Coroutine[Any, Any, None]]
+    ) -> None:
         """
         Subscribe to a NATS subject and register a callback for incoming messages.
 
         Args:
             subject: NATS subject name to subscribe to
-            callback: Function to call when messages are received (signature: async def callback(message_data: dict))
+            callback: Sync or async function when messages are received (message_data: dict)
 
         Raises:
             NATSSubscribeError: If subscription fails

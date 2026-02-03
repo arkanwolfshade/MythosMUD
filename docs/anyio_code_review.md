@@ -106,7 +106,7 @@ await sleep(0.1)
 
 **Affected Files**:
 
-- `server/container.py:168`
+- `server/container/main.py` (container initialization)
 - `server/services/inventory_mutation_guard.py:42, 45, 48, 70, 74, 77`
 - `server/npc/threading.py:206`
 - `server/services/room_sync_service.py:53`

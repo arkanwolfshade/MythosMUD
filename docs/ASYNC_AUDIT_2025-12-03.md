@@ -184,7 +184,7 @@ async def close(self) -> None:
 **Fix**:
 
 ```python
-# In server/app/container.py shutdown method
+# In server/container/main.py shutdown method
 
 async def shutdown(self):
     """Cleanup resources on shutdown."""
@@ -830,7 +830,7 @@ for task, result in zip(tasks, results, strict=False):
 
 **Issue**: #3 - Connection pool resource leaks
 
-**Files**: `server/app/container.py`, `server/async_persistence.py`
+**Files**: `server/container/main.py`, `server/async_persistence.py`
 
 **Actions**:
 

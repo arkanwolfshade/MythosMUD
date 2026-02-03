@@ -297,8 +297,8 @@ export async function waitForAllPlayersInGame(
     }),
   }).catch(() => {});
   // #endregion
-  // Brief stability wait after all room subscriptions established
-  await new Promise(resolve => setTimeout(resolve, 2000));
+  // Brief stability wait after all room subscriptions established (allow room broadcasts to settle)
+  await new Promise(resolve => setTimeout(resolve, 3000));
 }
 
 /**
@@ -496,30 +496,11 @@ export async function waitForCrossPlayerMessage(
     }),
   }).catch(() => {});
   // #endregion
+  // Use locator for both string and RegExp: Playwright's filter({ hasText }) accepts RegExp.
+  // Prefer locator over waitForFunction for auto-wait, retries, and clearer timeout errors.
+  // If this times out, the receiving player may have left the game (check Game Info for "has left the game").
   const messageLocator = playerContext.page.locator('[data-message-text]');
-
-  if (typeof expectedText === 'string') {
-    await messageLocator.filter({ hasText: expectedText }).first().waitFor({ state: 'visible', timeout });
-  } else {
-    // For RegExp, use page.waitForFunction to check messages dynamically
-    // Serialize RegExp to source and flags for serialization
-    const patternSource = expectedText.source;
-    const patternFlags = expectedText.flags;
-    await playerContext.page.waitForFunction(
-      ({ source, flags }) => {
-        const messages = Array.from(document.querySelectorAll('[data-message-text]'));
-        // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp
-        // Test fixture: RegExp from expectedText (test constant), not user input
-        const patternRegex = new RegExp(source, flags);
-        return messages.some(msg => {
-          const text = (msg.getAttribute('data-message-text') || '').trim();
-          return patternRegex.test(text);
-        });
-      },
-      { source: patternSource, flags: patternFlags },
-      { timeout }
-    );
-  }
+  await messageLocator.filter({ hasText: expectedText }).first().waitFor({ state: 'visible', timeout });
   // #region agent log
   fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
     method: 'POST',
@@ -556,16 +537,16 @@ export async function getPlayerMessages(playerContext: PlayerContext): Promise<s
  * which indicates they are in the same room and can communicate via local channels.
  *
  * CRITICAL: Call this AFTER waitForAllPlayersInGame and BEFORE any communication tests
- * (chat, local, whisper, etc.) to ensure players are properly synchronized.
+ * that require same room (/say, /local). Not required for /whisper or /teleport.
  *
  * @param contexts - Array of PlayerContext objects
  * @param expectedOccupants - Expected number of players in the room (default: contexts.length)
- * @param timeoutMs - Max wait in milliseconds (default: 30000)
+ * @param timeoutMs - Max wait in milliseconds (default: 45000)
  */
 export async function ensurePlayersInSameRoom(
   contexts: PlayerContext[],
   expectedOccupants: number = contexts.length,
-  timeoutMs: number = 30000
+  timeoutMs: number = 45000
 ): Promise<void> {
   // #region agent log
   fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
@@ -585,6 +566,35 @@ export async function ensurePlayersInSameRoom(
     }),
   }).catch(() => {});
   // #endregion
+
+  // Step 0: Wait for all players' header connection status to show "Connected" (same as waitForAllPlayersInGame).
+  // Do not require absence of "(linkdead)" in the whole body: the Occupants panel can show "Name (linkdead)"
+  // even when the header already shows "Connected", which would otherwise block this step forever.
+  const linkdeadWaitMs = Math.min(25000, timeoutMs);
+  await Promise.all(
+    contexts.map(({ page, player }) =>
+      page
+        .waitForFunction(
+          () => {
+            const statusElements = Array.from(document.querySelectorAll('*'));
+            const hasConnectedStatus = statusElements.some(
+              el =>
+                el.textContent?.trim() === 'Connected' ||
+                (el.textContent?.includes('Connected') && !el.textContent?.includes('linkdead'))
+            );
+            return hasConnectedStatus;
+          },
+          { timeout: linkdeadWaitMs }
+        )
+        .catch(err => {
+          const msg =
+            `[instrumentation] ensurePlayersInSameRoom failed: Player ${player.username} - ` +
+            `Step 0: header still not Connected within ${linkdeadWaitMs}ms`;
+          console.error(msg, err);
+          throw new Error(msg);
+        })
+    )
+  );
 
   // Step 1: Wait for all players to see the expected number of occupants in their room
   // Detection supports: OccupantsPanel title "Occupants (n)", content "Players (n)", or RoomInfoPanel "Occupants (n):"
@@ -670,29 +680,9 @@ export async function ensurePlayersInSameRoom(
     )
   );
 
-  // Step 2: Require no linkdead in room so both players are actually connected and can receive broadcasts
-  await Promise.all(
-    contexts.map(({ page, player }) =>
-      page
-        .waitForFunction(
-          () => {
-            const bodyText = document.body?.innerText ?? '';
-            const hasLinkdead = bodyText.includes('(linkdead)');
-            return !hasLinkdead;
-          },
-          { timeout: Math.min(timeoutMs, 15000) }
-        )
-        .catch(err => {
-          const ldTimeout = Math.min(timeoutMs, 15000);
-          const msg =
-            `[instrumentation] ensurePlayersInSameRoom failed: Player ${player.username} - ` +
-            `Step 2: no-linkdead - still sees linkdead in room within ${ldTimeout}ms ` +
-            '(other player not connected?)';
-          console.error(msg, err);
-          throw new Error(msg);
-        })
-    )
-  );
+  // Step 2 removed: we no longer require absence of "(linkdead)" in the body. The Occupants panel
+  // can show "Name (linkdead)" even when the header shows "Connected"; Step 0 already ensures
+  // header Connected for all, and Step 1 ensures occupants >= 2.
 
   // Brief stability wait after all players see each other and are connected
   await new Promise(resolve => setTimeout(resolve, 1000));

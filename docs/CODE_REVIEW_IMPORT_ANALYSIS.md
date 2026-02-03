@@ -141,7 +141,7 @@ These files use relative imports, which is preferred for:
 
 ### Container Files
 
-✅ `server/container.py` - Proper import organization with TYPE_CHECKING usage
+✅ `server/container/` - Proper import organization with TYPE_CHECKING usage (main.py, bundles)
 
 ---
 

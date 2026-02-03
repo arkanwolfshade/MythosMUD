@@ -18,6 +18,7 @@ import {
   waitForAllPlayersInGame,
   waitForCrossPlayerMessage,
 } from '../fixtures/multiplayer';
+import { ensureStanding } from '../fixtures/player';
 
 test.describe('Whisper Movement', () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
@@ -68,15 +69,13 @@ test.describe('Whisper Movement', () => {
     await ensurePlayerInGame(awContext, 15000);
     await ensurePlayerInGame(ithaquaContext, 15000);
 
-    await executeCommand(awContext.page, 'stand');
-    await waitForMessage(awContext.page, /rise|standing|feet|already standing/i, 5000).catch(() => {});
-
+    await ensureStanding(awContext.page, 5000);
     // AW moves to different room
     await executeCommand(awContext.page, 'go east');
     await waitForMessage(awContext.page, 'You move east', 10000).catch(() => {
       // Movement may succeed even if message format differs
     });
-    await awContext.page.waitForTimeout(2000);
+    await new Promise(r => setTimeout(r, 2000));
 
     // AW sends whisper from different room
     await executeCommand(awContext.page, 'whisper Ithaqua Testing whisper from different room');

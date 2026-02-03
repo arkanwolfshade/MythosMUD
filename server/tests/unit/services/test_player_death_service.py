@@ -70,6 +70,7 @@ def mock_player(sample_player_id):
     player.get_stats = MagicMock(return_value={"current_dp": 0})
     player.set_stats = MagicMock()
     player.is_dead = MagicMock(return_value=False)
+    player.is_mortally_wounded = MagicMock(return_value=False)
     return player
 
 
@@ -99,6 +100,7 @@ async def test_get_mortally_wounded_players_empty(player_death_service, mock_ses
 async def test_get_mortally_wounded_players_finds_mortally_wounded(player_death_service, mock_session, mock_player):
     """Test get_mortally_wounded_players() finds mortally wounded players."""
     mock_player.get_stats.return_value = {"current_dp": -5}  # Mortally wounded
+    mock_player.is_mortally_wounded.return_value = True
     mock_result = MagicMock()
     mock_result.scalars.return_value.all.return_value = [mock_player]
     mock_session.execute = AsyncMock(return_value=mock_result)
@@ -111,6 +113,7 @@ async def test_get_mortally_wounded_players_finds_mortally_wounded(player_death_
 async def test_get_mortally_wounded_players_excludes_healthy(player_death_service, mock_session, mock_player):
     """Test get_mortally_wounded_players() excludes healthy players."""
     mock_player.get_stats.return_value = {"current_dp": 10}  # Healthy
+    mock_player.is_mortally_wounded.return_value = False
     mock_result = MagicMock()
     mock_result.scalars.return_value.all.return_value = [mock_player]
     mock_session.execute = AsyncMock(return_value=mock_result)
@@ -122,6 +125,7 @@ async def test_get_mortally_wounded_players_excludes_healthy(player_death_servic
 async def test_get_mortally_wounded_players_excludes_dead(player_death_service, mock_session, mock_player):
     """Test get_mortally_wounded_players() excludes dead players."""
     mock_player.get_stats.return_value = {"current_dp": -10}  # Dead
+    mock_player.is_mortally_wounded.return_value = False  # Dead players are not mortally wounded
     mock_result = MagicMock()
     mock_result.scalars.return_value.all.return_value = [mock_player]
     mock_session.execute = AsyncMock(return_value=mock_result)
@@ -151,6 +155,7 @@ async def test_get_dead_players_empty(player_death_service, mock_session):
 async def test_get_dead_players_finds_dead(player_death_service, mock_session, mock_player):
     """Test get_dead_players() finds dead players."""
     mock_player.get_stats.return_value = {"current_dp": -10}  # Dead
+    mock_player.is_dead.return_value = True
     mock_result = MagicMock()
     mock_result.scalars.return_value.all.return_value = [mock_player]
     mock_session.execute = AsyncMock(return_value=mock_result)
@@ -202,15 +207,14 @@ async def test_process_mortally_wounded_tick_already_dead(
 async def test_process_mortally_wounded_tick_applies_decay(
     player_death_service, mock_session, sample_player_id, mock_player
 ):
-    """Test process_mortally_wounded_tick() applies DP decay."""
+    """Test process_mortally_wounded_tick() applies DP decay via Player.apply_dp_decay."""
     mock_player.get_stats.return_value = {"current_dp": -5, "position": "standing"}
     mock_player.is_dead.return_value = False
+    mock_player.apply_dp_decay = MagicMock(return_value=(-5, -6, False))
     mock_session.get = AsyncMock(return_value=mock_player)
     result = await player_death_service.process_mortally_wounded_tick(sample_player_id, mock_session)
     assert result is True
-    # Should decrease DP by 1
-    call_args = mock_player.set_stats.call_args
-    assert call_args[0][0]["current_dp"] == -6
+    mock_player.apply_dp_decay.assert_called_once_with(amount=1)
     mock_session.commit.assert_awaited_once()
 
 
@@ -218,30 +222,28 @@ async def test_process_mortally_wounded_tick_applies_decay(
 async def test_process_mortally_wounded_tick_caps_at_negative_10(
     player_death_service, mock_session, sample_player_id, mock_player
 ):
-    """Test process_mortally_wounded_tick() caps DP at -10."""
+    """Test process_mortally_wounded_tick() caps DP at -10 via Player.apply_dp_decay."""
     mock_player.get_stats.return_value = {"current_dp": -10, "position": "lying"}
     mock_player.is_dead.return_value = False
+    mock_player.apply_dp_decay = MagicMock(return_value=(-10, -10, False))
     mock_session.get = AsyncMock(return_value=mock_player)
     result = await player_death_service.process_mortally_wounded_tick(sample_player_id, mock_session)
     assert result is True
-    # Should not go below -10
-    call_args = mock_player.set_stats.call_args
-    assert call_args[0][0]["current_dp"] == -10
+    mock_player.apply_dp_decay.assert_called_once_with(amount=1)
 
 
 @pytest.mark.asyncio
 async def test_process_mortally_wounded_tick_changes_posture_to_lying(
     player_death_service, mock_session, sample_player_id, mock_player
 ):
-    """Test process_mortally_wounded_tick() changes posture to lying when DP drops to 0."""
+    """Test process_mortally_wounded_tick() delegates posture change to Player.apply_dp_decay."""
     mock_player.get_stats.return_value = {"current_dp": 0, "position": "standing"}
     mock_player.is_dead.return_value = False
+    mock_player.apply_dp_decay = MagicMock(return_value=(0, -1, True))  # posture_changed=True
     mock_session.get = AsyncMock(return_value=mock_player)
     result = await player_death_service.process_mortally_wounded_tick(sample_player_id, mock_session)
     assert result is True
-    # Should change position to lying
-    call_args = mock_player.set_stats.call_args
-    assert call_args[0][0]["position"] == PositionState.LYING
+    mock_player.apply_dp_decay.assert_called_once_with(amount=1)
 
 
 @pytest.mark.asyncio
@@ -251,6 +253,7 @@ async def test_process_mortally_wounded_tick_publishes_event(
     """Test process_mortally_wounded_tick() publishes DP decay event."""
     mock_player.get_stats.return_value = {"current_dp": -5, "position": "standing"}
     mock_player.is_dead.return_value = False
+    mock_player.apply_dp_decay = MagicMock(return_value=(-5, -6, False))
     mock_session.get = AsyncMock(return_value=mock_player)
     result = await player_death_service.process_mortally_wounded_tick(sample_player_id, mock_session)
     assert result is True

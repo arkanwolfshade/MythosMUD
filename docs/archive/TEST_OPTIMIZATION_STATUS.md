@@ -1,5 +1,7 @@
 # Test Suite Optimization Status
 
+> **Note:** This document describes the pre-architecture-cleanup state. For current architecture, see [docs/architecture/](../architecture/) and [ADR-002 ApplicationContainer](../architecture/decisions/ADR-002-application-container-dependency-injection.md).
+
 > *"The systematic refinement of our test chambers proceeds according to the optimization roadmap, removing ceremonial tests while preserving all critical protections."*
 
 **Optimization Plan:** Full Optimization (Option A)

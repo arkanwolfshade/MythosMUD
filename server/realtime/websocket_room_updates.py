@@ -68,7 +68,7 @@ async def get_npc_occupants_from_lifecycle_manager(room_id: str) -> list[str]:
             if lifecycle_manager and hasattr(lifecycle_manager, "active_npcs"):
                 active_npcs_dict = lifecycle_manager.active_npcs
                 for npc_id, npc_instance in active_npcs_dict.items():
-                    if not getattr(npc_instance, "is_alive", True):
+                    if not npc_instance.is_alive:
                         logger.debug(
                             "Skipping dead NPC from occupants",
                             npc_id=npc_id,
@@ -116,7 +116,7 @@ async def get_npc_occupants_fallback(room: "Room | Any", room_id: str) -> list[s
                 for npc_id in room_npc_ids:
                     if npc_id in lifecycle_manager.active_npcs:
                         npc_instance = lifecycle_manager.active_npcs[npc_id]
-                        if getattr(npc_instance, "is_alive", True):
+                        if npc_instance.is_alive:
                             filtered_npc_ids.append(npc_id)
                         else:
                             logger.debug("Filtered dead NPC from fallback occupants", npc_id=npc_id, room_id=room_id)

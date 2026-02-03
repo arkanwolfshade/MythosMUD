@@ -57,7 +57,7 @@ After reviewing the codebase against `.cursor/rules/python.mdc`, several categor
 **Examples of intentional patterns (DO NOT CHANGE)**:
 
 - `server/tests/conftest.py` - imports after environment variables (explicitly suppressed with `# noqa: E402`)
-- `server/container.py` - imports after TYPE_CHECKING block (explicitly suppressed with `# pylint: disable=wrong-import-position`)
+- `server/container/` (main.py or bundles) - imports after TYPE_CHECKING block (explicitly suppressed with `# pylint: disable=wrong-import-position`)
 - Many files with lazy imports inside functions to avoid circular dependencies
 
 **Action**: Only review imports inside functions that are NOT explicitly suppressed. If an import is inside a function with no suppression comment, evaluate if it should be moved to the top (e.g., standard library imports like `import inspect` that don't cause circular dependencies).

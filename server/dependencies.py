@@ -97,7 +97,7 @@ def get_player_service(request: Request) -> PlayerService:
     if container.player_service is None:
         raise RuntimeError("PlayerService not initialized in container")
 
-    return container.player_service
+    return cast(PlayerService, container.player_service)
 
 
 def get_player_service_for_testing(player_service: PlayerService | None = None) -> PlayerService:
@@ -147,7 +147,7 @@ def get_room_service(request: Request) -> RoomService:
     if container.room_service is None:
         raise RuntimeError("RoomService not initialized in container")
 
-    return container.room_service
+    return cast(RoomService, container.room_service)
 
 
 def get_stats_generator() -> StatsGenerator:
@@ -184,7 +184,7 @@ def get_connection_manager(request: Request) -> "ConnectionManager":
     if container.connection_manager is None:
         raise RuntimeError("ConnectionManager not initialized in container")
 
-    return container.connection_manager
+    return cast("ConnectionManager", container.connection_manager)
 
 
 def get_async_persistence(request: Request) -> "AsyncPersistenceLayer":
@@ -209,7 +209,7 @@ def get_async_persistence(request: Request) -> "AsyncPersistenceLayer":
     if container.async_persistence is None:
         raise RuntimeError("AsyncPersistenceLayer not initialized in container")
 
-    return container.async_persistence
+    return cast("AsyncPersistenceLayer", container.async_persistence)
 
 
 def get_exploration_service(request: Request) -> "ExplorationService":
@@ -234,7 +234,7 @@ def get_exploration_service(request: Request) -> "ExplorationService":
     if container.exploration_service is None:
         raise RuntimeError("ExplorationService not initialized in container")
 
-    return container.exploration_service
+    return cast("ExplorationService", container.exploration_service)
 
 
 def get_player_respawn_service(request: Request) -> "PlayerRespawnService":

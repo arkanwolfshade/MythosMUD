@@ -182,6 +182,29 @@ def _configure_cors() -> CORSConfigDict:
     return cors_config
 
 
+# OpenAPI tag metadata for API documentation (Swagger/ReDoc).
+# Order defines display order in docs UI.
+OPENAPI_TAGS = [
+    {"name": "auth", "description": "Authentication: JWT login, registration, user management."},
+    {"name": "users", "description": "User account operations (FastAPI Users)."},
+    {"name": "players", "description": "Player characters: create, list, select, delete, stats, effects."},
+    {"name": "professions", "description": "Character class and profession data."},
+    {"name": "game", "description": "Game state: enter game, movement, combat actions."},
+    {"name": "containers", "description": "Unified container system: environmental, wearable, corpse storage."},
+    {"name": "rooms", "description": "Room data and exploration."},
+    {"name": "maps", "description": "ASCII map rendering and exploration views."},
+    {"name": "realtime", "description": "WebSocket connection and real-time game events."},
+    {"name": "monitoring", "description": "Health checks, performance metrics, observability."},
+    {"name": "metrics", "description": "NATS and system metrics."},
+    {"name": "admin", "description": "Administrative endpoints: NPC management, teleport."},
+    {"name": "npc", "description": "NPC spawn and lifecycle administration."},
+    {"name": "nats", "description": "NATS subject management (admin)."},
+    {"name": "subjects", "description": "NATS subject inspection and management."},
+    {"name": "system", "description": "System-level monitoring and diagnostics."},
+    {"name": "api", "description": "Base API utilities."},
+]
+
+
 def create_app() -> FastAPI:  # pylint: disable=too-many-locals,too-many-statements  # Reason: Application factory requires many intermediate variables for service configuration. Application factory legitimately requires many statements for comprehensive app setup.
     """
     Create and configure the FastAPI application.
@@ -194,8 +217,14 @@ def create_app() -> FastAPI:  # pylint: disable=too-many-locals,too-many-stateme
     """
     app = FastAPI(
         title="MythosMUD API",
-        description=("A Cthulhu Mythos-themed MUD game API with real-time communication"),
+        description=(
+            "A Cthulhu Mythos-themed MUD game API with real-time communication via WebSocket. "
+            "REST endpoints handle authentication, player management, rooms, containers, and game state. "
+            "Contract documentation: docs/architecture/API_OPENAPI_SPECIFICATION.md"
+        ),
         version="0.1.0",
+        openapi_tags=OPENAPI_TAGS,
+        license_info={"name": "MIT", "identifier": "MIT"},
         lifespan=lifespan,
     )
 

@@ -10,7 +10,6 @@ import asyncio
 from typing import Any
 from uuid import UUID
 
-from server.models.game import PositionState
 from server.services.nats_exceptions import NATSError
 from server.structured_logging.enhanced_logging_config import get_logger
 
@@ -53,54 +52,6 @@ class CombatPersistenceHandler:
         ) as e:
             logger.warning("Could not get persistence from container", error=str(e))
             return None
-
-    def _update_player_dp_and_posture(self, player: Any, player_id: UUID, current_dp: int, old_dp: int) -> None:
-        """
-        Update player DP and handle posture changes.
-
-        Args:
-            player: Player object to update
-            player_id: ID of the player
-            current_dp: New DP value
-            old_dp: Previous DP value
-        """
-        stats = player.get_stats()
-
-        # AI Agent: CRITICAL DEBUG - Log stats BEFORE modification to diagnose persistence bug
-        logger.debug(
-            "Stats before DP update",
-            player_id=player_id,
-            raw_stats=player.stats,
-            parsed_stats=stats,
-            current_dp_in_stats=stats.get("current_dp"),
-        )
-
-        stats["current_dp"] = current_dp
-
-        # BUGFIX: Automatically change posture to lying when DP drops to <= 0
-        # As documented in "Combat Collapse and Unconsciousness" - Dr. Armitage, 1929
-        # When a player's DP reaches zero or below in combat, their body automatically collapses
-        if current_dp <= 0 < old_dp:
-            stats["position"] = PositionState.LYING
-            logger.info(
-                "Player posture changed to lying (unconscious in combat)",
-                player_id=player_id,
-                player_name=player.name,
-                dp=current_dp,
-            )
-        elif current_dp <= 0 and stats.get("position") != PositionState.LYING:
-            # Ensure player is lying if already at <= 0 DP
-            stats["position"] = PositionState.LYING
-
-        player.set_stats(stats)
-
-        # AI Agent: CRITICAL DEBUG - Log stats AFTER modification but BEFORE save
-        logger.debug(
-            "Stats after DP update, before save",
-            player_id=player_id,
-            raw_stats_after_set=player.stats,
-            new_current_dp=current_dp,
-        )
 
     async def _verify_player_save(
         self, persistence: Any, player_id: UUID, player_name: str, old_dp: int, current_dp: int
@@ -196,12 +147,15 @@ class CombatPersistenceHandler:
                 logger.warning("Player not found for DP persistence", player_id=player_id)
                 return
 
-            # Update player DP using proper methods
-            stats = player.get_stats()
-            old_dp = stats.get("current_dp", 20)  # current_dp represents DP
-
-            # Update DP and handle posture changes
-            self._update_player_dp_and_posture(player, player_id, current_dp, old_dp)
+            # Delegate DP and posture updates to Player domain model
+            old_dp, became_mortally_wounded, _became_dead = player.apply_dp_change(current_dp)
+            if became_mortally_wounded:
+                logger.info(
+                    "Player posture changed to lying (unconscious in combat)",
+                    player_id=player_id,
+                    player_name=player.name,
+                    dp=current_dp,
+                )
 
             # Save player to database
             await persistence.save_player(player)

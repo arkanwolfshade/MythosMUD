@@ -17,19 +17,35 @@ vi.mock('../../../../utils/logger', () => ({
   },
 }));
 
-vi.mock('../../eventHandlers', () => ({
-  processGameEvent: vi.fn(() => ({})),
-}));
-
-vi.mock('../../utils/stateUpdateUtils', () => ({
-  applyEventUpdates: vi.fn(),
-  sanitizeAndApplyUpdates: vi.fn(),
+const mockStoreClear = vi.fn();
+vi.mock('../../eventLog', () => ({
+  EventStore: vi.fn().mockImplementation(function MockEventStore(this: {
+    append: () => void;
+    getLog: () => unknown[];
+    clear: () => void;
+  }) {
+    this.append = function append() {};
+    this.getLog = function getLog() {
+      return [];
+    };
+    this.clear = mockStoreClear;
+  }),
+  projectState: vi.fn().mockImplementation(function projectStateMock(_log: unknown[]) {
+    return {
+      player: null,
+      room: null,
+      messages: [],
+      commandHistory: [],
+      loginGracePeriodActive: false,
+      loginGracePeriodRemaining: 0,
+    };
+  }),
 }));
 
 describe('useEventProcessing', () => {
   const mockSetGameState = vi.fn();
   const mockCurrentMessagesRef = { current: [] as ChatMessage[] };
-  const mockContext: EventHandlerContext = {
+  const _mockContext: EventHandlerContext = {
     currentPlayerRef: { current: null },
     currentRoomRef: { current: null },
     currentMessagesRef: mockCurrentMessagesRef,
@@ -73,9 +89,11 @@ describe('useEventProcessing', () => {
       throw new Error('Function not implemented.');
     },
   };
+  void _mockContext; // Kept for test structure; context no longer passed to useEventProcessing
 
   beforeEach(() => {
     vi.clearAllMocks();
+    mockStoreClear.mockClear();
     vi.useFakeTimers();
   });
 
@@ -83,25 +101,37 @@ describe('useEventProcessing', () => {
     vi.useRealTimers();
   });
 
-  it('should return handleGameEvent function', () => {
+  it('should return handleGameEvent and clearEventLog', () => {
     const { result } = renderHook(() =>
       useEventProcessing({
-        currentMessagesRef: mockCurrentMessagesRef,
         setGameState: mockSetGameState,
-        context: mockContext,
       })
     );
 
     expect(result.current.handleGameEvent).toBeDefined();
     expect(typeof result.current.handleGameEvent).toBe('function');
+    expect(result.current.clearEventLog).toBeDefined();
+    expect(typeof result.current.clearEventLog).toBe('function');
+  });
+
+  it('should call store clear when clearEventLog is invoked', () => {
+    const { result } = renderHook(() =>
+      useEventProcessing({
+        setGameState: mockSetGameState,
+      })
+    );
+
+    act(() => {
+      result.current.clearEventLog();
+    });
+
+    expect(mockStoreClear).toHaveBeenCalledTimes(1);
   });
 
   it('should queue events for processing', () => {
     const { result } = renderHook(() =>
       useEventProcessing({
-        currentMessagesRef: mockCurrentMessagesRef,
         setGameState: mockSetGameState,
-        context: mockContext,
       })
     );
 
@@ -123,9 +153,7 @@ describe('useEventProcessing', () => {
   it('should process queued events', async () => {
     const { result } = renderHook(() =>
       useEventProcessing({
-        currentMessagesRef: mockCurrentMessagesRef,
         setGameState: mockSetGameState,
-        context: mockContext,
       })
     );
 
@@ -157,9 +185,7 @@ describe('useEventProcessing', () => {
   it('should handle multiple events in queue', () => {
     const { result } = renderHook(() =>
       useEventProcessing({
-        currentMessagesRef: mockCurrentMessagesRef,
         setGameState: mockSetGameState,
-        context: mockContext,
       })
     );
 
@@ -187,21 +213,19 @@ describe('useEventProcessing', () => {
   });
 
   it('should handle errors during event processing gracefully', async () => {
-    const eventHandlers = await import('../../eventHandlers');
-    vi.mocked(eventHandlers.processGameEvent).mockImplementationOnce(() => {
+    const eventLog = await import('../../eventLog');
+    vi.mocked(eventLog.projectState).mockImplementationOnce(() => {
       throw new Error('Processing error');
     });
 
     const { result } = renderHook(() =>
       useEventProcessing({
-        currentMessagesRef: mockCurrentMessagesRef,
         setGameState: mockSetGameState,
-        context: mockContext,
       })
     );
 
     const event: GameEvent = {
-      event_type: 'test_event',
+      event_type: 'game_state',
       timestamp: new Date().toISOString(),
       sequence_number: 1,
       data: {},
@@ -227,9 +251,7 @@ describe('useEventProcessing', () => {
   it('should not process events when already processing', () => {
     const { result } = renderHook(() =>
       useEventProcessing({
-        currentMessagesRef: mockCurrentMessagesRef,
         setGameState: mockSetGameState,
-        context: mockContext,
       })
     );
 
@@ -264,9 +286,7 @@ describe('useEventProcessing', () => {
   it('should process remaining events after initial processing completes', async () => {
     const { result } = renderHook(() =>
       useEventProcessing({
-        currentMessagesRef: mockCurrentMessagesRef,
         setGameState: mockSetGameState,
-        context: mockContext,
       })
     );
 
@@ -313,9 +333,7 @@ describe('useEventProcessing', () => {
   it('should not schedule processing when timeout already exists', () => {
     const { result } = renderHook(() =>
       useEventProcessing({
-        currentMessagesRef: mockCurrentMessagesRef,
         setGameState: mockSetGameState,
-        context: mockContext,
       })
     );
 
@@ -339,9 +357,7 @@ describe('useEventProcessing', () => {
   it('should not schedule timeout when isProcessingEvent is true', async () => {
     const { result } = renderHook(() =>
       useEventProcessing({
-        currentMessagesRef: mockCurrentMessagesRef,
         setGameState: mockSetGameState,
-        context: mockContext,
       })
     );
 
@@ -375,9 +391,7 @@ describe('useEventProcessing', () => {
   it('should not schedule timeout when processingTimeout already exists', () => {
     const { result } = renderHook(() =>
       useEventProcessing({
-        currentMessagesRef: mockCurrentMessagesRef,
         setGameState: mockSetGameState,
-        context: mockContext,
       })
     );
 
@@ -398,28 +412,15 @@ describe('useEventProcessing', () => {
     expect(result.current.handleGameEvent).toBeDefined();
   });
 
-  it('should handle appendMessage callback correctly', async () => {
-    const eventHandlers = await import('../../eventHandlers');
-
-    vi.mocked(eventHandlers.processGameEvent).mockImplementationOnce((event, context, appendMessage) => {
-      appendMessage({
-        text: 'Test message',
-        timestamp: event.timestamp,
-        isHtml: false,
-      });
-      return {};
-    });
-
+  it('should call setGameState with projected state when events are processed', async () => {
     const { result } = renderHook(() =>
       useEventProcessing({
-        currentMessagesRef: mockCurrentMessagesRef,
         setGameState: mockSetGameState,
-        context: mockContext,
       })
     );
 
     const event: GameEvent = {
-      event_type: 'test_event',
+      event_type: 'game_state',
       timestamp: new Date().toISOString(),
       sequence_number: 1,
       data: {},
@@ -437,25 +438,25 @@ describe('useEventProcessing', () => {
       await Promise.resolve();
     });
 
-    // Should have called sanitizeAndApplyUpdates with messages
-    const { sanitizeAndApplyUpdates } = await import('../../utils/stateUpdateUtils');
-    expect(vi.mocked(sanitizeAndApplyUpdates)).toHaveBeenCalled();
+    expect(mockSetGameState).toHaveBeenCalledWith(
+      expect.objectContaining({
+        player: null,
+        room: null,
+        messages: [],
+        commandHistory: [],
+      })
+    );
   });
 
-  it('should handle null event updates', async () => {
-    const eventHandlers = await import('../../eventHandlers');
-    vi.mocked(eventHandlers.processGameEvent).mockReturnValueOnce(null as unknown as undefined);
-
+  it('should call setGameState when unknown event type is processed', async () => {
     const { result } = renderHook(() =>
       useEventProcessing({
-        currentMessagesRef: mockCurrentMessagesRef,
         setGameState: mockSetGameState,
-        context: mockContext,
       })
     );
 
     const event: GameEvent = {
-      event_type: 'test_event',
+      event_type: 'unknown_type',
       timestamp: new Date().toISOString(),
       sequence_number: 1,
       data: {},
@@ -473,16 +474,14 @@ describe('useEventProcessing', () => {
       await Promise.resolve();
     });
 
-    // Should not throw when event updates are null
+    expect(mockSetGameState).toHaveBeenCalled();
     expect(result.current.handleGameEvent).toBeDefined();
   });
 
   it('should not process when event queue is empty', () => {
     const { result } = renderHook(() =>
       useEventProcessing({
-        currentMessagesRef: mockCurrentMessagesRef,
         setGameState: mockSetGameState,
-        context: mockContext,
       })
     );
 
@@ -495,46 +494,22 @@ describe('useEventProcessing', () => {
     expect(result.current.handleGameEvent).toBeDefined();
   });
 
-  it('should handle appendMessage when messages already exist in updates', async () => {
-    const eventHandlers = await import('../../eventHandlers');
-    let callCount = 0;
-    vi.mocked(eventHandlers.processGameEvent).mockImplementation((event, context, appendMessage) => {
-      // First call adds a message
-      if (callCount === 0) {
-        appendMessage({
-          text: 'First message',
-          timestamp: event.timestamp,
-          isHtml: false,
-        });
-        callCount++;
-      } else {
-        // Second call adds another message (messages already exist in updates)
-        appendMessage({
-          text: 'Second message',
-          timestamp: event.timestamp,
-          isHtml: false,
-        });
-      }
-      return {};
-    });
-
+  it('should call setGameState once when multiple events are processed in one batch', async () => {
     const { result } = renderHook(() =>
       useEventProcessing({
-        currentMessagesRef: mockCurrentMessagesRef,
         setGameState: mockSetGameState,
-        context: mockContext,
       })
     );
 
     const event1: GameEvent = {
-      event_type: 'test_event_1',
+      event_type: 'game_state',
       timestamp: new Date().toISOString(),
       sequence_number: 1,
       data: {},
     };
 
     const event2: GameEvent = {
-      event_type: 'test_event_2',
+      event_type: 'game_tick',
       timestamp: new Date().toISOString(),
       sequence_number: 2,
       data: {},
@@ -553,16 +528,13 @@ describe('useEventProcessing', () => {
       await Promise.resolve();
     });
 
-    const { sanitizeAndApplyUpdates } = await import('../../utils/stateUpdateUtils');
-    expect(vi.mocked(sanitizeAndApplyUpdates)).toHaveBeenCalled();
+    expect(mockSetGameState).toHaveBeenCalled();
   });
 
   it('should not schedule processing when queue is empty after processing', async () => {
     const { result } = renderHook(() =>
       useEventProcessing({
-        currentMessagesRef: mockCurrentMessagesRef,
         setGameState: mockSetGameState,
-        context: mockContext,
       })
     );
 
@@ -597,9 +569,7 @@ describe('useEventProcessing', () => {
   it('should not process when event queue is empty at start of processEventQueue', () => {
     const { result } = renderHook(() =>
       useEventProcessing({
-        currentMessagesRef: mockCurrentMessagesRef,
         setGameState: mockSetGameState,
-        context: mockContext,
       })
     );
 
@@ -617,9 +587,7 @@ describe('useEventProcessing', () => {
   it('should schedule processing when queue has events after processing completes', async () => {
     const { result } = renderHook(() =>
       useEventProcessing({
-        currentMessagesRef: mockCurrentMessagesRef,
         setGameState: mockSetGameState,
-        context: mockContext,
       })
     );
 
@@ -685,9 +653,7 @@ describe('useEventProcessing', () => {
   it('should not schedule timeout when already processing', async () => {
     const { result } = renderHook(() =>
       useEventProcessing({
-        currentMessagesRef: mockCurrentMessagesRef,
         setGameState: mockSetGameState,
-        context: mockContext,
       })
     );
 
@@ -726,6 +692,54 @@ describe('useEventProcessing', () => {
     });
   });
 
+  it('should schedule another processEventQueue when setGameState synchronously queues an event', async () => {
+    let handleGameEventRef: ((e: GameEvent) => void) | null = null;
+    const { result } = renderHook(() => {
+      const hook = useEventProcessing({
+        setGameState: state => {
+          mockSetGameState(state);
+          if (handleGameEventRef) {
+            handleGameEventRef({
+              event_type: 'queued_during_setState',
+              timestamp: new Date().toISOString(),
+              sequence_number: 999,
+              data: {},
+            });
+          }
+        },
+      });
+      handleGameEventRef = hook.handleGameEvent;
+      return hook;
+    });
+
+    act(() => {
+      result.current.handleGameEvent({
+        event_type: 'first',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {},
+      });
+    });
+
+    act(() => {
+      vi.advanceTimersByTime(10);
+    });
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    act(() => {
+      vi.advanceTimersByTime(10);
+    });
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(mockSetGameState).toHaveBeenCalledTimes(2);
+  });
+
   it('should return early when processEventQueue is called while isProcessingEvent is true', async () => {
     // This test aims to cover the branch on line 26: `if (isProcessingEvent.current || ...)`
     // Specifically, the case where isProcessingEvent.current is true when processEventQueue is called.
@@ -744,9 +758,7 @@ describe('useEventProcessing', () => {
 
     const { result } = renderHook(() =>
       useEventProcessing({
-        currentMessagesRef: mockCurrentMessagesRef,
         setGameState: mockSetGameState,
-        context: mockContext,
       })
     );
 

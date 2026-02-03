@@ -144,7 +144,7 @@ async def close(self) -> None:
 **Fix**: Ensure `close()` is called in application shutdown lifecycle:
 
 ```python
-# In server/app/lifespan.py or ApplicationContainer
+# In server/app/lifespan.py or ApplicationContainer (server/container/main.py)
 
 async def shutdown(self):
     """Cleanup resources on shutdown."""

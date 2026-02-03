@@ -78,23 +78,13 @@ Source: server/models/room.py
 Location: server/realtime/event_handler.py lines 86-140
 ```
 
-### Path 2: Direct broadcast_room_update() calls (DUPLICATE - SHOULD BE REMOVED)
+### Path 2: Direct broadcast_room_update() calls (DUPLICATE - REMOVED)
 
-```
-Source: server/realtime/websocket_handler.py
-1. Movement command completes (line 424-432)
-2. broadcast_room_update(player_id, room_id) called directly
-3. Sends "room_update" message with full room state including occupants
-4. Provides redundant occupant information already sent via Path 1
-Location: server/realtime/websocket_handler.py lines 672-807
-```
+**Status:** Resolved. Duplicate calls have been removed; room state is notified only via EventBus.
 
-### Evidence
-
-Line 254: `await broadcast_room_update(player_id_str, str(canonical_room_id))` - After connection
-
-- Line 425: `await broadcast_room_update(player_id, str(changed_room_id))` - After go command
-- Line 432: `await broadcast_room_update(player_id, str(player.current_room_id))` - After go command
+- **websocket_handler.py:** Duplicate calls after movement were removed in Phase 1.2 (see comment at line 526).
+- **teleport_helpers.py:** Removed from `broadcast_teleport_updates()` and `execute_confirm_teleport()`. Confirm teleport now uses `update_player_room_location()` so `Room.player_entered()`/`player_left()` fire and EventBus sends notifications.
+- **goto_helpers.py:** Removed from `execute_goto_teleport()` and `execute_confirm_goto()`. Goto flows now use `update_player_room_location()` so EventBus handles room state.
 
 ### Impact
 
@@ -104,9 +94,9 @@ Players receive BOTH "player_entered" AND "room_update" messages
 - Out-of-order delivery creates UX confusion
 - Performance overhead from redundant broadcasts
 
-### Solution
+### Solution (Implemented)
 
-Remove direct broadcast_room_update() calls after movement. Let EventBus flow handle ALL room state notifications.
+Direct broadcast_room_update() calls after movement have been removed. Teleport and goto flows now call `update_player_room_location()` (which invokes `Room.player_left()`/`player_entered()`), so EventBus handles all room state notifications.
 
 ### 🟡 MEDIUM: Combat Event Overlap
 

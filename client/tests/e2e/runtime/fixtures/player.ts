@@ -8,6 +8,26 @@ import { type Page } from '@playwright/test';
 import { executeCommand } from './auth';
 
 /**
+ * Ensure the player is standing before movement.
+ * Server rejects "go" when sitting; call this before any movement command.
+ * Waits for either the posture UI "standing" or the game message (e.g. "You rise to your feet.")
+ * so we pass as soon as the server confirms; the Character Info panel can update later.
+ * Uses .first() on posture locator (strict mode) and Promise.race with game message.
+ *
+ * @param page - Playwright page instance
+ * @param timeoutMs - Max wait for standing confirmation (default: 5000)
+ */
+export async function ensureStanding(page: Page, timeoutMs: number = 5000): Promise<void> {
+  await executeCommand(page, 'stand');
+  const postureUi = page.locator('div:has-text("Posture")').filter({ hasText: 'standing' }).first();
+  const gameMessage = page.getByText(/You rise to your feet|standing|already standing/i).first();
+  await Promise.race([
+    postureUi.waitFor({ state: 'visible', timeout: timeoutMs }),
+    gameMessage.waitFor({ state: 'attached', timeout: timeoutMs }),
+  ]);
+}
+
+/**
  * Reset a player's position to their starting room.
  * Note: This requires admin privileges or a test helper endpoint.
  *
@@ -19,11 +39,14 @@ export async function resetPlayerPosition(page: Page, targetPlayer?: string): Pr
     // Admin command to teleport player
     await executeCommand(page, `teleport ${targetPlayer} earth_arkhamcity_sanitarium_room_foyer_001`);
   } else {
+    // Stand before movement (server rejects "go" when sitting)
+    await ensureStanding(page, 5000);
     // Regular movement command (if player is already in starting room, this is a no-op)
     await executeCommand(page, 'go north');
-    await page.waitForTimeout(1000);
+    await new Promise(r => setTimeout(r, 1000));
+    await ensureStanding(page, 5000);
     await executeCommand(page, 'go south');
-    await page.waitForTimeout(1000);
+    await new Promise(r => setTimeout(r, 1000));
   }
 }
 
@@ -36,7 +59,7 @@ export async function resetPlayerPosition(page: Page, targetPlayer?: string): Pr
 export async function getPlayerRoom(page: Page): Promise<string | null> {
   // Execute look command to get room information
   await executeCommand(page, 'look');
-  await page.waitForTimeout(2000);
+  await new Promise(r => setTimeout(r, 2000));
 
   // Try to extract room ID from look output
   const messages = await page.evaluate(() => {

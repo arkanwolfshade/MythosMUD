@@ -3,6 +3,8 @@
 **Date**: 2025-01-28
 **Status**: Analysis Complete
 
+**Note (architecture-cleanup):** As of the container refactor, `server/container.py` is now the `server/container/` package (main.py, utils.py, bundles/). Findings below that reference `server/container.py` and line numbers refer to the pre-split single file; equivalent logic now lives in main.py or bundle modules.
+
 ## Executive Summary
 
 This document analyzes the 1,233 unique pylint findings that ruff does not currently catch. These findings are
@@ -71,7 +73,7 @@ disable=invalid-name
 **Examples**:
 
 - `server/async_persistence.py:1` - Too many lines in module (795/550)
-- `server/container.py:1` - Too many lines in module (780/550)
+- `server/container/` (pre-split: container.py:1) - Too many lines in module (780/550); now split into main.py + bundles
 
 **Recommendation**: **SUPPRESS**
 **Rationale**:
@@ -93,7 +95,7 @@ disable=too-many-lines
 **Examples**:
 
 - `server/async_persistence.py:203` - "len(rooms_rows) == 0" can be simplified to "not len(rooms_rows)"
-- `server/container.py:578` - "value == ''" can be simplified to "not value"
+- `server/container/` (pre-split: container.py:578) - "value == ''" can be simplified to "not value"
 
 **Recommendation**: **CONFIGURE RUFF** (or fix manually)
 **Rationale**:
@@ -149,7 +151,7 @@ disable=missing-function-docstring
 **Examples**:
 
 - `server/async_persistence.py:18` - No name 'get_async_session' in module 'server.database'
-- `server/container.py:263` - No name 'init_db' in module 'server.database'
+- `server/container/` (pre-split: container.py:263) - No name 'init_db' in module 'server.database'
 
 **Recommendation**: **SUPPRESS** (False Positives)
 **Rationale**:
@@ -175,7 +177,7 @@ disable=no-name-in-module
 **Examples**:
 
 - `server/async_persistence.py:55` - Too many instance attributes (11/7)
-- `server/container.py:82` - Too many instance attributes (32/7)
+- `server/container/` (pre-split: container.py:82) - Too many instance attributes (32/7)
 
 **Recommendation**: **SUPPRESS**
 **Rationale**:
@@ -219,7 +221,7 @@ disable=too-many-arguments,too-many-positional-arguments
 **Examples**:
 
 - `server/async_persistence.py:293` - Too many local variables (16/15)
-- `server/container.py:222` - Too many local variables (39/15)
+- `server/container/` (pre-split: container.py:222) - Too many local variables (39/15)
 
 **Recommendation**: **SUPPRESS**
 **Rationale**:
@@ -240,7 +242,7 @@ disable=too-many-locals
 **Count**: ~20+ findings
 **Examples**:
 
-- `server/container.py:222` - Too many statements (127/50)
+- `server/container/` (pre-split: container.py:222) - Too many statements (127/50)
 
 **Recommendation**: **SUPPRESS**
 **Rationale**:
@@ -261,7 +263,7 @@ disable=too-many-statements
 **Count**: ~10+ findings
 **Examples**:
 
-- `server/container.py:576` - Too many return statements (7/6)
+- `server/container/` (pre-split: container.py:576) - Too many return statements (7/6)
 
 **Recommendation**: **SUPPRESS**
 **Rationale**:

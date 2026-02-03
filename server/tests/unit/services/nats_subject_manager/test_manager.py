@@ -125,6 +125,13 @@ def test_validate_subject_invalid(subject_manager):
     assert result is False
 
 
+def test_validate_subject_event_domain(subject_manager):
+    """Test validate_subject() accepts events.domain.{event_type} (distributed EventBus)."""
+    assert subject_manager.validate_subject("events.domain.NPCEnteredRoom") is True
+    assert subject_manager.validate_subject("events.domain.MythosHourTickEvent") is True
+    assert subject_manager.validate_subject("events.domain.PlayerEnteredRoom") is True
+
+
 def test_validate_subject_empty(subject_manager):
     """Test validate_subject() returns False for empty subject."""
     result = subject_manager.validate_subject("")

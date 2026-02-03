@@ -358,7 +358,16 @@ async def _setup_initial_connection_state(
                     )
 
         return canonical_room_id, False
-    except (WebSocketDisconnect, RuntimeError) as e:
+    except WebSocketDisconnect as e:
+        # Client closed during setup (e.g. page close, React unmount). Expected in e2e and dev.
+        logger.debug(
+            "Client disconnected during initial connection setup",
+            player_id=player_id,
+            code=getattr(e, "code", None),
+            reason=getattr(e, "reason", None),
+        )
+        return None, True
+    except RuntimeError as e:
         logger.error("Error in initial connection setup", player_id=player_id, error=str(e), exc_info=True)
         return None, True
 
@@ -427,9 +436,11 @@ async def handle_websocket_connection(
 
     _, should_exit = await _setup_initial_connection_state(websocket, player_id, player_id_str, connection_manager)
     if should_exit:
+        await _cleanup_connection(player_id, player_id_str, connection_manager)
         return
 
     if not await _send_welcome_event(websocket, player_id, player_id_str):
+        await _cleanup_connection(player_id, player_id_str, connection_manager)
         return
 
     try:
@@ -679,6 +690,24 @@ async def process_websocket_command(
     )
     if not isinstance(result, dict):
         raise TypeError("Command handler must return a dict")
+
+    # C3 enter-room request/response: include room_state in command_response when player moved
+    # so client can set room from response and not rely on push event ordering
+    if result.get("room_changed") and result.get("room_id"):
+        event_handler = getattr(app_state, "event_handler", None)
+        if event_handler and hasattr(event_handler, "player_handler"):
+            try:
+                room_state_event = await event_handler.player_handler.get_room_state_event(player_id, result["room_id"])
+                if room_state_event:
+                    result["room_state"] = room_state_event
+            except (TypeError, ValueError, AttributeError) as room_state_err:
+                logger.debug(
+                    "Could not attach room_state to command_response",
+                    player_id=player_id,
+                    room_id=result.get("room_id"),
+                    error=str(room_state_err),
+                )
+
     return result
 
 

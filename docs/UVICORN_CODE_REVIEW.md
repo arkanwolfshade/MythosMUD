@@ -112,7 +112,7 @@ async def close(self) -> None:
         self._logger.info("Closed asyncpg connection pool")
 ```
 
-**Status:** ✅ **VERIFIED** - Called via `container.shutdown()` in `server/container.py:625`
+**Status:** ✅ **VERIFIED** - Called via `container.shutdown()` in `server/container/main.py`
 
 **Recommendation:** No action needed, but ensure all code paths that create `AsyncPersistenceLayer` instances also call
 `close()`.

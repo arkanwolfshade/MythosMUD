@@ -504,7 +504,7 @@ Based on the organization structure, potential gaps:
    **Gap:** No tests verifying MessageBroker protocol compliance
    - **Recommendation:** Add 10-15 integration tests
 
-3. **ApplicationContainer** (`server/container.py`)
+3. **ApplicationContainer** (`server/container/`)
 
    **Current:** Container just created, only infrastructure tests
 

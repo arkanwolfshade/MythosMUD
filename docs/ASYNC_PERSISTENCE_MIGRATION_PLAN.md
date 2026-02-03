@@ -155,7 +155,7 @@ List all files that use sync persistence methods
 
 ### 2.1 Update ApplicationContainer
 
-**File**: `server/container.py`
+**File**: `server/container/main.py` (and bundles as needed)
 
 - Remove `PersistenceLayer` import and initialization (line 262-264)
 - Change `self.persistence = PersistenceLayer(...)` to `self.persistence = self.async_persistence`

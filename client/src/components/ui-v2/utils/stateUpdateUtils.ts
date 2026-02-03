@@ -2,6 +2,7 @@
 // Extracted from GameClientV2Container to reduce complexity
 // As documented in "State Management Patterns" - Dr. Armitage, 1928
 
+import type { MythosTimeState } from '../../../types/mythosTime';
 import type { GameStateUpdates } from '../eventHandlers/types';
 import type { ChatMessage, Player, Room } from '../types';
 import { sanitizeChatMessageForState } from './messageUtils';
@@ -14,15 +15,31 @@ export interface GameState {
   commandHistory: string[];
   loginGracePeriodActive?: boolean;
   loginGracePeriodRemaining?: number;
+  /** Derived from game_tick; used for Mythos time display. Bootstrap may set initial until first tick. */
+  mythosTime?: MythosTimeState | null;
+  /** Last quarter-hour minute projected (for deduplicating clock chime messages). */
+  lastQuarterHourForChime?: number | null;
+}
+
+// Helper: treat empty arrays/count as "no data" so we preserve existing
+// (room_update sends empty; room_occupants is authoritative).
+function hasOccupantData(room: Room): boolean {
+  const hasPlayers = room.players != null && room.players.length > 0;
+  const hasNpcs = room.npcs != null && room.npcs.length > 0;
+  const hasOccupants = room.occupants != null && room.occupants.length > 0;
+  return hasPlayers || hasNpcs || hasOccupants;
 }
 
 // Helper function to merge occupant data from two room updates
 export const mergeOccupantData = (newRoom: Room, existingRoom: Room) => {
+  const useNewOccupants = hasOccupantData(newRoom);
   return {
-    players: newRoom.players ?? existingRoom.players,
-    npcs: newRoom.npcs ?? existingRoom.npcs,
-    occupants: newRoom.occupants ?? existingRoom.occupants,
-    occupant_count: newRoom.occupant_count ?? existingRoom.occupant_count,
+    players: useNewOccupants ? (newRoom.players ?? existingRoom.players) : (existingRoom.players ?? []),
+    npcs: useNewOccupants ? (newRoom.npcs ?? existingRoom.npcs) : (existingRoom.npcs ?? []),
+    occupants: useNewOccupants ? (newRoom.occupants ?? existingRoom.occupants) : (existingRoom.occupants ?? []),
+    occupant_count: useNewOccupants
+      ? (newRoom.occupant_count ?? existingRoom.occupant_count ?? 0)
+      : (existingRoom.occupant_count ?? 0),
   };
 };
 
