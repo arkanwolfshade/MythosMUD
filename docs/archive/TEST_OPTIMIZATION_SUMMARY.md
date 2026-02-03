@@ -1,5 +1,7 @@
 # Test Suite Optimization Summary
 
+> **Note:** This document describes the pre-architecture-cleanup state. For current architecture, see [docs/architecture/](../architecture/) and [ADR-002](../architecture/decisions/ADR-002-application-container-dependency-injection.md).
+
 > *"In the systematic refinement of our test chambers, we have removed ceremonial validations while preserving all critical protections."*
 
 **Optimization Execution:** Partial (Focused Pruning)

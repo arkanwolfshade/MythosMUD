@@ -9,24 +9,28 @@ This document provides end-to-end workflow examples showing how to combine Curso
 ## Workflow Components
 
 ### Rules
+
 - **Purpose**: Persistent guidance and best practices
 - **Location**: `.cursor/rules/*.mdc`
 - **When Used**: Always applied automatically
 - **Example**: Coding standards, framework best practices
 
 ### Commands
+
 - **Purpose**: Single-purpose workflows
 - **Location**: `.cursor/commands/*.md`
 - **When Used**: Invoked explicitly via `@command-name`
 - **Example**: Bug investigation, test remediation
 
 ### Subagents
+
 - **Purpose**: Complex, multi-step tasks requiring context isolation
 - **Location**: `.cursor/agents/*.md`
 - **When Used**: Automatically invoked by agent or commands
 - **Example**: Codebase exploration, security audits
 
 ### CLI
+
 - **Purpose**: Automation, CI/CD, headless operations
 - **When Used**: Terminal-based workflows, scripts, automation
 - **Example**: Automated code review, test failure analysis
@@ -40,6 +44,7 @@ This document provides end-to-end workflow examples showing how to combine Curso
 **Steps**:
 
 1. **Invoke Command**:
+
    ```
    @investigate-bug
    Player cannot log in. Error messages appear in console but no specific error shown to user.
@@ -63,6 +68,7 @@ This document provides end-to-end workflow examples showing how to combine Curso
    - Remediation prompt for fixing
 
 **Tools Used**:
+
 - Command: `investigate-bug.md`
 - Subagent: `bug-investigator.md`
 - Rules: `MYTHOSMUD_DEBUGGING_AGENT.mdc`, `GAME_BUG_INVESTIGATION_PLAYBOOK.mdc`
@@ -74,6 +80,7 @@ This document provides end-to-end workflow examples showing how to combine Curso
 **Steps**:
 
 1. **Invoke Command**:
+
    ```
    @server-test-remediation
    ```
@@ -95,6 +102,7 @@ This document provides end-to-end workflow examples showing how to combine Curso
    - Prioritized test recommendations
 
 **Tools Used**:
+
 - Command: `server-test-remediation.md`
 - Subagent: `test-analyzer.md`
 - Rules: `pytest.mdc`, test coverage requirements
@@ -106,6 +114,7 @@ This document provides end-to-end workflow examples showing how to combine Curso
 **Steps**:
 
 1. **Run CLI Script**:
+
    ```powershell
    .\scripts\cursor-cli-review.ps1 -GitChanges -Focus security -OutputReport
    ```
@@ -128,6 +137,7 @@ This document provides end-to-end workflow examples showing how to combine Curso
    - Recommendations
 
 **Tools Used**:
+
 - CLI Script: `cursor-cli-review.ps1`
 - Subagent: `security-auditor.md`
 - Rules: `security.mdc`, COPPA compliance rules
@@ -139,6 +149,7 @@ This document provides end-to-end workflow examples showing how to combine Curso
 **Steps**:
 
 1. **Invoke Subagent Directly**:
+
    ```
    Use the performance profiler to analyze bottlenecks in the game loop
    ```
@@ -155,6 +166,7 @@ This document provides end-to-end workflow examples showing how to combine Curso
    - Optimization recommendations
 
 **Tools Used**:
+
 - Subagent: `performance-profiler.md`
 - Rules: Performance monitoring guidelines
 
@@ -165,6 +177,7 @@ This document provides end-to-end workflow examples showing how to combine Curso
 **Steps**:
 
 1. **Request Exploration**:
+
    ```
    Use the codebase explorer to find all authentication implementations
    ```
@@ -182,6 +195,7 @@ This document provides end-to-end workflow examples showing how to combine Curso
    - Architecture overview
 
 **Tools Used**:
+
 - Subagent: `codebase-explorer.md`
 - Rules: Architecture guidelines
 
@@ -192,6 +206,7 @@ This document provides end-to-end workflow examples showing how to combine Curso
 **Steps**:
 
 1. **Run CLI Script**:
+
    ```powershell
    .\scripts\cursor-cli-test-fix.ps1 -TestPath server/tests/unit -OutputReport
    ```
@@ -212,6 +227,7 @@ This document provides end-to-end workflow examples showing how to combine Curso
    - Validation steps
 
 **Tools Used**:
+
 - CLI Script: `cursor-cli-test-fix.ps1`
 - Subagent: `test-analyzer.md`
 - Rules: Test quality requirements
@@ -219,6 +235,7 @@ This document provides end-to-end workflow examples showing how to combine Curso
 ## Combining Components
 
 ### Pattern 1: Command → Subagent
+
 ```
 User invokes command → Command delegates to subagent → Subagent performs work → Results returned
 ```
@@ -226,6 +243,7 @@ User invokes command → Command delegates to subagent → Subagent performs wor
 **Example**: `investigate-bug.md` → `bug-investigator.md`
 
 ### Pattern 2: CLI → Agent → Subagent
+
 ```
 CLI script runs → Agent invoked → Agent uses subagent → Results saved
 ```
@@ -233,6 +251,7 @@ CLI script runs → Agent invoked → Agent uses subagent → Results saved
 **Example**: `cursor-cli-review.ps1` → Agent → `security-auditor.md`
 
 ### Pattern 3: Direct Subagent Invocation
+
 ```
 User requests → Agent invokes subagent → Subagent performs work → Results returned
 ```
@@ -240,6 +259,7 @@ User requests → Agent invokes subagent → Subagent performs work → Results 
 **Example**: "Use codebase explorer to..." → `codebase-explorer.md`
 
 ### Pattern 4: Rules Guide All
+
 ```
 Rules provide guidance → Commands/Subagents/CLI follow rules → Consistent results
 ```
@@ -265,24 +285,28 @@ Need to perform a task?
 ### When to Use Each Component
 
 **Use Rules For**:
+
 - Coding standards and best practices
 - Framework-specific guidelines
 - Project conventions
 - Always-applied guidance
 
 **Use Commands For**:
+
 - Quick, repeatable workflows
 - Single-purpose tasks
 - Common development tasks
 - User-initiated actions
 
 **Use Subagents For**:
+
 - Complex, multi-step analysis
 - Deep research tasks
 - Parallel workstreams
 - Context-heavy operations
 
 **Use CLI For**:
+
 - Automation and scripts
 - CI/CD pipelines
 - Headless operations
@@ -300,26 +324,31 @@ Need to perform a task?
 ### Example 1: Full Development Cycle
 
 1. **Planning**: Use Plan mode in CLI
+
    ```powershell
    .\scripts\cursor-cli-agent.ps1 -Plan -Prompt "implement new feature"
    ```
 
 2. **Implementation**: Use Agent mode with subagents
+
    ```
    Use codebase explorer to understand existing patterns
    ```
 
 3. **Testing**: Use test-analyzer subagent
+
    ```
    Analyze test coverage for new feature
    ```
 
 4. **Review**: Use CLI review script
+
    ```powershell
    .\scripts\cursor-cli-review.ps1 -GitChanges -Focus all
    ```
 
 5. **Security**: Use security-auditor subagent
+
    ```
    Perform security audit of new feature
    ```
@@ -327,22 +356,26 @@ Need to perform a task?
 ### Example 2: Bug Fix Workflow
 
 1. **Investigation**: Use investigate-bug command
+
    ```
    @investigate-bug
    Bug description...
    ```
 
 2. **Fix**: Use main agent with context from investigation
+
    ```
    Fix the issues identified in the investigation report
    ```
 
 3. **Test**: Use test-analyzer subagent
+
    ```
    Verify test coverage for bug fix
    ```
 
 4. **Review**: Use CLI review
+
    ```powershell
    .\scripts\cursor-cli-review.ps1 -GitChanges
    ```

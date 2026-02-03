@@ -1,6 +1,7 @@
 ---
 name: Architecture Review Plan
 overview: Comprehensive architectural review of MythosMUD codebase evaluating modern architecture patterns, clean architecture principles, distributed systems design, and identifying areas for improvement.
+# Note: Container split described in this plan is implemented in server/container/ (main.py, bundles). See docs/architecture/decisions/ADR-002-application-container-dependency-injection.md and docs/APPLICATION_CONTAINER_ANALYSIS.md.
 todos:
   - id: implement-client-updates-plan
     content: Implement Client Updates System (Option C) per client_updates_system_audit_628e3fef.plan.md before proceeding with remaining architecture review todos
@@ -120,7 +121,7 @@ This review evaluates MythosMUD's architecture against modern software architect
 
 ### 1.3 Dependency Injection Architecture
 
-**Implementation**: `ApplicationContainer` pattern in `server/container.py`
+**Implementation**: `ApplicationContainer` pattern in `server/container/` (main.py, bundles)
 
 **Analysis and proposal:** See `docs/APPLICATION_CONTAINER_ANALYSIS.md` for a full structure analysis, attribute inventory by domain, initialization order, and a proposed domain-specific split using internal bundles (Option A) with backward-compatible migration path.
 

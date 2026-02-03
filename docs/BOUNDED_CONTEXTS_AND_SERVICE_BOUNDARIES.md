@@ -251,4 +251,4 @@ Core
 - **ApplicationContainer and bundles:** `docs/APPLICATION_CONTAINER_ANALYSIS.md`
 - **Event ownership and duplication:** `docs/EVENT_OWNERSHIP_MATRIX.md`
 - **Architecture Review Plan:** `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
-- **Container implementation:** `server/container.py`, `server/container/bundles/`
+- **Container implementation:** `server/container/` (main.py, utils.py, bundles/)

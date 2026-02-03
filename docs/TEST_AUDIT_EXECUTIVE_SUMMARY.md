@@ -179,7 +179,7 @@ Reduce test count by ~200 while maintaining coverage
 
 ### Finding
 
-ApplicationContainer (400 lines) has mostly trivial tests
+ApplicationContainer (`server/container/`) has mostly trivial tests
 
 - MessageBroker abstraction (200 lines) has minimal tests
 - Database migration logic (100 lines) under-tested

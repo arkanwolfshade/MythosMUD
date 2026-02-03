@@ -1,6 +1,7 @@
 ---
 name: app.state to dependency injection migration
 overview: Migrate all services from app.state to ApplicationContainer-based dependency injection, eliminating the dual storage pattern and updating all 500+ access points throughout the codebase to use proper dependency injection.
+# Note: ApplicationContainer is now implemented in server/container/ package (main.py, utils.py, bundles/). See ADR-002 and docs/APPLICATION_CONTAINER_ANALYSIS.md.
 todos:
 
   - id: phase1-container-extend
@@ -113,6 +114,7 @@ Core: `container`, `task_registry`, `event_bus`, `event_handler`, `persistence`,
 **274+ instances** of `request.app.state` access in route handlers
 
 **Hundreds of test files** mocking `app.state` directly
+
 - Mixed patterns: some code uses `get_container(request)`, others use direct `app.state` access
 
 ## Migration Strategy
@@ -121,7 +123,7 @@ Core: `container`, `task_registry`, `event_bus`, `event_handler`, `persistence`,
 
 **Goal**: Add all missing services to `ApplicationContainer`
 
-1. **Add service attributes to `ApplicationContainer.__init__`** in `server/container.py`:
+1. **Add service attributes to `ApplicationContainer.__init__`** in `server/container/main.py` (or appropriate bundle):
 
    - Combat: `player_combat_service`, `player_death_service`, `player_respawn_service`, `combat_service`
    - Magic: `magic_service`, `spell_registry`, `spell_targeting_service`, `spell_effects`, `spell_learning_service`, `mp_regeneration_service`
@@ -459,6 +461,7 @@ Zero direct `app.state.*` access (except `app.state.container`)
 **Phase 2**: 4-6 hours
 
 **Phase 3**: 12-16 hours
+
 - **Phase 4**: 8-10 hours
 - **Phase 5**: 16-20 hours
 - **Phase 6**: 8-10 hours

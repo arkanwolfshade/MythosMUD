@@ -54,6 +54,7 @@ Optimize chat for subagent usage:
 The more specific your prompt, the better Cursor can decide when to use subagents:
 
 **Good Prompts** (triggers subagents automatically):
+
 ```
 "Find all implementations of the authentication system across the codebase"
 "Analyze test coverage and identify gaps in server/tests/unit"
@@ -63,6 +64,7 @@ The more specific your prompt, the better Cursor can decide when to use subagent
 ```
 
 **Less Effective Prompts** (may not trigger subagents):
+
 ```
 "Fix bugs"
 "Review code"
@@ -106,6 +108,7 @@ Cursor automatically uses subagents when:
 **User**: "I need to understand how authentication works across the codebase"
 
 **Expected Behavior**:
+
 - Agent recognizes this as a complex exploration task
 - Automatically invokes `codebase-explorer` subagent
 - Subagent runs parallel searches
@@ -116,6 +119,7 @@ Cursor automatically uses subagents when:
 **User**: "Analyze test coverage in server/tests/unit and find gaps"
 
 **Expected Behavior**:
+
 - Agent recognizes this as test analysis task
 - Automatically invokes `test-analyzer` subagent
 - Subagent analyzes coverage and identifies gaps
@@ -126,6 +130,7 @@ Cursor automatically uses subagents when:
 **User**: "Players report they cannot log in. Investigate systematically"
 
 **Expected Behavior**:
+
 - Agent recognizes this as bug investigation
 - Can use `@investigate-bug` command (which uses `bug-investigator` subagent)
 - Or automatically invokes `bug-investigator` subagent directly
@@ -187,11 +192,13 @@ Subagent output typically includes:
 ### Subagents Not Being Used Automatically
 
 **Check**:
+
 1. Are you on Max Mode? (Required for legacy plans)
 2. Are your prompts specific enough?
 3. Is the task complex enough to warrant a subagent?
 
 **Solution**: Explicitly request subagent usage:
+
 ```
 "Use the [subagent-name] to [task]"
 ```
@@ -210,6 +217,7 @@ Subagent output typically includes:
 **Reason**: Parallel execution multiplies token usage
 
 **Solution**:
+
 - Be selective about when to use subagents
 - Use main agent for simple tasks
 - See `.cursor/rules/subagent-usage.mdc` for guidance
@@ -228,6 +236,7 @@ You can customize subagent behavior by editing files in `.cursor/agents/`:
 ### Integration with Commands
 
 Commands can be configured to always use specific subagents. See:
+
 - `.cursor/commands/investigate-bug.md` - Example of subagent integration
 - `.cursor/commands/server-test-remediation.md` - Example of subagent integration
 

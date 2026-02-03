@@ -1,5 +1,7 @@
 # Fixture Optimization Summary
 
+> **Note:** This document describes the pre-architecture-cleanup state. For current container structure, see [ADR-002](../architecture/decisions/ADR-002-application-container-dependency-injection.md).
+
 ## Changes Made
 
 ### 1. Created Class-Scoped Fixture

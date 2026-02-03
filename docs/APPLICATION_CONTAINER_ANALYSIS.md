@@ -3,11 +3,15 @@
 **Document Version:** 1.1
 **Date:** January 2026
 **Status:** Implemented (Phase 1 and Phase 2 complete)
-**Purpose:** Analyze `server/container.py` (ApplicationContainer) and propose a domain-specific container split per the Architecture Review Plan.
+**Purpose:** Analyze the ApplicationContainer and document the domain-specific container split per the Architecture Review Plan.
+
+### Current state (architecture-cleanup)
+
+The container is implemented as a **package**: `server/container/`. The orchestrator lives in `server/container/main.py` (ApplicationContainer class); helpers in `server/container/utils.py`; domain bundles in `server/container/bundles/` (core, chat, combat, game, magic, monitoring, npc, realtime, time). Imports remain backward-compatible: `from server.container import ApplicationContainer`, `get_container`, `reset_container`. See ADR-002 and this document for details.
 
 ## 1. Executive Summary
 
-`ApplicationContainer` in `server/container.py` is a ~1,251-line dependency injection container that manages 50+ service attributes and 15 initialization phases. The architecture review plan recommends splitting it into domain-specific containers to improve maintainability, testability, and clarity. This document analyzes the current structure and proposes a split that preserves the existing public API and singleton behavior while organizing initialization and ownership by domain.
+`ApplicationContainer` was originally a single-file ~1,251-line dependency injection container that manages 50+ service attributes and 15 initialization phases. The architecture review plan recommends splitting it into domain-specific containers to improve maintainability, testability, and clarity. This document analyzes the current structure and proposes a split that preserves the existing public API and singleton behavior while organizing initialization and ownership by domain.
 
 ## 2. Current Structure Analysis
 
@@ -117,7 +121,7 @@ Keep a single **ApplicationContainer** as the public facade and singleton. Split
 | **ChatBundle**       | `server/container/bundles/chat.py`       | chat_service                                                                                                                                                                                                                                        |
 | **TimeBundle**       | `server/container/bundles/time.py`       | mythos_time_consumer                                                                                                                                                                                                                                |
 
-**ApplicationContainer** (slimmed `server/container.py`):
+**ApplicationContainer** (orchestrator in `server/container/main.py`):
 
 - Holds state flags: `server_shutdown_pending`, `shutdown_data`, `tick_task`, `_initialized`, `_initialization_lock`, `_project_root`.
 - Creates bundles, calls `await bundle.initialize(container)` (or similar) in dependency order, then copies bundle attributes onto `self` so `container.player_service` etc. remain valid.
@@ -195,7 +199,7 @@ Initialization order: Core → Realtime → Game → Monitoring → Combat → N
 ## 5. Backward Compatibility
 
 - **Public API:** No change. `container.player_service`, `get_container()`, `ApplicationContainer.get_instance()` remain as today.
-- **Tests:** No change to tests that rely on `container.player_service` or `get_container()`; only internal structure of `server/container.py` and new bundle modules change.
+- **Tests:** No change to tests that rely on `container.player_service` or `get_container()`; only internal structure of the `server/container/` package and bundle modules change.
 - **Lifespan:** `app/lifespan.py` and `app/lifespan_startup.py` continue to use the same ApplicationContainer; no changes required if Phase 1 is done correctly.
 
 ## 6. Success Criteria
@@ -209,5 +213,5 @@ Initialization order: Core → Realtime → Game → Monitoring → Combat → N
 ## 7. References
 
 - Architecture Review Plan: `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
-- ApplicationContainer implementation: `server/container.py`
+- ApplicationContainer implementation: `server/container/` (main.py and bundles/)
 - Dependency injection and lifespan: `server/app/lifespan.py`, `server/app/lifespan_startup.py`

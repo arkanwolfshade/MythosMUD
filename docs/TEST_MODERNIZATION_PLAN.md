@@ -1190,7 +1190,7 @@ If time is constrained, this minimal approach fixes critical issues:
 
 `server/tests/conftest.py` - Global test fixtures
 
-- `server/container.py` - ApplicationContainer implementation
+- `server/container/` - ApplicationContainer implementation (main.py and bundles)
 - `server/dependencies.py` - Dependency injection functions
 - `server/app/lifespan.py` - Application lifecycle
 

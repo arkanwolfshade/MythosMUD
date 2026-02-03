@@ -132,11 +132,11 @@ No other direct uses of `container_persistence` or `item_instance_persistence` a
 
 ### Phase 2: Async implementation (container)
 
-4. **Async container helpers**
+1. **Async container helpers**
    - Add async versions of helpers used by container persistence (e.g. `fetch_container_items_async(session, container_id)` using `session.execute(select(...))` and proper JSONB handling).
    - Keep `parse_jsonb_column` as a pure function or move it to a shared util; no I/O change.
 
-5. **Async container persistence**
+2. **Async container persistence**
    - Create `server/persistence/container_persistence_async.py` (or add `async_`-prefixed functions in the same module) implementing:
      - `create_container_async(session, ...)`
      - `get_container_async(session, container_id)`
@@ -144,26 +144,26 @@ No other direct uses of `container_persistence` or `item_instance_persistence` a
      - `delete_container_async(session, container_id)`
    - Each uses `AsyncSession` from `get_async_session()` (or session passed in by caller). Use SQLAlchemy Core or ORM; preserve existing validation and error handling.
 
-6. **Async container query helpers**
+3. **Async container query helpers**
    - Add async versions in `container_query_helpers.py` or a new `container_query_helpers_async.py`:
      - `get_containers_by_room_id_async(session, room_id)`
      - `get_containers_by_entity_id_async(session, entity_id)`
      - `get_decayed_containers_async(session, current_time)`
    - Reuse async `fetch_container_items` and `ContainerData` construction so behavior matches current code.
 
-7. **Wire ContainerRepository to async**
+4. **Wire ContainerRepository to async**
    - Change `ContainerRepository` to use the async persistence and query helpers.
    - Obtain session via `get_async_session()` (or inject a session factory) inside each method; no `_get_sync_connection()`, no `asyncio.to_thread`.
    - Keep the same public method signatures and return types (dict with `items_json`, `metadata_json`, etc.) so AsyncPersistenceLayer and tests need no changes.
    - Remove sync connection context manager and psycopg2 dependency from ContainerRepository.
 
-8. **Tests and backward compatibility**
+5. **Tests and backward compatibility**
    - Run existing ContainerRepository and container persistence tests against the new async path.
    - If any code still calls sync `container_persistence` / `container_query_helpers` directly, either migrate those call sites or keep thin sync wrappers that call the async implementation (e.g. `asyncio.run(...)`) until they are removed.
 
 ### Phase 3: Async implementation (item)
 
-9. **Async item instance persistence**
+1. **Async item instance persistence**
    - Add `server/persistence/item_instance_persistence_async.py` (or async functions in the same module):
      - `create_item_instance_async(session, ...)`
      - `ensure_item_instance_async(session, ...)`
@@ -171,33 +171,33 @@ No other direct uses of `container_persistence` or `item_instance_persistence` a
      - Optionally `get_item_instance_async(session, item_instance_id)` for future use.
    - Use AsyncSession and SQLAlchemy; preserve validation and error semantics.
 
-10. **Wire ItemRepository to async**
+2. **Wire ItemRepository to async**
     - Change `ItemRepository` to call the async item persistence functions.
     - Use `get_async_session()` (or injected session factory); remove `_get_sync_connection()` and `asyncio.to_thread`.
     - Keep public API unchanged.
 
-11. **Tests and backward compatibility**
+3. **Tests and backward compatibility**
     - Run existing ItemRepository and item instance persistence tests.
     - Handle any remaining sync callers as in step 8.
 
 ### Phase 4: Cleanup
 
-12. **Remove sync path from container/item**
+1. **Remove sync path from container/item**
     - Once all callers use async:
       - Remove or deprecate sync functions in `container_persistence.py`, `container_query_helpers.py`, `container_helpers.py` (or mark as legacy and used only by scripts).
       - Remove or deprecate sync functions in `item_instance_persistence.py`.
     - Remove psycopg2 usage from these modules (and from ContainerRepository/ItemRepository if still present).
 
-13. **Dependencies**
+2. **Dependencies**
     - If no other code uses psycopg2, consider removing it from project dependencies; otherwise leave it for the remaining sync use cases.
 
-14. **Docs and ADR**
+3. **Docs and ADR**
     - Update `server/persistence/repositories/README.md` (or equivalent) to state that ContainerRepository and ItemRepository are fully async and use SQLAlchemy async.
     - Add an ADR that records the decision to migrate container/item persistence to async (SQLAlchemy) and the deprecation of the sync wrappers.
 
 ### Phase 5: Verification
 
-15. **Integration and performance**
+1. **Integration and performance**
     - Run full test suite (unit + integration).
     - Optionally run a quick load check: many container/item operations in parallel to confirm no thread-pool saturation and improved scalability vs. current wrappers.
 

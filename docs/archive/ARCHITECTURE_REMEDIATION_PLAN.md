@@ -1,5 +1,7 @@
 # MythosMUD Architecture Remediation Plan
 
+> **Note:** This document describes the pre-architecture-cleanup state. For current container implementation (server/container/ package and bundles), see [ADR-002](../architecture/decisions/ADR-002-application-container-dependency-injection.md) and [APPLICATION_CONTAINER_ANALYSIS](../APPLICATION_CONTAINER_ANALYSIS.md).
+
 **Document Version:** 1.0
 **Date:** November 3, 2025
 **Status:** Active Implementation
@@ -420,6 +422,7 @@ Each phase requires updating:
 **Phase 2**: 2 weeks (80 hours)
 
 **Phase 3**: 1 week (40 hours)
+
 - **Total**: 5 weeks (200 hours)
 
 Note: Timeline assumes focused work without feature development in parallel.

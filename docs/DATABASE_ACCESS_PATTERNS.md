@@ -29,12 +29,12 @@ The codebase currently uses two database access patterns:
 - Raw SQL queries with parameterized placeholders (`$1`, `$2`, etc.)
 - Connection pooling with configurable pool size
 - Non-blocking event loop operations
-- Access via `ApplicationContainer.async_persistence`
+- Access via `ApplicationContainer.async_persistence` (container from `server/container/` package)
 
 **Example**:
 
 ```python
-from server.container import ApplicationContainer
+from server.container import ApplicationContainer  # server/container/ package
 
 container = ApplicationContainer.get_instance()
 async_persistence = container.async_persistence

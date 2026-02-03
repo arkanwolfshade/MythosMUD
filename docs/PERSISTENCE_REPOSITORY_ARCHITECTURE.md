@@ -24,7 +24,7 @@ no legacy sync code.
          │                               │
          ▼                               ▼
 ┌─────────────────────┐       ┌──────────────────────┐
-│  Async Repositories │       │  ApplicationContainer│
+│  Async Repositories │       │  ApplicationContainer (server/container/) │
 │  (1,185+ lines)     │       │  (Dependency Injection)│
 ├─────────────────────┤       ├──────────────────────┤
 │• PlayerRepository   │       │• async_persistence    │

@@ -9,7 +9,7 @@ Before the ApplicationContainer refactor, MythosMUD used 19+ global singletons f
 
 ## Decision
 
-Implement a single **ApplicationContainer** class in `server/container.py` that:
+Implement a single **ApplicationContainer** class in the `server/container/` package (orchestrator in `main.py`, domain bundles in `bundles/`) that:
 
 - Manages all service lifecycle and dependency resolution
 - Provides thread-safe initialization with explicit phases
@@ -23,12 +23,12 @@ The container is initialized once at application startup and passed (or accessed
 
 1. **Continue with global singletons** - Rejected: testing and maintainability suffer
 2. **Third-party DI framework (e.g., dependency-injector, injector)** - Rejected: ApplicationContainer provides sufficient control; avoids extra dependency; custom phases (e.g., warm room cache before starting real-time) are explicit
-3. **Domain-specific sub-containers** - Deferred: documented in APPLICATION_CONTAINER_ANALYSIS.md as future refinement; current single container is acceptable
+3. **Domain-specific sub-containers** - Implemented as internal bundles with flattened attributes; see APPLICATION_CONTAINER_ANALYSIS.md
 
 ## Consequences
 
 - **Positive**: Eliminated global singletons; explicit dependency graph; testable services via mock injection; proper lifecycle management
-- **Negative**: Container is large (~1,200+ lines); some circular dependencies handled with TYPE_CHECKING; splitting by domain requires migration
+- **Negative**: Some circular dependencies handled with TYPE_CHECKING; orchestration lives in `main.py`, domain logic in bundles under `server/container/bundles/`
 - **Neutral**: Initialization order is explicit but complex; document initialization phases for maintainers
 
 ## Related ADRs

@@ -72,7 +72,7 @@ async def my_endpoint(
 **Files Affected**: ~30 files across commands, realtime, and app modules
 **Priority**: 🔴 **CRITICAL**
 **Estimated Effort**: 40-60 hours
-**Dependencies**: ApplicationContainer already exists, needs migration
+**Dependencies**: ApplicationContainer (server/container/) already exists, needs migration
 
 ---
 

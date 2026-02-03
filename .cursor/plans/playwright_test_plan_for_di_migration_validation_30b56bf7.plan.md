@@ -1,6 +1,7 @@
 ---
 name: Playwright Test Plan for DI Migration Validation
 overview: Create a comprehensive Playwright test suite to validate the app.state to dependency injection migration, testing both regression (existing functionality) and new service functionality for combat, magic, NPC, chat, and shutdown services.
+# Note: ApplicationContainer is in server/container/ (main.py, bundles). See docs/architecture/decisions/ADR-002-application-container-dependency-injection.md.
 todos:
 
   - id: test-setup

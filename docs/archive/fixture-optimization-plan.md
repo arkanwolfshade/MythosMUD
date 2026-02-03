@@ -1,5 +1,7 @@
 # Container Test Client Fixture Optimization Plan
 
+> **Note:** This document describes the pre-architecture-cleanup state. For current container (server/container/ package), see [ADR-002](../architecture/decisions/ADR-002-application-container-dependency-injection.md).
+
 ## Current State Analysis
 
 ### Fixture: `container_test_client`

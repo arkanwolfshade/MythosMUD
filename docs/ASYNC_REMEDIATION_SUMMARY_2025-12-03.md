@@ -155,7 +155,7 @@ except Exception as e:
 
 ### 4. Connection Pool Cleanup
 
-**Location**: `server/container.py` lines 635-640
+**Location**: `server/container/main.py` (shutdown path)
 
 **Status**: Properly calls `async_persistence.close()` during shutdown
 

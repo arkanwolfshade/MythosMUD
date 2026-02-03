@@ -77,7 +77,7 @@
 | `server/services/player_preferences_service.py`       | 10.41%           | 70%      | 59.59% | 0/0   | 0/0      |
 | `server/realtime/monitoring/statistics_aggregator.py` | 10.43%           | 70%      | 59.57% | 0/0   | 0/0      |
 | `server/services/combat_event_publisher.py`           | 10.43%           | 70%      | 59.57% | 0/0   | 0/0      |
-| `server/container.py`                                 | 10.44%           | 70%      | 59.56% | 0/0   | 0/0      |
+| `server/container/` (main + bundles)                  | 10.44%           | 70%      | 59.56% | 0/0   | 0/0      |
 | `server/realtime/connection_helpers.py`               | 10.61%           | 70%      | 59.39% | 0/0   | 0/0      |
 | `server/commands/look_container.py`                   | 10.99%           | 70%      | 59.01% | 0/0   | 0/0      |
 | `server/utils/command_factories_inventory.py`         | 11.05%           | 70%      | 58.95% | 0/0   | 0/0      |
