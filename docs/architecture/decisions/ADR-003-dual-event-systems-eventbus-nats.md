@@ -40,7 +40,7 @@ Domain events flow: Domain → EventBus → RealTimeEventHandler → (optionally
 
 - **Positive**: Clear separation of concerns; EventBus is fast for in-process events; NATS enables horizontal scaling for chat/combat
 - **Negative**: Two systems to understand and operate; risk of event duplication if developers publish to both incorrectly (documented in EVENT_OWNERSHIP_MATRIX.md)
-- **Neutral**: EventBus is single-instance; horizontal scaling of game logic requires distributed EventBus (e.g., Redis) - deferred
+- **Neutral**: ~~EventBus is single-instance; horizontal scaling of game logic requires distributed EventBus (e.g., Redis) - deferred~~ **Implemented (2026-02):** Distributed EventBus via NATS. See DISTRIBUTED_EVENTBUS_NATS.md.
 
 ## Related ADRs
 

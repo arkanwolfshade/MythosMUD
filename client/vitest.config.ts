@@ -51,8 +51,8 @@ export default defineConfig({
         // Global threshold adjusted to reflect current coverage state.
         // Per-file thresholds below enforce category-specific requirements.
         // Note: Vitest requires exact file paths (not globs) for per-file thresholds.
-        // Current coverage: 82.53% statements, 75.13% branches, 81.05% functions, 82.91% lines
-        // Thresholds set with ~7-8% buffer to allow for normal fluctuations
+        // Current coverage: 76.78% statements, 70.19% branches, 79.59% functions, 76.97% lines
+        // Thresholds set with buffer to allow for normal fluctuations
         // Global thresholds: 70% minimum for non-critical code
         statements: 70,
         branches: 70,

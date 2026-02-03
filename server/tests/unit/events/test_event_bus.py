@@ -179,6 +179,17 @@ async def test_event_bus_publish_no_subscribers(event_bus):
 
 
 @pytest.mark.asyncio
+async def test_event_bus_inject_dispatches_to_subscribers(event_bus):
+    """Test EventBus.inject() delivers event to subscribers (used by distributed bridge)."""
+    handler = AsyncMock()
+    event_bus.subscribe(MockEventClass, handler)
+    event = MockEventClass()
+    event_bus.inject(event)
+    await asyncio.sleep(0.15)
+    handler.assert_awaited_once_with(event)
+
+
+@pytest.mark.asyncio
 async def test_event_bus_publish_multiple_subscribers(event_bus):
     """Test EventBus.publish() with multiple subscribers."""
     handler1 = AsyncMock()

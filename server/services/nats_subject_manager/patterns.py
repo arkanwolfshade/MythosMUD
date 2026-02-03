@@ -82,6 +82,11 @@ PREDEFINED_PATTERNS = {
         "required_params": ["room_id"],
         "description": "Player respawn events",
     },
+    "event_domain": {
+        "pattern": "events.domain.{event_type}",
+        "required_params": ["event_type"],
+        "description": "Distributed EventBus domain events",
+    },
     # Combat patterns
     "combat_attack": {
         "pattern": "combat.attack.{room_id}",

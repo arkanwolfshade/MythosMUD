@@ -284,8 +284,7 @@ class NATSMessageHandler:
                 logger.error("NATSService is required for subscriptions", subject=subject)
                 return False
             # subscribe() now raises exceptions instead of returning False
-            # Reason: NATS service accepts async callbacks at runtime despite sync type signature
-            await self.nats_service.subscribe(subject, self._handle_nats_message)  # type: ignore[arg-type]
+            await self.nats_service.subscribe(subject, self._handle_nats_message)
             self.subscriptions[subject] = True
             logger.info("Successfully subscribed to NATS subject", subject=subject, debug=True)
             return True

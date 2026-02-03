@@ -21,8 +21,8 @@ todos:
     content: Create Architecture Decision Records (ADRs) for major architectural decisions
     status: completed
   - id: evaluate-distributed-eventbus
-    content: Evaluate distributed EventBus solution (Redis) for horizontal scalability
-    status: pending
+    content: Evaluate distributed EventBus solution (NATS) for horizontal scalability
+    status: completed
   - id: review-domain-models
     content: Review domain models for anemic domain model anti-pattern and move logic from services to models
     status: completed

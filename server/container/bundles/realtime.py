@@ -52,6 +52,10 @@ class RealtimeBundle:
             self.nats_service = NATSService(config=config.nats)
             await self.nats_service.connect()
             logger.info("NATS service connected")
+            # Start distributed EventBus bridge for cross-instance domain events
+            if hasattr(event_bus, "set_nats_service"):
+                event_bus.set_nats_service(self.nats_service)
+                logger.info("NATS EventBus bridge enabled for distributed domain events")
         else:
             logger.warning("NATS service disabled in configuration")
 

@@ -5,9 +5,15 @@
 
 import { describe, expect, it } from 'vitest';
 import {
+  assertCharacterInfoArray,
+  assertLoginResponse,
+  assertProfessionArray,
   assertRefreshTokenResponse,
   assertServerCharacterResponseArray,
   assertStatsRollResponse,
+  isCharacterInfoArray,
+  isLoginResponse,
+  isProfessionArray,
   isRefreshTokenResponse,
   isServerCharacterResponse,
   isServerCharacterResponseArray,
@@ -64,6 +70,32 @@ describe('apiTypeGuards', () => {
         id: 'char-1',
         name: 'Test',
         profession_id: '1',
+        level: 1,
+        created_at: '2020-01-01',
+        last_active: '2020-01-01',
+      };
+      expect(isServerCharacterResponse(value)).toBe(false);
+    });
+
+    it('should return true for valid object with profession_name string', () => {
+      const value = {
+        id: 'char-1',
+        name: 'Test',
+        profession_id: 1,
+        profession_name: 'Scholar',
+        level: 1,
+        created_at: '2020-01-01',
+        last_active: '2020-01-01',
+      };
+      expect(isServerCharacterResponse(value)).toBe(true);
+    });
+
+    it('should return false when both id and player_id are invalid (not undefined and not string)', () => {
+      const value = {
+        id: 123,
+        player_id: 456,
+        name: 'Test',
+        profession_id: 1,
         level: 1,
         created_at: '2020-01-01',
         last_active: '2020-01-01',
@@ -182,6 +214,28 @@ describe('apiTypeGuards', () => {
       };
       expect(isStatsRollResponse(value)).toBe(false);
     });
+
+    it('should return true with profession_id null and meets_requirements null', () => {
+      const value = {
+        stats: validStats,
+        stat_summary: validStatSummary,
+        profession_id: null,
+        meets_requirements: null,
+        method_used: 'standard',
+      };
+      expect(isStatsRollResponse(value)).toBe(true);
+    });
+
+    it('should return true with meets_requirements false', () => {
+      const value = {
+        stats: validStats,
+        stat_summary: validStatSummary,
+        profession_id: 1,
+        meets_requirements: false,
+        method_used: 'standard',
+      };
+      expect(isStatsRollResponse(value)).toBe(true);
+    });
   });
 
   describe('isRefreshTokenResponse', () => {
@@ -288,6 +342,126 @@ describe('apiTypeGuards', () => {
 
     it('should throw when invalid', () => {
       expect(() => assertRefreshTokenResponse(null)).toThrow();
+    });
+  });
+
+  describe('isProfession', () => {
+    const validProfession = {
+      id: 1,
+      name: 'Scholar',
+      description: 'A seeker of knowledge.',
+      flavor_text: 'You have studied the occult.',
+      stat_requirements: [] as { stat: string; minimum: number }[],
+      mechanical_effects: [] as { effect_type: string; value: number | string; description?: string | null }[],
+      is_available: true,
+    };
+
+    it('should return true for valid profession with flavor_text string', () => {
+      expect(isProfessionArray([validProfession])).toBe(true);
+    });
+
+    it('should return true for valid profession with flavor_text null', () => {
+      const p = { ...validProfession, flavor_text: null };
+      expect(isProfessionArray([p])).toBe(true);
+    });
+
+    it('should return false when stat_requirements is not an array', () => {
+      const value = [{ ...validProfession, stat_requirements: 'invalid' }];
+      expect(isProfessionArray(value)).toBe(false);
+    });
+
+    it('should return false when stat_requirements contains invalid item', () => {
+      const value = [
+        {
+          ...validProfession,
+          stat_requirements: [{ stat: 'str', minimum: '10' }],
+        },
+      ];
+      expect(isProfessionArray(value)).toBe(false);
+    });
+
+    it('should return false when mechanical_effects is not an array', () => {
+      const value = [{ ...validProfession, mechanical_effects: {} }];
+      expect(isProfessionArray(value)).toBe(false);
+    });
+
+    it('should return false when mechanical_effects contains invalid item', () => {
+      const value = [
+        {
+          ...validProfession,
+          mechanical_effects: [{ effect_type: 'buff', value: 1, description: 123 }],
+        },
+      ];
+      expect(isProfessionArray(value)).toBe(false);
+    });
+
+    it('should return false for non-array', () => {
+      expect(isProfessionArray(null)).toBe(false);
+      expect(isProfessionArray({})).toBe(false);
+    });
+  });
+
+  describe('assertCharacterInfoArray', () => {
+    it('should throw with custom message when invalid', () => {
+      expect(() => assertCharacterInfoArray(null, 'Custom CharacterInfo error')).toThrow('Custom CharacterInfo error');
+    });
+  });
+
+  describe('assertLoginResponse', () => {
+    it('should throw with custom message when invalid', () => {
+      expect(() => assertLoginResponse({}, 'Custom LoginResponse error')).toThrow('Custom LoginResponse error');
+    });
+  });
+
+  describe('assertProfessionArray', () => {
+    it('should throw with custom message when invalid', () => {
+      expect(() => assertProfessionArray(null, 'Custom ProfessionArray error')).toThrow('Custom ProfessionArray error');
+    });
+  });
+
+  describe('isCharacterInfoArray', () => {
+    it('should return true for valid array of CharacterInfo', () => {
+      const value = [
+        {
+          player_id: 'p1',
+          name: 'Test',
+          profession_id: 1,
+          level: 1,
+          created_at: '2020-01-01',
+          last_active: '2020-01-01',
+        },
+      ];
+      expect(isCharacterInfoArray(value)).toBe(true);
+    });
+
+    it('should return false for non-array', () => {
+      expect(isCharacterInfoArray(null)).toBe(false);
+    });
+  });
+
+  describe('isLoginResponse', () => {
+    it('should return true for valid LoginResponse with refresh_token', () => {
+      const value = {
+        access_token: 'token',
+        token_type: 'Bearer',
+        user_id: 'u1',
+        characters: [
+          {
+            player_id: 'p1',
+            name: 'Test',
+            profession_id: 1,
+            level: 1,
+            created_at: '2020-01-01',
+            last_active: '2020-01-01',
+          },
+        ],
+        refresh_token: 'refresh',
+      };
+      expect(isLoginResponse(value)).toBe(true);
+    });
+
+    it('should return false for non-object', () => {
+      expect(isLoginResponse(null)).toBe(false);
     });
   });
 });

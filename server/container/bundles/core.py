@@ -70,12 +70,12 @@ class CoreBundle:
         self.tracked_task_manager.set_task_registry(self.task_registry)
         logger.info("Task management initialized")
 
-        # Phase 4: Event system
+        # Phase 4: Event system (DistributedEventBus for NATS-backed distribution)
         logger.debug("Initializing event system...")
-        from server.events.event_bus import EventBus
+        from server.events.distributed_event_bus import DistributedEventBus
 
-        self.event_bus = EventBus()
-        logger.info("Event system initialized")
+        self.event_bus = DistributedEventBus(nats_service=None)
+        logger.info("Event system initialized (NATS bridge will start when NATS connects)")
 
         # Phase 5: Persistence
         logger.debug("Initializing persistence layer...")
