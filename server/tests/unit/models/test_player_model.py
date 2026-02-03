@@ -6,6 +6,7 @@ Tests the Player model methods including stats, inventory, status effects, and h
 
 from uuid import uuid4
 
+from server.models.game import PositionState
 from server.models.player import Player
 
 
@@ -443,6 +444,34 @@ def test_player_get_health_percentage_full() -> None:
     assert percentage == 100.0
 
 
+def test_player_get_combat_stats() -> None:
+    """Test Player.get_combat_stats() returns combat-relevant stats."""
+    player = Player(
+        player_id=str(uuid4()),
+        user_id=str(uuid4()),
+        name="TestPlayer",
+        stats={"current_dp": 75, "max_dp": 100, "dexterity": 12},
+    )
+    combat_stats = player.get_combat_stats()
+    assert combat_stats["current_dp"] == 75
+    assert combat_stats["max_dp"] == 100
+    assert combat_stats["dexterity"] == 12
+
+
+def test_player_get_combat_stats_defaults() -> None:
+    """Test Player.get_combat_stats() uses defaults when combat keys missing."""
+    player = Player(
+        player_id=str(uuid4()),
+        user_id=str(uuid4()),
+        name="TestPlayer",
+        stats={"strength": 50},
+    )
+    combat_stats = player.get_combat_stats()
+    assert combat_stats["current_dp"] == 100
+    assert combat_stats["max_dp"] == 100
+    assert combat_stats["dexterity"] == 10
+
+
 def test_player_get_health_percentage_zero() -> None:
     """Test Player.get_health_percentage() returns 0.0 when current_dp is 0."""
     player_id = str(uuid4())
@@ -457,6 +486,110 @@ def test_player_get_health_percentage_zero() -> None:
     percentage = player.get_health_percentage()
 
     assert percentage == 0.0
+
+
+def test_player_apply_dp_decay_reduces_dp() -> None:
+    """Test Player.apply_dp_decay decreases DP and returns tuple."""
+    player = Player(
+        player_id=str(uuid4()),
+        user_id=str(uuid4()),
+        name="TestPlayer",
+        stats={"current_dp": 50, "max_dp": 100},
+    )
+    old_dp, new_dp, posture_changed = player.apply_dp_decay(amount=1)
+    assert old_dp == 50
+    assert new_dp == 49
+    assert posture_changed is False
+    assert player.get_stats()["current_dp"] == 49
+
+
+def test_player_apply_dp_decay_caps_at_negative_10() -> None:
+    """Test Player.apply_dp_decay caps DP at -10."""
+    player = Player(
+        player_id=str(uuid4()),
+        user_id=str(uuid4()),
+        name="TestPlayer",
+        stats={"current_dp": -10, "max_dp": 100},
+    )
+    old_dp, new_dp, posture_changed = player.apply_dp_decay(amount=5)
+    assert old_dp == -10
+    assert new_dp == -10
+    assert player.get_stats()["current_dp"] == -10
+
+
+def test_player_apply_dp_decay_changes_posture_when_crossing_zero() -> None:
+    """Test Player.apply_dp_decay sets posture to LYING when crossing to 0 or below."""
+    player = Player(
+        player_id=str(uuid4()),
+        user_id=str(uuid4()),
+        name="TestPlayer",
+        stats={"current_dp": 1, "max_dp": 100, "position": "standing"},
+    )
+    old_dp, new_dp, posture_changed = player.apply_dp_decay(amount=1)
+    assert old_dp == 1
+    assert new_dp == 0
+    assert posture_changed is True
+    assert player.get_stats()["position"] == PositionState.LYING
+
+
+def test_player_restore_to_full_health() -> None:
+    """Test Player.restore_to_full_health restores DP and posture."""
+    player = Player(
+        player_id=str(uuid4()),
+        user_id=str(uuid4()),
+        name="TestPlayer",
+        stats={"current_dp": 10, "max_dp": 100, "position": "lying"},
+    )
+    old_dp = player.restore_to_full_health()
+    assert old_dp == 10
+    stats = player.get_stats()
+    assert stats["current_dp"] == 100
+    assert stats["position"] == PositionState.STANDING
+
+
+def test_player_apply_dp_change_updates_dp() -> None:
+    """Test Player.apply_dp_change updates DP and returns state changes."""
+    player = Player(
+        player_id=str(uuid4()),
+        user_id=str(uuid4()),
+        name="TestPlayer",
+        stats={"current_dp": 50, "max_dp": 100},
+    )
+    old_dp, became_mortally_wounded, became_dead = player.apply_dp_change(30)
+    assert old_dp == 50
+    assert became_mortally_wounded is False
+    assert became_dead is False
+    assert player.get_stats()["current_dp"] == 30
+
+
+def test_player_apply_dp_change_became_mortally_wounded() -> None:
+    """Test Player.apply_dp_change detects crossing to mortally wounded (0 >= DP > -10)."""
+    player = Player(
+        player_id=str(uuid4()),
+        user_id=str(uuid4()),
+        name="TestPlayer",
+        stats={"current_dp": 50, "max_dp": 100, "position": "standing"},
+    )
+    old_dp, became_mortally_wounded, became_dead = player.apply_dp_change(0)
+    assert old_dp == 50
+    assert became_mortally_wounded is True
+    assert became_dead is False
+    assert player.get_stats()["position"] == PositionState.LYING
+
+
+def test_player_apply_dp_change_became_dead() -> None:
+    """Test Player.apply_dp_change detects crossing to dead (DP <= -10)."""
+    player = Player(
+        player_id=str(uuid4()),
+        user_id=str(uuid4()),
+        name="TestPlayer",
+        stats={"current_dp": 5, "max_dp": 100, "position": "standing"},
+    )
+    old_dp, became_mortally_wounded, became_dead = player.apply_dp_change(-10)
+    assert old_dp == 5
+    assert became_mortally_wounded is False
+    assert became_dead is True
+    assert player.get_stats()["position"] == PositionState.LYING
 
 
 def test_player_table_name() -> None:

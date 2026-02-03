@@ -63,6 +63,9 @@ help:
 	@echo "  setup-postgresql-test-db - Create PostgreSQL test database"
 	@echo "  verify-schema          - Verify authoritative_schema.sql matches mythos_dev"
 	@echo ""
+	@echo "Documentation:"
+	@echo "  openapi-spec          - Generate OpenAPI spec to docs/openapi/openapi.json"
+	@echo ""
 	@echo "Testing:"
 	@echo "  test                  - Run all tests (client + server, no coverage)"
 	@echo "  test-coverage         - Run all tests with coverage"
@@ -171,6 +174,14 @@ verify-schema:
 	$(POWERSHELL) scripts/verify_schema_match.ps1
 
 # ============================================================================
+# DOCUMENTATION
+# ============================================================================
+
+openapi-spec:
+	@echo "Generating OpenAPI spec..."
+	$(UV) python scripts/generate_openapi_spec.py
+
+# ============================================================================
 # TESTING
 # ============================================================================
 
@@ -234,4 +245,4 @@ run:
 # COMPOSITE TARGETS
 # ============================================================================
 
-all: format mypy lint lint-sqlalchemy codacy-tools build test-coverage
+all: format mypy lint lint-sqlalchemy codacy-tools build openapi-spec test-coverage

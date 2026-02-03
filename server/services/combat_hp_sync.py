@@ -16,7 +16,6 @@ from uuid import UUID
 from ..events.event_bus import EventBus
 from ..events.event_types import PlayerDPUpdated
 from ..exceptions import DatabaseError
-from ..models.game import PositionState
 from ..structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
@@ -156,30 +155,6 @@ class CombatDPSync:  # pylint: disable=too-few-public-methods  # Reason: DP sync
             logger.warning("Could not get persistence from container", error=str(e), player_id=player_id)
             return None
 
-    def _update_player_position(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Position update requires many parameters for context and position updates
-        self, stats: dict[str, Any], current_dp: int, old_dp: int, player_id: UUID, player_name: str
-    ) -> None:
-        """
-        Update player position based on DP threshold.
-
-        Args:
-            stats: Player stats dictionary to update
-            current_dp: New current DP value
-            old_dp: Previous DP value
-            player_id: Player ID for logging
-            player_name: Player name for logging
-        """
-        if current_dp <= 0 < old_dp:
-            stats["position"] = PositionState.LYING
-            logger.info(
-                "Player posture changed to lying (unconscious in combat)",
-                player_id=player_id,
-                player_name=player_name,
-                dp=current_dp,
-            )
-        elif current_dp <= 0 and stats.get("position") != PositionState.LYING:
-            stats["position"] = PositionState.LYING
-
     async def _verify_player_save(
         self, persistence: "AsyncPersistenceLayer", player_id: UUID, player_name: str, old_dp: int, current_dp: int
     ) -> None:
@@ -258,20 +233,15 @@ class CombatDPSync:  # pylint: disable=too-few-public-methods  # Reason: DP sync
             logger.warning("Player not found for DP persistence", player_id=player_id)
             return None
 
-        stats = player.get_stats()
-        old_dp = stats.get("current_dp", 100)
-
-        logger.debug(
-            "Stats before DP update",
-            player_id=player_id,
-            raw_stats=player.stats,
-            parsed_stats=stats,
-            current_dp_in_stats=stats.get("current_dp"),
-        )
-
-        stats["current_dp"] = current_dp
-        self._update_player_position(stats, current_dp, old_dp, player_id, player.name)
-        player.set_stats(stats)
+        # Delegate DP and posture updates to Player domain model
+        old_dp, became_mortally_wounded, _became_dead = player.apply_dp_change(current_dp)
+        if became_mortally_wounded:
+            logger.info(
+                "Player posture changed to lying (unconscious in combat)",
+                player_id=player_id,
+                player_name=player.name,
+                dp=current_dp,
+            )
 
         logger.debug(
             "Stats after DP update, before save",

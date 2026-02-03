@@ -343,13 +343,17 @@ class EventHandler:
                 logger.warning("NPC died event missing npc_id", data=data)
                 return
 
+            # Client projector expects event.data.message for Game Info panel display
+            npc_display = npc_name or "An unknown creature"
+            broadcast_data = {**data, "message": f"The {npc_display} has been slain."}
+
             # Import here to avoid circular imports
             from server.events.event_types import NPCDied
 
             # Broadcast death event to room clients using injected connection_manager
             # AI: Room state mutation is handled by NPCLeftRoom event from lifecycle manager
             # AI: This prevents duplicate removal attempts and maintains single source of truth
-            await self.connection_manager.broadcast_room_event("npc_died", room_id, data)
+            await self.connection_manager.broadcast_room_event("npc_died", room_id, broadcast_data)
             logger.debug("NPC died event broadcasted", room_id=room_id, npc_id=npc_id, npc_name=npc_name)
 
             # AI Agent: CRITICAL - Publish to EventBus so lifecycle manager can queue for respawn

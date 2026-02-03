@@ -236,6 +236,18 @@ class ContainerComponent(BaseModel):
         """Check if container has available capacity."""
         return len(self.items) < self.capacity_slots
 
+    def has_room_for(self, item_count: int) -> bool:
+        """Check if container has room for additional items."""
+        return len(self.items) + item_count <= self.capacity_slots
+
+    def can_hold(self, item_count: int) -> bool:
+        """Check if container can hold this many items (e.g. when replacing contents)."""
+        return item_count <= self.capacity_slots
+
+    def would_exceed_capacity(self, items: list[Any]) -> bool:
+        """Check if adding the given items would exceed container capacity."""
+        return not self.has_room_for(len(items))
+
     def get_used_slots(self) -> int:
         """Get number of used inventory slots."""
         return len(self.items)

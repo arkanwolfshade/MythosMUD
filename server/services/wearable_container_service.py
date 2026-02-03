@@ -327,15 +327,14 @@ class WearableContainerService:
                 user_friendly="Invalid container",
             )
 
-        # Check capacity
-        current_items = container.items
-        if len(current_items) + len(items) > container.capacity_slots:
+        # Check capacity using domain model
+        if container.would_exceed_capacity(items):
             log_and_raise(
                 WearableContainerServiceError,
-                f"Container capacity exceeded: {len(current_items) + len(items)} > {container.capacity_slots}",
+                f"Container capacity exceeded: {len(container.items) + len(items)} > {container.capacity_slots}",
                 context=context,
                 details={
-                    "current_items": len(current_items),
+                    "current_items": len(container.items),
                     "new_items": len(items),
                     "capacity_slots": container.capacity_slots,
                 },
@@ -343,6 +342,7 @@ class WearableContainerService:
             )
 
         # Add items - convert InventoryStack objects to dicts
+        current_items = container.items
         new_items: list[dict[str, Any]] = [
             cast(dict[str, Any], dict(item) if not isinstance(item, dict) else item) for item in current_items + items
         ]
@@ -421,8 +421,8 @@ class WearableContainerService:
                 user_friendly="Invalid container",
             )
 
-        # Check capacity
-        if len(items) > container.capacity_slots:
+        # Check capacity using domain model
+        if not container.can_hold(len(items)):
             log_and_raise(
                 WearableContainerServiceError,
                 f"Container capacity exceeded: {len(items)} > {container.capacity_slots}",

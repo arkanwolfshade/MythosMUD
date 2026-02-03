@@ -25,10 +25,10 @@ todos:
     status: pending
   - id: review-domain-models
     content: Review domain models for anemic domain model anti-pattern and move logic from services to models
-    status: pending
+    status: completed
   - id: document-api-contracts
     content: Document API contracts and service interfaces with OpenAPI/Swagger specifications
-    status: pending
+    status: completed
 isProject: false
 ---
 

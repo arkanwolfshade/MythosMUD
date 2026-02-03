@@ -161,6 +161,69 @@ def test_container_component_has_capacity_when_full():
     assert container.has_capacity() is False
 
 
+def test_container_component_has_room_for_additional_items():
+    """Test has_room_for returns True when container has space for additional items."""
+    container = ContainerComponent(
+        container_id=uuid4(),
+        source_type=ContainerSourceType.ENVIRONMENT,
+        room_id="room123",
+        capacity_slots=10,
+    )
+    container.items = cast(list[InventoryStack], [{"id": "item1"}, {"id": "item2"}])
+    assert container.has_room_for(3) is True
+    assert container.has_room_for(8) is True
+
+
+def test_container_component_has_room_for_exceeds_capacity():
+    """Test has_room_for returns False when adding items would exceed capacity."""
+    container = ContainerComponent(
+        container_id=uuid4(),
+        source_type=ContainerSourceType.ENVIRONMENT,
+        room_id="room123",
+        capacity_slots=5,
+    )
+    container.items = cast(list[InventoryStack], [{"id": "item1"}, {"id": "item2"}, {"id": "item3"}])
+    assert container.has_room_for(3) is False
+    assert container.has_room_for(5) is False
+
+
+def test_container_component_can_hold_replacement_items():
+    """Test can_hold returns True when item_count fits capacity (replacement scenario)."""
+    container = ContainerComponent(
+        container_id=uuid4(),
+        source_type=ContainerSourceType.ENVIRONMENT,
+        room_id="room123",
+        capacity_slots=10,
+    )
+    assert container.can_hold(5) is True
+    assert container.can_hold(10) is True
+
+
+def test_container_component_would_exceed_capacity():
+    """Test would_exceed_capacity returns True when adding items would exceed capacity."""
+    container = ContainerComponent(
+        container_id=uuid4(),
+        source_type=ContainerSourceType.ENVIRONMENT,
+        room_id="room123",
+        capacity_slots=3,
+    )
+    container.items = cast(list[InventoryStack], [{"id": "item1"}, {"id": "item2"}])
+    assert container.would_exceed_capacity([{"id": "x"}]) is False
+    assert container.would_exceed_capacity([{"id": "x"}, {"id": "y"}]) is True
+
+
+def test_container_component_can_hold_exceeds_capacity():
+    """Test can_hold returns False when item_count exceeds capacity."""
+    container = ContainerComponent(
+        container_id=uuid4(),
+        source_type=ContainerSourceType.ENVIRONMENT,
+        room_id="room123",
+        capacity_slots=5,
+    )
+    assert container.can_hold(6) is False
+    assert container.can_hold(10) is False
+
+
 def test_container_component_get_used_slots():
     """Test get_used_slots returns correct count."""
     container = ContainerComponent(

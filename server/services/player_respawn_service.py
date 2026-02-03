@@ -177,19 +177,12 @@ class PlayerRespawnService:
             # Get respawn room using async API
             respawn_room = await self.get_respawn_room(player_id, session)
 
-            # Get current stats and restore DP to max determination points
+            # Delegate health restoration to Player domain model
+            old_dp = player.restore_to_full_health()
             stats = player.get_stats()
-            old_dp = stats.get("current_dp", 0)
-            max_dp = stats.get("max_dp", 100)  # Default to 100 if max_dp not found
-            stats["current_dp"] = max_dp  # Restore to max determination points, not hardcoded 100
+            max_dp = stats.get("max_dp", 100)
 
-            # BUGFIX: Restore posture to standing when player respawns
-            # As documented in "Resurrection and Corporeal Restoration" - Dr. Armitage, 1930
-            # Upon resurrection, the body is restored to full function including upright posture
-            stats["position"] = PositionState.STANDING
-
-            # Update player stats and location
-            player.set_stats(stats)
+            # Update location
             old_room = player.current_room_id
             player.current_room_id = respawn_room
 

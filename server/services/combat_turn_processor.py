@@ -304,17 +304,15 @@ class CombatTurnProcessor:
                 logger.error("NPC object missing participant_id attribute", npc=npc)
                 return
 
-            # BUGFIX: Check if NPC is alive (DP > 0) before allowing actions
-            # NPCs die immediately at DP <= 0, unlike players who enter mortally wounded state
-            # As documented in "Non-Euclidean Biology and Combat Mechanics" - Dr. Armitage, 1929
-            if npc.current_dp <= 0:
+            # BUGFIX: Check if NPC can act (DP > 0) before allowing actions
+            # NPCs die at DP <= 0; use domain model method
+            if not npc.can_act_in_combat():
                 logger.info(
-                    "NPC is dead and cannot act",
+                    "NPC cannot act (dead or inactive)",
                     npc_name=npc.name,
                     current_dp=npc.current_dp,
                     combat_id=combat.combat_id,
                 )
-                # Skip turn but don't end combat (combat ends when is_alive() returns False)
                 npc.last_action_tick = current_tick
                 return
 
@@ -371,17 +369,15 @@ class CombatTurnProcessor:
                 logger.error("Player object missing participant_id attribute", player=player)
                 return
 
-            # BUGFIX #243: Check if player is conscious (DP > 0) before allowing actions
-            # As documented in "Consciousness and Corporeal Agency in Combat" - Dr. Armitage, 1929
+            # BUGFIX #243: Check if player can act (DP > 0) before allowing actions
             # Unconscious entities (DP <= 0) cannot perform voluntary actions
-            if player.current_dp <= 0:
+            if not player.can_act_in_combat():
                 logger.info(
-                    "Player is unconscious and cannot act",
+                    "Player cannot act (unconscious or inactive)",
                     player_name=player.name,
                     current_dp=player.current_dp,
                     combat_id=combat.combat_id,
                 )
-                # Skip turn but don't end combat (player may be unconscious but not dead)
                 player.last_action_tick = current_tick
                 return
 

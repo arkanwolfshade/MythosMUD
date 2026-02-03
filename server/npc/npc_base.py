@@ -56,7 +56,7 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
         self.current_room = getattr(definition, "room_id", None)
         # Track spawn room for idle movement (defaults to definition room_id or current_room)
         self.spawn_room_id = getattr(definition, "room_id", None) or self.current_room
-        self.is_alive = True
+        self._alive = True
         self.is_active = True
 
         # Parse configuration from definition - use getattr to avoid lazy loading issues
@@ -200,6 +200,38 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
         """Get current NPC stats."""
         return self._stats.copy()
 
+    @property
+    def is_alive(self) -> bool:
+        """
+        Check if NPC is alive.
+
+        Explicit interface for services per Domain-Driven Design. NPCs die when
+        determination_points <= 0; this flag is set by take_damage / _handle_die.
+        """
+        return bool(self._alive)
+
+    @is_alive.setter
+    def is_alive(self, value: bool) -> None:
+        """Allow backward-compatible assignment (npc.is_alive = False)."""
+        self._alive = value
+
+    def get_combat_stats(self) -> dict[str, int]:
+        """
+        Get stats used for combat participant creation.
+
+        Returns current_dp, max_dp, and dexterity for CombatParticipantData.
+        NPCs use determination_points (with backward compat for dp, hp).
+        Centralizes combat stat semantics per Domain-Driven Design.
+        """
+        current_dp = self._stats.get("determination_points", self._stats.get("dp", self._stats.get("hp", 100)))
+        max_dp = self._stats.get("max_dp", self._stats.get("max_hp", 100))
+        dexterity = self._stats.get("dexterity", 10)
+        return {
+            "current_dp": int(current_dp),
+            "max_dp": int(max_dp),
+            "dexterity": int(dexterity),
+        }
+
     def get_behavior_config(self) -> dict[str, Any]:
         """Get behavior configuration."""
         return self._behavior_config.copy()
@@ -306,7 +338,7 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
             damage: Amount of damage that caused death
             source_id: ID of damage source
         """
-        self.is_alive = False
+        self._alive = False
         logger.info("NPC died", npc_id=self.npc_id, damage=damage)
 
         # Use combat integration for death handling
@@ -693,7 +725,7 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
         npc.current_room = data.get("current_room", getattr(definition, "room_id", None))
         npc._stats = data.get("stats", {})
         npc._inventory = data.get("inventory", [])
-        npc.is_alive = data.get("is_alive", True)
+        npc._alive = data.get("is_alive", True)
         npc.is_active = data.get("is_active", True)
         npc._last_action_time = data.get("last_action_time", time.time())
         return npc
@@ -701,7 +733,7 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
     # Base action handlers
     def _handle_die(self, _context: dict[str, Any]) -> bool:
         """Handle death action."""
-        self.is_alive = False
+        self._alive = False
         self.is_active = False
         logger.info("NPC died", npc_id=self.npc_id)
         return True

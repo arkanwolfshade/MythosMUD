@@ -309,7 +309,7 @@ async def get_container_async(session: AsyncSession, container_id: UUID) -> Cont
     # log_and_raise always raises; no return needed here.
 
 
-async def update_container_async(
+async def update_container_async(  # pylint: disable=too-many-locals  # Reason: Single transactional update for items, lock_state, metadata; extracting would duplicate session/context handling
     session: AsyncSession,
     container_id: UUID,
     items_json: list[dict[str, Any]] | None = None,

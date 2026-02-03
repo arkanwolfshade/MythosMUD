@@ -37,6 +37,7 @@ def mock_player():
     player.stats = {"current_dp": 50, "max_dp": 100, "position": "standing"}
     player.get_stats = MagicMock(return_value={"current_dp": 50, "max_dp": 100, "position": "standing"})
     player.set_stats = MagicMock()
+    player.apply_dp_change = MagicMock(return_value=(50, False, False))
     return player
 
 

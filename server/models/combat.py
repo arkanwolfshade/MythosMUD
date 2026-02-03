@@ -71,6 +71,62 @@ class CombatParticipant:  # pylint: disable=too-many-instance-attributes  # Reas
         # NPCs die at 0 DP
         return self.current_dp > 0 and self.is_active
 
+    def is_dead(self) -> bool:
+        """
+        Check if participant is dead.
+
+        For players: dead if DP <= -10
+        For NPCs: dead if DP <= 0
+        """
+        if self.participant_type == CombatParticipantType.PLAYER:
+            return self.current_dp <= -10
+        return self.current_dp <= 0
+
+    def is_mortally_wounded(self) -> bool:
+        """
+        Check if participant is mortally wounded (players only).
+
+        For players: mortally wounded if 0 >= DP > -10
+        For NPCs: always False (NPCs die at 0, no mortal wound state)
+        """
+        if self.participant_type != CombatParticipantType.PLAYER:
+            return False
+        return 0 >= self.current_dp > -10
+
+    def can_act_in_combat(self) -> bool:
+        """
+        Check if participant can perform voluntary combat actions.
+
+        Unconscious (DP <= 0) or dead participants cannot act. For both players
+        and NPCs, requires current_dp > 0 and is_active.
+        """
+        return self.current_dp > 0 and self.is_active
+
+    def apply_damage(self, damage: int) -> tuple[int, bool, bool]:
+        """
+        Apply damage to this participant and determine resulting death states.
+
+        Encapsulates damage application rules: players cap at -10 DP and have
+        a mortally wounded band (0 >= DP > -10); NPCs cap at 0 DP and die there.
+
+        Args:
+            damage: Amount of damage to apply
+
+        Returns:
+            Tuple of (old_dp, target_died, target_mortally_wounded)
+            - target_mortally_wounded: True if this hit crossed from positive DP to 0 (players only)
+        """
+        old_dp = self.current_dp
+        if self.participant_type == CombatParticipantType.PLAYER:
+            self.current_dp = max(-10, self.current_dp - damage)
+            target_died = self.is_dead()
+            target_mortally_wounded = old_dp > 0 and not self.current_dp
+        else:
+            self.current_dp = max(0, self.current_dp - damage)
+            target_died = self.is_dead()
+            target_mortally_wounded = False
+        return old_dp, target_died, target_mortally_wounded
+
 
 @dataclass
 class CombatInstance:  # pylint: disable=too-many-instance-attributes  # Reason: Combat instance requires many fields to capture complete combat state

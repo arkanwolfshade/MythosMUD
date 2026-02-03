@@ -5,7 +5,7 @@ This module defines the Player model that stores game-specific data
 for each user, including stats, inventory, and current location.
 """
 
-# pylint: disable=too-few-public-methods  # Reason: SQLAlchemy models are data classes, no instance methods needed
+# pylint: disable=too-few-public-methods,too-many-lines  # Reason: SQLAlchemy models are data classes; Player aggregates stats, combat, lucidity, containers - splitting would fragment domain cohesion
 
 import json
 from datetime import UTC, datetime
@@ -17,6 +17,7 @@ from sqlalchemy.ext.mutable import MutableDict, MutableList
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base  # ARCHITECTURE FIX Phase 3.1: Use shared Base
+from .game import PositionState
 
 # Forward references for type checking (resolves circular imports)
 # Note: SQLAlchemy will resolve string references via shared registry at runtime
@@ -301,6 +302,20 @@ class Player(Base):
         """Set player's admin status."""
         self.is_admin = 1 if admin_status else 0
 
+    def get_combat_stats(self) -> dict[str, int]:
+        """
+        Get stats used for combat participant creation.
+
+        Returns current_dp, max_dp, and dexterity for CombatParticipantData.
+        Centralizes combat stat semantics per Domain-Driven Design.
+        """
+        stats = self.get_stats()
+        return {
+            "current_dp": int(stats.get("current_dp", 100)),
+            "max_dp": int(stats.get("max_dp", 100)),
+            "dexterity": int(stats.get("dexterity", 10)),
+        }
+
     def get_health_percentage(self) -> float:
         """Get player determination points (DP) as percentage."""
         stats = self.get_stats()
@@ -312,6 +327,78 @@ class Player(Base):
         if not max_dp:
             max_dp = 20  # Prevent division by zero
         return float((current_dp / max_dp) * 100)
+
+    def apply_dp_decay(self, amount: int = 1) -> tuple[int, int, bool]:
+        """
+        Apply DP decay (e.g. mortally wounded bleeding) with posture updates.
+
+        Decreases DP by amount, caps at -10. When crossing to 0 or below, posture
+        is set to LYING (unconscious). Encapsulates domain rules from "Corporeal
+        Collapse and Unconsciousness" - Dr. Armitage, 1928.
+
+        Args:
+            amount: DP to subtract (default 1)
+
+        Returns:
+            Tuple of (old_dp, new_dp, posture_changed)
+        """
+        stats = self.get_stats()
+        old_dp = stats.get("current_dp", 0)  # current_dp represents DP
+        new_dp = max(old_dp - amount, -10)
+        stats["current_dp"] = new_dp
+
+        posture_changed = False
+        if new_dp <= 0 < old_dp:
+            stats["position"] = PositionState.LYING
+            posture_changed = True
+        elif new_dp <= 0 and stats.get("position") != PositionState.LYING:
+            stats["position"] = PositionState.LYING
+            posture_changed = True
+
+        self.set_stats(stats)
+        return (old_dp, new_dp, posture_changed)
+
+    def restore_to_full_health(self) -> int:
+        """
+        Restore player to full health (max DP, standing posture).
+
+        Used on respawn. Sets DP to max_dp and posture to STANDING.
+        As documented in "Resurrection and Corporeal Restoration" - Dr. Armitage, 1930.
+
+        Returns:
+            Previous DP value (before restore)
+        """
+        stats = self.get_stats()
+        old_dp: int = int(stats.get("current_dp", 0))
+        max_dp = stats.get("max_dp", 100)
+        stats["current_dp"] = max_dp
+        stats["position"] = PositionState.STANDING
+        self.set_stats(stats)
+        return old_dp
+
+    def apply_dp_change(self, new_dp: int) -> tuple[int, bool, bool]:
+        """
+        Apply a DP change (e.g. from combat sync) with posture updates.
+
+        Updates current_dp to new_dp, sets posture to LYING when DP <= 0.
+        Used when syncing in-memory combat state to persistent player.
+
+        Args:
+            new_dp: New DP value (typically from CombatParticipant)
+
+        Returns:
+            Tuple of (old_dp, became_mortally_wounded, became_dead)
+        """
+        stats = self.get_stats()
+        old_dp = stats.get("current_dp", 0)
+        stats["current_dp"] = new_dp
+        if new_dp <= 0:
+            stats["position"] = PositionState.LYING
+        self.set_stats(stats)
+        # R1716: two distinct variables (old_dp, new_dp) cannot be one chained comparison
+        became_mortally_wounded = old_dp > 0 and (0 >= new_dp > -10)  # pylint: disable=chained-comparison
+        became_dead = new_dp <= -10 and old_dp > -10
+        return (old_dp, became_mortally_wounded, became_dead)
 
     lucidity: Mapped["PlayerLucidity"] = relationship(
         "PlayerLucidity",

@@ -322,7 +322,7 @@ class RoomSubscriptionManager:
 
         for npc_id, npc_instance in active_npcs_dict.items():
             # Skip dead NPCs
-            if not getattr(npc_instance, "is_alive", True):
+            if not npc_instance.is_alive:
                 logger.debug(
                     "Skipping dead NPC from occupants",
                     npc_id=npc_id,
@@ -349,7 +349,7 @@ class RoomSubscriptionManager:
                 for npc_id in room_npc_ids:
                     if npc_id in lifecycle_manager.active_npcs:
                         npc_instance = lifecycle_manager.active_npcs[npc_id]
-                        if getattr(npc_instance, "is_alive", True):
+                        if npc_instance.is_alive:
                             filtered_npc_ids.append(npc_id)
                         else:
                             logger.debug(

@@ -372,6 +372,30 @@ export function projectEvent(prevState: GameState, event: GameEvent): GameState 
       }
       break;
     }
+    case 'player_dp_updated':
+    case 'playerdpupdated': {
+      const data = event.data as {
+        new_dp?: number;
+        max_dp?: number;
+        player?: { stats?: { current_dp?: number; max_dp?: number } };
+      };
+      const newDp = data.new_dp ?? data.player?.stats?.current_dp;
+      const maxDp = data.max_dp ?? data.player?.stats?.max_dp;
+      if (prevState.player && prevState.player.stats && newDp !== undefined) {
+        nextState = {
+          ...prevState,
+          player: {
+            ...prevState.player,
+            stats: {
+              ...prevState.player.stats,
+              current_dp: newDp,
+              ...(maxDp !== undefined && { max_dp: maxDp }),
+            },
+          },
+        };
+      }
+      break;
+    }
     case 'lucidity_change':
     case 'luciditychange': {
       const currentDp = event.data.current_dp as number | undefined;

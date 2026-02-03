@@ -125,7 +125,7 @@ class NPCOccupantProcessor:
             Tuple of (should_include, npc_room_id) where npc_room_id is None if NPC should be excluded
         """
         # Filter out dead NPCs
-        if not getattr(npc_instance, "is_alive", True):
+        if not npc_instance.is_alive:
             self._logger.debug(
                 "Skipping dead NPC from occupants",
                 npc_id=npc_id,
@@ -299,7 +299,7 @@ class NPCOccupantProcessor:
             return False
 
         npc_instance = lifecycle_manager.active_npcs[npc_id]
-        if not getattr(npc_instance, "is_alive", True):
+        if not npc_instance.is_alive:
             self._logger.debug(
                 "Filtered dead NPC from fallback occupants",
                 npc_id=npc_id,

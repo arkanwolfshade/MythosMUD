@@ -154,25 +154,22 @@ class NPCCombatDataProvider:
             logger.error("Player not found when starting combat", player_id=player_id)
             raise ValueError(f"Player {player_id} not found")
 
-        player_stats = player.get_stats()
-        attacker_dp = player_stats.get("current_dp", 100)
-        attacker_max_dp = player_stats.get("max_dp", 100)
-        attacker_dex = player_stats.get("dexterity", 10)
+        combat_stats = player.get_combat_stats()
 
         logger.info(
             "Starting combat with player stats",
             player_id=player_id,
-            current_dp=attacker_dp,
-            max_dp=attacker_max_dp,
-            dex=attacker_dex,
+            current_dp=combat_stats["current_dp"],
+            max_dp=combat_stats["max_dp"],
+            dex=combat_stats["dexterity"],
         )
 
         return CombatParticipantData(
             participant_id=attacker_uuid,
             name=player_name,
-            current_dp=attacker_dp,
-            max_dp=attacker_max_dp,
-            dexterity=attacker_dex,
+            current_dp=combat_stats["current_dp"],
+            max_dp=combat_stats["max_dp"],
+            dexterity=combat_stats["dexterity"],
             participant_type=CombatParticipantType.PLAYER,
         )
 
@@ -187,27 +184,30 @@ class NPCCombatDataProvider:
         Returns:
             CombatParticipantData for the NPC
         """
-        # Get NPC stats properly from the NPC instance
-        npc_stats = npc_instance.get_stats()
-        npc_current_dp = npc_stats.get("determination_points", npc_stats.get("dp", 100))
-        # Check both max_dp and max_dp keys (NPCs may use either)
-        npc_max_dp = npc_stats.get("max_dp", npc_stats.get("max_dp", 100))
-        npc_id = getattr(npc_instance, "id", "unknown")
+        if hasattr(npc_instance, "get_combat_stats"):
+            combat_stats = npc_instance.get_combat_stats()
+        else:
+            npc_stats = npc_instance.get_stats()
+            combat_stats = {
+                "current_dp": int(npc_stats.get("determination_points", npc_stats.get("dp", 100))),
+                "max_dp": int(npc_stats.get("max_dp", npc_stats.get("max_hp", 100))),
+                "dexterity": int(npc_stats.get("dexterity", 10)),
+            }
+
+        npc_id = getattr(npc_instance, "id", getattr(npc_instance, "npc_id", "unknown"))
         logger.info(
-            "DEBUG: NPC stats extraction",
+            "NPC combat stats from model",
             npc_id=npc_id,
             npc_name=npc_instance.name,
-            npc_stats_keys=list(npc_stats.keys()),
-            npc_max_dp=npc_max_dp,
-            has_max_dp="max_dp" in npc_stats,
+            current_dp=combat_stats["current_dp"],
+            max_dp=combat_stats["max_dp"],
         )
-        npc_dexterity = npc_stats.get("dexterity", 10)
 
         return CombatParticipantData(
             participant_id=target_uuid,
             name=npc_instance.name,
-            current_dp=npc_current_dp,
-            max_dp=npc_max_dp,
-            dexterity=npc_dexterity,
+            current_dp=combat_stats["current_dp"],
+            max_dp=combat_stats["max_dp"],
+            dexterity=combat_stats["dexterity"],
             participant_type=CombatParticipantType.NPC,
         )
