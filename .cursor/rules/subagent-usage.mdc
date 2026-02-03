@@ -51,6 +51,20 @@ Do NOT use subagents for:
 | **Best For**  | Deep research, analysis              | Quick actions, workflows            | Best practices, standards         |
 | **Examples**  | Codebase exploration, security audit | Bug investigation, test remediation | Coding standards, framework rules |
 
+## Invoke by Intent
+
+When the user's request matches an intent below, use the corresponding subagent (read and follow `.cursor/agents/<file>.md`):
+
+| User intent | Subagent | File |
+|-------------|----------|------|
+| Test coverage analysis, test quality review, coverage gaps, test recommendations | Test Suite Analyzer | `test-analyzer.md` |
+| Bug investigation, root cause analysis, systematic debugging, evidence collection | Bug Investigator | `bug-investigator.md` |
+| Security audit, COPPA check, vulnerability scan, input validation review | Security Auditor | `security-auditor.md` |
+| Performance analysis, bottlenecks, optimization, memory/query profiling | Performance Profiler | `performance-profiler.md` |
+| Deep codebase exploration, pattern discovery, architecture analysis, dependency research | Codebase Explorer | `codebase-explorer.md` |
+
+Use the subagent when the task is complex or multi-step and benefits from context isolation; for simple single-purpose tasks, use the main agent or a command instead.
+
 ## Available Subagents
 
 ### Codebase Explorer
