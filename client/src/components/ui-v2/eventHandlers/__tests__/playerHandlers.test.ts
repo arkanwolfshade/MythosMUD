@@ -31,6 +31,7 @@ vi.mock('../../../utils/healthEventUtils', () => ({
 vi.mock('../../../utils/logger', () => ({
   logger: {
     warn: vi.fn(),
+    info: vi.fn(),
   },
 }));
 
@@ -326,6 +327,37 @@ describe('playerHandlers', () => {
       const result = handlePlayerRespawned(event, mockContext, mockAppendMessage);
       expect(result?.player).toBeDefined();
     });
+
+    it('should use default max_dp 100 when stats.max_dp is undefined', () => {
+      const mockPlayer = {
+        id: 'player1',
+        name: 'TestPlayer',
+        stats: { current_dp: 80, position: 'standing' },
+        in_combat: undefined,
+      };
+      mockContext.healthStatusRef.current = {
+        current: 0,
+        max: 100,
+        tier: 'vigorous',
+        posture: 'standing',
+        inCombat: false,
+      };
+      const event = {
+        event_type: 'player_respawned',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { player: mockPlayer },
+      };
+      const result = handlePlayerRespawned(event, mockContext, mockAppendMessage);
+      expect(mockContext.setDpStatus).toHaveBeenCalledWith(
+        expect.objectContaining({
+          current: 80,
+          max: 100,
+          inCombat: false,
+        })
+      );
+      expect(result?.player).toBeDefined();
+    });
   });
 
   describe('handlePlayerDeliriumRespawned', () => {
@@ -600,6 +632,24 @@ describe('playerHandlers', () => {
       };
       const result = handlePlayerDeliriumRespawned(event, mockContext, mockAppendMessage);
       expect(result?.player).toBeDefined();
+    });
+
+    it('should not call setLucidityStatus when lucidityStatusRef.current is null', () => {
+      const mockPlayer = {
+        id: 'player1',
+        name: 'TestPlayer',
+        stats: { lucidity: 60, max_lucidity: 100 },
+      };
+      mockContext.lucidityStatusRef.current = null;
+      const event = {
+        event_type: 'player_delirium_respawned',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { player: mockPlayer },
+      };
+      const result = handlePlayerDeliriumRespawned(event, mockContext, mockAppendMessage);
+      expect(result?.player).toBeDefined();
+      expect(mockContext.setLucidityStatus).not.toHaveBeenCalled();
     });
   });
 });

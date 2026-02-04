@@ -70,10 +70,42 @@ export const usePlayerStatusEffects = ({
     const currentDp = player.stats?.current_dp ?? 0;
     const roomId = room?.id;
     const isInLimbo = roomId === 'limbo_death_void_limbo_death_void';
+    // #region agent log
+    if (typeof fetch !== 'undefined') {
+      fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          location: 'usePlayerStatusEffects.ts:useEffect:run',
+          message: 'status effect effect run',
+          data: { currentDp, roomId, isInLimbo, isDead },
+          timestamp: Date.now(),
+          sessionId: 'debug-session',
+          hypothesisId: 'H2',
+        }),
+      }).catch(() => {});
+    }
+    // #endregion
 
     // Player is dead if DP <= -10 or in limbo
     if (currentDp <= -10 || isInLimbo) {
       if (!isDead) {
+        // #region agent log
+        if (typeof fetch !== 'undefined') {
+          fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              location: 'usePlayerStatusEffects.ts:useEffect:setIsDead(true)',
+              message: 'status effect setting isDead=true',
+              data: { currentDp, roomId, isInLimbo },
+              timestamp: Date.now(),
+              sessionId: 'debug-session',
+              hypothesisId: 'H2',
+            }),
+          }).catch(() => {});
+        }
+        // #endregion
         setIsDead(true);
         logger.info('GameClientV2Container', 'Player detected as dead', {
           currentDp,
@@ -83,6 +115,22 @@ export const usePlayerStatusEffects = ({
       }
     } else if (isDead && currentDp > -10 && !isInLimbo) {
       // Player is no longer dead
+      // #region agent log
+      if (typeof fetch !== 'undefined') {
+        fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            location: 'usePlayerStatusEffects.ts:useEffect:setIsDead(false)',
+            message: 'status effect setting isDead=false',
+            data: { currentDp, roomId },
+            timestamp: Date.now(),
+            sessionId: 'debug-session',
+            hypothesisId: 'H2',
+          }),
+        }).catch(() => {});
+      }
+      // #endregion
       setIsDead(false);
       logger.info('GameClientV2Container', 'Player detected as alive', {
         currentDp,

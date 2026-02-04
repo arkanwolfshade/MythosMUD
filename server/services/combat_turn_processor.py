@@ -124,6 +124,20 @@ class CombatTurnProcessor:
             # Check if participant has a queued action for this round
             if participant.participant_id in combat.round_actions:
                 action = combat.round_actions[participant.participant_id]
+                # Defensive: if queued attack target is not in this combat or is dead, use default action
+                if action.action_type == "attack":
+                    target_in_combat = combat.participants.get(action.target_id)
+                    if not target_in_combat or not target_in_combat.is_alive():
+                        logger.warning(
+                            "Stale queued attack target (not in combat or dead), using default action",
+                            combat_id=combat.combat_id,
+                            participant_id=participant.participant_id,
+                            queued_target_id=action.target_id,
+                            participant_ids=[str(pid) for pid in combat.participants.keys()],
+                        )
+                        combat.clear_queued_actions(participant.participant_id, round_number=next_round)
+                        await self._execute_default_action(combat, participant, current_tick)
+                        continue
                 await self._execute_queued_action(combat, participant, action, current_tick)
                 # Clear only this specific queued action (may have others queued for future rounds)
                 combat.clear_queued_actions(participant.participant_id, round_number=next_round)
@@ -156,6 +170,13 @@ class CombatTurnProcessor:
 
         # Handle different action types
         if action.action_type == "attack":
+            logger.info(
+                "Executing queued attack",
+                combat_id=combat.combat_id,
+                attacker_id=participant.participant_id,
+                target_id=action.target_id,
+                participant_ids=[str(pid) for pid in combat.participants.keys()],
+            )
             # Process attack - result is not used as process_attack has side effects (updates combat state)
             await self._combat_service.process_attack(
                 attacker_id=participant.participant_id, target_id=action.target_id, damage=action.damage
@@ -485,6 +506,13 @@ class CombatTurnProcessor:
                 logger.debug("Could not check casting state for autoattack", player_name=player.name, error=str(e))
 
             # Perform automatic basic attack
+            logger.info(
+                "Executing default attack (no queued action)",
+                combat_id=combat.combat_id,
+                attacker_id=player.participant_id,
+                target_id=target.participant_id,
+                participant_ids=[str(pid) for pid in combat.participants.keys()],
+            )
             logger.debug("Player performing automatic attack", player_name=player.name, target_name=target.name)
 
             config = get_config()

@@ -9,7 +9,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from server.models.combat import CombatParticipant, CombatParticipantType, CombatStatus
+from server.models.combat import CombatAction, CombatParticipant, CombatParticipantType, CombatStatus
 from server.services.combat_turn_processor import CombatTurnProcessor
 
 
@@ -145,6 +145,74 @@ async def test_execute_round_with_participants(combat_turn_processor, mock_comba
 
     # Should execute default actions for both participants
     assert combat_turn_processor._execute_default_action.call_count == 2  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test assertion requires access to protected member
+    mock_combat.advance_turn.assert_called_once_with(100)
+
+
+@pytest.mark.asyncio
+async def test_execute_round_stale_queued_attack_uses_default_action(combat_turn_processor, mock_combat):  # pylint: disable=redefined-outer-name  # Reason: pytest fixture parameter injection
+    """Stale queued attack (target not in combat) does not raise and uses default action instead.
+
+    Simulates: first combat ended, new combat started with second NPC; a queued action
+    still references the first (slain) NPC. We must not call process_attack with that
+    target_id and must not raise 'Target is not in this combat'.
+    """
+    from uuid import uuid4
+
+    player_id = uuid4()
+    npc_second_id = uuid4()
+    stale_npc_id = uuid4()  # First NPC (not in this combat)
+
+    player = CombatParticipant(
+        participant_id=player_id,
+        participant_type=CombatParticipantType.PLAYER,
+        name="Player",
+        current_dp=50,
+        max_dp=100,
+        dexterity=90,
+    )
+    npc_second = CombatParticipant(
+        participant_id=npc_second_id,
+        participant_type=CombatParticipantType.NPC,
+        name="NPC_second",
+        current_dp=50,
+        max_dp=100,
+        dexterity=50,
+    )
+
+    next_round = 1
+    stale_action = CombatAction(
+        attacker_id=player_id,
+        target_id=stale_npc_id,  # Not in combat.participants
+        action_type="attack",
+        damage=10,
+        round=next_round,
+    )
+
+    mock_combat.combat_round = 0
+    mock_combat.combat_id = uuid4()
+    mock_combat.participants = {player_id: player, npc_second_id: npc_second}
+    mock_combat.queued_actions = {player_id: [stale_action]}
+    mock_combat.round_actions = {}
+    mock_combat.get_participants_by_initiative = MagicMock(return_value=[player, npc_second])
+    mock_combat.clear_queued_actions = MagicMock()
+    mock_combat.advance_turn = MagicMock()
+    mock_combat.update_activity = MagicMock()
+
+    combat_turn_processor._combat_service.process_attack = AsyncMock()
+    combat_turn_processor._combat_service.end_combat = AsyncMock()
+    combat_turn_processor._execute_default_action = AsyncMock()
+
+    await combat_turn_processor._execute_round(mock_combat, 100)  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test requires direct access to protected method
+
+    # Must not call process_attack with the stale target (would raise "Target is not in this combat")
+    process_attack_calls = combat_turn_processor._combat_service.process_attack.call_args_list  # pylint: disable=protected-access  # noqa: SLF001
+    for call in process_attack_calls:
+        kwargs = call[1] if len(call) > 1 else {}
+        target_id = kwargs.get("target_id")
+        assert target_id != stale_npc_id, "process_attack must not be called with stale target_id"
+
+    # Stale path: we fall back to default action for the player, then default for NPC
+    assert combat_turn_processor._execute_default_action.call_count >= 1  # pylint: disable=protected-access  # noqa: SLF001
     mock_combat.advance_turn.assert_called_once_with(100)
 
 

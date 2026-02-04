@@ -3,8 +3,8 @@
 
 import { useCallback } from 'react';
 import { logger } from '../../../utils/logger';
-import { sanitizeChatMessageForState } from '../utils/messageUtils';
 import type { ChatMessage, Player, Room } from '../types';
+import { sanitizeChatMessageForState } from '../utils/messageUtils';
 import type { GameState } from '../utils/stateUpdateUtils';
 
 interface UseRespawnHandlersParams {
@@ -116,6 +116,20 @@ export const useRespawnHandlers = ({
   }, [authToken, setGameState, setIsDelirious, setIsDeliriumRespawning]);
 
   const handleRespawn = useCallback(async () => {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        location: 'useRespawnHandlers.ts:handleRespawn:entry',
+        message: 'handleRespawn called',
+        data: {},
+        timestamp: Date.now(),
+        sessionId: 'debug-session',
+        hypothesisId: 'H4',
+      }),
+    }).catch(() => {});
+    // #endregion
     logger.info('GameClientV2Container', 'Respawn requested');
     setIsRespawning(true);
 
@@ -152,6 +166,23 @@ export const useRespawnHandlers = ({
       }
 
       const respawnData = await response.json();
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          location: 'useRespawnHandlers.ts:handleRespawn:success',
+          message: 'respawn API success, about to call setIsDead(false)',
+          data: {
+            playerDp: respawnData.player?.stats?.current_dp ?? respawnData.player?.dp,
+            roomId: respawnData.room?.id,
+          },
+          timestamp: Date.now(),
+          sessionId: 'debug-session',
+          hypothesisId: 'H4',
+        }),
+      }).catch(() => {});
+      // #endregion
       logger.info('GameClientV2Container', 'Respawn successful', {
         room: respawnData.room,
         player: respawnData.player,
@@ -186,6 +217,20 @@ export const useRespawnHandlers = ({
         messages: [...prev.messages, respawnMessage],
       }));
     } catch (error) {
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          location: 'useRespawnHandlers.ts:handleRespawn:catch',
+          message: 'handleRespawn catch block',
+          data: { error: String(error) },
+          timestamp: Date.now(),
+          sessionId: 'debug-session',
+          hypothesisId: 'H4',
+        }),
+      }).catch(() => {});
+      // #endregion
       logger.error('GameClientV2Container', 'Error calling respawn API', { error });
 
       const errorMessage: ChatMessage = sanitizeChatMessageForState({

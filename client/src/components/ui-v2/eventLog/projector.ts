@@ -2,6 +2,7 @@
 // As documented in "Event Processing Architecture" - Dr. Armitage, 1928
 
 import type { MythosTimePayload } from '../../../types/mythosTime';
+import { logger } from '../../../utils/logger';
 import { determineMessageType } from '../../../utils/messageTypeUtils';
 import { buildMythosTimeState, formatMythosTime12Hour } from '../../../utils/mythosTime';
 import type { GameEvent } from '../eventHandlers/types';
@@ -337,6 +338,10 @@ export function projectEvent(prevState: GameState, event: GameEvent): GameState 
           channel: GAME_LOG_CHANNEL,
         });
         nextState = { ...prevState, messages: appendMessage(prevState.messages, msg) };
+        logger.info('projector', 'Combat message appended (npc_attacked)', {
+          event_type: 'npc_attacked',
+          text_preview: text.slice(0, 80),
+        });
       }
       break;
     }
@@ -357,6 +362,10 @@ export function projectEvent(prevState: GameState, event: GameEvent): GameState 
           channel: GAME_LOG_CHANNEL,
         });
         nextState = { ...prevState, messages: appendMessage(prevState.messages, msg) };
+        logger.info('projector', 'Combat message appended (player_attacked)', {
+          event_type: 'player_attacked',
+          text_preview: text.slice(0, 80),
+        });
       }
       break;
     }

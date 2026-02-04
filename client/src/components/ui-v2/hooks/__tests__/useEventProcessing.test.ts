@@ -14,6 +14,7 @@ import { useEventProcessing } from '../useEventProcessing';
 vi.mock('../../../../utils/logger', () => ({
   logger: {
     error: vi.fn(),
+    info: vi.fn(),
   },
 }));
 
@@ -738,6 +739,118 @@ describe('useEventProcessing', () => {
     });
 
     expect(mockSetGameState).toHaveBeenCalledTimes(2);
+  });
+
+  it('should log combat event when event_type is player_attacked', async () => {
+    const loggerModule = await import('../../../../utils/logger');
+    const { result } = renderHook(() =>
+      useEventProcessing({
+        setGameState: mockSetGameState,
+      })
+    );
+
+    const event: GameEvent = {
+      event_type: 'player_attacked',
+      timestamp: new Date().toISOString(),
+      sequence_number: 1,
+      data: { room_id: 'room1', damage: 10 },
+    };
+
+    act(() => {
+      result.current.handleGameEvent(event);
+    });
+
+    act(() => {
+      vi.advanceTimersByTime(10);
+    });
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(vi.mocked(loggerModule.logger.info)).toHaveBeenCalledWith(
+      'useEventProcessing',
+      'Combat event received',
+      expect.objectContaining({
+        event_type: 'player_attacked',
+        has_data: true,
+        data_keys: expect.arrayContaining(['room_id', 'damage']),
+      })
+    );
+  });
+
+  it('should log combat event when event_type is npc_attacked', async () => {
+    const loggerModule = await import('../../../../utils/logger');
+    const { result } = renderHook(() =>
+      useEventProcessing({
+        setGameState: mockSetGameState,
+      })
+    );
+
+    const event: GameEvent = {
+      event_type: 'npc_attacked',
+      timestamp: new Date().toISOString(),
+      sequence_number: 1,
+      data: {},
+    };
+
+    act(() => {
+      result.current.handleGameEvent(event);
+    });
+
+    act(() => {
+      vi.advanceTimersByTime(10);
+    });
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(vi.mocked(loggerModule.logger.info)).toHaveBeenCalledWith(
+      'useEventProcessing',
+      'Combat event received',
+      expect.objectContaining({
+        event_type: 'npc_attacked',
+      })
+    );
+  });
+
+  it('should log combat event with has_data false and data_keys empty when event.data is missing', async () => {
+    const loggerModule = await import('../../../../utils/logger');
+    const { result } = renderHook(() =>
+      useEventProcessing({
+        setGameState: mockSetGameState,
+      })
+    );
+
+    const event = {
+      event_type: 'player_attacked',
+      timestamp: new Date().toISOString(),
+      sequence_number: 1,
+      data: undefined,
+    } as GameEvent;
+
+    act(() => {
+      result.current.handleGameEvent(event);
+    });
+
+    act(() => {
+      vi.advanceTimersByTime(10);
+    });
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(vi.mocked(loggerModule.logger.info)).toHaveBeenCalledWith(
+      'useEventProcessing',
+      'Combat event received',
+      expect.objectContaining({
+        event_type: 'player_attacked',
+        has_data: false,
+        data_keys: [],
+      })
+    );
   });
 
   it('should return early when processEventQueue is called while isProcessingEvent is true', async () => {

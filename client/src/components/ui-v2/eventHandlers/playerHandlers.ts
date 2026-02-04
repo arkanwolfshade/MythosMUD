@@ -72,6 +72,22 @@ export const handlePlayerDied: EventHandler = (event, context) => {
 };
 
 export const handlePlayerRespawned: EventHandler = (event, context) => {
+  // #region agent log
+  if (typeof fetch !== 'undefined') {
+    fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        location: 'playerHandlers.ts:handlePlayerRespawned:entry',
+        message: 'handlePlayerRespawned WebSocket handler called',
+        data: {},
+        timestamp: Date.now(),
+        sessionId: 'debug-session',
+        hypothesisId: 'H5',
+      }),
+    }).catch(() => {});
+  }
+  // #endregion
   const respawnData = event.data as {
     player?: Player;
     respawn_room_id?: string;

@@ -33,6 +33,7 @@ def attack_handler(mock_combat_service):
 def mock_combat():
     """Create mock combat instance."""
     combat = MagicMock(spec=CombatInstance)
+    combat.combat_id = uuid.uuid4()
     combat.status = CombatStatus.ACTIVE
     combat.participants = {}
     combat.update_activity = MagicMock()

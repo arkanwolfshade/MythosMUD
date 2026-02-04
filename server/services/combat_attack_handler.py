@@ -123,10 +123,15 @@ class CombatAttackHandler:
                 None,
             )
         if not target:
-            logger.warning(
-                "Target not found in combat participants",
-                target_id=target_id,
-                participant_ids=[str(pid) for pid in combat.participants.keys()],
+            participant_ids = [str(pid) for pid in combat.participants.keys()]
+            participant_names = {str(pid): getattr(p, "name", "?") for pid, p in combat.participants.items()}
+            logger.error(
+                "Target not found in combat participants (stale target or wrong combat)",
+                combat_id=str(combat.combat_id),
+                attacker_id=str(attacker_id),
+                target_id=str(target_id),
+                participant_ids=participant_ids,
+                participant_names=participant_names,
             )
             raise ValueError("Target is not in this combat")
 
