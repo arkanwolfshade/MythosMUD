@@ -378,7 +378,8 @@ async def test_broadcast_room_update_success(mock_connection_manager):
 
         await broadcast_room_update(player_id, room_id, mock_connection_manager)
 
-        mock_connection_manager.broadcast_to_room.assert_called_once()
+        # broadcast_room_update sends room_update then room_occupants
+        assert mock_connection_manager.broadcast_to_room.call_count == 2
 
 
 @pytest.mark.asyncio
@@ -432,7 +433,8 @@ async def test_broadcast_room_update_no_connection_manager():
 
         await broadcast_room_update(player_id, room_id)
 
-        mock_connection_manager.broadcast_to_room.assert_called_once()
+        # broadcast_room_update sends room_update then room_occupants
+        assert mock_connection_manager.broadcast_to_room.call_count == 2
 
 
 @pytest.mark.asyncio
@@ -503,7 +505,8 @@ async def test_broadcast_room_update_fallback_npc_method(mock_connection_manager
         await broadcast_room_update(player_id, room_id, mock_connection_manager)
 
         mock_get_npcs_fallback.assert_called_once()
-        mock_connection_manager.broadcast_to_room.assert_called_once()
+        # broadcast_room_update sends room_update then room_occupants
+        assert mock_connection_manager.broadcast_to_room.call_count == 2
 
 
 @pytest.mark.asyncio

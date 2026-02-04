@@ -59,6 +59,15 @@ import { devtools } from 'zustand/middleware';
 export type ContainerSourceType = 'environment' | 'equipment' | 'corpse';
 export type ContainerLockState = 'unlocked' | 'locked' | 'sealed';
 
+/** Weapon stats when item is a weapon (from prototype metadata.weapon). */
+export interface WeaponStats {
+  min_damage: number;
+  max_damage: number;
+  modifier?: number;
+  damage_types?: string[];
+  magical?: boolean;
+}
+
 export interface InventoryStack {
   item_instance_id: string;
   prototype_id: string;
@@ -67,6 +76,8 @@ export interface InventoryStack {
   slot_type: string;
   quantity: number;
   metadata?: Record<string, unknown>;
+  /** Weapon stats when present (e.g. 1d4+0 slashing, piercing). */
+  weapon?: WeaponStats;
   flags?: string[];
   origin?: Record<string, unknown>;
   created_at?: string;

@@ -20,6 +20,92 @@ from .enhanced_error_logging import create_error_context, log_and_raise_enhanced
 
 logger = get_logger(__name__)
 
+_KNOWN_EQUIP_SLOTS = frozenset(
+    {
+        "head",
+        "torso",
+        "legs",
+        "feet",
+        "hands",
+        "left_hand",
+        "right_hand",
+        "main_hand",
+        "off_hand",
+        "accessory",
+        "ring",
+        "amulet",
+        "belt",
+        "backpack",
+        "waist",
+        "neck",
+    }
+)
+
+_MULTI_WORD_EQUIP_SLOTS = {
+    "main hand": "main_hand",
+    "off hand": "off_hand",
+    "left hand": "left_hand",
+    "right hand": "right_hand",
+}
+
+
+def _normalize_equip_slot_tokens(tokens: list[str]) -> list[str]:
+    """Normalize multi-word slot tokens (e.g. 'main hand' -> 'main_hand'); reduces create_equip_command complexity."""
+    if len(tokens) < 2:
+        return tokens
+    phrase = f"{tokens[-2].strip().lower()} {tokens[-1].strip().lower()}"
+    if phrase in _MULTI_WORD_EQUIP_SLOTS:
+        return tokens[:-2] + [_MULTI_WORD_EQUIP_SLOTS[phrase]]
+    return tokens
+
+
+def _maybe_extract_equip_slot(tokens: list[str]) -> tuple[list[str], str | None]:
+    """If last token is a known slot, return (remaining tokens, slot); else (tokens, None)."""
+    if not tokens:
+        return tokens, None
+    normalized = tokens[-1].strip().lower()
+    if normalized in _KNOWN_EQUIP_SLOTS:
+        return tokens[:-1], normalized
+    return tokens, None
+
+
+def _parse_equip_selector(selector_tokens: list[str], args: list[str]) -> tuple[int | None, str | None, str | None]:
+    """Parse selector tokens into (index, search_term, target_slot); may raise MythosValidationError."""
+    index: int | None = None
+    search_term: str | None = None
+    target_slot: str | None = None
+    try:
+        index_candidate = int(selector_tokens[0])
+    except ValueError:
+        index_candidate = None
+    if index_candidate is not None:
+        if index_candidate <= 0:
+            context = create_error_context()
+            context.metadata = {"args": args, "index": index_candidate}
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Inventory index must be a positive integer.",
+                context=context,
+                logger_name=__name__,
+            )
+        index = index_candidate
+        if len(selector_tokens) > 1:
+            target_slot = selector_tokens[1].strip().lower()
+    else:
+        trimmed_tokens, inferred_slot = _maybe_extract_equip_slot(selector_tokens)
+        search_term = " ".join(trimmed_tokens or selector_tokens).strip()
+        if not search_term:
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Equip item name cannot be empty.",
+                context=context,
+                logger_name=__name__,
+            )
+        target_slot = inferred_slot
+    return index, search_term, target_slot
+
 
 class InventoryCommandFactory:
     """Factory class for creating inventory and item management command objects."""
@@ -268,8 +354,7 @@ class InventoryCommandFactory:
 
         # Remove optional "from" keyword
         args_clean = [arg for arg in args if arg.lower() != "from"]
-
-        if len(args_clean) < 2:
+        if not args_clean:
             context = create_error_context()
             log_and_raise_enhanced(
                 MythosValidationError,
@@ -277,6 +362,9 @@ class InventoryCommandFactory:
                 context=context,
                 logger_name=__name__,
             )
+        if len(args_clean) == 1:
+            # Single arg: get from room/floor (container sentinel)
+            return GetCommand(item=args_clean[0], container="room", quantity=None)
 
         item = args_clean[0]
         container = args_clean[1]
@@ -307,7 +395,6 @@ class InventoryCommandFactory:
     @staticmethod
     def create_equip_command(args: list[str]) -> EquipCommand:
         """Create equip command."""
-
         if not args:
             context = create_error_context()
             log_and_raise_enhanced(
@@ -316,72 +403,8 @@ class InventoryCommandFactory:
                 context=context,
                 logger_name=__name__,
             )
-
-        selector_tokens = list(args)
-        index: int | None = None
-        search_term: str | None = None
-        target_slot: str | None = None
-
-        def _maybe_extract_slot(tokens: list[str]) -> tuple[list[str], str | None]:
-            if not tokens:
-                return tokens, None
-
-            possible_slot = tokens[-1]
-            normalized = possible_slot.strip().lower()
-            known_slots = {
-                "head",
-                "torso",
-                "legs",
-                "feet",
-                "hands",
-                "left_hand",
-                "right_hand",
-                "main_hand",
-                "off_hand",
-                "accessory",
-                "ring",
-                "amulet",
-                "belt",
-                "backpack",
-                "waist",
-                "neck",
-            }
-            if normalized in known_slots:
-                return tokens[:-1], normalized
-            return tokens, None
-
-        try:
-            index_candidate = int(selector_tokens[0])
-        except ValueError:
-            index_candidate = None
-
-        if index_candidate is not None:
-            if index_candidate <= 0:
-                context = create_error_context()
-                context.metadata = {"args": args, "index": index_candidate}
-                log_and_raise_enhanced(
-                    MythosValidationError,
-                    "Inventory index must be a positive integer.",
-                    context=context,
-                    logger_name=__name__,
-                )
-            index = index_candidate
-            if len(selector_tokens) > 1:
-                target_slot = selector_tokens[1].strip().lower()
-        else:
-            trimmed_tokens, inferred_slot = _maybe_extract_slot(selector_tokens)
-            search_term = " ".join(trimmed_tokens or selector_tokens).strip()
-            if not search_term:
-                context = create_error_context()
-                context.metadata = {"args": args}
-                log_and_raise_enhanced(
-                    MythosValidationError,
-                    "Equip item name cannot be empty.",
-                    context=context,
-                    logger_name=__name__,
-                )
-            target_slot = inferred_slot
-
+        selector_tokens = _normalize_equip_slot_tokens(list(args))
+        index, search_term, target_slot = _parse_equip_selector(selector_tokens, args)
         return EquipCommand(index=index, search_term=search_term, target_slot=target_slot)
 
     @staticmethod

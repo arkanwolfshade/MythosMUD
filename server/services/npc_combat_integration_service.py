@@ -558,7 +558,36 @@ class NPCCombatIntegrationService:  # pylint: disable=too-many-instance-attribut
         BUGFIX: Enhanced logging and defensive exception handling to prevent player disconnections
         during NPC death operations. See: investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md
         """
-        return await self._handlers.handle_npc_death(npc_id, room_id, killer_id, combat_id)
+        result = await self._handlers.handle_npc_death(npc_id, room_id, killer_id, combat_id)
+        if result and killer_id and room_id:
+            try:
+                from ..realtime.websocket_room_updates import broadcast_room_update
+
+                conn_mgr = getattr(self._messaging_integration, "connection_manager", None)
+                broadcast_room_id = room_id
+                if conn_mgr:
+                    try:
+                        killer_uuid = uuid.UUID(str(killer_id)) if isinstance(killer_id, str) else killer_id
+                        player = await conn_mgr.get_player(killer_uuid)
+                        killer_room = getattr(player, "current_room_id", None) if player else None
+                        if killer_room:
+                            broadcast_room_id = killer_room
+                    except (ValueError, TypeError, AttributeError):
+                        pass
+                await broadcast_room_update(
+                    str(killer_id),
+                    broadcast_room_id,
+                    connection_manager=conn_mgr,
+                )
+                logger.debug("Broadcast room occupants after NPC death", npc_id=npc_id, room_id=broadcast_room_id)
+            except Exception as broadcast_err:  # pylint: disable=broad-exception-caught  # Reason: Broadcast failure must not affect NPC death handling
+                logger.warning(
+                    "Failed to broadcast room occupants after NPC death (non-fatal)",
+                    npc_id=npc_id,
+                    room_id=room_id,
+                    error=str(broadcast_err),
+                )
+        return result
 
     def get_npc_combat_memory(self, npc_id: str) -> str | None:
         """

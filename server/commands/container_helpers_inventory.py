@@ -766,7 +766,7 @@ async def transfer_item_from_container(  # pylint: disable=too-many-arguments,to
 
         new_inventory = result.get("player_inventory", player.get_inventory())
         player.set_inventory(new_inventory)
-        persist_error = persist_player(persistence, player)
+        persist_error = await persist_player(persistence, player)
         if persist_error:
             return persist_error
 
@@ -792,13 +792,18 @@ async def validate_get_command_inputs(
     if not item_name or not container_name:
         return {"result": "Usage: get <item> [from] <container> [quantity]"}
 
+    room_manager = getattr(connection_manager, "room_manager", None)
+    if not room_manager:
+        return {"result": "Room manager is unavailable."}
+
+    # Get-from-room (single-arg "get <item>") only needs room_manager; container path needs container_service
+    is_get_from_room = container_name.lower() == "room"
+    if is_get_from_room:
+        return item_name, container_name, quantity, None, room_manager
+
     app = getattr(request, "app", None)
     container_service = getattr(app.state, "container_service", None) if app else None
     if not container_service:
         return {"result": "Container service is unavailable."}
-
-    room_manager = getattr(connection_manager, "room_manager", None)
-    if not room_manager:
-        return {"result": "Room manager is unavailable."}
 
     return item_name, container_name, quantity, container_service, room_manager

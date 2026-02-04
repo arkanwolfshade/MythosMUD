@@ -257,6 +257,10 @@ class InventoryItem(BaseModel):
 
     item_id: str = Field(..., description="Unique item identifier")
     quantity: int = Field(default=1, ge=1, description="Number of items")
+    weapon: dict[str, Any] | None = Field(
+        default=None,
+        description="Weapon stats when item is a weapon (min_damage, max_damage, modifier, damage_types, magical).",
+    )
 
 
 class Player(BaseModel):

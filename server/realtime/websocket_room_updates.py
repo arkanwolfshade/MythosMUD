@@ -83,11 +83,10 @@ async def get_npc_occupants_from_lifecycle_manager(room_id: str) -> list[str]:
                     if npc_room_id == room_id:
                         npc_ids.append(npc_id)
 
-        logger.debug("DEBUG: Room has NPCs from lifecycle manager", room_id=room_id, npc_ids=npc_ids)
+        logger.debug("Room has NPCs from lifecycle manager", room_id=room_id, npc_ids=npc_ids)
         for npc_id in npc_ids:
             npc_name = get_npc_name_from_instance(npc_id)
             if npc_name:
-                logger.debug("DEBUG: Got NPC name from database", npc_name=npc_name, npc_id=npc_id)
                 occupant_names.append(npc_name)
             else:
                 logger.warning("NPC instance not found for ID - skipping from room display", npc_id=npc_id)
@@ -105,7 +104,7 @@ async def get_npc_occupants_fallback(room: "Room | Any", room_id: str) -> list[s
     """Get NPC occupant names using fallback method (room.get_npcs())."""
     occupant_names = []
     room_npc_ids = room.get_npcs()
-    logger.debug("DEBUG: Room has NPCs from fallback", room_id=room_id, npc_ids=room_npc_ids)
+    logger.debug("Room has NPCs from fallback", room_id=room_id, npc_ids=room_npc_ids)
 
     filtered_npc_ids = []
     try:  # pylint: disable=too-many-nested-blocks  # Reason: NPC filtering requires complex nested logic for service lookup, lifecycle validation, and NPC ID filtering
@@ -144,13 +143,6 @@ async def build_room_update_event(
     if isinstance(room_data, dict):
         room_data = await connection_manager.convert_room_players_uuids_to_names(room_data)
 
-    logger.debug("DEBUG: Room occupants breakdown", room_id=room_id)
-    logger.debug("  - Room object ID", room_id=id(room))
-    logger.debug("  - Players", players=room.get_players())
-    logger.debug("  - Objects", objects=room.get_objects())
-    logger.debug("  - NPCs", npcs=room.get_npcs())
-    logger.debug("  - Total occupant_count", count=room.get_occupant_count())
-
     room_data = convert_uuids_to_strings(room_data)
 
     room_drops: list[dict[str, Any]] = []
@@ -163,6 +155,7 @@ async def build_room_update_event(
 
     drop_summary = build_room_drop_summary(room_drops)
 
+    event_room_id = getattr(room, "id", None) or room_id
     return build_event(
         "room_update",
         {
@@ -174,7 +167,7 @@ async def build_room_update_event(
             "drop_summary": drop_summary,
         },
         player_id=player_id,
-        room_id=room_id,
+        room_id=event_room_id,
     )
 
 
@@ -197,7 +190,7 @@ async def update_player_room_subscription(
     player.current_room_id = room_id
 
 
-async def broadcast_room_update(
+async def broadcast_room_update(  # pylint: disable=too-many-locals  # Reason: Broadcast flow needs room/fallback/connection state; splitting would obscure control flow
     player_id: str, room_id: str, connection_manager: "ConnectionManager | None" = None
 ) -> None:
     """
@@ -224,31 +217,64 @@ async def broadcast_room_update(
             return
 
         room = async_persistence.get_room_by_id(room_id)
-        if not room:
-            logger.warning("Room not found for update", room_id=room_id)
-            return
+        effective_room_id = room_id
+        if not room and player_id:
+            try:
+                player_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
+                player = await connection_manager.get_player(player_uuid)
+                fallback_room_id = getattr(player, "current_room_id", None) if player else None
+                if fallback_room_id and fallback_room_id != room_id:
+                    room = async_persistence.get_room_by_id(fallback_room_id)
+                    if room:
+                        original_room_id = room_id
+                        room_id = fallback_room_id
+                        effective_room_id = fallback_room_id
+                        logger.debug(
+                            "Used killer current_room_id fallback for broadcast",
+                            original_room_id=original_room_id,
+                            fallback_room_id=fallback_room_id,
+                        )
+                    else:
+                        effective_room_id = fallback_room_id
+            except (ValueError, TypeError, AttributeError):
+                pass
 
-        logger.debug("DEBUG: broadcast_room_update - Room object ID", room_id=id(room))
-        logger.debug("DEBUG: broadcast_room_update - Room players before any processing", players=room.get_players())
-
-        occupant_names = await get_player_occupants(connection_manager, room_id)
-
+        occupant_names = await get_player_occupants(connection_manager, effective_room_id)
         try:
-            npc_occupants = await get_npc_occupants_from_lifecycle_manager(room_id)
+            npc_occupants = await get_npc_occupants_from_lifecycle_manager(effective_room_id)
             occupant_names.extend(npc_occupants)
         except (AttributeError, KeyError, TypeError, ValueError):
-            npc_occupants = await get_npc_occupants_fallback(room, room_id)
-            occupant_names.extend(npc_occupants)
+            if room:
+                npc_occupants = await get_npc_occupants_fallback(room, effective_room_id)
+                occupant_names.extend(npc_occupants)
+
+        if not room:
+            logger.warning("Room not found for update - sending room_occupants only", room_id=effective_room_id)
+            occ_event = build_event(
+                "room_occupants",
+                {"occupants": occupant_names, "count": len(occupant_names)},
+                room_id=effective_room_id,
+            )
+            await connection_manager.broadcast_to_room(effective_room_id, occ_event)
+            logger.debug("Room occupants broadcast (no room cache) completed", room_id=effective_room_id)
+            return
 
         update_event = await build_room_update_event(room, room_id, player_id, occupant_names, connection_manager)
-
-        logger.debug("Room update event created", update_event=update_event)
 
         await update_player_room_subscription(connection_manager, player_id, room_id)
 
         logger.debug("Broadcasting room update to room", room_id=room_id)
         await connection_manager.broadcast_to_room(room_id, update_event)
         logger.debug("Room update broadcast completed for room", room_id=room_id)
+
+        event_room_id = getattr(room, "id", None) or room_id
+        occ_event = build_event(
+            "room_occupants",
+            {"occupants": occupant_names, "count": len(occupant_names)},
+            room_id=event_room_id,
+        )
+        await connection_manager.broadcast_to_room(room_id, occ_event)
+        logger.debug("Room occupants broadcast completed for room", room_id=room_id)
 
     except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
         logger.error("Error broadcasting room update for room", room_id=room_id, error=str(e))

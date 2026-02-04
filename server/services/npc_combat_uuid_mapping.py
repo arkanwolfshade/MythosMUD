@@ -20,6 +20,9 @@ class NPCCombatUUIDMapping:
         # UUID to string ID mapping for reverse lookup during XP calculation
         self._uuid_to_string_id_mapping: dict[UUID, str] = {}
 
+        # String ID to UUID mapping - ensures stable UUID for same NPC across combat start and round execution
+        self._string_id_to_uuid: dict[str, UUID] = {}
+
         # UUID to XP value mapping for direct XP lookup
         self._uuid_to_xp_mapping: dict[UUID, int] = {}
 
@@ -43,6 +46,10 @@ class NPCCombatUUIDMapping:
         """
         Convert string ID to UUID, creating new UUID if needed.
 
+        For non-UUID string IDs (e.g. npc "cultist_001"), returns a stable UUID
+        so the same entity_id maps to the same UUID across combat start, queuing,
+        and round execution. Otherwise "Target is not in this combat" occurs.
+
         Args:
             entity_id: String ID or UUID string
 
@@ -51,7 +58,12 @@ class NPCCombatUUIDMapping:
         """
         if self.is_valid_uuid(entity_id):
             return UUID(entity_id)
-        return uuid4()
+        # Return stable UUID for same string ID (critical for combat participant lookup)
+        if entity_id in self._string_id_to_uuid:
+            return self._string_id_to_uuid[entity_id]
+        new_uuid = uuid4()
+        self._string_id_to_uuid[entity_id] = new_uuid
+        return new_uuid
 
     def store_string_id_mapping(self, uuid_id: UUID, string_id: str) -> None:
         """

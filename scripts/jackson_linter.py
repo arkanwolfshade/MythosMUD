@@ -13,7 +13,7 @@ print("This will validate JSON syntax and structure...")
 
 # Find all JSON files (exclude node_modules, dist, build, etc.)
 json_files = []
-exclude_dirs = {"node_modules", "dist", "build", ".git", "__pycache__", ".venv", "htmlcov"}
+exclude_dirs = {"node_modules", "dist", "build", ".git", "__pycache__", ".venv", "htmlcov", "coverage"}
 # Exclude temporary/output JSON files
 exclude_patterns = ["*_output.json", "*_temp.json", "*_tmp.json"]
 

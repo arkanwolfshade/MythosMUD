@@ -155,6 +155,8 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
 
         # Item services
         await self._initialize_item_services(container)
+        if self.item_prototype_registry and self.player_service:
+            self.player_service.set_item_prototype_registry(self.item_prototype_registry)
 
         # Caching
         logger.debug("Initializing caching services...")

@@ -10,6 +10,7 @@ from typing import Any, cast
 from uuid import UUID
 
 from ..alias_storage import AliasStorage
+from ..game.items.prototype_registry import PrototypeRegistryError
 from ..services.equipment_service import EquipmentCapacityError, SlotValidationError
 from ..services.inventory_service import InventoryCapacityError, InventoryService
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -53,6 +54,27 @@ from .inventory_item_matching import normalize_slot_name
 from .inventory_service_helpers import get_shared_services
 
 logger = get_logger(__name__)
+
+
+def _infer_equip_slot_from_prototype(request: Any, selected_stack: dict[str, Any]) -> str | None:
+    """Infer equip slot from prototype wear_slots for inventory items."""
+    if selected_stack.get("slot_type") != "inventory":
+        return None
+    prototype_id = selected_stack.get("prototype_id") or selected_stack.get("item_id")
+    if not prototype_id:
+        return None
+    app_state = getattr(getattr(request, "app", None), "state", None)
+    registry = getattr(app_state, "prototype_registry", None) if app_state else None
+    if not registry:
+        return None
+    try:
+        prototype = registry.get(prototype_id)
+    except PrototypeRegistryError:
+        return None
+    wear_slots = list(getattr(prototype, "wear_slots", []))
+    if not wear_slots:
+        return None
+    return normalize_slot_name(wear_slots[0])
 
 
 async def handle_inventory_command(
@@ -164,7 +186,7 @@ async def handle_pickup_command(
         player_id=str(player.player_id),
         inventory_length=len(updated_inventory),
     )
-    persist_error = persist_player(persistence, player)
+    persist_error = await persist_player(persistence, player)
     if persist_error:
         room_manager.add_room_drop(room_id, extracted_stack)
         player.set_inventory(previous_inventory)
@@ -248,7 +270,7 @@ async def handle_drop_command(
     drop_stack = deepcopy(stack)
     drop_stack["quantity"] = quantity
 
-    persist_error = persist_player(persistence, player)
+    persist_error = await persist_player(persistence, player)
     if persist_error:
         player.set_inventory(previous_inventory)
         return persist_error
@@ -310,6 +332,13 @@ async def handle_equip_command(
         return error_or_stack or {"result": "Failed to resolve item index."}
     selected_stack = error_or_stack
 
+    if target_slot is None and isinstance(selected_stack, dict):
+        inferred_slot = _infer_equip_slot_from_prototype(request, selected_stack)
+        if inferred_slot:
+            target_slot = inferred_slot
+        elif selected_stack.get("slot_type") == "inventory":
+            return {"result": "Specify which slot to equip to (e.g. equip 1 main_hand or equip switchblade main_hand)."}
+
     inventory_service, _, equipment_service = get_shared_services(request)
     mutation_token = command_data.get("mutation_token")
 
@@ -356,7 +385,7 @@ async def handle_equip_command(
         player.set_inventory([cast(dict[str, Any], stack) for stack in new_inventory])
         player.set_equipped_items(cast(dict[str, Any], normalized_equipped))
 
-        persist_error = persist_player(persistence, player)
+        persist_error = await persist_player(persistence, player)
         if persist_error:
             player.set_inventory(previous_inventory)
             player.set_equipped_items(previous_equipped)
@@ -465,7 +494,7 @@ async def handle_unequip_command(
         player.set_inventory([cast(dict[str, Any], stack) for stack in new_inventory])
         player.set_equipped_items(cast(dict[str, Any], normalized_equipped))
 
-        persist_error = persist_player(persistence, player)
+        persist_error = await persist_player(persistence, player)
         if persist_error:
             player.set_inventory(previous_inventory)
             player.set_equipped_items(previous_equipped)
@@ -578,7 +607,7 @@ async def handle_put_command(
     # Remove item from player inventory
     transfer_quantity = transfer_result["transfer_quantity"]
     remove_item_from_inventory(player, item_index, transfer_quantity)
-    persist_error = persist_player(persistence, player)
+    persist_error = await persist_player(persistence, player)
     if persist_error:
         return persist_error
 
@@ -587,6 +616,71 @@ async def handle_put_command(
         "result": f"You put {transfer_quantity}x {item_display_name} into {container_name}.",
         "room_message": f"{player.name} puts {transfer_quantity}x {item_display_name} into {container_name}.",
         "game_log_message": f"{player.name} put {transfer_quantity}x {item_display_name} into {container_name}",
+        "game_log_channel": "game-log",
+    }
+
+
+async def _handle_get_from_room(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Get-from-room path needs all call-site context; already extracted from handle_get_command to reduce complexity
+    persistence: Any,
+    connection_manager: Any,
+    player: Any,
+    room_id: str,
+    item_name: str,
+    quantity: int | None,
+    room_manager: Any,
+) -> dict[str, Any]:
+    """Handle get-from-room (pickup from floor) path; reduces handle_get_command complexity."""
+    player_id_uuid = UUID(player.player_id) if isinstance(player.player_id, str) else player.player_id
+    drop_list = room_manager.list_room_drops(room_id)
+    pickup_command_data = {"search_term": item_name, "quantity": quantity}
+    resolved_index_zero, _, index_error = resolve_pickup_item_index(
+        pickup_command_data, drop_list, player.name, player_id_uuid, room_id
+    )
+    if index_error:
+        return index_error
+    desired_quantity = quantity
+    if desired_quantity is None:
+        desired_quantity = int(drop_list[resolved_index_zero].get("quantity", 1))
+    if desired_quantity <= 0:
+        return {"result": "Quantity must be a positive number."}
+    extracted_stack = room_manager.take_room_drop(room_id, resolved_index_zero, desired_quantity)
+    if not extracted_stack:
+        return {"result": "That item is no longer available."}
+    extracted_stack = prepare_extracted_stack(extracted_stack, player.name, player_id_uuid)
+    ensure_item_instance_for_pickup(persistence, extracted_stack, player, room_id)
+    previous_inventory = clone_inventory(player)
+    inventory_service = InventoryService()
+    updated_inventory, inventory_error = await add_pickup_to_inventory(
+        inventory_service, player, extracted_stack, room_manager, room_id
+    )
+    if inventory_error:
+        return inventory_error
+    if updated_inventory is None:
+        return {"result": "Failed to update inventory."}
+    player.set_inventory(updated_inventory)
+    persist_error = await persist_player(persistence, player)
+    if persist_error:
+        room_manager.add_room_drop(room_id, extracted_stack)
+        player.set_inventory(previous_inventory)
+        return persist_error
+    transfer_quantity = extracted_stack.get("quantity", desired_quantity)
+    item_display_name = extracted_stack.get("item_name") or extracted_stack.get("item_id", "item")
+    await build_and_broadcast_inventory_event(
+        connection_manager,
+        player,
+        room_id,
+        "inventory_pickup",
+        {
+            "player_name": player.name,
+            "item_id": extracted_stack.get("item_id"),
+            "item_name": item_display_name,
+            "quantity": transfer_quantity,
+        },
+    )
+    return {
+        "result": f"You get {transfer_quantity}x {item_display_name}.",
+        "room_message": f"{player.name} gets {transfer_quantity}x {item_display_name}.",
+        "game_log_message": f"{player.name} got {transfer_quantity}x {item_display_name}",
         "game_log_channel": "game-log",
     }
 
@@ -618,8 +712,14 @@ async def handle_get_command(
         quantity=quantity,
     )
 
-    # Find container
     room_id = str(player.current_room_id)
+
+    if container_name.lower() == "room":
+        return await _handle_get_from_room(
+            persistence, connection_manager, player, room_id, item_name, quantity, room_manager
+        )
+
+    # Find container
     container_found, container_id = find_container_in_room(room_manager, room_id, container_name)
 
     # Check wearable containers if not found in room

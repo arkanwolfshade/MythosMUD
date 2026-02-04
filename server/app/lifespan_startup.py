@@ -96,6 +96,13 @@ async def initialize_container_and_legacy_services(app: FastAPI, container: Appl
     ApplicationContainer.set_instance(container)
 
     app.state.container = container
+    # BUGFIX: Combat turn processor and other services use config._app_instance to access
+    # the container for weapon damage resolution. Without this, round attacks fall back to
+    # basic_unarmed_damage instead of using equipped weapon damage.
+    from ..config import get_config
+
+    config = get_config()
+    object.__setattr__(config, "_app_instance", app)
     logger.info("ApplicationContainer initialized and added to app.state")
 
     # Set services on app.state for backward compatibility with legacy command handlers

@@ -38,18 +38,20 @@ def test_clone_inventory(mock_player):
     assert len(mock_player.get_inventory()) == 1
 
 
-def test_persist_player_success(mock_persistence, mock_player):
+@pytest.mark.asyncio
+async def test_persist_player_success(mock_persistence, mock_player):
     """Test _persist_player() successfully saves player."""
-    result = persist_player(mock_persistence, mock_player)
+    result = await persist_player(mock_persistence, mock_player)
     assert result is None
     mock_persistence.save_player.assert_called_once_with(mock_player)
 
 
-def test_persist_player_error(mock_persistence, mock_player):
+@pytest.mark.asyncio
+async def test_persist_player_error(mock_persistence, mock_player):
     """Test _persist_player() handles save errors."""
     from server.schemas.inventory_schema import InventorySchemaValidationError
 
     mock_persistence.save_player = MagicMock(side_effect=InventorySchemaValidationError("Invalid inventory"))
-    result = persist_player(mock_persistence, mock_player)
+    result = await persist_player(mock_persistence, mock_player)
     assert result is not None
     assert "result" in result

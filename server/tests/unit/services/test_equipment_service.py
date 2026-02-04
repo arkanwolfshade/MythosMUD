@@ -85,6 +85,48 @@ def test_equip_from_inventory_slot_mismatch(equipment_service):
         equipment_service.equip_from_inventory(inventory, equipped, slot_index=0, target_slot="off_hand")
 
 
+def test_equip_from_inventory_slot_type_inventory_requires_target_slot(equipment_service):
+    """Test equip_from_inventory with slot_type 'inventory' requires target_slot."""
+    inventory = [
+        {
+            "item_instance_id": "inst1",
+            "item_id": "item1",
+            "prototype_id": "proto1",
+            "item_name": "switchblade",
+            "slot_type": "inventory",
+            "quantity": 1,
+        }
+    ]
+    equipped: dict[str, Any] = {}
+
+    with pytest.raises(SlotValidationError, match="Specify which slot"):
+        equipment_service.equip_from_inventory(inventory, equipped, slot_index=0)
+
+
+def test_equip_from_inventory_slot_type_inventory_with_target_slot(equipment_service):
+    """Test equip_from_inventory with slot_type 'inventory' and target_slot equips to that slot."""
+    inventory = [
+        {
+            "item_instance_id": "inst1",
+            "item_id": "item1",
+            "prototype_id": "proto1",
+            "item_name": "switchblade",
+            "slot_type": "inventory",
+            "quantity": 1,
+        }
+    ]
+    equipped: dict[str, Any] = {}
+
+    new_inventory, new_equipped = equipment_service.equip_from_inventory(
+        inventory, equipped, slot_index=0, target_slot="main_hand"
+    )
+
+    assert len(new_inventory) == 0
+    assert "main_hand" in new_equipped
+    assert new_equipped["main_hand"]["item_name"] == "switchblade"
+    assert new_equipped["main_hand"]["slot_type"] == "main_hand"
+
+
 def test_equip_from_inventory_quantity_split(equipment_service):
     """Test equip_from_inventory with quantity > 1."""
     inventory = [

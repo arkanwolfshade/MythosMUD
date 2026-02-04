@@ -116,6 +116,18 @@ class CombatAttackHandler:
 
         target = combat.participants.get(target_id)
         if not target:
+            # Fallback: lookup by string comparison in case of UUID representation mismatch
+            target_id_str = str(target_id)
+            target = next(
+                (p for p in combat.participants.values() if str(p.participant_id) == target_id_str),
+                None,
+            )
+        if not target:
+            logger.warning(
+                "Target not found in combat participants",
+                target_id=target_id,
+                participant_ids=[str(pid) for pid in combat.participants.keys()],
+            )
             raise ValueError("Target is not in this combat")
 
         if not target.is_alive():

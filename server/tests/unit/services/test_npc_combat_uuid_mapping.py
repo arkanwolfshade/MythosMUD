@@ -40,14 +40,17 @@ class TestNPCCombatUUIDMapping:
         assert str(result) == uuid_str
 
     def test_convert_to_uuid_from_string_id(self):
-        """Test convert_to_uuid creates new UUID when given string ID."""
+        """Test convert_to_uuid returns stable UUID for same string ID."""
         mapping = NPCCombatUUIDMapping()
         string_id = "npc_guard_001"
         result = mapping.convert_to_uuid(string_id)
         assert isinstance(result, UUID)
-        # Should be a different UUID each time
+        # Same string_id must return same UUID for combat participant lookup stability
         result2 = mapping.convert_to_uuid(string_id)
-        assert result != result2
+        assert result == result2
+        # Different string IDs return different UUIDs
+        result3 = mapping.convert_to_uuid("npc_guard_002")
+        assert result != result3
 
     def test_store_string_id_mapping(self):
         """Test store_string_id_mapping stores mapping."""

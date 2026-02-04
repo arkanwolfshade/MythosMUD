@@ -40,18 +40,25 @@ class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-pu
         persistence: Any,
         combat_service: Any = None,
         player_combat_service: Any = None,
+        item_prototype_registry: Any = None,
     ) -> None:
-        """Initialize the player service with a persistence layer and optional combat service."""
+        """Initialize the player service with a persistence layer and optional combat service and prototype registry."""
         self.persistence = persistence
         self.combat_service = combat_service
         self.player_combat_service = player_combat_service
         # Initialize sub-services (order matters - schema_converter needed by creation_service)
-        self._schema_converter = PlayerSchemaConverter(persistence, player_combat_service)
+        self._schema_converter = PlayerSchemaConverter(
+            persistence, player_combat_service, item_prototype_registry=item_prototype_registry
+        )
         self._creation_service = PlayerCreationService(persistence, self._schema_converter)
         self._search_service = PlayerSearchService(self)
         self._state_service = PlayerStateService(persistence)
         self._respawn_wrapper = PlayerRespawnWrapper(persistence)
         logger.info("PlayerService initialized")
+
+    def set_item_prototype_registry(self, registry: Any) -> None:
+        """Set the item prototype registry on the schema converter (e.g. after item services load)."""
+        self._schema_converter.item_prototype_registry = registry
 
     async def create_player(
         self,

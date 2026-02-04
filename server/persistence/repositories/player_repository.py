@@ -14,10 +14,11 @@ from typing import TYPE_CHECKING, Any, cast
 
 from sqlalchemy import func, select, update
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import selectinload
 
 from server.database import get_session_maker
 from server.exceptions import DatabaseError
-from server.models.player import Player
+from server.models.player import Player, PlayerInventory
 from server.schemas.inventory_schema import InventorySchemaValidationError, validate_inventory_payload
 from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.error_logging import create_error_context, log_and_raise
@@ -111,6 +112,7 @@ class PlayerRepository:
                 # Use case-insensitive comparison and exclude deleted characters
                 stmt = (
                     select(Player)
+                    .options(selectinload(Player.inventory_record))
                     .where(func.lower(Player.name) == func.lower(name))
                     .where(Player.is_deleted.is_(False))  # Use is_() for SQLAlchemy boolean comparison
                 )
@@ -154,7 +156,9 @@ class PlayerRepository:
                 # SQLAlchemy's UUID type (even with as_uuid=False) handles UUID object comparisons automatically.
                 # The database column is UUID type, and SQLAlchemy converts UUID objects appropriately for comparison.
                 # The as_uuid=False parameter only affects the Python return type (string vs UUID), not comparison behavior.
-                stmt = select(Player).where(Player.player_id == player_id)
+                stmt = (
+                    select(Player).options(selectinload(Player.inventory_record)).where(Player.player_id == player_id)
+                )
                 result = await session.execute(stmt)
                 player = result.scalar_one_or_none()
                 if player:
@@ -292,6 +296,19 @@ class PlayerRepository:
             # Ensure is_admin is an integer (PostgreSQL requires integer, not boolean)
             if isinstance(getattr(player, "is_admin", None), bool):
                 player.is_admin = 1 if player.is_admin else 0
+
+            inventory_json, equipped_json = self._prepare_inventory_payload(player)
+            record = getattr(player, "inventory_record", None)
+            if record is None:
+                record = PlayerInventory(
+                    player_id=str(player.player_id),
+                    inventory_json=inventory_json,
+                    equipped_json=equipped_json,
+                )
+                player.inventory_record = record
+            else:
+                record.inventory_json = inventory_json
+                record.equipped_json = equipped_json
 
             session_maker = get_session_maker()
             async with session_maker() as session:

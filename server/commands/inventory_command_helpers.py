@@ -78,10 +78,16 @@ async def broadcast_room_event(
         logger.warning("Failed to broadcast room event", room_id=room_id, error=str(exc))
 
 
-def persist_player(persistence: Any, player: Player) -> dict[str, str] | None:
-    """Persist player changes, returning error dict on failure."""
+async def persist_player(persistence: Any, player: Player) -> dict[str, str] | None:
+    """Persist player changes, returning error dict on failure.
+
+    Awaits save_player when persistence is async (e.g. AsyncPersistence) so the
+    save completes before return; otherwise inventory would not be persisted.
+    """
     try:
-        persistence.save_player(player)
+        result = persistence.save_player(player)
+        if inspect.isawaitable(result):
+            await result
         return None
     except InventorySchemaValidationError as exc:
         logger.error("Inventory schema validation during persistence", player=player.name, error=str(exc))
@@ -130,9 +136,15 @@ def resolve_pickup_item_index(
 
 
 def prepare_extracted_stack(extracted_stack: dict[str, Any], player_name: str, player_id: UUID) -> dict[str, Any]:
-    """Prepare extracted stack for inventory addition, ensuring it's a dict copy."""
+    """Prepare extracted stack for inventory addition, ensuring it's a dict copy.
+
+    Picked-up items (from room or get-from-room) go into general inventory (pockets),
+    not into an equipment slot. We set slot_type to 'inventory' so the player must
+    equip the item separately to use it in main_hand etc.
+    """
     if isinstance(extracted_stack, dict):
         extracted_stack = dict(extracted_stack)  # Create a copy to avoid mutating the original
+        extracted_stack["slot_type"] = "inventory"
         logger.debug(
             "Pickup: item will be added to general inventory",
             player=player_name,

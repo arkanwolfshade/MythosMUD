@@ -8,11 +8,22 @@
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
-import type { InventoryStack } from '../../stores/containerStore';
+import type { InventoryStack, WeaponStats } from '../../stores/containerStore';
 import { useContainerStore } from '../../stores/containerStore';
 import { useGameStore } from '../../stores/gameStore';
 import { MythosPanel } from '../ui/MythosPanel';
 import { TerminalButton } from '../ui/TerminalButton';
+
+/** Format weapon stats for display (e.g. "1d4+0 slashing, piercing"). */
+function formatWeaponStats(weapon: WeaponStats): string {
+  const sides = weapon.max_damage - weapon.min_damage + 1;
+  const count = 1;
+  const dice = sides > 0 ? `${count}d${sides}` : '0';
+  const mod = weapon.modifier ?? 0;
+  const diceStr = mod !== 0 ? `${dice}+${mod}` : dice;
+  const types = (weapon.damage_types ?? []).filter(Boolean).join(', ');
+  return types ? `${diceStr} ${types}` : diceStr;
+}
 
 export interface ContainerSplitPaneProps {
   /** Container ID to display */
@@ -263,6 +274,12 @@ export const ContainerSplitPane: React.FC<ContainerSplitPaneProps> = ({
           {item.quantity > 1 && (
             <div className="text-sm text-mythos-terminal-text-secondary">Quantity: {item.quantity}</div>
           )}
+          {(() => {
+            const weapon = item.weapon ?? (item.metadata as { weapon?: WeaponStats } | undefined)?.weapon;
+            return weapon ? (
+              <div className="text-sm text-mythos-terminal-text-secondary">{formatWeaponStats(weapon)}</div>
+            ) : null;
+          })()}
         </div>
         {canTransfer && (
           <TerminalButton

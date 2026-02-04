@@ -15,6 +15,8 @@ from server.alias_storage import AliasStorage
 from server.commands.rest_command import _cancel_rest_countdown, is_player_resting
 from server.config import get_config
 from server.game.player_service import PlayerService
+from server.game.weapons import resolve_weapon_attack_from_equipped
+from server.npc.combat_integration import NPCCombatIntegration
 from server.realtime.login_grace_period import is_player_in_login_grace_period
 
 # Removed: from server.persistence import get_persistence - now using async_persistence parameter
@@ -80,6 +82,7 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
         player_combat_service: "PlayerCombatService | None" = None,
         connection_manager: "ConnectionManager | None" = None,
         async_persistence: "AsyncPersistenceLayer | None" = None,
+        item_prototype_registry: Any | None = None,
     ) -> None:
         """
         Initialize the combat command handler.
@@ -114,6 +117,7 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
             async_persistence=async_persistence,
         )
         self.persistence = async_persistence
+        self._item_prototype_registry = item_prototype_registry
         self.combat_validator = CombatValidator()
         # Initialize target resolution service
         # Use async persistence for target resolution and player service
@@ -351,7 +355,7 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
             return {"valid": False, "message": "Invalid combat parameters"}
         return {"valid": True}
 
-    async def _execute_combat_action(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Combat action execution requires many parameters for context and state
+    async def _execute_combat_action(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Combat action execution requires many parameters and locals for context and state; refactor would split cohesive logic
         self, player_name: str, npc_id: str, command: str, room_id: str, npc_instance: Any | None = None
     ) -> dict[str, str]:
         """
@@ -379,10 +383,21 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
                 npc_instance = self._get_npc_instance(npc_id)
             npc_name = npc_instance.name if npc_instance else "unknown target"
 
-            # Calculate basic damage using configured value
-            # TODO: Implement proper damage calculation based on player stats, weapon, etc.  # pylint: disable=fixme  # Reason: Enhancement for more sophisticated damage system
+            # Resolve damage from equipped weapon or fall back to unarmed
             config = get_config()
             damage = config.game.basic_unarmed_damage
+            if self._item_prototype_registry:
+                main_hand = (player.get_equipped_items() or {}).get("main_hand")
+                weapon_info = resolve_weapon_attack_from_equipped(main_hand, self._item_prototype_registry)
+                if weapon_info:
+                    integration = NPCCombatIntegration(async_persistence=self.persistence)
+                    attacker_stats = player.get_stats() if hasattr(player, "get_stats") else {}
+                    damage = integration.calculate_damage(
+                        attacker_stats=attacker_stats,
+                        target_stats={},  # CON does not affect damage
+                        weapon_damage=weapon_info.base_damage,
+                        damage_type=weapon_info.damage_type,
+                    )
 
             logger.info(
                 "Executing combat action",
@@ -453,12 +468,14 @@ def get_combat_command_handler(app: Any | None = None) -> CombatCommandHandler:
         player_combat_service = getattr(container, "player_combat_service", None)
         connection_manager = getattr(container, "connection_manager", None)
         async_persistence = getattr(container, "async_persistence", None)
+        item_prototype_registry = getattr(container, "item_prototype_registry", None)
         _combat_command_handler = CombatCommandHandler(
             combat_service=combat_service,
             event_bus=event_bus,
             player_combat_service=player_combat_service,
             connection_manager=connection_manager,
             async_persistence=async_persistence,
+            item_prototype_registry=item_prototype_registry,
         )
     return _combat_command_handler
 

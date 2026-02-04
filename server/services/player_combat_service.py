@@ -41,18 +41,18 @@ class PlayerCombatState:
             self.last_activity = datetime.now(UTC)
 
 
+@dataclass
 class PlayerXPAwardEvent(BaseEvent):  # pylint: disable=too-few-public-methods  # Reason: Event dataclass with focused responsibility, minimal public interface
     """Event published when a player receives XP."""
 
-    def __init__(self, player_id: UUID, xp_amount: int, new_level: int, timestamp: datetime | None = None) -> None:
-        # AI Agent: BaseEvent fields have init=False, so we can't pass them to super().__init__()
-        # Instead, we set them directly after calling super().__init__() with no args
-        super().__init__()
+    player_id: UUID
+    xp_amount: int
+    new_level: int
+
+    def __post_init__(self) -> None:
+        """Set event_type for serialization/deserialization."""
+        super().__post_init__()
         object.__setattr__(self, "event_type", "player_xp_awarded")
-        object.__setattr__(self, "timestamp", timestamp or datetime.now(UTC))
-        self.player_id = player_id
-        self.xp_amount = xp_amount
-        self.new_level = new_level
 
 
 class PlayerCombatService:

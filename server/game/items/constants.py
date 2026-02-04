@@ -23,6 +23,7 @@ ALLOWED_ITEM_TYPES: set[str] = {
     "quest",
     "environment",
     "currency",
+    "weapon",
 }
 
 ALLOWED_WEAR_SLOTS: set[str] = {

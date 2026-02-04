@@ -6,6 +6,7 @@ import pytest
 
 from server.events.event_serialization import deserialize_event, serialize_event
 from server.events.event_types import PlayerDiedEvent, PlayerEnteredRoom
+from server.services.player_combat_service import PlayerXPAwardEvent
 
 
 def test_serialize_deserialize_player_entered_room():
@@ -34,6 +35,23 @@ def test_serialize_deserialize_player_died_event():
     restored = deserialize_event(data)
     assert restored.player_id == pid
     assert restored.player_name == "Test"
+
+
+def test_serialize_deserialize_player_xp_award_event():
+    """Test PlayerXPAwardEvent round-trip (fixes NATS deserialization error)."""
+    pid = uuid.uuid4()
+    event = PlayerXPAwardEvent(player_id=pid, xp_amount=100, new_level=5)
+    data = serialize_event(event)
+    assert data["_event_type"] == "player_xp_awarded"
+    assert "player_id" in data
+    assert data["xp_amount"] == 100
+    assert data["new_level"] == 5
+
+    restored = deserialize_event(data)
+    assert isinstance(restored, PlayerXPAwardEvent)
+    assert restored.player_id == pid
+    assert restored.xp_amount == 100
+    assert restored.new_level == 5
 
 
 def test_deserialize_unknown_event_type_raises():

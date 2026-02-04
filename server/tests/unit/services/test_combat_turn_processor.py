@@ -254,3 +254,101 @@ async def test_process_player_turn_casting_spell(combat_turn_processor, mock_com
     combat_turn_processor._combat_service.magic_service = mock_magic_service  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test setup requires access to protected member for mock injection
     await combat_turn_processor._process_player_turn(mock_combat, player, 100)  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test requires direct access to protected method for unit testing
     # Should skip autoattack when casting
+
+
+@pytest.mark.asyncio
+async def test_process_player_turn_fallback_to_basic_unarmed_damage_when_no_app(
+    combat_turn_processor, mock_combat, monkeypatch
+):  # pylint: disable=redefined-outer-name  # Reason: pytest fixture parameter injection
+    """When config has no _app_instance, process_attack is called with basic_unarmed_damage and damage_type physical."""
+    from uuid import uuid4
+
+    player_id = uuid4()
+    target_id = uuid4()
+    player = CombatParticipant(
+        participant_id=player_id,
+        participant_type=CombatParticipantType.PLAYER,
+        name="Player",
+        current_dp=50,
+        max_dp=50,
+        dexterity=12,
+        is_active=True,
+        last_action_tick=None,
+    )
+    target = CombatParticipant(
+        participant_id=target_id,
+        participant_type=CombatParticipantType.NPC,
+        name="Target",
+        current_dp=30,
+        max_dp=30,
+        dexterity=10,
+        is_active=True,
+        last_action_tick=None,
+    )
+    mock_combat.participants = {player_id: player, target_id: target}
+
+    mock_config = MagicMock()
+    mock_config.game.basic_unarmed_damage = 10
+    mock_config._app_instance = None
+    combat_turn_processor._combat_service.process_attack = AsyncMock()  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test assertion requires mock
+    combat_turn_processor._combat_service.magic_service = None  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Ensure casting check does not skip autoattack
+
+    monkeypatch.setattr("server.services.combat_turn_processor.get_config", lambda: mock_config)
+    await combat_turn_processor._process_player_turn(mock_combat, player, 100)  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test requires direct access to protected method
+
+    combat_turn_processor._combat_service.process_attack.assert_called_once()  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test assertion
+    call_kw = combat_turn_processor._combat_service.process_attack.call_args[1]  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test assertion
+    assert call_kw["damage"] == 10
+    assert call_kw["damage_type"] == "physical"
+
+
+@pytest.mark.asyncio
+async def test_process_player_turn_fallback_to_basic_unarmed_damage_when_no_player_from_persistence(
+    combat_turn_processor, mock_combat, monkeypatch
+):  # pylint: disable=redefined-outer-name  # Reason: pytest fixture parameter injection
+    """When player_service.get_player_by_id returns None, process_attack uses basic_unarmed_damage."""
+    from uuid import uuid4
+
+    player_id = uuid4()
+    target_id = uuid4()
+    player = CombatParticipant(
+        participant_id=player_id,
+        participant_type=CombatParticipantType.PLAYER,
+        name="Player",
+        current_dp=50,
+        max_dp=50,
+        dexterity=12,
+        is_active=True,
+        last_action_tick=None,
+    )
+    target = CombatParticipant(
+        participant_id=target_id,
+        participant_type=CombatParticipantType.NPC,
+        name="Target",
+        current_dp=30,
+        max_dp=30,
+        dexterity=10,
+        is_active=True,
+        last_action_tick=None,
+    )
+    mock_combat.participants = {player_id: player, target_id: target}
+
+    mock_config = MagicMock()
+    mock_config.game.basic_unarmed_damage = 10
+    mock_app = MagicMock()
+    mock_app.state.container.player_service = MagicMock()
+    mock_app.state.container.player_service.persistence.get_player_by_id = AsyncMock(return_value=None)
+    mock_app.state.container.item_prototype_registry = MagicMock()
+    mock_app.state.container.async_persistence = MagicMock()
+    mock_config._app_instance = mock_app
+
+    combat_turn_processor._combat_service.process_attack = AsyncMock()  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test assertion requires mock
+    combat_turn_processor._combat_service.magic_service = None  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Ensure casting check does not skip autoattack
+
+    monkeypatch.setattr("server.services.combat_turn_processor.get_config", lambda: mock_config)
+    await combat_turn_processor._process_player_turn(mock_combat, player, 100)  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test requires direct access to protected method
+
+    combat_turn_processor._combat_service.process_attack.assert_called_once()  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test assertion
+    call_kw = combat_turn_processor._combat_service.process_attack.call_args[1]  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test assertion
+    assert call_kw["damage"] == 10
+    assert call_kw["damage_type"] == "physical"

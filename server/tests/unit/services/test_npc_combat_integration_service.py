@@ -66,6 +66,46 @@ def test_integration_service_init(integration_service, mock_combat_service):
     assert mock_combat_service.auto_progression_enabled is True
 
 
+def test_integration_service_init_with_shared_player_combat_service(
+    mock_combat_service, mock_connection_manager, mock_async_persistence
+):
+    """Test init sets NPC combat integration reference on shared PlayerCombatService."""
+    mock_player_combat_service = MagicMock()
+    with patch("server.services.npc_combat_integration_service.get_config") as mock_config:
+        mock_config_instance = MagicMock()
+        mock_config_instance.game.combat_tick_interval = 10
+        mock_config.return_value = mock_config_instance
+        service = NPCCombatIntegrationService(
+            event_bus=None,
+            combat_service=mock_combat_service,
+            player_combat_service=mock_player_combat_service,
+            connection_manager=mock_connection_manager,
+            async_persistence=mock_async_persistence,
+        )
+    assert service._player_combat_service == mock_player_combat_service
+    assert mock_player_combat_service._npc_combat_integration_service is service
+
+
+def test_integration_service_init_creates_combat_service_when_none(mock_connection_manager, mock_async_persistence):
+    """Test init creates CombatService when combat_service is None."""
+    mock_combat_service_instance = MagicMock()
+    with (
+        patch("server.services.npc_combat_integration_service.get_config") as mock_config,
+        patch("server.services.combat_service.CombatService", return_value=mock_combat_service_instance),
+    ):
+        mock_config_instance = MagicMock()
+        mock_config_instance.game.combat_tick_interval = 10
+        mock_config.return_value = mock_config_instance
+        service = NPCCombatIntegrationService(
+            event_bus=None,
+            combat_service=None,
+            player_combat_service=None,
+            connection_manager=mock_connection_manager,
+            async_persistence=mock_async_persistence,
+        )
+    assert service._combat_service == mock_combat_service_instance
+
+
 @pytest.mark.asyncio
 async def test_get_integration_config(integration_service):
     """Test integration service has combat service with config."""
@@ -199,13 +239,48 @@ async def test_handle_npc_death(integration_service):
     assert isinstance(result, bool)
 
 
+@pytest.mark.asyncio
+async def test_handle_npc_death_broadcasts_room_update(integration_service):
+    """Test handle_npc_death broadcasts room update when killer and room are set."""
+    npc_id = "npc_001"
+    room_id = "room_001"
+    killer_id = str(uuid.uuid4())
+    integration_service._handlers = MagicMock()
+    integration_service._handlers.handle_npc_death = AsyncMock(return_value=True)
+    mock_player = MagicMock()
+    mock_player.current_room_id = "room_002"
+    integration_service._messaging_integration.connection_manager = MagicMock()
+    integration_service._messaging_integration.connection_manager.get_player = AsyncMock(return_value=mock_player)
+    with patch("server.realtime.websocket_room_updates.broadcast_room_update", new_callable=AsyncMock):
+        result = await integration_service.handle_npc_death(npc_id, room_id, killer_id, None)
+    assert result is True
+
+
+@pytest.mark.asyncio
+async def test_handle_npc_death_broadcast_failure_non_fatal(integration_service):
+    """Test handle_npc_death still returns True when broadcast fails (non-fatal)."""
+    npc_id = "npc_001"
+    room_id = "room_001"
+    killer_id = "player_001"
+    integration_service._handlers = MagicMock()
+    integration_service._handlers.handle_npc_death = AsyncMock(return_value=True)
+    with patch(
+        "server.realtime.websocket_room_updates.broadcast_room_update",
+        new_callable=AsyncMock,
+        side_effect=RuntimeError("broadcast failed"),
+    ):
+        result = await integration_service.handle_npc_death(npc_id, room_id, killer_id, None)
+    assert result is True
+
+
 def test_get_npc_combat_memory(integration_service):
-    """Test get_npc_combat_memory returns memory."""
+    """Test get_npc_combat_memory returns last attacker via get_attacker."""
     npc_id = "npc_001"
     integration_service._combat_memory = MagicMock()
-    integration_service._combat_memory.get_memory = MagicMock(return_value="memory")
+    integration_service._combat_memory.get_attacker = MagicMock(return_value="player_001")
     result = integration_service.get_npc_combat_memory(npc_id)
-    assert result is not None
+    assert result == "player_001"
+    integration_service._combat_memory.get_attacker.assert_called_once_with(npc_id)
 
 
 def test_clear_npc_combat_memory(integration_service):

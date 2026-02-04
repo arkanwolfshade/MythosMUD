@@ -585,7 +585,12 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
         return True
 
     async def process_attack(  # pylint: disable=too-many-locals  # Reason: Attack processing requires many intermediate variables for complex combat logic
-        self, attacker_id: UUID, target_id: UUID, damage: int = 10, is_initial_attack: bool = False
+        self,
+        attacker_id: UUID,
+        target_id: UUID,
+        damage: int = 10,
+        is_initial_attack: bool = False,
+        damage_type: str = "physical",
     ) -> CombatResult:
         """
         Process an attack action in combat.
@@ -595,6 +600,7 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
             target_id: ID of the target
             damage: Amount of damage to deal
             is_initial_attack: Whether this is the initial attack
+            damage_type: Type of damage (e.g. physical, slashing, piercing) for effects and future resistance.
 
         Returns:
             CombatResult containing the outcome
@@ -607,7 +613,13 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
             attacker_id, target_id, is_initial_attack
         )
 
-        logger.info("Processing attack", attacker_name=current_participant.name, target_name=target.name, damage=damage)
+        logger.info(
+            "Processing attack",
+            attacker_name=current_participant.name,
+            target_name=target.name,
+            damage=damage,
+            damage_type=damage_type,
+        )
 
         # Apply damage
         # old_dp is handled inside _apply_attack_damage via _handle_player_dp_update
