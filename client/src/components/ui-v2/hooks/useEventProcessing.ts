@@ -30,7 +30,8 @@ export const useEventProcessing = ({ setGameState }: UseEventProcessingParams) =
       const store = eventStoreRef.current;
       store.append(events);
       const derivedState = projectState(store.getLog());
-      setGameState(derivedState);
+      // Preserve client-only commandHistory; projector does not replay submitted commands.
+      setGameState(prev => ({ ...derivedState, commandHistory: prev.commandHistory }));
     } catch (error) {
       logger.error('useEventProcessing', 'Error projecting state from event log', { error });
     } finally {
