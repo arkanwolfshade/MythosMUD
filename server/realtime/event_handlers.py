@@ -368,5 +368,26 @@ class EventHandler:
                     npc_name=npc_name,
                 )
 
+            # Broadcast updated room occupants so clients remove the slain NPC from the Occupants panel.
+            # _handle_npc_died has already run (sync) and removed the NPC from active_npcs and room.
+            try:
+                from server.realtime.websocket_room_updates import broadcast_room_update
+
+                killer_id = data.get("killer_id")
+                player_id = str(killer_id) if killer_id else room_id
+                await broadcast_room_update(
+                    player_id,
+                    room_id,
+                    connection_manager=self.connection_manager,
+                )
+                logger.debug("Room occupants broadcast after NPC death", room_id=room_id, npc_id=npc_id)
+            except Exception as broadcast_err:  # pylint: disable=broad-exception-caught  # Non-fatal; must not break death event flow
+                logger.warning(
+                    "Failed to broadcast room occupants after NPC death (non-fatal)",
+                    room_id=room_id,
+                    npc_id=npc_id,
+                    error=str(broadcast_err),
+                )
+
         except NATSError as e:
             logger.error("Error handling NPC died event", error=str(e), data=data)

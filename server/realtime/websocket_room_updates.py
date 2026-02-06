@@ -171,6 +171,45 @@ async def build_room_update_event(
     )
 
 
+async def _resolve_room_with_fallback(
+    async_persistence: Any,
+    connection_manager: "ConnectionManager | Any",
+    player_id: str,
+    room_id: str,
+) -> tuple[Any, str, str]:
+    """
+    Resolve room by ID, optionally using player's current_room_id as fallback when room not found.
+
+    Returns:
+        Tuple of (room_or_none, effective_room_id, resolved_room_id for room_id variable).
+    """
+    room = async_persistence.get_room_by_id(room_id)
+    effective_room_id = room_id
+    resolved_room_id = room_id
+    if room or not player_id:
+        return room, effective_room_id, resolved_room_id
+    try:
+        player_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
+        player = await connection_manager.get_player(player_uuid)
+        fallback_room_id = getattr(player, "current_room_id", None) if player else None
+        if not fallback_room_id or fallback_room_id == room_id:
+            return room, effective_room_id, resolved_room_id
+        room = async_persistence.get_room_by_id(fallback_room_id)
+        if room:
+            resolved_room_id = fallback_room_id
+            effective_room_id = fallback_room_id
+            logger.debug(
+                "Used killer current_room_id fallback for broadcast",
+                original_room_id=room_id,
+                fallback_room_id=fallback_room_id,
+            )
+        else:
+            effective_room_id = fallback_room_id
+    except (ValueError, TypeError, AttributeError):
+        pass
+    return room, effective_room_id, resolved_room_id
+
+
 async def update_player_room_subscription(
     connection_manager: "ConnectionManager | Any", player_id: str, room_id: str
 ) -> None:
@@ -216,43 +255,30 @@ async def broadcast_room_update(  # pylint: disable=too-many-locals,too-many-sta
             logger.warning("Async persistence layer not available for room update")
             return
 
-        room = async_persistence.get_room_by_id(room_id)
-        effective_room_id = room_id
-        if not room and player_id:
-            try:
-                player_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
-                player = await connection_manager.get_player(player_uuid)
-                fallback_room_id = getattr(player, "current_room_id", None) if player else None
-                if fallback_room_id and fallback_room_id != room_id:
-                    room = async_persistence.get_room_by_id(fallback_room_id)
-                    if room:
-                        original_room_id = room_id
-                        room_id = fallback_room_id
-                        effective_room_id = fallback_room_id
-                        logger.debug(
-                            "Used killer current_room_id fallback for broadcast",
-                            original_room_id=original_room_id,
-                            fallback_room_id=fallback_room_id,
-                        )
-                    else:
-                        effective_room_id = fallback_room_id
-            except (ValueError, TypeError, AttributeError):
-                pass
+        room, effective_room_id, room_id = await _resolve_room_with_fallback(
+            async_persistence, connection_manager, player_id, room_id
+        )
 
-        occupant_names = await get_player_occupants(connection_manager, effective_room_id)
+        player_occupant_names = await get_player_occupants(connection_manager, effective_room_id)
+        npc_occupants = []
         try:
             npc_occupants = await get_npc_occupants_from_lifecycle_manager(effective_room_id)
-            occupant_names.extend(npc_occupants)
         except (AttributeError, KeyError, TypeError, ValueError):
             if room:
                 npc_occupants = await get_npc_occupants_fallback(room, effective_room_id)
-                occupant_names.extend(npc_occupants)
+        occupant_names = list(player_occupant_names) + list(npc_occupants)
 
+        occ_payload = {
+            "occupants": occupant_names,
+            "count": len(occupant_names),
+            "players": player_occupant_names,
+            "npcs": npc_occupants,
+        }
         if not room:
             logger.warning("Room not found for update - sending room_occupants only", room_id=effective_room_id)
             occ_event = build_event(
                 "room_occupants",
-                {"occupants": occupant_names, "count": len(occupant_names)},
+                occ_payload,
                 room_id=effective_room_id,
             )
             await connection_manager.broadcast_to_room(effective_room_id, occ_event)
@@ -261,7 +287,14 @@ async def broadcast_room_update(  # pylint: disable=too-many-locals,too-many-sta
 
         update_event = await build_room_update_event(room, room_id, player_id, occupant_names, connection_manager)
 
-        await update_player_room_subscription(connection_manager, player_id, room_id)
+        # Only update a player's subscription when player_id is a valid UUID (e.g. killer).
+        # When triggering a room-only refresh (e.g. after NPC death via EventBus), caller may pass
+        # room_id as player_id; skip subscription update to avoid "badly formed hexadecimal UUID string".
+        try:
+            _ = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
+            await update_player_room_subscription(connection_manager, player_id, room_id)
+        except (ValueError, TypeError, AttributeError):
+            pass
 
         logger.debug("Broadcasting room update to room", room_id=room_id)
         await connection_manager.broadcast_to_room(room_id, update_event)
@@ -270,7 +303,7 @@ async def broadcast_room_update(  # pylint: disable=too-many-locals,too-many-sta
         event_room_id = getattr(room, "id", None) or room_id
         occ_event = build_event(
             "room_occupants",
-            {"occupants": occupant_names, "count": len(occupant_names)},
+            occ_payload,
             room_id=event_room_id,
         )
         await connection_manager.broadcast_to_room(room_id, occ_event)

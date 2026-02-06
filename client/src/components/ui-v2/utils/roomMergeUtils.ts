@@ -31,7 +31,9 @@ const getNpcsArray = (room: Room): string[] => {
 };
 
 /**
- * Determines which players array to use based on update state
+ * Determines which players array to use based on update state.
+ * When the update explicitly provides players (including empty array), it is authoritative
+ * (e.g. room_occupants from server); otherwise we preserve previous when update has no players.
  */
 const selectPlayersArray = (updatesRoom: Room, prevRoom: Room, roomIdChanged: boolean): string[] => {
   const updatesPlayers = getPlayersArray(updatesRoom);
@@ -39,8 +41,8 @@ const selectPlayersArray = (updatesRoom: Room, prevRoom: Room, roomIdChanged: bo
   const updatesHasPlayers = isPopulatedArray(updatesPlayers);
   const prevHasPlayers = isPopulatedArray(prevPlayers);
 
-  // Updates has players - use it (authoritative)
-  if (updatesHasPlayers) {
+  // Update explicitly provided players (e.g. room_occupants): use it (authoritative, including [])
+  if (updatesRoom.players !== undefined) {
     return updatesPlayers;
   }
 
@@ -49,17 +51,23 @@ const selectPlayersArray = (updatesRoom: Room, prevRoom: Room, roomIdChanged: bo
     return updatesPlayers;
   }
 
-  // Previous has players - preserve them
+  // Updates has players - use it
+  if (updatesHasPlayers) {
+    return updatesPlayers;
+  }
+
+  // Previous has players - preserve them when update did not send players
   if (prevHasPlayers) {
     return prevPlayers;
   }
 
-  // Fallback to updates, then previous, then empty
   return updatesPlayers.length > 0 ? updatesPlayers : prevPlayers;
 };
 
 /**
- * Determines which NPCs array to use based on update state
+ * Determines which NPCs array to use based on update state.
+ * When the update explicitly provides npcs (including empty array), it is authoritative
+ * (e.g. room_occupants from server); otherwise we preserve previous when update has no NPCs.
  */
 const selectNpcsArray = (updatesRoom: Room, prevRoom: Room, roomIdChanged: boolean): string[] => {
   const updatesNpcs = getNpcsArray(updatesRoom);
@@ -67,8 +75,8 @@ const selectNpcsArray = (updatesRoom: Room, prevRoom: Room, roomIdChanged: boole
   const updatesHasNpcs = isPopulatedArray(updatesNpcs);
   const prevHasNpcs = isPopulatedArray(prevNpcs);
 
-  // Updates has NPCs - use it (authoritative)
-  if (updatesHasNpcs) {
+  // Update explicitly provided npcs (e.g. room_occupants): use it (authoritative, including [])
+  if (updatesRoom.npcs !== undefined) {
     return updatesNpcs;
   }
 
@@ -77,18 +85,16 @@ const selectNpcsArray = (updatesRoom: Room, prevRoom: Room, roomIdChanged: boole
     return updatesNpcs;
   }
 
-  // Previous has NPCs - preserve them
+  // Updates has NPCs - use it
+  if (updatesHasNpcs) {
+    return updatesNpcs;
+  }
+
+  // Previous has NPCs - preserve them when update did not send npcs
   if (prevHasNpcs) {
     return prevNpcs;
   }
 
-  // Check if updates tried to clear NPCs (empty array) while prev has them
-  const updatesClearedNpcs = updatesRoom.npcs !== undefined && updatesNpcs.length === 0;
-  if (updatesClearedNpcs && prevHasNpcs) {
-    return prevNpcs;
-  }
-
-  // Fallback to updates, then previous, then empty
   return updatesNpcs.length > 0 ? updatesNpcs : prevNpcs;
 };
 

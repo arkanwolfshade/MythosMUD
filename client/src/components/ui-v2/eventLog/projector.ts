@@ -145,11 +145,24 @@ export function projectEvent(prevState: GameState, event: GameEvent): GameState 
       break;
     }
     case 'room_occupants': {
+      const roomId = event.room_id as string | undefined;
+      const seq = event.sequence_number;
+      const lastSeq =
+        roomId && prevState.lastRoomOccupantsSequenceByRoom
+          ? (prevState.lastRoomOccupantsSequenceByRoom[roomId] ?? 0)
+          : 0;
+      if (typeof seq === 'number' && seq <= lastSeq) {
+        break;
+      }
       const room = deriveRoomFromRoomOccupants(event, prevState.room);
       if (room) {
         nextState = {
           ...prevState,
           room: mergeRoomState(room, prevState.room),
+          lastRoomOccupantsSequenceByRoom:
+            roomId != null && typeof seq === 'number'
+              ? { ...prevState.lastRoomOccupantsSequenceByRoom, [roomId]: seq }
+              : prevState.lastRoomOccupantsSequenceByRoom,
         };
       }
       break;
