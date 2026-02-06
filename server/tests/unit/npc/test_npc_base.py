@@ -1,10 +1,11 @@
 """
-Unit tests for NPCBase combat stats.
+Unit tests for NPCBase combat stats and movement.
 
-Tests get_combat_stats() which centralizes combat stat extraction for NPC combat.
+Tests get_combat_stats() which centralizes combat stat extraction for NPC combat,
+and move_to_room() blocking when NPC is in combat.
 """
 
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 from server.npc.passive_mob_npc import PassiveMobNPC
 
@@ -82,3 +83,23 @@ def test_npc_base_get_combat_stats_defaults() -> None:
     assert combat_stats["current_dp"] == 20
     assert combat_stats["max_dp"] == 100
     assert combat_stats["dexterity"] == 10
+
+
+def test_npc_base_move_to_room_blocked_when_in_combat() -> None:
+    """Test move_to_room() returns False and does not move when NPC is in combat."""
+    definition = MagicMock()
+    definition.name = "TestMob"
+    definition.room_id = "room_001"
+    definition.base_stats = "{}"
+    definition.behavior_config = "{}"
+    definition.ai_integration_stub = "{}"
+    definition.npc_type = "passive_mob"
+
+    npc = PassiveMobNPC(definition=definition, npc_id="test-npc-combat")
+    npc.current_room = "room_001"
+
+    with patch.object(npc, "_is_npc_in_combat", return_value=True):
+        result = npc.move_to_room("room_002", use_integration=False)
+
+    assert result is False
+    assert npc.current_room == "room_001"

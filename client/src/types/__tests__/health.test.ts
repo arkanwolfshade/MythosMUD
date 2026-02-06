@@ -54,9 +54,16 @@ describe('determineHealthTier', () => {
     });
   });
 
+  describe('incapacitated tier', () => {
+    it('should return incapacitated when current DP is zero or negative', () => {
+      expect(determineDpTier(0, 100)).toBe('incapacitated');
+      expect(determineDpTier(-10, 100)).toBe('incapacitated');
+      expect(determineDpTier(-5, 100)).toBe('incapacitated');
+    });
+  });
+
   describe('critical tier', () => {
-    it('should return critical when ratio is below 0.2', () => {
-      expect(determineDpTier(0, 100)).toBe('critical');
+    it('should return critical when ratio is below 0.2 but current > 0', () => {
       expect(determineDpTier(10, 100)).toBe('critical');
       expect(determineDpTier(19, 100)).toBe('critical');
     });
@@ -68,15 +75,10 @@ describe('determineHealthTier', () => {
       expect(determineDpTier(100, -10)).toBe('critical');
     });
 
-    it('should return critical for very low health values', () => {
+    it('should return critical for very low health values (1% to 19%)', () => {
       expect(determineDpTier(1, 100)).toBe('critical');
       expect(determineDpTier(5, 100)).toBe('critical');
       expect(determineDpTier(19, 100)).toBe('critical');
-    });
-
-    it('should return critical when current is negative', () => {
-      expect(determineDpTier(-10, 100)).toBe('critical');
-      expect(determineDpTier(-5, 100)).toBe('critical');
     });
   });
 

@@ -249,6 +249,24 @@ async def test_move_npc_instance_no_move_method(npc_instance_service, sample_npc
 
 
 @pytest.mark.asyncio
+async def test_move_npc_instance_blocked_when_in_combat(npc_instance_service, sample_npc_instance):
+    """Test move_npc_instance() returns success False when NPC is in combat."""
+    npc_instance_service.lifecycle_manager.active_npcs = {"npc_123": sample_npc_instance}
+    mock_combat_service = MagicMock()
+    mock_combat_service.is_npc_in_combat_sync = MagicMock(return_value=True)
+    with patch(
+        "server.services.combat_service.get_combat_service",
+        return_value=mock_combat_service,
+    ):
+        result = await npc_instance_service.move_npc_instance(
+            "npc_123", "earth_arkhamcity_downtown_002", reason="test_move"
+        )
+    assert result["success"] is False
+    assert "combat" in result["message"].lower()
+    assert result["npc_id"] == "npc_123"
+
+
+@pytest.mark.asyncio
 async def test_move_npc_instance_not_found(npc_instance_service):
     """Test move_npc_instance() raises ValueError when NPC not found."""
     npc_instance_service.lifecycle_manager.active_npcs = {}

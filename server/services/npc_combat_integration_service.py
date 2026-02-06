@@ -208,8 +208,9 @@ class NPCCombatIntegrationService:  # pylint: disable=too-many-instance-attribut
             if not npc_instance:
                 return False
 
-            # Validate combat location
+            # Validate combat location; if invalid, end any existing combat and fail the attack
             if not await self._validate_combat_location(player_id, npc_id, room_id, npc_instance):
+                await self._end_combat_if_participant_in_combat(player_id, npc_id)
                 return False
 
             # Store combat memory and set up UUIDs
@@ -333,7 +334,51 @@ class NPCCombatIntegrationService:  # pylint: disable=too-many-instance-attribut
             )
             return False
 
+        # Ensure combat room_id matches both participants (single source of truth)
+        if player_room_id != room_id or npc_room_id != room_id:
+            logger.warning(
+                "Combat room mismatch - room_id does not match participant rooms",
+                player_id=player_id,
+                npc_id=npc_id,
+                player_room_id=player_room_id,
+                npc_room_id=npc_room_id,
+                combat_room_id=room_id,
+            )
+            return False
+
         return True
+
+    async def _end_combat_if_participant_in_combat(self, player_id: str, npc_id: str) -> None:
+        """
+        End any active combat that includes this player or NPC when room validation fails.
+
+        Called when attacker and target are not in the same room so combat state is
+        cleaned up and the player is not left stuck in a broken combat.
+
+        Args:
+            player_id: ID of the attacking player (str, may be UUID string)
+            npc_id: ID of the target NPC (for logging)
+        """
+        try:
+            player_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
+        except (ValueError, TypeError):
+            logger.debug(
+                "Could not parse player_id for combat end check",
+                player_id=player_id,
+                npc_id=npc_id,
+            )
+            return
+        existing_combat = await self._combat_service.get_combat_by_participant(player_uuid)
+        if existing_combat:
+            reason = "Invalid combat location - participants not in same room"
+            logger.info(
+                "Ending combat due to room mismatch",
+                combat_id=existing_combat.combat_id,
+                player_id=player_id,
+                npc_id=npc_id,
+                reason=reason,
+            )
+            await self._combat_service.end_combat(existing_combat.combat_id, reason)
 
     async def _setup_combat_uuids_and_mappings(
         self, player_id: str, npc_id: str, room_id: str, first_engagement: bool

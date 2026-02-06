@@ -1,4 +1,4 @@
-export type HealthTier = 'vigorous' | 'steady' | 'wounded' | 'critical';
+export type HealthTier = 'vigorous' | 'steady' | 'wounded' | 'critical' | 'incapacitated';
 
 export interface HealthChange {
   delta: number;
@@ -23,10 +23,15 @@ export interface HealthMeterProps {
 /**
  * Deterministic tier calculation based on current percent of max DP.
  * Keep thresholds aligned with encounter design noted in the Pnakotic combat charts.
+ * DP <= 0 is incapacitated (prone, cannot act); 1%..19% is critical.
  */
 export const determineDpTier = (current: number, max: number): HealthTier => {
   if (max <= 0) {
     return 'critical';
+  }
+
+  if (current <= 0) {
+    return 'incapacitated';
   }
 
   const ratio = current / max;

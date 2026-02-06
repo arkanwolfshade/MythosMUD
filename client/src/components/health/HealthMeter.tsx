@@ -32,6 +32,12 @@ const TIER_METADATA: TierMetadata = {
     description: 'Darkness threatens to overwhelm your vision.',
     barClass: 'bg-rose-500',
   },
+  incapacitated: {
+    label: 'Incapacitated',
+    tone: 'text-slate-400',
+    description: 'You are prone and unable to act.',
+    barClass: 'bg-slate-500',
+  },
 };
 
 const formatDelta = (delta?: number): string => {

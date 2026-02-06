@@ -222,6 +222,23 @@ describe('Health Event Utilities', () => {
       // Assert
       expect(result.status.inCombat).toBe(true);
     });
+
+    it('should set tier to incapacitated and accept posture when new_dp <= 0', () => {
+      // DP <= 0 must transition to Incapacitated (distinct from Critical); server sends posture lying
+      const data = {
+        old_dp: 5,
+        new_dp: 0,
+        max_dp: 100,
+        posture: 'lying',
+      };
+      const timestamp = '2024-01-01T12:00:00Z';
+
+      const result = buildHealthStatusFromEvent(null, data, timestamp);
+
+      expect(result.status.tier).toBe('incapacitated');
+      expect(result.status.current).toBe(0);
+      expect(result.status.posture).toBe('lying');
+    });
   });
 
   describe('buildHealthChangeMessage', () => {

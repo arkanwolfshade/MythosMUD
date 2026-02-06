@@ -179,13 +179,13 @@ class GameMechanicsService:
         logger.info("Player damaged", player_id=player_id, amount=amount, damage_type=damage_type)
         return True, f"Damaged {player.name} for {amount} {damage_type} damage"
 
-    def gain_experience(self, player_id: str, amount: int, source: str = "unknown") -> tuple[bool, str]:
+    async def gain_experience(self, player_id: str, amount: int, source: str = "unknown") -> tuple[bool, str]:
         """
         Award experience points to a player.
 
         CRITICAL FIX: This method prevents XP awards from overwriting combat damage.
-        Previously, XP was awarded by loading player, updating XP, and saving entire player,
-        which overwrote any in-flight health changes from combat.
+        Uses atomic XP update via persistence.gain_experience so in-flight health
+        changes from combat are not overwritten.
 
         Args:
             player_id: ID of the player gaining XP
@@ -195,7 +195,10 @@ class GameMechanicsService:
         Returns:
             tuple: (success: bool, message: str)
         """
-        player = self.persistence.get_player(player_id)
+        import uuid as _uuid
+
+        player_uuid = _uuid.UUID(player_id) if isinstance(player_id, str) else player_id
+        player = await self.persistence.get_player_by_id(player_uuid)
         if not player:
             logger.warning("XP gain failed - player not found", player_id=player_id)
             context = create_error_context()
@@ -211,6 +214,6 @@ class GameMechanicsService:
                 user_friendly="Player not found",
             )
 
-        self.persistence.gain_experience(player, amount, source)
+        await self.persistence.gain_experience(player, amount, source)
         logger.info("XP awarded", player_id=player_id, amount=amount, source=source)
         return True, f"Awarded {amount} XP to {player.name}"

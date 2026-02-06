@@ -801,6 +801,10 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
             player_id, "corruption", amount, f"{source}: corruption increase"
         )
 
+    async def gain_experience(self, player: Player, amount: int, source: str = "unknown") -> None:
+        """Award experience to a player atomically. Delegates to ExperienceRepository."""
+        await self._experience_repo.gain_experience(player, amount, source)
+
     async def heal_player(self, player: Player, amount: int) -> None:
         """Heal a player. Delegates to HealthRepository."""
         await self._health_repo.heal_player(player, amount)

@@ -226,6 +226,70 @@ async def test_validate_combat_location_different_rooms(integration_service):
 
 
 @pytest.mark.asyncio
+async def test_validate_combat_location_combat_room_mismatch(integration_service):
+    """Test _validate_combat_location returns False when room_id does not match participant rooms."""
+    player_id = "player_001"
+    npc_id = "npc_001"
+    room_id = "room_001"
+    npc_instance = MagicMock()
+    npc_instance.current_room = room_id
+    integration_service._data_provider = MagicMock()
+    integration_service._data_provider.get_player_room_id = AsyncMock(return_value=room_id)
+    # Pass different combat_room_id (e.g. from stale command)
+    result = await integration_service._validate_combat_location(player_id, npc_id, "room_other", npc_instance)
+    assert result is False
+
+
+@pytest.mark.asyncio
+async def test_end_combat_if_participant_in_combat_ends_combat(integration_service):
+    """Test _end_combat_if_participant_in_combat ends combat when player is in one."""
+    player_id = str(uuid.uuid4())
+    npc_id = "npc_001"
+    combat_id = uuid.uuid4()
+    mock_combat = MagicMock()
+    mock_combat.combat_id = combat_id
+    integration_service._combat_service.get_combat_by_participant = AsyncMock(return_value=mock_combat)
+    integration_service._combat_service.end_combat = AsyncMock()
+    await integration_service._end_combat_if_participant_in_combat(player_id, npc_id)
+    integration_service._combat_service.get_combat_by_participant.assert_called_once()
+    integration_service._combat_service.end_combat.assert_called_once_with(
+        combat_id, "Invalid combat location - participants not in same room"
+    )
+
+
+@pytest.mark.asyncio
+async def test_end_combat_if_participant_in_combat_no_combat(integration_service):
+    """Test _end_combat_if_participant_in_combat does nothing when player not in combat."""
+    player_id = str(uuid.uuid4())
+    npc_id = "npc_001"
+    integration_service._combat_service.get_combat_by_participant = AsyncMock(return_value=None)
+    integration_service._combat_service.end_combat = AsyncMock()
+    await integration_service._end_combat_if_participant_in_combat(player_id, npc_id)
+    integration_service._combat_service.get_combat_by_participant.assert_called_once()
+    integration_service._combat_service.end_combat.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_handle_player_attack_on_npc_room_mismatch_ends_combat(integration_service):
+    """Test handle_player_attack_on_npc ends combat and returns False when rooms differ."""
+    player_id = str(uuid.uuid4())
+    npc_id = "npc_001"
+    room_id = "room_001"
+    npc_instance = MagicMock()
+    npc_instance.current_room = "room_002"
+    npc_instance.is_alive = True
+    integration_service._validate_and_get_npc_instance = AsyncMock(return_value=npc_instance)
+    integration_service._validate_combat_location = AsyncMock(return_value=False)
+    integration_service._combat_service.get_combat_by_participant = AsyncMock(
+        return_value=MagicMock(combat_id=uuid.uuid4())
+    )
+    integration_service._combat_service.end_combat = AsyncMock()
+    result = await integration_service.handle_player_attack_on_npc(player_id, npc_id, room_id)
+    assert result is False
+    integration_service._combat_service.end_combat.assert_called_once()
+
+
+@pytest.mark.asyncio
 async def test_handle_npc_death(integration_service):
     """Test handle_npc_death handles NPC death."""
     npc_id = "npc_001"
