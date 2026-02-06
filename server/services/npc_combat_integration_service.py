@@ -400,15 +400,12 @@ class NPCCombatIntegrationService:  # pylint: disable=too-many-instance-attribut
             target_uuid = self._uuid_mapping.convert_to_uuid(npc_id)
 
             # Always store the UUID-to-string ID mapping when we have a string ID
-            # This mapping is used later during XP calculation
             if not self._uuid_mapping.is_valid_uuid(npc_id):
-                # Only store mapping for string IDs
                 self._uuid_mapping.store_string_id_mapping(target_uuid, npc_id)
 
-                # Also store the XP value directly for this UUID
-                # This avoids the need to look it up from the lifecycle manager
-                # during XP calculation, since NPCs may be removed by then
-                await self._store_npc_xp_mapping(npc_id, target_uuid, room_id, player_id, first_engagement)
+            # Store XP value for this UUID in all cases (string ID or instance UUID).
+            # Target resolution passes instance UUID; get_npc_definition looks up by instance id in lifecycle_records.
+            await self._store_npc_xp_mapping(npc_id, target_uuid, room_id, player_id, first_engagement)
 
         except ValueError:
             attacker_uuid = uuid4()
