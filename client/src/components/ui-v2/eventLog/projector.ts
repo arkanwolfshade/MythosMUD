@@ -283,6 +283,17 @@ export function projectEvent(prevState: GameState, event: GameEvent): GameState 
           nextState = { ...nextState, room };
         }
       }
+      // Apply player_update from command response (e.g. position from /sit, /stand, /lie) so Character panel updates
+      const playerUpdatePayload = (event.data as { player_update?: { position?: string } }).player_update;
+      if (playerUpdatePayload?.position && nextState.player?.stats) {
+        nextState = {
+          ...nextState,
+          player: {
+            ...nextState.player,
+            stats: { ...nextState.player.stats, position: playerUpdatePayload.position },
+          },
+        };
+      }
       break;
     }
     case 'chat_message': {
