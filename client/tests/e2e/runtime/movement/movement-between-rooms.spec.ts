@@ -28,12 +28,28 @@ test.describe('Movement Between Rooms', () => {
     await waitForAllPlayersInGame(contexts, 60000);
     await ensurePlayerInGame(contexts[0], 60000);
     await ensurePlayerInGame(contexts[1], 60000);
-    // Movement broadcasts require both in same room. Force co-location: stand then move both north.
+    // Movement tests require both in the same room and that room must have an east exit
+    // (so AW can "go east" and Ithaqua sees "ArkanWolfshade leaves the room"). Co-locate
+    // via admin teleport, then move both to Main Foyer using path south -> west -> north
+    // (works from Laundry Room or from Main Foyer; both end in Main Foyer which has east).
     const [awContext, ithaquaContext] = contexts;
-    await ensureStanding(awContext.page, 10000);
+    await ensureStanding(awContext.page, 5000);
+    await executeCommand(awContext.page, 'teleport Ithaqua');
+    await new Promise(r => setTimeout(r, 3000));
+    await ensurePlayersInSameRoom(contexts, 2, 60000);
+    // Navigate both to Main Foyer (has east exit): south -> west -> north
+    await ensureStanding(awContext.page, 5000);
+    await executeCommand(awContext.page, 'go south');
+    await new Promise(r => setTimeout(r, 1500));
+    await executeCommand(awContext.page, 'go west');
+    await new Promise(r => setTimeout(r, 1500));
     await executeCommand(awContext.page, 'go north');
-    await new Promise(r => setTimeout(r, 2000));
-    await ensureStanding(ithaquaContext.page, 10000);
+    await new Promise(r => setTimeout(r, 1500));
+    await ensureStanding(ithaquaContext.page, 5000);
+    await executeCommand(ithaquaContext.page, 'go south');
+    await new Promise(r => setTimeout(r, 1500));
+    await executeCommand(ithaquaContext.page, 'go west');
+    await new Promise(r => setTimeout(r, 1500));
     await executeCommand(ithaquaContext.page, 'go north');
     await new Promise(r => setTimeout(r, 3000));
     await ensurePlayersInSameRoom(contexts, 2, 60000);

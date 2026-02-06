@@ -33,8 +33,13 @@ function hasCombatMessage(messages: string[]): boolean {
 
 function assertStillConnected(page: PlayerContext['page']): Promise<boolean> {
   return page.evaluate(() => {
-    const bodyText = document.body?.innerText ?? '';
-    return bodyText.includes('Connected') && !bodyText.includes('(linkdead)');
+    // Mirror multiplayer fixtures: any element whose text is exactly "Connected"
+    // or contains "Connected" without also containing "linkdead" counts as connected.
+    const statusElements = Array.from(document.querySelectorAll('*'));
+    return statusElements.some(el => {
+      const text = el.textContent?.trim() ?? '';
+      return text === 'Connected' || (text.includes('Connected') && !text.includes('linkdead'));
+    });
   });
 }
 
@@ -56,6 +61,22 @@ test.describe('Combat messages in Game Info', () => {
     const { page } = awContext;
 
     await ensurePlayerInGame(awContext, 15000);
+
+    // Dr. Francis Morgan is in Main Foyer. Ensure we are there (test order may leave us in Laundry etc.).
+    const inFoyer = await page.evaluate(() => {
+      const bodyText = document.body?.innerText ?? '';
+      return bodyText.includes('Main Foyer');
+    });
+    if (!inFoyer) {
+      // From Laundry: go south -> Eastern Hallway, go west -> Main Foyer. From Eastern Hallway: go west -> Main Foyer.
+      const hasLaundry = await page.evaluate(() => document.body?.innerText?.includes('Laundry Room') ?? false);
+      if (hasLaundry) {
+        await executeCommand(page, 'go south');
+        await page.waitForTimeout(1500);
+      }
+      await executeCommand(page, 'go west');
+      await page.waitForTimeout(1500);
+    }
 
     await executeCommand(page, 'attack Dr. Francis Morgan');
 

@@ -14,6 +14,9 @@ import pytest
 
 from server.services.catatonia_registry import CatatoniaRegistry
 
+# pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
+# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
+
 
 class TestCatatoniaRegistry:
     """Test suite for CatatoniaRegistry class."""
@@ -21,7 +24,7 @@ class TestCatatoniaRegistry:
     def test_init(self):
         """Test CatatoniaRegistry initialization."""
         registry = CatatoniaRegistry()
-        assert registry._catatonic == {}
+        assert not registry._catatonic
         assert registry._failover_callback is None
 
     def test_init_with_failover_callback(self):
@@ -192,7 +195,7 @@ class TestCatatoniaRegistry:
         """Test get_snapshot returns empty dict when no catatonic players."""
         registry = CatatoniaRegistry()
         snapshot = registry.get_snapshot()
-        assert snapshot == {}
+        assert not snapshot
 
     def test_get_snapshot_with_players(self):
         """Test get_snapshot returns copy of catatonic players."""

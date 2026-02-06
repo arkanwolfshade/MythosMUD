@@ -46,8 +46,8 @@ test.describe('Admin Teleportation', () => {
       // Message may succeed even if format differs
     });
 
-    // Verify Ithaqua sees teleportation message
-    await waitForCrossPlayerMessage(ithaquaContext, 'You are teleported to the south by ArkanWolfshade', 30000);
+    // Verify Ithaqua sees teleportation message (server sends with trailing period)
+    await waitForCrossPlayerMessage(ithaquaContext, /You are teleported to the south by ArkanWolfshade\.?/, 30000);
     const ithaquaMessages = await getPlayerMessages(ithaquaContext);
     const seesTeleportMessage = ithaquaMessages.some(
       msg => msg.includes('teleported') || msg.includes('ArkanWolfshade')

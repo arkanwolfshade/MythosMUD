@@ -28,13 +28,10 @@ test.describe('Local Channel Errors', () => {
     await ensurePlayerInGame(contexts[0], 60000);
     await ensurePlayerInGame(contexts[1], 60000);
 
-    // Local channel tests require both players in same room. Force co-location: stand then move both north.
-    const [awContext, ithaquaContext] = contexts;
+    // Local channel tests require both players in same room. Co-locate via admin teleport (reliable).
+    const [awContext] = contexts;
     await ensureStanding(awContext.page, 10000);
-    await executeCommand(awContext.page, 'go north');
-    await new Promise(r => setTimeout(r, 2000));
-    await ensureStanding(ithaquaContext.page, 10000);
-    await executeCommand(ithaquaContext.page, 'go north');
+    await executeCommand(awContext.page, 'teleport Ithaqua');
     await new Promise(r => setTimeout(r, 3000));
     await ensurePlayersInSameRoom(contexts, 2, 60000);
   });
@@ -109,6 +106,10 @@ test.describe('Local Channel Errors', () => {
     await ensurePlayerInGame(awContext, 15000);
     await ensurePlayerInGame(ithaquaContext, 15000);
     await ensurePlayersInSameRoom(contexts, 2, 15000);
+    // Re-ensure co-location immediately before sending (local is room-scoped; if receiver left room we'd timeout).
+    await ensurePlayerInGame(ithaquaContext, 10000);
+    await ensurePlayersInSameRoom(contexts, 2, 10000);
+    await new Promise(r => setTimeout(r, 2000));
 
     // Test special characters
     await executeCommand(awContext.page, 'local Message with special chars: !@#$%^&*()');
@@ -121,8 +122,12 @@ test.describe('Local Channel Errors', () => {
     const seesMessage = awMessages.some(msg => msg.includes('You say locally: Message with special chars: !@#$%^&*()'));
     expect(seesMessage).toBe(true);
 
-    // Verify Ithaqua sees the message
-    await waitForCrossPlayerMessage(ithaquaContext, 'ArkanWolfshade (local): Message with special chars: !@#$%^&*()');
+    // Verify Ithaqua sees the message (use RegExp to avoid regex metacharacters in string: ( ) * $ ^ etc.)
+    await waitForCrossPlayerMessage(
+      ithaquaContext,
+      /ArkanWolfshade \(local\): Message with special chars: !@#\$%\^&\*\(\)/,
+      35000
+    );
     const ithaquaMessages = await getPlayerMessages(ithaquaContext);
     const ithaquaSeesMessage = ithaquaMessages.some(msg =>
       msg.includes('ArkanWolfshade (local): Message with special chars: !@#$%^&*()')

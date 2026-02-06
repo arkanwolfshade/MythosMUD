@@ -1255,7 +1255,9 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
                 return False
 
             with open(mute_file, encoding="utf-8") as f:
-                data = json.load(f)
+                raw = f.read()
+            # Empty or whitespace-only file: treat as valid empty mute data (avoids JSONDecodeError)
+            data = json.loads(raw) if raw.strip() else {}
 
             # Load all mute types from JSON data
             self._load_player_mutes_from_data(data, player_id_uuid)

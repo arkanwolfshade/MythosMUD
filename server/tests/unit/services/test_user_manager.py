@@ -6,13 +6,16 @@ Tests the UserManager class.
 
 import json
 import uuid
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
 from server.services.user_manager import UserManager
+
+# pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
+# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
 
 
 @pytest.fixture
@@ -22,9 +25,10 @@ def mock_data_dir(tmp_path):
 
 
 @pytest.fixture
-def user_manager(mock_data_dir):
+def user_manager(request):
     """Create a UserManager instance."""
-    return UserManager(data_dir=mock_data_dir)
+    data_dir = request.getfixturevalue("mock_data_dir")
+    return UserManager(data_dir=data_dir)
 
 
 def test_user_manager_init(user_manager, mock_data_dir):
@@ -349,8 +353,6 @@ def test_get_player_mute_file(user_manager):
 def test_is_cache_valid_true(user_manager):
     """Test _is_cache_valid() returns True for valid cache."""
     player_id = uuid.uuid4()
-    from datetime import UTC, datetime
-
     user_manager._mute_cache[player_id] = (datetime.now(UTC), True)
     result = user_manager._is_cache_valid(player_id)
     assert result is True
@@ -359,7 +361,6 @@ def test_is_cache_valid_true(user_manager):
 def test_is_cache_valid_false_expired(user_manager):
     """Test _is_cache_valid() returns False for expired cache."""
     player_id = uuid.uuid4()
-    from datetime import UTC, datetime, timedelta
 
     # Set cache to expired time
     expired_time = datetime.now(UTC) - timedelta(seconds=400)  # More than TTL (300)
@@ -466,6 +467,21 @@ def test_load_player_mutes_file_not_exists(user_manager):
     """Test load_player_mutes() returns False when file doesn't exist."""
     result = user_manager.load_player_mutes(uuid.uuid4())
     assert result is False
+
+
+def test_load_player_mutes_empty_file(user_manager, tmp_path):
+    """Test load_player_mutes() treats empty or whitespace-only file as valid empty mute data."""
+    user_manager.data_dir = tmp_path
+    player_id = uuid.uuid4()
+    mute_file = user_manager._get_player_mute_file(player_id)
+    mute_file.write_text("")
+    result = user_manager.load_player_mutes(player_id)
+    assert result is True
+    assert player_id not in user_manager._player_mutes
+    assert player_id not in user_manager._channel_mutes
+    assert player_id in user_manager._mute_cache
+    _, valid = user_manager._mute_cache[player_id]
+    assert valid is True
 
 
 def test_load_player_mutes_invalid_json(user_manager, tmp_path):

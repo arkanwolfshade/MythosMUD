@@ -157,12 +157,14 @@ export function projectEvent(prevState: GameState, event: GameEvent): GameState 
     case 'player_update': {
       const data = event.data as { in_combat?: boolean; stats?: Record<string, unknown> };
       if (prevState.player) {
+        const mergedStats =
+          data.stats && prevState.player.stats
+            ? ({ ...prevState.player.stats, ...data.stats } as NonNullable<Player['stats']>)
+            : prevState.player.stats;
         const updated: Player = {
           ...prevState.player,
           ...(data.in_combat !== undefined && { in_combat: data.in_combat }),
-          ...(data.stats && {
-            stats: { ...prevState.player.stats, ...data.stats },
-          }),
+          ...(mergedStats !== undefined && { stats: mergedStats }),
         };
         nextState = { ...prevState, player: updated };
       }
@@ -483,7 +485,10 @@ export function projectEvent(prevState: GameState, event: GameEvent): GameState 
         }
       }
 
-      if (tickNumber % 23 === 0 && tickNumber >= 0) {
+      // Server broadcasts game_tick every 10 ticks (0, 10, 20, ...). Show [Tick N] for each
+      // so E2E can detect room subscription within ~1–2s; previously % 23 meant only tick 0
+      // was ever shown after connect, causing "no tick message" timeouts.
+      if (tickNumber % 10 === 0 && tickNumber >= 0) {
         const tickMsg = buildChatMessage(`[Tick ${tickNumber}]`, event.timestamp, {
           messageType: 'system',
           channel: 'system',
