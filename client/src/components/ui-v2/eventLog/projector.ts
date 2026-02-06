@@ -485,10 +485,8 @@ export function projectEvent(prevState: GameState, event: GameEvent): GameState 
         }
       }
 
-      // Server broadcasts game_tick every 10 ticks (0, 10, 20, ...). Show [Tick N] for each
-      // so E2E can detect room subscription within ~1–2s; previously % 23 meant only tick 0
-      // was ever shown after connect, causing "no tick message" timeouts.
-      if (tickNumber % 10 === 0 && tickNumber >= 0) {
+      // Server broadcasts game_tick; show [Tick N] every 23 ticks (0, 23, 46, ...).
+      if (tickNumber % 23 === 0 && tickNumber >= 0) {
         const tickMsg = buildChatMessage(`[Tick ${tickNumber}]`, event.timestamp, {
           messageType: 'system',
           channel: 'system',

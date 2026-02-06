@@ -301,26 +301,26 @@ describe('projector', () => {
       expect(next.mythosTime?.daypart).toBe('afternoon');
     });
 
-    it('appends [Tick N] message when tick_number is divisible by 10', () => {
-      const prev = getInitialGameState();
-      const event: GameEvent = {
-        event_type: 'game_tick',
-        timestamp: new Date().toISOString(),
-        sequence_number: 1,
-        data: { tick_number: 20 },
-      };
-      const next = projectEvent(prev, event);
-      expect(next.messages.length).toBe(1);
-      expect(next.messages[0].text).toBe('[Tick 20]');
-    });
-
-    it('does not append tick message when tick_number is not divisible by 10', () => {
+    it('appends [Tick N] message every 23 ticks', () => {
       const prev = getInitialGameState();
       const event: GameEvent = {
         event_type: 'game_tick',
         timestamp: new Date().toISOString(),
         sequence_number: 1,
         data: { tick_number: 23 },
+      };
+      const next = projectEvent(prev, event);
+      expect(next.messages.length).toBe(1);
+      expect(next.messages[0].text).toBe('[Tick 23]');
+    });
+
+    it('does not append tick message for non-23rd ticks', () => {
+      const prev = getInitialGameState();
+      const event: GameEvent = {
+        event_type: 'game_tick',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { tick_number: 50 },
       };
       const next = projectEvent(prev, event);
       expect(next.messages.length).toBe(0);
