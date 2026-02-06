@@ -24,6 +24,8 @@ describe('useRespawnHandlers', () => {
   const mockSetIsRespawning = vi.fn();
   const mockSetIsDelirious = vi.fn();
   const mockSetIsDeliriumRespawning = vi.fn();
+  const mockSetHasRespawned = vi.fn();
+  const mockAppendRespawnEvent = vi.fn();
 
   const defaultParams = {
     authToken: 'test-token',
@@ -33,6 +35,8 @@ describe('useRespawnHandlers', () => {
     setIsRespawning: mockSetIsRespawning,
     setIsDelirious: mockSetIsDelirious,
     setIsDeliriumRespawning: mockSetIsDeliriumRespawning,
+    setHasRespawned: mockSetHasRespawned,
+    appendRespawnEvent: mockAppendRespawnEvent,
   };
 
   beforeEach(() => {

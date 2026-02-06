@@ -3,6 +3,7 @@
 
 import { useCallback } from 'react';
 import { logger } from '../../../utils/logger';
+import type { GameEvent } from '../eventHandlers/types';
 import type { ChatMessage, Player, Room } from '../types';
 import { sanitizeChatMessageForState } from '../utils/messageUtils';
 import type { GameState } from '../utils/stateUpdateUtils';
@@ -15,6 +16,8 @@ interface UseRespawnHandlersParams {
   setIsRespawning: (respawning: boolean) => void;
   setIsDelirious: (delirious: boolean) => void;
   setIsDeliriumRespawning: (respawning: boolean) => void;
+  setHasRespawned: (hasRespawned: boolean) => void;
+  appendRespawnEvent: (event: GameEvent) => void;
 }
 
 export const useRespawnHandlers = ({
@@ -25,6 +28,8 @@ export const useRespawnHandlers = ({
   setIsRespawning,
   setIsDelirious,
   setIsDeliriumRespawning,
+  setHasRespawned,
+  appendRespawnEvent,
 }: UseRespawnHandlersParams) => {
   const handleDeliriumRespawn = useCallback(async () => {
     logger.info('GameClientV2Container', 'Delirium respawn requested');
@@ -116,20 +121,6 @@ export const useRespawnHandlers = ({
   }, [authToken, setGameState, setIsDelirious, setIsDeliriumRespawning]);
 
   const handleRespawn = useCallback(async () => {
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        location: 'useRespawnHandlers.ts:handleRespawn:entry',
-        message: 'handleRespawn called',
-        data: {},
-        timestamp: Date.now(),
-        sessionId: 'debug-session',
-        hypothesisId: 'H4',
-      }),
-    }).catch(() => {});
-    // #endregion
     logger.info('GameClientV2Container', 'Respawn requested');
     setIsRespawning(true);
 
@@ -166,32 +157,21 @@ export const useRespawnHandlers = ({
       }
 
       const respawnData = await response.json();
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          location: 'useRespawnHandlers.ts:handleRespawn:success',
-          message: 'respawn API success, about to call setIsDead(false)',
-          data: {
-            playerDp: respawnData.player?.stats?.current_dp ?? respawnData.player?.dp,
-            roomId: respawnData.room?.id,
-          },
-          timestamp: Date.now(),
-          sessionId: 'debug-session',
-          hypothesisId: 'H4',
-        }),
-      }).catch(() => {});
-      // #endregion
       logger.info('GameClientV2Container', 'Respawn successful', {
         room: respawnData.room,
         player: respawnData.player,
       });
 
-      setIsDead(false);
-      setIsMortallyWounded(false);
-      setIsRespawning(false);
+      // Normalize player so event log has stats.current_dp (API may return .dp at top level).
+      const normalizedPlayer = {
+        ...respawnData.player,
+        stats: {
+          ...respawnData.player?.stats,
+          current_dp: respawnData.player.dp ?? respawnData.player?.stats?.current_dp,
+        },
+      } as Player;
 
+      // Update player/room first so usePlayerStatusEffects sees new DP before we clear isDead.
       setGameState(prev => ({
         ...prev,
         player: {
@@ -205,6 +185,19 @@ export const useRespawnHandlers = ({
         room: respawnData.room as Room,
       }));
 
+      // Append synthetic event so event-log projection keeps respawned state (stops later events from overwriting).
+      appendRespawnEvent({
+        event_type: 'player_respawned',
+        timestamp: new Date().toISOString(),
+        sequence_number: 0,
+        data: { player: normalizedPlayer, room: respawnData.room },
+      });
+
+      setIsDead(false);
+      setIsMortallyWounded(false);
+      setIsRespawning(false);
+      setHasRespawned(true);
+
       const respawnMessage: ChatMessage = sanitizeChatMessageForState({
         text: 'You feel a chilling wind as your form reconstitutes in Arkham General Hospital...',
         timestamp: new Date().toISOString(),
@@ -217,20 +210,6 @@ export const useRespawnHandlers = ({
         messages: [...prev.messages, respawnMessage],
       }));
     } catch (error) {
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          location: 'useRespawnHandlers.ts:handleRespawn:catch',
-          message: 'handleRespawn catch block',
-          data: { error: String(error) },
-          timestamp: Date.now(),
-          sessionId: 'debug-session',
-          hypothesisId: 'H4',
-        }),
-      }).catch(() => {});
-      // #endregion
       logger.error('GameClientV2Container', 'Error calling respawn API', { error });
 
       const errorMessage: ChatMessage = sanitizeChatMessageForState({
@@ -247,7 +226,7 @@ export const useRespawnHandlers = ({
 
       setIsRespawning(false);
     }
-  }, [authToken, setGameState, setIsDead, setIsMortallyWounded, setIsRespawning]);
+  }, [authToken, setGameState, setIsDead, setIsMortallyWounded, setIsRespawning, setHasRespawned, appendRespawnEvent]);
 
   return { handleRespawn, handleDeliriumRespawn };
 };

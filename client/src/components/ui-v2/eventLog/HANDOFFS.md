@@ -1,5 +1,9 @@
 # Critical State Handoffs (Request/Response vs Push-Only)
 
+**Authority:** The server is always authoritative over the client. If there is a disparity, the server is
+assumed to be correct; client state must be updated from server payloads (room_state, game_state, command
+responses).
+
 As documented in the Client Updates System Audit plan (Option C3). This file records which
 critical handoffs use request/response (to avoid ordering bugs) and which remain push-only.
 

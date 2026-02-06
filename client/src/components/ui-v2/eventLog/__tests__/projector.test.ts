@@ -4,16 +4,20 @@
 
 import { describe, expect, it, vi } from 'vitest';
 import type { GameEvent } from '../../eventHandlers/types';
+import type { ChatMessage } from '../../types';
 import { getInitialGameState, projectEvent, projectState } from '../projector';
 import type { EventLog } from '../types';
 
 vi.mock('../../utils/messageUtils', () => ({
-  sanitizeChatMessageForState: (msg: { text: string; timestamp: string; isHtml: boolean }) => ({
-    ...msg,
-    messageType: msg.messageType ?? 'system',
-    channel: msg.channel ?? 'game',
-    type: msg.type ?? 'say',
-  }),
+  sanitizeChatMessageForState: (msg: unknown) => {
+    const m = msg as ChatMessage;
+    return {
+      ...m,
+      messageType: m.messageType ?? 'system',
+      channel: m.channel ?? 'game',
+      type: m.type ?? 'say',
+    };
+  },
 }));
 
 describe('projector', () => {
@@ -177,6 +181,49 @@ describe('projector', () => {
     it('returns initial state for empty log', () => {
       const state = projectState([]);
       expect(state).toEqual(getInitialGameState());
+    });
+
+    it('player_respawned with player and room updates both player and room in projected state', () => {
+      const log: EventLog = [
+        {
+          event_type: 'game_state',
+          timestamp: new Date().toISOString(),
+          sequence_number: 1,
+          data: {
+            player: { name: 'TestPlayer', stats: { current_dp: -10, lucidity: 50 } },
+            room: {
+              id: 'some_combat_room',
+              name: 'Combat Room',
+              description: 'Where you died.',
+              exits: {},
+            },
+          },
+        },
+        {
+          event_type: 'player_respawned',
+          timestamp: new Date().toISOString(),
+          sequence_number: 2,
+          data: {
+            player: {
+              name: 'TestPlayer',
+              stats: { current_dp: 27, lucidity: 50 },
+            },
+            room: {
+              id: 'earth_arkhamcity_sanitarium_room_foyer_001',
+              name: 'Sanitarium Foyer',
+              description: 'You have been restored here.',
+              exits: { south: 'other' },
+            },
+          },
+        },
+      ];
+      const state = projectState(log);
+      expect(state.player).not.toBeNull();
+      expect(state.player?.stats?.current_dp).toBe(27);
+      expect(state.player?.name).toBe('TestPlayer');
+      expect(state.room).not.toBeNull();
+      expect(state.room?.id).toBe('earth_arkhamcity_sanitarium_room_foyer_001');
+      expect(state.room?.name).toBe('Sanitarium Foyer');
     });
 
     it('room_state is authoritative (replaces room for same id)', () => {

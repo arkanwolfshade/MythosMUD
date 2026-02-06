@@ -49,20 +49,6 @@ export interface PlayerContext {
  * @returns Array of PlayerContext objects
  */
 export async function createMultiPlayerContexts(browser: Browser, playerUsernames: string[]): Promise<PlayerContext[]> {
-  // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      location: 'multiplayer.ts:createMultiPlayerContexts:entry',
-      message: 'createMultiPlayerContexts started',
-      data: { playerUsernames },
-      timestamp: Date.now(),
-      sessionId: 'debug-session',
-      hypothesisId: 'C',
-    }),
-  }).catch(() => {});
-  // #endregion
   const contexts: PlayerContext[] = [];
 
   // Ensure server is ready before any login (avoids first-player "still on login" when server cold)
@@ -91,21 +77,6 @@ export async function createMultiPlayerContexts(browser: Browser, playerUsername
     if (i === 0) {
       await new Promise(r => setTimeout(r, 2000));
     }
-
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        location: 'multiplayer.ts:createMultiPlayerContexts:afterLogin',
-        message: 'loginPlayer completed for player',
-        data: { username, index: i },
-        timestamp: Date.now(),
-        sessionId: 'debug-session',
-        hypothesisId: 'B',
-      }),
-    }).catch(() => {});
-    // #endregion
 
     contexts.push({ context, page, player });
   }
@@ -146,21 +117,6 @@ export async function waitForAllPlayersInGame(
   contexts: PlayerContext[],
   timeoutMs: number = TEST_TIMEOUTS.GAME_LOAD
 ): Promise<void> {
-  // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      location: 'multiplayer.ts:waitForAllPlayersInGame:entry',
-      message: 'waitForAllPlayersInGame started',
-      data: { contextCount: contexts.length, usernames: contexts.map(c => c.player.username) },
-      timestamp: Date.now(),
-      sessionId: 'debug-session',
-      hypothesisId: 'D',
-    }),
-  }).catch(() => {});
-  // #endregion
-
   // Step 1: Wait for all players to reach game UI (not on login screen)
   // Broadened detection: command input, Game Info, game terminal, Player header, Mythos Time, or room content
   await Promise.all(

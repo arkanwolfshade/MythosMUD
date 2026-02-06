@@ -13,6 +13,7 @@ MythosMUD is a Cthulhu Mythos-themed MUD (Multi-User Dungeon) built with:
 **Frontend**: React, TypeScript
 
 **Architecture**: Client-server with WebSocket real-time communication
+
 - **Testing**: pytest with 80%+ coverage requirement
 
 ---
@@ -224,6 +225,12 @@ Always verify current branch before git operations
 ---
 
 ## 🏗️ Architecture Guidelines
+
+### Server Authority (Critical)
+
+**The server is always authoritative over the client.** If there is a disparity between server state and client
+state, the server is assumed to be correct. Client state must be updated to match server data; never treat
+client-held state as the source of truth when it conflicts with server responses or events.
 
 ### Implementation Requirements
 

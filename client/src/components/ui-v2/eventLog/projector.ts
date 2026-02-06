@@ -6,7 +6,7 @@ import { logger } from '../../../utils/logger';
 import { determineMessageType } from '../../../utils/messageTypeUtils';
 import { buildMythosTimeState, formatMythosTime12Hour } from '../../../utils/mythosTime';
 import type { GameEvent } from '../eventHandlers/types';
-import type { ChatMessage, Player } from '../types';
+import type { ChatMessage, Player, Room } from '../types';
 import { sanitizeChatMessageForState } from '../utils/messageUtils';
 import { mergeRoomState } from '../utils/roomMergeUtils';
 import type { GameState } from '../utils/stateUpdateUtils';
@@ -185,8 +185,12 @@ export function projectEvent(prevState: GameState, event: GameEvent): GameState 
     case 'player_delirium_respawned':
     case 'playerdeliriumrespawned': {
       const player = event.data.player as Player | undefined;
+      const room = event.data.room as Room | undefined;
       if (player) {
         nextState = { ...prevState, player };
+      }
+      if (room) {
+        nextState = { ...nextState, room };
       }
       break;
     }

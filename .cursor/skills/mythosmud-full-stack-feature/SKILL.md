@@ -9,11 +9,18 @@ description: Implement MythosMUD features across the full stack: client (React/T
 
 When implementing a feature, implement the **entire stack**: client, server, and persistence (where applicable).
 
+## Authority
+
+**Server is authoritative over the client.** On any disparity, server state is correct; client must follow
+server data (events, command responses, room/game state). See CLAUDE.md "SERVER AUTHORITY" and
+`.cursor/rules/server-authority.mdc`.
+
 ## Checklist
 
 - [ ] **API / server:** Routes, request/response models (Pydantic), business logic. Location: `server/`
-- [ ] **Persistence:** Schema changes, migrations, repositories if needed. PostgreSQL only; see [mythosmud-database-placement](.cursor/skills/mythosmud-database-placement). Location: `db/`, `server/`
-- [ ] **Client:** UI, hooks, API calls, types. Location: `client/`
+- [ ] **Persistence:** Schema changes, migrations, repositories if needed. PostgreSQL only; see
+  [mythosmud-database-placement](.cursor/skills/mythosmud-database-placement). Location: `db/`, `server/`
+- [ ] **Client:** UI, hooks, API calls, types. Location: `client/`. Client state must reflect server authority.
 - [ ] **Terminology:** Use "coordinator" or "controller," not "master"; use "agent," not "slave"
 
 ## Stack Summary

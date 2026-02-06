@@ -94,6 +94,19 @@ Before running ANY server command, ask yourself:
 
 ---
 
+## 🎯 SERVER AUTHORITY (CRITICAL)
+
+**The server is always authoritative over the client.** If there is a disparity between server state and client
+state, the server is assumed to be correct. Client state must be updated to match server data; never treat
+client-held state as the source of truth when it conflicts with server responses or events.
+
+- **On sync conflicts:** Prefer server payloads (e.g. `room_state`, `game_state`, command responses) over
+  client-inferred or cached state.
+- **Bug investigation:** When behavior differs between client and server, assume the server implementation is
+  correct unless proven otherwise; fix client handling or display to align with server.
+
+---
+
 ## 📊 DATABASE PLACEMENT RULES
 
 ### CRITICAL DATABASE PLACEMENT RULES
