@@ -183,18 +183,18 @@ if IN_CI:
     verify_env = os.environ.copy()
     if IN_CI and venv_python and sys_executable_normalized == venv_python:
         # We're in CI using a symlinked venv Python - need to set VIRTUAL_ENV and PYTHONPATH
-        # to ensure it uses the venv's site-packages
+        # to ensure it uses the venv's site-packages and the project is importable
         venv_dir = os.path.dirname(os.path.dirname(venv_python))  # Go up from bin/python
         venv_site_packages = os.path.join(venv_dir, "lib", "python3.12", "site-packages")
         verify_env["VIRTUAL_ENV"] = venv_dir
-        # PYTHONPATH must include the venv's site-packages for symlinked Python to find packages
-        existing_pythonpath = verify_env.get("PYTHONPATH", "")
-        if existing_pythonpath:
-            verify_env["PYTHONPATH"] = f"{venv_site_packages}:{existing_pythonpath}"
-        else:
-            verify_env["PYTHONPATH"] = venv_site_packages
+        path_sep = os.pathsep
+        existing_verify_path = verify_env.get("PYTHONPATH", "")
+        verify_parts = [PROJECT_ROOT, venv_site_packages]
+        if existing_verify_path:
+            verify_parts.append(existing_verify_path)
+        verify_env["PYTHONPATH"] = path_sep.join(verify_parts)
         print(f"[VERIFICATION] Setting VIRTUAL_ENV={venv_dir} to ensure venv site-packages are used")
-        print(f"[VERIFICATION] Setting PYTHONPATH={venv_site_packages} to ensure packages are found")
+        print("[VERIFICATION] Setting PYTHONPATH with PROJECT_ROOT and venv site-packages")
 
     try:
         # First, verify the Python path is what we expect
@@ -256,14 +256,17 @@ if IN_CI:
         venv_dir = os.path.dirname(os.path.dirname(venv_python))  # Go up from bin/python to venv root
         venv_site_packages = os.path.join(venv_dir, "lib", "python3.12", "site-packages")
         env["VIRTUAL_ENV"] = venv_dir
-        # PYTHONPATH must include the venv's site-packages for symlinked Python to find packages
+        # PYTHONPATH: project root first (so 'server' is importable), then venv site-packages
+        path_sep = os.pathsep
         existing_pythonpath = env.get("PYTHONPATH", "")
+        parts = [PROJECT_ROOT, venv_site_packages]
         if existing_pythonpath:
-            env["PYTHONPATH"] = f"{venv_site_packages}:{existing_pythonpath}"
-        else:
-            env["PYTHONPATH"] = venv_site_packages
+            parts.append(existing_pythonpath)
+        env["PYTHONPATH"] = path_sep.join(parts)
         print(f"[INFO] Setting VIRTUAL_ENV={venv_dir} to ensure venv site-packages are used for pytest")
-        print(f"[INFO] Setting PYTHONPATH={venv_site_packages} to ensure packages are found")
+        print(
+            f"[INFO] Setting PYTHONPATH={PROJECT_ROOT}{path_sep}{venv_site_packages}... to ensure packages and project are found"
+        )
 
     # Run tests with coverage
     safe_run_static(
@@ -320,15 +323,15 @@ else:
     except subprocess.CalledProcessError as e:
         # Check if error is due to corrupted Docker build cache
         # Error message typically contains "parent snapshot" and "does not exist"
-        error_output = ""
+        collected_error_output = ""
         if e.stderr:
-            error_output += str(e.stderr)
+            collected_error_output += str(e.stderr)
         if e.stdout:
-            error_output += str(e.stdout)
+            collected_error_output += str(e.stdout)
         if hasattr(e, "output") and e.output:
-            error_output += str(e.output)
+            collected_error_output += str(e.output)
 
-        if "parent snapshot" in error_output and "does not exist" in error_output:
+        if "parent snapshot" in collected_error_output and "does not exist" in collected_error_output:
             print("Docker build cache appears corrupted. Retrying with --no-cache...")
             safe_run_static(
                 "docker",
