@@ -73,6 +73,11 @@ describe('HeaderBar', () => {
       expect(screen.getByText('Disconnected')).toBeInTheDocument();
     });
 
+    it('should render Reconnecting... when isConnecting and reconnectAttempts > 0', () => {
+      render(<HeaderBar {...defaultProps} isConnected={false} isConnecting={true} reconnectAttempts={2} />);
+      expect(screen.getByText('Reconnecting...')).toBeInTheDocument();
+    });
+
     it('should render error message when error is present', () => {
       render(<HeaderBar {...defaultProps} error="Connection failed" />);
       expect(screen.getByText('Connection failed')).toBeInTheDocument();

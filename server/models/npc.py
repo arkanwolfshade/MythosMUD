@@ -9,7 +9,7 @@ and relationships that support the NPC subsystem.
 
 import json
 from datetime import UTC, datetime
-from enum import Enum
+from enum import StrEnum
 from typing import Any, cast
 
 from sqlalchemy import (
@@ -35,7 +35,7 @@ class Base(DeclarativeBase):
     metadata = npc_metadata
 
 
-class NPCDefinitionType(str, Enum):
+class NPCDefinitionType(StrEnum):
     """Enumeration of valid NPC definition types."""
 
     SHOPKEEPER = "shopkeeper"

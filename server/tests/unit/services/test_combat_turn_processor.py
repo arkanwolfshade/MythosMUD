@@ -9,7 +9,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from server.models.combat import CombatParticipant, CombatParticipantType, CombatStatus
+from server.models.combat import CombatAction, CombatParticipant, CombatParticipantType, CombatStatus
 from server.services.combat_turn_processor import CombatTurnProcessor
 
 
@@ -149,6 +149,74 @@ async def test_execute_round_with_participants(combat_turn_processor, mock_comba
 
 
 @pytest.mark.asyncio
+async def test_execute_round_stale_queued_attack_uses_default_action(combat_turn_processor, mock_combat):  # pylint: disable=redefined-outer-name  # Reason: pytest fixture parameter injection
+    """Stale queued attack (target not in combat) does not raise and uses default action instead.
+
+    Simulates: first combat ended, new combat started with second NPC; a queued action
+    still references the first (slain) NPC. We must not call process_attack with that
+    target_id and must not raise 'Target is not in this combat'.
+    """
+    from uuid import uuid4
+
+    player_id = uuid4()
+    npc_second_id = uuid4()
+    stale_npc_id = uuid4()  # First NPC (not in this combat)
+
+    player = CombatParticipant(
+        participant_id=player_id,
+        participant_type=CombatParticipantType.PLAYER,
+        name="Player",
+        current_dp=50,
+        max_dp=100,
+        dexterity=90,
+    )
+    npc_second = CombatParticipant(
+        participant_id=npc_second_id,
+        participant_type=CombatParticipantType.NPC,
+        name="NPC_second",
+        current_dp=50,
+        max_dp=100,
+        dexterity=50,
+    )
+
+    next_round = 1
+    stale_action = CombatAction(
+        attacker_id=player_id,
+        target_id=stale_npc_id,  # Not in combat.participants
+        action_type="attack",
+        damage=10,
+        round=next_round,
+    )
+
+    mock_combat.combat_round = 0
+    mock_combat.combat_id = uuid4()
+    mock_combat.participants = {player_id: player, npc_second_id: npc_second}
+    mock_combat.queued_actions = {player_id: [stale_action]}
+    mock_combat.round_actions = {}
+    mock_combat.get_participants_by_initiative = MagicMock(return_value=[player, npc_second])
+    mock_combat.clear_queued_actions = MagicMock()
+    mock_combat.advance_turn = MagicMock()
+    mock_combat.update_activity = MagicMock()
+
+    combat_turn_processor._combat_service.process_attack = AsyncMock()
+    combat_turn_processor._combat_service.end_combat = AsyncMock()
+    combat_turn_processor._execute_default_action = AsyncMock()
+
+    await combat_turn_processor._execute_round(mock_combat, 100)  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test requires direct access to protected method
+
+    # Must not call process_attack with the stale target (would raise "Target is not in this combat")
+    process_attack_calls = combat_turn_processor._combat_service.process_attack.call_args_list  # pylint: disable=protected-access  # noqa: SLF001
+    for call in process_attack_calls:
+        kwargs = call[1] if len(call) > 1 else {}
+        target_id = kwargs.get("target_id")
+        assert target_id != stale_npc_id, "process_attack must not be called with stale target_id"
+
+    # Stale path: we fall back to default action for the player, then default for NPC
+    assert combat_turn_processor._execute_default_action.call_count >= 1  # pylint: disable=protected-access  # noqa: SLF001
+    mock_combat.advance_turn.assert_called_once_with(100)
+
+
+@pytest.mark.asyncio
 async def test_process_npc_turn_npc_dead(combat_turn_processor, mock_combat):  # pylint: disable=redefined-outer-name  # Reason: pytest fixture parameter injection - parameter names must match fixture names
     """Test _process_npc_turn() when NPC is dead (DP <= 0)."""
     npc = CombatParticipant(
@@ -254,3 +322,101 @@ async def test_process_player_turn_casting_spell(combat_turn_processor, mock_com
     combat_turn_processor._combat_service.magic_service = mock_magic_service  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test setup requires access to protected member for mock injection
     await combat_turn_processor._process_player_turn(mock_combat, player, 100)  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test requires direct access to protected method for unit testing
     # Should skip autoattack when casting
+
+
+@pytest.mark.asyncio
+async def test_process_player_turn_fallback_to_basic_unarmed_damage_when_no_app(
+    combat_turn_processor, mock_combat, monkeypatch
+):  # pylint: disable=redefined-outer-name  # Reason: pytest fixture parameter injection
+    """When config has no _app_instance, process_attack is called with basic_unarmed_damage and damage_type physical."""
+    from uuid import uuid4
+
+    player_id = uuid4()
+    target_id = uuid4()
+    player = CombatParticipant(
+        participant_id=player_id,
+        participant_type=CombatParticipantType.PLAYER,
+        name="Player",
+        current_dp=50,
+        max_dp=50,
+        dexterity=12,
+        is_active=True,
+        last_action_tick=None,
+    )
+    target = CombatParticipant(
+        participant_id=target_id,
+        participant_type=CombatParticipantType.NPC,
+        name="Target",
+        current_dp=30,
+        max_dp=30,
+        dexterity=10,
+        is_active=True,
+        last_action_tick=None,
+    )
+    mock_combat.participants = {player_id: player, target_id: target}
+
+    mock_config = MagicMock()
+    mock_config.game.basic_unarmed_damage = 10
+    mock_config._app_instance = None
+    combat_turn_processor._combat_service.process_attack = AsyncMock()  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test assertion requires mock
+    combat_turn_processor._combat_service.magic_service = None  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Ensure casting check does not skip autoattack
+
+    monkeypatch.setattr("server.services.combat_turn_processor.get_config", lambda: mock_config)
+    await combat_turn_processor._process_player_turn(mock_combat, player, 100)  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test requires direct access to protected method
+
+    combat_turn_processor._combat_service.process_attack.assert_called_once()  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test assertion
+    call_kw = combat_turn_processor._combat_service.process_attack.call_args[1]  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test assertion
+    assert call_kw["damage"] == 10
+    assert call_kw["damage_type"] == "physical"
+
+
+@pytest.mark.asyncio
+async def test_process_player_turn_fallback_to_basic_unarmed_damage_when_no_player_from_persistence(
+    combat_turn_processor, mock_combat, monkeypatch
+):  # pylint: disable=redefined-outer-name  # Reason: pytest fixture parameter injection
+    """When player_service.get_player_by_id returns None, process_attack uses basic_unarmed_damage."""
+    from uuid import uuid4
+
+    player_id = uuid4()
+    target_id = uuid4()
+    player = CombatParticipant(
+        participant_id=player_id,
+        participant_type=CombatParticipantType.PLAYER,
+        name="Player",
+        current_dp=50,
+        max_dp=50,
+        dexterity=12,
+        is_active=True,
+        last_action_tick=None,
+    )
+    target = CombatParticipant(
+        participant_id=target_id,
+        participant_type=CombatParticipantType.NPC,
+        name="Target",
+        current_dp=30,
+        max_dp=30,
+        dexterity=10,
+        is_active=True,
+        last_action_tick=None,
+    )
+    mock_combat.participants = {player_id: player, target_id: target}
+
+    mock_config = MagicMock()
+    mock_config.game.basic_unarmed_damage = 10
+    mock_app = MagicMock()
+    mock_app.state.container.player_service = MagicMock()
+    mock_app.state.container.player_service.persistence.get_player_by_id = AsyncMock(return_value=None)
+    mock_app.state.container.item_prototype_registry = MagicMock()
+    mock_app.state.container.async_persistence = MagicMock()
+    mock_config._app_instance = mock_app
+
+    combat_turn_processor._combat_service.process_attack = AsyncMock()  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test assertion requires mock
+    combat_turn_processor._combat_service.magic_service = None  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Ensure casting check does not skip autoattack
+
+    monkeypatch.setattr("server.services.combat_turn_processor.get_config", lambda: mock_config)
+    await combat_turn_processor._process_player_turn(mock_combat, player, 100)  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test requires direct access to protected method
+
+    combat_turn_processor._combat_service.process_attack.assert_called_once()  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test assertion
+    call_kw = combat_turn_processor._combat_service.process_attack.call_args[1]  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test assertion
+    assert call_kw["damage"] == 10
+    assert call_kw["damage_type"] == "physical"

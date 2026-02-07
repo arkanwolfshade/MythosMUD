@@ -217,6 +217,27 @@ class NPCInstanceService:
             if npc_id not in self.lifecycle_manager.active_npcs:
                 raise ValueError(f"NPC instance {npc_id} not found")
 
+            # Block movement while NPC is in combat (normal move equivalent)
+            try:
+                from server.services.combat_service import get_combat_service
+
+                combat_service = get_combat_service()
+                if combat_service and combat_service.is_npc_in_combat_sync(npc_id):
+                    npc_name = getattr(self.lifecycle_manager.active_npcs[npc_id], "name", "Unknown")
+                    logger.info(
+                        "NPC move blocked - NPC in combat",
+                        npc_id=npc_id,
+                        npc_name=npc_name,
+                        new_room_id=new_room_id,
+                    )
+                    return {
+                        "success": False,
+                        "npc_id": npc_id,
+                        "message": f"Cannot move {npc_name} while in combat.",
+                    }
+            except (ImportError, AttributeError, RuntimeError):
+                pass
+
             # Get NPC info
             npc_instance = self.lifecycle_manager.active_npcs[npc_id]
             npc_name = getattr(npc_instance, "name", "Unknown")

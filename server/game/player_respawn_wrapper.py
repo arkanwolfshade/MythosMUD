@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING, Any
 
 from ..exceptions import ValidationError
 from ..models.player import Player
+from ..services.player_respawn_service import LIMBO_ROOM_ID
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.enhanced_error_logging import create_error_context, log_and_raise_enhanced
 
@@ -85,9 +86,16 @@ class PlayerRespawnWrapper:
                 user_friendly="Player not found",
             )
 
-        # MULTI-CHARACTER: Find the dead player(s) among active characters
-        # Filter to players that are dead (DP <= -10)
-        dead_players = [p for p in all_players if p.is_dead()]
+        # MULTI-CHARACTER: Find the dead player(s) among active characters.
+        # Treat as dead: (1) DP <= -10, or (2) in limbo (handles persistence race or restart).
+        def _is_eligible_for_respawn(p: Player) -> bool:
+            if p.is_dead():
+                return True
+            if str(p.current_room_id or "") == LIMBO_ROOM_ID:
+                return True
+            return False
+
+        dead_players = [p for p in all_players if _is_eligible_for_respawn(p)]
 
         if not dead_players:
             # No dead players found - check if any players exist to give better error message

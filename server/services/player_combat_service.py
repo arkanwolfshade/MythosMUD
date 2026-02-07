@@ -41,18 +41,18 @@ class PlayerCombatState:
             self.last_activity = datetime.now(UTC)
 
 
+@dataclass
 class PlayerXPAwardEvent(BaseEvent):  # pylint: disable=too-few-public-methods  # Reason: Event dataclass with focused responsibility, minimal public interface
     """Event published when a player receives XP."""
 
-    def __init__(self, player_id: UUID, xp_amount: int, new_level: int, timestamp: datetime | None = None) -> None:
-        # AI Agent: BaseEvent fields have init=False, so we can't pass them to super().__init__()
-        # Instead, we set them directly after calling super().__init__() with no args
-        super().__init__()
+    player_id: UUID
+    xp_amount: int
+    new_level: int
+
+    def __post_init__(self) -> None:
+        """Set event_type for serialization/deserialization."""
+        super().__post_init__()
         object.__setattr__(self, "event_type", "player_xp_awarded")
-        object.__setattr__(self, "timestamp", timestamp or datetime.now(UTC))
-        self.player_id = player_id
-        self.xp_amount = xp_amount
-        self.new_level = new_level
 
 
 class PlayerCombatService:
@@ -272,8 +272,26 @@ class PlayerCombatService:
             xp_amount=xp_amount,
             persistence_type=type(self._persistence).__name__,
         )
+        # Delegate to NPCCombatRewards when available so XP uses atomic
+        # gain_experience and does not overwrite in-flight combat state
+        rewards = (
+            getattr(self._npc_combat_integration_service, "_rewards", None)
+            if self._npc_combat_integration_service
+            else None
+        )
+        if rewards is not None and isinstance(xp_amount, (int, float)) and xp_amount > 0:
+            try:
+                await rewards.award_xp_to_killer(str(player_id), str(npc_id), int(xp_amount))
+            except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError, Exception) as e:  # pylint: disable=broad-exception-caught  # noqa: B904
+                logger.error(
+                    "Error awarding XP via NPCCombatRewards",
+                    player_id=player_id,
+                    npc_id=npc_id,
+                    error=str(e),
+                )
+            return
         try:
-            # Get player from persistence
+            # Fallback: get player, add XP, save (used when no integration service in tests)
             player = await self._persistence.get_player_by_id(player_id)
             if not player:
                 logger.warning("Player not found for XP award", player_id=player_id)
@@ -400,22 +418,22 @@ class PlayerCombatService:
         )
         logger.debug("Persistence object", persistence_type=type(self._persistence).__name__)
 
-        # First, try to get XP directly from the UUID-to-XP mapping
-        # This is more reliable than looking it up from the lifecycle manager,
-        # since NPCs may be removed from the lifecycle manager after death
+        # First, try to get XP from the UUID mapping on the NPC combat integration service.
+        # XP is stored on _uuid_mapping (NPCCombatUUIDMapping) when combat starts; use it so
+        # we have a value even after the NPC is removed from the lifecycle manager.
         if self._npc_combat_integration_service:
-            # Access the UUID-to-XP mapping directly from the NPC combat integration service
-            uuid_to_xp_mapping = getattr(self._npc_combat_integration_service, "_uuid_to_xp_mapping", {})
-            if npc_id in uuid_to_xp_mapping:
-                xp_reward = uuid_to_xp_mapping[npc_id]
-                logger.debug(
-                    "Retrieved XP reward from UUID-to-XP mapping",
-                    npc_id=npc_id,
-                    xp_amount=xp_reward,
-                )
-                if not isinstance(xp_reward, int):
-                    raise TypeError(f"XP reward must be int, got {type(xp_reward).__name__}")
-                return xp_reward
+            uuid_mapping = getattr(self._npc_combat_integration_service, "_uuid_mapping", None)
+            if uuid_mapping is not None and hasattr(uuid_mapping, "get_xp_value"):
+                xp_reward = uuid_mapping.get_xp_value(npc_id)
+                if xp_reward is not None:
+                    logger.debug(
+                        "Retrieved XP reward from UUID mapping",
+                        npc_id=npc_id,
+                        xp_amount=xp_reward,
+                    )
+                    if not isinstance(xp_reward, int):
+                        raise TypeError(f"XP reward must be int, got {type(xp_reward).__name__}")
+                    return xp_reward
 
         # Fallback to database lookup if UUID-to-XP mapping doesn't have the value
         try:

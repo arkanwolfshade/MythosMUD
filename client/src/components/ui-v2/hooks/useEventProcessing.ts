@@ -30,7 +30,8 @@ export const useEventProcessing = ({ setGameState }: UseEventProcessingParams) =
       const store = eventStoreRef.current;
       store.append(events);
       const derivedState = projectState(store.getLog());
-      setGameState(derivedState);
+      // Preserve client-only commandHistory; projector does not replay submitted commands.
+      setGameState(prev => ({ ...derivedState, commandHistory: prev.commandHistory }));
     } catch (error) {
       logger.error('useEventProcessing', 'Error projecting state from event log', { error });
     } finally {
@@ -44,6 +45,15 @@ export const useEventProcessing = ({ setGameState }: UseEventProcessingParams) =
 
   const handleGameEvent = useCallback(
     (event: GameEvent) => {
+      const eventType = (event.event_type ?? '').toString().trim().toLowerCase();
+      if (eventType === 'player_attacked' || eventType === 'npc_attacked') {
+        logger.info('useEventProcessing', 'Combat event received', {
+          event_type: eventType,
+          room_id: (event as { room_id?: string }).room_id,
+          has_data: !!event.data,
+          data_keys: event.data ? Object.keys(event.data) : [],
+        });
+      }
       eventQueue.current.push(event);
       if (!isProcessingEvent.current && !processingTimeout.current) {
         processingTimeout.current = window.setTimeout(() => {

@@ -7,7 +7,7 @@ turn order calculation, and combat resolution.
 
 # pylint: disable=too-many-instance-attributes,too-many-arguments,too-many-positional-arguments,too-many-locals,too-many-lines  # Reason: Combat service requires many state tracking attributes and complex combat logic. Combat service requires extensive combat logic for comprehensive combat system management.
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 from uuid import UUID
 
 from server.commands.rest_command import _cancel_rest_countdown, is_player_resting
@@ -335,6 +335,78 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
             return self._active_combats.get(combat_id)
         return None
 
+    def is_npc_in_combat_sync(self, npc_id: str) -> bool:
+        """
+        Check if an NPC (by string id or UUID string) is currently in combat.
+
+        Used by movement and idle logic to block normal NPC movement while in combat.
+
+        Args:
+            npc_id: NPC identifier (string id e.g. "cultist_001" or UUID string)
+
+        Returns:
+            True if the NPC is in an active combat, False otherwise
+        """
+        try:
+            npc_uuid = UUID(npc_id) if isinstance(npc_id, str) else npc_id
+            if npc_uuid in self._npc_combats:
+                return True
+        except (ValueError, TypeError, AttributeError):
+            pass
+        # pylint: disable=protected-access  # Reason: NPCCombatUUIDMapping does not expose public "find UUID by string id"; CombatService must resolve string npc_id to UUID for _npc_combats lookup without adding new public API
+        if self._npc_combat_integration_service and hasattr(self._npc_combat_integration_service, "_uuid_mapping"):
+            mapping = self._npc_combat_integration_service._uuid_mapping
+            if hasattr(mapping, "_uuid_to_string_id_mapping"):
+                for uuid_key, string_id in mapping._uuid_to_string_id_mapping.items():
+                    if string_id == npc_id and uuid_key in self._npc_combats:
+                        return True
+        # pylint: enable=protected-access
+        return False
+
+    async def _get_participant_current_room(self, participant: CombatParticipant) -> str | None:
+        """
+        Get current room ID for a combat participant (player or NPC).
+
+        Uses NPC combat integration data provider when available. Returns None if
+        room cannot be determined (e.g. no integration service).
+        """
+        svc = self._npc_combat_integration_service
+        data_provider = getattr(svc, "_data_provider", None) if svc else None
+        if not data_provider:
+            return None
+        if participant.participant_type == CombatParticipantType.PLAYER:
+            result = await data_provider.get_player_room_id(str(participant.participant_id))
+            return cast(str | None, result)
+        # NPC: resolve UUID to npc_id then get instance current_room
+        uuid_mapping = getattr(svc, "_uuid_mapping", None) if svc else None
+        if not uuid_mapping or not hasattr(uuid_mapping, "get_original_string_id"):
+            return None
+        npc_id = uuid_mapping.get_original_string_id(participant.participant_id)
+        if not npc_id:
+            return None
+        npc_instance = data_provider.get_npc_instance(npc_id)
+        if not npc_instance:
+            return None
+        return getattr(npc_instance, "current_room", None)
+
+    async def _validate_melee_location(
+        self, combat: CombatInstance, attacker: CombatParticipant, target: CombatParticipant
+    ) -> tuple[bool, str | None]:
+        """
+        Validate that both participants are still in combat.room_id (melee requires same room).
+
+        Returns (True, None) if valid, (False, reason) if invalid.
+        When we cannot determine rooms (no integration), we allow the attack (fail open).
+        """
+        combat_room_id = combat.room_id
+        attacker_room = await self._get_participant_current_room(attacker)
+        target_room = await self._get_participant_current_room(target)
+        if attacker_room is None and target_room is None:
+            return True, None
+        if attacker_room != combat_room_id or target_room != combat_room_id:
+            return False, "Invalid combat location - participants not in same room"
+        return True, None
+
     async def _handle_player_dp_update(self, target: CombatParticipant, old_dp: int, combat: CombatInstance) -> None:
         """Handle player DP update, persistence, and event publishing."""
         await self._persistence_handler.publish_player_dp_update_event(
@@ -585,7 +657,12 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
         return True
 
     async def process_attack(  # pylint: disable=too-many-locals  # Reason: Attack processing requires many intermediate variables for complex combat logic
-        self, attacker_id: UUID, target_id: UUID, damage: int = 10, is_initial_attack: bool = False
+        self,
+        attacker_id: UUID,
+        target_id: UUID,
+        damage: int = 10,
+        is_initial_attack: bool = False,
+        damage_type: str = "physical",
     ) -> CombatResult:
         """
         Process an attack action in combat.
@@ -595,6 +672,7 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
             target_id: ID of the target
             damage: Amount of damage to deal
             is_initial_attack: Whether this is the initial attack
+            damage_type: Type of damage (e.g. physical, slashing, piercing) for effects and future resistance.
 
         Returns:
             CombatResult containing the outcome
@@ -607,7 +685,33 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
             attacker_id, target_id, is_initial_attack
         )
 
-        logger.info("Processing attack", attacker_name=current_participant.name, target_name=target.name, damage=damage)
+        # Melee room validation: both participants must still be in combat.room_id
+        valid, reason = await self._validate_melee_location(combat, current_participant, target)
+        if not valid and reason:
+            logger.warning(
+                "Melee room validation failed, ending combat",
+                combat_id=combat.combat_id,
+                attacker_id=attacker_id,
+                target_id=target_id,
+                reason=reason,
+            )
+            await self.end_combat(combat.combat_id, reason)
+            return CombatResult(
+                success=False,
+                damage=0,
+                target_died=False,
+                combat_ended=True,
+                message=reason,
+                combat_id=combat.combat_id,
+            )
+
+        logger.info(
+            "Processing attack",
+            attacker_name=current_participant.name,
+            target_name=target.name,
+            damage=damage,
+            damage_type=damage_type,
+        )
 
         # Apply damage
         # old_dp is handled inside _apply_attack_damage via _handle_player_dp_update

@@ -165,6 +165,8 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
     sendCommandRef.current = sendCommand;
   }, [sendCommand]);
 
+  const [hasRespawned, setHasRespawned] = useState(false);
+
   // Player status effects (death/delirium detection)
   usePlayerStatusEffects({
     player: gameState.player,
@@ -175,6 +177,8 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
     setIsDead,
     setIsDelirious,
     setDeliriumLocation,
+    hasRespawned,
+    setHasRespawned,
   });
 
   // Command handlers
@@ -226,6 +230,8 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
     setIsRespawning,
     setIsDelirious,
     setIsDeliriumRespawning,
+    setHasRespawned,
+    appendRespawnEvent: handleGameEvent,
   });
 
   // Handle ESC key to open/close main menu (only when map is not open)

@@ -15,6 +15,8 @@ interface UsePlayerStatusEffectsParams {
   setIsDead: (dead: boolean) => void;
   setIsDelirious: (delirious: boolean) => void;
   setDeliriumLocation: (location: string) => void;
+  hasRespawned: boolean;
+  setHasRespawned: (hasRespawned: boolean) => void;
 }
 
 export const usePlayerStatusEffects = ({
@@ -26,6 +28,8 @@ export const usePlayerStatusEffects = ({
   setIsDead,
   setIsDelirious,
   setDeliriumLocation,
+  hasRespawned,
+  setHasRespawned,
 }: UsePlayerStatusEffectsParams) => {
   // Helper function to get current lucidity value
   const getCurrentLucidity = useCallback((player: Player | null, lucidityStatus: LucidityStatus | null): number => {
@@ -70,11 +74,17 @@ export const usePlayerStatusEffects = ({
     const currentDp = player.stats?.current_dp ?? 0;
     const roomId = room?.id;
     const isInLimbo = roomId === 'limbo_death_void_limbo_death_void';
+    // Respawn destination room: when we've already respawned in this session and are currently not dead,
+    // do not set isDead true here. This prevents a stale player (current_dp <= -10) from event-log
+    // re-projection from re-opening the respawn modal after a successful respawn.
+    const isRespawnRoom = roomId === 'earth_arkhamcity_sanitarium_room_foyer_001';
+    const skipDeadInRespawnRoom = isRespawnRoom && !isDead && hasRespawned;
 
     // Player is dead if DP <= -10 or in limbo
-    if (currentDp <= -10 || isInLimbo) {
+    if ((currentDp <= -10 || isInLimbo) && !skipDeadInRespawnRoom) {
       if (!isDead) {
         setIsDead(true);
+        setHasRespawned(false);
         logger.info('GameClientV2Container', 'Player detected as dead', {
           currentDp,
           roomId,
@@ -89,7 +99,7 @@ export const usePlayerStatusEffects = ({
         roomId,
       });
     }
-  }, [player, room, isDead, setIsDead]);
+  }, [player, room, isDead, setIsDead, hasRespawned, setHasRespawned]);
 
   // Check if player is delirious based on lucidity
   useEffect(() => {

@@ -15,11 +15,11 @@ have proper birth, existence, and eventual return to the void.
 
 import time
 from collections.abc import Sequence
-from enum import Enum
+from enum import StrEnum
 from typing import TYPE_CHECKING, Any
 
 from server.events.event_bus import EventBus
-from server.events.event_types import NPCDied, NPCEnteredRoom, NPCLeftRoom
+from server.events.event_types import NPCDied, NPCEnteredRoom, NPCLeftRoom, RoomOccupantsRefreshRequested
 from server.models.npc import NPCDefinition
 from server.npc.behaviors import NPCBase
 from server.npc.population_control import NPCPopulationController
@@ -37,7 +37,7 @@ if TYPE_CHECKING:
 logger = get_logger(__name__)
 
 
-class NPCLifecycleState(str, Enum):
+class NPCLifecycleState(StrEnum):
     """Enumeration of NPC lifecycle states."""
 
     SPAWNING = "spawning"
@@ -49,7 +49,7 @@ class NPCLifecycleState(str, Enum):
     ERROR = "error"
 
 
-class NPCLifecycleEvent(str, Enum):
+class NPCLifecycleEvent(StrEnum):
     """Enumeration of NPC lifecycle events."""
 
     SPAWNED = "spawned"
@@ -332,20 +332,24 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
             # Mark NPC as inactive but keep lifecycle record
             if event.npc_id in self.active_npcs:
                 npc_instance = self.active_npcs[event.npc_id]
+                room_id = getattr(npc_instance, "room_id", event.room_id)
+                # Update population controller while NPC is still in active_npcs (same fix as despawn_npc).
+                if self.population_controller:
+                    self.population_controller.despawn_npc(event.npc_id)
                 # Remove from active NPCs (so it won't be processed)
                 del self.active_npcs[event.npc_id]
 
                 # Remove from room if we have persistence
                 if self.persistence:
-                    room_id = getattr(npc_instance, "room_id", event.room_id)
                     room = self.persistence.get_room_by_id(room_id)  # Sync method, uses cache
                     if room:
                         room.npc_left(event.npc_id)
                         logger.debug("NPC removed from room after death", npc_id=event.npc_id, room_id=room_id)
 
-                # Update population controller
-                if self.population_controller:
-                    self.population_controller.despawn_npc(event.npc_id)
+                # Request room occupants broadcast so clients update Occupants panel (EventBus path;
+                # NATS path does this in handle_npc_died_event).
+                if self.event_bus:
+                    self.event_bus.publish(RoomOccupantsRefreshRequested(room_id=room_id))
 
             # Update lifecycle record state (but DON'T remove it yet)
             record.change_state(NPCLifecycleState.DESPAWNED, f"death: {event.cause}")
@@ -535,6 +539,13 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
             if npc_instance:
                 room_id = getattr(npc_instance, "room_id", "unknown")
 
+                # Update population controller while NPC is still in active_npcs (so it can read
+                # instance for room_id and metadata). Previously we called this after removing
+                # from active_npcs, causing "Attempted to despawn non-existent NPC" and skipped
+                # population stats updates.
+                if self.population_controller is not None:
+                    self.population_controller.despawn_npc(npc_id)
+
                 # Remove NPC from room (which publishes NPCLeftRoom event)
                 # AI: Proper domain-driven design - mutate state via domain entity, not by publishing event directly
                 if self.persistence:
@@ -555,10 +566,6 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
 
                 # Remove from active NPCs
                 del self.active_npcs[npc_id]
-
-            # Update population controller
-            if self.population_controller is not None:
-                self.population_controller.despawn_npc(npc_id)
 
             # Update lifecycle record
             record.change_state(NPCLifecycleState.DESPAWNED, reason)

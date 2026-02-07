@@ -9,12 +9,12 @@ systems is essential for maintaining the delicate balance between order
 and chaos in our digital realm.
 """
 
-from enum import Enum
+from enum import StrEnum
 
 from pydantic import BaseModel, ConfigDict, Field
 
 
-class HealthStatus(str, Enum):
+class HealthStatus(StrEnum):
     """Health status enumeration for system components."""
 
     HEALTHY = "healthy"

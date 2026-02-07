@@ -11,7 +11,9 @@ import uuid
 from typing import Any
 
 from server.config import get_config
+from server.game.weapons import resolve_weapon_attack_from_equipped
 from server.models.combat import CombatAction, CombatInstance, CombatParticipant, CombatParticipantType, CombatStatus
+from server.npc.combat_integration import NPCCombatIntegration
 from server.services.nats_exceptions import NATSError
 from server.structured_logging.enhanced_logging_config import get_logger
 
@@ -122,6 +124,20 @@ class CombatTurnProcessor:
             # Check if participant has a queued action for this round
             if participant.participant_id in combat.round_actions:
                 action = combat.round_actions[participant.participant_id]
+                # Defensive: if queued attack target is not in this combat or is dead, use default action
+                if action.action_type == "attack":
+                    target_in_combat = combat.participants.get(action.target_id)
+                    if not target_in_combat or not target_in_combat.is_alive():
+                        logger.warning(
+                            "Stale queued attack target (not in combat or dead), using default action",
+                            combat_id=combat.combat_id,
+                            participant_id=participant.participant_id,
+                            queued_target_id=action.target_id,
+                            participant_ids=[str(pid) for pid in combat.participants.keys()],
+                        )
+                        combat.clear_queued_actions(participant.participant_id, round_number=next_round)
+                        await self._execute_default_action(combat, participant, current_tick)
+                        continue
                 await self._execute_queued_action(combat, participant, action, current_tick)
                 # Clear only this specific queued action (may have others queued for future rounds)
                 combat.clear_queued_actions(participant.participant_id, round_number=next_round)
@@ -154,6 +170,13 @@ class CombatTurnProcessor:
 
         # Handle different action types
         if action.action_type == "attack":
+            logger.info(
+                "Executing queued attack",
+                combat_id=combat.combat_id,
+                attacker_id=participant.participant_id,
+                target_id=action.target_id,
+                participant_ids=[str(pid) for pid in combat.participants.keys()],
+            )
             # Process attack - result is not used as process_attack has side effects (updates combat state)
             await self._combat_service.process_attack(
                 attacker_id=participant.participant_id, target_id=action.target_id, damage=action.damage
@@ -347,6 +370,73 @@ class CombatTurnProcessor:
         except (AttributeError, ValueError, TypeError, RuntimeError, NATSError, ConnectionError, KeyError) as e:
             logger.error("Error processing NPC turn", npc_name=npc.name, error=str(e), exc_info=True)
 
+    def _get_combat_container_services(self, config: Any) -> tuple[Any, Any, Any]:
+        """Return (player_service, registry, async_persistence) from app container, or (None, None, None)."""
+        app = getattr(config, "_app_instance", None)
+        if not app or not hasattr(app.state, "container"):
+            return None, None, None
+        container = app.state.container
+        return (
+            getattr(container, "player_service", None),
+            getattr(container, "item_prototype_registry", None),
+            getattr(container, "async_persistence", None),
+        )
+
+    async def _get_target_stats_for_damage(self, target: CombatParticipant, async_persistence: Any) -> dict[str, Any]:
+        """Resolve target stats dict for damage calculation (player or default)."""
+        if target.participant_type != CombatParticipantType.PLAYER or not async_persistence:
+            return {"constitution": 50}
+        try:
+            target_player = await async_persistence.get_player_by_id(target.participant_id)
+            stats = target_player.get_stats() if target_player and hasattr(target_player, "get_stats") else {}
+        except (TypeError, ValueError, AttributeError):
+            return {"constitution": 50}
+        return stats if isinstance(stats, dict) else {"constitution": 50}
+
+    async def _resolve_player_attack_damage(
+        self,
+        player: CombatParticipant,
+        target: CombatParticipant,
+        config: Any,
+    ) -> tuple[int, str]:
+        """
+        Resolve damage and damage_type for a player auto-attack from equipped main_hand or unarmed fallback.
+
+        Returns:
+            (damage, damage_type) for use with process_attack.
+        """
+        damage = config.game.basic_unarmed_damage
+        damage_type = "physical"
+
+        player_service, registry, async_persistence = self._get_combat_container_services(config)
+        if not player_service or not registry:
+            return damage, damage_type
+
+        full_player = await player_service.persistence.get_player_by_id(player.participant_id)
+        if not full_player:
+            return damage, damage_type
+
+        main_hand_stack = (full_player.get_equipped_items() or {}).get("main_hand")
+        weapon_info = resolve_weapon_attack_from_equipped(main_hand_stack, registry)
+
+        if not weapon_info:
+            return damage, damage_type
+
+        damage_type = weapon_info.damage_type
+        attacker_stats = full_player.get_stats() if hasattr(full_player, "get_stats") else {}
+        if not isinstance(attacker_stats, dict):
+            attacker_stats = {}
+
+        target_stats = await self._get_target_stats_for_damage(target, async_persistence)
+        integration = NPCCombatIntegration(async_persistence=async_persistence)
+        damage = integration.calculate_damage(
+            attacker_stats=attacker_stats,
+            target_stats=target_stats,
+            weapon_damage=weapon_info.base_damage,
+            damage_type=damage_type,
+        )
+        return damage, damage_type
+
     async def _process_player_turn(self, combat: CombatInstance, player: CombatParticipant, current_tick: int) -> None:
         """
         Process player turn with automatic basic attack.
@@ -416,15 +506,24 @@ class CombatTurnProcessor:
                 logger.debug("Could not check casting state for autoattack", player_name=player.name, error=str(e))
 
             # Perform automatic basic attack
+            logger.info(
+                "Executing default attack (no queued action)",
+                combat_id=combat.combat_id,
+                attacker_id=player.participant_id,
+                target_id=target.participant_id,
+                participant_ids=[str(pid) for pid in combat.participants.keys()],
+            )
             logger.debug("Player performing automatic attack", player_name=player.name, target_name=target.name)
 
-            # Use configured damage for automatic attacks
             config = get_config()
-            damage = config.game.basic_unarmed_damage
+            damage, damage_type = await self._resolve_player_attack_damage(player, target, config)
 
             # Process the attack
             combat_result = await self._combat_service.process_attack(
-                attacker_id=player.participant_id, target_id=target.participant_id, damage=damage
+                attacker_id=player.participant_id,
+                target_id=target.participant_id,
+                damage=damage,
+                damage_type=damage_type,
             )
 
             if combat_result.success:

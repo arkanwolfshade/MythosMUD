@@ -8,6 +8,7 @@ including player lookup, teleport effect messages, and broadcasting.
 # pylint: disable=too-many-arguments,too-many-return-statements  # Reason: Teleport utilities require many parameters for context and validation and multiple return statements for early validation returns
 
 from typing import Any, cast
+from uuid import UUID
 
 from ..realtime.envelope import build_event
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -173,8 +174,9 @@ async def notify_player_of_teleport(
 
         target_player_info = connection_manager.get_online_player_by_display_name(target_player_name)
         if target_player_info:
-            player_id = target_player_info.get("player_id")
-            if player_id and hasattr(connection_manager, "send_personal_message"):
+            raw_player_id = target_player_info.get("player_id")
+            if raw_player_id and hasattr(connection_manager, "send_personal_message"):
+                player_id = UUID(str(raw_player_id)) if not isinstance(raw_player_id, UUID) else raw_player_id
                 event = build_event(
                     "system",
                     {"message": message, "message_type": "info"},

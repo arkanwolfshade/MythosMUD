@@ -4,13 +4,13 @@ Spell data models for the magic system.
 This module contains Pydantic models for spells, spell materials, and spell effects.
 """
 
-from enum import Enum
+from enum import StrEnum
 from typing import Any
 
 from pydantic import BaseModel, Field
 
 
-class SpellSchool(str, Enum):
+class SpellSchool(StrEnum):
     """Spell schools/types."""
 
     MYTHOS = "mythos"
@@ -19,7 +19,7 @@ class SpellSchool(str, Enum):
     OTHER = "other"
 
 
-class SpellTargetType(str, Enum):
+class SpellTargetType(StrEnum):
     """Valid target types for spells."""
 
     SELF = "self"
@@ -29,7 +29,7 @@ class SpellTargetType(str, Enum):
     ALL = "all"
 
 
-class SpellRangeType(str, Enum):
+class SpellRangeType(StrEnum):
     """Valid range types for spells."""
 
     TOUCH = "touch"
@@ -38,7 +38,7 @@ class SpellRangeType(str, Enum):
     UNLIMITED = "unlimited"
 
 
-class SpellEffectType(str, Enum):
+class SpellEffectType(StrEnum):
     """Valid effect types for spells."""
 
     HEAL = "heal"

@@ -93,40 +93,43 @@ async def test_broadcast_room_event_error():
     await broadcast_room_event(connection_manager, "test_room", {"event": "test"})
 
 
-def test_persist_player_success():
+@pytest.mark.asyncio
+async def test_persist_player_success():
     """Test _persist_player successful save."""
     persistence = MagicMock()
     persistence.save_player = MagicMock()
     player = MagicMock()
     player.name = "TestPlayer"
 
-    result = persist_player(persistence, player)
+    result = await persist_player(persistence, player)
 
     assert result is None
     persistence.save_player.assert_called_once_with(player)
 
 
-def test_persist_player_validation_error():
+@pytest.mark.asyncio
+async def test_persist_player_validation_error():
     """Test _persist_player handles InventorySchemaValidationError."""
     persistence = MagicMock()
     persistence.save_player = MagicMock(side_effect=InventorySchemaValidationError("Invalid schema"))
     player = MagicMock()
     player.name = "TestPlayer"
 
-    result = persist_player(persistence, player)
+    result = await persist_player(persistence, player)
 
     assert result is not None
     assert "schema validation" in result["result"].lower()
 
 
-def test_persist_player_general_error():
+@pytest.mark.asyncio
+async def test_persist_player_general_error():
     """Test _persist_player handles general errors."""
     persistence = MagicMock()
     persistence.save_player = MagicMock(side_effect=Exception("Database error"))
     player = MagicMock()
     player.name = "TestPlayer"
 
-    result = persist_player(persistence, player)
+    result = await persist_player(persistence, player)
 
     assert result is not None
     assert "error occurred" in result["result"].lower()

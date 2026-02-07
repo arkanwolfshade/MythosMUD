@@ -170,20 +170,22 @@ async def test_broadcast_room_event_exception():
     await broadcast_room_event(mock_connection_manager, "room_001", event)
 
 
-def test_persist_player_success():
+@pytest.mark.asyncio
+async def test_persist_player_success():
     """Test _persist_player() returns None on success."""
     mock_persistence = MagicMock()
     mock_persistence.save_player = MagicMock()
     player = MagicMock()
     player.name = "TestPlayer"
 
-    result = persist_player(mock_persistence, player)
+    result = await persist_player(mock_persistence, player)
 
     assert result is None
     mock_persistence.save_player.assert_called_once_with(player)
 
 
-def test_persist_player_inventory_schema_error():
+@pytest.mark.asyncio
+async def test_persist_player_inventory_schema_error():
     """Test _persist_player() returns error on InventorySchemaValidationError."""
     from server.schemas.inventory_schema import InventorySchemaValidationError
 
@@ -192,20 +194,21 @@ def test_persist_player_inventory_schema_error():
     player = MagicMock()
     player.name = "TestPlayer"
 
-    result = persist_player(mock_persistence, player)
+    result = await persist_player(mock_persistence, player)
 
     assert result is not None
     assert "schema validation" in result["result"].lower()
 
 
-def test_persist_player_generic_exception():
+@pytest.mark.asyncio
+async def test_persist_player_generic_exception():
     """Test _persist_player() returns error on generic exception."""
     mock_persistence = MagicMock()
     mock_persistence.save_player = MagicMock(side_effect=Exception("Test error"))
     player = MagicMock()
     player.name = "TestPlayer"
 
-    result = persist_player(mock_persistence, player)
+    result = await persist_player(mock_persistence, player)
 
     assert result is not None
     assert "error" in result["result"].lower()

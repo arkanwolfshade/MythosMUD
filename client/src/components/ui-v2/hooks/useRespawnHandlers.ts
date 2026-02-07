@@ -3,8 +3,9 @@
 
 import { useCallback } from 'react';
 import { logger } from '../../../utils/logger';
-import { sanitizeChatMessageForState } from '../utils/messageUtils';
+import type { GameEvent } from '../eventHandlers/types';
 import type { ChatMessage, Player, Room } from '../types';
+import { sanitizeChatMessageForState } from '../utils/messageUtils';
 import type { GameState } from '../utils/stateUpdateUtils';
 
 interface UseRespawnHandlersParams {
@@ -15,6 +16,8 @@ interface UseRespawnHandlersParams {
   setIsRespawning: (respawning: boolean) => void;
   setIsDelirious: (delirious: boolean) => void;
   setIsDeliriumRespawning: (respawning: boolean) => void;
+  setHasRespawned: (hasRespawned: boolean) => void;
+  appendRespawnEvent: (event: GameEvent) => void;
 }
 
 export const useRespawnHandlers = ({
@@ -25,6 +28,8 @@ export const useRespawnHandlers = ({
   setIsRespawning,
   setIsDelirious,
   setIsDeliriumRespawning,
+  setHasRespawned,
+  appendRespawnEvent,
 }: UseRespawnHandlersParams) => {
   const handleDeliriumRespawn = useCallback(async () => {
     logger.info('GameClientV2Container', 'Delirium respawn requested');
@@ -157,10 +162,16 @@ export const useRespawnHandlers = ({
         player: respawnData.player,
       });
 
-      setIsDead(false);
-      setIsMortallyWounded(false);
-      setIsRespawning(false);
+      // Normalize player so event log has stats.current_dp (API may return .dp at top level).
+      const normalizedPlayer = {
+        ...respawnData.player,
+        stats: {
+          ...respawnData.player?.stats,
+          current_dp: respawnData.player.dp ?? respawnData.player?.stats?.current_dp,
+        },
+      } as Player;
 
+      // Update player/room first so usePlayerStatusEffects sees new DP before we clear isDead.
       setGameState(prev => ({
         ...prev,
         player: {
@@ -173,6 +184,19 @@ export const useRespawnHandlers = ({
         } as Player,
         room: respawnData.room as Room,
       }));
+
+      // Append synthetic event so event-log projection keeps respawned state (stops later events from overwriting).
+      appendRespawnEvent({
+        event_type: 'player_respawned',
+        timestamp: new Date().toISOString(),
+        sequence_number: 0,
+        data: { player: normalizedPlayer, room: respawnData.room },
+      });
+
+      setIsDead(false);
+      setIsMortallyWounded(false);
+      setIsRespawning(false);
+      setHasRespawned(true);
 
       const respawnMessage: ChatMessage = sanitizeChatMessageForState({
         text: 'You feel a chilling wind as your form reconstitutes in Arkham General Hospital...',
@@ -202,7 +226,7 @@ export const useRespawnHandlers = ({
 
       setIsRespawning(false);
     }
-  }, [authToken, setGameState, setIsDead, setIsMortallyWounded, setIsRespawning]);
+  }, [authToken, setGameState, setIsDead, setIsMortallyWounded, setIsRespawning, setHasRespawned, appendRespawnEvent]);
 
   return { handleRespawn, handleDeliriumRespawn };
 };

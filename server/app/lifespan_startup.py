@@ -96,6 +96,13 @@ async def initialize_container_and_legacy_services(app: FastAPI, container: Appl
     ApplicationContainer.set_instance(container)
 
     app.state.container = container
+    # BUGFIX: Combat turn processor and other services use config._app_instance to access
+    # the container for weapon damage resolution. Without this, round attacks fall back to
+    # basic_unarmed_damage instead of using equipped weapon damage.
+    from ..config import get_config
+
+    config = get_config()
+    object.__setattr__(config, "_app_instance", app)
     logger.info("ApplicationContainer initialized and added to app.state")
 
     # Set services on app.state for backward compatibility with legacy command handlers
@@ -111,6 +118,30 @@ async def initialize_container_and_legacy_services(app: FastAPI, container: Appl
         logger.info("Item services ready", prototype_count=prototype_count)
 
 
+def _subscribe_room_occupants_refresh(container: ApplicationContainer) -> None:
+    """Subscribe to RoomOccupantsRefreshRequested so Occupants panel updates after NPC death (EventBus path)."""
+    if not container.event_bus or not container.connection_manager:
+        return
+
+    from server.events.event_types import RoomOccupantsRefreshRequested
+    from server.realtime.websocket_room_updates import broadcast_room_update
+
+    def _on_room_occupants_refresh(event: RoomOccupantsRefreshRequested) -> None:
+        try:
+            loop = asyncio.get_running_loop()
+        except RuntimeError:
+            return
+        conn_mgr = container.connection_manager
+        if not conn_mgr:
+            return
+        loop.create_task(broadcast_room_update(event.room_id, event.room_id, connection_manager=conn_mgr))
+
+    container.event_bus.subscribe(
+        RoomOccupantsRefreshRequested, _on_room_occupants_refresh, service_id="room_occupants_refresh"
+    )
+    logger.debug("Subscribed to RoomOccupantsRefreshRequested for Occupants panel updates")
+
+
 async def setup_connection_manager(app: FastAPI, container: ApplicationContainer) -> None:
     """Set up connection manager with dependencies."""
     if container.connection_manager is None:
@@ -122,6 +153,8 @@ async def setup_connection_manager(app: FastAPI, container: ApplicationContainer
     container.connection_manager.start_health_checks()
     container.connection_manager.message_queue.pending_messages.clear()
     logger.info("Cleared stale pending messages from previous server sessions")
+
+    _subscribe_room_occupants_refresh(container)
 
 
 async def initialize_npc_services(app: FastAPI, container: ApplicationContainer) -> None:

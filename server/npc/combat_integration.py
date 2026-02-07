@@ -55,7 +55,7 @@ class NPCCombatIntegration:
     def calculate_damage(
         self,
         attacker_stats: dict[str, Any],
-        target_stats: dict[str, Any],
+        target_stats: dict[str, Any],  # pylint: disable=unused-argument  # kept for API compatibility; CON does not affect damage
         weapon_damage: int = 0,
         damage_type: str = "physical",
     ) -> int:
@@ -75,16 +75,15 @@ class NPCCombatIntegration:
             # Base damage calculation
             base_damage = weapon_damage
 
-            # Add strength modifier for physical attacks
-            if damage_type == "physical":
+            # Add strength modifier for physical and melee damage types (physical, slashing, piercing)
+            # These are all melee attacks where physical strength contributes to damage
+            if damage_type in ("physical", "slashing", "piercing"):
                 strength_mod = attacker_stats.get("strength", 50)
                 strength_bonus = max(0, (strength_mod - 50) // 2)
                 base_damage += strength_bonus
 
-            # Apply target's constitution for damage reduction
-            target_con = target_stats.get("constitution", 50)
-            damage_reduction = max(0, (target_con - 50) // 4)
-            final_damage = cast(int, max(1, base_damage - damage_reduction))
+            # CON does not provide damage protection; use base_damage as final
+            final_damage = max(1, base_damage)
 
             logger.debug(
                 "Damage calculated", base_damage=base_damage, final_damage=final_damage, damage_type=damage_type

@@ -4,7 +4,7 @@ Unit tests for NPC combat rewards.
 Tests the NPCCombatRewards class for XP calculation and rewards.
 """
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -23,7 +23,7 @@ class TestNPCCombatRewards:
     def mock_game_mechanics(self):
         """Create a mock game mechanics service."""
         mechanics = MagicMock()
-        mechanics.gain_experience = MagicMock(return_value=(True, "XP awarded"))
+        mechanics.gain_experience = AsyncMock(return_value=(True, "XP awarded"))
         return mechanics
 
     @pytest.fixture
@@ -128,7 +128,7 @@ class TestNPCCombatRewards:
         npc_id = "npc_001"
         xp_reward = 100
 
-        mock_game_mechanics.gain_experience.return_value = (False, "Error message")
+        mock_game_mechanics.gain_experience = AsyncMock(return_value=(False, "Error message"))
 
         await rewards_service.award_xp_to_killer(killer_id, npc_id, xp_reward)
 
@@ -141,7 +141,7 @@ class TestNPCCombatRewards:
         npc_id = "npc_001"
         xp_reward = 100
 
-        mock_game_mechanics.gain_experience.side_effect = ValueError("Test error")
+        mock_game_mechanics.gain_experience = AsyncMock(side_effect=ValueError("Test error"))
 
         await rewards_service.award_xp_to_killer(killer_id, npc_id, xp_reward)
 

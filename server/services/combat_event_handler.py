@@ -118,6 +118,11 @@ class CombatEventHandler:
             if target_died:
                 xp_awarded = await self._calculate_xp_reward(target_id)
                 if target.participant_type == CombatParticipantType.NPC:
+                    if not (xp_awarded or 0):
+                        logger.warning(
+                            "XP reward was 0 for defeated NPC",
+                            npc_id=target_id,
+                        )
                     death_handler = getattr(self._combat_service, "_death_handler", None)
                     if death_handler:
                         await death_handler.handle_npc_death(target, combat, xp_awarded or 0)

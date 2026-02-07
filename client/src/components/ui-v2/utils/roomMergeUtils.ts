@@ -4,19 +4,6 @@
 import type { Room } from '../types';
 
 /**
- * Checks if an array is populated (defined, is an array, and has length > 0)
- */
-const isPopulatedArray = (arr: string[] | undefined): boolean => {
-  if (arr === undefined) {
-    return false;
-  }
-  if (!Array.isArray(arr)) {
-    return false;
-  }
-  return arr.length > 0;
-};
-
-/**
  * Gets players array from room, returning empty array if not available
  */
 const getPlayersArray = (room: Room): string[] => {
@@ -31,65 +18,53 @@ const getNpcsArray = (room: Room): string[] => {
 };
 
 /**
- * Determines which players array to use based on update state
+ * Determines which players array to use based on update state.
+ * Uses updates when it provides a populated array; preserves prev when updates has
+ * undefined, empty array, or non-array (invalid) so we don't clear or corrupt occupants.
  */
 const selectPlayersArray = (updatesRoom: Room, prevRoom: Room, roomIdChanged: boolean): string[] => {
-  const updatesPlayers = getPlayersArray(updatesRoom);
+  const updatesPlayersRaw = updatesRoom.players;
   const prevPlayers = getPlayersArray(prevRoom);
-  const updatesHasPlayers = isPopulatedArray(updatesPlayers);
-  const prevHasPlayers = isPopulatedArray(prevPlayers);
+  const updatesIsValidArray = Array.isArray(updatesPlayersRaw);
 
-  // Updates has players - use it (authoritative)
-  if (updatesHasPlayers) {
-    return updatesPlayers;
-  }
-
-  // Room changed - use new room's players
   if (roomIdChanged) {
-    return updatesPlayers;
+    return updatesIsValidArray ? updatesPlayersRaw : prevPlayers;
   }
-
-  // Previous has players - preserve them
-  if (prevHasPlayers) {
+  if (updatesPlayersRaw === undefined) {
     return prevPlayers;
   }
-
-  // Fallback to updates, then previous, then empty
-  return updatesPlayers.length > 0 ? updatesPlayers : prevPlayers;
+  if (!updatesIsValidArray) {
+    return prevPlayers;
+  }
+  if (updatesPlayersRaw.length > 0) {
+    return updatesPlayersRaw;
+  }
+  return prevPlayers;
 };
 
 /**
- * Determines which NPCs array to use based on update state
+ * Determines which NPCs array to use based on update state.
+ * Uses updates when it provides a populated array; preserves prev when updates has
+ * undefined, empty array, or non-array (invalid) so we don't clear or corrupt occupants.
  */
 const selectNpcsArray = (updatesRoom: Room, prevRoom: Room, roomIdChanged: boolean): string[] => {
-  const updatesNpcs = getNpcsArray(updatesRoom);
+  const updatesNpcsRaw = updatesRoom.npcs;
   const prevNpcs = getNpcsArray(prevRoom);
-  const updatesHasNpcs = isPopulatedArray(updatesNpcs);
-  const prevHasNpcs = isPopulatedArray(prevNpcs);
+  const updatesIsValidArray = Array.isArray(updatesNpcsRaw);
 
-  // Updates has NPCs - use it (authoritative)
-  if (updatesHasNpcs) {
-    return updatesNpcs;
-  }
-
-  // Room changed - use new room's NPCs
   if (roomIdChanged) {
-    return updatesNpcs;
+    return updatesIsValidArray ? updatesNpcsRaw : prevNpcs;
   }
-
-  // Previous has NPCs - preserve them
-  if (prevHasNpcs) {
+  if (updatesNpcsRaw === undefined) {
     return prevNpcs;
   }
-
-  // Check if updates tried to clear NPCs (empty array) while prev has them
-  const updatesClearedNpcs = updatesRoom.npcs !== undefined && updatesNpcs.length === 0;
-  if (updatesClearedNpcs && prevHasNpcs) {
+  if (!updatesIsValidArray) {
     return prevNpcs;
   }
-
-  // Fallback to updates, then previous, then empty
-  return updatesNpcs.length > 0 ? updatesNpcs : prevNpcs;
+  if (updatesNpcsRaw.length > 0) {
+    return updatesNpcsRaw;
+  }
+  return prevNpcs;
 };
 
 /**

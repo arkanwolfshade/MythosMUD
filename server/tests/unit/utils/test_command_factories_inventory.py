@@ -169,10 +169,12 @@ def test_create_get_command_no_args():
         InventoryCommandFactory.create_get_command([])
 
 
-def test_create_get_command_only_item():
-    """Test create_get_command() raises error with only item."""
-    with pytest.raises(ValidationError, match="Usage: get"):
-        InventoryCommandFactory.create_get_command(["sword"])
+def test_create_get_command_only_item_get_from_room():
+    """Test create_get_command() with single arg returns get-from-room (container='room')."""
+    result = InventoryCommandFactory.create_get_command(["sword"])
+    assert result.item == "sword"
+    assert result.container == "room"
+    assert result.quantity is None
 
 
 def test_create_get_command_with_from_keyword():

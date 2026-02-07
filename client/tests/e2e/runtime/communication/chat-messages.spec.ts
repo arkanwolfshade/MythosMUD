@@ -29,13 +29,11 @@ test.describe('Chat Messages Between Players', () => {
     await ensurePlayerInGame(contexts[0], 60000);
     await ensurePlayerInGame(contexts[1], 60000);
 
-    // Room-based /say requires both players in the same room. Force co-location: stand then move both north.
+    // Room-based /say requires both players in the same room. Co-locate by having AW (admin) teleport
+    // Ithaqua to his location; "go north" only works when both already share a room.
     const [awContext, ithaquaContext] = contexts;
     await ensureStanding(awContext.page, 5000);
-    await executeCommand(awContext.page, 'go north');
-    await new Promise(r => setTimeout(r, 2000));
-    await ensureStanding(ithaquaContext.page, 5000);
-    await executeCommand(ithaquaContext.page, 'go north');
+    await executeCommand(awContext.page, 'teleport Ithaqua');
     await new Promise(r => setTimeout(r, 3000));
     await ensurePlayersInSameRoom(contexts, 2, 60000);
 
@@ -71,12 +69,19 @@ test.describe('Chat Messages Between Players', () => {
     await ensurePlayerInGame(ithaquaContext, 15000);
     await ensurePlayersInSameRoom(contexts, 2, 15000);
 
+    // Ensure Ithaqua has unmuted AW so the server delivers AW's say to Ithaqua (mute filter is per-receiver).
     try {
       await executeCommand(ithaquaContext.page, 'unmute ArkanWolfshade');
-      await new Promise(r => setTimeout(r, 1000));
+      await waitForMessage(
+        ithaquaContext.page,
+        /You have unmuted ArkanWolfshade|Failed to unmute ArkanWolfshade/i,
+        8000
+      );
     } catch {
       // Ignore if already unmuted or command fails
     }
+    // Allow server mute state to be applied before we send the say (avoids filtered delivery).
+    await new Promise(r => setTimeout(r, 2500));
 
     // Re-ensure receiver (Ithaqua) is in game and same room; brief stability wait so receiver is not
     // linkdead when sender sends
@@ -109,7 +114,8 @@ test.describe('Chat Messages Between Players', () => {
 
     try {
       await executeCommand(awContext.page, 'unmute Ithaqua');
-      await new Promise(r => setTimeout(r, 1000));
+      await waitForMessage(awContext.page, /You have unmuted Ithaqua|Failed to unmute Ithaqua/i, 8000);
+      await new Promise(r => setTimeout(r, 1500));
     } catch {
       // Ignore if already unmuted or command fails
     }
@@ -145,7 +151,12 @@ test.describe('Chat Messages Between Players', () => {
 
     try {
       await executeCommand(ithaquaContext.page, 'unmute ArkanWolfshade');
-      await new Promise(r => setTimeout(r, 1000));
+      await waitForMessage(
+        ithaquaContext.page,
+        /You have unmuted ArkanWolfshade|Failed to unmute ArkanWolfshade/i,
+        8000
+      );
+      await new Promise(r => setTimeout(r, 1500));
     } catch {
       // Ignore if already unmuted or command fails
     }

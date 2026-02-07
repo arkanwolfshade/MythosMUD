@@ -58,8 +58,12 @@ class NPCCombatDataProvider:
         """
         Get NPC definition for an NPC instance.
 
+        Uses persistence.get_npc_lifecycle_manager when available; otherwise
+        falls back to the instance service lifecycle (same source as get_npc_instance)
+        so that XP mapping works when persistence does not expose the lifecycle manager.
+
         Args:
-            npc_id: ID of the NPC
+            npc_id: ID of the NPC (lifecycle key, e.g. string from _generate_npc_id or instance id)
 
         Returns:
             NPC definition if found, None otherwise
@@ -67,22 +71,19 @@ class NPCCombatDataProvider:
         try:
             import asyncio
 
-            # Try to get from lifecycle manager if available
+            lifecycle_manager = None
             if hasattr(self._persistence, "get_npc_lifecycle_manager"):
                 lifecycle_manager = await asyncio.to_thread(self._persistence.get_npc_lifecycle_manager)
-                if lifecycle_manager:
-                    keys = list(lifecycle_manager.lifecycle_records.keys())
-                else:
-                    keys = []
-                logger.debug(
-                    "_get_npc_definition lookup",
-                    npc_id=npc_id,
-                    has_lifecycle_manager=bool(lifecycle_manager),
-                    lifecycle_records_count=len(keys),
-                    npc_id_in_keys=npc_id in keys if lifecycle_manager else False,
-                )
-                if lifecycle_manager and npc_id in lifecycle_manager.lifecycle_records:
-                    return lifecycle_manager.lifecycle_records[npc_id].definition
+
+            if not lifecycle_manager:
+                from .npc_instance_service import get_npc_instance_service
+
+                npc_instance_service = get_npc_instance_service()
+                if hasattr(npc_instance_service, "lifecycle_manager"):
+                    lifecycle_manager = npc_instance_service.lifecycle_manager
+
+            if lifecycle_manager and npc_id in lifecycle_manager.lifecycle_records:
+                return lifecycle_manager.lifecycle_records[npc_id].definition
 
             return None
 

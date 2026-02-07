@@ -229,6 +229,23 @@ class NPCDied(BaseEvent):
 
 
 @dataclass
+class RoomOccupantsRefreshRequested(BaseEvent):
+    """
+    Event requesting that room occupants be broadcast to clients.
+
+    Used after NPC death (and similar) so the Occupants panel updates
+    even when death is processed via EventBus only (no NATS npc_died).
+    """
+
+    room_id: str
+
+    def __post_init__(self) -> None:
+        """Initialize the event with proper type."""
+        super().__post_init__()
+        self.event_type = "RoomOccupantsRefreshRequested"
+
+
+@dataclass
 class NPCSpoke(BaseEvent):
     """
     Event fired when an NPC speaks.

@@ -35,6 +35,8 @@ def mock_player():
     player.name = "TestPlayer"
     player.current_room_id = "arkham_square"
     player.is_admin = 0
+    player.get_inventory.return_value = []
+    player.get_equipped_items.return_value = {}
     return player
 
 

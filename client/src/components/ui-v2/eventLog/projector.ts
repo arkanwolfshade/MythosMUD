@@ -2,10 +2,11 @@
 // As documented in "Event Processing Architecture" - Dr. Armitage, 1928
 
 import type { MythosTimePayload } from '../../../types/mythosTime';
+import { logger } from '../../../utils/logger';
 import { determineMessageType } from '../../../utils/messageTypeUtils';
 import { buildMythosTimeState, formatMythosTime12Hour } from '../../../utils/mythosTime';
 import type { GameEvent } from '../eventHandlers/types';
-import type { ChatMessage, Player } from '../types';
+import type { ChatMessage, Player, Room } from '../types';
 import { sanitizeChatMessageForState } from '../utils/messageUtils';
 import { mergeRoomState } from '../utils/roomMergeUtils';
 import type { GameState } from '../utils/stateUpdateUtils';
@@ -144,11 +145,24 @@ export function projectEvent(prevState: GameState, event: GameEvent): GameState 
       break;
     }
     case 'room_occupants': {
+      const roomId = event.room_id as string | undefined;
+      const seq = event.sequence_number;
+      const lastSeq =
+        roomId && prevState.lastRoomOccupantsSequenceByRoom
+          ? (prevState.lastRoomOccupantsSequenceByRoom[roomId] ?? 0)
+          : 0;
+      if (typeof seq === 'number' && seq <= lastSeq) {
+        break;
+      }
       const room = deriveRoomFromRoomOccupants(event, prevState.room);
       if (room) {
         nextState = {
           ...prevState,
           room: mergeRoomState(room, prevState.room),
+          lastRoomOccupantsSequenceByRoom:
+            roomId != null && typeof seq === 'number'
+              ? { ...prevState.lastRoomOccupantsSequenceByRoom, [roomId]: seq }
+              : prevState.lastRoomOccupantsSequenceByRoom,
         };
       }
       break;
@@ -156,12 +170,14 @@ export function projectEvent(prevState: GameState, event: GameEvent): GameState 
     case 'player_update': {
       const data = event.data as { in_combat?: boolean; stats?: Record<string, unknown> };
       if (prevState.player) {
+        const mergedStats =
+          data.stats && prevState.player.stats
+            ? ({ ...prevState.player.stats, ...data.stats } as NonNullable<Player['stats']>)
+            : prevState.player.stats;
         const updated: Player = {
           ...prevState.player,
           ...(data.in_combat !== undefined && { in_combat: data.in_combat }),
-          ...(data.stats && {
-            stats: { ...prevState.player.stats, ...data.stats },
-          }),
+          ...(mergedStats !== undefined && { stats: mergedStats }),
         };
         nextState = { ...prevState, player: updated };
       }
@@ -182,8 +198,12 @@ export function projectEvent(prevState: GameState, event: GameEvent): GameState 
     case 'player_delirium_respawned':
     case 'playerdeliriumrespawned': {
       const player = event.data.player as Player | undefined;
+      const room = event.data.room as Room | undefined;
       if (player) {
         nextState = { ...prevState, player };
+      }
+      if (room) {
+        nextState = { ...nextState, room };
       }
       break;
     }
@@ -276,6 +296,17 @@ export function projectEvent(prevState: GameState, event: GameEvent): GameState 
           nextState = { ...nextState, room };
         }
       }
+      // Apply player_update from command response (e.g. position from /sit, /stand, /lie) so Character panel updates
+      const playerUpdatePayload = (event.data as { player_update?: { position?: string } }).player_update;
+      if (playerUpdatePayload?.position && nextState.player?.stats) {
+        nextState = {
+          ...nextState,
+          player: {
+            ...nextState.player,
+            stats: { ...nextState.player.stats, position: playerUpdatePayload.position },
+          },
+        };
+      }
       break;
     }
     case 'chat_message': {
@@ -337,6 +368,10 @@ export function projectEvent(prevState: GameState, event: GameEvent): GameState 
           channel: GAME_LOG_CHANNEL,
         });
         nextState = { ...prevState, messages: appendMessage(prevState.messages, msg) };
+        logger.info('projector', 'Combat message appended (npc_attacked)', {
+          event_type: 'npc_attacked',
+          text_preview: text.slice(0, 80),
+        });
       }
       break;
     }
@@ -357,6 +392,10 @@ export function projectEvent(prevState: GameState, event: GameEvent): GameState 
           channel: GAME_LOG_CHANNEL,
         });
         nextState = { ...prevState, messages: appendMessage(prevState.messages, msg) };
+        logger.info('projector', 'Combat message appended (player_attacked)', {
+          event_type: 'player_attacked',
+          text_preview: text.slice(0, 80),
+        });
       }
       break;
     }
@@ -474,6 +513,7 @@ export function projectEvent(prevState: GameState, event: GameEvent): GameState 
         }
       }
 
+      // Server broadcasts game_tick; show [Tick N] every 23 ticks (0, 23, 46, ...).
       if (tickNumber % 23 === 0 && tickNumber >= 0) {
         const tickMsg = buildChatMessage(`[Tick ${tickNumber}]`, event.timestamp, {
           messageType: 'system',

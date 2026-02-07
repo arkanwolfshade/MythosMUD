@@ -45,7 +45,13 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
     ? `${formatMythosTime12Hour(mythosTime.mythos_clock)} - ${mythosTime.formatted_date}`
     : 'Calibrating chronicle...';
 
-  const connectionStatus = isConnected ? 'Connected' : isConnecting ? 'Connecting...' : 'Disconnected';
+  const connectionStatus = isConnected
+    ? 'Connected'
+    : isConnecting
+      ? reconnectAttempts > 0
+        ? 'Reconnecting...'
+        : 'Connecting...'
+      : 'Disconnected';
   const connectionColor = isConnected ? 'text-mythos-terminal-success' : 'text-mythos-terminal-error';
 
   if (isCollapsed) {

@@ -161,6 +161,15 @@ class PlayerStateEventHandler:
                 player_name = "Unknown"  # Will be updated from player_update event if available
                 current_room_id = None
 
+            # Posture: when DP <= 0 player is incapacitated and prone (lying)
+            position = stats.get("position") if isinstance(stats, dict) else None
+            if event.new_dp <= 0:
+                posture = "lying"
+            elif position is not None:
+                posture = getattr(position, "value", str(position)) if hasattr(position, "value") else str(position)
+            else:
+                posture = "standing"
+
             # Create player update event with new DP and full stats
             player_update_data = {
                 "player_id": player_id_str,
@@ -172,6 +181,7 @@ class PlayerStateEventHandler:
                     **stats,
                     "current_dp": event.new_dp,
                     "max_dp": event.max_dp,
+                    "position": posture,
                 },  # Ensure DP is set even if stats are empty
             }
 
@@ -185,6 +195,7 @@ class PlayerStateEventHandler:
                     "new_dp": event.new_dp,
                     "max_dp": event.max_dp,
                     "damage_taken": event.damage_taken,
+                    "posture": posture,
                     "player": player_update_data,
                 },
                 player_id=player_id_str,

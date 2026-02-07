@@ -38,6 +38,19 @@ def _clone_equipped(equipped: Mapping[str, Mapping[str, Any]]) -> dict[str, Inve
     return {slot: cast(InventoryStack, copy.deepcopy(stack)) for slot, stack in equipped.items()}
 
 
+def _resolve_effective_equip_slot(slot_type: str, target_slot: str | None) -> str:
+    """Resolve effective equip slot from slot_type and optional target_slot; reduces equip_from_inventory complexity."""
+    if slot_type == "inventory":
+        if target_slot is None or not target_slot.strip():
+            raise SlotValidationError(
+                "Specify which slot to equip to (e.g. equip 1 main_hand or equip switchblade main_hand)."
+            )
+        return target_slot.strip().lower()
+    if target_slot is not None and slot_type != target_slot:
+        raise SlotValidationError(f"Item slot '{slot_type}' does not match requested slot '{target_slot}'.")
+    return slot_type
+
+
 @dataclass(frozen=True)
 class EquipmentService:
     """
@@ -49,7 +62,7 @@ class EquipmentService:
     inventory_service: InventoryService = field(default_factory=InventoryService)
     wearable_container_service: WearableContainerService | None = field(default=None)
 
-    def equip_from_inventory(
+    def equip_from_inventory(  # pylint: disable=too-many-locals  # Reason: Equip flow uses working copies and validation; already reduced by _resolve_effective_equip_slot
         self,
         inventory: Sequence[Mapping[str, Any]],
         equipped: Mapping[str, Mapping[str, Any]],
@@ -71,8 +84,7 @@ class EquipmentService:
         if not isinstance(slot_type, str) or not slot_type:
             raise SlotValidationError("Inventory item lacks a valid slot_type.")
 
-        if target_slot is not None and slot_type != target_slot:
-            raise SlotValidationError(f"Item slot '{slot_type}' does not match requested slot '{target_slot}'.")
+        effective_slot = _resolve_effective_equip_slot(slot_type, target_slot)
 
         quantity = source_stack.get("quantity", 0)
         if not isinstance(quantity, int) or quantity <= 0:
@@ -87,8 +99,9 @@ class EquipmentService:
 
         equipped_item = copy.deepcopy(source_stack)
         equipped_item["quantity"] = 1
+        equipped_item["slot_type"] = effective_slot
 
-        previously_equipped = working_equipped.get(slot_type)
+        previously_equipped = working_equipped.get(effective_slot)
         if previously_equipped is not None:
             try:
                 working_inventory = self.inventory_service.add_stack(working_inventory, previously_equipped)
@@ -97,7 +110,7 @@ class EquipmentService:
                     f"Cannot swap '{previously_equipped['item_name']}' into inventory; capacity reached."
                 ) from exc
 
-        working_equipped[slot_type] = equipped_item
+        working_equipped[effective_slot] = equipped_item
 
         # Handle wearable container creation if this is a container item
         if self.wearable_container_service and equipped_item.get("inner_container"):

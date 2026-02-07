@@ -4,12 +4,12 @@ Base command models and enums for MythosMUD.
 This module provides the foundational classes and enums used by all command models.
 """
 
-from enum import Enum
+from enum import StrEnum
 
 from pydantic import BaseModel, ConfigDict
 
 
-class Direction(str, Enum):
+class Direction(StrEnum):
     """Valid directions for movement and looking."""
 
     NORTH = "north"
@@ -24,7 +24,7 @@ class Direction(str, Enum):
     SOUTHWEST = "southwest"
 
 
-class CommandType(str, Enum):
+class CommandType(StrEnum):
     """Valid command types for MythosMUD."""
 
     LOOK = "look"

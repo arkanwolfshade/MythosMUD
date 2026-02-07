@@ -226,9 +226,22 @@ class Player(Base):
         self.status_effects = json.dumps(status_effects)
 
     def get_equipped_items(self) -> dict[str, Any]:
-        """Return equipped items mapping."""
+        """Return equipped items mapping.
+
+        On load, _equipped_items may be None; populate from inventory_record.equipped_json
+        if present (player_inventories table).
+        """
         equipped = getattr(self, "_equipped_items", None)
         if equipped is None:
+            record = getattr(self, "inventory_record", None)
+            if record is not None and getattr(record, "equipped_json", None):
+                try:
+                    parsed = json.loads(record.equipped_json)
+                    if isinstance(parsed, dict):
+                        self._equipped_items = parsed
+                        return parsed
+                except (json.JSONDecodeError, TypeError, AttributeError):
+                    pass
             return {}
         if isinstance(equipped, str):
             try:

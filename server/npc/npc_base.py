@@ -435,6 +435,23 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
             logger.error("Error getting persistence or event bus", error=str(e), error_type=type(e).__name__)
             return event_bus, persistence
 
+    def _is_npc_in_combat(self) -> bool:
+        """
+        Return True if this NPC is currently in combat (blocks normal movement).
+
+        Uses combat service when available; returns False on any lookup failure
+        so movement is not blocked by transient errors.
+        """
+        try:
+            from ..services.combat_service import get_combat_service
+
+            combat_service = get_combat_service()
+            if combat_service:
+                return combat_service.is_npc_in_combat_sync(self.npc_id)
+        except (ImportError, AttributeError, RuntimeError):
+            pass
+        return False
+
     def _move_with_integration(self, room_id: str) -> bool:
         """
         Move NPC using the movement integration system.
@@ -482,6 +499,9 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
         """
         Move NPC to a different room.
 
+        Normal movement is blocked while the NPC is in combat (same policy as
+        NPCMovementIntegration and idle movement).
+
         Args:
             room_id: ID of the destination room
             use_integration: Whether to use the movement integration system
@@ -490,6 +510,14 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
             bool: True if movement was successful
         """
         try:
+            # Block normal movement while in combat (players and NPCs must not leave combat by walking)
+            if self._is_npc_in_combat():
+                logger.debug(
+                    "NPC movement blocked - NPC in combat",
+                    npc_id=self.npc_id,
+                    room_id=room_id,
+                )
+                return False
             if use_integration:
                 return self._move_with_integration(room_id)
             return self._move_simple(room_id)

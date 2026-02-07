@@ -22,20 +22,6 @@ const BASE_URL = 'http://localhost:5173';
  * @param password - Password to login with
  */
 export async function loginPlayer(page: Page, username: string, password: string): Promise<void> {
-  // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      location: 'auth.ts:loginPlayer:entry',
-      message: 'loginPlayer started',
-      data: { username },
-      timestamp: Date.now(),
-      sessionId: 'debug-session',
-      hypothesisId: 'A',
-    }),
-  }).catch(() => {});
-  // #endregion
   // Navigate to base URL
   await page.goto(BASE_URL, { waitUntil: 'load' });
 
@@ -158,21 +144,6 @@ export async function loginPlayer(page: Page, username: string, password: string
 
   const isMOTDScreen =
     motdCheck.hasWelcomeText || motdCheck.hasMotdContent || motdCheck.hasMotdButton || motdCheck.hasEnterRealmButton;
-
-  // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      location: 'auth.ts:loginPlayer:motdCheck',
-      message: 'MOTD check result',
-      data: { username, isMOTDScreen, ...motdCheck },
-      timestamp: Date.now(),
-      sessionId: 'debug-session',
-      hypothesisId: 'D',
-    }),
-  }).catch(() => {});
-  // #endregion
 
   if (isMOTDScreen) {
     // Click MOTD button - use direct DOM click since visibility checks are unreliable

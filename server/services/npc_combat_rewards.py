@@ -100,7 +100,7 @@ class NPCCombatRewards:
         # CRITICAL FIX: Use GameMechanicsService.gain_experience() to prevent
         # XP awards from overwriting combat damage with stale health values
         try:
-            success, message = self._game_mechanics.gain_experience(killer_id, xp_reward, f"killed_{npc_id}")
+            success, message = await self._game_mechanics.gain_experience(killer_id, xp_reward, f"killed_{npc_id}")
             if success:
                 logger.info(
                     "Awarded XP to player",

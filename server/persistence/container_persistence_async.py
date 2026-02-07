@@ -159,8 +159,8 @@ async def create_container_async(  # pylint: disable=too-many-arguments,too-many
                     metadata_json, container_item_instance_id, created_at, updated_at
                 ) VALUES (
                     :source_type, :owner_id, :room_id, :entity_id, :lock_state,
-                    :capacity_slots, :weight_limit, :decay_at, :allowed_roles::jsonb,
-                    :metadata_json::jsonb, :container_item_instance_id, :now, :now
+                    :capacity_slots, :weight_limit, :decay_at, CAST(:allowed_roles AS jsonb),
+                    CAST(:metadata_json AS jsonb), :container_item_instance_id, :now, :now
                 )
                 RETURNING container_instance_id, created_at, updated_at
             """),
@@ -363,7 +363,7 @@ async def update_container_async(  # pylint: disable=too-many-locals  # Reason: 
         updates.append("lock_state = :lock_state")
         params["lock_state"] = lock_state
     if metadata_json is not None:
-        updates.append("metadata_json = :metadata_json::jsonb")
+        updates.append("metadata_json = CAST(:metadata_json AS jsonb)")
         params["metadata_json"] = json.dumps(metadata_json)
     updates.append("updated_at = :now")
     # Run UPDATE when we changed lock_state/metadata and/or items (to bump updated_at)

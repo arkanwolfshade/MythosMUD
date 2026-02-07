@@ -91,6 +91,8 @@ help:
 # CODE QUALITY
 # ============================================================================
 
+# Ruff command in scripts/lint.py matches CI (.github/workflows/ci.yml "Lint with ruff")
+# so local make lint fails on the same issues as CI
 lint:
 	$(PYTHON) scripts/lint.py
 	$(PYTHON) scripts/check_logging_consistency.py

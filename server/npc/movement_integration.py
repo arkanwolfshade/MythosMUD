@@ -80,6 +80,18 @@ class NPCMovementIntegration:
 
         return True
 
+    def _is_npc_in_combat(self, npc_id: str) -> bool:
+        """Return True if the NPC is currently in combat (blocks normal movement)."""
+        try:
+            from ..services.combat_service import get_combat_service
+
+            combat_service = get_combat_service()
+            if combat_service and combat_service.is_npc_in_combat_sync(npc_id):
+                return True
+        except (ImportError, AttributeError, RuntimeError):
+            pass
+        return False
+
     def _get_room_objects(self, npc_id: str, from_room_id: str, to_room_id: str) -> tuple[Any, Any] | None:
         """
         Get room objects and validate they exist.
@@ -171,6 +183,7 @@ class NPCMovementIntegration:
         Move an NPC to a different room with full integration.
 
         This method provides enhanced NPC movement that:
+        - Blocks movement when NPC is in combat
         - Validates room existence
         - Updates room occupancy
         - Publishes movement events
@@ -186,6 +199,15 @@ class NPCMovementIntegration:
         """
         try:
             if not self._validate_room_ids(npc_id, from_room_id, to_room_id):
+                return False
+
+            if self._is_npc_in_combat(npc_id):
+                logger.debug(
+                    "NPC movement blocked - NPC in combat",
+                    npc_id=npc_id,
+                    from_room=from_room_id,
+                    to_room=to_room_id,
+                )
                 return False
 
             room_objects = self._get_room_objects(npc_id, from_room_id, to_room_id)

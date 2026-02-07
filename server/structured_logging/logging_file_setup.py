@@ -571,6 +571,7 @@ def setup_enhanced_file_logging(  # pylint: disable=too-many-locals  # Reason: F
         "validators": ["validators", "server.validators"],
         "combat": [
             "services.combat_service",
+            "services.combat_turn_processor",
             "services.combat_event_publisher",
             "services.npc_combat_integration_service",
             "services.player_combat_service",

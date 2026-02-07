@@ -14,6 +14,7 @@ import { useEventProcessing } from '../useEventProcessing';
 vi.mock('../../../../utils/logger', () => ({
   logger: {
     error: vi.fn(),
+    info: vi.fn(),
   },
 }));
 
@@ -53,6 +54,7 @@ describe('useEventProcessing', () => {
     lucidityStatusRef: { current: null },
     lastDaypartRef: { current: null },
     lastHourRef: { current: null },
+    lastQuarterHourRef: { current: null },
     lastHolidayIdsRef: { current: [] },
     lastRoomUpdateTime: { current: 0 },
     setDpStatus: function (_status: HealthStatus): void {
@@ -438,7 +440,12 @@ describe('useEventProcessing', () => {
       await Promise.resolve();
     });
 
-    expect(mockSetGameState).toHaveBeenCalledWith(
+    // Hook passes an updater (prev => nextState) to preserve commandHistory
+    expect(mockSetGameState).toHaveBeenCalledWith(expect.any(Function));
+    const updater = mockSetGameState.mock.calls[0][0] as (prev: { commandHistory: unknown[] }) => unknown;
+    const prev = { commandHistory: [] };
+    const nextState = updater(prev) as { player: null; room: null; messages: unknown[]; commandHistory: unknown[] };
+    expect(nextState).toEqual(
       expect.objectContaining({
         player: null,
         room: null,
@@ -740,6 +747,118 @@ describe('useEventProcessing', () => {
     expect(mockSetGameState).toHaveBeenCalledTimes(2);
   });
 
+  it('should log combat event when event_type is player_attacked', async () => {
+    const loggerModule = await import('../../../../utils/logger');
+    const { result } = renderHook(() =>
+      useEventProcessing({
+        setGameState: mockSetGameState,
+      })
+    );
+
+    const event: GameEvent = {
+      event_type: 'player_attacked',
+      timestamp: new Date().toISOString(),
+      sequence_number: 1,
+      data: { room_id: 'room1', damage: 10 },
+    };
+
+    act(() => {
+      result.current.handleGameEvent(event);
+    });
+
+    act(() => {
+      vi.advanceTimersByTime(10);
+    });
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(vi.mocked(loggerModule.logger.info)).toHaveBeenCalledWith(
+      'useEventProcessing',
+      'Combat event received',
+      expect.objectContaining({
+        event_type: 'player_attacked',
+        has_data: true,
+        data_keys: expect.arrayContaining(['room_id', 'damage']),
+      })
+    );
+  });
+
+  it('should log combat event when event_type is npc_attacked', async () => {
+    const loggerModule = await import('../../../../utils/logger');
+    const { result } = renderHook(() =>
+      useEventProcessing({
+        setGameState: mockSetGameState,
+      })
+    );
+
+    const event: GameEvent = {
+      event_type: 'npc_attacked',
+      timestamp: new Date().toISOString(),
+      sequence_number: 1,
+      data: {},
+    };
+
+    act(() => {
+      result.current.handleGameEvent(event);
+    });
+
+    act(() => {
+      vi.advanceTimersByTime(10);
+    });
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(vi.mocked(loggerModule.logger.info)).toHaveBeenCalledWith(
+      'useEventProcessing',
+      'Combat event received',
+      expect.objectContaining({
+        event_type: 'npc_attacked',
+      })
+    );
+  });
+
+  it('should log combat event with has_data false and data_keys empty when event.data is missing', async () => {
+    const loggerModule = await import('../../../../utils/logger');
+    const { result } = renderHook(() =>
+      useEventProcessing({
+        setGameState: mockSetGameState,
+      })
+    );
+
+    // Intentional: test "data is missing" path; data omitted so has_data is false at runtime
+    const event = {
+      event_type: 'player_attacked',
+      timestamp: new Date().toISOString(),
+      sequence_number: 1,
+    } as unknown as GameEvent;
+
+    act(() => {
+      result.current.handleGameEvent(event);
+    });
+
+    act(() => {
+      vi.advanceTimersByTime(10);
+    });
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(vi.mocked(loggerModule.logger.info)).toHaveBeenCalledWith(
+      'useEventProcessing',
+      'Combat event received',
+      expect.objectContaining({
+        event_type: 'player_attacked',
+        has_data: false,
+        data_keys: [],
+      })
+    );
+  });
+
   it('should return early when processEventQueue is called while isProcessingEvent is true', async () => {
     // This test aims to cover the branch on line 26: `if (isProcessingEvent.current || ...)`
     // Specifically, the case where isProcessingEvent.current is true when processEventQueue is called.
@@ -751,10 +870,10 @@ describe('useEventProcessing', () => {
 
     const timeoutCallbacks: Array<() => void> = [];
     const originalSetTimeout = window.setTimeout;
-    vi.spyOn(window, 'setTimeout').mockImplementation((fn: () => void) => {
+    vi.spyOn(window, 'setTimeout').mockImplementation(((fn: () => void) => {
       timeoutCallbacks.push(fn);
       return originalSetTimeout(fn, 0);
-    });
+    }) as unknown as typeof window.setTimeout);
 
     const { result } = renderHook(() =>
       useEventProcessing({

@@ -19,6 +19,12 @@ export interface GameState {
   mythosTime?: MythosTimeState | null;
   /** Last quarter-hour minute projected (for deduplicating clock chime messages). */
   lastQuarterHourForChime?: number | null;
+  /**
+   * Last sequence_number applied per room_id for room_occupants.
+   * Server-authoritative: ignore room_occupants with older sequence to avoid
+   * stale updates (e.g. second NPC stays after death).
+   */
+  lastRoomOccupantsSequenceByRoom?: Record<string, number>;
 }
 
 // Helper: treat empty arrays/count as "no data" so we preserve existing

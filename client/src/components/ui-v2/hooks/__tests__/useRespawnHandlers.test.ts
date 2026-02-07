@@ -24,6 +24,8 @@ describe('useRespawnHandlers', () => {
   const mockSetIsRespawning = vi.fn();
   const mockSetIsDelirious = vi.fn();
   const mockSetIsDeliriumRespawning = vi.fn();
+  const mockSetHasRespawned = vi.fn();
+  const mockAppendRespawnEvent = vi.fn();
 
   const defaultParams = {
     authToken: 'test-token',
@@ -33,6 +35,8 @@ describe('useRespawnHandlers', () => {
     setIsRespawning: mockSetIsRespawning,
     setIsDelirious: mockSetIsDelirious,
     setIsDeliriumRespawning: mockSetIsDeliriumRespawning,
+    setHasRespawned: mockSetHasRespawned,
+    appendRespawnEvent: mockAppendRespawnEvent,
   };
 
   beforeEach(() => {
@@ -56,10 +60,13 @@ describe('useRespawnHandlers', () => {
         room: { id: 'room2', name: 'Hospital', description: 'Hospital room', exits: {} },
       };
 
-      fetchSpy.mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockRespawnData,
-      } as unknown as Response);
+      // Mock respawn API then optional agent-log fetch (hook issues a second fetch in success path)
+      fetchSpy
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => mockRespawnData,
+        } as unknown as Response)
+        .mockResolvedValueOnce({ ok: true, json: async () => ({}) } as unknown as Response);
 
       const { result } = renderHook(() => useRespawnHandlers(defaultParams));
 
@@ -73,7 +80,7 @@ describe('useRespawnHandlers', () => {
         expect(mockSetGameState).toHaveBeenCalled();
       });
 
-      expect(global.fetch).toHaveBeenCalledWith('/api/players/respawn', {
+      expect(fetchSpy).toHaveBeenCalledWith('/api/players/respawn', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

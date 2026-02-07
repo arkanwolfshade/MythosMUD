@@ -7,6 +7,7 @@ This module handles conversion of Player objects and dictionaries to PlayerRead 
 from typing import TYPE_CHECKING, Any, cast
 
 from ..exceptions import DatabaseError
+from ..game.items.prototype_registry import PrototypeRegistryError
 from ..models import Stats
 from ..models.game import (  # pylint: disable=unused-import  # Reason: InventoryItem and StatusEffect are used for type conversion
     InventoryItem,
@@ -22,13 +23,48 @@ if TYPE_CHECKING:
     pass
 
 
+def _weapon_from_prototype_registry(registry: Any, prototype_id: str) -> dict[str, Any] | None:
+    """Resolve metadata.weapon from prototype registry for a given prototype_id.
+
+    Returns:
+        Weapon dict (min_damage, max_damage, modifier, damage_types, magical) or None.
+    """
+    if not registry or not prototype_id:
+        return None
+    try:
+        prototype = registry.get(prototype_id)
+    except PrototypeRegistryError:
+        return None
+    if not prototype or not getattr(prototype, "metadata", None):
+        return None
+    weapon = prototype.metadata.get("weapon")
+    if isinstance(weapon, dict):
+        return weapon
+    return None
+
+
+def _inventory_item_with_weapon(item: dict[str, Any], registry: Any) -> InventoryItem:
+    """Build InventoryItem from raw item dict, enriching with weapon stats from registry when present."""
+    item_id = item.get("item_id") or item.get("prototype_id") or ""
+    quantity = int(item.get("quantity", 1))
+    prototype_id = item.get("prototype_id") or item.get("item_id") or ""
+    weapon = _weapon_from_prototype_registry(registry, prototype_id)
+    return InventoryItem(item_id=item_id, quantity=quantity, weapon=weapon)
+
+
 class PlayerSchemaConverter:
     """Utility class for converting Player objects to PlayerRead schemas."""
 
-    def __init__(self, persistence: Any, player_combat_service: Any = None) -> None:
-        """Initialize the converter with persistence and optional combat service."""
+    def __init__(
+        self,
+        persistence: Any,
+        player_combat_service: Any = None,
+        item_prototype_registry: Any = None,
+    ) -> None:
+        """Initialize the converter with persistence, optional combat service, and optional prototype registry."""
         self.persistence = persistence
         self.player_combat_service = player_combat_service
+        self.item_prototype_registry = item_prototype_registry
 
     async def check_player_combat_state(self, player: Any) -> bool:
         """Check if player is in combat."""
@@ -150,10 +186,11 @@ class PlayerSchemaConverter:
 
         self.compute_derived_stats_fields(stats)
 
-        # Convert dicts to typed models
+        # Convert dicts to typed models; enrich inventory items with weapon stats from prototype registry
         stats_model = Stats(**stats) if isinstance(stats, dict) else stats
+        registry = getattr(self, "item_prototype_registry", None)
         inventory_models = (
-            [InventoryItem(**item) if isinstance(item, dict) else item for item in inventory]
+            [_inventory_item_with_weapon(item, registry) if isinstance(item, dict) else item for item in inventory]
             if isinstance(inventory, list)
             else inventory
         )
@@ -201,10 +238,14 @@ class PlayerSchemaConverter:
             position_value = PositionState.STANDING.value
         position_state = self.get_position_state(position_value, player.get("player_id"))
 
-        # Convert dicts to typed models
+        # Convert dicts to typed models; enrich inventory items with weapon stats from prototype registry
         stats_model = Stats(**player["stats"]) if isinstance(player["stats"], dict) else player["stats"]
+        registry = getattr(self, "item_prototype_registry", None)
         inventory_models = (
-            [InventoryItem(**item) if isinstance(item, dict) else item for item in player["inventory"]]
+            [
+                _inventory_item_with_weapon(item, registry) if isinstance(item, dict) else item
+                for item in player["inventory"]
+            ]
             if isinstance(player["inventory"], list)
             else player["inventory"]
         )

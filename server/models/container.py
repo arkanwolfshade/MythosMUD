@@ -10,7 +10,7 @@ to ensure proper handling of forbidden artifacts.
 from __future__ import annotations
 
 from datetime import datetime
-from enum import Enum
+from enum import StrEnum
 from typing import TYPE_CHECKING, Any
 from uuid import UUID
 
@@ -23,7 +23,7 @@ else:
     InventoryStack = dict[str, Any]
 
 
-class ContainerSourceType(str, Enum):
+class ContainerSourceType(StrEnum):
     """Source type for container instances."""
 
     ENVIRONMENT = "environment"
@@ -31,7 +31,7 @@ class ContainerSourceType(str, Enum):
     CORPSE = "corpse"
 
 
-class ContainerLockState(str, Enum):
+class ContainerLockState(StrEnum):
     """Lock state for container instances."""
 
     UNLOCKED = "unlocked"

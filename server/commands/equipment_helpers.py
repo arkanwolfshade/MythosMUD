@@ -182,7 +182,7 @@ async def handle_wearable_container_on_unequip(
                     if inv_item.get("item_instance_id") == unequipped_item.get("item_instance_id"):
                         inv_item["inner_container"] = container_result["inner_container"]
                         player.set_inventory(inventory_view)
-                        persist_player(persistence, player)
+                        await persist_player(persistence, player)
                         logger.debug(
                             "Wearable container preserved on unequip",
                             player_id=player.player_id,

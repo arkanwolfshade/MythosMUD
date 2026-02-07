@@ -208,8 +208,9 @@ class NPCCombatIntegrationService:  # pylint: disable=too-many-instance-attribut
             if not npc_instance:
                 return False
 
-            # Validate combat location
+            # Validate combat location; if invalid, end any existing combat and fail the attack
             if not await self._validate_combat_location(player_id, npc_id, room_id, npc_instance):
+                await self._end_combat_if_participant_in_combat(player_id, npc_id)
                 return False
 
             # Store combat memory and set up UUIDs
@@ -333,7 +334,51 @@ class NPCCombatIntegrationService:  # pylint: disable=too-many-instance-attribut
             )
             return False
 
+        # Ensure combat room_id matches both participants (single source of truth)
+        if player_room_id != room_id or npc_room_id != room_id:
+            logger.warning(
+                "Combat room mismatch - room_id does not match participant rooms",
+                player_id=player_id,
+                npc_id=npc_id,
+                player_room_id=player_room_id,
+                npc_room_id=npc_room_id,
+                combat_room_id=room_id,
+            )
+            return False
+
         return True
+
+    async def _end_combat_if_participant_in_combat(self, player_id: str, npc_id: str) -> None:
+        """
+        End any active combat that includes this player or NPC when room validation fails.
+
+        Called when attacker and target are not in the same room so combat state is
+        cleaned up and the player is not left stuck in a broken combat.
+
+        Args:
+            player_id: ID of the attacking player (str, may be UUID string)
+            npc_id: ID of the target NPC (for logging)
+        """
+        try:
+            player_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
+        except (ValueError, TypeError):
+            logger.debug(
+                "Could not parse player_id for combat end check",
+                player_id=player_id,
+                npc_id=npc_id,
+            )
+            return
+        existing_combat = await self._combat_service.get_combat_by_participant(player_uuid)
+        if existing_combat:
+            reason = "Invalid combat location - participants not in same room"
+            logger.info(
+                "Ending combat due to room mismatch",
+                combat_id=existing_combat.combat_id,
+                player_id=player_id,
+                npc_id=npc_id,
+                reason=reason,
+            )
+            await self._combat_service.end_combat(existing_combat.combat_id, reason)
 
     async def _setup_combat_uuids_and_mappings(
         self, player_id: str, npc_id: str, room_id: str, first_engagement: bool
@@ -355,15 +400,12 @@ class NPCCombatIntegrationService:  # pylint: disable=too-many-instance-attribut
             target_uuid = self._uuid_mapping.convert_to_uuid(npc_id)
 
             # Always store the UUID-to-string ID mapping when we have a string ID
-            # This mapping is used later during XP calculation
             if not self._uuid_mapping.is_valid_uuid(npc_id):
-                # Only store mapping for string IDs
                 self._uuid_mapping.store_string_id_mapping(target_uuid, npc_id)
 
-                # Also store the XP value directly for this UUID
-                # This avoids the need to look it up from the lifecycle manager
-                # during XP calculation, since NPCs may be removed by then
-                await self._store_npc_xp_mapping(npc_id, target_uuid, room_id, player_id, first_engagement)
+            # Store XP value for this UUID in all cases (string ID or instance UUID).
+            # Target resolution passes instance UUID; get_npc_definition looks up by instance id in lifecycle_records.
+            await self._store_npc_xp_mapping(npc_id, target_uuid, room_id, player_id, first_engagement)
 
         except ValueError:
             attacker_uuid = uuid4()
@@ -558,7 +600,36 @@ class NPCCombatIntegrationService:  # pylint: disable=too-many-instance-attribut
         BUGFIX: Enhanced logging and defensive exception handling to prevent player disconnections
         during NPC death operations. See: investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md
         """
-        return await self._handlers.handle_npc_death(npc_id, room_id, killer_id, combat_id)
+        result = await self._handlers.handle_npc_death(npc_id, room_id, killer_id, combat_id)
+        if result and killer_id and room_id:
+            try:
+                from ..realtime.websocket_room_updates import broadcast_room_update
+
+                conn_mgr = getattr(self._messaging_integration, "connection_manager", None)
+                broadcast_room_id = room_id
+                if conn_mgr:
+                    try:
+                        killer_uuid = uuid.UUID(str(killer_id)) if isinstance(killer_id, str) else killer_id
+                        player = await conn_mgr.get_player(killer_uuid)
+                        killer_room = getattr(player, "current_room_id", None) if player else None
+                        if killer_room:
+                            broadcast_room_id = killer_room
+                    except (ValueError, TypeError, AttributeError):
+                        pass
+                await broadcast_room_update(
+                    str(killer_id),
+                    broadcast_room_id,
+                    connection_manager=conn_mgr,
+                )
+                logger.debug("Broadcast room occupants after NPC death", npc_id=npc_id, room_id=broadcast_room_id)
+            except Exception as broadcast_err:  # pylint: disable=broad-exception-caught  # Reason: Broadcast failure must not affect NPC death handling
+                logger.warning(
+                    "Failed to broadcast room occupants after NPC death (non-fatal)",
+                    npc_id=npc_id,
+                    room_id=room_id,
+                    error=str(broadcast_err),
+                )
+        return result
 
     def get_npc_combat_memory(self, npc_id: str) -> str | None:
         """
