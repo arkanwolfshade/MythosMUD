@@ -6,9 +6,10 @@ from utils.safe_subprocess import safe_run_static
 
 success = True
 
-# Ruff linting on entire repository (matching pre-commit hooks)
-print("Running ruff linting on entire repository...")
-result = safe_run_static("uv", "run", "--active", "ruff", "check", "--fix", "--line-length=120", ".", cwd=".")
+# Same invocation and args as CI ("Lint with ruff": python -m ruff check --line-length=120 server/)
+# so we find the same findings locally. --fix so local auto-fixes when possible.
+print("Running ruff linting (python -m ruff, matches CI, with --fix)...")
+result = safe_run_static("uv", "run", "python", "-m", "ruff", "check", "--fix", "--line-length=120", "server/", cwd=".")
 if result.returncode != 0:
     print(f"Ruff linting failed with exit code: {result.returncode}")
     success = False

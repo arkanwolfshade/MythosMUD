@@ -6,13 +6,13 @@ character statistics and attribute types.
 """
 
 from datetime import UTC, datetime
-from enum import Enum
+from enum import StrEnum
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field, computed_field, model_validator
 
 
-class AttributeType(str, Enum):
+class AttributeType(StrEnum):
     """Core attribute types for the character system ."""
 
     STR = "strength"
@@ -29,7 +29,7 @@ class AttributeType(str, Enum):
     CORR = "corruption"
 
 
-class StatusEffectType(str, Enum):
+class StatusEffectType(StrEnum):
     """Status effects that can be applied to characters."""
 
     STUNNED = "stunned"
@@ -42,7 +42,7 @@ class StatusEffectType(str, Enum):
     BUFF = "buff"
 
 
-class PositionState(str, Enum):
+class PositionState(StrEnum):
     """Permitted posture states for a character."""
 
     STANDING = "standing"

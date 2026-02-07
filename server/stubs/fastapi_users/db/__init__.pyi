@@ -38,7 +38,7 @@ class SQLAlchemyUserDatabase:
 
     def __init__(
         self,
-        session: AsyncSession | AsyncGenerator[AsyncSession, None],
+        session: AsyncSession | AsyncGenerator[AsyncSession],
         user_table: type[SQLAlchemyBaseUserTableUUID],
     ) -> None: ...
     async def get(self, id: UUID) -> SQLAlchemyBaseUserTableUUID | None: ...

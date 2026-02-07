@@ -12,9 +12,9 @@ lurk in the shadows of our world.
 
 # pylint: disable=too-many-instance-attributes,too-few-public-methods,too-many-arguments,too-many-positional-arguments  # Reason: Auth service requires many state tracking attributes and complex authentication logic
 
+import enum
 import time
 from datetime import UTC, datetime
-from enum import Enum
 from typing import Any
 
 from fastapi import HTTPException, Request, status
@@ -24,7 +24,7 @@ from ..structured_logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 
 
-class AdminRole(str, Enum):
+class AdminRole(enum.StrEnum):
     """Enumeration of admin roles."""
 
     SUPERUSER = "superuser"  # Full system access
@@ -33,7 +33,7 @@ class AdminRole(str, Enum):
     VIEWER = "viewer"  # Read-only access
 
 
-class AdminAction(str, Enum):
+class AdminAction(enum.StrEnum):
     """Enumeration of admin actions for audit logging."""
 
     # NPC Definition Management

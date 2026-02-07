@@ -15,7 +15,7 @@ have proper birth, existence, and eventual return to the void.
 
 import time
 from collections.abc import Sequence
-from enum import Enum
+from enum import StrEnum
 from typing import TYPE_CHECKING, Any
 
 from server.events.event_bus import EventBus
@@ -37,7 +37,7 @@ if TYPE_CHECKING:
 logger = get_logger(__name__)
 
 
-class NPCLifecycleState(str, Enum):
+class NPCLifecycleState(StrEnum):
     """Enumeration of NPC lifecycle states."""
 
     SPAWNING = "spawning"
@@ -49,7 +49,7 @@ class NPCLifecycleState(str, Enum):
     ERROR = "error"
 
 
-class NPCLifecycleEvent(str, Enum):
+class NPCLifecycleEvent(StrEnum):
     """Enumeration of NPC lifecycle events."""
 
     SPAWNED = "spawned"

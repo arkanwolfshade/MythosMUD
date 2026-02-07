@@ -5,13 +5,13 @@ This module defines Pydantic models for target resolution results,
 supporting both player and NPC targets with proper validation.
 """
 
-from enum import Enum
+from enum import StrEnum
 from typing import Any
 
 from pydantic import BaseModel, Field
 
 
-class TargetType(str, Enum):
+class TargetType(StrEnum):
     """Enumeration of possible target types."""
 
     PLAYER = "player"
