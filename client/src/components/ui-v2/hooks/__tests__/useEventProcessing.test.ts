@@ -54,6 +54,7 @@ describe('useEventProcessing', () => {
     lucidityStatusRef: { current: null },
     lastDaypartRef: { current: null },
     lastHourRef: { current: null },
+    lastQuarterHourRef: { current: null },
     lastHolidayIdsRef: { current: [] },
     lastRoomUpdateTime: { current: 0 },
     setDpStatus: function (_status: HealthStatus): void {
@@ -439,7 +440,12 @@ describe('useEventProcessing', () => {
       await Promise.resolve();
     });
 
-    expect(mockSetGameState).toHaveBeenCalledWith(
+    // Hook passes an updater (prev => nextState) to preserve commandHistory
+    expect(mockSetGameState).toHaveBeenCalledWith(expect.any(Function));
+    const updater = mockSetGameState.mock.calls[0][0] as (prev: { commandHistory: unknown[] }) => unknown;
+    const prev = { commandHistory: [] };
+    const nextState = updater(prev) as { player: null; room: null; messages: unknown[]; commandHistory: unknown[] };
+    expect(nextState).toEqual(
       expect.objectContaining({
         player: null,
         room: null,
@@ -823,12 +829,12 @@ describe('useEventProcessing', () => {
       })
     );
 
+    // Intentional: test "data is missing" path; data omitted so has_data is false at runtime
     const event = {
       event_type: 'player_attacked',
       timestamp: new Date().toISOString(),
       sequence_number: 1,
-      data: undefined,
-    } as GameEvent;
+    } as unknown as GameEvent;
 
     act(() => {
       result.current.handleGameEvent(event);
@@ -864,10 +870,10 @@ describe('useEventProcessing', () => {
 
     const timeoutCallbacks: Array<() => void> = [];
     const originalSetTimeout = window.setTimeout;
-    vi.spyOn(window, 'setTimeout').mockImplementation((fn: () => void) => {
+    vi.spyOn(window, 'setTimeout').mockImplementation(((fn: () => void) => {
       timeoutCallbacks.push(fn);
       return originalSetTimeout(fn, 0);
-    });
+    }) as unknown as typeof window.setTimeout);
 
     const { result } = renderHook(() =>
       useEventProcessing({

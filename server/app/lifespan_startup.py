@@ -134,9 +134,7 @@ def _subscribe_room_occupants_refresh(container: ApplicationContainer) -> None:
         conn_mgr = container.connection_manager
         if not conn_mgr:
             return
-        loop.create_task(
-            broadcast_room_update(event.room_id, event.room_id, connection_manager=conn_mgr)
-        )
+        loop.create_task(broadcast_room_update(event.room_id, event.room_id, connection_manager=conn_mgr))
 
     container.event_bus.subscribe(
         RoomOccupantsRefreshRequested, _on_room_occupants_refresh, service_id="room_occupants_refresh"
