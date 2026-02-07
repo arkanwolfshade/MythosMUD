@@ -71,6 +71,9 @@ def _legacy_service_bindings(container: ApplicationContainer) -> list[tuple[str,
         ("prototype_registry", container.item_prototype_registry, "Prototype registry"),
         ("connection_manager", container.connection_manager, "Connection manager"),
         ("chat_service", container.chat_service, "Chat service"),
+        ("magic_service", container.magic_service, "Magic service"),
+        ("spell_registry", container.spell_registry, "Spell registry"),
+        ("spell_learning_service", container.spell_learning_service, "Spell learning service"),
     ]
 
 
