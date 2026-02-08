@@ -185,8 +185,8 @@ class MessageBroadcaster:
         logger.debug("broadcast_to_room", room_id=room_id, exclude_player=exclude_player_str)
         logger.debug("broadcast_to_room targets", targets=targets)
 
-        # OPTIMIZATION: Batch send messages concurrently to all recipients
-        target_list = [pid for pid in targets if pid != exclude_player_str]
+        # Dedupe targets so each player receives at most one copy (fixes duplicate Game Info messages)
+        target_list = list(dict.fromkeys(pid for pid in targets if pid != exclude_player_str))
         excluded_count = len(targets) - len(target_list)
 
         if excluded_count > 0:
