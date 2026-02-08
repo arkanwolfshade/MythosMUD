@@ -24,6 +24,7 @@ from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import create_context_from_request
 from .dependencies import get_current_active_user, get_current_superuser
 from .invites import InviteManager, get_invite_manager
+from .token_epoch import get_auth_epoch
 from .users import UserManager, get_user_manager
 
 if TYPE_CHECKING:
@@ -234,12 +235,16 @@ def _handle_integrity_error(e: IntegrityError, username: str, request: Request) 
 
 
 def _generate_jwt_token(user: User) -> str:
-    """Generate JWT token for user."""
+    """Generate JWT token for user. Includes server auth epoch so tokens are invalid after restart."""
     import os
 
     from fastapi_users.jwt import generate_jwt
 
-    data = {"sub": str(user.id), "aud": ["fastapi-users:auth"]}
+    data = {
+        "sub": str(user.id),
+        "aud": ["fastapi-users:auth"],
+        "srv": get_auth_epoch(),
+    }
     jwt_secret = os.getenv("MYTHOSMUD_JWT_SECRET")
     if not jwt_secret:
         raise ValueError(
