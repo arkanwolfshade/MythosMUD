@@ -8,7 +8,7 @@ missing epoch.
 
 from __future__ import annotations
 
-_auth_epoch: str | None = None
+_auth_epoch: str | None = None  # pylint: disable=invalid-name  # Reason: Module-private mutable, set at startup; leading underscore intentional, not a constant
 
 
 def set_auth_epoch(epoch: str) -> None:
