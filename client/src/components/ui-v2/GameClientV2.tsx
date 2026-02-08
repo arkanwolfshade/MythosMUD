@@ -173,7 +173,7 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
 
   // Render panels only if they exist in the panel manager
   return (
-    <div className="min-h-screen w-full bg-mythos-terminal-background text-mythos-terminal-text font-mono relative overflow-hidden">
+    <div className="h-screen min-h-screen w-full bg-mythos-terminal-background text-mythos-terminal-text font-mono relative overflow-hidden flex flex-col">
       <HeaderBar
         playerName={playerName}
         isConnected={isConnected}
@@ -185,8 +185,8 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
         isLoggingOut={isLoggingOut}
       />
 
-      {/* Main Content Area - Panels */}
-      <div className="pt-12">
+      {/* Main Content Area - Panels: flex-1 min-h-0 so panel area is bounded and scroll/overflow work */}
+      <div className="flex-1 min-h-0 pt-12 relative">
         {chatHistoryPanel && chatHistoryPanel.isVisible && (
           <PanelContainer
             id={chatHistoryPanel.id}

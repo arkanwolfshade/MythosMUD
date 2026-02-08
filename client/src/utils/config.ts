@@ -6,7 +6,7 @@
 /**
  * Get the API base URL from environment variables
  * Falls back to relative URLs for production (same origin)
- * Falls back to localhost:54731 for development
+ * Falls back to same-origin (empty string) in development so the Vite proxy is used (LAN-friendly)
  *
  * @returns API base URL string
  */
@@ -21,8 +21,10 @@ export function getApiBaseUrl(): string {
     return '';
   }
 
-  // Development default
-  return 'http://localhost:54731';
+  // Development: use same origin so requests go through Vite proxy. This allows LAN clients
+  // (e.g. http://<host-ip>:5173) to reach the API via the proxy; absolute localhost:54731
+  // would point at the client machine and fail from another PC.
+  return '';
 }
 
 /**

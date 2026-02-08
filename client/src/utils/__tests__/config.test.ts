@@ -16,14 +16,13 @@ describe('Config Utilities', () => {
       expect(url === '' || url.startsWith('http://') || url.startsWith('https://')).toBe(true);
     });
 
-    it('should return localhost:54731 in development mode', () => {
+    it('should return same-origin (empty string) in development so Vite proxy is used (LAN-friendly)', () => {
       // Act
       const url = getApiBaseUrl();
 
-      // Assert
-      // In test environment, should default to development
-      if (!import.meta.env.PROD) {
-        expect(url).toBe('http://localhost:54731');
+      // Assert: in dev we use '' so API calls go through Vite proxy from any origin (e.g. LAN)
+      if (!import.meta.env.PROD && !import.meta.env.VITE_API_URL) {
+        expect(url).toBe('');
       }
     });
 
