@@ -112,6 +112,8 @@ class SpellTargetingService:  # pylint: disable=too-few-public-methods  # Reason
         logger.debug("Resolving spell target", player_id=player_id, spell_id=spell.spell_id, target_name=target_name)
 
         if spell.target_type == SpellTargetType.SELF:
+            if target_name and target_name.strip():
+                return None, f"{spell.name} can only be cast on yourself."
             return await self._resolve_self_target(player_id)
 
         if spell.target_type in (SpellTargetType.AREA, SpellTargetType.ALL):

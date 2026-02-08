@@ -232,10 +232,25 @@ class UtilityCommandFactory:
             log_and_raise_enhanced(
                 MythosValidationError, "Cast command requires a spell name", context=context, logger_name=__name__
             )
-        # Join all arguments as spell name to support multi-word spell names (e.g., "basic heal")
-        # Target parsing can be added later with a separator syntax if needed
-        spell_name = " ".join(args)
-        target = None
+        # Unified "heal" dispatch: heal_self vs heal_other by second token or target
+        first = args[0].strip().lower()
+        if first == "heal":
+            if len(args) == 1:
+                return CastCommand(spell_name="heal_self", target=None)
+            second = args[1].strip().lower()
+            if second in ("self", "me"):
+                return CastCommand(spell_name="heal_self", target=None)
+            if second == "other":
+                target = " ".join(args[2:]).strip() if len(args) > 2 else None
+                return CastCommand(spell_name="heal_other", target=target or None)
+            # heal <target> -> heal_other with that target
+            target = " ".join(args[1:]).strip()
+            return CastCommand(spell_name="heal_other", target=target or None)
+        # Default: first token is spell name, rest is optional target
+        spell_name = args[0].strip()
+        target = " ".join(args[1:]).strip() if len(args) > 1 else None
+        if not target:
+            target = None
         return CastCommand(spell_name=spell_name, target=target)
 
     @staticmethod

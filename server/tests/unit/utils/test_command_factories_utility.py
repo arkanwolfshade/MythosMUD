@@ -206,9 +206,23 @@ def test_create_shutdown_command_with_args():
 
 
 def test_create_cast_command():
-    """Test create_cast_command() creates CastCommand."""
+    """Test create_cast_command() with 'heal' and no target invokes heal_self."""
     command = UtilityCommandFactory.create_cast_command(["heal"])
-    assert command.spell_name == "heal"
+    assert command.spell_name == "heal_self"
+    assert command.target is None
+
+
+def test_create_cast_command_heal_self():
+    """Test /cast heal self -> heal_self, no target."""
+    command = UtilityCommandFactory.create_cast_command(["heal", "self"])
+    assert command.spell_name == "heal_self"
+    assert command.target is None
+
+
+def test_create_cast_command_heal_me():
+    """Test /cast heal me -> heal_self, no target."""
+    command = UtilityCommandFactory.create_cast_command(["heal", "me"])
+    assert command.spell_name == "heal_self"
     assert command.target is None
 
 
@@ -219,9 +233,24 @@ def test_create_cast_command_no_args():
 
 
 def test_create_cast_command_multi_word():
-    """Test create_cast_command() with multi-word spell name."""
+    """Test create_cast_command() with two args: first=spell, rest=target."""
     command = UtilityCommandFactory.create_cast_command(["basic", "heal"])
-    assert command.spell_name == "basic heal"
+    assert command.spell_name == "basic"
+    assert command.target == "heal"
+
+
+def test_create_cast_command_with_target():
+    """Test /cast heal <target> (target not self/me) -> heal_other with target."""
+    command = UtilityCommandFactory.create_cast_command(["heal", "Ithaqua"])
+    assert command.spell_name == "heal_other"
+    assert command.target == "Ithaqua"
+
+
+def test_create_cast_command_heal_other_with_target():
+    """Test /cast heal other <target> -> heal_other with target."""
+    command = UtilityCommandFactory.create_cast_command(["heal", "other", "ithaqua"])
+    assert command.spell_name == "heal_other"
+    assert command.target == "ithaqua"
 
 
 def test_create_spell_command():

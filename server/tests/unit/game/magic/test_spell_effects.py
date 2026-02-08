@@ -13,6 +13,9 @@ from server.game.magic.spell_effects import SpellEffects
 from server.models.spell import SpellEffectType
 from server.schemas.target_resolution import TargetMatch, TargetType
 
+# pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
+# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
+
 
 @pytest.fixture
 def mock_player_service():
@@ -50,7 +53,6 @@ def test_spell_effects_init(spell_effects, mock_player_service):
 
 def test_spell_effects_init_with_repository(mock_player_service):
     """Test SpellEffects initialization with repository."""
-    from server.game.magic.spell_effects import SpellEffects
     from server.persistence.repositories.player_spell_repository import PlayerSpellRepository
 
     mock_repo = PlayerSpellRepository()
@@ -133,22 +135,41 @@ async def test_process_effect_create_object(spell_effects, mock_spell, mock_targ
 @pytest.mark.asyncio
 async def test_process_heal_invalid_target(spell_effects):
     """Test _process_heal() with invalid target type."""
-    from server.schemas.target_resolution import TargetMatch, TargetType
 
     spell = MagicMock()
     spell.effect_data = {"heal_amount": 10}
     invalid_target = TargetMatch(
         target_id="invalid", target_type=TargetType.ROOM, target_name="Room", room_id="room_001"
     )
-    result = await spell_effects._process_heal(spell, invalid_target, 1.5)
+    result = await spell_effects._process_heal(spell, invalid_target, uuid.uuid4(), 1.5)
     assert result["success"] is False
     assert "can only target entities" in result.get("message", "").lower()
 
 
 @pytest.mark.asyncio
+async def test_process_heal_heal_other_rejects_self_target(spell_effects):
+    """Test _process_heal() with heal_other spell targeting self returns error."""
+
+    caster_id = uuid.uuid4()
+    spell = MagicMock()
+    spell.spell_id = "heal_other"
+    spell.name = "Heal Other"
+    spell.effect_data = {"heal_amount": 10}
+    self_target = TargetMatch(
+        target_id=str(caster_id),
+        target_type=TargetType.PLAYER,
+        target_name="Self",
+        room_id="room_001",
+    )
+    result = await spell_effects._process_heal(spell, self_target, caster_id, 1.5)
+    assert result["success"] is False
+    assert "can only target others" in result.get("message", "").lower()
+    assert "not yourself" in result.get("message", "").lower()
+
+
+@pytest.mark.asyncio
 async def test_process_damage_invalid_target(spell_effects):
     """Test _process_damage() with invalid target type."""
-    from server.schemas.target_resolution import TargetMatch, TargetType
 
     spell = MagicMock()
     spell.effect_data = {"damage_amount": 10}
@@ -163,7 +184,6 @@ async def test_process_damage_invalid_target(spell_effects):
 @pytest.mark.asyncio
 async def test_process_status_effect_invalid_target(spell_effects):
     """Test _process_status_effect() with invalid target type."""
-    from server.schemas.target_resolution import TargetMatch, TargetType
 
     spell = MagicMock()
     spell.effect_data = {"status_effect_type": "poison"}
@@ -178,7 +198,6 @@ async def test_process_status_effect_invalid_target(spell_effects):
 @pytest.mark.asyncio
 async def test_process_stat_modify_invalid_target(spell_effects):
     """Test _process_stat_modify() with invalid target type."""
-    from server.schemas.target_resolution import TargetMatch, TargetType
 
     spell = MagicMock()
     spell.effect_data = {"stat_modifications": {"strength": 5}}
@@ -193,7 +212,6 @@ async def test_process_stat_modify_invalid_target(spell_effects):
 @pytest.mark.asyncio
 async def test_process_lucidity_adjust_invalid_target(spell_effects):
     """Test _process_lucidity_adjust() with invalid target type."""
-    from server.schemas.target_resolution import TargetMatch, TargetType
 
     spell = MagicMock()
     spell.effect_data = {"adjust_amount": 10}
@@ -208,7 +226,6 @@ async def test_process_lucidity_adjust_invalid_target(spell_effects):
 @pytest.mark.asyncio
 async def test_process_corruption_adjust_invalid_target(spell_effects):
     """Test _process_corruption_adjust() with invalid target type."""
-    from server.schemas.target_resolution import TargetMatch, TargetType
 
     spell = MagicMock()
     spell.effect_data = {"adjust_amount": 10}
@@ -223,7 +240,6 @@ async def test_process_corruption_adjust_invalid_target(spell_effects):
 @pytest.mark.asyncio
 async def test_process_teleport_invalid_target(spell_effects):
     """Test _process_teleport() with invalid target type."""
-    from server.schemas.target_resolution import TargetMatch, TargetType
 
     spell = MagicMock()
     spell.effect_data = {"destination_room_id": "room_002"}
@@ -238,7 +254,6 @@ async def test_process_teleport_invalid_target(spell_effects):
 @pytest.mark.asyncio
 async def test_process_create_object_invalid_target(spell_effects):
     """Test _process_create_object() with invalid target type."""
-    from server.schemas.target_resolution import TargetMatch, TargetType
 
     spell = MagicMock()
     spell.effect_data = {"prototype_id": "item_001"}
