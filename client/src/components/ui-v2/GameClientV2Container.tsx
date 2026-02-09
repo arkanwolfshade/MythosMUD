@@ -11,7 +11,6 @@ import { MainMenuModal } from '../MainMenuModal';
 import { MapView } from '../MapView';
 import { AsciiMinimap } from '../map/AsciiMinimap';
 import { GameClientV2 } from './GameClientV2';
-import { LoginGracePeriodBanner } from './LoginGracePeriodBanner';
 import { TabbedInterfaceOverlay } from './components/TabbedInterfaceOverlay';
 import { useCommandHandlers } from './hooks/useCommandHandlers';
 import { useEventProcessing } from './hooks/useEventProcessing';
@@ -23,7 +22,7 @@ import { useRefSynchronization } from './hooks/useRefSynchronization';
 import { useRespawnHandlers } from './hooks/useRespawnHandlers';
 import type { ChatMessage, Player, Room } from './types';
 import { useTabbedInterface } from './useTabbedInterface';
-import type { GameState } from './utils/stateUpdateUtils';
+import type { ActiveEffectDisplay, GameState } from './utils/stateUpdateUtils';
 
 interface GameClientV2ContainerProps {
   playerName: string;
@@ -273,6 +272,18 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
           mythosTime={gameState.mythosTime ?? mythosTime}
           healthStatus={healthStatus}
           lucidityStatus={lucidityStatus}
+          activeEffects={
+            gameState.activeEffects ??
+            (gameState.loginGracePeriodActive && gameState.loginGracePeriodRemaining !== undefined
+              ? [
+                  {
+                    effect_type: 'login_warded',
+                    label: 'Warded',
+                    remaining_seconds: gameState.loginGracePeriodRemaining,
+                  } satisfies ActiveEffectDisplay,
+                ]
+              : [])
+          }
           onSendCommand={handleCommandSubmit}
           onSendChatMessage={handleChatMessage}
           onClearMessages={handleClearMessages}
@@ -280,14 +291,6 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
           onDownloadLogs={() => {
             logger.downloadLogs();
           }}
-        />
-      )}
-
-      {/* Login Grace Period Banner */}
-      {gameState.loginGracePeriodActive && gameState.loginGracePeriodRemaining !== undefined && (
-        <LoginGracePeriodBanner
-          remainingSeconds={gameState.loginGracePeriodRemaining}
-          className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 max-w-md"
         />
       )}
 

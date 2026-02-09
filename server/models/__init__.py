@@ -19,6 +19,7 @@ from .item import ItemComponentState, ItemInstance, ItemPrototype
 from .lucidity import LucidityAdjustmentLog, LucidityCooldown, LucidityExposureState, PlayerLucidity
 from .npc import NPCDefinition, NPCDefinitionType, NPCRelationship, NPCSpawnRule
 from .player import Player, PlayerExploration, PlayerInventory
+from .player_effect import PlayerEffect
 from .player_spells import PlayerSpell
 from .spell import Spell, SpellEffectType, SpellMaterial, SpellRangeType, SpellSchool, SpellTargetType
 from .spell_db import SpellDB
@@ -66,6 +67,7 @@ __all__ = [
     "SpellRangeType",
     "SpellEffectType",
     "SpellMaterial",
+    "PlayerEffect",
     "PlayerSpell",
     "SpellDB",
     "Zone",

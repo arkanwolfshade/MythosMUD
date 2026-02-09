@@ -71,6 +71,7 @@ def test_status_effect_type_enum_all_types():
         "corrupted",
         "delirious",
         "buff",
+        "login_warded",  # ADR-009 effects system
     }
     actual_types = {t.value for t in StatusEffectType}
     assert actual_types == expected_types

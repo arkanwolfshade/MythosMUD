@@ -6,11 +6,15 @@ providing immunity to damage and negative effects while allowing movement.
 
 As documented in "Protective Wards Upon Entering the Realms" - Dr. Armitage, 1930,
 the grace period provides a brief window of protection for newly arrived characters.
+
+Effects system (ADR-009): Grace period is implemented as LOGIN_WARDED effect in
+player_effects table; tick processing expires it and clears in-memory state.
 """
 
 import asyncio
 import time
 import uuid
+from collections.abc import Callable
 from typing import Any, cast
 
 from anyio import sleep
@@ -113,9 +117,16 @@ async def _grace_period_task(player_id: uuid.UUID, manager: Any) -> None:
 async def start_login_grace_period(
     player_id: uuid.UUID,
     manager: Any,  # ConnectionManager
+    async_persistence: Any | None = None,
+    get_current_tick: Callable[[], int] | None = None,
+    get_tick_interval: Callable[[], float] | None = None,
 ) -> None:
     """
     Start a login grace period for a player.
+
+    When async_persistence and get_current_tick are provided (effects system ADR-009),
+    adds a LOGIN_WARDED effect to player_effects and sets in-memory state; expiration
+    is handled by game tick processing. Otherwise falls back to asyncio task (legacy).
 
     During the grace period, the player:
     - Is immune to all damage and negative status effects
@@ -127,6 +138,9 @@ async def start_login_grace_period(
     Args:
         player_id: The player's ID
         manager: ConnectionManager instance
+        async_persistence: Optional async persistence layer for effect storage
+        get_current_tick: Optional function returning current game tick
+        get_tick_interval: Optional function returning tick interval in seconds (for duration_ticks)
     """
     # Check if already in grace period
     if player_id in manager.login_grace_period_players:
@@ -135,11 +149,36 @@ async def start_login_grace_period(
 
     logger.info("Starting login grace period for player", player_id=player_id, duration=LOGIN_GRACE_PERIOD_DURATION)
 
-    # Store start timestamp for remaining time calculation
     start_time = time.time()
     manager.login_grace_period_start_times[player_id] = start_time
 
-    # Store the task
+    if async_persistence and get_current_tick and get_tick_interval:
+        # Effects system (ADR-009): persist effect; tick processing will expire and clear in-memory
+        try:
+            tick_interval = get_tick_interval()
+            duration_ticks = max(1, int(LOGIN_GRACE_PERIOD_DURATION / tick_interval))
+            current_tick = get_current_tick()
+            await async_persistence.add_player_effect(
+                player_id,
+                effect_type="login_warded",
+                category="entry_ward",
+                duration=duration_ticks,
+                applied_at_tick=current_tick,
+                intensity=1,
+                source="game_entry",
+                visibility_level="visible",
+            )
+            # In-memory state so is_player_in_login_grace_period / get_login_grace_period_remaining work
+            manager.login_grace_period_players[player_id] = True  # Sentinel: effect-based, no asyncio task
+            return
+        except (AttributeError, TypeError, ValueError) as e:
+            logger.warning(
+                "Failed to add LOGIN_WARDED effect, falling back to asyncio task",
+                player_id=player_id,
+                error=str(e),
+            )
+
+    # Legacy: asyncio task
     task = asyncio.create_task(_grace_period_task(player_id, manager))
     manager.login_grace_period_players[player_id] = task
 
@@ -151,25 +190,28 @@ async def cancel_login_grace_period(
     """
     Cancel login grace period for a player (if needed).
 
-    Args:
-        player_id: The player's ID
-        manager: ConnectionManager instance
+    For effect-based grace (login_grace_period_players[player_id] is True), just clears
+    in-memory state; the effect remains in DB until tick expiration (or could be removed
+    by a future API). For task-based grace, cancels the asyncio task.
     """
     if player_id not in manager.login_grace_period_players:
         return
 
     logger.info("Cancelling login grace period for player", player_id=player_id)
 
-    task = manager.login_grace_period_players[player_id]
-    task.cancel()
+    entry = manager.login_grace_period_players[player_id]
+    if entry is True:
+        # Effect-based: no task to cancel
+        _remove_from_grace_period_tracking(player_id, manager)
+        return
 
+    task = entry
+    task.cancel()
     try:
         await task
     except asyncio.CancelledError:
         pass
     except (AttributeError, RuntimeError, ValueError, TypeError) as e:
-        # Catching broad exceptions here is necessary because task cancellation
-        # can fail for various reasons and we must ensure cleanup completes
         logger.error("Error cancelling login grace period task", player_id=player_id, error=str(e), exc_info=True)
     finally:
         _remove_from_grace_period_tracking(player_id, manager)

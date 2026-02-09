@@ -28,6 +28,7 @@ from .persistence.repositories import (
     ExperienceRepository,
     HealthRepository,
     ItemRepository,
+    PlayerEffectRepository,
     PlayerRepository,
     ProfessionRepository,
     RoomRepository,
@@ -105,6 +106,7 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
         self._item_repo = ItemRepository(
             None
         )  # ItemRepository handles None persistence layer by using sync persistence internally if needed
+        self._player_effect_repo = PlayerEffectRepository()
 
     async def _ensure_room_cache_loaded(self) -> None:
         """
@@ -820,6 +822,45 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
     async def async_damage_player(self, player: Player, amount: int, damage_type: str = "physical") -> None:
         """Async alias for damage_player. Delegates to HealthRepository."""
         await self._health_repo.damage_player(player, amount, damage_type)
+
+    # Player effects (ADR-009)
+    async def add_player_effect(
+        self,
+        player_id: uuid.UUID | str,
+        effect_type: str,
+        category: str,
+        duration: int,
+        applied_at_tick: int,
+        intensity: int = 1,
+        source: str | None = None,
+        visibility_level: str = "visible",
+    ) -> str:
+        """Add a player effect. Returns effect id."""
+        return await self._player_effect_repo.add_effect(
+            player_id, effect_type, category, duration, applied_at_tick, intensity, source, visibility_level
+        )
+
+    async def remove_player_effect_by_id(self, effect_id: uuid.UUID | str) -> None:
+        """Remove a player effect by id."""
+        await self._player_effect_repo.delete_effect(effect_id)
+
+    async def get_active_player_effects(self, player_id: uuid.UUID | str, current_tick: int) -> list[Any]:
+        """Get active effects for a player (remaining_ticks > 0). Returns list of PlayerEffect."""
+        return await self._player_effect_repo.get_active_effects_for_player(player_id, current_tick)
+
+    async def has_player_effect(self, player_id: uuid.UUID | str, effect_type: str, current_tick: int) -> bool:
+        """Return True if player has an active effect of the given type."""
+        return await self._player_effect_repo.has_effect(player_id, effect_type, current_tick)
+
+    async def get_player_effect_remaining_ticks(
+        self, player_id: uuid.UUID | str, effect_type: str, current_tick: int
+    ) -> int | None:
+        """Return remaining ticks for the effect, or None."""
+        return await self._player_effect_repo.get_effect_remaining_ticks(player_id, effect_type, current_tick)
+
+    async def expire_player_effects_for_tick(self, current_tick: int) -> list[tuple[str, str]]:
+        """Expire effects for current tick; return list of (player_id, effect_type) expired."""
+        return await self._player_effect_repo.expire_effects_for_tick(current_tick)
 
     # Container methods
     async def create_container(

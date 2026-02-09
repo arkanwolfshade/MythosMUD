@@ -28,6 +28,7 @@ if TYPE_CHECKING:
         LucidityExposureState,
         PlayerLucidity,
     )
+    from .player_effect import PlayerEffect
     from .player_spells import PlayerSpell
     from .user import User
 
@@ -105,6 +106,10 @@ class Player(Base):
     user: Mapped["User"] = relationship("User", back_populates="players", overlaps="player")
     spells: Mapped[list["PlayerSpell"]] = relationship(
         "PlayerSpell", back_populates="player", cascade="all, delete-orphan"
+    )
+    # Effects system (ADR-009): persistent tick-based effects in player_effects table
+    player_effects: Mapped[list["PlayerEffect"]] = relationship(
+        "PlayerEffect", back_populates="player", cascade="all, delete-orphan"
     )
 
     # Profession - add index for queries filtering by profession

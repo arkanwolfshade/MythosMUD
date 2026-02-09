@@ -45,10 +45,12 @@ cmd = pylint_cmd + [
     "--max-line-length=120",
     "--disable=all",
     "--enable=E,W,F,C,R",  # E=Error, W=Warning, F=Fatal, C=Convention, R=Refactor
-    # Re-apply disables from .pylintrc after --enable to ensure they're respected
-    # This ensures that rules disabled in .pylintrc (like line-too-long, import-outside-toplevel)
-    # are still disabled even after enabling all categories
-    "--disable=line-too-long,import-outside-toplevel",
+    # Re-apply disables from .pylintrc after --enable so they are not re-enabled by --enable=E,W,F,C,R.
+    # Complexity (R0911-R0915, R0902, R0903, R0904) is handled by ruff C901; see .pylintrc and
+    # docs/LINTING_COMPLEXITY_ALIGNMENT.md.
+    "--disable=line-too-long,import-outside-toplevel,too-many-arguments,too-many-positional-arguments,"
+    "too-many-locals,too-many-statements,too-many-return-statements,too-many-branches,"
+    "too-many-instance-attributes,too-many-public-methods,too-few-public-methods",
     "--output-format=text",
     "--rcfile=.pylintrc",  # Use project pylintrc
 ]

@@ -93,6 +93,22 @@ describe('HeaderBar', () => {
       expect(screen.queryByText(/Reconnect:/)).not.toBeInTheDocument();
     });
 
+    it('should render active effects when provided', () => {
+      render(
+        <HeaderBar
+          {...defaultProps}
+          activeEffects={[{ effect_type: 'login_warded', label: 'Warded', remaining_seconds: 8 }]}
+        />
+      );
+      expect(screen.getByText(/Warded/)).toBeInTheDocument();
+      expect(screen.getByText(/0:08/)).toBeInTheDocument();
+    });
+
+    it('should not render effects section when activeEffects is empty', () => {
+      render(<HeaderBar {...defaultProps} activeEffects={[]} />);
+      expect(screen.queryByText(/Warded/)).not.toBeInTheDocument();
+    });
+
     it('should render mythos time when provided', () => {
       render(<HeaderBar {...defaultProps} mythosTime={mockMythosTime} />);
       expect(screen.getByText(/Mythos Time/)).toBeInTheDocument();

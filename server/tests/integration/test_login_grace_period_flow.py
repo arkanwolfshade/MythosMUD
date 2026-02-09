@@ -7,6 +7,7 @@ Tests the complete login grace period flow including:
 - Combat prevention during grace period
 - Damage blocking during grace period
 - Visual indicator display
+- Effect-based flow (ADR-009): start grace -> effect added -> tick expiration clears in-memory
 """
 
 import asyncio
@@ -16,6 +17,7 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 
 from server.realtime.login_grace_period import (
+    _grace_period_expiration_handler,
     cancel_login_grace_period,
     get_login_grace_period_remaining,
     is_player_in_login_grace_period,
@@ -168,3 +170,31 @@ async def test_grace_period_start_time_tracking(mock_connection_manager):  # pyl
     # Verify remaining time calculation uses start time
     remaining = get_login_grace_period_remaining(player_id, mock_connection_manager)
     assert 9.0 <= remaining <= 10.0  # Should be close to 10 seconds initially (allow for timing)
+
+
+@pytest.mark.asyncio
+async def test_effect_based_grace_start_then_tick_expiration_clears_in_memory(
+    mock_connection_manager,
+):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name
+    """Start grace with effect (ADR-009); simulate tick expiration; in-memory state is cleared."""
+    player_id = uuid.uuid4()
+    mock_persistence = MagicMock()
+    mock_persistence.add_player_effect = AsyncMock(return_value=str(uuid.uuid4()))
+    get_current_tick = MagicMock(return_value=0)
+    get_tick_interval = MagicMock(return_value=0.1)
+
+    await start_login_grace_period(
+        player_id,
+        mock_connection_manager,
+        async_persistence=mock_persistence,
+        get_current_tick=get_current_tick,
+        get_tick_interval=get_tick_interval,
+    )
+    assert is_player_in_login_grace_period(player_id, mock_connection_manager) is True
+    assert mock_connection_manager.login_grace_period_players[player_id] is True
+
+    await _grace_period_expiration_handler(player_id, mock_connection_manager)
+
+    assert player_id not in mock_connection_manager.login_grace_period_players
+    assert player_id not in mock_connection_manager.login_grace_period_start_times
+    assert is_player_in_login_grace_period(player_id, mock_connection_manager) is False

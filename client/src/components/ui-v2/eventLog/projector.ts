@@ -76,6 +76,7 @@ export function getInitialGameState(): GameState {
 /** Known event types that affect state (allowlist for projector) */
 const PROJECTED_EVENT_TYPES = new Set([
   'game_state',
+  'effects_update',
   'room_update',
   'room_state',
   'room_occupants',
@@ -137,6 +138,16 @@ export function projectEvent(prevState: GameState, event: GameEvent): GameState 
         ...prevState,
         player: player ?? prevState.player,
         room: room ? mergeRoomState(room, prevState.room) : prevState.room,
+        ...(loginGracePeriodActive !== undefined && { loginGracePeriodActive }),
+        ...(loginGracePeriodRemaining !== undefined && { loginGracePeriodRemaining }),
+      };
+      break;
+    }
+    case 'effects_update': {
+      const loginGracePeriodActive = event.data.login_grace_period_active as boolean | undefined;
+      const loginGracePeriodRemaining = event.data.login_grace_period_remaining as number | undefined;
+      nextState = {
+        ...prevState,
         ...(loginGracePeriodActive !== undefined && { loginGracePeriodActive }),
         ...(loginGracePeriodRemaining !== undefined && { loginGracePeriodRemaining }),
       };

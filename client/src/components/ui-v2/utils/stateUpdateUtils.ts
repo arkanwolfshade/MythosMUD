@@ -8,6 +8,13 @@ import type { ChatMessage, Player, Room } from '../types';
 import { sanitizeChatMessageForState } from './messageUtils';
 import { mergeRoomState } from './roomMergeUtils';
 
+/** Single active effect for header display (server-authoritative). */
+export interface ActiveEffectDisplay {
+  effect_type: string;
+  label?: string;
+  remaining_seconds?: number;
+}
+
 export interface GameState {
   player: Player | null;
   room: Room | null;
@@ -15,6 +22,8 @@ export interface GameState {
   commandHistory: string[];
   loginGracePeriodActive?: boolean;
   loginGracePeriodRemaining?: number;
+  /** Active effects for header bar (e.g. LOGIN_WARDED). When absent, derived from grace period for backward compat. */
+  activeEffects?: ActiveEffectDisplay[];
   /** Derived from game_tick; used for Mythos time display. Bootstrap may set initial until first tick. */
   mythosTime?: MythosTimeState | null;
   /** Last quarter-hour minute projected (for deduplicating clock chime messages). */

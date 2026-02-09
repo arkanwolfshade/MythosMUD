@@ -3,6 +3,7 @@ import type { MythosTimeState } from '../../types/mythosTime';
 import { formatMythosTime12Hour } from '../../utils/mythosTime';
 import { EldritchIcon, MythosIcons } from '../ui/EldritchIcon';
 import { LogoutButton } from '../ui/LogoutButton';
+import type { ActiveEffectDisplay } from './utils/stateUpdateUtils';
 
 interface HeaderBarProps {
   playerName: string;
@@ -13,10 +14,19 @@ interface HeaderBarProps {
   mythosTime: MythosTimeState | null;
   onLogout: () => void;
   isLoggingOut?: boolean;
+  /** Active effects to show in header (e.g. Warded). Server-authoritative. */
+  activeEffects?: ActiveEffectDisplay[];
 }
 
 // Collapsible header bar with player info, connection status, in-game time, and logout
 // Based on findings from "Temporal Interface Design" - Dr. Armitage, 1928
+function formatRemaining(seconds: number | undefined): string {
+  if (seconds === undefined || seconds <= 0) return '';
+  const m = Math.floor(seconds / 60);
+  const s = Math.floor(seconds % 60);
+  return m > 0 ? `${m}:${s.toString().padStart(2, '0')}` : `0:${s.toString().padStart(2, '0')}`;
+}
+
 export const HeaderBar: React.FC<HeaderBarProps> = ({
   playerName,
   isConnected,
@@ -26,6 +36,7 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
   mythosTime,
   onLogout,
   isLoggingOut = false,
+  activeEffects = [],
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(() => {
     const stored = localStorage.getItem('mythosmud-ui-v2-header-collapsed');
@@ -91,6 +102,26 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
         {error && <span className="text-mythos-terminal-error text-sm">{error}</span>}
         {reconnectAttempts > 0 && (
           <span className="text-mythos-terminal-warning text-sm">Reconnect: {reconnectAttempts}</span>
+        )}
+        {activeEffects.length > 0 && (
+          <div className="flex items-center gap-2 flex-wrap">
+            {activeEffects.map((eff, idx) => (
+              <span
+                key={eff.effect_type + (eff.remaining_seconds ?? 0) + idx}
+                className="px-2 py-0.5 rounded text-xs bg-mythos-terminal-surface border border-gray-600 text-mythos-terminal-text-secondary"
+                title={
+                  eff.remaining_seconds != null
+                    ? `${eff.label ?? eff.effect_type}: ${formatRemaining(eff.remaining_seconds)} left`
+                    : undefined
+                }
+              >
+                {eff.label ?? eff.effect_type}
+                {eff.remaining_seconds != null && eff.remaining_seconds > 0 && (
+                  <span className="ml-1 opacity-80">({formatRemaining(eff.remaining_seconds)})</span>
+                )}
+              </span>
+            ))}
+          </div>
         )}
       </div>
 
