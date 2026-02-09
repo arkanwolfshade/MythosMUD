@@ -237,8 +237,8 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
             </div>
           </div>
 
-          {/* Panel Content */}
-          <div className="flex-1 overflow-auto">{children}</div>
+          {/* Panel Content: min-h-0 lets flex item shrink so overflow-auto can show scrollbar on any resolution */}
+          <div className="flex-1 min-h-0 overflow-auto">{children}</div>
         </div>
       </Rnd>
     );

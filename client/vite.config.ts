@@ -76,6 +76,7 @@ export default defineConfig(({ mode }) => ({
     },
   },
   server: {
+    host: true, // Listen on 0.0.0.0 so dev server is reachable from LAN (e.g. http://<machine-ip>:5173)
     port: parseInt(process.env.PORT || '5173'),
     proxy: {
       '/api': {

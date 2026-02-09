@@ -12,14 +12,12 @@ from typing import Any, cast
 
 from fastapi import Depends, HTTPException, Request
 from fastapi_users import BaseUserManager, FastAPIUsers, UUIDIDMixin
-from fastapi_users.authentication import (
-    AuthenticationBackend,
-    BearerTransport,
-    JWTStrategy,
-)
+from fastapi_users.authentication import AuthenticationBackend, BearerTransport
 from fastapi_users.db import SQLAlchemyUserDatabase
 from fastapi_users.exceptions import InvalidID
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from server.auth.jwt_strategy import RestartInvalidatingJWTStrategy
 
 from ..database import get_async_session
 from ..models.user import User
@@ -136,11 +134,10 @@ def get_auth_backend() -> AuthenticationBackend[User, uuid.UUID]:  # type: ignor
     # Bearer token transport
     bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
 
-    # JWT strategy - return a function that creates the strategy
-    def get_jwt_strategy() -> JWTStrategy[User, uuid.UUID]:  # type: ignore[type-var]
-        # Validate JWT secret - CRITICAL: Must be set in production
+    # JWT strategy - invalidates all tokens after server restart
+    def get_jwt_strategy() -> RestartInvalidatingJWTStrategy[User, uuid.UUID]:  # type: ignore[type-var]
         jwt_secret = _validate_jwt_secret()
-        return JWTStrategy(
+        return RestartInvalidatingJWTStrategy(
             secret=jwt_secret,
             lifetime_seconds=3600,  # 1 hour
             token_audience=["fastapi-users:auth"],
@@ -171,11 +168,10 @@ def get_username_auth_backend() -> UsernameAuthenticationBackend:
     # Bearer token transport
     bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
 
-    # JWT strategy - return a function that creates the strategy
-    def get_jwt_strategy() -> JWTStrategy[User, uuid.UUID]:  # type: ignore[type-var]
-        # Validate JWT secret - CRITICAL: Must be set in production
+    # JWT strategy - invalidates all tokens after server restart
+    def get_jwt_strategy() -> RestartInvalidatingJWTStrategy[User, uuid.UUID]:  # type: ignore[type-var]
         jwt_secret = _validate_jwt_secret()
-        return JWTStrategy(
+        return RestartInvalidatingJWTStrategy(
             secret=jwt_secret,
             lifetime_seconds=3600,  # 1 hour
             token_audience=["fastapi-users:auth"],

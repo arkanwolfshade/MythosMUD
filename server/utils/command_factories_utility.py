@@ -224,6 +224,25 @@ class UtilityCommandFactory:
         return ShutdownCommand(args=args)
 
     @staticmethod
+    def _resolve_heal_cast(args: list[str]) -> CastCommand | None:
+        """Resolve 'heal' command variations to (spell_name, target). Returns None if not a heal command."""
+        if not args or args[0].strip().lower() != "heal":
+            return None
+        # Heal aliases that map to heal_self (no target)
+        heal_self_tokens = ("self", "me")
+        if len(args) == 1:
+            return CastCommand(spell_name="heal_self", target=None)
+        second = args[1].strip().lower()
+        if second in heal_self_tokens:
+            return CastCommand(spell_name="heal_self", target=None)
+        if second == "other":
+            target = " ".join(args[2:]).strip() if len(args) > 2 else None
+            return CastCommand(spell_name="heal_other", target=target or None)
+        # heal <target> -> heal_other with that target
+        target = " ".join(args[1:]).strip()
+        return CastCommand(spell_name="heal_other", target=target or None)
+
+    @staticmethod
     def create_cast_command(args: list[str]) -> CastCommand:
         """Create CastCommand from arguments."""
         if not args:
@@ -232,11 +251,12 @@ class UtilityCommandFactory:
             log_and_raise_enhanced(
                 MythosValidationError, "Cast command requires a spell name", context=context, logger_name=__name__
             )
-        # Join all arguments as spell name to support multi-word spell names (e.g., "basic heal")
-        # Target parsing can be added later with a separator syntax if needed
-        spell_name = " ".join(args)
-        target = None
-        return CastCommand(spell_name=spell_name, target=target)
+        heal_cmd = UtilityCommandFactory._resolve_heal_cast(args)
+        if heal_cmd is not None:
+            return heal_cmd
+        spell_name = args[0].strip()
+        target = " ".join(args[1:]).strip() if len(args) > 1 else None
+        return CastCommand(spell_name=spell_name, target=target or None)
 
     @staticmethod
     def create_spell_command(args: list[str]) -> SpellCommand:

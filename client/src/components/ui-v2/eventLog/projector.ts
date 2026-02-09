@@ -43,6 +43,22 @@ function appendMessage(prevMessages: ChatMessage[], message: ChatMessage): ChatM
   return [...prevMessages, sanitizeChatMessageForState(message)];
 }
 
+/** Dedupe window (ms): same movement text within this window is treated as duplicate. */
+const MOVEMENT_DEDUPE_MS = 2000;
+
+function appendMovementMessage(prevMessages: ChatMessage[], message: ChatMessage): ChatMessage[] {
+  const sanitized = sanitizeChatMessageForState(message);
+  const last = prevMessages[prevMessages.length - 1];
+  if (last.text === sanitized.text) {
+    const lastTs = new Date(last.timestamp).getTime();
+    const newTs = new Date(sanitized.timestamp).getTime();
+    if (Math.abs(newTs - lastTs) <= MOVEMENT_DEDUPE_MS) {
+      return prevMessages;
+    }
+  }
+  return [...prevMessages, sanitized];
+}
+
 /** Initial GameState before any events */
 export function getInitialGameState(): GameState {
   return {
@@ -225,7 +241,7 @@ export function projectEvent(prevState: GameState, event: GameEvent): GameState 
           messageType: 'system',
           channel: 'game',
         });
-        nextState = { ...prevState, messages: appendMessage(prevState.messages, msg) };
+        nextState = { ...prevState, messages: appendMovementMessage(prevState.messages, msg) };
       }
       break;
     }
@@ -247,7 +263,7 @@ export function projectEvent(prevState: GameState, event: GameEvent): GameState 
           messageType: 'system',
           channel: 'game',
         });
-        nextState = { ...prevState, messages: appendMessage(prevState.messages, msg) };
+        nextState = { ...prevState, messages: appendMovementMessage(prevState.messages, msg) };
       }
       break;
     }
@@ -337,7 +353,13 @@ export function projectEvent(prevState: GameState, event: GameEvent): GameState 
           messageType,
           channel,
         });
-        nextState = { ...prevState, messages: appendMessage(prevState.messages, msg) };
+        nextState = {
+          ...prevState,
+          messages:
+            messageTypeFromEvent === 'system'
+              ? appendMovementMessage(prevState.messages, msg)
+              : appendMessage(prevState.messages, msg),
+        };
       }
       break;
     }

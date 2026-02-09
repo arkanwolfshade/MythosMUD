@@ -77,31 +77,41 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
         mastery_modifier = 1.0 + (mastery / 100.0)
 
         # Route to appropriate effect handler
-        if spell.effect_type == SpellEffectType.HEAL:
-            return await self._process_heal(spell, target, mastery_modifier)
-        if spell.effect_type == SpellEffectType.DAMAGE:
-            return await self._process_damage(spell, target, mastery_modifier)
-        if spell.effect_type == SpellEffectType.STATUS_EFFECT:
-            return await self._process_status_effect(spell, target, mastery_modifier)
-        if spell.effect_type == SpellEffectType.STAT_MODIFY:
-            return await self._process_stat_modify(spell, target, mastery_modifier)
-        if spell.effect_type == SpellEffectType.LUCIDITY_ADJUST:
-            return await self._process_lucidity_adjust(spell, target, mastery_modifier)
-        if spell.effect_type == SpellEffectType.CORRUPTION_ADJUST:
-            return await self._process_corruption_adjust(spell, target, mastery_modifier)
-        if spell.effect_type == SpellEffectType.TELEPORT:
-            return await self._process_teleport(spell, target, mastery_modifier)
-        if spell.effect_type == SpellEffectType.CREATE_OBJECT:
-            return await self._process_create_object(spell, target, mastery_modifier)
-        # This should never happen if all enum values are handled
-        # Using assert_never for exhaustive enum checking
-        assert_never(spell.effect_type)
+        match spell.effect_type:
+            case SpellEffectType.HEAL:
+                return await self._process_heal(spell, target, caster_id, mastery_modifier)
+            case SpellEffectType.DAMAGE:
+                return await self._process_damage(spell, target, mastery_modifier)
+            case SpellEffectType.STATUS_EFFECT:
+                return await self._process_status_effect(spell, target, mastery_modifier)
+            case SpellEffectType.STAT_MODIFY:
+                return await self._process_stat_modify(spell, target, mastery_modifier)
+            case SpellEffectType.LUCIDITY_ADJUST:
+                return await self._process_lucidity_adjust(spell, target, mastery_modifier)
+            case SpellEffectType.CORRUPTION_ADJUST:
+                return await self._process_corruption_adjust(spell, target, mastery_modifier)
+            case SpellEffectType.TELEPORT:
+                return await self._process_teleport(spell, target, mastery_modifier)
+            case SpellEffectType.CREATE_OBJECT:
+                return await self._process_create_object(spell, target, mastery_modifier)
+            case _:
+                # Exhaustive enum check: all SpellEffectType values must be handled above
+                assert_never(spell.effect_type)
 
-    async def _process_heal(self, spell: Spell, target: TargetMatch, mastery_modifier: float) -> dict[str, Any]:
+    async def _process_heal(
+        self, spell: Spell, target: TargetMatch, caster_id: uuid.UUID, mastery_modifier: float
+    ) -> dict[str, Any]:
         """Process heal effect."""
         if target.target_type not in (TargetType.PLAYER, TargetType.NPC):
             return {"success": False, "message": "Heal can only target entities", "effect_applied": False}
 
+        # Heal Other cannot target self
+        if spell.spell_id == "heal_other" and str(target.target_id) == str(caster_id):
+            return {
+                "success": False,
+                "message": f"{spell.name} can only target others, not yourself.",
+                "effect_applied": False,
+            }
         heal_amount = int(spell.effect_data.get("heal_amount", 0) * mastery_modifier)
         if heal_amount <= 0:
             return {"success": False, "message": "Invalid heal amount", "effect_applied": False}

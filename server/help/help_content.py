@@ -543,7 +543,7 @@ No players found matching 'xyz'. Try 'who' to see all online players.
         "category": "Magic",
         "description": "Cast a learned spell",
         "usage": "cast <spell_name> [target]",
-        "examples": ["cast heal", "cast heal self", "cast fireball goblin"],
+        "examples": ["cast heal", "cast heal self", "cast heal me", "cast heal other ithaqua", "cast fireball goblin"],
         "detailed_help": """
 <div style="color: #9370DB;">
 <h3>CAST Command</h3>
@@ -574,8 +574,9 @@ Magic Points (MP) and, for Mythos spells, lucidity. The forbidden knowledge exac
 
 <h4>Examples:</h4>
 <ul>
-<li>cast heal</li>
-<li>cast heal self</li>
+<li>cast heal - heal yourself (heal_self)</li>
+<li>cast heal self / cast heal me - same</li>
+<li>cast heal ithaqua / cast heal other ithaqua - heal another (heal_other)</li>
 <li>cast fireball goblin</li>
 <li>cast bless party</li>
 </ul>

@@ -33,16 +33,21 @@ async def get_player_occupants(connection_manager: "ConnectionManager | Any", ro
     try:  # pylint: disable=too-many-nested-blocks  # Reason: Room occupant processing requires complex nested logic for name extraction, grace period checks, and formatting
         room_occupants = await connection_manager.get_room_occupants(room_id)
         for occ in room_occupants or []:
+            # Only include actual players: skip NPCs even if dict has player_name (e.g. merged format with is_npc).
+            if occ.get("is_npc") or "npc_name" in occ:
+                continue
             name = occ.get("player_name") or occ.get("name")
             if name:
-                # Check if player is in disconnect grace period (name may already include "(linkdead)" from occupant processor)
-                # Also check if player is in login grace period and add "(warded)" indicator
-                # But we check here as well for safety
                 player_id_str = occ.get("player_id")
                 if player_id_str and connection_manager:
                     try:
                         player_id = uuid.UUID(player_id_str) if isinstance(player_id_str, str) else player_id_str
-
+                        # Only show players who are actually connected or in grace period; hide fully disconnected
+                        if not connection_manager.has_websocket_connection(player_id) and not is_player_in_grace_period(
+                            player_id, connection_manager
+                        ):
+                            continue
+                        # Check if player is in disconnect grace period (name may already include "(linkdead)" from occupant processor)
                         if is_player_in_grace_period(player_id, connection_manager) and "(linkdead)" not in name:
                             name = f"{name} (linkdead)"
                         # Check login grace period (can have both indicators)

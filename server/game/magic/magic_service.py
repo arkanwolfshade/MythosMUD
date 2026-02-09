@@ -23,7 +23,7 @@ from server.game.magic.spell_targeting import SpellTargetingService
 from server.game.player_service import PlayerService
 from server.models.spell import Spell
 from server.persistence.repositories.player_spell_repository import PlayerSpellRepository
-from server.schemas.target_resolution import TargetMatch
+from server.schemas.target_resolution import TargetMatch, TargetType
 from server.structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
@@ -264,6 +264,15 @@ class MagicService:  # pylint: disable=too-many-instance-attributes  # Reason: M
         """
         logger.info("Casting spell", player_id=player_id, spell_id=spell_id, target_name=target_name)
 
+        # Normalize "heal" to heal_self or heal_other when command_data passes literal "heal" (e.g. from client)
+        if spell_id and spell_id.strip().lower() == "heal":
+            if not target_name or not target_name.strip():
+                spell_id = "heal_self"
+            elif target_name.strip().lower() in ("self", "me"):
+                spell_id = "heal_self"
+            else:
+                spell_id = "heal_other"
+
         # Check if already casting
         already_casting = self._check_already_casting(player_id)
         if already_casting:
@@ -408,7 +417,6 @@ class MagicService:  # pylint: disable=too-many-instance-attributes  # Reason: M
         Returns:
             TargetMatch object
         """
-        from server.schemas.target_resolution import TargetType
 
         target_type_str = casting_state.target_type or "player"
         try:
@@ -502,19 +510,27 @@ class MagicService:  # pylint: disable=too-many-instance-attributes  # Reason: M
             )
 
     async def _send_healing_update_event(  # pylint: disable=too-many-locals  # Reason: Healing event requires many intermediate variables for complex event processing
-        self, player_id: uuid.UUID, effect_result: dict[str, Any], spell_id: str, room_id: str
+        self,
+        player_id: uuid.UUID,
+        effect_result: dict[str, Any],
+        spell_id: str,
+        room_id: str,
+        healed_player_id: uuid.UUID | None = None,
     ) -> None:
-        """Send player_dp_updated event if healing occurred."""
+        """Send player_dp_updated event for the healed player (target for heal other, caster for heal self)."""
         if not (
             effect_result.get("success") and effect_result.get("effect_applied") and effect_result.get("heal_amount")
         ):
             return
 
+        # For heal-other, notify the target's client; for heal-self, notify the caster
+        event_player_id = healed_player_id if healed_player_id is not None else player_id
+
         try:
             from server.container import ApplicationContainer
             from server.events.event_types import PlayerDPUpdated
 
-            updated_player = await self.player_service.persistence.get_player_by_id(player_id)
+            updated_player = await self.player_service.persistence.get_player_by_id(event_player_id)
             if not updated_player:
                 return
 
@@ -523,11 +539,10 @@ class MagicService:  # pylint: disable=too-many-instance-attributes  # Reason: M
             max_dp = stats.get("max_dp", 0)
             heal_amount = effect_result.get("heal_amount", 0)
             old_dp = max(0, current_dp - heal_amount)
-
             container = ApplicationContainer.get_instance()
             if container and container.event_bus:
                 dp_event = PlayerDPUpdated(
-                    player_id=player_id,
+                    player_id=event_player_id,
                     old_dp=old_dp,
                     new_dp=current_dp,
                     max_dp=max_dp,
@@ -540,7 +555,7 @@ class MagicService:  # pylint: disable=too-many-instance-attributes  # Reason: M
                 from server.realtime.connection_manager_api import send_game_event
 
                 await send_game_event(
-                    player_id,
+                    event_player_id,
                     "player_dp_updated",
                     {
                         "old_dp": old_dp,
@@ -557,13 +572,13 @@ class MagicService:  # pylint: disable=too-many-instance-attributes  # Reason: M
                 )
                 logger.warning(
                     "Event bus not available for DP update after spell",
-                    player_id=player_id,
+                    player_id=event_player_id,
                     spell_id=spell_id,
                 )
         except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError, RuntimeError) as dp_error:
             logger.warning(
                 "Failed to publish PlayerDPUpdated event after spell",
-                player_id=player_id,
+                player_id=event_player_id,
                 spell_id=spell_id,
                 error=str(dp_error),
             )
@@ -650,7 +665,21 @@ class MagicService:  # pylint: disable=too-many-instance-attributes  # Reason: M
             )
 
             await self._send_spell_completion_message(player_id, spell.spell_id, effect_result)
-            await self._send_healing_update_event(player_id, effect_result, spell.spell_id, room_id)
+            # Heal-other: send DP update to the healed player (target), not the caster
+            healed_player_id = None
+            if (
+                effect_result.get("effect_applied")
+                and effect_result.get("heal_amount")
+                and target
+                and getattr(target, "target_type", None) == TargetType.PLAYER
+                and str(target.target_id) != str(player_id)
+            ):
+                healed_player_id = (
+                    uuid.UUID(target.target_id) if isinstance(target.target_id, str) else target.target_id
+                )
+            await self._send_healing_update_event(
+                player_id, effect_result, spell.spell_id, room_id, healed_player_id=healed_player_id
+            )
 
         except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError) as e:
             logger.error(

@@ -13,6 +13,7 @@ This module also integrates enhanced logging and monitoring systems.
 """
 
 import asyncio
+import uuid as uuid_lib
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from datetime import UTC, datetime
@@ -20,6 +21,7 @@ from typing import Any
 
 from fastapi import FastAPI
 
+from ..auth.token_epoch import set_auth_epoch
 from ..container import ApplicationContainer
 from ..monitoring.exception_tracker import get_exception_tracker
 from ..monitoring.memory_leak_metrics import MemoryLeakMetricsCollector
@@ -168,6 +170,10 @@ async def _startup_application(app: FastAPI) -> ApplicationContainer:
         RuntimeError: If required services are not initialized
     """
     logger.info("Starting MythosMUD server with ApplicationContainer...")
+
+    # Invalidate all prior JWTs so clients must re-authenticate after any server restart
+    set_auth_epoch(uuid_lib.uuid4().hex)
+    logger.info("Auth token epoch set - all pre-restart tokens are now invalid")
 
     container = ApplicationContainer()
     await container.initialize()

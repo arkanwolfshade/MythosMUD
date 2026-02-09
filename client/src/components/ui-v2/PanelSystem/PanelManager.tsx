@@ -45,6 +45,24 @@ const loadPanelLayout = (): Record<string, PanelState> | null => {
   return null;
 };
 
+// Stored layout may be from a different resolution (e.g. another machine). Use it only if it fits.
+const storedLayoutFitsViewport = (
+  panels: Record<string, PanelState>,
+  viewportWidth: number,
+  viewportHeight: number
+): boolean => {
+  const padding = 40;
+  const maxRight = viewportWidth - padding;
+  const maxBottom = viewportHeight - padding;
+  return Object.values(panels).every(
+    p =>
+      p.position.x >= -padding &&
+      p.position.y >= 0 &&
+      p.position.x + p.size.width <= maxRight &&
+      p.position.y + p.size.height <= maxBottom
+  );
+};
+
 // Save panel layout to localStorage
 const savePanelLayout = (panels: Record<string, PanelState>): void => {
   try {
@@ -265,10 +283,13 @@ export const PanelManagerProvider: React.FC<PanelManagerProviderProps> = ({ chil
     nextZIndex: 1000,
   });
 
-  // Initialize panels from localStorage or defaults
+  // Initialize panels from localStorage or defaults. Ignore stored layout if it was saved on a
+  // different resolution (e.g. another machine) so the network machine gets a valid layout.
   useEffect(() => {
     const stored = loadPanelLayout();
-    const panelsToUse = stored || defaultPanels;
+    const vw = typeof window !== 'undefined' ? window.innerWidth : 1920;
+    const vh = typeof window !== 'undefined' ? window.innerHeight : 1080;
+    const panelsToUse = stored && storedLayoutFitsViewport(stored, vw, vh) ? stored : defaultPanels;
     dispatch({ type: 'INIT_PANELS', payload: panelsToUse });
   }, [defaultPanels]);
 
