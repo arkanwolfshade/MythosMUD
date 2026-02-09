@@ -439,18 +439,41 @@ async def test_broadcast_room_update_no_connection_manager():
 
 @pytest.mark.asyncio
 async def test_broadcast_room_update_room_not_found(mock_connection_manager):
-    """Test broadcast_room_update() does nothing when room not found."""
+    """Test broadcast_room_update() sends room_occupants only (empty) when room not found."""
     player_id = TEST_PLAYER_ID_STR
     room_id = "room_123"
 
-    with patch("server.realtime.websocket_room_updates.get_async_persistence") as mock_get_persistence:
+    async def resolve_none_room(*_args, **_kwargs):
+        return (None, room_id, room_id)
+
+    with (
+        patch("server.realtime.websocket_room_updates.get_async_persistence") as mock_get_persistence,
+        patch(
+            "server.realtime.websocket_room_updates._resolve_room_with_fallback",
+            side_effect=resolve_none_room,
+        ),
+        patch(
+            "server.realtime.websocket_room_updates.get_npc_occupants_from_lifecycle_manager",
+            new_callable=AsyncMock,
+            return_value=[],
+        ),
+    ):
         mock_persistence = MagicMock()
         mock_persistence.get_room_by_id.return_value = None
         mock_get_persistence.return_value = mock_persistence
 
         await broadcast_room_update(player_id, room_id, mock_connection_manager)
 
-        mock_connection_manager.broadcast_to_room.assert_not_called()
+        # When room not found, we still send one room_occupants event with empty data (no room_update)
+        mock_connection_manager.broadcast_to_room.assert_called_once()
+        call_args = mock_connection_manager.broadcast_to_room.call_args[0]
+        assert call_args[0] == room_id
+        event = call_args[1]
+        assert event["event_type"] == "room_occupants"
+        assert event["data"]["players"] == []
+        assert event["data"]["npcs"] == []
+        assert event["data"]["occupants"] == []
+        assert event["data"]["count"] == 0
 
 
 @pytest.mark.asyncio
