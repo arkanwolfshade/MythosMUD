@@ -115,6 +115,8 @@ max-complexity = 11
 "docs/**/*" = ["F821", "F841", "F811", "B904", "E402"]
 "server/stubs/**/*.pyi" = ["UP046"]  # Stub files use old Generic syntax for compatibility
 "server/main.py" = ["E402"]  # Reason: Imports must come after load_dotenv() to ensure env vars are loaded before any modules that depend on them are imported
+# Alembic requires exact names revision, down_revision, branch_labels, depends_on; cannot use UPPER_CASE
+"server/alembic/versions/*.py" = ["N816"]
 
 [tool.isort]
 profile = "black"

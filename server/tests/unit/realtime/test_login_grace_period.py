@@ -3,12 +3,13 @@ Unit tests for login grace period functionality.
 
 Tests the core login grace period module functions including
 start, cancel, check status, and remaining time calculation.
+Covers both legacy (asyncio task) and effect-based (ADR-009) paths.
 """
 
 import asyncio
 import time
 import uuid
-from unittest.mock import MagicMock
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
@@ -216,6 +217,52 @@ async def test_grace_period_task_cancellation_cleanup(mock_connection_manager): 
         del mock_connection_manager.login_grace_period_players[player_id]
     if player_id in mock_connection_manager.login_grace_period_start_times:
         del mock_connection_manager.login_grace_period_start_times[player_id]
+
+    assert player_id not in mock_connection_manager.login_grace_period_players
+    assert player_id not in mock_connection_manager.login_grace_period_start_times
+
+
+# --- Effect-based grace period (ADR-009) ---
+
+
+@pytest.mark.asyncio
+async def test_start_login_grace_period_effect_based_adds_effect_and_sets_in_memory(
+    mock_connection_manager,
+):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name
+    """When async_persistence and tick getters are provided, add effect and set in-memory state (no asyncio task)."""
+    player_id = uuid.uuid4()
+    mock_persistence = MagicMock()
+    mock_persistence.add_player_effect = AsyncMock(return_value=str(uuid.uuid4()))
+    get_current_tick = MagicMock(return_value=100)
+    get_tick_interval = MagicMock(return_value=0.1)
+
+    await start_login_grace_period(
+        player_id,
+        mock_connection_manager,
+        async_persistence=mock_persistence,
+        get_current_tick=get_current_tick,
+        get_tick_interval=get_tick_interval,
+    )
+
+    mock_persistence.add_player_effect.assert_called_once()
+    call_kw = mock_persistence.add_player_effect.call_args[1]
+    assert call_kw.get("effect_type") == "login_warded"
+    assert call_kw.get("category") == "entry_ward"
+    assert call_kw.get("applied_at_tick") == 100
+    assert call_kw.get("source") == "game_entry"
+    assert player_id in mock_connection_manager.login_grace_period_players
+    assert mock_connection_manager.login_grace_period_players[player_id] is True
+    assert player_id in mock_connection_manager.login_grace_period_start_times
+
+
+@pytest.mark.asyncio
+async def test_cancel_login_grace_period_effect_based_clears_tracking(mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name
+    """Cancel when grace is effect-based (sentinel True) only clears in-memory tracking."""
+    player_id = uuid.uuid4()
+    mock_connection_manager.login_grace_period_players[player_id] = True
+    mock_connection_manager.login_grace_period_start_times[player_id] = time.time()
+
+    await cancel_login_grace_period(player_id, mock_connection_manager)
 
     assert player_id not in mock_connection_manager.login_grace_period_players
     assert player_id not in mock_connection_manager.login_grace_period_start_times

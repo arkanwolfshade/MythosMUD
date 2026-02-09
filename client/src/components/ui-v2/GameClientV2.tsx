@@ -15,6 +15,7 @@ import { LocationPanel } from './panels/LocationPanel';
 import { OccupantsPanel } from './panels/OccupantsPanel';
 import { RoomDescriptionPanel } from './panels/RoomDescriptionPanel';
 import type { ChatMessage, MythosTimeState, Player, Room } from './types';
+import type { ActiveEffectDisplay } from './utils/stateUpdateUtils';
 import { createDefaultPanelLayout } from './utils/panelLayout';
 
 // Helper function to calculate occupant count from room data
@@ -60,6 +61,7 @@ interface GameClientV2Props {
   onClearMessages: () => void;
   onClearHistory: () => void;
   onDownloadLogs: () => void;
+  activeEffects?: ActiveEffectDisplay[];
 }
 
 // Main game client component with three-column layout
@@ -84,6 +86,7 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
   onClearMessages,
   onClearHistory,
   onDownloadLogs,
+  activeEffects = [],
 }) => {
   const panelManager = usePanelManager();
 
@@ -133,7 +136,7 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
     };
 
     // Use debounce to avoid excessive updates during resize
-    let resizeTimeout: number;
+    let resizeTimeout: ReturnType<typeof setTimeout>;
     const debouncedHandleResize = () => {
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(handleResize, 150);
@@ -183,6 +186,7 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
         mythosTime={mythosTime}
         onLogout={onLogout || (() => {})}
         isLoggingOut={isLoggingOut}
+        activeEffects={activeEffects}
       />
 
       {/* Main Content Area - Panels: flex-1 min-h-0 so panel area is bounded and scroll/overflow work */}

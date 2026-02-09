@@ -12,6 +12,7 @@ from typing import Any, cast
 from fastapi import APIRouter, Depends
 from fastapi import Request as FastAPIRequest
 
+from ..app.game_tick_processing import get_current_tick, get_tick_interval
 from ..auth.users import get_current_active_user, get_current_user
 from ..dependencies import PlayerServiceDep, StatsGeneratorDep
 from ..error_types import ErrorMessages
@@ -563,8 +564,16 @@ async def start_login_grace_period_endpoint(
         # Remove player from combat if they're in combat
         await _end_combat_for_grace_period(player_id)
 
-        # Start login grace period
-        await start_login_grace_period(player_id, connection_manager)
+        # Start login grace period (effects system: pass async_persistence and tick getters)
+        container = getattr(request.app.state, "container", None)
+        async_persistence = getattr(container, "async_persistence", None) if container else None
+        await start_login_grace_period(
+            player_id,
+            connection_manager,
+            async_persistence=async_persistence,
+            get_current_tick=get_current_tick,
+            get_tick_interval=get_tick_interval,
+        )
         remaining = get_login_grace_period_remaining(player_id, connection_manager)
         logger.info(
             "Login grace period started",

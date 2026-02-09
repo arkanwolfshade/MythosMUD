@@ -19,7 +19,11 @@ from ..config import get_config
 from ..config.npc_config import NPCMaintenanceConfig
 from ..database import get_async_session
 from ..realtime.connection_manager_api import broadcast_game_event
-from ..realtime.login_grace_period import is_player_in_login_grace_period
+from ..realtime.login_grace_period import (
+    _grace_period_expiration_handler,
+    get_login_grace_period_remaining,
+    is_player_in_login_grace_period,
+)
 from ..services.combat_messaging_integration import combat_messaging_integration
 from ..services.container_websocket_events import emit_container_decayed
 from ..services.corpse_lifecycle_service import CorpseLifecycleService
@@ -265,6 +269,33 @@ async def _process_player_status_effects(app: FastAPI, container: "ApplicationCo
     except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
         logger.warning("Error processing status effects for player", player_id=player_id, error=str(e))
         return False
+
+
+async def process_player_effects_expiration(app: FastAPI, tick_count: int) -> None:
+    """Expire player_effects for this tick; for LOGIN_WARDED clear in-memory state and trigger room update."""
+    is_valid, container = _validate_app_state_for_status_effects(app)
+    if not is_valid or not container or not container.async_persistence or not container.connection_manager:
+        return
+
+    try:
+        expired = await container.async_persistence.expire_player_effects_for_tick(tick_count)
+        for player_id_str, effect_type in expired:
+            if effect_type == "login_warded":
+                try:
+                    player_uuid = uuid.UUID(player_id_str) if isinstance(player_id_str, str) else player_id_str
+                    await _grace_period_expiration_handler(player_uuid, container.connection_manager)
+                except (ValueError, AttributeError, TypeError) as e:
+                    logger.warning(
+                        "Error handling LOGIN_WARDED expiration",
+                        player_id=player_id_str,
+                        error=str(e),
+                    )
+    except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
+        logger.warning(
+            "Error processing player effects expiration",
+            tick_count=tick_count,
+            error=str(e),
+        )
 
 
 async def process_status_effects(app: FastAPI, tick_count: int) -> None:
@@ -683,6 +714,29 @@ async def broadcast_tick_event(app: FastAPI, tick_count: int) -> None:
         player_count=len(app.state.container.connection_manager.player_websockets),
     )
     await broadcast_game_event("game_tick", tick_data)
+
+    # Send per-player effects update so client can show countdown and remove effect when expired
+    manager = app.state.container.connection_manager
+    if manager and getattr(manager, "player_websockets", None):
+        from ..realtime.envelope import build_event
+
+        for player_id in list(manager.player_websockets.keys()):
+            try:
+                active = is_player_in_login_grace_period(player_id, manager)
+                remaining = get_login_grace_period_remaining(player_id, manager)
+                effects_data = {
+                    "login_grace_period_active": active,
+                    "login_grace_period_remaining": round(remaining, 1),
+                }
+                event = build_event("effects_update", effects_data, player_id=player_id)
+                await manager.send_personal_message(player_id, event)
+            except (AttributeError, TypeError, ValueError) as e:
+                logger.debug(
+                    "Skip effects_update for player",
+                    player_id=player_id,
+                    error=str(e),
+                )
+
     logger.debug("Game tick broadcast completed", tick_count=tick_count)
 
 
@@ -699,6 +753,7 @@ async def game_tick_loop(app: FastAPI) -> None:
 
     while True:
         try:
+            await process_player_effects_expiration(app, tick_count)
             await process_status_effects(app, tick_count)
             logger.debug("Game tick", tick_count=tick_count)
             _current_tick = tick_count

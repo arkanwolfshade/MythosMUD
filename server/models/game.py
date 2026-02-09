@@ -40,6 +40,8 @@ class StatusEffectType(StrEnum):
     CORRUPTED = "corrupted"
     DELIRIOUS = "delirious"
     BUFF = "buff"
+    # Effects system (ADR-009): game-entry warded (login grace period)
+    LOGIN_WARDED = "login_warded"
 
 
 class PositionState(StrEnum):
