@@ -21,9 +21,7 @@ class RestartInvalidatingJWTStrategy(JWTStrategy[models.UP, models.ID]):
     async def read_token(
         self, token: str | None, user_manager: BaseUserManager[models.UP, models.ID]
     ) -> models.UP | None:
-        """Reads a JWT token, validating its signature, audience, and server epoch. """
-        self, token: str | None, user_manager: BaseUserManager[models.UP, models.ID]
-    ) -> models.UP | None:
+        """Reads a JWT token, validating its signature, audience, and server epoch."""
         if token is None:
             return None
 
