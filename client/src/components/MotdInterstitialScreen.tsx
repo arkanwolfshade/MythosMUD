@@ -6,6 +6,23 @@ interface MotdInterstitialScreenProps {
   onReturnToLogin: () => void;
 }
 
+/** Shared styles for MOTD action buttons (Return to Login, Enter the Realm). */
+const MOTD_BUTTON_STYLE: React.CSSProperties = {
+  background: 'linear-gradient(45deg, #d4af37, #b8941f)',
+  color: '#0a0a0a',
+  border: 'none',
+  padding: '12px 30px',
+  fontSize: '1.1em',
+  fontWeight: 'bold',
+  fontFamily: 'Courier New, monospace',
+  borderRadius: '5px',
+  cursor: 'pointer',
+  transition: 'all 0.3s ease',
+  textTransform: 'uppercase',
+  letterSpacing: '1px',
+  boxShadow: '0 4px 8px rgba(212, 175, 55, 0.3)',
+};
+
 /**
  * Interstitial MOTD screen that appears between authentication and the game terminal.
  * This replaces the modal overlay approach with a dedicated screen.
@@ -27,21 +44,7 @@ export const MotdInterstitialScreen: React.FC<MotdInterstitialScreenProps> = ({ 
               onClick={onReturnToLogin}
               data-testid="motd-return-to-login"
               className="px-6 py-3 bg-mythos-terminal-surface border border-mythos-terminal-border text-mythos-terminal-text hover:bg-mythos-terminal-surface-hover transition-colors rounded"
-              style={{
-                background: 'linear-gradient(45deg, #d4af37, #b8941f)',
-                color: '#0a0a0a',
-                border: 'none',
-                padding: '12px 30px',
-                fontSize: '1.1em',
-                fontWeight: 'bold',
-                fontFamily: 'Courier New, monospace',
-                borderRadius: '5px',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                textTransform: 'uppercase',
-                letterSpacing: '1px',
-                boxShadow: '0 4px 8px rgba(212, 175, 55, 0.3)',
-              }}
+              style={MOTD_BUTTON_STYLE}
             >
               Return to Login
             </button>
@@ -49,21 +52,7 @@ export const MotdInterstitialScreen: React.FC<MotdInterstitialScreenProps> = ({ 
               onClick={onContinue}
               data-testid="motd-enter-realm"
               className="px-6 py-3 bg-mythos-terminal-primary text-black hover:bg-mythos-terminal-primary-hover transition-colors rounded font-semibold"
-              style={{
-                background: 'linear-gradient(45deg, #d4af37, #b8941f)',
-                color: '#0a0a0a',
-                border: 'none',
-                padding: '12px 30px',
-                fontSize: '1.1em',
-                fontWeight: 'bold',
-                fontFamily: 'Courier New, monospace',
-                borderRadius: '5px',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                textTransform: 'uppercase',
-                letterSpacing: '1px',
-                boxShadow: '0 4px 8px rgba(212, 175, 55, 0.3)',
-              }}
+              style={MOTD_BUTTON_STYLE}
             >
               Enter the Realm
             </button>
