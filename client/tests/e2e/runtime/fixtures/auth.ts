@@ -187,7 +187,6 @@ export async function loginPlayer(page: Page, username: string, password: string
           (enterButton as HTMLElement).click();
         }
       });
-      clicked = true;
     }
 
     // Wait for game interface to load

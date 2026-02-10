@@ -768,8 +768,13 @@ function App() {
         }
         console.error('Failed to refresh characters list after deletion:', errorMessage);
         setError(errorMessage);
-        // Still throw to indicate partial failure
-        throw new Error(errorMessage);
+        // Still throw to indicate partial failure; include response context as cause for diagnostics
+        throw new Error(errorMessage, {
+          cause: {
+            status: response.status,
+            statusText: response.statusText,
+          },
+        });
       }
     } catch (error) {
       // Check if error is due to server unavailability
@@ -779,7 +784,8 @@ function App() {
       }
 
       const errorMessage = error instanceof Error ? error.message : 'Failed to delete character';
-      throw new Error(errorMessage);
+      // Preserve original error as cause so callers and logs can inspect root failure.
+      throw new Error(errorMessage, { cause: error });
     }
   };
 

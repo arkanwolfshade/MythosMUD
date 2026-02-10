@@ -576,7 +576,7 @@ async function loginPlayer(page: Page, username: string, password: string): Prom
 
       if (!clickResult.success) {
         clearInterval(motdCheckInterval);
-        throw new Error(`Failed to click MOTD button: ${clickResult.error}`);
+        throw new Error(`Failed to click MOTD button: ${clickResult.error}`, { cause: clickError });
       }
       console.error('[DEBUG] Button click completed via', clickResult.method);
     }
@@ -669,7 +669,8 @@ async function loginPlayer(page: Page, username: string, password: string): Prom
     if (page.isClosed()) {
       const errorDetails = errors.length > 0 ? ` Page errors captured: ${errors.join('; ')}` : '';
       throw new Error(
-        `Page was closed while waiting for command input - login may have failed or timed out.${errorDetails}`
+        `Page was closed while waiting for command input - login may have failed or timed out.${errorDetails}`,
+        { cause: error }
       );
     }
     // If timeout, check if we're at least past MOTD/login screens
@@ -680,7 +681,9 @@ async function loginPlayer(page: Page, username: string, password: string): Prom
 
     if (atLogin) {
       const errorDetails = errors.length > 0 ? ` Page errors captured: ${errors.join('; ')}` : '';
-      throw new Error(`Command input timeout - still at login screen, authentication may have failed.${errorDetails}`);
+      throw new Error(`Command input timeout - still at login screen, authentication may have failed.${errorDetails}`, {
+        cause: error,
+      });
     }
     if (atMOTD) {
       const debugInfo = {
@@ -692,10 +695,10 @@ async function loginPlayer(page: Page, username: string, password: string): Prom
       const errorDetails = errors.length > 0 ? ` Page errors: ${errors.join('; ')}` : '';
       const consoleDetails =
         consoleMessages.length > 0 ? ` Console messages (last 5): ${consoleMessages.slice(-5).join('; ')}` : '';
-      throw new Error(
-        `Command input timeout - still at MOTD screen, "Enter the Realm" button click may have
-        failed.${errorDetails}${consoleDetails}`
-      );
+      const message =
+        'Command input timeout - still at MOTD screen, "Enter the Realm" button click may have failed.' +
+        `${errorDetails}${consoleDetails}`;
+      throw new Error(message, { cause: error });
     }
 
     // Log any page errors we captured
@@ -736,6 +739,7 @@ async function executeCommand(
 
   // Wait for command to process and response to appear
   // Game log messages use data-testid="game-log-message" and data-message-text attributes
+  // eslint-disable-next-line no-useless-assignment -- explicit default documents "no response" baseline
   let responseReceived = false;
   let responseText = '';
 
@@ -966,11 +970,12 @@ test.describe('Suite 1: Core Service Functionality Tests', () => {
     await safeWait(page, 5000);
     console.error('[DEBUG] WebSocket messages received:', wsMessages.length);
 
-    // Verify status response was received by waiting for it to appear in game log
+    // Verify status response was received by waiting for it to appear in game log.
     // Status output typically includes "Name:", "Location:", "Health:", etc.
-    // Game log messages use data-testid="game-log-message" and data-message-text attributes
+    // Game log messages use data-testid="game-log-message" and data-message-text attributes.
     console.error('[DEBUG] Waiting for status response in game log...');
 
+    // eslint-disable-next-line no-useless-assignment -- explicit default documents "no status output" baseline
     let hasStatusOutput = false;
 
     try {
