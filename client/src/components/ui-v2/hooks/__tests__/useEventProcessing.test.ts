@@ -942,4 +942,42 @@ describe('useEventProcessing', () => {
     expect(result.current.handleGameEvent).toBeDefined();
     vi.restoreAllMocks();
   });
+
+  it('should clear pending follow request via event log and preserve commandHistory', async () => {
+    const eventLog = await import('../../eventLog');
+    const projectStateSpy = vi.mocked(eventLog.projectState);
+
+    const preservedHistory = ['look', 'say hello'];
+    const appliedStates: unknown[] = [];
+
+    const { result } = renderHook(() =>
+      useEventProcessing({
+        setGameState: updater => {
+          if (typeof updater === 'function') {
+            const prevState = {
+              player: null,
+              room: null,
+              messages: [],
+              commandHistory: preservedHistory,
+              loginGracePeriodActive: false,
+              loginGracePeriodRemaining: 0,
+            };
+            const nextState = updater(prevState as never);
+            appliedStates.push(nextState);
+          } else {
+            appliedStates.push(updater);
+          }
+        },
+      })
+    );
+
+    act(() => {
+      result.current.clearPendingFollowRequest('req-123');
+    });
+
+    expect(projectStateSpy).toHaveBeenCalled();
+    expect(appliedStates).toHaveLength(1);
+    const finalState = appliedStates[0] as { commandHistory: string[] };
+    expect(finalState.commandHistory).toBe(preservedHistory);
+  });
 });

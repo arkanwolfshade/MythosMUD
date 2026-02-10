@@ -371,6 +371,29 @@ export function useGameConnection(options: UseGameConnectionOptions) {
     [isConnectionEstablished, sendWebSocketMessage]
   );
 
+  // Send arbitrary message type (e.g. follow_response) through WebSocket
+  const sendMessage = useCallback(
+    (type: string, data: Record<string, unknown>): boolean => {
+      if (!isConnectionEstablished) {
+        logger.warn('GameConnection', 'Cannot send message: not connected');
+        return false;
+      }
+      try {
+        const message = JSON.stringify({
+          type,
+          data,
+          timestamp: new Date().toISOString(),
+        });
+        sendWebSocketMessage(message);
+        return true;
+      } catch (error) {
+        logger.error('GameConnection', 'Failed to send message', { error: String(error) });
+        return false;
+      }
+    },
+    [isConnectionEstablished, sendWebSocketMessage]
+  );
+
   // Get connection info
   const getConnectionInfo = useCallback(() => {
     return {
@@ -446,6 +469,7 @@ export function useGameConnection(options: UseGameConnectionOptions) {
     connect,
     disconnect,
     sendCommand,
+    sendMessage,
 
     // Session management (backward compatibility)
     createNewSession: sessionCreateNewSession,

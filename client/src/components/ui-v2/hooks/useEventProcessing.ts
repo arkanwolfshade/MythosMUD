@@ -69,5 +69,21 @@ export const useEventProcessing = ({ setGameState }: UseEventProcessingParams) =
     eventStoreRef.current.clear();
   }, []);
 
-  return { handleGameEvent, clearEventLog };
+  /** Clear pending follow request in the event log so the dialog stays closed after accept/decline. */
+  const clearPendingFollowRequest = useCallback(
+    (requestId: string) => {
+      const store = eventStoreRef.current;
+      store.append({
+        event_type: 'follow_request_cleared',
+        timestamp: new Date().toISOString(),
+        sequence_number: 0,
+        data: { request_id: requestId },
+      });
+      const derivedState = projectState(store.getLog());
+      setGameState(prev => ({ ...derivedState, commandHistory: prev.commandHistory }));
+    },
+    [setGameState]
+  );
+
+  return { handleGameEvent, clearEventLog, clearPendingFollowRequest };
 };

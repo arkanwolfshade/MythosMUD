@@ -72,6 +72,7 @@ export const useGameConnectionManagement = ({
     connect,
     disconnect: disconnectFn,
     sendCommand,
+    sendMessage,
   } = useGameConnection({
     authToken,
     characterId,
@@ -115,6 +116,7 @@ export const useGameConnectionManagement = ({
     error,
     reconnectAttempts,
     sendCommand,
+    sendMessage,
     disconnect: disconnectFn,
   };
 };

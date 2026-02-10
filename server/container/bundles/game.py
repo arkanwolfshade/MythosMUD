@@ -27,6 +27,7 @@ logger = get_logger(__name__)
 
 GAME_ATTRS = (
     "movement_service",
+    "follow_service",
     "exploration_service",
     "player_service",
     "room_service",
@@ -46,6 +47,7 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
     """Game services: movement, player, room, user, container, caches, temporal, items."""
 
     movement_service: Any = None
+    follow_service: Any = None
     exploration_service: Any = None
     player_service: Any = None
     room_service: Any = None
@@ -85,7 +87,25 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
             async_persistence=async_persistence,
             exploration_service=self.exploration_service,
         )
-        logger.info("Exploration and movement services initialized")
+        from server.game.follow_service import FollowService
+        from server.services.player_position_service import PlayerPositionService
+
+        connection_manager = getattr(container, "connection_manager", None)
+        alias_storage = getattr(container, "alias_storage", None)
+        player_position_service = PlayerPositionService(
+            async_persistence,
+            connection_manager,
+            alias_storage,
+        )
+        self.follow_service = FollowService(
+            event_bus=event_bus,
+            movement_service=self.movement_service,
+            user_manager=None,  # Set below after user_manager is created
+            connection_manager=connection_manager,
+            async_persistence=async_persistence,
+            player_position_service=player_position_service,
+        )
+        logger.info("Exploration, movement and follow services initialized")
 
         # Temporal services
         logger.debug("Initializing temporal services...")
@@ -144,6 +164,8 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
 
         user_management_dir = get_environment_data_dir(normalized_environment) / "user_management"
         self.user_manager = UserManager(data_dir=user_management_dir)
+        if self.follow_service is not None:
+            self.follow_service._user_manager = self.user_manager  # pylint: disable=protected-access  # Reason: FollowService requires UserManager set after bundle init order
         if nats_message_handler is not None:
             nats_message_handler.user_manager = self.user_manager
 

@@ -62,6 +62,7 @@ interface GameClientV2Props {
   onClearHistory: () => void;
   onDownloadLogs: () => void;
   activeEffects?: ActiveEffectDisplay[];
+  followingTarget?: { target_name: string; target_type: 'player' | 'npc' } | null;
 }
 
 // Main game client component with three-column layout
@@ -87,6 +88,7 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
   onClearHistory,
   onDownloadLogs,
   activeEffects = [],
+  followingTarget = null,
 }) => {
   const panelManager = usePanelManager();
 
@@ -187,6 +189,7 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
         onLogout={onLogout || (() => {})}
         isLoggingOut={isLoggingOut}
         activeEffects={activeEffects}
+        followingTarget={followingTarget}
       />
 
       {/* Main Content Area - Panels: flex-1 min-h-0 so panel area is bounded and scroll/overflow work */}

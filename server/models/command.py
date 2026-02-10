@@ -37,6 +37,9 @@ from .command_communication import (
 # Import exploration commands
 from .command_exploration import GoCommand, LookCommand
 
+# Import follow commands
+from .command_follow import FollowCommand, FollowingCommand, UnfollowCommand
+
 # Import inventory commands
 from .command_inventory import (
     DropCommand,
@@ -96,6 +99,10 @@ __all__ = [
     # Exploration commands
     "LookCommand",
     "GoCommand",
+    # Follow commands
+    "FollowCommand",
+    "UnfollowCommand",
+    "FollowingCommand",
     # Alias commands
     "AliasCommand",
     "AliasesCommand",
@@ -155,6 +162,9 @@ __all__ = [
 Command = (
     LookCommand
     | GoCommand
+    | FollowCommand
+    | UnfollowCommand
+    | FollowingCommand
     | SayCommand
     | LocalCommand
     | SystemCommand

@@ -183,3 +183,33 @@ def test_create_ground_command_empty_target():
     """Test create_ground_command() raises error with empty target."""
     with pytest.raises(ValidationError):
         ExplorationCommandFactory.create_ground_command(["   "])
+
+
+def test_create_follow_command():
+    """Test create_follow_command() creates FollowCommand with target."""
+    command = ExplorationCommandFactory.create_follow_command(["Professor", "Armitage"])
+    assert command.target == "Professor Armitage"
+
+
+def test_create_follow_command_no_args():
+    """Test create_follow_command() raises error with no args."""
+    with pytest.raises(ValidationError):
+        ExplorationCommandFactory.create_follow_command([])
+
+
+def test_create_follow_command_empty_target():
+    """Test create_follow_command() raises error with empty target."""
+    with pytest.raises(ValidationError):
+        ExplorationCommandFactory.create_follow_command(["   "])
+
+
+def test_create_unfollow_command():
+    """Test create_unfollow_command() creates UnfollowCommand with no args."""
+    command = ExplorationCommandFactory.create_unfollow_command([])
+    assert command is not None
+
+
+def test_create_unfollow_command_with_args():
+    """Test create_unfollow_command() raises error with args."""
+    with pytest.raises(ValidationError):
+        ExplorationCommandFactory.create_unfollow_command(["extra"])

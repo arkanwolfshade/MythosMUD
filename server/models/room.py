@@ -71,7 +71,12 @@ class Room:  # pylint: disable=too-many-instance-attributes  # Reason: Room requ
 
         self._logger.debug("Initialized room", room_name=self.name, room_id=self.id)
 
-    def player_entered(self, player_id: uuid.UUID | str, force_event: bool = False) -> None:
+    def player_entered(
+        self,
+        player_id: uuid.UUID | str,
+        force_event: bool = False,
+        from_room_id: str | None = None,
+    ) -> None:
         """
         Add a player to the room and trigger event.
 
@@ -79,6 +84,7 @@ class Room:  # pylint: disable=too-many-instance-attributes  # Reason: Room requ
             player_id: The ID of the player entering the room (UUID or string)
             force_event: If True, always trigger PlayerEnteredRoom event even if player already in room
                         (used when player returns to a previously visited room to ensure room_update is sent)
+            from_room_id: Optional ID of the room the player left (for follow propagation and event consumers)
         """
         if not player_id:
             raise ValueError("Player ID cannot be empty")
@@ -103,7 +109,7 @@ class Room:  # pylint: disable=too-many-instance-attributes  # Reason: Room requ
         # CRITICAL: Always publish event if force_event=True to ensure room_update is sent
         # even when returning to a previously visited room
         if self._event_bus:
-            event = PlayerEnteredRoom(player_id=player_id_str, room_id=self.id)
+            event = PlayerEnteredRoom(player_id=player_id_str, room_id=self.id, from_room_id=from_room_id)
             self._event_bus.publish(event)
 
     def add_player_silently(self, player_id: uuid.UUID | str) -> None:

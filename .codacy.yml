@@ -7,6 +7,8 @@ exclude_paths:
   - '**/node_modules/**'
   - '**/dist/**'
   - '**/build/**'
+  - '**/mythosmud_data/**'
+  - '.data/**'
 
 # Ignore assert statements in test files
 # Assert statements are standard and expected in test files (pytest uses them extensively)

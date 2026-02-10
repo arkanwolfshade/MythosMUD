@@ -5,6 +5,12 @@ import { EldritchIcon, MythosIcons } from '../ui/EldritchIcon';
 import { LogoutButton } from '../ui/LogoutButton';
 import type { ActiveEffectDisplay } from './utils/stateUpdateUtils';
 
+/** Who the player is currently following (for title panel). */
+export interface FollowingTarget {
+  target_name: string;
+  target_type: 'player' | 'npc';
+}
+
 interface HeaderBarProps {
   playerName: string;
   isConnected: boolean;
@@ -16,6 +22,8 @@ interface HeaderBarProps {
   isLoggingOut?: boolean;
   /** Active effects to show in header (e.g. Warded). Server-authoritative. */
   activeEffects?: ActiveEffectDisplay[];
+  /** Who the player is following (shown in title area). Server-authoritative. */
+  followingTarget?: FollowingTarget | null;
 }
 
 // Collapsible header bar with player info, connection status, in-game time, and logout
@@ -37,6 +45,7 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
   onLogout,
   isLoggingOut = false,
   activeEffects = [],
+  followingTarget = null,
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(() => {
     const stored = localStorage.getItem('mythosmud-ui-v2-header-collapsed');
@@ -75,6 +84,7 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
         >
           <EldritchIcon name={MythosIcons.maximize} size={14} variant="primary" />
           <span className="text-xs">{playerName}</span>
+          {followingTarget && <span className="text-xs opacity-80">| Following: {followingTarget.target_name}</span>}
         </button>
         <div className="flex items-center gap-2">
           <span className={`text-xs ${connectionColor}`}>{connectionStatus}</span>
@@ -94,6 +104,14 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
           <EldritchIcon name={MythosIcons.minimize} size={14} variant="primary" />
         </button>
         <span className="text-base text-mythos-terminal-text-secondary">Player: {playerName}</span>
+        {followingTarget && (
+          <span
+            className="text-sm text-mythos-terminal-text-secondary"
+            title={`Following: ${followingTarget.target_name}`}
+          >
+            Following: {followingTarget.target_name}
+          </span>
+        )}
         <span
           className={`px-2 py-1 rounded text-sm ${isConnected ? 'bg-mythos-terminal-success text-black' : 'bg-mythos-terminal-error text-white'}`}
         >

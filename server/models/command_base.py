@@ -88,6 +88,10 @@ class CommandType(StrEnum):
     SPELL = "spell"
     SPELLS = "spells"
     LEARN = "learn"
+    # Follow commands
+    FOLLOW = "follow"
+    UNFOLLOW = "unfollow"
+    FOLLOWING = "following"
 
 
 class BaseCommand(BaseModel):

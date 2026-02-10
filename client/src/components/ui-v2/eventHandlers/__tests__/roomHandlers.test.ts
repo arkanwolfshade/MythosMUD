@@ -4,7 +4,13 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Room } from '../../types';
-import { __setOccupantDebugForTests, handleGameState, handleRoomOccupants, handleRoomUpdate } from '../roomHandlers';
+import {
+  __setOccupantDebugForTests,
+  handleFollowState,
+  handleGameState,
+  handleRoomOccupants,
+  handleRoomUpdate,
+} from '../roomHandlers';
 import type { EventHandlerContext } from '../types';
 
 // Mock logger (info/debug used in OCCUPANT_DEBUG paths; warn for validation)
@@ -174,6 +180,78 @@ describe('roomHandlers', () => {
       expect(result?.loginGracePeriodActive).toBe(true);
       expect(result?.loginGracePeriodRemaining).toBe(30);
     });
+
+    it('should include followingTarget when following is provided in game_state', () => {
+      const playerData = { id: 'player1', name: 'TestPlayer' };
+      const roomData = { id: 'room1', name: 'Test Room' };
+      const following = { target_name: 'Bob', target_type: 'player' as const };
+      const event = {
+        event_type: 'game_state',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { player: playerData, room: roomData, following },
+      };
+      const result = handleGameState(event, mockContext, vi.fn());
+      expect(result).toBeDefined();
+      expect(result?.followingTarget).toEqual(following);
+    });
+
+    it('should return only followingTarget when player/room missing but following provided', () => {
+      const event = {
+        event_type: 'game_state',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { following: { target_name: 'Guard', target_type: 'npc' as const } },
+      };
+      const result = handleGameState(event, mockContext, vi.fn());
+      expect(result).toEqual({ followingTarget: { target_name: 'Guard', target_type: 'npc' } });
+    });
+
+    it('should set followingTarget to null when following is null in payload', () => {
+      const event = {
+        event_type: 'game_state',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { following: null },
+      };
+      const result = handleGameState(event, mockContext, vi.fn());
+      expect(result).toEqual({ followingTarget: null });
+    });
+  });
+
+  describe('handleFollowState', () => {
+    it('should return followingTarget when following is provided', () => {
+      const event = {
+        event_type: 'follow_state',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { following: { target_name: 'Alice', target_type: 'player' as const } },
+      };
+      const result = handleFollowState(event, mockContext, vi.fn());
+      expect(result).toEqual({ followingTarget: { target_name: 'Alice', target_type: 'player' } });
+    });
+
+    it('should return followingTarget null when following is null', () => {
+      const event = {
+        event_type: 'follow_state',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { following: null },
+      };
+      const result = handleFollowState(event, mockContext, vi.fn());
+      expect(result).toEqual({ followingTarget: null });
+    });
+
+    it('should return followingTarget null when following is undefined', () => {
+      const event = {
+        event_type: 'follow_state',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {},
+      };
+      const result = handleFollowState(event, mockContext, vi.fn());
+      expect(result).toEqual({ followingTarget: null });
+    });
   });
 
   describe('handleRoomUpdate', () => {
@@ -221,16 +299,17 @@ describe('roomHandlers', () => {
     });
 
     it('should use nullish coalescing for players and npcs when they are null/undefined', () => {
-      const existingRoom: Partial<Room> = {
+      // Room type is string[] | undefined; we pass null to assert handler uses ?? correctly at runtime.
+      const existingRoom = {
         id: 'room1',
         name: 'Test Room',
         description: 'Test Room Description',
         exits: {},
-        players: null, // null value
-        npcs: undefined, // undefined value
+        players: null,
+        npcs: undefined,
         occupants: null,
         occupant_count: null,
-      };
+      } as unknown as Partial<Room>;
       mockContext.currentRoomRef.current = existingRoom as Room;
       const roomData = { id: 'room1', name: 'Updated Room' };
       const event = {

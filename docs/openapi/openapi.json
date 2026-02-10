@@ -1839,7 +1839,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/server__api__monitoring_models__MetricsResponse"
+                  "$ref": "#/components/schemas/MetricsResponse"
                 }
               }
             }
@@ -2215,7 +2215,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MetricsResponse"
+                  "$ref": "#/components/schemas/server__schemas__metrics__MetricsResponse"
                 }
               }
             }
@@ -6309,32 +6309,132 @@
       },
       "MetricsResponse": {
         "properties": {
-          "metrics": {
-            "additionalProperties": true,
+          "total_movements": {
+            "type": "integer",
+            "title": "Total Movements"
+          },
+          "successful_movements": {
+            "type": "integer",
+            "title": "Successful Movements"
+          },
+          "failed_movements": {
+            "type": "integer",
+            "title": "Failed Movements"
+          },
+          "success_rate": {
+            "type": "number",
+            "title": "Success Rate"
+          },
+          "failure_rate": {
+            "type": "number",
+            "title": "Failure Rate"
+          },
+          "current_concurrent_movements": {
+            "type": "integer",
+            "title": "Current Concurrent Movements"
+          },
+          "max_concurrent_movements": {
+            "type": "integer",
+            "title": "Max Concurrent Movements"
+          },
+          "avg_movement_time_ms": {
+            "type": "number",
+            "title": "Avg Movement Time Ms"
+          },
+          "max_movement_time_ms": {
+            "type": "number",
+            "title": "Max Movement Time Ms"
+          },
+          "min_movement_time_ms": {
+            "type": "number",
+            "title": "Min Movement Time Ms"
+          },
+          "movements_per_second": {
+            "type": "number",
+            "title": "Movements Per Second"
+          },
+          "uptime_seconds": {
+            "type": "number",
+            "title": "Uptime Seconds"
+          },
+          "integrity_checks": {
+            "type": "integer",
+            "title": "Integrity Checks"
+          },
+          "integrity_violations": {
+            "type": "integer",
+            "title": "Integrity Violations"
+          },
+          "integrity_rate": {
+            "type": "number",
+            "title": "Integrity Rate"
+          },
+          "last_movement_time": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Movement Time"
+          },
+          "last_validation_time": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Validation Time"
+          },
+          "room_occupancy": {
+            "additionalProperties": {
+              "type": "integer"
+            },
             "type": "object",
-            "title": "Metrics",
-            "description": "Comprehensive system metrics including NATS, circuit breaker, and DLQ stats"
+            "title": "Room Occupancy"
+          },
+          "player_movement_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Player Movement Counts"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
           }
         },
         "type": "object",
         "required": [
-          "metrics"
+          "total_movements",
+          "successful_movements",
+          "failed_movements",
+          "success_rate",
+          "failure_rate",
+          "current_concurrent_movements",
+          "max_concurrent_movements",
+          "avg_movement_time_ms",
+          "max_movement_time_ms",
+          "min_movement_time_ms",
+          "movements_per_second",
+          "uptime_seconds",
+          "integrity_checks",
+          "integrity_violations",
+          "integrity_rate",
+          "last_movement_time",
+          "last_validation_time",
+          "room_occupancy",
+          "player_movement_counts",
+          "timestamp"
         ],
         "title": "MetricsResponse",
-        "description": "Response model for comprehensive system metrics.",
-        "example": {
-          "metrics": {
-            "circuit_breaker": {
-              "state": "closed"
-            },
-            "dead_letter_queue": {
-              "total_messages": 0
-            },
-            "nats_connection": {
-              "status": "connected"
-            }
-          }
-        }
+        "description": "Response model for movement metrics."
       },
       "MetricsSummaryResponse": {
         "properties": {
@@ -9313,134 +9413,34 @@
         "title": "ViewportInfo",
         "description": "Viewport information for map rendering."
       },
-      "server__api__monitoring_models__MetricsResponse": {
+      "server__schemas__metrics__MetricsResponse": {
         "properties": {
-          "total_movements": {
-            "type": "integer",
-            "title": "Total Movements"
-          },
-          "successful_movements": {
-            "type": "integer",
-            "title": "Successful Movements"
-          },
-          "failed_movements": {
-            "type": "integer",
-            "title": "Failed Movements"
-          },
-          "success_rate": {
-            "type": "number",
-            "title": "Success Rate"
-          },
-          "failure_rate": {
-            "type": "number",
-            "title": "Failure Rate"
-          },
-          "current_concurrent_movements": {
-            "type": "integer",
-            "title": "Current Concurrent Movements"
-          },
-          "max_concurrent_movements": {
-            "type": "integer",
-            "title": "Max Concurrent Movements"
-          },
-          "avg_movement_time_ms": {
-            "type": "number",
-            "title": "Avg Movement Time Ms"
-          },
-          "max_movement_time_ms": {
-            "type": "number",
-            "title": "Max Movement Time Ms"
-          },
-          "min_movement_time_ms": {
-            "type": "number",
-            "title": "Min Movement Time Ms"
-          },
-          "movements_per_second": {
-            "type": "number",
-            "title": "Movements Per Second"
-          },
-          "uptime_seconds": {
-            "type": "number",
-            "title": "Uptime Seconds"
-          },
-          "integrity_checks": {
-            "type": "integer",
-            "title": "Integrity Checks"
-          },
-          "integrity_violations": {
-            "type": "integer",
-            "title": "Integrity Violations"
-          },
-          "integrity_rate": {
-            "type": "number",
-            "title": "Integrity Rate"
-          },
-          "last_movement_time": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Last Movement Time"
-          },
-          "last_validation_time": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Last Validation Time"
-          },
-          "room_occupancy": {
-            "additionalProperties": {
-              "type": "integer"
-            },
+          "metrics": {
+            "additionalProperties": true,
             "type": "object",
-            "title": "Room Occupancy"
-          },
-          "player_movement_counts": {
-            "additionalProperties": {
-              "type": "integer"
-            },
-            "type": "object",
-            "title": "Player Movement Counts"
-          },
-          "timestamp": {
-            "type": "string",
-            "title": "Timestamp"
+            "title": "Metrics",
+            "description": "Comprehensive system metrics including NATS, circuit breaker, and DLQ stats"
           }
         },
         "type": "object",
         "required": [
-          "total_movements",
-          "successful_movements",
-          "failed_movements",
-          "success_rate",
-          "failure_rate",
-          "current_concurrent_movements",
-          "max_concurrent_movements",
-          "avg_movement_time_ms",
-          "max_movement_time_ms",
-          "min_movement_time_ms",
-          "movements_per_second",
-          "uptime_seconds",
-          "integrity_checks",
-          "integrity_violations",
-          "integrity_rate",
-          "last_movement_time",
-          "last_validation_time",
-          "room_occupancy",
-          "player_movement_counts",
-          "timestamp"
+          "metrics"
         ],
         "title": "MetricsResponse",
-        "description": "Response model for movement metrics."
+        "description": "Response model for comprehensive system metrics.",
+        "example": {
+          "metrics": {
+            "circuit_breaker": {
+              "state": "closed"
+            },
+            "dead_letter_queue": {
+              "total_messages": 0
+            },
+            "nats_connection": {
+              "status": "connected"
+            }
+          }
+        }
       },
       "server__schemas__player__MessageResponse": {
         "properties": {
