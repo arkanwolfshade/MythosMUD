@@ -50,6 +50,11 @@ from .communication_commands import (
 )
 from .debrief_command import handle_debrief_command
 from .exploration_commands import handle_go_command, handle_look_command
+from .follow_commands import (
+    handle_follow_command,
+    handle_following_command,
+    handle_unfollow_command,
+)
 from .inventory_commands import (
     handle_drop_command,
     handle_equip_command,
@@ -117,6 +122,9 @@ class CommandService:
             # Exploration commands
             "look": handle_look_command,
             "go": handle_go_command,
+            "follow": handle_follow_command,
+            "unfollow": handle_unfollow_command,
+            "following": handle_following_command,
             "read": handle_read_command,
             # Communication commands
             "say": handle_say_command,

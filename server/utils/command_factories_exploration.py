@@ -12,12 +12,15 @@ from typing import Literal, cast
 from ..exceptions import ValidationError as MythosValidationError
 from ..models.command import (
     Direction,
+    FollowCommand,
+    FollowingCommand,
     GoCommand,
     GroundCommand,
     LieCommand,
     LookCommand,
     SitCommand,
     StandCommand,
+    UnfollowCommand,
 )
 from ..structured_logging.enhanced_logging_config import get_logger
 from .enhanced_error_logging import create_error_context, log_and_raise_enhanced
@@ -217,3 +220,55 @@ class ExplorationCommandFactory:
             )
 
         return GroundCommand(target_player=target)
+
+    @staticmethod
+    def create_follow_command(args: list[str]) -> FollowCommand:
+        """Create FollowCommand from arguments."""
+        if not args:
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Follow command requires a target. Usage: follow <player or NPC name>",
+                context=context,
+                logger_name=__name__,
+            )
+        target = " ".join(args).strip()
+        if not target:
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Follow command requires a target. Usage: follow <player or NPC name>",
+                context=context,
+                logger_name=__name__,
+            )
+        return FollowCommand(target=target)
+
+    @staticmethod
+    def create_unfollow_command(args: list[str]) -> UnfollowCommand:
+        """Create UnfollowCommand from arguments."""
+        if args:
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Unfollow command takes no arguments",
+                context=context,
+                logger_name=__name__,
+            )
+        return UnfollowCommand()
+
+    @staticmethod
+    def create_following_command(args: list[str]) -> FollowingCommand:
+        """Create FollowingCommand from arguments."""
+        if args:
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Following command takes no arguments",
+                context=context,
+                logger_name=__name__,
+            )
+        return FollowingCommand()

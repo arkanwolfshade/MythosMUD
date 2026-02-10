@@ -32,6 +32,7 @@ const eventHandlers: Record<string, EventHandler> = {
 
   // Room events
   game_state: roomHandlers.handleGameState,
+  follow_state: roomHandlers.handleFollowState,
   room_update: roomHandlers.handleRoomUpdate,
   room_state: roomHandlers.handleRoomUpdate,
   room_occupants: roomHandlers.handleRoomOccupants,

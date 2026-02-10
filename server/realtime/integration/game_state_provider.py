@@ -417,6 +417,34 @@ class GameStateProvider:
             )
             return self._get_fallback_player_data(player, player_id, room_id)
 
+    async def _get_following_for_client(self, player_id: uuid.UUID) -> dict[str, Any] | None:
+        """Get who this player is following for client title panel: { target_name, target_type } or None."""
+        try:
+            app = self.get_app()
+            container = getattr(getattr(app, "state", None), "container", None) if app else None
+            follow_service = getattr(container, "follow_service", None) if container else None
+            if not follow_service:
+                return None
+            following = follow_service.get_following(player_id)
+            if not following:
+                return None
+            target_id, target_type = following
+            async_persistence = self.get_async_persistence()
+            if target_type == "player":
+                target_player = await async_persistence.get_player_by_id(uuid.UUID(target_id))
+                target_name = getattr(target_player, "name", target_id) if target_player else target_id
+            else:
+                # NPC: use stored display name from follow (e.g. "Sanitarium patient"), not internal id.
+                target_name = follow_service.get_following_display_name(player_id) or target_id
+            return {"target_name": str(target_name), "target_type": target_type}
+        except (AttributeError, ImportError, TypeError, ValueError) as e:
+            logger.debug(
+                "Could not get following for game state",
+                player_id=player_id,
+                error=str(e),
+            )
+        return None
+
     def _get_login_grace_period_status(self, player_id: uuid.UUID) -> tuple[bool, float]:
         """Get login grace period status for player."""
         try:
@@ -462,13 +490,15 @@ class GameStateProvider:
             # Get login grace period status
             login_grace_period_active, login_grace_period_remaining = self._get_login_grace_period_status(player_id)
 
-            # Create game_state event
+            # Who this player is following (for title panel)
+            following_for_client = await self._get_following_for_client(player_id)
             game_state_data = {
                 "player": player_data_for_client,
                 "room": room_data,
                 "occupants": occupants,
                 "login_grace_period_active": login_grace_period_active,
                 "login_grace_period_remaining": login_grace_period_remaining,
+                "following": following_for_client,
             }
 
             # BUGFIX: Populate room_data with structured player/NPC arrays for new UI

@@ -8,6 +8,7 @@ import { useMemoryMonitor } from '../../utils/memoryMonitor';
 import { DeathInterstitial } from '../DeathInterstitial';
 import { DeliriumInterstitial } from '../DeliriumInterstitial';
 import { MainMenuModal } from '../MainMenuModal';
+import { ModalContainer } from '../ui/ModalContainer';
 import { MapView } from '../MapView';
 import { AsciiMinimap } from '../map/AsciiMinimap';
 import { GameClientV2 } from './GameClientV2';
@@ -45,6 +46,9 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
 }) => {
   const [isMainMenuOpen, setIsMainMenuOpen] = useState(false);
   const [showMap, setShowMap] = useState(false);
+
+  /** Request ID we've accepted/declined; hide dialog for this id even if event log re-applies it. */
+  const [clearedFollowRequestId, setClearedFollowRequestId] = useState<string | null>(null);
 
   // Tabbed interface for in-app tabs
   const { tabs, activeTabId, addTab, closeTab, setActiveTab } = useTabbedInterface([]);
@@ -145,20 +149,21 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
   useHallucinationFeedCleanup(setHallucinationFeed);
 
   // Event processing hook (event-sourced: EventStore + projector)
-  const { handleGameEvent } = useEventProcessing({
+  const { handleGameEvent, clearPendingFollowRequest } = useEventProcessing({
     setGameState,
   });
 
   // Game connection management
-  const { isConnected, isConnecting, error, reconnectAttempts, sendCommand, disconnect } = useGameConnectionManagement({
-    authToken,
-    playerName,
-    characterId,
-    onLogout,
-    onGameEvent: handleGameEvent,
-    setGameState,
-    intentionalExitInProgressRef,
-  });
+  const { isConnected, isConnecting, error, reconnectAttempts, sendCommand, sendMessage, disconnect } =
+    useGameConnectionManagement({
+      authToken,
+      playerName,
+      characterId,
+      onLogout,
+      onGameEvent: handleGameEvent,
+      setGameState,
+      intentionalExitInProgressRef,
+    });
 
   useEffect(() => {
     sendCommandRef.current = sendCommand;
@@ -284,6 +289,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
                 ]
               : [])
           }
+          followingTarget={gameState.followingTarget ?? null}
           onSendCommand={handleCommandSubmit}
           onSendChatMessage={handleChatMessage}
           onClearMessages={handleClearMessages}
@@ -306,6 +312,62 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
         onRespawn={handleDeliriumRespawn}
         isRespawning={isDeliriumRespawning}
       />
+
+      {/* Follow request prompt: accept/decline when another player wants to follow you */}
+      {gameState.pendingFollowRequest && clearedFollowRequestId !== gameState.pendingFollowRequest.request_id && (
+        <ModalContainer
+          isOpen={true}
+          onClose={() => {
+            const reqId = gameState.pendingFollowRequest!.request_id;
+            setClearedFollowRequestId(reqId);
+            setGameState(prev => ({ ...prev, pendingFollowRequest: null }));
+            clearPendingFollowRequest(reqId);
+            sendMessage('follow_response', { request_id: reqId, accept: false });
+          }}
+          title="Follow request"
+          maxWidth="sm"
+          showCloseButton={true}
+          overlayZIndex={10000}
+          position="center-no-backdrop"
+          contentClassName="!bg-black border-2 border-mythos-terminal-primary shadow-2xl"
+        >
+          <div className="p-4 space-y-4">
+            <p className="text-mythos-terminal-text font-medium">
+              {gameState.pendingFollowRequest.requestor_name} wants to follow you.
+            </p>
+            <div className="flex gap-3 justify-end">
+              <button
+                type="button"
+                className="px-3 py-1.5 rounded border border-mythos-terminal-border bg-mythos-terminal-surface
+                  text-mythos-terminal-text hover:bg-mythos-terminal-border/30 font-medium"
+                onClick={() => {
+                  const reqId = gameState.pendingFollowRequest!.request_id;
+                  setClearedFollowRequestId(reqId);
+                  setGameState(prev => ({ ...prev, pendingFollowRequest: null }));
+                  clearPendingFollowRequest(reqId);
+                  sendMessage('follow_response', { request_id: reqId, accept: false });
+                }}
+              >
+                Decline
+              </button>
+              <button
+                type="button"
+                className="px-3 py-1.5 rounded border border-mythos-terminal-border bg-mythos-terminal-surface
+                  text-mythos-terminal-text hover:bg-mythos-terminal-border/30 font-medium"
+                onClick={() => {
+                  const reqId = gameState.pendingFollowRequest!.request_id;
+                  setClearedFollowRequestId(reqId);
+                  setGameState(prev => ({ ...prev, pendingFollowRequest: null }));
+                  clearPendingFollowRequest(reqId);
+                  sendMessage('follow_response', { request_id: reqId, accept: true });
+                }}
+              >
+                Accept
+              </button>
+            </div>
+          </div>
+        </ModalContainer>
+      )}
 
       <MainMenuModal
         isOpen={isMainMenuOpen}

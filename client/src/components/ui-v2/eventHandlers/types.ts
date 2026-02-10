@@ -26,19 +26,21 @@ export interface GameStateUpdates {
   messages?: ChatMessage[];
   loginGracePeriodActive?: boolean;
   loginGracePeriodRemaining?: number;
+  /** Who the player is following (for title panel). */
+  followingTarget?: { target_name: string; target_type: 'player' | 'npc' } | null;
 }
 
 export interface EventHandlerContext {
-  currentPlayerRef: React.MutableRefObject<Player | null>;
-  currentRoomRef: React.MutableRefObject<Room | null>;
-  currentMessagesRef: React.MutableRefObject<ChatMessage[]>;
-  healthStatusRef: React.MutableRefObject<HealthStatus | null>;
-  lucidityStatusRef: React.MutableRefObject<LucidityStatus | null>;
-  lastDaypartRef: React.MutableRefObject<string | null>;
-  lastHourRef: React.MutableRefObject<number | null>;
-  lastQuarterHourRef: React.MutableRefObject<number | null>;
-  lastHolidayIdsRef: React.MutableRefObject<string[]>;
-  lastRoomUpdateTime: React.MutableRefObject<number>;
+  currentPlayerRef: React.RefObject<Player | null>;
+  currentRoomRef: React.RefObject<Room | null>;
+  currentMessagesRef: React.RefObject<ChatMessage[]>;
+  healthStatusRef: React.RefObject<HealthStatus | null>;
+  lucidityStatusRef: React.RefObject<LucidityStatus | null>;
+  lastDaypartRef: React.RefObject<string | null>;
+  lastHourRef: React.RefObject<number | null>;
+  lastQuarterHourRef: React.RefObject<number | null>;
+  lastHolidayIdsRef: React.RefObject<string[]>;
+  lastRoomUpdateTime: React.RefObject<number>;
   setDpStatus: (status: HealthStatus) => void;
   setLucidityStatus: (status: LucidityStatus) => void;
   setMythosTime: (time: MythosTimeState) => void;

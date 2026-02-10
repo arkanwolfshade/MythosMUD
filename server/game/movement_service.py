@@ -208,7 +208,7 @@ class MovementService:
         self._logger.debug("Removing player from room", player_id=resolved_player_id, room_id=from_room.id)
         from_room.player_left(resolved_player_id)
         self._logger.debug("Adding player to room", player_id=resolved_player_id, room_id=to_room.id)
-        to_room.player_entered(resolved_player_id, force_event=True)
+        to_room.player_entered(resolved_player_id, force_event=True, from_room_id=from_room.id)
         room_update_end = time.time()
         timing_breakdown["room_update_ms"] = (room_update_end - room_update_start) * 1000
 
@@ -517,7 +517,17 @@ class MovementService:
         if not self._check_combat_state(player_id, from_room_id, to_room_id):
             return False
 
-        if not self._check_player_posture(player_obj, player_id, from_room_id, to_room_id):
+        # Use fresh player from persistence for posture check so we see position
+        # just updated by follow auto-stand (change_position) or other updates.
+        posture_player = player_obj
+        try:
+            fresh = await self._persistence.get_player_by_id(player_id)
+            if fresh is not None:
+                posture_player = fresh
+        except (DatabaseError, SQLAlchemyError):
+            pass
+        posture_ok = self._check_player_posture(posture_player, player_id, from_room_id, to_room_id)
+        if not posture_ok:
             return False
 
         from_room = self._persistence.get_room_by_id(from_room_id)

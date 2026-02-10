@@ -107,6 +107,8 @@ const PROJECTED_EVENT_TYPES = new Set([
   'luciditychange',
   'intentional_disconnect',
   'game_tick',
+  'follow_request',
+  'follow_state',
 ]);
 
 /**
@@ -126,6 +128,10 @@ export function projectEvent(prevState: GameState, event: GameEvent): GameState 
       const room = deriveRoomFromGameState(event);
       const loginGracePeriodActive = event.data.login_grace_period_active as boolean | undefined;
       const loginGracePeriodRemaining = event.data.login_grace_period_remaining as number | undefined;
+      const following = event.data.following as
+        | { target_name: string; target_type: 'player' | 'npc' }
+        | null
+        | undefined;
       const player =
         playerData &&
         typeof playerData === 'object' &&
@@ -140,6 +146,18 @@ export function projectEvent(prevState: GameState, event: GameEvent): GameState 
         room: room ? mergeRoomState(room, prevState.room) : prevState.room,
         ...(loginGracePeriodActive !== undefined && { loginGracePeriodActive }),
         ...(loginGracePeriodRemaining !== undefined && { loginGracePeriodRemaining }),
+        ...(following !== undefined && { followingTarget: following ?? null }),
+      };
+      break;
+    }
+    case 'follow_state': {
+      const following = event.data.following as
+        | { target_name: string; target_type: 'player' | 'npc' }
+        | null
+        | undefined;
+      nextState = {
+        ...prevState,
+        followingTarget: following ?? null,
       };
       break;
     }
@@ -554,6 +572,21 @@ export function projectEvent(prevState: GameState, event: GameEvent): GameState 
         });
         nextState = { ...nextState, messages: appendMessage(nextState.messages, tickMsg) };
       }
+      break;
+    }
+    case 'follow_request': {
+      const requestId = typeof event.data.request_id === 'string' ? event.data.request_id : '';
+      const requestorName = typeof event.data.requestor_name === 'string' ? event.data.requestor_name : 'Someone';
+      if (requestId) {
+        nextState = {
+          ...prevState,
+          pendingFollowRequest: { request_id: requestId, requestor_name: requestorName },
+        };
+      }
+      break;
+    }
+    case 'follow_request_cleared': {
+      nextState = { ...prevState, pendingFollowRequest: null };
       break;
     }
     default:

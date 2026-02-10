@@ -10,6 +10,14 @@ interface ModalContainerProps {
   className?: string;
   contentClassName?: string;
   showCloseButton?: boolean;
+  /** Z-index for overlay (default 50). Use 10000+ to appear above game panels (1000–1007). */
+  overlayZIndex?: number;
+  /**
+   * 'center' = full-screen dimmed overlay + centered dialog;
+   * 'center-no-backdrop' = centered dialog only, no overlay (game UI stays visible, dialog accepts clicks);
+   * 'bottom-right' = floating card only.
+   */
+  position?: 'center' | 'center-no-backdrop' | 'bottom-right';
 }
 
 const maxWidthClasses = {
@@ -35,6 +43,8 @@ export const ModalContainer: React.FC<ModalContainerProps> = ({
   className = '',
   contentClassName = '',
   showCloseButton = false,
+  overlayZIndex = 50,
+  position = 'center',
 }) => {
   if (!isOpen) return null;
 
@@ -54,42 +64,79 @@ export const ModalContainer: React.FC<ModalContainerProps> = ({
     `bg-mythos-terminal-background border border-mythos-terminal-border rounded-lg w-full ` +
     `${maxWidthClasses[maxWidth]} max-h-modal overflow-y-auto shadow-xl ${contentClassName}`;
 
+  const isFloating = position === 'bottom-right';
+  const isNoBackdrop = position === 'center-no-backdrop';
+
+  const content = (
+    <div
+      className={modalContentClasses}
+      onClick={e => e.stopPropagation()}
+      style={isNoBackdrop ? { pointerEvents: 'auto' } : undefined}
+    >
+      {(title || showCloseButton) && (
+        <div className="flex items-center justify-between p-4 border-b border-mythos-terminal-border">
+          {title && (
+            <h2 id={titleId} className="text-xl font-bold text-mythos-terminal-text-primary">
+              {title}
+            </h2>
+          )}
+          {showCloseButton && (
+            <button
+              type="button"
+              onClick={onClose}
+              className="text-mythos-terminal-text-secondary hover:text-mythos-terminal-primary focus:outline-hidden focus:ring-2 focus:ring-mythos-terminal-primary rounded p-1"
+              aria-label="Close modal"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+      )}
+      {children}
+    </div>
+  );
+
+  if (isFloating) {
+    return (
+      <div
+        className={`fixed bottom-4 right-4 flex flex-col items-end ${className}`}
+        style={{ zIndex: overlayZIndex }}
+        onKeyDown={handleKeyDown}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+      >
+        {content}
+      </div>
+    );
+  }
+
+  if (isNoBackdrop) {
+    return (
+      <div
+        className={`fixed inset-0 flex items-center justify-center pointer-events-none ${className}`}
+        style={{ zIndex: overlayZIndex }}
+        onKeyDown={handleKeyDown}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+      >
+        {content}
+      </div>
+    );
+  }
+
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 ${className}`}
+      className={`fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 ${className}`}
+      style={{ zIndex: overlayZIndex }}
       onClick={handleBackdropClick}
       onKeyDown={handleKeyDown}
       role="dialog"
       aria-modal="true"
       aria-labelledby={titleId}
     >
-      <div
-        className={modalContentClasses}
-        onClick={e => {
-          e.stopPropagation();
-        }}
-      >
-        {(title || showCloseButton) && (
-          <div className="flex items-center justify-between p-4 border-b border-mythos-terminal-border">
-            {title && (
-              <h2 id={titleId} className="text-xl font-bold text-mythos-terminal-text-primary">
-                {title}
-              </h2>
-            )}
-            {showCloseButton && (
-              <button
-                type="button"
-                onClick={onClose}
-                className="text-mythos-terminal-text-secondary hover:text-mythos-terminal-primary focus:outline-hidden focus:ring-2 focus:ring-mythos-terminal-primary rounded p-1"
-                aria-label="Close modal"
-              >
-                ✕
-              </button>
-            )}
-          </div>
-        )}
-        {children}
-      </div>
+      {content}
     </div>
   );
 };

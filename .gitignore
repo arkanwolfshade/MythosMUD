@@ -71,7 +71,7 @@ coverage.xml
 cover/
 coverage/
 coverage-final.json
-
+node_modules/.vite/vitest/
 # Translations
 *.mo
 *.pot

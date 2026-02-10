@@ -20,6 +20,7 @@ export const handleGameState: EventHandler = (event, _context) => {
   const occupants = event.data.occupants as string[] | undefined;
   const loginGracePeriodActive = event.data.login_grace_period_active as boolean | undefined;
   const loginGracePeriodRemaining = event.data.login_grace_period_remaining as number | undefined;
+  const following = event.data.following as { target_name: string; target_type: 'player' | 'npc' } | null | undefined;
   if (playerData && roomData) {
     const roomWithOccupants = {
       ...(roomData as Room),
@@ -40,6 +41,7 @@ export const handleGameState: EventHandler = (event, _context) => {
         room: roomWithOccupants,
         ...(loginGracePeriodActive !== undefined && { loginGracePeriodActive }),
         ...(loginGracePeriodRemaining !== undefined && { loginGracePeriodRemaining }),
+        ...(following !== undefined && { followingTarget: following ?? null }),
       };
     }
     logger.warn('roomHandlers', 'handleGameState: invalid player data, missing name property');
@@ -48,8 +50,19 @@ export const handleGameState: EventHandler = (event, _context) => {
       room: roomWithOccupants,
       ...(loginGracePeriodActive !== undefined && { loginGracePeriodActive }),
       ...(loginGracePeriodRemaining !== undefined && { loginGracePeriodRemaining }),
+      ...(following !== undefined && { followingTarget: following ?? null }),
     };
   }
+  if (following !== undefined) {
+    return { followingTarget: following ?? null };
+  }
+  return undefined;
+};
+
+/** Apply follow_state event (who I am following). */
+export const handleFollowState: EventHandler = event => {
+  const following = event.data.following as { target_name: string; target_type: 'player' | 'npc' } | null | undefined;
+  return { followingTarget: following ?? null };
 };
 
 /**

@@ -103,6 +103,18 @@ class CommandFactory:
         """Create GroundCommand from arguments."""
         return self._exploration.create_ground_command(args)
 
+    def create_follow_command(self, args: list[str]) -> BaseCommand:
+        """Create FollowCommand from arguments."""
+        return self._exploration.create_follow_command(args)
+
+    def create_unfollow_command(self, args: list[str]) -> BaseCommand:
+        """Create UnfollowCommand from arguments."""
+        return self._exploration.create_unfollow_command(args)
+
+    def create_following_command(self, args: list[str]) -> BaseCommand:
+        """Create FollowingCommand from arguments."""
+        return self._exploration.create_following_command(args)
+
     # Inventory commands
     def create_inventory_command(self, args: list[str]) -> BaseCommand:
         """Create InventoryCommand from arguments."""

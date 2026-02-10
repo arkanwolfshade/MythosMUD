@@ -34,6 +34,10 @@ export interface GameState {
    * stale updates (e.g. second NPC stays after death).
    */
   lastRoomOccupantsSequenceByRoom?: Record<string, number>;
+  /** Pending follow request (target player only). Cleared when user accepts/declines or request expires. */
+  pendingFollowRequest?: { request_id: string; requestor_name: string } | null;
+  /** Who the player is following (for title panel). Server-authoritative. */
+  followingTarget?: { target_name: string; target_type: 'player' | 'npc' } | null;
 }
 
 // Helper: treat empty arrays/count as "no data" so we preserve existing
@@ -133,6 +137,9 @@ export const applyEventUpdates = (
   applyRoomUpdate(eventUpdates, updates, mergeRoomUpdate);
   applyMessageUpdates(eventUpdates, updates, currentMessages);
   applyGracePeriodUpdate(eventUpdates, updates);
+  if (eventUpdates.followingTarget !== undefined) {
+    updates.followingTarget = eventUpdates.followingTarget;
+  }
 };
 
 // Helper function to sanitize and apply updates to state

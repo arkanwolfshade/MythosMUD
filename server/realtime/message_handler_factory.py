@@ -65,6 +65,16 @@ class PingMessageHandler(MessageHandler):
         await handle_ping_message(websocket, player_id, data)
 
 
+class FollowResponseMessageHandler(MessageHandler):
+    """Handler for follow_response messages (accept/decline follow request)."""
+
+    async def handle(self, websocket: WebSocket, player_id: str, data: dict[str, Any]) -> None:
+        """Handle follow_response message type."""
+        from .message_handlers import handle_follow_response_message
+
+        await handle_follow_response_message(websocket, player_id, data)
+
+
 class MessageHandlerFactory:
     """
     Factory for creating and managing message handlers.
@@ -82,6 +92,7 @@ class MessageHandlerFactory:
             "game_command": CommandMessageHandler(),  # Alias for game_command message type
             "chat": ChatMessageHandler(),
             "ping": PingMessageHandler(),
+            "follow_response": FollowResponseMessageHandler(),
         }
 
     def register_handler(self, message_type: str, handler: MessageHandler) -> None:
