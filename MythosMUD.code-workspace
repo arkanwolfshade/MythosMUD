@@ -2,14 +2,14 @@
   "folders": [
     {
       "name": "📁 Main (Integration)",
-      "path": "."
-    }
+      "path": ".",
+    },
   ],
   "settings": {
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
       "source.fixAll": "explicit",
-      "source.organizeImports": "explicit"
+      "source.organizeImports": "explicit",
     },
     "python.defaultInterpreterPath": "./.venv/Scripts/python.exe",
     "python.terminal.activateEnvironment": true,
@@ -33,46 +33,46 @@
     "git.allowNoVerifyCommit": false,
     "terminal.integrated.env.windows": {
       "VIRTUAL_ENV": "${workspaceFolder}/.venv",
-      "PATH": "${workspaceFolder}/.venv/Scripts;${env:PATH}"
+      "PATH": "${workspaceFolder}/.venv/Scripts;${env:PATH}",
     },
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "[javascript]": {
       "editor.defaultFormatter": "esbenp.prettier-vscode",
-      "editor.rulers": [120]
+      "editor.rulers": [120],
     },
     "[typescript]": {
       "editor.defaultFormatter": "esbenp.prettier-vscode",
-      "editor.rulers": [120]
+      "editor.rulers": [120],
     },
     "[typescriptreact]": {
       "editor.defaultFormatter": "esbenp.prettier-vscode",
-      "editor.rulers": [120]
+      "editor.rulers": [120],
     },
     "[json]": {
       "editor.defaultFormatter": "esbenp.prettier-vscode",
-      "editor.rulers": [120]
+      "editor.rulers": [120],
     },
     "[html]": {
       "editor.defaultFormatter": "esbenp.prettier-vscode",
-      "editor.rulers": [120]
+      "editor.rulers": [120],
     },
     "[css]": {
       "editor.defaultFormatter": "esbenp.prettier-vscode",
-      "editor.rulers": [120]
+      "editor.rulers": [120],
     },
     "[markdown]": {
       "editor.defaultFormatter": "yzhang.markdown-all-in-one",
-      "editor.rulers": [120]
+      "editor.rulers": [120],
     },
     "[python]": {
       "editor.rulers": [120],
-      "editor.defaultFormatter": "charliermarsh.ruff"
+      "editor.defaultFormatter": "charliermarsh.ruff",
     },
     "[yaml]": {
-      "editor.rulers": [120]
+      "editor.rulers": [120],
     },
     "[toml]": {
-      "editor.rulers": [120]
+      "editor.rulers": [120],
     },
     "files.exclude": {
       "**/node_modules": true,
@@ -84,7 +84,7 @@
       "**/.ruff_cache": true,
       "**/htmlcov": true,
       "**/.coverage": true,
-      "**/mythosmud.egg-info": true
+      "**/mythosmud.egg-info": true,
     },
     "search.exclude": {
       "**/node_modules": true,
@@ -96,7 +96,7 @@
       "**/.ruff_cache": true,
       "**/htmlcov": true,
       "**/.coverage": true,
-      "**/mythosmud.egg-info": true
+      "**/mythosmud.egg-info": true,
     },
     "explorer.fileNesting.enabled": true,
     "explorer.fileNesting.expand": false,
@@ -112,7 +112,7 @@
       "*.py": "${capture}.pyc, ${capture}.pyo, ${capture}.pyd",
       "Dockerfile": "docker-compose*.yml, .dockerignore, Dockerfile*",
       ".env": "*.env, .envrc, .flaskenv",
-      "README.md": "README*, CHANGELOG*, LICENSE*, CONTRIBUTING*"
+      "README.md": "README*, CHANGELOG*, LICENSE*, CONTRIBUTING*",
     },
     "workbench.colorCustomizations": {
       "activityBar.background": "#1a1a2e",
@@ -125,19 +125,19 @@
       "statusBar.background": "#16213e",
       "statusBar.foreground": "#ffffff",
       "statusBar.debuggingBackground": "#ff6b6b",
-      "statusBar.debuggingForeground": "#ffffff"
+      "statusBar.debuggingForeground": "#ffffff",
     },
     "workbench.iconTheme": "material-icon-theme",
     "material-icon-theme.folders.associations": {
       "client": "react",
       "server": "python",
       "docs": "docs",
-      "testing": "test"
+      "testing": "test",
     },
     "material-icon-theme.files.associations": {
       "*.ps1": "powershell",
       "*.yaml": "yaml",
-      "*.yml": "yaml"
+      "*.yml": "yaml",
     },
     "powershell.cwd": "🐍 Server (Python/Backend)",
     "window.title": "${dirty}${activeEditorShort}${separator}${rootName}${separator}${appName}",
@@ -145,31 +145,31 @@
     "statusBar.items": {
       "worktree": {
         "alignment": "left",
-        "priority": 100
+        "priority": 100,
       },
       "git": {
         "alignment": "left",
-        "priority": 90
+        "priority": 90,
       },
       "python": {
         "alignment": "left",
-        "priority": 80
-      }
+        "priority": 80,
+      },
     },
     "[sql]": {
-      "editor.defaultFormatter": "mtxr.sqltools"
+      "editor.defaultFormatter": "mtxr.sqltools",
     },
     "[powershell]": {
-      "editor.defaultFormatter": "ms-vscode.powershell"
+      "editor.defaultFormatter": "ms-vscode.powershell",
     },
     "[dockerfile]": {
-      "editor.defaultFormatter": "ms-azuretools.vscode-containers"
+      "editor.defaultFormatter": "ms-azuretools.vscode-containers",
     },
     "codacy.autoDiscover": false,
     "codacy.autoSync": false,
     "codacy.enabled": true,
     "files.readonlyInclude": {
-      ".codacy/codacy.yaml": true
+      ".codacy/codacy.yaml": true,
     },
     "makefile.makefilePath": "E:\\projects\\GitHub\\MythosMUD\\Makefile",
     "markdownlint.lintWorkspaceGlobs": [
@@ -179,23 +179,20 @@
       "!**/.git/**",
       "!**/investigations/**",
       "!**/.agent-os/**",
-      "!**/docs/archive/**"
+      "!**/docs/archive/**",
     ],
     "markdownlint.config": {
       "default": true,
       "MD013": {
-        "line_length": 120
+        "line_length": 120,
       },
       "MD033": false,
       "MD040": false,
-      "MD060": false
+      "MD060": false,
     },
-    "markdownlint.ignore": [
-      "**/investigations/**/*.md",
-      "**/.agent-os/**/*.md",
-      "**/docs/archive/**/*.md"
-    ],
-    "markdownlint.run": "onSave"
+    "markdownlint.ignore": ["**/investigations/**/*.md", "**/.agent-os/**/*.md", "**/docs/archive/**/*.md"],
+    "markdownlint.run": "onSave",
+    "codeQL.githubDatabase.update": "never",
   },
   "extensions": {
     "recommendations": [
@@ -217,8 +214,8 @@
       "eamodio.gitlens",
       "ms-vscode.vscode-test-explorer",
       "littlefoxteam.vscode-python-test-adapter",
-      "ms-vscode.vscode-coverage-gutters"
-    ]
+      "ms-vscode.vscode-coverage-gutters",
+    ],
   },
   "tasks": {
     "version": "2.0.0",
@@ -233,8 +230,8 @@
           "echo": true,
           "reveal": "always",
           "focus": false,
-          "panel": "shared"
-        }
+          "panel": "shared",
+        },
       },
       {
         "label": "⚛️ Switch to Client Worktree",
@@ -246,8 +243,8 @@
           "echo": true,
           "reveal": "always",
           "focus": false,
-          "panel": "shared"
-        }
+          "panel": "shared",
+        },
       },
       {
         "label": "🐍 Switch to Server Worktree",
@@ -259,8 +256,8 @@
           "echo": true,
           "reveal": "always",
           "focus": false,
-          "panel": "shared"
-        }
+          "panel": "shared",
+        },
       },
       {
         "label": "📚 Switch to Docs Worktree",
@@ -272,8 +269,8 @@
           "echo": true,
           "reveal": "always",
           "focus": false,
-          "panel": "shared"
-        }
+          "panel": "shared",
+        },
       },
       {
         "label": "🧪 Switch to Testing Worktree",
@@ -285,8 +282,8 @@
           "echo": true,
           "reveal": "always",
           "focus": false,
-          "panel": "shared"
-        }
+          "panel": "shared",
+        },
       },
       {
         "label": "📊 Show Worktree Status",
@@ -298,8 +295,8 @@
           "echo": true,
           "reveal": "always",
           "focus": false,
-          "panel": "shared"
-        }
+          "panel": "shared",
+        },
       },
       {
         "label": "🧹 Cleanup Legacy Branches",
@@ -311,9 +308,9 @@
           "echo": true,
           "reveal": "always",
           "focus": false,
-          "panel": "shared"
-        }
-      }
-    ]
-  }
+          "panel": "shared",
+        },
+      },
+    ],
+  },
 }
