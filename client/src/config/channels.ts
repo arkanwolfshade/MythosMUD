@@ -38,6 +38,15 @@ export const AVAILABLE_CHANNELS: Channel[] = [
     disabled: false, // Now implemented
   },
   {
+    id: 'party',
+    name: 'Party',
+    description: 'Chat with your current party (ephemeral group)',
+    icon: MythosIcons.users,
+    color: 'text-mythos-terminal-primary',
+    shortcut: 'party',
+    disabled: false,
+  },
+  {
     id: 'reply',
     name: 'Reply',
     description: 'Reply to the last whisper received',
@@ -77,6 +86,7 @@ export const CHANNEL_GROUPS = {
   basic: ['say'],
   area: ['local'],
   server: ['global'],
+  party: ['party'],
   advanced: ['whisper', 'system'],
 };
 

@@ -36,6 +36,8 @@ export interface GameState {
   lastRoomOccupantsSequenceByRoom?: Record<string, number>;
   /** Pending follow request (target player only). Cleared when user accepts/declines or request expires. */
   pendingFollowRequest?: { request_id: string; requestor_name: string } | null;
+  /** Pending party invite (invitee only). Cleared when user accepts/declines or invite expires. */
+  pendingPartyInvite?: { invite_id: string; inviter_name: string } | null;
   /** Who the player is following (for title panel). Server-authoritative. */
   followingTarget?: { target_name: string; target_type: 'player' | 'npc' } | null;
 }

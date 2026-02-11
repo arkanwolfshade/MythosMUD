@@ -5,6 +5,7 @@ Tests the CombatValidator class for combat command validation with thematic erro
 """
 
 from typing import Any
+from unittest.mock import MagicMock
 
 import pytest
 
@@ -535,6 +536,35 @@ def test_validate_combat_command_suspicious_patterns_with_mock(combat_validator)
         assert error_msg is not None
         assert warning_msg is not None
         assert "cosmic forces" in warning_msg.lower() or "amiss" in warning_msg.lower()
+
+
+def test_validate_can_attack_target_no_party_service_allows():
+    """When party_service is None, validate_can_attack_target allows attack."""
+    validator = CombatValidator(party_service=None)
+    can_attack, error = validator.validate_can_attack_target("player_a", "player_b")
+    assert can_attack is True
+    assert error is None
+
+
+def test_validate_can_attack_target_same_party_blocks():
+    """When both players are in same party, validate_can_attack_target blocks attack."""
+    mock_party_service = MagicMock()
+    mock_party_service.is_in_same_party = MagicMock(return_value=True)
+    validator = CombatValidator(party_service=mock_party_service)
+    can_attack, error = validator.validate_can_attack_target("player_a", "player_b")
+    assert can_attack is False
+    assert error is not None
+    assert "party" in error.lower() or "companion" in error.lower() or "fellowship" in error.lower()
+
+
+def test_validate_can_attack_target_different_party_allows():
+    """When players are not in same party, validate_can_attack_target allows attack."""
+    mock_party_service = MagicMock()
+    mock_party_service.is_in_same_party = MagicMock(return_value=False)
+    validator = CombatValidator(party_service=mock_party_service)
+    can_attack, error = validator.validate_can_attack_target("player_a", "player_b")
+    assert can_attack is True
+    assert error is None
 
 
 def test_validate_combat_command_target_too_long_with_mock(combat_validator):

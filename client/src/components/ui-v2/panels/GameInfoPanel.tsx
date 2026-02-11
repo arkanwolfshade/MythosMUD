@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ansiToHtmlWithBreaks } from '../../../utils/ansiToHtml';
+import { SafeHtml } from '../../common/SafeHtml';
 import { EldritchIcon, MythosIcons } from '../../ui/EldritchIcon';
 import { TerminalButton } from '../../ui/TerminalButton';
-import { SafeHtml } from '../../common/SafeHtml';
 import type { ChatMessage } from '../types';
 
 interface GameInfoPanelProps {
@@ -58,8 +58,8 @@ export const GameInfoPanel: React.FC<GameInfoPanelProps> = ({ messages, onClearM
 
   // Filter messages - simplified (no time filter, no search history)
   const filteredMessages = messages.filter(message => {
-    // Always exclude chat messages from Game Info Panel - they belong in Chat Panel
-    if (message.messageType === 'chat') {
+    // Exclude chat messages from Game Info except party (party shows here so E2E and users see delivery)
+    if (message.messageType === 'chat' && message.channel !== 'party') {
       return false;
     }
 

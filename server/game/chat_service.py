@@ -27,6 +27,9 @@ from .chat_message_senders import (
     send_local_message as send_local_message_helper,
 )
 from .chat_message_senders import (
+    send_party_message as send_party_message_helper,
+)
+from .chat_message_senders import (
     send_predefined_emote as send_predefined_emote_helper,
 )
 from .chat_message_senders import (
@@ -285,6 +288,31 @@ class ChatService:  # pylint: disable=too-many-instance-attributes  # Reason: Ch
             self.chat_logger,
             self._room_messages,
             self._max_messages_per_room,
+            self.nats_service,
+            self.subject_manager,
+        )
+
+    async def send_party_message(self, player_id: uuid.UUID | str, message: str, party_id: str) -> dict[str, Any]:
+        """
+        Send a party (ephemeral group) chat message. Only current party members
+        receive it; delivery is enforced by PartyChannelStrategy. Caller must
+        ensure the sender is in the given party.
+
+        Args:
+            player_id: ID of the sender
+            message: Message content
+            party_id: Party ID
+
+        Returns:
+            Dictionary with success status and message details
+        """
+        return await send_party_message_helper(
+            player_id,
+            message,
+            party_id,
+            self.player_service,
+            self.rate_limiter,
+            self.chat_logger,
             self.nats_service,
             self.subject_manager,
         )

@@ -2,10 +2,10 @@ import React, { useMemo, useState } from 'react';
 import { ALL_MESSAGES_CHANNEL, CHAT_CHANNEL_OPTIONS, DEFAULT_CHANNEL } from '../../../config/channels';
 import { ansiToHtmlWithBreaks } from '../../../utils/ansiToHtml';
 import { extractChannelFromMessage, isChatContent } from '../../../utils/messageTypeUtils';
+import { SafeHtml } from '../../common/SafeHtml';
 import { ChannelSelector } from '../../ui/ChannelSelector';
 import { EldritchIcon, MythosIcons } from '../../ui/EldritchIcon';
 import { TerminalButton } from '../../ui/TerminalButton';
-import { SafeHtml } from '../../common/SafeHtml';
 import type { ChatMessage } from '../types';
 
 interface ChatHistoryPanelProps {
@@ -73,6 +73,10 @@ export const ChatHistoryPanel: React.FC<ChatHistoryPanelProps> = ({
         return normalizedSelectedChannel === 'whisper';
       }
 
+      if (messageChannel === 'party') {
+        return normalizedSelectedChannel === 'party';
+      }
+
       return messageChannel === normalizedSelectedChannel;
     });
   }, [messages, normalizedSelectedChannel, isAllChannelSelected]);
@@ -123,6 +127,8 @@ export const ChatHistoryPanel: React.FC<ChatHistoryPanelProps> = ({
         return 'text-mythos-terminal-error font-bold';
       case 'whisper':
         return 'text-mythos-terminal-secondary italic';
+      case 'party':
+        return 'text-mythos-terminal-primary';
       case 'shout':
         return 'text-mythos-terminal-warning font-bold';
       default:

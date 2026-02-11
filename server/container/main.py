@@ -59,6 +59,7 @@ class ApplicationContainer:
         self.room_service: Any = None
         self.movement_service: Any = None
         self.follow_service: Any = None
+        self.party_service: Any = None
         self.exploration_service: Any = None
         self.user_manager: Any = None
         self.container_service: Any = None

@@ -78,11 +78,21 @@ async def test_global_channel_strategy_broadcast():
 
 
 @pytest.mark.asyncio
-async def test_party_channel_strategy_broadcast_with_party_id():
-    """Test PartyChannelStrategy.broadcast() handles party message."""
+async def test_party_channel_strategy_broadcast_sends_only_to_party_members():
+    """Party chat is delivered only to current party members (visibility)."""
     strategy = PartyChannelStrategy()
     mock_nats_handler = MagicMock()
-    chat_event = {"type": "chat", "message": "Hello"}
+    # pylint: disable=protected-access  # Reason: Accessing protected member for testing internal NATS handler methods
+    mock_nats_handler._apply_dampening_and_send_message = AsyncMock()
+    mock_party = MagicMock()
+    member_a = "player_a_id"
+    member_b = "player_b_id"
+    mock_party.member_ids = {member_a, member_b}
+    mock_party_service = MagicMock()
+    mock_party_service.get_party = MagicMock(return_value=mock_party)
+    mock_nats_handler.party_service = mock_party_service
+
+    chat_event = {"type": "chat_message", "message": "Hello party"}
     room_id = ""
     party_id = "party_123"
     target_player_id = None
@@ -90,7 +100,47 @@ async def test_party_channel_strategy_broadcast_with_party_id():
 
     await strategy.broadcast(chat_event, room_id, party_id, target_player_id, sender_id, mock_nats_handler)
 
-    # Should not raise, just log
+    assert mock_nats_handler._apply_dampening_and_send_message.await_count == 2
+    calls = mock_nats_handler._apply_dampening_and_send_message.call_args_list
+    member_ids_sent = {c[0][2] for c in calls}
+    assert member_ids_sent == {member_a, member_b}
+    for call in calls:
+        assert call[0][1] == str(sender_id)
+        assert call[0][3] == "party"
+
+
+@pytest.mark.asyncio
+async def test_party_channel_strategy_broadcast_no_party_service_no_send():
+    """When party_service is missing on handler, no message is sent."""
+    strategy = PartyChannelStrategy()
+    mock_nats_handler = MagicMock()
+    # pylint: disable=protected-access  # Reason: Accessing protected member for testing internal NATS handler methods
+    mock_nats_handler._apply_dampening_and_send_message = AsyncMock()
+    # Do not set party_service on handler
+
+    chat_event = {"type": "chat", "message": "Hello"}
+    party_id = "party_123"
+    await strategy.broadcast(chat_event, "", party_id, None, uuid.uuid4(), mock_nats_handler)
+
+    mock_nats_handler._apply_dampening_and_send_message.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_party_channel_strategy_broadcast_party_not_found_no_send():
+    """When party does not exist, no message is sent."""
+    strategy = PartyChannelStrategy()
+    mock_nats_handler = MagicMock()
+    # pylint: disable=protected-access  # Reason: Accessing protected member for testing internal NATS handler methods
+    mock_nats_handler._apply_dampening_and_send_message = AsyncMock()
+    mock_party_service = MagicMock()
+    mock_party_service.get_party = MagicMock(return_value=None)
+    mock_nats_handler.party_service = mock_party_service
+
+    chat_event = {"type": "chat", "message": "Hello"}
+    party_id = "party_nonexistent"
+    await strategy.broadcast(chat_event, "", party_id, None, uuid.uuid4(), mock_nats_handler)
+
+    mock_nats_handler._apply_dampening_and_send_message.assert_not_called()
 
 
 @pytest.mark.asyncio

@@ -74,7 +74,6 @@ server/structured_logging/
 ### Core Components
 
 1. **Enhanced Logging Config** (`enhanced_logging_config.py`)
-
    - MDC implementation with `structlog.contextvars`
    - Security sanitization processor
    - Correlation ID management
@@ -82,7 +81,6 @@ server/structured_logging/
    - Async logging support via QueueHandler/QueueListener
 
 2. **Custom Processors** (`logging_processors.py`)
-
    - `sanitize_sensitive_data`: Automatically redacts passwords, tokens, secrets
    - `add_correlation_id`: Ensures all logs have correlation IDs
    - `add_request_context`: Adds request context information
@@ -91,7 +89,6 @@ server/structured_logging/
    - `enhance_player_ids`: Converts GUIDs to human-readable format
 
 3. **Custom Formatters**
-
    - `PlayerGuidFormatter`: Converts player GUIDs to `<name>: <GUID>` format
    - Enhanced readability for debugging
 
@@ -124,6 +121,7 @@ subsystem has its own log file for better organization and debugging:
 - **validators.log**: Input validation, command validation, security validation
 - **combat.log**: Combat system, combat events, combat services
 - **magic.log**: Magic system, spellcasting, spell effects, MP management
+- **party.log**: Party (ephemeral grouping) service and party commands
 - **access.log**: Access control, permissions, API access
 - **security.log**: Security events, audit trails, security violations
 
@@ -132,7 +130,7 @@ subsystem has its own log file for better organization and debugging:
 **warnings.log**: ALL WARNING level logs from ALL subsystems (dual logging)
 
 **errors.log**: ALL ERROR and CRITICAL level logs from ALL subsystems (dual
-  logging)
+logging)
 
 **console.log**: Console output, general logging
 
@@ -147,14 +145,14 @@ The system implements dual logging for warnings and errors:
 This enables:
 
 **Subsystem-specific debugging**: Find all logs for a specific subsystem in
-  its dedicated file
+its dedicated file
 
 **Centralized monitoring**: Quickly scan all warnings or errors across the
-  entire system
+entire system
 
 **Better observability**: No need to search multiple files to find all
 
-  warnings or errors
+warnings or errors
 
 Example:
 
@@ -502,6 +500,6 @@ When adding new logging:
 
 ---
 
-*As noted in the Pnakotic Manuscripts, proper documentation of our eldritch systems is essential for maintaining their
+_As noted in the Pnakotic Manuscripts, proper documentation of our eldritch systems is essential for maintaining their
 stability. This enhanced logging system provides the foundation for comprehensive system monitoring and debugging,
-ensuring the continued observability of the MythosMUD server.*
+ensuring the continued observability of the MythosMUD server._

@@ -71,6 +71,7 @@ _SYSTEM_COMMANDS = {
     "follow",
     "unfollow",
     "following",
+    "party",
     "rest",
     "sleep",
     "wake",

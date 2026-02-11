@@ -583,6 +583,11 @@ def setup_enhanced_file_logging(  # pylint: disable=too-many-locals  # Reason: F
             "game.magic",
             "magic",
         ],
+        "party": [
+            "server.game.party_service",
+            "server.commands.party_commands",
+            "server.realtime.channel_broadcasting_strategies",
+        ],
         "access": ["access", "uvicorn.access"],
         "security": [
             "security",

@@ -44,8 +44,8 @@ async def get_all_professions(
     try:
         # Get professions using ProfessionService
         profession_list = await profession_service.get_all_professions_dict()
-
-        return ProfessionListResponse(professions=profession_list)
+        response_obj = ProfessionListResponse(professions=profession_list)
+        return response_obj
 
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Profession retrieval errors unpredictable, must create error context
         context = create_context_from_request(request)

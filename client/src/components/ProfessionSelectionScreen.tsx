@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { assertProfessionArray } from '../utils/apiTypeGuards.js';
 import { getErrorMessage, isErrorResponse } from '../utils/errorHandler.js';
 import { logger } from '../utils/logger.js';
+import { secureTokenStorage } from '../utils/security.js';
 import { Profession, ProfessionCard } from './ProfessionCard.jsx';
 
 interface ProfessionSelectionScreenProps {
@@ -31,11 +32,16 @@ export const ProfessionSelectionScreen: React.FC<ProfessionSelectionScreenProps>
       setIsLoading(true);
       setError('');
 
-      const response = await fetch(`${baseUrl}/professions`, {
+      const storageToken = secureTokenStorage.getToken();
+      const tokenToUse = authToken || storageToken || '';
+
+      const professionsUrl = `${baseUrl}/professions`;
+
+      const response = await fetch(professionsUrl, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${authToken}`,
+          Authorization: `Bearer ${tokenToUse}`,
         },
       });
 

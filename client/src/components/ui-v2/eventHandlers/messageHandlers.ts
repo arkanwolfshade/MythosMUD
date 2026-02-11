@@ -126,6 +126,9 @@ export const handleChatMessage: EventHandler = (_event, _context, appendMessage)
       case 'emote':
         messageType = 'emote';
         break;
+      case 'party':
+        messageType = 'chat';
+        break;
       case 'say':
       case 'local':
       default:

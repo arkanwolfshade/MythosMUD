@@ -1,7 +1,7 @@
 # NATS Subject Pattern Management
 
-> *As noted in the restricted archives of Miskatonic University, proper subject naming conventions are essential for
-maintaining the integrity of our messaging infrastructure across dimensional boundaries.*
+> _As noted in the restricted archives of Miskatonic University, proper subject naming conventions are essential for
+> maintaining the integrity of our messaging infrastructure across dimensional boundaries._
 
 ## Overview
 
@@ -132,6 +132,7 @@ for pattern in chat_patterns:
 | `chat_system`         | `chat.system`                     | -          | System-wide messages         |
 | `chat_emote_room`     | `chat.emote.room.{room_id}`       | room_id    | Room-level emote messages    |
 | `chat_pose_room`      | `chat.pose.room.{room_id}`        | room_id    | Room-level pose messages     |
+| `chat_party_group`    | `chat.party.group.{party_id}`     | party_id   | Party group chat             |
 
 ### Event Patterns
 
@@ -188,13 +189,11 @@ manager.register_pattern(
 The subject manager implements two levels of caching:
 
 1. **Validation Result Caching**: Caches subject validation results
-
    - Provides 5-8x speedup for repeated validations
    - Automatic cache invalidation when patterns change
    - Configurable via `enable_cache` parameter
 
 2. **Pattern Compilation Caching**: Pre-compiles regex patterns
-
    - Used for component validation
    - Eliminates runtime compilation overhead
 
@@ -280,7 +279,7 @@ Validate a NATS subject against registered patterns.
 
 ```json
 {
-    "subject": "chat.say.room.arkham_1"
+  "subject": "chat.say.room.arkham_1"
 }
 ```
 
@@ -288,10 +287,10 @@ Validate a NATS subject against registered patterns.
 
 ```json
 {
-    "subject": "chat.say.room.arkham_1",
-    "is_valid": true,
-    "validation_time_ms": 0.05,
-    "details": null
+  "subject": "chat.say.room.arkham_1",
+  "is_valid": true,
+  "validation_time_ms": 0.05,
+  "details": null
 }
 ```
 
@@ -324,10 +323,10 @@ Register a new subject pattern (admin-only).
 
 ```json
 {
-    "name": "chat_party_group",
-    "pattern": "chat.party.group.{party_id}",
-    "required_params": ["party_id"],
-    "description": "Party group messages"
+  "name": "chat_party_group",
+  "pattern": "chat.party.group.{party_id}",
+  "required_params": ["party_id"],
+  "description": "Party group messages"
 }
 ```
 
@@ -335,9 +334,9 @@ Register a new subject pattern (admin-only).
 
 ```json
 {
-    "success": true,
-    "pattern_name": "chat_party_group",
-    "message": "Pattern registered successfully"
+  "success": true,
+  "pattern_name": "chat_party_group",
+  "message": "Pattern registered successfully"
 }
 ```
 
@@ -586,7 +585,7 @@ Returns comprehensive statistics for monitoring:
 - Error counts by type
 - Total patterns registered
 
-### Performance Metrics
+### Accessing Performance Metrics
 
 Access metrics programmatically:
 

@@ -29,30 +29,44 @@ def _extract_subzone_from_room(room_id: str | None) -> str:
     return subzone_result if subzone_result else "unknown"
 
 
+def _subject_whisper_standardized(chat_message: "ChatMessage", subject_manager: Any) -> str:
+    """Build whisper subject; returns fallback 'chat.whisper' if no target_id."""
+    target_id = getattr(chat_message, "target_id", None)
+    if target_id:
+        return cast(str, subject_manager.build_subject("chat_whisper_player", target_id=target_id))
+    return "chat.whisper"
+
+
+def _subject_party_standardized(chat_message: "ChatMessage", subject_manager: Any) -> str | None:
+    """Build party subject; returns None if no party_id."""
+    party_id = getattr(chat_message, "party_id", None)
+    if party_id:
+        return cast(str, subject_manager.build_subject("chat_party_group", party_id=party_id))
+    return None
+
+
 def _build_standardized_subject(chat_message: "ChatMessage", room_id: str | None, subject_manager: Any) -> str | None:
     """Build NATS subject using standardized patterns via subject_manager."""
     try:
-        match chat_message.channel:
-            case "say":
-                return cast(str, subject_manager.build_subject("chat_say_room", room_id=room_id))
-            case "local":
-                subzone = _extract_subzone_from_room(room_id)
-                return cast(str, subject_manager.build_subject("chat_local_subzone", subzone=subzone))
-            case "global":
-                return cast(str, subject_manager.build_subject("chat_global"))
-            case "system":
-                return cast(str, subject_manager.build_subject("chat_system"))
-            case "whisper":
-                target_id = getattr(chat_message, "target_id", None)
-                if target_id:
-                    return cast(str, subject_manager.build_subject("chat_whisper_player", target_id=target_id))
-                return "chat.whisper"
-            case "emote":
-                return cast(str, subject_manager.build_subject("chat_emote_room", room_id=room_id))
-            case "pose":
-                return cast(str, subject_manager.build_subject("chat_pose_room", room_id=room_id))
-            case _:
-                return f"chat.{chat_message.channel}.{room_id}"
+        channel = chat_message.channel
+        if channel == "say":
+            return cast(str, subject_manager.build_subject("chat_say_room", room_id=room_id))
+        if channel == "local":
+            subzone = _extract_subzone_from_room(room_id)
+            return cast(str, subject_manager.build_subject("chat_local_subzone", subzone=subzone))
+        if channel == "global":
+            return cast(str, subject_manager.build_subject("chat_global"))
+        if channel == "system":
+            return cast(str, subject_manager.build_subject("chat_system"))
+        if channel == "whisper":
+            return _subject_whisper_standardized(chat_message, subject_manager)
+        if channel == "emote":
+            return cast(str, subject_manager.build_subject("chat_emote_room", room_id=room_id))
+        if channel == "pose":
+            return cast(str, subject_manager.build_subject("chat_pose_room", room_id=room_id))
+        if channel == "party":
+            return _subject_party_standardized(chat_message, subject_manager)
+        return f"chat.{channel}.{room_id}"
     except (ValueError, TypeError, KeyError, SubjectValidationError) as e:
         logger.warning(
             "Failed to build subject with NATSSubjectManager, falling back to legacy construction",
@@ -78,6 +92,11 @@ def _build_legacy_subject(chat_message: "ChatMessage", room_id: str | None) -> s
             if target_id:
                 return f"chat.whisper.player.{target_id}"
             return "chat.whisper"
+        case "party":
+            party_id = getattr(chat_message, "party_id", None)
+            if party_id:
+                return f"chat.party.group.{party_id}"
+            return "chat.party.group.unknown"
         case _:
             return f"chat.{chat_message.channel}.{room_id}"
 
@@ -191,6 +210,9 @@ async def publish_chat_message_to_nats(
             message_data["target_id"] = chat_message.target_id
         if hasattr(chat_message, "target_name") and chat_message.target_name:
             message_data["target_name"] = chat_message.target_name
+        # Add party_id for party channel (ephemeral group chat)
+        if hasattr(chat_message, "party_id") and chat_message.party_id:
+            message_data["party_id"] = chat_message.party_id
 
         # Build NATS subject using standardized patterns
         subject = build_nats_subject(chat_message, room_id, subject_manager)

@@ -22,6 +22,7 @@ Implement a comprehensive chat channel system that provides players with multipl
 **Global Channel**: Server-wide communication with level restrictions
 
 **Whisper Channel**: Player-to-player private communication with reply functionality
+
 - **System Channel**: Admin announcements (unmutable)
 - **Integration**: Extends existing NATS-based "say" system
 - **UI Support**: Both command-line and graphical interface options
@@ -187,8 +188,8 @@ class LocalChannelStrategy:
 
 chat:
   global:
-    min_level: 1  # Configurable minimum level
-    rate_limit: 10  # messages per minute
+    min_level: 1 # Configurable minimum level
+    rate_limit: 10 # messages per minute
 ```
 
 #### 3.2.3 Implementation
@@ -370,25 +371,25 @@ Default channel selection
 ```typescript
 interface ChannelFormatting {
   local: {
-    prefix: "[Local]",
-    color: "#4CAF50",  // Green
-    format: "[Local] <playername>: <message>"
-  },
+    prefix: "[Local]";
+    color: "#4CAF50"; // Green
+    format: "[Local] <playername>: <message>";
+  };
   global: {
-    prefix: "[Global]",
-    color: "#2196F3",  // Blue
-    format: "[Global] <playername>: <message>"
-  },
+    prefix: "[Global]";
+    color: "#2196F3"; // Blue
+    format: "[Global] <playername>: <message>";
+  };
   whisper: {
-    prefix: "[Whisper]",
-    color: "#9C27B0",  // Purple
-    format: "<playername> whispers to you: <message>"
-  },
+    prefix: "[Whisper]";
+    color: "#9C27B0"; // Purple
+    format: "<playername> whispers to you: <message>";
+  };
   system: {
-    prefix: "[System]",
-    color: "#FF9800",  // Orange
-    format: "[System] <message>"
-  }
+    prefix: "[System]";
+    color: "#FF9800"; // Orange
+    format: "[System] <message>";
+  };
 }
 ```
 
@@ -403,7 +404,7 @@ const ErrorMessages = {
   playerNotFound: "You whisper into the aether.",
   noReplyTarget: "No one has whispered to you recently.",
   accessDenied: "You do not have access to this channel.",
-  adminRequired: "Admin access required for this command."
+  adminRequired: "Admin access required for this command.",
 };
 ```
 
@@ -416,10 +417,10 @@ const ErrorMessages = {
 
 chat:
   rate_limiting:
-    local: 20      # messages per minute
-    global: 10     # messages per minute
-    whisper: 30     # messages per minute
-    system: 60     # messages per minute (admin)
+    local: 20 # messages per minute
+    global: 10 # messages per minute
+    whisper: 30 # messages per minute
+    system: 60 # messages per minute (admin)
 ```
 
 ### 6.2 Implementation
@@ -706,7 +707,8 @@ Architecture decisions
 
 ### 14.1 Party Channel
 
-Group-based communication
+Group-based communication. See [PLANNING_ephemeral_grouping.md](../PLANNING_ephemeral_grouping.md)
+for the consolidated ephemeral grouping (party) plan.
 
 - Party formation and management
 - Shared party features
@@ -747,4 +749,5 @@ The implementation will provide players with multiple communication options whil
 **Last Updated**: 2025-01-27
 
 **Next Review**: After Phase 1 completion
+
 - **Approval**: Pending Professor Wolfshade review

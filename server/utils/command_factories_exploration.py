@@ -18,6 +18,7 @@ from ..models.command import (
     GroundCommand,
     LieCommand,
     LookCommand,
+    PartyCommand,
     SitCommand,
     StandCommand,
     UnfollowCommand,
@@ -272,3 +273,29 @@ class ExplorationCommandFactory:
                 logger_name=__name__,
             )
         return FollowingCommand()
+
+    @staticmethod
+    def create_party_command(args: list[str]) -> PartyCommand:
+        """Create PartyCommand from arguments. Usage: party [invite|leave|kick|list] [target] or party <message>."""
+        subcommand: Literal["", "invite", "leave", "kick", "list"] = ""
+        target: str | None = None
+        message: str | None = None
+        if args:
+            first = args[0].lower()
+            if first in ("invite", "leave", "kick", "list"):
+                subcommand = first  # type: ignore[assignment]
+                if first in ("invite", "kick") and len(args) > 1:
+                    target = " ".join(args[1:]).strip() or None
+                elif first in ("invite", "kick") and len(args) == 1:
+                    context = create_error_context()
+                    context.metadata = {"args": args, "subcommand": first}
+                    log_and_raise_enhanced(
+                        MythosValidationError,
+                        f"Party {first} requires a target. Usage: party {first} <player name>",
+                        context=context,
+                        logger_name=__name__,
+                    )
+            else:
+                # No subcommand: args are party chat message
+                message = " ".join(args).strip() or None
+        return PartyCommand(subcommand=subcommand, target=target, message=message)

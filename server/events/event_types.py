@@ -441,3 +441,22 @@ class MythosHourTickEvent(BaseEvent):
     def __post_init__(self) -> None:
         super().__post_init__()
         self.event_type = "MythosHourTickEvent"
+
+
+@dataclass
+class PartyUpdated(BaseEvent):
+    """
+    Event fired when party membership or leadership changes.
+
+    Emitted by PartyService on create, add_member, remove_member, kick_member,
+    disband, and on_player_disconnect. Subscribers can push party_state to clients.
+    """
+
+    party_id: str
+    leader_id: str
+    member_ids: list[str] = field(default_factory=list)
+    change_type: str = "updated"  # created | member_joined | member_left | disbanded
+
+    def __post_init__(self) -> None:
+        super().__post_init__()
+        self.event_type = "PartyUpdated"

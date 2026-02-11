@@ -4,11 +4,11 @@
 
 # Exclude paths from analysis
 exclude_paths:
-  - '**/node_modules/**'
-  - '**/dist/**'
-  - '**/build/**'
-  - '**/mythosmud_data/**'
-  - '.data/**'
+  - "**/node_modules/**"
+  - "**/dist/**"
+  - "**/build/**"
+  - "**/mythosmud_data/**"
+  - ".data/**"
 
 # Ignore assert statements in test files
 # Assert statements are standard and expected in test files (pytest uses them extensively)
@@ -20,123 +20,123 @@ exclude_paths:
 ignore_patterns:
   # Bandit B101: Use of assert detected (security warning that's acceptable in tests)
   # NOTE: This is handled by bandit.yml - see bandit.yml for actual Bandit configuration
-  - pattern_id: 'Bandit_B101'
+  - pattern_id: "Bandit_B101"
     file_paths:
-      - '**/test_*.py'
-      - '**/tests/**/*.py'
-      - '**/*_test.py'
+      - "**/test_*.py"
+      - "**/tests/**/*.py"
+      - "**/*_test.py"
   # Bandit B105: Hardcoded password (acceptable for development defaults with environment variable fallback)
-  - pattern_id: 'Bandit_B105'
+  - pattern_id: "Bandit_B105"
     file_paths:
-      - 'scripts/verify_migration.py'
-      - 'scripts/apply_players_migration.py'
+      - "scripts/verify_migration.py"
+      - "scripts/apply_players_migration.py"
   # Semgrep: XSS warnings in SafeHtml.test.tsx (false positives - tests verify XSS protection)
-  - pattern_id: 'typescript.react.security.audit.dangerouslysetinnerhtml.dangerouslysetinnerhtml'
+  - pattern_id: "typescript.react.security.audit.dangerouslysetinnerhtml.dangerouslysetinnerhtml"
     file_paths:
-      - 'client/src/components/common/__tests__/SafeHtml.test.tsx'
-  - pattern_id: 'typescript.lang.security.audit.xss.xss'
+      - "client/src/components/common/__tests__/SafeHtml.test.tsx"
+  - pattern_id: "typescript.lang.security.audit.xss.xss"
     file_paths:
-      - 'client/src/components/common/__tests__/SafeHtml.test.tsx'
+      - "client/src/components/common/__tests__/SafeHtml.test.tsx"
   # Semgrep: SQL string concatenation in load_world_seed.py (false positive - loading trusted seed data)
-  - pattern_id: 'python.lang.security.audit.sqli.asyncpg-sqli'
+  - pattern_id: "python.lang.security.audit.sqli.asyncpg-sqli"
     file_paths:
-      - 'scripts/load_world_seed.py'
+      - "scripts/load_world_seed.py"
   # Bandit B404: Subprocess module import (false positive - safe_subprocess.py provides secure wrappers)
-  - pattern_id: 'Bandit_B404'
+  - pattern_id: "Bandit_B404"
     file_paths:
-      - 'scripts/utils/safe_subprocess.py'
+      - "scripts/utils/safe_subprocess.py"
   # Bandit B603: Subprocess call with validated input (false positive - safe wrappers validate all inputs)
   # Pattern for "subprocess call - check for execution of untrusted input"
   # Pattern for "Detected subprocess function 'run' without a static string"
-  - pattern_id: 'Bandit_B603'
+  - pattern_id: "Bandit_B603"
     file_paths:
-      - 'scripts/utils/safe_subprocess.py'
-      - 'scripts/lint.py'
+      - "scripts/utils/safe_subprocess.py"
+      - "scripts/lint.py"
   # Semgrep: Subprocess patterns (alternative to Bandit for some issues)
   # Pattern for "Detected subprocess function 'run' without a static string" in safe_subprocess.py
-  - pattern_id: 'python.lang.security.audit.subprocess-shell-true.subprocess-shell-true'
+  - pattern_id: "python.lang.security.audit.subprocess-shell-true.subprocess-shell-true"
     file_paths:
-      - 'scripts/utils/safe_subprocess.py'
+      - "scripts/utils/safe_subprocess.py"
   # Semgrep: RegExp DoS in ChatPanel.tsx (false positive - query is escaped and length-limited)
   # Multiple RegExp patterns for ChatPanel.tsx (all false positives - query is escaped):
   # - "The `RegExp` constructor was called with a non-literal value"
   # - "RegExp() called with a `query` function argument"
   # - "Found RegExp with non literal argument"
   # - "Found non-literal argument to RegExp Constructor"
-  - pattern_id: 'typescript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp'
+  - pattern_id: "typescript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp"
     file_paths:
-      - 'client/src/components/panels/ChatPanel.tsx'
-  - pattern_id: 'typescript.lang.security.audit.dos.dos'
+      - "client/src/components/panels/ChatPanel.tsx"
+  - pattern_id: "typescript.lang.security.audit.dos.dos"
     file_paths:
-      - 'client/src/components/panels/ChatPanel.tsx'
+      - "client/src/components/panels/ChatPanel.tsx"
   # Semgrep: console.log with non-literal in debugLogger.ts (false positive - debug logger intentionally uses console)
   # Pattern for "Detect console.log() with non Literal argument"
-  - pattern_id: 'typescript.lang.security.audit.detect-non-literal-fs-filename.detect-non-literal-fs-filename'
+  - pattern_id: "typescript.lang.security.audit.detect-non-literal-fs-filename.detect-non-literal-fs-filename"
     file_paths:
-      - 'client/src/utils/debugLogger.ts'
+      - "client/src/utils/debugLogger.ts"
   # Semgrep: console.log string concatenation (false positive - debug logger intentionally formats messages)
   # Pattern for "Detected string concatenation with a non-literal variable in a util.format / console.log function"
-  - pattern_id: 'typescript.lang.security.audit.unexpected-behaviour.unexpected-behaviour'
+  - pattern_id: "typescript.lang.security.audit.unexpected-behaviour.unexpected-behaviour"
     file_paths:
-      - 'client/src/utils/debugLogger.ts'
+      - "client/src/utils/debugLogger.ts"
   # Semgrep: SQL injection false positives in container_persistence.py (using parameterized queries)
   # Pattern for "Avoiding SQL string concatenation" - these use parameterized queries via psycopg2.sql.SQL
-  - pattern_id: 'python.lang.security.audit.sql-injection.sql-injection'
+  - pattern_id: "python.lang.security.audit.sql-injection.sql-injection"
     file_paths:
-      - 'server/container_persistence/container_persistence.py'
-      - 'server/persistence/container_persistence.py'
+      - "server/container_persistence/container_persistence.py"
+      - "server/persistence/container_persistence.py"
   # Semgrep: SQL injection patterns for load_world_seed.py (all false positives - trusted seed data)
   # Pattern for "Detected possible formatted SQL query"
   # Pattern for "Detected string concatenation with a non-literal variable in a asyncpg Python SQL statement"
   # Pattern for "Avoiding SQL string concatenation"
-  - pattern_id: 'python.lang.security.audit.sql-injection.sql-injection'
+  - pattern_id: "python.lang.security.audit.sql-injection.sql-injection"
     file_paths:
-      - 'scripts/load_world_seed.py'
-  - pattern_id: 'python.lang.security.audit.sqli.asyncpg-sqli'
+      - "scripts/load_world_seed.py"
+  - pattern_id: "python.lang.security.audit.sqli.asyncpg-sqli"
     file_paths:
-      - 'scripts/load_world_seed.py'
+      - "scripts/load_world_seed.py"
   # Semgrep: dangerouslySetInnerHTML in SafeHtml.tsx (false positive - content is sanitized via DOMPurify)
-  - pattern_id: 'typescript.react.security.audit.dangerouslysetinnerhtml.dangerouslysetinnerhtml'
+  - pattern_id: "typescript.react.security.audit.dangerouslysetinnerhtml.dangerouslysetinnerhtml"
     file_paths:
-      - 'client/src/components/common/SafeHtml.tsx'
+      - "client/src/components/common/SafeHtml.tsx"
   # Semgrep: XSS warnings for SafeHtml.tsx (false positive - DOMPurify sanitizes all HTML)
   # Pattern for "HTML passed in to function 'DOMPurify.sanitize'"
-  - pattern_id: 'typescript.lang.security.audit.xss.xss'
+  - pattern_id: "typescript.lang.security.audit.xss.xss"
     file_paths:
-      - 'client/src/components/common/SafeHtml.tsx'
+      - "client/src/components/common/SafeHtml.tsx"
   # Semgrep: XSS warnings for ChatPanel.tsx (false positive - HTML is escaped before replace)
   # Pattern for "HTML passed in to function 'escapedText.replace'"
-  - pattern_id: 'typescript.lang.security.audit.xss.xss'
+  - pattern_id: "typescript.lang.security.audit.xss.xss"
     file_paths:
-      - 'client/src/components/panels/ChatPanel.tsx'
+      - "client/src/components/panels/ChatPanel.tsx"
   # Semgrep: XSS warnings for SafeHtml.test.tsx (false positive - tests verify XSS protection)
   # Pattern for "Non-HTML variable 'wrapper' is used to store raw HTML"
-  - pattern_id: 'typescript.lang.security.audit.xss.xss'
+  - pattern_id: "typescript.lang.security.audit.xss.xss"
     file_paths:
-      - 'client/src/components/common/__tests__/SafeHtml.test.tsx'
+      - "client/src/components/common/__tests__/SafeHtml.test.tsx"
   # Pylint: Import outside toplevel (acceptable for lazy imports to avoid circular dependencies)
-  - pattern_id: 'Pylint_import-outside-toplevel'
+  - pattern_id: "Pylint_import-outside-toplevel"
     file_paths:
-      - 'scripts/worktree-ops.py'
+      - "scripts/worktree-ops.py"
   # Pylint: Constant naming (false positive - these are variables, not constants)
   # Pattern for "Constant name doesn't conform to UPPER_CASE naming style"
-  - pattern_id: 'Pylint_invalid-name'
+  - pattern_id: "Pylint_invalid-name"
     file_paths:
-      - 'scripts/run_test_ci.py'
+      - "scripts/run_test_ci.py"
   # Pylint: Performance suggestion (already fixed in code - using 'in' operator)
   # Pattern for "Consider merging these comparisons with 'in'"
   # Note: This is already fixed in the code, but adding suppression in case Codacy hasn't re-analyzed
-  - pattern_id: 'Pylint_consider-using-in'
+  - pattern_id: "Pylint_consider-using-in"
     file_paths:
-      - 'scripts/run_test_ci.py'
+      - "scripts/run_test_ci.py"
   # SQL: RAC_TABLE_REQUIRED false positives in migration file
   # Pattern for "All queries must target RAC_* tables" - false positives for:
   # - PostgreSQL configuration commands (SET)
   # - Comment lines
   # - DO blocks for verification (not data queries)
-  - pattern_id: 'sql:RAC_TABLE_REQUIRED'
+  - pattern_id: "sql:RAC_TABLE_REQUIRED"
     file_paths:
-      - 'db/migrations/020_migrate_weekday_names.sql'
+      - "db/migrations/020_migrate_weekday_names.sql"
   # # Lizard CCN: Ignore cyclomatic complexity warnings for complexity <= 10
   # # We want to only report complexity > 10, but Codacy doesn't support custom CCN thresholds
   # # So we suppress the medium severity warnings (which report complexity > 8)
@@ -158,12 +158,9 @@ ignore_patterns:
 #     exclude_patterns:
 #       - 'Lizard_ccn-medium'
 
-# Line length configuration
-# The project uses 120 character line length (not Codacy's default of 100)
-# - Python: Configured via .pylintrc (max-line-length=120)
-#   Enable "Use configuration file" for Pylint in Codacy's Code patterns page
-# - TypeScript/JavaScript: Configured via client/eslint.config.js (max-len: 120)
-#   Enable "Use configuration file" for ESLint in Codacy's Code patterns page
+# Line length: disabled project-wide
+# Pylint (line-too-long), ESLint (max-len), Ruff (E501), and markdownlint (MD013) are configured
+# in the project to not enforce line length. Codacy uses those configs; no line-length ignore here.
 
 # Note: Package.json dependency version warnings cannot be suppressed via config file
 # because JSON doesn't support comments. These warnings need to be suppressed via:

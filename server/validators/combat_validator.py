@@ -24,8 +24,15 @@ class CombatValidator:
     the Cthulhu Mythos atmosphere through carefully crafted error messages.
     """
 
-    def __init__(self) -> None:
-        """Initialize the combat validator."""
+    def __init__(self, party_service: Any = None) -> None:
+        """
+        Initialize the combat validator.
+
+        Args:
+            party_service: Optional PartyService for same-party checks (e.g. block
+                attacking party members). When None, validate_can_attack_target allows.
+        """
+        self.party_service = party_service
         self.attack_aliases = {
             "attack",
             "punch",
@@ -116,7 +123,36 @@ class CombatValidator:
                 "The cosmic energies in this place make combat unpredictable.",
                 "The ancient magics here interfere with your violent intent.",
             ],
+            "target_in_party": [
+                "The bonds of fellowship protect your companion from your wrath.",
+                "You cannot turn your violence upon a party member.",
+                "The cosmic pact between you and your ally forbids such an attack.",
+                "Your party bond stays your hand against this target.",
+            ],
         }
+
+    def validate_can_attack_target(self, attacker_id: str, target_id: str) -> tuple[bool, str | None]:
+        """
+        Validate that attacker is allowed to attack target (e.g. not same party).
+        Hook for party-friendly rules: when party_service is set and both players
+        are in the same party, returns (False, thematic_message).
+
+        Args:
+            attacker_id: Attacker player ID (str or UUID string)
+            target_id: Target player ID (str or UUID string)
+
+        Returns:
+            Tuple of (can_attack, error_message). (True, None) when allowed.
+        """
+        if not self.party_service:
+            return True, None
+        try:
+            if self.party_service.is_in_same_party(attacker_id, target_id):
+                msg = self._get_random_error_message("target_in_party")
+                return False, msg
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Fail-open if party check errors
+            logger.debug("Party check failed, allowing attack", error=str(e))
+        return True, None
 
     def validate_combat_command(
         self, command_data: dict[str, Any], player_context: dict[str, Any]

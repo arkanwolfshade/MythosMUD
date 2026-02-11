@@ -322,16 +322,68 @@ function App() {
         let message = `Registration failed (${response.status})`;
         try {
           const rawData: unknown = await response.json();
+
           if (isErrorResponse(rawData)) {
             message = getErrorMessage(rawData);
           } else if (isObject(rawData)) {
             const data = rawData as Record<string, unknown>;
-            message =
-              typeof data.error === 'object' && data.error !== null && 'message' in data.error
-                ? String((data.error as Record<string, unknown>).message)
-                : typeof data.detail === 'string'
-                  ? data.detail
-                  : message;
+            // Handle Pydantic validation errors (422) - check for detail array
+            if (response.status === 422 && Array.isArray(data.detail)) {
+              const validationErrors = data.detail as Array<Record<string, unknown>>;
+
+              // Extract password-specific errors
+              const passwordErrors = validationErrors.filter(err => {
+                const loc = err.loc;
+                if (Array.isArray(loc)) {
+                  const fieldPath = loc.map(String).join('.').toLowerCase();
+                  return fieldPath.includes('password');
+                }
+                return false;
+              });
+
+              if (passwordErrors.length > 0) {
+                // Build user-friendly password error message with criteria
+                const passwordMessages = passwordErrors.map(err => {
+                  const msg = String(err.msg || err.message || 'Validation error');
+                  // Extract specific password requirements from error messages
+                  if (msg.includes('at least') || msg.includes('8 characters')) {
+                    return 'Password must be at least 8 characters long';
+                  }
+                  if (msg.includes('exceed') || msg.includes('1024')) {
+                    return 'Password must not exceed 1024 characters';
+                  }
+                  if (msg.includes('empty')) {
+                    return 'Password cannot be empty';
+                  }
+                  return msg;
+                });
+
+                // Add password criteria summary
+                message = `${passwordMessages.join('. ')}. Password requirements: at least 8 characters, maximum 1024 characters.`;
+              } else {
+                // Handle other validation errors
+                const errorMessages = validationErrors
+                  .map(err => {
+                    const loc = err.loc ? (Array.isArray(err.loc) ? err.loc.join('.') : String(err.loc)) : '';
+                    const msg = err.msg || err.message || 'Validation error';
+                    // Convert field paths to user-friendly names
+                    const fieldName = loc.split('.').pop()?.replace('_', ' ') || 'field';
+                    return `${fieldName}: ${msg}`;
+                  })
+                  .join('; ');
+                message = errorMessages || message;
+              }
+            } else if (response.status === 422 && typeof data.detail === 'string') {
+              // Handle string detail (non-array 422 response)
+              message = data.detail;
+            } else {
+              message =
+                typeof data.error === 'object' && data.error !== null && 'message' in data.error
+                  ? String((data.error as Record<string, unknown>).message)
+                  : typeof data.detail === 'string'
+                    ? data.detail
+                    : message;
+            }
           }
         } catch {
           // Ignore JSON parsing errors, use default message
@@ -769,12 +821,12 @@ function App() {
         console.error('Failed to refresh characters list after deletion:', errorMessage);
         setError(errorMessage);
         // Still throw to indicate partial failure; include response context as cause for diagnostics
-        throw new Error(errorMessage, {
-          cause: {
-            status: response.status,
-            statusText: response.statusText,
-          },
-        });
+        const deletionError = new Error(errorMessage);
+        (deletionError as Error & { cause?: unknown }).cause = {
+          status: response.status,
+          statusText: response.statusText,
+        };
+        throw deletionError;
       }
     } catch (error) {
       // Check if error is due to server unavailability
@@ -785,7 +837,9 @@ function App() {
 
       const errorMessage = error instanceof Error ? error.message : 'Failed to delete character';
       // Preserve original error as cause so callers and logs can inspect root failure.
-      throw new Error(errorMessage, { cause: error });
+      const deletionError = new Error(errorMessage);
+      (deletionError as Error & { cause?: unknown }).cause = error;
+      throw deletionError;
     }
   };
 

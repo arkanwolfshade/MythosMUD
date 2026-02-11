@@ -1,8 +1,8 @@
 # 🗺️ MythosMUD – Comprehensive Planning Document
 
-*"The most merciful thing in the world, I think, is the inability of the human brain to correlate all its contents. We
+_"The most merciful thing in the world, I think, is the inability of the human brain to correlate all its contents. We
 live on a placid island of ignorance in the midst of black seas of infinity, and it was not meant that we should voyage
-far."* - H.P. Lovecraft
+far."_ - H.P. Lovecraft
 
 ---
 
@@ -110,7 +110,6 @@ educational experience for myself and my teenage son.
 2. **Server Shutdown**: ALWAYS use `./scripts/stop_server.ps1` before starting
 
 3. **Database Placement**:
-
    - Production: `/data/players/` ONLY
 
    - Tests: `/data/unit_test/players/` ONLY
@@ -134,25 +133,21 @@ educational experience for myself and my teenage son.
 When multiple tasks are pending, prioritize in this order:
 
 1. **🔴 Critical Security Issues** (Fix immediately)
-
    - Security vulnerabilities
    - Privacy compliance issues
    - Data protection problems
 
 2. **🟡 High Priority** (Complete within current session)
-
    - Core functionality bugs
    - Authentication/authorization issues
    - Critical user experience problems
 
 3. **🟢 Medium Priority** (Plan for next session)
-
    - Feature enhancements
    - Performance improvements
    - Code quality improvements
 
 4. **🔵 Low Priority** (Nice to have)
-
    - UI/UX polish
    - Documentation improvements
    - Advanced features
@@ -242,8 +237,8 @@ When multiple tasks are pending, prioritize in this order:
 
 ### Technology Stack
 
-| Layer           | Technology                    | Status        | Notes                                       |
-| --------------- | ----------------------------- | ------------- | ------------------------------------------- |
+| Layer           | Technology                    | Status         | Notes                                       |
+| --------------- | ----------------------------- | -------------- | ------------------------------------------- |
 | Front-End       | React 19 + TypeScript         | ✅ Implemented | Vite 7, Panel-based UI                      |
 | Back-End        | Python 3.12+ (FastAPI 0.119+) | ✅ Implemented | Async, type-safe                            |
 | Real-Time       | WebSocket + SSE + NATS        | ✅ Implemented | Dual connection system, pub/sub messaging   |
@@ -535,7 +530,7 @@ When multiple tasks are pending, prioritize in this order:
 - `server/app/lifespan.py` - Added critical services to app.state
 - `server/realtime/connection_manager.py` - Fixed disconnection order and exclude_player logic
 - `server/persistence.py` - Fixed sync_room_players to use direct state updates
-- `server/game/movement_service.py` - Fixed _validate_movement to use direct state updates
+- `server/game/movement_service.py` - Fixed \_validate_movement to use direct state updates
 - `server/realtime/websocket_handler.py` - Removed synthetic player_entered events
 
 **Status**: ✅ **COMPLETED** - All critical multiplayer messaging issues resolved, audit document archived
@@ -721,7 +716,8 @@ When multiple tasks are pending, prioritize in this order:
 
 **Live Player Updates**: Real-time player position and status updates
 
-**Player Groups**: Party/group formation and management
+**Player Groups**: Party/group formation and management (see
+[docs/PLANNING_ephemeral_grouping.md](docs/PLANNING_ephemeral_grouping.md))
 
 **Trading System**: Player-to-player item trading
 
@@ -1018,7 +1014,7 @@ anomalies that have been successfully resolved through the Comprehensive System 
 
 - `server/realtime/connection_manager.py` - Fixed disconnection order and exclude_player logic
 - `server/persistence.py` - Fixed sync_room_players to use direct state updates
-- `server/game/movement_service.py` - Fixed _validate_movement to use direct state updates
+- `server/game/movement_service.py` - Fixed \_validate_movement to use direct state updates
 - `server/realtime/websocket_handler.py` - Removed synthetic player_entered events
 
 ### Success Criteria Achievement ✅
@@ -1091,7 +1087,7 @@ For detailed information about the investigation and fixes, see:
 
 ---
 
-*"That is not dead which can eternal lie, and with strange aeons even death may die."* - But our planning shall guide us
+_"That is not dead which can eternal lie, and with strange aeons even death may die."_ - But our planning shall guide us
 through the eldritch depths of development.
 
 ---

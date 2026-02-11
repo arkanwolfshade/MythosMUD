@@ -1,13 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import {
-  AVAILABLE_CHANNELS,
   ALL_MESSAGES_CHANNEL,
+  AVAILABLE_CHANNELS,
+  CHANNEL_GROUPS,
   CHAT_CHANNEL_OPTIONS,
   DEFAULT_CHANNEL,
-  CHANNEL_GROUPS,
   getChannelById,
-  getEnabledChannels,
   getChannelDisplayName,
+  getEnabledChannels,
 } from '../channels';
 
 describe('channels', () => {
@@ -43,6 +43,7 @@ describe('channels', () => {
       expect(channelIds).toContain('local');
       expect(channelIds).toContain('global');
       expect(channelIds).toContain('whisper');
+      expect(channelIds).toContain('party');
     });
   });
 
@@ -91,6 +92,7 @@ describe('channels', () => {
       expect(CHANNEL_GROUPS).toHaveProperty('basic');
       expect(CHANNEL_GROUPS).toHaveProperty('area');
       expect(CHANNEL_GROUPS).toHaveProperty('server');
+      expect(CHANNEL_GROUPS).toHaveProperty('party');
       expect(CHANNEL_GROUPS).toHaveProperty('advanced');
     });
 
@@ -104,6 +106,10 @@ describe('channels', () => {
 
     it('should have correct channels in server group', () => {
       expect(CHANNEL_GROUPS.server).toContain('global');
+    });
+
+    it('should have correct channels in party group', () => {
+      expect(CHANNEL_GROUPS.party).toContain('party');
     });
 
     it('should have correct channels in advanced group', () => {

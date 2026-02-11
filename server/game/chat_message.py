@@ -25,6 +25,7 @@ class ChatMessage:  # pylint: disable=too-many-instance-attributes  # Reason: Ch
         content: str,
         target_id: uuid.UUID | str | None = None,
         target_name: str | None = None,
+        party_id: str | None = None,
     ):
         self.id = str(uuid.uuid4())
         # Convert UUID to string for JSON serialization
@@ -41,6 +42,7 @@ class ChatMessage:  # pylint: disable=too-many-instance-attributes  # Reason: Ch
         else:
             self.target_id = target_id
         self.target_name = target_name
+        self.party_id = party_id
         self.timestamp = datetime.now(UTC)
         self.echo_sent = False
 
@@ -60,6 +62,8 @@ class ChatMessage:  # pylint: disable=too-many-instance-attributes  # Reason: Ch
             result["target_id"] = self.target_id
         if self.target_name:
             result["target_name"] = self.target_name
+        if getattr(self, "party_id", None):
+            result["party_id"] = self.party_id
 
         # Indicate metadata flags when present
         if getattr(self, "echo_sent", False):
@@ -83,5 +87,7 @@ class ChatMessage:  # pylint: disable=too-many-instance-attributes  # Reason: Ch
             log_data["target_id"] = self.target_id
         if self.target_name:
             log_data["target_name"] = self.target_name
+        if self.party_id is not None:
+            log_data["party_id"] = self.party_id
 
         logger.info("CHAT MESSAGE", **log_data)

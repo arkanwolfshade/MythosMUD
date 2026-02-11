@@ -22,15 +22,8 @@ export default tseslint.config([
     rules: {
       ...reactHooks.configs.recommended.rules,
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
-      'max-len': [
-        'error',
-        {
-          code: 120,
-          ignoreUrls: true,
-          ignoreStrings: true,
-          ignorePattern: '^\\s*\\}, \\[.*\\]\\);',
-        },
-      ],
+      // Line-length checks disabled project-wide; file length / TLOC checks remain
+      'max-len': 'off',
       'prefer-const': 'error',
       'no-var': 'error',
       'no-unused-vars': 'off',

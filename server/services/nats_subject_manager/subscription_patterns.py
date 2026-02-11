@@ -75,6 +75,7 @@ def get_chat_subscription_patterns(
         "chat_system",
         "chat_emote_room",
         "chat_pose_room",
+        "chat_party_group",
     ]
 
     for pattern_name in chat_pattern_names:

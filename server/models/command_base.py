@@ -92,6 +92,8 @@ class CommandType(StrEnum):
     FOLLOW = "follow"
     UNFOLLOW = "unfollow"
     FOLLOWING = "following"
+    # Party commands (ephemeral grouping)
+    PARTY = "party"
 
 
 class BaseCommand(BaseModel):

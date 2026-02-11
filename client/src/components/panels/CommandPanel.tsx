@@ -98,6 +98,7 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
       'logout',
       'me',
       'mute',
+      'party', // Party command and party chat
       'pose',
       'punch', // Combat command
       'quit',
@@ -126,6 +127,7 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
       !command.startsWith('/') &&
       effectiveChannel !== 'say' &&
       effectiveChannel !== 'local' &&
+      effectiveChannel !== 'party' &&
       !isStandaloneCommand
     ) {
       const channel = CHAT_CHANNEL_OPTIONS.find(c => c.id === effectiveChannel);
@@ -136,6 +138,13 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
 
       if (channel?.shortcut && !alreadyHasChannelPrefix) {
         command = `/${channel.shortcut} ${command}`;
+      }
+    }
+    // When on party channel, prepend "party " so server receives party chat or party subcommand
+    if (!command.startsWith('/') && effectiveChannel === 'party' && command.trim()) {
+      const commandLower = command.toLowerCase();
+      if (!commandLower.startsWith('party ')) {
+        command = `party ${command}`;
       }
     }
 

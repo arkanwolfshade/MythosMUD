@@ -5,13 +5,13 @@
 load-plugins=pylint_per_file_ignores
 
 [FORMAT]
-# Maximum line length (Codacy default is 100, project standard is 120)
+# Line-length checks disabled project-wide; max-line-length unused for enforcement
 max-line-length=120
-# Maximum module lines (project standard is 500 per user rules)
+# Maximum module lines (project standard is 500 per user rules) - KEEP enforced
 max-module-lines=550
 
 [MESSAGES CONTROL]
-# Disable line-too-long warnings since we handle this with max-line-length
+# Line-length checks disabled globally; file length (max-module-lines) remains enforced
 # Disable import-outside-toplevel (C0415) - imports are sometimes needed inside functions to avoid circular dependencies
 # These match ruff's global ignores: E501 (line-too-long) and B008 (no pylint equivalent)
 #

@@ -83,6 +83,7 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
         connection_manager: "ConnectionManager | None" = None,
         async_persistence: "AsyncPersistenceLayer | None" = None,
         item_prototype_registry: Any | None = None,
+        party_service: Any = None,
     ) -> None:
         """
         Initialize the combat command handler.
@@ -96,6 +97,7 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
                 If None, NPCCombatIntegrationService will create its own.
             connection_manager: Optional ConnectionManager instance to use.
                 If None, NPCCombatIntegrationService will try to lazy-load from container.
+            party_service: Optional PartyService for same-party attack checks (hook).
         """
         self.attack_aliases = {
             "attack",
@@ -118,7 +120,7 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
         )
         self.persistence = async_persistence
         self._item_prototype_registry = item_prototype_registry
-        self.combat_validator = CombatValidator()
+        self.combat_validator = CombatValidator(party_service=party_service)
         # Initialize target resolution service
         # Use async persistence for target resolution and player service
         # Type ignore: TargetResolutionService accepts PersistenceProtocol (sync methods),
@@ -469,6 +471,7 @@ def get_combat_command_handler(app: Any | None = None) -> CombatCommandHandler:
         connection_manager = getattr(container, "connection_manager", None)
         async_persistence = getattr(container, "async_persistence", None)
         item_prototype_registry = getattr(container, "item_prototype_registry", None)
+        party_service = getattr(container, "party_service", None)
         _combat_command_handler = CombatCommandHandler(
             combat_service=combat_service,
             event_bus=event_bus,
@@ -476,6 +479,7 @@ def get_combat_command_handler(app: Any | None = None) -> CombatCommandHandler:
             connection_manager=connection_manager,
             async_persistence=async_persistence,
             item_prototype_registry=item_prototype_registry,
+            party_service=party_service,
         )
     return _combat_command_handler
 
