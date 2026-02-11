@@ -1,6 +1,6 @@
 # Chat System Implementation Plan
 
-*Academic Research into Forbidden Communications - Prof. Armitage's Notes*
+_Academic Research into Forbidden Communications - Prof. Armitage's Notes_
 
 ## Current Status (Updated: August 14, 2025)
 
@@ -11,6 +11,7 @@
 **Server-Side Architecture**: NATS service, message handler, and WebSocket integration working
 
 **Cross-Player Chat**: Demonstrated working chat between ArkanWolfshade and Ithaqua
+
 - **Real-Time Communication**: Messages delivered instantly via NATS → WebSocket pipeline
 
 ### 🔄 **Phase 2: Chat Channels - IN PROGRESS**
@@ -20,6 +21,7 @@
 **Local Channel**: ⏳ **PENDING** - Area-wide communication (room + adjacent)
 
 **Global Channel**: ⏳ **PENDING** - System-wide communication
+
 - **Party Channel**: ⏳ **PENDING** - Group communication
 - **Whisper Channel**: ⏳ **PENDING** - Private messaging
 
@@ -30,6 +32,7 @@
 **Rate Limiting**: ⏳ **PENDING** - Per-user, per-channel rate limiting
 
 **Content Filtering**: ⏳ **PENDING** - Profanity and keyword detection
+
 - **Muting System**: ⏳ **PENDING** - Player and channel muting
 - **Message Persistence**: ⏳ **PENDING** - Chat history and audit trail
 
@@ -52,6 +55,7 @@ The implementation follows a **tracer bullet** approach, using the `say` channel
 **Rapid feedback**: Get working chat functionality in 1-2 weeks
 
 **Iterative development**: Build on validated foundation
+
 - **Risk mitigation**: Identify issues early in the development cycle
 
 ### MVP Definition
@@ -74,6 +78,7 @@ The implementation follows a **tracer bullet** approach, using the `say` channel
 **Local Channel**: Area-wide communication (current room + adjacent areas)
 
 **Party Channel**: Group communication for players in the same party
+
 - **Say Channel**: Direct speech within the current room only
 - **Whisper Channel**: Private communication between specific players
 
@@ -84,6 +89,7 @@ The implementation follows a **tracer bullet** approach, using the `say` channel
 **Moderation System**: Profanity filtering, harm-related keyword detection
 
 **Admin Tools**: Moderator commands and administrative oversight
+
 - **Chat Logging**: Audit trail and message history
 - **Real-time Delivery**: WebSocket-based instant messaging
 - **User Interface**: Intuitive chat interface components
@@ -123,6 +129,7 @@ The implementation follows a **tracer bullet** approach, using the `say` channel
 **Say/Local**: Automatically active when in rooms
 
 **Global**: Always available (but can be muted)
+
 - **Party**: Automatically joined when in a party
 - **Whisper**: Always available for private communication
 - **No Manual Join/Leave**: Use mute/unmute instead for better UX
@@ -134,6 +141,7 @@ The implementation follows a **tracer bullet** approach, using the `say` channel
 **Admin Protection**: Admins and moderators cannot be muted by regular users
 
 **Self-Muting**: Players cannot mute themselves
+
 - **Cross-Channel**: Muted players are hidden from all channels (global, local, party, say)
 - **Whisper Exception**: Muted players can still send whispers (for emergency communication)
 - **Admin Override**: Admins can mute/unmute any player, including other admins
@@ -145,6 +153,7 @@ The implementation follows a **tracer bullet** approach, using the `say` channel
 **Sliding Window**: Uses sliding window algorithm for accurate rate tracking
 
 **Channel-Specific**: Different limits for different channels based on usage patterns
+
 - **Admin Bypass**: Admins and moderators are exempt from rate limiting
 
 #### Rate Limits (Per User Per Minute)
@@ -164,6 +173,7 @@ Whisper Channel: 5 messages per minute per user
 **Algorithm**: Sliding window with 1-minute buckets
 
 **Response**: Graceful degradation with user feedback
+
 - **Monitoring**: Rate limit violations logged for moderation review
 
 ### Message Display Format
@@ -194,6 +204,7 @@ Prof. Armitage whispers to you, "I found something disturbing..."
 **Player Muting**: Messages from muted players are hidden in all channels except whispers
 
 **Admin Messages**: Cannot be muted by regular users (system protection)
+
 - **Whisper Exception**: Muted players can still send whispers for emergency communication
 - **Cross-Session**: Mute settings persist across game sessions
 
@@ -241,6 +252,7 @@ SREM chat:online:{channel} {player_id}
 **Concurrent Users**: 100+ supported (optimized for 10-100 range)
 
 **Message Volume**: 1000+ messages per minute capacity
+
 - **Memory Usage**: Efficient session storage
 - **Scalability**: Horizontal scaling with Redis Cluster
 - **Reliability**: Message persistence and delivery guarantees
@@ -348,6 +360,7 @@ async def get_muted_players(player_id: str)
 **Channel tabs**: Switching between chat types
 
 **Message input**: Full keyboard support with send button
+
 - **Message history**: Scrollable message display
 - **User list**: Current channel participants
 - **Mute/unmute controls**: Channel and player management
@@ -374,6 +387,7 @@ interface UseChatReturn {
 **Format**: JSON-structured logs for AI integration
 
 **Rotation**: Daily log files with timestamp naming
+
 - **Retention**: 30 days by default, configurable
 
 ### Redis Pub/Sub Architecture
@@ -383,6 +397,7 @@ interface UseChatReturn {
 **Session History**: In-memory session storage with Redis
 
 **Performance**: Sub-millisecond message delivery
+
 - **Scalability**: Support for 1000+ concurrent users
 - **Reliability**: Message persistence and delivery guarantees
 
@@ -421,17 +436,17 @@ CREATE TABLE chat_mute_settings (
 
 -- Chat moderation logs (for admin oversight)
 CREATE TABLE chat_moderation_logs (
-    id TEXT PRIMARY KEY,
-    moderator_id TEXT NOT NULL,
-    target_id TEXT NOT NULL,
-    action TEXT NOT NULL, -- mute, unmute, ban, etc.
-    reason TEXT,
-    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (moderator_id) REFERENCES players(id),
-    FOREIGN KEY (target_id) REFERENCES players(id)
+id TEXT PRIMARY KEY,
+moderator_id TEXT NOT NULL,
+target_id TEXT NOT NULL,
+action TEXT NOT NULL, -- mute, unmute, ban, etc.
+reason TEXT,
+timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+FOREIGN KEY (moderator_id) REFERENCES players(id),
+FOREIGN KEY (target_id) REFERENCES players(id)
 );
 
-```
+````
 
 ## Prerequisites: System Infrastructure Requirements
 
@@ -445,7 +460,7 @@ CREATE TABLE chat_moderation_logs (
 # server/server_config.yaml
 
 allow_multiplay: true  # Enable multiplayer for chat functionality
-```
+````
 
 **Impact**: Without this fix, only one player can connect at a time, making chat impossible.
 
@@ -492,7 +507,9 @@ def resolve_player_name(self, identifier: str) -> Player | None:
 #### 6. Party System
 
 **Timing**: Implemented when adding `/party` channel in Phase 3
-**Scope**: Party management, party chat functionality
+**Scope**: Party management, party chat functionality. See
+[docs/PLANNING_ephemeral_grouping.md](../PLANNING_ephemeral_grouping.md) for consolidated
+ephemeral grouping plan.
 
 ## Implementation Phases
 
@@ -667,6 +684,7 @@ Basic chat interface for say messages
 **Phase 0.1**: Multiplayer configuration must be enabled before any chat development
 
 **Phase 0.2**: Room adjacency logic required for local channel functionality
+
 - **Phase 0.3**: Player name resolution required for whisper commands
 
 ### Feature Dependencies
@@ -674,6 +692,7 @@ Basic chat interface for say messages
 **Say Channel**: Requires Phase 0.1 (multiplayer enabled)
 
 **Local Channel**: Requires Phase 0.1 + Phase 0.2 (multiplayer + adjacency)
+
 - **Whisper Channel**: Requires Phase 0.1 + Phase 0.3 (multiplayer + name resolution)
 - **Party Channel**: Requires new Party System (implemented in Phase 3)
 - **Admin Features**: Requires Admin/Moderator System (implemented in Phase 4)
@@ -683,6 +702,7 @@ Basic chat interface for say messages
 **Phase 0**: Complete all infrastructure fixes before starting chat development
 
 **Testing**: Each phase must be fully tested before proceeding to next phase
+
 - **Rollback Plan**: Infrastructure changes can be reverted if issues arise
 
 ## Testing Strategy
@@ -748,6 +768,7 @@ Message encryption (future enhancement)
 **Concurrent Users**: 10-100 players
 
 **Message Volume**: 100-1000 messages per minute (10 messages per player per minute average)
+
 - **Message Delivery**: Sub-100ms latency
 - **Uptime**: 99.9% availability
 - **Peak Load**: Handle burst traffic up to 2000 messages per minute
@@ -768,6 +789,7 @@ Message queuing and batching
 **Player Service**: User authentication and management
 
 **Room Service**: Location-based messaging
+
 - **Party System**: Group communication
 - **WebSocket Handler**: Real-time delivery
 - **Event Bus**: System-wide notifications
@@ -778,6 +800,7 @@ Message queuing and batching
 **Voice Chat**: Audio communication
 
 **File Sharing**: Image and document exchange
+
 - **Emoji Support**: Enhanced expression
 - **Chat Bots**: Automated responses
 - **Translation**: Multi-language support
@@ -797,6 +820,7 @@ All chat channels operational
 **Message delivery latency**: < 100ms
 
 **System uptime**: > 99.9%
+
 - **Concurrent users**: 10-100 players
 - **Message volume**: 100-1000 messages per minute
 - **Successful message filtering**: > 95%
@@ -817,6 +841,7 @@ User satisfaction scores
 **WebSocket Scalability**: Implement connection pooling and load balancing
 
 **Database Performance**: Optimize queries and implement caching
+
 - **Message Loss**: Implement reliable delivery mechanisms
 - **Security Vulnerabilities**: Regular security audits and penetration testing
 
@@ -825,6 +850,7 @@ User satisfaction scores
 **Moderation Burden**: Automated filtering and community tools
 
 **User Abuse**: Rate limiting and administrative oversight
+
 - **System Overload**: Monitoring and auto-scaling capabilities
 - **Data Loss**: Regular backups and disaster recovery procedures
 
@@ -835,6 +861,7 @@ User satisfaction scores
 **Phase 0 (Infrastructure Prerequisites)**: 1 week (Critical fixes)
 
 **Phase 1 (Tracer Bullet)**: 1-2 weeks (Say channel MVP)
+
 - **Phase 2 (Core Infrastructure)**: 2-3 weeks (Redis, full chat service)
 - **Phase 3 (Additional Channels)**: 2-3 weeks (Global, local, whisper, party)
 - **Phase 4 (Advanced Features)**: 2-3 weeks (Admin/moderator, moderation, enhanced UI)
@@ -863,9 +890,9 @@ Players can use `/say` command successfully
 
 This chat system implementation will provide MythosMUD with a comprehensive communication platform that enhances player interaction while maintaining the atmospheric integrity of our eldritch setting. The phased approach ensures steady progress while allowing for iterative refinement based on user feedback and testing results.
 
-*"The most merciful thing in the world, I think, is the inability of the human brain to correlate all its contents." - H.P. Lovecraft*
+_"The most merciful thing in the world, I think, is the inability of the human brain to correlate all its contents." - H.P. Lovecraft_
 
 ---
 
-*Document prepared by Prof. Armitage, Miskatonic University Department of Occult Studies*
-*Last updated: [Current Date]*
+_Document prepared by Prof. Armitage, Miskatonic University Department of Occult Studies_
+_Last updated: [Current Date]_

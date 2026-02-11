@@ -65,6 +65,9 @@ from .command_moderation import (
     UnmuteGlobalCommand,
 )
 
+# Import party command
+from .command_party import PartyCommand
+
 # Import player state commands
 from .command_player_state import (
     GroundCommand,
@@ -103,6 +106,8 @@ __all__ = [
     "FollowCommand",
     "UnfollowCommand",
     "FollowingCommand",
+    # Party command
+    "PartyCommand",
     # Alias commands
     "AliasCommand",
     "AliasesCommand",
@@ -165,6 +170,7 @@ Command = (
     | FollowCommand
     | UnfollowCommand
     | FollowingCommand
+    | PartyCommand
     | SayCommand
     | LocalCommand
     | SystemCommand

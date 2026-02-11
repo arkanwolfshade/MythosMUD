@@ -52,6 +52,7 @@ export const CommandInputPanel: React.FC<CommandInputPanelProps> = ({
       'logout',
       'me',
       'mute',
+      'party',
       'pose',
       'punch',
       'quit',
@@ -77,6 +78,7 @@ export const CommandInputPanel: React.FC<CommandInputPanelProps> = ({
       !command.startsWith('/') &&
       effectiveChannel !== 'say' &&
       effectiveChannel !== 'local' &&
+      effectiveChannel !== 'party' &&
       !isStandaloneCommand
     ) {
       const channel = CHAT_CHANNEL_OPTIONS.find(c => c.id === effectiveChannel);
@@ -86,6 +88,12 @@ export const CommandInputPanel: React.FC<CommandInputPanelProps> = ({
 
       if (channel?.shortcut && !alreadyHasChannelPrefix) {
         command = `/${channel.shortcut} ${command}`;
+      }
+    }
+    if (!command.startsWith('/') && effectiveChannel === 'party' && command.trim()) {
+      const commandLower = command.toLowerCase();
+      if (!commandLower.startsWith('party ')) {
+        command = `party ${command}`;
       }
     }
 

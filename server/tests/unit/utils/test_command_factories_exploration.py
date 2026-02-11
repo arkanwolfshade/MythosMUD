@@ -213,3 +213,75 @@ def test_create_unfollow_command_with_args():
     """Test create_unfollow_command() raises error with args."""
     with pytest.raises(ValidationError):
         ExplorationCommandFactory.create_unfollow_command(["extra"])
+
+
+def test_create_following_command():
+    """Test create_following_command() creates FollowingCommand with no args."""
+    command = ExplorationCommandFactory.create_following_command([])
+    assert command is not None
+
+
+def test_create_following_command_with_args():
+    """Test create_following_command() raises error with args."""
+    with pytest.raises(ValidationError):
+        ExplorationCommandFactory.create_following_command(["extra"])
+
+
+def test_create_party_command_no_args():
+    """Test create_party_command() with no args returns status-only command."""
+    command = ExplorationCommandFactory.create_party_command([])
+    assert command.subcommand == ""
+    assert command.target is None
+    assert command.message is None
+
+
+def test_create_party_command_invite_with_target():
+    """Test create_party_command() with invite and target."""
+    command = ExplorationCommandFactory.create_party_command(["invite", "Armitage"])
+    assert command.subcommand == "invite"
+    assert command.target == "Armitage"
+    assert command.message is None
+
+
+def test_create_party_command_invite_no_target():
+    """Test create_party_command() with invite but no target raises."""
+    with pytest.raises(ValidationError):
+        ExplorationCommandFactory.create_party_command(["invite"])
+
+
+def test_create_party_command_kick_with_target():
+    """Test create_party_command() with kick and target."""
+    command = ExplorationCommandFactory.create_party_command(["kick", "SomePlayer"])
+    assert command.subcommand == "kick"
+    assert command.target == "SomePlayer"
+    assert command.message is None
+
+
+def test_create_party_command_kick_no_target():
+    """Test create_party_command() with kick but no target raises."""
+    with pytest.raises(ValidationError):
+        ExplorationCommandFactory.create_party_command(["kick"])
+
+
+def test_create_party_command_leave():
+    """Test create_party_command() with leave subcommand."""
+    command = ExplorationCommandFactory.create_party_command(["leave"])
+    assert command.subcommand == "leave"
+    assert command.target is None
+    assert command.message is None
+
+
+def test_create_party_command_list():
+    """Test create_party_command() with list subcommand."""
+    command = ExplorationCommandFactory.create_party_command(["list"])
+    assert command.subcommand == "list"
+    assert command.target is None
+    assert command.message is None
+
+
+def test_create_party_command_message():
+    """Test create_party_command() with message (no subcommand)."""
+    command = ExplorationCommandFactory.create_party_command(["hello", "party"])
+    assert command.subcommand == ""
+    assert command.target is None
+    assert command.message == "hello party"

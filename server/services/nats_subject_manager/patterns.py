@@ -46,6 +46,11 @@ PREDEFINED_PATTERNS = {
         "required_params": ["room_id"],
         "description": "Room-level pose messages",
     },
+    "chat_party_group": {
+        "pattern": "chat.party.group.{party_id}",
+        "required_params": ["party_id"],
+        "description": "Party (ephemeral group) chat messages",
+    },
     # Event patterns
     "event_player_entered": {
         "pattern": "events.player_entered.{room_id}",

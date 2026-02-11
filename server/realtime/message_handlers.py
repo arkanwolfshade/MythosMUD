@@ -106,3 +106,32 @@ async def handle_follow_response_message(websocket: WebSocket, player_id: str, d
     await websocket.send_json(
         build_event("command_response", {"result": result.get("result", "Done.")}, player_id=player_id)
     )
+
+
+async def handle_party_invite_response_message(websocket: WebSocket, player_id: str, data: dict[str, Any]) -> None:
+    """Handle party_invite_response message (accept/decline party invite)."""
+    from .envelope import build_event
+
+    invite_id = data.get("invite_id")
+    accept = data.get("accept", False)
+    if not invite_id:
+        await websocket.send_json(
+            build_event("command_response", {"result": "Invalid party invite response."}, player_id=player_id)
+        )
+        return
+    from ..container import get_container
+
+    container = get_container()
+    if not container or not getattr(container, "party_service", None):
+        await websocket.send_json(
+            build_event("command_response", {"result": "Party is not available."}, player_id=player_id)
+        )
+        return
+    party_service = container.party_service
+    if accept:
+        result = await party_service.accept_party_invite(player_id, str(invite_id))
+    else:
+        result = await party_service.decline_party_invite(player_id, str(invite_id))
+    await websocket.send_json(
+        build_event("command_response", {"result": result.get("result", "Done.")}, player_id=player_id)
+    )

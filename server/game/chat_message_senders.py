@@ -335,6 +335,83 @@ async def send_whisper_message(  # pylint: disable=too-many-arguments,too-many-p
     return {"success": True, "message": chat_message.to_dict()}
 
 
+async def send_party_message(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Message sending requires many parameters for context and routing
+    player_id: uuid.UUID | str,
+    message: str,
+    party_id: str,
+    player_service: Any,
+    rate_limiter: Any,
+    chat_logger: Any,
+    nats_service: Any,
+    subject_manager: Any | None,
+) -> dict[str, Any]:
+    """
+    Send a party (ephemeral group) chat message to party members only.
+
+    Message is published to NATS on chat.party.group.{party_id}; delivery to
+    only current party members is enforced by PartyChannelStrategy. Rate limit
+    uses the configured party channel limit (e.g. 30 msg/min).
+
+    Args:
+        player_id: ID of the sender
+        message: Message content
+        party_id: Party ID (sender must be in this party; caller validates)
+        player_service: Player service instance
+        rate_limiter: Rate limiter instance
+        chat_logger: Chat logger instance
+        nats_service: NATS service instance
+        subject_manager: NATS subject manager instance (optional)
+
+    Returns:
+        Dictionary with success status and message details
+    """
+    player_id = normalize_player_id(player_id)
+    if not message or not message.strip():
+        return {"success": False, "error": "Message cannot be empty"}
+    if len(message.strip()) > 2000:
+        return {"success": False, "error": "Message too long (max 2000 characters)"}
+
+    player = await player_service.get_player_by_id(player_id)
+    if not player:
+        logger.warning("Player not found for party message")
+        return {"success": False, "error": "Player not found"}
+
+    if not rate_limiter.check_rate_limit(player_id, "party", player.name):
+        return {"success": False, "error": "Rate limit exceeded for party chat", "rate_limited": True}
+
+    chat_message = ChatMessage(
+        sender_id=player_id,
+        sender_name=player.name,
+        channel="party",
+        content=message.strip(),
+        party_id=party_id,
+    )
+    chat_logger.log_chat_message(
+        {
+            "message_id": chat_message.id,
+            "channel": chat_message.channel,
+            "sender_id": chat_message.sender_id,
+            "sender_name": chat_message.sender_name,
+            "content": chat_message.content,
+            "room_id": None,
+            "filtered": False,
+            "moderation_notes": None,
+        }
+    )
+    rate_limiter.record_message(player_id, "party", player.name)
+    chat_message.log_message()
+
+    success = await publish_chat_message_to_nats(chat_message, None, nats_service, subject_manager)
+    if not success:
+        logger.error(
+            "NATS publishing failed for party message",
+            player_id=player_id,
+            message_id=chat_message.id,
+        )
+        return {"success": False, "error": "Chat system temporarily unavailable. Please try again in a moment."}
+    return {"success": True, "message": chat_message.to_dict()}
+
+
 async def send_global_message(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Message sending requires many parameters for context and routing
     player_id: uuid.UUID | str,
     message: str,

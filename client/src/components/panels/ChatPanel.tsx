@@ -132,6 +132,10 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         return normalizedSelectedChannel === 'whisper';
       }
 
+      if (messageChannel === 'party') {
+        return normalizedSelectedChannel === 'party';
+      }
+
       return messageChannel === normalizedSelectedChannel;
     });
   }, [messages, normalizedSelectedChannel, isAllChannelSelected]);
@@ -264,6 +268,8 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         return 'text-mythos-terminal-error font-bold';
       case 'whisper':
         return 'text-mythos-terminal-secondary italic';
+      case 'party':
+        return 'text-mythos-terminal-primary';
       case 'shout':
         return 'text-mythos-terminal-warning font-bold';
       default:

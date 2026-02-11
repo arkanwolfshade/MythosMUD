@@ -109,6 +109,8 @@ const PROJECTED_EVENT_TYPES = new Set([
   'game_tick',
   'follow_request',
   'follow_state',
+  'party_invite',
+  'party_invite_cleared',
 ]);
 
 /**
@@ -587,6 +589,21 @@ export function projectEvent(prevState: GameState, event: GameEvent): GameState 
     }
     case 'follow_request_cleared': {
       nextState = { ...prevState, pendingFollowRequest: null };
+      break;
+    }
+    case 'party_invite': {
+      const inviteId = typeof event.data.invite_id === 'string' ? event.data.invite_id : '';
+      const inviterName = typeof event.data.inviter_name === 'string' ? event.data.inviter_name : 'Someone';
+      if (inviteId) {
+        nextState = {
+          ...prevState,
+          pendingPartyInvite: { invite_id: inviteId, inviter_name: inviterName },
+        };
+      }
+      break;
+    }
+    case 'party_invite_cleared': {
+      nextState = { ...prevState, pendingPartyInvite: null };
       break;
     }
     default:

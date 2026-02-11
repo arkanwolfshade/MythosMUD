@@ -103,7 +103,7 @@ class GlobalChannelStrategy(ChannelBroadcastingStrategy):  # pylint: disable=too
 
 
 class PartyChannelStrategy(ChannelBroadcastingStrategy):  # pylint: disable=too-few-public-methods  # Reason: Strategy class with focused responsibility, minimal public interface
-    """Strategy for party channel broadcasting."""
+    """Strategy for party channel broadcasting. Delivers only to current party members."""
 
     async def broadcast(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Broadcasting requires many parameters for context and message routing
         self,
@@ -114,12 +114,30 @@ class PartyChannelStrategy(ChannelBroadcastingStrategy):  # pylint: disable=too-
         sender_id: uuid.UUID,
         nats_handler: Any,
     ) -> None:
-        """Broadcast party message to party members."""
-        if party_id:
-            # TODO: Implement party-based broadcasting when party system is available  # pylint: disable=fixme  # Reason: Feature placeholder for party system integration
-            logger.debug("Party message received")
-        else:
+        """Broadcast party message to party members only, with dampening and mute checks."""
+        if not party_id:
             logger.warning("Party message missing party_id")
+            return
+        party_service = getattr(nats_handler, "party_service", None)
+        if not party_service:
+            logger.warning("Party channel strategy: party_service not available on NATS handler")
+            return
+        party = party_service.get_party(party_id)
+        if not party:
+            logger.debug("Party not found for party chat", party_id=party_id)
+            return
+        sender_id_str = str(sender_id)
+        for member_id in party.member_ids:
+            await nats_handler._apply_dampening_and_send_message(  # pylint: disable=protected-access  # Reason: Internal API for per-receiver delivery with mute/dampening
+                chat_event, sender_id_str, member_id, "party"
+            )
+        logger.info(
+            "Party message broadcast to members via WebSocket",
+            party_id=party_id,
+            member_count=len(party.member_ids),
+            sender_id=sender_id,
+            member_ids=list(party.member_ids),
+        )
 
 
 class WhisperChannelStrategy(ChannelBroadcastingStrategy):  # pylint: disable=too-few-public-methods  # Reason: Strategy class with focused responsibility, minimal public interface

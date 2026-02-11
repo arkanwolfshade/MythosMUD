@@ -28,6 +28,7 @@ logger = get_logger(__name__)
 GAME_ATTRS = (
     "movement_service",
     "follow_service",
+    "party_service",
     "exploration_service",
     "player_service",
     "room_service",
@@ -48,6 +49,7 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
 
     movement_service: Any = None
     follow_service: Any = None
+    party_service: Any = None
     exploration_service: Any = None
     player_service: Any = None
     room_service: Any = None
@@ -105,7 +107,14 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
             async_persistence=async_persistence,
             player_position_service=player_position_service,
         )
-        logger.info("Exploration, movement and follow services initialized")
+        from server.game.party_service import PartyService
+
+        self.party_service = PartyService(
+            event_bus=event_bus,
+            connection_manager=connection_manager,
+            async_persistence=async_persistence,
+        )
+        logger.info("Exploration, movement, follow and party services initialized")
 
         # Temporal services
         logger.debug("Initializing temporal services...")
@@ -168,6 +177,7 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
             self.follow_service._user_manager = self.user_manager  # pylint: disable=protected-access  # Reason: FollowService requires UserManager set after bundle init order
         if nats_message_handler is not None:
             nats_message_handler.user_manager = self.user_manager
+            nats_message_handler.party_service = self.party_service
 
         from server.services.container_service import ContainerService
 

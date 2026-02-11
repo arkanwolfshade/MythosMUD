@@ -309,15 +309,17 @@ async def _handle_websocket_message_loop(
 async def _cleanup_connection(
     player_id: uuid.UUID, player_id_str: str, connection_manager: "ConnectionManager"
 ) -> None:
-    """Clean up connection, follow state, and player mute data on disconnect."""
+    """Clean up connection, follow state, party state, and player mute data on disconnect."""
     try:
         from ..container import get_container
 
         container = get_container()
         if container and getattr(container, "follow_service", None):
             container.follow_service.on_player_disconnect(player_id)
+        if container and getattr(container, "party_service", None):
+            container.party_service.on_player_disconnect(player_id)
     except (ImportError, AttributeError, RuntimeError) as e:
-        logger.debug("Could not clean up follow state on disconnect", player_id=player_id, error=str(e))
+        logger.debug("Could not clean up follow/party state on disconnect", player_id=player_id, error=str(e))
 
     try:
         await connection_manager.disconnect_websocket(player_id)

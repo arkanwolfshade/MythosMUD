@@ -275,13 +275,16 @@ class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Re
         """Handle LoggedHTTPException instances."""
         # Map status code to error type
         error_type = self._map_status_code_to_error_type(exc.status_code)
-        user_friendly = self.USER_FRIENDLY_MESSAGES.get(error_type, ErrorMessages.INTERNAL_ERROR)
+        # Determine user-friendly message with special handling for certain operations
+        # Human reader: keep invite-code errors explicit for better UX.
+        # AI reader: rely on sanitized_detail for invite-code messages, not raw exception text.
 
         # Create error details
         details: dict[str, Any] = {"status_code": exc.status_code}
         # Human reader: sanitize detail to prevent stack trace exposure.
         # AI reader: ensure no stack traces leak into user-facing responses.
         sanitized_detail = self._sanitize_exception_message(str(exc.detail))
+        user_friendly = self._get_logged_http_user_friendly_message(error_type, exc, sanitized_detail)
         if include_details:
             details["original_detail"] = sanitized_detail
 
@@ -304,6 +307,38 @@ class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Re
             )
 
         return JSONResponse(status_code=exc.status_code, content=response_data)
+
+    def _get_logged_http_user_friendly_message(
+        self,
+        error_type: ErrorType,
+        exc: LoggedHTTPException,
+        sanitized_detail: str,
+    ) -> str:
+        """
+        Determine user-friendly message for LoggedHTTPException.
+
+        For most errors we use the generic mapping, but for some operations (like
+        invite validation) we want the specific detail string so the user gets a
+        clear explanation instead of a vague "Invalid input provided".
+
+        This helper intentionally uses the sanitized detail text to avoid leaking
+        stack traces or sensitive data.
+        """
+        try:
+            context = getattr(exc, "context", None)
+            metadata = getattr(context, "metadata", {}) if context is not None else {}
+            operation = metadata.get("operation")
+        except Exception:  # pylint: disable=broad-exception-caught  # Reason: Defensive - context structure may vary
+            operation = None
+
+        # Special-case invite validation failures so registration UX is clear.
+        if error_type is ErrorType.INVALID_INPUT and operation == "validate_invite":
+            # Example sanitized_detail: "Invite code is expired or already used"
+            # This is safe to show directly to the user and much more helpful than
+            # the generic "Invalid input provided".
+            return sanitized_detail or ErrorMessages.INVALID_INPUT
+
+        return self.USER_FRIENDLY_MESSAGES.get(error_type, ErrorMessages.INTERNAL_ERROR)
 
     def _handle_http_exception(self, exc: HTTPException, include_details: bool, response_type: str) -> JSONResponse:  # pylint: disable=unused-argument  # Reason: response_type unused in this handler
         """Handle standard HTTPException instances."""

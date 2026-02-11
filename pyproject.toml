@@ -87,6 +87,7 @@ include = ["server*"]
 
 [tool.ruff]
 target-version = "py312"
+# line-length checks disabled project-wide; formatter may still use this for wrap
 line-length = 120
 
 [tool.ruff.lint]
@@ -101,7 +102,7 @@ select = [
     "UP", # pyupgrade
 ]
 ignore = [
-    "E501",  # line too long, handled by line-length
+    "E501",  # line too long - line-length checks disabled globally
     "B008",  # do not perform function calls in argument defaults
 ]
 # Cyclomatic complexity threshold: 11 (matches Codacy threshold)

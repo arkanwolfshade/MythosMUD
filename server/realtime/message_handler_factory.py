@@ -75,6 +75,16 @@ class FollowResponseMessageHandler(MessageHandler):
         await handle_follow_response_message(websocket, player_id, data)
 
 
+class PartyInviteResponseMessageHandler(MessageHandler):
+    """Handler for party_invite_response messages (accept/decline party invite)."""
+
+    async def handle(self, websocket: WebSocket, player_id: str, data: dict[str, Any]) -> None:
+        """Handle party_invite_response message type."""
+        from .message_handlers import handle_party_invite_response_message
+
+        await handle_party_invite_response_message(websocket, player_id, data)
+
+
 class MessageHandlerFactory:
     """
     Factory for creating and managing message handlers.
@@ -93,6 +103,7 @@ class MessageHandlerFactory:
             "chat": ChatMessageHandler(),
             "ping": PingMessageHandler(),
             "follow_response": FollowResponseMessageHandler(),
+            "party_invite_response": PartyInviteResponseMessageHandler(),
         }
 
     def register_handler(self, message_type: str, handler: MessageHandler) -> None:

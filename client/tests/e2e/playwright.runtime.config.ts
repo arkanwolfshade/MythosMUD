@@ -32,6 +32,8 @@ export default defineConfig({
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: 'http://localhost:5173',
+    /* Run headed locally (do not use headless); headless only in CI. */
+    headless: process.env.CI === 'true',
     /* Default timeout for each action (30 seconds) */
     actionTimeout: 30000,
     /* Default timeout for navigation */
@@ -52,11 +54,14 @@ export default defineConfig({
   expect: {
     timeout: 30000,
   },
-  /* Configure projects for major browsers */
+  /* Configure projects for major browsers.
+   * Use channel 'chrome' to use the system-installed Chrome so we do not depend on
+   * Playwright's bundled chromium/chromium_headless_shell (build 1208) being present.
+   */
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: { ...devices['Desktop Chrome'], channel: 'chrome' },
     },
   ],
   /* Run your local dev server before starting the tests (disabled in CI) */

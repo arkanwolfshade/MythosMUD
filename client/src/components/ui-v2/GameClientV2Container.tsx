@@ -8,9 +8,9 @@ import { useMemoryMonitor } from '../../utils/memoryMonitor';
 import { DeathInterstitial } from '../DeathInterstitial';
 import { DeliriumInterstitial } from '../DeliriumInterstitial';
 import { MainMenuModal } from '../MainMenuModal';
-import { ModalContainer } from '../ui/ModalContainer';
 import { MapView } from '../MapView';
 import { AsciiMinimap } from '../map/AsciiMinimap';
+import { ModalContainer } from '../ui/ModalContainer';
 import { GameClientV2 } from './GameClientV2';
 import { TabbedInterfaceOverlay } from './components/TabbedInterfaceOverlay';
 import { useCommandHandlers } from './hooks/useCommandHandlers';
@@ -49,6 +49,8 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
 
   /** Request ID we've accepted/declined; hide dialog for this id even if event log re-applies it. */
   const [clearedFollowRequestId, setClearedFollowRequestId] = useState<string | null>(null);
+  /** Invite ID we've accepted/declined; hide party invite dialog for this id even if event log re-applies it. */
+  const [clearedPartyInviteId, setClearedPartyInviteId] = useState<string | null>(null);
 
   // Tabbed interface for in-app tabs
   const { tabs, activeTabId, addTab, closeTab, setActiveTab } = useTabbedInterface([]);
@@ -360,6 +362,59 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
                   setGameState(prev => ({ ...prev, pendingFollowRequest: null }));
                   clearPendingFollowRequest(reqId);
                   sendMessage('follow_response', { request_id: reqId, accept: true });
+                }}
+              >
+                Accept
+              </button>
+            </div>
+          </div>
+        </ModalContainer>
+      )}
+
+      {/* Party invite prompt: accept/decline when a party leader invites you */}
+      {gameState.pendingPartyInvite && clearedPartyInviteId !== gameState.pendingPartyInvite.invite_id && (
+        <ModalContainer
+          isOpen={true}
+          onClose={() => {
+            const inviteId = gameState.pendingPartyInvite!.invite_id;
+            setClearedPartyInviteId(inviteId);
+            setGameState(prev => ({ ...prev, pendingPartyInvite: null }));
+            sendMessage('party_invite_response', { invite_id: inviteId, accept: false });
+          }}
+          title="Party invite"
+          maxWidth="sm"
+          showCloseButton={true}
+          overlayZIndex={10000}
+          position="center-no-backdrop"
+          contentClassName="!bg-black border-2 border-mythos-terminal-primary shadow-2xl"
+        >
+          <div className="p-4 space-y-4">
+            <p className="text-mythos-terminal-text font-medium">
+              {gameState.pendingPartyInvite.inviter_name} has invited you to join their party.
+            </p>
+            <div className="flex gap-3 justify-end">
+              <button
+                type="button"
+                className="px-3 py-1.5 rounded border border-mythos-terminal-border bg-mythos-terminal-surface
+                    text-mythos-terminal-text hover:bg-mythos-terminal-border/30 font-medium"
+                onClick={() => {
+                  const inviteId = gameState.pendingPartyInvite!.invite_id;
+                  setClearedPartyInviteId(inviteId);
+                  setGameState(prev => ({ ...prev, pendingPartyInvite: null }));
+                  sendMessage('party_invite_response', { invite_id: inviteId, accept: false });
+                }}
+              >
+                Decline
+              </button>
+              <button
+                type="button"
+                className="px-3 py-1.5 rounded border border-mythos-terminal-border bg-mythos-terminal-surface
+                    text-mythos-terminal-text hover:bg-mythos-terminal-border/30 font-medium"
+                onClick={() => {
+                  const inviteId = gameState.pendingPartyInvite!.invite_id;
+                  setClearedPartyInviteId(inviteId);
+                  setGameState(prev => ({ ...prev, pendingPartyInvite: null }));
+                  sendMessage('party_invite_response', { invite_id: inviteId, accept: true });
                 }}
               >
                 Accept

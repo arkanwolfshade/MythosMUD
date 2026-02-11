@@ -115,6 +115,10 @@ class CommandFactory:
         """Create FollowingCommand from arguments."""
         return self._exploration.create_following_command(args)
 
+    def create_party_command(self, args: list[str]) -> BaseCommand:
+        """Create PartyCommand from arguments."""
+        return self._exploration.create_party_command(args)
+
     # Inventory commands
     def create_inventory_command(self, args: list[str]) -> BaseCommand:
         """Create InventoryCommand from arguments."""

@@ -5,7 +5,7 @@ Tests the ChatService class and ChatMessage class.
 """
 
 import uuid
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -212,6 +212,75 @@ async def test_get_last_whisper_sender():
     service._whisper_tracker._last_senders["TestPlayer"] = "OtherPlayer"
     result = service.get_last_whisper_sender("TestPlayer")
     assert result == "OtherPlayer"
+
+
+# ---- send_party_message (party chat) ----
+@pytest.mark.asyncio
+async def test_send_party_message_empty():
+    """Test send_party_message() with empty message."""
+    mock_persistence = MagicMock()
+    mock_room_service = MagicMock()
+    mock_player_service = MagicMock()
+    service = ChatService(mock_persistence, mock_room_service, mock_player_service)
+    result = await service.send_party_message(uuid.uuid4(), "", "party_123")
+    assert result["success"] is False
+    assert "empty" in result["error"].lower()
+
+
+@pytest.mark.asyncio
+async def test_send_party_message_player_not_found():
+    """Test send_party_message() when player is not found."""
+    mock_persistence = MagicMock()
+    mock_room_service = MagicMock()
+    mock_player_service = AsyncMock()
+    mock_player_service.get_player_by_id = AsyncMock(return_value=None)
+    service = ChatService(mock_persistence, mock_room_service, mock_player_service)
+    result = await service.send_party_message(uuid.uuid4(), "Hello party", "party_123")
+    assert result["success"] is False
+    assert "not found" in result["error"].lower()
+
+
+@pytest.mark.asyncio
+async def test_send_party_message_rate_limited():
+    """Test send_party_message() when party channel rate limit is exceeded."""
+    mock_persistence = MagicMock()
+    mock_room_service = MagicMock()
+    mock_player_service = AsyncMock()
+    mock_player = MagicMock()
+    mock_player.name = "TestPlayer"
+    mock_player_service.get_player_by_id = AsyncMock(return_value=mock_player)
+    service = ChatService(mock_persistence, mock_room_service, mock_player_service)
+    # Reason: Standard test mocking practice - replacing method with MagicMock for testing
+    service.rate_limiter.check_rate_limit = MagicMock(return_value=False)  # type: ignore[method-assign]
+    result = await service.send_party_message(uuid.uuid4(), "Hello party", "party_123")
+    assert result["success"] is False
+    assert "rate limit" in result["error"].lower()
+    assert result.get("rate_limited") is True
+
+
+@pytest.mark.asyncio
+async def test_send_party_message_success():
+    """Test send_party_message() success path: message published to NATS."""
+    mock_persistence = MagicMock()
+    mock_room_service = MagicMock()
+    mock_player_service = AsyncMock()
+    mock_player = MagicMock()
+    mock_player.name = "TestPlayer"
+    mock_player_service.get_player_by_id = AsyncMock(return_value=mock_player)
+    service = ChatService(mock_persistence, mock_room_service, mock_player_service)
+    service.rate_limiter.check_rate_limit = MagicMock(return_value=True)  # type: ignore[method-assign]
+    service.rate_limiter.record_message = MagicMock()
+    with patch(
+        "server.game.chat_message_senders.publish_chat_message_to_nats",
+        new_callable=AsyncMock,
+        return_value=True,
+    ):
+        result = await service.send_party_message(uuid.uuid4(), "Hello party", "party_123")
+    assert result["success"] is True
+    assert "message" in result
+    assert result["message"].get("channel") == "party"
+    assert result["message"].get("party_id") == "party_123"
+    assert result["message"].get("content") == "Hello party"
 
 
 @pytest.mark.asyncio

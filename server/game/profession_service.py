@@ -51,7 +51,7 @@ class ProfessionService:
             else:
                 mechanical_effects_list.append({"effect_type": effect_key, "value": effect_value, "description": None})
 
-        return {
+        result_dict = {
             "id": profession.id,
             "name": profession.name,
             "description": profession.description,
@@ -60,6 +60,7 @@ class ProfessionService:
             "mechanical_effects": mechanical_effects_list,
             "is_available": profession.is_available,
         }
+        return result_dict
 
     async def get_all_professions_dict(self) -> list[dict[str, Any]]:
         """
@@ -69,7 +70,11 @@ class ProfessionService:
             list[dict[str, Any]]: List of profession dictionaries
         """
         professions = await self.persistence.get_professions()
-        return [self.profession_to_dict(profession) for profession in professions]
+        result = []
+        for profession in professions:
+            profession_dict = self.profession_to_dict(profession)
+            result.append(profession_dict)
+        return result
 
     async def get_profession_by_id_dict(self, profession_id: int) -> dict[str, Any] | None:
         """

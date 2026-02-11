@@ -86,6 +86,7 @@ class CommandParser:
             CommandType.FOLLOW.value: self.factory.create_follow_command,
             CommandType.UNFOLLOW.value: self.factory.create_unfollow_command,
             CommandType.FOLLOWING.value: self.factory.create_following_command,
+            CommandType.PARTY.value: self.factory.create_party_command,
             # Communication commands
             CommandType.CHANNEL.value: self.factory.create_channel_command,
             CommandType.WHISPER.value: self.factory.create_whisper_command,

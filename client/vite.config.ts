@@ -1,6 +1,31 @@
 import react from '@vitejs/plugin-react';
 import path from 'path';
+import type { Plugin } from 'vite';
 import { defineConfig } from 'vite';
+
+// Plugin to ensure Authorization header is forwarded for /professions proxy
+const professionsProxyPlugin = (): Plugin => ({
+  name: 'professions-proxy-auth',
+  configureServer(server) {
+    // Add middleware BEFORE proxy to capture Authorization header
+    server.middlewares.use('/professions', (req, _res, next) => {
+      // Log incoming request headers for debugging
+      const authHeader = req.headers.authorization || req.headers.Authorization;
+      if (authHeader) {
+        // Ensure the header is preserved in the request object
+        req.headers.authorization = authHeader as string;
+        req.headers.Authorization = authHeader as string;
+        console.log('[Vite Plugin] /professions middleware - Authorization header found:', {
+          hasAuth: !!authHeader,
+          authPreview: authHeader.toString().substring(0, 30),
+        });
+      } else {
+        console.log('[Vite Plugin] /professions middleware - NO Authorization header');
+      }
+      next();
+    });
+  },
+});
 
 // TODO: Implement AST-based console removal plugin to selectively remove
 // console.debug, console.log, console.info, console.trace while preserving
@@ -11,6 +36,7 @@ import { defineConfig } from 'vite';
 export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
+    professionsProxyPlugin(),
     // Note: Console removal plugin is disabled due to regex limitations
     // For production, prefer using console.error/warn for logging
     // TODO: Implement AST-based console removal to preserve console.error/warn
@@ -91,6 +117,37 @@ export default defineConfig(({ mode }) => ({
       '/game': {
         target: 'http://127.0.0.1:54731',
         changeOrigin: true,
+      },
+      '/professions': {
+        target: 'http://127.0.0.1:54731',
+        changeOrigin: true,
+        configure: (proxy, _options) => {
+          // Access the http-proxy instance to ensure Authorization header is forwarded
+          proxy.on('proxyReq', (proxyReq, req) => {
+            // Get Authorization header (check both cases)
+            const authHeader = req.headers.authorization || req.headers.Authorization;
+
+            // Explicitly set the Authorization header on the proxy request
+            if (authHeader) {
+              proxyReq.setHeader('Authorization', authHeader as string);
+              console.log('[Vite Proxy] /professions proxyReq - Setting Authorization header', {
+                url: req.url,
+                method: req.method,
+                authPreview: (authHeader as string).substring(0, 30),
+              });
+            } else {
+              console.log('[Vite Proxy] /professions proxyReq - NO Authorization header found', {
+                url: req.url,
+                method: req.method,
+                allHeaders: Object.keys(req.headers),
+                headerValues: Object.entries(req.headers).map(([k, v]) => [
+                  k,
+                  typeof v === 'string' ? v.substring(0, 30) : String(v),
+                ]),
+              });
+            }
+          });
+        },
       },
     },
   },

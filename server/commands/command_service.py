@@ -79,6 +79,7 @@ from .magic_commands import (
     handle_stop_command,
 )
 from .npc_admin_commands import handle_npc_command
+from .party_commands import handle_party_command
 from .position_commands import handle_lie_command, handle_sit_command, handle_stand_command
 from .read_command import handle_read_command
 from .rescue_commands import handle_ground_command
@@ -125,6 +126,7 @@ class CommandService:
             "follow": handle_follow_command,
             "unfollow": handle_unfollow_command,
             "following": handle_following_command,
+            "party": handle_party_command,
             "read": handle_read_command,
             # Communication commands
             "say": handle_say_command,
