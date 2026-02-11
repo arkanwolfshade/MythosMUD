@@ -30,7 +30,7 @@ class SpellLearningService:
         spell_registry: SpellRegistry,
         player_service: PlayerService,
         player_spell_repository: PlayerSpellRepository | None = None,
-    ):
+    ) -> None:
         """
         Initialize the spell learning service.
 

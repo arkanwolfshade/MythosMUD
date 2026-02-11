@@ -80,7 +80,7 @@ class DeadLetterQueue:
     AI: File-based DLQ is simple, durable, and doesn't require additional infrastructure.
     """
 
-    def __init__(self, storage_dir: str | None = None):
+    def __init__(self, storage_dir: str | None = None) -> None:
         """
         Initialize dead letter queue.
 

@@ -36,7 +36,7 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     user creation and validation logic with Argon2 password hashing.
     """
 
-    def __init__(self, user_db: SQLAlchemyUserDatabase):
+    def __init__(self, user_db: SQLAlchemyUserDatabase) -> None:
         """Initialize UserManager with validated secrets."""
         super().__init__(user_db)
         # Validate and set token secrets from environment
@@ -198,8 +198,8 @@ get_current_user = fastapi_users.current_user(optional=True)
 get_current_active_user = fastapi_users.current_user(active=True)
 
 
-# Enhanced logging wrapper for get_current_user
-def get_current_user_with_logging():
+# Enhanced logging wrapper for get_current_user (returns FastAPI Depends dependency)
+def get_current_user_with_logging() -> Any:
     """Enhanced get_current_user with detailed logging."""
 
     async def _get_current_user_with_logging(request: Request | None = None) -> dict[str, Any] | None:

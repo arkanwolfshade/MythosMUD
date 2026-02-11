@@ -33,7 +33,7 @@ class NPCMovementIntegration:
     with the existing MovementService and event system.
     """
 
-    def __init__(self, event_bus: EventBus | None = None, persistence: AsyncPersistenceLayer | None = None):
+    def __init__(self, event_bus: EventBus | None = None, persistence: AsyncPersistenceLayer | None = None) -> None:
         """
         Initialize NPC movement integration.
 

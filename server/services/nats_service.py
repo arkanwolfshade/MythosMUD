@@ -893,7 +893,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             raise
 
     # Event handlers with state machine integration (fire-and-forget async tasks)
-    def _on_error(self, error):
+    def _on_error(self, error: BaseException) -> None:
         """
         Handle NATS connection errors with state machine tracking.
 
@@ -921,7 +921,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Error handler errors unpredictable, must log but not fail
             logger.error("Error in async error handler", error=str(e), original_error=str(error))
 
-    def _on_disconnect(self):
+    def _on_disconnect(self) -> None:
         """
         Handle NATS disconnection events with state machine tracking.
 
@@ -952,7 +952,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Disconnect handler errors unpredictable, must log but not fail
             logger.error("Error in async disconnect handler", error=str(e))
 
-    def _on_reconnect(self):
+    def _on_reconnect(self) -> None:
         """
         Handle NATS reconnection events with state machine tracking.
 

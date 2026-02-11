@@ -12,7 +12,7 @@ from typing import Any
 class PopulationStats:  # pylint: disable=too-many-instance-attributes  # Reason: Population stats requires many fields to capture complete population metrics
     """Statistics for NPC population in a zone or sub-zone."""
 
-    def __init__(self, zone_id: str, sub_zone_id: str):
+    def __init__(self, zone_id: str, sub_zone_id: str) -> None:
         """
         Initialize population statistics.
 

@@ -18,7 +18,7 @@ def bind_request_context(
     user_id: str | None = None,
     session_id: str | None = None,
     request_id: str | None = None,
-    **kwargs,
+    **kwargs: Any,
 ) -> None:
     """
     Bind request context to the current logging context.
@@ -65,7 +65,7 @@ def get_current_context() -> dict[str, Any]:
         return {}
 
 
-def log_with_context(bound_logger: BoundLogger, level: str, message: str, **kwargs) -> None:
+def log_with_context(bound_logger: BoundLogger, level: str, message: str, **kwargs: Any) -> None:
     """
     Log a message with the current context automatically included.
 

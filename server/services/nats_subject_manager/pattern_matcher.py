@@ -15,7 +15,7 @@ class PatternMatcher:  # pylint: disable=too-few-public-methods  # Reason: Patte
     Matcher for validating subjects against registered patterns.
     """
 
-    def __init__(self, strict_validation: bool = False):
+    def __init__(self, strict_validation: bool = False) -> None:
         """
         Initialize pattern matcher.
 

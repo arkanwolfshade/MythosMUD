@@ -55,7 +55,7 @@ class PerformanceMonitor:
     timing, metrics collection, alerting, and reporting.
     """
 
-    def __init__(self, max_metrics: int = 10000, alert_threshold_ms: float = 1000.0):
+    def __init__(self, max_metrics: int = 10000, alert_threshold_ms: float = 1000.0) -> None:
         """
         Initialize the performance monitor.
 

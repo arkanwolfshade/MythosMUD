@@ -22,7 +22,7 @@ logger = get_logger("server.task_registry")
 class TaskMetadata:  # pylint: disable=too-few-public-methods  # Reason: Data class for metadata, no instance methods needed
     """Metadata for tracked asyncio.Tasks."""
 
-    def __init__(self, task: asyncio.Task[Any], task_name: str, task_type: str = "unknown"):
+    def __init__(self, task: asyncio.Task[Any], task_name: str, task_type: str = "unknown") -> None:
         """
         Initialize task metadata.
 

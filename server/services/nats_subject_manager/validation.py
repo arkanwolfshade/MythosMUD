@@ -17,7 +17,7 @@ class SubjectValidator:
     Provides validation logic that can be reused across the subject manager.
     """
 
-    def __init__(self, max_subject_length: int = 255, strict_validation: bool = False):
+    def __init__(self, max_subject_length: int = 255, strict_validation: bool = False) -> None:
         """
         Initialize validator.
 

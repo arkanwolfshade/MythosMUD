@@ -92,7 +92,7 @@ class CorpseLifecycleService:
         persistence: Any | None = None,
         connection_manager: Any | None = None,
         time_service: Any | None = None,
-    ):
+    ) -> None:
         """
         Initialize the corpse lifecycle service.
 

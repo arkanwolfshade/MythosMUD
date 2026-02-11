@@ -82,7 +82,7 @@ class NATSRetryHandler:
 
     config: RetryConfig
 
-    def __init__(self, max_retries: int = 3, base_delay: float = 1.0, max_delay: float = 60.0):
+    def __init__(self, max_retries: int = 3, base_delay: float = 1.0, max_delay: float = 60.0) -> None:
         """
         Initialize retry handler.
 

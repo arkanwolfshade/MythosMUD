@@ -18,6 +18,7 @@ from typing import Any, cast
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from ..models.lucidity import LucidityActionCode
 from ..services.lucidity_service import LucidityService, resolve_tier
 from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -29,9 +30,6 @@ HALLUCINATION_FREQUENCIES: dict[str, dict[str, Any]] = {
     "fractured": {"chance": 0.25, "trigger": "time_based", "cooldown_seconds": 30},
     "deranged": {"chance": 0.45, "trigger": "time_based", "cooldown_seconds": 20},
 }
-
-# Cooldown action code for tracking last hallucination check
-HALLUCINATION_TIMER_ACTION_CODE = "hallucination_timer"
 
 
 class HallucinationFrequencyService:
@@ -82,7 +80,7 @@ class HallucinationFrequencyService:
 
             try:
                 lucidity_service = LucidityService(session)
-                cooldown = await lucidity_service.get_cooldown(player_id, HALLUCINATION_TIMER_ACTION_CODE)
+                cooldown = await lucidity_service.get_cooldown(player_id, LucidityActionCode.HALLUCINATION_TIMER)
 
                 now = datetime.now(UTC)
                 if cooldown and cooldown.cooldown_expires_at:
@@ -104,7 +102,7 @@ class HallucinationFrequencyService:
                     cooldown_expires = now + timedelta(seconds=cast(int, config["cooldown_seconds"]))
                     cooldown_expires_naive = cooldown_expires.replace(tzinfo=None)
                     await lucidity_service.set_cooldown(
-                        player_id, HALLUCINATION_TIMER_ACTION_CODE, cooldown_expires_naive
+                        player_id, LucidityActionCode.HALLUCINATION_TIMER, cooldown_expires_naive
                     )
                     logger.debug(
                         "Hallucination triggered",
@@ -162,4 +160,4 @@ class HallucinationFrequencyService:
         return await self.should_trigger_hallucination(player_id, tier, "time_based", session)
 
 
-__all__ = ["HallucinationFrequencyService", "HALLUCINATION_FREQUENCIES", "HALLUCINATION_TIMER_ACTION_CODE"]
+__all__ = ["HallucinationFrequencyService", "HALLUCINATION_FREQUENCIES"]

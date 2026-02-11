@@ -31,7 +31,7 @@ class MPRegenerationService:
     during rest/meditation.
     """
 
-    def __init__(self, player_service: PlayerService, regen_rate: float = DEFAULT_MP_REGEN_RATE):
+    def __init__(self, player_service: PlayerService, regen_rate: float = DEFAULT_MP_REGEN_RATE) -> None:
         """
         Initialize the MP regeneration service.
 

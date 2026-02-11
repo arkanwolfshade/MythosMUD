@@ -49,7 +49,7 @@ def _ensure_async_compat(manager: "Any | None") -> "Any | None":
         # This works for both real methods and test mocks without importing Mock types
         if callable(attr):
 
-            async def _async_wrapper(*args, _attr=attr, **kwargs):
+            async def _async_wrapper(*args: Any, _attr: Any = attr, **kwargs: Any) -> Any:
                 result = _attr(*args, **kwargs)
                 if inspect.isawaitable(result):
                     return await result

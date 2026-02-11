@@ -69,7 +69,7 @@ class CombatMessagingIntegration:
             raise RuntimeError("Connection manager is not available") from exc
 
     @property
-    def connection_manager(self):
+    def connection_manager(self) -> Any:
         """
         Return the connection manager, resolving it from the application container if needed.
         """
@@ -78,7 +78,7 @@ class CombatMessagingIntegration:
         return self._connection_manager
 
     @connection_manager.setter
-    def connection_manager(self, value):
+    def connection_manager(self, value: Any) -> None:
         """
         Explicitly set the connection manager (primarily used in tests).
         """

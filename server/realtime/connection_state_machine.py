@@ -83,7 +83,7 @@ class NATSConnectionStateMachine(StateMachine):
     open_circuit = reconnecting.to(circuit_open)
     close_circuit = circuit_open.to(disconnected)
 
-    def __init__(self, connection_id: str, max_reconnect_attempts: int = 5):
+    def __init__(self, connection_id: str, max_reconnect_attempts: int = 5) -> None:
         """
         Initialize connection state machine.
 

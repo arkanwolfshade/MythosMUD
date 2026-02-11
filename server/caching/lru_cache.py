@@ -28,7 +28,7 @@ class LRUCache[K, V]:  # pylint: disable=too-many-instance-attributes  # Reason:
     the cache reaches its maximum capacity. All operations are thread-safe.
     """
 
-    def __init__(self, max_size: int = 1000, ttl_seconds: int | None = None):
+    def __init__(self, max_size: int = 1000, ttl_seconds: int | None = None) -> None:
         """
         Initialize the LRU cache.
 

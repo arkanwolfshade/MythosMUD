@@ -130,7 +130,7 @@ class WebSocketCorrelationMiddleware:  # pylint: disable=too-few-public-methods 
     correlation IDs and context information.
     """
 
-    def __init__(self, correlation_header: str = "X-Correlation-ID"):
+    def __init__(self, correlation_header: str = "X-Correlation-ID") -> None:
         """
         Initialize the WebSocket correlation middleware.
 

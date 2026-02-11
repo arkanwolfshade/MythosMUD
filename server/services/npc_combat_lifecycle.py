@@ -20,7 +20,7 @@ logger = get_logger(__name__)
 class NPCCombatLifecycle:  # pylint: disable=too-few-public-methods  # Reason: Lifecycle class with focused responsibility, minimal public interface
     """Manages NPC lifecycle operations during combat."""
 
-    def __init__(self, async_persistence: Any):
+    def __init__(self, async_persistence: Any) -> None:
         """
         Initialize the lifecycle manager.
 

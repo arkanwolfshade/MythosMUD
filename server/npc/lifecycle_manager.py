@@ -63,7 +63,7 @@ class NPCLifecycleEvent(StrEnum):
 class NPCLifecycleRecord:  # pylint: disable=too-many-instance-attributes  # Reason: Lifecycle record requires many fields to capture complete NPC lifecycle state
     """Record of an NPC's lifecycle events and state changes."""
 
-    def __init__(self, npc_id: str, definition: NPCDefinition):
+    def __init__(self, npc_id: str, definition: NPCDefinition) -> None:
         """
         Initialize lifecycle record.
 
@@ -188,7 +188,7 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
         spawning_service: NPCSpawningService,
         persistence: "AsyncPersistenceLayer | None" = None,
         thread_manager: "NPCThreadManager | None" = None,
-    ):
+    ) -> None:
         """
         Initialize the NPC lifecycle manager.
 

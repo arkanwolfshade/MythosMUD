@@ -38,7 +38,7 @@ class Room:  # pylint: disable=too-many-instance-attributes  # Reason: Room requ
     shifts that occur when entities move between spaces.
     """
 
-    def __init__(self, room_data: dict[str, Any], event_bus: EventBus | None = None):
+    def __init__(self, room_data: dict[str, Any], event_bus: EventBus | None = None) -> None:
         """
         Initialize a Room from JSON data.
 

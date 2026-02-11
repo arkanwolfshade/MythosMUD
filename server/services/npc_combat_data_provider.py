@@ -20,7 +20,7 @@ logger = get_logger(__name__)
 class NPCCombatDataProvider:
     """Provides data retrieval and preparation for NPC combat."""
 
-    def __init__(self, async_persistence: Any):
+    def __init__(self, async_persistence: Any) -> None:
         """
         Initialize the data provider.
 

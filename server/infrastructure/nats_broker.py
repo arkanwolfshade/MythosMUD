@@ -47,7 +47,7 @@ class NATSMessageBroker:  # pylint: disable=too-many-instance-attributes  # Reas
         config: NATSConfig,
         enable_message_validation: bool = True,
         subject_manager: NATSSubjectManager | None = None,
-    ):
+    ) -> None:
         """
         Initialize NATS message broker.
 

@@ -34,7 +34,7 @@ class CommandRateLimiter:
         max_commands: int = 10,
         window_seconds: int = 1,
         now_provider: Callable[[], datetime] | None = None,
-    ):
+    ) -> None:
         """
         Initialize command rate limiter.
 

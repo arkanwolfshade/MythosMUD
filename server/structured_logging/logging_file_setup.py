@@ -160,7 +160,7 @@ def _setup_console_handler(  # pylint: disable=too-many-arguments,too-many-posit
             class SafeWinHandlerConsole(win_safe_handler):  # type: ignore[misc, valid-type]  # Reason: Dynamic class creation inside conditional block, mypy cannot validate type compatibility at definition time
                 """Windows-safe rotating file handler with directory safety for console logs."""
 
-                def shouldRollover(self, record):  # noqa: N802  # pylint: disable=invalid-name  # Reason: Method name required by parent class logging.handlers.RotatingFileHandler, cannot change to follow PEP8 naming
+                def shouldRollover(self, record: logging.LogRecord) -> bool:  # noqa: N802  # pylint: disable=invalid-name  # Reason: Method name required by parent class logging.handlers.RotatingFileHandler, cannot change to follow PEP8 naming
                     """Check if log file should roll over, ensuring directory exists first.
 
                     Args:
@@ -172,7 +172,7 @@ def _setup_console_handler(  # pylint: disable=too-many-arguments,too-many-posit
                     if self.baseFilename:
                         log_path = Path(self.baseFilename)
                         ensure_log_directory(log_path)
-                    return super().shouldRollover(record)
+                    return bool(super().shouldRollover(record))
 
             handler_class = SafeWinHandlerConsole
     except Exception:  # pylint: disable=broad-except  # Reason: Defensive fallback for class definition failures, must catch all exceptions to prevent logging setup from failing completely
@@ -282,7 +282,7 @@ def _get_handler_class(
             class SafeWinHandlerCategory(win_safe_handler):  # type: ignore[valid-type,misc]  # mypy: parameter as base class; pylint: disable=too-few-public-methods  # Reason: Handler class with focused responsibility, minimal public interface
                 """Windows-safe rotating file handler with directory safety for categorized logs."""
 
-                def shouldRollover(self, record):  # noqa: N802  # pylint: disable=invalid-name  # Reason: Overrides parent class method, must match parent signature
+                def shouldRollover(self, record: logging.LogRecord) -> bool:  # noqa: N802  # pylint: disable=invalid-name  # Reason: Overrides parent class method, must match parent signature
                     """Determine if log rollover should occur.
 
                     Args:
@@ -294,7 +294,7 @@ def _get_handler_class(
                     if self.baseFilename:
                         log_path = Path(self.baseFilename)
                         ensure_log_directory(log_path)
-                    return super().shouldRollover(record)
+                    return bool(super().shouldRollover(record))
 
             handler_class = SafeWinHandlerCategory
     except ImportError:

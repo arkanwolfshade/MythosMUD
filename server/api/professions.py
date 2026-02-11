@@ -29,12 +29,13 @@ async def get_all_professions(
     current_user: User = Depends(get_current_user),
     profession_service: ProfessionService = ProfessionServiceDep,
 ) -> ProfessionListResponse:
-    """
-    Retrieve all available professions for character creation with caching.
+    """Retrieve all available professions for character creation with caching.
 
-    Returns a list of all professions that are currently available
-    for character creation, including their descriptions, flavor text,
-    and stat requirements.
+    :param request: FastAPI request (for error context).
+    :param current_user: Authenticated user (injected).
+    :param profession_service: Profession service (injected).
+    :return: List of professions with descriptions and stat requirements.
+    :raises LoggedHTTPException: If not authenticated (401) or on server error (500).
     """
     # Check if user is authenticated
     if not current_user:
@@ -63,11 +64,14 @@ async def get_profession_by_id(
     current_user: User = Depends(get_current_user),
     profession_service: ProfessionService = ProfessionServiceDep,
 ) -> ProfessionResponse:
-    """
-    Retrieve specific profession details by ID with caching.
+    """Retrieve specific profession details by ID with caching.
 
-    Returns detailed information about a specific profession including
-    its description, flavor text, stat requirements, and mechanical effects.
+    :param profession_id: ID of the profession to fetch.
+    :param request: FastAPI request (for error context).
+    :param current_user: Authenticated user (injected).
+    :param profession_service: Profession service (injected).
+    :return: Profession details including description and stat requirements.
+    :raises LoggedHTTPException: If not authenticated (401), not found (404), or error (500).
     """
     # Check if user is authenticated
     if not current_user:

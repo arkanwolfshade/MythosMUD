@@ -13,7 +13,7 @@ class NATSSubjectError(Exception):
 class PatternNotFoundError(NATSSubjectError):
     """Exception raised when a pattern name is not found in registry."""
 
-    def __init__(self, pattern_name: str):
+    def __init__(self, pattern_name: str) -> None:
         self.pattern_name = pattern_name
         super().__init__(f"Pattern '{pattern_name}' not found in registry")
 
@@ -21,7 +21,7 @@ class PatternNotFoundError(NATSSubjectError):
 class MissingParameterError(NATSSubjectError):
     """Exception raised when required parameters are missing."""
 
-    def __init__(self, pattern_name: str, missing_params: list[str]):
+    def __init__(self, pattern_name: str, missing_params: list[str]) -> None:
         self.pattern_name = pattern_name
         self.missing_params = missing_params
         params_str = ", ".join(missing_params)

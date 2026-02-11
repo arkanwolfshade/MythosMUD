@@ -56,7 +56,7 @@ def _get_emote_validator() -> Optional["SchemaValidator"]:
 class EmoteService:
     """Service for managing predefined emote actions and their messages."""
 
-    def __init__(self, emote_file_path: str | None = None):
+    def __init__(self, emote_file_path: str | None = None) -> None:
         """
         Initialize the EmoteService.
 
@@ -75,7 +75,7 @@ class EmoteService:
         """Load emote definitions from PostgreSQL database."""
         result_container: dict[str, Any] = {"emotes": {}, "aliases": {}, "error": None}
 
-        def run_async():
+        def run_async() -> None:
             new_loop = asyncio.new_event_loop()
             asyncio.set_event_loop(new_loop)
             try:

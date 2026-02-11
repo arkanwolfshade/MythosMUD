@@ -48,7 +48,7 @@ class PlayerRepository:
     Uses async SQLAlchemy ORM for non-blocking database access.
     """
 
-    def __init__(self, room_cache: dict[str, "Room"] | None = None, event_bus: "EventBus | None" = None):
+    def __init__(self, room_cache: dict[str, "Room"] | None = None, event_bus: "EventBus | None" = None) -> None:
         """
         Initialize the player repository.
 

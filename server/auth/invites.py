@@ -28,7 +28,7 @@ class InviteManager:
     Handles the invite-only registration system for MythosMUD.
     """
 
-    def __init__(self, session: AsyncSession):
+    def __init__(self, session: AsyncSession) -> None:
         self.session = session
         logger.info("InviteManager initialized")
 

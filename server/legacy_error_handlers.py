@@ -55,7 +55,7 @@ class ErrorResponse:
         user_friendly: str | None = None,
         status_code: int = 500,
         severity: ErrorSeverity = ErrorSeverity.MEDIUM,
-    ):
+    ) -> None:
         self.error_type = error_type
         self.message = message
         self.details = details or {}
@@ -426,7 +426,7 @@ class CircuitBreaker:  # pylint: disable=too-few-public-methods  # Reason: Utili
     failing fast when errors exceed thresholds.
     """
 
-    def __init__(self, failure_threshold: int = 5, timeout: int = 60):
+    def __init__(self, failure_threshold: int = 5, timeout: int = 60) -> None:
         self.failure_threshold = failure_threshold
         self.timeout = timeout
         self.failure_count = 0

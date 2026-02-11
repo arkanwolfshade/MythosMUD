@@ -29,7 +29,7 @@ class TrackedTaskManager:
     replacing low-level asyncio.create_task() calls with properly tracked alternatives.
     """
 
-    def __init__(self, task_registry: TaskRegistry | None = None):
+    def __init__(self, task_registry: TaskRegistry | None = None) -> None:
         """
         Initialize the TrackedTaskManager.
 

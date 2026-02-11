@@ -34,7 +34,7 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
         self,
         player_service: PlayerService,
         player_spell_repository: PlayerSpellRepository | None = None,
-    ):
+    ) -> None:
         """
         Initialize the spell effects engine.
 

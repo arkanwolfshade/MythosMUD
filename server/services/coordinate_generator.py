@@ -36,7 +36,7 @@ class CoordinateGenerator:
     4. Detect conflicts and warn (don't auto-resolve)
     """
 
-    def __init__(self, session: AsyncSession):
+    def __init__(self, session: AsyncSession) -> None:
         """
         Initialize coordinate generator.
 

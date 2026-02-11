@@ -25,7 +25,7 @@ class SafeRotatingFileHandler(RotatingFileHandler):
     when shouldRollover() is called from different threads in CI environments.
     """
 
-    def _open(self):  # noqa: N802  # Reason: Method name required by parent class logging.handlers.RotatingFileHandler, cannot change to follow PEP8 naming
+    def _open(self) -> Any:  # noqa: N802  # Reason: Method name required by parent class logging.handlers.RotatingFileHandler, cannot change to follow PEP8 naming
         """
         Open the log file, ensuring directory exists first.
 
@@ -73,7 +73,7 @@ class SafeRotatingFileHandler(RotatingFileHandler):
         # Should never reach here, but call parent as fallback
         return super()._open()
 
-    def shouldRollover(self, record):  # noqa: N802  # Reason: Method name required by parent class logging.handlers.RotatingFileHandler, cannot change to follow PEP8 naming
+    def shouldRollover(self, record: logging.LogRecord) -> bool:  # noqa: N802  # Reason: Method name required by parent class logging.handlers.RotatingFileHandler, cannot change to follow PEP8 naming
         """
         Determine if rollover should occur, ensuring directory exists first.
 
@@ -99,7 +99,7 @@ class SafeRotatingFileHandler(RotatingFileHandler):
             # Wrap in try-except to handle race conditions where directory might be deleted
             # between the check above and when parent tries to open the file
             try:
-                return super().shouldRollover(record)
+                return bool(super().shouldRollover(record))
             except (FileNotFoundError, OSError):
                 # Directory might have been deleted, will retry on next iteration
                 if attempt == max_retries - 1:
@@ -173,11 +173,11 @@ def create_aggregator_handler(
             class SafeWinHandlerAggregator(_WinSafeHandler):  # type: ignore[misc, valid-type]  # Reason: Dynamic class creation inside conditional block, mypy cannot validate type compatibility at definition time
                 """Windows-safe rotating file handler with directory safety for aggregator logs."""
 
-                def shouldRollover(self, record):  # noqa: N802  # Reason: Method name required by parent class logging.handlers.RotatingFileHandler, cannot change to follow PEP8 naming
+                def shouldRollover(self, record: logging.LogRecord) -> bool:  # noqa: N802  # Reason: Method name required by parent class logging.handlers.RotatingFileHandler, cannot change to follow PEP8 naming
                     if self.baseFilename:
                         log_path = Path(self.baseFilename)
                         ensure_log_directory(log_path)
-                    return super().shouldRollover(record)
+                    return bool(super().shouldRollover(record))
 
             handler_class = SafeWinHandlerAggregator
     except ImportError:

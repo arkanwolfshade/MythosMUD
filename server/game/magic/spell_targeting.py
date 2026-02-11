@@ -31,7 +31,7 @@ class SpellTargetingService:  # pylint: disable=too-few-public-methods  # Reason
         target_resolution_service: TargetResolutionService,
         combat_service: CombatService | None = None,
         player_combat_service: PlayerCombatService | None = None,
-    ):
+    ) -> None:
         """
         Initialize the spell targeting service.
 

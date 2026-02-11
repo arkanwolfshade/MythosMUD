@@ -24,7 +24,7 @@ class CombatAuditLogger:
     and compliance focus, maintaining the Cthulhu Mythos atmosphere.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the combat audit logger."""
         self.logger = get_logger("combat.audit")
 

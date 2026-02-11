@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import uuid
 from datetime import UTC, datetime
+from enum import StrEnum
 from typing import TYPE_CHECKING, Any
 
 from sqlalchemy import BigInteger, CheckConstraint, DateTime, ForeignKey, Index, Integer, String, Text, UniqueConstraint
@@ -21,6 +22,13 @@ if TYPE_CHECKING:
 def _utc_now() -> datetime:
     """Return naive UTC timestamps for PostgreSQL TIMESTAMP WITHOUT TIME ZONE compatibility."""
     return datetime.now(UTC).replace(tzinfo=None)
+
+
+class LucidityActionCode(StrEnum):
+    """Action codes used for lucidity cooldowns (debrief, hallucination timer, etc.)."""
+
+    DEBRIEF_PENDING = "debrief_pending"
+    HALLUCINATION_TIMER = "hallucination_timer"
 
 
 class PlayerLucidity(Base):

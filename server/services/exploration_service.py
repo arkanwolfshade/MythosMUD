@@ -36,7 +36,7 @@ class ExplorationService:
     the map viewer to show only explored rooms to players.
     """
 
-    def __init__(self, database_manager: Any | None = None):
+    def __init__(self, database_manager: Any | None = None) -> None:
         """
         Initialize the exploration service.
 

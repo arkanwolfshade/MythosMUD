@@ -43,7 +43,7 @@ class MagicCommandHandler:
         player_spell_repository: PlayerSpellRepository | None = None,
         spell_learning_service: SpellLearningService | None = None,
         chat_service: ChatService | None = None,
-    ):
+    ) -> None:
         """
         Initialize the magic command handler.
 

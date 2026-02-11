@@ -25,7 +25,7 @@ class ItemFactoryError(Exception):
 class ItemFactory:  # pylint: disable=too-few-public-methods  # Reason: Factory class with focused responsibility, minimal public interface
     """Factory responsible for instantiating runtime item instances."""
 
-    def __init__(self, registry: PrototypeRegistry):
+    def __init__(self, registry: PrototypeRegistry) -> None:
         """Initialize the item factory with a prototype registry.
 
         Args:

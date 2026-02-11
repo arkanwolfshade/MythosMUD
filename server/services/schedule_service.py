@@ -67,7 +67,7 @@ class ScheduleService:
         """Load schedules from PostgreSQL database."""
         result_container = {"entries": None, "error": None}
 
-        def run_async():
+        def run_async() -> None:
             new_loop = asyncio.new_event_loop()
             asyncio.set_event_loop(new_loop)
             try:

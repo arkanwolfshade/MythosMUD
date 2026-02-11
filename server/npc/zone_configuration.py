@@ -11,7 +11,7 @@ from typing import Any, cast
 class ZoneConfiguration:  # pylint: disable=too-many-instance-attributes  # Reason: Zone configuration requires many fields to capture complete zone configuration
     """Represents the configuration for a zone or sub-zone."""
 
-    def __init__(self, config_data: dict[str, Any]):
+    def __init__(self, config_data: dict[str, Any]) -> None:
         """
         Initialize zone configuration.
 

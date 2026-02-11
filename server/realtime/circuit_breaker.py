@@ -66,7 +66,7 @@ class CircuitBreaker:
 
     def __init__(
         self, failure_threshold: int = 5, timeout: timedelta = timedelta(seconds=60), success_threshold: int = 2
-    ):
+    ) -> None:
         """
         Initialize circuit breaker.
 

@@ -51,7 +51,7 @@ class MovementService:
         player_combat_service: "PlayerCombatService | None" = None,
         async_persistence: "AsyncPersistenceLayer | None" = None,
         exploration_service: Any | None = None,
-    ):
+    ) -> None:
         """
         Initialize the movement service.
 

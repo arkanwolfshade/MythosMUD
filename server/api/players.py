@@ -63,7 +63,16 @@ async def create_player(
     current_user: User = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
 ) -> PlayerRead:
-    """Create a new player character."""
+    """Create a new player character.
+
+    :param name: Display name for the new character.
+    :param request: FastAPI request (for error context).
+    :param starting_room_id: Room ID where the character will spawn.
+    :param current_user: Authenticated user (injected).
+    :param player_service: Player service (injected).
+    :return: The created player as PlayerRead.
+    :raises LoggedHTTPException: On validation error (400) or auth failure (401).
+    """
     try:
         player = await player_service.create_player(name, profession_id=0, starting_room_id=starting_room_id)
         return player
@@ -78,7 +87,14 @@ async def list_players(
     _current_user: User | None = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
 ) -> list[PlayerRead]:
-    """Get a list of all players."""
+    """Get a list of all players.
+
+    :param _request: FastAPI request (for error context).
+    :param _current_user: Authenticated user if any (injected).
+    :param player_service: Player service (injected).
+    :return: List of all players as PlayerRead.
+    :raises LoggedHTTPException: If not authenticated (401).
+    """
     # Note: _current_user is optional for CORS testing, but endpoint requires auth for actual use
     if _current_user is None:
         context = create_error_context(_request, _current_user, operation="list_players")

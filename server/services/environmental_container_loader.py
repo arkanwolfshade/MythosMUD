@@ -30,7 +30,7 @@ class EnvironmentalContainerLoader:
     retrieval of containers when loading rooms.
     """
 
-    def __init__(self, persistence: Any | None = None):
+    def __init__(self, persistence: Any | None = None) -> None:
         """
         Initialize the environmental container loader.
 

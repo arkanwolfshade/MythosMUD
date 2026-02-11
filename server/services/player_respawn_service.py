@@ -17,6 +17,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from server.events.event_types import PlayerDeliriumRespawnedEvent, PlayerRespawnedEvent
 from server.models.game import PositionState
+from server.models.lucidity import LucidityActionCode
 from server.models.player import Player
 from server.structured_logging.enhanced_logging_config import get_logger
 
@@ -432,7 +433,7 @@ class PlayerRespawnService:
             from datetime import timedelta
 
             debrief_expires_at = _utc_now() + timedelta(days=365)  # Far future expiration
-            await lucidity_service.set_cooldown(player_id, "debrief_pending", debrief_expires_at)
+            await lucidity_service.set_cooldown(player_id, LucidityActionCode.DEBRIEF_PENDING, debrief_expires_at)
 
             # Commit changes using async API (includes debrief flag)
             await session.commit()

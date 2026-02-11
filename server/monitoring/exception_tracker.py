@@ -62,7 +62,7 @@ class ExceptionTracker:
     enabling comprehensive error monitoring and debugging capabilities.
     """
 
-    def __init__(self, max_records: int = 10000):
+    def __init__(self, max_records: int = 10000) -> None:
         """
         Initialize the exception tracker.
 

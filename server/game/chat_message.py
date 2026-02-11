@@ -26,7 +26,7 @@ class ChatMessage:  # pylint: disable=too-many-instance-attributes  # Reason: Ch
         target_id: uuid.UUID | str | None = None,
         target_name: str | None = None,
         party_id: str | None = None,
-    ):
+    ) -> None:
         self.id = str(uuid.uuid4())
         # Convert UUID to string for JSON serialization
         self.sender_id = str(sender_id) if isinstance(sender_id, uuid.UUID) else sender_id

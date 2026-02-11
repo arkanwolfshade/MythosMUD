@@ -19,7 +19,7 @@ logger = get_logger(__name__)
 class ProfessionService:
     """Service class for profession-related business operations."""
 
-    def __init__(self, persistence: "AsyncPersistenceLayer"):
+    def __init__(self, persistence: "AsyncPersistenceLayer") -> None:
         """Initialize the profession service with a persistence layer."""
         self.persistence = persistence
         logger.info("ProfessionService initialized")

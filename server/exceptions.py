@@ -85,7 +85,7 @@ class MythosMUDError(LoggedException):
         context: ErrorContext | None = None,
         details: dict[str, Any] | None = None,
         user_friendly: str | None = None,
-    ):
+    ) -> None:
         """
         Initialize MythosMUD error.
 
@@ -291,7 +291,7 @@ class LoggedHTTPException(HTTPException, LoggedException):
         detail: str,
         context: ErrorContext | None = None,
         logger_name: str | None = None,
-    ):
+    ) -> None:
         """
         Initialize LoggedHTTPException.
 

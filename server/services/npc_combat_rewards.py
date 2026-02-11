@@ -19,7 +19,7 @@ logger = get_logger(__name__)
 class NPCCombatRewards:
     """Manages XP rewards for NPC combat."""
 
-    def __init__(self, async_persistence: Any, game_mechanics: GameMechanicsService):
+    def __init__(self, async_persistence: Any, game_mechanics: GameMechanicsService) -> None:
         """
         Initialize the rewards manager.
 

@@ -22,7 +22,7 @@ class SpellRegistry:
     fast lookup methods for spell operations.
     """
 
-    def __init__(self, spell_repository: SpellRepository | None = None):
+    def __init__(self, spell_repository: SpellRepository | None = None) -> None:
         """
         Initialize the spell registry.
 

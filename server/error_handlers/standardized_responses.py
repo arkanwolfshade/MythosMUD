@@ -132,7 +132,7 @@ class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Re
         ErrorType.MESSAGE_PROCESSING_ERROR: ErrorMessages.MESSAGE_PROCESSING_ERROR,
     }
 
-    def __init__(self, request: Request | None = None):
+    def __init__(self, request: Request | None = None) -> None:
         """
         Initialize standardized error response handler.
 

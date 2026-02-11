@@ -47,7 +47,7 @@ class ChannelBroadcastingStrategy(ABC):
 class RoomBasedChannelStrategy(ChannelBroadcastingStrategy):  # pylint: disable=too-few-public-methods  # Reason: Strategy class with focused responsibility, minimal public interface
     """Strategy for room-based channels (say, local, emote, pose)."""
 
-    def __init__(self, channel_type: str):
+    def __init__(self, channel_type: str) -> None:
         """
         Initialize room-based channel strategy.
 
@@ -172,7 +172,7 @@ class WhisperChannelStrategy(ChannelBroadcastingStrategy):  # pylint: disable=to
 class SystemAdminChannelStrategy(ChannelBroadcastingStrategy):  # pylint: disable=too-few-public-methods  # Reason: Strategy class with focused responsibility, minimal public interface
     """Strategy for system/admin channel broadcasting."""
 
-    def __init__(self, channel_type: str):
+    def __init__(self, channel_type: str) -> None:
         """
         Initialize system/admin channel strategy.
 
@@ -201,7 +201,7 @@ class SystemAdminChannelStrategy(ChannelBroadcastingStrategy):  # pylint: disabl
 class UnknownChannelStrategy(ChannelBroadcastingStrategy):  # pylint: disable=too-few-public-methods  # Reason: Strategy class with focused responsibility, minimal public interface
     """Strategy for unknown channel types."""
 
-    def __init__(self, channel_type: str):
+    def __init__(self, channel_type: str) -> None:
         """
         Initialize unknown channel strategy.
 

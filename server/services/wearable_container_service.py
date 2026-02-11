@@ -77,7 +77,7 @@ class WearableContainerService:
     nested capacity enforcement, and inventory spill rules.
     """
 
-    def __init__(self, persistence: Any | None = None):
+    def __init__(self, persistence: Any | None = None) -> None:
         """
         Initialize the wearable container service.
 

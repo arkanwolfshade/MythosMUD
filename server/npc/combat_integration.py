@@ -36,7 +36,9 @@ class NPCCombatIntegration:
     game mechanics service for lucidity, fear, and corruption effects.
     """
 
-    def __init__(self, event_bus: EventBus | None = None, async_persistence: AsyncPersistenceLayer | None = None):
+    def __init__(
+        self, event_bus: EventBus | None = None, async_persistence: AsyncPersistenceLayer | None = None
+    ) -> None:
         """
         Initialize the NPC combat integration.
 

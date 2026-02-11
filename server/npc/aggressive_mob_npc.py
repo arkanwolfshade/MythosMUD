@@ -25,7 +25,7 @@ class AggressiveMobNPC(NPCBase):
         npc_id: str,
         event_bus: "EventBus | None" = None,
         event_reaction_system: "NPCEventReactionSystem | None" = None,
-    ):
+    ) -> None:
         """Initialize aggressive mob NPC."""
         super().__init__(definition, npc_id, event_bus, event_reaction_system)
         self._targets: list[str] = []
