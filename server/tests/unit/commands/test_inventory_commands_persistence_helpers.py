@@ -11,6 +11,9 @@ import pytest
 from server.commands.inventory_command_helpers import clone_inventory, persist_player
 from server.models.player import Player
 
+# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
+# pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
+
 
 @pytest.fixture
 def mock_player():
@@ -49,7 +52,7 @@ async def test_persist_player_success(mock_persistence, mock_player):
 @pytest.mark.asyncio
 async def test_persist_player_error(mock_persistence, mock_player):
     """Test _persist_player() handles save errors."""
-    from server.schemas.inventory_schema import InventorySchemaValidationError
+    from server.schemas.shared import InventorySchemaValidationError
 
     mock_persistence.save_player = MagicMock(side_effect=InventorySchemaValidationError("Invalid inventory"))
     result = await persist_player(mock_persistence, mock_player)

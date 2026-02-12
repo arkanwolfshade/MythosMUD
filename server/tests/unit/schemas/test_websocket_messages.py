@@ -7,7 +7,7 @@ Tests the Pydantic schemas in websocket_messages.py.
 import pytest
 from pydantic import ValidationError
 
-from server.schemas.websocket_messages import (
+from server.schemas.realtime.websocket_messages import (
     BaseWebSocketMessage,
     ChatMessage,
     ChatMessageData,

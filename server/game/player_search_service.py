@@ -6,7 +6,7 @@ This module handles player name resolution, search, and validation operations.
 
 from typing import Any, cast
 
-from ..schemas.player import PlayerRead
+from ..schemas.players import PlayerRead
 from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)

@@ -26,7 +26,7 @@ from ...exceptions import LoggedHTTPException
 from ...models.npc import NPCDefinition, NPCDefinitionType, NPCSpawnRule
 from ...models.user import User
 from ...npc_database import get_npc_session
-from ...schemas.npc_admin import (
+from ...schemas.admin import (
     AdminAuditLogResponse,
     AdminCleanupSessionsResponse,
     AdminSessionsResponse,

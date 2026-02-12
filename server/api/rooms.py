@@ -19,7 +19,7 @@ from ..dependencies import AsyncPersistenceDep, ExplorationServiceDep, RoomServi
 from ..exceptions import LoggedHTTPException
 from ..game.room_service import RoomService
 from ..models.user import User
-from ..schemas.room import RoomListResponse, RoomPositionUpdateResponse, RoomResponse
+from ..schemas.rooms import RoomListResponse, RoomPositionUpdateResponse, RoomResponse
 from ..services.admin_auth_service import AdminAction, get_admin_auth_service
 from ..services.exploration_service import ExplorationService
 from ..structured_logging.enhanced_logging_config import get_logger

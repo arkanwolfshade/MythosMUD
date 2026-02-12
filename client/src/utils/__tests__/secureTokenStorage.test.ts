@@ -94,7 +94,7 @@ describe('Secure Token Storage', () => {
 
       await secureTokenStorage.refreshTokenIfNeeded(token);
 
-      expect(mockFetch).toHaveBeenCalledWith('/auth/refresh', {
+      expect(mockFetch).toHaveBeenCalledWith('/v1/auth/refresh', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

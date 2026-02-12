@@ -2,6 +2,7 @@
 // Extracted from GameClientV2Container to reduce complexity
 
 import { useCallback } from 'react';
+import { API_V1_BASE } from '../../../utils/config';
 import { logger } from '../../../utils/logger';
 import type { GameEvent } from '../eventHandlers/types';
 import type { ChatMessage, Player, Room } from '../types';
@@ -36,7 +37,7 @@ export const useRespawnHandlers = ({
     setIsDeliriumRespawning(true);
 
     try {
-      const response = await fetch('/api/players/respawn-delirium', {
+      const response = await fetch(`${API_V1_BASE}/api/players/respawn-delirium`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -125,7 +126,7 @@ export const useRespawnHandlers = ({
     setIsRespawning(true);
 
     try {
-      const response = await fetch('/api/players/respawn', {
+      const response = await fetch(`${API_V1_BASE}/api/players/respawn`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

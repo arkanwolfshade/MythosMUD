@@ -10,6 +10,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import type { Room } from '../../../stores/gameStore';
+import { getVersionedApiBaseUrl } from '../../../utils/config';
 
 export interface UseRoomMapDataOptions {
   /** Plane name (required) */
@@ -49,6 +50,7 @@ export interface UseRoomMapDataResult {
  */
 export function useRoomMapData(options: UseRoomMapDataOptions): UseRoomMapDataResult {
   const { plane, zone, subZone, includeExits = true, filterExplored = false, baseUrl = '', authToken } = options;
+  const effectiveBaseUrl = baseUrl || getVersionedApiBaseUrl();
 
   const [rooms, setRooms] = useState<Room[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -88,7 +90,7 @@ export function useRoomMapData(options: UseRoomMapDataOptions): UseRoomMapDataRe
       }
 
       // Fetch room data
-      const response = await fetch(`${baseUrl}/api/rooms/list?${params.toString()}`, {
+      const response = await fetch(`${effectiveBaseUrl}/api/rooms/list?${params.toString()}`, {
         method: 'GET',
         headers,
       });
@@ -109,7 +111,7 @@ export function useRoomMapData(options: UseRoomMapDataOptions): UseRoomMapDataRe
     } finally {
       setIsLoading(false);
     }
-  }, [plane, zone, subZone, includeExits, filterExplored, baseUrl, authToken]);
+  }, [plane, zone, subZone, includeExits, filterExplored, effectiveBaseUrl, authToken]);
 
   // Fetch data when dependencies change
   useEffect(() => {

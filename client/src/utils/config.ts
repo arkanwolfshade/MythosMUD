@@ -31,3 +31,17 @@ export function getApiBaseUrl(): string {
  * Get the API base URL (exported constant for convenience)
  */
 export const API_BASE_URL = getApiBaseUrl();
+
+/**
+ * Get the versioned API base URL for v1 endpoints (base + /v1).
+ * Use for all REST and WebSocket API calls so the client targets /v1/... paths.
+ *
+ * @returns Versioned API base string (e.g. '' -> '/v1', 'http://host:54731' -> 'http://host:54731/v1')
+ */
+export function getVersionedApiBaseUrl(): string {
+  const base = getApiBaseUrl();
+  return base ? `${base}/v1` : '/v1';
+}
+
+/** Versioned API base for v1 endpoints (use for all API fetch/WS URLs). */
+export const API_V1_BASE = getVersionedApiBaseUrl();

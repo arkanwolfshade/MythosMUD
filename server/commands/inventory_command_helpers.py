@@ -7,7 +7,7 @@ from uuid import UUID
 
 from ..exceptions import ValidationError as MythosValidationError
 from ..models.player import Player
-from ..schemas.inventory_schema import InventorySchemaValidationError
+from ..schemas.shared import InventorySchemaValidationError
 from ..services.inventory_service import InventoryCapacityError, InventoryService, InventoryValidationError
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user

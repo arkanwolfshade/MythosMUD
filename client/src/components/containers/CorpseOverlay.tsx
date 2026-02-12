@@ -11,6 +11,7 @@ import { useShallow } from 'zustand/react/shallow';
 import type { ContainerComponent } from '../../stores/containerStore';
 import { useContainerStore } from '../../stores/containerStore';
 import { useGameStore } from '../../stores/gameStore';
+import { API_V1_BASE } from '../../utils/config';
 import { EldritchIcon, MythosIcons } from '../ui/EldritchIcon';
 import { TerminalButton } from '../ui/TerminalButton';
 
@@ -132,7 +133,7 @@ export const CorpseOverlay: React.FC<CorpseOverlayProps> = ({ onOpen, className 
   const handleOpenCorpse = async (containerId: string) => {
     // Open container via API - mutation token will be returned
     try {
-      const response = await fetch('/api/containers/open', {
+      const response = await fetch(`${API_V1_BASE}/api/containers/open`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

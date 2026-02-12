@@ -3,6 +3,7 @@
  * Handles server-side logout command, client-side state cleanup, and graceful error handling
  */
 
+import { API_V1_BASE } from './config.js';
 import { logger } from './logger.js';
 import { secureTokenStorage } from './security.js';
 
@@ -79,7 +80,7 @@ async function sendLogoutCommandToServer(authToken: string, timeout: number): Pr
   }, timeout);
 
   try {
-    const response = await fetch('/commands/logout', {
+    const response = await fetch(`${API_V1_BASE}/commands/logout`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

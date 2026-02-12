@@ -42,6 +42,7 @@ def _terminate_uvicorn_processes(uvicorn_processes: list[Any]) -> None:
         except (psutil.NoSuchProcess, psutil.AccessDenied) as e:
             logger.warning("Could not terminate uvicorn process", pid=proc.info["pid"], error=str(e))
 
+    # Shutdown/termination is sync-only; not used from async request path.
     time.sleep(1)
 
     for proc in uvicorn_processes:
@@ -90,6 +91,7 @@ def _terminate_with_signals(pid: int, ppid: int) -> None:
     except OSError as e:
         logger.warning("ProcessTerminator SIGINT(parent) failed", error=str(e))
 
+    # Shutdown/termination is sync-only; not used from async request path.
     time.sleep(0.1)
     try:
         logger.info("ProcessTerminator sending SIGTERM to child")
@@ -120,6 +122,7 @@ def schedule_process_termination(delay_seconds: float = 0.3) -> None:
     def _terminator() -> None:
         try:
             logger.info("ProcessTerminator thread started", delay_seconds=delay_seconds)
+            # Shutdown/termination is sync-only; not used from async request path.
             time.sleep(delay_seconds)
             pid = os.getpid()
             ppid = os.getppid()
@@ -134,7 +137,7 @@ def schedule_process_termination(delay_seconds: float = 0.3) -> None:
                 logger.warning("psutil not available, falling back to signal-based termination")
                 _terminate_with_signals(pid, ppid)
 
-            # As a last resort, force exit to avoid hanging processes
+            # As a last resort, force exit to avoid hanging processes. Sync-only; not from async request path.
             time.sleep(0.2)
             logger.info("ProcessTerminator forcing exit with os._exit(0)")
             os._exit(0)

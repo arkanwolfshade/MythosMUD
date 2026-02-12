@@ -19,7 +19,7 @@ import ReactFlow, {
   type NodeChange,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { getApiBaseUrl } from '../../utils/config';
+import { getVersionedApiBaseUrl } from '../../utils/config';
 import { EdgeCreationModal } from './EdgeCreationModal';
 import { EdgeDetailsPanel } from './EdgeDetailsPanel';
 import { MapControls } from './MapControls';
@@ -168,7 +168,7 @@ export const RoomMapEditor: React.FC<RoomMapEditorProps> = ({
       try {
         await saveMapChanges(changes, {
           authToken,
-          baseUrl: baseUrl || getApiBaseUrl(),
+          baseUrl: baseUrl || getVersionedApiBaseUrl(),
         });
       } catch (error) {
         console.error('Failed to save map changes:', error);

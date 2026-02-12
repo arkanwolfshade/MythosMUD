@@ -19,7 +19,7 @@ from ..database import get_async_session
 from ..dependencies import get_container
 from ..exceptions import LoggedHTTPException
 from ..models.user import User
-from ..schemas.invite import InviteRead
+from ..schemas.auth import InviteRead
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import create_context_from_request
 from .dependencies import get_current_active_user, get_current_superuser
@@ -405,7 +405,7 @@ async def _authenticate_user_credentials(
 
 async def _get_user_characters(user: User, async_persistence: "AsyncPersistenceLayer") -> list[dict[str, Any]]:
     """Get all active characters for user."""
-    from ..schemas.player import CharacterInfo
+    from ..schemas.players import CharacterInfo
 
     active_players = await async_persistence.get_active_players_by_user_id(str(user.id))
 

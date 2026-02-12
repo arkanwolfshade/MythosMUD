@@ -10,7 +10,7 @@ from datetime import UTC, datetime
 import pytest
 from pydantic import ValidationError
 
-from server.schemas.user import UserBase, UserCreate, UserRead, UserUpdate
+from server.schemas.auth import UserBase, UserCreate, UserRead, UserUpdate
 
 
 def test_user_base():

@@ -21,7 +21,7 @@ from ..dependencies import AsyncPersistenceDep, ExplorationServiceDep, RoomServi
 from ..exceptions import DatabaseError, LoggedHTTPException
 from ..game.room_service import RoomService
 from ..models.user import User
-from ..schemas.map import (
+from ..schemas.maps import (
     AsciiMapResponse,
     AsciiMinimapResponse,
     CoordinateRecalculationResponse,

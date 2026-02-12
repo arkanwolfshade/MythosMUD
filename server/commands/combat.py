@@ -20,7 +20,7 @@ from server.npc.combat_integration import NPCCombatIntegration
 from server.realtime.login_grace_period import is_player_in_login_grace_period
 
 # Removed: from server.persistence import get_persistence - now using async_persistence parameter
-from server.schemas.target_resolution import TargetType
+from server.schemas.shared import TargetType
 from server.services.npc_combat_integration_service import (
     NPCCombatIntegrationService,
 )

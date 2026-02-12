@@ -9,7 +9,7 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from .calendar import HolidayEntry
+from server.schemas.calendar import HolidayEntry
 
 
 class GameStatusResponse(BaseModel):

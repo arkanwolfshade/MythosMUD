@@ -14,7 +14,7 @@ from ..models.game import (  # pylint: disable=unused-import  # Reason: Inventor
     PositionState,
     StatusEffect,
 )
-from ..schemas.player import PlayerRead
+from ..schemas.players import PlayerRead
 from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)

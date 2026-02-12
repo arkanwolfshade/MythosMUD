@@ -9,7 +9,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from server.schemas.combat_schema import (
+from server.schemas.combat import (
     CombatSchemaValidationError,
     add_default_combat_data_to_config,
     add_default_combat_data_to_stats,

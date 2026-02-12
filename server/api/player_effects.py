@@ -16,10 +16,10 @@ from ..error_types import ErrorMessages
 from ..exceptions import LoggedHTTPException, ValidationError
 from ..game.player_service import PlayerService
 from ..models.user import User
-from ..schemas.player_effects import EffectResponse
-from ..schemas.player_requests import (
+from ..schemas.players import (
     CorruptionRequest,
     DamageRequest,
+    EffectResponse,
     FearRequest,
     HealRequest,
     LucidityLossRequest,

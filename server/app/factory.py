@@ -9,7 +9,7 @@ import json
 import os
 from typing import Any, TypedDict, cast
 
-from fastapi import FastAPI
+from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from ..api.admin import npc_router as admin_npc_router
@@ -254,31 +254,30 @@ def create_app() -> FastAPI:  # pylint: disable=too-many-locals,too-many-stateme
     include_details = os.getenv("ENV", "development") != "production"
     setup_error_handling(app, include_details=include_details)
 
-    # Include routers
-    app.include_router(auth_router)
-
-    # Include FastAPI Users routers for authentication
-    app.include_router(fastapi_users.get_auth_router(auth_backend), prefix="/auth/jwt", tags=["auth"])
-    app.include_router(
+    # API v1: mount all versioned API routers under /v1
+    v1_router = APIRouter(prefix="/v1")
+    v1_router.include_router(auth_router)
+    v1_router.include_router(fastapi_users.get_auth_router(auth_backend), prefix="/auth/jwt", tags=["auth"])
+    v1_router.include_router(
         fastapi_users.get_register_router(UserRead, UserCreate),
         prefix="/auth",
         tags=["auth"],
     )
-    app.include_router(fastapi_users.get_users_router(UserRead, UserUpdate), prefix="/users", tags=["users"])
-
-    app.include_router(command_router)
-    app.include_router(player_router)
-    app.include_router(profession_router)
-    app.include_router(game_router)
-    app.include_router(monitoring_router)
-    app.include_router(system_monitoring_router)  # System-level monitoring (root-level paths)
-    app.include_router(metrics_router)  # NEW: NATS metrics endpoint (CRITICAL-4)
-    app.include_router(realtime_router)
-    app.include_router(room_router, prefix="/api")
-    app.include_router(map_router, prefix="/api")
-    app.include_router(container_router)  # Container system endpoints
-    app.include_router(admin_npc_router)
-    app.include_router(admin_subject_router, prefix="/api/admin")  # NATS subject management endpoints
+    v1_router.include_router(fastapi_users.get_users_router(UserRead, UserUpdate), prefix="/users", tags=["users"])
+    v1_router.include_router(command_router)
+    v1_router.include_router(player_router)
+    v1_router.include_router(profession_router)
+    v1_router.include_router(game_router)
+    v1_router.include_router(monitoring_router)
+    v1_router.include_router(system_monitoring_router)
+    v1_router.include_router(metrics_router)
+    v1_router.include_router(realtime_router)
+    v1_router.include_router(room_router, prefix="/api")
+    v1_router.include_router(map_router, prefix="/api")
+    v1_router.include_router(container_router)
+    v1_router.include_router(admin_npc_router)
+    v1_router.include_router(admin_subject_router, prefix="/api/admin")
+    app.include_router(v1_router)
 
     # CORS handled by AllowedCORSMiddleware above
 

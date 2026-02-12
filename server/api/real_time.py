@@ -232,7 +232,8 @@ async def _resolve_player_id(websocket: WebSocket, token: str | None, logger: An
         return await _resolve_player_id_from_test(websocket, player_id_str, logger)
     # Type narrowing: payload is guaranteed to be a dict with "sub" key at this point
     if payload is None or "sub" not in payload:
-        raise ValueError("Invalid payload: missing 'sub' key")
+        context = create_context_from_websocket(websocket)
+        raise LoggedHTTPException(status_code=401, detail="Invalid payload: missing 'sub' key", context=context)
     return await _resolve_player_id_from_token(websocket, payload)
 
 

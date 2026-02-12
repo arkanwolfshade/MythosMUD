@@ -4,7 +4,7 @@ Unit tests for target_resolution schemas.
 Tests the Pydantic models in target_resolution.py module.
 """
 
-from server.schemas.target_resolution import TargetMatch, TargetResolutionResult, TargetType
+from server.schemas.shared import TargetMatch, TargetResolutionResult, TargetType
 
 
 def test_target_type_enum():
@@ -199,4 +199,4 @@ def test_get_disambiguation_list_empty():
     )
 
     options = result.get_disambiguation_list()
-    assert options == []
+    assert not options

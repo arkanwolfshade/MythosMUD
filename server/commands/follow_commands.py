@@ -10,7 +10,7 @@ from __future__ import annotations
 from typing import Any, Literal
 
 from ..alias_storage import AliasStorage
-from ..schemas.target_resolution import TargetType as SchemaTargetType
+from ..schemas.shared import TargetType as SchemaTargetType
 from ..services.target_resolution_service import TargetResolutionService
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user

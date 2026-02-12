@@ -14,7 +14,7 @@ from fastapi import APIRouter, Depends, Request
 from ..auth.users import get_current_user
 from ..dependencies import AsyncPersistenceDep, ConnectionManagerDep
 from ..models.user import User
-from ..schemas.container import (
+from ..schemas.containers import (
     ContainerCloseResponse,
     ContainerOpenResponse,
     ContainerTransferResponse,

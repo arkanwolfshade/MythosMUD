@@ -16,7 +16,7 @@ from ..dependencies import AsyncPersistenceDep, ConnectionManagerDep
 from ..exceptions import LoggedHTTPException
 from ..models.container import ContainerComponent
 from ..models.user import User
-from ..schemas.container import ContainerLootAllResponse
+from ..schemas.containers import ContainerLootAllResponse
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.audit_logger import audit_logger
 from .container_events import emit_loot_all_event

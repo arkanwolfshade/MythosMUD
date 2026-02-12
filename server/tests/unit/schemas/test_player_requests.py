@@ -7,7 +7,7 @@ Tests the Pydantic models in player_requests.py module.
 import pytest
 from pydantic import ValidationError
 
-from server.schemas.player_requests import (
+from server.schemas.players import (
     CorruptionRequest,
     CreateCharacterRequest,
     DamageRequest,

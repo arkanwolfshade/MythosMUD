@@ -18,7 +18,7 @@ from nats.aio.msg import Msg
 
 # BadRequestError removed - unused import
 from ..config.models import NATSConfig
-from ..schemas.nats_messages import validate_message
+from ..schemas.realtime import validate_message
 from ..services.nats_subject_manager import NATSSubjectManager, SubjectValidationError
 from ..structured_logging.enhanced_logging_config import get_logger
 from .message_broker import (

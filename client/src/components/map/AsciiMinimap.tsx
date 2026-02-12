@@ -9,7 +9,7 @@
  */
 
 import React, { useCallback, useEffect, useState } from 'react';
-import { getApiBaseUrl } from '../../utils/config';
+import { getVersionedApiBaseUrl } from '../../utils/config';
 import { SafeHtml } from '../common/SafeHtml';
 
 export interface AsciiMinimapProps {
@@ -63,7 +63,7 @@ export const AsciiMinimap: React.FC<AsciiMinimapProps> = ({
     setError(null);
 
     try {
-      const url = new URL(`${baseUrl || getApiBaseUrl()}/api/maps/ascii/minimap`);
+      const url = new URL(`${baseUrl || getVersionedApiBaseUrl()}/api/maps/ascii/minimap`);
       url.searchParams.set('plane', plane);
       url.searchParams.set('zone', zone);
       if (subZone) {

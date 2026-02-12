@@ -187,7 +187,7 @@ async def test_persist_player_success():
 @pytest.mark.asyncio
 async def test_persist_player_inventory_schema_error():
     """Test _persist_player() returns error on InventorySchemaValidationError."""
-    from server.schemas.inventory_schema import InventorySchemaValidationError
+    from server.schemas.shared import InventorySchemaValidationError
 
     mock_persistence = MagicMock()
     mock_persistence.save_player = MagicMock(side_effect=InventorySchemaValidationError("Invalid schema"))

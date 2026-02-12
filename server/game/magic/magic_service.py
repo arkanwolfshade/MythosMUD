@@ -23,7 +23,7 @@ from server.game.magic.spell_targeting import SpellTargetingService
 from server.game.player_service import PlayerService
 from server.models.spell import Spell
 from server.persistence.repositories.player_spell_repository import PlayerSpellRepository
-from server.schemas.target_resolution import TargetMatch, TargetType
+from server.schemas.shared import TargetMatch, TargetType
 from server.structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:

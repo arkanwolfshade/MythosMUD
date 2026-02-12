@@ -10,7 +10,7 @@ with proper perspective (attacker, defender, others) and variable substitution.
 from typing import Any
 
 from server.exceptions import MythosMUDError
-from server.schemas.combat_schema import validate_combat_messages
+from server.schemas.combat import validate_combat_messages
 from server.structured_logging.enhanced_logging_config import get_logger
 
 # Type aliases for better readability

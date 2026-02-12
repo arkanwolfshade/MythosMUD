@@ -173,6 +173,7 @@ def _create_sync_wrapper[F: Callable[..., Any]](  # pylint: disable=too-many-arg
 
                 delay = _calculate_retry_delay(attempt, initial_delay, max_delay, exponential_base)
                 _log_retry_attempt(func.__name__, attempt, max_attempts, delay, e)
+                # Sync-only: must not be called from async request handlers.
                 time.sleep(delay)
 
         if last_error:

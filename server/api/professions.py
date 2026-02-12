@@ -13,7 +13,7 @@ from ..error_types import ErrorMessages
 from ..exceptions import LoggedHTTPException
 from ..game.profession_service import ProfessionService
 from ..models.user import User
-from ..schemas.profession import ProfessionListResponse, ProfessionResponse
+from ..schemas.players import ProfessionListResponse, ProfessionResponse
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import create_context_from_request
 

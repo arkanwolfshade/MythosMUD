@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { getApiBaseUrl } from '../../utils/config';
+import { getVersionedApiBaseUrl } from '../../utils/config';
 import { EldritchIcon } from '../ui/EldritchIcon';
 import './MonitoringPanel.css';
 
@@ -59,7 +59,7 @@ interface MonitoringPanelProps {
 }
 
 export const MonitoringPanel: React.FC<MonitoringPanelProps> = ({
-  baseUrl = getApiBaseUrl(),
+  baseUrl = getVersionedApiBaseUrl(),
   refreshInterval = 5000,
 }) => {
   const [monitoringData, setMonitoringData] = useState<MonitoringData>({});

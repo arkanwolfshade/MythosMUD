@@ -206,7 +206,7 @@ class CombatTurnProcessor:
                             if player:
                                 room_id = player.current_room_id or combat.room_id
                                 # Recreate target from action data
-                                from server.schemas.target_resolution import (  # noqa: PLC0415  # Reason: Local import
+                                from server.schemas.shared import (  # noqa: PLC0415  # Reason: Local import
                                     TargetMatch,
                                     TargetType,
                                 )

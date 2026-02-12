@@ -9,7 +9,7 @@ import uuid
 from typing import Any
 
 from server.models.spell import Spell, SpellTargetType
-from server.schemas.target_resolution import TargetMatch, TargetType
+from server.schemas.shared import TargetMatch, TargetType
 from server.services.combat_service import CombatService
 from server.services.player_combat_service import PlayerCombatService
 from server.services.target_resolution_service import TargetResolutionService

@@ -8,7 +8,7 @@
  */
 
 import type { Edge } from 'reactflow';
-import { getApiBaseUrl } from '../../../utils/config';
+import { getVersionedApiBaseUrl } from '../../../utils/config';
 import type { MapEditingChanges } from '../hooks/useMapEditing';
 import type { ExitEdgeData, RoomNodeData } from '../types';
 
@@ -27,7 +27,7 @@ export async function saveNodePositions(
   options: SaveMapChangesOptions
 ): Promise<void> {
   const { authToken, baseUrl } = options;
-  const apiBaseUrl = baseUrl || getApiBaseUrl();
+  const apiBaseUrl = baseUrl || getVersionedApiBaseUrl();
 
   // Save each node position
   const savePromises = Array.from(nodePositions.entries()).map(async ([roomId, position]) => {

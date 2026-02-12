@@ -80,7 +80,7 @@ describe('useRespawnHandlers', () => {
         expect(mockSetGameState).toHaveBeenCalled();
       });
 
-      expect(fetchSpy).toHaveBeenCalledWith('/api/players/respawn', {
+      expect(fetchSpy).toHaveBeenCalledWith('/v1/api/players/respawn', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -168,7 +168,7 @@ describe('useRespawnHandlers', () => {
         expect(mockSetGameState).toHaveBeenCalled();
       });
 
-      expect(global.fetch).toHaveBeenCalledWith('/api/players/respawn-delirium', {
+      expect(global.fetch).toHaveBeenCalledWith('/v1/api/players/respawn-delirium', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

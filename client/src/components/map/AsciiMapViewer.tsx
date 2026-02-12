@@ -9,9 +9,9 @@
  */
 
 import React, { useCallback, useEffect, useState } from 'react';
-import { getApiBaseUrl } from '../../utils/config';
-import { MapControls } from './MapControls';
+import { getVersionedApiBaseUrl } from '../../utils/config';
 import { SafeHtml } from '../common/SafeHtml';
+import { MapControls } from './MapControls';
 
 export interface AsciiMapViewerProps {
   /** Plane name (required) */
@@ -84,7 +84,7 @@ export const AsciiMapViewer: React.FC<AsciiMapViewerProps> = ({
     setError(null);
 
     try {
-      const url = new URL(`${baseUrl || getApiBaseUrl()}/api/maps/ascii`);
+      const url = new URL(`${baseUrl || getVersionedApiBaseUrl()}/api/maps/ascii`);
       url.searchParams.set('plane', selectedPlane);
       url.searchParams.set('zone', selectedZone);
       if (selectedSubZone) {

@@ -19,7 +19,7 @@ from sqlalchemy.orm import selectinload
 from server.database import get_session_maker
 from server.exceptions import DatabaseError
 from server.models.player import Player, PlayerInventory
-from server.schemas.inventory_schema import InventorySchemaValidationError, validate_inventory_payload
+from server.schemas.shared import InventorySchemaValidationError, validate_inventory_payload
 from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.error_logging import create_error_context, log_and_raise
 from server.utils.retry import retry_with_backoff

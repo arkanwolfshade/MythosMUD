@@ -18,13 +18,14 @@ from ..game.profession_service import ProfessionService
 from ..game.stats_generator import StatsGenerator
 from ..models import Stats
 from ..models.user import User
-from ..schemas.character_creation import (
+from ..schemas.players import (
+    CreateCharacterRequest,
     CreateCharacterResponse,
+    RollStatsRequest,
     RollStatsResponse,
     StatSummary,
     ValidateStatsResponse,
 )
-from ..schemas.player_requests import CreateCharacterRequest, RollStatsRequest
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.rate_limiter import character_creation_limiter, stats_roll_limiter
 from .player_helpers import create_error_context as create_error_context_helper
@@ -127,7 +128,15 @@ async def _roll_stats_with_profession(
     try:
         # After None check, profession_id is guaranteed to be non-None
         if request_data.profession_id is None:
-            raise ValueError("profession_id should not be None for profession-based rolling")
+            context = create_error_context()
+            if current_user:
+                context.user_id = str(current_user.id)
+            context.metadata["operation"] = "roll_stats"
+            raise LoggedHTTPException(
+                status_code=400,
+                detail="profession_id is required for profession-based rolling",
+                context=context,
+            )
         profession_id: int = request_data.profession_id
 
         profession = await profession_service.validate_and_get_profession(profession_id)

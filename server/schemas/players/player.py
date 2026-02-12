@@ -11,7 +11,7 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from ..models.game import InventoryItem, PositionState, Stats, StatusEffect
+from ...models.game import InventoryItem, PositionState, Stats, StatusEffect
 
 
 class PlayerBase(BaseModel):

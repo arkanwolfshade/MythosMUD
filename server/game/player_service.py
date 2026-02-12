@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 from ..config import get_config
 from ..exceptions import DatabaseError, ValidationError
 from ..models import Stats
-from ..schemas.player import PlayerRead
+from ..schemas.players import PlayerRead
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.enhanced_error_logging import create_error_context, log_and_raise_enhanced
 from .player_creation_service import PlayerCreationService

@@ -10,13 +10,13 @@
     "version": "0.1.0"
   },
   "paths": {
-    "/auth/register": {
+    "/v1/auth/register": {
       "post": {
         "tags": [
           "auth"
         ],
         "summary": "Register:Register",
-        "operationId": "register_register_auth_register_post",
+        "operationId": "register_register_v1_auth_register_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -78,14 +78,14 @@
         }
       }
     },
-    "/auth/login": {
+    "/v1/auth/login": {
       "post": {
         "tags": [
           "auth"
         ],
         "summary": "Login User",
         "description": "Authenticate a user and return an access token.\n\nThis endpoint validates user credentials and returns a JWT token\nfor authenticated requests.",
-        "operationId": "login_user_auth_login_post",
+        "operationId": "login_user_v1_auth_login_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -120,14 +120,14 @@
         }
       }
     },
-    "/auth/me": {
+    "/v1/auth/me": {
       "get": {
         "tags": [
           "auth"
         ],
         "summary": "Get Current User Info",
         "description": "Get current user information.\n\nThis endpoint returns information about the currently authenticated user.",
-        "operationId": "get_current_user_info_auth_me_get",
+        "operationId": "get_current_user_info_v1_auth_me_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -136,7 +136,7 @@
                 "schema": {
                   "additionalProperties": true,
                   "type": "object",
-                  "title": "Response Get Current User Info Auth Me Get"
+                  "title": "Response Get Current User Info V1 Auth Me Get"
                 }
               }
             }
@@ -149,14 +149,14 @@
         ]
       }
     },
-    "/auth/invites": {
+    "/v1/auth/invites": {
       "get": {
         "tags": [
           "auth"
         ],
         "summary": "List Invites",
         "description": "List all invite codes.\n\nThis endpoint returns all invite codes in the system.",
-        "operationId": "list_invites_auth_invites_get",
+        "operationId": "list_invites_v1_auth_invites_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -168,7 +168,7 @@
                     "type": "object"
                   },
                   "type": "array",
-                  "title": "Response List Invites Auth Invites Get"
+                  "title": "Response List Invites V1 Auth Invites Get"
                 }
               }
             }
@@ -186,7 +186,7 @@
         ],
         "summary": "Create Invite",
         "description": "Create a new invite code.\n\nThis endpoint creates a new invite code for user registration.",
-        "operationId": "create_invite_auth_invites_post",
+        "operationId": "create_invite_v1_auth_invites_post",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -206,18 +206,18 @@
         ]
       }
     },
-    "/auth/jwt/login": {
+    "/v1/auth/jwt/login": {
       "post": {
         "tags": [
           "auth"
         ],
         "summary": "Auth:Jwt.Login",
-        "operationId": "auth_jwt_login_auth_jwt_login_post",
+        "operationId": "auth_jwt_login_v1_auth_jwt_login_post",
         "requestBody": {
           "content": {
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/Body_auth_jwt_login_auth_jwt_login_post"
+                "$ref": "#/components/schemas/Body_auth_jwt_login_v1_auth_jwt_login_post"
               }
             }
           },
@@ -275,13 +275,13 @@
         }
       }
     },
-    "/auth/jwt/logout": {
+    "/v1/auth/jwt/logout": {
       "post": {
         "tags": [
           "auth"
         ],
         "summary": "Auth:Jwt.Logout",
-        "operationId": "auth_jwt_logout_auth_jwt_logout_post",
+        "operationId": "auth_jwt_logout_v1_auth_jwt_logout_post",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -302,13 +302,13 @@
         ]
       }
     },
-    "/users/me": {
+    "/v1/users/me": {
       "get": {
         "tags": [
           "users"
         ],
         "summary": "Users:Current User",
-        "operationId": "users_current_user_users_me_get",
+        "operationId": "users_current_user_v1_users_me_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -335,7 +335,7 @@
           "users"
         ],
         "summary": "Users:Patch Current User",
-        "operationId": "users_patch_current_user_users_me_patch",
+        "operationId": "users_patch_current_user_v1_users_me_patch",
         "requestBody": {
           "content": {
             "application/json": {
@@ -405,13 +405,13 @@
         ]
       }
     },
-    "/users/{id}": {
+    "/v1/users/{id}": {
       "get": {
         "tags": [
           "users"
         ],
         "summary": "Users:User",
-        "operationId": "users_user_users__id__get",
+        "operationId": "users_user_v1_users__id__get",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -465,7 +465,7 @@
           "users"
         ],
         "summary": "Users:Patch User",
-        "operationId": "users_patch_user_users__id__patch",
+        "operationId": "users_patch_user_v1_users__id__patch",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -556,7 +556,7 @@
           "users"
         ],
         "summary": "Users:Delete User",
-        "operationId": "users_delete_user_users__id__delete",
+        "operationId": "users_delete_user_v1_users__id__delete",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -599,14 +599,14 @@
         }
       }
     },
-    "/command": {
+    "/v1/command": {
       "post": {
         "tags": [
           "command"
         ],
         "summary": "Handle Command",
         "description": "Handle incoming HTTP command requests.",
-        "operationId": "handle_command_command_post",
+        "operationId": "handle_command_v1_command_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -644,14 +644,14 @@
         ]
       }
     },
-    "/api/players/roll-stats": {
+    "/v1/api/players/roll-stats": {
       "post": {
         "tags": [
           "players"
         ],
         "summary": "Roll Character Stats",
         "description": "Roll random stats for character creation.\n\nThis endpoint generates random character statistics using the specified method\nand validates them against class prerequisites if a required class is specified.\n\nRate limited to 10 requests per minute per user.",
-        "operationId": "roll_character_stats_api_players_roll_stats_post",
+        "operationId": "roll_character_stats_v1_api_players_roll_stats_post",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -703,14 +703,14 @@
         }
       }
     },
-    "/api/players/create-character": {
+    "/v1/api/players/create-character": {
       "post": {
         "tags": [
           "players"
         ],
         "summary": "Create Character With Stats",
         "description": "Create a new character with specific stats.\n\nThis endpoint creates a new player character with the provided stats\nand automatically logs the user in with the new character.\n\nRate limited to 5 creations per 5 minutes per user.",
-        "operationId": "create_character_with_stats_api_players_create_character_post",
+        "operationId": "create_character_with_stats_v1_api_players_create_character_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -750,14 +750,14 @@
         ]
       }
     },
-    "/api/players/validate-stats": {
+    "/v1/api/players/validate-stats": {
       "post": {
         "tags": [
           "players"
         ],
         "summary": "Validate Character Stats",
         "description": "Validate character stats against class prerequisites.\n\nThis endpoint checks if the provided stats meet the requirements for a given class.",
-        "operationId": "validate_character_stats_api_players_validate_stats_post",
+        "operationId": "validate_character_stats_v1_api_players_validate_stats_post",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -817,14 +817,14 @@
         }
       }
     },
-    "/api/players/{player_id}/lucidity-loss": {
+    "/v1/api/players/{player_id}/lucidity-loss": {
       "post": {
         "tags": [
           "players"
         ],
         "summary": "Apply Lucidity Loss",
         "description": "Apply lucidity loss to a player.",
-        "operationId": "apply_lucidity_loss_api_players__player_id__lucidity_loss_post",
+        "operationId": "apply_lucidity_loss_v1_api_players__player_id__lucidity_loss_post",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -876,14 +876,14 @@
         }
       }
     },
-    "/api/players/{player_id}/fear": {
+    "/v1/api/players/{player_id}/fear": {
       "post": {
         "tags": [
           "players"
         ],
         "summary": "Apply Fear",
         "description": "Apply fear to a player.",
-        "operationId": "apply_fear_api_players__player_id__fear_post",
+        "operationId": "apply_fear_v1_api_players__player_id__fear_post",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -935,14 +935,14 @@
         }
       }
     },
-    "/api/players/{player_id}/corruption": {
+    "/v1/api/players/{player_id}/corruption": {
       "post": {
         "tags": [
           "players"
         ],
         "summary": "Apply Corruption",
         "description": "Apply corruption to a player.",
-        "operationId": "apply_corruption_api_players__player_id__corruption_post",
+        "operationId": "apply_corruption_v1_api_players__player_id__corruption_post",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -994,14 +994,14 @@
         }
       }
     },
-    "/api/players/{player_id}/occult-knowledge": {
+    "/v1/api/players/{player_id}/occult-knowledge": {
       "post": {
         "tags": [
           "players"
         ],
         "summary": "Gain Occult Knowledge",
         "description": "Gain occult knowledge (with lucidity loss).",
-        "operationId": "gain_occult_knowledge_api_players__player_id__occult_knowledge_post",
+        "operationId": "gain_occult_knowledge_v1_api_players__player_id__occult_knowledge_post",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -1053,14 +1053,14 @@
         }
       }
     },
-    "/api/players/{player_id}/heal": {
+    "/v1/api/players/{player_id}/heal": {
       "post": {
         "tags": [
           "players"
         ],
         "summary": "Heal Player",
         "description": "Heal a player's health.",
-        "operationId": "heal_player_api_players__player_id__heal_post",
+        "operationId": "heal_player_v1_api_players__player_id__heal_post",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -1112,14 +1112,14 @@
         }
       }
     },
-    "/api/players/{player_id}/damage": {
+    "/v1/api/players/{player_id}/damage": {
       "post": {
         "tags": [
           "players"
         ],
         "summary": "Damage Player",
         "description": "Damage a player's health.",
-        "operationId": "damage_player_api_players__player_id__damage_post",
+        "operationId": "damage_player_v1_api_players__player_id__damage_post",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -1171,14 +1171,14 @@
         }
       }
     },
-    "/api/players/respawn-delirium": {
+    "/v1/api/players/respawn-delirium": {
       "post": {
         "tags": [
           "players"
         ],
         "summary": "Respawn Player From Delirium",
         "description": "Respawn a delirious player at the Sanitarium with restored lucidity.\n\nThis endpoint handles player respawn after delirium, moving them to\nthe Sanitarium and restoring their lucidity to 10.\n\nRate limited to 1 request per 5 seconds per user.\n\nReturns:\n    dict: Respawn room data and updated player state\n\nRaises:\n    HTTPException(403): Player is not delirious\n    HTTPException(404): Player not found\n    HTTPException(500): Respawn failed",
-        "operationId": "respawn_player_from_delirium_api_players_respawn_delirium_post",
+        "operationId": "respawn_player_from_delirium_v1_api_players_respawn_delirium_post",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -1198,14 +1198,14 @@
         ]
       }
     },
-    "/api/players/respawn": {
+    "/v1/api/players/respawn": {
       "post": {
         "tags": [
           "players"
         ],
         "summary": "Respawn Player",
         "description": "Respawn a dead player at their respawn location with full DP.\n\nThis endpoint handles player resurrection after death, moving them from\nlimbo to their designated respawn room and restoring their DP to 100.\n\nRate limited to 1 request per 5 seconds per user.\n\nReturns:\n    dict: Respawn room data and updated player state\n\nRaises:\n    HTTPException(403): Player is not dead\n    HTTPException(404): Player not found\n    HTTPException(500): Respawn failed",
-        "operationId": "respawn_player_api_players_respawn_post",
+        "operationId": "respawn_player_v1_api_players_respawn_post",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -1225,14 +1225,14 @@
         ]
       }
     },
-    "/api/players/": {
+    "/v1/api/players/": {
       "post": {
         "tags": [
           "players"
         ],
         "summary": "Create Player",
         "description": "Create a new player character.\n\n:param name: Display name for the new character.\n:param request: FastAPI request (for error context).\n:param starting_room_id: Room ID where the character will spawn.\n:param current_user: Authenticated user (injected).\n:param player_service: Player service (injected).\n:return: The created player as PlayerRead.\n:raises LoggedHTTPException: On validation error (400) or auth failure (401).",
-        "operationId": "create_player_api_players__post",
+        "operationId": "create_player_v1_api_players__post",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -1288,7 +1288,7 @@
         ],
         "summary": "List Players",
         "description": "Get a list of all players.\n\n:param _request: FastAPI request (for error context).\n:param _current_user: Authenticated user if any (injected).\n:param player_service: Player service (injected).\n:return: List of all players as PlayerRead.\n:raises LoggedHTTPException: If not authenticated (401).",
-        "operationId": "list_players_api_players__get",
+        "operationId": "list_players_v1_api_players__get",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -1304,7 +1304,7 @@
                   "items": {
                     "$ref": "#/components/schemas/PlayerRead"
                   },
-                  "title": "Response List Players Api Players  Get"
+                  "title": "Response List Players V1 Api Players  Get"
                 }
               }
             }
@@ -1312,14 +1312,14 @@
         }
       }
     },
-    "/api/players/available-classes": {
+    "/v1/api/players/available-classes": {
       "get": {
         "tags": [
           "players"
         ],
         "summary": "Get Available Classes",
         "description": "Get information about all available character classes and their prerequisites.",
-        "operationId": "get_available_classes_api_players_available_classes_get",
+        "operationId": "get_available_classes_v1_api_players_available_classes_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -1339,14 +1339,14 @@
         ]
       }
     },
-    "/api/players/characters": {
+    "/v1/api/players/characters": {
       "get": {
         "tags": [
           "players"
         ],
         "summary": "Get User Characters",
         "description": "Get all active characters for the current user.\n\nMULTI-CHARACTER: Returns list of active (non-deleted) characters for the authenticated user.\n\nReturns:\n    list[PlayerRead]: List of active character data",
-        "operationId": "get_user_characters_api_players_characters_get",
+        "operationId": "get_user_characters_v1_api_players_characters_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -1357,7 +1357,7 @@
                     "$ref": "#/components/schemas/PlayerRead"
                   },
                   "type": "array",
-                  "title": "Response Get User Characters Api Players Characters Get"
+                  "title": "Response Get User Characters V1 Api Players Characters Get"
                 }
               }
             }
@@ -1370,14 +1370,14 @@
         ]
       }
     },
-    "/api/players/{player_id}": {
+    "/v1/api/players/{player_id}": {
       "get": {
         "tags": [
           "players"
         ],
         "summary": "Get Player",
         "description": "Get a specific player by ID.",
-        "operationId": "get_player_api_players__player_id__get",
+        "operationId": "get_player_v1_api_players__player_id__get",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -1424,7 +1424,7 @@
         ],
         "summary": "Delete Player",
         "description": "Delete a player character.",
-        "operationId": "delete_player_api_players__player_id__delete",
+        "operationId": "delete_player_v1_api_players__player_id__delete",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -1448,7 +1448,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/server__schemas__player__MessageResponse"
+                  "$ref": "#/components/schemas/server__schemas__players__player__MessageResponse"
                 }
               }
             }
@@ -1466,14 +1466,14 @@
         }
       }
     },
-    "/api/players/name/{player_name}": {
+    "/v1/api/players/name/{player_name}": {
       "get": {
         "tags": [
           "players"
         ],
         "summary": "Get Player By Name",
         "description": "Get a specific player by name.",
-        "operationId": "get_player_by_name_api_players_name__player_name__get",
+        "operationId": "get_player_by_name_v1_api_players_name__player_name__get",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -1514,14 +1514,14 @@
         }
       }
     },
-    "/api/players/characters/{character_id}": {
+    "/v1/api/players/characters/{character_id}": {
       "delete": {
         "tags": [
           "players"
         ],
         "summary": "Delete Character",
         "description": "Soft delete a character.\n\nMULTI-CHARACTER: Soft deletes a character (sets is_deleted=True) belonging to the current user.\nCharacter data is preserved but the character is hidden from selection.\n\nArgs:\n    character_id: Character ID (player_id) to delete\n\nReturns:\n    dict: Success message\n\nRaises:\n    HTTPException: If character not found or doesn't belong to user",
-        "operationId": "delete_character_api_players_characters__character_id__delete",
+        "operationId": "delete_character_v1_api_players_characters__character_id__delete",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -1562,14 +1562,14 @@
         }
       }
     },
-    "/api/players/select-character": {
+    "/v1/api/players/select-character": {
       "post": {
         "tags": [
           "players"
         ],
         "summary": "Select Character",
         "description": "Select a character to play.\n\nMULTI-CHARACTER: Validates that the character belongs to the user and is not deleted,\nthen returns character details for game connection.\n\nArgs:\n    request_data: Character selection request containing character_id\n\nReturns:\n    dict: Character details for game connection\n\nRaises:\n    HTTPException: If character not found, deleted, or doesn't belong to user",
-        "operationId": "select_character_api_players_select_character_post",
+        "operationId": "select_character_v1_api_players_select_character_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1609,14 +1609,14 @@
         ]
       }
     },
-    "/api/players/{player_id}/start-login-grace-period": {
+    "/v1/api/players/{player_id}/start-login-grace-period": {
       "post": {
         "tags": [
           "players"
         ],
         "summary": "Start Login Grace Period Endpoint",
         "description": "Start login grace period for a player after MOTD dismissal.\n\nThis endpoint is called when a player clicks through the MOTD screen\nto enter the game, starting their 10-second grace period of immunity.\n\nArgs:\n    player_id: The player's ID\n    request: FastAPI request object\n    current_user: Current authenticated user\n\nReturns:\n    dict: Success status and grace period details\n\nRaises:\n    HTTPException: If player not found, doesn't belong to user, or already in grace period",
-        "operationId": "start_login_grace_period_endpoint_api_players__player_id__start_login_grace_period_post",
+        "operationId": "start_login_grace_period_endpoint_v1_api_players__player_id__start_login_grace_period_post",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -1658,14 +1658,14 @@
         }
       }
     },
-    "/professions/": {
+    "/v1/professions/": {
       "get": {
         "tags": [
           "professions"
         ],
         "summary": "Get All Professions",
         "description": "Retrieve all available professions for character creation with caching.\n\n:param request: FastAPI request (for error context).\n:param current_user: Authenticated user (injected).\n:param profession_service: Profession service (injected).\n:return: List of professions with descriptions and stat requirements.\n:raises LoggedHTTPException: If not authenticated (401) or on server error (500).",
-        "operationId": "get_all_professions_professions__get",
+        "operationId": "get_all_professions_v1_professions__get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -1685,14 +1685,14 @@
         ]
       }
     },
-    "/professions/{profession_id}": {
+    "/v1/professions/{profession_id}": {
       "get": {
         "tags": [
           "professions"
         ],
         "summary": "Get Profession By Id",
         "description": "Retrieve specific profession details by ID with caching.\n\n:param profession_id: ID of the profession to fetch.\n:param request: FastAPI request (for error context).\n:param current_user: Authenticated user (injected).\n:param profession_service: Profession service (injected).\n:return: Profession details including description and stat requirements.\n:raises LoggedHTTPException: If not authenticated (401), not found (404), or error (500).",
-        "operationId": "get_profession_by_id_professions__profession_id__get",
+        "operationId": "get_profession_by_id_v1_professions__profession_id__get",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -1733,14 +1733,14 @@
         }
       }
     },
-    "/game/status": {
+    "/v1/game/status": {
       "get": {
         "tags": [
           "game"
         ],
         "summary": "Get Game Status",
         "description": "Get current game status and connection information.",
-        "operationId": "get_game_status_game_status_get",
+        "operationId": "get_game_status_v1_game_status_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -1755,14 +1755,14 @@
         }
       }
     },
-    "/game/broadcast": {
+    "/v1/game/broadcast": {
       "post": {
         "tags": [
           "game"
         ],
         "summary": "Broadcast Message",
         "description": "Broadcast a message to all connected players (admin only).\n\nRequires superuser privileges. Returns 403 for non-admin users.",
-        "operationId": "broadcast_message_game_broadcast_post",
+        "operationId": "broadcast_message_v1_game_broadcast_post",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -1803,14 +1803,14 @@
         }
       }
     },
-    "/game/time": {
+    "/v1/game/time": {
       "get": {
         "tags": [
           "game"
         ],
         "summary": "Get Mythos Time",
         "description": "Return the current Mythos calendar metadata for HUD initialization.",
-        "operationId": "get_mythos_time_game_time_get",
+        "operationId": "get_mythos_time_v1_game_time_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -1825,14 +1825,14 @@
         }
       }
     },
-    "/monitoring/metrics": {
+    "/v1/monitoring/metrics": {
       "get": {
         "tags": [
           "monitoring"
         ],
         "summary": "Get Movement Metrics",
         "description": "Get comprehensive movement system metrics.",
-        "operationId": "get_movement_metrics_monitoring_metrics_get",
+        "operationId": "get_movement_metrics_v1_monitoring_metrics_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -1847,14 +1847,14 @@
         }
       }
     },
-    "/monitoring/integrity": {
+    "/v1/monitoring/integrity": {
       "get": {
         "tags": [
           "monitoring"
         ],
         "summary": "Validate Room Integrity",
         "description": "Validate room data integrity and return results.",
-        "operationId": "validate_room_integrity_monitoring_integrity_get",
+        "operationId": "validate_room_integrity_v1_monitoring_integrity_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -1869,7 +1869,7 @@
         }
       }
     },
-    "/monitoring/alerts": {
+    "/v1/monitoring/alerts": {
       "get": {
         "tags": [
           "monitoring",
@@ -1877,7 +1877,7 @@
         ],
         "summary": "Get System Monitoring Alerts",
         "description": "Get system alerts from monitoring dashboard.",
-        "operationId": "get_system_monitoring_alerts_monitoring_alerts_get",
+        "operationId": "get_system_monitoring_alerts_v1_monitoring_alerts_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -1892,14 +1892,14 @@
         }
       }
     },
-    "/monitoring/reset": {
+    "/v1/monitoring/reset": {
       "post": {
         "tags": [
           "monitoring"
         ],
         "summary": "Reset Metrics",
         "description": "Reset all movement metrics (admin only).",
-        "operationId": "reset_metrics_monitoring_reset_post",
+        "operationId": "reset_metrics_v1_monitoring_reset_post",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -1914,14 +1914,14 @@
         }
       }
     },
-    "/monitoring/performance-summary": {
+    "/v1/monitoring/performance-summary": {
       "get": {
         "tags": [
           "monitoring"
         ],
         "summary": "Get Performance Summary",
         "description": "Get a human-readable performance summary.",
-        "operationId": "get_performance_summary_monitoring_performance_summary_get",
+        "operationId": "get_performance_summary_v1_monitoring_performance_summary_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -1936,14 +1936,14 @@
         }
       }
     },
-    "/monitoring/memory": {
+    "/v1/monitoring/memory": {
       "get": {
         "tags": [
           "monitoring"
         ],
         "summary": "Get Memory Stats",
         "description": "Get comprehensive memory and connection statistics.",
-        "operationId": "get_memory_stats_monitoring_memory_get",
+        "operationId": "get_memory_stats_v1_monitoring_memory_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -1958,14 +1958,14 @@
         }
       }
     },
-    "/monitoring/memory-alerts": {
+    "/v1/monitoring/memory-alerts": {
       "get": {
         "tags": [
           "monitoring"
         ],
         "summary": "Get Memory Alerts",
         "description": "Get memory-related alerts and warnings.",
-        "operationId": "get_memory_alerts_monitoring_memory_alerts_get",
+        "operationId": "get_memory_alerts_v1_monitoring_memory_alerts_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -1980,14 +1980,14 @@
         }
       }
     },
-    "/monitoring/memory/cleanup": {
+    "/v1/monitoring/memory/cleanup": {
       "post": {
         "tags": [
           "monitoring"
         ],
         "summary": "Force Memory Cleanup",
         "description": "Force immediate memory cleanup (admin only).",
-        "operationId": "force_memory_cleanup_monitoring_memory_cleanup_post",
+        "operationId": "force_memory_cleanup_v1_monitoring_memory_cleanup_post",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -2002,14 +2002,14 @@
         }
       }
     },
-    "/monitoring/dual-connections": {
+    "/v1/monitoring/dual-connections": {
       "get": {
         "tags": [
           "monitoring"
         ],
         "summary": "Get Dual Connection Stats",
         "description": "Get comprehensive dual connection statistics.",
-        "operationId": "get_dual_connection_stats_monitoring_dual_connections_get",
+        "operationId": "get_dual_connection_stats_v1_monitoring_dual_connections_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -2024,14 +2024,14 @@
         }
       }
     },
-    "/monitoring/performance": {
+    "/v1/monitoring/performance": {
       "get": {
         "tags": [
           "monitoring"
         ],
         "summary": "Get Performance Stats",
         "description": "Get connection performance statistics.",
-        "operationId": "get_performance_stats_monitoring_performance_get",
+        "operationId": "get_performance_stats_v1_monitoring_performance_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -2046,14 +2046,14 @@
         }
       }
     },
-    "/monitoring/connection-health": {
+    "/v1/monitoring/connection-health": {
       "get": {
         "tags": [
           "monitoring"
         ],
         "summary": "Get Connection Health Stats",
         "description": "Get connection health statistics.",
-        "operationId": "get_connection_health_stats_monitoring_connection_health_get",
+        "operationId": "get_connection_health_stats_v1_monitoring_connection_health_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -2068,14 +2068,14 @@
         }
       }
     },
-    "/monitoring/eventbus": {
+    "/v1/monitoring/eventbus": {
       "get": {
         "tags": [
           "monitoring"
         ],
         "summary": "Get Eventbus Metrics",
         "description": "Get EventBus metrics including subscriber counts and task information.\n\nReturns metrics for detecting memory leaks in the event subscription system:\n- Subscriber counts by event type (normal: stable, abnormal: growing unbounded)\n- Active task count in EventBus (normal: < 10, warning: > 50)\n- Subscription churn rate (normal: < 0.1, warning: > 0.2 indicates leaks)\n- Recent subscription/unsubscription activity\n\nThresholds:\n- subscription_churn_rate: Warning if > 0.1 (10% growth per hour)\n- active_task_count: Warning if > 50 active tasks\n- total_subscribers: Should remain stable, growing count indicates leaks",
-        "operationId": "get_eventbus_metrics_monitoring_eventbus_get",
+        "operationId": "get_eventbus_metrics_v1_monitoring_eventbus_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -2090,14 +2090,14 @@
         }
       }
     },
-    "/monitoring/caches": {
+    "/v1/monitoring/caches": {
       "get": {
         "tags": [
           "monitoring"
         ],
         "summary": "Get Cache Metrics",
         "description": "Get cache metrics including sizes, hit rates, and expiration rates.\n\nReturns metrics for detecting memory leaks in cache management:\n- Cache sizes for all caches (normal: within max_size, abnormal: exceeds max_size)\n- Cache hit rates (normal: > 0.7, low indicates cache issues)\n- Expired entry counts (indicates TTL working correctly)\n- Expiration rates (normal: varies by cache, high indicates TTL working)\n- Capacity utilization (normal: < 100%, warning: > 110% indicates leak)\n\nThresholds:\n- capacity_utilization: Warning if > 1.1 (110% of max_size)\n- cache_sizes: Warning if any cache exceeds its max_size\n- expiration_rates: High rates are normal for TTL caches, low rates with high sizes indicate leaks",
-        "operationId": "get_cache_metrics_monitoring_caches_get",
+        "operationId": "get_cache_metrics_v1_monitoring_caches_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -2112,14 +2112,14 @@
         }
       }
     },
-    "/monitoring/tasks": {
+    "/v1/monitoring/tasks": {
       "get": {
         "tags": [
           "monitoring"
         ],
         "summary": "Get Task Metrics",
         "description": "Get TaskRegistry metrics including task counts and lifecycle information.\n\nReturns metrics for detecting memory leaks in task management:\n- Active task count (normal: stable, abnormal: growing unbounded)\n- Task breakdown by type and service\n- Task creation and completion rates (should be balanced)\n- Orphaned task count (normal: 0, warning: > 5)\n\nThresholds:\n- task_growth_rate: Warning if > 0.2 (20% growth per hour)\n- orphaned_task_count: Warning if > 5\n- active_task_count: Should remain relatively stable, growing count indicates leaks",
-        "operationId": "get_task_metrics_monitoring_tasks_get",
+        "operationId": "get_task_metrics_v1_monitoring_tasks_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -2134,14 +2134,14 @@
         }
       }
     },
-    "/monitoring/memory-leaks": {
+    "/v1/monitoring/memory-leaks": {
       "get": {
         "tags": [
           "monitoring"
         ],
         "summary": "Get Memory Leak Metrics",
         "description": "Get comprehensive memory leak metrics from all sources.\n\nReturns aggregated metrics from all monitoring sources for comprehensive\nmemory leak detection. Includes connection, event, cache, task, and NATS metrics\nalong with growth rate calculations and automated alerts.\n\nThis endpoint provides:\n- Connection metrics (websockets, metadata, orphaned connections)\n- Event system metrics (subscribers, tasks, churn rates)\n- Cache metrics (sizes, expiration, utilization)\n- Task metrics (counts, lifecycle, orphaned tasks)\n- NATS metrics (subscriptions, cleanup status)\n- Growth rates (calculated from historical data)\n- Automated alerts (based on configured thresholds)\n\nThresholds (configured in MemoryLeakMetricsCollector):\n- closed_websockets_max: 5000 (warning), 10000 (critical)\n- subscriber_growth_rate: 0.1 (10% per period)\n- cache_size_limit_factor: 1.1 (110% of max_size)\n- task_growth_rate: 0.2 (20% per period)\n\nExample normal values:\n- closed_websockets_count: < 1000\n- active_to_player_ratio: 0.8-1.2\n- subscription_churn_rate: < 0.1\n- capacity_utilization: < 1.0\n\nExample abnormal values (indicate potential leaks):\n- closed_websockets_count: > 5000\n- active_to_player_ratio: > 2.0\n- subscription_churn_rate: > 0.2\n- capacity_utilization: > 1.1\n- orphaned_connections: > 10\n- orphaned_task_count: > 5",
-        "operationId": "get_memory_leak_metrics_monitoring_memory_leaks_get",
+        "operationId": "get_memory_leak_metrics_v1_monitoring_memory_leaks_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -2156,14 +2156,14 @@
         }
       }
     },
-    "/monitoring/health": {
+    "/v1/monitoring/health": {
       "get": {
         "tags": [
           "monitoring"
         ],
         "summary": "Get Health Status",
         "description": "Get comprehensive system health status with timeout protection.\n\nThis endpoint validates all critical components:\n- Server metrics (CPU, memory, uptime)\n- Database connectivity (actual query validation)\n- Connection manager health\n- Event loop health\n\nReturns appropriate HTTP status codes:\n- 200 OK: System healthy or degraded (status in response body)\n- 503 Service Unavailable: System unhealthy\n- 500 Internal Server Error: Health check itself failed",
-        "operationId": "get_health_status_monitoring_health_get",
+        "operationId": "get_health_status_v1_monitoring_health_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -2178,7 +2178,7 @@
         }
       }
     },
-    "/health": {
+    "/v1/health": {
       "get": {
         "tags": [
           "monitoring",
@@ -2186,7 +2186,7 @@
         ],
         "summary": "Get System Health",
         "description": "Enhanced health check endpoint using monitoring dashboard.",
-        "operationId": "get_system_health_health_get",
+        "operationId": "get_system_health_v1_health_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -2201,14 +2201,14 @@
         }
       }
     },
-    "/metrics": {
+    "/v1/metrics": {
       "get": {
         "tags": [
           "metrics"
         ],
         "summary": "Get Metrics",
         "description": "Get comprehensive system metrics.\n\nReturns metrics about NATS message delivery, circuit breaker state,\ndead letter queue, and performance statistics.\n\nRequires admin authentication.\n\nReturns:\n    Dictionary containing all metrics\n\nAI: For monitoring dashboards and alerting systems.",
-        "operationId": "get_metrics_metrics_get",
+        "operationId": "get_metrics_v1_metrics_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -2228,7 +2228,7 @@
         ]
       }
     },
-    "/monitoring/summary": {
+    "/v1/monitoring/summary": {
       "get": {
         "tags": [
           "monitoring",
@@ -2236,7 +2236,7 @@
         ],
         "summary": "Get System Monitoring Summary",
         "description": "Get comprehensive monitoring summary.",
-        "operationId": "get_system_monitoring_summary_monitoring_summary_get",
+        "operationId": "get_system_monitoring_summary_v1_monitoring_summary_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -2251,7 +2251,7 @@
         }
       }
     },
-    "/monitoring/alerts/{alert_id}/resolve": {
+    "/v1/monitoring/alerts/{alert_id}/resolve": {
       "post": {
         "tags": [
           "monitoring",
@@ -2259,7 +2259,7 @@
         ],
         "summary": "Resolve System Alert",
         "description": "Resolve a system alert.",
-        "operationId": "resolve_system_alert_monitoring_alerts__alert_id__resolve_post",
+        "operationId": "resolve_system_alert_v1_monitoring_alerts__alert_id__resolve_post",
         "parameters": [
           {
             "name": "alert_id",
@@ -2295,14 +2295,14 @@
         }
       }
     },
-    "/metrics/summary": {
+    "/v1/metrics/summary": {
       "get": {
         "tags": [
           "metrics"
         ],
         "summary": "Get Metrics Summary",
         "description": "Get concise metrics summary.\n\nReturns high-level health indicators without detailed breakdowns.\nFaster than full metrics endpoint.\n\nRequires admin authentication.\n\nReturns:\n    Dictionary with summary metrics\n\nAI: For quick health checks and status dashboards.",
-        "operationId": "get_metrics_summary_metrics_summary_get",
+        "operationId": "get_metrics_summary_v1_metrics_summary_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -2322,14 +2322,14 @@
         ]
       }
     },
-    "/metrics/reset": {
+    "/v1/metrics/reset": {
       "post": {
         "tags": [
           "metrics"
         ],
         "summary": "Reset Metrics",
         "description": "Reset metrics counters.\n\nClears all metrics counters. Use after maintenance or deployment.\n\nRequires admin authentication.\n\nReturns:\n    Confirmation message\n\nAI: Use sparingly - metrics history is valuable.",
-        "operationId": "reset_metrics_metrics_reset_post",
+        "operationId": "reset_metrics_v1_metrics_reset_post",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -2349,14 +2349,14 @@
         ]
       }
     },
-    "/metrics/dlq": {
+    "/v1/metrics/dlq": {
       "get": {
         "tags": [
           "metrics"
         ],
         "summary": "Get Dlq Messages",
         "description": "Get messages from dead letter queue.\n\nReturns failed messages for manual inspection and potential replay.\n\nArgs:\n    limit: Maximum number of messages to return\n\nRequires admin authentication.\n\nReturns:\n    Dictionary with DLQ messages and statistics\n\nAI: For incident investigation and manual message replay.",
-        "operationId": "get_dlq_messages_metrics_dlq_get",
+        "operationId": "get_dlq_messages_v1_metrics_dlq_get",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -2398,14 +2398,14 @@
         }
       }
     },
-    "/metrics/circuit-breaker/reset": {
+    "/v1/metrics/circuit-breaker/reset": {
       "post": {
         "tags": [
           "metrics"
         ],
         "summary": "Reset Circuit Breaker",
         "description": "Manually reset circuit breaker to CLOSED state.\n\nUse this to force the circuit closed after manual service recovery.\n\nRequires admin authentication.\n\nReturns:\n    Confirmation message\n\nAI: Emergency admin action - use when you know service is healthy.",
-        "operationId": "reset_circuit_breaker_metrics_circuit_breaker_reset_post",
+        "operationId": "reset_circuit_breaker_v1_metrics_circuit_breaker_reset_post",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -2425,14 +2425,14 @@
         ]
       }
     },
-    "/metrics/dlq/{filepath}/replay": {
+    "/v1/metrics/dlq/{filepath}/replay": {
       "post": {
         "tags": [
           "metrics"
         ],
         "summary": "Replay Dlq Message",
         "description": "Replay a message from the Dead Letter Queue.\n\nAttempts to reprocess a failed message. If successful, removes it from DLQ.\n\nArgs:\n    filepath: Path to the DLQ file (relative to DLQ storage)\n\nRequires admin authentication.\n\nReturns:\n    Confirmation message with replay status\n\nAI: For manual incident recovery - use after fixing underlying issue.",
-        "operationId": "replay_dlq_message_metrics_dlq__filepath__replay_post",
+        "operationId": "replay_dlq_message_v1_metrics_dlq__filepath__replay_post",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -2473,14 +2473,14 @@
         }
       }
     },
-    "/metrics/dlq/{filepath}": {
+    "/v1/metrics/dlq/{filepath}": {
       "delete": {
         "tags": [
           "metrics"
         ],
         "summary": "Delete Dlq Message",
         "description": "Delete a message from the Dead Letter Queue without replaying.\n\nUse this to discard a message that is not worth replaying.\n\nArgs:\n    filepath: Path to the DLQ file (relative to DLQ storage)\n\nRequires admin authentication.\n\nReturns:\n    Confirmation message\n\nAI: For discarding permanently failed or invalid messages.",
-        "operationId": "delete_dlq_message_metrics_dlq__filepath__delete",
+        "operationId": "delete_dlq_message_v1_metrics_dlq__filepath__delete",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -2521,14 +2521,14 @@
         }
       }
     },
-    "/api/connections/{player_id}": {
+    "/v1/api/connections/{player_id}": {
       "get": {
         "tags": [
           "realtime"
         ],
         "summary": "Get Player Connections",
         "description": "Get connection information for a player.\nReturns detailed connection metadata including session information.",
-        "operationId": "get_player_connections_api_connections__player_id__get",
+        "operationId": "get_player_connections_v1_api_connections__player_id__get",
         "parameters": [
           {
             "name": "player_id",
@@ -2565,14 +2565,14 @@
         }
       }
     },
-    "/api/connections/{player_id}/session": {
+    "/v1/api/connections/{player_id}/session": {
       "post": {
         "tags": [
           "realtime"
         ],
         "summary": "Handle New Game Session",
         "description": "Handle a new game session for a player.\nThis will disconnect existing connections and establish a new session.",
-        "operationId": "handle_new_game_session_api_connections__player_id__session_post",
+        "operationId": "handle_new_game_session_v1_api_connections__player_id__session_post",
         "parameters": [
           {
             "name": "player_id",
@@ -2609,14 +2609,14 @@
         }
       }
     },
-    "/api/connections/stats": {
+    "/v1/api/connections/stats": {
       "get": {
         "tags": [
           "realtime"
         ],
         "summary": "Get Connection Statistics",
         "description": "Get comprehensive connection statistics.\nReturns detailed statistics about all connections, sessions, and presence.",
-        "operationId": "get_connection_statistics_api_connections_stats_get",
+        "operationId": "get_connection_statistics_v1_api_connections_stats_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -2631,14 +2631,14 @@
         }
       }
     },
-    "/api/rooms/list": {
+    "/v1/api/rooms/list": {
       "get": {
         "tags": [
           "rooms"
         ],
         "summary": "List Rooms",
         "description": "List rooms filtered by plane, zone, and optionally sub_zone.\n\nReturns room data in the same format as the single room endpoint,\nincluding map_x and map_y coordinates when available in the database.\n\nIf filter_explored is True and a user is authenticated:\n- Admin users: See all rooms (filtering is skipped)\n- Non-admin users: Only see rooms that the player has explored",
-        "operationId": "list_rooms_api_rooms_list_get",
+        "operationId": "list_rooms_v1_api_rooms_list_get",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -2734,14 +2734,14 @@
         }
       }
     },
-    "/api/rooms/{room_id}/position": {
+    "/v1/api/rooms/{room_id}/position": {
       "post": {
         "tags": [
           "rooms"
         ],
         "summary": "Update Room Position",
         "description": "Update room map coordinates (admin only).\n\nUpdates the map_x and map_y columns in the rooms table for the specified room.\nRequires admin privileges.",
-        "operationId": "update_room_position_api_rooms__room_id__position_post",
+        "operationId": "update_room_position_v1_api_rooms__room_id__position_post",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -2792,14 +2792,14 @@
         }
       }
     },
-    "/api/rooms/{room_id}": {
+    "/v1/api/rooms/{room_id}": {
       "get": {
         "tags": [
           "rooms"
         ],
         "summary": "Get Room",
         "description": "Get room information by room ID.",
-        "operationId": "get_room_api_rooms__room_id__get",
+        "operationId": "get_room_v1_api_rooms__room_id__get",
         "parameters": [
           {
             "name": "room_id",
@@ -2835,14 +2835,14 @@
         }
       }
     },
-    "/api/maps/ascii": {
+    "/v1/api/maps/ascii": {
       "get": {
         "tags": [
           "maps"
         ],
         "summary": "Get Ascii Map",
         "description": "Get ASCII map for a zone/subzone.\n\nReturns HTML string with ASCII map rendered. For authenticated players,\nonly shows explored rooms. Admins see all rooms.",
-        "operationId": "get_ascii_map_api_maps_ascii_get",
+        "operationId": "get_ascii_map_v1_api_maps_ascii_get",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -2962,14 +2962,14 @@
         }
       }
     },
-    "/api/maps/ascii/minimap": {
+    "/v1/api/maps/ascii/minimap": {
       "get": {
         "tags": [
           "maps"
         ],
         "summary": "Get Ascii Minimap",
         "description": "Get ASCII minimap centered on player.\n\nReturns a small ASCII map showing area around the player's current room.",
-        "operationId": "get_ascii_minimap_api_maps_ascii_minimap_get",
+        "operationId": "get_ascii_minimap_v1_api_maps_ascii_minimap_get",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -3053,14 +3053,14 @@
         }
       }
     },
-    "/api/maps/coordinates/recalculate": {
+    "/v1/api/maps/coordinates/recalculate": {
       "post": {
         "tags": [
           "maps"
         ],
         "summary": "Recalculate Coordinates",
         "description": "Trigger coordinate recalculation for a zone/subzone (admin only).\n\nReturns list of conflicts if any.",
-        "operationId": "recalculate_coordinates_api_maps_coordinates_recalculate_post",
+        "operationId": "recalculate_coordinates_v1_api_maps_coordinates_recalculate_post",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -3132,14 +3132,14 @@
         }
       }
     },
-    "/api/maps/rooms/{room_id}/origin": {
+    "/v1/api/maps/rooms/{room_id}/origin": {
       "post": {
         "tags": [
           "maps"
         ],
         "summary": "Set Map Origin",
         "description": "Set a room as the map origin for its zone/subzone (admin only).\n\nTriggers coordinate recalculation.",
-        "operationId": "set_map_origin_api_maps_rooms__room_id__origin_post",
+        "operationId": "set_map_origin_v1_api_maps_rooms__room_id__origin_post",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -3190,14 +3190,14 @@
         }
       }
     },
-    "/api/containers/open": {
+    "/v1/api/containers/open": {
       "post": {
         "tags": [
           "containers"
         ],
         "summary": "Open Container",
         "description": "Open a container for interaction.\n\nInitiates interaction with a container in the player's current room or inventory.\nReturns container data and a mutation token for subsequent operations.\n\nRate limited to 20 requests per 60 seconds per player.\n\nArgs:\n    request_data: OpenContainerRequest with container_id\n    request: FastAPI Request object\n    current_user: Current authenticated user\n    persistence: Persistence layer instance\n\nReturns:\n    dict containing container data and mutation_token\n\nRaises:\n    HTTPException(404): Container not found\n    HTTPException(403): Access denied\n    HTTPException(409): Container already open\n    HTTPException(423): Container is locked\n    HTTPException(429): Rate limit exceeded",
-        "operationId": "open_container_api_containers_open_post",
+        "operationId": "open_container_v1_api_containers_open_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -3237,14 +3237,14 @@
         ]
       }
     },
-    "/api/containers/transfer": {
+    "/v1/api/containers/transfer": {
       "post": {
         "tags": [
           "containers"
         ],
         "summary": "Transfer Items",
         "description": "Transfer items between container and player inventory.\n\nMoves items bidirectionally between container and player inventory.\nRequires a valid mutation token from open_container.\n\nRate limited to 20 requests per 60 seconds per player.\n\nArgs:\n    request_data: TransferContainerRequest with container_id, mutation_token, direction, stack, quantity\n    request: FastAPI Request object\n    current_user: Current authenticated user\n    persistence: Persistence layer instance\n\nReturns:\n    dict containing updated container and player_inventory\n\nRaises:\n    HTTPException(400): Invalid stack or token\n    HTTPException(403): Access denied\n    HTTPException(409): Capacity exceeded\n    HTTPException(412): Stale mutation token\n    HTTPException(429): Rate limit exceeded",
-        "operationId": "transfer_items_api_containers_transfer_post",
+        "operationId": "transfer_items_v1_api_containers_transfer_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -3284,14 +3284,14 @@
         ]
       }
     },
-    "/api/containers/close": {
+    "/v1/api/containers/close": {
       "post": {
         "tags": [
           "containers"
         ],
         "summary": "Close Container",
         "description": "Close a container and release the mutation guard.\n\nReleases the mutation guard and closes the container UI.\nRequires a valid mutation token from open_container.\n\nRate limited to 20 requests per 60 seconds per player.\n\nArgs:\n    request_data: CloseContainerRequest with container_id and mutation_token\n    request: FastAPI Request object\n    current_user: Current authenticated user\n    persistence: Persistence layer instance\n\nReturns:\n    dict with status=\"closed\"\n\nRaises:\n    HTTPException(400): Invalid token\n    HTTPException(404): Container not found\n    HTTPException(429): Rate limit exceeded",
-        "operationId": "close_container_api_containers_close_post",
+        "operationId": "close_container_v1_api_containers_close_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -3331,14 +3331,14 @@
         ]
       }
     },
-    "/api/containers/loot-all": {
+    "/v1/api/containers/loot-all": {
       "post": {
         "tags": [
           "containers"
         ],
         "summary": "Loot All Items",
         "description": "Loot all eligible items from a container.\n\nConvenience action to move all eligible stacks from container to player inventory,\nsubject to capacity constraints. Requires a valid mutation token from open_container.\n\nRate limited to 20 requests per 60 seconds per player.\n\nArgs:\n    request_data: LootAllRequest with container_id and mutation_token\n    request: FastAPI Request object\n    current_user: Current authenticated user\n    persistence: Persistence layer instance\n\nReturns:\n    dict containing updated container and player_inventory\n\nRaises:\n    HTTPException(403): Access denied\n    HTTPException(409): Capacity exceeded\n    HTTPException(423): Container is locked\n    HTTPException(429): Rate limit exceeded",
-        "operationId": "loot_all_items_api_containers_loot_all_post",
+        "operationId": "loot_all_items_v1_api_containers_loot_all_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -3378,7 +3378,7 @@
         ]
       }
     },
-    "/admin/npc/definitions": {
+    "/v1/admin/npc/definitions": {
       "get": {
         "tags": [
           "admin",
@@ -3386,7 +3386,7 @@
         ],
         "summary": "Get Npc Definitions",
         "description": "Get all NPC definitions.",
-        "operationId": "get_npc_definitions_admin_npc_definitions_get",
+        "operationId": "get_npc_definitions_v1_admin_npc_definitions_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -3397,7 +3397,7 @@
                     "$ref": "#/components/schemas/NPCDefinitionResponse"
                   },
                   "type": "array",
-                  "title": "Response Get Npc Definitions Admin Npc Definitions Get"
+                  "title": "Response Get Npc Definitions V1 Admin Npc Definitions Get"
                 }
               }
             }
@@ -3416,7 +3416,7 @@
         ],
         "summary": "Create Npc Definition",
         "description": "Create a new NPC definition.",
-        "operationId": "create_npc_definition_admin_npc_definitions_post",
+        "operationId": "create_npc_definition_v1_admin_npc_definitions_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -3456,7 +3456,7 @@
         ]
       }
     },
-    "/admin/npc/definitions/{definition_id}": {
+    "/v1/admin/npc/definitions/{definition_id}": {
       "get": {
         "tags": [
           "admin",
@@ -3464,7 +3464,7 @@
         ],
         "summary": "Get Npc Definition",
         "description": "Get a specific NPC definition by ID.",
-        "operationId": "get_npc_definition_admin_npc_definitions__definition_id__get",
+        "operationId": "get_npc_definition_v1_admin_npc_definitions__definition_id__get",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -3511,7 +3511,7 @@
         ],
         "summary": "Update Npc Definition",
         "description": "Update an existing NPC definition.",
-        "operationId": "update_npc_definition_admin_npc_definitions__definition_id__put",
+        "operationId": "update_npc_definition_v1_admin_npc_definitions__definition_id__put",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -3568,7 +3568,7 @@
         ],
         "summary": "Delete Npc Definition",
         "description": "Delete an NPC definition.",
-        "operationId": "delete_npc_definition_admin_npc_definitions__definition_id__delete",
+        "operationId": "delete_npc_definition_v1_admin_npc_definitions__definition_id__delete",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -3602,7 +3602,7 @@
         }
       }
     },
-    "/admin/npc/instances": {
+    "/v1/admin/npc/instances": {
       "get": {
         "tags": [
           "admin",
@@ -3610,7 +3610,7 @@
         ],
         "summary": "Get Npc Instances",
         "description": "Get all active NPC instances.",
-        "operationId": "get_npc_instances_admin_npc_instances_get",
+        "operationId": "get_npc_instances_v1_admin_npc_instances_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -3622,7 +3622,7 @@
                     "type": "object"
                   },
                   "type": "array",
-                  "title": "Response Get Npc Instances Admin Npc Instances Get"
+                  "title": "Response Get Npc Instances V1 Admin Npc Instances Get"
                 }
               }
             }
@@ -3635,7 +3635,7 @@
         ]
       }
     },
-    "/admin/npc/instances/spawn": {
+    "/v1/admin/npc/instances/spawn": {
       "post": {
         "tags": [
           "admin",
@@ -3643,7 +3643,7 @@
         ],
         "summary": "Spawn Npc Instance",
         "description": "Spawn a new NPC instance.",
-        "operationId": "spawn_npc_instance_admin_npc_instances_spawn_post",
+        "operationId": "spawn_npc_instance_v1_admin_npc_instances_spawn_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -3683,7 +3683,7 @@
         ]
       }
     },
-    "/admin/npc/instances/{npc_id}": {
+    "/v1/admin/npc/instances/{npc_id}": {
       "delete": {
         "tags": [
           "admin",
@@ -3691,7 +3691,7 @@
         ],
         "summary": "Despawn Npc Instance",
         "description": "Despawn an NPC instance.",
-        "operationId": "despawn_npc_instance_admin_npc_instances__npc_id__delete",
+        "operationId": "despawn_npc_instance_v1_admin_npc_instances__npc_id__delete",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -3732,7 +3732,7 @@
         }
       }
     },
-    "/admin/npc/instances/{npc_id}/move": {
+    "/v1/admin/npc/instances/{npc_id}/move": {
       "put": {
         "tags": [
           "admin",
@@ -3740,7 +3740,7 @@
         ],
         "summary": "Move Npc Instance",
         "description": "Move an NPC instance to a different room.",
-        "operationId": "move_npc_instance_admin_npc_instances__npc_id__move_put",
+        "operationId": "move_npc_instance_v1_admin_npc_instances__npc_id__move_put",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -3791,7 +3791,7 @@
         }
       }
     },
-    "/admin/npc/instances/{npc_id}/stats": {
+    "/v1/admin/npc/instances/{npc_id}/stats": {
       "get": {
         "tags": [
           "admin",
@@ -3799,7 +3799,7 @@
         ],
         "summary": "Get Npc Stats",
         "description": "Get stats for a specific NPC instance.",
-        "operationId": "get_npc_stats_admin_npc_instances__npc_id__stats_get",
+        "operationId": "get_npc_stats_v1_admin_npc_instances__npc_id__stats_get",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -3840,7 +3840,7 @@
         }
       }
     },
-    "/admin/npc/population": {
+    "/v1/admin/npc/population": {
       "get": {
         "tags": [
           "admin",
@@ -3848,7 +3848,7 @@
         ],
         "summary": "Get Npc Population Stats",
         "description": "Get NPC population statistics.",
-        "operationId": "get_npc_population_stats_admin_npc_population_get",
+        "operationId": "get_npc_population_stats_v1_admin_npc_population_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -3868,7 +3868,7 @@
         ]
       }
     },
-    "/admin/npc/zones": {
+    "/v1/admin/npc/zones": {
       "get": {
         "tags": [
           "admin",
@@ -3876,7 +3876,7 @@
         ],
         "summary": "Get Npc Zone Stats",
         "description": "Get NPC zone statistics.",
-        "operationId": "get_npc_zone_stats_admin_npc_zones_get",
+        "operationId": "get_npc_zone_stats_v1_admin_npc_zones_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -3896,7 +3896,7 @@
         ]
       }
     },
-    "/admin/npc/status": {
+    "/v1/admin/npc/status": {
       "get": {
         "tags": [
           "admin",
@@ -3904,7 +3904,7 @@
         ],
         "summary": "Get Npc System Status",
         "description": "Get NPC system status.",
-        "operationId": "get_npc_system_status_admin_npc_status_get",
+        "operationId": "get_npc_system_status_v1_admin_npc_status_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -3924,7 +3924,7 @@
         ]
       }
     },
-    "/admin/npc/spawn-rules": {
+    "/v1/admin/npc/spawn-rules": {
       "get": {
         "tags": [
           "admin",
@@ -3932,7 +3932,7 @@
         ],
         "summary": "Get Npc Spawn Rules",
         "description": "Get all NPC spawn rules.",
-        "operationId": "get_npc_spawn_rules_admin_npc_spawn_rules_get",
+        "operationId": "get_npc_spawn_rules_v1_admin_npc_spawn_rules_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -3943,7 +3943,7 @@
                     "$ref": "#/components/schemas/NPCSpawnRuleResponse"
                   },
                   "type": "array",
-                  "title": "Response Get Npc Spawn Rules Admin Npc Spawn Rules Get"
+                  "title": "Response Get Npc Spawn Rules V1 Admin Npc Spawn Rules Get"
                 }
               }
             }
@@ -3962,7 +3962,7 @@
         ],
         "summary": "Create Npc Spawn Rule",
         "description": "Create a new NPC spawn rule.",
-        "operationId": "create_npc_spawn_rule_admin_npc_spawn_rules_post",
+        "operationId": "create_npc_spawn_rule_v1_admin_npc_spawn_rules_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -4002,7 +4002,7 @@
         ]
       }
     },
-    "/admin/npc/spawn-rules/{spawn_rule_id}": {
+    "/v1/admin/npc/spawn-rules/{spawn_rule_id}": {
       "delete": {
         "tags": [
           "admin",
@@ -4010,7 +4010,7 @@
         ],
         "summary": "Delete Npc Spawn Rule",
         "description": "Delete an NPC spawn rule.",
-        "operationId": "delete_npc_spawn_rule_admin_npc_spawn_rules__spawn_rule_id__delete",
+        "operationId": "delete_npc_spawn_rule_v1_admin_npc_spawn_rules__spawn_rule_id__delete",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -4044,7 +4044,7 @@
         }
       }
     },
-    "/admin/npc/admin/sessions": {
+    "/v1/admin/npc/admin/sessions": {
       "get": {
         "tags": [
           "admin",
@@ -4052,7 +4052,7 @@
         ],
         "summary": "Get Admin Sessions",
         "description": "Get active admin sessions.",
-        "operationId": "get_admin_sessions_admin_npc_admin_sessions_get",
+        "operationId": "get_admin_sessions_v1_admin_npc_admin_sessions_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -4072,7 +4072,7 @@
         ]
       }
     },
-    "/admin/npc/admin/audit-log": {
+    "/v1/admin/npc/admin/audit-log": {
       "get": {
         "tags": [
           "admin",
@@ -4080,7 +4080,7 @@
         ],
         "summary": "Get Admin Audit Log",
         "description": "Get admin audit log.",
-        "operationId": "get_admin_audit_log_admin_npc_admin_audit_log_get",
+        "operationId": "get_admin_audit_log_v1_admin_npc_admin_audit_log_get",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -4122,7 +4122,7 @@
         }
       }
     },
-    "/admin/npc/admin/cleanup-sessions": {
+    "/v1/admin/npc/admin/cleanup-sessions": {
       "post": {
         "tags": [
           "admin",
@@ -4130,7 +4130,7 @@
         ],
         "summary": "Cleanup Admin Sessions",
         "description": "Clean up expired admin sessions.",
-        "operationId": "cleanup_admin_sessions_admin_npc_admin_cleanup_sessions_post",
+        "operationId": "cleanup_admin_sessions_v1_admin_npc_admin_cleanup_sessions_post",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -4150,7 +4150,7 @@
         ]
       }
     },
-    "/api/admin/nats/subjects/health": {
+    "/v1/api/admin/nats/subjects/health": {
       "get": {
         "tags": [
           "admin",
@@ -4159,7 +4159,7 @@
         ],
         "summary": "Get Subject Statistics",
         "description": "Get NATS subject management statistics and health status.\n\nThis endpoint provides observability into subject pattern usage,\nvalidation performance, and cache efficiency.\n\nReturns:\n    Subject management statistics including metrics and configuration\n\nRaises:\n    LoggedHTTPException: If metrics retrieval fails\n\nAI: Public health endpoint - no admin required for monitoring.\nAI: Provides performance metrics for observability and alerting.",
-        "operationId": "get_subject_statistics_api_admin_nats_subjects_health_get",
+        "operationId": "get_subject_statistics_v1_api_admin_nats_subjects_health_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -4174,7 +4174,7 @@
         }
       }
     },
-    "/api/admin/nats/subjects/validate": {
+    "/v1/api/admin/nats/subjects/validate": {
       "post": {
         "tags": [
           "admin",
@@ -4183,7 +4183,7 @@
         ],
         "summary": "Validate Subject",
         "description": "Validate a NATS subject against registered patterns.\n\nThis endpoint allows administrators to test subject validation\nand verify subject formatting before use.\n\nArgs:\n    request: Subject validation request\n    current_user: Current authenticated admin user\n    subject_manager: Subject manager dependency\n\nReturns:\n    Validation result with timing information\n\nRaises:\n    LoggedHTTPException: If validation fails or errors occur\n\nAI: Admin-only endpoint for subject validation testing.\nAI: Records validation time for performance monitoring.",
-        "operationId": "validate_subject_api_admin_nats_subjects_validate_post",
+        "operationId": "validate_subject_v1_api_admin_nats_subjects_validate_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -4223,7 +4223,7 @@
         ]
       }
     },
-    "/api/admin/nats/subjects/patterns": {
+    "/v1/api/admin/nats/subjects/patterns": {
       "get": {
         "tags": [
           "admin",
@@ -4232,7 +4232,7 @@
         ],
         "summary": "Get Patterns",
         "description": "Get all registered subject patterns.\n\nThis endpoint allows administrators to view all available\nsubject patterns and their configurations.\n\nArgs:\n    current_user: Current authenticated admin user\n    subject_manager: Subject manager dependency\n\nReturns:\n    All registered patterns with metadata\n\nRaises:\n    LoggedHTTPException: If pattern retrieval fails\n\nAI: Admin-only endpoint for pattern introspection.\nAI: Useful for documentation and debugging.",
-        "operationId": "get_patterns_api_admin_nats_subjects_patterns_get",
+        "operationId": "get_patterns_v1_api_admin_nats_subjects_patterns_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -4259,7 +4259,7 @@
         ],
         "summary": "Register Pattern",
         "description": "Register a new subject pattern.\n\nThis endpoint allows administrators to dynamically register\nnew subject patterns without code changes.\n\nArgs:\n    request: Pattern registration request\n    current_user: Current authenticated admin user\n    subject_manager: Subject manager dependency\n\nReturns:\n    Registration success confirmation\n\nRaises:\n    LoggedHTTPException: If registration fails or pattern is invalid\n\nAI: Admin-only endpoint for dynamic pattern registration.\nAI: Validates pattern format before registration.",
-        "operationId": "register_pattern_api_admin_nats_subjects_patterns_post",
+        "operationId": "register_pattern_v1_api_admin_nats_subjects_patterns_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -4607,7 +4607,7 @@
         ],
         "title": "BearerResponse"
       },
-      "Body_auth_jwt_login_auth_jwt_login_post": {
+      "Body_auth_jwt_login_v1_auth_jwt_login_post": {
         "properties": {
           "grant_type": {
             "anyOf": [
@@ -4664,7 +4664,7 @@
           "username",
           "password"
         ],
-        "title": "Body_auth_jwt_login_auth_jwt_login_post"
+        "title": "Body_auth_jwt_login_v1_auth_jwt_login_post"
       },
       "BroadcastMessageResponse": {
         "properties": {
@@ -9442,7 +9442,7 @@
         "title": "MetricsResponse",
         "description": "Response model for movement metrics."
       },
-      "server__schemas__player__MessageResponse": {
+      "server__schemas__players__player__MessageResponse": {
         "properties": {
           "message": {
             "type": "string",

@@ -11,7 +11,7 @@
 import React, { useEffect, useState } from 'react';
 import { RoomMapEditor } from '../components/map/RoomMapEditor.jsx';
 import { RoomMapViewer } from '../components/map/RoomMapViewer.jsx';
-import { API_BASE_URL } from '../utils/config.js';
+import { API_V1_BASE } from '../utils/config.js';
 import { logger } from '../utils/logger.js';
 import { secureTokenStorage } from '../utils/security.js';
 
@@ -148,7 +148,7 @@ export const MapPage: React.FC = () => {
           subZone={currentRoom?.subZone}
           currentRoomId={currentRoom?.id}
           authToken={authToken}
-          baseUrl={API_BASE_URL}
+          baseUrl={API_V1_BASE}
         />
       ) : (
         <RoomMapViewer
@@ -157,7 +157,7 @@ export const MapPage: React.FC = () => {
           subZone={currentRoom?.subZone}
           currentRoomId={currentRoom?.id}
           authToken={authToken}
-          baseUrl={API_BASE_URL}
+          baseUrl={API_V1_BASE}
         />
       )}
     </div>

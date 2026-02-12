@@ -13,7 +13,7 @@ import uuid
 from typing import Any, Protocol
 
 from ..npc.behaviors import NPCBase
-from ..schemas.target_resolution import TargetMatch, TargetResolutionResult, TargetType
+from ..schemas.shared import TargetMatch, TargetResolutionResult, TargetType
 from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)

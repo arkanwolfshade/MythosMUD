@@ -15,8 +15,8 @@ from server.commands.follow_commands import (
     handle_following_command,
     handle_unfollow_command,
 )
-from server.schemas.target_resolution import TargetMatch, TargetResolutionResult
-from server.schemas.target_resolution import TargetType as SchemaTargetType
+from server.schemas.shared import TargetMatch, TargetResolutionResult
+from server.schemas.shared import TargetType as SchemaTargetType
 
 
 def _make_container(follow_service=None, async_persistence=None, npc_lifecycle_manager=None, player_service=None):

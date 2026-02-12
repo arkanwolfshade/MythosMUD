@@ -19,7 +19,7 @@ describe('StatsRollingScreen', () => {
     characterName: 'TestCharacter',
     onStatsAccepted: vi.fn(),
     onError: vi.fn(),
-    baseUrl: 'http://localhost:54731',
+    baseUrl: 'http://localhost:54731/v1',
     authToken: 'mock-token',
   };
 
@@ -171,7 +171,7 @@ describe('StatsRollingScreen', () => {
       });
 
       await waitFor(() => {
-        expect(mockFetch).toHaveBeenCalledWith('http://localhost:54731/api/players/roll-stats', {
+        expect(mockFetch).toHaveBeenCalledWith('http://localhost:54731/v1/api/players/roll-stats', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

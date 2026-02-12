@@ -9,8 +9,11 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from server.schemas.target_resolution import TargetResolutionResult
+from server.schemas.shared import TargetResolutionResult
 from server.services.target_resolution_service import TargetResolutionService
+
+# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
+# pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
 
 
 @pytest.fixture

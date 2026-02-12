@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING, Any, cast
 from ..exceptions import ValidationError
 from ..models import Stats
 from ..models.player import Player
-from ..schemas.player import PlayerRead
+from ..schemas.players import PlayerRead
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.enhanced_error_logging import create_error_context, log_and_raise_enhanced
 

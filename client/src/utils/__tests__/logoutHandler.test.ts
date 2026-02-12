@@ -62,7 +62,7 @@ describe('logoutHandler', () => {
 
       await logoutHandler(defaultOptions);
 
-      expect(global.fetch).toHaveBeenCalledWith('/commands/logout', {
+      expect(global.fetch).toHaveBeenCalledWith('/v1/commands/logout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -684,7 +684,7 @@ describe('logoutHandler', () => {
       await handler();
 
       expect(global.fetch).toHaveBeenCalledWith(
-        '/commands/logout',
+        '/v1/commands/logout',
         expect.objectContaining({
           headers: expect.objectContaining({
             Authorization: 'Bearer test-token',

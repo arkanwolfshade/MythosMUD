@@ -18,7 +18,7 @@ from ..realtime.circuit_breaker import CircuitBreaker, CircuitBreakerOpen
 from ..realtime.dead_letter_queue import DeadLetterMessage, DeadLetterQueue
 from ..realtime.envelope import build_event
 from ..realtime.nats_retry_handler import NATSRetryHandler
-from ..schemas.nats_messages import validate_message
+from ..schemas.realtime import validate_message
 from ..services.nats_exceptions import NATSError, NATSSubscribeError
 from ..structured_logging.enhanced_logging_config import get_logger
 from .connection_manager import resolve_connection_manager as _resolve_connection_manager

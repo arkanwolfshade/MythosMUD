@@ -25,14 +25,14 @@ from ..realtime.login_grace_period import (
     is_player_in_login_grace_period,
     start_login_grace_period,
 )
-from ..schemas.player import (
+from ..schemas.players import (
     AvailableClassesResponse,
     DeleteCharacterResponse,
     LoginGracePeriodResponse,
     MessageResponse,
     PlayerRead,
+    SelectCharacterRequest,
 )
-from ..schemas.player_requests import SelectCharacterRequest
 from ..structured_logging.enhanced_logging_config import get_logger
 from .player_helpers import create_error_context
 
