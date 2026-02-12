@@ -10,7 +10,13 @@ import uuid
 from datetime import UTC, datetime, timedelta
 from typing import TYPE_CHECKING, Any
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, String
+from sqlalchemy import (  # pylint: disable=unused-import  # func used in insert_default
+    Boolean,
+    DateTime,
+    ForeignKey,
+    String,
+    func,
+)
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -39,9 +45,11 @@ class Invite(Base):
     # is_active: True means invite is available, False means used
     is_active: Mapped[bool] = mapped_column(Boolean, default=lambda: True, nullable=False)
     expires_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
-    # Store datetimes in database as naive UTC for PostgreSQL TIMESTAMP WITHOUT TIME ZONE compatibility.
+    # Timestamps (server-side per SQLAlchemy 2.x rule)
     created_at: Mapped[datetime] = mapped_column(
-        DateTime, default=lambda: datetime.now(UTC).replace(tzinfo=None), nullable=False
+        DateTime,
+        insert_default=func.now(),  # pylint: disable=not-callable  # func.now() callable at runtime
+        nullable=False,
     )
 
     # ARCHITECTURE FIX Phase 3.1: Relationships defined directly in model (no circular imports)

@@ -11,7 +11,7 @@ import json
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any, cast
 
-from sqlalchemy import BigInteger, Boolean, DateTime, ForeignKey, Integer, String, Text, event, text
+from sqlalchemy import BigInteger, Boolean, DateTime, ForeignKey, Integer, String, Text, event, func, text
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.ext.mutable import MutableDict, MutableList
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -119,12 +119,16 @@ class Player(Base):
     is_deleted: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False, index=True)
     deleted_at: Mapped[datetime | None] = mapped_column(DateTime(), nullable=True)
 
-    # Timestamps (persist naive UTC)
+    # Timestamps (persist naive UTC; server-side per SQLAlchemy 2.x rule)
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(), default=lambda: datetime.now(UTC).replace(tzinfo=None), nullable=False
+        DateTime(),
+        insert_default=func.now(),
+        nullable=False,  # pylint: disable=not-callable  # func.now() callable at runtime
     )
     last_active: Mapped[datetime] = mapped_column(
-        DateTime(), default=lambda: datetime.now(UTC).replace(tzinfo=None), nullable=False
+        DateTime(),
+        insert_default=func.now(),
+        nullable=False,  # pylint: disable=not-callable  # func.now() callable at runtime
     )
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:

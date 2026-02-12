@@ -44,7 +44,8 @@ def test_player_lucidity_defaults() -> None:
     assert lucidity.current_lcd == 100
     assert lucidity.current_tier == "lucid"
     assert lucidity.liabilities == "[]"
-    assert isinstance(lucidity.last_updated_at, datetime)
+    # last_updated_at uses insert_default=func.now(); set at INSERT time, so None until persisted
+    assert lucidity.last_updated_at is None or isinstance(lucidity.last_updated_at, datetime)
     assert lucidity.catatonia_entered_at is None
 
 
@@ -103,8 +104,8 @@ def test_lucidity_adjustment_log_creation() -> None:
     assert log.reason_code == "combat_loss"
     assert log.metadata_payload == "{}"
     assert log.location_id is None
-    # SQLAlchemy defaults are applied on DB save, not object instantiation
-    assert isinstance(log.created_at, datetime)
+    # created_at uses insert_default=func.now(); set at INSERT time, so None until persisted
+    assert log.created_at is None or isinstance(log.created_at, datetime)
 
 
 def test_lucidity_adjustment_log_with_location() -> None:
@@ -191,9 +192,8 @@ def test_lucidity_exposure_state_creation() -> None:
     assert exposure.player_id == player_id
     assert exposure.entity_archetype == "cthulhu"
     assert exposure.encounter_count == 3
-    # SQLAlchemy defaults are applied on DB save, not object instantiation
-    # With Mapped types, non-nullable fields have default values applied
-    assert isinstance(exposure.last_encounter_at, datetime)
+    # last_encounter_at uses insert_default=func.now(); set at INSERT time, so None until persisted
+    assert exposure.last_encounter_at is None or isinstance(exposure.last_encounter_at, datetime)
 
 
 def test_lucidity_exposure_state_default_encounter_count() -> None:

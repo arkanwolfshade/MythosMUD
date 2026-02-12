@@ -182,6 +182,8 @@ class PlayerRepository:
         MULTI-CHARACTER: Returns list of all characters for a user, including soft-deleted ones.
         Use get_active_players_by_user_id() to get only active characters.
 
+        Eager-loads inventory_record to avoid N+1 when callers access player inventory.
+
         Args:
             user_id: User ID
 
@@ -198,7 +200,7 @@ class PlayerRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                stmt = select(Player).where(Player.user_id == user_id)
+                stmt = select(Player).options(selectinload(Player.inventory_record)).where(Player.user_id == user_id)
                 result = await session.execute(stmt)
                 players = list(result.scalars().all())
                 # Validate and fix room for each player
@@ -220,6 +222,8 @@ class PlayerRepository:
 
         MULTI-CHARACTER: Returns only active characters, excluding soft-deleted ones.
 
+        Eager-loads inventory_record to avoid N+1 when callers access player inventory.
+
         Args:
             user_id: User ID
 
@@ -238,6 +242,7 @@ class PlayerRepository:
             async with session_maker() as session:
                 stmt = (
                     select(Player)
+                    .options(selectinload(Player.inventory_record))
                     .where(Player.user_id == user_id)
                     .where(Player.is_deleted.is_(False))  # Use is_() for SQLAlchemy boolean comparison
                 )

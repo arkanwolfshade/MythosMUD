@@ -9,7 +9,18 @@ from datetime import UTC, datetime
 from enum import StrEnum
 from typing import TYPE_CHECKING, Any
 
-from sqlalchemy import BigInteger, CheckConstraint, DateTime, ForeignKey, Index, Integer, String, Text, UniqueConstraint
+from sqlalchemy import (
+    BigInteger,
+    CheckConstraint,
+    DateTime,
+    ForeignKey,
+    Index,
+    Integer,
+    String,
+    Text,
+    UniqueConstraint,
+    func,  # pylint: disable=unused-import  # func used in insert_default=func.now()
+)
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -20,7 +31,11 @@ if TYPE_CHECKING:
 
 
 def _utc_now() -> datetime:
-    """Return naive UTC timestamps for PostgreSQL TIMESTAMP WITHOUT TIME ZONE compatibility."""
+    """Return naive UTC timestamps for PostgreSQL TIMESTAMP WITHOUT TIME ZONE compatibility.
+
+    Kept for tests and any code that needs a Python-side naive UTC datetime;
+    model timestamp columns use insert_default=func.now() per SQLAlchemy 2.x rule.
+    """
     return datetime.now(UTC).replace(tzinfo=None)
 
 
@@ -52,7 +67,11 @@ class PlayerLucidity(Base):
     current_lcd: Mapped[int] = mapped_column(Integer(), nullable=False, default=lambda: 100)
     current_tier: Mapped[str] = mapped_column(String(length=32), nullable=False, default=lambda: "lucid")
     liabilities: Mapped[str] = mapped_column(Text(), nullable=False, default=lambda: "[]")
-    last_updated_at: Mapped[datetime] = mapped_column(DateTime(), nullable=False, default=_utc_now)
+    last_updated_at: Mapped[datetime] = mapped_column(
+        DateTime(),
+        nullable=False,
+        insert_default=func.now(),  # pylint: disable=not-callable  # func.now() callable at runtime
+    )
     catatonia_entered_at: Mapped[datetime | None] = mapped_column(DateTime(), nullable=True)
 
     player: Mapped[Player] = relationship(
@@ -75,9 +94,7 @@ class PlayerLucidity(Base):
         liabilities_val = getattr(self, "liabilities", _sentinel)
         if liabilities_val is _sentinel or liabilities_val is None:
             object.__setattr__(self, "liabilities", "[]")
-        last_updated_at_val = getattr(self, "last_updated_at", _sentinel)
-        if last_updated_at_val is _sentinel or last_updated_at_val is None:
-            object.__setattr__(self, "last_updated_at", _utc_now())
+        # last_updated_at uses insert_default=func.now(); no __init__ fallback needed
 
 
 class LucidityAdjustmentLog(Base):
@@ -97,7 +114,11 @@ class LucidityAdjustmentLog(Base):
     reason_code: Mapped[str] = mapped_column(Text(), nullable=False)
     metadata_payload: Mapped[str] = mapped_column("metadata", Text(), nullable=False, default=lambda: "{}")
     location_id: Mapped[str | None] = mapped_column(String(length=255), nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime(), nullable=False, default=_utc_now)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(),
+        nullable=False,
+        insert_default=func.now(),  # pylint: disable=not-callable  # func.now() callable at runtime
+    )
 
     player: Mapped[Player] = relationship(
         "Player",
@@ -112,9 +133,7 @@ class LucidityAdjustmentLog(Base):
         metadata_payload_val = getattr(self, "metadata_payload", _sentinel)
         if metadata_payload_val is _sentinel or metadata_payload_val is None:
             object.__setattr__(self, "metadata_payload", "{}")
-        created_at_val = getattr(self, "created_at", _sentinel)
-        if created_at_val is _sentinel or created_at_val is None:
-            object.__setattr__(self, "created_at", _utc_now())
+        # created_at uses insert_default=func.now(); no __init__ fallback needed
 
 
 class LucidityExposureState(Base):
@@ -132,7 +151,11 @@ class LucidityExposureState(Base):
     )
     entity_archetype: Mapped[str] = mapped_column(Text(), nullable=False)
     encounter_count: Mapped[int] = mapped_column(Integer(), nullable=False, default=lambda: 0)
-    last_encounter_at: Mapped[datetime] = mapped_column(DateTime(), nullable=False, default=_utc_now)
+    last_encounter_at: Mapped[datetime] = mapped_column(
+        DateTime(),
+        nullable=False,
+        insert_default=func.now(),  # pylint: disable=not-callable  # func.now() callable at runtime
+    )
 
     player: Mapped[Player] = relationship(
         "Player",
@@ -147,9 +170,7 @@ class LucidityExposureState(Base):
         encounter_count_val = getattr(self, "encounter_count", _sentinel)
         if encounter_count_val is _sentinel or encounter_count_val is None:
             object.__setattr__(self, "encounter_count", 0)
-        last_encounter_at_val = getattr(self, "last_encounter_at", _sentinel)
-        if last_encounter_at_val is _sentinel or last_encounter_at_val is None:
-            object.__setattr__(self, "last_encounter_at", _utc_now())
+        # last_encounter_at uses insert_default=func.now(); no __init__ fallback needed
 
 
 class LucidityCooldown(Base):

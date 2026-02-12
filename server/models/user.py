@@ -9,11 +9,17 @@ The base class fields (email, hashed_password) use legacy Column() but we type
 our custom fields with Mapped[] for better type safety.
 """
 
-from datetime import UTC, datetime
+from datetime import datetime
 from typing import TYPE_CHECKING, Any
 
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID
-from sqlalchemy import Boolean, DateTime, String, event
+from sqlalchemy import (  # pylint: disable=unused-import  # func used in insert_default/onupdate
+    Boolean,
+    DateTime,
+    String,
+    event,
+    func,
+)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base  # ARCHITECTURE FIX Phase 3.1: Use shared Base
@@ -59,15 +65,16 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
 
     # User status fields (is_active, is_superuser, is_verified are inherited from base)
 
-    # Timestamps (persist naive UTC)
-    # Using Mapped[] with Column for compatibility with existing schema
+    # Timestamps (persist naive UTC; server-side per SQLAlchemy 2.x rule)
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(), default=lambda: datetime.now(UTC).replace(tzinfo=None), nullable=False
+        DateTime(),
+        insert_default=func.now(),
+        nullable=False,  # pylint: disable=not-callable  # func.now() callable at runtime
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(),
-        default=lambda: datetime.now(UTC).replace(tzinfo=None),
-        onupdate=lambda: datetime.now(UTC).replace(tzinfo=None),
+        insert_default=func.now(),
+        onupdate=func.now(),  # pylint: disable=not-callable  # func.now() callable at runtime
         nullable=False,
     )
 
