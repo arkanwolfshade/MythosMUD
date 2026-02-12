@@ -126,12 +126,14 @@ async def get_available_classes(
     """
     Get information about all available character classes and their prerequisites.
     """
+    from server.schemas.players.class_definition import ClassDefinition
+
     class_info = {}
     for class_name, prerequisites in stats_generator.CLASS_PREREQUISITES.items():
-        class_info[class_name] = {
-            "prerequisites": {attr.value: min_value for attr, min_value in prerequisites.items()},
-            "description": get_class_description(class_name),
-        }
+        class_info[class_name] = ClassDefinition(
+            prerequisites={attr.value: min_value for attr, min_value in prerequisites.items()},
+            description=get_class_description(class_name),
+        )
 
     return AvailableClassesResponse(
         classes=class_info, stat_range={"min": stats_generator.MIN_STAT, "max": stats_generator.MAX_STAT}

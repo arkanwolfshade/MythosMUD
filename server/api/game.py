@@ -91,11 +91,20 @@ async def broadcast_message(
         broadcast_stats=broadcast_stats,
     )
 
+    # Convert broadcast_stats dict to BroadcastStats model
+    from server.schemas.game.game import BroadcastStats
+
+    broadcast_stats_model = BroadcastStats(
+        successful_deliveries=broadcast_stats.get("successful_deliveries", 0),
+        failed_deliveries=broadcast_stats.get("failed_deliveries", 0),
+        total_recipients=broadcast_stats.get("total_recipients", recipients),
+    )
+
     return BroadcastMessageResponse(
         message=message,
         recipients=recipients,
         broadcaster=current_user.username,
-        broadcast_stats=broadcast_stats,
+        broadcast_stats=broadcast_stats_model,
     )
 
 

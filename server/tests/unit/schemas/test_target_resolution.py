@@ -5,6 +5,7 @@ Tests the Pydantic models in target_resolution.py module.
 """
 
 from server.schemas.shared import TargetMatch, TargetResolutionResult, TargetType
+from server.schemas.shared.target_metadata import TargetMetadata
 
 
 def test_target_type_enum():
@@ -28,7 +29,11 @@ def test_target_match():
     assert match.target_type == TargetType.PLAYER
     assert match.room_id == "room_001"
     assert match.disambiguation_suffix is None
-    assert match.metadata == {}
+    assert isinstance(match.metadata, TargetMetadata)
+    # Pylint incorrectly infers match.metadata as FieldInfo instead of TargetMetadata after isinstance check
+    # Runtime isinstance check ensures type safety, suppress Pylint false positive
+    metadata = match.metadata  # pylint: disable=no-member,assignment-from-no-return
+    assert metadata.additional_info == {}  # pylint: disable=no-member
 
 
 def test_target_match_with_disambiguation():

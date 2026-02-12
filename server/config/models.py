@@ -16,7 +16,7 @@ from datetime import UTC, datetime
 from typing import Any
 
 from pydantic import AliasChoices, Field, field_validator, model_validator
-from pydantic_settings import BaseSettings, SettingsError
+from pydantic_settings import BaseSettings, SettingsConfigDict, SettingsError
 
 from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -70,7 +70,7 @@ class ServerConfig(BaseSettings):
         logger.debug("Server port validation successful", port=v)
         return v
 
-    model_config = {"env_prefix": "SERVER_", "case_sensitive": False, "extra": "ignore"}
+    model_config = SettingsConfigDict(env_prefix="SERVER_", case_sensitive=False, extra="ignore")
 
 
 class DatabaseConfig(BaseSettings):
@@ -150,7 +150,7 @@ class DatabaseConfig(BaseSettings):
                     data["url"] = npc_url
         return data
 
-    model_config = {"env_prefix": "DATABASE_", "case_sensitive": False, "extra": "ignore"}
+    model_config = SettingsConfigDict(env_prefix="DATABASE_", case_sensitive=False, extra="ignore")
 
 
 class NATSConfig(BaseSettings):
@@ -254,7 +254,7 @@ class NATSConfig(BaseSettings):
             raise ValueError("Value must be positive")
         return v
 
-    model_config = {"env_prefix": "NATS_", "case_sensitive": False, "extra": "ignore"}
+    model_config = SettingsConfigDict(env_prefix="NATS_", case_sensitive=False, extra="ignore")
 
 
 class SecurityConfig(BaseSettings):
@@ -277,7 +277,7 @@ class SecurityConfig(BaseSettings):
         logger.debug("Admin password validation successful", password_length=len(v))
         return v
 
-    model_config = {"env_prefix": "MYTHOSMUD_", "case_sensitive": False, "extra": "ignore"}
+    model_config = SettingsConfigDict(env_prefix="MYTHOSMUD_", case_sensitive=False, extra="ignore")
 
 
 class LoggingConfig(BaseSettings):
@@ -323,7 +323,7 @@ class LoggingConfig(BaseSettings):
             raise ValueError(f"Log format must be one of {valid_formats}, got '{v}'")
         return v
 
-    model_config = {"env_prefix": "LOGGING_", "case_sensitive": False, "extra": "ignore"}
+    model_config = SettingsConfigDict(env_prefix="LOGGING_", case_sensitive=False, extra="ignore")
 
     def to_legacy_dict(self) -> dict[str, Any]:
         """
@@ -448,7 +448,7 @@ class GameConfig(BaseSettings):
             raise ValueError("Error threshold must be between 1 and 50")
         return v
 
-    model_config = {"env_prefix": "GAME_", "case_sensitive": False, "extra": "ignore"}
+    model_config = SettingsConfigDict(env_prefix="GAME_", case_sensitive=False, extra="ignore")
 
 
 class ChatConfig(BaseSettings):
@@ -485,7 +485,7 @@ class ChatConfig(BaseSettings):
             raise ValueError("Rate limit must be between 1 and 1000 messages per minute")
         return v
 
-    model_config = {"env_prefix": "CHAT_", "case_sensitive": False, "extra": "ignore"}
+    model_config = SettingsConfigDict(env_prefix="CHAT_", case_sensitive=False, extra="ignore")
 
 
 class TimeConfig(BaseSettings):
@@ -514,7 +514,7 @@ class TimeConfig(BaseSettings):
             raise ValueError("compression_ratio must be greater than zero")
         return value
 
-    model_config = {"env_prefix": "TIME_", "case_sensitive": False, "extra": "ignore"}
+    model_config = SettingsConfigDict(env_prefix="TIME_", case_sensitive=False, extra="ignore")
 
 
 class CORSConfig(BaseSettings):
@@ -574,11 +574,7 @@ class CORSConfig(BaseSettings):
         description="Seconds browsers may cache CORS preflight responses",
     )
 
-    model_config = {
-        "env_prefix": "CORS_",
-        "case_sensitive": False,
-        "extra": "ignore",
-    }
+    model_config = SettingsConfigDict(env_prefix="CORS_", case_sensitive=False, extra="ignore")
 
     @model_validator(mode="after")
     def _validate_and_warn_wildcards(self) -> "CORSConfig":
@@ -778,7 +774,7 @@ class PlayerStatsConfig(BaseSettings):
             raise ValueError("Derived stats must be non-negative")
         return v
 
-    model_config = {"env_prefix": "DEFAULT_STATS_", "case_sensitive": False, "extra": "ignore"}
+    model_config = SettingsConfigDict(env_prefix="DEFAULT_STATS_", case_sensitive=False, extra="ignore")
 
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary format expected by game code."""
@@ -823,7 +819,7 @@ class AppConfig(BaseSettings):
     cors: CORSConfig = Field(default_factory=CORSConfig)
     default_player_stats: PlayerStatsConfig = Field(default_factory=PlayerStatsConfig)
 
-    model_config = {"env_file": ".env", "env_file_encoding": "utf-8", "case_sensitive": False, "extra": "ignore"}
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", case_sensitive=False, extra="ignore")
 
     def __init__(self, **kwargs: Any) -> None:
         """Initialize configuration and set environment variables for legacy compatibility."""

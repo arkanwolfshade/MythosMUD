@@ -12,6 +12,30 @@ from typing import Any
 from pydantic import BaseModel, ConfigDict, Field, computed_field, model_validator
 
 
+class WeaponStats(BaseModel):
+    """
+    Weapon statistics for items that can be used as weapons.
+
+    This model represents the combat properties of a weapon item, including
+    damage range, modifiers, damage types, and magical properties.
+    """
+
+    model_config = ConfigDict(
+        extra="forbid",
+        validate_assignment=True,
+        str_strip_whitespace=True,
+        validate_default=True,
+    )
+
+    min_damage: int = Field(..., ge=0, description="Minimum damage dealt by this weapon")
+    max_damage: int = Field(..., ge=0, description="Maximum damage dealt by this weapon")
+    modifier: int = Field(default=0, description="Damage modifier added to rolled damage")
+    damage_types: list[str] = Field(
+        default_factory=list, description="List of damage types this weapon can deal (e.g., ['slashing', 'piercing'])"
+    )
+    magical: bool = Field(default=False, description="Whether this weapon has magical properties")
+
+
 class AttributeType(StrEnum):
     """Core attribute types for the character system ."""
 
@@ -125,9 +149,12 @@ class Stats(BaseModel):
 
         For random stat generation, use generate_random_stats() from server.game.stats_generator
         instead of calling Stats() without arguments.
+
+        AI: This method handles backward compatibility by generating random stats when core attributes
+        are missing or None. The logic ensures that any explicitly provided values take precedence
+        over generated random values.
         """
-        # Handle backward compatibility: if no attributes provided, generate random ones
-        # This maintains compatibility with existing code that calls Stats()
+        # Core stats that must be present for a valid Stats instance
         core_stats = [
             "strength",
             "dexterity",
@@ -139,50 +166,91 @@ class Stats(BaseModel):
             "charisma",
             "luck",
         ]
-        if not any(key in data for key in core_stats):
+
+        # Check if we need to generate random stats (either missing or None values)
+        needs_random_stats = not any(key in data for key in core_stats) or any(
+            data.get(key) is None for key in core_stats
+        )
+
+        if needs_random_stats:
             # Import here to avoid circular dependency
             from ..game.stats_generator import generate_random_stats
 
             # Generate random stats and merge with provided data
             seed = data.pop("_test_seed", None)
             random_stats = generate_random_stats(seed=seed)
+
             # Merge random stats with any provided data (provided data takes precedence)
             for key in core_stats:
-                if key not in data:
+                if key not in data or data.get(key) is None:
                     data[key] = getattr(random_stats, key, None)
-
-        # Replace None values with random values for backward compatibility
-        if any(data.get(key) is None for key in core_stats):
-            from ..game.stats_generator import generate_random_stats
-
-            seed = data.pop("_test_seed", None)
-            random_stats = generate_random_stats(seed=seed)
-            for field in core_stats:
-                if data.get(field) is None:
-                    data[field] = getattr(random_stats, field, None)
 
         super().__init__(**data)
 
     # Derived stats - computed fields
     @computed_field
     def max_dp(self) -> int:
-        """Calculate max determination points (DP) using formula: (CON + SIZ) / 5."""
-        # Compute directly to avoid mypy @computed_field inference issues
+        """
+        Calculate max determination points (DP) using formula: (CON + SIZ) / 5.
+
+        AI: This computed field uses the same calculation logic as _calculate_max_dp()
+        but is exposed as a property for external access. The calculation is duplicated
+        here to avoid mypy inference issues with @computed_field decorators.
+        """
+        return self._calculate_max_dp()
+
+    @computed_field
+    def max_magic_points(self) -> int:
+        """
+        Calculate max magic points (MP) using formula: 20% of Power (ceiling rounded).
+
+        AI: This computed field uses the same calculation logic as _calculate_max_magic_points()
+        but is exposed as a property for external access. The calculation is duplicated
+        here to avoid mypy inference issues with @computed_field decorators.
+        """
+        return self._calculate_max_magic_points()
+
+    @computed_field
+    def max_lucidity(self) -> int:
+        """
+        Calculate max lucidity based on education.
+
+        AI: This computed field uses the same calculation logic as _calculate_max_lucidity()
+        but is exposed as a property for external access. The calculation is duplicated
+        here to avoid mypy inference issues with @computed_field decorators.
+        """
+        return self._calculate_max_lucidity()
+
+    def _calculate_max_dp(self) -> int:
+        """
+        Calculate max determination points (DP) using formula: (CON + SIZ) / 5.
+
+        AI: Helper method to calculate max_dp. Uses the same logic as the computed field
+        but can be called during validation before computed fields are fully initialized.
+        """
         con = self.constitution or 50
         siz = self.size or 50
         return (con + siz) // 5
 
-    @computed_field
-    def max_magic_points(self) -> int:
-        """Calculate max magic points (MP) using formula: 20% of Power (ceiling rounded)."""
+    def _calculate_max_magic_points(self) -> int:
+        """
+        Calculate max magic points (MP) using formula: 20% of Power (ceiling rounded).
+
+        AI: Helper method to calculate max_magic_points. Uses the same logic as the computed field
+        but can be called during validation before computed fields are fully initialized.
+        """
         import math
 
         pow_val = self.power or 50
         return math.ceil(pow_val * 0.2)
 
-    @computed_field
-    def max_lucidity(self) -> int:
-        """Calculate max lucidity based on education."""
+    def _calculate_max_lucidity(self) -> int:
+        """
+        Calculate max lucidity based on education.
+
+        AI: Helper method to calculate max_lucidity. Uses the same logic as the computed field
+        but can be called during validation before computed fields are fully initialized.
+        """
         return self.education or 50
 
     @model_validator(mode="after")
@@ -190,42 +258,38 @@ class Stats(BaseModel):
         """
         Ensure current_dp (DP), magic_points (MP), and lucidity don't exceed their max values.
 
-        BUGFIX: Initialize current_dp, magic_points, and lucidity to their max values if not explicitly provided.
-        This prevents new characters from having impossible stats.
+        Validation Rules:
+        - current_dp is capped at max_dp (calculated as (CON + SIZ) / 5)
+        - magic_points is capped at max_magic_points (calculated as ceil(POW * 0.2))
+        - lucidity is capped at max_lucidity (equals education), but preserves:
+          * Default value (100) to allow characters to start with full mental clarity
+          * Reasonable explicit values (<= 100) that slightly exceed max_lucidity
+          * Only unreasonably high values (> 100) are capped
+
+        AI: This validator ensures that current values never exceed their maximums, preventing
+        impossible stat configurations. The lucidity logic preserves intentional user-specified
+        values while preventing unreasonably high values. Uses object.__setattr__ to bypass
+        Pydantic's validation cycle and prevent recursion.
         """
-        # Compute max values directly to avoid mypy @computed_field inference issues
-        # Calculate max_dp: (CON + SIZ) / 5
-        con = self.constitution or 50
-        siz = self.size or 50
-        max_dp = (con + siz) // 5
+        # Use helper methods to calculate max values (same logic as computed fields)
+        max_dp = self._calculate_max_dp()
+        max_mp = self._calculate_max_magic_points()
+        max_lucidity_value = self._calculate_max_lucidity()
 
-        # Calculate max_mp: 20% of Power (ceiling rounded)
-        import math
-
-        pow_val = self.power or 50
-        max_mp = math.ceil(pow_val * 0.2)
-
-        # Calculate max_lucidity: education value
-        max_lucidity_value = self.education or 50
-
-        # Cap current_dp (DP) at max_dp
+        # Cap current_dp at max_dp
         # Use object.__setattr__ to bypass Pydantic validation and prevent recursion
-        object.__setattr__(self, "current_dp", min(self.current_dp, max_dp))
+        if self.current_dp > max_dp:
+            object.__setattr__(self, "current_dp", max_dp)
 
         # Cap magic_points at max_magic_points
-        object.__setattr__(self, "magic_points", min(self.magic_points, max_mp))
+        if self.magic_points > max_mp:
+            object.__setattr__(self, "magic_points", max_mp)
 
-        # Cap lucidity at max_lucidity when it exceeds max
-        # Exception: Preserve lucidity if it's at the default (100) to allow characters
-        # to start with full mental clarity regardless of education level.
-        # Also preserve reasonable explicit values (<= 100) that are slightly above max_lucidity,
-        # as these are likely intentional user-specified values.
-        # Only cap unreasonably high values (> 100) that exceed max_lucidity.
-        if self.lucidity > max_lucidity_value:
-            # Preserve default value (100) and reasonable explicit values (<= 100)
-            # Only cap unreasonably high values (> 100)
-            if self.lucidity > 100:
-                object.__setattr__(self, "lucidity", max_lucidity_value)
+        # Cap lucidity at max_lucidity with special handling for default/reasonable values
+        # Preserve default value (100) and reasonable explicit values (<= 100)
+        # Only cap unreasonably high values (> 100) that exceed max_lucidity
+        if self.lucidity > max_lucidity_value and self.lucidity > 100:
+            object.__setattr__(self, "lucidity", max_lucidity_value)
 
         return self
 
@@ -259,7 +323,7 @@ class InventoryItem(BaseModel):
 
     item_id: str = Field(..., description="Unique item identifier")
     quantity: int = Field(default=1, ge=1, description="Number of items")
-    weapon: dict[str, Any] | None = Field(
+    weapon: WeaponStats | None = Field(
         default=None,
         description="Weapon stats when item is a weapon (min_damage, max_damage, modifier, damage_types, magical).",
     )

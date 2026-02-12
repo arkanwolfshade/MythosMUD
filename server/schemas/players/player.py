@@ -7,11 +7,11 @@ and updating operations.
 
 import uuid
 from datetime import datetime
-from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
 from ...models.game import InventoryItem, PositionState, Stats, StatusEffect
+from .class_definition import ClassDefinition
 
 
 class PlayerBase(BaseModel):
@@ -171,7 +171,7 @@ class PlayerUpdate(BaseModel):
 class AvailableClassesResponse(BaseModel):
     """Response model for available character classes endpoint."""
 
-    classes: dict[str, dict[str, Any]] = Field(
+    classes: dict[str, ClassDefinition] = Field(
         ..., description="Dictionary of class names to their prerequisites and descriptions"
     )
     stat_range: dict[str, int] = Field(..., description="Stat range information (min and max values)")

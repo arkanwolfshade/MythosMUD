@@ -5,9 +5,9 @@ This module provides Pydantic models for player respawn-related API responses,
 ensuring type safety and automatic OpenAPI documentation.
 """
 
-from typing import Any
-
 from pydantic import BaseModel, ConfigDict, Field
+
+from ..rooms.room_data import RoomData
 
 
 class RespawnPlayerData(BaseModel):
@@ -26,7 +26,7 @@ class RespawnResponse(BaseModel):
 
     success: bool = Field(..., description="Whether respawn was successful")
     player: RespawnPlayerData = Field(..., description="Updated player data after respawn")
-    room: dict[str, Any] = Field(..., description="Room data for the respawn location")
+    room: RoomData = Field(..., description="Room data for the respawn location")
     message: str = Field(..., description="Respawn message for the player")
 
     model_config = ConfigDict(

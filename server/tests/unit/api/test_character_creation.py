@@ -481,7 +481,7 @@ class TestValidateCharacterStats:
             "cha": 10,
         }
         mock_stats_generator.get_available_classes = Mock(return_value=["warrior", "mage"])
-        mock_stats_generator.get_stat_summary = Mock(return_value={"total": 60})
+        mock_stats_generator.get_stat_summary = Mock(return_value={"total_points": 60, "average_stat": 10.0})
 
         result = await validate_character_stats(
             stats=stats,
@@ -491,7 +491,8 @@ class TestValidateCharacterStats:
         )
 
         assert result.available_classes == ["warrior", "mage"]
-        assert result.stat_summary == {"total": 60}
+        assert result.stat_summary is not None
+        assert result.stat_summary.total == 60
 
     @pytest.mark.asyncio
     async def test_validate_stats_invalid_input(self, mock_user, mock_stats_generator):

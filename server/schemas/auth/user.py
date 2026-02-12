@@ -8,10 +8,12 @@ and updating operations.
 import uuid
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import ConfigDict, Field
+
+from ..shared.base import ResponseBaseModel, SecureBaseModel
 
 
-class UserBase(BaseModel):
+class UserBase(SecureBaseModel):
     """Base user schema with common fields."""
 
     __slots__ = ()  # Performance optimization
@@ -42,16 +44,23 @@ class UserCreate(UserBase):
     )
 
 
-class UserRead(UserBase):
+class UserRead(ResponseBaseModel):
     """Schema for reading user data."""
 
     __slots__ = ()  # Performance optimization
 
     user_id: uuid.UUID = Field(..., description="User's unique identifier")
+    username: str = Field(..., description="User's username")
+    is_active: bool = Field(default=True, description="Whether user is active")
+    is_superuser: bool = Field(default=False, description="Whether user is superuser")
     created_at: datetime = Field(..., description="User creation timestamp")
     updated_at: datetime = Field(..., description="User last update timestamp")
 
     model_config = ConfigDict(
+        extra="forbid",
+        validate_assignment=True,
+        str_strip_whitespace=True,
+        validate_default=True,
         from_attributes=True,
         json_schema_extra={
             "example": {
@@ -67,7 +76,7 @@ class UserRead(UserBase):
     )
 
 
-class UserUpdate(BaseModel):
+class UserUpdate(SecureBaseModel):
     """Schema for updating user data."""
 
     __slots__ = ()  # Performance optimization
@@ -79,6 +88,10 @@ class UserUpdate(BaseModel):
     is_superuser: bool | None = Field(None, description="Whether user is superuser")
 
     model_config = ConfigDict(
+        extra="forbid",
+        validate_assignment=True,
+        str_strip_whitespace=True,
+        validate_default=True,
         json_schema_extra={
             "example": {
                 "username": "neweuser",
@@ -87,5 +100,5 @@ class UserUpdate(BaseModel):
                 "is_superuser": False,
                 "is_verified": True,
             }
-        }
+        },
     )

@@ -7,10 +7,12 @@ and updating operations.
 
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import ConfigDict, Field
+
+from ..shared.base import SecureBaseModel
 
 
-class InviteBase(BaseModel):
+class InviteBase(SecureBaseModel):
     """Base invite schema with common fields."""
 
     __slots__ = ()  # Performance optimization
@@ -58,7 +60,7 @@ class InviteRead(InviteBase):
     )
 
 
-class InviteUpdate(BaseModel):
+class InviteUpdate(SecureBaseModel):
     """Schema for updating invite data."""
 
     __slots__ = ()  # Performance optimization
@@ -69,6 +71,10 @@ class InviteUpdate(BaseModel):
     expires_at: datetime | None = Field(None, description="When the invite expires")
 
     model_config = ConfigDict(
+        extra="forbid",
+        validate_assignment=True,
+        str_strip_whitespace=True,
+        validate_default=True,
         json_schema_extra={
             "example": {
                 "invite_code": "NEW123CODE456",
@@ -76,5 +82,5 @@ class InviteUpdate(BaseModel):
                 "used_by_user_id": "123e4567-e89b-12d3-a456-426614174000",
                 "expires_at": "2024-12-31T23:59:59Z",
             }
-        }
+        },
     )

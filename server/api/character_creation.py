@@ -26,6 +26,7 @@ from ..schemas.players import (
     StatSummary,
     ValidateStatsResponse,
 )
+from ..schemas.players.stat_values import RolledStats
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.rate_limiter import character_creation_limiter, stats_roll_limiter
 from .player_helpers import create_error_context as create_error_context_helper
@@ -165,8 +166,22 @@ async def _roll_stats_with_profession(
     stat_summary_dict = stats_generator.get_stat_summary(stats)
     stat_summary = _convert_stat_summary_to_stat_summary_model(stats, stat_summary_dict)
 
+    # Extract only core stats for RolledStats model
+    stats_dict = stats.model_dump()
+    rolled_stats = RolledStats(
+        strength=stats_dict.get("strength", 50),
+        dexterity=stats_dict.get("dexterity", 50),
+        constitution=stats_dict.get("constitution", 50),
+        size=stats_dict.get("size", 50),
+        intelligence=stats_dict.get("intelligence", 50),
+        power=stats_dict.get("power", 50),
+        education=stats_dict.get("education", 50),
+        charisma=stats_dict.get("charisma", 50),
+        luck=stats_dict.get("luck", 50),
+    )
+
     return {
-        "stats": stats.model_dump(),
+        "stats": rolled_stats,
         "stat_summary": stat_summary,
         "profession_id": profession_id,
         "meets_requirements": meets_requirements,
@@ -186,8 +201,22 @@ def _roll_stats_with_class(
     stat_summary_dict = stats_generator.get_stat_summary(stats)
     stat_summary = _convert_stat_summary_to_stat_summary_model(stats, stat_summary_dict)
 
+    # Extract only core stats for RolledStats model
+    stats_dict = stats.model_dump()
+    rolled_stats = RolledStats(
+        strength=stats_dict.get("strength", 50),
+        dexterity=stats_dict.get("dexterity", 50),
+        constitution=stats_dict.get("constitution", 50),
+        size=stats_dict.get("size", 50),
+        intelligence=stats_dict.get("intelligence", 50),
+        power=stats_dict.get("power", 50),
+        education=stats_dict.get("education", 50),
+        charisma=stats_dict.get("charisma", 50),
+        luck=stats_dict.get("luck", 50),
+    )
+
     return {
-        "stats": stats.model_dump(),
+        "stats": rolled_stats,
         "stat_summary": stat_summary,
         "available_classes": available_classes,
         "method_used": request_data.method,
@@ -359,7 +388,8 @@ async def validate_character_stats(
             )
 
         available_classes = stats_generator.get_available_classes(stats_obj)
-        stat_summary = stats_generator.get_stat_summary(stats_obj)
+        stat_summary_dict = stats_generator.get_stat_summary(stats_obj)
+        stat_summary = _convert_stat_summary_to_stat_summary_model(stats_obj, stat_summary_dict)
 
         return ValidateStatsResponse(available_classes=available_classes, stat_summary=stat_summary)
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Class retrieval errors unpredictable, must create error context

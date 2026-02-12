@@ -5,11 +5,10 @@ This module provides Pydantic models for character creation-related API response
 ensuring type safety and automatic OpenAPI documentation.
 """
 
-from typing import Any
-
 from pydantic import BaseModel, ConfigDict, Field
 
 from .player import PlayerRead
+from .stat_values import RolledStats
 
 
 class StatSummary(BaseModel):
@@ -24,7 +23,7 @@ class StatSummary(BaseModel):
 class RollStatsResponse(BaseModel):
     """Response model for rolling character stats."""
 
-    stats: dict[str, Any] = Field(..., description="Rolled character stats")
+    stats: RolledStats = Field(..., description="Rolled character stats")
     stat_summary: StatSummary = Field(..., description="Summary of the rolled stats")
     profession_id: int | None = Field(default=None, description="Profession ID (if profession-based rolling)")
     available_classes: list[str] | None = Field(default=None, description="Available classes (if class-based rolling)")
@@ -72,7 +71,7 @@ class ValidateStatsResponse(BaseModel):
     failed_requirements: list[str] = Field(default_factory=list, description="List of failed requirements")
     available_classes: list[str] = Field(default_factory=list, description="List of available classes for these stats")
     requested_class: str | None = Field(default=None, description="Requested class name (if class_name provided)")
-    stat_summary: dict[str, Any] | None = Field(default=None, description="Stat summary (if no class_name provided)")
+    stat_summary: StatSummary | None = Field(default=None, description="Stat summary (if no class_name provided)")
 
     model_config = ConfigDict(
         json_schema_extra={

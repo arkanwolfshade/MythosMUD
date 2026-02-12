@@ -323,15 +323,15 @@ else:
     except subprocess.CalledProcessError as e:
         # Check if error is due to corrupted Docker build cache
         # Error message typically contains "parent snapshot" and "does not exist"
-        collected_error_output = ""
+        err_parts: list[str] = []
         if e.stderr:
-            collected_error_output += str(e.stderr)
+            err_parts.append(str(e.stderr))
         if e.stdout:
-            collected_error_output += str(e.stdout)
+            err_parts.append(str(e.stdout))
         if hasattr(e, "output") and e.output:
-            collected_error_output += str(e.output)
+            err_parts.append(str(e.output))
 
-        if "parent snapshot" in collected_error_output and "does not exist" in collected_error_output:
+        if "parent snapshot" in (s := "".join(err_parts)) and "does not exist" in s:
             print("Docker build cache appears corrupted. Retrying with --no-cache...")
             safe_run_static(
                 "docker",

@@ -6,9 +6,10 @@ supporting both player and NPC targets with proper validation.
 """
 
 from enum import StrEnum
-from typing import Any
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
+
+from .target_metadata import TargetMetadata
 
 
 class TargetType(StrEnum):
@@ -27,6 +28,13 @@ class TargetMatch(BaseModel):
     that matches the search criteria.
     """
 
+    model_config = ConfigDict(
+        extra="forbid",
+        validate_assignment=True,
+        str_strip_whitespace=True,
+        validate_default=True,
+    )
+
     target_id: str = Field(..., description="Unique identifier for the target")
     target_name: str = Field(..., description="Display name of the target")
     target_type: TargetType = Field(..., description="Type of target (player or NPC)")
@@ -34,7 +42,7 @@ class TargetMatch(BaseModel):
     disambiguation_suffix: str | None = Field(
         default=None, description="Suffix for disambiguation (e.g., '-1', '-2') when multiple targets have same name"
     )
-    metadata: dict[str, Any] = Field(default_factory=dict, description="Additional metadata about the target")
+    metadata: TargetMetadata = Field(default_factory=TargetMetadata, description="Additional metadata about the target")
 
 
 class TargetResolutionResult(BaseModel):
@@ -44,6 +52,13 @@ class TargetResolutionResult(BaseModel):
     This model contains the complete result of a target resolution
     operation, including success status, matches, and error information.
     """
+
+    model_config = ConfigDict(
+        extra="forbid",
+        validate_assignment=True,
+        str_strip_whitespace=True,
+        validate_default=True,
+    )
 
     success: bool = Field(..., description="Whether the resolution was successful")
     matches: list[TargetMatch] = Field(default_factory=list, description="List of matching targets found")

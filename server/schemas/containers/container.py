@@ -5,18 +5,15 @@ This module provides Pydantic models for container-related API responses,
 ensuring type safety and automatic OpenAPI documentation.
 """
 
-from typing import Any
-
 from pydantic import BaseModel, ConfigDict, Field
 
-# InventoryStack is a TypedDict from services, use dict[str, Any] for Pydantic compatibility
-# from ..services.inventory_service import InventoryStack
+from .container_data import ContainerData, InventoryStack
 
 
 class ContainerOpenResponse(BaseModel):
     """Response model for opening a container."""
 
-    container: dict[str, Any] = Field(..., description="Container data including inventory and metadata")
+    container: ContainerData = Field(..., description="Container data including inventory and metadata")
     mutation_token: str = Field(..., description="Token required for subsequent container operations")
 
     model_config = ConfigDict(
@@ -37,10 +34,8 @@ class ContainerOpenResponse(BaseModel):
 class ContainerTransferResponse(BaseModel):
     """Response model for transferring items between container and inventory."""
 
-    container: dict[str, Any] = Field(..., description="Updated container data")
-    player_inventory: list[dict[str, Any]] = Field(
-        ..., description="Updated player inventory (list of InventoryStack items)"
-    )
+    container: ContainerData = Field(..., description="Updated container data")
+    player_inventory: list[InventoryStack] = Field(..., description="Updated player inventory")
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -78,10 +73,8 @@ class ContainerCloseResponse(BaseModel):
 class ContainerLootAllResponse(BaseModel):
     """Response model for looting all items from a container."""
 
-    container: dict[str, Any] = Field(..., description="Updated container data after looting")
-    player_inventory: list[dict[str, Any]] = Field(
-        ..., description="Updated player inventory with looted items (list of InventoryStack items)"
-    )
+    container: ContainerData = Field(..., description="Updated container data after looting")
+    player_inventory: list[InventoryStack] = Field(..., description="Updated player inventory with looted items")
     items_looted: int = Field(..., description="Number of items successfully looted")
 
     model_config = ConfigDict(

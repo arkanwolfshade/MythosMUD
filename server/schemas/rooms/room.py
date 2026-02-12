@@ -5,19 +5,15 @@ This module provides Pydantic models for room-related API responses,
 ensuring type safety and automatic OpenAPI documentation.
 """
 
-from typing import Any
-
 from pydantic import BaseModel, ConfigDict, Field
 
-# Room data is dynamic, so we use dict[str, Any] directly for the response
-# This matches the structure returned by room_service.get_room()
-# The response model will be dict[str, Any] with proper typing
+from .room_data import RoomData
 
 
 class RoomListResponse(BaseModel):
     """Response model for listing rooms."""
 
-    rooms: list[dict[str, Any]] = Field(..., description="List of room data dictionaries")
+    rooms: list[RoomData] = Field(..., description="List of room data")
     total: int = Field(..., description="Total number of rooms returned")
     plane: str = Field(..., description="Plane name used for filtering")
     zone: str = Field(..., description="Zone name used for filtering")

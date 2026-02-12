@@ -14,6 +14,7 @@ from typing import Any, Protocol
 
 from ..npc.behaviors import NPCBase
 from ..schemas.shared import TargetMatch, TargetResolutionResult, TargetType
+from ..schemas.shared.target_metadata import TargetMetadata
 from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -269,7 +270,7 @@ class TargetResolutionService:  # pylint: disable=too-few-public-methods  # Reas
                             target_name=player.name,
                             target_type=TargetType.PLAYER,
                             room_id=room_id,
-                            metadata={"player_id": str(player.player_id)},
+                            metadata=TargetMetadata(additional_info={"player_id": str(player.player_id)}),
                         )
                     )
 
@@ -378,7 +379,7 @@ class TargetResolutionService:  # pylint: disable=too-few-public-methods  # Reas
                         target_name=npc_instance.name,
                         target_type=TargetType.NPC,
                         room_id=room_id,
-                        metadata={"npc_id": npc_id},
+                        metadata=TargetMetadata(additional_info={"npc_id": npc_id}),
                     )
                 )
 

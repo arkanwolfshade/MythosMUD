@@ -14,7 +14,7 @@ from collections.abc import Iterable, Sequence
 from pathlib import Path
 from typing import Any
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 _TRADITIONS = {"catholic", "islamic", "jewish", "neo_pagan", "mythos"}
 _SEASONS = {"winter", "spring", "summer", "autumn"}
@@ -23,6 +23,13 @@ _MYTHOS_WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Sat
 
 class HolidayEntry(BaseModel):
     """Single holiday definition loaded from data/<env>/calendar/holidays.json."""
+
+    model_config = ConfigDict(
+        extra="forbid",
+        validate_assignment=True,
+        str_strip_whitespace=True,
+        validate_default=True,
+    )
 
     id: str = Field(pattern=r"^[a-z0-9_]+$", min_length=3)
     name: str
@@ -83,6 +90,13 @@ class HolidayEntry(BaseModel):
 class HolidayCollection(BaseModel):
     """Wrapper for the complete holiday JSON payload."""
 
+    model_config = ConfigDict(
+        extra="forbid",
+        validate_assignment=True,
+        str_strip_whitespace=True,
+        validate_default=True,
+    )
+
     holidays: list[HolidayEntry]
 
     @property
@@ -119,6 +133,13 @@ class HolidayCollection(BaseModel):
 
 class ScheduleEntry(BaseModel):
     """Single schedule block describing routine availability (`data/<env>/calendar/schedules/*.json`)."""
+
+    model_config = ConfigDict(
+        extra="forbid",
+        validate_assignment=True,
+        str_strip_whitespace=True,
+        validate_default=True,
+    )
 
     id: str = Field(pattern=r"^[a-z0-9_]+$", min_length=3)
     name: str
@@ -172,6 +193,13 @@ class ScheduleEntry(BaseModel):
 
 class ScheduleCollection(BaseModel):
     """Wrapper around an array of schedule entries."""
+
+    model_config = ConfigDict(
+        extra="forbid",
+        validate_assignment=True,
+        str_strip_whitespace=True,
+        validate_default=True,
+    )
 
     schedules: list[ScheduleEntry]
 

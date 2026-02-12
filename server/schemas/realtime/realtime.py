@@ -6,9 +6,10 @@ ensuring type safety and automatic OpenAPI documentation.
 """
 
 import time
-from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
+
+from .presence_data import ErrorStatistics, PresenceStatistics, SessionStatistics
 
 
 class PresenceInfo(BaseModel):
@@ -69,9 +70,9 @@ class PlayerConnectionsResponse(BaseModel):
     """Response model for player connection information endpoint."""
 
     player_id: str = Field(..., description="Player ID")
-    presence: dict[str, Any] = Field(..., description="Presence information")
+    presence: PresenceInfo = Field(..., description="Presence information")
     session: SessionInfo = Field(..., description="Session information")
-    health: dict[str, Any] = Field(..., description="Health information")
+    health: HealthInfo = Field(..., description="Health information")
     timestamp: float = Field(default_factory=time.time, description="Response timestamp")
 
     model_config = ConfigDict(
@@ -114,9 +115,9 @@ class NewGameSessionResponse(BaseModel):
 class ConnectionStatisticsResponse(BaseModel):
     """Response model for connection statistics endpoint."""
 
-    presence: dict[str, Any] = Field(..., description="Presence statistics")
-    sessions: dict[str, Any] = Field(..., description="Session statistics")
-    errors: dict[str, Any] = Field(..., description="Error statistics")
+    presence: PresenceStatistics = Field(..., description="Presence statistics")
+    sessions: SessionStatistics = Field(..., description="Session statistics")
+    errors: ErrorStatistics = Field(..., description="Error statistics")
     timestamp: float = Field(default_factory=time.time, description="Response timestamp")
 
     model_config = ConfigDict(

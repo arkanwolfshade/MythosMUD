@@ -6,6 +6,8 @@ This module handles conversion of Player objects and dictionaries to PlayerRead 
 
 from typing import TYPE_CHECKING, Any, cast
 
+from pydantic import ValidationError
+
 from ..exceptions import DatabaseError
 from ..game.items.prototype_registry import PrototypeRegistryError
 from ..models import Stats
@@ -14,6 +16,7 @@ from ..models.game import (  # pylint: disable=unused-import  # Reason: Inventor
     PositionState,
     StatusEffect,
 )
+from ..schemas.game.weapon import WeaponStats
 from ..schemas.players import PlayerRead
 from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -23,11 +26,11 @@ if TYPE_CHECKING:
     pass
 
 
-def _weapon_from_prototype_registry(registry: Any, prototype_id: str) -> dict[str, Any] | None:
+def _weapon_from_prototype_registry(registry: Any, prototype_id: str) -> WeaponStats | None:
     """Resolve metadata.weapon from prototype registry for a given prototype_id.
 
     Returns:
-        Weapon dict (min_damage, max_damage, modifier, damage_types, magical) or None.
+        WeaponStats model (min_damage, max_damage, modifier, damage_types, magical) or None.
     """
     if not registry or not prototype_id:
         return None
@@ -39,7 +42,14 @@ def _weapon_from_prototype_registry(registry: Any, prototype_id: str) -> dict[st
         return None
     weapon = prototype.metadata.get("weapon")
     if isinstance(weapon, dict):
-        return weapon
+        try:
+            return WeaponStats(**weapon)
+        except (ValidationError, TypeError):
+            # If weapon dict doesn't match WeaponStats schema, return None
+            # ValidationError: Pydantic validation failed
+            # TypeError: Invalid argument types for model construction
+            logger.warning("Failed to parse weapon stats from prototype", prototype_id=prototype_id, weapon=weapon)
+            return None
     return None
 
 

@@ -5,8 +5,6 @@ This module provides Pydantic models for game-related API responses,
 ensuring type safety and automatic OpenAPI documentation.
 """
 
-from typing import Any
-
 from pydantic import BaseModel, ConfigDict, Field
 
 from server.schemas.calendar import HolidayEntry
@@ -46,7 +44,7 @@ class BroadcastMessageResponse(BaseModel):
     message: str = Field(..., description="The broadcast message")
     recipients: int = Field(..., description="Number of recipients who received the message")
     broadcaster: str = Field(..., description="Username of the broadcaster")
-    broadcast_stats: dict[str, Any] = Field(..., description="Detailed broadcast statistics")
+    broadcast_stats: BroadcastStats = Field(..., description="Detailed broadcast statistics")
 
     model_config = ConfigDict(
         json_schema_extra={

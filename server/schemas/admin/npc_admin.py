@@ -5,9 +5,9 @@ This module provides Pydantic models for NPC admin API responses,
 ensuring type safety and automatic OpenAPI documentation.
 """
 
-from typing import Any
-
 from pydantic import BaseModel, ConfigDict, Field
+
+from .admin_data import AdminSession, AuditLogEntry
 
 
 class NPCSpawnResponse(BaseModel):
@@ -131,7 +131,7 @@ class NPCSystemStatusResponse(BaseModel):
 class AdminSessionsResponse(BaseModel):
     """Response model for admin sessions."""
 
-    sessions: list[dict[str, Any]] = Field(..., description="List of active admin sessions")
+    sessions: list[AdminSession] = Field(..., description="List of active admin sessions")
     count: int = Field(..., description="Number of active sessions")
 
     model_config = ConfigDict(
@@ -147,7 +147,7 @@ class AdminSessionsResponse(BaseModel):
 class AdminAuditLogResponse(BaseModel):
     """Response model for admin audit log."""
 
-    audit_log: list[dict[str, Any]] = Field(..., description="List of audit log entries")
+    audit_log: list[AuditLogEntry] = Field(..., description="List of audit log entries")
     count: int = Field(..., description="Number of audit log entries")
 
     model_config = ConfigDict(
