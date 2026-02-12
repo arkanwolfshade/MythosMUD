@@ -54,6 +54,7 @@ dependencies = [
     "starlette>=0.50.0",  # Fixes alert #14 - CVE-2025-62727, CVE-2025-54121, CVE-2024-47874
     "python-multipart>=0.0.22",  # Fixes alert #12 - CVE-2024-53981, CVE-2024-24762
     "fonttools>=4.60.2",  # Fixes alert #21 - CVE-2025-66034, CVE-2023-45139
+    "pillow>=12.1.1",  # Image handling (transitive from playwright/matplotlib); pin for security/consistency
     # Note: ecdsa>=0.19.1 is already latest, but CVE-2024-23342 has no patch available
     # This is a transitive dependency of python-jose. Alert #13, #20 may remain open.
 ]

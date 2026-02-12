@@ -1,41 +1,46 @@
--- Verification checks for users and players migration
-SET client_min_messages = WARNING;
-SET search_path = public;
+-- Verification checks for users and players (PostgreSQL).
+-- Aligns with public.users and public.players; no staging tables.
+-- Reference: .cursor/rules/postgresql.mdc
+set client_min_messages = warning;
+set search_path = public;
 
--- Basic row counts
-SELECT
-    (SELECT COUNT(*) AS cnt FROM staging_users) AS staging_users_count,
-    (SELECT COUNT(*) AS cnt FROM users) AS users_count,
-    (SELECT COUNT(*) AS cnt FROM staging_players)
-        AS staging_players_count,
-    (SELECT COUNT(*) AS cnt FROM players) AS players_count;
+-- Row counts for live tables only
+select
+    (select count(*) as cnt from users) as users_count,
+    (select count(*) as cnt from players) as players_count,
+    (select count(*) as cnt from id_map_users) as id_map_users_count,
+    (select count(*) as cnt from id_map_players) as id_map_players_count;
 
 -- Players without matching users (should be zero)
-SELECT COUNT(*) AS players_without_users
-FROM players AS p
-LEFT JOIN users AS u ON u.id = p.user_id
-WHERE u.id IS NULL;
+select
+    count(*) as players_without_users
+from
+    players as p
+left join
+    users as u
+    on u.id = p.user_id
+where
+    u.id is null;
 
--- id_map sanity checks
-SELECT
-    (SELECT COUNT(*) AS cnt FROM id_map_users) AS id_map_users_count,
-    (SELECT COUNT(*) AS cnt FROM id_map_players)
-        AS id_map_players_count;
+-- Sample users (explicit columns)
+select
+    u.id,
+    u.username,
+    u.is_admin,
+    u.created_at
+from
+    users as u
+order by
+    u.created_at
+limit 5;
 
--- Sample data (first few rows)
-SELECT
-    id,
-    username,
-    is_admin,
-    created_at
-FROM users AS u
-ORDER BY created_at
-LIMIT 5;
-SELECT
-    id,
-    "name",
-    sanity_score,
-    created_at
-FROM players AS p
-ORDER BY created_at
-LIMIT 5;
+-- Sample players (explicit columns; stats is jsonb)
+select
+    p.player_id,
+    p.name,
+    p.created_at
+from
+    players as p
+order by
+    p.created_at
+limit 5;

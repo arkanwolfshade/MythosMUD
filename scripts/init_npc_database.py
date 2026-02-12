@@ -66,26 +66,42 @@ def get_npc_seed_data_from_postgresql(database_url: str):
         sync_url = database_url.replace("+asyncpg", "")
         engine = create_engine(sync_url, echo=False)
 
-        with engine.connect() as conn:
-            # Get all NPC definitions
-            result = conn.execute(text("SELECT * FROM npc_definitions"))
-            npc_definitions = result.fetchall()
-            # Get column names from result metadata (SQLAlchemy 2.0)
-            try:
-                column_names = list(result.keys())
-            except AttributeError:
-                # Fallback for older SQLAlchemy versions
-                column_names = [desc[0] for desc in result.cursor.description]
+        # Explicit column lists per PostgreSQL style; avoid select * for schema stability.
+        NPC_DEF_COLUMNS = (
+            "id",
+            "name",
+            "description",
+            "npc_type",
+            "sub_zone_id",
+            "room_id",
+            "required_npc",
+            "max_population",
+            "spawn_probability",
+            "base_stats",
+            "behavior_config",
+            "ai_integration_stub",
+            "created_at",
+            "updated_at",
+        )
+        NPC_SPAWN_COLUMNS = (
+            "id",
+            "npc_definition_id",
+            "sub_zone_id",
+            "min_population",
+            "max_population",
+            "spawn_conditions",
+        )
+        def_cols = ", ".join(NPC_DEF_COLUMNS)
+        spawn_cols = ", ".join(NPC_SPAWN_COLUMNS)
 
-            # Get all NPC spawn rules
-            result = conn.execute(text("SELECT * FROM npc_spawn_rules"))
+        with engine.connect() as conn:
+            result = conn.execute(text(f"select {def_cols} from npc_definitions"))
+            npc_definitions = result.fetchall()
+            column_names = list(NPC_DEF_COLUMNS)
+
+            result = conn.execute(text(f"select {spawn_cols} from npc_spawn_rules"))
             npc_spawn_rules = result.fetchall()
-            # Get column names from result metadata (SQLAlchemy 2.0)
-            try:
-                spawn_rule_columns = list(result.keys())
-            except AttributeError:
-                # Fallback for older SQLAlchemy versions
-                spawn_rule_columns = [desc[0] for desc in result.cursor.description]
+            spawn_rule_columns = list(NPC_SPAWN_COLUMNS)
 
         return (npc_definitions, column_names), (npc_spawn_rules, spawn_rule_columns)
     except Exception as e:

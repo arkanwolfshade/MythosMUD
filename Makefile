@@ -124,6 +124,10 @@ sqlfluff:
 sqlint:
 	$(PYTHON) scripts/sqlint.py
 
+# Lightweight guardrails for hand-maintained SQL (select *, NOT IN subquery)
+lint-sql-guardrails:
+	$(PYTHON) scripts/lint_sql_guardrails.py
+
 # ============================================================================
 # CODACY TOOLS - Other Languages
 # ============================================================================
@@ -247,4 +251,4 @@ run:
 # COMPOSITE TARGETS
 # ============================================================================
 
-all: format mypy lint lint-sqlalchemy codacy-tools build openapi-spec test-coverage
+all: format mypy lint lint-sqlalchemy lint-sql-guardrails codacy-tools build openapi-spec test-coverage
