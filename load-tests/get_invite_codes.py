@@ -6,9 +6,10 @@ This script queries the database for 10 active invite codes and outputs them
 in a format suitable for use in the load test.
 """
 
-import asyncio
 import sys
 from pathlib import Path
+
+from anyio import run
 
 # Add server directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent / "server"))
@@ -25,9 +26,7 @@ load_dotenv(Path(".env.local"))
 async def get_10_active_invites() -> list[str] | None:
     """Get 10 active invite codes from the database."""
     async with get_session_maker()() as session:
-        result = await session.execute(
-            text("SELECT invite_code FROM invites WHERE is_active = true LIMIT 10")
-        )
+        result = await session.execute(text("SELECT invite_code FROM invites WHERE is_active = true LIMIT 10"))
         codes = [row[0] for row in result.fetchall()]
 
         if len(codes) < 10:
@@ -57,8 +56,9 @@ async def main() -> None:
     print(",".join(codes))
     print("\nInvite codes (JSON array):")
     import json
+
     print(json.dumps(codes, indent=2))
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    run(main)

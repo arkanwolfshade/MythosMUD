@@ -250,6 +250,17 @@ class MagicService:  # pylint: disable=too-many-instance-attributes  # Reason: M
             "is_casting": True,
         }
 
+    @staticmethod
+    def _resolve_heal_spell_id(spell_id: str, target_name: str | None) -> str:
+        """Normalize 'heal' to heal_self or heal_other when command_data passes literal 'heal' (e.g. from client)."""
+        if not spell_id or spell_id.strip().lower() != "heal":
+            return spell_id
+        if not target_name or not target_name.strip():
+            return "heal_self"
+        if target_name.strip().lower() in ("self", "me"):
+            return "heal_self"
+        return "heal_other"
+
     async def cast_spell(self, player_id: uuid.UUID, spell_id: str, target_name: str | None = None) -> dict[str, Any]:
         """
         Cast a spell.
@@ -264,14 +275,7 @@ class MagicService:  # pylint: disable=too-many-instance-attributes  # Reason: M
         """
         logger.info("Casting spell", player_id=player_id, spell_id=spell_id, target_name=target_name)
 
-        # Normalize "heal" to heal_self or heal_other when command_data passes literal "heal" (e.g. from client)
-        if spell_id and spell_id.strip().lower() == "heal":
-            if not target_name or not target_name.strip():
-                spell_id = "heal_self"
-            elif target_name.strip().lower() in ("self", "me"):
-                spell_id = "heal_self"
-            else:
-                spell_id = "heal_other"
+        spell_id = self._resolve_heal_spell_id(spell_id, target_name)
 
         # Check if already casting
         already_casting = self._check_already_casting(player_id)
@@ -310,7 +314,20 @@ class MagicService:  # pylint: disable=too-many-instance-attributes  # Reason: M
 
         # Handle instant cast or delayed cast
         if not spell.casting_time_seconds:
-            return await self._handle_instant_cast(player_id, spell, target, mastery)
+            result = await self._handle_instant_cast(player_id, spell, target, mastery)
+            effect_result = result.get("effect_result", result)
+            if (
+                effect_result.get("success")
+                and effect_result.get("effect_applied")
+                and effect_result.get("heal_amount")
+            ):
+                room_id = getattr(target, "room_id", None) or ""
+                tid = getattr(target, "target_id", None) if target is not None else None
+                healed_player_id = uuid.UUID(tid) if spell.spell_id == "heal_other" and tid else None
+                await self._send_healing_update_event(
+                    player_id, effect_result, spell.spell_id, room_id, healed_player_id=healed_player_id
+                )
+            return result
 
         current_tick = get_current_tick()
         return await self._start_delayed_cast(player_id, spell, target, mastery, current_tick)

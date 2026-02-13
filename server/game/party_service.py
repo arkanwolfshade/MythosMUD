@@ -6,6 +6,9 @@ Leader can invite, kick, and disband; members can leave. Cleanup on disconnect.
 Party invites use the same confirmation pattern as /follow: target must accept or decline.
 """
 
+# pylint: disable=too-many-lines
+# Reason: Module slightly exceeds 550-line limit; party logic is cohesive and splitting would add indirection.
+
 from __future__ import annotations
 
 import asyncio

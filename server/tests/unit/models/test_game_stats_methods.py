@@ -245,6 +245,14 @@ def test_stats_validate_current_vs_max_stats_exceeds_dp_alternative():
     assert result.current_dp == 20  # Should be capped at max_dp (20)
 
 
+def test_stats_preserves_stored_max_dp_over_formula():
+    """Stored max_dp from persistence takes precedence; current_dp not capped to formula max."""
+    # CON+SIZ=200 gives formula max_dp=40, but persistence may store max_dp=100
+    stats = Stats(constitution=100, size=100, current_dp=73, max_dp=100)
+    assert stats.current_dp == 73
+    assert stats.max_dp == 100
+
+
 def test_stats_validate_current_vs_max_stats_exceeds_mp_alternative():
     """Test validate_current_vs_max_stats adjusts magic_points when it exceeds max."""
     stats = Stats(power=50, magic_points=60)  # max_mp = ceil(50 * 0.2) = 10

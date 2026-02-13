@@ -122,13 +122,13 @@ class Player(Base):
     # Timestamps (persist naive UTC; server-side per SQLAlchemy 2.x rule)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(),
-        insert_default=func.now(),
-        nullable=False,  # pylint: disable=not-callable  # func.now() callable at runtime
+        insert_default=func.now(),  # pylint: disable=not-callable  # func.now() callable at runtime (SQLAlchemy)
+        nullable=False,
     )
     last_active: Mapped[datetime] = mapped_column(
         DateTime(),
-        insert_default=func.now(),
-        nullable=False,  # pylint: disable=not-callable  # func.now() callable at runtime
+        insert_default=func.now(),  # pylint: disable=not-callable  # func.now() callable at runtime (SQLAlchemy)
+        nullable=False,
     )
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:

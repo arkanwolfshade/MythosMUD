@@ -34,6 +34,7 @@ class CharacterCreationService:
         required_class: str | None = None,
         max_attempts: int = 50,  # Increased from 10 to improve success rate for profession requirements
         profession_id: int | None = None,
+        profession: Any | None = None,
     ) -> dict[str, Any]:
         """
         Roll random stats for character creation.
@@ -43,6 +44,8 @@ class CharacterCreationService:
             required_class: Optional class to validate against
             max_attempts: Maximum number of attempts to meet requirements
             profession_id: Optional profession ID for profession-based rolling
+            profession: Optional profession object; required when calling with profession_id from sync context
+                (stats_generator does not use asyncio.run(); use API async path or pass profession)
 
         Returns:
             dict: Stats and validation results
@@ -60,10 +63,13 @@ class CharacterCreationService:
 
         try:
             if profession_id is not None:
-                # Use profession-based stat rolling
-                # Use default timeout_seconds from RollStatsRequest (5.0) for better success rate
+                # Use profession-based stat rolling; profession must be passed when in sync context
                 stats, meets_requirements = self.stats_generator.roll_stats_with_profession(
-                    method=method, profession_id=profession_id, max_attempts=max_attempts, timeout_seconds=5.0
+                    method=method,
+                    profession_id=profession_id,
+                    max_attempts=max_attempts,
+                    timeout_seconds=5.0,
+                    profession=profession,
                 )
                 stat_summary = self.stats_generator.get_stat_summary(stats)
 

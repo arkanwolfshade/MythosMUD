@@ -4,7 +4,6 @@ Unit tests for inventory mutation guard - internal helper methods.
 Tests internal helper methods including token pruning, limit enforcement, and async state management.
 """
 
-import asyncio
 import uuid
 from time import monotonic
 
@@ -81,16 +80,14 @@ def test_get_async_global_lock(guard):
     assert lock1 is lock2  # Should return same lock
 
 
-def test_get_async_state_creates_lazily(guard):
+@pytest.mark.asyncio
+async def test_get_async_state_creates_lazily(guard):
     """Test _get_async_state creates state lazily."""
     player_id = str(uuid.uuid4())
 
-    async def test():
-        state = await guard._get_async_state(player_id)
-        assert state is not None
-        assert player_id in guard._async_states
-
-    asyncio.run(test())
+    state = await guard._get_async_state(player_id)
+    assert state is not None
+    assert player_id in guard._async_states
 
 
 @pytest.mark.asyncio

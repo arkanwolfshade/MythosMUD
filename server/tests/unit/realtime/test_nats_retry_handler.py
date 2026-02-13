@@ -4,10 +4,10 @@ Unit tests for NATS retry handler.
 Tests the NATSRetryHandler class and related retry logic.
 """
 
-import asyncio
 from datetime import UTC, datetime
 from unittest.mock import AsyncMock
 
+import anyio
 import pytest
 
 from server.realtime.nats_retry_handler import NATSRetryHandler, RetryableMessage, RetryConfig
@@ -157,9 +157,9 @@ async def test_retry_async_waits_for_backoff():
     handler = NATSRetryHandler(base_delay=0.1, max_delay=1.0)
     message = RetryableMessage(subject="test", data={}, attempt=0, first_attempt_time=datetime.now(UTC))
     func = AsyncMock()
-    start_time = asyncio.get_event_loop().time()
+    start_time = anyio.current_time()
     await handler.retry_async(func, message)
-    elapsed = asyncio.get_event_loop().time() - start_time
+    elapsed = anyio.current_time() - start_time
     # Should have waited at least some time (with jitter, could be 0.075-0.125)
     assert elapsed >= 0.05  # Allow some margin for jitter
 
@@ -224,9 +224,9 @@ async def test_retry_with_backoff_no_sleep_after_last_attempt():
     """Test retry_with_backoff() doesn't sleep after last attempt."""
     handler = NATSRetryHandler(max_retries=2, base_delay=0.1, max_delay=1.0)
     func = AsyncMock(side_effect=Exception("Error"))
-    start_time = asyncio.get_event_loop().time()
+    start_time = anyio.current_time()
     await handler.retry_with_backoff(func)
-    elapsed = asyncio.get_event_loop().time() - start_time
+    elapsed = anyio.current_time() - start_time
     # Should only sleep once (after first attempt), not after last
     # With base_delay=0.1 and jitter, should be ~0.075-0.125
     assert elapsed < 0.2  # Should not wait after last attempt

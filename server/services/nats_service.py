@@ -15,6 +15,7 @@ from collections.abc import Callable, Coroutine
 from pathlib import Path
 from typing import Any, cast
 
+import anyio
 import nats
 from anyio import sleep
 
@@ -472,7 +473,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
 
                 if health_ok:
                     self._consecutive_health_failures = 0
-                    self._last_health_check = asyncio.get_running_loop().time()
+                    self._last_health_check = anyio.current_time()
                     # Update health score in metrics
                     self.metrics.update_connection_health(100.0)
                 else:
@@ -806,7 +807,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
         health_check_interval = getattr(self.config, "health_check_interval", 30)
         if health_check_interval > 0:
             try:
-                current_time = asyncio.get_running_loop().time()
+                current_time = anyio.current_time()
             except RuntimeError:
                 # No event loop running, can't check time - assume connected if nc and _running are True
                 return True
@@ -996,7 +997,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
         AI: For monitoring dashboards and health checks.
         """
         try:
-            current_time = asyncio.get_running_loop().time()
+            current_time = anyio.current_time()
             time_since_last_check = current_time - self._last_health_check if self._last_health_check > 0 else None
         except RuntimeError:
             time_since_last_check = None
@@ -1152,9 +1153,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
 
         AI: Raises exceptions instead of returning False for better error handling.
         """
-        # AI Agent: Use asyncio.get_running_loop() instead of deprecated get_event_loop()
-        #           Python 3.10+ deprecates get_event_loop() in async contexts
-        start_time = asyncio.get_running_loop().time()
+        start_time = anyio.current_time()
         success = False
         connection = None
 
@@ -1216,7 +1215,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             if connection:
                 await self._return_connection(connection)
             # Record metrics
-            processing_time = asyncio.get_running_loop().time() - start_time
+            processing_time = anyio.current_time() - start_time
             self.metrics.record_publish(success, processing_time)
 
     async def _cleanup_connection_pool(self) -> None:
@@ -1342,7 +1341,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             batch_data = {
                 "messages": messages,
                 "count": len(messages),
-                "batch_timestamp": asyncio.get_running_loop().time(),
+                "batch_timestamp": anyio.current_time(),
             }
 
             try:
@@ -1426,7 +1425,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             batch_data = {
                 "messages": messages,
                 "count": len(messages),
-                "batch_timestamp": asyncio.get_running_loop().time(),
+                "batch_timestamp": anyio.current_time(),
             }
 
             try:

@@ -334,7 +334,8 @@ class StatsGenerator:
 
         logger.debug("DEBUG: Starting profession-based stats rolling", profession_id=profession_id)
 
-        # Get profession requirements from persistence (async) or use provided profession
+        # Get profession requirements from persistence (async) or use provided profession.
+        # Callers must pass profession when in async context; we do not use asyncio.run() in library code.
         try:
             if profession is None:
                 import asyncio
@@ -343,20 +344,20 @@ class StatsGenerator:
 
                 container = ApplicationContainer.get_instance()
                 if container and container.async_persistence:
-                    # Try to get profession (async)
                     try:
-                        asyncio.get_running_loop()  # Check if we're in async context
-                        # In async context, we can't use asyncio.run()
-                        # Profession should be fetched by caller and passed in
+                        asyncio.get_running_loop()
+                        # In async context caller must fetch and pass profession
                         raise ValueError(
                             f"Profession must be provided when called from async context. "
                             f"Invalid profession ID: {profession_id}"
                         )
                     except RuntimeError:
-                        # No running loop, we can use asyncio.run()
-                        profession = asyncio.run(container.async_persistence.get_profession_by_id(profession_id))
-                else:
-                    profession = None
+                        # Sync context: do not use asyncio.run(); caller must pass profession
+                        raise ValueError(
+                            f"Profession must be provided when calling from sync context (no event loop). "
+                            f"Use async entry point or pass profession= for profession_id={profession_id}"
+                        ) from None
+                profession = None
 
             if not profession:
                 raise ValueError(f"Invalid profession ID: {profession_id}")

@@ -187,17 +187,21 @@ class Stats(BaseModel):
 
         super().__init__(**data)
 
-    # Derived stats - computed fields
-    @computed_field
-    def max_dp(self) -> int:
-        """
-        Calculate max determination points (DP) using formula: (CON + SIZ) / 5.
+    @model_validator(mode="before")
+    @classmethod
+    def _compute_max_dp_if_missing(cls, data: Any) -> Any:
+        """Populate max_dp from (CON+SIZ)/5 when not provided (stored value takes precedence)."""
+        if isinstance(data, dict) and data.get("max_dp") is None:
+            con = data.get("constitution", 50)
+            siz = data.get("size", 50)
+            data = {**data, "max_dp": (con + siz) // 5}
+        return data
 
-        AI: This computed field uses the same calculation logic as _calculate_max_dp()
-        but is exposed as a property for external access. The calculation is duplicated
-        here to avoid mypy inference issues with @computed_field decorators.
-        """
-        return self._calculate_max_dp()
+    # Derived stats - use stored max_dp from persistence when present, else compute from (CON+SIZ)/5
+    max_dp: int | None = Field(
+        default=None,
+        description="Max DP from persistence; if None, computed from (CON+SIZ)/5",
+    )
 
     @computed_field
     def max_magic_points(self) -> int:
@@ -271,8 +275,8 @@ class Stats(BaseModel):
         values while preventing unreasonably high values. Uses object.__setattr__ to bypass
         Pydantic's validation cycle and prevent recursion.
         """
-        # Use helper methods to calculate max values (same logic as computed fields)
-        max_dp = self._calculate_max_dp()
+        # Use stored max_dp when present (persistence), else computed; prevents capping 73 to formula max
+        max_dp = self.max_dp if self.max_dp is not None else self._calculate_max_dp()
         max_mp = self._calculate_max_magic_points()
         max_lucidity_value = self._calculate_max_lucidity()
 

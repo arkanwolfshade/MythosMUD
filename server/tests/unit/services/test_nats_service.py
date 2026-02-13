@@ -12,6 +12,7 @@ import json
 from collections import deque
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import anyio
 import pytest
 
 from server.config.models import NATSConfig
@@ -510,7 +511,7 @@ async def test_is_connected_true(nats_service):
     mock_client.is_connected = True
     nats_service.nc = mock_client
     nats_service._running = True
-    nats_service._last_health_check = asyncio.get_event_loop().time()  # Recent health check
+    nats_service._last_health_check = anyio.current_time()  # Recent health check
     nats_service.config.health_check_interval = 0  # Disable health check for simpler test
     assert nats_service.is_connected() is True
 

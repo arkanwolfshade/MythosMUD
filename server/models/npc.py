@@ -102,8 +102,8 @@ class NPCDefinition(Base):
     # Timestamps (server-side per SQLAlchemy 2.x rule)
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
-        insert_default=func.now(),
-        nullable=False,  # pylint: disable=not-callable  # func.now() callable at runtime
+        insert_default=func.now(),  # pylint: disable=not-callable  # func.now() callable at runtime (SQLAlchemy)
+        nullable=False,
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime,

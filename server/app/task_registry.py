@@ -12,6 +12,7 @@ import asyncio
 from collections.abc import Callable, Coroutine
 from typing import Any
 
+import anyio
 from anyio import Event
 
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -34,7 +35,7 @@ class TaskMetadata:  # pylint: disable=too-few-public-methods  # Reason: Data cl
         self.task = task
         self.task_name = task_name
         self.task_type = task_type
-        self.created_at = asyncio.get_event_loop().time()
+        self.created_at = anyio.current_time()
         self.is_lifecycle = task_type in ("lifecycle", "system", "background")
 
     def __repr__(self) -> str:
@@ -78,7 +79,7 @@ class TaskRegistry:  # pylint: disable=too-many-instance-attributes  # Reason: T
         """Ensure task name is unique by appending timestamp if needed."""
         if task_name in self._task_names:
             logger.debug("Warning: Task name already exists, appending timestamp", task_name=task_name)
-            task_name = f"{task_name}_{asyncio.get_event_loop().time()}"
+            task_name = f"{task_name}_{anyio.current_time()}"
         return task_name
 
     def _track_task_creation_metrics(self) -> None:

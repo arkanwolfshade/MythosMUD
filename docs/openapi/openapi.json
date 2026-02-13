@@ -1448,7 +1448,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MessageResponse"
+                  "$ref": "#/components/schemas/server__schemas__players__player__MessageResponse"
                 }
               }
             }
@@ -1906,7 +1906,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/server__api__monitoring_models__MessageResponse"
+                  "$ref": "#/components/schemas/MessageResponse"
                 }
               }
             }
@@ -1994,7 +1994,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/server__api__monitoring_models__MessageResponse"
+                  "$ref": "#/components/schemas/MessageResponse"
                 }
               }
             }
@@ -7022,20 +7022,15 @@
         "properties": {
           "message": {
             "type": "string",
-            "title": "Message",
-            "description": "Success or status message"
+            "title": "Message"
           }
         },
-        "additionalProperties": false,
         "type": "object",
         "required": [
           "message"
         ],
         "title": "MessageResponse",
-        "description": "Generic response model for operations that return a simple message.",
-        "example": {
-          "message": "Operation completed successfully"
-        }
+        "description": "Generic response model for operations that return a simple message."
       },
       "MetricsData": {
         "properties": {
@@ -9844,10 +9839,16 @@
             "default": "standing"
           },
           "max_dp": {
-            "type": "integer",
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Max Dp",
-            "description": "Calculate max determination points (DP) using formula: (CON + SIZ) / 5.\n\nAI: This computed field uses the same calculation logic as _calculate_max_dp()\nbut is exposed as a property for external access. The calculation is duplicated\nhere to avoid mypy inference issues with @computed_field decorators.",
-            "readOnly": true
+            "description": "Max DP from persistence; if None, computed from (CON+SIZ)/5"
           },
           "max_magic_points": {
             "type": "integer",
@@ -9864,7 +9865,6 @@
         },
         "type": "object",
         "required": [
-          "max_dp",
           "max_magic_points",
           "max_lucidity"
         ],
@@ -10567,20 +10567,6 @@
         "title": "WeaponStats",
         "description": "Weapon statistics for items that can be used as weapons.\n\nThis model represents the combat properties of a weapon item, including\ndamage range, modifiers, damage types, and magical properties."
       },
-      "server__api__monitoring_models__MessageResponse": {
-        "properties": {
-          "message": {
-            "type": "string",
-            "title": "Message"
-          }
-        },
-        "type": "object",
-        "required": [
-          "message"
-        ],
-        "title": "MessageResponse",
-        "description": "Generic response model for operations that return a simple message."
-      },
       "server__api__monitoring_models__MetricsResponse": {
         "properties": {
           "total_movements": {
@@ -10709,6 +10695,25 @@
         ],
         "title": "MetricsResponse",
         "description": "Response model for movement metrics."
+      },
+      "server__schemas__players__player__MessageResponse": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "Success or status message"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "title": "MessageResponse",
+        "description": "Generic response model for operations that return a simple message.",
+        "example": {
+          "message": "Operation completed successfully"
+        }
       }
     },
     "securitySchemes": {

@@ -11,7 +11,9 @@ consistent in form and structure, lest the mortal mind be overwhelmed
 by the chaos of inconsistent error reporting."
 """
 
-# pylint: disable=too-many-return-statements  # Reason: Standardized response handlers require multiple return statements for different error type handling and response generation
+# pylint: disable=too-many-return-statements,too-many-lines
+# Reason: Standardized response handlers require multiple return statements for different error type handling.
+# Module slightly exceeds 550-line limit; refactoring would fragment cohesive error response logic.
 
 from typing import Any
 

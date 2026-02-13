@@ -6,11 +6,12 @@ This script generates unique Mythos-themed invite codes and stores them
 in the database using the new FastAPI Users migration structure.
 """
 
-import asyncio
 import random
 import sys
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
+
+from anyio import run
 
 # Load environment variables from .env.local
 from dotenv import load_dotenv
@@ -27,6 +28,7 @@ else:
 
 # Add server directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "server"))
+
 
 # Now import server modules
 from sqlalchemy import text  # noqa: E402
@@ -257,4 +259,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    run(main)

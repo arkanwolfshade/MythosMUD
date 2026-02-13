@@ -96,6 +96,8 @@ help:
 lint:
 	$(PYTHON) scripts/lint.py
 	$(PYTHON) scripts/check_logging_consistency.py
+	$(PYTHON) scripts/check_asyncio_run_guardrails.py
+	$(PYTHON) scripts/lint_sql_guardrails.py
 
 lint-sqlalchemy:
 	$(PYTHON) scripts/lint_sqlalchemy_async.py
@@ -127,6 +129,10 @@ sqlint:
 # Lightweight guardrails for hand-maintained SQL (select *, NOT IN subquery)
 lint-sql-guardrails:
 	$(PYTHON) scripts/lint_sql_guardrails.py
+
+# Forbid asyncio.run() in server/ (AnyIO best practice; use anyio.run() at entry points)
+lint-asyncio-run-guardrails:
+	$(PYTHON) scripts/check_asyncio_run_guardrails.py
 
 # ============================================================================
 # CODACY TOOLS - Other Languages
@@ -251,4 +257,4 @@ run:
 # COMPOSITE TARGETS
 # ============================================================================
 
-all: format mypy lint lint-sqlalchemy lint-sql-guardrails codacy-tools build openapi-spec test-coverage
+all: format mypy lint lint-sqlalchemy codacy-tools build openapi-spec test-coverage

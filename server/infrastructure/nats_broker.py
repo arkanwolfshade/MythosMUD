@@ -12,6 +12,7 @@ import json
 from typing import Any, cast
 from uuid import uuid4
 
+import anyio
 import nats
 from anyio import sleep
 from nats.aio.msg import Msg
@@ -163,8 +164,9 @@ class NATSMessageBroker:  # pylint: disable=too-many-instance-attributes  # Reas
         health_check_interval = getattr(self.config, "health_check_interval", 30)
         if health_check_interval > 0:
             try:
-                current_time = asyncio.get_running_loop().time()
-            except RuntimeError:
+                current_time = anyio.current_time()
+            except (anyio.NoEventLoopError, RuntimeError, Exception):  # noqa: BLE001  # pylint: disable=broad-exception-caught
+                # No event loop, or not in anyio backend (e.g. sync test / pytest-asyncio)
                 # No event loop running, can't check time - assume connected if client is connected
                 result: bool = cast(bool, self._client.is_connected)
                 return result
@@ -512,7 +514,7 @@ class NATSMessageBroker:  # pylint: disable=too-many-instance-attributes  # Reas
 
                 if health_ok:
                     self._consecutive_health_failures = 0
-                    self._last_health_check = asyncio.get_running_loop().time()
+                    self._last_health_check = anyio.current_time()
                 else:
                     self._consecutive_health_failures += 1
                     self._logger.warning(
