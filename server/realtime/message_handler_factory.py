@@ -144,14 +144,8 @@ class MessageHandlerFactory:
         message_type = message.get("type", "unknown")
         data = message.get("data", {})
 
-        logger.info(
-            "🚨 SERVER DEBUG: message_handler_factory.handle_message called",
-            extra={"message_type": message_type, "data": data, "player_id": player_id, "full_message": message},
-        )
-
         handler = self.get_handler(message_type)
         if handler:
-            logger.info("🚨 SERVER DEBUG: Found handler for message type", message_type=message_type)
             await handler.handle(websocket, player_id, data)
         else:
             # Unknown message type - send error response

@@ -1,21 +1,22 @@
 """
-Unit tests for websocket handler help functions.
+Unit tests for help content used in the realtime/WebSocket path.
 
-Tests the help content functions in websocket_handler.py.
+Uses the canonical help system (server.help.help_content) rather than the
+removed websocket_handler stub.
 """
 
-from server.realtime.websocket_handler import get_help_content
+from server.help.help_content import get_help_content
 
 
 def test_get_help_content_general():
     """Test get_help_content() returns general help when no command specified."""
     result = get_help_content()
     assert isinstance(result, str)
-    assert "Available Commands" in result or "Commands" in result
+    assert "command" in result.lower() or "help" in result.lower()
 
 
 def test_get_help_content_specific():
-    """Test get_help_content() returns specific command help."""
+    """Test get_help_content() returns specific command help for look."""
     result = get_help_content("look")
     assert isinstance(result, str)
     assert "look" in result.lower() or "not found" in result.lower()

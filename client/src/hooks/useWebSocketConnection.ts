@@ -183,6 +183,7 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
       // CRITICAL FIX: Pass JWT via query parameter, not subprotocol
       // JWT tokens contain characters (dots, etc.) that are invalid in WebSocket subprotocols
       // This causes the browser to reject the handshake
+      // Production must be served over HTTPS so the same-origin WebSocket uses WSS.
       // MULTI-CHARACTER: Include character_id if provided to connect as the selected character
       let wsUrl = `${API_V1_BASE}/api/ws?session_id=${encodeURIComponent(sessionId)}&token=${encodeURIComponent(authToken)}`;
       if (characterId) {

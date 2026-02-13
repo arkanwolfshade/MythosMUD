@@ -1,5 +1,11 @@
 # MythosMUD Deployment
 
+## Production: HTTPS and WSS
+
+Production must be served over **HTTPS** so that WebSocket connections use **WSS**
+(secure WebSocket) and credentials remain protected. Configure TLS at the server or
+reverse proxy; see [realtime.md](realtime.md) for details.
+
 ## Production: Gunicorn + Uvicorn
 
 For production, run the ASGI app with **Gunicorn** as the process manager and **Uvicorn** as the worker

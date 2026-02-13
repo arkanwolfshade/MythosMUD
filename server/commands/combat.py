@@ -279,7 +279,7 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
         command, target_name = self._extract_combat_command_data(command_data)
 
         logger.debug(
-            "🚨 COMBAT DEBUG: Processing attack command",
+            "Processing attack command",
             command=command,
             player_name=player_name,
             target_name=target_name,

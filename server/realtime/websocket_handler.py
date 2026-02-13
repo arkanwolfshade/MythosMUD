@@ -2,7 +2,9 @@
 WebSocket handler for MythosMUD real-time communication.
 
 This module handles WebSocket message processing, command handling,
-and real-time updates for the game.
+and real-time updates for the game. Callers should pass connection_manager
+from the WebSocket pipeline when invoking handle_game_command,
+process_websocket_command, or handle_chat_message.
 """
 
 # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals,too-many-lines  # Reason: WebSocket handler requires many parameters and intermediate variables for complex message processing logic. WebSocket handler requires extensive message processing logic for comprehensive real-time communication.
@@ -40,7 +42,6 @@ __all__ = [
     "handle_game_command",
     "process_websocket_command",
     "handle_chat_message",
-    "get_help_content",
     "send_system_message",
     "broadcast_room_update",  # Re-exported from websocket_room_updates
 ]
@@ -486,6 +487,21 @@ async def handle_websocket_message(websocket: WebSocket, player_id: str, message
         await websocket.send_json(error_response)
 
 
+def _resolve_connection_manager(connection_manager: "ConnectionManager | None") -> "ConnectionManager":
+    """
+    Resolve ConnectionManager; fallback to app.state for backward compatibility.
+
+    Callers should pass connection_manager from the WebSocket pipeline when invoking
+    handle_game_command, process_websocket_command, or handle_chat_message.
+    """
+    if connection_manager is not None:
+        return connection_manager
+    from ..main import app
+
+    # cast: app.state.container is not fully typed; connection_manager is ConnectionManager at runtime
+    return cast("ConnectionManager", app.state.container.connection_manager)
+
+
 async def handle_game_command(
     websocket: WebSocket,
     player_id: str,
@@ -501,14 +517,10 @@ async def handle_game_command(
         player_id: The player's ID
         command: The command string
         args: Command arguments (optional, will parse from command if not provided)
-        connection_manager: ConnectionManager instance (optional, will resolve from app.state if not provided)
+        connection_manager: ConnectionManager instance (optional; prefer passing from WebSocket pipeline)
     """
     try:
-        # Resolve connection_manager if not provided (backward compatibility)
-        if connection_manager is None:
-            from ..main import app
-
-            connection_manager = app.state.container.connection_manager
+        connection_manager = _resolve_connection_manager(connection_manager)
         # Parse command and arguments if args not provided
         if args is None:
             parts = command.strip().split()
@@ -638,11 +650,7 @@ async def process_websocket_command(
     """
     logger.debug("Processing command", cmd=cmd, args=args, player_id=player_id)
 
-    # Resolve connection_manager if not provided (backward compatibility)
-    if connection_manager is None:
-        from ..main import app
-
-        connection_manager = app.state.container.connection_manager
+    connection_manager = _resolve_connection_manager(connection_manager)
 
     # Validate player and persistence
     player, error_result = await _validate_player_and_persistence(connection_manager, player_id)
@@ -722,24 +730,6 @@ async def process_websocket_command(
     return result
 
 
-def get_help_content(command_name: str | None = None) -> str:
-    """Get help content for commands."""
-    if command_name:
-        # Return specific command help
-        return f"Help for '{command_name}': Command not found or help not available."
-
-    # Return general help
-    return """
-Available Commands:
-- look [direction]: Examine your surroundings
-- go <direction>: Move in a direction
-- say <message>: Say something
-- help [command]: Get help on commands
-
-Directions: north, south, east, west
-"""
-
-
 async def handle_chat_message(
     websocket: WebSocket, player_id: str, message: str, connection_manager: "ConnectionManager | None" = None
 ) -> None:
@@ -753,11 +743,7 @@ async def handle_chat_message(
         connection_manager: ConnectionManager instance (optional, will resolve from app.state if not provided)
     """
     try:
-        # Resolve connection_manager if not provided (backward compatibility)
-        if connection_manager is None:
-            from ..main import app
-
-            connection_manager = app.state.container.connection_manager
+        connection_manager = _resolve_connection_manager(connection_manager)
 
         # Create chat event
         chat_event = build_event(

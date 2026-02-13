@@ -408,7 +408,7 @@ async def _validate_websocket_connection_manager(websocket: WebSocket) -> Any | 
     websocket_app = getattr(websocket, "app", None)
     websocket_state = getattr(websocket_app, "state", None)
     connection_manager = _resolve_connection_manager_from_state(websocket_state)
-    if connection_manager is None or getattr(connection_manager, "persistence", None) is None:
+    if connection_manager is None or getattr(connection_manager, "async_persistence", None) is None:
         await websocket.accept()
         await websocket.send_json({"type": "error", "message": "Service temporarily unavailable"})
         await websocket.close(code=1013)
@@ -455,9 +455,11 @@ async def _resolve_player_id_from_path_or_token(player_id: str, token: str | Non
 @realtime_router.websocket("/ws/{player_id}")
 async def websocket_endpoint_route(websocket: WebSocket, player_id: str) -> None:  # pylint: disable=too-many-locals  # Reason: WebSocket endpoint requires many intermediate variables for connection management
     """
-    Backward-compatible WebSocket endpoint that accepts a path player_id but
-    prefers JWT token identity when provided.
-    Supports session tracking for dual connection management.
+    Deprecated. Backward-compatible WebSocket endpoint that accepts a path player_id
+    but prefers JWT token identity when provided. Supports session tracking.
+
+    **Deprecation**: Use GET /api/ws with JWT (query param or subprotocol) instead.
+    This route will be removed in a future release. Migrate clients to /api/ws.
     """
     from ..structured_logging.enhanced_logging_config import get_logger
 
