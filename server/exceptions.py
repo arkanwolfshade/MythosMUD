@@ -289,8 +289,8 @@ class LoggedHTTPException(HTTPException, LoggedException):
         self,
         status_code: int,
         detail: str,
-        context: ErrorContext | None = None,
         logger_name: str | None = None,
+        **kwargs: Any,
     ) -> None:
         """
         Initialize LoggedHTTPException.
@@ -298,8 +298,8 @@ class LoggedHTTPException(HTTPException, LoggedException):
         Args:
             status_code: HTTP status code
             detail: Error detail message
-            context: Error context information
             logger_name: Specific logger name to use (defaults to current module)
+            **kwargs: Additional structured logging data (e.g., operation, user_id, etc.)
         """
         HTTPException.__init__(self, status_code=status_code, detail=detail)
         LoggedException.__init__(self)
@@ -307,19 +307,25 @@ class LoggedHTTPException(HTTPException, LoggedException):
         # Use specified logger or default to current module logger
         error_logger = get_logger(logger_name) if logger_name else logger
 
-        # Create context if not provided
-        if context is None:
-            context = create_error_context()
+        # Create ErrorContext internally from kwargs for exception object (exceptions need ErrorContext)
+        # Extract common context fields from kwargs
+        context_metadata = {k: v for k, v in kwargs.items() if k not in ["error_type", "status_code", "detail"]}
+        context = create_error_context(
+            user_id=kwargs.get("user_id"),
+            session_id=kwargs.get("session_id"),
+            request_id=kwargs.get("request_id"),
+            metadata=context_metadata,
+        )
 
         # Store context as instance attribute for testability
         self.context = context
 
-        # Log the HTTP error with full context
+        # Prepare structured log data using kwargs directly
         log_data = {
             "error_type": "LoggedHTTPException",
             "status_code": status_code,
             "detail": detail,
-            "context": context.to_dict(),
+            **kwargs,
         }
 
         try:

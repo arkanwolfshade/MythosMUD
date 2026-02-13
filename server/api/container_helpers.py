@@ -21,7 +21,6 @@ from ..services.container_service import (
 )
 from ..services.inventory_service import InventoryStack
 from ..structured_logging.enhanced_logging_config import get_logger
-from ..utils.error_logging import create_context_from_request
 from ..utils.rate_limiter import RateLimiter
 from .container_models import LootAllRequest, TransferContainerRequest
 
@@ -31,25 +30,26 @@ logger = get_logger(__name__)
 container_rate_limiter = RateLimiter(max_requests=20, window_seconds=60)
 
 
-def create_error_context(request: Request | None, current_user: User | None, **metadata: Any) -> Any:
+def create_error_context(_request: Request | None, current_user: User | None, **metadata: Any) -> dict[str, Any]:
     """
-    Create error context from request and user.
+    Create error context dict from request and user.
 
     Helper function to reduce duplication in exception handling.
+    Returns a dict suitable for passing as **kwargs to LoggedHTTPException.
 
     Args:
-        request: FastAPI Request object
+        _request: FastAPI Request object (unused; kept for API consistency with callers).
         current_user: Current user or None
         **metadata: Additional metadata to add to context
 
     Returns:
-        ErrorContext: Error context with request and user information
+        dict: Error context dict with request and user information
     """
-    context = create_context_from_request(request)
+    context_dict: dict[str, Any] = {}
     if current_user:
-        context.user_id = str(current_user.id)
-    context.metadata.update(metadata)
-    return context
+        context_dict["user_id"] = str(current_user.id)
+    context_dict.update(metadata)
+    return context_dict
 
 
 async def get_player_id_from_user(current_user: User, persistence: Any) -> UUID:
@@ -71,7 +71,7 @@ async def get_player_id_from_user(current_user: User, persistence: Any) -> UUID:
         raise LoggedHTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Player not found for user",
-            context=create_error_context(None, current_user, operation="get_player_id"),
+            **create_error_context(None, current_user, operation="get_player_id"),
         )
     return UUID(str(player.player_id))
 
@@ -92,51 +92,49 @@ def get_container_service(persistence: Any) -> ContainerService:
     return ContainerService(persistence=persistence)
 
 
-def validate_user_for_open_container(current_user: User | None, request: Request) -> None:
+def validate_user_for_open_container(current_user: User | None, _request: Request) -> None:
     """Validate user for container opening. Raises exception if invalid."""
     if not current_user:
-        context = create_error_context(request, current_user, operation="open_container")
         raise LoggedHTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=ErrorMessages.AUTHENTICATION_REQUIRED,
-            context=context,
+            operation="open_container",
         )
 
 
-def apply_rate_limiting_for_open_container(current_user: User, request: Request) -> None:
+def apply_rate_limiting_for_open_container(current_user: User, _request: Request) -> None:
     """Apply rate limiting for container opening. Raises exception if rate limit exceeded."""
     try:
         container_rate_limiter.enforce_rate_limit(str(current_user.id))
     except RateLimitError as e:
-        context = create_error_context(request, current_user, rate_limit_type="container_operation")
         raise LoggedHTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
             detail=f"Rate limit exceeded. Retry after {e.retry_after} seconds",
-            context=context,
+            user_id=str(current_user.id) if current_user else None,
+            rate_limit_type="container_operation",
         ) from e
 
 
-def validate_user_for_transfer(current_user: User | None, request: Request) -> None:
+def validate_user_for_transfer(current_user: User | None, _request: Request) -> None:
     """Validate current_user for transfer operation."""
     if not current_user:
-        context = create_error_context(request, current_user, operation="transfer_items")
         raise LoggedHTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=ErrorMessages.AUTHENTICATION_REQUIRED,
-            context=context,
+            operation="transfer_items",
         )
 
 
-def apply_rate_limiting_for_transfer(current_user: User, request: Request) -> None:
+def apply_rate_limiting_for_transfer(current_user: User, _request: Request) -> None:
     """Apply rate limiting for transfer operation."""
     try:
         container_rate_limiter.enforce_rate_limit(str(current_user.id))
     except RateLimitError as e:
-        context = create_error_context(request, current_user, rate_limit_type="container_operation")
         raise LoggedHTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
             detail=f"Rate limit exceeded. Retry after {e.retry_after} seconds",
-            context=context,
+            user_id=str(current_user.id) if current_user else None,
+            rate_limit_type="container_operation",
         ) from e
 
 
@@ -166,7 +164,7 @@ async def execute_transfer(
 
 def handle_container_service_error(
     e: ContainerServiceError,
-    request: Request,
+    _request: Request,
     current_user: User,
     request_data: TransferContainerRequest | None = None,
     container_id: UUID | None = None,
@@ -176,7 +174,7 @@ def handle_container_service_error(
 
     Args:
         e: ContainerServiceError exception
-        request: FastAPI Request object
+        _request: FastAPI Request object (unused; kept for API consistency with callers).
         current_user: Current authenticated user
         request_data: Transfer request data (optional, for backward compatibility)
         container_id: Container UUID (optional, used if request_data is None)
@@ -187,99 +185,102 @@ def handle_container_service_error(
     container_id_str = (
         str(request_data.container_id) if request_data else (str(container_id) if container_id else "unknown")
     )
-    context = create_error_context(request, current_user, container_id=container_id_str, operation="transfer_items")
     error_str = str(e).lower()
     if "stale" in error_str or "token" in error_str or "mutation" in error_str:
         raise LoggedHTTPException(
             status_code=status.HTTP_412_PRECONDITION_FAILED,
             detail="Stale mutation token. Please reopen the container.",
-            context=context,
+            user_id=str(current_user.id) if current_user else None,
+            container_id=container_id_str,
+            operation="transfer_items",
         ) from e
     if "invalid" in error_str or "stack" in error_str:
         raise LoggedHTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid item stack",
-            context=context,
+            user_id=str(current_user.id) if current_user else None,
+            container_id=container_id_str,
+            operation="transfer_items",
         ) from e
     raise LoggedHTTPException(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         detail="Failed to transfer items",
-        context=context,
+        user_id=str(current_user.id) if current_user else None,
+        container_id=container_id_str,
+        operation="transfer_items",
     ) from e
 
 
-def validate_user_for_close_container(current_user: User | None, request: Request) -> None:
+def validate_user_for_close_container(current_user: User | None, _request: Request) -> None:
     """Validate current_user for close_container operation."""
     if not current_user:
-        context = create_error_context(request, current_user, operation="close_container")
         raise LoggedHTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=ErrorMessages.AUTHENTICATION_REQUIRED,
-            context=context,
+            operation="close_container",
         )
 
 
-def apply_rate_limiting_for_close_container(current_user: User, request: Request) -> None:
+def apply_rate_limiting_for_close_container(current_user: User, _request: Request) -> None:
     """Apply rate limiting for close_container operation."""
     try:
         container_rate_limiter.enforce_rate_limit(str(current_user.id))
     except RateLimitError as e:
-        context = create_error_context(request, current_user, rate_limit_type="container_operation")
         raise LoggedHTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
             detail=f"Rate limit exceeded. Retry after {e.retry_after} seconds",
-            context=context,
+            user_id=str(current_user.id) if current_user else None,
+            rate_limit_type="container_operation",
         ) from e
 
 
-def validate_user_for_loot_all(current_user: User | None, request: Request) -> None:
+def validate_user_for_loot_all(current_user: User | None, _request: Request) -> None:
     """Validate current_user for loot_all operation."""
     if not current_user:
-        context = create_error_context(request, current_user, operation="loot_all")
         raise LoggedHTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=ErrorMessages.AUTHENTICATION_REQUIRED,
-            context=context,
+            operation="loot_all",
         )
 
 
-def apply_rate_limiting_for_loot_all(current_user: User, request: Request) -> None:
+def apply_rate_limiting_for_loot_all(current_user: User, _request: Request) -> None:
     """Apply rate limiting for loot_all operation."""
     try:
         container_rate_limiter.enforce_rate_limit(str(current_user.id))
     except RateLimitError as e:
-        context = create_error_context(request, current_user, rate_limit_type="container_operation")
         raise LoggedHTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
             detail=f"Rate limit exceeded. Retry after {e.retry_after} seconds",
-            context=context,
+            user_id=str(current_user.id) if current_user else None,
+            rate_limit_type="container_operation",
         ) from e
 
 
 async def get_container_and_player_for_loot_all(
-    persistence: Any, request_data: LootAllRequest, player_id: UUID, request: Request, current_user: User
+    persistence: Any, request_data: LootAllRequest, player_id: UUID, _request: Request, current_user: User
 ) -> tuple[ContainerComponent, Any, list[InventoryStack]]:
     """Get container and player data for loot_all operation."""
     container_data = await persistence.get_container(request_data.container_id)
     if not container_data:
-        context = create_error_context(
-            request, current_user, container_id=str(request_data.container_id), operation="loot_all"
-        )
         raise LoggedHTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Container not found",
-            context=context,
+            user_id=str(current_user.id) if current_user else None,
+            container_id=str(request_data.container_id),
+            operation="loot_all",
         )
 
     container = ContainerComponent.model_validate(container_data)
 
     player = persistence.get_player(player_id)
     if not player:
-        context = create_error_context(request, current_user, player_id=str(player_id), operation="loot_all")
         raise LoggedHTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Player not found",
-            context=context,
+            user_id=str(current_user.id) if current_user else None,
+            player_id=str(player_id),
+            operation="loot_all",
         )
 
     player_inventory = getattr(player, "inventory", [])

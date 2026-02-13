@@ -78,8 +78,8 @@ class TestHelperFunctions:
         )
 
         context = create_error_context(mock_request, mock_user, operation="test")
-        assert context.user_id == str(mock_user.id)
-        assert context.metadata["operation"] == "test"
+        assert context["user_id"] == str(mock_user.id)
+        assert context["operation"] == "test"
 
     @pytest.mark.asyncio
     async def test_get_player_id_from_user_success(self, mock_user, mock_persistence):

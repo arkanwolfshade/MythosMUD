@@ -21,7 +21,7 @@ from server.exceptions import DatabaseError
 from server.models.player import Player, PlayerInventory
 from server.schemas.shared import InventorySchemaValidationError, validate_inventory_payload
 from server.structured_logging.enhanced_logging_config import get_logger
-from server.utils.error_logging import create_error_context, log_and_raise
+from server.utils.error_logging import log_and_raise
 from server.utils.retry import retry_with_backoff
 
 if TYPE_CHECKING:
@@ -102,10 +102,6 @@ class PlayerRepository:
         Raises:
             DatabaseError: If database operation fails
         """
-        context = create_error_context()
-        context.metadata["operation"] = "get_player_by_name"
-        context.metadata["player_name"] = name
-
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
@@ -126,7 +122,8 @@ class PlayerRepository:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving player by name '{name}': {e}",
-                context=context,
+                operation="get_player_by_name",
+                player_name=name,
                 details={"player_name": name, "error": str(e)},
                 user_friendly="Failed to retrieve player information",
             )
@@ -146,10 +143,6 @@ class PlayerRepository:
         Raises:
             DatabaseError: If database operation fails
         """
-        context = create_error_context()
-        context.metadata["operation"] = "get_player_by_id"
-        context.metadata["player_id"] = player_id
-
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
@@ -169,7 +162,8 @@ class PlayerRepository:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving player by ID '{player_id}': {e}",
-                context=context,
+                operation="get_player_by_id",
+                player_id=player_id,
                 details={"player_id": player_id, "error": str(e)},
                 user_friendly="Failed to retrieve player information",
             )
@@ -193,10 +187,6 @@ class PlayerRepository:
         Raises:
             DatabaseError: If database operation fails
         """
-        context = create_error_context()
-        context.metadata["operation"] = "get_players_by_user_id"
-        context.metadata["user_id"] = user_id
-
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
@@ -211,7 +201,8 @@ class PlayerRepository:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving players by user ID '{user_id}': {e}",
-                context=context,
+                operation="get_players_by_user_id",
+                user_id=user_id,
                 details={"user_id": user_id, "error": str(e)},
                 user_friendly="Failed to retrieve player information",
             )
@@ -233,10 +224,6 @@ class PlayerRepository:
         Raises:
             DatabaseError: If database operation fails
         """
-        context = create_error_context()
-        context.metadata["operation"] = "get_active_players_by_user_id"
-        context.metadata["user_id"] = user_id
-
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
@@ -256,7 +243,8 @@ class PlayerRepository:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving active players by user ID '{user_id}': {e}",
-                context=context,
+                operation="get_active_players_by_user_id",
+                user_id=user_id,
                 details={"user_id": user_id, "error": str(e)},
                 user_friendly="Failed to retrieve player information",
             )
@@ -292,11 +280,6 @@ class PlayerRepository:
         Raises:
             DatabaseError: If database operation fails
         """
-        context = create_error_context()
-        context.metadata["operation"] = "save_player"
-        context.metadata["player_name"] = player.name
-        context.metadata["player_id"] = player.player_id
-
         try:
             # Ensure is_admin is an integer (PostgreSQL requires integer, not boolean)
             if isinstance(getattr(player, "is_admin", None), bool):
@@ -326,7 +309,9 @@ class PlayerRepository:
             log_and_raise(
                 DatabaseError,
                 f"Database error saving player: {e}",
-                context=context,
+                operation="save_player",
+                player_name=player.name,
+                player_id=player.player_id,
                 details={"player_name": player.name, "player_id": player.player_id, "error": str(e)},
                 user_friendly="Failed to save player",
             )
@@ -341,9 +326,6 @@ class PlayerRepository:
         Raises:
             DatabaseError: If database operation fails
         """
-        context = create_error_context()
-        context.metadata["operation"] = "list_players"
-
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
@@ -358,7 +340,7 @@ class PlayerRepository:
             log_and_raise(
                 DatabaseError,
                 f"Database error listing players: {e}",
-                context=context,
+                operation="list_players",
                 details={"error": str(e)},
                 user_friendly="Failed to retrieve player list",
             )
@@ -376,10 +358,6 @@ class PlayerRepository:
         Raises:
             DatabaseError: If database operation fails
         """
-        context = create_error_context()
-        context.metadata["operation"] = "get_players_in_room"
-        context.metadata["room_id"] = room_id
-
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
@@ -394,7 +372,8 @@ class PlayerRepository:
             log_and_raise(
                 DatabaseError,
                 f"Database error getting players in room: {e}",
-                context=context,
+                operation="get_players_in_room",
+                room_id=room_id,
                 details={"room_id": room_id, "error": str(e)},
                 user_friendly="Failed to retrieve players in room",
             )
@@ -409,10 +388,6 @@ class PlayerRepository:
         Raises:
             DatabaseError: If database operation fails
         """
-        context = create_error_context()
-        context.metadata["operation"] = "save_players"
-        context.metadata["player_count"] = len(players)
-
         try:
             # Ensure is_admin is an integer for all players
             for player in players:
@@ -430,7 +405,8 @@ class PlayerRepository:
             log_and_raise(
                 DatabaseError,
                 f"Database error saving players: {e}",
-                context=context,
+                operation="save_players",
+                player_count=len(players),
                 details={"player_count": len(players), "error": str(e)},
                 user_friendly="Failed to save players",
             )
@@ -450,10 +426,6 @@ class PlayerRepository:
         Raises:
             DatabaseError: If database operation fails
         """
-        context = create_error_context()
-        context.metadata["operation"] = "soft_delete_player"
-        context.metadata["player_id"] = player_id
-
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
@@ -477,7 +449,8 @@ class PlayerRepository:
             log_and_raise(
                 DatabaseError,
                 f"Database error soft-deleting player {player_id}: {e}",
-                context=context,
+                operation="soft_delete_player",
+                player_id=player_id,
                 details={"player_id": player_id, "error": str(e)},
                 user_friendly="Failed to delete player",
             )
@@ -495,10 +468,6 @@ class PlayerRepository:
         Raises:
             DatabaseError: If database operation fails
         """
-        context = create_error_context()
-        context.metadata["operation"] = "delete_player"
-        context.metadata["player_id"] = player_id
-
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
@@ -528,7 +497,8 @@ class PlayerRepository:
             log_and_raise(
                 DatabaseError,
                 f"Database error deleting player {player_id}: {e}",
-                context=context,
+                operation="delete_player",
+                player_id=player_id,
                 details={"player_id": player_id, "error": str(e)},
                 user_friendly="Failed to delete player",
             )
@@ -544,10 +514,6 @@ class PlayerRepository:
         Raises:
             DatabaseError: If database operation fails
         """
-        context = create_error_context()
-        context.metadata["operation"] = "update_player_last_active"
-        context.metadata["player_id"] = player_id
-
         try:
             if last_active is None:
                 last_active = datetime.now(UTC)
@@ -574,7 +540,8 @@ class PlayerRepository:
             log_and_raise(
                 DatabaseError,
                 f"Database error updating last_active for player '{player_id}': {e}",
-                context=context,
+                operation="update_player_last_active",
+                player_id=player_id,
                 details={"player_id": player_id, "error": str(e)},
                 user_friendly="Failed to update player activity",
             )
@@ -592,10 +559,6 @@ class PlayerRepository:
         Raises:
             DatabaseError: If database operation fails
         """
-        context = create_error_context()
-        context.metadata["operation"] = "get_players_batch"
-        context.metadata["player_count"] = len(player_ids)
-
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
@@ -617,7 +580,8 @@ class PlayerRepository:
             log_and_raise(
                 DatabaseError,
                 f"Database error batch loading players: {e}",
-                context=context,
+                operation="get_players_batch",
+                player_count=len(player_ids),
                 details={"player_count": len(player_ids), "error": str(e)},
                 user_friendly="Failed to retrieve players",
             )

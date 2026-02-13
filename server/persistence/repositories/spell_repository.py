@@ -14,7 +14,7 @@ from server.database import get_session_maker
 from server.exceptions import DatabaseError
 from server.models.spell_db import SpellDB
 from server.structured_logging.enhanced_logging_config import get_logger
-from server.utils.error_logging import create_error_context, log_and_raise
+from server.utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)
 
@@ -40,9 +40,6 @@ class SpellRepository:
         Raises:
             DatabaseError: If database operation fails
         """
-        context = create_error_context()
-        context.metadata["operation"] = "get_all_spells"
-
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
@@ -75,7 +72,7 @@ class SpellRepository:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving spells: {e}",
-                context=context,
+                operation="get_all_spells",
                 details={"error": str(e)},
                 user_friendly="Failed to retrieve spell list",
             )
@@ -93,10 +90,6 @@ class SpellRepository:
         Raises:
             DatabaseError: If database operation fails
         """
-        context = create_error_context()
-        context.metadata["operation"] = "get_spell_by_id"
-        context.metadata["spell_id"] = spell_id
-
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
@@ -125,7 +118,8 @@ class SpellRepository:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving spell by ID '{spell_id}': {e}",
-                context=context,
+                operation="get_spell_by_id",
+                spell_id=spell_id,
                 details={"spell_id": spell_id, "error": str(e)},
                 user_friendly="Failed to retrieve spell",
             )

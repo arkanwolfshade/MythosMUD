@@ -20,7 +20,7 @@ from ..models.container import ContainerComponent, ContainerLockState, Container
 from ..structured_logging.enhanced_logging_config import get_logger
 
 # Removed: from ..persistence import get_persistence - now using async_persistence parameter
-from ..utils.error_logging import create_error_context, log_and_raise
+from ..utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)
 
@@ -129,11 +129,6 @@ class CorpseLifecycleService:
         Raises:
             CorpseServiceError: If player not found or creation fails
         """
-        context = create_error_context()
-        context.metadata["operation"] = "create_corpse_on_death"
-        context.metadata["player_id"] = str(player_id)
-        context.metadata["room_id"] = room_id
-
         logger.info("Creating corpse container on death", player_id=str(player_id), room_id=room_id)
 
         # Get player
@@ -142,7 +137,9 @@ class CorpseLifecycleService:
             log_and_raise(
                 CorpseServiceError,
                 f"Player not found: {player_id}",
-                context=context,
+                operation="create_corpse_on_death",
+                player_id=str(player_id),
+                room_id=room_id,
                 details={"player_id": str(player_id)},
                 user_friendly="Player not found",
             )
@@ -204,7 +201,9 @@ class CorpseLifecycleService:
             log_and_raise(
                 CorpseServiceError,
                 f"Failed to create corpse container: {str(e)}",
-                context=context,
+                operation="create_corpse_on_death",
+                player_id=str(player_id),
+                room_id=room_id,
                 details={"player_id": str(player_id), "room_id": room_id},
                 user_friendly="Failed to create corpse container",
             )
@@ -340,10 +339,6 @@ class CorpseLifecycleService:
             CorpseNotFoundError: If corpse doesn't exist
             CorpseServiceError: If cleanup fails
         """
-        context = create_error_context()
-        context.metadata["operation"] = "cleanup_decayed_corpse"
-        context.metadata["container_id"] = str(container_id)
-
         logger.info("Cleaning up decayed corpse", container_id=str(container_id))
 
         # Get container
@@ -352,7 +347,8 @@ class CorpseLifecycleService:
             log_and_raise(
                 CorpseNotFoundError,
                 f"Corpse container not found: {container_id}",
-                context=context,
+                operation="cleanup_decayed_corpse",
+                container_id=str(container_id),
                 details={"container_id": str(container_id)},
                 user_friendly="Corpse container not found",
             )
@@ -365,7 +361,8 @@ class CorpseLifecycleService:
             log_and_raise(
                 CorpseServiceError,
                 f"Container is not a corpse: {container_id}",
-                context=context,
+                operation="cleanup_decayed_corpse",
+                container_id=str(container_id),
                 details={"container_id": str(container_id), "source_type": _get_enum_value(container.source_type)},
                 user_friendly="Container is not a corpse",
             )
@@ -388,7 +385,8 @@ class CorpseLifecycleService:
             log_and_raise(
                 CorpseServiceError,
                 f"Failed to delete decayed corpse: {str(e)}",
-                context=context,
+                operation="cleanup_decayed_corpse",
+                container_id=str(container_id),
                 details={"container_id": str(container_id)},
                 user_friendly="Failed to clean up corpse",
             )

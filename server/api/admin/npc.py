@@ -42,7 +42,6 @@ from ...services.admin_auth_service import AdminAction, get_admin_auth_service
 from ...services.npc_instance_service import get_npc_instance_service
 from ...services.npc_service import npc_service
 from ...structured_logging.enhanced_logging_config import get_logger
-from ...utils.error_logging import create_context_from_request
 
 logger = get_logger(__name__)
 
@@ -323,12 +322,10 @@ async def get_npc_definitions(
     except HTTPException:
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC retrieval errors unpredictable, must create error context
-        context = create_context_from_request(request)
-        logger.error("Error retrieving NPC definitions", error=str(e), **context.to_dict())
+        logger.error("Error retrieving NPC definitions", error=str(e))
         raise LoggedHTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error retrieving NPC definitions",
-            context=context,
         ) from e
 
 
@@ -376,10 +373,9 @@ async def create_npc_definition(
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC creation errors unpredictable, must create error context
         # Rollback is handled by the session context manager
-        context = create_context_from_request(request)
-        logger.error("Error creating NPC definition", error=str(e), **context.to_dict())
+        logger.error("Error creating NPC definition", error=str(e))
         raise LoggedHTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error creating NPC definition", context=context
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error creating NPC definition"
         ) from e
 
 
@@ -403,11 +399,11 @@ async def get_npc_definition(
         definition = await npc_service.get_npc_definition(session, definition_id)
 
         if not definition:
-            context = create_context_from_request(request)
-            context.metadata["operation"] = "get_npc_definition"
-            context.metadata["definition_id"] = definition_id
             raise LoggedHTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="NPC definition not found", context=context
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="NPC definition not found",
+                operation="get_npc_definition",
+                definition_id=definition_id,
             )
 
         return NPCDefinitionResponse.from_orm(definition)
@@ -415,10 +411,9 @@ async def get_npc_definition(
     except HTTPException:
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC retrieval errors unpredictable, must create error context
-        context = create_context_from_request(request)
-        logger.error("Error retrieving NPC definition", error=str(e), **context.to_dict())
+        logger.error("Error retrieving NPC definition", error=str(e))
         raise LoggedHTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error retrieving NPC definition", context=context
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error retrieving NPC definition"
         ) from e
 
 
@@ -463,12 +458,12 @@ async def update_npc_definition(
         )
 
         if not definition:
-            context = create_context_from_request(request)
-            context.user_id = str(current_user.id) if current_user else None
-            context.metadata["operation"] = "update_npc_definition"
-            context.metadata["definition_id"] = definition_id
             raise LoggedHTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="NPC definition not found", context=context
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="NPC definition not found",
+                user_id=str(current_user.id) if current_user else None,
+                operation="update_npc_definition",
+                definition_id=definition_id,
             )
 
         # Commit the transaction
@@ -480,10 +475,9 @@ async def update_npc_definition(
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC update errors unpredictable, must rollback and create error context
         await session.rollback()
-        context = create_context_from_request(request)
-        logger.error("Error updating NPC definition", error=str(e), **context.to_dict())
+        logger.error("Error updating NPC definition", error=str(e))
         raise LoggedHTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error updating NPC definition", context=context
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error updating NPC definition"
         ) from e
 
 
@@ -509,12 +503,12 @@ async def delete_npc_definition(
         deleted = await npc_service.delete_npc_definition(session, definition_id)
 
         if not deleted:
-            context = create_context_from_request(request)
-            context.user_id = str(current_user.id) if current_user else None
-            context.metadata["operation"] = "delete_npc_definition"
-            context.metadata["definition_id"] = definition_id
             raise LoggedHTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="NPC definition not found", context=context
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="NPC definition not found",
+                user_id=str(current_user.id) if current_user else None,
+                operation="delete_npc_definition",
+                definition_id=definition_id,
             )
 
         # Commit the transaction
@@ -524,10 +518,9 @@ async def delete_npc_definition(
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC deletion errors unpredictable, must rollback and create error context
         await session.rollback()
-        context = create_context_from_request(request)
-        logger.error("Error deleting NPC definition", error=str(e), **context.to_dict())
+        logger.error("Error deleting NPC definition", error=str(e))
         raise LoggedHTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error deleting NPC definition", context=context
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error deleting NPC definition"
         ) from e
 
 
@@ -559,10 +552,9 @@ async def get_npc_instances(
     except HTTPException:
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC instance retrieval errors unpredictable, must create error context
-        context = create_context_from_request(request)
-        logger.error("Error retrieving NPC instances", error=str(e), **context.to_dict())
+        logger.error("Error retrieving NPC instances", error=str(e))
         raise LoggedHTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error retrieving NPC instances", context=context
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error retrieving NPC instances"
         ) from e
 
 
@@ -606,19 +598,20 @@ async def spawn_npc_instance(
         return NPCSpawnResponse(**result)
 
     except ValueError as e:
-        context = create_context_from_request(request)
-        context.user_id = str(current_user.id) if current_user else None
-        context.metadata["operation"] = "spawn_npc_instance"
-        context.metadata["definition_id"] = spawn_data.definition_id
-        context.metadata["room_id"] = spawn_data.room_id
-        raise LoggedHTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e), context=context) from e
+        raise LoggedHTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(e),
+            user_id=str(current_user.id) if current_user else None,
+            operation="spawn_npc_instance",
+            definition_id=spawn_data.definition_id,
+            room_id=spawn_data.room_id,
+        ) from e
     except HTTPException:
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC spawn errors unpredictable, must create error context
-        context = create_context_from_request(request)
-        logger.error("Error spawning NPC instance", error=str(e), **context.to_dict())
+        logger.error("Error spawning NPC instance", error=str(e))
         raise LoggedHTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error spawning NPC instance", context=context
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error spawning NPC instance"
         ) from e
 
 
@@ -655,18 +648,19 @@ async def despawn_npc_instance(
         return NPCDespawnResponse(**result)
 
     except ValueError as e:
-        context = create_context_from_request(request)
-        context.user_id = str(current_user.id) if current_user else None
-        context.metadata["operation"] = "despawn_npc_instance"
-        context.metadata["npc_id"] = npc_id
-        raise LoggedHTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e), context=context) from e
+        raise LoggedHTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(e),
+            user_id=str(current_user.id) if current_user else None,
+            operation="despawn_npc_instance",
+            npc_id=npc_id,
+        ) from e
     except HTTPException:
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC despawn errors unpredictable, must create error context
-        context = create_context_from_request(request)
-        logger.error("Error despawning NPC instance", error=str(e), **context.to_dict())
+        logger.error("Error despawning NPC instance", error=str(e))
         raise LoggedHTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error despawning NPC instance", context=context
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error despawning NPC instance"
         ) from e
 
 
@@ -709,19 +703,20 @@ async def move_npc_instance(
         return NPCMoveResponse(**result)
 
     except ValueError as e:
-        context = create_context_from_request(request)
-        context.user_id = str(current_user.id) if current_user else None
-        context.metadata["operation"] = "move_npc_instance"
-        context.metadata["npc_id"] = npc_id
-        context.metadata["room_id"] = move_data.room_id
-        raise LoggedHTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e), context=context) from e
+        raise LoggedHTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(e),
+            user_id=str(current_user.id) if current_user else None,
+            operation="move_npc_instance",
+            npc_id=npc_id,
+            room_id=move_data.room_id,
+        ) from e
     except HTTPException:
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC movement errors unpredictable, must create error context
-        context = create_context_from_request(request)
-        logger.error("Error moving NPC instance", error=str(e), **context.to_dict())
+        logger.error("Error moving NPC instance", error=str(e))
         raise LoggedHTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error moving NPC instance", context=context
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error moving NPC instance"
         ) from e
 
 
@@ -755,18 +750,19 @@ async def get_npc_stats(
         return NPCStatsResponse(**stats)
 
     except ValueError as e:
-        context = create_context_from_request(request)
-        context.user_id = str(current_user.id) if current_user else None
-        context.metadata["operation"] = "get_npc_stats"
-        context.metadata["npc_id"] = npc_id
-        raise LoggedHTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e), context=context) from e
+        raise LoggedHTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(e),
+            user_id=str(current_user.id) if current_user else None,
+            operation="get_npc_stats",
+            npc_id=npc_id,
+        ) from e
     except HTTPException:
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC stats retrieval errors unpredictable, must create error context
-        context = create_context_from_request(request)
-        logger.error("Error retrieving NPC stats", error=str(e), **context.to_dict())
+        logger.error("Error retrieving NPC stats", error=str(e))
         raise LoggedHTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error retrieving NPC stats", context=context
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error retrieving NPC stats"
         ) from e
 
 
@@ -802,12 +798,10 @@ async def get_npc_population_stats(
     except HTTPException:
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC population stats errors unpredictable, must create error context
-        context = create_context_from_request(request)
-        logger.error("Error retrieving NPC population stats", error=str(e), **context.to_dict())
+        logger.error("Error retrieving NPC population stats", error=str(e))
         raise LoggedHTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error retrieving NPC population stats",
-            context=context,
         ) from e
 
 
@@ -842,10 +836,9 @@ async def get_npc_zone_stats(
     except HTTPException:
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC zone stats errors unpredictable, must create error context
-        context = create_context_from_request(request)
-        logger.error("Error retrieving NPC zone stats", error=str(e), **context.to_dict())
+        logger.error("Error retrieving NPC zone stats", error=str(e))
         raise LoggedHTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error retrieving NPC zone stats", context=context
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error retrieving NPC zone stats"
         ) from e
 
 
@@ -880,12 +873,10 @@ async def get_npc_system_status(
     except HTTPException:
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC system status errors unpredictable, must create error context
-        context = create_context_from_request(request)
-        logger.error("Error retrieving NPC system status", error=str(e), **context.to_dict())
+        logger.error("Error retrieving NPC system status", error=str(e))
         raise LoggedHTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error retrieving NPC system status",
-            context=context,
         ) from e
 
 
@@ -916,12 +907,10 @@ async def get_npc_spawn_rules(
     except HTTPException:
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC spawn rule retrieval errors unpredictable, must create error context
-        context = create_context_from_request(request)
-        logger.error("Error retrieving NPC spawn rules", error=str(e), **context.to_dict())
+        logger.error("Error retrieving NPC spawn rules", error=str(e))
         raise LoggedHTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error retrieving NPC spawn rules",
-            context=context,
         ) from e
 
 
@@ -963,10 +952,9 @@ async def create_npc_spawn_rule(
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC spawn rule creation errors unpredictable, must rollback and create error context
         await session.rollback()
-        context = create_context_from_request(request)
-        logger.error("Error creating NPC spawn rule", error=str(e), **context.to_dict())
+        logger.error("Error creating NPC spawn rule", error=str(e))
         raise LoggedHTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error creating NPC spawn rule", context=context
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error creating NPC spawn rule"
         ) from e
 
 
@@ -992,12 +980,12 @@ async def delete_npc_spawn_rule(
         deleted = await npc_service.delete_spawn_rule(session, spawn_rule_id)
 
         if not deleted:
-            context = create_context_from_request(request)
-            context.user_id = str(current_user.id) if current_user else None
-            context.metadata["operation"] = "delete_npc_spawn_rule"
-            context.metadata["spawn_rule_id"] = spawn_rule_id
             raise LoggedHTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="NPC spawn rule not found", context=context
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="NPC spawn rule not found",
+                user_id=str(current_user.id) if current_user else None,
+                operation="delete_npc_spawn_rule",
+                spawn_rule_id=spawn_rule_id,
             )
 
         # Commit the transaction
@@ -1007,10 +995,9 @@ async def delete_npc_spawn_rule(
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC spawn rule deletion errors unpredictable, must rollback and create error context
         await session.rollback()
-        context = create_context_from_request(request)
-        logger.error("Error deleting NPC spawn rule", error=str(e), **context.to_dict())
+        logger.error("Error deleting NPC spawn rule", error=str(e))
         raise LoggedHTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error deleting NPC spawn rule", context=context
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error deleting NPC spawn rule"
         ) from e
 
 
@@ -1040,10 +1027,9 @@ async def get_admin_sessions(
     except HTTPException:
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Admin session retrieval errors unpredictable, must create error context
-        context = create_context_from_request(request)
-        logger.error("Error retrieving admin sessions", error=str(e), **context.to_dict())
+        logger.error("Error retrieving admin sessions", error=str(e))
         raise LoggedHTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error retrieving admin sessions", context=context
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error retrieving admin sessions"
         ) from e
 
 
@@ -1072,12 +1058,10 @@ async def get_admin_audit_log(
     except HTTPException:
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Admin audit log retrieval errors unpredictable, must create error context
-        context = create_context_from_request(request)
-        logger.error("Error retrieving admin audit log", error=str(e), **context.to_dict())
+        logger.error("Error retrieving admin audit log", error=str(e))
         raise LoggedHTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error retrieving admin audit log",
-            context=context,
         ) from e
 
 
@@ -1106,10 +1090,8 @@ async def cleanup_admin_sessions(
     except HTTPException:
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Admin session cleanup errors unpredictable, must create error context
-        context = create_context_from_request(request)
-        logger.error("Error cleaning up admin sessions", error=str(e), **context.to_dict())
+        logger.error("Error cleaning up admin sessions", error=str(e))
         raise LoggedHTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error cleaning up admin sessions",
-            context=context,
         ) from e

@@ -12,7 +12,7 @@ from server.database import get_session_maker
 from server.exceptions import DatabaseError
 from server.models.profession import Profession
 from server.structured_logging.enhanced_logging_config import get_logger
-from server.utils.error_logging import create_error_context, log_and_raise
+from server.utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)
 
@@ -38,9 +38,6 @@ class ProfessionRepository:
         Raises:
             DatabaseError: If database operation fails
         """
-        context = create_error_context()
-        context.metadata["operation"] = "get_all_professions"
-
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
@@ -53,7 +50,7 @@ class ProfessionRepository:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving professions: {e}",
-                context=context,
+                operation="get_all_professions",
                 details={"error": str(e)},
                 user_friendly="Failed to retrieve profession list",
             )
@@ -71,10 +68,6 @@ class ProfessionRepository:
         Raises:
             DatabaseError: If database operation fails
         """
-        context = create_error_context()
-        context.metadata["operation"] = "get_profession_by_id"
-        context.metadata["profession_id"] = profession_id
-
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
@@ -85,7 +78,8 @@ class ProfessionRepository:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving profession by ID '{profession_id}': {e}",
-                context=context,
+                operation="get_profession_by_id",
+                profession_id=profession_id,
                 details={"profession_id": profession_id, "error": str(e)},
                 user_friendly="Failed to retrieve profession",
             )

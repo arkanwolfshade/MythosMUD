@@ -16,7 +16,7 @@ from ..models.command import (
     UnequipCommand,
 )
 from ..structured_logging.enhanced_logging_config import get_logger
-from .enhanced_error_logging import create_error_context, log_and_raise_enhanced
+from .enhanced_error_logging import log_and_raise_enhanced
 
 logger = get_logger(__name__)
 
@@ -80,12 +80,11 @@ def _parse_equip_selector(selector_tokens: list[str], args: list[str]) -> tuple[
         index_candidate = None
     if index_candidate is not None:
         if index_candidate <= 0:
-            context = create_error_context()
-            context.metadata = {"args": args, "index": index_candidate}
             log_and_raise_enhanced(
                 MythosValidationError,
                 "Inventory index must be a positive integer.",
-                context=context,
+                args=args,
+                index=index_candidate,
                 logger_name=__name__,
             )
         index = index_candidate
@@ -95,12 +94,10 @@ def _parse_equip_selector(selector_tokens: list[str], args: list[str]) -> tuple[
         trimmed_tokens, inferred_slot = _maybe_extract_equip_slot(selector_tokens)
         search_term = " ".join(trimmed_tokens or selector_tokens).strip()
         if not search_term:
-            context = create_error_context()
-            context.metadata = {"args": args}
             log_and_raise_enhanced(
                 MythosValidationError,
                 "Equip item name cannot be empty.",
-                context=context,
+                args=args,
                 logger_name=__name__,
             )
         target_slot = inferred_slot
@@ -114,10 +111,8 @@ class InventoryCommandFactory:
     def create_inventory_command(args: list[str]) -> InventoryCommand:
         """Create InventoryCommand from arguments."""
         if args:
-            context = create_error_context()
-            context.metadata = {"args": args}
             log_and_raise_enhanced(
-                MythosValidationError, "Inventory command takes no arguments", context=context, logger_name=__name__
+                MythosValidationError, "Inventory command takes no arguments", args=args, logger_name=__name__
             )
         return InventoryCommand()
 
@@ -144,12 +139,11 @@ class InventoryCommandFactory:
 
             if quantity_candidate is not None:
                 if quantity_candidate <= 0:
-                    context = create_error_context()
-                    context.metadata = {"args": args, "quantity": quantity_candidate}
                     log_and_raise_enhanced(
                         MythosValidationError,
                         "Quantity must be a positive integer.",
-                        context=context,
+                        args=args,
+                        quantity=quantity_candidate,
                         logger_name=__name__,
                     )
                 quantity = quantity_candidate
@@ -170,12 +164,10 @@ class InventoryCommandFactory:
             Tuple of (index, search_term)
         """
         if not selector_tokens:
-            context = create_error_context()
-            context.metadata = {"args": args}
             log_and_raise_enhanced(
                 MythosValidationError,
                 "Usage: pickup <item-number|item-name> [quantity]",
-                context=context,
+                args=args,
                 logger_name=__name__,
             )
 
@@ -190,22 +182,19 @@ class InventoryCommandFactory:
 
         if index_candidate is not None:
             if index_candidate <= 0:
-                context = create_error_context()
-                context.metadata = {"args": args, "index": index_candidate}
                 log_and_raise_enhanced(
                     MythosValidationError,
                     "Item number must be a positive integer.",
-                    context=context,
+                    args=args,
+                    index=index_candidate,
                     logger_name=__name__,
                 )
 
             if len(selector_tokens) > 1:
-                context = create_error_context()
-                context.metadata = {"args": args}
                 log_and_raise_enhanced(
                     MythosValidationError,
                     "Usage: pickup <item-number|item-name> [quantity]",
-                    context=context,
+                    args=args,
                     logger_name=__name__,
                 )
 
@@ -213,12 +202,10 @@ class InventoryCommandFactory:
         else:
             search_term = " ".join(selector_tokens).strip()
             if not search_term:
-                context = create_error_context()
-                context.metadata = {"args": args}
                 log_and_raise_enhanced(
                     MythosValidationError,
                     "Pickup item name cannot be empty.",
-                    context=context,
+                    args=args,
                     logger_name=__name__,
                 )
 
@@ -228,11 +215,9 @@ class InventoryCommandFactory:
     def create_pickup_command(args: list[str]) -> PickupCommand:
         """Create pickup command supporting numeric indices or fuzzy names."""
         if not args:
-            context = create_error_context()
             log_and_raise_enhanced(
                 MythosValidationError,
                 "Usage: pickup <item-number|item-name> [quantity]",
-                context=context,
                 logger_name=__name__,
             )
 
@@ -247,21 +232,17 @@ class InventoryCommandFactory:
         """Create drop command."""
 
         if not args:
-            context = create_error_context()
             log_and_raise_enhanced(
                 MythosValidationError,
                 "Usage: drop <inventory-number> [quantity]",
-                context=context,
                 logger_name=__name__,
             )
 
         try:
             index = int(args[0])
         except ValueError:
-            context = create_error_context()
-            context.metadata = {"args": args}
             log_and_raise_enhanced(
-                MythosValidationError, "Inventory index must be an integer", context=context, logger_name=__name__
+                MythosValidationError, "Inventory index must be an integer", args=args, logger_name=__name__
             )
 
         quantity = None
@@ -269,12 +250,10 @@ class InventoryCommandFactory:
             try:
                 quantity = int(args[1])
             except ValueError:
-                context = create_error_context()
-                context.metadata = {"args": args}
                 log_and_raise_enhanced(
                     MythosValidationError,
                     "Quantity must be an integer",
-                    context=context,
+                    args=args,
                     logger_name=__name__,
                 )
 
@@ -289,11 +268,9 @@ class InventoryCommandFactory:
         The "in" keyword is optional.
         """
         if not args:
-            context = create_error_context()
             log_and_raise_enhanced(
                 MythosValidationError,
                 "Usage: put <item> [in] <container> [quantity]",
-                context=context,
                 logger_name=__name__,
             )
 
@@ -301,11 +278,9 @@ class InventoryCommandFactory:
         args_clean = [arg for arg in args if arg.lower() != "in"]
 
         if len(args_clean) < 2:
-            context = create_error_context()
             log_and_raise_enhanced(
                 MythosValidationError,
                 "Usage: put <item> [in] <container> [quantity]",
-                context=context,
                 logger_name=__name__,
             )
 
@@ -318,12 +293,10 @@ class InventoryCommandFactory:
             try:
                 quantity = int(args_clean[-1])
                 if quantity <= 0:
-                    context = create_error_context()
-                    context.metadata = {"quantity": quantity}
                     log_and_raise_enhanced(
                         MythosValidationError,
                         "Quantity must be a positive integer",
-                        context=context,
+                        quantity=quantity,
                         logger_name=__name__,
                     )
                 # If quantity was parsed, container might be multi-word
@@ -344,22 +317,18 @@ class InventoryCommandFactory:
         The "from" keyword is optional.
         """
         if not args:
-            context = create_error_context()
             log_and_raise_enhanced(
                 MythosValidationError,
                 "Usage: get <item> [from] <container> [quantity]",
-                context=context,
                 logger_name=__name__,
             )
 
         # Remove optional "from" keyword
         args_clean = [arg for arg in args if arg.lower() != "from"]
         if not args_clean:
-            context = create_error_context()
             log_and_raise_enhanced(
                 MythosValidationError,
                 "Usage: get <item> [from] <container> [quantity]",
-                context=context,
                 logger_name=__name__,
             )
         if len(args_clean) == 1:
@@ -375,12 +344,10 @@ class InventoryCommandFactory:
             try:
                 quantity = int(args_clean[-1])
                 if quantity <= 0:
-                    context = create_error_context()
-                    context.metadata = {"quantity": quantity}
                     log_and_raise_enhanced(
                         MythosValidationError,
                         "Quantity must be a positive integer",
-                        context=context,
+                        quantity=quantity,
                         logger_name=__name__,
                     )
                 # If quantity was parsed, container might be multi-word
@@ -396,11 +363,9 @@ class InventoryCommandFactory:
     def create_equip_command(args: list[str]) -> EquipCommand:
         """Create equip command."""
         if not args:
-            context = create_error_context()
             log_and_raise_enhanced(
                 MythosValidationError,
                 "Usage: equip <inventory-number|item-name> [slot]",
-                context=context,
                 logger_name=__name__,
             )
         selector_tokens = _normalize_equip_slot_tokens(list(args))
@@ -412,22 +377,18 @@ class InventoryCommandFactory:
         """Create unequip command."""
 
         if not args:
-            context = create_error_context()
             log_and_raise_enhanced(
                 MythosValidationError,
                 "Usage: unequip <slot|item-name>",
-                context=context,
                 logger_name=__name__,
             )
 
         candidate = " ".join(args).strip()
         if not candidate:
-            context = create_error_context()
-            context.metadata = {"args": args}
             log_and_raise_enhanced(
                 MythosValidationError,
                 "Usage: unequip <slot|item-name>",
-                context=context,
+                args=args,
                 logger_name=__name__,
             )
 

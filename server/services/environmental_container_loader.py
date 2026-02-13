@@ -17,7 +17,7 @@ from ..models.container import ContainerComponent, ContainerLockState, Container
 from ..structured_logging.enhanced_logging_config import get_logger
 
 # Removed: from ..persistence import get_persistence - now using async_persistence parameter
-from ..utils.error_logging import create_error_context, log_and_raise
+from ..utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)
 
@@ -80,7 +80,9 @@ class EnvironmentalContainerLoader:
             log_and_raise(
                 ValidationError,
                 f"Invalid capacity_slots: {capacity_slots}. Must be between 1 and 20",
-                context=create_error_context(),
+                operation="load_environmental_container",
+                capacity_slots=capacity_slots,
+                room_id=room_id,
                 details={"capacity_slots": capacity_slots, "room_id": room_id},
                 user_friendly="Invalid container capacity",
             )
@@ -92,7 +94,9 @@ class EnvironmentalContainerLoader:
             log_and_raise(
                 ValidationError,
                 f"Invalid lock_state: {lock_state_str}. Must be 'unlocked', 'locked', or 'sealed'",
-                context=create_error_context(),
+                operation="load_environmental_container",
+                lock_state=lock_state_str,
+                room_id=room_id,
                 details={"lock_state": lock_state_str, "room_id": room_id},
                 user_friendly="Invalid container lock state",
             )
@@ -191,7 +195,8 @@ class EnvironmentalContainerLoader:
             log_and_raise(
                 ValidationError,
                 f"Failed to migrate container to PostgreSQL: {str(e)}",
-                context=create_error_context(),
+                operation="load_environmental_container",
+                room_id=room_id,
                 details={"room_id": room_id, "error": str(e)},
                 user_friendly="Failed to create container",
             )

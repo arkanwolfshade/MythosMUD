@@ -23,7 +23,7 @@ from ..events import EventBus
 from ..exceptions import DatabaseError, ValidationError
 from ..models.room import Room
 from ..structured_logging.enhanced_logging_config import get_logger
-from ..utils.error_logging import create_error_context, log_and_raise
+from ..utils.error_logging import log_and_raise
 from .movement_monitor import get_movement_monitor
 
 if TYPE_CHECKING:
@@ -95,37 +95,31 @@ class MovementService:
     def _validate_move_params(self, player_id: uuid.UUID | str, from_room_id: str, to_room_id: str) -> bool:
         """Validate movement parameters. Returns False if validation fails (same room), raises on invalid params."""
         if not player_id:
-            context = create_error_context()
-            context.metadata["operation"] = "move_player"
             log_and_raise(
                 ValidationError,
                 "Player ID cannot be empty",
-                context=context,
+                operation="move_player",
                 details={"from_room_id": from_room_id, "to_room_id": to_room_id},
                 user_friendly="Player ID is required",
             )
 
         if not from_room_id:
-            context = create_error_context()
-            context.metadata["player_id"] = player_id
-            context.metadata["operation"] = "move_player"
             log_and_raise(
                 ValidationError,
                 "From room ID cannot be empty",
-                context=context,
+                player_id=player_id,
+                operation="move_player",
                 details={"player_id": player_id, "to_room_id": to_room_id},
                 user_friendly="Source room ID is required",
             )
 
         if not to_room_id:
-            context = create_error_context()
-            context.metadata["player_id"] = player_id
-            context.metadata["from_room_id"] = from_room_id
-            context.metadata["operation"] = "move_player"
             log_and_raise(
                 ValidationError,
                 "To room ID cannot be empty",
-                context=context,
+                player_id=player_id,
+                from_room_id=from_room_id,
+                operation="move_player",
                 details={"player_id": player_id, "from_room_id": from_room_id},
                 user_friendly="Destination room ID is required",
             )
@@ -264,16 +258,14 @@ class MovementService:
             room_update_ms=timing_breakdown.get("room_update_ms", 0),
             db_write_ms=timing_breakdown.get("db_write_ms", 0),
         )
-        context = create_error_context()
-        context.metadata["player_id"] = player_id
-        context.metadata["from_room_id"] = from_room_id
-        context.metadata["to_room_id"] = to_room_id
-        context.metadata["operation"] = "move_player"
         monitor.record_movement_attempt(str(player_id), from_room_id, to_room_id, False, duration_ms)
         log_and_raise(
             DatabaseError,
             f"Error moving player {player_id}: {e}",
-            context=context,
+            player_id=player_id,
+            from_room_id=from_room_id,
+            to_room_id=to_room_id,
+            operation="move_player",
             details={"player_id": player_id, "from_room_id": from_room_id, "to_room_id": to_room_id, "error": str(e)},
             user_friendly="Movement failed",
         )
@@ -612,24 +604,20 @@ class MovementService:
             True if the player was added successfully, False otherwise
         """
         if not player_id:
-            context = create_error_context()
-            context.metadata["operation"] = "add_player_to_room"
             log_and_raise(
                 ValidationError,
                 "Player ID cannot be empty",
-                context=context,
+                operation="add_player_to_room",
                 details={"room_id": room_id},
                 user_friendly="Player ID is required",
             )
 
         if not room_id:
-            context = create_error_context()
-            context.metadata["player_id"] = player_id
-            context.metadata["operation"] = "add_player_to_room"
             log_and_raise(
                 ValidationError,
                 "Room ID cannot be empty",
-                context=context,
+                player_id=player_id,
+                operation="add_player_to_room",
                 details={"player_id": player_id},
                 user_friendly="Room ID is required",
             )
@@ -675,14 +663,12 @@ class MovementService:
 
             except (DatabaseError, SQLAlchemyError) as e:
                 self._logger.error("Error adding player to room", player_id=player_id, room_id=room_id, error=str(e))
-                context = create_error_context()
-                context.metadata["player_id"] = player_id
-                context.metadata["room_id"] = room_id
-                context.metadata["operation"] = "add_player_to_room"
                 log_and_raise(
                     DatabaseError,
                     f"Error adding player {player_id} to room {room_id}: {e}",
-                    context=context,
+                    player_id=player_id,
+                    room_id=room_id,
+                    operation="add_player_to_room",
                     details={"player_id": player_id, "room_id": room_id, "error": str(e)},
                     user_friendly="Failed to add player to room",
                 )
@@ -690,24 +676,20 @@ class MovementService:
     def _validate_remove_player_params(self, player_id: uuid.UUID | str, room_id: str) -> None:
         """Validate parameters for remove_player_from_room operation."""
         if not player_id:
-            context = create_error_context()
-            context.metadata["operation"] = "remove_player_from_room"
             log_and_raise(
                 ValidationError,
                 "Player ID cannot be empty",
-                context=context,
+                operation="remove_player_from_room",
                 details={"room_id": room_id},
                 user_friendly="Player ID is required",
             )
 
         if not room_id:
-            context = create_error_context()
-            context.metadata["player_id"] = player_id
-            context.metadata["operation"] = "remove_player_from_room"
             log_and_raise(
                 ValidationError,
                 "Room ID cannot be empty",
-                context=context,
+                player_id=player_id,
+                operation="remove_player_from_room",
                 details={"player_id": player_id},
                 user_friendly="Room ID is required",
             )
@@ -747,14 +729,12 @@ class MovementService:
                 self._logger.error(
                     "Error removing player from room", player_id=player_id, room_id=room_id, error=str(e)
                 )
-                context = create_error_context()
-                context.metadata["player_id"] = player_id
-                context.metadata["room_id"] = room_id
-                context.metadata["operation"] = "remove_player_from_room"
                 log_and_raise(
                     DatabaseError,
                     f"Error removing player {player_id} from room {room_id}: {e}",
-                    context=context,
+                    player_id=player_id,
+                    room_id=room_id,
+                    operation="remove_player_from_room",
                     details={"player_id": player_id, "room_id": room_id, "error": str(e)},
                     user_friendly="Failed to remove player from room",
                 )
@@ -770,10 +750,11 @@ class MovementService:
             The room ID where the player is located, or None if not found
         """
         if not player_id:
-            context = create_error_context()
-            context.metadata["operation"] = "get_player_room"
             log_and_raise(
-                ValidationError, "Player ID cannot be empty", context=context, user_friendly="Player ID is required"
+                ValidationError,
+                "Player ID cannot be empty",
+                operation="get_player_room",
+                user_friendly="Player ID is required",
             )
 
         # Convert to UUID for get_player_by_id if needed
@@ -807,10 +788,11 @@ class MovementService:
             List of player IDs in the room
         """
         if not room_id:
-            context = create_error_context()
-            context.metadata["operation"] = "get_room_players"
             log_and_raise(
-                ValidationError, "Room ID cannot be empty", context=context, user_friendly="Room ID is required"
+                ValidationError,
+                "Room ID cannot be empty",
+                operation="get_room_players",
+                user_friendly="Room ID is required",
             )
 
         room = self._persistence.get_room_by_id(room_id)  # Sync method, uses cache
@@ -831,24 +813,20 @@ class MovementService:
             True if the player is in the specified room, False otherwise
         """
         if not player_id:
-            context = create_error_context()
-            context.metadata["operation"] = "validate_player_location"
             log_and_raise(
                 ValidationError,
                 "Player ID cannot be empty",
-                context=context,
+                operation="validate_player_location",
                 details={"room_id": room_id},
                 user_friendly="Player ID is required",
             )
 
         if not room_id:
-            context = create_error_context()
-            context.metadata["player_id"] = player_id
-            context.metadata["operation"] = "validate_player_location"
             log_and_raise(
                 ValidationError,
                 "Room ID cannot be empty",
-                context=context,
+                player_id=player_id,
+                operation="validate_player_location",
                 details={"player_id": player_id},
                 user_friendly="Room ID is required",
             )

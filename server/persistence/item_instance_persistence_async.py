@@ -18,7 +18,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ..exceptions import DatabaseError, ValidationError
 from ..models.item import ItemInstance
 from ..structured_logging.enhanced_logging_config import get_logger
-from ..utils.error_logging import create_error_context, log_and_raise
+from ..utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)
 
@@ -65,29 +65,20 @@ async def create_item_instance_async(  # pylint: disable=too-many-arguments,too-
         ValidationError: If required parameters are invalid
     """
     if not item_instance_id:
-        context = create_error_context()
-        context.metadata["operation"] = "create_item_instance_async"
         log_and_raise(
             ValidationError,
             "item_instance_id is required",
-            context=context,
+            operation="create_item_instance_async",
             user_friendly="Invalid item instance data",
         )
 
     if not prototype_id:
-        context = create_error_context()
-        context.metadata["operation"] = "create_item_instance_async"
         log_and_raise(
             ValidationError,
             "prototype_id is required",
-            context=context,
+            operation="create_item_instance_async",
             user_friendly="Invalid item instance data",
         )
-
-    context = create_error_context()
-    context.metadata["operation"] = "create_item_instance_async"
-    context.metadata["item_instance_id"] = item_instance_id
-    context.metadata["prototype_id"] = prototype_id
 
     table = cast(Table, ItemInstance.__table__)
     now = datetime.now(UTC)
@@ -151,7 +142,9 @@ async def create_item_instance_async(  # pylint: disable=too-many-arguments,too-
         log_and_raise(
             DatabaseError,
             f"Database error creating item instance: {e}",
-            context=context,
+            operation="create_item_instance_async",
+            item_instance_id=item_instance_id,
+            prototype_id=prototype_id,
             details={"error": str(e), "item_instance_id": item_instance_id, "prototype_id": prototype_id},
             user_friendly="Failed to create item instance",
         )

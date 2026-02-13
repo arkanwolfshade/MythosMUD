@@ -13,7 +13,7 @@ from ..models import Stats
 from ..models.player import Player
 from ..schemas.players import PlayerRead
 from ..structured_logging.enhanced_logging_config import get_logger
-from ..utils.enhanced_error_logging import create_error_context, log_and_raise_enhanced
+from ..utils.enhanced_error_logging import log_and_raise_enhanced
 
 if TYPE_CHECKING:
     pass
@@ -63,13 +63,11 @@ class PlayerCreationService:
         existing_player = await self.persistence.get_player_by_name(name)
         if existing_player:
             logger.warning("Player creation failed - name already exists")
-            context = create_error_context()
-            context.metadata["player_name"] = name
-            context.metadata["operation"] = "create_player"
             log_and_raise_enhanced(
                 ValidationError,
                 "Player name already exists",
-                context=context,
+                player_name=name,
+                operation="create_player",
                 details={"player_name": name, "existing_player_id": str(existing_player.player_id)},
                 user_friendly="A player with this name already exists",
             )
@@ -140,14 +138,12 @@ class PlayerCreationService:
             active_characters = await self.persistence.get_active_players_by_user_id(str(user_id))
             if len(active_characters) >= 3:
                 logger.warning("Character creation failed - character limit reached", user_id=user_id)
-                context = create_error_context()
-                context.metadata["user_id"] = str(user_id)
-                context.metadata["operation"] = "create_player_with_stats"
-                context.metadata["active_character_count"] = len(active_characters)
                 log_and_raise_enhanced(
                     ValidationError,
                     "Character limit reached",
-                    context=context,
+                    user_id=str(user_id),
+                    operation="create_player_with_stats",
+                    active_character_count=len(active_characters),
                     details={"user_id": str(user_id), "active_character_count": len(active_characters)},
                     user_friendly="You have reached the maximum number of characters (3). Please delete a character to create a new one.",
                 )
@@ -157,13 +153,11 @@ class PlayerCreationService:
         existing_player = await self.persistence.get_player_by_name(name)
         if existing_player:
             logger.warning("Character creation failed - name already exists", name=name)
-            context = create_error_context()
-            context.metadata["player_name"] = name
-            context.metadata["operation"] = "create_player_with_stats"
             log_and_raise_enhanced(
                 ValidationError,
                 "Character name already exists",
-                context=context,
+                player_name=name,
+                operation="create_player_with_stats",
                 details={"player_name": name, "existing_player_id": str(existing_player.player_id)},
                 user_friendly="A character with this name already exists (names are case-insensitive)",
             )

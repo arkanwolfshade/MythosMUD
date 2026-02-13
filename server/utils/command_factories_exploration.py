@@ -24,7 +24,7 @@ from ..models.command import (
     UnfollowCommand,
 )
 from ..structured_logging.enhanced_logging_config import get_logger
-from .enhanced_error_logging import create_error_context, log_and_raise_enhanced
+from .enhanced_error_logging import log_and_raise_enhanced
 
 logger = get_logger(__name__)
 
@@ -146,10 +146,8 @@ class ExplorationCommandFactory:
     def create_go_command(args: list[str]) -> GoCommand:
         """Create GoCommand from arguments."""
         if not args:
-            context = create_error_context()
-            context.metadata = {"args": args}
             log_and_raise_enhanced(
-                MythosValidationError, "Go command requires a direction", context=context, logger_name=__name__
+                MythosValidationError, "Go command requires a direction", args=args, logger_name=__name__
             )
         # Convert to lowercase for case-insensitive matching
         direction = args[0].lower()
@@ -159,10 +157,8 @@ class ExplorationCommandFactory:
     def create_sit_command(args: list[str]) -> SitCommand:
         """Create SitCommand from arguments."""
         if args:
-            context = create_error_context()
-            context.metadata = {"args": args}
             log_and_raise_enhanced(
-                MythosValidationError, "Sit command takes no arguments", context=context, logger_name=__name__
+                MythosValidationError, "Sit command takes no arguments", args=args, logger_name=__name__
             )
         return SitCommand()
 
@@ -170,10 +166,8 @@ class ExplorationCommandFactory:
     def create_stand_command(args: list[str]) -> StandCommand:
         """Create StandCommand from arguments."""
         if args:
-            context = create_error_context()
-            context.metadata = {"args": args}
             log_and_raise_enhanced(
-                MythosValidationError, "Stand command takes no arguments", context=context, logger_name=__name__
+                MythosValidationError, "Stand command takes no arguments", args=args, logger_name=__name__
             )
         return StandCommand()
 
@@ -185,12 +179,10 @@ class ExplorationCommandFactory:
             if len(args) == 1 and args[0].lower() == "down":
                 modifier = "down"
             else:
-                context = create_error_context()
-                context.metadata = {"args": args}
                 log_and_raise_enhanced(
                     MythosValidationError,
                     "Usage: lie [down]",
-                    context=context,
+                    args=args,
                     logger_name=__name__,
                 )
         return LieCommand(modifier=modifier)
@@ -200,23 +192,19 @@ class ExplorationCommandFactory:
         """Create GroundCommand from arguments."""
 
         if not args:
-            context = create_error_context()
-            context.metadata = {"args": args}
             log_and_raise_enhanced(
                 MythosValidationError,
                 "Usage: ground <player>",
-                context=context,
+                args=args,
                 logger_name=__name__,
             )
 
         target = " ".join(args).strip()
         if not target:
-            context = create_error_context()
-            context.metadata = {"args": args}
             log_and_raise_enhanced(
                 MythosValidationError,
                 "Usage: ground <player>",
-                context=context,
+                args=args,
                 logger_name=__name__,
             )
 
@@ -226,22 +214,18 @@ class ExplorationCommandFactory:
     def create_follow_command(args: list[str]) -> FollowCommand:
         """Create FollowCommand from arguments."""
         if not args:
-            context = create_error_context()
-            context.metadata = {"args": args}
             log_and_raise_enhanced(
                 MythosValidationError,
                 "Follow command requires a target. Usage: follow <player or NPC name>",
-                context=context,
+                args=args,
                 logger_name=__name__,
             )
         target = " ".join(args).strip()
         if not target:
-            context = create_error_context()
-            context.metadata = {"args": args}
             log_and_raise_enhanced(
                 MythosValidationError,
                 "Follow command requires a target. Usage: follow <player or NPC name>",
-                context=context,
+                args=args,
                 logger_name=__name__,
             )
         return FollowCommand(target=target)
@@ -250,12 +234,10 @@ class ExplorationCommandFactory:
     def create_unfollow_command(args: list[str]) -> UnfollowCommand:
         """Create UnfollowCommand from arguments."""
         if args:
-            context = create_error_context()
-            context.metadata = {"args": args}
             log_and_raise_enhanced(
                 MythosValidationError,
                 "Unfollow command takes no arguments",
-                context=context,
+                args=args,
                 logger_name=__name__,
             )
         return UnfollowCommand()
@@ -264,12 +246,10 @@ class ExplorationCommandFactory:
     def create_following_command(args: list[str]) -> FollowingCommand:
         """Create FollowingCommand from arguments."""
         if args:
-            context = create_error_context()
-            context.metadata = {"args": args}
             log_and_raise_enhanced(
                 MythosValidationError,
                 "Following command takes no arguments",
-                context=context,
+                args=args,
                 logger_name=__name__,
             )
         return FollowingCommand()
@@ -287,12 +267,11 @@ class ExplorationCommandFactory:
                 if first in ("invite", "kick") and len(args) > 1:
                     target = " ".join(args[1:]).strip() or None
                 elif first in ("invite", "kick") and len(args) == 1:
-                    context = create_error_context()
-                    context.metadata = {"args": args, "subcommand": first}
                     log_and_raise_enhanced(
                         MythosValidationError,
                         f"Party {first} requires a target. Usage: party {first} <player name>",
-                        context=context,
+                        args=args,
+                        subcommand=first,
                         logger_name=__name__,
                     )
             else:

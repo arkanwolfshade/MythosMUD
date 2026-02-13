@@ -25,19 +25,18 @@ from ..schemas.metrics import (
     StatusMessageResponse,
 )
 from ..structured_logging.enhanced_logging_config import get_logger
-from ..utils.error_logging import create_context_from_request
 
 logger = get_logger(__name__)
 
 router = APIRouter(prefix="/metrics", tags=["metrics"])
 
 
-def verify_admin_access(request: Request, current_user: User | None = Depends(get_current_user)) -> User:
+def verify_admin_access(_request: Request, current_user: User | None = Depends(get_current_user)) -> User:
     """
     Verify user has admin access to metrics.
 
     Args:
-        request: FastAPI request object for error context
+        _request: FastAPI request object (unused; kept for dependency injection).
         current_user: Current authenticated user
 
     Returns:
@@ -49,26 +48,28 @@ def verify_admin_access(request: Request, current_user: User | None = Depends(ge
     AI: Metrics may contain sensitive operational data - admin only.
     """
     if not current_user:
-        context = create_context_from_request(request)
-        context.metadata["operation"] = "verify_admin_access"
         raise LoggedHTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication required for metrics", context=context
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication required for metrics",
+            operation="verify_admin_access",
         )
 
     # Check if user is admin
     is_admin = current_user.is_admin or current_user.is_superuser
 
     if not is_admin:
-        # Create context before logging to ensure full context in logs
-        context = create_context_from_request(request)
-        context.user_id = str(current_user.id)
-        context.metadata["operation"] = "verify_admin_access"
-        context.metadata["username"] = current_user.username
         logger.warning(
-            "Non-admin user attempted to access metrics", username=current_user.username, context=context.to_dict()
+            "Non-admin user attempted to access metrics",
+            username=current_user.username,
+            user_id=str(current_user.id),
+            operation="verify_admin_access",
         )
         raise LoggedHTTPException(
-            status_code=status.HTTP_403_FORBIDDEN, detail="Admin access required for metrics", context=context
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin access required for metrics",
+            user_id=str(current_user.id),
+            operation="verify_admin_access",
+            username=current_user.username,
         )
 
     return current_user
@@ -76,7 +77,7 @@ def verify_admin_access(request: Request, current_user: User | None = Depends(ge
 
 @router.get("", response_model=MetricsResponse)
 async def get_metrics(
-    request: Request,
+    _request: Request,
     current_user: User = Depends(verify_admin_access),
     nats_message_handler: Any = NatsMessageHandlerDep,
 ) -> MetricsResponse:
@@ -127,17 +128,17 @@ async def get_metrics(
         return MetricsResponse(metrics=base_metrics)
 
     except Exception as e:
-        context = create_context_from_request(request)
-        context.user_id = str(current_user.id) if current_user else None
-        context.metadata["operation"] = "get_metrics"
         raise LoggedHTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error retrieving metrics", context=context
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error retrieving metrics",
+            user_id=str(current_user.id) if current_user else None,
+            operation="get_metrics",
         ) from e
 
 
 @router.get("/summary", response_model=MetricsSummaryResponse)
 async def get_metrics_summary(
-    request: Request,
+    _request: Request,
     _current_user: User = Depends(verify_admin_access),  # pylint: disable=unused-argument  # Required by Depends for auth
     nats_message_handler: Any = NatsMessageHandlerDep,
 ) -> MetricsSummaryResponse:
@@ -170,16 +171,16 @@ async def get_metrics_summary(
         return MetricsSummaryResponse(summary=summary, dlq_pending=dlq_pending, circuit_state=circuit_state)
 
     except Exception as e:
-        context = create_context_from_request(request)
-        context.user_id = str(_current_user.id) if _current_user else None
-        context.metadata["operation"] = "get_metrics_summary"
         raise LoggedHTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error retrieving metrics", context=context
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error retrieving metrics",
+            user_id=str(_current_user.id) if _current_user else None,
+            operation="get_metrics_summary",
         ) from e
 
 
 @router.post("/reset", response_model=StatusMessageResponse)
-async def reset_metrics(request: Request, current_user: User = Depends(verify_admin_access)) -> StatusMessageResponse:
+async def reset_metrics(_request: Request, current_user: User = Depends(verify_admin_access)) -> StatusMessageResponse:
     """
     Reset metrics counters.
 
@@ -200,17 +201,17 @@ async def reset_metrics(request: Request, current_user: User = Depends(verify_ad
         return StatusMessageResponse(status="success", message="Metrics counters reset")
 
     except Exception as e:
-        context = create_context_from_request(request)
-        context.user_id = str(current_user.id) if current_user else None
-        context.metadata["operation"] = "reset_metrics"
         raise LoggedHTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error resetting metrics", context=context
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error resetting metrics",
+            user_id=str(current_user.id) if current_user else None,
+            operation="reset_metrics",
         ) from e
 
 
 @router.get("/dlq", response_model=DLQMessagesResponse)
 async def get_dlq_messages(
-    request: Request,
+    _request: Request,
     limit: int = 100,
     current_user: User = Depends(verify_admin_access),
     nats_message_handler: Any = NatsMessageHandlerDep,
@@ -242,17 +243,17 @@ async def get_dlq_messages(
         return DLQMessagesResponse(messages=messages, count=len(messages), total_in_dlq=total_count)
 
     except Exception as e:
-        context = create_context_from_request(request)
-        context.user_id = str(current_user.id) if current_user else None
-        context.metadata["operation"] = "get_dlq_messages"
         raise LoggedHTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error retrieving DLQ messages", context=context
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error retrieving DLQ messages",
+            user_id=str(current_user.id) if current_user else None,
+            operation="get_dlq_messages",
         ) from e
 
 
 @router.post("/circuit-breaker/reset", response_model=StatusMessageResponse)
 async def reset_circuit_breaker(
-    request: Request,
+    _request: Request,
     current_user: User = Depends(verify_admin_access),
     nats_message_handler: Any = NatsMessageHandlerDep,
 ) -> StatusMessageResponse:
@@ -270,11 +271,11 @@ async def reset_circuit_breaker(
     """
     try:
         if not nats_message_handler:
-            context = create_context_from_request(request)
-            context.user_id = str(current_user.id) if current_user else None
-            context.metadata["operation"] = "reset_circuit_breaker"
             raise LoggedHTTPException(
-                status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="NATS handler not available", context=context
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="NATS handler not available",
+                user_id=str(current_user.id) if current_user else None,
+                operation="reset_circuit_breaker",
             )
 
         nats_message_handler.circuit_breaker.reset()
@@ -287,11 +288,11 @@ async def reset_circuit_breaker(
         # Re-raise HTTPExceptions (like 503 SERVICE_UNAVAILABLE) without wrapping
         raise
     except Exception as e:
-        context = create_context_from_request(request)
-        context.user_id = str(current_user.id) if current_user else None
-        context.metadata["operation"] = "reset_circuit_breaker"
         raise LoggedHTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error resetting circuit breaker", context=context
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error resetting circuit breaker",
+            user_id=str(current_user.id) if current_user else None,
+            operation="reset_circuit_breaker",
         ) from e
 
 
@@ -414,7 +415,7 @@ def _get_nats_handler(nats_message_handler: Any | None) -> Any:
 @router.post("/dlq/{filepath:path}/replay", response_model=DLQReplayResponse)
 async def replay_dlq_message(
     filepath: str,
-    request: Request,
+    _request: Request,
     current_user: User = Depends(verify_admin_access),
     nats_message_handler: Any = NatsMessageHandlerDep,
 ) -> DLQReplayResponse:
@@ -452,19 +453,19 @@ async def replay_dlq_message(
     except HTTPException:
         raise
     except Exception as e:
-        context = create_context_from_request(request)
-        context.user_id = str(current_user.id) if current_user else None
-        context.metadata["operation"] = "replay_dlq_message"
-        context.metadata["filepath"] = filepath
         raise LoggedHTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error replaying DLQ message", context=context
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error replaying DLQ message",
+            user_id=str(current_user.id) if current_user else None,
+            operation="replay_dlq_message",
+            filepath=filepath,
         ) from e
 
 
 @router.delete("/dlq/{filepath:path}", response_model=StatusMessageResponse)
 async def delete_dlq_message(
     filepath: str,
-    request: Request,
+    _request: Request,
     current_user: User = Depends(verify_admin_access),
     nats_message_handler: Any = NatsMessageHandlerDep,
 ) -> StatusMessageResponse:
@@ -485,22 +486,22 @@ async def delete_dlq_message(
     """
     try:
         if not nats_message_handler:
-            context = create_context_from_request(request)
-            context.user_id = str(current_user.id) if current_user else None
-            context.metadata["operation"] = "delete_dlq_message"
             raise LoggedHTTPException(
-                status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="NATS handler not available", context=context
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="NATS handler not available",
+                user_id=str(current_user.id) if current_user else None,
+                operation="delete_dlq_message",
             )
 
         dlq_path = nats_message_handler.dead_letter_queue.storage_dir / filepath
 
         if not dlq_path.exists():
-            context = create_context_from_request(request)
-            context.user_id = str(current_user.id) if current_user else None
-            context.metadata["operation"] = "delete_dlq_message"
-            context.metadata["filepath"] = filepath
             raise LoggedHTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail=f"DLQ file not found: {filepath}", context=context
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"DLQ file not found: {filepath}",
+                user_id=str(current_user.id) if current_user else None,
+                operation="delete_dlq_message",
+                filepath=filepath,
             )
 
         nats_message_handler.dead_letter_queue.delete_message(str(dlq_path))
@@ -510,10 +511,10 @@ async def delete_dlq_message(
     except LoggedHTTPException:
         raise
     except Exception as e:
-        context = create_context_from_request(request)
-        context.user_id = str(current_user.id) if current_user else None
-        context.metadata["operation"] = "delete_dlq_message"
-        context.metadata["filepath"] = filepath
         raise LoggedHTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error deleting DLQ message", context=context
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error deleting DLQ message",
+            user_id=str(current_user.id) if current_user else None,
+            operation="delete_dlq_message",
+            filepath=filepath,
         ) from e

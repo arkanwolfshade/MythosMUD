@@ -32,8 +32,8 @@ class LoggingComplianceChecker(ast.NodeVisitor):
         self.has_logger = False
         self.imports_logging = False
 
-    def visit_Import(self, node: ast.Import) -> None:
-        """Check for deprecated logging imports."""
+    def visit_Import(self, node: ast.Import) -> None:  # noqa: N802, N815
+        """Check for deprecated logging imports. Name required by ast.NodeVisitor API."""
         for alias in node.names:
             if alias.name == "logging":
                 # Check if this is an allowed exception (logging module itself or formatter)
@@ -49,8 +49,8 @@ class LoggingComplianceChecker(ast.NodeVisitor):
                     self.imports_logging = True
         self.generic_visit(node)
 
-    def visit_ImportFrom(self, node: ast.ImportFrom) -> None:
-        """Check for deprecated logging imports and verify enhanced logging usage."""
+    def visit_ImportFrom(self, node: ast.ImportFrom) -> None:  # noqa: N802, N815
+        """Check for deprecated logging imports. Name required by ast.NodeVisitor API."""
         if node.module == "logging":
             # Direct imports from logging module (forbidden)
             if "logging" not in str(self.file_path):
@@ -69,46 +69,75 @@ class LoggingComplianceChecker(ast.NodeVisitor):
                     self.uses_enhanced_logging = True
         self.generic_visit(node)
 
-    def visit_Call(self, node: ast.Call) -> None:
-        """Check for deprecated logging.getLogger() calls and f-string logging."""
-        # Check for logging.getLogger() calls
-        if isinstance(node.func, ast.Attribute):
-            if isinstance(node.func.value, ast.Name) and node.func.value.id == "logging":
-                if node.func.attr == "getLogger":
-                    if "logging" not in str(self.file_path) and "test" not in str(self.file_path):
-                        self.violations.append(
-                            (
-                                node.lineno,
-                                "FORBIDDEN_GETLOGGER",
-                                "Found 'logging.getLogger()' - Use 'get_logger()' from enhanced_logging_config instead",
-                            )
-                        )
+    def _check_getlogger_call(self, node: ast.Call) -> None:
+        """Record violation if node is a logging.getLogger() call in non-infra code."""
+        if not isinstance(node.func, ast.Attribute):
+            return
+        if not isinstance(node.func.value, ast.Name) or node.func.value.id != "logging":
+            return
+        if node.func.attr != "getLogger":
+            return
+        if "logging" in str(self.file_path) or "test" in str(self.file_path):
+            return
+        self.violations.append(
+            (
+                node.lineno,
+                "FORBIDDEN_GETLOGGER",
+                "Found 'logging.getLogger()' - Use 'get_logger()' from enhanced_logging_config instead",
+            )
+        )
 
-        # Check for f-string logging patterns
-        if isinstance(node.func, ast.Attribute) and node.func.attr in [
-            "info",
-            "debug",
-            "warning",
-            "error",
-            "critical",
-            "exception",
-        ]:
-            # Check if this is a logger call
-            if isinstance(node.func.value, ast.Name) and node.func.value.id == "logger":
-                # Check for f-string in first argument
-                if node.args and isinstance(node.args[0], ast.JoinedStr):
-                    self.violations.append(
-                        (
-                            node.lineno,
-                            "FSTRING_LOGGING",
-                            "Found f-string in logger call - Use structured logging with key-value pairs instead",
-                        )
+    def _check_fstring_logging(self, node: ast.Call) -> None:
+        """Record violation if node is a logger.*(f\"...\") style call."""
+        if not isinstance(node.func, ast.Attribute):
+            return
+        if node.func.attr not in ("info", "debug", "warning", "error", "critical", "exception"):
+            return
+        if not isinstance(node.func.value, ast.Name) or node.func.value.id != "logger":
+            return
+        if not node.args or not isinstance(node.args[0], ast.JoinedStr):
+            return
+        self.violations.append(
+            (
+                node.lineno,
+                "FSTRING_LOGGING",
+                "Found f-string in logger call - Use structured logging with key-value pairs instead",
+            )
+        )
+
+    def _check_deprecated_context_param(self, node: ast.Call) -> None:
+        """Record violation if node is an error_logging call with context= keyword."""
+        if not isinstance(node.func, ast.Name):
+            return
+        func_name = node.func.id
+        if func_name not in (
+            "log_and_raise",
+            "log_and_raise_http",
+            "log_error_with_context",
+            "create_logged_http_exception",
+            "wrap_third_party_exception",
+        ):
+            return
+        for keyword in node.keywords:
+            if keyword.arg == "context":
+                self.violations.append(
+                    (
+                        node.lineno,
+                        "DEPRECATED_CONTEXT_PARAMETER",
+                        f"Found deprecated 'context=' parameter in {func_name}() - Use **kwargs instead",
                     )
+                )
+                break
 
+    def visit_Call(self, node: ast.Call) -> None:  # noqa: N802, N815
+        """Check for deprecated getLogger/f-string/context. Name required by ast.NodeVisitor API."""
+        self._check_getlogger_call(node)
+        self._check_fstring_logging(node)
+        self._check_deprecated_context_param(node)
         self.generic_visit(node)
 
-    def visit_Assign(self, node: ast.Assign) -> None:
-        """Check for logger assignment patterns."""
+    def visit_Assign(self, node: ast.Assign) -> None:  # noqa: N802, N815  # pylint: disable=invalid-name
+        """Check for logger assignment patterns. Name required by ast.NodeVisitor API."""
         # Check if assigning logger = logging.getLogger(...)
         for target in node.targets:
             if isinstance(target, ast.Name) and target.id == "logger":
@@ -131,6 +160,70 @@ class LoggingComplianceChecker(ast.NodeVisitor):
         self.generic_visit(node)
 
 
+def _should_skip_file(file_path: Path) -> bool:
+    """Return True if file should be skipped (tests, pycache, missing, or not .py)."""
+    path_str = str(file_path)
+    if "test" in path_str or "__pycache__" in path_str:
+        return True
+    if not file_path.exists() or file_path.suffix != ".py":
+        return True
+    return False
+
+
+def _read_and_parse(file_path: Path) -> tuple[str, ast.AST] | None:
+    """Read file and parse AST. Returns (content, tree) or None if unreadable/empty/syntax error."""
+    try:
+        with open(file_path, encoding="utf-8") as f:
+            content = f.read()
+    except (UnicodeDecodeError, FileNotFoundError):
+        return None
+    if not content.strip():
+        return None
+    try:
+        tree = ast.parse(content, filename=str(file_path))
+    except SyntaxError:
+        return None
+    return content, tree
+
+
+def _run_regex_checks(content: str, file_path: Path, checker: LoggingComplianceChecker) -> None:
+    """Run regex-based checks on file lines and append violations to checker."""
+    path_str = str(file_path)
+    lines = content.split("\n")
+    error_logging_func = re.compile(
+        r"\b(log_and_raise|log_and_raise_http|log_error_with_context|"
+        r"create_logged_http_exception|wrap_third_party_exception)\s*\("
+    )
+    for line_num, line in enumerate(lines, 1):
+        if re.search(r'logger\.(info|debug|warning|error|critical|exception)\s*\(\s*f["\']', line):
+            if "logging/README.md" not in path_str:
+                checker.violations.append(
+                    (
+                        line_num,
+                        "FSTRING_LOGGING",
+                        f"Found f-string in logger call: {line.strip()[:80]}",
+                    )
+                )
+        if re.search(r"\bcontext\s*=\s*(context|create_error_context\s*\(\))", line):
+            if "logging" not in path_str and "test" not in path_str and error_logging_func.search(line):
+                checker.violations.append(
+                    (
+                        line_num,
+                        "DEPRECATED_CONTEXT_PARAMETER",
+                        f"Found deprecated 'context=' parameter: {line.strip()[:80]}",
+                    )
+                )
+        if re.search(r"\bcontext\.metadata\[", line):
+            if "logging" not in path_str and "test" not in path_str:
+                checker.violations.append(
+                    (
+                        line_num,
+                        "DEPRECATED_CONTEXT_METADATA",
+                        f"Found deprecated 'context.metadata[...]' pattern - Use **kwargs instead: {line.strip()[:80]}",
+                    )
+                )
+
+
 def check_file(file_path: Path) -> tuple[bool, list[tuple[int, str, str]]]:
     """
     Check a single file for logging compliance.
@@ -141,47 +234,15 @@ def check_file(file_path: Path) -> tuple[bool, list[tuple[int, str, str]]]:
     Returns:
         Tuple of (is_compliant, violations)
     """
-    # Skip test files and logging infrastructure
-    if "test" in str(file_path) or "__pycache__" in str(file_path):
+    if _should_skip_file(file_path):
         return True, []
-
-    # Skip if file doesn't exist or isn't Python
-    if not file_path.exists() or file_path.suffix != ".py":
+    parsed = _read_and_parse(file_path)
+    if parsed is None:
         return True, []
-
-    try:
-        with open(file_path, encoding="utf-8") as f:
-            content = f.read()
-    except (UnicodeDecodeError, FileNotFoundError):
-        return True, []
-
-    # Skip empty files
-    if not content.strip():
-        return True, []
-
-    try:
-        tree = ast.parse(content, filename=str(file_path))
-    except SyntaxError:
-        # Skip files with syntax errors (they'll be caught by other tools)
-        return True, []
-
+    content, tree = parsed
     checker = LoggingComplianceChecker(file_path)
     checker.visit(tree)
-
-    # Additional regex checks for patterns AST might miss
-    lines = content.split("\n")
-    for line_num, line in enumerate(lines, 1):
-        # Check for f-string logging patterns
-        if re.search(r'logger\.(info|debug|warning|error|critical|exception)\s*\(\s*f["\']', line):
-            if "logging/README.md" not in str(file_path):  # Skip README examples
-                checker.violations.append(
-                    (
-                        line_num,
-                        "FSTRING_LOGGING",
-                        f"Found f-string in logger call: {line.strip()[:80]}",
-                    )
-                )
-
+    _run_regex_checks(content, file_path, checker)
     return len(checker.violations) == 0, checker.violations
 
 
@@ -201,7 +262,7 @@ def _check_all_files(python_files: list[Path]) -> tuple[dict[Path, list[tuple[in
     compliant_files = 0
 
     for file_path in sorted(python_files):
-        is_compliant, violations = check_file(file_path)
+        _is_compliant, violations = check_file(file_path)
         if violations:
             all_violations[file_path] = violations
         else:
@@ -242,6 +303,12 @@ def _print_fix_instructions() -> None:
     print("3. Replace f-string logging with structured key-value pairs")
     print('   WRONG: logger.info(f"User {user_id} performed {action}")')
     print('   RIGHT: logger.info("User action", user_id=user_id, action=action)')
+    print("4. Remove deprecated 'context=' parameter from error_logging functions")
+    print("   WRONG: log_and_raise(Error, 'message', context=context)")
+    print("   RIGHT: log_and_raise(Error, 'message', operation='op', user_id=user_id)")
+    print("5. Remove 'context.metadata[...]' patterns - use **kwargs instead")
+    print("   WRONG: context = create_error_context(); context.metadata['key'] = value")
+    print("   RIGHT: log_and_raise(Error, 'message', key=value)")
     print()
     print("See .cursor/rules/structlog.mdc and docs/LOGGING_BEST_PRACTICES.md for details.")
 

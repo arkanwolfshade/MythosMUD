@@ -15,7 +15,7 @@ from server.database import get_session_maker
 from server.exceptions import DatabaseError
 from server.models.player import Player
 from server.structured_logging.enhanced_logging_config import get_logger
-from server.utils.error_logging import create_error_context, log_and_raise
+from server.utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)
 
@@ -128,10 +128,6 @@ class ExperienceRepository:
         if delta < 0:
             raise ValueError(f"XP delta must be non-negative, got {delta}")
 
-        context = create_error_context()
-        context.metadata["operation"] = "update_player_xp"
-        context.metadata["player_id"] = str(player_id)
-
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
@@ -161,7 +157,8 @@ class ExperienceRepository:
             log_and_raise(
                 DatabaseError,
                 f"Database error updating XP for player '{player_id}': {e}",
-                context=context,
+                operation="update_player_xp",
+                player_id=str(player_id),
                 details={"player_id": str(player_id), "delta": delta, "reason": reason, "error": str(e)},
                 user_friendly="Failed to update player experience",
             )
@@ -190,11 +187,6 @@ class ExperienceRepository:
         if field_name not in self.FIELD_NAME_TO_ARRAY:
             allowed_fields = set(self.FIELD_NAME_TO_ARRAY.keys())
             raise ValueError(f"Invalid stat field name: {field_name}. Must be one of {allowed_fields}")
-
-        context = create_error_context()
-        context.metadata["operation"] = "update_player_stat_field"
-        context.metadata["player_id"] = str(player_id)
-        context.metadata["field_name"] = field_name
 
         try:
             # Get the PostgreSQL array literal from the mapping dictionary
@@ -247,7 +239,9 @@ class ExperienceRepository:
             log_and_raise(
                 DatabaseError,
                 f"Database error updating stat field: {e}",
-                context=context,
+                operation="update_player_stat_field",
+                player_id=str(player_id),
+                field_name=field_name,
                 details={
                     "player_id": str(player_id),
                     "field_name": field_name,

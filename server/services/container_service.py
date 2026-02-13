@@ -26,7 +26,7 @@ from ..exceptions import MythosMUDError, ValidationError
 from ..models.container import ContainerComponent, ContainerLockState, ContainerSourceType
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.audit_logger import audit_logger
-from ..utils.error_logging import create_error_context, log_and_raise
+from ..utils.error_logging import log_and_raise
 from .inventory_mutation_guard import InventoryMutationGuard
 from .inventory_service import InventoryCapacityError, InventoryService, InventoryStack
 
@@ -130,11 +130,6 @@ class ContainerService:
             ContainerLockedError: If container is locked
             ContainerServiceError: If container is already open
         """
-        context = create_error_context()
-        context.metadata["operation"] = "open_container"
-        context.metadata["container_id"] = str(container_id)
-        context.metadata["player_id"] = str(player_id)
-
         logger.info("Opening container", container_id=str(container_id), player_id=str(player_id))
 
         # Check if container exists
@@ -143,7 +138,9 @@ class ContainerService:
             log_and_raise(
                 ContainerNotFoundError,
                 f"Container not found: {container_id}",
-                context=context,
+                operation="open_container",
+                container_id=str(container_id),
+                player_id=str(player_id),
                 details={"container_id": str(container_id)},
                 user_friendly="Container not found",
             )
@@ -158,13 +155,15 @@ class ContainerService:
             log_and_raise(
                 ValidationError,
                 f"Player not found: {player_id}",
-                context=context,
+                operation="open_container",
+                container_id=str(container_id),
+                player_id=str(player_id),
                 details={"player_id": str(player_id)},
                 user_friendly="Player not found",
             )
 
         # Validate access control (proximity, roles, ownership)
-        self._validate_container_access(container, player, context)
+        self._validate_container_access(container, player)
 
         # Check if container is sealed (raises access denied, not locked error)
         if container.lock_state == ContainerLockState.SEALED:
@@ -172,7 +171,10 @@ class ContainerService:
                 log_and_raise(
                     ContainerAccessDeniedError,
                     f"Container is sealed: {container_id}",
-                    context=context,
+                    operation="open_container",
+                    container_id=str(container_id),
+                    player_id=str(player_id),
+                    lock_state=_get_enum_value(container.lock_state),
                     details={
                         "container_id": str(container_id),
                         "lock_state": _get_enum_value(container.lock_state),
@@ -187,7 +189,10 @@ class ContainerService:
                 log_and_raise(
                     ContainerLockedError,
                     f"Container is locked: {container_id}",
-                    context=context,
+                    operation="open_container",
+                    container_id=str(container_id),
+                    player_id=str(player_id),
+                    lock_state=_get_enum_value(container.lock_state),
                     details={"container_id": str(container_id), "lock_state": _get_enum_value(container.lock_state)},
                     user_friendly="Container is locked",
                 )
@@ -197,7 +202,9 @@ class ContainerService:
             log_and_raise(
                 ContainerServiceError,
                 f"Container already open: {container_id}",
-                context=context,
+                operation="open_container",
+                container_id=str(container_id),
+                player_id=str(player_id),
                 details={"container_id": str(container_id), "player_id": str(player_id)},
                 user_friendly="Container is already open",
             )
@@ -240,13 +247,15 @@ class ContainerService:
             "mutation_token": mutation_token,
         }
 
-    def _validate_container_close(self, container_id: UUID, player_id: UUID, mutation_token: str, context: Any) -> None:
+    def _validate_container_close(self, container_id: UUID, player_id: UUID, mutation_token: str) -> None:
         """Validate that container is open and mutation token is valid."""
         if container_id not in self._open_containers:
             log_and_raise(
                 ContainerServiceError,
                 f"Container not open: {container_id}",
-                context=context,
+                operation="validate_container_close",
+                container_id=str(container_id),
+                player_id=str(player_id),
                 details={"container_id": str(container_id)},
                 user_friendly="Container is not open",
             )
@@ -255,7 +264,9 @@ class ContainerService:
             log_and_raise(
                 ContainerServiceError,
                 f"Container not open by player: {container_id}",
-                context=context,
+                operation="validate_container_close",
+                container_id=str(container_id),
+                player_id=str(player_id),
                 details={"container_id": str(container_id), "player_id": str(player_id)},
                 user_friendly="Container is not open",
             )
@@ -265,7 +276,9 @@ class ContainerService:
             log_and_raise(
                 ContainerServiceError,
                 f"Invalid mutation token: {container_id}",
-                context=context,
+                operation="validate_container_close",
+                container_id=str(container_id),
+                player_id=str(player_id),
                 details={"container_id": str(container_id), "player_id": str(player_id)},
                 user_friendly="Invalid mutation token",
             )
@@ -308,15 +321,10 @@ class ContainerService:
         Raises:
             ContainerServiceError: If container is not open or token is invalid
         """
-        context = create_error_context()
-        context.metadata["operation"] = "close_container"
-        context.metadata["container_id"] = str(container_id)
-        context.metadata["player_id"] = str(player_id)
-
         logger.info("Closing container", container_id=str(container_id), player_id=str(player_id))
 
         # Validate container is open and token is valid
-        self._validate_container_close(container_id, player_id, mutation_token, context)
+        self._validate_container_close(container_id, player_id, mutation_token)
 
         # Remove from open containers
         self._remove_container_from_open_list(container_id, player_id)
@@ -366,12 +374,6 @@ class ContainerService:
             ContainerServiceError: If container is not open or token is invalid
             ContainerCapacityError: If container capacity is exceeded
         """
-        context = create_error_context()
-        context.metadata["operation"] = "transfer_to_container"
-        context.metadata["container_id"] = str(container_id)
-        context.metadata["player_id"] = str(player_id)
-        context.metadata["item_id"] = item.get("item_id", "unknown")
-
         logger.info(
             "Transferring item to container",
             container_id=str(container_id),
@@ -394,7 +396,10 @@ class ContainerService:
             log_and_raise(
                 ContainerNotFoundError,
                 f"Container not found: {container_id}",
-                context=context,
+                operation="transfer_to_container",
+                container_id=str(container_id),
+                player_id=str(player_id),
+                item_id=item.get("item_id", "unknown"),
                 details={"container_id": str(container_id)},
                 user_friendly="Container not found",
             )
@@ -434,7 +439,12 @@ class ContainerService:
             log_and_raise(
                 ContainerCapacityError,
                 f"Container capacity exceeded: {container_id}",
-                context=context,
+                operation="transfer_to_container",
+                container_id=str(container_id),
+                player_id=str(player_id),
+                item_id=item.get("item_id", "unknown"),
+                capacity_slots=container.capacity_slots,
+                used_slots=container.get_used_slots(),
                 details={
                     "container_id": str(container_id),
                     "capacity_slots": container.capacity_slots,
@@ -456,7 +466,10 @@ class ContainerService:
             log_and_raise(
                 ValidationError,
                 f"Player not found: {player_id}",
-                context=context,
+                operation="transfer_to_container",
+                container_id=str(container_id),
+                player_id=str(player_id),
+                item_id=item.get("item_id", "unknown"),
                 details={"player_id": str(player_id)},
                 user_friendly="Player not found",
             )
@@ -487,7 +500,10 @@ class ContainerService:
                 log_and_raise(
                     ContainerCapacityError,
                     f"Container capacity exceeded: {e}",
-                    context=context,
+                    operation="transfer_to_container",
+                    container_id=str(container_id),
+                    player_id=str(player_id),
+                    item_id=item.get("item_id", "unknown"),
                     details={"container_id": str(container_id), "error": str(e)},
                     user_friendly="Container is full",
                 )
@@ -539,7 +555,7 @@ class ContainerService:
                 "player_inventory": player.inventory if hasattr(player, "inventory") else [],
             }
 
-    def _prepare_transfer_item(self, item: InventoryStack, quantity: int | None, _context: Any) -> InventoryStack:
+    def _prepare_transfer_item(self, item: InventoryStack, quantity: int | None) -> InventoryStack:
         """Prepare item for transfer, handling quantity and slot_type."""
         # TypedDict.copy() returns a dict, which is compatible with InventoryStack at runtime
         # Create a mutable copy to allow modifications
@@ -584,11 +600,12 @@ class ContainerService:
                 new_container_items.append(stack)
 
         if not item_found:
-            context = create_error_context()
             log_and_raise(
                 ContainerServiceError,
                 f"Item not found in container: {transfer_item_dict.get('item_id')}",
-                context=context,
+                operation="remove_item_from_container",
+                container_id=str(container_id),
+                item_id=transfer_item_dict.get("item_id"),
                 details={"item_id": transfer_item_dict.get("item_id"), "container_id": str(container_id)},
                 user_friendly="Item not found in container",
             )
@@ -596,7 +613,7 @@ class ContainerService:
         return new_container_items
 
     def _add_item_to_player_inventory(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Inventory management requires many parameters for context and inventory operations
-        self, player: Any, transfer_item_dict: InventoryStack, container_id: UUID, player_id: UUID, context: Any
+        self, player: Any, transfer_item_dict: InventoryStack, container_id: UUID, player_id: UUID
     ) -> list[InventoryStack]:
         """Add item to player inventory using InventoryService."""
         player_inventory = getattr(player, "inventory", [])
@@ -622,7 +639,10 @@ class ContainerService:
             log_and_raise(
                 ContainerCapacityError,
                 f"Player inventory capacity exceeded: {e}",
-                context=context,
+                operation="add_item_to_player_inventory",
+                container_id=str(container_id),
+                player_id=str(player_id),
+                item_id=transfer_item_dict.get("item_id", "unknown"),
                 details={"player_id": str(player_id), "error": str(e)},
                 user_friendly="Your inventory is full",
             )
@@ -700,16 +720,12 @@ class ContainerService:
             log_and_raise(
                 ContainerServiceError,
                 f"Item must be a dictionary, got {type(item).__name__}",
-                context=create_error_context(),
+                operation="transfer_from_container",
+                container_id=str(container_id),
+                player_id=str(player_id),
                 details={"item_type": type(item).__name__, "item": str(item)},
                 user_friendly="Invalid item data format",
             )
-
-        context = create_error_context()
-        context.metadata["operation"] = "transfer_from_container"
-        context.metadata["container_id"] = str(container_id)
-        context.metadata["player_id"] = str(player_id)
-        context.metadata["item_id"] = item.get("item_id", "unknown")
 
         logger.info(
             "Transferring item from container",
@@ -726,7 +742,10 @@ class ContainerService:
             log_and_raise(
                 ContainerNotFoundError,
                 f"Container not found: {container_id}",
-                context=context,
+                operation="transfer_from_container",
+                container_id=str(container_id),
+                player_id=str(player_id),
+                item_id=item.get("item_id", "unknown"),
                 details={"container_id": str(container_id)},
                 user_friendly="Container not found",
             )
@@ -738,7 +757,9 @@ class ContainerService:
             log_and_raise(
                 ValidationError,
                 f"Player not found: {player_id}",
-                context=context,
+                operation="transfer_from_container",
+                player_id=str(player_id),
+                container_id=str(container_id),
                 details={"player_id": str(player_id)},
                 user_friendly="Player not found",
             )
@@ -754,12 +775,12 @@ class ContainerService:
                 raise ContainerServiceError("Transfer suppressed by mutation guard")
 
             try:
-                transfer_item_dict = self._prepare_transfer_item(item, quantity, context)
+                transfer_item_dict = self._prepare_transfer_item(item, quantity)
                 new_container_items = self._remove_item_from_container(
                     container, transfer_item_dict, container_id, player_id
                 )
                 new_player_inventory = self._add_item_to_player_inventory(
-                    player, transfer_item_dict, container_id, player_id, context
+                    player, transfer_item_dict, container_id, player_id
                 )
                 return await self._persist_and_audit_transfer_from_container(
                     container, container_id, player, item, transfer_item_dict, new_container_items, new_player_inventory
@@ -802,11 +823,6 @@ class ContainerService:
             ContainerServiceError: If container is not open or token is invalid
             ContainerCapacityError: If player inventory capacity is exceeded (stops at that point)
         """
-        context = create_error_context()
-        context.metadata["operation"] = "loot_all"
-        context.metadata["container_id"] = str(container_id)
-        context.metadata["player_id"] = str(player_id)
-
         logger.info(
             "Looting all items from container",
             container_id=str(container_id),
@@ -822,7 +838,9 @@ class ContainerService:
             log_and_raise(
                 ContainerNotFoundError,
                 f"Container not found: {container_id}",
-                context=context,
+                operation="loot_all",
+                container_id=str(container_id),
+                player_id=str(player_id),
                 details={"container_id": str(container_id)},
                 user_friendly="Container not found",
             )
@@ -838,7 +856,9 @@ class ContainerService:
             log_and_raise(
                 ContainerServiceError,
                 f"Player not found: {player_id}",
-                context=context,
+                operation="loot_all",
+                container_id=str(container_id),
+                player_id=str(player_id),
                 details={"player_id": str(player_id)},
                 user_friendly="Player not found",
             )
@@ -922,7 +942,7 @@ class ContainerService:
         if stored_token != mutation_token:
             raise ContainerServiceError(f"Invalid mutation token: {container_id}")
 
-    def _validate_proximity(self, container: ContainerComponent, player: Any, player_id: str, context: Any) -> None:
+    def _validate_proximity(self, container: ContainerComponent, player: Any, player_id: str) -> None:
         """Validate player is in same room as container for environment/corpse containers."""
         if container.source_type in (ContainerSourceType.ENVIRONMENT, ContainerSourceType.CORPSE):
             player_room_id = getattr(player, "current_room_id", None)
@@ -930,7 +950,11 @@ class ContainerService:
                 log_and_raise(
                     ContainerAccessDeniedError,
                     f"Player not in same room as container: {container.container_id}",
-                    context=context,
+                    operation="validate_proximity",
+                    container_id=str(container.container_id),
+                    player_id=str(player_id),
+                    container_room_id=container.room_id,
+                    player_room_id=player_room_id,
                     details={
                         "container_id": str(container.container_id),
                         "player_id": str(player_id),
@@ -940,7 +964,7 @@ class ContainerService:
                     user_friendly="You must be in the same room as the container",
                 )
 
-    def _validate_ownership(self, container: ContainerComponent, player_id: str, context: Any) -> None:
+    def _validate_ownership(self, container: ContainerComponent, player_id: str) -> None:
         """Validate player owns equipment container."""
         if container.source_type == ContainerSourceType.EQUIPMENT:
             player_id_uuid = UUID(str(player_id)) if player_id else None
@@ -949,7 +973,10 @@ class ContainerService:
                 log_and_raise(
                     ContainerAccessDeniedError,
                     f"Player does not own equipment container: {container.container_id}",
-                    context=context,
+                    operation="validate_ownership",
+                    container_id=str(container.container_id),
+                    player_id=str(player_id),
+                    owner_id=str(container.entity_id),
                     details={
                         "container_id": str(container.container_id),
                         "player_id": str(player_id),
@@ -958,9 +985,7 @@ class ContainerService:
                     user_friendly="You do not own this container",
                 )
 
-    def _validate_role_access(
-        self, container: ContainerComponent, player_id: str, is_admin: bool, context: Any
-    ) -> None:
+    def _validate_role_access(self, container: ContainerComponent, player_id: str, is_admin: bool) -> None:
         """Validate player has required role for container access."""
         if container.allowed_roles and not is_admin:
             player_role = "admin" if is_admin else "player"
@@ -968,7 +993,11 @@ class ContainerService:
                 log_and_raise(
                     ContainerAccessDeniedError,
                     f"Player role not allowed: {container.container_id}",
-                    context=context,
+                    operation="validate_role_access",
+                    container_id=str(container.container_id),
+                    player_id=str(player_id),
+                    player_role=player_role,
+                    allowed_roles=container.allowed_roles,
                     details={
                         "container_id": str(container.container_id),
                         "player_id": str(player_id),
@@ -978,9 +1007,7 @@ class ContainerService:
                     user_friendly="You do not have permission to access this container",
                 )
 
-    def _validate_corpse_grace_period(
-        self, container: ContainerComponent, player_id: str, is_admin: bool, context: Any
-    ) -> None:
+    def _validate_corpse_grace_period(self, container: ContainerComponent, player_id: str, is_admin: bool) -> None:
         """Validate corpse grace period access rules."""
         if container.source_type == ContainerSourceType.CORPSE and container.owner_id:
             grace_period_seconds = container.metadata.get("grace_period_seconds", 300)
@@ -995,7 +1022,11 @@ class ContainerService:
                     log_and_raise(
                         ContainerAccessDeniedError,
                         f"Corpse grace period active: {container.container_id}",
-                        context=context,
+                        operation="validate_corpse_grace_period",
+                        container_id=str(container.container_id),
+                        player_id=str(player_id),
+                        owner_id=str(container.owner_id),
+                        grace_period_end=grace_period_end.isoformat(),
                         details={
                             "container_id": str(container.container_id),
                             "player_id": str(player_id),
@@ -1009,7 +1040,10 @@ class ContainerService:
                     log_and_raise(
                         ContainerAccessDeniedError,
                         f"Corpse grace period active: {container.container_id}",
-                        context=context,
+                        operation="validate_corpse_grace_period",
+                        container_id=str(container.container_id),
+                        player_id=str(player_id),
+                        owner_id=str(container.owner_id),
                         details={
                             "container_id": str(container.container_id),
                             "player_id": str(player_id),
@@ -1018,7 +1052,7 @@ class ContainerService:
                         user_friendly="The corpse's owner has exclusive access during the grace period",
                     )
 
-    def _validate_container_access(self, container: ContainerComponent, player: Any, context: Any) -> None:
+    def _validate_container_access(self, container: ContainerComponent, player: Any) -> None:
         """
         Validate that player has access to the container.
 
@@ -1027,7 +1061,6 @@ class ContainerService:
         Args:
             container: Container to check access for
             player: Player object
-            context: Error context for logging
 
         Raises:
             ContainerAccessDeniedError: If access is denied
@@ -1035,10 +1068,10 @@ class ContainerService:
         player_id = getattr(player, "player_id", None) or getattr(player, "id", None)
         is_admin = getattr(player, "is_admin", False)
 
-        self._validate_proximity(container, player, str(player_id), context)
-        self._validate_ownership(container, str(player_id), context)
-        self._validate_role_access(container, str(player_id), is_admin, context)
-        self._validate_corpse_grace_period(container, str(player_id), is_admin, context)
+        self._validate_proximity(container, player, str(player_id))
+        self._validate_ownership(container, str(player_id))
+        self._validate_role_access(container, str(player_id), is_admin)
+        self._validate_corpse_grace_period(container, str(player_id), is_admin)
 
     def _can_unlock_container(self, container: ContainerComponent, player: Any) -> bool:
         """
@@ -1096,11 +1129,6 @@ class ContainerService:
             ContainerNotFoundError: If container doesn't exist
             ContainerServiceError: If lock operation fails
         """
-        context = create_error_context()
-        context.metadata["operation"] = "lock_container"
-        context.metadata["container_id"] = str(container_id)
-        context.metadata["player_id"] = str(player_id)
-
         logger.info(
             "Locking container", container_id=str(container_id), player_id=str(player_id), lock_state=lock_state.value
         )
@@ -1111,7 +1139,9 @@ class ContainerService:
             log_and_raise(
                 ContainerNotFoundError,
                 f"Container not found: {container_id}",
-                context=context,
+                operation="lock_container",
+                container_id=str(container_id),
+                player_id=str(player_id),
                 details={"container_id": str(container_id)},
                 user_friendly="Container not found",
             )
@@ -1124,7 +1154,9 @@ class ContainerService:
             log_and_raise(
                 ValidationError,
                 f"Player not found: {player_id}",
-                context=context,
+                operation="lock_container",
+                container_id=str(container_id),
+                player_id=str(player_id),
                 details={"player_id": str(player_id)},
                 user_friendly="Player not found",
             )
@@ -1139,7 +1171,9 @@ class ContainerService:
                     log_and_raise(
                         ContainerAccessDeniedError,
                         f"Player does not own container: {container_id}",
-                        context=context,
+                        operation="lock_container",
+                        container_id=str(container_id),
+                        player_id=str(player_id),
                         details={"container_id": str(container_id), "player_id": str(player_id)},
                         user_friendly="You do not own this container",
                     )
@@ -1147,7 +1181,9 @@ class ContainerService:
                 log_and_raise(
                     ContainerAccessDeniedError,
                     f"Player does not own container: {container_id}",
-                    context=context,
+                    operation="lock_container",
+                    container_id=str(container_id),
+                    player_id=str(player_id),
                     details={"container_id": str(container_id), "player_id": str(player_id)},
                     user_friendly="You do not own this container",
                 )
@@ -1158,7 +1194,9 @@ class ContainerService:
             log_and_raise(
                 ContainerServiceError,
                 f"Failed to lock container: {container_id}",
-                context=context,
+                operation="lock_container",
+                container_id=str(container_id),
+                player_id=str(player_id),
                 details={"container_id": str(container_id)},
                 user_friendly="Failed to lock container",
             )
@@ -1184,11 +1222,6 @@ class ContainerService:
             ContainerNotFoundError: If container doesn't exist
             ContainerServiceError: If unlock operation fails
         """
-        context = create_error_context()
-        context.metadata["operation"] = "unlock_container"
-        context.metadata["container_id"] = str(container_id)
-        context.metadata["player_id"] = str(player_id)
-
         logger.info("Unlocking container", container_id=str(container_id), player_id=str(player_id))
 
         # Get container
@@ -1197,7 +1230,9 @@ class ContainerService:
             log_and_raise(
                 ContainerNotFoundError,
                 f"Container not found: {container_id}",
-                context=context,
+                operation="unlock_container",
+                container_id=str(container_id),
+                player_id=str(player_id),
                 details={"container_id": str(container_id)},
                 user_friendly="Container not found",
             )
@@ -1210,20 +1245,24 @@ class ContainerService:
             log_and_raise(
                 ValidationError,
                 f"Player not found: {player_id}",
-                context=context,
+                operation="unlock_container",
+                container_id=str(container_id),
+                player_id=str(player_id),
                 details={"player_id": str(player_id)},
                 user_friendly="Player not found",
             )
 
         # Validate access control (proximity, roles, ownership)
-        self._validate_container_access(container, player, context)
+        self._validate_container_access(container, player)
 
         # Check if player can unlock
         if not self._can_unlock_container(container, player):
             log_and_raise(
                 ContainerAccessDeniedError,
                 f"Player cannot unlock container: {container_id}",
-                context=context,
+                operation="unlock_container",
+                container_id=str(container_id),
+                player_id=str(player_id),
                 details={"container_id": str(container_id), "player_id": str(player_id)},
                 user_friendly="You cannot unlock this container",
             )
@@ -1234,7 +1273,9 @@ class ContainerService:
             log_and_raise(
                 ContainerServiceError,
                 f"Failed to unlock container: {container_id}",
-                context=context,
+                operation="unlock_container",
+                container_id=str(container_id),
+                player_id=str(player_id),
                 details={"container_id": str(container_id)},
                 user_friendly="Failed to unlock container",
             )

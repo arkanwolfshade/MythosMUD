@@ -9,7 +9,7 @@ from typing import Any
 
 from .exceptions import ValidationError
 from .structured_logging.enhanced_logging_config import get_logger
-from .utils.enhanced_error_logging import create_error_context, log_and_raise_enhanced
+from .utils.enhanced_error_logging import log_and_raise_enhanced
 
 logger = get_logger(__name__)
 
@@ -123,14 +123,12 @@ def validate_room_data(
     try:
         errors = validator.validate_room(room_data, file_path)
         if errors and strict_validation:
-            context = create_error_context()
-            context.metadata["operation"] = "validate_room_data"
-            context.metadata["file_path"] = file_path
-            context.metadata["validation_errors"] = errors
             log_and_raise_enhanced(
                 ValidationError,
                 f"Room validation failed: {'; '.join(errors)}",
-                context=context,
+                operation="validate_room_data",
+                file_path=file_path,
+                validation_errors=errors,
                 details={"file_path": file_path, "validation_errors": errors},
                 user_friendly="Room data validation failed",
             )
@@ -139,14 +137,12 @@ def validate_room_data(
         return errors
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Validation errors unpredictable, must handle gracefully
         if strict_validation:
-            context = create_error_context()
-            context.metadata["operation"] = "validate_room_data"
-            context.metadata["file_path"] = file_path
-            context.metadata["error_type"] = type(e).__name__
             log_and_raise_enhanced(
                 ValidationError,
                 f"Schema validation error for {file_path}: {e}",
-                context=context,
+                operation="validate_room_data",
+                file_path=file_path,
+                error_type=type(e).__name__,
                 details={"file_path": file_path, "error": str(e), "error_type": type(e).__name__},
                 user_friendly="Room data validation failed",
             )

@@ -16,7 +16,7 @@ from server.database import get_session_maker
 from server.exceptions import DatabaseError
 from server.models.player_spells import PlayerSpell
 from server.structured_logging.enhanced_logging_config import get_logger
-from server.utils.error_logging import create_error_context, log_and_raise
+from server.utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)
 
@@ -45,10 +45,6 @@ class PlayerSpellRepository:
         Raises:
             DatabaseError: If database operation fails
         """
-        context = create_error_context()
-        context.metadata["operation"] = "get_player_spells"
-        context.metadata["player_id"] = str(player_id)
-
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
@@ -61,7 +57,8 @@ class PlayerSpellRepository:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving player spells: {e}",
-                context=context,
+                operation="get_player_spells",
+                player_id=str(player_id),
                 details={"player_id": str(player_id), "error": str(e)},
                 user_friendly="Failed to retrieve learned spells",
             )
@@ -80,11 +77,6 @@ class PlayerSpellRepository:
         Raises:
             DatabaseError: If database operation fails
         """
-        context = create_error_context()
-        context.metadata["operation"] = "get_player_spell"
-        context.metadata["player_id"] = str(player_id)
-        context.metadata["spell_id"] = spell_id
-
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
@@ -97,7 +89,9 @@ class PlayerSpellRepository:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving player spell: {e}",
-                context=context,
+                operation="get_player_spell",
+                player_id=str(player_id),
+                spell_id=spell_id,
                 details={"player_id": str(player_id), "spell_id": spell_id, "error": str(e)},
                 user_friendly="Failed to retrieve spell",
             )
@@ -117,11 +111,6 @@ class PlayerSpellRepository:
         Raises:
             DatabaseError: If database operation fails
         """
-        context = create_error_context()
-        context.metadata["operation"] = "learn_spell"
-        context.metadata["player_id"] = str(player_id)
-        context.metadata["spell_id"] = spell_id
-
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
@@ -154,7 +143,9 @@ class PlayerSpellRepository:
             log_and_raise(
                 DatabaseError,
                 f"Database error learning spell: {e}",
-                context=context,
+                operation="learn_spell",
+                player_id=str(player_id),
+                spell_id=spell_id,
                 details={"player_id": str(player_id), "spell_id": spell_id, "error": str(e)},
                 user_friendly="Failed to learn spell",
             )
@@ -176,12 +167,6 @@ class PlayerSpellRepository:
         Raises:
             DatabaseError: If database operation fails
         """
-        context = create_error_context()
-        context.metadata["operation"] = "update_mastery"
-        context.metadata["player_id"] = str(player_id)
-        context.metadata["spell_id"] = spell_id
-        context.metadata["new_mastery"] = new_mastery
-
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
@@ -210,7 +195,10 @@ class PlayerSpellRepository:
             log_and_raise(
                 DatabaseError,
                 f"Database error updating mastery: {e}",
-                context=context,
+                operation="update_mastery",
+                player_id=str(player_id),
+                spell_id=spell_id,
+                new_mastery=new_mastery,
                 details={"player_id": str(player_id), "spell_id": spell_id, "error": str(e)},
                 user_friendly="Failed to update spell mastery",
             )
@@ -229,11 +217,6 @@ class PlayerSpellRepository:
         Raises:
             DatabaseError: If database operation fails
         """
-        context = create_error_context()
-        context.metadata["operation"] = "record_spell_cast"
-        context.metadata["player_id"] = str(player_id)
-        context.metadata["spell_id"] = spell_id
-
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
@@ -258,7 +241,9 @@ class PlayerSpellRepository:
             log_and_raise(
                 DatabaseError,
                 f"Database error recording spell cast: {e}",
-                context=context,
+                operation="record_spell_cast",
+                player_id=str(player_id),
+                spell_id=spell_id,
                 details={"player_id": str(player_id), "spell_id": spell_id, "error": str(e)},
                 user_friendly="Failed to record spell cast",
             )

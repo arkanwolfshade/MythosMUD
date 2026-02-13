@@ -70,7 +70,6 @@ THIRD_PARTY_EXCEPTION_MAPPING = {
 def log_and_raise_enhanced(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Error logging requires many parameters for complete error context
     exception_class: type[MythosMUDError],
     message: str,
-    context: ErrorContext | None = None,
     details: dict[str, Any] | None = None,
     user_friendly: str | None = None,
     logger_name: str | None = None,
@@ -86,11 +85,10 @@ def log_and_raise_enhanced(  # pylint: disable=too-many-arguments,too-many-posit
     Args:
         exception_class: The MythosMUD exception class to raise
         message: Technical error message
-        context: Error context information
         details: Additional error details
         user_friendly: User-friendly error message
         logger_name: Specific logger name to use (defaults to current module)
-        **kwargs: Additional structured logging data
+        **kwargs: Additional structured logging data (e.g., operation, user_id, etc.)
 
     Raises:
         The specified MythosMUD exception
@@ -98,16 +96,23 @@ def log_and_raise_enhanced(  # pylint: disable=too-many-arguments,too-many-posit
     # Use specified logger or default to current module logger
     error_logger = get_logger(logger_name) if logger_name else logger
 
-    # Create context if not provided
-    if context is None:
-        context = create_error_context()
+    # Create ErrorContext internally from kwargs for exception object
+    # Extract common context fields from kwargs
+    context_metadata = {
+        k: v for k, v in kwargs.items() if k not in ["error_type", "error_message", "details", "user_friendly"]
+    }
+    context = create_error_context(
+        user_id=kwargs.get("user_id"),
+        session_id=kwargs.get("session_id"),
+        request_id=kwargs.get("request_id"),
+        metadata=context_metadata,
+    )
 
     # Prepare structured log data
     log_data = {
         "error_type": exception_class.__name__,
         "error_message": message,
         "user_friendly": user_friendly,
-        "context": context.to_dict() if context else {},
         "details": details or {},
         **kwargs,
     }
@@ -115,6 +120,15 @@ def log_and_raise_enhanced(  # pylint: disable=too-many-arguments,too-many-posit
     # ValidationError is expected user input error (e.g. empty local message); log as warning not error
     log_level = "warning" if exception_class is ValidationError else "error"
     log_with_context(error_logger, log_level, "Error logged and exception raised", **log_data)
+
+    # Increment exception counter for monitoring
+    from ..monitoring.exception_metrics import increment_exception
+
+    try:
+        increment_exception(exception_class.__name__)
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Monitoring errors must never break error propagation
+        # nosec B110 - Intentional silent handling: Monitoring errors must never break error propagation
+        logger.debug("Failed to increment exception counter, continuing with error propagation", exc_info=e)
 
     # Raise the exception
     raise exception_class(
@@ -125,9 +139,7 @@ def log_and_raise_enhanced(  # pylint: disable=too-many-arguments,too-many-posit
     )
 
 
-def log_and_raise_http_enhanced(
-    status_code: int, detail: str, context: ErrorContext | None = None, logger_name: str | None = None, **kwargs: Any
-) -> None:
+def log_and_raise_http_enhanced(status_code: int, detail: str, logger_name: str | None = None, **kwargs: Any) -> None:
     """
     Enhanced HTTP error logging with structured logging.
 
@@ -137,9 +149,8 @@ def log_and_raise_http_enhanced(
     Args:
         status_code: HTTP status code
         detail: Error detail message
-        context: Error context information
         logger_name: Specific logger name to use (defaults to current module)
-        **kwargs: Additional structured logging data
+        **kwargs: Additional structured logging data (e.g., path, method, user_id, etc.)
 
     Raises:
         HTTPException with the specified status code and detail
@@ -147,16 +158,11 @@ def log_and_raise_http_enhanced(
     # Use specified logger or default to current module logger
     error_logger = get_logger(logger_name) if logger_name else logger
 
-    # Create context if not provided
-    if context is None:
-        context = create_error_context()
-
     # Prepare structured log data
     log_data = {
         "error_type": "HTTPException",
         "status_code": status_code,
         "detail": detail,
-        "context": context.to_dict() if context else {},
         **kwargs,
     }
 
@@ -169,7 +175,6 @@ def log_and_raise_http_enhanced(
 
 def log_structured_error(
     error: Exception,
-    context: ErrorContext | None = None,
     logger_name: str | None = None,
     level: str = "error",
     **kwargs: Any,
@@ -182,23 +187,17 @@ def log_structured_error(
 
     Args:
         error: The exception to log
-        context: Error context information
         logger_name: Specific logger name to use (defaults to current module)
         level: Log level (debug, info, warning, error, critical)
-        **kwargs: Additional structured logging data
+        **kwargs: Additional structured logging data (e.g., operation, user_id, etc.)
     """
     # Use specified logger or default to current module logger
     error_logger = get_logger(logger_name) if logger_name else logger
-
-    # Create context if not provided
-    if context is None:
-        context = create_error_context()
 
     # Prepare structured log data
     log_data = {
         "error_type": error.__class__.__name__,
         "error_message": str(error),
-        "context": context.to_dict() if context else {},
         "traceback": traceback.format_exc(),
         **kwargs,
     }
@@ -206,9 +205,18 @@ def log_structured_error(
     # Log with structured data
     log_with_context(error_logger, level, "Error logged with context", **log_data)
 
+    # Increment exception counter for monitoring
+    from ..monitoring.exception_metrics import increment_exception
+
+    try:
+        increment_exception(error.__class__.__name__)
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Monitoring errors must never break error propagation
+        # nosec B110 - Intentional silent handling: Monitoring errors must never break error propagation
+        logger.debug("Failed to increment exception counter, continuing with error propagation", exc_info=e)
+
 
 def wrap_third_party_exception_enhanced(
-    exc: Exception, context: ErrorContext | None = None, logger_name: str | None = None, **kwargs: Any
+    exc: Exception, logger_name: str | None = None, **kwargs: Any
 ) -> MythosMUDError:
     """
     Enhanced wrapper for third-party exceptions with structured logging.
@@ -218,9 +226,8 @@ def wrap_third_party_exception_enhanced(
 
     Args:
         exc: The original third-party exception
-        context: Error context information
         logger_name: Specific logger name to use (defaults to current module)
-        **kwargs: Additional structured logging data
+        **kwargs: Additional structured logging data (e.g., operation, user_id, etc.)
 
     Returns:
         MythosMUDError instance
@@ -250,16 +257,23 @@ def wrap_third_party_exception_enhanced(
             **kwargs,
         )
 
-    # Create context if not provided
-    if context is None:
-        context = create_error_context()
+    # Create ErrorContext internally from kwargs for exception object
+    context_metadata = {
+        k: v for k, v in kwargs.items() if k not in ["original_type", "original_message", "mythos_type"]
+    }
+    context = create_error_context(
+        user_id=kwargs.get("user_id"),
+        session_id=kwargs.get("session_id"),
+        request_id=kwargs.get("request_id"),
+        metadata=context_metadata,
+    )
 
     # Add original exception details
     details = {
         "original_type": exc_class_name,
         "original_message": str(exc),
         "traceback": traceback.format_exc(),
-        **kwargs,
+        **{k: v for k, v in kwargs.items() if k not in ["user_id", "session_id", "request_id"]},
     }
 
     # Log the conversion with structured data
@@ -269,7 +283,6 @@ def wrap_third_party_exception_enhanced(
         "Third-party exception wrapped",
         original_type=exc_class_name,
         mythos_type=mythos_error_class.__name__,
-        context=context.to_dict() if context else {},
         **kwargs,
     )
 
@@ -356,7 +369,6 @@ def log_performance_metric(
     operation: str,
     duration_ms: float,
     success: bool = True,
-    context: ErrorContext | None = None,
     logger_name: str | None = None,
     **kwargs: Any,
 ) -> None:
@@ -369,9 +381,8 @@ def log_performance_metric(
         operation: Name of the operation being measured
         duration_ms: Duration in milliseconds
         success: Whether the operation was successful
-        context: Error context information
         logger_name: Specific logger name to use (defaults to current module)
-        **kwargs: Additional structured logging data
+        **kwargs: Additional structured logging data (e.g., user_id, request_id, etc.)
     """
     # Use specified logger or default to current module logger
     metric_logger = get_logger(logger_name) if logger_name else logger
@@ -382,7 +393,6 @@ def log_performance_metric(
         "operation": operation,
         "duration_ms": duration_ms,
         "success": success,
-        "context": context.to_dict() if context else {},
         **kwargs,
     }
 
@@ -394,7 +404,6 @@ def log_security_event_enhanced(
     event_type: str,
     severity: str = "medium",
     user_id: str | None = None,
-    context: ErrorContext | None = None,
     logger_name: str | None = None,
     **kwargs: Any,
 ) -> None:
@@ -407,9 +416,8 @@ def log_security_event_enhanced(
         event_type: Type of security event
         severity: Severity level (low, medium, high, critical)
         user_id: User ID if available
-        context: Error context information
         logger_name: Specific logger name to use (defaults to current module)
-        **kwargs: Additional structured logging data
+        **kwargs: Additional structured logging data (e.g., operation, request_id, etc.)
     """
     # Use specified logger or default to current module logger
     security_logger = get_logger(logger_name) if logger_name else logger
@@ -420,7 +428,6 @@ def log_security_event_enhanced(
         "security_event_type": event_type,
         "severity": severity,
         "user_id": user_id,
-        "context": context.to_dict() if context else {},
         **kwargs,
     }
 

@@ -1231,7 +1231,7 @@
           "players"
         ],
         "summary": "Create Player",
-        "description": "Create a new player character.\n\n:param name: Display name for the new character.\n:param request: FastAPI request (for error context).\n:param starting_room_id: Room ID where the character will spawn.\n:param current_user: Authenticated user (injected).\n:param player_service: Player service (injected).\n:return: The created player as PlayerRead.\n:raises LoggedHTTPException: On validation error (400) or auth failure (401).",
+        "description": "Create a new player character.\n\n:param name: Display name for the new character.\n:param _request: FastAPI request (unused; kept for dependency injection).\n:param starting_room_id: Room ID where the character will spawn.\n:param current_user: Authenticated user (injected).\n:param player_service: Player service (injected).\n:return: The created player as PlayerRead.\n:raises LoggedHTTPException: On validation error (400) or auth failure (401).",
         "operationId": "create_player_v1_api_players__post",
         "security": [
           {
@@ -1448,7 +1448,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/server__schemas__players__player__MessageResponse"
+                  "$ref": "#/components/schemas/MessageResponse"
                 }
               }
             }
@@ -1664,7 +1664,7 @@
           "professions"
         ],
         "summary": "Get All Professions",
-        "description": "Retrieve all available professions for character creation with caching.\n\n:param request: FastAPI request (for error context).\n:param current_user: Authenticated user (injected).\n:param profession_service: Profession service (injected).\n:return: List of professions with descriptions and stat requirements.\n:raises LoggedHTTPException: If not authenticated (401) or on server error (500).",
+        "description": "Retrieve all available professions for character creation with caching.\n\n:param _request: FastAPI request (unused; kept for dependency injection).\n:param current_user: Authenticated user (injected).\n:param profession_service: Profession service (injected).\n:return: List of professions with descriptions and stat requirements.\n:raises LoggedHTTPException: If not authenticated (401) or on server error (500).",
         "operationId": "get_all_professions_v1_professions__get",
         "responses": {
           "200": {
@@ -1691,7 +1691,7 @@
           "professions"
         ],
         "summary": "Get Profession By Id",
-        "description": "Retrieve specific profession details by ID with caching.\n\n:param profession_id: ID of the profession to fetch.\n:param request: FastAPI request (for error context).\n:param current_user: Authenticated user (injected).\n:param profession_service: Profession service (injected).\n:return: Profession details including description and stat requirements.\n:raises LoggedHTTPException: If not authenticated (401), not found (404), or error (500).",
+        "description": "Retrieve specific profession details by ID with caching.\n\n:param profession_id: ID of the profession to fetch.\n:param _request: FastAPI request (unused; kept for dependency injection).\n:param current_user: Authenticated user (injected).\n:param profession_service: Profession service (injected).\n:return: Profession details including description and stat requirements.\n:raises LoggedHTTPException: If not authenticated (401), not found (404), or error (500).",
         "operationId": "get_profession_by_id_v1_professions__profession_id__get",
         "security": [
           {
@@ -1839,7 +1839,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/server__api__monitoring_models__MetricsResponse"
+                  "$ref": "#/components/schemas/MetricsResponse"
                 }
               }
             }
@@ -1906,7 +1906,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MessageResponse"
+                  "$ref": "#/components/schemas/server__api__monitoring_models__MessageResponse"
                 }
               }
             }
@@ -1994,7 +1994,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MessageResponse"
+                  "$ref": "#/components/schemas/server__api__monitoring_models__MessageResponse"
                 }
               }
             }
@@ -2215,7 +2215,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MetricsResponse"
+                  "$ref": "#/components/schemas/server__schemas__metrics__metrics__MetricsResponse"
                 }
               }
             }
@@ -7022,15 +7022,20 @@
         "properties": {
           "message": {
             "type": "string",
-            "title": "Message"
+            "title": "Message",
+            "description": "Success or status message"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
           "message"
         ],
         "title": "MessageResponse",
-        "description": "Generic response model for operations that return a simple message."
+        "description": "Generic response model for operations that return a simple message.",
+        "example": {
+          "message": "Operation completed successfully"
+        }
       },
       "MetricsData": {
         "properties": {
@@ -7119,30 +7124,132 @@
       },
       "MetricsResponse": {
         "properties": {
-          "metrics": {
-            "$ref": "#/components/schemas/MetricsData",
-            "description": "Comprehensive system metrics including NATS, circuit breaker, and DLQ stats"
+          "total_movements": {
+            "type": "integer",
+            "title": "Total Movements"
+          },
+          "successful_movements": {
+            "type": "integer",
+            "title": "Successful Movements"
+          },
+          "failed_movements": {
+            "type": "integer",
+            "title": "Failed Movements"
+          },
+          "success_rate": {
+            "type": "number",
+            "title": "Success Rate"
+          },
+          "failure_rate": {
+            "type": "number",
+            "title": "Failure Rate"
+          },
+          "current_concurrent_movements": {
+            "type": "integer",
+            "title": "Current Concurrent Movements"
+          },
+          "max_concurrent_movements": {
+            "type": "integer",
+            "title": "Max Concurrent Movements"
+          },
+          "avg_movement_time_ms": {
+            "type": "number",
+            "title": "Avg Movement Time Ms"
+          },
+          "max_movement_time_ms": {
+            "type": "number",
+            "title": "Max Movement Time Ms"
+          },
+          "min_movement_time_ms": {
+            "type": "number",
+            "title": "Min Movement Time Ms"
+          },
+          "movements_per_second": {
+            "type": "number",
+            "title": "Movements Per Second"
+          },
+          "uptime_seconds": {
+            "type": "number",
+            "title": "Uptime Seconds"
+          },
+          "integrity_checks": {
+            "type": "integer",
+            "title": "Integrity Checks"
+          },
+          "integrity_violations": {
+            "type": "integer",
+            "title": "Integrity Violations"
+          },
+          "integrity_rate": {
+            "type": "number",
+            "title": "Integrity Rate"
+          },
+          "last_movement_time": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Movement Time"
+          },
+          "last_validation_time": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Validation Time"
+          },
+          "room_occupancy": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Room Occupancy"
+          },
+          "player_movement_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Player Movement Counts"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
           }
         },
         "type": "object",
         "required": [
-          "metrics"
+          "total_movements",
+          "successful_movements",
+          "failed_movements",
+          "success_rate",
+          "failure_rate",
+          "current_concurrent_movements",
+          "max_concurrent_movements",
+          "avg_movement_time_ms",
+          "max_movement_time_ms",
+          "min_movement_time_ms",
+          "movements_per_second",
+          "uptime_seconds",
+          "integrity_checks",
+          "integrity_violations",
+          "integrity_rate",
+          "last_movement_time",
+          "last_validation_time",
+          "room_occupancy",
+          "player_movement_counts",
+          "timestamp"
         ],
         "title": "MetricsResponse",
-        "description": "Response model for comprehensive system metrics.",
-        "example": {
-          "metrics": {
-            "circuit_breaker": {
-              "state": "closed"
-            },
-            "dead_letter_queue": {
-              "total_messages": 0
-            },
-            "nats_connection": {
-              "status": "connected"
-            }
-          }
-        }
+        "description": "Response model for movement metrics."
       },
       "MetricsSummary": {
         "properties": {
@@ -10567,152 +10674,45 @@
         "title": "WeaponStats",
         "description": "Weapon statistics for items that can be used as weapons.\n\nThis model represents the combat properties of a weapon item, including\ndamage range, modifiers, damage types, and magical properties."
       },
-      "server__api__monitoring_models__MetricsResponse": {
-        "properties": {
-          "total_movements": {
-            "type": "integer",
-            "title": "Total Movements"
-          },
-          "successful_movements": {
-            "type": "integer",
-            "title": "Successful Movements"
-          },
-          "failed_movements": {
-            "type": "integer",
-            "title": "Failed Movements"
-          },
-          "success_rate": {
-            "type": "number",
-            "title": "Success Rate"
-          },
-          "failure_rate": {
-            "type": "number",
-            "title": "Failure Rate"
-          },
-          "current_concurrent_movements": {
-            "type": "integer",
-            "title": "Current Concurrent Movements"
-          },
-          "max_concurrent_movements": {
-            "type": "integer",
-            "title": "Max Concurrent Movements"
-          },
-          "avg_movement_time_ms": {
-            "type": "number",
-            "title": "Avg Movement Time Ms"
-          },
-          "max_movement_time_ms": {
-            "type": "number",
-            "title": "Max Movement Time Ms"
-          },
-          "min_movement_time_ms": {
-            "type": "number",
-            "title": "Min Movement Time Ms"
-          },
-          "movements_per_second": {
-            "type": "number",
-            "title": "Movements Per Second"
-          },
-          "uptime_seconds": {
-            "type": "number",
-            "title": "Uptime Seconds"
-          },
-          "integrity_checks": {
-            "type": "integer",
-            "title": "Integrity Checks"
-          },
-          "integrity_violations": {
-            "type": "integer",
-            "title": "Integrity Violations"
-          },
-          "integrity_rate": {
-            "type": "number",
-            "title": "Integrity Rate"
-          },
-          "last_movement_time": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Last Movement Time"
-          },
-          "last_validation_time": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Last Validation Time"
-          },
-          "room_occupancy": {
-            "additionalProperties": {
-              "type": "integer"
-            },
-            "type": "object",
-            "title": "Room Occupancy"
-          },
-          "player_movement_counts": {
-            "additionalProperties": {
-              "type": "integer"
-            },
-            "type": "object",
-            "title": "Player Movement Counts"
-          },
-          "timestamp": {
-            "type": "string",
-            "title": "Timestamp"
-          }
-        },
-        "type": "object",
-        "required": [
-          "total_movements",
-          "successful_movements",
-          "failed_movements",
-          "success_rate",
-          "failure_rate",
-          "current_concurrent_movements",
-          "max_concurrent_movements",
-          "avg_movement_time_ms",
-          "max_movement_time_ms",
-          "min_movement_time_ms",
-          "movements_per_second",
-          "uptime_seconds",
-          "integrity_checks",
-          "integrity_violations",
-          "integrity_rate",
-          "last_movement_time",
-          "last_validation_time",
-          "room_occupancy",
-          "player_movement_counts",
-          "timestamp"
-        ],
-        "title": "MetricsResponse",
-        "description": "Response model for movement metrics."
-      },
-      "server__schemas__players__player__MessageResponse": {
+      "server__api__monitoring_models__MessageResponse": {
         "properties": {
           "message": {
             "type": "string",
-            "title": "Message",
-            "description": "Success or status message"
+            "title": "Message"
           }
         },
-        "additionalProperties": false,
         "type": "object",
         "required": [
           "message"
         ],
         "title": "MessageResponse",
-        "description": "Generic response model for operations that return a simple message.",
+        "description": "Generic response model for operations that return a simple message."
+      },
+      "server__schemas__metrics__metrics__MetricsResponse": {
+        "properties": {
+          "metrics": {
+            "$ref": "#/components/schemas/MetricsData",
+            "description": "Comprehensive system metrics including NATS, circuit breaker, and DLQ stats"
+          }
+        },
+        "type": "object",
+        "required": [
+          "metrics"
+        ],
+        "title": "MetricsResponse",
+        "description": "Response model for comprehensive system metrics.",
         "example": {
-          "message": "Operation completed successfully"
+          "metrics": {
+            "circuit_breaker": {
+              "state": "closed"
+            },
+            "dead_letter_queue": {
+              "total_messages": 0
+            },
+            "nats_connection": {
+              "status": "connected"
+            }
+          }
         }
       }
     },

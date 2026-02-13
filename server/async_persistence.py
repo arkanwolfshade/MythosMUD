@@ -35,7 +35,7 @@ from .persistence.repositories import (
 )
 from .persistence.repositories.container_repository import ContainerCreateParams
 from .structured_logging.enhanced_logging_config import get_logger
-from .utils.error_logging import create_error_context, log_and_raise
+from .utils.error_logging import log_and_raise
 
 if TYPE_CHECKING:
     from .models.room import Room
@@ -136,8 +136,6 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
                 await self._load_room_cache_async()
                 self._room_cache_loaded = True
             except (DatabaseError, OSError, RuntimeError) as e:
-                context = create_error_context()
-                context.metadata["operation"] = "load_room_cache"
                 self._logger.error(
                     "Room cache load failed",
                     error=str(e),
@@ -638,10 +636,6 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
         """
         from sqlalchemy import func
 
-        context = create_error_context()
-        context.metadata["operation"] = "get_user_by_username_case_insensitive"
-        context.metadata["username"] = username
-
         try:
             async for session in get_async_session():
                 # Use case-insensitive comparison
@@ -654,7 +648,8 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving user by username '{username}': {e}",
-                context=context,
+                operation="get_user_by_username_case_insensitive",
+                username=username,
                 details={"username": username, "error": str(e)},
                 user_friendly="Failed to retrieve user information",
             )
@@ -755,9 +750,6 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
 
     async def get_professions(self) -> list[Profession]:
         """Get all available professions using SQLAlchemy ORM."""
-        context = create_error_context()
-        context.metadata["operation"] = "async_get_professions"
-
         try:
             async for session in get_async_session():
                 # SQLAlchemy Column: use .is_(True) for boolean comparisons
@@ -773,7 +765,7 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving professions: {e}",
-                context=context,
+                operation="async_get_professions",
                 details={"error": str(e)},
                 user_friendly="Failed to retrieve professions",
             )

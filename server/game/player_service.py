@@ -22,7 +22,7 @@ from ..exceptions import DatabaseError, ValidationError
 from ..models import Stats
 from ..schemas.players import PlayerRead
 from ..structured_logging.enhanced_logging_config import get_logger
-from ..utils.enhanced_error_logging import create_error_context, log_and_raise_enhanced
+from ..utils.enhanced_error_logging import log_and_raise_enhanced
 from .player_creation_service import PlayerCreationService
 from .player_respawn_wrapper import PlayerRespawnWrapper
 from .player_schema_converter import PlayerSchemaConverter
@@ -264,13 +264,11 @@ class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-pu
         player = await self.persistence.get_player_by_id(player_id)
         if not player:
             logger.warning("Player not found for deletion")
-            context = create_error_context()
-            context.metadata["player_id"] = player_id
-            context.metadata["operation"] = "delete_player"
             log_and_raise_enhanced(
                 ValidationError,
                 "Player not found for deletion",
-                context=context,
+                player_id=str(player_id),
+                operation="delete_player",
                 details={"player_id": player_id},
                 user_friendly="Player not found",
             )
@@ -279,13 +277,11 @@ class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-pu
         success = await self.persistence.delete_player(player_id)
         if not success:
             logger.error("Failed to delete player from persistence", player_id=player_id)
-            context = create_error_context()
-            context.metadata["player_id"] = player_id
-            context.metadata["operation"] = "delete_player"
             log_and_raise_enhanced(
                 DatabaseError,
                 "Failed to delete player from persistence",
-                context=context,
+                player_id=str(player_id),
+                operation="delete_player",
                 details={"player_id": player_id},
                 user_friendly="Failed to delete player",
             )
@@ -379,13 +375,11 @@ class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-pu
         player = await self.persistence.get_player_by_id(player_id)
         if not player:
             logger.warning("Character not found for soft deletion", player_id=player_id)
-            context = create_error_context()
-            context.metadata["player_id"] = player_id
-            context.metadata["operation"] = "soft_delete_character"
             log_and_raise_enhanced(
                 ValidationError,
                 "Character not found for deletion",
-                context=context,
+                player_id=str(player_id),
+                operation="soft_delete_character",
                 details={"player_id": player_id},
                 user_friendly="Character not found",
             )
@@ -393,14 +387,12 @@ class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-pu
         # Validate that character belongs to user
         if str(player.user_id) != str(user_id):
             logger.warning("Character does not belong to user", player_id=player_id, user_id=user_id)
-            context = create_error_context()
-            context.metadata["player_id"] = player_id
-            context.metadata["user_id"] = str(user_id)
-            context.metadata["operation"] = "soft_delete_character"
             log_and_raise_enhanced(
                 ValidationError,
                 "Character does not belong to user",
-                context=context,
+                player_id=str(player_id),
+                user_id=str(user_id),
+                operation="soft_delete_character",
                 details={"player_id": player_id, "user_id": str(user_id)},
                 user_friendly="You can only delete your own characters",
             )
@@ -414,13 +406,11 @@ class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-pu
         success = await self.persistence.soft_delete_player(player_id)
         if not success:
             logger.error("Failed to soft delete character", player_id=player_id)
-            context = create_error_context()
-            context.metadata["player_id"] = player_id
-            context.metadata["operation"] = "soft_delete_character"
             log_and_raise_enhanced(
                 DatabaseError,
                 "Failed to soft delete character",
-                context=context,
+                player_id=str(player_id),
+                operation="soft_delete_character",
                 details={"player_id": player_id},
                 user_friendly="Failed to delete character",
             )
@@ -446,14 +436,12 @@ class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-pu
             player = await self.persistence.get_player_by_name(player_name)
             if not player:
                 logger.warning("Cannot update location - player not found", player_name=player_name)
-                context = create_error_context()
-                context.metadata["player_name"] = player_name
-                context.metadata["new_room_id"] = new_room_id
-                context.metadata["operation"] = "update_player_location"
                 log_and_raise_enhanced(
                     ValidationError,
                     f"Player not found: {player_name}",
-                    context=context,
+                    player_name=player_name,
+                    new_room_id=new_room_id,
+                    operation="update_player_location",
                     details={"player_name": player_name, "new_room_id": new_room_id},
                     user_friendly="Player not found",
                 )
@@ -470,14 +458,12 @@ class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-pu
 
         except (DatabaseError, AttributeError) as e:
             logger.error("Failed to update player location", player_name=player_name, room_id=new_room_id, error=str(e))
-            context = create_error_context()
-            context.metadata["player_name"] = player_name
-            context.metadata["new_room_id"] = new_room_id
-            context.metadata["operation"] = "update_player_location"
             log_and_raise_enhanced(
                 DatabaseError,
                 f"Failed to update player location: {str(e)}",
-                context=context,
+                operation="update_player_location",
+                player_name=player_name,
+                new_room_id=new_room_id,
                 details={"player_name": player_name, "new_room_id": new_room_id, "error": str(e)},
                 user_friendly="Failed to update player location",
             )

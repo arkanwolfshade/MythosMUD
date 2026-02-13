@@ -13,7 +13,7 @@ from ..exceptions import ValidationError
 from ..models.player import Player
 from ..services.player_respawn_service import LIMBO_ROOM_ID
 from ..structured_logging.enhanced_logging_config import get_logger
-from ..utils.enhanced_error_logging import create_error_context, log_and_raise_enhanced
+from ..utils.enhanced_error_logging import log_and_raise_enhanced
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
@@ -75,13 +75,11 @@ class PlayerRespawnWrapper:
         all_players = list(result.scalars().all())
 
         if not all_players:
-            context = create_error_context()
-            context.metadata["operation"] = "respawn_player_by_user_id"
-            context.metadata["user_id"] = user_id
             log_and_raise_enhanced(
                 ValidationError,
                 "Player not found for respawn",
-                context=context,
+                operation="respawn_player_by_user_id",
+                user_id=user_id,
                 details={"user_id": user_id},
                 user_friendly="Player not found",
             )
@@ -99,18 +97,16 @@ class PlayerRespawnWrapper:
 
         if not dead_players:
             # No dead players found - check if any players exist to give better error message
-            context = create_error_context()
-            context.metadata["operation"] = "respawn_player_by_user_id"
-            context.metadata["user_id"] = user_id
-            if all_players:
-                context.metadata["player_dp"] = all_players[0].get_stats().get("current_dp", 0)
+            player_dp = all_players[0].get_stats().get("current_dp", 0) if all_players else None
             log_and_raise_enhanced(
                 ValidationError,
                 "Player must be dead to respawn (DP must be -10 or below)",
-                context=context,
+                operation="respawn_player_by_user_id",
+                user_id=user_id,
+                player_dp=player_dp,
                 details={
                     "user_id": user_id,
-                    "player_dp": all_players[0].get_stats().get("current_dp", 0) if all_players else None,
+                    "player_dp": player_dp,
                 },
                 user_friendly="Player must be dead to respawn",
             )
@@ -131,17 +127,13 @@ class PlayerRespawnWrapper:
         success = await respawn_service.respawn_player(player_id_uuid, session)
         if not success:
             logger.error("Respawn failed", player_id=player.player_id)
-            context = create_error_context()
-            context.metadata["operation"] = "respawn_player_by_user_id"
-            context.metadata["user_id"] = user_id
-            # Structlog handles UUID objects automatically, no need to convert to string
-            context.metadata["player_id"] = player.player_id
             log_and_raise_enhanced(
                 ValidationError,
                 "Failed to respawn player",
-                context=context,
-                # Structlog handles UUID objects automatically, no need to convert to string
-                details={"user_id": user_id, "player_id": player.player_id},
+                operation="respawn_player_by_user_id",
+                user_id=user_id,
+                player_id=str(player.player_id),
+                details={"user_id": user_id, "player_id": str(player.player_id)},
                 user_friendly="Respawn failed",
             )
 
@@ -212,13 +204,11 @@ class PlayerRespawnWrapper:
         result = await session.execute(stmt)
         player = result.scalar_one_or_none()
         if not player:
-            context = create_error_context()
-            context.metadata["operation"] = "respawn_player_from_delirium_by_user_id"
-            context.metadata["user_id"] = user_id
             log_and_raise_enhanced(
                 ValidationError,
                 "Player not found for delirium respawn",
-                context=context,
+                operation="respawn_player_from_delirium_by_user_id",
+                user_id=user_id,
                 details={"user_id": user_id},
                 user_friendly="Player not found",
             )
@@ -226,15 +216,13 @@ class PlayerRespawnWrapper:
         # Verify player is delirious (lucidity <= -10)
         lucidity_record = await session.get(PlayerLucidity, player.player_id)
         if not lucidity_record or lucidity_record.current_lcd > -10:
-            context = create_error_context()
-            context.metadata["operation"] = "respawn_player_from_delirium_by_user_id"
-            context.metadata["user_id"] = user_id
             current_lucidity = lucidity_record.current_lcd if lucidity_record else None
-            context.metadata["player_lucidity"] = current_lucidity
             log_and_raise_enhanced(
                 ValidationError,
                 "Player must be delirious to respawn (lucidity must be -10 or below)",
-                context=context,
+                operation="respawn_player_from_delirium_by_user_id",
+                user_id=user_id,
+                player_lucidity=current_lucidity,
                 details={"user_id": user_id, "player_lucidity": current_lucidity},
                 user_friendly="Player must be delirious to respawn",
             )
@@ -246,15 +234,13 @@ class PlayerRespawnWrapper:
         success = await respawn_service.respawn_player_from_delirium(player_id_uuid, session)
         if not success:
             logger.error("Delirium respawn failed", player_id=player.player_id)
-            context = create_error_context()
-            context.metadata["operation"] = "respawn_player_from_delirium_by_user_id"
-            context.metadata["user_id"] = user_id
-            context.metadata["player_id"] = player.player_id
             log_and_raise_enhanced(
                 ValidationError,
                 "Failed to respawn player from delirium",
-                context=context,
-                details={"user_id": user_id, "player_id": player.player_id},
+                operation="respawn_player_from_delirium_by_user_id",
+                user_id=user_id,
+                player_id=str(player.player_id),
+                details={"user_id": user_id, "player_id": str(player.player_id)},
                 user_friendly="Delirium respawn failed",
             )
 

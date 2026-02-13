@@ -23,7 +23,6 @@ from ..schemas.rooms import RoomListResponse, RoomPositionUpdateResponse, RoomRe
 from ..services.admin_auth_service import AdminAction, get_admin_auth_service
 from ..services.exploration_service import ExplorationService
 from ..structured_logging.enhanced_logging_config import get_logger
-from ..utils.error_logging import create_context_from_request
 
 if TYPE_CHECKING:
     from ..async_persistence import AsyncPersistenceLayer
@@ -89,16 +88,18 @@ async def _apply_exploration_filter_if_needed(  # pylint: disable=too-many-argum
 def _validate_room_position_update(current_user: User | None, room_id: str, request: Request) -> None:
     """Validate authentication and admin permissions for room position update."""
     if not current_user:
-        context = create_context_from_request(request)
-        context.metadata["requested_room_id"] = room_id
-        raise LoggedHTTPException(status_code=401, detail="Authentication required", context=context)
+        raise LoggedHTTPException(
+            status_code=401,
+            detail="Authentication required",
+            requested_room_id=room_id,
+        )
 
     auth_service = get_admin_auth_service()
     auth_service.validate_permission(current_user, AdminAction.UPDATE_ROOM_POSITION, request)
 
 
 async def _update_room_position_in_db(
-    session: AsyncSession, room_id: str, map_x: int, map_y: int, request: Request
+    session: AsyncSession, room_id: str, map_x: int, map_y: int, _request: Request
 ) -> None:
     """Update room position in database and verify the update succeeded."""
     update_query = text(
@@ -121,12 +122,10 @@ async def _update_room_position_in_db(
     rowcount: int = getattr(result, "rowcount", 0)
     if not rowcount:
         logger.warning("No rows updated for room position", room_id=room_id)
-        context = create_context_from_request(request)
-        context.metadata["requested_room_id"] = room_id
         raise LoggedHTTPException(
             status_code=404,
             detail="Room not found in database",
-            context=context,
+            requested_room_id=room_id,
         )
 
     await session.commit()
@@ -142,7 +141,7 @@ async def _invalidate_room_cache(room_service: RoomService, room_id: str) -> Non
 # FastAPI matches routes in order, and /{room_id} would match /list otherwise
 @room_router.get("/list", response_model=RoomListResponse)
 async def list_rooms(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: API endpoint requires many query parameters and intermediate variables for room listing
-    request: Request,
+    _request: Request,
     plane: str = Query(..., description="Plane name (required)"),
     zone: str = Query(..., description="Zone name (required)"),
     sub_zone: str | None = Query(None, description="Optional sub-zone name for filtering"),
@@ -212,11 +211,9 @@ async def list_rooms(  # pylint: disable=too-many-arguments,too-many-positional-
             sub_zone=sub_zone,
             exc_info=True,
         )
-        context = create_context_from_request(request)
         raise LoggedHTTPException(
             status_code=500,
             detail="Failed to retrieve room list",
-            context=context,
         ) from e
 
 
@@ -231,7 +228,7 @@ class RoomPositionUpdate(BaseModel):
 async def update_room_position(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: API endpoint requires many parameters for room position updates
     room_id: str,
     position_data: RoomPositionUpdate,
-    request: Request,
+    _request: Request,
     current_user: User | None = Depends(get_current_user),
     session: AsyncSession = Depends(get_async_session),
     room_service: RoomService = RoomServiceDep,
@@ -244,7 +241,7 @@ async def update_room_position(  # pylint: disable=too-many-arguments,too-many-p
     """
     try:
         # Validate authentication and permissions
-        _validate_room_position_update(current_user, room_id, request)
+        _validate_room_position_update(current_user, room_id, _request)
 
         auth_service = get_admin_auth_service()
         logger.info(
@@ -259,12 +256,16 @@ async def update_room_position(  # pylint: disable=too-many-arguments,too-many-p
         room = await room_service.get_room(room_id)
         if not room:
             logger.warning("Room not found for position update", room_id=room_id)
-            context = create_context_from_request(request)
-            context.metadata["requested_room_id"] = room_id
-            raise LoggedHTTPException(status_code=404, detail="Room not found", context=context)
+            raise LoggedHTTPException(
+                status_code=404,
+                detail="Room not found",
+                requested_room_id=room_id,
+            )
 
         # Update room position in database
-        await _update_room_position_in_db(session, room_id, int(position_data.map_x), int(position_data.map_y), request)
+        await _update_room_position_in_db(
+            session, room_id, int(position_data.map_x), int(position_data.map_y), _request
+        )
 
         logger.info(
             "Room position updated successfully",
@@ -287,25 +288,23 @@ async def update_room_position(  # pylint: disable=too-many-arguments,too-many-p
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Room creation errors unpredictable, must rollback and create context
         await session.rollback()
-        context = create_context_from_request(request)
-        context.metadata["requested_room_id"] = room_id
         logger.error(
             "Error updating room position",
             error=str(e),
             exc_info=True,
-            **context.to_dict(),
+            requested_room_id=room_id,
         )
         raise LoggedHTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to update room position",
-            context=context,
+            requested_room_id=room_id,
         ) from e
 
 
 @room_router.get("/{room_id}", response_model=RoomResponse)
 async def get_room(
     room_id: str,
-    request: Request,
+    _request: Request,
     room_service: RoomService = RoomServiceDep,
 ) -> RoomResponse:
     """Get room information by room ID."""
@@ -314,9 +313,11 @@ async def get_room(
     room = await room_service.get_room(room_id)
     if not room:
         logger.warning("Room not found", room_id=room_id)
-        context = create_context_from_request(request)
-        context.metadata["requested_room_id"] = room_id
-        raise LoggedHTTPException(status_code=404, detail="Room not found", context=context)
+        raise LoggedHTTPException(
+            status_code=404,
+            detail="Room not found",
+            requested_room_id=room_id,
+        )
 
     logger.debug("Room information returned", room_id=room_id, room_name=room.get("name", "Unknown"))
     if not isinstance(room, dict):

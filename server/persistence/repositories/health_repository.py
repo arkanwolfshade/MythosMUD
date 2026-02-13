@@ -15,7 +15,7 @@ from server.database import get_session_maker
 from server.exceptions import DatabaseError
 from server.models.player import Player
 from server.structured_logging.enhanced_logging_config import get_logger
-from server.utils.error_logging import create_error_context, log_and_raise
+from server.utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)
 
@@ -166,12 +166,6 @@ class HealthRepository:
         Raises:
             DatabaseError: If database operation fails
         """
-        context = create_error_context()
-        context.metadata["operation"] = "update_player_health"
-        context.metadata["player_id"] = str(player_id)
-        context.metadata["delta"] = delta
-        context.metadata["reason"] = reason
-
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
@@ -219,7 +213,10 @@ class HealthRepository:
             log_and_raise(
                 DatabaseError,
                 f"Database error updating player health: {e}",
-                context=context,
+                operation="update_player_health",
+                player_id=str(player_id),
+                delta=delta,
+                reason=reason,
                 details={"player_id": str(player_id), "delta": delta, "reason": reason, "error": str(e)},
                 user_friendly="Failed to update player health",
             )

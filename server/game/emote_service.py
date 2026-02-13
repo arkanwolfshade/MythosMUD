@@ -15,7 +15,7 @@ import asyncpg
 
 from ..exceptions import ValidationError
 from ..structured_logging.enhanced_logging_config import get_logger
-from ..utils.error_logging import create_error_context, log_and_raise
+from ..utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)
 
@@ -232,14 +232,12 @@ class EmoteService:
         """
         emote_def = self.get_emote_definition(command)
         if not emote_def:
-            context = create_error_context()
-            context.metadata["command"] = command
-            context.metadata["player_name"] = player_name
-            context.metadata["operation"] = "format_emote_messages"
             log_and_raise(
                 ValidationError,
                 f"Unknown emote: {command}",
-                context=context,
+                operation="format_emote_messages",
+                command=command,
+                player_name=player_name,
                 details={"command": command, "player_name": player_name},
                 user_friendly="Unknown emote command",
             )

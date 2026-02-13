@@ -14,7 +14,7 @@ from ..exceptions import ValidationError
 from ..game.stats_generator import StatsGenerator
 from ..models import Stats
 from ..structured_logging.enhanced_logging_config import get_logger
-from ..utils.error_logging import create_error_context, log_and_raise
+from ..utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)
 
@@ -96,13 +96,11 @@ class CharacterCreationService:
             }
         except ValueError as e:
             logger.error("Invalid parameters for stats rolling", error=str(e))
-            context = create_error_context()
-            context.metadata["operation"] = "roll_stats"
-            context.metadata["error"] = str(e)
             log_and_raise(
                 ValidationError,
                 f"Invalid profession: {str(e)}",
-                context=context,
+                operation="roll_stats",
+                error=str(e),
                 details={"error": str(e)},
                 user_friendly="Invalid parameters provided",
             )
@@ -146,12 +144,10 @@ class CharacterCreationService:
             return {"available_classes": available_classes, "stat_summary": stat_summary}
         except (ValueError, PydanticValidationError) as e:
             logger.error("Stats validation failed", error=str(e))
-            context = create_error_context()
-            context.metadata["operation"] = "validate_stats"
             log_and_raise(
                 ValidationError,
                 "Invalid stats format",
-                context=context,
+                operation="validate_stats",
                 details={"error": str(e)},
                 user_friendly="Invalid stats format provided",
             )
@@ -210,13 +206,11 @@ class CharacterCreationService:
             }
         except (ValueError, PydanticValidationError, ValidationError) as e:
             logger.error("Character creation failed", name=name, error=str(e))
-            context = create_error_context()
-            context.metadata["operation"] = "create_character"
-            context.metadata["character_name"] = name
             log_and_raise(
                 ValidationError,
                 "Character creation failed",
-                context=context,
+                operation="create_character",
+                character_name=name,
                 details={"error": str(e), "character_name": name},
                 user_friendly="Failed to create character",
             )

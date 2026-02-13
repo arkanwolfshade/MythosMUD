@@ -16,7 +16,6 @@ from ..exceptions import ValidationError as MythosValidationError
 from ..models.command import CommandType
 from ..structured_logging.enhanced_logging_config import get_logger
 from .command_parser import CommandParser, parse_command
-from .error_logging import create_error_context
 
 logger = get_logger(__name__)
 
@@ -73,13 +72,13 @@ class CommandProcessor:
                 error_details.append(f"{field}: {message}")
 
             error_message = "; ".join(error_details)
-            context = create_error_context()
-            context.metadata = {
-                "player_name": player_name,
-                "command_line": command_line,
-                "validation_errors": error_details,
-            }
-            logger.warning("Command validation failed", error_message=error_message)
+            logger.warning(
+                "Command validation failed",
+                error_message=error_message,
+                player_name=player_name,
+                command_line=command_line,
+                validation_errors=error_details,
+            )
 
             return None, f"Invalid command: {error_message}", None
 
@@ -93,28 +92,26 @@ class CommandProcessor:
         except ValueError as e:
             # Handle parser-specific errors (e.g., unknown commands)
             error_message = str(e)
-            context = create_error_context()
-            context.metadata = {
-                "player_name": player_name,
-                "command_line": command_line,
-                "error_type": "ValueError",
-                "error_message": error_message,
-            }
-            logger.warning("Command parsing failed", error_message=error_message)
+            logger.warning(
+                "Command parsing failed",
+                error_message=error_message,
+                player_name=player_name,
+                command_line=command_line,
+                error_type="ValueError",
+            )
 
             return None, error_message, None
 
         except (TypeError, AttributeError, KeyError, RuntimeError) as e:
             # Handle unexpected errors
             error_message = f"Unexpected error processing command: {str(e)}"
-            context = create_error_context()
-            context.metadata = {
-                "player_name": player_name,
-                "command_line": command_line,
-                "error_type": type(e).__name__,
-                "error_message": str(e),
-            }
-            logger.error("Unexpected error in command processing", error_message=error_message)
+            logger.error(
+                "Unexpected error in command processing",
+                error_message=error_message,
+                player_name=player_name,
+                command_line=command_line,
+                error_type=type(e).__name__,
+            )
 
             return None, error_message, None
 
@@ -252,9 +249,12 @@ class CommandProcessor:
         try:
             return self.parser.get_command_help(command_name)
         except (ValueError, TypeError, AttributeError, KeyError, RuntimeError) as e:
-            context = create_error_context()
-            context.metadata = {"command_name": command_name, "error_type": type(e).__name__, "error_message": str(e)}
-            logger.error("Error getting command help", error=str(e))
+            logger.error(
+                "Error getting command help",
+                error=str(e),
+                command_name=command_name,
+                error_type=type(e).__name__,
+            )
             return "Help system temporarily unavailable."
 
 

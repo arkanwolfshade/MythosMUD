@@ -25,7 +25,7 @@ from ..models.command import (
     UnaliasCommand,
 )
 from ..structured_logging.enhanced_logging_config import get_logger
-from .enhanced_error_logging import create_error_context, log_and_raise_enhanced
+from .enhanced_error_logging import log_and_raise_enhanced
 
 logger = get_logger(__name__)
 
@@ -37,10 +37,8 @@ class UtilityCommandFactory:
     def create_alias_command(args: list[str]) -> AliasCommand:
         """Create AliasCommand from arguments."""
         if not args:
-            context = create_error_context()
-            context.metadata = {"args": args}
             log_and_raise_enhanced(
-                MythosValidationError, "Alias command requires an alias name", context=context, logger_name=__name__
+                MythosValidationError, "Alias command requires an alias name", args=args, logger_name=__name__
             )
 
         alias_name = args[0]
@@ -52,10 +50,8 @@ class UtilityCommandFactory:
     def create_aliases_command(args: list[str]) -> AliasesCommand:
         """Create AliasesCommand from arguments."""
         if args:
-            context = create_error_context()
-            context.metadata = {"args": args}
             log_and_raise_enhanced(
-                MythosValidationError, "Aliases command takes no arguments", context=context, logger_name=__name__
+                MythosValidationError, "Aliases command takes no arguments", args=args, logger_name=__name__
             )
         return AliasesCommand()
 
@@ -63,16 +59,16 @@ class UtilityCommandFactory:
     def create_unalias_command(args: list[str]) -> UnaliasCommand:
         """Create UnaliasCommand from arguments."""
         if not args:
-            context = create_error_context()
-            context.metadata = {"args": args}
             log_and_raise_enhanced(
-                MythosValidationError, "Unalias command requires an alias name", context=context, logger_name=__name__
+                MythosValidationError, "Unalias command requires an alias name", args=args, logger_name=__name__
             )
         if len(args) > 1:
-            context = create_error_context()
-            context.metadata = {"args": args, "arg_count": len(args)}
             log_and_raise_enhanced(
-                MythosValidationError, "Unalias command takes only one argument", context=context, logger_name=__name__
+                MythosValidationError,
+                "Unalias command takes only one argument",
+                args=args,
+                arg_count=len(args),
+                logger_name=__name__,
             )
 
         return UnaliasCommand(alias_name=args[0])
@@ -101,12 +97,10 @@ class UtilityCommandFactory:
     def create_summon_command(args: list[str]) -> SummonCommand:
         """Create SummonCommand from arguments."""
         if not args:
-            context = create_error_context()
-            context.metadata = {"args": args}
             log_and_raise_enhanced(
                 MythosValidationError,
                 "Usage: summon <prototype_id> [quantity] [item|npc]",
-                context=context,
+                args=args,
                 logger_name=__name__,
             )
 
@@ -123,34 +117,31 @@ class UtilityCommandFactory:
                 try:
                     parsed_quantity = int(token)
                 except ValueError as error:
-                    context = create_error_context()
-                    context.metadata = {"args": args, "invalid_token": token}
                     log_and_raise_enhanced(
                         MythosValidationError,
                         "Usage: summon <prototype_id> [quantity] [item|npc]",
-                        context=context,
+                        args=args,
+                        invalid_token=token,
+                        error=str(error),
                         logger_name=__name__,
-                        error=error,
                     )
                 if parsed_quantity <= 0:
-                    context = create_error_context()
-                    context.metadata = {"args": args, "invalid_quantity": parsed_quantity}
                     log_and_raise_enhanced(
                         MythosValidationError,
                         "Summon quantity must be a positive number.",
-                        context=context,
+                        args=args,
+                        invalid_quantity=parsed_quantity,
                         logger_name=__name__,
                     )
                 quantity = parsed_quantity
                 continue
 
             # Extra positional argument that we don't recognise.
-            context = create_error_context()
-            context.metadata = {"args": args, "unexpected_token": token}
             log_and_raise_enhanced(
                 MythosValidationError,
                 "Usage: summon <prototype_id> [quantity] [item|npc]",
-                context=context,
+                args=args,
+                unexpected_token=token,
                 logger_name=__name__,
             )
 
@@ -164,10 +155,8 @@ class UtilityCommandFactory:
     def create_teleport_command(args: list[str]) -> TeleportCommand:
         """Create TeleportCommand from arguments."""
         if not args:
-            context = create_error_context()
-            context.metadata = {"args": args}
             log_and_raise_enhanced(
-                MythosValidationError, "Teleport command requires a player name", context=context, logger_name=__name__
+                MythosValidationError, "Teleport command requires a player name", args=args, logger_name=__name__
             )
 
         player_name = args[0]
@@ -175,26 +164,23 @@ class UtilityCommandFactory:
 
         if len(args) > 1:
             if len(args) > 2:
-                context = create_error_context()
-                context.metadata = {"args": args}
                 log_and_raise_enhanced(
                     MythosValidationError,
                     "Teleport command accepts at most one direction argument",
-                    context=context,
+                    args=args,
                     logger_name=__name__,
                 )
             raw_direction = args[1].lower()
             try:
                 direction = Direction(raw_direction)
             except ValueError as error:
-                context = create_error_context()
-                context.metadata = {"args": args, "direction": raw_direction}
                 log_and_raise_enhanced(
                     MythosValidationError,
                     "Teleport command direction must be a valid Mythos cardinal or intercardinal direction",
-                    context=context,
+                    args=args,
+                    direction=raw_direction,
+                    error=str(error),
                     logger_name=__name__,
-                    error=error,
                 )
 
         return TeleportCommand(player_name=player_name, direction=direction)
@@ -203,10 +189,8 @@ class UtilityCommandFactory:
     def create_goto_command(args: list[str]) -> GotoCommand:
         """Create GotoCommand from arguments."""
         if not args:
-            context = create_error_context()
-            context.metadata = {"args": args}
             log_and_raise_enhanced(
-                MythosValidationError, "Goto command requires a player name", context=context, logger_name=__name__
+                MythosValidationError, "Goto command requires a player name", args=args, logger_name=__name__
             )
         player_name = args[0]
         return GotoCommand(player_name=player_name)
@@ -246,10 +230,8 @@ class UtilityCommandFactory:
     def create_cast_command(args: list[str]) -> CastCommand:
         """Create CastCommand from arguments."""
         if not args:
-            context = create_error_context()
-            context.metadata = {"args": args}
             log_and_raise_enhanced(
-                MythosValidationError, "Cast command requires a spell name", context=context, logger_name=__name__
+                MythosValidationError, "Cast command requires a spell name", args=args, logger_name=__name__
             )
         heal_cmd = UtilityCommandFactory._resolve_heal_cast(args)
         if heal_cmd is not None:
@@ -262,10 +244,8 @@ class UtilityCommandFactory:
     def create_spell_command(args: list[str]) -> SpellCommand:
         """Create SpellCommand from arguments."""
         if not args:
-            context = create_error_context()
-            context.metadata = {"args": args}
             log_and_raise_enhanced(
-                MythosValidationError, "Spell command requires a spell name", context=context, logger_name=__name__
+                MythosValidationError, "Spell command requires a spell name", args=args, logger_name=__name__
             )
         spell_name = " ".join(args)  # Allow multi-word spell names
         return SpellCommand(spell_name=spell_name)
@@ -274,10 +254,8 @@ class UtilityCommandFactory:
     def create_spells_command(args: list[str]) -> SpellsCommand:
         """Create SpellsCommand from arguments."""
         if args:
-            context = create_error_context()
-            context.metadata = {"args": args}
             log_and_raise_enhanced(
-                MythosValidationError, "Spells command takes no arguments", context=context, logger_name=__name__
+                MythosValidationError, "Spells command takes no arguments", args=args, logger_name=__name__
             )
         return SpellsCommand()
 
@@ -285,10 +263,8 @@ class UtilityCommandFactory:
     def create_learn_command(args: list[str]) -> LearnCommand:
         """Create LearnCommand from arguments."""
         if not args:
-            context = create_error_context()
-            context.metadata = {"args": args}
             log_and_raise_enhanced(
-                MythosValidationError, "Learn command requires a spell name", context=context, logger_name=__name__
+                MythosValidationError, "Learn command requires a spell name", args=args, logger_name=__name__
             )
         spell_name = " ".join(args)  # Allow multi-word spell names
         return LearnCommand(spell_name=spell_name)
