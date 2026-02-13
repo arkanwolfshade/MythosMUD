@@ -14,7 +14,7 @@ described in the Pnakotic Manuscripts to ensure proper eldritch architecture.
 
 **Support for Exit Flags**: Handles one-way exits and
 
-  self-references
+self-references
 
 **Zone-based Validation**: Validate specific zones or the entire world
 
@@ -158,10 +158,10 @@ The validator supports both legacy string format and new object format for exits
 ### Connectivity Rules
 
 **Bidirectional Connections**: Ensures room A → room B implies room B →
-  room A
+room A
 
 **Unreachable Room Detection**: Finds rooms that cannot be reached from
-  starting point
+starting point
 
 **Dead End Detection**: Identifies rooms with no exits (true dead ends)
 
@@ -233,6 +233,10 @@ The validator supports both legacy string format and new object format for exits
 ```
 
 ## Architecture
+
+The CLI is a single-command tool by design (one entry point in `validator.py`). If subcommands
+are added later (e.g. `validate`, `report`, `fix`), the layout will be refactored to a click Group
+and a `commands/` package (e.g. `commands/validate.py`) with `cli.add_command(...)`.
 
 The validator is organized into several modules:
 

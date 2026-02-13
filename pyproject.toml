@@ -60,6 +60,9 @@ dependencies = [
     # This is a transitive dependency of python-jose. Alert #13, #20 may remain open.
 ]
 
+[project.scripts]
+room-validator = "tools.room_toolkit.room_validator.validator:main"
+
 [project.optional-dependencies]
 dev = [
     "pytest>=9.0.2",

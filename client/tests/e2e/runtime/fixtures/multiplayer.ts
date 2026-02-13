@@ -31,7 +31,10 @@ async function waitForServerReady(): Promise<void> {
     }
     await new Promise(r => setTimeout(r, SERVER_READY_POLL_MS));
   }
-  throw new Error(`[instrumentation] Server not ready at ${healthUrl} within ${SERVER_READY_TIMEOUT_MS}ms`);
+  throw new Error(
+    `[instrumentation] Server not ready at ${healthUrl} within ${SERVER_READY_TIMEOUT_MS}ms. ` +
+      'Ensure the server is running (e.g. ./scripts/start_local.ps1 from project root) and port 54731 is free.'
+  );
 }
 
 export interface PlayerContext {

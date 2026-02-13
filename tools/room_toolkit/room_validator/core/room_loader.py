@@ -9,6 +9,7 @@ import json
 import re
 from pathlib import Path
 
+import click
 from tqdm import tqdm
 
 
@@ -254,8 +255,6 @@ class RoomLoader:
         json_files = self.discover_room_files(str(search_path))
 
         if not json_files:
-            import click
-
             click.secho(f"⚠️  No JSON files found in {search_path}", fg="yellow", err=True)
             return {}
 

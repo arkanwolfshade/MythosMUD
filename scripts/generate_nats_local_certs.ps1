@@ -31,9 +31,7 @@
 [CmdletBinding()]
 param(
     [Parameter()]
-    [string] $OutDir = "",
-    [Parameter(ValueFromRemainingArguments = $true)]
-    [string[]] $Remaining = @()
+    [string] $OutDir = ""
 )
 
 $ErrorActionPreference = "Stop"

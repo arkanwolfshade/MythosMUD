@@ -9,7 +9,7 @@
  */
 
 import { expect, test } from '@playwright/test';
-import { executeCommand, getMessages } from '../fixtures/auth';
+import { executeCommand, getMessages, waitForMessage } from '../fixtures/auth';
 import type { PlayerContext } from '../fixtures/multiplayer';
 import {
   cleanupMultiPlayerContexts,
@@ -62,46 +62,34 @@ test.describe('Combat messages in Game Info', () => {
 
     await ensurePlayerInGame(awContext, 15000);
 
-    // Dr. Francis Morgan is in Main Foyer. Ensure we are there (test order may leave us in Laundry etc.).
-    const inFoyer = await page.evaluate(() => {
-      const bodyText = document.body?.innerText ?? '';
-      return bodyText.includes('Main Foyer');
-    });
+    // Dr. Francis Morgan is in Main Foyer. Navigate there and wait until location actually shows Main Foyer.
+    const inFoyer = await page.evaluate(() => (document.body?.innerText ?? '').includes('Main Foyer'));
     if (!inFoyer) {
-      // From Laundry: go south -> Eastern Hallway, go west -> Main Foyer. From Eastern Hallway: go west -> Main Foyer.
       const hasLaundry = await page.evaluate(() => document.body?.innerText?.includes('Laundry Room') ?? false);
       if (hasLaundry) {
         await executeCommand(page, 'go south');
-        await page.waitForTimeout(1500);
+        await waitForMessage(page, /You go south|Eastern Hallway/i, 10000).catch(() => {});
+        await page.waitForTimeout(500);
       }
       await executeCommand(page, 'go west');
-      await page.waitForTimeout(1500);
+      await waitForMessage(page, /You go west|Main Foyer/i, 10000).catch(() => {});
+      await page.waitForTimeout(500);
     }
+    await page.waitForFunction(() => (document.body?.innerText ?? '').includes('Main Foyer'), { timeout: 10000 });
 
     await executeCommand(page, 'attack Dr. Francis Morgan');
-
-    await page.waitForTimeout(2000);
 
     const stillConnected = await assertStillConnected(page);
     expect(stillConnected).toBe(true);
 
-    await page.waitForFunction(
-      () => {
-        const messages = Array.from(document.querySelectorAll('[data-message-text]'));
-        const texts = messages.map(m => (m.getAttribute('data-message-text') || '').trim());
-        return texts.some(msg => {
-          const lower = msg.toLowerCase();
-          return (
-            lower.includes('attack') ||
-            lower.includes('auto_attack') ||
-            lower.includes('slain') ||
-            lower.includes('has been slain') ||
-            lower.includes('you attack')
-          );
-        });
-      },
-      { timeout: 45000 }
-    );
+    // Wait for a combat message in Game Info (locator is more reliable than waitForFunction)
+    const combatMessageLocator = page
+      .locator('[data-message-text]')
+      .filter({
+        hasText: /attack|auto_attack|slain|has been slain|you attack/i,
+      })
+      .first();
+    await combatMessageLocator.waitFor({ state: 'visible', timeout: 45000 });
 
     const messages = await getMessages(page);
     expect(hasCombatMessage(messages)).toBe(true);
