@@ -61,22 +61,6 @@ logger.info("Logging setup completed", environment=config.logging.environment)  
 # These are kept for backward compatibility but are no longer used
 
 
-# Monitoring endpoints have been moved to server/api/monitoring.py
-# This function is kept for backward compatibility but is now a no-op
-def setup_monitoring_endpoints(app: FastAPI) -> None:  # pylint: disable=redefined-outer-name  # noqa: F811  # Reason: Parameter name matches FastAPI convention, kept for backward compatibility
-    """Setup monitoring and health check endpoints.
-
-    NOTE: Monitoring endpoints have been moved to server/api/monitoring.py
-    and are now registered via the monitoring_router. This function registers
-    the routers for testing purposes.
-    """
-    from server.api.monitoring import monitoring_router
-    from server.api.system_monitoring import system_monitoring_router
-
-    app.include_router(monitoring_router)
-    app.include_router(system_monitoring_router)
-
-
 def main() -> FastAPI:
     """Main entry point for the MythosMUD server."""
     logger.info("Starting MythosMUD server...")
@@ -118,16 +102,13 @@ def _create_get_app() -> Callable[[], FastAPI]:
 get_app = _create_get_app()
 
 
-# Create the FastAPI application for uvicorn compatibility
-# Note: This is created at module level for uvicorn's "server.main:app" reference
-# but uses lazy initialization pattern internally
+# Module-level app is intentionally exposed for Uvicorn's "server.main:app" entry point.
+# Application construction is encapsulated in get_app()/create_app(); this is the single
+# global reference required by the process.
 app = get_app()
 
 # Add correlation middleware (CORS is already configured in factory)
-# Starlette's add_middleware type annotation doesn't properly handle BaseHTTPMiddleware subclasses
-app.add_middleware(CorrelationMiddleware, correlation_header="X-Correlation-ID")  # type: ignore[arg-type]
-
-setup_monitoring_endpoints(app)
+app.add_middleware(CorrelationMiddleware, correlation_header="X-Correlation-ID")
 
 # Security
 security = HTTPBearer()

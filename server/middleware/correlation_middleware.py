@@ -6,14 +6,17 @@ context information for tracing and debugging across the application.
 
 As noted in the Pnakotic Manuscripts, proper tracking of events through
 the cosmic flow is essential for understanding the deeper patterns.
+
+IMPLEMENTATION NOTE: This uses pure ASGI middleware instead of BaseHTTPMiddleware
+for better performance and proper type safety with mypy.
 """
 
 import uuid
 from collections.abc import Callable
-from typing import TYPE_CHECKING, Any, cast
+from typing import Any, cast
 
-from fastapi import Request, Response
-from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.datastructures import MutableHeaders
+from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
 from ..structured_logging.enhanced_logging_config import (
     bind_request_context,
@@ -21,104 +24,111 @@ from ..structured_logging.enhanced_logging_config import (
     get_logger,
 )
 
-if TYPE_CHECKING:
-    from fastapi import FastAPI
-
 logger = get_logger(__name__)
 
 
-class CorrelationMiddleware(BaseHTTPMiddleware):  # pylint: disable=too-few-public-methods  # Reason: Middleware class with focused responsibility, minimal public interface
+def _get_header(scope: Scope, name: str) -> str | None:
+    """Return first header value for name (case-insensitive) from ASGI scope."""
+    name_lower = name.lower().encode()
+    for key, value in scope.get("headers", []):
+        if key.lower() == name_lower:
+            # value is bytes from ASGI headers; decode returns str. Cast for mypy (scope yields Any).
+            return cast(str, value.decode("utf-8", errors="replace"))
+    return None
+
+
+class CorrelationMiddleware:  # pylint: disable=too-few-public-methods  # Reason: Middleware class with focused responsibility, minimal public interface
     """
-    Middleware for adding correlation IDs and request context to all requests.
+    Pure ASGI middleware for adding correlation IDs and request context to all requests.
 
     This middleware automatically adds correlation IDs to all HTTP requests
     and sets up the logging context for the request duration.
     """
 
-    def __init__(self, app: "FastAPI", correlation_header: str = "X-Correlation-ID") -> None:
+    def __init__(self, app: ASGIApp, correlation_header: str = "X-Correlation-ID") -> None:
         """
         Initialize the correlation middleware.
 
         Args:
-            app: FastAPI application instance
+            app: ASGI application instance
             correlation_header: HTTP header name for correlation ID
         """
-        super().__init__(app)
-        self.correlation_header = correlation_header
+        self.app = app
         self.correlation_header = correlation_header
 
-    async def dispatch(self, request: Request, call_next: Callable[[Request], Any]) -> Response:
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         """
-        Process the request with correlation ID and context.
+        ASGI application interface.
 
         Args:
-            request: Incoming HTTP request
-            call_next: Next middleware/handler in the chain
-
-        Returns:
-            HTTP response with correlation ID header
+            scope: ASGI connection scope
+            receive: ASGI receive callable
+            send: ASGI send callable
         """
-        # Generate or extract correlation ID
-        correlation_id = request.headers.get(self.correlation_header)
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+
+        # Generate or extract correlation ID from request headers
+        correlation_id = _get_header(scope, self.correlation_header)
         if not correlation_id:
             correlation_id = str(uuid.uuid4())
 
-        # Extract request context information
-        request_id = str(request.url)
-        user_agent = request.headers.get("user-agent", "")
-        remote_addr = request.client.host if request.client else "unknown"
+        # Extract request context from scope
+        method = scope.get("method", "")
+        path = scope.get("path", "")
+        query_string = scope.get("query_string", b"").decode("utf-8", errors="replace")
+        request_id = path + ("?" + query_string if query_string else "")
+        user_agent = _get_header(scope, "user-agent") or ""
+        client = scope.get("client")
+        remote_addr = client[0] if client else "unknown"
 
-        # Set up logging context for this request
         bind_request_context(
             correlation_id=correlation_id,
             request_id=request_id,
             user_agent=user_agent,
             remote_addr=remote_addr,
-            method=request.method,
-            path=request.url.path,
+            method=method,
+            path=path,
         )
 
-        # Log request start
         logger.info(
             "Request started",
-            method=request.method,
-            path=request.url.path,
-            query_params=dict(request.query_params),
+            method=method,
+            path=path,
             user_agent=user_agent,
             remote_addr=remote_addr,
         )
 
+        status_code = 500
+        response_started = False
+
+        async def send_with_correlation_header(message: Message) -> None:
+            nonlocal status_code, response_started
+            if message["type"] == "http.response.start":
+                headers = MutableHeaders(scope=message)
+                headers.append(self.correlation_header, correlation_id)
+                status_code = message.get("status", 500)
+                response_started = True
+            await send(message)
+
         try:
-            # Process the request
-            response = await call_next(request)
-
-            # Add correlation ID to response headers
-            response.headers[self.correlation_header] = correlation_id
-
-            # Log request completion
-            logger.info(
-                "Request completed",
-                status_code=response.status_code,
-                response_time_ms="calculated_by_middleware",  # Could be enhanced with timing
-            )
-
-            result: Response = cast(Response, response)
-            return result
-
+            await self.app(scope, receive, send_with_correlation_header)
+            if response_started:
+                logger.info(
+                    "Request completed",
+                    status_code=status_code,
+                    response_time_ms="calculated_by_middleware",
+                )
         except Exception as e:
-            # Log request error
             logger.error(
                 "Request failed",
                 error_type=type(e).__name__,
                 error_message=str(e),
                 exc_info=True,
             )
-
-            # Re-raise the exception
             raise
-
         finally:
-            # Clear the request context
             clear_request_context()
 
 

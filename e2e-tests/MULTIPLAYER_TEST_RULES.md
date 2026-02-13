@@ -82,16 +82,16 @@ if (messages.length === 0) {
 ### MANDATORY LLM REQUIREMENT
 
 **MUST USE GPT-4 OR NEWER MODEL**: This playbook requires GPT-4 or newer model with higher level reasoning
-  and instruction adherence
+and instruction adherence
 
 **DO NOT USE**: GPT-3.5, Claude, or other LLMs for playbook execution
 
 **REASON**: Complex multi-step scenarios with strict execution requirements
-  need advanced reasoning capabilities
+need advanced reasoning capabilities
 
 **VERIFICATION**: Confirm you are using GPT-4 or greater before proceeding
 
-  with any scenario
+with any scenario
 
 ## 🚨 CRITICAL INSTRUCTION FOR AI EXECUTORS 🚨
 
@@ -157,14 +157,14 @@ multiple characters.
 
 **Database**: PostgreSQL `mythos_e2e` database (connection:
 
-  `postgresql://postgres:Cthulhu1@localhost:5432/mythos_e2e`)
+`postgresql://postgres:Cthulhu1@localhost:5432/mythos_e2e`)
 
 **Log Directory**: `logs/e2e_test/`
 
 ### Command Syntax
 
 **Movement**: `go <direction>` or direction shortcuts (e.g., `go east`,
-  `east`, `e`, `go west`, `west`, `w`)
+`east`, `e`, `go west`, `west`, `w`)
 
 **Say**: `say <message>` or `/say <message>` or just `<message>` (defaults to say channel)
 
@@ -228,7 +228,7 @@ multiple characters.
 
 2. **VERIFY PORTS**: After stopping, verify ports are free with `netstat -an |
 
-   findstr :54731` and `netstat -an | findstr :5173`
+   findstr :54731`and`netstat -an | findstr :5173`
 
 3. **NO BACKGROUND**: NEVER use `is_background: true` for server startup commands
 4. **SEE OUTPUT**: ALWAYS use `is_background: false` for server startup so you can see what's happening
@@ -366,7 +366,7 @@ $maxRetries = 5
 $retryCount = 0
 do {
     try {
-        $healthResponse = Invoke-WebRequest -Uri "http://localhost:54731/monitoring/health" -UseBasicParsing -TimeoutSec 30
+        $healthResponse = Invoke-WebRequest -Uri "http://localhost:54731/v1/monitoring/health" -UseBasicParsing -TimeoutSec 30
         if ($healthResponse.StatusCode -eq 200) {
             $healthData = $healthResponse.Content | ConvertFrom-Json
             Write-Host "Server Status: $($healthData.status)"
@@ -417,7 +417,6 @@ do {
 4. **Wait for Login Processing**: Allow time for authentication (15 seconds)
 
 5. **Character Selection (if applicable)**:
-
    - If character selection screen appears (text: "Select Your Character"), select the character with the same name as
 
      the player account
@@ -435,7 +434,7 @@ do {
 **When it appears**: Character selection screen appears automatically if the player has multiple active characters
 
 **What to select**: Always select the character with the same name as the player account (ArkanWolfshade player →
-  ArkanWolfshade character, Ithaqua player → Ithaqua character)
+ArkanWolfshade character, Ithaqua player → Ithaqua character)
 
 **How to identify**: Use `browser_snapshot()` to find the correct "Select Character" button reference
 
@@ -445,25 +444,25 @@ do {
 
 ```javascript
 // After login, check for character selection screen
-await mcp_playwright_browser_wait_for({time: 15});
+await mcp_playwright_browser_wait_for({ time: 15 });
 
 // Check if character selection screen appears
 const snapshot = await mcp_playwright_browser_snapshot();
 if (snapshot.includes("Select Your Character") || snapshot.includes("character-selection")) {
   // Wait for character selection screen to fully load
-  await mcp_playwright_browser_wait_for({text: "Select Your Character", time: 15});
+  await mcp_playwright_browser_wait_for({ text: "Select Your Character", time: 15 });
 
   // Find and click the "Select Character" button for the character matching the player name
   // Use browser_snapshot() to get the correct element reference
   // Example: await mcp_playwright_browser_click({element: "Select Character button for ArkanWolfshade", ref: "eXX"});
 
   // Wait for character selection processing
-  await mcp_playwright_browser_wait_for({time: 5});
+  await mcp_playwright_browser_wait_for({ time: 5 });
 }
 
 // Proceed to MOTD screen
-await mcp_playwright_browser_wait_for({text: "Continue", time: 15});
-await mcp_playwright_browser_click({element: "Continue button", ref: "e59"});
+await mcp_playwright_browser_wait_for({ text: "Continue", time: 15 });
+await mcp_playwright_browser_click({ element: "Continue button", ref: "e59" });
 ```
 
 ## NO INTERPRETATION RULE
@@ -511,7 +510,7 @@ After each step, document:
 COPPA compliance settings for minor users
 
 **Database Configuration**: Verify PostgreSQL database connection is properly configured via DATABASE_URL environment
-  variable
+variable
 
 **Environment Variables**: Ensure all secrets are properly configured via environment variables, never hardcoded
 

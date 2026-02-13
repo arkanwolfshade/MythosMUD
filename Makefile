@@ -16,7 +16,7 @@ PYTEST_OPTS := --maxfail=10 --tb=short
 PYTEST_COV_OPTS := --cov=server --cov-report=html --cov-report=term-missing --cov-report=xml
 
 # PHONY targets
-.PHONY: help clean install build run
+.PHONY: help clean install build run run-production
 .PHONY: lint lint-sqlalchemy format mypy
 .PHONY: bandit pylint ruff sqlfluff sqlint
 .PHONY: hadolint shellcheck psscriptanalyzer
@@ -78,10 +78,11 @@ help:
 	@echo "  test-ci               - CI/CD test suite (enforces coverage thresholds)"
 	@echo ""
 	@echo "Build & Deploy:"
-	@echo "  clean           - Remove build, dist, and cache files"
-	@echo "  install         - Install dependencies (worktree-aware)"
-	@echo "  build           - Build the client (Node)"
-	@echo "  run             - Start the development server"
+	@echo "  clean             - Remove build, dist, and cache files"
+	@echo "  install           - Install dependencies (worktree-aware)"
+	@echo "  build             - Build the client (Node)"
+	@echo "  run               - Start the development server (Uvicorn)"
+	@echo "  run-production    - Start the server for production (Gunicorn + Uvicorn workers)"
 	@echo ""
 	@echo "Note: For tiered server testing (unit/integration/e2e), use pytest markers directly:"
 	@echo "  uv run pytest -m unit server/tests"
@@ -252,6 +253,11 @@ build:
 
 run:
 	$(PYTHON) scripts/run.py
+
+# Production: Gunicorn with Uvicorn workers (see docs/deployment.md)
+# Default port 8000; for another port run the gunicorn command with -b 0.0.0.0:PORT
+run-production:
+	$(UV) gunicorn server.main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000
 
 # ============================================================================
 # COMPOSITE TARGETS

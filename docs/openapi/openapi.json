@@ -1809,7 +1809,7 @@
           "game"
         ],
         "summary": "Get Mythos Time",
-        "description": "Return the current Mythos calendar metadata for HUD initialization.",
+        "description": "Return the current Mythos calendar metadata for HUD initialization.\n\nIn-memory only: chronicle and holiday_service use state loaded at startup; no blocking I/O.",
         "operationId": "get_mythos_time_v1_game_time_get",
         "responses": {
           "200": {

@@ -89,7 +89,7 @@ combat.
 
 **Magic/Spellcasting System** - Complete spell system with MP (Magic Points), spell learning and mastery, material
 
-  components, casting times, and integration with combat and lucidity systems
+components, casting times, and integration with combat and lucidity systems
 
 **Database Layer** - PostgreSQL persistence with async operations, connection pooling, and migration support
 
@@ -127,7 +127,7 @@ combat.
 ### Core Gameplay
 
 **Real-time Multiplayer** - Multiple players can interact simultaneously (100ms server tick rate for responsive
-  gameplay)
+gameplay)
 
 **Character Creation** - Random stats generation with Lovecraftian investigator archetypes
 
@@ -139,7 +139,7 @@ combat.
 
 **Magic System** - Cast spells, learn new spells, track mastery, and manage MP (Magic Points) with automatic
 
-  regeneration
+regeneration
 
 ### Technical Features
 
@@ -167,7 +167,7 @@ combat.
 
 **Modular Test Framework** - Hierarchical test organization with 304 test files across unit, integration, E2E,
 
-  security, and performance categories
+security, and performance categories
 
 ### Security & Privacy
 
@@ -190,7 +190,6 @@ See [DEVELOPMENT.md](docs/DEVELOPMENT.md) for full setup instructions.
 ### Quickstart
 
 1. **Prerequisites:**
-
    - Python 3.12+ (managed via pyenv-win recommended)
    - Node.js 22+ and npm (NVM for Windows recommended)
    - PostgreSQL 15+ (for database - required for tests and development)
@@ -258,7 +257,6 @@ See [DEVELOPMENT.md](docs/DEVELOPMENT.md) for full setup instructions.
    ```
 
 6. **Visit:**
-
    - Frontend: <http://localhost:5173>
    - Backend API: <http://localhost:54731>
    - API Documentation: <http://localhost:54731/docs>
@@ -463,6 +461,7 @@ See [scripts/README.md](scripts/README.md) for detailed documentation.
 
 [Product Requirements Document (PRD)](docs/PRD.md) — Full game and technical design
 
+- [Deployment](docs/deployment.md) — Production deployment with Gunicorn + Uvicorn
 - [PLANNING.md](PLANNING.md) — Comprehensive project planning and current status
 - [GitHub Issues](https://github.com/arkanwolfshade/MythosMUD/issues) — Current tasks and development priorities
 

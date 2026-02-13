@@ -110,8 +110,10 @@ async def broadcast_message(
 
 @game_router.get("/time", response_model=MythosTimeResponse)
 def get_mythos_time(container: "ApplicationContainer" = Depends(get_container)) -> MythosTimeResponse:
-    """Return the current Mythos calendar metadata for HUD initialization."""
+    """Return the current Mythos calendar metadata for HUD initialization.
 
+    In-memory only: chronicle and holiday_service use state loaded at startup; no blocking I/O.
+    """
     chronicle = get_mythos_chronicle()
     mythos_dt = chronicle.get_current_mythos_datetime()
     components = chronicle.get_calendar_components(mythos_dt)
