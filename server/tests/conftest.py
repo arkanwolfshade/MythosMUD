@@ -34,6 +34,8 @@ os.environ.setdefault("DATABASE_URL", "postgresql+asyncpg://postgres:Cthulhu1@lo
 if not os.environ.get("DATABASE_NPC_URL"):
     os.environ["DATABASE_NPC_URL"] = "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
 os.environ.setdefault("GAME_ALIASES_DIR", "data/unit_test/players/aliases")
+# Force NATS TLS off for unit tests so config validation does not require cert files (not present in CI)
+os.environ["NATS_TLS_ENABLED"] = "false"
 
 # Imports must come after environment variables to prevent config loading failures
 from server.config import (  # pylint: disable=wrong-import-position  # noqa: E402  # Reason: Import must come after environment variables to prevent config loading failures during test setup

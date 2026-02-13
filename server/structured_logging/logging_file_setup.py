@@ -39,6 +39,32 @@ def _get_or_create_log_queue() -> queue.Queue[logging.LogRecord]:
         return _log_queue
 
 
+def get_queue_listener() -> QueueListener | None:
+    """
+    Return the global QueueListener if running (for tests and shutdown).
+
+    Returns:
+        The current QueueListener instance or None if async logging not started
+    """
+    with _queue_listener_lock:
+        return _queue_listener
+
+
+def stop_queue_listener() -> None:
+    """
+    Stop the global QueueListener and reset state (for tests and shutdown).
+
+    Allows the next setup_enhanced_file_logging(enable_async=True) to create
+    a fresh listener and queue.
+    """
+    global _queue_listener, _log_queue  # pylint: disable=global-statement  # Reason: Must reset module state for teardown
+    with _queue_listener_lock:
+        if _queue_listener is not None:
+            _queue_listener.stop()
+            _queue_listener = None
+        _log_queue = None
+
+
 def _setup_category_handlers(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Log handler setup requires 10 parameters for categories, directory paths, handler configuration, async settings, and environment context; combining into a config object would add unnecessary abstraction layer
     log_categories: dict[str, list[str]],
     env_log_dir: Path,

@@ -9,25 +9,29 @@ import { loginPlayer } from './auth';
 import { TEST_PLAYERS, TEST_TIMEOUTS, type TestPlayer } from './test-data';
 
 const SERVER_URL = 'http://localhost:54731';
+/** Versioned API base for v1 endpoints (health, etc.). */
+const SERVER_API_V1 = `${SERVER_URL}/v1`;
 const SERVER_READY_POLL_MS = 500;
 const SERVER_READY_TIMEOUT_MS = 30000;
 
 /**
  * Poll server health endpoint until it responds 200 or timeout.
  * Ensures server is ready before first player login (avoids "still on login" when server was cold).
+ * Uses versioned API path /v1/monitoring/health (validates server, DB, and connection manager).
  */
 async function waitForServerReady(): Promise<void> {
+  const healthUrl = `${SERVER_API_V1}/monitoring/health`;
   const start = Date.now();
   while (Date.now() - start < SERVER_READY_TIMEOUT_MS) {
     try {
-      const res = await fetch(`${SERVER_URL}/health`, { signal: AbortSignal.timeout(3000) });
+      const res = await fetch(healthUrl, { signal: AbortSignal.timeout(3000) });
       if (res.ok) return;
     } catch {
       // Server not ready, keep polling
     }
     await new Promise(r => setTimeout(r, SERVER_READY_POLL_MS));
   }
-  throw new Error(`[instrumentation] Server not ready at ${SERVER_URL}/health within ${SERVER_READY_TIMEOUT_MS}ms`);
+  throw new Error(`[instrumentation] Server not ready at ${healthUrl} within ${SERVER_READY_TIMEOUT_MS}ms`);
 }
 
 export interface PlayerContext {

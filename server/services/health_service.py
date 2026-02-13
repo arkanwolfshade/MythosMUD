@@ -11,6 +11,7 @@ and chaos in our digital realm.
 
 # pylint: disable=too-many-instance-attributes  # Reason: Health service requires many state tracking attributes
 
+import asyncio
 import time
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any
@@ -129,29 +130,45 @@ class HealthService:
             if async_persistence:
                 # Perform actual database query with timeout
                 try:
-                    # Use asyncio.wait_for to enforce timeout
                     query_start = time.time()
-                    # Simple query: check if we can get a connection from the pool
-                    # This validates both pool health and database connectivity
+                    # SQLAlchemy path: AsyncPersistenceLayer uses get_async_session(), no _pool.
+                    # Run a simple SELECT 1 to validate connectivity.
                     pool = getattr(async_persistence, "_pool", None)
                     if pool:
-                        # Check pool size and availability
+                        # asyncpg-style pool (legacy path)
                         pool_size = getattr(pool, "_size", 0)
-                        # Try to acquire a connection (non-blocking check)
-                        # Note: We don't actually use the connection, just validate it's available
                         query_time_ms = (time.time() - query_start) * 1000
-
-                        # Determine database status based on pool availability and response time
                         if pool_size > 0 and query_time_ms < 100:
                             status = HealthStatus.HEALTHY
                         elif pool_size > 0 and query_time_ms < self.database_timeout_ms:
                             status = HealthStatus.DEGRADED
                         else:
                             status = HealthStatus.UNHEALTHY
-
                         return self._create_health_response(status, pool_size, query_time_ms)
-                    # No pool available
-                    return self._create_health_response(HealthStatus.UNHEALTHY, 0, None)
+
+                    # SQLAlchemy path: validate with a real query via get_async_session
+                    from sqlalchemy import text
+
+                    from ..database import get_async_session
+
+                    async def _run_ping() -> None:
+                        async for session in get_async_session():
+                            await session.execute(text("SELECT 1"))
+                            break
+
+                    await asyncio.wait_for(
+                        _run_ping(),
+                        timeout=self.database_timeout_ms / 1000.0,
+                    )
+                    query_time_ms = (time.time() - query_start) * 1000
+                    status = (
+                        HealthStatus.HEALTHY
+                        if query_time_ms < 100
+                        else HealthStatus.DEGRADED
+                        if query_time_ms < self.database_timeout_ms
+                        else HealthStatus.UNHEALTHY
+                    )
+                    return self._create_health_response(status, 1, query_time_ms)
                 except TimeoutError:
                     logger.warning("Database health check timed out")
                     return self._create_health_response(HealthStatus.UNHEALTHY, 0, self.database_timeout_ms)

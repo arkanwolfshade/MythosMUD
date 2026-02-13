@@ -162,6 +162,11 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             "ping_interval": self.config.ping_interval,
             "max_outstanding_pings": self.config.max_outstanding_pings,
         }
+        if self.config.token:
+            connect_options["token"] = self.config.token
+        elif self.config.user and self.config.password:
+            connect_options["user"] = self.config.user
+            connect_options["password"] = self.config.password
         return connect_options
 
     def _configure_tls(self, connect_options: dict[str, Any]) -> None:
@@ -563,7 +568,9 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
         callback: Callable[[dict[str, Any]], None | Coroutine[Any, Any, None]],
         message_data: dict[str, Any],
     ) -> None:
-        """Call the registered callback, handling both async and sync callbacks."""
+        """Call the registered callback, handling both async and sync callbacks.
+        Sync callbacks must not perform blocking I/O (see subscribe() docstring).
+        """
         if asyncio.iscoroutinefunction(callback):
             await callback(message_data)
         else:
@@ -621,7 +628,10 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
 
         Args:
             subject: NATS subject name to subscribe to
-            callback: Sync or async function when messages are received (message_data: dict)
+            callback: Sync or async function when messages are received (message_data: dict).
+                Prefer async callbacks; they must not perform blocking I/O. Sync callbacks are
+                supported for backward compatibility but must complete quickly (no I/O) to avoid
+                blocking the event loop.
 
         Raises:
             NATSSubscribeError: If subscription fails

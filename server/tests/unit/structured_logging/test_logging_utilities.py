@@ -44,7 +44,7 @@ def test_ensure_log_directory_existing_directory(temp_dir):
     assert log_dir.exists()
 
 
-def test_ensure_log_directory_no_parent(temp_dir):
+def test_ensure_log_directory_no_parent():
     """Test ensure_log_directory() handles log_path with no parent."""
     log_file = Path("test.log")  # No parent
     # Should not raise, should handle gracefully
@@ -146,6 +146,19 @@ def test_resolve_log_base_finds_pyproject_in_parent(tmp_path):
         result = resolve_log_base("logs")
         assert result.is_absolute()
         assert result == tmp_path / "logs"
+
+
+def test_resolve_log_base_env_local_directory(tmp_path):
+    """Test that log_base 'logs' and environment 'local' yield .../logs/local (H4)."""
+    pyproject = tmp_path / "pyproject.toml"
+    pyproject.write_text("[project]\nname = 'test'")
+    with patch("pathlib.Path.cwd", return_value=tmp_path):
+        log_base = resolve_log_base("logs")
+        env_log_dir = log_base / "local"
+        assert env_log_dir.is_absolute()
+        assert env_log_dir.name == "local"
+        assert "logs" in env_log_dir.parts
+        assert "local" in env_log_dir.parts
 
 
 def test_rotate_log_files_no_directory(tmp_path):

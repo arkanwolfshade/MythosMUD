@@ -58,78 +58,65 @@ For multiplayer scenarios that require AI Agent coordination:
 #### Category A: Full Conversion (6 Scenarios)
 
 1. **Local Channel Errors** - `error-handling/local-channel-errors.spec.ts`
-
    - Tests: 8 tests covering error conditions and edge cases
    - Runtime: ~1 minute
 
 2. **Whisper Errors** - `error-handling/whisper-errors.spec.ts`
-
    - Tests: 10 tests covering validation and error handling
    - Runtime: ~1 minute
 
 3. **Whisper Rate Limiting** - `error-handling/whisper-rate-limiting.spec.ts`
-
    - Tests: 9 tests including 60-second reset test
    - Runtime: ~2 minutes (includes slow test)
 
 4. **Whisper Logging** - `admin/whisper-logging.spec.ts`
-
    - Tests: 9 tests covering admin access and privacy
    - Runtime: ~1 minute
 
 5. **Logout Errors** - `error-handling/logout-errors.spec.ts`
-
    - Tests: 9 tests covering error conditions and recovery
    - Runtime: ~1 minute
 
 6. **Logout Accessibility** - `accessibility/logout-accessibility.spec.ts`
-
    - Tests: 25 tests covering WCAG compliance
    - Runtime: ~2 minutes
 
 #### Category B: Partial Conversion (4 Scenarios)
 
 1. **Who Command** - `integration/who-command.spec.ts`
-
    - Automated: 10 tests for single-player functionality
    - MCP: Multi-player visibility (see `e2e-tests/scenarios/scenario-07-who-command.md`)
    - Runtime: ~1 minute
 
 2. **Logout Button** - `integration/logout-button.spec.ts`
-
    - Automated: 13 tests for UI functionality and state
    - MCP: Logout broadcasting (see `e2e-tests/scenarios/scenario-19-logout-button.md`)
    - Runtime: ~1 minute
 
 3. **Local Channel Integration** - `integration/local-channel-integration.spec.ts`
-
    - Automated: 11 tests for system integration points
    - MCP: Message broadcasting (see `e2e-tests/scenarios/scenario-12-local-channel-integration.md`)
    - Runtime: ~1 minute
 
 4. **Whisper Integration** - `integration/whisper-integration.spec.ts`
-
-    - Automated: 12 tests for system integration
-    - MCP: Cross-player delivery (see `e2e-tests/scenarios/scenario-17-whisper-integration.md`)
-    - Runtime: ~1 minute
+   - Automated: 12 tests for system integration
+   - MCP: Cross-player delivery (see `e2e-tests/scenarios/scenario-17-whisper-integration.md`)
+   - Runtime: ~1 minute
 
 5. **Map Viewer** - `integration/map-viewer.spec.ts`
-
-    - Automated: 9 tests for map viewer functionality
-    - Tests: Opening map, displaying rooms, room details, filtering, navigation
-    - Runtime: ~2 minutes
+   - Automated: 9 tests for map viewer functionality
+   - Tests: Opening map, displaying rooms, room details, filtering, navigation
+   - Runtime: ~2 minutes
 
 6. **Map Admin Edit** - `integration/map-admin-edit.spec.ts`
-
-    - Automated: 8 tests for admin edit mode
-    - Tests: Node repositioning, edge creation/deletion, room editing, undo/redo
-    - Runtime: ~2 minutes
+   - Automated: 8 tests for admin edit mode
+   - Tests: Node repositioning, edge creation/deletion, room editing, undo/redo
+   - Runtime: ~2 minutes
 
 7. **Map Performance** - `performance/map-performance.spec.ts`
-
-    - Automated: 6 tests for performance benchmarks
-    - Tests: Large room sets (500+), FPS monitoring, viewport optimization, memory usage
-    - Runtime: ~3 minutes
+   - Automated: 6 tests for performance benchmarks
+   - Tests: Large room sets (500+), FPS monitoring, viewport optimization, memory usage
+   - Runtime: ~3 minutes
 
 **Total Automated Tests**: 137 tests in 13 files
 **Total Runtime**: ~12 minutes (excluding 60-second rate limit test)
@@ -192,7 +179,6 @@ The test database is seeded with three baseline players. **MULTI-CHARACTER**: Ea
 (up to 3 active characters per user).
 
 1. **ArkanWolfshade** (Admin)
-
    - Username: `ArkanWolfshade`
    - Password: `Cthulhu1`
    - Admin: Yes
@@ -200,7 +186,6 @@ The test database is seeded with three baseline players. **MULTI-CHARACTER**: Ea
    - Starting Room: Main Foyer (per character)
 
 2. **Ithaqua** (Regular Player)
-
    - Username: `Ithaqua`
    - Password: `Cthulhu1`
    - Admin: No
@@ -208,7 +193,6 @@ The test database is seeded with three baseline players. **MULTI-CHARACTER**: Ea
    - Starting Room: Main Foyer (per character)
 
 3. **TestAdmin** (Superuser)
-
    - Username: `TestAdmin`
    - Password: `Cthulhu1`
    - Admin: Yes, Superuser: Yes
@@ -220,20 +204,17 @@ The test database is seeded with three baseline players. **MULTI-CHARACTER**: Ea
 ### Database Lifecycle
 
 1. **Global Setup** (before all tests):
-
    - Backs up existing `unit_test_players.db` if present
    - Creates fresh database with schema
    - Seeds baseline test players (each with their initial character)
 
 2. **Between Tests**:
-
    - Player positions reset to starting rooms (per character)
    - Test-created data cleaned up
    - Baseline players and their characters preserved
    - Soft-deleted characters remain in database but are hidden
 
 3. **Global Teardown** (after all tests):
-
    - Final cleanup performed
    - Test database remains for debugging
    - All characters (active and deleted) are preserved for analysis
@@ -303,30 +284,26 @@ Create a new `.spec.ts` file in the appropriate directory:
 ```typescript
 // client/tests/e2e/runtime/error-handling/my-feature-errors.spec.ts
 
-import { test, expect } from '@playwright/test';
-import { loginAsPlayer } from '../fixtures/auth';
-import { sendCommand, waitForMessage, getMessages } from '../fixtures/player';
-import { TEST_PLAYERS, ERROR_MESSAGES } from '../fixtures/test-data';
+import { test, expect } from "@playwright/test";
+import { loginAsPlayer } from "../fixtures/auth";
+import { sendCommand, waitForMessage, getMessages } from "../fixtures/player";
+import { TEST_PLAYERS, ERROR_MESSAGES } from "../fixtures/test-data";
 
-test.describe('My Feature Error Handling', () => {
+test.describe("My Feature Error Handling", () => {
   test.beforeEach(async ({ page }) => {
-    await loginAsPlayer(
-      page,
-      TEST_PLAYERS.ARKAN_WOLFSHADE.username,
-      TEST_PLAYERS.ARKAN_WOLFSHADE.password
-    );
+    await loginAsPlayer(page, TEST_PLAYERS.ARKAN_WOLFSHADE.username, TEST_PLAYERS.ARKAN_WOLFSHADE.password);
   });
 
-  test('should reject invalid input', async ({ page }) => {
+  test("should reject invalid input", async ({ page }) => {
     // Send invalid command
-    await sendCommand(page, 'mycommand invalid');
+    await sendCommand(page, "mycommand invalid");
 
     // Verify error message
-    await waitForMessage(page, 'Expected error message');
+    await waitForMessage(page, "Expected error message");
 
     // Additional assertions
     const messages = await getMessages(page);
-    expect(messages).toContain('Expected error message');
+    expect(messages).toContain("Expected error message");
   });
 });
 ```
@@ -420,7 +397,7 @@ Then wait 10 seconds for it to initialize before running tests.
 
 **Solution**:
 
-1. Verify server is running: `curl http://localhost:54731/health`
+1. Verify server is running: `curl http://localhost:54731/v1/monitoring/health`
 2. Check server logs in `logs/development/`
 3. Run test in headed mode to see what's happening: `npm run test:e2e:runtime:headed`
 
@@ -514,7 +491,7 @@ On test failure, the following artifacts are uploaded:
 ### Using Test Constants
 
 ```typescript
-import { TEST_PLAYERS, ERROR_MESSAGES, SUCCESS_MESSAGES } from '../fixtures/test-data';
+import { TEST_PLAYERS, ERROR_MESSAGES, SUCCESS_MESSAGES } from "../fixtures/test-data";
 
 // Login as test player
 // MULTI-CHARACTER: Login with optional character selection
@@ -522,14 +499,14 @@ await loginAsPlayer(
   page,
   TEST_PLAYERS.ARKAN_WOLFSHADE.username,
   TEST_PLAYERS.ARKAN_WOLFSHADE.password,
-  'CharacterName' // Optional: specify character name if user has multiple characters
+  "CharacterName", // Optional: specify character name if user has multiple characters
 );
 
 // Verify error message
 await waitForMessage(page, ERROR_MESSAGES.LOCAL_EMPTY_MESSAGE);
 
 // Verify success message
-const expectedMessage = SUCCESS_MESSAGES.LOCAL_MESSAGE_SENT('Hello');
+const expectedMessage = SUCCESS_MESSAGES.LOCAL_MESSAGE_SENT("Hello");
 await waitForMessage(page, expectedMessage);
 ```
 
@@ -540,7 +517,7 @@ Edit `client/tests/e2e/runtime/fixtures/test-data.ts`:
 ```typescript
 export const ERROR_MESSAGES = {
   // ... existing messages
-  MY_NEW_ERROR: 'My new error message',
+  MY_NEW_ERROR: "My new error message",
 } as const;
 ```
 
@@ -603,7 +580,7 @@ All E2E tests MUST use the enhanced logging system for proper observability and 
 
 ```typescript
 // ✅ CORRECT - Enhanced logging import (MANDATORY)
-import { getLogger } from 'server/logging/enhanced_logging_config';
+import { getLogger } from "server/logging/enhanced_logging_config";
 const logger = getLogger(__name__);
 ```
 
@@ -611,11 +588,11 @@ const logger = getLogger(__name__);
 
 ```typescript
 // ❌ FORBIDDEN - Will cause import failures and system crashes
-import { logging } from 'logging';
+import { logging } from "logging";
 const logger = logging.getLogger(__name__);
 
 // ❌ FORBIDDEN - Deprecated context parameter (causes TypeError)
-logger.info("Test started", context={"test_name": "example"});
+logger.info("Test started", (context = { test_name: "example" }));
 
 // ❌ FORBIDDEN - String formatting breaks structured logging
 logger.info(`Test ${testName} started`);
@@ -625,16 +602,26 @@ logger.info(`Test ${testName} started`);
 
 ```typescript
 // ✅ CORRECT - Test setup logging
-logger.info("E2E test started", test_name="local-channel-errors", test_file="error-handling/local-channel-errors.spec.ts");
+logger.info(
+  "E2E test started",
+  (test_name = "local-channel-errors"),
+  (test_file = "error-handling/local-channel-errors.spec.ts"),
+);
 
 // ✅ CORRECT - Test step logging
-logger.debug("Test step executed", step="navigate_to_chat", url="/chat", expected_element="chat-panel");
+logger.debug("Test step executed", (step = "navigate_to_chat"), (url = "/chat"), (expected_element = "chat-panel"));
 
 // ✅ CORRECT - Error logging in tests
-logger.error("Test assertion failed", assertion="chat_message_visible", expected=true, actual=false, test_step="verify_message_display");
+logger.error(
+  "Test assertion failed",
+  (assertion = "chat_message_visible"),
+  (expected = true),
+  (actual = false),
+  (test_step = "verify_message_display"),
+);
 
 // ✅ CORRECT - Performance logging
-logger.info("Test performance metrics", test_duration_ms=1500, steps_completed=8, assertions_passed=10);
+logger.info("Test performance metrics", (test_duration_ms = 1500), (steps_completed = 8), (assertions_passed = 10));
 ```
 
 #### **Test Logging Best Practices**
@@ -653,13 +640,13 @@ logger.info("Test performance metrics", test_duration_ms=1500, steps_completed=8
 
 ```typescript
 // ✅ CORRECT - Validate logging behavior in tests
-test('should log user actions correctly', async () => {
+test("should log user actions correctly", async () => {
   // Mock the logger to capture log calls
   const mockLogger = jest.fn();
-  jest.spyOn(enhancedLogging, 'getLogger').mockReturnValue({
+  jest.spyOn(enhancedLogging, "getLogger").mockReturnValue({
     info: mockLogger,
     error: mockLogger,
-    debug: mockLogger
+    debug: mockLogger,
   });
 
   // Perform test action
@@ -671,8 +658,8 @@ test('should log user actions correctly', async () => {
     expect.objectContaining({
       action: "send_message",
       user_id: expect.any(String),
-      success: true
-    })
+      success: true,
+    }),
   );
 });
 ```

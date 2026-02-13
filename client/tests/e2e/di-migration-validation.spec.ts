@@ -19,6 +19,8 @@ import { expect, test, type APIResponse, type BrowserContext, type Page } from '
 // Test configuration
 const BASE_URL = 'http://localhost:5173';
 const SERVER_URL = 'http://localhost:54731';
+/** Versioned API base for v1 endpoints (use for all direct API requests in E2E). */
+const SERVER_API_V1 = `${SERVER_URL}/v1`;
 const TEST_USERNAME = 'ArkanWolfshade';
 const TEST_PASSWORD = 'Cthulhu1';
 const ADMIN_USERNAME = 'ArkanWolfshade'; // Admin account
@@ -821,7 +823,7 @@ async function testAPIEndpoint(
   if (body) {
     fetchOptions.data = body;
   }
-  const response = await page.request.fetch(`${SERVER_URL}${endpoint}`, fetchOptions);
+  const response = await page.request.fetch(`${SERVER_API_V1}${endpoint}`, fetchOptions);
   return response;
 }
 

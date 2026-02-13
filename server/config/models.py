@@ -187,6 +187,11 @@ class NATSConfig(BaseSettings):
     # Message acknowledgment configuration
     manual_ack: bool = Field(default=False, description="Enable manual message acknowledgment (ack/nak)")
 
+    # Optional NATS server authentication (NATS_USER, NATS_PASSWORD, or NATS_TOKEN)
+    user: str | None = Field(default=None, description="NATS auth username (optional)")
+    password: str | None = Field(default=None, description="NATS auth password (optional)")
+    token: str | None = Field(default=None, description="NATS auth token (optional; alternative to user/password)")
+
     # TLS/SSL configuration
     tls_enabled: bool = Field(default=False, description="Enable TLS/SSL encryption for NATS connections")
     tls_cert_file: str | None = Field(default=None, description="Path to TLS certificate file (.crt)")

@@ -20,7 +20,7 @@ if (!existsSync(testsDir)) {
 async function checkBackendServer() {
   if (process.env.CI === 'true') {
     try {
-      const response = await fetch('http://localhost:54731/health', {
+      const response = await fetch('http://localhost:54731/v1/monitoring/health', {
         signal: AbortSignal.timeout(2000),
       });
       if (!response.ok) {

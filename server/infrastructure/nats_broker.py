@@ -9,6 +9,8 @@ using NATS as the underlying message broker.
 
 import asyncio
 import json
+import ssl
+from pathlib import Path
 from typing import Any, cast
 from uuid import uuid4
 
@@ -78,6 +80,35 @@ class NATSMessageBroker:  # pylint: disable=too-many-instance-attributes  # Reas
         self._health_check_timeout = 5.0  # seconds
         self._running = False
 
+    def _configure_tls(self, connect_options: dict[str, Any]) -> None:
+        """Configure TLS settings for NATS connection (mirrors NATSService._configure_tls)."""
+        if not self.config.tls_enabled:
+            return
+
+        ssl_context = ssl.create_default_context()
+
+        if self.config.tls_cert_file and self.config.tls_key_file:
+            cert_path = Path(self.config.tls_cert_file)
+            key_path = Path(self.config.tls_key_file)
+            ssl_context.load_cert_chain(cert_path, key_path)
+            self._logger.debug("Loaded TLS client certificate", cert_file=str(cert_path), key_file=str(key_path))
+
+        if self.config.tls_ca_file:
+            ca_path = Path(self.config.tls_ca_file)
+            ssl_context.load_verify_locations(ca_path)
+            self._logger.debug("Loaded TLS CA certificate", ca_file=str(ca_path))
+
+        if self.config.tls_verify:
+            ssl_context.check_hostname = True
+            ssl_context.verify_mode = ssl.CERT_REQUIRED
+        else:
+            ssl_context.check_hostname = False
+            ssl_context.verify_mode = ssl.CERT_NONE
+            self._logger.warning("TLS verification disabled - using unverified certificates")
+
+        connect_options["tls"] = ssl_context
+        self._logger.info("TLS enabled for NATS connection", verify=self.config.tls_verify)
+
     async def connect(self) -> bool:
         """
         Connect to NATS server.
@@ -90,19 +121,23 @@ class NATSMessageBroker:  # pylint: disable=too-many-instance-attributes  # Reas
                 self._logger.info("Already connected to NATS")
                 return True
 
-            self._client = await nats.connect(
-                servers=self.config.url,
-                max_reconnect_attempts=self.config.max_reconnect_attempts,
-                reconnect_time_wait=self.config.reconnect_time_wait,
-                ping_interval=self.config.ping_interval,
-                max_outstanding_pings=self.config.max_outstanding_pings,
-                # Error callback
-                error_cb=self._error_callback,
-                # Disconnect callback
-                disconnected_cb=self._disconnected_callback,
-                # Reconnect callback
-                reconnected_cb=self._reconnected_callback,
-            )
+            connect_options: dict[str, Any] = {
+                "max_reconnect_attempts": self.config.max_reconnect_attempts,
+                "reconnect_time_wait": self.config.reconnect_time_wait,
+                "ping_interval": self.config.ping_interval,
+                "max_outstanding_pings": self.config.max_outstanding_pings,
+                "error_cb": self._error_callback,
+                "disconnected_cb": self._disconnected_callback,
+                "reconnected_cb": self._reconnected_callback,
+            }
+            self._configure_tls(connect_options)
+            if self.config.token:
+                connect_options["token"] = self.config.token
+            elif self.config.user and self.config.password:
+                connect_options["user"] = self.config.user
+                connect_options["password"] = self.config.password
+
+            self._client = await nats.connect(servers=self.config.url, **connect_options)
 
             self._logger.info("Connected to NATS", url=self.config.url)
             self._running = True

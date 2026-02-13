@@ -190,7 +190,11 @@ def test_nats_service_init_with_config(nats_config):
 
 def test_nats_service_init_with_dict():
     """Test NATSService initialization with dict config."""
-    config_dict = {"url": "nats://localhost:4222", "max_reconnect_attempts": 3}
+    config_dict = {
+        "url": "nats://localhost:4222",
+        "max_reconnect_attempts": 3,
+        "tls_enabled": False,
+    }
     service = NATSService(config_dict)
     assert isinstance(service.config, NATSConfig)
     assert service.config.url == "nats://localhost:4222"

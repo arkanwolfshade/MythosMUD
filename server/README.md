@@ -450,6 +450,22 @@ The server uses:
 
 **Asyncio** for the game loop
 
+### NATS code layout
+
+NATS-related code is organized by layer (not a single `nats/` tree):
+
+- **infrastructure** (`server/infrastructure/nats_broker.py`): MessageBroker protocol
+  implementation; used where the protocol abstraction is required.
+- **services** (`server/services/nats_service.py`, `server/services/nats_subject_manager/`):
+  Connection pool, subject validation, and primary NATS client used by the app.
+- **realtime** (`server/realtime/nats_message_handler.py`): Message handler that
+  subscribes to NATS and broadcasts to WebSocket clients.
+- **events** (`server/events/nats_event_bridge.py`): Bridge between local EventBus
+  and NATS for distributed events.
+
+See also `docs/NATS_ERROR_HANDLING_STRATEGY.md` and `docs/deployment.md` for NATS
+configuration and auth.
+
 ## Future Enhancements
 
 Database integration (PostgreSQL/DynamoDB)

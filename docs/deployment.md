@@ -27,6 +27,15 @@ Use these URLs for load balancers and orchestration health checks.
 
 Use `./scripts/stop_server.ps1` (Windows) to stop both Uvicorn and Gunicorn server processes.
 
+### NATS (optional)
+
+For NATS servers that require authentication, set `NATS_USER` and `NATS_PASSWORD`, or
+`NATS_TOKEN`, via environment or secrets manager (see env.\*.example NATS sections).
+For local development with NATS over TLS, generate certs with
+`./scripts/generate_nats_local_certs.ps1` (output in `certs/nats/`); then set
+`NATS_TLS_ENABLED`, `NATS_TLS_CERT_FILE`, `NATS_TLS_KEY_FILE`, and `NATS_TLS_CA_FILE`
+in `.env.local`.
+
 ### Development
 
 Local development continues to use Uvicorn only (e.g. `scripts/start_server.ps1` or

@@ -93,7 +93,6 @@ class NATSMessageHandler:
         AI: Initializes retry handler, DLQ, and circuit breaker for resilience.
         AI Agent: connection_manager injected via constructor to eliminate global singleton dependency
         """
-        logger.info("NATSMessageHandler __init__ called - ENHANCED LOGGING TEST")
         self.nats_service = nats_service
         self.subject_manager = subject_manager
         self._connection_manager = connection_manager  # AI Agent: Injected dependency, not global
@@ -174,12 +173,11 @@ class NATSMessageHandler:
         Returns:
             True if started successfully, False otherwise
         """
-        logger.info("NATS message handler start() called - ENHANCED LOGGING TEST")
         try:
-            logger.info("About to call _subscribe_to_chat_subjects()", debug=True)
+            logger.debug("Subscribing to chat subjects")
             # Subscribe to chat message subjects
             await self._subscribe_to_chat_subjects()
-            logger.info("Finished _subscribe_to_chat_subjects()", debug=True)
+            logger.debug("Chat subject subscription complete")
 
             # Subscribe to event subjects if enabled
             if enable_event_subscriptions:
@@ -238,9 +236,7 @@ class NATSMessageHandler:
         AI: Uses subject manager to generate subscription patterns dynamically.
         AI: Includes legacy patterns for backward compatibility during migration.
         """
-        logger.info(
-            "Starting _subscribe_to_standardized_chat_subjects - subscribing to standardized chat subjects", debug=True
-        )
+        logger.debug("Starting standardized chat subject subscriptions")
 
         # Get standardized chat subscription patterns from subject manager
         if self.subject_manager is None:
@@ -253,7 +249,7 @@ class NATSMessageHandler:
         )
 
         for pattern in subscription_patterns:
-            logger.info("About to subscribe to pattern", pattern=pattern, debug=True)
+            logger.debug("Subscribing to pattern", pattern=pattern)
             try:
                 await self._subscribe_to_subject(pattern)
             except (NATSError, RuntimeError) as e:
@@ -261,12 +257,11 @@ class NATSMessageHandler:
                     "Failed to subscribe to pattern, continuing with other patterns",
                     pattern=pattern,
                     error=str(e),
-                    debug=True,
                 )
                 # Continue with other patterns even if one fails
                 continue
 
-        logger.info("Finished _subscribe_to_standardized_chat_subjects", debug=True)
+        logger.debug("Finished standardized chat subject subscriptions")
 
     async def _subscribe_to_subject(self, subject: str) -> bool:
         """
@@ -279,20 +274,20 @@ class NATSMessageHandler:
             NATSSubscribeError: If subscription fails
         """
         try:
-            logger.info("Attempting to subscribe to NATS subject", subject=subject, debug=True)
+            logger.debug("Subscribing to NATS subject", subject=subject)
             if self.nats_service is None:
                 logger.error("NATSService is required for subscriptions", subject=subject)
                 return False
             # subscribe() now raises exceptions instead of returning False
             await self.nats_service.subscribe(subject, self._handle_nats_message)
             self.subscriptions[subject] = True
-            logger.info("Successfully subscribed to NATS subject", subject=subject, debug=True)
+            logger.debug("Subscribed to NATS subject", subject=subject)
             return True
         except NATSSubscribeError:
             # Re-raise NATSSubscribeError as documented in docstring
             raise
         except (NATSError, RuntimeError) as e:
-            logger.error("Error subscribing to NATS subject", subject=subject, error=str(e), debug=True)
+            logger.error("Error subscribing to NATS subject", subject=subject, error=str(e))
             return False
 
     async def _unsubscribe_from_subject(self, subject: str) -> bool:
@@ -329,7 +324,9 @@ class NATSMessageHandler:
 
         AI: Entry point with full error boundary protection.
         """
-        logger.info("_handle_nats_message called", message_data=message_data, debug=True)
+        logger.debug(
+            "NATS message received", message_keys=list(message_data.keys()) if isinstance(message_data, dict) else None
+        )
         channel = message_data.get("channel", "unknown")
         message_id = message_data.get("message_id", "unknown")
 
