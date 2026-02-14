@@ -2,6 +2,9 @@
 
 This is the greenfield test suite for MythosMUD server code.
 
+**Project layout:** This project uses a top-level `server/` package (not a `src/` layout). Tests
+are run from the project root via `make test` so imports resolve correctly.
+
 ## Structure
 
 `unit/` - Unit tests with mocks/fakes, no real I/O
@@ -77,6 +80,9 @@ Additional markers:
 
 Place in `server/tests/unit/`
 
+- Use mocker for multi-patch or call assertions; monkeypatch for simple setenv/setattr.
+- Prefer one logical behavior per test; names with "and" are acceptable when they describe a single
+  scenario.
 - Use `strict_mocker` fixture for mocking (autospec enabled by default)
 - Use `dummy_request` fixture for request objects
 - No real database, network, or filesystem access

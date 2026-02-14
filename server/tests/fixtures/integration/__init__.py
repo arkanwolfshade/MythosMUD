@@ -103,6 +103,7 @@ async def session_factory(integration_engine: AsyncEngine) -> AsyncGenerator[asy
     # Tables persist - cleaned by db_cleanup fixture
 
 
+# autouse: required for test isolation - truncates tables after every integration test
 @pytest.fixture(scope="function", autouse=True)
 async def db_cleanup(session_factory: async_sessionmaker[AsyncSession]) -> AsyncGenerator[None, None]:
     """

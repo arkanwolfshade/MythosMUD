@@ -5,6 +5,7 @@ import pytest
 from server.auth.token_epoch import set_auth_epoch
 
 
+# autouse: required for test isolation in this module - token generation needs an epoch
 @pytest.fixture(autouse=True)
 def set_auth_epoch_for_tests():
     """Set auth epoch so token generation and validation work in tests (no real server lifespan)."""

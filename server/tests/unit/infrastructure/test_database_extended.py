@@ -24,7 +24,11 @@ from server.database import (
 )
 from server.exceptions import ValidationError
 
+# pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
+# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
 
+
+# autouse: required for test isolation in this module - DatabaseManager singleton reset
 @pytest.fixture(autouse=True)
 def reset_db_state():
     """Reset database state before each test."""
@@ -277,6 +281,8 @@ async def test_get_async_session_rollback_on_error():
 
     # Create a proper async context manager that propagates exceptions
     class MockSessionContext:
+        """Async context manager wrapping a session; does not suppress exceptions in __aexit__."""
+
         def __init__(self, session):
             self.session = session
 

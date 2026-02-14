@@ -12,15 +12,20 @@ import pytest
 from server.models.combat import CombatAction, CombatParticipant, CombatParticipantType, CombatStatus
 from server.services.combat_turn_processor import CombatTurnProcessor
 
+# pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
+# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
+
 
 @pytest.fixture
-def mock_combat_service():
+def mock_combat_service() -> MagicMock:
     """Create a mock combat service."""
     return MagicMock()
 
 
 @pytest.fixture
-def combat_turn_processor(mock_combat_service):  # pylint: disable=redefined-outer-name  # Reason: pytest fixture dependency injection - parameter name must match fixture name
+def combat_turn_processor(
+    mock_combat_service: MagicMock,
+) -> CombatTurnProcessor:  # pylint: disable=redefined-outer-name  # Reason: pytest fixture dependency injection - parameter name must match fixture name
     """Create a CombatTurnProcessor instance."""
     return CombatTurnProcessor(mock_combat_service)
 

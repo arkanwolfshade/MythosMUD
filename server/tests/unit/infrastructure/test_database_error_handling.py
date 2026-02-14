@@ -16,6 +16,7 @@ from server.exceptions import DatabaseError, ValidationError
 # pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
 
 
+# autouse: required for test isolation in this module - DatabaseManager singleton reset
 @pytest.fixture(autouse=True)
 def reset_db_state():
     """Reset database state before each test."""

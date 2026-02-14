@@ -57,6 +57,7 @@ pytest_plugins = [
 ]
 
 
+# autouse: truly global - ensures env vars are set before every test (some tests clear them)
 @pytest.fixture(autouse=True)
 def ensure_test_environment_variables() -> Generator[None, None, None]:
     """
@@ -71,6 +72,7 @@ def ensure_test_environment_variables() -> Generator[None, None, None]:
     # No cleanup needed - env vars persist for next test
 
 
+# autouse: truly global - prevents config singleton state from leaking between tests
 @pytest.fixture(autouse=True)
 def reset_config_singleton() -> Generator[None, None, None]:
     """
@@ -86,6 +88,7 @@ def reset_config_singleton() -> Generator[None, None, None]:
     reset_config()
 
 
+# autouse: truly global - reproducible tests; non-interfering
 @pytest.fixture(autouse=True)
 def deterministic_random_seed() -> Generator[None, None, None]:
     """Set deterministic random seed for reproducible tests."""
@@ -94,6 +97,7 @@ def deterministic_random_seed() -> Generator[None, None, None]:
     # Seed is reset automatically per test
 
 
+# autouse: session-scoped, truly global - required for asyncpg/Windows compatibility
 @pytest.fixture(scope="session", autouse=True)
 def configure_event_loop_policy() -> Generator[None, None, None]:
     """

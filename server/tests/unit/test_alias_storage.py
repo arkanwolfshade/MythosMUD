@@ -7,6 +7,7 @@ Tests the AliasStorage class for managing player command aliases in JSON format.
 import json
 import os
 import tempfile
+from collections.abc import Generator
 from datetime import datetime
 from pathlib import Path
 from unittest.mock import MagicMock, patch
@@ -16,28 +17,31 @@ import pytest
 from server.alias_storage import AliasStorage, _get_alias_validator
 from server.models.alias import Alias
 
+# pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
+# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
+
 
 @pytest.fixture
-def temp_storage_dir():
+def temp_storage_dir() -> Generator[Path, None, None]:
     """Create a temporary directory for alias storage."""
     with tempfile.TemporaryDirectory() as tmpdir:
         yield Path(tmpdir)
 
 
 @pytest.fixture
-def alias_storage(temp_storage_dir):
+def alias_storage(temp_storage_dir: Path) -> AliasStorage:
     """Create an AliasStorage instance with temporary directory."""
     return AliasStorage(storage_dir=str(temp_storage_dir))
 
 
 @pytest.fixture
-def sample_alias():
+def sample_alias() -> Alias:
     """Create a sample alias for testing."""
     return Alias(name="n", command="go north")
 
 
 @pytest.fixture
-def sample_alias2():
+def sample_alias2() -> Alias:
     """Create another sample alias for testing."""
     return Alias(name="s", command="go south")
 
