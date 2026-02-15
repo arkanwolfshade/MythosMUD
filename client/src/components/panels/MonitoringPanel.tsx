@@ -71,22 +71,22 @@ export const MonitoringPanel: React.FC<MonitoringPanelProps> = ({
     try {
       setError(null);
 
-      // Fetch dual connection stats
+      // Fetch dual connection stats (typed as unknown; shape assumed to match API contract)
       const dualConnectionsResponse = await fetch(`${baseUrl}/api/monitoring/dual-connections`);
-      const dualConnections = dualConnectionsResponse.ok ? await dualConnectionsResponse.json() : null;
+      const rawDual: unknown = dualConnectionsResponse.ok ? await dualConnectionsResponse.json() : null;
 
       // Fetch performance stats
       const performanceResponse = await fetch(`${baseUrl}/api/monitoring/performance`);
-      const performance = performanceResponse.ok ? await performanceResponse.json() : null;
+      const rawPerformance: unknown = performanceResponse.ok ? await performanceResponse.json() : null;
 
       // Fetch connection health stats
       const healthResponse = await fetch(`${baseUrl}/api/monitoring/connection-health`);
-      const connectionHealth = healthResponse.ok ? await healthResponse.json() : null;
+      const rawHealth: unknown = healthResponse.ok ? await healthResponse.json() : null;
 
       setMonitoringData({
-        dualConnections,
-        performance,
-        connectionHealth,
+        dualConnections: rawDual as MonitoringData['dualConnections'],
+        performance: rawPerformance as MonitoringData['performance'],
+        connectionHealth: rawHealth as MonitoringData['connectionHealth'],
       });
 
       setLastUpdated(new Date());

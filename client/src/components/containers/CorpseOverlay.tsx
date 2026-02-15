@@ -11,6 +11,7 @@ import { useShallow } from 'zustand/react/shallow';
 import type { ContainerComponent } from '../../stores/containerStore';
 import { useContainerStore } from '../../stores/containerStore';
 import { useGameStore } from '../../stores/gameStore';
+import { isOpenContainerApiResponse } from '../../utils/apiTypeGuards';
 import { API_V1_BASE } from '../../utils/config';
 import { EldritchIcon, MythosIcons } from '../ui/EldritchIcon';
 import { TerminalButton } from '../ui/TerminalButton';
@@ -143,10 +144,13 @@ export const CorpseOverlay: React.FC<CorpseOverlayProps> = ({ onOpen, className 
       });
 
       if (response.ok) {
-        const data = await response.json();
+        const raw: unknown = await response.json();
+        if (!isOpenContainerApiResponse(raw)) {
+          return;
+        }
         // Store mutation token in container store
-        const container = data.container as ContainerComponent;
-        const mutationToken = data.mutation_token as string;
+        const container = raw.container as ContainerComponent;
+        const mutationToken = raw.mutation_token ?? '';
         openContainer(container, mutationToken);
         onOpen?.(containerId);
       }

@@ -9,6 +9,7 @@
  */
 
 import React, { useCallback, useEffect, useState } from 'react';
+import { isAsciiMapApiResponse } from '../../utils/apiTypeGuards';
 import { getVersionedApiBaseUrl } from '../../utils/config';
 import { SafeHtml } from '../common/SafeHtml';
 import { MapControls } from './MapControls';
@@ -112,14 +113,18 @@ export const AsciiMapViewer: React.FC<AsciiMapViewerProps> = ({
         throw new Error(`Failed to fetch map: ${response.statusText}`);
       }
 
-      const data = await response.json();
-      setMapHtml(data.map_html || '');
+      const raw: unknown = await response.json();
+      if (!isAsciiMapApiResponse(raw)) {
+        setMapHtml('');
+        return;
+      }
+      setMapHtml(raw.map_html ?? '');
 
       // Sync viewport with server response (server auto-centers on player's room)
       // Only update if different to avoid unnecessary re-renders
-      if (data.viewport) {
-        const serverX = data.viewport.x || 0;
-        const serverY = data.viewport.y || 0;
+      if (raw.viewport) {
+        const serverX = raw.viewport.x ?? 0;
+        const serverY = raw.viewport.y ?? 0;
         // Update viewport if server changed it (auto-centering)
         if (serverX !== viewportX || serverY !== viewportY) {
           setViewportX(serverX);

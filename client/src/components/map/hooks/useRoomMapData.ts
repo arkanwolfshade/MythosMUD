@@ -10,6 +10,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import type { Room } from '../../../stores/gameStore';
+import { isApiErrorWithDetail, isRoomsListApiResponse } from '../../../utils/apiTypeGuards';
 import { getVersionedApiBaseUrl } from '../../../utils/config';
 
 export interface UseRoomMapDataOptions {
@@ -96,13 +97,20 @@ export function useRoomMapData(options: UseRoomMapDataOptions): UseRoomMapDataRe
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ detail: 'Failed to fetch rooms' }));
-        throw new Error(errorData.detail || `Failed to fetch rooms: ${response.status}`);
+        const rawErr: unknown = await response.json().catch(() => ({ detail: 'Failed to fetch rooms' }));
+        const message =
+          isApiErrorWithDetail(rawErr) && rawErr.detail ? rawErr.detail : `Failed to fetch rooms: ${response.status}`;
+        throw new Error(message);
       }
 
-      const data = await response.json();
-      setRooms(data.rooms || []);
-      setTotal(data.total || 0);
+      const raw: unknown = await response.json();
+      if (!isRoomsListApiResponse(raw)) {
+        setRooms([]);
+        setTotal(0);
+        return;
+      }
+      setRooms(Array.isArray(raw.rooms) ? (raw.rooms as Room[]) : []);
+      setTotal(typeof raw.total === 'number' ? raw.total : 0);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch room data';
       setError(errorMessage);

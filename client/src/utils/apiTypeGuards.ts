@@ -62,6 +62,131 @@ export interface RefreshTokenResponse {
 }
 
 /**
+ * ASCII map API response (map viewer and minimap endpoints).
+ */
+export interface AsciiMapApiResponse {
+  map_html?: string;
+  viewport?: { x?: number; y?: number };
+}
+
+/**
+ * Type guard: Check if value is an AsciiMapApiResponse.
+ */
+export function isAsciiMapApiResponse(value: unknown): value is AsciiMapApiResponse {
+  if (typeof value !== 'object' || value === null) {
+    return false;
+  }
+  const o = value as Record<string, unknown>;
+  if (o.map_html !== undefined && typeof o.map_html !== 'string') {
+    return false;
+  }
+  if (o.viewport !== undefined) {
+    if (typeof o.viewport !== 'object' || o.viewport === null) {
+      return false;
+    }
+    const v = o.viewport as Record<string, unknown>;
+    if (v.x !== undefined && typeof v.x !== 'number') {
+      return false;
+    }
+    if (v.y !== undefined && typeof v.y !== 'number') {
+      return false;
+    }
+  }
+  return true;
+}
+
+/**
+ * Rooms list API response (GET /api/rooms/list).
+ */
+export interface RoomsListApiResponse {
+  rooms?: unknown[];
+  total?: number;
+}
+
+/**
+ * Type guard: Check if value is a RoomsListApiResponse.
+ */
+export function isRoomsListApiResponse(value: unknown): value is RoomsListApiResponse {
+  if (typeof value !== 'object' || value === null) {
+    return false;
+  }
+  const o = value as Record<string, unknown>;
+  if (o.rooms !== undefined && !Array.isArray(o.rooms)) {
+    return false;
+  }
+  if (o.total !== undefined && typeof o.total !== 'number') {
+    return false;
+  }
+  return true;
+}
+
+/**
+ * API error body with optional detail message.
+ */
+export interface ApiErrorWithDetail {
+  detail?: string;
+}
+
+/**
+ * Type guard: Check if value is an ApiErrorWithDetail (for error response bodies).
+ */
+export function isApiErrorWithDetail(value: unknown): value is ApiErrorWithDetail {
+  if (typeof value !== 'object' || value === null) {
+    return false;
+  }
+  const o = value as Record<string, unknown>;
+  if (o.detail !== undefined && typeof o.detail !== 'string') {
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Respawn API success response (POST /api/players/respawn or respawn-delirium).
+ */
+export interface RespawnApiResponse {
+  room?: unknown;
+  player?: unknown;
+  message?: string;
+}
+
+/**
+ * Type guard: Check if value is a RespawnApiResponse.
+ */
+export function isRespawnApiResponse(value: unknown): value is RespawnApiResponse {
+  if (typeof value !== 'object' || value === null) {
+    return false;
+  }
+  const o = value as Record<string, unknown>;
+  if (o.message !== undefined && typeof o.message !== 'string') {
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Open container API response (container + mutation_token).
+ */
+export interface OpenContainerApiResponse {
+  container?: unknown;
+  mutation_token?: string;
+}
+
+/**
+ * Type guard: Check if value is an OpenContainerApiResponse.
+ */
+export function isOpenContainerApiResponse(value: unknown): value is OpenContainerApiResponse {
+  if (typeof value !== 'object' || value === null) {
+    return false;
+  }
+  const o = value as Record<string, unknown>;
+  if (o.mutation_token !== undefined && typeof o.mutation_token !== 'string') {
+    return false;
+  }
+  return true;
+}
+
+/**
  * Type guard: Check if value is a string.
  */
 function isString(value: unknown): value is string {

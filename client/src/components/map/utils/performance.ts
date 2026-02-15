@@ -17,7 +17,7 @@
  * @returns Debounced function
  */
 
-// Generic function type requires any[] for args to accept functions with any parameter types
+// TypeScript best practice: any here is constrained to generic T; callers get full type safety via Parameters<T>.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function debounce<T extends (...args: any[]) => any>(func: T, delay: number): (...args: Parameters<T>) => void {
   let timeoutId: ReturnType<typeof setTimeout> | null = null;
@@ -41,7 +41,7 @@ export function debounce<T extends (...args: any[]) => any>(func: T, delay: numb
  * @returns Throttled function
  */
 
-// Generic function type requires any[] for args to accept functions with any parameter types
+// TypeScript best practice: any here is constrained to generic T; callers get full type safety via Parameters<T>.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function throttle<T extends (...args: any[]) => any>(func: T, delay: number): (...args: Parameters<T>) => void {
   let lastCall = 0;
