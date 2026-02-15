@@ -32,6 +32,8 @@ test.describe('Environmental Container Interactions', () => {
     await cleanupMultiPlayerContexts(contexts);
   });
 
+  // Skipped until 'open' command is implemented
+  // eslint-disable-next-line playwright/no-skipped-test -- placeholder until container open command exists
   test.skip('should allow opening environmental containers', async () => {
     const awContext = contexts[0];
 

@@ -1,4 +1,5 @@
 import js from '@eslint/js';
+import playwright from 'eslint-plugin-playwright';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import { globalIgnores } from 'eslint/config';
@@ -47,6 +48,14 @@ export default tseslint.config([
         window: 'readonly',
         Element: 'readonly',
       },
+    },
+  },
+  {
+    files: ['tests/e2e/**/*.ts', 'tests/e2e/**/*.tsx'],
+    extends: [playwright.configs['flat/recommended']],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: { ...globals.node, ...globals.browser },
     },
   },
   {

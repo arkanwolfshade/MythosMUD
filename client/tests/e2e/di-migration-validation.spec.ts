@@ -13,6 +13,7 @@
 
 /* eslint-disable react-hooks/rules-of-hooks */
 // 'use' in test.extend is a Playwright fixture function, not a React hook
+/* eslint-disable playwright/no-standalone-expect -- authenticatedTest is test.extend(); expects run inside its callbacks */
 
 import { expect, test, type APIResponse, type BrowserContext, type Page } from '@playwright/test';
 
@@ -57,9 +58,7 @@ async function setupAuthStorage(
       throw new Error('Page was closed after login');
     }
 
-    const commandInput = page.locator(
-      'input[placeholder*="command" i], textarea[placeholder*="command" i], [data-testid="command-input"]'
-    );
+    const commandInput = page.getByTestId('command-input');
     const isLoggedIn = await commandInput.isVisible({ timeout: 5000 }).catch(() => false);
 
     if (!isLoggedIn) {
@@ -110,49 +109,34 @@ const authenticatedTest = test.extend<AuthenticatedPage>({
     await page.goto(BASE_URL, { waitUntil: 'load' });
 
     // Verify we're actually logged in (not back at login screen)
-    const loginForm = page.locator('input[placeholder*="username" i], input[name*="username" i]');
-    const isAtLoginScreen = await loginForm.isVisible({ timeout: 2000 }).catch(() => false);
+    const isAtLoginScreen = await page
+      .getByTestId('username-input')
+      .isVisible({ timeout: 2000 })
+      .catch(() => false);
 
     if (isAtLoginScreen) {
-      // Storage state didn't preserve authentication, need to login again
       await loginPlayer(page, TEST_USERNAME, TEST_PASSWORD);
-      // Save the updated storage state
       await context.storageState({ path: AUTH_STORAGE_PATH });
     } else {
-      // Verify we're in the game (command input should be visible)
-      const commandInput = page.locator(
-        'input[placeholder*="command" i], textarea[placeholder*="command" i], [data-testid="command-input"]'
-      );
+      const commandInput = page.getByTestId('command-input');
       const isInGame = await commandInput.isVisible({ timeout: 10000 }).catch(() => false);
 
       if (!isInGame) {
-        // We're not at login, but not in game either - might be at character selection or MOTD
-        // Check if we're at MOTD - if so, just click the button (we're already authenticated)
-        const motdButton = page.locator('[data-testid="motd-enter-realm"]');
+        const motdButton = page.getByTestId('motd-enter-realm');
         const isAtMOTD = await motdButton.isVisible({ timeout: 5000 }).catch(() => false);
 
         if (isAtMOTD) {
-          // Just click MOTD button - we're already authenticated
           await motdButton.click();
-          // Wait for game interface (~10 seconds)
           await commandInput.waitFor({ state: 'visible', timeout: 15000 });
         } else {
-          // Might be at character selection or something else - use full login
           await loginPlayer(page, TEST_USERNAME, TEST_PASSWORD);
           await context.storageState({ path: AUTH_STORAGE_PATH });
         }
       }
     }
 
-    // After login, verify command input is visible (confirms we're in the game)
-    // Game loads in ~10 seconds after MOTD, so wait up to 15 seconds
-    const commandInput = page.locator(
-      'input[placeholder*="command" i], textarea[placeholder*="command" i], [data-testid="command-input"]'
-    );
-    await commandInput.waitFor({ state: 'visible', timeout: 15000 }).catch(() => {
-      // Command input might not be visible yet, but we're probably in the game
-      // The test will verify this itself
-    });
+    const commandInput = page.getByTestId('command-input');
+    await commandInput.waitFor({ state: 'visible', timeout: 15000 }).catch(() => {});
 
     await use(page);
     await context.close();
@@ -182,50 +166,34 @@ const adminTest = test.extend<AuthenticatedPage>({
     // Navigate to base URL - storage state should handle authentication
     await page.goto(BASE_URL, { waitUntil: 'load' });
 
-    // Verify we're actually logged in (not back at login screen)
-    const loginForm = page.locator('input[placeholder*="username" i], input[name*="username" i]');
-    const isAtLoginScreen = await loginForm.isVisible({ timeout: 2000 }).catch(() => false);
+    const isAtLoginScreen = await page
+      .getByTestId('username-input')
+      .isVisible({ timeout: 2000 })
+      .catch(() => false);
 
     if (isAtLoginScreen) {
-      // Storage state didn't preserve authentication, need to login again
       await loginPlayer(page, ADMIN_USERNAME, TEST_PASSWORD);
-      // Save the updated storage state
       await context.storageState({ path: ADMIN_STORAGE_PATH });
     } else {
-      // Verify we're in the game (command input should be visible)
-      const commandInput = page.locator(
-        'input[placeholder*="command" i], textarea[placeholder*="command" i], [data-testid="command-input"]'
-      );
+      const commandInput = page.getByTestId('command-input');
       const isInGame = await commandInput.isVisible({ timeout: 10000 }).catch(() => false);
 
       if (!isInGame) {
-        // We're not at login, but not in game either - might be at character selection or MOTD
-        // Check if we're at MOTD - if so, just click the button (we're already authenticated)
-        const motdButton = page.locator('[data-testid="motd-enter-realm"]');
+        const motdButton = page.getByTestId('motd-enter-realm');
         const isAtMOTD = await motdButton.isVisible({ timeout: 5000 }).catch(() => false);
 
         if (isAtMOTD) {
-          // Just click MOTD button - we're already authenticated
           await motdButton.click();
-          // Wait for game interface (~10 seconds)
           await commandInput.waitFor({ state: 'visible', timeout: 15000 });
         } else {
-          // Might be at character selection or something else - use full login
           await loginPlayer(page, ADMIN_USERNAME, TEST_PASSWORD);
           await context.storageState({ path: ADMIN_STORAGE_PATH });
         }
       }
     }
 
-    // After login, verify command input is visible (confirms we're in the game)
-    // Game loads in ~10 seconds after MOTD, so wait up to 15 seconds
-    const commandInput = page.locator(
-      'input[placeholder*="command" i], textarea[placeholder*="command" i], [data-testid="command-input"]'
-    );
-    await commandInput.waitFor({ state: 'visible', timeout: 15000 }).catch(() => {
-      // Command input might not be visible yet, but we're probably in the game
-      // The test will verify this itself
-    });
+    const commandInput = page.getByTestId('command-input');
+    await commandInput.waitFor({ state: 'visible', timeout: 15000 }).catch(() => {});
 
     await use(page);
     await context.close();
@@ -290,16 +258,12 @@ async function loginPlayer(page: Page, username: string, password: string): Prom
   // Use 'load' instead of 'networkidle' - much faster
   await page.goto(BASE_URL, { waitUntil: 'load' });
 
-  // Wait for login form - reduced timeout to 5s (page should load quickly)
-  const usernameInput = page.locator('input[placeholder*="username" i], input[name*="username" i]');
+  const usernameInput = page.getByTestId('username-input');
   await expect(usernameInput).toBeVisible({ timeout: 5000 });
 
-  // Fill login form
   await usernameInput.fill(username);
-  await page.fill('input[type="password"]', password);
-
-  // Click login button and wait for navigation
-  await page.click('button:has-text("Enter"), button:has-text("Login"), button[type="submit"]');
+  await page.getByTestId('password-input').fill(password);
+  await page.getByTestId('login-button').click();
   await page.waitForLoadState('domcontentloaded', { timeout: 5000 }).catch(() => {});
 
   // Wait for loading to complete first (if present)
@@ -334,27 +298,30 @@ async function loginPlayer(page: Page, username: string, password: string): Prom
     { timeout: 15000 } // Increased timeout to account for loading
   );
 
-  // Handle character selection if present - optimized with shorter timeouts
-  const characterSelectionHeading = page.locator('h1, h2, h3').filter({ hasText: /Select Your Character/i });
+  const characterSelectionHeading = page.getByRole('heading', { name: /Select Your Character/i });
   if (await characterSelectionHeading.isVisible({ timeout: 2000 }).catch(() => false)) {
     if (page.isClosed()) {
       const errorDetails = errors.length > 0 ? ` Errors: ${errors.join('; ')}` : '';
       throw new Error(`Page was closed during character selection check. Reason: ${pageCloseReason}.${errorDetails}`);
     }
 
-    const selectCharacterButton = page.locator('button:has-text("Select Character")').first();
+    const selectCharacterButton = page.getByRole('button', { name: /Select Character/i }).first();
     if (await selectCharacterButton.isVisible({ timeout: 3000 }).catch(() => false)) {
       await selectCharacterButton.click();
-      // After clicking, wait for navigation - could go to MOTD or game
       await page.waitForLoadState('domcontentloaded', { timeout: 5000 }).catch(() => {});
-      await safeWait(page, 500); // Small wait for transitions
+      await page
+        .getByTestId('motd-enter-realm')
+        .waitFor({ state: 'visible', timeout: 10000 })
+        .catch(() => {});
     } else {
-      // Fallback: try clicking first character card or button
-      const firstCharacter = page.locator('.character-card, [data-character-id], button:has-text("Select")').first();
+      const firstCharacter = page.getByRole('button', { name: /Select/i }).first();
       if (await firstCharacter.isVisible({ timeout: 3000 }).catch(() => false)) {
         await firstCharacter.click();
         await page.waitForLoadState('domcontentloaded', { timeout: 5000 }).catch(() => {});
-        await safeWait(page, 500); // Small wait for transitions
+        await page
+          .getByTestId('motd-enter-realm')
+          .waitFor({ state: 'visible', timeout: 10000 })
+          .catch(() => {});
       }
     }
 
@@ -395,9 +362,8 @@ async function loginPlayer(page: Page, username: string, password: string): Prom
   // Small wait for any post-loading transitions
   await safeWait(page, 2000);
 
-  // Check for MOTD screen - give it more time and also check for MOTD content
   console.error('[DEBUG] Checking for MOTD screen...');
-  const enterRealmButton = page.locator('[data-testid="motd-enter-realm"]');
+  const enterRealmButton = page.getByTestId('motd-enter-realm');
   const isMOTDScreen = await enterRealmButton.isVisible({ timeout: 10000 }).catch(() => false);
 
   // Also check if we're on MOTD by looking for MOTD content (fallback)
@@ -431,13 +397,8 @@ async function loginPlayer(page: Page, username: string, password: string): Prom
       throw new Error(`Page was closed while checking MOTD screen. Reason: ${pageCloseReason}.${errorDetails}`);
     }
 
-    // Wait for button to be ready - use data-testid for reliable detection
-    // Wait up to 15 seconds for button to appear and be ready (like MCP tests use 30s for MOTD)
     console.error('[DEBUG] Waiting for MOTD button to appear...');
-    await page.waitForSelector('[data-testid="motd-enter-realm"]', {
-      state: 'visible',
-      timeout: 15000,
-    });
+    await page.getByTestId('motd-enter-realm').waitFor({ state: 'visible', timeout: 15000 });
     console.error('[DEBUG] MOTD button is visible');
 
     if (page.isClosed()) {
@@ -544,7 +505,7 @@ async function loginPlayer(page: Page, username: string, password: string): Prom
     }, 200);
 
     try {
-      await page.click('[data-testid="motd-enter-realm"]', { timeout: 5000 });
+      await page.getByTestId('motd-enter-realm').click({ timeout: 5000 });
       console.error('[DEBUG] Button click completed via Playwright');
     } catch (clickError) {
       console.error('[DEBUG] Playwright click failed, trying direct DOM click:', clickError);
@@ -617,8 +578,8 @@ async function loginPlayer(page: Page, username: string, password: string): Prom
       // Try multiple selectors - Game Info heading, message items, or message text
       await Promise.race([
         page.getByText('Game Info', { exact: false }).waitFor({ state: 'visible', timeout: 15000 }),
-        page.waitForSelector('.message-item', { state: 'visible', timeout: 15000 }),
-        page.waitForSelector('[data-message-text]', { state: 'visible', timeout: 15000 }),
+        page.locator('.message-item').waitFor({ state: 'visible', timeout: 15000 }),
+        page.locator('[data-message-text]').waitFor({ state: 'visible', timeout: 15000 }),
       ]).catch(() => {
         // If Game Info panel not found, try other indicators
       });
@@ -675,11 +636,14 @@ async function loginPlayer(page: Page, username: string, password: string): Prom
         { cause: error }
       );
     }
-    // If timeout, check if we're at least past MOTD/login screens
-    const loginForm = page.locator('input[placeholder*="username" i]');
-    const motdButton = page.locator('[data-testid="motd-enter-realm"]');
-    const atLogin = await loginForm.isVisible({ timeout: 1000 }).catch(() => false);
-    const atMOTD = await motdButton.isVisible({ timeout: 1000 }).catch(() => false);
+    const atLogin = await page
+      .getByTestId('username-input')
+      .isVisible({ timeout: 1000 })
+      .catch(() => false);
+    const atMOTD = await page
+      .getByTestId('motd-enter-realm')
+      .isVisible({ timeout: 1000 })
+      .catch(() => false);
 
     if (atLogin) {
       const errorDetails = errors.length > 0 ? ` Page errors captured: ${errors.join('; ')}` : '';
@@ -722,21 +686,16 @@ async function executeCommand(
   // Find command input field
   // Reduced timeout from 30s to 10s - if command input isn't visible, there's a real issue
   try {
-    const commandInput = page.locator(
-      'input[placeholder*="command" i], textarea[placeholder*="command" i], [data-testid="command-input"]'
-    );
+    const commandInput = page.getByTestId('command-input');
     await expect(commandInput).toBeVisible({ timeout: 10000 });
-
-    // Clear any existing text
     await commandInput.clear();
     await commandInput.fill(command);
     await commandInput.press('Enter');
   } catch (error) {
-    // Page was closed or command input not available
     if (page.isClosed()) {
       return { sent: false, responseReceived: false };
     }
-    throw error; // Re-throw if it's a different error
+    throw error;
   }
 
   // Wait for command to process and response to appear
@@ -827,12 +786,14 @@ async function testAPIEndpoint(
   return response;
 }
 
-// Helper function for safe timeout waits (handles page closure gracefully)
+// Web-first wait: wait for game UI or message (avoids waitForTimeout)
 async function safeWait(page: Page, timeout: number): Promise<void> {
   try {
-    if (!page.isClosed()) {
-      await page.waitForTimeout(timeout);
-    }
+    if (page.isClosed()) return;
+    await Promise.race([
+      page.getByTestId('command-input').waitFor({ state: 'visible', timeout }),
+      page.locator('[data-message-text]').first().waitFor({ state: 'attached', timeout }),
+    ]).catch(() => {});
   } catch {
     // Page was closed or context invalid - this is okay for test cleanup
   }
@@ -852,9 +813,7 @@ async function waitForGameTick(page: Page, timeout: number = 5000): Promise<void
 async function cleanupTest(_page: Page): Promise<void> {
   try {
     // Try to logout if possible
-    const logoutButton = _page.locator(
-      '[data-testid="logout-button"], button:has-text("Logout"), button:has-text("Log out")'
-    );
+    const logoutButton = _page.getByTestId('logout-button').or(_page.getByRole('button', { name: /Log out/i }));
     if (await logoutButton.isVisible({ timeout: 5000 }).catch(() => false)) {
       await logoutButton.click();
       await _page.waitForLoadState('domcontentloaded', { timeout: 5000 }).catch(() => {});
@@ -879,10 +838,7 @@ test.describe('Suite 1: Core Service Functionality Tests', () => {
   });
 
   authenticatedTest('Container Initialization Test', async ({ page }) => {
-    // Verify game interface is accessible (indicates container is initialized)
-    const commandInput = page.locator(
-      'input[placeholder*="command" i], textarea[placeholder*="command" i], [data-testid="command-input"]'
-    );
+    const commandInput = page.getByTestId('command-input');
     await expect(commandInput).toBeVisible({ timeout: 10000 });
 
     // Verify ApplicationContainer is initialized by testing multiple services
@@ -933,9 +889,7 @@ test.describe('Suite 1: Core Service Functionality Tests', () => {
     // Fixture already verified we're in the game, so command input should be available
 
     // Verify command input is visible before executing command
-    const commandInput = page.locator(
-      'input[placeholder*="command" i], textarea[placeholder*="command" i], [data-testid="command-input"]'
-    );
+    const commandInput = page.getByTestId('command-input');
     await expect(commandInput).toBeVisible({ timeout: 10000 });
 
     console.error('[DEBUG] Command input is visible, executing status command...');
@@ -1223,9 +1177,7 @@ test.describe('Suite 5: WebSocket and Real-time Communication Tests', () => {
   authenticatedTest('WebSocket Connection Test', async ({ page }) => {
     // Verify WebSocket connection is established
     // This is verified by the game interface being accessible
-    const commandInput = page.locator(
-      'input[placeholder*="command" i], textarea[placeholder*="command" i], [data-testid="command-input"]'
-    );
+    const commandInput = page.getByTestId('command-input');
     await expect(commandInput).toBeVisible({ timeout: 10000 });
 
     // Execute a command to verify WebSocket is working

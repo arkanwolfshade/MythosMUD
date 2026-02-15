@@ -24,9 +24,10 @@ test.describe('Local Channel Integration', () => {
 
   test.beforeAll(async ({ browser }) => {
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
-    await waitForAllPlayersInGame(contexts, 60000);
-    await ensurePlayerInGame(contexts[0], 60000);
-    await ensurePlayerInGame(contexts[1], 60000);
+    // Ensure each player is fully in game (including tick) with full timeout before shared wait,
+    // so the slower client has time to receive the first tick without hitting a 30s cap.
+    await Promise.all([ensurePlayerInGame(contexts[0], 60000), ensurePlayerInGame(contexts[1], 60000)]);
+    await waitForAllPlayersInGame(contexts, 20000);
 
     // Local channel requires both players in same room. Force co-location: stand then move both north.
     const [awContext, ithaquaContext] = contexts;

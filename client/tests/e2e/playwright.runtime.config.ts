@@ -24,7 +24,7 @@ export default defineConfig({
   /* CRITICAL: E2E tests must run serially to avoid race conditions */
   workers: 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  reporter: [['html'], ['list']],
   /* Global setup and teardown */
   globalSetup: './runtime/global-setup.ts',
   globalTeardown: './runtime/global-teardown.ts',
@@ -42,8 +42,8 @@ export default defineConfig({
     trace: 'on-first-retry',
     /* Screenshot on failure */
     screenshot: 'only-on-failure',
-    /* Video on failure */
-    video: 'retain-on-failure',
+    /* Video on first retry for CI debugging (aligns with Playwright best practices) */
+    video: 'on-first-retry',
   },
   /* Timeout for each test and beforeAll hooks.
    * Multiplayer setup (createContexts + waitForAllPlayersInGame + ensurePlayersInSameRoom)

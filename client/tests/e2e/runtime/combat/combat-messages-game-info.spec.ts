@@ -64,17 +64,17 @@ test.describe('Combat messages in Game Info', () => {
 
     // Dr. Francis Morgan is in Main Foyer. Navigate there and wait until location actually shows Main Foyer.
     const inFoyer = await page.evaluate(() => (document.body?.innerText ?? '').includes('Main Foyer'));
+    /* eslint-disable playwright/no-conditional-in-test -- optional navigation when not already in Foyer */
     if (!inFoyer) {
       const hasLaundry = await page.evaluate(() => document.body?.innerText?.includes('Laundry Room') ?? false);
       if (hasLaundry) {
         await executeCommand(page, 'go south');
         await waitForMessage(page, /You go south|Eastern Hallway/i, 10000).catch(() => {});
-        await page.waitForTimeout(500);
       }
       await executeCommand(page, 'go west');
       await waitForMessage(page, /You go west|Main Foyer/i, 10000).catch(() => {});
-      await page.waitForTimeout(500);
     }
+    /* eslint-enable playwright/no-conditional-in-test */
     await page.waitForFunction(() => (document.body?.innerText ?? '').includes('Main Foyer'), { timeout: 10000 });
 
     await executeCommand(page, 'attack Dr. Francis Morgan');

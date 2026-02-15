@@ -52,9 +52,17 @@ test.describe('Whisper Rate Limiting', () => {
 
     // Send multiple whisper messages
     await executeCommand(awContext.page, 'whisper Ithaqua Rate limit test message 2');
-    await awContext.page.waitForTimeout(1000);
+    await awContext.page
+      .locator('[data-message-text]')
+      .first()
+      .waitFor({ state: 'attached', timeout: 3000 })
+      .catch(() => {});
     await executeCommand(awContext.page, 'whisper Ithaqua Rate limit test message 3');
-    await awContext.page.waitForTimeout(1000);
+    await awContext.page
+      .locator('[data-message-text]')
+      .first()
+      .waitFor({ state: 'attached', timeout: 3000 })
+      .catch(() => {});
 
     // Verify messages appear
     const messages = await getMessages(awContext.page);
@@ -70,11 +78,18 @@ test.describe('Whisper Rate Limiting', () => {
     // Send many whispers rapidly to trigger rate limit
     for (let i = 4; i <= 10; i++) {
       await executeCommand(awContext.page, `whisper Ithaqua Rate limit test message ${i}`);
-      await awContext.page.waitForTimeout(500); // Small delay between messages
+      await awContext.page
+        .locator('[data-message-text]')
+        .first()
+        .waitFor({ state: 'attached', timeout: 2000 })
+        .catch(() => {});
     }
 
-    // Wait a bit for rate limit to be enforced
-    await awContext.page.waitForTimeout(2000);
+    try {
+      await expect(awContext.page.locator('[data-message-text]').first()).toBeVisible({ timeout: 5000 });
+    } catch {
+      // Message may or may not appear
+    }
 
     // Check for rate limit error message
     const messages = await getMessages(awContext.page);

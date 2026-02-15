@@ -62,9 +62,11 @@ test.describe('Local Channel Errors', () => {
     // Test invalid local command syntax
     await executeCommand(awContext.page, 'local message with invalid syntax');
 
-    // Wait for error message (if server validates syntax)
-    // Note: This may not produce an error if the server accepts it
-    await awContext.page.waitForTimeout(2000);
+    try {
+      await expect(awContext.page.locator('[data-message-text]').first()).toBeVisible({ timeout: 5000 });
+    } catch {
+      // Message may or may not appear
+    }
 
     const messages = await getMessages(awContext.page);
     // Check if error message appears (may not be present if syntax is accepted)

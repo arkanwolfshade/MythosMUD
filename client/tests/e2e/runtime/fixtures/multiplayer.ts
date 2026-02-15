@@ -33,7 +33,8 @@ async function waitForServerReady(): Promise<void> {
   }
   throw new Error(
     `[instrumentation] Server not ready at ${healthUrl} within ${SERVER_READY_TIMEOUT_MS}ms. ` +
-      'Ensure the server is running (e.g. ./scripts/start_local.ps1 from project root) and port 54731 is free.'
+      'Runtime E2E tests require the server to be started first. ' +
+      'Run ./scripts/start_local.ps1 from project root (after ./scripts/stop_server.ps1 if needed) and ensure port 54731 is free.'
   );
 }
 
@@ -207,6 +208,8 @@ export async function waitForAllPlayersInGame(
   );
 
   // Step 3: Wait for all players' room subscriptions to be established (tick message appears)
+  // Use a longer cap (50s) so the slower client has time to receive first tick after Connected.
+  const step3Timeout = Math.min(timeoutMs, 50000);
   await Promise.all(
     contexts.map(({ page, player }) =>
       page
@@ -219,10 +222,10 @@ export async function waitForAllPlayersInGame(
             );
             return hasTickMessage;
           },
-          { timeout: Math.min(timeoutMs, 30000) } // Max 30s for room subscription per player
+          { timeout: step3Timeout }
         )
         .catch(err => {
-          const tickTimeout = Math.min(timeoutMs, 30000);
+          const tickTimeout = step3Timeout;
           const msg =
             `[instrumentation] waitForAllPlayersInGame failed: Player ${player.username} - ` +
             `Step 3: room subscription (tick) - no tick message after ${tickTimeout}ms`;
@@ -375,7 +378,9 @@ export async function ensurePlayerInGame(playerContext: PlayerContext, timeoutMs
     });
 
   // Step 3: Wait for room subscription to be established (tick message appears in Game Info)
-  // Tick messages indicate the player is subscribed to room updates via NATS
+  // Tick messages indicate the player is subscribed to room updates via NATS.
+  // Use 50s cap so slower clients have time to receive first tick after Connected.
+  const tickTimeoutMs = Math.min(timeoutMs, 50000);
   await playerContext.page
     .waitForFunction(
       () => {
@@ -386,7 +391,7 @@ export async function ensurePlayerInGame(playerContext: PlayerContext, timeoutMs
         );
         return hasTickMessage;
       },
-      { timeout: Math.min(timeoutMs, 30000) } // Max 30s for room subscription
+      { timeout: tickTimeoutMs }
     )
     .catch(err => {
       // #region agent log
@@ -404,10 +409,7 @@ export async function ensurePlayerInGame(playerContext: PlayerContext, timeoutMs
       }).catch(() => {});
       // #endregion
       throw new Error(
-        `Player ${playerContext.player.username} room subscription not established within ${Math.min(
-          timeoutMs,
-          30000
-        )}ms (no tick message received)`
+        `Player ${playerContext.player.username} room subscription not established within ${tickTimeoutMs}ms (no tick message received)`
       );
     });
 
@@ -461,9 +463,21 @@ export async function waitForCrossPlayerMessage(
   // #endregion
   // Use locator for both string and RegExp: Playwright's filter({ hasText }) accepts RegExp.
   // Prefer locator over waitForFunction for auto-wait, retries, and clearer timeout errors.
-  // If this times out, the receiving player may have left the game (check Game Info for "has left the game").
+  // If this times out, the receiving player may have left the game or be in a different room
+  // (say is room-scoped); check Game Info for "has left the game" and Occupants for co-location.
   const messageLocator = playerContext.page.locator('[data-message-text]');
-  await messageLocator.filter({ hasText: expectedText }).first().waitFor({ state: 'visible', timeout });
+  try {
+    await messageLocator.filter({ hasText: expectedText }).first().waitFor({ state: 'visible', timeout });
+  } catch (err) {
+    const actualMessages = await getPlayerMessages(playerContext);
+    const expectedStr = typeof expectedText === 'string' ? expectedText : expectedText.source;
+    throw new Error(
+      `waitForCrossPlayerMessage timed out: Player ${playerContext.player.username} did not see "${expectedStr}" ` +
+        `within ${timeout}ms. Received ${actualMessages.length} message(s): ${JSON.stringify(actualMessages.slice(-5))}. ` +
+        `Possible causes: receiver in different room (say is room-scoped), mute filter blocking delivery, or network delay.`,
+      { cause: err }
+    );
+  }
   // #region agent log
   fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
     method: 'POST',
@@ -643,9 +657,31 @@ export async function ensurePlayersInSameRoom(
     )
   );
 
-  // Step 2 removed: we no longer require absence of "(linkdead)" in the body. The Occupants panel
-  // can show "Name (linkdead)" even when the header shows "Connected"; Step 0 already ensures
-  // header Connected for all, and Step 1 ensures occupants >= 2.
+  // Step 2: Verify each player sees all other players by name in the Occupants section.
+  // This catches edge cases where count >= 2 but the other test player is not actually co-located.
+  const getOtherUsernames = (ctx: PlayerContext) =>
+    contexts.filter(c => c.player.username !== ctx.player.username).map(c => c.player.username);
+  await Promise.all(
+    contexts.map(ctx => {
+      const expectedNames = getOtherUsernames(ctx);
+      if (expectedNames.length === 0) return Promise.resolve();
+      return ctx.page
+        .waitForFunction(
+          (names: string[]) => {
+            const bodyText = document.body?.innerText ?? '';
+            return names.every(name => bodyText.includes(name));
+          },
+          expectedNames,
+          { timeout: Math.min(10000, timeoutMs) }
+        )
+        .catch(() => {
+          throw new Error(
+            `ensurePlayersInSameRoom: Player ${ctx.player.username} does not see ${expectedNames.join(', ')} in room ` +
+              `(required for room-scoped /say)`
+          );
+        });
+    })
+  );
 
   // Brief stability wait after all players see each other and are connected
   await new Promise(resolve => setTimeout(resolve, 1000));

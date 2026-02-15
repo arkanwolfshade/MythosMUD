@@ -29,11 +29,15 @@ test.describe('Chat Messages Between Players', () => {
     await ensurePlayerInGame(contexts[0], 60000);
     await ensurePlayerInGame(contexts[1], 60000);
 
-    // Room-based /say requires both players in the same room. Co-locate by having AW (admin) teleport
-    // Ithaqua to his location; "go north" only works when both already share a room.
+    // Room-based /say requires both players in the same room. Co-locate by movement (same as
+    // local-channel-basic): teleport depends on target being "online" and can race; moving both
+    // north avoids that and does not require admin/target lookup.
     const [awContext, ithaquaContext] = contexts;
     await ensureStanding(awContext.page, 5000);
-    await executeCommand(awContext.page, 'teleport Ithaqua');
+    await executeCommand(awContext.page, 'go north');
+    await new Promise(r => setTimeout(r, 2000));
+    await ensureStanding(ithaquaContext.page, 5000);
+    await executeCommand(ithaquaContext.page, 'go north');
     await new Promise(r => setTimeout(r, 3000));
     await ensurePlayersInSameRoom(contexts, 2, 60000);
 

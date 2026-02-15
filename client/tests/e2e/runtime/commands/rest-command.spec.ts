@@ -58,8 +58,11 @@ test.describe('Rest Command', () => {
     // Try to use /rest (may or may not be in combat)
     await executeCommand(awContext.page, '/rest');
 
-    // Wait for response
-    await awContext.page.waitForTimeout(2000);
+    try {
+      await expect(awContext.page.locator('[data-message-text]').first()).toBeVisible({ timeout: 5000 });
+    } catch {
+      // Message may or may not appear depending on combat state
+    }
 
     // Check response message
     const messages = await getMessages(awContext.page);

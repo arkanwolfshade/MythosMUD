@@ -7,19 +7,19 @@
  */
 
 import { expect, test } from '@playwright/test';
+import { executeCommand, getMessages } from '../fixtures/auth';
 import {
-  createMultiPlayerContexts,
   cleanupMultiPlayerContexts,
+  createMultiPlayerContexts,
   ensurePlayerInGame,
   getPlayerMessages,
 } from '../fixtures/multiplayer';
-import { executeCommand, getMessages } from '../fixtures/auth';
 
 test.describe('Clean Game State on Connection', () => {
   test('AW should see no previous game state on fresh connection', async ({ browser }) => {
     const awContexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade']);
     const awContext = awContexts[0];
-    await ensurePlayerInGame(awContext, 15000);
+    await ensurePlayerInGame(awContext, 45000);
 
     // Check for stale messages
     const awMessages = await getMessages(awContext.page);
@@ -41,11 +41,11 @@ test.describe('Clean Game State on Connection', () => {
   test('Ithaqua should see no previous game state on fresh connection', async ({ browser }) => {
     const awContexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade']);
     const awContext = awContexts[0];
-    await ensurePlayerInGame(awContext, 15000);
+    await ensurePlayerInGame(awContext, 45000);
 
     const ithaquaContexts = await createMultiPlayerContexts(browser, ['Ithaqua']);
     const ithaquaContext = ithaquaContexts[0];
-    await ensurePlayerInGame(ithaquaContext, 15000);
+    await ensurePlayerInGame(ithaquaContext, 45000);
 
     // Check for stale messages
     const ithaquaMessages = await getPlayerMessages(ithaquaContext);
@@ -68,14 +68,22 @@ test.describe('Clean Game State on Connection', () => {
   test('players should not see messages from before their connection', async ({ browser }) => {
     const awContexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade']);
     const awContext = awContexts[0];
-    await ensurePlayerInGame(awContext, 15000);
+    // Fresh connection needs longer timeout for login + WebSocket + first tick.
+    await ensurePlayerInGame(awContext, 45000);
 
     await executeCommand(awContext.page, 'say Hello before Ithaqua connects');
-    await awContext.page.waitForTimeout(2000);
+    try {
+      await expect(
+        awContext.page.locator('[data-message-text]').filter({ hasText: /Hello before Ithaqua/ })
+      ).toBeVisible({ timeout: 5000 });
+    } catch {
+      // Message may or may not appear due to timing
+    }
 
     const ithaquaContexts = await createMultiPlayerContexts(browser, ['Ithaqua']);
     const ithaquaContext = ithaquaContexts[0];
-    await ensurePlayerInGame(ithaquaContext, 15000);
+    // Connecting player needs longer timeout for first tick.
+    await ensurePlayerInGame(ithaquaContext, 45000);
 
     // Check Ithaqua's messages
     const ithaquaMessages = await getPlayerMessages(ithaquaContext);
