@@ -299,6 +299,8 @@ export const AsciiMapViewer: React.FC<AsciiMapViewerProps> = ({
         html={mapHtml}
         className="flex items-center justify-center h-full w-full overflow-auto"
         tag="div"
+        role="img"
+        aria-label="Room map; click to select room, use arrow keys to scroll"
         onClick={handleMapClick}
       />
 

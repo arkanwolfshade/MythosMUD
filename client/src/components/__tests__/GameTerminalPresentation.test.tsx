@@ -404,16 +404,7 @@ describe('GameTerminalPresentation', () => {
       // Component should still be rendered
       expect(container.firstChild).toBeInTheDocument();
     });
-
-    it('should clean up resize event listener on unmount', () => {
-      const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener');
-      const { unmount } = render(<GameTerminalPresentation {...defaultProps} />);
-
-      unmount();
-
-      expect(removeEventListenerSpy).toHaveBeenCalledWith('resize', expect.any(Function));
-      removeEventListenerSpy.mockRestore();
-    });
+    // Resize listener was removed; panel sizing reserved for future CSS Grid integration.
   });
 
   describe('Player Stats Display', () => {
@@ -685,16 +676,7 @@ describe('GameTerminalPresentation', () => {
       expect(container.firstChild).toBeInTheDocument();
       expect(screen.getByTestId('chat-panel')).toBeInTheDocument();
     });
-
-    it('should clean up resize event listener on unmount', () => {
-      const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener');
-      const { unmount } = render(<GameTerminalPresentation {...defaultProps} />);
-
-      unmount();
-
-      expect(removeEventListenerSpy).toHaveBeenCalledWith('resize', expect.any(Function));
-      removeEventListenerSpy.mockRestore();
-    });
+    // Resize listener was removed; panel sizing reserved for future CSS Grid integration.
   });
 
   describe('Player Stats Display', () => {

@@ -106,8 +106,7 @@ export const useGameConnectionManagement = ({
       disconnectFn();
     };
 
-    // Cleanup function should only run on mount/unmount, disconnectFn is stable and doesn't need to be in deps
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- Cleanup only on mount/unmount; disconnectFn stable
   }, []);
 
   return {

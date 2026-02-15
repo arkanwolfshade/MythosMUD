@@ -215,8 +215,8 @@ function App() {
           setAuthToken('');
         });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Only run on mount - dependencies intentionally omitted to prevent re-running on state changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- Only run on mount; omit deps to prevent re-run on state changes
+  }, []);
 
   const handleLoginClick = async () => {
     // Sanitize inputs

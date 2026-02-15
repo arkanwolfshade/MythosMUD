@@ -102,13 +102,14 @@ export const MainMenuModal: React.FC<MainMenuModalProps> = ({ isOpen, onClose, o
     <div
       className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-100"
       onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="main-menu-title"
       style={{ pointerEvents: 'auto' }}
+      data-testid="main-menu-backdrop"
     >
       <div
         className="bg-mythos-terminal-background border-2 border-mythos-terminal-border rounded-lg p-6 w-full max-w-md shadow-xl"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="main-menu-title"
         onClick={e => {
           e.stopPropagation();
         }}
