@@ -268,7 +268,7 @@ git checkout -b fix/issue-number-description
 
 **Branch Naming Conventions**:
 
-- `feature/` - New features (e.g., `feature/whisper-command`)
+- `feature/` - New features (e.g., `feature/whisper-command`). The short form `feat/` is also acceptable to match the commit type (e.g., `feat/123-add-whisper`).
 - `fix/` - Bug fixes (e.g., `fix/123-login-error`)
 - `docs/` - Documentation changes (e.g., `docs/update-contributing`)
 - `refactor/` - Code refactoring (e.g., `refactor/command-handler`)
@@ -282,6 +282,8 @@ Follow these guidelines when writing code:
 
 Never commit secrets, API keys, or passwords
 
+- Consider adding detect-secrets and `.secrets.baseline` for secret scanning (see pre-commit documentation)
+- If you add large binary files (e.g. assets, media), use Git LFS and update `.gitattributes`.
 - Always validate and sanitize user input
 - Use parameterized queries for database operations
 - Follow COPPA compliance for minor user data
@@ -388,7 +390,11 @@ See [Testing Requirements](#testing-requirements) for details.
 - `refactor`: Code refactoring
 - `perf`: Performance improvements
 - `security`: Security fixes
+- `style`: Code style (formatting, whitespace; no logic change)
+- `build`: Build system or dependency changes
+- `ci`: CI configuration changes
 - `chore`: Maintenance tasks
+- `revert`: Revert a previous commit
 
 **Examples**:
 
@@ -418,7 +424,8 @@ Fixes #456
 
 - Format code with ruff (Python) and Prettier (TypeScript)
 - Run linters (ruff, ESLint)
-- Validate commit message format
+
+Commit message format is recommended; enforce via code review or add a commit-msg hook (e.g. commitlint) to validate Conventional Commits.
 
 If hooks fail, fix the issues and try again:
 
@@ -437,6 +444,8 @@ npm run lint:fix
 ```
 
 ### Submitting a Pull Request
+
+**History and merge:** Before opening a PR, rebase your branch onto `dev` and squash WIP commits if desired. Use `git fetch origin; git rebase -i origin/dev`, then `git push --force-with-lease origin your-branch` (only on your own feature branch). When merging into `dev`, use a merge commit (`--no-ff` or GitHub’s “Create a merge commit”) so branch context is preserved. Prefer configuring the repo’s default merge button to “Create a merge commit.”
 
 1. **Push your branch:**
 

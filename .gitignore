@@ -259,6 +259,7 @@ certs/nats/
 .env.unit_test
 .env.e2e_test
 .act.secrets
+config.local.js
 
 # Virtual environments
 .venv
