@@ -4,7 +4,7 @@ import type { ChatMessage } from '../../../stores/gameStore';
 import { GameLogPanel } from '../GameLogPanel';
 
 // Mock the dependencies
-vi.mock('../src/components/ui/EldritchIcon', () => ({
+vi.mock('../../ui/EldritchIcon', () => ({
   EldritchIcon: ({ name, className }: { name: string; className?: string }) => (
     <span data-testid={`icon-${name}`} className={className}>
       {name}
@@ -24,7 +24,7 @@ interface TerminalButtonProps {
   [key: string]: unknown;
 }
 
-vi.mock('../src/components/ui/TerminalButton', () => ({
+vi.mock('../../ui/TerminalButton', () => ({
   TerminalButton: ({ children, onClick, disabled, ...props }: TerminalButtonProps) => (
     <button onClick={onClick} disabled={disabled} {...props}>
       {children}
@@ -32,7 +32,7 @@ vi.mock('../src/components/ui/TerminalButton', () => ({
   ),
 }));
 
-vi.mock('../src/utils/ansiToHtml', () => ({
+vi.mock('../../../utils/ansiToHtml', () => ({
   ansiToHtmlWithBreaks: (text: string) => text.replace(/\n/g, '<br>'),
 }));
 

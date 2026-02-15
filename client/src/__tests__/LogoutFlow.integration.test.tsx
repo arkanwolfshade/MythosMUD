@@ -113,9 +113,8 @@ describe('Complete Logout Flow Integration', () => {
       let navigateToLoginCalled = false;
 
       mockLogoutHandler.mockImplementation(async ({ disconnect, clearState, navigateToLogin }) => {
-        // LEGITIMATE: Using setTimeout to simulate server logout command delay
-        // This is not polling - it's simulating async behavior in the mock
-        await new Promise(resolve => setTimeout(resolve, 100));
+        // Mock completes asynchronously; test asserts observable state via waitFor (Exiting..., Username)
+        await Promise.resolve();
 
         // Simulate disconnect callback
         disconnect();

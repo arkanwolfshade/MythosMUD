@@ -96,6 +96,11 @@ vi.mock('../../utils/ansiToHtml', () => ({
   ansiToHtmlWithBreaks: (text: string) => text.replace(/\n/g, '<br>'),
 }));
 
+vi.mock('../../utils/messageTypeUtils', () => ({
+  extractChannelFromMessage: () => null,
+  isChatContent: () => false,
+}));
+
 vi.mock('../../config/channels', () => {
   const baseChannels = [
     { id: 'local', name: 'Local', shortcut: 'l' },
@@ -177,23 +182,23 @@ describe('GameTerminal Integration', () => {
     it('displays correct panel titles', () => {
       render(<GameTerminal {...defaultProps} />);
 
-      expect(screen.getByText('Chat')).toBeInTheDocument();
-      expect(screen.getByText('Game Log')).toBeInTheDocument();
-      expect(screen.getByText('Commands')).toBeInTheDocument();
+      expect(screen.getAllByText('Chat').length).toBeGreaterThan(0);
+      expect(screen.getAllByText('Game Log').length).toBeGreaterThan(0);
+      expect(screen.getAllByText('Commands').length).toBeGreaterThan(0);
     });
 
     it('passes props to all panels', () => {
       render(<GameTerminal {...defaultProps} />);
 
-      // Chat panel should have chat input
-      expect(screen.getByPlaceholderText('Type your message here...')).toBeInTheDocument();
+      // Chat and GameLog panels have search (ChatPanel is display-only; commands sent via CommandPanel)
+      expect(screen.getAllByPlaceholderText('Search messages...').length).toBeGreaterThan(0);
 
       // Game log panel should show messages
       expect(screen.getByText('Hello, world!')).toBeInTheDocument();
       expect(screen.getByText('System message')).toBeInTheDocument();
 
       // Command panel should have command input
-      expect(screen.getByPlaceholderText('Enter game command...')).toBeInTheDocument();
+      expect(screen.getByPlaceholderText(/Enter game command/)).toBeInTheDocument();
     });
   });
 
@@ -204,27 +209,27 @@ describe('GameTerminal Integration', () => {
     it('allows switching between panels', () => {
       render(<GameTerminal {...defaultProps} />);
 
-      // All panels should be visible and interactive
-      const chatInput = screen.getByPlaceholderText('Type your message here...');
-      const commandInput = screen.getByPlaceholderText('Enter game command...');
+      // All panels should be visible and interactive (ChatPanel and GameLogPanel have search; CommandPanel has input)
+      const searchInputs = screen.getAllByPlaceholderText('Search messages...');
+      const commandInput = screen.getByPlaceholderText(/Enter game command/);
 
-      expect(chatInput).toBeInTheDocument();
+      expect(searchInputs.length).toBeGreaterThan(0);
       expect(commandInput).toBeInTheDocument();
     });
 
     it('maintains state across panel interactions', () => {
       render(<GameTerminal {...defaultProps} />);
 
-      // Type in chat panel
-      const chatInput = screen.getByPlaceholderText('Type your message here...');
-      fireEvent.change(chatInput, { target: { value: 'Test chat message' } });
+      // Type in chat search (ChatPanel search filter)
+      const searchInput = screen.getAllByPlaceholderText('Search messages...')[0];
+      fireEvent.change(searchInput, { target: { value: 'Hello' } });
 
       // Type in command panel
-      const commandInput = screen.getByPlaceholderText('Enter game command...');
+      const commandInput = screen.getByPlaceholderText(/Enter game command/);
       fireEvent.change(commandInput, { target: { value: 'look' } });
 
       // Both inputs should maintain their values
-      expect(chatInput).toHaveValue('Test chat message');
+      expect(searchInput).toHaveValue('Hello');
       expect(commandInput).toHaveValue('look');
     });
   });
@@ -272,11 +277,13 @@ describe('GameTerminal Integration', () => {
     it('allows executing commands from history', () => {
       render(<GameTerminal {...defaultProps} />);
 
-      // Click on a command from history
+      // Click on a command from history (populates input), then submit
       const historyItem = screen.getByText('look');
       fireEvent.click(historyItem);
 
-      // Should execute the command
+      const sendButton = screen.getByText('Send Command');
+      fireEvent.click(sendButton);
+
       expect(defaultProps.onSendCommand).toHaveBeenCalledWith('look');
     });
   });
@@ -292,17 +299,16 @@ describe('GameTerminal Integration', () => {
       expect(channelSelector).toHaveValue('global');
     });
 
-    it('sends chat messages to correct channel', () => {
+    it('sends commands via command panel', () => {
       render(<GameTerminal {...defaultProps} />);
 
-      const chatInput = screen.getByPlaceholderText('Type your message here...');
-      const sendButton = screen.getByText('Send');
+      const commandInput = screen.getByPlaceholderText(/Enter game command/);
+      const sendButton = screen.getByText('Send Command');
 
-      fireEvent.change(chatInput, { target: { value: 'Hello!' } });
+      fireEvent.change(commandInput, { target: { value: 'look' } });
       fireEvent.click(sendButton);
 
-      // Should send to default channel (local)
-      expect(defaultProps.onSendChatMessage).toHaveBeenCalledWith('Hello!', 'local');
+      expect(defaultProps.onSendCommand).toHaveBeenCalledWith('look');
     });
   });
 
@@ -310,11 +316,8 @@ describe('GameTerminal Integration', () => {
     it('handles connection errors gracefully', () => {
       render(<GameTerminal {...defaultProps} isConnected={false} />);
 
-      // Should disable inputs when disconnected
-      const chatInput = screen.getByPlaceholderText('Type your message here...');
-      const commandInput = screen.getByPlaceholderText('Enter game command...');
-
-      expect(chatInput).toBeDisabled();
+      // Should disable command input when disconnected
+      const commandInput = screen.getByPlaceholderText(/Enter game command/);
       expect(commandInput).toBeDisabled();
     });
 
@@ -380,22 +383,16 @@ describe('GameTerminal Integration', () => {
 
       // Each panel should have proper accessibility labels
       expect(screen.getByLabelText('Channel Selection')).toBeInTheDocument();
-      expect(screen.getByLabelText('Chat Input')).toBeInTheDocument();
       expect(screen.getByLabelText('Chat Messages')).toBeInTheDocument();
     });
 
     it('supports keyboard navigation between panels', () => {
       render(<GameTerminal {...defaultProps} />);
 
-      const chatInput = screen.getByPlaceholderText('Type your message here...');
-      const commandInput = screen.getByPlaceholderText('Enter game command...');
+      const commandInput = screen.getByPlaceholderText(/Enter game command/);
 
-      // Test tab navigation
-      chatInput.focus();
-      expect(chatInput).toHaveFocus();
-
-      // Should be able to navigate between inputs
-      expect(chatInput).toBeInTheDocument();
+      commandInput.focus();
+      expect(commandInput).toHaveFocus();
       expect(commandInput).toBeInTheDocument();
     });
   });
@@ -417,16 +414,16 @@ describe('GameTerminal Integration', () => {
     it('maintains consistent state across all panels', () => {
       render(<GameTerminal {...defaultProps} />);
 
-      // Test that state is properly managed
-      const chatInput = screen.getByPlaceholderText('Type your message here...');
-      const commandInput = screen.getByPlaceholderText('Enter game command...');
+      // Test that state is properly managed (command input and chat search)
+      const searchInputs = screen.getAllByPlaceholderText('Search messages...');
+      const commandInput = screen.getByPlaceholderText(/Enter game command/);
 
-      // Both inputs should be functional
-      fireEvent.change(chatInput, { target: { value: 'test' } });
-      fireEvent.change(commandInput, { target: { value: 'test' } });
-
-      expect(chatInput).toHaveValue('test');
-      expect(commandInput).toHaveValue('test');
+      if (searchInputs.length > 0) {
+        fireEvent.change(searchInputs[0], { target: { value: 'test' } });
+        expect(searchInputs[0]).toHaveValue('test');
+      }
+      fireEvent.change(commandInput, { target: { value: 'look' } });
+      expect(commandInput).toHaveValue('look');
     });
 
     it('handles state updates correctly', () => {

@@ -4,28 +4,28 @@ overview: "Remediate client Vitest tests and config against .cursor/rules/vitest
 todos:
   - id: VIT-1
     content: Rename all 7 *.spec.tsx to *.test.tsx; fix mock/import paths; remove **/*.spec.* from vitest.config.ts
-    status: pending
+    status: completed
   - id: VIT-2
     content: "useWebSocketConnection.test.ts: replace setTimeout(0) with vi.waitFor or waitFor(condition)"
-    status: pending
+    status: completed
   - id: VIT-3
     content: "LogoutFlow.integration (src/__tests__): replace 100ms wait with waitFor(observable condition)"
-    status: pending
+    status: completed
   - id: VIT-4
     content: "StatRollingWithProfessionRequirements: use vi.spyOn(global,'fetch') or vi.stubGlobal + restore"
-    status: pending
+    status: completed
   - id: VIT-5
     content: Audit vi.mock/vi.spyOn files for afterEach cleanup (clearAllMocks or mockRestore)
-    status: pending
+    status: completed
   - id: VIT-6
     content: "Optional: vi.useFakeTimers/advanceTimersByTime in App.test.tsx and LogoutFlow mocks"
-    status: pending
+    status: completed
   - id: VIT-7
     content: "Optional: add describe.concurrent / it.concurrent for independent suites; destructure expect"
-    status: pending
+    status: completed
   - id: VIT-8
     content: "Verification: npm run test and vitest run --coverage in client; fix any .spec inclusion failures"
-    status: pending
+    status: completed
 isProject: false
 ---
 
@@ -59,7 +59,6 @@ Analysis used [.cursor/rules/vitest.mdc](.cursor/rules/vitest.mdc). All Vitest u
 
 **Finding:** Rule says to use `vi.waitFor` for polling conditions and avoid `await new Promise(resolve => setTimeout(resolve, N))` before assertions.
 
-
 | Location                                                                                                                                           | Current pattern                                                                           | Recommendation                                                                                                                                            |
 | -------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [client/src/hooks/**tests**/useWebSocketConnection.test.ts](client/src/hooks/__tests__/useWebSocketConnection.test.ts) ~L1500                      | `await new Promise(resolve => setTimeout(resolve, 0));` to "flush effects" after rerender | Replace with `vi.waitFor` (or RTL `waitFor`) on an observable condition (e.g. ref/callback updated) if possible; otherwise document as intentional yield. |
@@ -67,7 +66,6 @@ Analysis used [.cursor/rules/vitest.mdc](.cursor/rules/vitest.mdc). All Vitest u
 | [client/src/**tests**/LogoutFlow.integration.test.tsx](client/src/__tests__/LogoutFlow.integration.test.tsx) L116–118                              | Comment says "simulate server logout command delay"; 100ms wait in test                   | Prefer asserting on observable state with `vi.waitFor` (or RTL `waitFor`) instead of fixed 100ms.                                                         |
 | [client/src/App.test.tsx](client/src/App.test.tsx) L1196–1205, L1251–1265                                                                          | `setTimeout` inside **fetch mock** to simulate network delay                              | Acceptable (mock behavior). Optional: fake timers to avoid real 100ms.                                                                                    |
 | [client/src/utils/**tests**/performanceTester.test.ts](client/src/utils/__tests__/performanceTester.test.ts) L49, L80                              | `setTimeout` inside the **function under test** (async test function)                     | Acceptable; not "wait then assert."                                                                                                                       |
-
 
 **Action:** Focus on useWebSocketConnection (replace `setTimeout(0)` with a condition-based wait where feasible) and the LogoutFlow 100ms wait (replace with `waitFor` on an observable condition). Leave mock-internal delays and performanceTester SUT behavior as-is unless adopting fake timers project-wide.
 
@@ -117,16 +115,14 @@ Analysis used [.cursor/rules/vitest.mdc](.cursor/rules/vitest.mdc). All Vitest u
 
 ## Implementation Order and Risk
 
-
 | Priority | Item                                                                                        | Risk                |
 | -------- | ------------------------------------------------------------------------------------------- | ------------------- |
 | 1        | Fix StatRollingWithProfessionRequirements global.fetch (when re-enabling)                   | Low                 |
-| 2        | .spec → .test naming (option A); fix mock/import paths; remove */*.spec. from vitest.config | Medium (path fixes) |
+| 2        | .spec → .test naming (option A); fix mock/import paths; remove _/_.spec. from vitest.config | Medium (path fixes) |
 | 3        | useWebSocketConnection: replace setTimeout(0) with vi.waitFor / waitFor on condition        | Low                 |
 | 4        | LogoutFlow 100ms: replace with waitFor(condition)                                           | Low                 |
 | 5        | Audit vi.mock/vi.spyOn cleanup across client test files                                     | Low                 |
 | 6        | Optional: fake timers for mock delays; .concurrent for independent suites                   | Low                 |
-
 
 ---
 

@@ -20,9 +20,9 @@ import {
   isStatsRollResponse,
 } from '../apiTypeGuards';
 
-describe('apiTypeGuards', () => {
+describe.concurrent('apiTypeGuards', () => {
   describe('isServerCharacterResponse', () => {
-    it('should return true for valid object with id', () => {
+    it('should return true for valid object with id', ({ expect }) => {
       const value = {
         id: 'char-1',
         name: 'Test',
@@ -34,7 +34,7 @@ describe('apiTypeGuards', () => {
       expect(isServerCharacterResponse(value)).toBe(true);
     });
 
-    it('should return true for valid object with player_id', () => {
+    it('should return true for valid object with player_id', ({ expect }) => {
       const value = {
         player_id: 'player-1',
         name: 'Test',

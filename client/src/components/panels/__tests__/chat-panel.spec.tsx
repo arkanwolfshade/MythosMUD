@@ -5,7 +5,7 @@ import type { ChatMessage } from '../../../stores/gameStore';
 import { ChatPanel } from '../ChatPanel';
 
 // Mock the dependencies
-vi.mock('../src/config/channels', () => {
+vi.mock('../../../config/channels', () => {
   const baseChannels = [
     { id: 'local', name: 'Local', shortcut: 'l' },
     { id: 'global', name: 'Global', shortcut: 'g' },
@@ -22,7 +22,7 @@ vi.mock('../src/config/channels', () => {
   };
 });
 
-vi.mock('../src/components/ui/EldritchIcon', () => ({
+vi.mock('../../ui/EldritchIcon', () => ({
   EldritchIcon: ({ name, className }: { name: string; className?: string }) => (
     <span data-testid={`icon-${name}`} className={className}>
       {name}
@@ -45,7 +45,7 @@ interface TerminalButtonProps {
   [key: string]: unknown;
 }
 
-vi.mock('../src/components/ui/TerminalButton', () => ({
+vi.mock('../../ui/TerminalButton', () => ({
   TerminalButton: ({ children, onClick, disabled, ...props }: TerminalButtonProps) => (
     <button onClick={onClick} disabled={disabled} {...props}>
       {children}
@@ -60,7 +60,7 @@ interface TerminalInputProps {
   [key: string]: unknown;
 }
 
-vi.mock('../src/components/ui/TerminalInput', () => ({
+vi.mock('../../ui/TerminalInput', () => ({
   TerminalInput: ({ value, onChange, onKeyDown, ...props }: TerminalInputProps) => (
     <input value={value} onChange={onChange} onKeyDown={onKeyDown} {...props} />
   ),
@@ -78,7 +78,7 @@ interface ChannelSelectorProps {
   disabled?: boolean;
 }
 
-vi.mock('../src/components/ui/ChannelSelector', () => ({
+vi.mock('../../ui/ChannelSelector', () => ({
   ChannelSelector: ({ channels, selectedChannel, onChannelSelect, disabled }: ChannelSelectorProps) => (
     <select
       value={selectedChannel}
@@ -95,7 +95,7 @@ vi.mock('../src/components/ui/ChannelSelector', () => ({
   ),
 }));
 
-vi.mock('../src/utils/ansiToHtml', () => ({
+vi.mock('../../../utils/ansiToHtml', () => ({
   ansiToHtmlWithBreaks: (text: string) => text.replace(/\n/g, '<br>'),
 }));
 

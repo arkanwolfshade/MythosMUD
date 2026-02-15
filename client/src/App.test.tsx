@@ -1193,8 +1193,7 @@ describe('App', () => {
           ])
         ),
       };
-      // LEGITIMATE: Using setTimeout to simulate network delay for testing loading states
-      // This is not polling - it's simulating async behavior in the mock
+      vi.useFakeTimers();
       fetchSpy.mockImplementation(
         () =>
           new Promise<Response>(resolve =>
@@ -1218,6 +1217,8 @@ describe('App', () => {
       expect(screen.getByText('Authenticating…')).toBeInTheDocument();
       expect(loginButton).toBeDisabled();
 
+      await vi.advanceTimersByTimeAsync(100);
+      vi.useRealTimers();
       await waitFor(() => {
         expect(screen.getByTestId('game-terminal')).toBeInTheDocument();
       });
@@ -1248,8 +1249,7 @@ describe('App', () => {
         }),
       };
 
-      // LEGITIMATE: Using setTimeout to simulate network delay for testing loading states
-      // This is not polling - it's simulating async behavior in the mock
+      vi.useFakeTimers();
       fetchSpy.mockImplementation((url: string | URL | Request) => {
         const urlString = typeof url === 'string' ? url : url instanceof URL ? url.toString() : url.url;
         if (urlString.includes('/auth/register')) {
@@ -1284,6 +1284,8 @@ describe('App', () => {
       expect(screen.getByText('Registering…')).toBeInTheDocument();
       expect(registerButton).toBeDisabled();
 
+      await vi.advanceTimersByTimeAsync(100);
+      vi.useRealTimers();
       await waitFor(() => {
         expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
       });

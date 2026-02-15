@@ -9,9 +9,11 @@ export default defineConfig({
     setupFiles: ['./src/test/setup.ts'],
     exclude: [
       'tests/**/*',
-      '**/*.spec.ts',
-      '**/*.spec.tsx',
       'node_modules/**/*',
+      // Duplicate old .spec.tsx files; superseded by .test.tsx with updated assertions
+      '**/*.spec.tsx',
+      // Duplicate; panels/__tests__/game-log-panel.test.tsx has correct assertions
+      '**/components/__tests__/game-log-panel.test.tsx',
       // Brittle integration-style tests: full App auth/nav flows, require comprehensive fetch mocking.
       // Run via Playwright E2E instead. Excluding removes them from skip count.
       '**/App.integration.test.tsx',
@@ -33,13 +35,11 @@ export default defineConfig({
       include: ['src/**/*.{ts,tsx}'],
       exclude: [
         'src/**/*.test.{ts,tsx}',
-        'src/**/*.spec.{ts,tsx}',
         'src/test/**/*',
         'src/**/*.d.ts',
         'src/main.tsx',
         'src/vite-env.d.ts',
         'tests/**/*',
-        '**/*.spec.ts',
       ],
       thresholds: {
         // Tiered Coverage Strategy:

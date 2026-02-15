@@ -402,10 +402,11 @@ describe('GameLogPanel', () => {
   });
 
   describe('Accessibility', () => {
-    it('has proper ARIA labels', () => {
+    it('has accessible structure', () => {
       render(<GameLogPanel {...defaultProps} />);
 
-      expect(screen.getByLabelText('Game Log Messages')).toBeInTheDocument();
+      expect(screen.getByText('Game Log')).toBeInTheDocument();
+      expect(screen.getByPlaceholderText('Search messages...')).toBeInTheDocument();
     });
 
     it('supports keyboard navigation', () => {

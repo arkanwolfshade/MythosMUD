@@ -1,4 +1,5 @@
 /// <reference types="node" />
+// Vitest: use afterEach(vi.clearAllMocks()) or afterEach(spy.mockRestore()) when using vi.mock or vi.spyOn(global).
 import '@testing-library/jest-dom/vitest';
 import { mkdirSync } from 'fs';
 import { join } from 'path';
