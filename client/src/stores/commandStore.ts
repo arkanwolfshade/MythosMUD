@@ -274,11 +274,17 @@ export const useCommandStore = create<CommandStore>()(
         ),
 
       processNextCommand: () => {
-        const state = get();
-        if (state.commandQueue.length === 0) return null;
-
-        const [nextCommand, ...remainingQueue] = state.commandQueue;
-        set({ commandQueue: remainingQueue }, false, 'processNextCommand');
+        let nextCommand: string | null = null;
+        set(
+          state => {
+            if (state.commandQueue.length === 0) return state;
+            const [next, ...rest] = state.commandQueue;
+            nextCommand = next;
+            return { commandQueue: rest };
+          },
+          false,
+          'processNextCommand'
+        );
         return nextCommand;
       },
 

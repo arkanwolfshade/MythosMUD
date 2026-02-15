@@ -30,20 +30,19 @@ export interface BackpackTabProps {
  * - Keyboard accessible
  */
 export const BackpackTab: React.FC<BackpackTabProps> = ({ onSelect, className = '' }) => {
-  const getWearableContainers = useContainerStore(state => state.getWearableContainersForPlayer);
+  const { openContainers } = useContainerStore(useShallow(state => ({ openContainers: state.openContainers })));
   const selectContainer = useContainerStore(state => state.selectContainer);
   const deselectContainer = useContainerStore(state => state.deselectContainer);
   const selectedContainerId = useContainerStore(state => state.selectedContainerId);
-  // Use shallow comparison for object selector to prevent unnecessary re-renders
   const { player } = useGameStore(useShallow(state => ({ player: state.player })));
 
   const wearableContainers = useMemo(() => {
-    if (!player?.id) {
-      return [];
-    }
-    // Player ID is a string in the gameStore
-    return getWearableContainers(player.id as string);
-  }, [player?.id, getWearableContainers]);
+    if (!player?.id) return [];
+    const containers = openContainers ?? {};
+    return Object.values(containers).filter(
+      container => container.source_type === 'equipment' && container.entity_id === (player.id as string)
+    );
+  }, [openContainers, player]);
 
   // Don't render if no wearable containers
   if (wearableContainers.length === 0) {
