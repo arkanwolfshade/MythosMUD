@@ -47,9 +47,9 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
   const [isMainMenuOpen, setIsMainMenuOpen] = useState(false);
   const [showMap, setShowMap] = useState(false);
 
-  /** Request ID we've accepted/declined; hide dialog for this id even if event log re-applies it. */
+  /** Server-authority: rely on server follow_request_cleared / party_invite_cleared where possible;
+   * cleared* IDs are UX-only so we do not re-show after user dismiss; do not persist across reconnect. */
   const [clearedFollowRequestId, setClearedFollowRequestId] = useState<string | null>(null);
-  /** Invite ID we've accepted/declined; hide party invite dialog for this id even if event log re-applies it. */
   const [clearedPartyInviteId, setClearedPartyInviteId] = useState<string | null>(null);
 
   // Tabbed interface for in-app tabs

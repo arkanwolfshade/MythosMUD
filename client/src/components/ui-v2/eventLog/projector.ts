@@ -1,5 +1,7 @@
 // Event-sourced GameState projector: derives state from event log (pure, no refs)
 // As documented in "Event Processing Architecture" - Dr. Armitage, 1928
+// Server is authoritative; prefer server payloads (game_state, room_state, command_response) over client state.
+// See .cursor/rules/server-authority.mdc
 
 import type { MythosTimePayload } from '../../../types/mythosTime';
 import { logger } from '../../../utils/logger';
@@ -142,10 +144,11 @@ export function projectEvent(prevState: GameState, event: GameEvent): GameState 
         typeof (playerData as Player).name === 'string'
           ? (playerData as Player)
           : null;
+      // Server-authoritative: game_state sends full snapshot; replace room when present.
       nextState = {
         ...prevState,
         player: player ?? prevState.player,
-        room: room ? mergeRoomState(room, prevState.room) : prevState.room,
+        room: room ?? prevState.room,
         ...(loginGracePeriodActive !== undefined && { loginGracePeriodActive }),
         ...(loginGracePeriodRemaining !== undefined && { loginGracePeriodRemaining }),
         ...(following !== undefined && { followingTarget: following ?? null }),
@@ -343,14 +346,32 @@ export function projectEvent(prevState: GameState, event: GameEvent): GameState 
           nextState = { ...nextState, room };
         }
       }
-      // Apply player_update from command response (e.g. position from /sit, /stand, /lie) so Character panel updates
-      const playerUpdatePayload = (event.data as { player_update?: { position?: string } }).player_update;
-      if (playerUpdatePayload?.position && nextState.player?.stats) {
+      // Server-authoritative: apply full player_update from command response.
+      const playerUpdatePayload = (event.data as { player_update?: Record<string, unknown> }).player_update;
+      if (playerUpdatePayload && nextState.player) {
+        const current = nextState.player;
+        const rawStats =
+          playerUpdatePayload.stats &&
+          typeof playerUpdatePayload.stats === 'object' &&
+          playerUpdatePayload.stats !== null
+            ? (playerUpdatePayload.stats as Record<string, unknown>)
+            : {};
+        const serverStats = {
+          ...rawStats,
+          ...(playerUpdatePayload.position !== undefined && { position: playerUpdatePayload.position }),
+          ...(playerUpdatePayload.previous_position !== undefined && {
+            previous_position: playerUpdatePayload.previous_position,
+          }),
+        };
+        // Destructure to exclude stats/position/previous_position (handled above); rest is spread as topLevel.
+        /* eslint-disable-next-line @typescript-eslint/no-unused-vars -- keys intentionally omitted for separate merge */
+        const { stats: _s, position: _p, previous_position: _pp, ...topLevel } = playerUpdatePayload;
         nextState = {
           ...nextState,
           player: {
-            ...nextState.player,
-            stats: { ...nextState.player.stats, position: playerUpdatePayload.position },
+            ...current,
+            ...topLevel,
+            stats: { ...current.stats, ...serverStats } as NonNullable<Player['stats']>,
           },
         };
       }

@@ -39,6 +39,7 @@
   },
   "makefile.configureOnOpen": true,
   "editor.fontFamily": "HackNerd, Consolas, 'Courier New', monospace",
+  "terminal.integrated.fontSize": 12,
   "editor.cursorStyle": "block",
   "editor.wordWrap": "wordWrapColumn",
   "editor.accessibilitySupport": "off",
@@ -53,14 +54,10 @@
   "git.detectSubmodules": true,
   "git.diagnosticsCommitHook.Enabled": true,
   "git.enableCommitSigning": true,
-    "git.pruneOnFetch": false,
-    "git.pullBeforeCheckout": true,
-    "markdownlint.ignore": [
-      "**/investigations/**/*.md",
-      "**/.agent-os/**/*.md",
-      "**/docs/archive/**/*.md"
-    ],
-    "markdownlint.run": "off",
+  "git.pruneOnFetch": false,
+  "git.pullBeforeCheckout": true,
+  "markdownlint.ignore": ["**/investigations/**/*.md", "**/.agent-os/**/*.md", "**/docs/archive/**/*.md"],
+  "markdownlint.run": "onSave",
   "editor.formatOnSave": true,
   "[python]": {
     "editor.defaultFormatter": "charliermarsh.ruff",

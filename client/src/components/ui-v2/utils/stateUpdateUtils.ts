@@ -144,7 +144,12 @@ export const applyEventUpdates = (
   }
 };
 
-// Helper function to sanitize and apply updates to state
+/**
+ * Sanitize and apply updates to game state.
+ * Note: When updates.room comes from an authoritative server event (e.g. room_state), room should
+ * replace rather than merge; this implementation always merges. Do not use for authoritative room
+ * updates from server, or extend the API (e.g. replaceRoom flag) to support replace.
+ */
 export const sanitizeAndApplyUpdates = (
   updates: Partial<GameState>,
   setGameState: React.Dispatch<React.SetStateAction<GameState>>

@@ -96,7 +96,7 @@ describe('roomMergeUtils', () => {
       expect(result?.npcs).toEqual(['npc1']);
     });
 
-    it('should preserve prev NPCs when updates explicitly clears NPCs (empty array)', () => {
+    it('should use empty NPCs when updates explicitly sends empty array (server-authoritative)', () => {
       const prevRoom: Room = {
         id: 'room1',
         name: 'Room 1',
@@ -110,7 +110,7 @@ describe('roomMergeUtils', () => {
       } as Room;
 
       const result = mergeRoomState(updatesRoom, prevRoom);
-      expect(result?.npcs).toEqual(['npc1', 'npc2']);
+      expect(result?.npcs).toEqual([]);
     });
 
     it('should use new room players when room ID changes', () => {
@@ -182,7 +182,7 @@ describe('roomMergeUtils', () => {
       expect(result?.occupant_count).toBe(3);
     });
 
-    it('should handle empty arrays correctly', () => {
+    it('should handle empty arrays correctly (server-authoritative: use empty when provided)', () => {
       const prevRoom: Room = {
         id: 'room1',
         name: 'Room 1',
@@ -199,13 +199,11 @@ describe('roomMergeUtils', () => {
       };
 
       const result = mergeRoomState(updatesRoom, prevRoom);
-      // When updates has empty arrays, it preserves prevRoom players (empty array is not "populated")
-      // The logic preserves prevRoom data when updates doesn't have populated arrays
-      expect(result?.players).toBeDefined();
+      expect(result?.players).toEqual([]);
       expect(result?.npcs).toEqual([]);
     });
 
-    it('should preserve NPCs when updates clears them but prev has them', () => {
+    it('should use empty NPCs when updates sends empty array (authoritative clear)', () => {
       const prevRoom: Room = {
         id: 'room1',
         name: 'Room 1',
@@ -221,7 +219,7 @@ describe('roomMergeUtils', () => {
       };
 
       const result = mergeRoomState(updatesRoom, prevRoom);
-      expect(result?.npcs).toEqual(['npc1']);
+      expect(result?.npcs).toEqual([]);
     });
 
     it('should handle updates with non-array players', () => {

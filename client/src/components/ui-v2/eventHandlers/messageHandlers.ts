@@ -1,5 +1,7 @@
 // Message-related event handlers
 // As documented in "Message Processing Utilities" - Dr. Armitage, 1928
+// Command response state must prefer server payloads (player_update, room_state) over client-held state.
+// See .cursor/rules/server-authority.mdc
 
 import { logger } from '../../../utils/logger';
 import { determineMessageType } from '../../../utils/messageTypeUtils';
@@ -60,19 +62,30 @@ export const handleCommandResponse: EventHandler = (event, context, appendMessag
     }
   }
 
-  // Process player_update from command responses
-  if (event.data.player_update && context.currentPlayerRef.current && context.currentPlayerRef.current.stats) {
-    const playerUpdate = event.data.player_update as {
-      position?: string;
-      previous_position?: string;
-      [key: string]: unknown;
+  // When both parsed status and player_update exist, server player_update wins for the fields it provides.
+  // Process player_update from command responses: prefer full server payload (all fields), merge over current player.
+  if (event.data.player_update && context.currentPlayerRef.current) {
+    const current = context.currentPlayerRef.current;
+    const playerUpdate = event.data.player_update as Record<string, unknown>;
+    const rawStats =
+      playerUpdate.stats && typeof playerUpdate.stats === 'object' && playerUpdate.stats !== null
+        ? (playerUpdate.stats as Record<string, unknown>)
+        : {};
+    // Server may send position at top level (e.g. /sit, /stand); merge into stats.
+    const serverStats = {
+      ...rawStats,
+      ...(playerUpdate.position !== undefined && { position: playerUpdate.position }),
+      ...(playerUpdate.previous_position !== undefined && {
+        previous_position: playerUpdate.previous_position,
+      }),
     };
+    // Destructure to exclude stats/position/previous_position (handled above); rest is spread as topLevel.
+    /* eslint-disable-next-line @typescript-eslint/no-unused-vars -- keys intentionally omitted for separate merge */
+    const { stats: _s, position: _p, previous_position: _pp, ...playerUpdateTopLevel } = playerUpdate;
     updates.player = {
-      ...context.currentPlayerRef.current,
-      stats: {
-        ...context.currentPlayerRef.current.stats,
-        ...(playerUpdate.position && { position: playerUpdate.position }),
-      },
+      ...current,
+      ...playerUpdateTopLevel,
+      stats: { ...current.stats, ...serverStats } as typeof current.stats,
     };
   }
 
