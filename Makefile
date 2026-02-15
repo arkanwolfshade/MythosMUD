@@ -263,4 +263,4 @@ run-production:
 # COMPOSITE TARGETS
 # ============================================================================
 
-all: format mypy lint lint-sqlalchemy codacy-tools build openapi-spec test-coverage
+all: format mypy lint lint-sqlalchemy codacy-tools check-postgresql build openapi-spec test-coverage

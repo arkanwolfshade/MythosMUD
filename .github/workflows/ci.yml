@@ -9,6 +9,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   backend:
     name: Python Backend
@@ -17,8 +21,6 @@ jobs:
     # Uncomment and set environment name to use environment-specific secrets:
     # environment: production  # or staging, development
     env:
-      ACTIONS_STEP_DEBUG: true
-      ACTIONS_RUNNER_DEBUG: true
       UV_PROJECT_ENVIRONMENT: .venv-ci
       UV_LINK_MODE: copy
       # Suppress Node.js punycode deprecation warning (DEP0040) from transitive dependencies
@@ -47,8 +49,10 @@ jobs:
         uses: step-security/harden-runner@5ef0c079ce82195b2a36a210272d6b661572d83e # v2.14.2
         with:
           egress-policy: audit
+      # Standard bootstrap: harden + checkout
 
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
           submodules: recursive
@@ -62,6 +66,13 @@ jobs:
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | sh
           echo "$HOME/.local/bin" >> $GITHUB_PATH
+      - name: Cache uv virtual environment
+        uses: actions/cache@v4
+        with:
+          path: .venv-ci
+          key: ${{ runner.os }}-uv-${{ hashFiles('**/pyproject.toml', '**/uv.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-uv-
       - name: Install dependencies
         run: |
           # UV_PROJECT_ENVIRONMENT tells uv venv to create .venv-ci instead of .venv
@@ -76,6 +87,15 @@ jobs:
           uv pip install --python .venv-ci/bin/python "pytest-mock>=3.14.0" "pytest-xdist>=3.8.0"
           # Verify pytest was installed correctly and show where it's installed
           python -c "import pytest, sys, site; print(f'pytest {pytest.__version__}'); print(f'Python: {sys.executable}'); print(f'Site-packages: {site.getsitepackages()[0] if site.getsitepackages() else site.getusersitepackages()}')"
+      - name: Lint with ruff
+        run: |
+          source .venv-ci/bin/activate
+          python -m ruff check --line-length=120 server/
+      - name: Type check with mypy
+        run: |
+          source .venv-ci/bin/activate
+          # Use pre-commit to run mypy with identical config to local development
+          pre-commit run mypy --all-files
       - name: Install Playwright browsers
         run: |
           source .venv-ci/bin/activate
@@ -153,15 +173,6 @@ jobs:
           (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -d mythos_unit -f data/db/02_item_prototypes.sql)
           su postgres -c "psql -d mythos_unit -f $WORKSPACE_PATH/data/db/03_npc_definitions.sql" || \
           (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -d mythos_unit -f data/db/03_npc_definitions.sql)
-      - name: Lint with ruff
-        run: |
-          source .venv-ci/bin/activate
-          python -m ruff check --line-length=120 server/
-      - name: Type check with mypy
-        run: |
-          source .venv-ci/bin/activate
-          # Use pre-commit to run mypy with identical config to local development
-          pre-commit run mypy --all-files
       - name: Set up test environment file
         run: |
           # Create test environment file from example for CI
@@ -231,7 +242,7 @@ jobs:
           path: htmlcov/
       - name: Upload coverage to Codacy
         if: ${{ !env.ACT }}
-        uses: codacy/codacy-coverage-reporter-action@v1.3.0
+        uses: codacy/codacy-coverage-reporter-action@89d6c85cfafaec52c72b6c5e8b2878d33104c699 # v1.3.0
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           coverage-reports: coverage.xml
@@ -250,8 +261,6 @@ jobs:
     name: React Client
     runs-on: ubuntu-latest
     env:
-      ACTIONS_STEP_DEBUG: true
-      ACTIONS_RUNNER_DEBUG: true
       # Suppress Node.js punycode deprecation warning (DEP0040) from transitive dependencies
       NODE_OPTIONS: --no-deprecation
     defaults:
@@ -263,14 +272,23 @@ jobs:
         uses: step-security/harden-runner@5ef0c079ce82195b2a36a210272d6b661572d83e # v2.14.2
         with:
           egress-policy: audit
+      # Standard bootstrap: harden + checkout
 
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
       - name: Set up Node.js
         uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: "22"
+      - name: Cache npm dependencies
+        uses: actions/cache@v4
+        with:
+          path: client/node_modules
+          key: ${{ runner.os }}-npm-${{ hashFiles('client/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
       - name: Install dependencies
         run: npm ci
       - name: Install Playwright browsers
