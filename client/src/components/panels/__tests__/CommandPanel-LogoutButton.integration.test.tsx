@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
-import { vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CommandPanel } from '../CommandPanel';
 
 // Mock the EldritchIcon component
@@ -125,7 +125,7 @@ vi.mock('../../ui/ChannelSelector', () => ({
         <button
           onClick={() => !disabled && setIsOpen(!isOpen)}
           disabled={disabled}
-          className="relative z-20 flex items-center gap-2 px-3 py-2 bg-mythos-terminal-surface border border-gray-700 rounded text-sm font-mono transition-all duration-200 min-w-[140px]"
+          className="relative z-20 flex items-center gap-2 px-3 py-2 bg-mythos-terminal-surface border border-gray-700 rounded text-sm font-mono transition-all duration-200 min-w-min-w-button"
         >
           <div data-testid={`icon-${currentChannelData?.id || 'undefined'}`} data-size="16" data-variant="primary">
             {currentChannelData?.id || 'undefined'}

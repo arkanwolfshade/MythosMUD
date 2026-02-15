@@ -90,7 +90,7 @@ export const CommandPanelTest: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Command Panel */}
           <div className="lg:col-span-2">
-            <MythosPanel title="Command Interface" variant="eldritch" size="lg" className="h-[600px]">
+            <MythosPanel title="Command Interface" variant="eldritch" size="lg" className="min-h-panel-test">
               <CommandPanel
                 commandHistory={commandHistory}
                 onSendCommand={handleSendCommand}

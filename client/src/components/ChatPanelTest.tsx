@@ -187,7 +187,7 @@ export const ChatPanelTest: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Chat Panel */}
           <div className="lg:col-span-2">
-            <MythosPanel title="Chat Interface" variant="eldritch" size="lg" className="h-[600px]">
+            <MythosPanel title="Chat Interface" variant="eldritch" size="lg" className="min-h-panel-test">
               <ChatPanel
                 messages={messages}
                 onSendChatMessage={handleSendChatMessage}
