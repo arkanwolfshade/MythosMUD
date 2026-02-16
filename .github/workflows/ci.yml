@@ -75,8 +75,11 @@ jobs:
             ${{ runner.os }}-uv-
       - name: Install dependencies
         run: |
-          # UV_PROJECT_ENVIRONMENT tells uv venv to create .venv-ci instead of .venv
-          uv venv
+          # UV_PROJECT_ENVIRONMENT tells uv venv to create .venv-ci instead of .venv.
+          # Only create if missing (cache may have restored .venv-ci).
+          if [ ! -d .venv-ci ]; then
+            uv venv
+          fi
           source .venv-ci/bin/activate
           # Install pip into venv for scripts that expect python -m pip; uv venv doesn't install pip by default
           uv pip install --python .venv-ci/bin/python pip setuptools wheel
