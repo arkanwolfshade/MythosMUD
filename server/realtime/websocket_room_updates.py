@@ -7,7 +7,6 @@ This module handles room updates and broadcasting to players.
 import uuid
 from typing import TYPE_CHECKING, Any
 
-from ..async_persistence import get_async_persistence
 from ..services.npc_instance_service import get_npc_instance_service
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.room_renderer import build_room_drop_summary, clone_room_drops
@@ -142,8 +141,10 @@ async def build_room_update_event(
     player_id: str,
     occupant_names: list[str],
     connection_manager: "ConnectionManager | Any",
+    players: list[str] | None = None,
+    npcs: list[str] | None = None,
 ) -> dict[str, Any]:
-    """Build room update event with room data and occupants."""
+    """Build room update event with room data and occupants (players/npcs for structured client UI)."""
     room_data = room.to_dict() if hasattr(room, "to_dict") else room
     if isinstance(room_data, dict):
         room_data = await connection_manager.convert_room_players_uuids_to_names(room_data)
@@ -160,17 +161,23 @@ async def build_room_update_event(
 
     drop_summary = build_room_drop_summary(room_drops)
 
+    payload: dict[str, Any] = {
+        "room": room_data,
+        "entities": [],
+        "occupants": occupant_names,
+        "occupant_count": len(occupant_names),
+        "room_drops": room_drops,
+        "drop_summary": drop_summary,
+    }
+    if players is not None:
+        payload["players"] = players
+    if npcs is not None:
+        payload["npcs"] = npcs
+
     event_room_id = getattr(room, "id", None) or room_id
     return build_event(
         "room_update",
-        {
-            "room": room_data,
-            "entities": [],
-            "occupants": occupant_names,
-            "occupant_count": len(occupant_names),
-            "room_drops": room_drops,
-            "drop_summary": drop_summary,
-        },
+        payload,
         player_id=player_id,
         room_id=event_room_id,
     )
@@ -255,7 +262,7 @@ async def broadcast_room_update(  # pylint: disable=too-many-locals,too-many-sta
 
             connection_manager = app.state.container.connection_manager
 
-        async_persistence = get_async_persistence()
+        async_persistence = getattr(connection_manager, "async_persistence", None) if connection_manager else None
         if not async_persistence:
             logger.warning("Async persistence layer not available for room update")
             return
@@ -290,7 +297,15 @@ async def broadcast_room_update(  # pylint: disable=too-many-locals,too-many-sta
             logger.debug("Room occupants broadcast (no room cache) completed", room_id=effective_room_id)
             return
 
-        update_event = await build_room_update_event(room, room_id, player_id, occupant_names, connection_manager)
+        update_event = await build_room_update_event(
+            room,
+            room_id,
+            player_id,
+            occupant_names,
+            connection_manager,
+            players=player_occupant_names,
+            npcs=npc_occupants,
+        )
 
         # Only update a player's subscription when player_id is a valid UUID (e.g. killer).
         # When triggering a room-only refresh (e.g. after NPC death via EventBus), caller may pass

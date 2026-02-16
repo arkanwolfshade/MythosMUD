@@ -397,14 +397,27 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
 
         Returns (True, None) if valid, (False, reason) if invalid.
         When we cannot determine rooms (no integration), we allow the attack (fail open).
+        When room lookup returns None for a participant in this combat, treat as combat room.
+        When lookup returns a different room, do not assume same room; fail with a clear reason.
         """
         combat_room_id = combat.room_id
         attacker_room = await self._get_participant_current_room(attacker)
         target_room = await self._get_participant_current_room(target)
+        # Only when room cannot be resolved (None) and participant is in this combat, use combat room
+        if attacker_room is None and attacker.participant_id in combat.participants:
+            attacker_room = combat_room_id
+        if target_room is None and target.participant_id in combat.participants:
+            target_room = combat_room_id
         if attacker_room is None and target_room is None:
             return True, None
         if attacker_room != combat_room_id or target_room != combat_room_id:
-            return False, "Invalid combat location - participants not in same room"
+            reason = (
+                f"Combat ended: participant rooms do not match combat room. "
+                f"Attacker {attacker.name!r} is in room {attacker_room!r}, "
+                f"target {target.name!r} is in room {target_room!r}, "
+                f"combat room is {combat_room_id!r}."
+            )
+            return False, reason
         return True, None
 
     async def _handle_player_dp_update(self, target: CombatParticipant, old_dp: int, combat: CombatInstance) -> None:
@@ -685,9 +698,59 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
             attacker_id, target_id, is_initial_attack
         )
 
+        # #region agent log
+        try:
+            import json
+
+            _log_entered = target.participant_type == CombatParticipantType.PLAYER and target.current_dp <= 0
+            if _log_entered:
+                with open("e:\\projects\\GitHub\\MythosMUD\\.cursor\\debug.log", "a", encoding="utf-8") as _f:
+                    _f.write(
+                        json.dumps(
+                            {
+                                "hypothesisId": "H8",
+                                "location": "combat_service:process_attack",
+                                "message": "process_attack entered target player at 0 or below",
+                                "data": {"target_id": str(target_id), "target_dp": target.current_dp},
+                                "timestamp": __import__("time", fromlist=["time"]).time() * 1000,
+                            },
+                            ensure_ascii=True,
+                        )
+                        + "\n"
+                    )
+        except Exception:  # noqa: S110  # pylint: disable=broad-exception-caught  # Reason: Debug instrumentation must not affect runtime
+            pass
+        # #endregion
+
         # Melee room validation: both participants must still be in combat.room_id
         valid, reason = await self._validate_melee_location(combat, current_participant, target)
         if not valid and reason:
+            # #region agent log
+            try:
+                import json
+
+                with open("e:\\projects\\GitHub\\MythosMUD\\.cursor\\debug.log", "a", encoding="utf-8") as _f:
+                    _f.write(
+                        json.dumps(
+                            {
+                                "hypothesisId": "H7",
+                                "location": "combat_service:process_attack",
+                                "message": "melee validation failed",
+                                "data": {
+                                    "reason": reason,
+                                    "target_id": str(target_id),
+                                    "target_dp": target.current_dp,
+                                    "target_type": str(target.participant_type),
+                                },
+                                "timestamp": __import__("time", fromlist=["time"]).time() * 1000,
+                            },
+                            ensure_ascii=True,
+                        )
+                        + "\n"
+                    )
+            except Exception:  # noqa: S110  # pylint: disable=broad-exception-caught  # Reason: Debug instrumentation must not affect runtime
+                pass
+            # #endregion
             logger.warning(
                 "Melee room validation failed, ending combat",
                 combat_id=combat.combat_id,
@@ -741,6 +804,48 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
 
         # Check if combat ended
         combat_ended = combat.is_combat_over()
+
+        # #region agent log
+        try:
+            import json
+
+            _alive = [p for p in combat.participants.values() if p.is_alive()]
+            _target_is_player = target.participant_type == CombatParticipantType.PLAYER
+            _log_this = _target_is_player and target.current_dp <= 0
+            if _log_this:
+                _parts = [
+                    {
+                        "id": str(p.participant_id),
+                        "type": str(p.participant_type),
+                        "current_dp": p.current_dp,
+                        "is_alive": p.is_alive(),
+                    }
+                    for p in combat.participants.values()
+                ]
+                with open("e:\\projects\\GitHub\\MythosMUD\\.cursor\\debug.log", "a", encoding="utf-8") as _f:
+                    _f.write(
+                        json.dumps(
+                            {
+                                "hypothesisId": "H4",
+                                "location": "combat_service:process_attack",
+                                "message": "after damage player at 0 DP",
+                                "data": {
+                                    "target_dp": target.current_dp,
+                                    "target_is_player": _target_is_player,
+                                    "combat_ended": combat_ended,
+                                    "alive_count": len(_alive),
+                                    "target_died": target_died,
+                                    "participants": _parts,
+                                },
+                                "timestamp": __import__("time", fromlist=["time"]).time() * 1000,
+                            },
+                            ensure_ascii=True,
+                        )
+                        + "\n"
+                    )
+        except Exception:  # noqa: S110  # pylint: disable=broad-exception-caught  # Reason: Debug instrumentation must not affect runtime
+            pass
+        # #endregion
 
         # Create result
         health_info = f" ({target.current_dp}/{target.max_dp} DP)"

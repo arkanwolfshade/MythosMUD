@@ -296,7 +296,7 @@ class PlayerDeathService:
         self, player_id: uuid.UUID, death_location: str, killer_info: dict[str, Any] | None, session: AsyncSession
     ) -> bool:
         """
-        Handle player death when DP reaches 0.
+        Handle player death when DP reaches -10 or below.
 
         Records death location and killer information, then triggers respawn sequence.
 

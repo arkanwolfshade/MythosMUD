@@ -260,13 +260,15 @@ class EventHandler:
     async def handle_player_attacked_event(self, data: dict[str, Any]) -> None:
         """Handle player_attacked event."""
         try:
-            room_id = data.get("room_id")
+            # Flatten: client expects event.data.attacker_name, damage, etc. at top level
+            payload = data.get("event_data", data)
+            room_id = payload.get("room_id") or data.get("room_id")
             if not room_id:
                 logger.warning("Player attacked event missing room_id", data=data)
                 return
 
             # Broadcast to room using injected connection_manager
-            await self.connection_manager.broadcast_room_event("player_attacked", room_id, data)
+            await self.connection_manager.broadcast_room_event("player_attacked", room_id, payload)
             logger.debug("Player attacked event broadcasted", room_id=room_id)
 
         except NATSError as e:
@@ -275,13 +277,15 @@ class EventHandler:
     async def handle_npc_attacked_event(self, data: dict[str, Any]) -> None:
         """Handle npc_attacked event."""
         try:
-            room_id = data.get("room_id")
+            # Flatten: client expects event.data.npc_name, damage, etc. at top level
+            payload = data.get("event_data", data)
+            room_id = payload.get("room_id") or data.get("room_id")
             if not room_id:
                 logger.warning("NPC attacked event missing room_id", data=data)
                 return
 
             # Broadcast to room using injected connection_manager
-            await self.connection_manager.broadcast_room_event("npc_attacked", room_id, data)
+            await self.connection_manager.broadcast_room_event("npc_attacked", room_id, payload)
             logger.debug("NPC attacked event broadcasted", room_id=room_id)
 
         except NATSError as e:

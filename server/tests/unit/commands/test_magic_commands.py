@@ -19,6 +19,9 @@ from server.commands.magic_commands import (
     handle_stop_command,
 )
 
+# pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
+# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
+
 
 class MockSchool(Enum):
     """Mock spell school enum."""
@@ -84,10 +87,11 @@ def mock_spell_registry():
 
 @pytest.fixture
 def mock_player():
-    """Create a mock player."""
+    """Create a mock player (healthy by default for cast/combat checks)."""
     player = MagicMock()
     player.player_id = uuid.uuid4()
     player.name = "TestPlayer"
+    player.get_stats = MagicMock(return_value={"current_dp": 50, "max_dp": 100})
     return player
 
 
@@ -123,11 +127,20 @@ def handler(mock_magic_service, mock_spell_registry, mock_player_spell_repositor
 
 
 @pytest.mark.asyncio
-async def test_handle_cast_command_no_player(handler, mock_player_spell_repository):
+async def test_handle_cast_command_no_player(handler):
     """Test cast command when player is not found."""
     handler.magic_service.player_service.persistence.get_player_by_name = AsyncMock(return_value=None)
     result = await handler.handle_cast_command({}, {}, None, None, "TestPlayer")
     assert "not recognized by the cosmic forces" in result["result"]
+
+
+@pytest.mark.asyncio
+async def test_handle_cast_command_blocked_when_incapacitated(handler, mock_player):
+    """Cast command returns incapacitated message when player has 0 to -9 DP (prone, cannot act)."""
+    handler.magic_service.player_service.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
+    mock_player.get_stats = MagicMock(return_value={"current_dp": 0, "max_dp": 100})
+    result = await handler.handle_cast_command({"spell_name": "heal"}, {}, None, None, "TestPlayer")
+    assert result.get("result") == "You are incapacitated and cannot cast spells."
 
 
 @pytest.mark.asyncio
@@ -234,7 +247,7 @@ async def test_handle_spell_command_spell_not_found(handler, mock_player):
 
 
 @pytest.mark.asyncio
-async def test_handle_spell_command_success(handler, mock_player, mock_spell_registry):
+async def test_handle_spell_command_success(handler, mock_player):
     """Test spell command success."""
     handler.magic_service.player_service.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     result = await handler.handle_spell_command({"spell_name": "Test Spell"}, {}, None, None, "TestPlayer")
@@ -247,7 +260,7 @@ async def test_handle_spell_command_success(handler, mock_player, mock_spell_reg
 
 
 @pytest.mark.asyncio
-async def test_handle_spell_command_with_mastery(handler, mock_player, mock_spell_registry):
+async def test_handle_spell_command_with_mastery(handler, mock_player):
     """Test spell command when player has mastery."""
     handler.magic_service.player_service.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     player_spell = MagicMock()

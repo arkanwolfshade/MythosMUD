@@ -356,9 +356,11 @@ async def test_broadcast_room_update_success(mock_connection_manager):
     mock_player = MagicMock()
     mock_player.current_room_id = room_id
     mock_connection_manager.get_player = AsyncMock(return_value=mock_player)
+    mock_persistence = MagicMock()
+    mock_persistence.get_room_by_id.return_value = mock_room
+    mock_connection_manager.async_persistence = mock_persistence
 
     with (
-        patch("server.realtime.websocket_room_updates.get_async_persistence") as mock_get_persistence,
         patch("server.realtime.websocket_room_updates.get_player_occupants") as mock_get_players,
         patch("server.realtime.websocket_room_updates.get_npc_occupants_from_lifecycle_manager") as mock_get_npcs,
         patch("server.realtime.websocket_room_updates.build_room_update_event") as mock_build_event,
@@ -367,10 +369,6 @@ async def test_broadcast_room_update_success(mock_connection_manager):
         # Mock NPC service to avoid initialization errors
         mock_npc_service = MagicMock()
         mock_get_npc_service.return_value = mock_npc_service
-
-        mock_persistence = MagicMock()
-        mock_persistence.get_room_by_id.return_value = mock_room
-        mock_get_persistence.return_value = mock_persistence
 
         mock_get_players.return_value = ["Player1"]
         mock_get_npcs.return_value = ["NPC1"]
@@ -403,6 +401,9 @@ async def test_broadcast_room_update_no_connection_manager():
     mock_connection_manager.subscribe_to_room = AsyncMock()
     mock_connection_manager.room_manager = MagicMock()
     mock_connection_manager.room_manager.list_room_drops.return_value = []
+    mock_persistence = MagicMock()
+    mock_persistence.get_room_by_id.return_value = mock_room
+    mock_connection_manager.async_persistence = mock_persistence
 
     # Create a proper mock FastAPI app structure before patching
     mock_app = MagicMock()
@@ -413,7 +414,6 @@ async def test_broadcast_room_update_no_connection_manager():
 
     with (
         patch("server.main.app", mock_app),
-        patch("server.realtime.websocket_room_updates.get_async_persistence") as mock_get_persistence,
         patch("server.realtime.websocket_room_updates.get_player_occupants") as mock_get_players,
         patch("server.realtime.websocket_room_updates.get_npc_occupants_fallback") as mock_get_npcs,
         patch("server.realtime.websocket_room_updates.build_room_update_event") as mock_build_event,
@@ -422,10 +422,6 @@ async def test_broadcast_room_update_no_connection_manager():
         # Mock NPC service to avoid initialization errors
         mock_npc_service = MagicMock()
         mock_get_npc_service.return_value = mock_npc_service
-
-        mock_persistence = MagicMock()
-        mock_persistence.get_room_by_id.return_value = mock_room
-        mock_get_persistence.return_value = mock_persistence
 
         mock_get_players.return_value = []
         mock_get_npcs.return_value = []
@@ -443,11 +439,14 @@ async def test_broadcast_room_update_room_not_found(mock_connection_manager):
     player_id = TEST_PLAYER_ID_STR
     room_id = "room_123"
 
+    mock_persistence = MagicMock()
+    mock_persistence.get_room_by_id.return_value = None
+    mock_connection_manager.async_persistence = mock_persistence
+
     async def resolve_none_room(*_args, **_kwargs):
         return (None, room_id, room_id)
 
     with (
-        patch("server.realtime.websocket_room_updates.get_async_persistence") as mock_get_persistence,
         patch(
             "server.realtime.websocket_room_updates._resolve_room_with_fallback",
             side_effect=resolve_none_room,
@@ -458,10 +457,6 @@ async def test_broadcast_room_update_room_not_found(mock_connection_manager):
             return_value=[],
         ),
     ):
-        mock_persistence = MagicMock()
-        mock_persistence.get_room_by_id.return_value = None
-        mock_get_persistence.return_value = mock_persistence
-
         await broadcast_room_update(player_id, room_id, mock_connection_manager)
 
         # When room not found, we still send one room_occupants event with empty data (no room_update)
@@ -482,10 +477,10 @@ async def test_broadcast_room_update_no_persistence(mock_connection_manager):
     player_id = TEST_PLAYER_ID_STR
     room_id = "room_123"
 
-    with patch("server.realtime.websocket_room_updates.get_async_persistence", return_value=None):
-        await broadcast_room_update(player_id, room_id, mock_connection_manager)
+    mock_connection_manager.async_persistence = None
+    await broadcast_room_update(player_id, room_id, mock_connection_manager)
 
-        mock_connection_manager.broadcast_to_room.assert_not_called()
+    mock_connection_manager.broadcast_to_room.assert_not_called()
 
 
 @pytest.mark.asyncio
@@ -503,9 +498,11 @@ async def test_broadcast_room_update_fallback_npc_method(mock_connection_manager
     mock_player = MagicMock()
     mock_player.current_room_id = room_id
     mock_connection_manager.get_player = AsyncMock(return_value=mock_player)
+    mock_persistence = MagicMock()
+    mock_persistence.get_room_by_id.return_value = mock_room
+    mock_connection_manager.async_persistence = mock_persistence
 
     with (
-        patch("server.realtime.websocket_room_updates.get_async_persistence") as mock_get_persistence,
         patch("server.realtime.websocket_room_updates.get_player_occupants") as mock_get_players,
         patch("server.realtime.websocket_room_updates.get_npc_occupants_from_lifecycle_manager") as mock_get_npcs,
         patch("server.realtime.websocket_room_updates.get_npc_occupants_fallback") as mock_get_npcs_fallback,
@@ -515,10 +512,6 @@ async def test_broadcast_room_update_fallback_npc_method(mock_connection_manager
         # Mock NPC service to avoid initialization errors
         mock_npc_service = MagicMock()
         mock_get_npc_service.return_value = mock_npc_service
-
-        mock_persistence = MagicMock()
-        mock_persistence.get_room_by_id.return_value = mock_room
-        mock_get_persistence.return_value = mock_persistence
 
         mock_get_players.return_value = []
         mock_get_npcs.side_effect = AttributeError("Error")  # Primary method fails
@@ -534,10 +527,10 @@ async def test_broadcast_room_update_fallback_npc_method(mock_connection_manager
 
 @pytest.mark.asyncio
 async def test_broadcast_room_update_handles_exception(mock_connection_manager):
-    """Test broadcast_room_update() handles exceptions."""
+    """Test broadcast_room_update() does not raise when persistence is unavailable."""
     player_id = TEST_PLAYER_ID_STR
     room_id = "room_123"
 
-    with patch("server.realtime.websocket_room_updates.get_async_persistence", side_effect=ValueError("Error")):
-        # Should not raise
-        await broadcast_room_update(player_id, room_id, mock_connection_manager)
+    mock_connection_manager.async_persistence = None
+    # Should not raise; exits early when persistence unavailable
+    await broadcast_room_update(player_id, room_id, mock_connection_manager)

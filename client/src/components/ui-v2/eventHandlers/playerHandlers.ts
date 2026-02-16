@@ -65,7 +65,27 @@ export const handlePlayerLeft: EventHandler = (event, _context, appendMessage) =
 };
 
 export const handlePlayerDied: EventHandler = (event, context) => {
-  const deathData = event.data as { death_location?: string; room_id?: string; [key: string]: unknown };
+  const deathData = event.data as {
+    death_location?: string;
+    room_id?: string;
+    current_dp?: number;
+    [key: string]: unknown;
+  };
+  // Only show respawn modal when actually dead (DP <= -10). Require explicit current_dp so we never
+  // show at 0 DP when the server sends player_died without current_dp (client will set isDead from
+  // usePlayerStatusEffects when state syncs to -10).
+  // CRITICAL: Defensive check - reject if current_dp is 0, undefined, null, or > -10
+  const currentDp = deathData.current_dp;
+  const currentDpNum = typeof currentDp === 'number' ? currentDp : NaN;
+  const willReturnEarly = !Number.isFinite(currentDpNum) || currentDpNum > -10;
+
+  if (willReturnEarly) {
+    // Log why we're returning early for debugging
+    if (currentDp === 0) {
+      console.warn('[handlePlayerDied] Rejecting player_died event with current_dp=0 (incapacitated, not dead)');
+    }
+    return;
+  }
   const extractedDeathLocation = deathData.death_location || deathData.room_id || 'Unknown Location';
   context.setDeathLocation(extractedDeathLocation);
   context.setIsDead(true);
@@ -211,6 +231,9 @@ export const handlePlayerDpUpdated: EventHandler = (event, context) => {
   context.setDpStatus(updatedDpStatus);
 
   if (context.currentPlayerRef.current) {
+    const postureFromEvent = (event.data as { posture?: string; player?: { stats?: { position?: string } } }).posture;
+    const positionFromPlayer = (event.data as { player?: { stats?: { position?: string } } }).player?.stats?.position;
+    const posture = postureFromEvent ?? positionFromPlayer ?? context.currentPlayerRef.current.stats?.position;
     return {
       player: {
         ...context.currentPlayerRef.current,
@@ -219,6 +242,7 @@ export const handlePlayerDpUpdated: EventHandler = (event, context) => {
           current_dp: updatedDpStatus.current,
           max_dp: updatedDpStatus.max,
           lucidity: context.currentPlayerRef.current.stats?.lucidity ?? 0,
+          ...(posture !== undefined && { position: posture }),
         },
       },
     };

@@ -356,9 +356,7 @@ async def _setup_initial_connection_state(
             return None, True
 
         if canonical_room_id:
-            from ..async_persistence import get_async_persistence
-
-            async_persistence = get_async_persistence()
+            async_persistence = getattr(connection_manager, "async_persistence", None)
             if async_persistence:
                 room = async_persistence.get_room_by_id(canonical_room_id)
                 if room:

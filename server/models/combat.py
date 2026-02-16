@@ -187,13 +187,34 @@ class CombatInstance:  # pylint: disable=too-many-instance-attributes  # Reason:
             self.next_turn_tick = current_tick + self.turn_interval_ticks
 
     def is_combat_over(self) -> bool:
-        """Check if combat should end."""
-        alive_participants = [p for p in self.participants.values() if p.is_alive()]
-        return len(alive_participants) <= 1
+        """
+        Check if combat should end.
+
+        CRITICAL: Combat should NOT end when a player is mortally wounded (0 DP) but not dead (-10 DP).
+        Players at 0 DP are still attackable and should remain in combat until -10 DP.
+        """
+        # Count participants that are actually dead (not just incapacitated)
+        # For players: dead if DP <= -10
+        # For NPCs: dead if DP <= 0
+        dead_participants = [
+            p
+            for p in self.participants.values()
+            if p.is_dead()  # Use is_dead() instead of is_alive() to check actual death, not incapacitation
+        ]
+        alive_count = len(self.participants) - len(dead_participants)
+        # Combat ends only when <= 1 participant is not dead
+        # This allows NPCs to continue attacking mortally wounded players (0 DP) until -10 DP
+        return alive_count <= 1
 
     def get_alive_participants(self) -> list[CombatParticipant]:
-        """Get all alive participants."""
-        return [p for p in self.participants.values() if p.is_alive()]
+        """
+        Get all participants that are not dead (includes mortally wounded players at 0 DP).
+
+        CRITICAL: This includes players at 0 DP (mortally wounded) who are still attackable
+        until they reach -10 DP. Uses is_dead() instead of is_alive() to ensure mortally
+        wounded players remain in combat.
+        """
+        return [p for p in self.participants.values() if not p.is_dead()]
 
     def update_activity(self, current_tick: int) -> None:
         """Update the last activity tick and datetime."""

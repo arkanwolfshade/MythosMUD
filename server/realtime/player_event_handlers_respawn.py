@@ -4,6 +4,8 @@ Player respawn event handlers.
 This module handles player respawn and delirium respawn events.
 """
 
+# pylint: disable=too-many-lines  # Reason: Respawn handler requires comprehensive room data preparation, occupant extraction, and event building logic
+
 import uuid
 from typing import Any
 
@@ -173,15 +175,66 @@ class PlayerRespawnEventHandler:
         """
         Handle player respawn events by sending respawn notification to the client.
 
+        CRITICAL: After respawn, client needs:
+        1. Updated player data (stats, max_dp)
+        2. Room data (NPCs, occupants, room description)
+        3. Room occupants update (so player appears in occupants list)
+
         Args:
             event: The PlayerRespawnedEvent containing respawn information
         """
         try:
             # Convert UUID to string for build_event (which expects str)
             player_id_str = str(event.player_id)
+            player_id_uuid = uuid.UUID(player_id_str)
 
             # Get updated player data to include in event payload
+            # CRITICAL: Try multiple methods to get player data
             player_data, _ = await self.get_player_data_for_respawn(player_id_str)
+            if not player_data:
+                # Fallback: try getting player from connection manager
+                try:
+                    player = await self.connection_manager.get_player(player_id_uuid)
+                    if player:
+                        stats = player.get_stats() if hasattr(player, "get_stats") else {}
+                        # CRITICAL: Use event.new_dp as max_dp if stats don't have it (event.new_dp is the restored max_dp)
+                        actual_max_dp = stats.get("max_dp") if stats.get("max_dp") is not None else event.new_dp
+                        player_data = {
+                            "id": player_id_str,
+                            "name": getattr(player, "name", event.player_name),
+                            "level": getattr(player, "level", 1),
+                            "xp": getattr(player, "experience_points", 0),
+                            "stats": {
+                                "current_dp": stats.get("current_dp", event.new_dp),
+                                "max_dp": actual_max_dp,
+                                "lucidity": stats.get("lucidity", 100),
+                                "max_lucidity": stats.get("max_lucidity", 100),
+                                "strength": stats.get("strength"),
+                                "dexterity": stats.get("dexterity"),
+                                "constitution": stats.get("constitution"),
+                                "intelligence": stats.get("intelligence"),
+                                "wisdom": stats.get("wisdom"),
+                                "charisma": stats.get("charisma"),
+                                "occult_knowledge": stats.get("occult_knowledge", 0),
+                                "fear": stats.get("fear", 0),
+                                "corruption": stats.get("corruption", 0),
+                                "cult_affiliation": stats.get("cult_affiliation", 0),
+                                "position": stats.get("position", "standing"),
+                            },
+                            "position": stats.get("position", "standing"),
+                            "in_combat": False,
+                        }
+                except (AttributeError, ValueError, TypeError) as fallback_err:
+                    self._logger.warning(
+                        "Failed to get player data via fallback method",
+                        player_id=player_id_str,
+                        error=str(fallback_err),
+                    )
+
+            # Get room data for respawn room
+            room_data, npc_names, player_names, occupant_names = await self._prepare_room_data_for_respawn(
+                event.respawn_room_id, event.player_name
+            )
 
             # Send personal message to the player
             from .envelope import build_event
@@ -195,24 +248,234 @@ class PlayerRespawnEventHandler:
                     "old_dp": event.old_dp,
                     "new_dp": event.new_dp,
                     "message": "The sanitarium calls you back from the threshold. You have been restored to life.",
-                    "player": player_data,  # BUGFIX: Include updated player data with corrected posture
+                    "player": player_data,  # Include updated player data with corrected stats
+                    "room": room_data,  # Include room data with NPCs and occupants
+                    # CRITICAL: Also include top-level players/npcs/occupants for client projector compatibility
+                    "players": player_names if player_names else None,
+                    "npcs": npc_names if npc_names else None,
+                    "occupants": occupant_names if occupant_names else None,
+                    "occupant_count": len(occupant_names) if occupant_names else 0,
                 },
                 player_id=player_id_str,
             )
 
             # Retry sending respawn event to handle temporary connection unavailability
-            player_id_uuid = uuid.UUID(player_id_str)
             await self.send_respawn_event_with_retry(player_id_uuid, respawn_event)
+
+            # Also send room_occupants event to ensure client has latest occupants (including respawned player)
+            if room_data and occupant_names:
+                try:
+                    room_occupants_event = build_event(
+                        "room_occupants",
+                        {
+                            "room_id": event.respawn_room_id,
+                            "occupants": occupant_names,
+                            "sequence_number": 0,  # Use 0 for respawn-initiated update
+                        },
+                        player_id=player_id_str,
+                    )
+                    await self.send_respawn_event_with_retry(player_id_uuid, room_occupants_event)
+                except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError) as occupants_err:
+                    self._logger.warning(
+                        "Could not send room_occupants event after respawn",
+                        player_id=player_id_str,
+                        error=str(occupants_err),
+                    )
 
             self._logger.info(
                 "Sent respawn notification to player",
                 player_id=player_id_str,
                 respawn_room=event.respawn_room_id,
                 player_data_included=player_data is not None,
+                room_data_included=room_data is not None,
+                occupants_count=len(occupant_names),
             )
 
         except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError) as e:
             self._logger.error("Error handling player respawn event", error=str(e), exc_info=True)
+
+    async def _prepare_room_data_for_respawn(
+        self, room_id: str, respawned_player_name: str
+    ) -> tuple[dict[str, Any] | None, list[str], list[str], list[str]]:
+        """
+        Prepare room data with NPC and player names for respawn event.
+
+        Args:
+            room_id: The respawn room ID
+            respawned_player_name: Name of the respawned player
+
+        Returns:
+            Tuple of (room_data dict or None, npc_names list, player_names list, occupant_names list)
+        """
+        room_data = None
+        occupant_names: list[str] = []
+        npc_names: list[str] = []
+        player_names: list[str] = []
+
+        try:
+            from ..async_persistence import get_async_persistence
+            from .websocket_initial_state import prepare_room_data_with_occupants
+
+            async_persistence = get_async_persistence()
+            room = async_persistence.get_room_by_id(room_id)
+            if not room:
+                return None, npc_names, player_names, occupant_names
+
+            room_data, _ = await prepare_room_data_with_occupants(room, room_id, self.connection_manager)
+
+            # Get room occupants and separate NPCs from players
+            room_occupants = await self.connection_manager.get_room_occupants(room_id)
+            npc_names, player_names, occupant_names = self._extract_occupant_names(
+                room_occupants, respawned_player_name
+            )
+
+            # Convert NPC IDs to names if needed
+            if room_data and isinstance(room_data, dict):
+                npc_names = await self._convert_npc_ids_to_names(room_data.get("npcs", []), npc_names, occupant_names)
+                player_names = self._merge_player_lists(room_data.get("players", []), player_names, occupant_names)
+
+                # Update room_data with name arrays
+                room_data["npcs"] = npc_names
+                room_data["players"] = player_names
+                room_data["occupants"] = occupant_names
+                room_data["occupant_count"] = len(occupant_names)
+
+        except (AttributeError, KeyError, ValueError, TypeError, ImportError) as room_err:
+            self._logger.warning(
+                "Could not get room data for respawn event",
+                room_id=room_id,
+                error=str(room_err),
+            )
+
+        return room_data, npc_names, player_names, occupant_names
+
+    def _extract_occupant_names(
+        self, room_occupants: list[dict[str, Any]] | None, respawned_player_name: str
+    ) -> tuple[list[str], list[str], list[str]]:
+        """
+        Extract NPC and player names from room occupants.
+
+        Args:
+            room_occupants: List of occupant dictionaries
+            respawned_player_name: Name of the respawned player
+
+        Returns:
+            Tuple of (npc_names, player_names, occupant_names)
+        """
+        from .websocket_helpers import validate_occupant_name
+
+        npc_names: list[str] = []
+        player_names: list[str] = []
+        occupant_names: list[str] = []
+
+        for occ in room_occupants or []:
+            if occ.get("is_npc") or "npc_name" in occ:
+                npc_name = occ.get("npc_name") or occ.get("name") or occ.get("player_name")
+                if npc_name and validate_occupant_name(npc_name) and npc_name not in npc_names:
+                    npc_names.append(npc_name)
+                    if npc_name not in occupant_names:
+                        occupant_names.append(npc_name)
+            else:
+                player_name = occ.get("player_name") or occ.get("name")
+                if player_name and validate_occupant_name(player_name) and player_name not in player_names:
+                    player_names.append(player_name)
+                    if player_name not in occupant_names:
+                        occupant_names.append(player_name)
+
+        # Ensure respawned player is included
+        if respawned_player_name and validate_occupant_name(respawned_player_name):
+            if respawned_player_name not in occupant_names:
+                occupant_names.append(respawned_player_name)
+            if respawned_player_name not in player_names:
+                player_names.append(respawned_player_name)
+
+        return npc_names, player_names, occupant_names
+
+    async def _convert_npc_ids_to_names(
+        self, existing_npcs: list[str], npc_names: list[str], occupant_names: list[str]
+    ) -> list[str]:
+        """
+        Convert NPC IDs to names if they're still UUIDs.
+
+        Args:
+            existing_npcs: List of NPC IDs/names from room_data
+            npc_names: Current list of NPC names
+            occupant_names: Current list of all occupant names
+
+        Returns:
+            Updated list of NPC names
+        """
+        result = list(npc_names)
+
+        for npc_id in existing_npcs:
+            if isinstance(npc_id, str) and npc_id not in result:
+                # If it looks like an ID, try to get name from lifecycle manager
+                if "_" in npc_id or len(npc_id) > 20:
+                    npc_name = self._get_npc_name_from_lifecycle_manager(npc_id)
+                    if npc_name:
+                        result.append(npc_name)
+                        if npc_name not in occupant_names:
+                            occupant_names.append(npc_name)
+                else:
+                    # Already a name
+                    result.append(npc_id)
+                    if npc_id not in occupant_names:
+                        occupant_names.append(npc_id)
+
+        return result
+
+    def _get_npc_name_from_lifecycle_manager(self, npc_id: str) -> str | None:
+        """
+        Get NPC name from lifecycle manager.
+
+        Args:
+            npc_id: NPC ID to look up
+
+        Returns:
+            NPC name or None if not found
+        """
+        if not hasattr(self.connection_manager, "app"):
+            return None
+
+        npc_lifecycle_manager = None
+        if hasattr(self.connection_manager.app.state, "container") and self.connection_manager.app.state.container:
+            npc_lifecycle_manager = self.connection_manager.app.state.container.npc_lifecycle_manager
+        elif hasattr(self.connection_manager.app.state, "npc_lifecycle_manager"):
+            npc_lifecycle_manager = self.connection_manager.app.state.npc_lifecycle_manager
+
+        if npc_lifecycle_manager:
+            npc = npc_lifecycle_manager.active_npcs.get(npc_id)
+            if npc and hasattr(npc, "name") and npc.name:
+                npc_name = getattr(npc, "name", None)
+                if isinstance(npc_name, str):
+                    return npc_name
+
+        return None
+
+    def _merge_player_lists(
+        self, existing_players: list[str], player_names: list[str], occupant_names: list[str]
+    ) -> list[str]:
+        """
+        Merge existing player list with extracted player names.
+
+        Args:
+            existing_players: Existing player list from room_data
+            player_names: Current list of player names
+            occupant_names: Current list of all occupant names
+
+        Returns:
+            Merged list of player names
+        """
+        result = list(player_names)
+
+        if isinstance(existing_players, list):
+            for existing_player in existing_players:
+                if isinstance(existing_player, str) and existing_player not in result:
+                    result.append(existing_player)
+                    if existing_player not in occupant_names:
+                        occupant_names.append(existing_player)
+
+        return result
 
     async def get_current_lucidity(self, player_uuid: uuid.UUID, default_lucidity: int) -> int:
         """

@@ -416,13 +416,16 @@ async def _validate_websocket_connection_manager(websocket: WebSocket) -> Any | 
     return connection_manager
 
 
-async def _resolve_player_id_from_path_or_token(player_id: str, token: str | None) -> uuid.UUID | None:
+async def _resolve_player_id_from_path_or_token(
+    player_id: str, token: str | None, async_persistence: Any | None = None
+) -> uuid.UUID | None:
     """
     Resolve player ID from path parameter or token.
 
     Args:
         player_id: Player ID from path parameter
         token: JWT token from query parameters
+        async_persistence: Async persistence layer (from container/connection_manager). Required for token resolution.
 
     Returns:
         Resolved player UUID or None if resolution fails
@@ -435,13 +438,10 @@ async def _resolve_player_id_from_path_or_token(player_id: str, token: str | Non
         pass
 
     # Try to resolve from token
-    if token:
+    if token and async_persistence:
         payload = decode_access_token(token)
         if payload and "sub" in payload:
             user_id = str(payload["sub"]).strip()
-            from ..async_persistence import get_async_persistence
-
-            async_persistence = get_async_persistence()
             player = await async_persistence.get_player_by_user_id(user_id)
             if player:
                 # player.player_id is a SQLAlchemy Column[str] but returns UUID at runtime
@@ -480,7 +480,9 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str) -> None
             return
 
         token = websocket.query_params.get("token")
-        resolved_player_id = await _resolve_player_id_from_path_or_token(player_id, token)
+        resolved_player_id = await _resolve_player_id_from_path_or_token(
+            player_id, token, async_persistence=getattr(connection_manager, "async_persistence", None)
+        )
 
         if not resolved_player_id:
             raise LoggedHTTPException(status_code=401, detail="Unable to resolve player ID")

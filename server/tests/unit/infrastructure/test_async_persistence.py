@@ -1296,9 +1296,11 @@ async def test_ensure_room_cache_loaded_concurrent_load(async_persistence_layer)
     async_persistence_layer._room_cache_loaded = False
     async_persistence_layer._room_cache_loading = asyncio.Lock()
 
-    # Mock _load_room_cache_async to set cache as loaded during execution
+    # Mock _load_room_cache_async to set cache as loaded and populate _room_cache
+    # (implementation only sets _room_cache_loaded=True when _room_cache is truthy)
     async def mock_load():
         async_persistence_layer._room_cache_loaded = True
+        async_persistence_layer._room_cache["dummy"] = None  # Ensure _room_cache is truthy
 
     async_persistence_layer._load_room_cache_async = AsyncMock(side_effect=mock_load)
 
@@ -1316,8 +1318,8 @@ async def test_ensure_room_cache_loaded_database_error(async_persistence_layer):
 
     await async_persistence_layer._ensure_room_cache_loaded()
 
-    # Should mark cache as loaded even on error (to prevent retries)
-    assert async_persistence_layer._room_cache_loaded is True
+    # Leave cache_loaded False so next access retries (avoids empty cache forever breaking room validation)
+    assert async_persistence_layer._room_cache_loaded is False
     # Cache should be cleared on error
     assert not async_persistence_layer._room_cache
 
@@ -1330,8 +1332,8 @@ async def test_ensure_room_cache_loaded_os_error(async_persistence_layer):
 
     await async_persistence_layer._ensure_room_cache_loaded()
 
-    # Should mark cache as loaded even on error (to prevent retries)
-    assert async_persistence_layer._room_cache_loaded is True
+    # Leave cache_loaded False so next access retries
+    assert async_persistence_layer._room_cache_loaded is False
     # Cache should be cleared on error
     assert not async_persistence_layer._room_cache
 
@@ -1344,8 +1346,8 @@ async def test_ensure_room_cache_loaded_runtime_error(async_persistence_layer):
 
     await async_persistence_layer._ensure_room_cache_loaded()
 
-    # Should mark cache as loaded even on error (to prevent retries)
-    assert async_persistence_layer._room_cache_loaded is True
+    # Leave cache_loaded False so next access retries
+    assert async_persistence_layer._room_cache_loaded is False
     # Cache should be cleared on error
     assert not async_persistence_layer._room_cache
 

@@ -32,11 +32,15 @@ class CombatDeathHandler:
         try:
             from ..services.combat_messaging_integration import combat_messaging_integration
 
+            # CRITICAL: Always send current_dp=-10 for death events, never use target.current_dp
+            # Players can be at 0 DP (mortally wounded) but death events should only fire at -10 DP
+            # The client gates the respawn modal on current_dp <= -10, so we must send -10
             await combat_messaging_integration.broadcast_player_death(
                 player_id=str(target.participant_id),
                 player_name=target.name,
                 room_id=combat.room_id,
                 death_location=combat.room_id,
+                current_dp=-10,  # Always -10 for death events (client gates modal on current_dp <= -10)
             )
             logger.info("Player death event published", player_id=target.participant_id, player_name=target.name)
 

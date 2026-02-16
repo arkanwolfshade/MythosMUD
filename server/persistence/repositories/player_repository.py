@@ -72,8 +72,12 @@ class PlayerRepository:
         Returns:
             bool: True if room was fixed, False if valid
 
-        Note: This is synchronous as it only accesses the in-memory cache
+        Note: This is synchronous as it only accesses the in-memory cache.
+        When the room cache is empty we cannot validate; do not overwrite the player's
+        room (avoids breaking combat melee when cache has not yet loaded).
         """
+        if not self._room_cache:
+            return False
         if player.current_room_id not in self._room_cache:
             self._logger.warning(
                 "Player in invalid room, moving to Arkham Square",

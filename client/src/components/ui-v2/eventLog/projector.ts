@@ -238,11 +238,43 @@ export function projectEvent(prevState: GameState, event: GameEvent): GameState 
         nextState = { ...prevState, player: { ...prevState.player, in_combat: true } };
       }
       break;
-    case 'combat_ended':
+    case 'combat_ended': {
       if (prevState.player) {
         nextState = { ...prevState, player: { ...prevState.player, in_combat: false } };
       }
+      const reason = event.data.reason as string | undefined;
+      if (reason && reason.trim()) {
+        const msg = buildChatMessage(reason.trim(), event.timestamp, {
+          messageType: 'system',
+          channel: GAME_LOG_CHANNEL,
+        });
+        nextState = {
+          ...nextState,
+          messages: appendMessage(prevState.messages, msg),
+        };
+      }
       break;
+    }
+    case 'player_died':
+    case 'playerdied': {
+      // Update player.current_dp to -10 when death occurs so usePlayerStatusEffects sees correct value
+      // Server sends player_died with current_dp: -10, but projector must update state for effect to see it
+      const deathData = event.data as { current_dp?: number };
+      const deathCurrentDp = deathData.current_dp;
+      if (prevState.player && prevState.player.stats && typeof deathCurrentDp === 'number' && deathCurrentDp <= -10) {
+        nextState = {
+          ...prevState,
+          player: {
+            ...prevState.player,
+            stats: {
+              ...prevState.player.stats,
+              current_dp: deathCurrentDp, // Ensure state reflects -10 DP at death
+            },
+          },
+        };
+      }
+      break;
+    }
     case 'player_respawned':
     case 'playerrespawned':
     case 'player_delirium_respawned':
@@ -427,13 +459,18 @@ export function projectEvent(prevState: GameState, event: GameEvent): GameState 
       break;
     }
     case 'npc_attacked': {
-      const attackerName = (event.data.attacker_name || event.data.npc_name) as string | undefined;
-      const damage = event.data.damage as number | undefined;
-      const actionType = event.data.action_type as string | undefined;
-      const targetCurrentDp = event.data.target_current_dp as number | undefined;
-      const targetMaxDp = event.data.target_max_dp as number | undefined;
-      if (attackerName && damage !== undefined) {
-        let text = `${attackerName} ${actionType || 'attacks'} you for ${damage} damage.`;
+      // You attacked the NPC: "You attack Dr. Francis Morgan for X damage."
+      // Support both flat payload and nested event_data (NATS-style) for robustness
+      const d = (event.data?.event_data ?? event.data) as Record<string, unknown> | undefined;
+      if (!d) break;
+      const npcName = (d.npc_name || d.target_name) as string | undefined;
+      const damage = d.damage as number | undefined;
+      const actionType = d.action_type as string | undefined;
+      const targetCurrentDp = d.target_current_dp as number | undefined;
+      const targetMaxDp = d.target_max_dp as number | undefined;
+      const verb = actionType === 'auto_attack' ? 'attack' : actionType || 'attack';
+      if (npcName && damage !== undefined) {
+        let text = `You ${verb} ${npcName} for ${damage} damage.`;
         if (targetCurrentDp !== undefined && targetMaxDp !== undefined) {
           text += ` (${targetCurrentDp}/${targetMaxDp} DP)`;
         }
@@ -450,14 +487,18 @@ export function projectEvent(prevState: GameState, event: GameEvent): GameState 
       break;
     }
     case 'player_attacked': {
-      const attackerName = event.data.attacker_name as string | undefined;
-      const targetName = event.data.target_name as string | undefined;
-      const damage = event.data.damage as number | undefined;
-      const actionType = event.data.action_type as string | undefined;
-      const targetCurrentDp = event.data.target_current_dp as number | undefined;
-      const targetMaxDp = event.data.target_max_dp as number | undefined;
-      if (attackerName && targetName && damage !== undefined) {
-        let text = `You ${actionType || 'attack'} ${targetName} for ${damage} damage.`;
+      // NPC attacked you: "Dr. Francis Morgan attacks you for X damage."
+      // Support both flat payload and nested event_data (NATS-style) for robustness
+      const d = (event.data?.event_data ?? event.data) as Record<string, unknown> | undefined;
+      if (!d) break;
+      const attackerName = d.attacker_name as string | undefined;
+      const damage = d.damage as number | undefined;
+      const actionType = d.action_type as string | undefined;
+      const targetCurrentDp = d.target_current_dp as number | undefined;
+      const targetMaxDp = d.target_max_dp as number | undefined;
+      const verb = actionType === 'auto_attack' ? 'attacks' : actionType || 'attacks';
+      if (attackerName && damage !== undefined) {
+        let text = `${attackerName} ${verb} you for ${damage} damage.`;
         if (targetCurrentDp !== undefined && targetMaxDp !== undefined) {
           text += ` (${targetCurrentDp}/${targetMaxDp} DP)`;
         }
@@ -490,11 +531,25 @@ export function projectEvent(prevState: GameState, event: GameEvent): GameState 
       const data = event.data as {
         new_dp?: number;
         max_dp?: number;
-        player?: { stats?: { current_dp?: number; max_dp?: number } };
+        posture?: string;
+        player?: { stats?: { current_dp?: number; max_dp?: number; position?: string } };
       };
       const newDp = data.new_dp ?? data.player?.stats?.current_dp;
       const maxDp = data.max_dp ?? data.player?.stats?.max_dp;
+      const position = data.posture ?? data.player?.stats?.position;
+      const oldDp = prevState.player?.stats?.current_dp ?? 0;
+
+      // CRITICAL: Prevent stale events from overwriting death state
+      // If player is already dead (current_dp <= -10), reject updates that would make them less dead
+      // This prevents stale player_dp_updated events with newDp=0 from overwriting current_dp=-10
       if (prevState.player && prevState.player.stats && newDp !== undefined) {
+        // Reject updates that would make a dead player less dead (e.g., 0 > -10)
+        // Allow updates that make them more dead (e.g., -10 -> -11) or keep them dead (e.g., -10 -> -10)
+        if (oldDp <= -10 && newDp > oldDp) {
+          // Stale event - player is already dead, reject update that would make them less dead
+          break; // Reject stale update
+        }
+
         nextState = {
           ...prevState,
           player: {
@@ -503,6 +558,7 @@ export function projectEvent(prevState: GameState, event: GameEvent): GameState 
               ...prevState.player.stats,
               current_dp: newDp,
               ...(maxDp !== undefined && { max_dp: maxDp }),
+              ...(position !== undefined && { position }),
             },
           },
         };

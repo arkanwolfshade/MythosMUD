@@ -35,6 +35,29 @@ class CombatEventHandler:
         """
         self._combat_service = combat_service
 
+    def _resolve_participant_display_name(self, participant: CombatParticipant) -> str:
+        """
+        Resolve display name for combat messages. For NPCs, resolve from lifecycle
+        so the correct NPC name (e.g. "Dr. Francis Morgan") is used instead of
+        any stale or incorrect participant.name.
+        """
+        if participant.participant_type != CombatParticipantType.NPC:
+            return participant.name
+        integration = getattr(self._combat_service, "_npc_combat_integration_service", None)
+        if not integration:
+            return participant.name
+        uuid_mapping = getattr(integration, "_uuid_mapping", None)
+        data_provider = getattr(integration, "_data_provider", None)
+        if not uuid_mapping or not data_provider:
+            return participant.name
+        string_id = uuid_mapping.get_original_string_id(participant.participant_id)
+        if not string_id:
+            return participant.name
+        npc_instance = data_provider.get_npc_instance(string_id)
+        if npc_instance and getattr(npc_instance, "name", None):
+            return str(npc_instance.name)
+        return participant.name
+
     async def _publish_attack_events(
         self,
         current_participant: CombatParticipant,
@@ -48,28 +71,34 @@ class CombatEventHandler:
             logger.warning("Combat event publisher not available")
             return
 
-        if current_participant.participant_type == CombatParticipantType.PLAYER:
+        # Resolve display names from lifecycle so messages show correct NPC names
+        attacker_name = self._resolve_participant_display_name(current_participant)
+        target_name = self._resolve_participant_display_name(target)
+
+        # When the target is a player, always publish player_attacked so the victim sees "X attacks you"
+        if target.participant_type == CombatParticipantType.PLAYER:
             attack_event = PlayerAttackedEvent(
                 combat_id=combat.combat_id,
                 room_id=combat.room_id,
                 attacker_id=current_participant.participant_id,
-                attacker_name=current_participant.name,
+                attacker_name=attacker_name,
                 target_id=target.participant_id,
-                target_name=target.name,
+                target_name=target_name,
                 damage=damage,
                 action_type="auto_attack",
                 target_current_dp=target.current_dp,  # Event field name kept for backward compatibility
                 target_max_dp=target.max_dp,  # Event field name kept for backward compatibility
             )
             await combat_event_publisher.publish_player_attacked(attack_event)
-        else:
+        elif current_participant.participant_type == CombatParticipantType.PLAYER:
+            # Player attacked NPC - publish npc_attacked for room
             npc_attack_event = NPCAttackedEvent(
                 combat_id=combat.combat_id,
                 room_id=combat.room_id,
                 attacker_id=current_participant.participant_id,
-                attacker_name=current_participant.name,
+                attacker_name=attacker_name,
                 npc_id=target.participant_id,
-                npc_name=target.name,
+                npc_name=target_name,
                 damage=damage,
                 action_type="auto_attack",
                 target_current_dp=target.current_dp,  # Event field name kept for backward compatibility
@@ -82,7 +111,7 @@ class CombatEventHandler:
                 combat_id=combat.combat_id,
                 room_id=combat.room_id,
                 npc_id=target.participant_id,
-                npc_name=target.name,
+                npc_name=target_name,
                 damage=damage,
                 current_dp=target.current_dp,  # Event field name kept for backward compatibility
                 max_dp=target.max_dp,  # Event field name kept for backward compatibility

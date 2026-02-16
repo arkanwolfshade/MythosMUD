@@ -185,3 +185,43 @@ async def test_attack_command_works_when_not_in_grace_period(mock_request, mock_
     # Should not contain grace period blocking message
     if "result" in result and isinstance(result["result"], str):
         assert "warded" not in result["result"].lower() or "cannot engage" not in result["result"].lower()
+
+
+@pytest.mark.asyncio
+async def test_attack_command_blocked_when_incapacitated(mock_request):  # pylint: disable=redefined-outer-name
+    """Attack command returns incapacitated message when player has 0 to -9 DP (prone, cannot act)."""
+    player_id = uuid.uuid4()
+    player_name = "TestPlayer"
+    mock_player = MagicMock()
+    mock_player.player_id = player_id
+    mock_player.current_room_id = uuid.uuid4()
+    mock_player.get_stats = MagicMock(return_value={"current_dp": 0, "max_dp": 100})
+
+    # Persistence with async get_player_by_name and sync get_room_by_id
+    async_persistence = MagicMock()
+    async_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
+    async_persistence.get_room_by_id = MagicMock(return_value=MagicMock())
+    mock_request.app.state.async_persistence = async_persistence
+    mock_request.app.state.persistence = async_persistence
+    # Handler prefers request_app.state.container.async_persistence when present
+    if not hasattr(mock_request.app.state, "container") or mock_request.app.state.container is None:
+        mock_request.app.state.container = MagicMock()
+    mock_request.app.state.container.async_persistence = async_persistence
+
+    from server.commands.combat import (  # noqa: E402
+        CombatCommandHandler,
+    )
+
+    handler = CombatCommandHandler(async_persistence=async_persistence)
+    command_data: dict[str, Any] = {"command_type": "attack", "target_player": "SomeNPC"}
+    current_user = {"username": player_name}
+
+    result = await handler.handle_attack_command(
+        command_data=command_data,
+        current_user=current_user,
+        request=mock_request,
+        alias_storage=None,
+        player_name=player_name,
+    )
+
+    assert result.get("result") == "You are incapacitated and cannot attack."

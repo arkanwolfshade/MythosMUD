@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useContainerStore } from '../../stores/containerStore';
 import type { HealthStatus } from '../../types/health';
+import { determineDpTier } from '../../types/health';
 import type { HallucinationMessage, LucidityStatus, RescueState } from '../../types/lucidity';
 import type { MythosTimeState } from '../../types/mythosTime';
 import { logger } from '../../utils/logger';
@@ -72,7 +73,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
   const [deliriumLocation, setDeliriumLocation] = useState<string>('Unknown Location');
   const [isDeliriumRespawning, setIsDeliriumRespawning] = useState(false);
   const [lucidityStatus] = useState<LucidityStatus | null>(null);
-  const [healthStatus] = useState<HealthStatus | null>(null);
+  const [healthStatus, setHealthStatus] = useState<HealthStatus | null>(null);
   const [, setHallucinationFeed] = useState<HallucinationMessage[]>([]);
   const [rescueState, setRescueState] = useState<RescueState | null>(null);
   const [mythosTime, setMythosTime] = useState<MythosTimeState | null>(null);
@@ -170,6 +171,34 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
   useEffect(() => {
     sendCommandRef.current = sendCommand;
   }, [sendCommand]);
+
+  // Derive healthStatus from player stats (since event handlers aren't called in projector-only pattern)
+  // Use useMemo to avoid cascading renders from setState in useEffect
+  const derivedHealthStatus = useMemo(() => {
+    const player = gameState.player;
+    if (player?.stats) {
+      const stats = player.stats;
+      const currentDp = stats.current_dp;
+      const maxDp = stats.max_dp ?? 100;
+
+      if (currentDp !== undefined) {
+        return {
+          current: currentDp,
+          max: maxDp,
+          tier: determineDpTier(currentDp, maxDp),
+          posture: stats.position,
+          inCombat: player.in_combat ?? false,
+          lastChange: healthStatus?.lastChange, // Preserve last change if available
+        } as HealthStatus;
+      }
+    }
+    return null;
+  }, [gameState.player, healthStatus?.lastChange]);
+
+  // Update healthStatus when derived value changes
+  useEffect(() => {
+    setHealthStatus(derivedHealthStatus);
+  }, [derivedHealthStatus]);
 
   const [hasRespawned, setHasRespawned] = useState(false);
 

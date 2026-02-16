@@ -247,24 +247,23 @@ async def test_setup_initial_connection_state_with_room(mock_websocket, mock_ws_
     mock_room.name = "Test Room"
     mock_async_persistence = MagicMock()
     mock_async_persistence.get_room_by_id = MagicMock(return_value=mock_room)
+    mock_ws_connection_manager.async_persistence = mock_async_persistence
 
     with patch("server.realtime.websocket_handler.send_initial_game_state", new_callable=AsyncMock) as mock_send_game:
         mock_send_game.return_value = (room_id, False)
-        with patch("server.async_persistence.get_async_persistence") as mock_get_persist:
-            mock_get_persist.return_value = mock_async_persistence
+        with patch(
+            "server.realtime.websocket_handler.check_and_send_death_notification", new_callable=AsyncMock
+        ) as mock_death:
             with patch(
-                "server.realtime.websocket_handler.check_and_send_death_notification", new_callable=AsyncMock
-            ) as mock_death:
-                with patch(
-                    "server.realtime.websocket_handler.send_initial_room_state", new_callable=AsyncMock
-                ) as mock_room_state:
-                    result, should_exit = await _setup_initial_connection_state(
-                        mock_websocket, player_id, player_id_str, mock_ws_connection_manager
-                    )
-                    assert result == room_id
-                    assert should_exit is False
-                    mock_death.assert_awaited_once()
-                    mock_room_state.assert_awaited_once()
+                "server.realtime.websocket_handler.send_initial_room_state", new_callable=AsyncMock
+            ) as mock_room_state:
+                result, should_exit = await _setup_initial_connection_state(
+                    mock_websocket, player_id, player_id_str, mock_ws_connection_manager
+                )
+                assert result == room_id
+                assert should_exit is False
+                mock_death.assert_awaited_once()
+                mock_room_state.assert_awaited_once()
 
 
 @pytest.mark.asyncio
@@ -432,8 +431,8 @@ async def test_handle_websocket_connection_welcome_fails(mock_websocket, mock_ws
                         mock_loop.assert_not_awaited()
 
 
-# TODO: Fix these tests - they need better mocking of app_state and event_handler
-# The room_state attachment logic is covered by integration tests
+# Disabled: room_state attachment tests require better mocking of app_state and event_handler.
+# The room_state attachment logic is covered by integration tests.
 # @pytest.mark.asyncio
 # async def test_process_websocket_command_room_state_attachment(mock_ws_connection_manager):
 #     """Test process_websocket_command attaches room_state when room changes (lines 686-693)."""

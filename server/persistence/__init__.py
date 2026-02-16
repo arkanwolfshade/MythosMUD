@@ -25,6 +25,7 @@ from .item_instance_persistence import (
     get_item_instance,
     item_instance_exists,
 )
+from .protocols import PlayerRepositoryProtocol, RoomRepositoryProtocol
 
 # Import new async repositories (available for gradual migration)
 from .repositories import (
@@ -63,6 +64,8 @@ __all__ = [
     "ProfessionRepository",
     "ContainerRepository",
     "ItemRepository",
+    "PlayerRepositoryProtocol",
+    "RoomRepositoryProtocol",
 ]
 
 # NOTE: Removed PersistenceLayer, get_persistence, and reset_persistence from __all__

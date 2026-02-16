@@ -5,7 +5,7 @@ This module implements the combat commands including attack, punch, kick,
 strike, and other combat-related actions.
 """
 
-# pylint: disable=too-many-return-statements  # Reason: Combat command handlers require multiple return statements for early validation returns (target validation, combat state checks, error handling)
+# pylint: disable=too-many-return-statements,too-many-lines  # Reason: Combat command handlers require multiple return statements for early validation returns (target validation, combat state checks, error handling). Module size is necessary for comprehensive combat command handling.
 
 import secrets
 import uuid
@@ -299,6 +299,11 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
             player, _, player_error = await self._get_player_and_room(request_app, current_user)
             if player_error:
                 return player_error
+
+            # Incapacitated (0 to -9 DP): cannot attack; must reach -10 to die and respawn
+            current_dp = (player.get_stats() or {}).get("current_dp", 1)
+            if current_dp <= 0:
+                return {"result": "You are incapacitated and cannot attack."}
 
             room_id = player.current_room_id
 
