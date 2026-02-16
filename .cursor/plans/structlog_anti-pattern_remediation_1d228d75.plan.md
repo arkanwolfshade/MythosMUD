@@ -227,10 +227,15 @@ After analyzing the codebase against `.cursor/rules/structlog.mdc` and the proje
 ### Critical Violations Found
 
 1. **Direct `logging` Module Usage** (1 file)
+
   - `server/tests/fixtures/integration/__init__.py`: Uses `import logging` and `logging.getLogger(__name__).debug(f"...")` - violates the requirement to use enhanced logging
+
 2. **F-String Logging** (1 file)
+
   - `server/tests/fixtures/integration/__init__.py`: Uses f-string in log message: `logging.getLogger(__name__).debug(f"Database cleanup warning: {e}")`
+
 3. **Deprecated `context` Parameter API** (1 file)
+
   - `server/utils/error_logging.py`: Public API functions accept `context: ErrorContext | None = None` parameter, which is explicitly deprecated per `LOGGING_BEST_PRACTICES.md`. While the internal implementation correctly converts to `**kwargs`, the public API still exposes the deprecated pattern.
 
 ### Acceptable Usage (Not Violations)
@@ -280,14 +285,19 @@ logger.warning("Database cleanup warning", error=str(e), error_type=type(e).__na
 **Steps**:
 
 1. **Update `error_logging.py` function signatures**:
+
   - Remove `context: ErrorContext | None = None` parameter from public API
   - Add `**kwargs: Any` parameter for structured logging data
   - Internally, create `ErrorContext` from `**kwargs` if needed for exception objects
   - Use `log_with_context` from `enhanced_logging_config` for structured logging (like `enhanced_error_logging.py` does)
+
 2. **Find all usages** across server and client codebases:
+
   - Search for `log_and_raise(`, `log_and_raise_http(`, `log_error_with_context(`, `create_logged_http_exception(`, `wrap_third_party_exception(`
   - Identify all files that pass `context=context` parameter
+
 3. **Update all callers**:
+
   - Remove `context=context` parameter from function calls
   - Convert `context.metadata` and other context data to `**kwargs` format
   - Example transformation:
@@ -300,11 +310,15 @@ logger.warning("Database cleanup warning", error=str(e), error_type=type(e).__na
     # NEW:
     log_and_raise(ValidationError, "Error", operation="move_player")
     ```
+
 4. **Consolidate modules** (optional but recommended):
+
   - Consider merging `error_logging.py` and `enhanced_error_logging.py` if they're duplicates
   - Or update `error_logging.py` to match `enhanced_error_logging.py` pattern exactly
   - Update all imports to use the consolidated module
+
 5. **Update exception creation**:
+
   - Ensure `ErrorContext` objects are still created internally for exception objects (exceptions need ErrorContext)
   - But logging should use `**kwargs` directly via `log_with_context`
 

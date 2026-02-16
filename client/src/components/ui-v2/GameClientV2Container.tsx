@@ -203,7 +203,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
       OCCUPANTS_PANEL_EMPTY_PLAYERS,
       'Occupants panel players list is empty but current player exists',
       {
-        player_name: gameState.player?.name,
+        player_name: gameState.player.name,
         room_id: room.id,
         room_name: room.name,
       }
