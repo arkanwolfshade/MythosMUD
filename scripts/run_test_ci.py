@@ -268,23 +268,20 @@ if IN_CI:
             f"[INFO] Setting PYTHONPATH={PROJECT_ROOT}{path_sep}{venv_site_packages}... to ensure packages and project are found"
         )
 
-    # Run tests with coverage. One test crashes pytest-xdist workers (QueueListener
-    # teardown in forked process), so run it separately with -n 0 and merge coverage.
+    # Run tests with coverage. The whole logging file_setup module crashes pytest-xdist
+    # workers (QueueListener/root logger teardown in forked process), so run that file
+    # with -n 0 and merge coverage.
     # Node id for deselect is relative to pytest rootdir (server/), so no "server/" prefix.
-    FLAKY_XDIST_TEST_NODE_ID = (
-        "tests/unit/structured_logging/test_logging_file_setup.py::test_aggregator_handlers_on_root_when_async"
-    )
-    FLAKY_XDIST_TEST_PATH = (
-        "server/tests/unit/structured_logging/test_logging_file_setup.py::test_aggregator_handlers_on_root_when_async"
-    )
-    # Run 1: full suite excluding the flaky test (coverage data to .coverage)
+    FLAKY_XDIST_MODULE_NODE_ID = "tests/unit/structured_logging/test_logging_file_setup.py"
+    FLAKY_XDIST_MODULE_PATH = "server/tests/unit/structured_logging/test_logging_file_setup.py"
+    # Run 1: full suite excluding the logging file_setup module (coverage data to .coverage)
     safe_run_static(
         python_exe,
         "-m",
         "pytest",
         "server/tests/",
         "--deselect",
-        FLAKY_XDIST_TEST_NODE_ID,
+        FLAKY_XDIST_MODULE_NODE_ID,
         "--cov=server",
         "--cov-report=",
         "--cov-config=.coveragerc",
@@ -295,14 +292,14 @@ if IN_CI:
         check=True,
         env=env,
     )
-    # Run 2: flaky test only, no xdist (coverage to .coverage.serial)
+    # Run 2: logging file_setup module only, no xdist (coverage to .coverage.serial)
     env_serial = env.copy()
     env_serial["COVERAGE_FILE"] = os.path.join(PROJECT_ROOT, ".coverage.serial")
     safe_run_static(
         python_exe,
         "-m",
         "pytest",
-        FLAKY_XDIST_TEST_PATH,
+        FLAKY_XDIST_MODULE_PATH,
         "-n",
         "0",
         "--cov=server",
