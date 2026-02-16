@@ -130,12 +130,13 @@ def log_and_raise_enhanced(  # pylint: disable=too-many-arguments,too-many-posit
         # nosec B110 - Intentional silent handling: Monitoring errors must never break error propagation
         logger.debug("Failed to increment exception counter, continuing with error propagation", exc_info=e)
 
-    # Raise the exception
+    # Raise the exception (skip_log=True for ValidationError: we already logged above).
     raise exception_class(
         message=message,
         context=context,
         details=details,
         user_friendly=user_friendly,
+        skip_log=exception_class is ValidationError,
     )
 
 

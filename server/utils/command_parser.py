@@ -280,7 +280,6 @@ class CommandParser:
             # Re-raise MythosValidationError without wrapping it
             raise
         except PydanticValidationError as e:
-            logger.warning("Command validation failed", command=command, args=args, errors=e.errors())
             log_and_raise_enhanced(
                 MythosValidationError,
                 f"Invalid command format: {e}",

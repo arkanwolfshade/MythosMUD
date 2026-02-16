@@ -83,10 +83,8 @@ class CommandProcessor:
             return None, f"Invalid command: {error_message}", None
 
         except MythosValidationError as e:
-            # Handle validation errors with user-friendly messages
+            # Handle validation errors with user-friendly messages (already logged at raise site).
             error_message = str(e)
-            logger.warning("Command validation failed", error_message=error_message)
-
             return None, error_message, None
 
         except ValueError as e:

@@ -591,6 +591,8 @@ def setup_enhanced_file_logging(  # pylint: disable=too-many-locals  # Reason: F
         "commands": [
             "commands",
             "server.commands",
+            "server.utils.command_parser",
+            "server.utils.command_processor",
         ],
         "events": ["events", "EventBus"],
         "infrastructure": ["infrastructure", "server.infrastructure"],

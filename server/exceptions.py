@@ -85,6 +85,7 @@ class MythosMUDError(LoggedException):
         context: ErrorContext | None = None,
         details: dict[str, Any] | None = None,
         user_friendly: str | None = None,
+        skip_log: bool = False,
     ) -> None:
         """
         Initialize MythosMUD error.
@@ -94,6 +95,7 @@ class MythosMUDError(LoggedException):
             context: Error context information
             details: Additional error details
             user_friendly: User-friendly error message
+            skip_log: If True, do not log in constructor (caller already logged, e.g. log_and_raise_enhanced).
         """
         LoggedException.__init__(self, message)
         self.message = message
@@ -102,8 +104,9 @@ class MythosMUDError(LoggedException):
         self.user_friendly = user_friendly or message
         self.timestamp = datetime.now(UTC)
 
-        # Log the error with context
-        self._log_error()
+        # Log the error with context unless caller already logged (e.g. log_and_raise_enhanced).
+        if not skip_log:
+            self._log_error()
         self.mark_logged()
 
     def _log_error(self) -> None:
