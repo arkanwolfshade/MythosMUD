@@ -242,19 +242,19 @@ jobs:
           source .venv-ci/bin/activate
           python scripts/bench_cache_professions.py
       - name: Upload performance metrics
-        if: ${{ !env.ACT }}
+        if: ${{ success() && !env.ACT }}
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: perf-metrics
           path: artifacts/perf/
       - name: Upload coverage report
-        if: ${{ !env.ACT }}
+        if: ${{ success() && !env.ACT }}
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: coverage-html
           path: htmlcov/
       - name: Upload coverage to Codacy
-        if: ${{ !env.ACT }}
+        if: ${{ success() && !env.ACT }}
         uses: codacy/codacy-coverage-reporter-action@89d6c85cfafaec52c72b6c5e8b2878d33104c699 # v1.3.0
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}

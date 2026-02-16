@@ -329,11 +329,14 @@ if IN_CI:
         check=True,
         env=env,
     )
+    coverage_xml_path = os.path.join(PROJECT_ROOT, "coverage.xml")
     safe_run_static(
         python_exe,
         "-m",
         "coverage",
         "xml",
+        "-o",
+        coverage_xml_path,
         cwd=PROJECT_ROOT,
         check=True,
         env=env,
@@ -343,6 +346,8 @@ if IN_CI:
         "-m",
         "coverage",
         "html",
+        "--directory",
+        os.path.join(PROJECT_ROOT, "htmlcov"),
         cwd=PROJECT_ROOT,
         check=True,
         env=env,
