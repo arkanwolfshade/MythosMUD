@@ -4,6 +4,7 @@ import type { HealthStatus } from '../../types/health';
 import { determineDpTier } from '../../types/health';
 import type { HallucinationMessage, LucidityStatus, RescueState } from '../../types/lucidity';
 import type { MythosTimeState } from '../../types/mythosTime';
+import { OCCUPANTS_PANEL_EMPTY_PLAYERS, reportClientError } from '../../utils/clientErrorReporter';
 import { logger } from '../../utils/logger';
 import { useMemoryMonitor } from '../../utils/memoryMonitor';
 import { DeathInterstitial } from '../DeathInterstitial';
@@ -123,6 +124,10 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
   const sendCommandRef = useRef<((command: string, args?: string[]) => Promise<boolean>) | null>(null);
   /** Set when user chose Exit (/rest); on socket close we skip reconnection and go to login. */
   const intentionalExitInProgressRef = useRef(false);
+  /** Timestamp when room was first set (for 2s grace period before empty-players check). */
+  const roomFirstSetAtRef = useRef<number | null>(null);
+  /** Room IDs we have already reported empty players for (rate limit: once per room). */
+  const reportedRoomIdsRef = useRef<Set<string>>(new Set());
 
   // Ref synchronization
   useRefSynchronization({
@@ -171,6 +176,39 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
   useEffect(() => {
     sendCommandRef.current = sendCommand;
   }, [sendCommand]);
+
+  // Track when room is first set (for 2s grace period)
+  useEffect(() => {
+    if (gameState.room?.id && roomFirstSetAtRef.current === null) {
+      roomFirstSetAtRef.current = Date.now();
+    }
+    if (!gameState.room?.id) {
+      roomFirstSetAtRef.current = null;
+    }
+  }, [gameState.room?.id]);
+
+  // Detect empty Occupants panel players list and report to server (after 2s grace, rate-limited per room)
+  useEffect(() => {
+    if (!isConnected || !gameState.player || !gameState.room?.id) return;
+    const room = gameState.room;
+    const players = room.players ?? [];
+    if (players.length > 0) return;
+    const now = Date.now();
+    const firstSetAt = roomFirstSetAtRef.current ?? now;
+    if (now - firstSetAt < 2000) return;
+    if (reportedRoomIdsRef.current.has(room.id)) return;
+    reportedRoomIdsRef.current.add(room.id);
+    reportClientError(
+      sendMessage,
+      OCCUPANTS_PANEL_EMPTY_PLAYERS,
+      'Occupants panel players list is empty but current player exists',
+      {
+        player_name: gameState.player?.name,
+        room_id: room.id,
+        room_name: room.name,
+      }
+    );
+  }, [isConnected, gameState.player, gameState.room, sendMessage]);
 
   // Derive healthStatus from player stats (since event handlers aren't called in projector-only pattern)
   // Use useMemo to avoid cascading renders from setState in useEffect

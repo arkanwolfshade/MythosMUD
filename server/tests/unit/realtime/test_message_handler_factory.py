@@ -16,6 +16,9 @@ from server.realtime.message_handler_factory import (
     message_handler_factory,
 )
 
+# pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
+# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
+
 
 @pytest.mark.asyncio
 async def test_command_message_handler_handle():
@@ -154,6 +157,7 @@ def test_message_handler_factory_get_supported_message_types():
     assert "command" in types
     assert "chat" in types
     assert "ping" in types
+    assert "client_error_report" in types
 
 
 def test_message_handler_factory_game_command_alias():
@@ -174,3 +178,28 @@ def test_global_message_handler_factory():
     """Test global message_handler_factory instance exists."""
 
     assert isinstance(message_handler_factory, MessageHandlerFactory)
+
+
+@pytest.mark.asyncio
+async def test_client_error_report_handler_logs():
+    """Test ClientErrorReportMessageHandler logs via logger.error."""
+    from server.realtime.message_handler_factory import ClientErrorReportMessageHandler
+
+    mock_websocket = AsyncMock()
+    player_id = "player_456"
+    data = {
+        "error_type": "occupants_panel_empty_players",
+        "message": "Occupants panel players list is empty",
+        "context": {"room_id": "room1", "player_name": "TestPlayer"},
+    }
+
+    with patch("server.realtime.message_handlers.logger") as mock_logger:
+        handler = ClientErrorReportMessageHandler()
+        await handler.handle(mock_websocket, player_id, data)
+
+        mock_logger.error.assert_called_once()
+        call_kwargs = mock_logger.error.call_args[1]
+        assert call_kwargs["player_id"] == player_id
+        assert call_kwargs["error_type"] == "occupants_panel_empty_players"
+        assert "Occupants panel" in call_kwargs["message"]
+        assert call_kwargs["context"]["room_id"] == "room1"

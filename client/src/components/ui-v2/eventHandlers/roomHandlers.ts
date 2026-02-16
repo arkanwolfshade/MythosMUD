@@ -17,16 +17,24 @@ export function __setOccupantDebugForTests(value: boolean): void {
 export const handleGameState: EventHandler = (event, _context) => {
   const playerData = event.data.player as unknown;
   const roomData = event.data.room as unknown;
-  const occupants = event.data.occupants as string[] | undefined;
   const loginGracePeriodActive = event.data.login_grace_period_active as boolean | undefined;
   const loginGracePeriodRemaining = event.data.login_grace_period_remaining as number | undefined;
   const following = event.data.following as { target_name: string; target_type: 'player' | 'npc' } | null | undefined;
   if (playerData && roomData) {
+    const r = roomData as Room;
+    const players = r.players ?? [];
+    const npcs = r.npcs ?? [];
+    const playersArr = Array.isArray(players) ? players : [];
+    const npcsArr = Array.isArray(npcs) ? npcs : [];
+    const occupants = [...playersArr, ...npcsArr];
     const roomWithOccupants = {
-      ...(roomData as Room),
-      ...(occupants && { occupants, occupant_count: occupants.length }),
+      ...r,
+      players: playersArr,
+      npcs: npcsArr,
+      occupants,
+      occupant_count: r.occupant_count ?? occupants.length,
     };
-    const occupantCount = roomWithOccupants.occupants?.length ?? roomWithOccupants.occupant_count ?? 0;
+    const occupantCount = occupants.length;
     if (_occupantDebug) {
       logger.info('roomHandlers', 'OCCUPANT_DEBUG: game_state setting room', {
         occupants_from_payload: occupants?.length ?? 0,
@@ -81,12 +89,11 @@ function extractRoomMetadata(roomData: Room): Omit<Room, 'players' | 'npcs' | 'o
   return roomMetadata;
 }
 
-/** True when room has at least one player, NPC, or occupant (used to prefer payload over existing). */
+/** True when room has players or NPCs (used to prefer payload over existing). */
 function hasOccupantData(room: Room): boolean {
   const hasPlayers = room.players != null && room.players.length > 0;
   const hasNpcs = room.npcs != null && room.npcs.length > 0;
-  const hasOccupants = room.occupants != null && room.occupants.length > 0;
-  return hasPlayers || hasNpcs || hasOccupants;
+  return hasPlayers || hasNpcs;
 }
 
 /**
@@ -106,13 +113,23 @@ function createRoomUpdateWithPreservedOccupants(
       players: payloadRoom?.players?.length ?? 0,
     });
   }
+  const players = usePayloadOccupants ? (payloadRoom?.players ?? []) : (existingRoom.players ?? []);
+  const npcs = usePayloadOccupants
+    ? payloadRoom?.npcs !== undefined
+      ? Array.isArray(payloadRoom.npcs)
+        ? payloadRoom.npcs
+        : []
+      : existingRoom.npcs
+    : existingRoom.npcs;
+  const npcsArr = Array.isArray(npcs) ? npcs : [];
+  const occupants = [...players, ...npcsArr];
   const roomUpdate: Partial<Room> = {
     ...existingRoom,
     ...roomMetadata,
-    players: usePayloadOccupants ? (payloadRoom?.players ?? []) : (existingRoom.players ?? []),
-    npcs: usePayloadOccupants ? payloadRoom?.npcs : existingRoom.npcs,
-    occupants: usePayloadOccupants ? (payloadRoom?.occupants ?? []) : (existingRoom.occupants ?? []),
-    occupant_count: usePayloadOccupants ? (payloadRoom?.occupant_count ?? 0) : (existingRoom.occupant_count ?? 0),
+    players,
+    npcs,
+    occupants,
+    occupant_count: usePayloadOccupants ? (payloadRoom?.occupant_count ?? occupants.length) : occupants.length,
   };
 
   // If room ID changed, clear occupants
@@ -135,35 +152,42 @@ function createInitialRoomState(
   roomData?: Room
 ): Room {
   const players = roomData?.players ?? [];
-  const npcs = roomData?.npcs;
-  const occupants = roomData?.occupants ?? [];
-  const fallbackCount = occupants.length > 0 ? occupants.length : players.length + (npcs?.length ?? 0);
-  const occupant_count = roomData?.occupant_count ?? fallbackCount;
+  const npcs = roomData?.npcs ?? [];
+  const playersArr = Array.isArray(players) ? players : [];
+  const npcsArr = Array.isArray(npcs) ? npcs : [];
+  const occupants = [...playersArr, ...npcsArr];
+  const occupant_count = roomData?.occupant_count ?? occupants.length;
   return {
     ...roomMetadata,
-    players: Array.isArray(players) ? players : [],
-    npcs: Array.isArray(npcs) ? npcs : undefined,
-    occupants: Array.isArray(occupants) ? occupants : [],
+    players: playersArr,
+    npcs: npcsArr,
+    occupants,
     occupant_count: Number(occupant_count) || 0,
   };
 }
 
-/** Build unified room from event: room may be in data.room or data.room_data; occupants may be top-level. */
+/** Build unified room from event: room may be in data.room or data.room_data; occupants derived from players+npcs. */
 function getRoomDataFromEvent(event: { data: Record<string, unknown> }): Room | null {
   const raw = (event.data.room || event.data.room_data) as Room | undefined;
   if (!raw) return null;
-  const topOccupants = event.data.occupants as string[] | undefined;
   const topPlayers = event.data.players as string[] | undefined;
   const topNpcs = event.data.npcs as string[] | undefined;
-  const topCount = event.data.occupant_count as number | undefined;
-  if (topOccupants === undefined && topPlayers === undefined && topNpcs === undefined && topCount === undefined) {
+  if (topPlayers === undefined && topNpcs === undefined) {
     return raw as Room;
   }
+  const playersArr = Array.isArray(topPlayers ?? raw.players) ? (topPlayers ?? raw.players ?? []) : [];
+  const npcsArr =
+    topNpcs !== undefined ? (Array.isArray(topNpcs) ? topNpcs : []) : Array.isArray(raw.npcs) ? raw.npcs : [];
+  const occupants = [...playersArr, ...npcsArr];
+  const topCount = event.data.occupant_count as number | undefined;
+  const count = event.data.count as number | undefined;
+  const occupantCount = topCount ?? count ?? occupants.length;
   return {
     ...(raw as Room),
-    ...(topOccupants != null && { occupants: topOccupants, occupant_count: topCount ?? topOccupants.length }),
-    ...(topPlayers != null && { players: topPlayers }),
-    ...(topNpcs != null && { npcs: topNpcs }),
+    players: playersArr,
+    npcs: topNpcs !== undefined ? (Array.isArray(topNpcs) ? topNpcs : []) : raw.npcs,
+    occupants,
+    occupant_count: occupantCount,
   } as Room;
 }
 
@@ -280,23 +304,6 @@ function handleStructuredOccupantsFormat(
 }
 
 /**
- * Handles legacy format with a single occupants array
- */
-function handleLegacyOccupantsFormat(currentRoom: Room, occupants: string[], occupantCount: number | undefined): Room {
-  const finalOccupantCount = occupantCount !== undefined ? occupantCount : occupants.length;
-  const finalPlayers = currentRoom.players || [];
-  const finalNpcs = currentRoom.npcs || [];
-
-  return {
-    ...currentRoom,
-    occupants: occupants,
-    occupant_count: finalOccupantCount,
-    players: finalPlayers,
-    npcs: finalNpcs,
-  };
-}
-
-/**
  * Creates minimal room state from room_occupants event when no current room exists.
  * Fixes race where room_occupants arrives before application of room_update for entering player.
  */
@@ -304,13 +311,12 @@ function createMinimalRoomFromOccupantsEvent(
   eventRoomId: string,
   players: string[] | undefined,
   npcs: string[] | undefined,
-  occupants: string[] | undefined,
   occupantCount: number | undefined
 ): Room {
   const finalPlayers = players ?? [];
   const finalNpcs = npcs ?? [];
-  const finalOccupants = occupants && Array.isArray(occupants) ? occupants : [...finalPlayers, ...finalNpcs];
-  const count = occupantCount !== undefined ? occupantCount : finalOccupants.length;
+  const occupants = [...finalPlayers, ...finalNpcs];
+  const count = occupantCount !== undefined ? occupantCount : occupants.length;
   return {
     id: eventRoomId,
     name: '',
@@ -318,7 +324,7 @@ function createMinimalRoomFromOccupantsEvent(
     exits: {},
     players: finalPlayers,
     npcs: finalNpcs,
-    occupants: finalOccupants,
+    occupants,
     occupant_count: count,
   };
 }
@@ -326,15 +332,14 @@ function createMinimalRoomFromOccupantsEvent(
 export const handleRoomOccupants: EventHandler = (event, context) => {
   const players = event.data.players as string[] | undefined;
   const npcs = event.data.npcs as string[] | undefined;
-  const occupants = event.data.occupants as string[] | undefined;
   const occupantCount = event.data.count as number | undefined;
   const eventRoomId = event.room_id as string | undefined;
 
   const currentRoom = context.currentRoomRef.current;
   if (!currentRoom) {
     // room_occupants can arrive before room_update (entering player race). Apply occupants via minimal room state.
-    if (eventRoomId && (players !== undefined || npcs !== undefined || (occupants && Array.isArray(occupants)))) {
-      const minimalRoom = createMinimalRoomFromOccupantsEvent(eventRoomId, players, npcs, occupants, occupantCount);
+    if (eventRoomId && (players !== undefined || npcs !== undefined)) {
+      const minimalRoom = createMinimalRoomFromOccupantsEvent(eventRoomId, players, npcs, occupantCount);
       if (_occupantDebug) {
         logger.info('roomHandlers', 'OCCUPANT_DEBUG: room_occupants branch=minimal (no currentRoom)', {
           result_occupants: minimalRoom.occupants?.length ?? 0,
@@ -351,22 +356,10 @@ export const handleRoomOccupants: EventHandler = (event, context) => {
     return;
   }
 
-  // Use structured format if available
   if (players !== undefined || npcs !== undefined) {
     const room = handleStructuredOccupantsFormat(currentRoom, players, npcs, occupantCount);
     if (_occupantDebug) {
       logger.info('roomHandlers', 'OCCUPANT_DEBUG: room_occupants branch=structured', {
-        result_occupants: room.occupants?.length ?? 0,
-      });
-    }
-    return { room };
-  }
-
-  // Legacy format
-  if (occupants && Array.isArray(occupants)) {
-    const room = handleLegacyOccupantsFormat(currentRoom, occupants, occupantCount);
-    if (_occupantDebug) {
-      logger.info('roomHandlers', 'OCCUPANT_DEBUG: room_occupants branch=legacy', {
         result_occupants: room.occupants?.length ?? 0,
       });
     }
