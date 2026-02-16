@@ -76,8 +76,12 @@ jobs:
       - name: Install dependencies
         run: |
           # UV_PROJECT_ENVIRONMENT tells uv venv to create .venv-ci instead of .venv.
-          # Only create if missing (cache may have restored .venv-ci).
-          if [ ! -d .venv-ci ]; then
+          # Use cached venv only when valid; otherwise create or replace.
+          if [ -f .venv-ci/bin/python ]; then
+            :  # valid cache, skip creation
+          elif [ -d .venv-ci ]; then
+            uv venv --clear
+          else
             uv venv
           fi
           source .venv-ci/bin/activate
