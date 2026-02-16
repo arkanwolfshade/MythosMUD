@@ -268,18 +268,77 @@ if IN_CI:
             f"[INFO] Setting PYTHONPATH={PROJECT_ROOT}{path_sep}{venv_site_packages}... to ensure packages and project are found"
         )
 
-    # Run tests with coverage
+    # Run tests with coverage. One test crashes pytest-xdist workers (QueueListener
+    # teardown in forked process), so run it separately with -n 0 and merge coverage.
+    FLAKY_XDIST_TEST = (
+        "server/tests/unit/structured_logging/test_logging_file_setup.py::test_aggregator_handlers_on_root_when_async"
+    )
+    # Run 1: full suite excluding the flaky test (coverage data to .coverage)
     safe_run_static(
         python_exe,
         "-m",
         "pytest",
         "server/tests/",
+        "--deselect",
+        FLAKY_XDIST_TEST,
         "--cov=server",
-        "--cov-report=xml",
-        "--cov-report=html",
+        "--cov-report=",
         "--cov-config=.coveragerc",
+        "--cov-fail-under=0",
         "-v",
         "--tb=short",
+        cwd=PROJECT_ROOT,
+        check=True,
+        env=env,
+    )
+    # Run 2: flaky test only, no xdist (coverage to .coverage.serial)
+    env_serial = env.copy()
+    env_serial["COVERAGE_FILE"] = os.path.join(PROJECT_ROOT, ".coverage.serial")
+    safe_run_static(
+        python_exe,
+        "-m",
+        "pytest",
+        FLAKY_XDIST_TEST,
+        "-n",
+        "0",
+        "--cov=server",
+        "--cov-report=",
+        "--cov-config=.coveragerc",
+        "--cov-fail-under=0",
+        "-v",
+        "--tb=short",
+        cwd=PROJECT_ROOT,
+        check=True,
+        env=env_serial,
+    )
+    # Merge coverage and generate reports
+    coverage_serial = os.path.join(PROJECT_ROOT, ".coverage.serial")
+    safe_run_static(
+        python_exe,
+        "-m",
+        "coverage",
+        "combine",
+        os.path.join(PROJECT_ROOT, ".coverage"),
+        coverage_serial,
+        "--keep",
+        cwd=PROJECT_ROOT,
+        check=True,
+        env=env,
+    )
+    safe_run_static(
+        python_exe,
+        "-m",
+        "coverage",
+        "xml",
+        cwd=PROJECT_ROOT,
+        check=True,
+        env=env,
+    )
+    safe_run_static(
+        python_exe,
+        "-m",
+        "coverage",
+        "html",
         cwd=PROJECT_ROOT,
         check=True,
         env=env,
