@@ -197,7 +197,13 @@ jobs:
           fi
       - name: Run tests with coverage
         run: |
-          .venv-ci/bin/python scripts/run_test_ci.py
+          .venv-ci/bin/python scripts/run_test_ci.py 2>&1 | tee pytest.log
+      - name: Upload pytest log
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pytest-log
+          path: pytest.log
       - name: Check for excessive warnings
         run: |
           source .venv-ci/bin/activate
