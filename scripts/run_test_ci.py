@@ -270,7 +270,11 @@ if IN_CI:
 
     # Run tests with coverage. One test crashes pytest-xdist workers (QueueListener
     # teardown in forked process), so run it separately with -n 0 and merge coverage.
-    FLAKY_XDIST_TEST = (
+    # Node id for deselect is relative to pytest rootdir (server/), so no "server/" prefix.
+    FLAKY_XDIST_TEST_NODE_ID = (
+        "tests/unit/structured_logging/test_logging_file_setup.py::test_aggregator_handlers_on_root_when_async"
+    )
+    FLAKY_XDIST_TEST_PATH = (
         "server/tests/unit/structured_logging/test_logging_file_setup.py::test_aggregator_handlers_on_root_when_async"
     )
     # Run 1: full suite excluding the flaky test (coverage data to .coverage)
@@ -280,7 +284,7 @@ if IN_CI:
         "pytest",
         "server/tests/",
         "--deselect",
-        FLAKY_XDIST_TEST,
+        FLAKY_XDIST_TEST_NODE_ID,
         "--cov=server",
         "--cov-report=",
         "--cov-config=.coveragerc",
@@ -298,7 +302,7 @@ if IN_CI:
         python_exe,
         "-m",
         "pytest",
-        FLAKY_XDIST_TEST,
+        FLAKY_XDIST_TEST_PATH,
         "-n",
         "0",
         "--cov=server",
