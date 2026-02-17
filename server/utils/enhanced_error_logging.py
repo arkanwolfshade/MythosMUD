@@ -73,6 +73,7 @@ def log_and_raise_enhanced(  # pylint: disable=too-many-arguments,too-many-posit
     details: dict[str, Any] | None = None,
     user_friendly: str | None = None,
     logger_name: str | None = None,
+    skip_log_validation: bool = True,
     **kwargs: Any,
 ) -> NoReturn:
     """
@@ -130,14 +131,36 @@ def log_and_raise_enhanced(  # pylint: disable=too-many-arguments,too-many-posit
         # nosec B110 - Intentional silent handling: Monitoring errors must never break error propagation
         logger.debug("Failed to increment exception counter, continuing with error propagation", exc_info=e)
 
-    # Raise the exception (skip_log=True for ValidationError: we already logged above).
+    # Raise the exception (skip_log=True for ValidationError when skip_log_validation: we already logged above).
     raise exception_class(
         message=message,
         context=context,
         details=details,
         user_friendly=user_friendly,
-        skip_log=exception_class is ValidationError,
+        skip_log=skip_log_validation and exception_class is ValidationError,
     )
+
+
+def _log_http_error(
+    status_code: int,
+    detail: str,
+    logger_name: str | None = None,
+    raise_it: bool = True,
+    **kwargs: Any,
+) -> HTTPException:
+    """Log HTTP error and optionally raise or return HTTPException. Shared by raise vs return variants."""
+    error_logger = get_logger(logger_name) if logger_name else logger
+    log_data = {
+        "error_type": "HTTPException",
+        "status_code": status_code,
+        "detail": detail,
+        **kwargs,
+    }
+    log_with_context(error_logger, "warning", "HTTP error logged and exception raised", **log_data)
+    ex = HTTPException(status_code=status_code, detail=detail)
+    if raise_it:
+        raise ex
+    return ex
 
 
 def log_and_raise_http_enhanced(status_code: int, detail: str, logger_name: str | None = None, **kwargs: Any) -> None:
@@ -156,22 +179,17 @@ def log_and_raise_http_enhanced(status_code: int, detail: str, logger_name: str 
     Raises:
         HTTPException with the specified status code and detail
     """
-    # Use specified logger or default to current module logger
-    error_logger = get_logger(logger_name) if logger_name else logger
+    _log_http_error(status_code, detail, logger_name=logger_name, raise_it=True, **kwargs)
 
-    # Prepare structured log data
-    log_data = {
-        "error_type": "HTTPException",
-        "status_code": status_code,
-        "detail": detail,
-        **kwargs,
-    }
 
-    # Log the HTTP error with structured data
-    log_with_context(error_logger, "warning", "HTTP error logged and exception raised", **log_data)
-
-    # Raise the HTTPException
-    raise HTTPException(status_code=status_code, detail=detail)
+def create_logged_http_exception_enhanced(
+    status_code: int,
+    detail: str,
+    logger_name: str | None = None,
+    **kwargs: Any,
+) -> HTTPException:
+    """Create an HTTPException with proper logging and return it (caller raises when appropriate)."""
+    return _log_http_error(status_code, detail, logger_name=logger_name, raise_it=False, **kwargs)
 
 
 def log_structured_error(
@@ -438,4 +456,11 @@ def log_security_event_enhanced(
     log_with_context(security_logger, level, "Security event logged", **log_data)
 
 
-__all__ = ["create_error_context", "log_and_raise_enhanced", "log_and_raise_http_enhanced"]
+__all__ = [
+    "create_error_context",
+    "create_enhanced_error_context",
+    "create_logged_http_exception_enhanced",
+    "log_and_raise_enhanced",
+    "log_and_raise_http_enhanced",
+    "THIRD_PARTY_EXCEPTION_MAPPING",
+]

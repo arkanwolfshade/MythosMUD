@@ -10,17 +10,19 @@ exclude_paths:
   - "**/mythosmud_data/**"
   - ".data/**"
 
-# Ignore assert statements in test files
-# Assert statements are standard and expected in test files (pytest uses them extensively)
-# Common assert-related patterns: Bandit B101, Pylint warnings
-#
-# NOTE: Bandit B101 is now handled via bandit.yml file (skip B101 only for test files).
-# ignore_patterns does not work for Bandit rules in Codacy - Bandit requires its own config file.
-# The entry below is kept for documentation but may not be effective for Bandit rules.
+# Ignore assert and hardcoded secrets in test files (Prospector_bandit B101/B106)
+# Assert and test passwords are standard in tests; bandit.yml skips them but Codacy
+# may still report via Prospector_bandit - these patterns suppress for **/tests/**.
 ignore_patterns:
   # Bandit B101: Use of assert detected (security warning that's acceptable in tests)
-  # NOTE: This is handled by bandit.yml - see bandit.yml for actual Bandit configuration
+  # NOTE: Also configured in bandit.yml - see bandit.yml for native Bandit runs.
   - pattern_id: "Bandit_B101"
+    file_paths:
+      - "**/test_*.py"
+      - "**/tests/**/*.py"
+      - "**/*_test.py"
+  # Bandit B106: Hardcoded password in tests (test fixtures, mock credentials)
+  - pattern_id: "Bandit_B106"
     file_paths:
       - "**/test_*.py"
       - "**/tests/**/*.py"
@@ -137,6 +139,19 @@ ignore_patterns:
   - pattern_id: "sql:RAC_TABLE_REQUIRED"
     file_paths:
       - "db/migrations/020_migrate_weekday_names.sql"
+  # Semgrep: RAC table access - internal verification/migration scripts that do not use RAC_ prefix
+  # Exclude scripts that run one-off migrations or verification (not production data access).
+  - pattern_id: "Semgrep_codacy.generic.sql.rac-table-access"
+    file_paths:
+      - "scripts/verify_*.py"
+      - "scripts/apply_*.py"
+      - "db/migrations/*.sql"
+  # Semgrep: Python random - game mechanics (dice rolls, stat generation) where crypto is not required
+  # Suppress for server/game/ and server/npc/ per Codacy PR feedback.
+  - pattern_id: "Semgrep_python_random_rule-random"
+    file_paths:
+      - "server/game/**/*.py"
+      - "server/npc/**/*.py"
   # # Lizard CCN: Ignore cyclomatic complexity warnings for complexity <= 10
   # # We want to only report complexity > 10, but Codacy doesn't support custom CCN thresholds
   # # So we suppress the medium severity warnings (which report complexity > 8)
