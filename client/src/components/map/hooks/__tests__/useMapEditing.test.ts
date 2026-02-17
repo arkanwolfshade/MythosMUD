@@ -5,11 +5,11 @@
  * node repositioning, edge creation/deletion, and undo/redo functionality.
  */
 
-import { renderHook, act } from '@testing-library/react';
-import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { act, renderHook } from '@testing-library/react';
+import type { Edge, Node } from 'reactflow';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { ExitEdgeData, RoomNodeData } from '../../types';
 import { useMapEditing } from '../useMapEditing';
-import type { Node, Edge } from 'reactflow';
-import type { RoomNodeData, ExitEdgeData } from '../../types';
 
 describe('useMapEditing', () => {
   const mockNodes: Node<RoomNodeData>[] = [
@@ -17,13 +17,13 @@ describe('useMapEditing', () => {
       id: 'room1',
       type: 'room',
       position: { x: 0, y: 0 },
-      data: { id: 'room1', name: 'Room 1' },
+      data: { id: 'room1', name: 'Room 1', description: '' },
     },
     {
       id: 'room2',
       type: 'room',
       position: { x: 100, y: 100 },
-      data: { id: 'room2', name: 'Room 2' },
+      data: { id: 'room2', name: 'Room 2', description: '' },
     },
   ];
 

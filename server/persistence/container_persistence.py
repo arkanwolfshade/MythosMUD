@@ -18,7 +18,7 @@ from psycopg2.extras import RealDictCursor
 
 from ..exceptions import DatabaseError, ValidationError
 from ..structured_logging.enhanced_logging_config import get_logger
-from ..utils.error_logging import create_error_context, log_and_raise
+from ..utils.error_logging import log_and_raise
 from .container_data import ContainerData
 from .container_helpers import (
     build_update_query,
@@ -75,16 +75,13 @@ def create_container(  # pylint: disable=too-many-arguments,too-many-positional-
         ValidationError: If validation fails
         DatabaseError: If database operation fails
     """
-    context = create_error_context()
-    context.metadata["operation"] = "create_container"
-    context.metadata["source_type"] = source_type
-
     # Validate source_type
     if source_type not in ("environment", "equipment", "corpse"):
         log_and_raise(
             ValidationError,
             f"Invalid source_type: {source_type}. Must be 'environment', 'equipment', or 'corpse'",
-            context=context,
+            operation="create_container",
+            source_type=source_type,
             details={"source_type": source_type},
             user_friendly="Invalid container type",
         )
@@ -94,7 +91,8 @@ def create_container(  # pylint: disable=too-many-arguments,too-many-positional-
         log_and_raise(
             ValidationError,
             f"Invalid capacity_slots: {capacity_slots}. Must be between 1 and 20",
-            context=context,
+            operation="create_container",
+            capacity_slots=capacity_slots,
             details={"capacity_slots": capacity_slots},
             user_friendly="Invalid container capacity",
         )
@@ -104,7 +102,8 @@ def create_container(  # pylint: disable=too-many-arguments,too-many-positional-
         log_and_raise(
             ValidationError,
             f"Invalid lock_state: {lock_state}. Must be 'unlocked', 'locked', or 'sealed'",
-            context=context,
+            operation="create_container",
+            lock_state=lock_state,
             details={"lock_state": lock_state},
             user_friendly="Invalid lock state",
         )
@@ -159,7 +158,8 @@ def create_container(  # pylint: disable=too-many-arguments,too-many-positional-
             log_and_raise(
                 DatabaseError,
                 "Failed to create container - no ID returned",
-                context=context,
+                operation="create_container",
+                source_type=source_type,
                 user_friendly="Failed to create container",
             )
 
@@ -239,7 +239,8 @@ def create_container(  # pylint: disable=too-many-arguments,too-many-positional-
         log_and_raise(
             DatabaseError,
             f"Database error creating container: {e}",
-            context=context,
+            operation="create_container",
+            source_type=source_type,
             details={"error": str(e), "source_type": source_type},
             user_friendly="Failed to create container",
         )
@@ -259,10 +260,6 @@ def get_container(conn: Any, container_id: UUID) -> ContainerData | None:
     Raises:
         DatabaseError: If database operation fails
     """
-    context = create_error_context()
-    context.metadata["operation"] = "get_container"
-    context.metadata["container_id"] = str(container_id)
-
     try:
         cursor = conn.cursor(cursor_factory=RealDictCursor)
         # Convert UUID to string for psycopg2 compatibility
@@ -310,7 +307,8 @@ def get_container(conn: Any, container_id: UUID) -> ContainerData | None:
         log_and_raise(
             DatabaseError,
             f"Database error retrieving container: {e}",
-            context=context,
+            operation="get_container",
+            container_id=str(container_id),
             details={"container_id": str(container_id), "error": str(e)},
             user_friendly="Failed to retrieve container",
         )
@@ -340,11 +338,7 @@ def update_container(
         ValidationError: If validation fails
         DatabaseError: If database operation fails
     """
-    context = create_error_context()
-    context.metadata["operation"] = "update_container"
-    context.metadata["container_id"] = str(container_id)
-
-    validate_lock_state(lock_state, context)
+    validate_lock_state(lock_state)
 
     try:
         container_id_str = str(container_id) if isinstance(container_id, UUID) else container_id
@@ -399,7 +393,8 @@ def update_container(
         log_and_raise(
             DatabaseError,
             f"Database error updating container: {e}",
-            context=context,
+            operation="update_container",
+            container_id=str(container_id),
             details={"container_id": str(container_id), "error": str(e)},
             user_friendly="Failed to update container",
         )
@@ -419,10 +414,6 @@ def delete_container(conn: Any, container_id: UUID) -> bool:
     Raises:
         DatabaseError: If database operation fails
     """
-    context = create_error_context()
-    context.metadata["operation"] = "delete_container"
-    context.metadata["container_id"] = str(container_id)
-
     try:
         cursor = conn.cursor()
         # Convert UUID to string for psycopg2 compatibility
@@ -445,7 +436,8 @@ def delete_container(conn: Any, container_id: UUID) -> bool:
         log_and_raise(
             DatabaseError,
             f"Database error deleting container: {e}",
-            context=context,
+            operation="delete_container",
+            container_id=str(container_id),
             details={"container_id": str(container_id), "error": str(e)},
             user_friendly="Failed to delete container",
         )

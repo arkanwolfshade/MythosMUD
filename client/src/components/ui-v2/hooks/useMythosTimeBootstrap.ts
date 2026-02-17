@@ -2,7 +2,8 @@
 // Extracted from GameClientV2Container to reduce complexity
 
 import { useEffect } from 'react';
-import type { MythosTimePayload, MythosTimeState } from '../../../types/mythosTime';
+import { isMythosTimePayload, type MythosTimeState } from '../../../types/mythosTime';
+import { API_V1_BASE } from '../../../utils/config';
 import { logger } from '../../../utils/logger';
 import { buildMythosTimeState } from '../../../utils/mythosTime';
 
@@ -32,15 +33,19 @@ export const useMythosTimeBootstrap = ({
         if (authToken) {
           headers.Authorization = `Bearer ${authToken}`;
         }
-        const response = await fetch('/game/time', { headers });
+        const response = await fetch(`${API_V1_BASE}/game/time`, { headers });
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}`);
         }
-        const payload = (await response.json()) as MythosTimePayload;
+        const raw: unknown = await response.json();
         if (cancelled) {
           return;
         }
-        const nextState = buildMythosTimeState(payload);
+        if (!isMythosTimePayload(raw)) {
+          logger.warn('GameClientV2Container', 'Invalid Mythos time payload from server', { raw });
+          return;
+        }
+        const nextState = buildMythosTimeState(raw);
         setMythosTime(nextState);
         lastDaypartRef.current = nextState.daypart;
         // Ensure active_holidays is always an array before calling .map() (defensive coding)

@@ -92,6 +92,12 @@ async def send_initial_game_state(
             return None, False
 
         room_data, occupant_names = await prepare_room_data_with_occupants(room, canonical_room_id, connection_manager)
+        # Ensure the connecting player is always in occupants (they may not be in room_occupants yet)
+        from .websocket_helpers import validate_occupant_name
+
+        player_name = getattr(player, "name", None)
+        if player_name and validate_occupant_name(player_name) and player_name not in occupant_names:
+            occupant_names.append(player_name)
 
         player_data_for_client = await prepare_player_data(player, player_id, connection_manager)
 
@@ -165,7 +171,10 @@ async def check_and_send_death_notification(  # pylint: disable=too-many-argumen
     stats = player.get_stats() if hasattr(player, "get_stats") else {}
     current_dp = stats.get("current_dp", 20) if isinstance(stats.get("current_dp"), int) else 20
 
-    if current_dp <= -10 or str(canonical_room_id) == LIMBO_ROOM_ID:
+    # Only send death notification when player is actually dead (DP <= -10).
+    # Do not send based on limbo alone: player must only be in limbo at -10 DP, so if they are
+    # in limbo with DP > -10 that is an invalid state; avoid showing respawn modal at 0 DP.
+    if current_dp <= -10:
         death_location_name = _get_death_location_name(room)
         death_event = build_event(
             "player_died",
@@ -174,6 +183,7 @@ async def check_and_send_death_notification(  # pylint: disable=too-many-argumen
                 "player_name": player.name,
                 "death_location": death_location_name,
                 "message": "You have died. The darkness claims you utterly.",
+                "current_dp": current_dp,
             },
             player_id=player_id_str,
         )
@@ -245,16 +255,16 @@ def get_event_handler_for_initial_state(connection_manager: "ConnectionManager",
 async def send_occupants_snapshot_if_needed(
     event_handler: Any, room: "Room", player_id: uuid.UUID, player_id_str: str, canonical_room_id: str
 ) -> None:
-    """Send occupants snapshot if event handler is available and player is in room."""
+    """Send occupants snapshot if event handler is available (include connecting player via ensure_player_included)."""
     if not event_handler:
         return
     if not hasattr(event_handler, "player_handler"):
         return
     if not hasattr(event_handler.player_handler, "send_occupants_snapshot_to_player"):
         return
-    if not room or not room.has_player(player_id_str):
+    if not room:
         return
-
+    # Always send snapshot so connecting player is included (they may not be in room._players yet)
     await event_handler.player_handler.send_occupants_snapshot_to_player(player_id, str(canonical_room_id))
     logger.debug(
         "Sent room_occupants event to connecting player",
@@ -281,8 +291,15 @@ async def send_initial_room_state(
 
         room_occupants = await connection_manager.get_room_occupants(str(canonical_room_id))
         occupant_names = await get_occupant_names(room_occupants, canonical_room_id)
-
         await add_npc_occupants_to_list(room, occupant_names, canonical_room_id, connection_manager)
+        # Ensure the connecting player is in occupants (they may not be in room_occupants yet)
+        from .websocket_helpers import validate_occupant_name
+
+        connecting_player = await connection_manager.get_player(player_id)
+        if connecting_player:
+            player_name = getattr(connecting_player, "name", None)
+            if player_name and validate_occupant_name(player_name) and player_name not in occupant_names:
+                occupant_names.append(player_name)
 
         room_data_for_update = await prepare_initial_room_data(room, connection_manager)
 

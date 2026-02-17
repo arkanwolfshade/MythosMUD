@@ -8,6 +8,7 @@ the spaces between worlds.
 
 # pylint: disable=too-many-locals,too-many-statements  # Reason: Respawn service requires many intermediate variables for complex respawn logic. Respawn service legitimately requires many statements for comprehensive respawn operations.
 
+import json
 import uuid
 from datetime import UTC, datetime
 from typing import Any
@@ -17,6 +18,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from server.events.event_types import PlayerDeliriumRespawnedEvent, PlayerRespawnedEvent
 from server.models.game import PositionState
+from server.models.lucidity import LucidityActionCode
 from server.models.player import Player
 from server.structured_logging.enhanced_logging_config import get_logger
 
@@ -83,10 +85,63 @@ class PlayerRespawnService:
             True if player was moved to limbo, False otherwise
         """
         try:
+            # #region agent log
+            try:
+                _debug_payload = {
+                    "location": "player_respawn_service.move_player_to_limbo.entry",
+                    "message": "move_player_to_limbo called",
+                    "data": {"player_id": str(player_id), "death_location": death_location},
+                    "hypothesisId": "H1",
+                    "timestamp": datetime.now(UTC).isoformat(),
+                }
+                with open("e:\\projects\\GitHub\\MythosMUD\\.cursor\\debug.log", "a", encoding="utf-8") as _f:
+                    _f.write(json.dumps(_debug_payload) + "\n")
+            except Exception:  # pylint: disable=broad-except  # Reason: Debug instrumentation must not affect runtime
+                pass
+            # #endregion
             # Retrieve player from database using async API
             player = await session.get(Player, player_id)
             if not player:
                 logger.warning("Player not found for limbo movement", player_id=player_id)
+                return False
+
+            # Player must be at -10 or lower DP before moving to limbo (death transition).
+            # Catatonia failover is the only exception (lucidity-based, not DP).
+            is_catatonia_failover = death_location == "catatonia_failover"
+            stats = player.get_stats() or {}
+            current_dp = stats.get("current_dp", 0)
+            # Explicit numeric check: never move at 0 to -9 (incapacitated but not dead)
+            if isinstance(current_dp, (int, float)):
+                current_dp_int = int(current_dp)
+            else:
+                current_dp_int = 0
+            player_is_dead = player.is_dead()
+            # #region agent log
+            try:
+                _debug_payload = {
+                    "location": "player_respawn_service.move_player_to_limbo.guard",
+                    "message": "guard check",
+                    "data": {
+                        "player_id": str(player_id),
+                        "current_dp": current_dp_int,
+                        "is_dead": player_is_dead,
+                        "is_catatonia_failover": is_catatonia_failover,
+                    },
+                    "hypothesisId": "H1",
+                    "timestamp": datetime.now(UTC).isoformat(),
+                }
+                with open("e:\\projects\\GitHub\\MythosMUD\\.cursor\\debug.log", "a", encoding="utf-8") as _f:
+                    _f.write(json.dumps(_debug_payload) + "\n")
+            except Exception:  # pylint: disable=broad-except  # Reason: Debug instrumentation must not affect runtime
+                pass
+            # #endregion
+            # Require actual DP <= -10; do not rely on is_dead() alone (defense against bad/stale stats)
+            if not is_catatonia_failover and (current_dp_int > -10 or not player_is_dead):
+                logger.warning(
+                    "Refusing to move player to limbo: DP must be -10 or lower",
+                    player_id=player_id,
+                    current_dp=current_dp_int,
+                )
                 return False
 
             # Move player to limbo room
@@ -103,6 +158,20 @@ class PlayerRespawnService:
                 from_room=old_room,
                 death_location=death_location,
             )
+            # #region agent log
+            try:
+                _debug_payload = {
+                    "location": "player_respawn_service.move_player_to_limbo.did_move",
+                    "message": "player moved to limbo",
+                    "data": {"player_id": str(player_id), "current_dp": current_dp},
+                    "hypothesisId": "H1",
+                    "timestamp": datetime.now(UTC).isoformat(),
+                }
+                with open("e:\\projects\\GitHub\\MythosMUD\\.cursor\\debug.log", "a", encoding="utf-8") as _f:
+                    _f.write(json.dumps(_debug_payload) + "\n")
+            except Exception:  # pylint: disable=broad-except  # Reason: Debug instrumentation must not affect runtime
+                pass
+            # #endregion
 
             return True
 
@@ -280,12 +349,9 @@ class PlayerRespawnService:
             # Get respawn room (always Sanitarium for delirium respawn)
             respawn_room = DEFAULT_RESPAWN_ROOM
 
-            # Get current stats and ensure posture is standing
-            stats = player.get_stats()
-            stats["position"] = PositionState.STANDING
+            # Delegate health restoration to Player domain model (DP and posture)
+            player.restore_to_full_health()
 
-            # Update player stats and location
-            player.set_stats(stats)
             old_room = player.current_room_id
             player.current_room_id = respawn_room
 
@@ -432,7 +498,7 @@ class PlayerRespawnService:
             from datetime import timedelta
 
             debrief_expires_at = _utc_now() + timedelta(days=365)  # Far future expiration
-            await lucidity_service.set_cooldown(player_id, "debrief_pending", debrief_expires_at)
+            await lucidity_service.set_cooldown(player_id, LucidityActionCode.DEBRIEF_PENDING, debrief_expires_at)
 
             # Commit changes using async API (includes debrief flag)
             await session.commit()

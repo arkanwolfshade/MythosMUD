@@ -385,7 +385,7 @@ class ConnectionManager:
         """Remove players whose presence is stale beyond the threshold."""
         prune_stale_players_impl(self, max_age_seconds)
 
-    async def cleanup_orphaned_data(self):
+    async def cleanup_orphaned_data(self) -> None:
         """Clean up orphaned data that might accumulate over time."""
         await cleanup_orphaned_data_impl(self)
 
@@ -495,7 +495,7 @@ class ConnectionManager:
         """Get NPC names for multiple NPCs in a batch operation."""
         return get_npcs_batch_impl(self, npc_ids)
 
-    def _convert_uuids_to_strings(self, obj):
+    def _convert_uuids_to_strings(self, obj: Any) -> Any:
         """Recursively convert UUID objects to strings for JSON serialization."""
         return convert_uuids_to_strings_impl(self, obj)
 
@@ -605,7 +605,7 @@ class ConnectionManager:
         """Send initial game_state event to a newly connected player."""
         await send_initial_game_state_impl(self, player_id, player, room_id)
 
-    async def _check_and_cleanup(self):
+    async def _check_and_cleanup(self) -> None:
         """Periodically check for cleanup conditions and perform cleanup if needed."""
         await check_and_cleanup_impl(self)
 
@@ -629,7 +629,7 @@ class ConnectionManager:
         """Get memory-related alerts."""
         return get_memory_alerts_impl(self)
 
-    async def force_cleanup(self):
+    async def force_cleanup(self) -> None:
         """Force immediate cleanup of all orphaned data."""
         await force_cleanup_impl(self)
 
@@ -648,16 +648,16 @@ class ConnectionManager:
         """Get the event bus from connection manager."""
         return self._event_bus
 
-    def _get_event_bus(self):
+    def _get_event_bus(self) -> Any:
         """Get the event bus from connection manager."""
         # Event bus is already available on connection_manager
         return self._event_bus
 
-    async def subscribe_to_room_events(self):
+    async def subscribe_to_room_events(self) -> None:
         """Subscribe to room movement events for occupant broadcasting."""
         await subscribe_to_room_events_impl(self)
 
-    async def unsubscribe_from_room_events(self):
+    async def unsubscribe_from_room_events(self) -> None:
         """Unsubscribe from room movement events."""
         await unsubscribe_from_room_events_impl(self)
 

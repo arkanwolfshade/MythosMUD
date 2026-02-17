@@ -91,18 +91,29 @@ async def broadcast_message(
         broadcast_stats=broadcast_stats,
     )
 
+    # Convert broadcast_stats dict to BroadcastStats model
+    from server.schemas.game.game import BroadcastStats
+
+    broadcast_stats_model = BroadcastStats(
+        successful_deliveries=broadcast_stats.get("successful_deliveries", 0),
+        failed_deliveries=broadcast_stats.get("failed_deliveries", 0),
+        total_recipients=broadcast_stats.get("total_recipients", recipients),
+    )
+
     return BroadcastMessageResponse(
         message=message,
         recipients=recipients,
         broadcaster=current_user.username,
-        broadcast_stats=broadcast_stats,
+        broadcast_stats=broadcast_stats_model,
     )
 
 
 @game_router.get("/time", response_model=MythosTimeResponse)
 def get_mythos_time(container: "ApplicationContainer" = Depends(get_container)) -> MythosTimeResponse:
-    """Return the current Mythos calendar metadata for HUD initialization."""
+    """Return the current Mythos calendar metadata for HUD initialization.
 
+    In-memory only: chronicle and holiday_service use state loaded at startup; no blocking I/O.
+    """
     chronicle = get_mythos_chronicle()
     mythos_dt = chronicle.get_current_mythos_datetime()
     components = chronicle.get_calendar_components(mythos_dt)

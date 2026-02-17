@@ -1,14 +1,14 @@
 /**
  * SafeHtml component wrapper for dangerouslySetInnerHTML
- * Automatically sanitizes HTML content using DOMPurify before rendering
+ * Automatically sanitizes HTML content via security.ts before rendering
  *
  * This component provides a safe way to render HTML content from the server
- * while preventing XSS attacks. All HTML is sanitized using DOMPurify.sanitize()
- * before being rendered via dangerouslySetInnerHTML.
+ * while preventing XSS attacks. All HTML is sanitized using
+ * inputSanitizer.sanitizeIncomingHtml() before being rendered via dangerouslySetInnerHTML.
  */
 
-import DOMPurify, { type Config as DOMPurifyConfig } from 'dompurify';
 import React from 'react';
+import { inputSanitizer } from '../../utils/security';
 
 interface SafeHtmlProps extends React.HTMLAttributes<HTMLElement> {
   /**
@@ -31,24 +31,13 @@ interface SafeHtmlProps extends React.HTMLAttributes<HTMLElement> {
  * ```
  *
  * This replaces direct usage of dangerouslySetInnerHTML with automatic
- * XSS protection via DOMPurify sanitization.
+ * XSS protection via inputSanitizer.sanitizeIncomingHtml() from security.ts.
  *
- * All HTML content is sanitized via DOMPurify.sanitize() before rendering.
+ * All HTML content is sanitized before rendering.
  */
 export const SafeHtml: React.FC<SafeHtmlProps> = ({ html, className, tag: Tag = 'span', ...props }) => {
-  // Sanitize HTML content using DOMPurify before rendering
-  // Using the same configuration as inputSanitizer.sanitizeIncomingHtml() for consistency
-  // nosemgrep: typescript.lang.security.audit.xss.xss
-  // nosemgrep: typescript.react.security.audit.dangerouslysetinnerhtml.dangerouslysetinnerhtml
-  const sanitizedHtml = DOMPurify.sanitize(html, {
-    ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'br', 'p', 'span', 'div', 'ul', 'ol', 'li', 'code', 'pre'],
-    ALLOWED_ATTR: ['class'],
-    ALLOW_DATA_ATTR: false,
-    ALLOW_UNKNOWN_PROTOCOLS: false,
-    SAFE_FOR_TEMPLATES: true,
-  } as DOMPurifyConfig);
-
-  // HTML content has been sanitized via DOMPurify.sanitize() before being used with dangerouslySetInnerHTML
+  const sanitizedHtml = inputSanitizer.sanitizeIncomingHtml(html);
+  // HTML content has been sanitized via inputSanitizer.sanitizeIncomingHtml() before dangerouslySetInnerHTML
   // nosemgrep: typescript.react.security.audit.dangerouslysetinnerhtml.dangerouslysetinnerhtml
   return <Tag className={className} dangerouslySetInnerHTML={{ __html: sanitizedHtml }} {...props} />;
 };

@@ -15,6 +15,7 @@ from collections.abc import Callable, Coroutine
 from pathlib import Path
 from typing import Any, cast
 
+import anyio
 import nats
 from anyio import sleep
 
@@ -161,6 +162,11 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             "ping_interval": self.config.ping_interval,
             "max_outstanding_pings": self.config.max_outstanding_pings,
         }
+        if self.config.token:
+            connect_options["token"] = self.config.token
+        elif self.config.user and self.config.password:
+            connect_options["user"] = self.config.user
+            connect_options["password"] = self.config.password
         return connect_options
 
     def _configure_tls(self, connect_options: dict[str, Any]) -> None:
@@ -472,7 +478,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
 
                 if health_ok:
                     self._consecutive_health_failures = 0
-                    self._last_health_check = asyncio.get_running_loop().time()
+                    self._last_health_check = anyio.current_time()
                     # Update health score in metrics
                     self.metrics.update_connection_health(100.0)
                 else:
@@ -562,7 +568,9 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
         callback: Callable[[dict[str, Any]], None | Coroutine[Any, Any, None]],
         message_data: dict[str, Any],
     ) -> None:
-        """Call the registered callback, handling both async and sync callbacks."""
+        """Call the registered callback, handling both async and sync callbacks.
+        Sync callbacks must not perform blocking I/O (see subscribe() docstring).
+        """
         if asyncio.iscoroutinefunction(callback):
             await callback(message_data)
         else:
@@ -620,7 +628,10 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
 
         Args:
             subject: NATS subject name to subscribe to
-            callback: Sync or async function when messages are received (message_data: dict)
+            callback: Sync or async function when messages are received (message_data: dict).
+                Prefer async callbacks; they must not perform blocking I/O. Sync callbacks are
+                supported for backward compatibility but must complete quickly (no I/O) to avoid
+                blocking the event loop.
 
         Raises:
             NATSSubscribeError: If subscription fails
@@ -806,7 +817,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
         health_check_interval = getattr(self.config, "health_check_interval", 30)
         if health_check_interval > 0:
             try:
-                current_time = asyncio.get_running_loop().time()
+                current_time = anyio.current_time()
             except RuntimeError:
                 # No event loop running, can't check time - assume connected if nc and _running are True
                 return True
@@ -893,7 +904,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             raise
 
     # Event handlers with state machine integration (fire-and-forget async tasks)
-    def _on_error(self, error):
+    def _on_error(self, error: BaseException) -> None:
         """
         Handle NATS connection errors with state machine tracking.
 
@@ -921,7 +932,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Error handler errors unpredictable, must log but not fail
             logger.error("Error in async error handler", error=str(e), original_error=str(error))
 
-    def _on_disconnect(self):
+    def _on_disconnect(self) -> None:
         """
         Handle NATS disconnection events with state machine tracking.
 
@@ -952,7 +963,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Disconnect handler errors unpredictable, must log but not fail
             logger.error("Error in async disconnect handler", error=str(e))
 
-    def _on_reconnect(self):
+    def _on_reconnect(self) -> None:
         """
         Handle NATS reconnection events with state machine tracking.
 
@@ -996,7 +1007,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
         AI: For monitoring dashboards and health checks.
         """
         try:
-            current_time = asyncio.get_running_loop().time()
+            current_time = anyio.current_time()
             time_since_last_check = current_time - self._last_health_check if self._last_health_check > 0 else None
         except RuntimeError:
             time_since_last_check = None
@@ -1152,9 +1163,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
 
         AI: Raises exceptions instead of returning False for better error handling.
         """
-        # AI Agent: Use asyncio.get_running_loop() instead of deprecated get_event_loop()
-        #           Python 3.10+ deprecates get_event_loop() in async contexts
-        start_time = asyncio.get_running_loop().time()
+        start_time = anyio.current_time()
         success = False
         connection = None
 
@@ -1216,7 +1225,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             if connection:
                 await self._return_connection(connection)
             # Record metrics
-            processing_time = asyncio.get_running_loop().time() - start_time
+            processing_time = anyio.current_time() - start_time
             self.metrics.record_publish(success, processing_time)
 
     async def _cleanup_connection_pool(self) -> None:
@@ -1342,7 +1351,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             batch_data = {
                 "messages": messages,
                 "count": len(messages),
-                "batch_timestamp": asyncio.get_running_loop().time(),
+                "batch_timestamp": anyio.current_time(),
             }
 
             try:
@@ -1426,7 +1435,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             batch_data = {
                 "messages": messages,
                 "count": len(messages),
-                "batch_timestamp": asyncio.get_running_loop().time(),
+                "batch_timestamp": anyio.current_time(),
             }
 
             try:

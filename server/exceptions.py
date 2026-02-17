@@ -85,7 +85,8 @@ class MythosMUDError(LoggedException):
         context: ErrorContext | None = None,
         details: dict[str, Any] | None = None,
         user_friendly: str | None = None,
-    ):
+        skip_log: bool = False,
+    ) -> None:
         """
         Initialize MythosMUD error.
 
@@ -94,6 +95,7 @@ class MythosMUDError(LoggedException):
             context: Error context information
             details: Additional error details
             user_friendly: User-friendly error message
+            skip_log: If True, do not log in constructor (caller already logged, e.g. log_and_raise_enhanced).
         """
         LoggedException.__init__(self, message)
         self.message = message
@@ -102,8 +104,9 @@ class MythosMUDError(LoggedException):
         self.user_friendly = user_friendly or message
         self.timestamp = datetime.now(UTC)
 
-        # Log the error with context
-        self._log_error()
+        # Log the error with context unless caller already logged (e.g. log_and_raise_enhanced).
+        if not skip_log:
+            self._log_error()
         self.mark_logged()
 
     def _log_error(self) -> None:
@@ -289,17 +292,17 @@ class LoggedHTTPException(HTTPException, LoggedException):
         self,
         status_code: int,
         detail: str,
-        context: ErrorContext | None = None,
         logger_name: str | None = None,
-    ):
+        **kwargs: Any,
+    ) -> None:
         """
         Initialize LoggedHTTPException.
 
         Args:
             status_code: HTTP status code
             detail: Error detail message
-            context: Error context information
             logger_name: Specific logger name to use (defaults to current module)
+            **kwargs: Additional structured logging data (e.g., operation, user_id, etc.)
         """
         HTTPException.__init__(self, status_code=status_code, detail=detail)
         LoggedException.__init__(self)
@@ -307,19 +310,25 @@ class LoggedHTTPException(HTTPException, LoggedException):
         # Use specified logger or default to current module logger
         error_logger = get_logger(logger_name) if logger_name else logger
 
-        # Create context if not provided
-        if context is None:
-            context = create_error_context()
+        # Create ErrorContext internally from kwargs for exception object (exceptions need ErrorContext)
+        # Extract common context fields from kwargs
+        context_metadata = {k: v for k, v in kwargs.items() if k not in ["error_type", "status_code", "detail"]}
+        context = create_error_context(
+            user_id=kwargs.get("user_id"),
+            session_id=kwargs.get("session_id"),
+            request_id=kwargs.get("request_id"),
+            metadata=context_metadata,
+        )
 
         # Store context as instance attribute for testability
         self.context = context
 
-        # Log the HTTP error with full context
+        # Prepare structured log data using kwargs directly
         log_data = {
             "error_type": "LoggedHTTPException",
             "status_code": status_code,
             "detail": detail,
-            "context": context.to_dict(),
+            **kwargs,
         }
 
         try:

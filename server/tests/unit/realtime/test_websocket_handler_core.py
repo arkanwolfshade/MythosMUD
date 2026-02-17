@@ -11,6 +11,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from server.error_types import ErrorType
+from server.help.help_content import get_help_content
 from server.realtime.websocket_handler import (
     _cleanup_connection,
     _handle_generic_exception,
@@ -21,7 +22,6 @@ from server.realtime.websocket_handler import (
     _resolve_and_setup_app_state_services,
     _send_error_response,
     _validate_player_and_persistence,
-    get_help_content,
     handle_chat_message,
     handle_game_command,
     handle_websocket_message,

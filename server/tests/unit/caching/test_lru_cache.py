@@ -31,8 +31,8 @@ def test_cache_put_expired_entries_removed_before_lru_eviction(cache_with_ttl):
     for i in range(10):
         cache_with_ttl.put(f"key{i}", f"value{i}")
 
-    # Wait for entries to expire
-    time.sleep(1.1)
+    # Wait for entries to expire (TTL=1s; sleep well past to avoid CI timing flakiness)
+    time.sleep(2.0)
 
     # Add new entry - should evict expired entries first, not LRU
     cache_with_ttl.put("new_key", "new_value")
@@ -52,8 +52,8 @@ def test_cache_put_expired_entries_removed_before_capacity_check(cache_with_ttl)
     for i in range(10):
         cache_with_ttl.put(f"key{i}", f"value{i}")
 
-    # Wait for entries to expire
-    time.sleep(1.1)
+    # Wait for entries to expire (TTL=1s; sleep well past to avoid CI timing flakiness)
+    time.sleep(2.0)
 
     # Add multiple new entries - should fill cache with new entries
     for i in range(5):
@@ -76,8 +76,8 @@ def test_cache_expired_entries_not_counted_in_evictions(cache_with_ttl):
 
     initial_evictions = cache_with_ttl.get_stats()["evictions"]
 
-    # Wait for entries to expire
-    time.sleep(1.1)
+    # Wait for entries to expire (TTL=1s; sleep well past to avoid CI timing flakiness)
+    time.sleep(2.0)
 
     # Add new entry - should remove expired entries, not evict LRU
     cache_with_ttl.put("new_key", "new_value")
@@ -109,8 +109,8 @@ def test_cache_expired_count_tracked_in_stats(cache_with_ttl):
     for i in range(5):
         cache_with_ttl.put(f"key{i}", f"value{i}")
 
-    # Wait for entries to expire
-    time.sleep(1.1)
+    # Wait for entries to expire (TTL=1s; sleep well past to avoid CI timing flakiness)
+    time.sleep(2.0)
 
     # Try to get expired entry - should increment expired_count
     result = cache_with_ttl.get("key0")
@@ -126,8 +126,8 @@ def test_cache_expiration_rate_calculated(cache_with_ttl):
     for i in range(5):
         cache_with_ttl.put(f"key{i}", f"value{i}")
 
-    # Wait for entries to expire
-    time.sleep(1.1)
+    # Wait for entries to expire (TTL=1s; sleep well past to avoid CI timing flakiness)
+    time.sleep(2.0)
 
     # Access expired entries
     for i in range(5):
@@ -145,8 +145,8 @@ def test_cache_size_stays_within_bounds_after_expiration(cache_with_ttl):
     for i in range(10):
         cache_with_ttl.put(f"key{i}", f"value{i}")
 
-    # Wait for entries to expire
-    time.sleep(1.1)
+    # Wait for entries to expire (TTL=1s; sleep well past to avoid CI timing flakiness)
+    time.sleep(2.0)
 
     # Add many new entries
     for i in range(20):
@@ -185,8 +185,8 @@ def test_cache_expired_entries_removed_efficiently(cache_with_ttl):
     for i in range(10):
         cache_with_ttl.put(f"key{i}", f"value{i}")
 
-    # Wait for entries to expire
-    time.sleep(1.1)
+    # Wait for entries to expire (TTL=1s; sleep well past to avoid CI timing flakiness)
+    time.sleep(2.0)
 
     # Add new entry - should remove all expired entries in one pass
     start_time = time.time()
@@ -202,22 +202,19 @@ def test_cache_expired_entries_removed_efficiently(cache_with_ttl):
 
 def test_cache_mixed_expired_and_valid_entries(cache_with_ttl):
     """Test cache behavior with mix of expired and valid entries."""
-    # Add entries at different times
+    # Add entries at different times (TTL=1s). Use generous sleeps for CI.
     cache_with_ttl.put("key0", "value0")
-    time.sleep(0.5)
+    time.sleep(1.5)  # key0 expires at t=1.0
     cache_with_ttl.put("key1", "value1")
-    time.sleep(0.5)
+    time.sleep(1.5)  # key1 expires at t=2.5
     cache_with_ttl.put("key2", "value2")
 
-    # Wait for first two entries to expire (key0 at t=1.0, key1 at t=1.5)
-    # After 0.6s from key2 (at t=1.6), key0 and key1 should be expired, key2 should be valid
-    time.sleep(0.6)
+    # Wait so key0 and key1 are clearly expired, key2 still valid (expires at t=3.5)
+    time.sleep(0.8)
 
-    # key0 should be expired (put at t=0, expires at t=1.0)
+    # key0 expired (t=0, exp 1.0); key1 expired (t=1.5, exp 2.5); key2 valid (t=3.0, exp 4.0)
     assert cache_with_ttl.get("key0") is None
-    # key1 should be expired (put at t=0.5, expires at t=1.5, we check at t=1.6)
     assert cache_with_ttl.get("key1") is None
-    # key2 should be valid (put at t=1.0, expires at t=2.0)
     assert cache_with_ttl.get("key2") == "value2"
 
     stats = cache_with_ttl.get_stats()

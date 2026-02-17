@@ -12,22 +12,23 @@ from fastapi import Depends, HTTPException, Request
 from ..auth.users import get_current_user
 from ..dependencies import PlayerServiceDep, ProfessionServiceDep, StatsGeneratorDep
 from ..error_types import ErrorMessages
-from ..exceptions import LoggedHTTPException, RateLimitError, ValidationError, create_error_context
+from ..exceptions import LoggedHTTPException, RateLimitError, ValidationError
 from ..game.player_service import PlayerService
 from ..game.profession_service import ProfessionService
 from ..game.stats_generator import StatsGenerator
 from ..models import Stats
 from ..models.user import User
-from ..schemas.character_creation import (
+from ..schemas.players import (
+    CreateCharacterRequest,
     CreateCharacterResponse,
+    RollStatsRequest,
     RollStatsResponse,
     StatSummary,
     ValidateStatsResponse,
 )
-from ..schemas.player_requests import CreateCharacterRequest, RollStatsRequest
+from ..schemas.players.stat_values import RolledStats
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.rate_limiter import character_creation_limiter, stats_roll_limiter
-from .player_helpers import create_error_context as create_error_context_helper
 from .players import player_router
 
 if TYPE_CHECKING:
@@ -75,11 +76,12 @@ def _check_shutdown_status(request: Request, current_user: User) -> None:
     from ..commands.admin_shutdown_command import get_shutdown_blocking_message, is_shutdown_pending
 
     if request and is_shutdown_pending(request.app):
-        context = create_error_context(user_id=str(current_user.id) if current_user else None)
-        context.metadata["operation"] = "roll_stats"
-        context.metadata["reason"] = "server_shutdown"
         raise LoggedHTTPException(
-            status_code=503, detail=get_shutdown_blocking_message("stats_rolling"), context=context
+            status_code=503,
+            detail=get_shutdown_blocking_message("stats_rolling"),
+            user_id=str(current_user.id) if current_user else None,
+            operation="roll_stats",
+            reason="server_shutdown",
         )
 
 
@@ -88,8 +90,7 @@ def _validate_user_for_stats_roll(current_user: User) -> None:
     logger.debug("Authentication check", current_user=current_user)
     if not current_user:
         logger.warning("Authentication failed: No user returned from get_current_active_user")
-        context = create_error_context()
-        raise LoggedHTTPException(status_code=401, detail="Authentication required", context=context)
+        raise LoggedHTTPException(status_code=401, detail="Authentication required")
 
     logger.info("Authentication successful for user", username=current_user.username, user_id=current_user.id)
 
@@ -99,14 +100,11 @@ def _apply_rate_limiting_for_stats_roll(current_user: User) -> None:
     try:
         stats_roll_limiter.enforce_rate_limit(str(current_user.id))
     except RateLimitError as e:
-        context = create_error_context()
-        if current_user:
-            context.user_id = str(current_user.id)
-        context.metadata["rate_limit_type"] = "stats_roll"
         raise LoggedHTTPException(
             status_code=429,
             detail=f"Rate limit exceeded: {str(e)}. Retry after {e.retry_after} seconds",
-            context=context,
+            user_id=str(current_user.id) if current_user else None,
+            rate_limit_type="stats_roll",
         ) from e
 
 
@@ -127,23 +125,28 @@ async def _roll_stats_with_profession(
     try:
         # After None check, profession_id is guaranteed to be non-None
         if request_data.profession_id is None:
-            raise ValueError("profession_id should not be None for profession-based rolling")
+            raise LoggedHTTPException(
+                status_code=400,
+                detail="profession_id is required for profession-based rolling",
+                user_id=str(current_user.id) if current_user else None,
+                operation="roll_stats",
+            )
         profession_id: int = request_data.profession_id
 
         profession = await profession_service.validate_and_get_profession(profession_id)
     except ValidationError as e:
-        context = create_error_context()
-        if current_user:
-            context.user_id = str(current_user.id)
-        context.metadata["operation"] = "roll_stats"
-        if request_data.profession_id:
-            context.metadata["profession_id"] = request_data.profession_id
         # Convert ValidationError to appropriate HTTP status code
         if "not found" in str(e).lower():
             status_code = 404
         else:
             status_code = 400
-        raise LoggedHTTPException(status_code=status_code, detail=str(e), context=context) from e
+        raise LoggedHTTPException(
+            status_code=status_code,
+            detail=str(e),
+            user_id=str(current_user.id) if current_user else None,
+            operation="roll_stats",
+            profession_id=request_data.profession_id if request_data.profession_id else None,
+        ) from e
 
     # Roll stats with validated profession
     stats, meets_requirements = stats_generator.roll_stats_with_profession(
@@ -156,8 +159,22 @@ async def _roll_stats_with_profession(
     stat_summary_dict = stats_generator.get_stat_summary(stats)
     stat_summary = _convert_stat_summary_to_stat_summary_model(stats, stat_summary_dict)
 
+    # Extract only core stats for RolledStats model
+    stats_dict = stats.model_dump()
+    rolled_stats = RolledStats(
+        strength=stats_dict.get("strength", 50),
+        dexterity=stats_dict.get("dexterity", 50),
+        constitution=stats_dict.get("constitution", 50),
+        size=stats_dict.get("size", 50),
+        intelligence=stats_dict.get("intelligence", 50),
+        power=stats_dict.get("power", 50),
+        education=stats_dict.get("education", 50),
+        charisma=stats_dict.get("charisma", 50),
+        luck=stats_dict.get("luck", 50),
+    )
+
     return {
-        "stats": stats.model_dump(),
+        "stats": rolled_stats,
         "stat_summary": stat_summary,
         "profession_id": profession_id,
         "meets_requirements": meets_requirements,
@@ -177,8 +194,22 @@ def _roll_stats_with_class(
     stat_summary_dict = stats_generator.get_stat_summary(stats)
     stat_summary = _convert_stat_summary_to_stat_summary_model(stats, stat_summary_dict)
 
+    # Extract only core stats for RolledStats model
+    stats_dict = stats.model_dump()
+    rolled_stats = RolledStats(
+        strength=stats_dict.get("strength", 50),
+        dexterity=stats_dict.get("dexterity", 50),
+        constitution=stats_dict.get("constitution", 50),
+        size=stats_dict.get("size", 50),
+        intelligence=stats_dict.get("intelligence", 50),
+        power=stats_dict.get("power", 50),
+        education=stats_dict.get("education", 50),
+        charisma=stats_dict.get("charisma", 50),
+        luck=stats_dict.get("luck", 50),
+    )
+
     return {
-        "stats": stats.model_dump(),
+        "stats": rolled_stats,
         "stat_summary": stat_summary,
         "available_classes": available_classes,
         "method_used": request_data.method,
@@ -219,21 +250,23 @@ async def roll_character_stats(  # pylint: disable=too-many-arguments,too-many-p
         return RollStatsResponse(**result)
     except ValueError as e:
         # Handle validation errors (e.g., invalid profession ID)
-        context = create_error_context()
-        if current_user:
-            context.user_id = str(current_user.id)
-        context.metadata["operation"] = "roll_stats"
-        context.metadata["error"] = str(e)
-        raise LoggedHTTPException(status_code=400, detail=f"Invalid profession: {str(e)}", context=context) from e
+        raise LoggedHTTPException(
+            status_code=400,
+            detail=f"Invalid profession: {str(e)}",
+            user_id=str(current_user.id) if current_user else None,
+            operation="roll_stats",
+            error=str(e),
+        ) from e
     except LoggedHTTPException:
         # Re-raise LoggedHTTPException without modification
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Character creation errors unpredictable, must create error context
-        context = create_error_context()
-        if current_user:
-            context.user_id = str(current_user.id)
-        context.metadata["operation"] = "roll_stats"
-        raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR, context=context) from e
+        raise LoggedHTTPException(
+            status_code=500,
+            detail=ErrorMessages.INTERNAL_ERROR,
+            user_id=str(current_user.id) if current_user else None,
+            operation="roll_stats",
+        ) from e
 
 
 @player_router.post("/create-character", response_model=CreateCharacterResponse)
@@ -255,27 +288,27 @@ async def create_character_with_stats(
     from ..commands.admin_shutdown_command import get_shutdown_blocking_message, is_shutdown_pending
 
     if request and is_shutdown_pending(request.app):
-        context = create_error_context(user_id=str(current_user.id) if current_user else None)
-        context.metadata["operation"] = "create_character"
-        context.metadata["reason"] = "server_shutdown"
         raise LoggedHTTPException(
-            status_code=503, detail=get_shutdown_blocking_message("character_creation"), context=context
+            status_code=503,
+            detail=get_shutdown_blocking_message("character_creation"),
+            user_id=str(current_user.id) if current_user else None,
+            operation="create_character",
+            reason="server_shutdown",
         )
 
     # Check if user is authenticated
     if not current_user:
-        context = create_error_context_helper(request, current_user)
-        raise LoggedHTTPException(status_code=401, detail=ErrorMessages.AUTHENTICATION_REQUIRED, context=context)
+        raise LoggedHTTPException(status_code=401, detail=ErrorMessages.AUTHENTICATION_REQUIRED)
 
     # Apply rate limiting
     try:
         character_creation_limiter.enforce_rate_limit(str(current_user.id))
     except RateLimitError as e:
-        context = create_error_context_helper(request, current_user, rate_limit_type="character_creation")
         raise LoggedHTTPException(
             status_code=429,
             detail="Rate limit exceeded",
-            context=context,
+            user_id=str(current_user.id) if current_user else None,
+            rate_limit_type="character_creation",
         ) from e
 
     try:
@@ -312,11 +345,19 @@ async def create_character_with_stats(
         # Re-raise HTTPExceptions without modification
         raise
     except ValueError as e:
-        context = create_error_context_helper(request, current_user, operation="create_character")
-        raise LoggedHTTPException(status_code=400, detail=ErrorMessages.INVALID_INPUT, context=context) from e
+        raise LoggedHTTPException(
+            status_code=400,
+            detail=ErrorMessages.INVALID_INPUT,
+            user_id=str(current_user.id) if current_user else None,
+            operation="create_character",
+        ) from e
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Character creation errors unpredictable, must create error context
-        context = create_error_context_helper(request, current_user, operation="create_character")
-        raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR, context=context) from e
+        raise LoggedHTTPException(
+            status_code=500,
+            detail=ErrorMessages.INTERNAL_ERROR,
+            user_id=str(current_user.id) if current_user else None,
+            operation="create_character",
+        ) from e
 
 
 @player_router.post("/validate-stats", response_model=ValidateStatsResponse)
@@ -350,12 +391,14 @@ async def validate_character_stats(
             )
 
         available_classes = stats_generator.get_available_classes(stats_obj)
-        stat_summary = stats_generator.get_stat_summary(stats_obj)
+        stat_summary_dict = stats_generator.get_stat_summary(stats_obj)
+        stat_summary = _convert_stat_summary_to_stat_summary_model(stats_obj, stat_summary_dict)
 
         return ValidateStatsResponse(available_classes=available_classes, stat_summary=stat_summary)
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Class retrieval errors unpredictable, must create error context
-        context = create_error_context()
-        if current_user:
-            context.user_id = str(current_user.id)
-        context.metadata["operation"] = "validate_stats"
-        raise LoggedHTTPException(status_code=400, detail=ErrorMessages.INVALID_FORMAT, context=context) from e
+        raise LoggedHTTPException(
+            status_code=400,
+            detail=ErrorMessages.INVALID_FORMAT,
+            user_id=str(current_user.id) if current_user else None,
+            operation="validate_stats",
+        ) from e

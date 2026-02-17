@@ -69,7 +69,7 @@ class CombatMessagingIntegration:
             raise RuntimeError("Connection manager is not available") from exc
 
     @property
-    def connection_manager(self):
+    def connection_manager(self) -> Any:
         """
         Return the connection manager, resolving it from the application container if needed.
         """
@@ -78,7 +78,7 @@ class CombatMessagingIntegration:
         return self._connection_manager
 
     @connection_manager.setter
-    def connection_manager(self, value):
+    def connection_manager(self, value: Any) -> None:
         """
         Explicitly set the connection manager (primarily used in tests).
         """
@@ -491,6 +491,7 @@ class CombatMessagingIntegration:
         player_name: str,
         room_id: str,
         death_location: str,
+        current_dp: int = -10,
     ) -> dict[str, Any]:
         """
         Broadcast player death message to all players in the room.
@@ -500,6 +501,7 @@ class CombatMessagingIntegration:
             player_name: Name of the dead player
             room_id: Room where the player died
             death_location: Detailed death location information
+            current_dp: Player DP at death (must be <= -10); client uses this to gate respawn modal
 
         Returns:
             dict: Broadcast delivery statistics
@@ -516,13 +518,14 @@ class CombatMessagingIntegration:
         personal_message = "You exhale your last breath."
         room_message = f"{player_name} exhales their last breath."
 
-        # Create event for the dead player
+        # Create event for the dead player; include current_dp so client only shows respawn at -10
         personal_event = build_event(
             "player_died",
             {
                 "player_id": player_id,
                 "player_name": player_name,
                 "death_location": death_location,
+                "current_dp": current_dp,  # Client gates respawn modal on current_dp <= -10
                 "message": personal_message,
             },
             room_id=room_id,

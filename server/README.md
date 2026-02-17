@@ -7,7 +7,7 @@ The backend server for MythosMUD, a Lovecraftian horror MUD game.
 ### Core Systems
 
 **World Loading**: Loads room data from JSON files organized by zones (now
-  in `data/local/rooms/`)
+in `data/local/rooms/`)
 
 **Player Management**: Complete player character system with stats and persistence
 
@@ -64,11 +64,11 @@ The game features a comprehensive stats system with Lovecraftian horror elements
 
 ### System Health & Monitoring
 
-`GET /monitoring/health` - Get comprehensive system health status
+`GET /v1/monitoring/health` - Get comprehensive system health status
 
 - Returns server status, uptime, memory usage, database connectivity, and
 
-    active connections
+  active connections
 
 - HTTP 200: System is healthy or degraded (with status in response body)
 - HTTP 503: System is unhealthy
@@ -134,10 +134,7 @@ The game features a comprehensive stats system with Lovecraftian horror elements
       "connection_rate_per_minute": 45.2
     }
   },
-  "alerts": [
-    "High memory usage: 512.8MB",
-    "Database response time elevated"
-  ]
+  "alerts": ["High memory usage: 512.8MB", "Database response time elevated"]
 }
 ```
 
@@ -190,10 +187,10 @@ The game features a comprehensive stats system with Lovecraftian horror elements
 #### Health Endpoint Usage Guidelines
 
 **Monitoring**: Use this endpoint for load balancer health checks and
-  monitoring systems
+monitoring systems
 
 **Performance**: Response time is optimized to be under 100ms for healthy
-  systems
+systems
 
 **Rate Limiting**: No rate limiting applied - designed for frequent health checks
 
@@ -224,21 +221,21 @@ The server provides comprehensive memory leak monitoring endpoints for detecting
 
 #### Memory Leak Metrics Endpoints
 
-`GET /monitoring/memory-leaks` - Get comprehensive memory leak metrics from all sources
+`GET /v1/monitoring/memory-leaks` - Get comprehensive memory leak metrics from all sources
 
 - Returns aggregated metrics from connections, events, caches, tasks, and NATS
 - Includes growth rates, alerts, and trend data
 - Response includes: connection metrics, event metrics, cache metrics, task metrics, NATS metrics, growth rates, and alerts
 
-- `GET /monitoring/eventbus` - Get EventBus subscriber and task metrics
+- `GET /v1/monitoring/eventbus` - Get EventBus subscriber and task metrics
   - Returns subscriber counts by event type, active task count, subscription churn rate
   - Useful for detecting event subscription leaks
 
-- `GET /monitoring/caches` - Get cache metrics with expiration tracking
+- `GET /v1/monitoring/caches` - Get cache metrics with expiration tracking
   - Returns cache sizes, hit rates, expired entry counts, expiration rates, capacity utilization
   - Helps identify cache-related memory leaks
 
-- `GET /monitoring/tasks` - Get TaskRegistry metrics
+- `GET /v1/monitoring/tasks` - Get TaskRegistry metrics
   - Returns active task counts, task lifecycle metrics, service-level breakdown
   - Tracks orphaned tasks and task growth rates
 
@@ -452,6 +449,22 @@ The server uses:
 **JSON** for data persistence (can be upgraded to database later)
 
 **Asyncio** for the game loop
+
+### NATS code layout
+
+NATS-related code is organized by layer (not a single `nats/` tree):
+
+- **infrastructure** (`server/infrastructure/nats_broker.py`): MessageBroker protocol
+  implementation; used where the protocol abstraction is required.
+- **services** (`server/services/nats_service.py`, `server/services/nats_subject_manager/`):
+  Connection pool, subject validation, and primary NATS client used by the app.
+- **realtime** (`server/realtime/nats_message_handler.py`): Message handler that
+  subscribes to NATS and broadcasts to WebSocket clients.
+- **events** (`server/events/nats_event_bridge.py`): Bridge between local EventBus
+  and NATS for distributed events.
+
+See also `docs/NATS_ERROR_HANDLING_STRATEGY.md` and `docs/deployment.md` for NATS
+configuration and auth.
 
 ## Future Enhancements
 

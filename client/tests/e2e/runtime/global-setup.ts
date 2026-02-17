@@ -15,10 +15,10 @@ import { chromium, type FullConfig } from '@playwright/test';
 async function globalSetup(_config: FullConfig): Promise<void> {
   console.log('Starting global setup for E2E runtime tests...');
 
-  // Verify server is accessible
+  // Verify server is accessible (versioned API health endpoint)
   const serverUrl = 'http://localhost:54731';
   try {
-    const response = await fetch(`${serverUrl}/health`, { signal: AbortSignal.timeout(5000) });
+    const response = await fetch(`${serverUrl}/v1/monitoring/health`, { signal: AbortSignal.timeout(5000) });
     if (!response.ok) {
       console.warn(`Server health check failed: ${response.status}`);
     }

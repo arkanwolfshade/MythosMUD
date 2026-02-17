@@ -10,7 +10,7 @@ component-specific metadata.
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import datetime
 from typing import TYPE_CHECKING
 
 from sqlalchemy import (
@@ -69,8 +69,8 @@ class ItemPrototype(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
-        default=lambda: datetime.now(UTC),
-        server_default=func.now(),  # pylint: disable=not-callable  # SQLAlchemy func is callable at runtime  # pylint: disable=not-callable  # SQLAlchemy func is callable at runtime
+        insert_default=func.now(),  # pylint: disable=not-callable  # func.now() callable at runtime
+        server_default=func.now(),  # pylint: disable=not-callable  # DDL default for non-ORM inserts
     )
 
     item_instances: Mapped[list[ItemInstance]] = relationship(
@@ -119,15 +119,15 @@ class ItemInstance(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
-        default=lambda: datetime.now(UTC),
-        server_default=func.now(),  # pylint: disable=not-callable  # SQLAlchemy func is callable at runtime  # pylint: disable=not-callable  # SQLAlchemy func is callable at runtime
+        insert_default=func.now(),  # pylint: disable=not-callable  # func.now() callable at runtime
+        server_default=func.now(),  # pylint: disable=not-callable  # DDL default for non-ORM inserts
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
-        default=lambda: datetime.now(UTC),
-        onupdate=lambda: datetime.now(UTC),
-        server_default=func.now(),  # pylint: disable=not-callable  # SQLAlchemy func is callable at runtime
+        insert_default=func.now(),  # pylint: disable=not-callable  # func.now() callable at runtime
+        onupdate=func.now(),  # pylint: disable=not-callable  # func.now() callable at runtime
+        server_default=func.now(),  # pylint: disable=not-callable  # DDL default for non-ORM inserts
     )
 
     prototype: Mapped[ItemPrototype] = relationship(back_populates="item_instances")
@@ -163,9 +163,9 @@ class ItemComponentState(Base):
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
-        default=lambda: datetime.now(UTC),
-        onupdate=lambda: datetime.now(UTC),
-        server_default=func.now(),  # pylint: disable=not-callable  # SQLAlchemy func is callable at runtime
+        insert_default=func.now(),  # pylint: disable=not-callable  # func.now() callable at runtime
+        onupdate=func.now(),  # pylint: disable=not-callable  # func.now() callable at runtime
+        server_default=func.now(),  # pylint: disable=not-callable  # DDL default for non-ORM inserts
     )
 
     item_instance: Mapped[ItemInstance] = relationship(back_populates="component_states")

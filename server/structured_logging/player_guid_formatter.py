@@ -28,7 +28,7 @@ class PlayerGuidFormatter(logging.Formatter):
     is crucial for understanding the flow of events through our eldritch systems.
     """
 
-    def __init__(self, player_service: Any, *args, **kwargs):
+    def __init__(self, player_service: Any, *args: Any, **kwargs: Any) -> None:
         """
         Initialize the PlayerGuidFormatter.
 

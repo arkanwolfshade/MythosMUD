@@ -16,7 +16,7 @@ export default defineConfig({
   /* CRITICAL: E2E tests must run serially to avoid race conditions with shared player accounts */
   workers: 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  reporter: [['html'], ['list']],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
@@ -24,6 +24,10 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+    /* Screenshot on failure for CI debugging */
+    screenshot: 'only-on-failure',
+    /* Video on first retry for CI debugging */
+    video: 'on-first-retry',
 
     /* Run in headless mode in CI, headed mode locally for debugging */
     headless: process.env.CI === 'true',

@@ -13,12 +13,15 @@ from unittest.mock import AsyncMock, MagicMock, Mock, patch
 import pytest
 from fastapi import Request
 
+# Ensure module under test is loaded so patch("server.api.character_creation.*") can resolve.
+import server.api.character_creation  # noqa: F401
+
 # Lazy imports to avoid circular import issues
 # Import inside functions that need them to avoid triggering circular import chain
 from server.exceptions import LoggedHTTPException, RateLimitError
 from server.models import Stats
 from server.models.user import User
-from server.schemas.player_requests import CreateCharacterRequest, RollStatsRequest
+from server.schemas.players import CreateCharacterRequest, RollStatsRequest
 
 
 @pytest.fixture
@@ -386,7 +389,7 @@ class TestCreateCharacterWithStats:
         )
         from datetime import UTC, datetime
 
-        from server.schemas.player import PlayerRead, PositionState
+        from server.schemas.players import PlayerRead, PositionState
 
         mock_player = PlayerRead(
             id=uuid.uuid4(),
@@ -478,7 +481,7 @@ class TestValidateCharacterStats:
             "cha": 10,
         }
         mock_stats_generator.get_available_classes = Mock(return_value=["warrior", "mage"])
-        mock_stats_generator.get_stat_summary = Mock(return_value={"total": 60})
+        mock_stats_generator.get_stat_summary = Mock(return_value={"total_points": 60, "average_stat": 10.0})
 
         result = await validate_character_stats(
             stats=stats,
@@ -488,7 +491,8 @@ class TestValidateCharacterStats:
         )
 
         assert result.available_classes == ["warrior", "mage"]
-        assert result.stat_summary == {"total": 60}
+        assert result.stat_summary is not None
+        assert result.stat_summary.total == 60
 
     @pytest.mark.asyncio
     async def test_validate_stats_invalid_input(self, mock_user, mock_stats_generator):

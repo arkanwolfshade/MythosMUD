@@ -98,7 +98,7 @@ class NPCMessageQueue:
     delivery and proper ordering of actions.
     """
 
-    def __init__(self, max_messages_per_npc: int = 1000):
+    def __init__(self, max_messages_per_npc: int = 1000) -> None:
         """
         Initialize the NPC message queue.
 

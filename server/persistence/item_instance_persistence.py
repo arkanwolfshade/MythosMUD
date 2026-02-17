@@ -16,7 +16,7 @@ from psycopg2.extras import RealDictCursor
 
 from ..exceptions import DatabaseError, ValidationError
 from ..structured_logging.enhanced_logging_config import get_logger
-from ..utils.error_logging import create_error_context, log_and_raise
+from ..utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)
 
@@ -63,22 +63,18 @@ def create_item_instance(  # pylint: disable=too-many-arguments,too-many-positio
         ValidationError: If required parameters are invalid
     """
     if not item_instance_id:
-        context = create_error_context()
-        context.metadata["operation"] = "create_item_instance"
         log_and_raise(
             ValidationError,
             "item_instance_id is required",
-            context=context,
+            operation="create_item_instance",
             user_friendly="Invalid item instance data",
         )
 
     if not prototype_id:
-        context = create_error_context()
-        context.metadata["operation"] = "create_item_instance"
         log_and_raise(
             ValidationError,
             "prototype_id is required",
-            context=context,
+            operation="create_item_instance",
             user_friendly="Invalid item instance data",
         )
 
@@ -149,26 +145,22 @@ def create_item_instance(  # pylint: disable=too-many-arguments,too-many-positio
         )
     except psycopg2.IntegrityError as e:
         conn.rollback()
-        context = create_error_context()
-        context.metadata["operation"] = "create_item_instance"
-        context.metadata["item_instance_id"] = item_instance_id
-        context.metadata["prototype_id"] = prototype_id
         log_and_raise(
             DatabaseError,
             f"Database error creating item instance: {str(e)}",
-            context=context,
+            operation="create_item_instance",
+            item_instance_id=item_instance_id,
+            prototype_id=prototype_id,
             details={"error": str(e), "item_instance_id": item_instance_id, "prototype_id": prototype_id},
             user_friendly="Failed to create item instance",
         )
     except psycopg2.Error as e:
         conn.rollback()
-        context = create_error_context()
-        context.metadata["operation"] = "create_item_instance"
-        context.metadata["item_instance_id"] = item_instance_id
         log_and_raise(
             DatabaseError,
             f"Database error creating item instance: {str(e)}",
-            context=context,
+            operation="create_item_instance",
+            item_instance_id=item_instance_id,
             details={"error": str(e), "item_instance_id": item_instance_id},
             user_friendly="Failed to create item instance",
         )

@@ -57,9 +57,9 @@ test.describe('Administrative Summon Command', () => {
     });
 
     expect(summonSucceeded || summonFailed).toBe(true);
-    if (summonFailed) {
-      expect(awMessages.some(msg => msg.includes('summoning failed') || msg.includes('not found'))).toBe(true);
-    }
+    expect(
+      awMessages.some(msg => msg.includes('summoning failed') || msg.includes('not found')) || summonSucceeded
+    ).toBe(true);
     // Note: Room broadcast visibility to other players is not asserted here; summoning only requires the admin.
   });
 

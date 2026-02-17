@@ -6,6 +6,7 @@ including container initialization, service setup, and dependency wiring.
 # pylint: disable=too-many-lines  # Reason: Startup logic requires comprehensive initialization - splitting would reduce cohesion
 
 import asyncio
+import logging as stdlib_logging
 import uuid as uuid_lib
 from collections.abc import Iterable
 from typing import Any
@@ -106,6 +107,11 @@ async def initialize_container_and_legacy_services(app: FastAPI, container: Appl
 
     config = get_config()
     object.__setattr__(config, "_app_instance", app)
+    # When NATS TLS is enabled but verification is off (self-signed local certs), suppress nats-py
+    # "TLS verification disabled - using unverified certificates" so it does not fill warnings.log
+    nats_cfg = getattr(config, "nats", None)
+    if nats_cfg and getattr(nats_cfg, "tls_enabled", False) and not getattr(nats_cfg, "tls_verify", True):
+        stdlib_logging.getLogger("nats").setLevel(stdlib_logging.ERROR)
     logger.info("ApplicationContainer initialized and added to app.state")
 
     # Set services on app.state for backward compatibility with legacy command handlers

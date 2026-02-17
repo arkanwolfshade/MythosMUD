@@ -14,7 +14,7 @@ from server.database import get_session_maker
 from server.exceptions import DatabaseError
 from server.models.player_effect import PlayerEffect
 from server.structured_logging.enhanced_logging_config import get_logger
-from server.utils.error_logging import create_error_context, log_and_raise
+from server.utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)
 
@@ -52,11 +52,6 @@ class PlayerEffectRepository:
         Raises:
             DatabaseError: If insert fails
         """
-        context = create_error_context()
-        context.metadata["operation"] = "add_effect"
-        context.metadata["player_id"] = str(player_id)
-        context.metadata["effect_type"] = effect_type
-
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
@@ -85,17 +80,15 @@ class PlayerEffectRepository:
             log_and_raise(
                 DatabaseError,
                 f"Database error adding player effect: {e}",
-                context=context,
+                operation="add_effect",
+                player_id=str(player_id),
+                effect_type=effect_type,
                 details={"player_id": str(player_id), "effect_type": effect_type, "error": str(e)},
                 user_friendly="Failed to add player effect",
             )
 
     async def delete_effect(self, effect_id: UUID | str) -> None:
         """Delete an effect by id. No-op if not found."""
-        context = create_error_context()
-        context.metadata["operation"] = "delete_effect"
-        context.metadata["effect_id"] = str(effect_id)
-
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
@@ -106,7 +99,8 @@ class PlayerEffectRepository:
             log_and_raise(
                 DatabaseError,
                 f"Database error deleting player effect: {e}",
-                context=context,
+                operation="delete_effect",
+                effect_id=str(effect_id),
                 details={"effect_id": str(effect_id), "error": str(e)},
                 user_friendly="Failed to delete player effect",
             )
@@ -117,10 +111,6 @@ class PlayerEffectRepository:
 
     async def get_active_effects_for_player(self, player_id: UUID | str, current_tick: int) -> list[PlayerEffect]:
         """Return effects where remaining_ticks > 0. Order by applied_at_tick."""
-        context = create_error_context()
-        context.metadata["operation"] = "get_active_effects_for_player"
-        context.metadata["player_id"] = str(player_id)
-
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
@@ -137,7 +127,8 @@ class PlayerEffectRepository:
             log_and_raise(
                 DatabaseError,
                 f"Database error getting active effects: {e}",
-                context=context,
+                operation="get_active_effects_for_player",
+                player_id=str(player_id),
                 details={"player_id": str(player_id), "error": str(e)},
                 user_friendly="Failed to get active effects",
             )
@@ -147,10 +138,6 @@ class PlayerEffectRepository:
         Find effects that expire this tick (remaining <= 0), return (player_id, effect_type).
         Caller should then delete/expire them (we delete in expire_effects_for_tick).
         """
-        context = create_error_context()
-        context.metadata["operation"] = "get_effects_expiring_this_tick"
-        context.metadata["current_tick"] = current_tick
-
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
@@ -166,7 +153,8 @@ class PlayerEffectRepository:
             log_and_raise(
                 DatabaseError,
                 f"Database error getting expiring effects: {e}",
-                context=context,
+                operation="get_effects_expiring_this_tick",
+                current_tick=current_tick,
                 details={"current_tick": current_tick, "error": str(e)},
                 user_friendly="Failed to get expiring effects",
             )
@@ -178,10 +166,6 @@ class PlayerEffectRepository:
         expiring = await self.get_effects_expiring_this_tick(current_tick)
         if not expiring:
             return []
-
-        context = create_error_context()
-        context.metadata["operation"] = "expire_effects_for_tick"
-        context.metadata["current_tick"] = current_tick
 
         try:
             session_maker = get_session_maker()
@@ -201,7 +185,8 @@ class PlayerEffectRepository:
             log_and_raise(
                 DatabaseError,
                 f"Database error expiring effects: {e}",
-                context=context,
+                operation="expire_effects_for_tick",
+                current_tick=current_tick,
                 details={"current_tick": current_tick, "error": str(e)},
                 user_friendly="Failed to expire effects",
             )

@@ -69,7 +69,7 @@ class PydanticErrorHandler:
         "less_than_equal": ErrorType.INVALID_INPUT,
     }
 
-    def __init__(self, context: ErrorContext | None = None):
+    def __init__(self, context: ErrorContext | None = None) -> None:
         """
         Initialize the Pydantic error handler.
 

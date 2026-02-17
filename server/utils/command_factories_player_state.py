@@ -16,7 +16,7 @@ from ..models.command import (
     WhoCommand,
 )
 from ..structured_logging.enhanced_logging_config import get_logger
-from .enhanced_error_logging import create_error_context, log_and_raise_enhanced
+from .enhanced_error_logging import log_and_raise_enhanced
 
 logger = get_logger(__name__)
 
@@ -28,10 +28,8 @@ class PlayerStateCommandFactory:
     def create_status_command(args: list[str]) -> StatusCommand:
         """Create StatusCommand from arguments."""
         if args:
-            context = create_error_context()
-            context.metadata = {"args": args}
             log_and_raise_enhanced(
-                MythosValidationError, "Status command takes no arguments", context=context, logger_name=__name__
+                MythosValidationError, "Status command takes no arguments", args=args, logger_name=__name__
             )
         return StatusCommand()
 
@@ -39,10 +37,8 @@ class PlayerStateCommandFactory:
     def create_time_command(args: list[str]) -> TimeCommand:
         """Create TimeCommand from arguments."""
         if args:
-            context = create_error_context()
-            context.metadata = {"args": args}
             log_and_raise_enhanced(
-                MythosValidationError, "Time command takes no arguments", context=context, logger_name=__name__
+                MythosValidationError, "Time command takes no arguments", args=args, logger_name=__name__
             )
         return TimeCommand()
 
@@ -50,10 +46,8 @@ class PlayerStateCommandFactory:
     def create_whoami_command(args: list[str]) -> WhoamiCommand:
         """Create WhoamiCommand from arguments."""
         if args:
-            context = create_error_context()
-            context.metadata = {"args": args}
             log_and_raise_enhanced(
-                MythosValidationError, "Whoami command takes no arguments", context=context, logger_name=__name__
+                MythosValidationError, "Whoami command takes no arguments", args=args, logger_name=__name__
             )
         return WhoamiCommand()
 
@@ -67,10 +61,8 @@ class PlayerStateCommandFactory:
     def create_quit_command(args: list[str]) -> QuitCommand:
         """Create QuitCommand from arguments."""
         if args:
-            context = create_error_context()
-            context.metadata = {"args": args}
             log_and_raise_enhanced(
-                MythosValidationError, "Quit command takes no arguments", context=context, logger_name=__name__
+                MythosValidationError, "Quit command takes no arguments", args=args, logger_name=__name__
             )
         return QuitCommand()
 
@@ -85,9 +77,7 @@ class PlayerStateCommandFactory:
     def create_rest_command(args: list[str]) -> RestCommand:
         """Create RestCommand from arguments."""
         if args:
-            context = create_error_context()
-            context.metadata = {"args": args}
             log_and_raise_enhanced(
-                MythosValidationError, "Rest command takes no arguments", context=context, logger_name=__name__
+                MythosValidationError, "Rest command takes no arguments", args=args, logger_name=__name__
             )
         return RestCommand()

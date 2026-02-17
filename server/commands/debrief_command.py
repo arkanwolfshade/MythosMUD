@@ -13,15 +13,13 @@ from typing import Any
 
 from ..alias_storage import AliasStorage
 from ..database import get_async_session
+from ..models.lucidity import LucidityActionCode
 from ..services.active_lucidity_service import ActiveLucidityService, LucidityActionOnCooldownError
 from ..services.lucidity_service import LucidityService
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
 
 logger = get_logger(__name__)
-
-# Action code for tracking debrief availability
-DEBRIEF_PENDING_ACTION_CODE = "debrief_pending"
 
 
 def _get_persistence_from_app(app: Any) -> Any:
@@ -58,7 +56,7 @@ async def _validate_debrief_context(
 
 async def _check_debrief_availability(lucidity_service: LucidityService, player_id_uuid: Any) -> dict[str, str] | None:
     """Check if debrief cooldown exists and return error if not available."""
-    debrief_cooldown = await lucidity_service.get_cooldown(player_id_uuid, DEBRIEF_PENDING_ACTION_CODE)
+    debrief_cooldown = await lucidity_service.get_cooldown(player_id_uuid, LucidityActionCode.DEBRIEF_PENDING)
     if not debrief_cooldown:
         return {
             "result": (
@@ -119,7 +117,7 @@ async def _complete_debrief(
 ) -> dict[str, str]:
     """Complete debrief by clearing cooldown and finalizing message."""
     await lucidity_service._repo.delete_cooldowns_by_action_code_pattern(  # pylint: disable=protected-access  # Reason: Accessing protected member _repo is necessary for lucidity service repository access, this is part of the service internal API
-        player_id_uuid, DEBRIEF_PENDING_ACTION_CODE
+        player_id_uuid, LucidityActionCode.DEBRIEF_PENDING
     )
     await session.commit()
     result_message += (
@@ -250,4 +248,4 @@ def _generate_narrative_recap(player_id: Any, session: Any, _lucidity_service: L
         )
 
 
-__all__ = ["handle_debrief_command", "DEBRIEF_PENDING_ACTION_CODE"]
+__all__ = ["handle_debrief_command", "LucidityActionCode"]

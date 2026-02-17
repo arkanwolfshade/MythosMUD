@@ -1,8 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useContainerStore } from '../../stores/containerStore';
 import type { HealthStatus } from '../../types/health';
+import { determineDpTier } from '../../types/health';
 import type { HallucinationMessage, LucidityStatus, RescueState } from '../../types/lucidity';
 import type { MythosTimeState } from '../../types/mythosTime';
+import { OCCUPANTS_PANEL_EMPTY_PLAYERS, reportClientError } from '../../utils/clientErrorReporter';
 import { logger } from '../../utils/logger';
 import { useMemoryMonitor } from '../../utils/memoryMonitor';
 import { DeathInterstitial } from '../DeathInterstitial';
@@ -47,9 +49,9 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
   const [isMainMenuOpen, setIsMainMenuOpen] = useState(false);
   const [showMap, setShowMap] = useState(false);
 
-  /** Request ID we've accepted/declined; hide dialog for this id even if event log re-applies it. */
+  /** Server-authority: rely on server follow_request_cleared / party_invite_cleared where possible;
+   * cleared* IDs are UX-only so we do not re-show after user dismiss; do not persist across reconnect. */
   const [clearedFollowRequestId, setClearedFollowRequestId] = useState<string | null>(null);
-  /** Invite ID we've accepted/declined; hide party invite dialog for this id even if event log re-applies it. */
   const [clearedPartyInviteId, setClearedPartyInviteId] = useState<string | null>(null);
 
   // Tabbed interface for in-app tabs
@@ -72,7 +74,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
   const [deliriumLocation, setDeliriumLocation] = useState<string>('Unknown Location');
   const [isDeliriumRespawning, setIsDeliriumRespawning] = useState(false);
   const [lucidityStatus] = useState<LucidityStatus | null>(null);
-  const [healthStatus] = useState<HealthStatus | null>(null);
+  const [healthStatus, setHealthStatus] = useState<HealthStatus | null>(null);
   const [, setHallucinationFeed] = useState<HallucinationMessage[]>([]);
   const [rescueState, setRescueState] = useState<RescueState | null>(null);
   const [mythosTime, setMythosTime] = useState<MythosTimeState | null>(null);
@@ -122,6 +124,10 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
   const sendCommandRef = useRef<((command: string, args?: string[]) => Promise<boolean>) | null>(null);
   /** Set when user chose Exit (/rest); on socket close we skip reconnection and go to login. */
   const intentionalExitInProgressRef = useRef(false);
+  /** Timestamp when room was first set (for 2s grace period before empty-players check). */
+  const roomFirstSetAtRef = useRef<number | null>(null);
+  /** Room IDs we have already reported empty players for (rate limit: once per room). */
+  const reportedRoomIdsRef = useRef<Set<string>>(new Set());
 
   // Ref synchronization
   useRefSynchronization({
@@ -170,6 +176,67 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
   useEffect(() => {
     sendCommandRef.current = sendCommand;
   }, [sendCommand]);
+
+  // Track when room is first set (for 2s grace period)
+  useEffect(() => {
+    if (gameState.room?.id && roomFirstSetAtRef.current === null) {
+      roomFirstSetAtRef.current = Date.now();
+    }
+    if (!gameState.room?.id) {
+      roomFirstSetAtRef.current = null;
+    }
+  }, [gameState.room?.id]);
+
+  // Detect empty Occupants panel players list and report to server (after 2s grace, rate-limited per room)
+  useEffect(() => {
+    if (!isConnected || !gameState.player || !gameState.room?.id) return;
+    const room = gameState.room;
+    const players = room.players ?? [];
+    if (players.length > 0) return;
+    const now = Date.now();
+    const firstSetAt = roomFirstSetAtRef.current ?? now;
+    if (now - firstSetAt < 2000) return;
+    if (reportedRoomIdsRef.current.has(room.id)) return;
+    reportedRoomIdsRef.current.add(room.id);
+    reportClientError(
+      sendMessage,
+      OCCUPANTS_PANEL_EMPTY_PLAYERS,
+      'Occupants panel players list is empty but current player exists',
+      {
+        player_name: gameState.player.name,
+        room_id: room.id,
+        room_name: room.name,
+      }
+    );
+  }, [isConnected, gameState.player, gameState.room, sendMessage]);
+
+  // Derive healthStatus from player stats (since event handlers aren't called in projector-only pattern)
+  // Use useMemo to avoid cascading renders from setState in useEffect
+  const derivedHealthStatus = useMemo(() => {
+    const player = gameState.player;
+    if (player?.stats) {
+      const stats = player.stats;
+      const currentDp = stats.current_dp;
+      const maxDp = stats.max_dp ?? 100;
+
+      if (currentDp !== undefined) {
+        return {
+          current: currentDp,
+          max: maxDp,
+          tier: determineDpTier(currentDp, maxDp),
+          posture: stats.position,
+          inCombat: player.in_combat ?? false,
+          lastChange: healthStatus?.lastChange, // Preserve last change if available
+        } as HealthStatus;
+      }
+    }
+    return null;
+  }, [gameState.player, healthStatus?.lastChange]);
+
+  // Update healthStatus when derived value changes
+  useEffect(() => {
+    setHealthStatus(derivedHealthStatus);
+  }, [derivedHealthStatus]);
 
   const [hasRespawned, setHasRespawned] = useState(false);
 

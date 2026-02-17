@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { EldritchIcon, MythosIcons } from './EldritchIcon';
+import { ModalContainer } from './ModalContainer';
 import { TerminalButton } from './TerminalButton';
 import { TerminalInput } from './TerminalInput';
-import { ModalContainer } from './ModalContainer';
 
 interface FeedbackFormProps {
   onSubmit: (feedback: FeedbackData) => void;
@@ -19,6 +19,10 @@ interface FeedbackData {
   userAgent: string;
   timestamp: string;
 }
+
+const formSelectClasses =
+  'w-full bg-mythos-terminal-surface border border-mythos-terminal-border rounded px-3 py-2 text-mythos-terminal-text-primary focus:outline-hidden focus:border-mythos-terminal-primary';
+const formTextareaClasses = formSelectClasses + ' resize-y';
 
 export const FeedbackForm: React.FC<FeedbackFormProps> = ({ onSubmit, onCancel, isOpen }) => {
   const [feedback, setFeedback] = useState<Omit<FeedbackData, 'userAgent' | 'timestamp'>>({
@@ -87,7 +91,7 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({ onSubmit, onCancel, 
             onChange={e => {
               handleChange('type', e.target.value);
             }}
-            className="w-full bg-mythos-terminal-surface border border-mythos-terminal-border rounded px-3 py-2 text-mythos-terminal-text-primary focus:outline-hidden focus:border-mythos-terminal-primary"
+            className={formSelectClasses}
           >
             <option value="general">General Feedback</option>
             <option value="bug">Bug Report</option>
@@ -106,7 +110,7 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({ onSubmit, onCancel, 
             onChange={e => {
               handleChange('component', e.target.value);
             }}
-            className="w-full bg-mythos-terminal-surface border border-mythos-terminal-border rounded px-3 py-2 text-mythos-terminal-text-primary focus:outline-hidden focus:border-mythos-terminal-primary"
+            className={formSelectClasses}
           >
             <option value="all">All Components</option>
             <option value="chat">Chat Panel</option>
@@ -123,7 +127,7 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({ onSubmit, onCancel, 
             onChange={e => {
               handleChange('priority', e.target.value);
             }}
-            className="w-full bg-mythos-terminal-surface border border-mythos-terminal-border rounded px-3 py-2 text-mythos-terminal-text-primary focus:outline-hidden focus:border-mythos-terminal-primary"
+            className={formSelectClasses}
           >
             <option value="low">Low</option>
             <option value="medium">Medium</option>
@@ -156,7 +160,7 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({ onSubmit, onCancel, 
             placeholder="Please provide detailed information about your feedback, including steps to reproduce if it's a bug report."
             required
             rows={6}
-            className="w-full bg-mythos-terminal-surface border border-mythos-terminal-border rounded px-3 py-2 text-mythos-terminal-text-primary focus:outline-hidden focus:border-mythos-terminal-primary resize-vertical"
+            className={formTextareaClasses}
           />
         </div>
 

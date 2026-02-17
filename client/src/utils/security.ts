@@ -5,6 +5,8 @@
 
 import DOMPurify, { type Config as DOMPurifyConfig } from 'dompurify';
 
+import { API_V1_BASE } from './config';
+
 interface Session {
   id: string;
   userId: string;
@@ -120,7 +122,7 @@ export const secureTokenStorage = {
     }
 
     try {
-      const response = await fetch('/auth/refresh', {
+      const response = await fetch(`${API_V1_BASE}/auth/refresh`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

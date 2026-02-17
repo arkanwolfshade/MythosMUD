@@ -47,14 +47,12 @@ for different machine types.
    ```
 
 5. **Low-Performance Machine Specific**:
-
    - Allow 5-10 minutes for server startup on very slow machines
    - Monitor system resources (CPU/Memory) during startup
    - Close unnecessary applications to free up resources
    - Check available disk space (minimum 2GB free recommended)
 
 6. **High-Performance Machine Specific**:
-
    - Server should start within 30-60 seconds
    - If startup takes longer than 2 minutes, investigate system issues
 
@@ -95,14 +93,12 @@ for different machine types.
    ```
 
 5. **Low-Performance Machine Specific**:
-
    - Use retry logic with 30-second intervals
    - Close other applications to free up system resources
    - Allow 2-3 minutes for initial connection establishment
    - Check browser memory usage and restart if needed
 
 6. **High-Performance Machine Specific**:
-
    - Connections should establish within 5-10 seconds
    - If connections take longer than 30 seconds, investigate network issues
 
@@ -117,7 +113,6 @@ for different machine types.
 **Solutions**:
 
 1. **Wait longer for message delivery**:
-
    - Standard machines: Wait 10-15 seconds
    - Low-performance machines: Wait 30-60 seconds
    - High-performance machines: Wait 3-5 seconds
@@ -126,14 +121,14 @@ for different machine types.
 
    ```javascript
    // In browser console
-   console.log('WebSocket status:', window.websocket?.readyState);
+   console.log("WebSocket status:", window.websocket?.readyState);
    ```
 
 3. **Verify WebSocket connections are active**:
 
    ```javascript
    // Check connection status
-   await mcp_playwright_browser_evaluate({function: "() => window.websocket?.readyState === 1"});
+   await mcp_playwright_browser_evaluate({ function: "() => window.websocket?.readyState === 1" });
    ```
 
 4. **Check server logs for message broadcasting errors**:
@@ -143,13 +138,11 @@ for different machine types.
    ```
 
 5. **Low-Performance Machine Specific**:
-
    - Increase all wait_for timeouts to 30+ seconds
    - Add buffer time between critical operations
    - Check for memory pressure affecting message processing
 
 6. **High-Performance Machine Specific**:
-
    - Messages should appear within 1-2 seconds
    - If messages take longer than 5 seconds, investigate server performance
 
@@ -231,7 +224,7 @@ for different machine types.
 
    ```javascript
    // Wait for element to be available
-   await mcp_playwright_browser_wait_for({text: "Expected Text", time: 30});
+   await mcp_playwright_browser_wait_for({ text: "Expected Text", time: 30 });
    ```
 
 3. **Verify tab state before switching**:
@@ -239,17 +232,15 @@ for different machine types.
    ```javascript
    // Check current tab count
    const tabs = await mcp_playwright_browser_tab_list();
-   console.log('Current tabs:', tabs.length);
+   console.log("Current tabs:", tabs.length);
    ```
 
 4. **Low-Performance Machine Specific**:
-
    - Use longer timeouts for all browser operations
    - Add buffer time between tab operations
    - Check browser memory usage and restart if needed
 
 5. **High-Performance Machine Specific**:
-
    - Standard timeouts should be sufficient
    - If browser operations fail, check for system resource issues
 
@@ -279,21 +270,18 @@ for different machine types.
    ```
 
 2. **Browser Optimization**:
-
    - Use Chrome/Edge with hardware acceleration disabled
    - Close unnecessary browser tabs
    - Restart browser between test scenarios
    - Use incognito/private browsing mode
 
 3. **System Resource Management**:
-
    - Close background applications
    - Disable unnecessary Windows services
    - Ensure minimum 4GB RAM available
    - Check disk space (minimum 5GB free)
 
 4. **Timeout Adjustments**:
-
    - Double all standard timeouts
    - Add 10-15 second buffer between operations
    - Use retry logic for critical operations
@@ -312,17 +300,15 @@ for different machine types.
 
    ```javascript
    // Add small delays for server processing
-   await mcp_playwright_browser_wait_for({time: 1});
+   await mcp_playwright_browser_wait_for({ time: 1 });
    ```
 
 2. **Check for Race Conditions**:
-
    - Verify server state before proceeding
    - Add explicit state checks
    - Use proper synchronization
 
 3. **Optimize for Speed**:
-
    - Use shorter timeouts where appropriate
    - Parallel operations where possible
    - Skip unnecessary waits
@@ -342,7 +328,7 @@ Get-Content logs/e2e_test/server.log -Tail 50
 
 # Check server health endpoint
 
-Invoke-WebRequest -Uri "http://localhost:54731/monitoring/health" -UseBasicParsing
+Invoke-WebRequest -Uri "http://localhost:54731/v1/monitoring/health" -UseBasicParsing
 ```
 
 ### Check Database State
@@ -362,16 +348,20 @@ $env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "SELE
 
 ```javascript
 // Get all messages in current tab
-const messages = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
-console.log('Current messages:', messages);
+const messages = await mcp_playwright_browser_evaluate({
+  function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())",
+});
+console.log("Current messages:", messages);
 
 // Get current room information
-const roomInfo = await mcp_playwright_browser_evaluate({function: "() => document.querySelector('.room-description')?.textContent.trim()"});
-console.log('Current room:', roomInfo);
+const roomInfo = await mcp_playwright_browser_evaluate({
+  function: "() => document.querySelector('.room-description')?.textContent.trim()",
+});
+console.log("Current room:", roomInfo);
 
 // Check WebSocket connection
-const wsStatus = await mcp_playwright_browser_evaluate({function: "() => window.websocket?.readyState"});
-console.log('WebSocket status:', wsStatus);
+const wsStatus = await mcp_playwright_browser_evaluate({ function: "() => window.websocket?.readyState" });
+console.log("WebSocket status:", wsStatus);
 ```
 
 ## Emergency Recovery Procedures
@@ -410,7 +400,7 @@ If all else fails:
 
    # Check server health
 
-   Invoke-WebRequest -Uri "http://localhost:54731/monitoring/health" -UseBasicParsing
+   Invoke-WebRequest -Uri "http://localhost:54731/v1/monitoring/health" -UseBasicParsing
    ```
 
 ## Prevention Strategies
@@ -418,19 +408,16 @@ If all else fails:
 ### Regular Maintenance
 
 1. **Daily**:
-
    - Check available disk space
    - Monitor system memory usage
    - Review server logs for errors
 
 2. **Weekly**:
-
    - Archive old log files
    - Clean up temporary files
    - Update system if needed
 
 3. **Before Major Test Sessions**:
-
    - Restart system for clean state
    - Close unnecessary applications
    - Verify all dependencies are current

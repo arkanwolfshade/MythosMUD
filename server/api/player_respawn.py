@@ -13,9 +13,8 @@ from ..dependencies import AsyncPersistenceDep, PlayerRespawnServiceDep, PlayerS
 from ..exceptions import LoggedHTTPException, ValidationError
 from ..game.player_service import PlayerService
 from ..models.user import User
-from ..schemas.player_respawn import RespawnResponse
+from ..schemas.players import RespawnResponse
 from ..structured_logging.enhanced_logging_config import get_logger
-from .player_helpers import create_error_context
 from .players import player_router
 
 if TYPE_CHECKING:
@@ -25,61 +24,61 @@ if TYPE_CHECKING:
 logger = get_logger(__name__)
 
 
-def _handle_respawn_validation_error(e: ValidationError, request: Request, current_user: User) -> None:
+def _handle_respawn_validation_error(e: ValidationError, _request: Request, current_user: User) -> None:
     """
     Convert ValidationError to appropriate HTTPException for respawn.
 
     Args:
         e: ValidationError exception
-        request: FastAPI Request object
+        _request: FastAPI Request object (unused; kept for API consistency).
         current_user: Current authenticated user
 
     Raises:
         LoggedHTTPException: With appropriate status code based on error message
     """
-    context = create_error_context(request, current_user)
     error_message = str(e).lower()
+    user_id = str(current_user.id) if current_user else None
 
     if "not found" in error_message:
-        raise LoggedHTTPException(status_code=404, detail="Player not found", context=context) from e
+        raise LoggedHTTPException(status_code=404, detail="Player not found", user_id=user_id) from e
     if "must be dead" in error_message:
         raise LoggedHTTPException(
             status_code=403,
             detail="Player must be dead to respawn (DP must be -10 or below)",
-            context=context,
+            user_id=user_id,
         ) from e
-    raise LoggedHTTPException(status_code=500, detail="Failed to respawn player", context=context) from e
+    raise LoggedHTTPException(status_code=500, detail="Failed to respawn player", user_id=user_id) from e
 
 
-def _handle_delirium_respawn_validation_error(e: ValidationError, request: Request, current_user: User) -> None:
+def _handle_delirium_respawn_validation_error(e: ValidationError, _request: Request, current_user: User) -> None:
     """
     Convert ValidationError to appropriate HTTPException for delirium respawn.
 
     Args:
         e: ValidationError exception
-        request: FastAPI Request object
+        _request: FastAPI Request object (unused; kept for API consistency).
         current_user: Current authenticated user
 
     Raises:
         LoggedHTTPException: With appropriate status code based on error message
     """
-    context = create_error_context(request, current_user)
     error_message = str(e).lower()
+    user_id = str(current_user.id) if current_user else None
 
     if "not found" in error_message:
-        raise LoggedHTTPException(status_code=404, detail="Player not found", context=context) from e
+        raise LoggedHTTPException(status_code=404, detail="Player not found", user_id=user_id) from e
     if "must be delirious" in error_message or "lucidity" in error_message:
         raise LoggedHTTPException(
             status_code=403,
             detail="Player must be delirious to respawn (lucidity must be -10 or below)",
-            context=context,
+            user_id=user_id,
         ) from e
-    raise LoggedHTTPException(status_code=500, detail="Failed to respawn player from delirium", context=context) from e
+    raise LoggedHTTPException(status_code=500, detail="Failed to respawn player from delirium", user_id=user_id) from e
 
 
 @player_router.post("/respawn-delirium", response_model=RespawnResponse)
 async def respawn_player_from_delirium(
-    request: Request,
+    _request: Request,
     current_user: User = Depends(get_current_active_user),
     player_service: PlayerService = PlayerServiceDep,
     respawn_service: "PlayerRespawnService" = PlayerRespawnServiceDep,
@@ -117,46 +116,52 @@ async def respawn_player_from_delirium(
                 )
                 return RespawnResponse(**result)
             except ValidationError as e:
-                _handle_delirium_respawn_validation_error(e, request, current_user)
+                _handle_delirium_respawn_validation_error(e, _request, current_user)
             except LoggedHTTPException:
                 raise
             except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Respawn errors unpredictable, must create error context
-                context = create_error_context(request, current_user, operation="respawn_player_from_delirium")
                 logger.error(
                     "Error in delirium respawn endpoint",
                     error=str(e),
                     exc_info=True,
-                    context=context.to_dict(),
+                    user_id=str(current_user.id) if current_user else None,
+                    operation="respawn_player_from_delirium",
                 )
                 raise LoggedHTTPException(
-                    status_code=500, detail="Failed to process delirium respawn request", context=context
+                    status_code=500,
+                    detail="Failed to process delirium respawn request",
+                    user_id=str(current_user.id) if current_user else None,
+                    operation="respawn_player_from_delirium",
                 ) from e
 
         # This should never be reached, but mypy needs it
         raise LoggedHTTPException(
             status_code=500,
             detail="No database session available",
-            context=create_error_context(request, current_user),
+            user_id=str(current_user.id) if current_user else None,
         )
 
     except LoggedHTTPException:
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Respawn errors unpredictable, must create error context
-        context = create_error_context(request, current_user, operation="respawn_player_from_delirium")
         logger.error(
             "Unexpected error in delirium respawn endpoint",
             error=str(e),
             exc_info=True,
-            context=context.to_dict(),
+            user_id=str(current_user.id) if current_user else None,
+            operation="respawn_player_from_delirium",
         )
         raise LoggedHTTPException(
-            status_code=500, detail="Unexpected error during delirium respawn", context=context
+            status_code=500,
+            detail="Unexpected error during delirium respawn",
+            user_id=str(current_user.id) if current_user else None,
+            operation="respawn_player_from_delirium",
         ) from e
 
 
 @player_router.post("/respawn", response_model=RespawnResponse)
 async def respawn_player(
-    request: Request,
+    _request: Request,
     current_user: User = Depends(get_current_active_user),
     player_service: PlayerService = PlayerServiceDep,
     respawn_service: "PlayerRespawnService" = PlayerRespawnServiceDep,
@@ -194,36 +199,44 @@ async def respawn_player(
                 )
                 return RespawnResponse(**result)
             except ValidationError as e:
-                _handle_respawn_validation_error(e, request, current_user)
+                _handle_respawn_validation_error(e, _request, current_user)
             except LoggedHTTPException:
                 raise
             except Exception as e:
-                context = create_error_context(request, current_user, operation="respawn_player")
                 logger.error(
                     "Error in respawn endpoint",
                     error=str(e),
                     exc_info=True,
-                    context=context.to_dict(),
+                    user_id=str(current_user.id) if current_user else None,
+                    operation="respawn_player",
                 )
                 raise LoggedHTTPException(
-                    status_code=500, detail="Failed to process respawn request", context=context
+                    status_code=500,
+                    detail="Failed to process respawn request",
+                    user_id=str(current_user.id) if current_user else None,
+                    operation="respawn_player",
                 ) from e
 
         # This should never be reached, but mypy needs it
         raise LoggedHTTPException(
             status_code=500,
             detail="No database session available",
-            context=create_error_context(request, current_user),
+            user_id=str(current_user.id) if current_user else None,
         )
 
     except LoggedHTTPException:
         raise
     except Exception as e:
-        context = create_error_context(request, current_user, operation="respawn_player")
         logger.error(
             "Unexpected error in respawn endpoint",
             error=str(e),
             exc_info=True,
-            context=context.to_dict(),
+            user_id=str(current_user.id) if current_user else None,
+            operation="respawn_player",
         )
-        raise LoggedHTTPException(status_code=500, detail="Unexpected error during respawn", context=context) from e
+        raise LoggedHTTPException(
+            status_code=500,
+            detail="Unexpected error during respawn",
+            user_id=str(current_user.id) if current_user else None,
+            operation="respawn_player",
+        ) from e

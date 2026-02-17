@@ -7,6 +7,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { API_V1_BASE } from '../utils/config';
 import { logger } from '../utils/logger';
 import { useResourceCleanup } from '../utils/resourceCleanup';
 import { inputSanitizer } from '../utils/security';
@@ -182,8 +183,9 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
       // CRITICAL FIX: Pass JWT via query parameter, not subprotocol
       // JWT tokens contain characters (dots, etc.) that are invalid in WebSocket subprotocols
       // This causes the browser to reject the handshake
+      // Production must be served over HTTPS so the same-origin WebSocket uses WSS.
       // MULTI-CHARACTER: Include character_id if provided to connect as the selected character
-      let wsUrl = `/api/ws?session_id=${encodeURIComponent(sessionId)}&token=${encodeURIComponent(authToken)}`;
+      let wsUrl = `${API_V1_BASE}/api/ws?session_id=${encodeURIComponent(sessionId)}&token=${encodeURIComponent(authToken)}`;
       if (characterId) {
         wsUrl += `&character_id=${encodeURIComponent(characterId)}`;
       }
@@ -212,7 +214,7 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
             // DEV-only: check NATS health via server
             if (import.meta.env.DEV) {
               try {
-                const healthResponse = await fetch('/api/monitoring/health', {
+                const healthResponse = await fetch(`${API_V1_BASE}/api/monitoring/health`, {
                   method: 'GET',
                   headers: { Authorization: `Bearer ${authToken}` },
                 });

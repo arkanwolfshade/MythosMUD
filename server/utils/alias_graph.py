@@ -27,7 +27,7 @@ class AliasGraph:
     AI: This is a critical security component preventing DoS via recursive aliases.
     """
 
-    def __init__(self, alias_storage: AliasStorage):
+    def __init__(self, alias_storage: AliasStorage) -> None:
         """
         Initialize alias graph analyzer.
 

@@ -100,26 +100,30 @@ def test_windows_safe_rotating_file_handler_do_rollover_no_backup(temp_log_dir):
     """Test doRollover() when backupCount is 0."""
     log_file = os.path.join(temp_log_dir, "test.log")
     handler = WindowsSafeRotatingFileHandler(log_file, maxBytes=10, backupCount=0)
-    handler.stream = open(log_file, "w", encoding="utf-8")
-    handler.stream.write("test content")
-    handler.stream.flush()
-    handler.doRollover()
-    # Should not create backup files
-    assert not Path(f"{log_file}.1").exists()
-    handler.close()
+    try:
+        handler.stream = open(log_file, "w", encoding="utf-8")
+        handler.stream.write("test content")
+        handler.stream.flush()
+        handler.doRollover()
+        # Should not create backup files
+        assert not Path(f"{log_file}.1").exists()
+    finally:
+        handler.close()
 
 
 def test_windows_safe_rotating_file_handler_do_rollover_with_backup(temp_log_dir):
     """Test doRollover() creates backup files."""
     log_file = os.path.join(temp_log_dir, "test.log")
     handler = WindowsSafeRotatingFileHandler(log_file, maxBytes=10, backupCount=2)
-    handler.stream = open(log_file, "w", encoding="utf-8")
-    handler.stream.write("test content")
-    handler.stream.flush()
-    handler.doRollover()
-    # Should create backup file
-    assert Path(f"{log_file}.1").exists()
-    handler.close()
+    try:
+        handler.stream = open(log_file, "w", encoding="utf-8")
+        handler.stream.write("test content")
+        handler.stream.flush()
+        handler.doRollover()
+        # Should create backup file
+        assert Path(f"{log_file}.1").exists()
+    finally:
+        handler.close()
 
 
 def test_windows_safe_rotating_file_handler_do_rollover_rotates_existing_backups(temp_log_dir):
@@ -128,57 +132,65 @@ def test_windows_safe_rotating_file_handler_do_rollover_rotates_existing_backups
     backup1 = Path(f"{log_file}.1")
     backup1.write_text("old backup 1")
     handler = WindowsSafeRotatingFileHandler(log_file, maxBytes=10, backupCount=2)
-    handler.stream = open(log_file, "w", encoding="utf-8")
-    handler.stream.write("new content")
-    handler.stream.flush()
-    handler.doRollover()
-    # Should rotate existing backup
-    assert Path(f"{log_file}.2").exists()
-    handler.close()
+    try:
+        handler.stream = open(log_file, "w", encoding="utf-8")
+        handler.stream.write("new content")
+        handler.stream.flush()
+        handler.doRollover()
+        # Should rotate existing backup
+        assert Path(f"{log_file}.2").exists()
+    finally:
+        handler.close()
 
 
 def test_windows_safe_rotating_file_handler_do_rollover_handles_os_error(temp_log_dir):
     """Test doRollover() handles OSError during rotation gracefully."""
     log_file = os.path.join(temp_log_dir, "test.log")
     handler = WindowsSafeRotatingFileHandler(log_file, maxBytes=10, backupCount=2)
-    handler.stream = open(log_file, "w", encoding="utf-8")
-    handler.stream.write("test content")
-    handler.stream.flush()
+    try:
+        handler.stream = open(log_file, "w", encoding="utf-8")
+        handler.stream.write("test content")
+        handler.stream.flush()
 
-    with patch("os.rename", side_effect=OSError("Permission denied")):
-        # Should not raise, should fall back to copy-then-truncate
-        handler.doRollover()
-    handler.close()
+        with patch("os.rename", side_effect=OSError("Permission denied")):
+            # Should not raise, should fall back to copy-then-truncate
+            handler.doRollover()
+    finally:
+        handler.close()
 
 
 def test_windows_safe_rotating_file_handler_do_rollover_windows_platform(temp_log_dir):
     """Test doRollover() uses copy-then-truncate on Windows."""
     log_file = os.path.join(temp_log_dir, "test.log")
     handler = WindowsSafeRotatingFileHandler(log_file, maxBytes=10, backupCount=1)
-    handler.stream = open(log_file, "w", encoding="utf-8")
-    handler.stream.write("test content")
-    handler.stream.flush()
+    try:
+        handler.stream = open(log_file, "w", encoding="utf-8")
+        handler.stream.write("test content")
+        handler.stream.flush()
 
-    with patch("sys.platform", "win32"):
-        with patch("server.structured_logging.windows_safe_rotation._copy_then_truncate") as mock_copy:
-            handler.doRollover()
-            mock_copy.assert_called_once()
-    handler.close()
+        with patch("sys.platform", "win32"):
+            with patch("server.structured_logging.windows_safe_rotation._copy_then_truncate") as mock_copy:
+                handler.doRollover()
+                mock_copy.assert_called_once()
+    finally:
+        handler.close()
 
 
 def test_windows_safe_rotating_file_handler_do_rollover_non_windows_platform(temp_log_dir):
     """Test doRollover() uses rename on non-Windows platforms."""
     log_file = os.path.join(temp_log_dir, "test.log")
     handler = WindowsSafeRotatingFileHandler(log_file, maxBytes=10, backupCount=1)
-    handler.stream = open(log_file, "w", encoding="utf-8")
-    handler.stream.write("test content")
-    handler.stream.flush()
+    try:
+        handler.stream = open(log_file, "w", encoding="utf-8")
+        handler.stream.write("test content")
+        handler.stream.flush()
 
-    with patch("sys.platform", "linux"):
-        with patch("os.rename") as mock_rename:
-            handler.doRollover()
-            mock_rename.assert_called()
-    handler.close()
+        with patch("sys.platform", "linux"):
+            with patch("os.rename") as mock_rename:
+                handler.doRollover()
+                mock_rename.assert_called()
+    finally:
+        handler.close()
 
 
 def test_windows_safe_rotating_file_handler_do_rollover_no_stream(temp_log_dir):

@@ -4,7 +4,7 @@ Aggressive mob NPC type for MythosMUD.
 This module provides the AggressiveMobNPC class with hunting and territorial behaviors.
 """
 
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, Any
 
 from ..structured_logging.enhanced_logging_config import get_logger
 from .npc_base import NPCBase
@@ -25,7 +25,7 @@ class AggressiveMobNPC(NPCBase):
         npc_id: str,
         event_bus: "EventBus | None" = None,
         event_reaction_system: "NPCEventReactionSystem | None" = None,
-    ):
+    ) -> None:
         """Initialize aggressive mob NPC."""
         super().__init__(definition, npc_id, event_bus, event_reaction_system)
         self._targets: list[str] = []
@@ -93,12 +93,11 @@ class AggressiveMobNPC(NPCBase):
             attack_damage = self._behavior_config.get("attack_damage", 1)
             logger.info("NPC attacked target", npc_id=self.npc_id, target_id=target_id, damage=attack_damage)
 
-            # Use combat integration for attack handling
+            # Use combat integration for attack handling when we have a running event loop
             if hasattr(self, "combat_integration") and self.combat_integration:
                 import asyncio
 
                 try:
-                    # Try to get running event loop
                     asyncio.get_running_loop()
                     # Fire-and-forget: create task for async call
                     asyncio.create_task(
@@ -106,33 +105,28 @@ class AggressiveMobNPC(NPCBase):
                             self.npc_id, target_id, self.current_room, attack_damage, "physical", self.get_stats()
                         )
                     )
-                    # Return True immediately (attack is queued)
                     return True
                 except RuntimeError:
-                    # No running loop - use asyncio.run() if possible
-                    try:
-                        success = cast(
-                            bool,
-                            asyncio.run(
-                                self.combat_integration.handle_npc_attack(
-                                    self.npc_id,
-                                    target_id,
-                                    self.current_room,
-                                    attack_damage,
-                                    "physical",
-                                    self.get_stats(),
-                                )
-                            ),
+                    # No running loop - do not use asyncio.run(); delegate via event bus if available
+                    if self.event_bus:
+                        from ..events.event_types import NPCAttacked
+
+                        self.event_bus.publish(
+                            NPCAttacked(
+                                npc_id=self.npc_id,
+                                target_id=target_id,
+                                room_id=self.current_room or "unknown",
+                                damage=attack_damage,
+                                attack_type="physical",
+                            )
                         )
-                        return success
-                    except (RuntimeError, TypeError, AttributeError) as e:
-                        logger.error(
-                            "Failed to execute NPC attack",
-                            npc_id=self.npc_id,
-                            error=str(e),
-                            error_type=type(e).__name__,
-                        )
-                        return False
+                        return True
+                    logger.warning(
+                        "NPC attack called without event loop and no event_bus; attack dropped",
+                        npc_id=self.npc_id,
+                        target_id=target_id,
+                    )
+                    return False
             else:
                 # Fallback to direct event publishing
                 if self.event_bus:

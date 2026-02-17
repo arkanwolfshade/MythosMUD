@@ -15,7 +15,7 @@ import asyncpg
 
 from ..exceptions import ValidationError
 from ..structured_logging.enhanced_logging_config import get_logger
-from ..utils.error_logging import create_error_context, log_and_raise
+from ..utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)
 
@@ -56,7 +56,7 @@ def _get_emote_validator() -> Optional["SchemaValidator"]:
 class EmoteService:
     """Service for managing predefined emote actions and their messages."""
 
-    def __init__(self, emote_file_path: str | None = None):
+    def __init__(self, emote_file_path: str | None = None) -> None:
         """
         Initialize the EmoteService.
 
@@ -75,7 +75,7 @@ class EmoteService:
         """Load emote definitions from PostgreSQL database."""
         result_container: dict[str, Any] = {"emotes": {}, "aliases": {}, "error": None}
 
-        def run_async():
+        def run_async() -> None:
             new_loop = asyncio.new_event_loop()
             asyncio.set_event_loop(new_loop)
             try:
@@ -232,14 +232,12 @@ class EmoteService:
         """
         emote_def = self.get_emote_definition(command)
         if not emote_def:
-            context = create_error_context()
-            context.metadata["command"] = command
-            context.metadata["player_name"] = player_name
-            context.metadata["operation"] = "format_emote_messages"
             log_and_raise(
                 ValidationError,
                 f"Unknown emote: {command}",
-                context=context,
+                operation="format_emote_messages",
+                command=command,
+                player_name=player_name,
                 details={"command": command, "player_name": player_name},
                 user_friendly="Unknown emote command",
             )

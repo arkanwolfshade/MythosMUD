@@ -26,7 +26,7 @@ from sqlalchemy.pool import NullPool
 
 from .exceptions import ValidationError
 from .structured_logging.enhanced_logging_config import get_logger
-from .utils.error_logging import create_error_context, log_and_raise
+from .utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)
 
@@ -52,9 +52,6 @@ def _initialize_npc_database() -> None:
     if _npc_engine is not None:
         return
 
-    context = create_error_context()
-    context.metadata["operation"] = "npc_database_initialization"
-
     # Import config here to avoid circular imports
     try:
         from .config import get_config
@@ -62,7 +59,7 @@ def _initialize_npc_database() -> None:
         log_and_raise(
             ValidationError,
             "Failed to import config - configuration system unavailable",
-            context=context,
+            operation="npc_database_initialization",
             details={"import_error": str(e)},
             user_friendly="Critical system error: configuration system not available",
         )
@@ -86,7 +83,7 @@ def _initialize_npc_database() -> None:
             log_and_raise(
                 ValidationError,
                 f"Failed to load configuration: {e}",
-                context=context,
+                operation="npc_database_initialization",
                 details={"config_error": str(e)},
                 user_friendly="NPC database cannot be initialized: configuration not loaded or invalid",
             )
@@ -101,7 +98,8 @@ def _initialize_npc_database() -> None:
         log_and_raise(
             ValidationError,
             f"Unsupported database URL: {_npc_database_url}. Only PostgreSQL is supported.",
-            context=context,
+            operation="npc_database_initialization",
+            database_url=_npc_database_url,
             details={"database_url": _npc_database_url},
             user_friendly="NPC database configuration error - PostgreSQL required",
         )
@@ -223,10 +221,7 @@ async def get_npc_session() -> AsyncGenerator[AsyncSession, None]:
     Yields:
         AsyncSession: Database session for async operations
     """
-    context = create_error_context()
-    context.metadata["operation"] = "npc_database_session"
-
-    logger.debug("Creating NPC database session")
+    logger.debug("Creating NPC database session", operation="npc_database_session")
     # Prefer existing session maker if already set (e.g., tests mocking it)
     global _npc_async_session_maker  # pylint: disable=global-statement,global-variable-not-assigned  # Reason: Singleton pattern, checking if None before assignment
     if _npc_async_session_maker is None:
@@ -243,11 +238,9 @@ async def get_npc_session() -> AsyncGenerator[AsyncSession, None]:
             logger.debug("NPC database session created successfully")
             yield session
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Database session errors unpredictable, must log and rollback
-            context.metadata["error_type"] = type(e).__name__
-            context.metadata["error_message"] = str(e)
             logger.error(
                 "NPC database session error",
-                context=context.to_dict(),
+                operation="npc_database_session",
                 error=str(e),
                 error_type=type(e).__name__,
             )
@@ -257,7 +250,7 @@ async def get_npc_session() -> AsyncGenerator[AsyncSession, None]:
             except Exception as rollback_error:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Rollback errors unpredictable, must log but not fail
                 logger.error(
                     "Failed to rollback NPC database session",
-                    context=context.to_dict(),
+                    operation="npc_database_session",
                     rollback_error=str(rollback_error),
                 )
             raise
@@ -282,10 +275,7 @@ async def init_npc_db() -> None:
 
     To create tables, use the SQL script db/authoritative_schema.sql.
     """
-    context = create_error_context()
-    context.metadata["operation"] = "init_npc_db"
-
-    logger.info("Initializing NPC database connection")
+    logger.info("Initializing NPC database connection", operation="init_npc_db")
 
     try:
         # Import all NPC models to ensure they're registered with metadata
@@ -307,7 +297,7 @@ async def init_npc_db() -> None:
             log_and_raise(
                 ValidationError,
                 "NPC database engine is None - initialization failed",
-                context=context,
+                operation="init_npc_db",
                 user_friendly="Critical system error: NPC database not available",
             )
         async with engine.begin() as conn:
@@ -316,11 +306,9 @@ async def init_npc_db() -> None:
 
         logger.info("NPC database initialization complete - DDL must be applied separately via SQL scripts")
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Database initialization errors unpredictable, must log with context
-        context.metadata["error_type"] = type(e).__name__
-        context.metadata["error_message"] = str(e)
         logger.error(
             "NPC database initialization failed",
-            context=context.to_dict(),
+            operation="init_npc_db",
             error=str(e),
             error_type=type(e).__name__,
         )
@@ -331,10 +319,7 @@ async def close_npc_db() -> None:
     """Close NPC database connections."""
     global _npc_engine, _npc_async_session_maker, _npc_creation_loop_id  # pylint: disable=global-statement  # Reason: Singleton pattern for database engine cleanup
 
-    context = create_error_context()
-    context.metadata["operation"] = "close_npc_db"
-
-    logger.info("Closing NPC database connections")
+    logger.info("Closing NPC database connections", operation="close_npc_db")
     try:
         engine = get_npc_engine()  # Initialize if needed
         if engine is not None:
@@ -393,11 +378,9 @@ async def close_npc_db() -> None:
                 _npc_creation_loop_id = None
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Cleanup errors unpredictable, best effort only
         # Only log, don't raise - best effort cleanup
-        context.metadata["error_type"] = type(e).__name__
-        context.metadata["error_message"] = str(e)
         logger.warning(
             "Error closing NPC database connections",
-            context=context.to_dict(),
+            operation="close_npc_db",
             error=str(e),
             error_type=type(e).__name__,
         )
@@ -450,13 +433,11 @@ def get_npc_database_path() -> Path | None:
         # PostgreSQL doesn't have a file path
         return None
 
-    context = create_error_context()
-    context.metadata["operation"] = "get_npc_database_path"
-    context.metadata["database_url"] = _npc_database_url
     log_and_raise(
         ValidationError,
         f"Unsupported NPC database URL: {_npc_database_url}. Only PostgreSQL is supported.",
-        context=context,
+        operation="get_npc_database_path",
+        database_url=_npc_database_url,
         details={"database_url": _npc_database_url},
         user_friendly="Unsupported NPC database configuration - PostgreSQL required",
     )

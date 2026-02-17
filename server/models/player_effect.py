@@ -4,11 +4,11 @@ Player effect model for the effects system (ADR-009).
 Persistent, tick-based status effects stored in a separate player_effects table.
 """
 
-from datetime import UTC, datetime
+from datetime import datetime
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
-from sqlalchemy import DateTime, ForeignKey, Integer, String
+from sqlalchemy import DateTime, ForeignKey, Integer, String, func
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -49,7 +49,7 @@ class PlayerEffect(Base):
     visibility_level: Mapped[str] = mapped_column(String(length=32), nullable=False, default="visible")
     created_at: Mapped[datetime] = mapped_column(
         DateTime(),
-        default=lambda: datetime.now(UTC).replace(tzinfo=None),
+        insert_default=func.now(),  # pylint: disable=not-callable  # func.now() callable at runtime
         nullable=False,
     )
 

@@ -12,7 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..exceptions import DatabaseError
 from ..structured_logging.enhanced_logging_config import get_logger
-from ..utils.error_logging import create_error_context, log_and_raise
+from ..utils.error_logging import log_and_raise
 from .container_data import ContainerData
 from .container_helpers import parse_jsonb_column
 from .container_persistence_async import fetch_container_items_async
@@ -50,9 +50,6 @@ async def _build_container_data_from_row_async(
 
 async def get_containers_by_room_id_async(session: AsyncSession, room_id: str) -> list[ContainerData]:
     """Get all containers in a room (async)."""
-    context = create_error_context()
-    context.metadata["operation"] = "get_containers_by_room_id_async"
-    context.metadata["room_id"] = room_id
     try:
         result = await session.execute(
             text("""
@@ -77,7 +74,8 @@ async def get_containers_by_room_id_async(session: AsyncSession, room_id: str) -
         log_and_raise(
             DatabaseError,
             f"Database error retrieving containers by room_id: {e}",
-            context=context,
+            operation="get_containers_by_room_id_async",
+            room_id=room_id,
             details={"room_id": room_id, "error": str(e)},
             user_friendly="Failed to retrieve containers",
         )
@@ -86,9 +84,6 @@ async def get_containers_by_room_id_async(session: AsyncSession, room_id: str) -
 
 async def get_containers_by_entity_id_async(session: AsyncSession, entity_id: UUID) -> list[ContainerData]:
     """Get all containers owned by an entity (async)."""
-    context = create_error_context()
-    context.metadata["operation"] = "get_containers_by_entity_id_async"
-    context.metadata["entity_id"] = str(entity_id)
     entity_id_str = str(entity_id) if isinstance(entity_id, UUID) else entity_id
     try:
         result = await session.execute(
@@ -114,7 +109,8 @@ async def get_containers_by_entity_id_async(session: AsyncSession, entity_id: UU
         log_and_raise(
             DatabaseError,
             f"Database error retrieving containers by entity_id: {e}",
-            context=context,
+            operation="get_containers_by_entity_id_async",
+            entity_id=str(entity_id),
             details={"entity_id": str(entity_id), "error": str(e)},
             user_friendly="Failed to retrieve containers",
         )
@@ -125,8 +121,6 @@ async def get_decayed_containers_async(
     session: AsyncSession, current_time: datetime | None = None
 ) -> list[ContainerData]:
     """Get all decayed containers (async)."""
-    context = create_error_context()
-    context.metadata["operation"] = "get_decayed_containers_async"
     if current_time is None:
         current_time = datetime.now(UTC)
     else:
@@ -158,7 +152,7 @@ async def get_decayed_containers_async(
         log_and_raise(
             DatabaseError,
             f"Database error retrieving decayed containers: {e}",
-            context=context,
+            operation="get_decayed_containers_async",
             details={"current_time": current_time.isoformat(), "error": str(e)},
             user_friendly="Failed to retrieve decayed containers",
         )

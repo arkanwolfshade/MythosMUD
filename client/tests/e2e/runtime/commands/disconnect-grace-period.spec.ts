@@ -36,8 +36,10 @@ test.describe('Disconnect Grace Period', () => {
     // Simulate unintentional disconnect for AW (close context)
     await awContext.context.close();
 
-    // Wait for grace period to activate
-    await ithaquaContext.page.waitForTimeout(2000);
+    await ithaquaContext.page
+      .getByTestId('occupants-panel')
+      .waitFor({ state: 'visible', timeout: 5000 })
+      .catch(() => {});
 
     // Check for linkdead indicator in room occupants
     const occupantsRaw = await ithaquaContext.page.evaluate(() => {

@@ -9,7 +9,7 @@ from typing import Any
 
 from ..exceptions import ValidationError
 from ..structured_logging.enhanced_logging_config import get_logger
-from ..utils.enhanced_error_logging import create_error_context, log_and_raise_enhanced
+from ..utils.enhanced_error_logging import log_and_raise_enhanced
 
 logger = get_logger(__name__)
 
@@ -41,14 +41,12 @@ class PlayerStateService:
         player = await self.persistence.get_player_by_id(player_id)
         if not player:
             logger.warning("Player not found for lucidity loss", player_id=player_id)
-            context = create_error_context()
-            context.metadata["player_id"] = player_id
-            context.metadata["operation"] = "apply_lucidity_loss"
             log_and_raise_enhanced(
                 ValidationError,
                 f"Player not found: {player_id}",
-                context=context,
-                details={"player_id": player_id},
+                player_id=str(player_id),
+                operation="apply_lucidity_loss",
+                details={"player_id": str(player_id)},
                 user_friendly="Player not found",
             )
 
@@ -76,14 +74,12 @@ class PlayerStateService:
         player = await self.persistence.get_player_by_id(player_id)
         if not player:
             logger.warning("Player not found for fear application", player_id=player_id)
-            context = create_error_context()
-            context.metadata["player_id"] = player_id
-            context.metadata["operation"] = "apply_fear"
             log_and_raise_enhanced(
                 ValidationError,
                 f"Player not found: {player_id}",
-                context=context,
-                details={"player_id": player_id},
+                player_id=str(player_id),
+                operation="apply_fear",
+                details={"player_id": str(player_id)},
                 user_friendly="Player not found",
             )
 
@@ -111,14 +107,12 @@ class PlayerStateService:
         player = await self.persistence.get_player_by_id(player_id)
         if not player:
             logger.warning("Player not found for corruption application", player_id=player_id)
-            context = create_error_context()
-            context.metadata["player_id"] = player_id
-            context.metadata["operation"] = "apply_corruption"
             log_and_raise_enhanced(
                 ValidationError,
                 f"Player not found: {player_id}",
-                context=context,
-                details={"player_id": player_id},
+                player_id=str(player_id),
+                operation="apply_corruption",
+                details={"player_id": str(player_id)},
                 user_friendly="Player not found",
             )
 
@@ -146,14 +140,12 @@ class PlayerStateService:
         player = await self.persistence.get_player_by_id(player_id)
         if not player:
             logger.warning("Player not found for occult knowledge gain", player_id=player_id)
-            context = create_error_context()
-            context.metadata["player_id"] = player_id
-            context.metadata["operation"] = "gain_occult_knowledge"
             log_and_raise_enhanced(
                 ValidationError,
                 f"Player not found: {player_id}",
-                context=context,
-                details={"player_id": player_id},
+                player_id=str(player_id),
+                operation="gain_occult_knowledge",
+                details={"player_id": str(player_id)},
                 user_friendly="Player not found",
             )
 
@@ -180,14 +172,12 @@ class PlayerStateService:
         player = await self.persistence.get_player_by_id(player_id)
         if not player:
             logger.warning("Player not found for healing", player_id=player_id)
-            context = create_error_context()
-            context.metadata["player_id"] = player_id
-            context.metadata["operation"] = "heal_player"
             log_and_raise_enhanced(
                 ValidationError,
                 f"Player not found: {player_id}",
-                context=context,
-                details={"player_id": player_id},
+                player_id=str(player_id),
+                operation="heal_player",
+                details={"player_id": str(player_id)},
                 user_friendly="Player not found",
             )
 
@@ -215,14 +205,12 @@ class PlayerStateService:
         player = await self.persistence.get_player_by_id(player_id)
         if not player:
             logger.warning("Player not found for damage", player_id=player_id)
-            context = create_error_context()
-            context.metadata["player_id"] = player_id
-            context.metadata["operation"] = "damage_player"
             log_and_raise_enhanced(
                 ValidationError,
                 f"Player not found: {player_id}",
-                context=context,
-                details={"player_id": player_id},
+                player_id=str(player_id),
+                operation="damage_player",
+                details={"player_id": str(player_id)},
                 user_friendly="Player not found",
             )
 

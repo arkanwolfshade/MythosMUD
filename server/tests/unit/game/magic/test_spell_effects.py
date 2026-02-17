@@ -11,7 +11,7 @@ import pytest
 
 from server.game.magic.spell_effects import SpellEffects
 from server.models.spell import SpellEffectType
-from server.schemas.target_resolution import TargetMatch, TargetType
+from server.schemas.shared import TargetMatch, TargetType
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
 # pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions

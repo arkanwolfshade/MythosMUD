@@ -182,6 +182,7 @@ def test_schedule_entry():
         category="routine",
         start_hour=9,
         end_hour=17,
+        days=["Monday"],
     )
 
     assert schedule.id == "test_schedule"
@@ -189,7 +190,7 @@ def test_schedule_entry():
     assert schedule.category == "routine"
     assert schedule.start_hour == 9
     assert schedule.end_hour == 17
-    assert schedule.days == []
+    assert schedule.days == ["Monday"]
     assert schedule.applies_to == []
     assert schedule.effects == []
 
@@ -216,6 +217,7 @@ def test_schedule_collection():
             category="routine",
             start_hour=9,
             end_hour=17,
+            days=["Monday"],
         ),
     ]
     collection = ScheduleCollection(schedules=schedules)
@@ -235,6 +237,7 @@ def test_schedule_collection_load_file():
                     "category": "routine",
                     "start_hour": 9,
                     "end_hour": 17,
+                    "days": ["Monday"],
                 }
             ]
         }

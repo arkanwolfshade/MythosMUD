@@ -203,7 +203,7 @@ def rotate_log_files(env_log_dir: Path) -> None:
 
                 except (OSError, PermissionError) as e:
                     if attempt < max_retries - 1:
-                        # Wait before retrying
+                        # Wait before retrying. Sync file-handling path only; not used from async request handlers.
                         time.sleep(retry_delay)
                         retry_delay *= 2  # Exponential backoff
                     else:

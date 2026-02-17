@@ -49,9 +49,8 @@ test.describe('Muting System and Emotes', () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    // Ensure Ithaqua is muted
     await executeCommand(awContext.page, 'mute Ithaqua');
-    await awContext.page.waitForTimeout(1000);
+    await waitForMessage(awContext.page, /muted|Ithaqua/, 5000).catch(() => {});
 
     // Ithaqua uses dance emote
     await executeCommand(ithaquaContext.page, 'dance');
@@ -61,8 +60,11 @@ test.describe('Muting System and Emotes', () => {
       // Message may succeed even if format differs
     });
 
-    // Wait a bit for message routing
-    await awContext.page.waitForTimeout(3000);
+    try {
+      await expect(awContext.page.locator('[data-message-text]').first()).toBeVisible({ timeout: 5000 });
+    } catch {
+      // Message may or may not appear
+    }
 
     // Verify AW does NOT see Ithaqua's emote
     const awMessages = await getMessages(awContext.page);

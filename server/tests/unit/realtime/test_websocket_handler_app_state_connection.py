@@ -304,13 +304,9 @@ async def test_handle_websocket_connection_with_room_and_death(mock_websocket, m
                             new_callable=AsyncMock,
                         ):
                             with patch("server.realtime.websocket_handler._cleanup_connection", new_callable=AsyncMock):
-                                with patch(
-                                    "server.async_persistence.get_async_persistence",
-                                    return_value=mock_async_persistence,
-                                ):
-                                    await handle_websocket_connection(
-                                        mock_websocket, player_id, None, mock_ws_connection_manager
-                                    )
+                                await handle_websocket_connection(
+                                    mock_websocket, player_id, None, mock_ws_connection_manager
+                                )
 
 
 @pytest.mark.asyncio

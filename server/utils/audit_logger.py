@@ -33,7 +33,7 @@ class AuditLogger:
     AI: Audit logs should be immutable and stored separately from regular logs.
     """
 
-    def __init__(self, log_directory: str | None = None):
+    def __init__(self, log_directory: str | None = None) -> None:
         """
         Initialize audit logger.
 

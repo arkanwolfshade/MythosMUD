@@ -12,28 +12,31 @@ function extractRoomMetadata(roomData: Room): Omit<Room, 'players' | 'npcs' | 'o
 }
 
 function hasOccupantData(room: Room): boolean {
-  return (
-    (room.players != null && room.players.length > 0) ||
-    (room.npcs != null && room.npcs.length > 0) ||
-    (room.occupants != null && room.occupants.length > 0)
-  );
+  return (room.players != null && room.players.length > 0) || (room.npcs != null && room.npcs.length > 0);
 }
 
 function getRoomDataFromEvent(event: GameEvent): Room | null {
   const raw = (event.data.room || event.data.room_data) as Room | undefined;
   if (!raw) return null;
-  const topOccupants = event.data.occupants as string[] | undefined;
   const topPlayers = event.data.players as string[] | undefined;
   const topNpcs = event.data.npcs as string[] | undefined;
-  const topCount = event.data.occupant_count as number | undefined;
-  if (topOccupants === undefined && topPlayers === undefined && topNpcs === undefined && topCount === undefined) {
+  if (topPlayers === undefined && topNpcs === undefined) {
     return raw as Room;
   }
+  const players = topPlayers ?? raw.players ?? [];
+  const npcs = topNpcs ?? raw.npcs ?? [];
+  const playersArr = Array.isArray(players) ? players : [];
+  const npcsArr = Array.isArray(npcs) ? npcs : [];
+  const occupants = [...playersArr, ...npcsArr];
+  const topCount = event.data.occupant_count as number | undefined;
+  const count = event.data.count as number | undefined;
+  const occupantCount = topCount ?? count ?? occupants.length;
   return {
     ...(raw as Room),
-    ...(topOccupants != null && { occupants: topOccupants, occupant_count: topCount ?? topOccupants.length }),
-    ...(topPlayers != null && { players: topPlayers }),
-    ...(topNpcs != null && { npcs: topNpcs }),
+    players: playersArr,
+    npcs: npcsArr,
+    occupants,
+    occupant_count: occupantCount,
   } as Room;
 }
 
@@ -42,16 +45,16 @@ function createInitialRoomState(
   roomData?: Room
 ): Room {
   const players = roomData?.players ?? [];
-  const npcs = roomData?.npcs;
-  const occupants = roomData?.occupants ?? [];
-  const fallbackCount =
-    occupants.length > 0 ? occupants.length : (Array.isArray(players) ? players.length : 0) + (npcs?.length ?? 0);
-  const occupant_count = roomData?.occupant_count ?? fallbackCount;
+  const npcs = roomData?.npcs ?? [];
+  const playersArr = Array.isArray(players) ? players : [];
+  const npcsArr = Array.isArray(npcs) ? npcs : [];
+  const occupants = [...playersArr, ...npcsArr];
+  const occupant_count = roomData?.occupant_count ?? occupants.length;
   return {
     ...roomMetadata,
-    players: Array.isArray(players) ? players : [],
-    npcs: Array.isArray(npcs) ? npcs : undefined,
-    occupants: Array.isArray(occupants) ? occupants : [],
+    players: playersArr,
+    npcs: npcsArr,
+    occupants,
     occupant_count: Number(occupant_count) || 0,
   };
 }
@@ -63,13 +66,17 @@ function createRoomUpdateWithPreservedOccupants(
   payloadRoom?: Room
 ): Room {
   const usePayloadOccupants = payloadRoom != null && hasOccupantData(payloadRoom);
+  const players = usePayloadOccupants ? (payloadRoom?.players ?? []) : (existingRoom.players ?? []);
+  const npcs = usePayloadOccupants ? (payloadRoom?.npcs ?? []) : (existingRoom.npcs ?? []);
+  const npcsArr = Array.isArray(npcs) ? npcs : [];
+  const occupants = [...players, ...npcsArr];
   const roomUpdate: Room = {
     ...existingRoom,
     ...roomMetadata,
-    players: usePayloadOccupants ? (payloadRoom?.players ?? []) : (existingRoom.players ?? []),
-    npcs: usePayloadOccupants ? payloadRoom?.npcs : existingRoom.npcs,
-    occupants: usePayloadOccupants ? (payloadRoom?.occupants ?? []) : (existingRoom.occupants ?? []),
-    occupant_count: usePayloadOccupants ? (payloadRoom?.occupant_count ?? 0) : (existingRoom.occupant_count ?? 0),
+    players,
+    npcs: npcsArr,
+    occupants,
+    occupant_count: usePayloadOccupants ? (payloadRoom?.occupant_count ?? occupants.length) : occupants.length,
   };
   if (roomIdChanged) {
     roomUpdate.players = [];
@@ -84,13 +91,12 @@ function createMinimalRoomFromOccupantsEvent(
   eventRoomId: string,
   players: string[] | undefined,
   npcs: string[] | undefined,
-  occupants: string[] | undefined,
   occupantCount: number | undefined
 ): Room {
   const finalPlayers = players ?? [];
   const finalNpcs = npcs ?? [];
-  const finalOccupants = occupants && Array.isArray(occupants) ? occupants : [...finalPlayers, ...finalNpcs];
-  const count = occupantCount !== undefined ? occupantCount : finalOccupants.length;
+  const occupants = [...finalPlayers, ...finalNpcs];
+  const count = occupantCount !== undefined ? occupantCount : occupants.length;
   return {
     id: eventRoomId,
     name: '',
@@ -98,7 +104,7 @@ function createMinimalRoomFromOccupantsEvent(
     exits: {},
     players: finalPlayers,
     npcs: finalNpcs,
-    occupants: finalOccupants,
+    occupants,
     occupant_count: count,
   };
 }
@@ -126,27 +132,22 @@ function handleStructuredOccupantsFormat(
   };
 }
 
-function handleLegacyOccupantsFormat(currentRoom: Room, occupants: string[], occupantCount: number | undefined): Room {
-  const count = occupantCount !== undefined ? occupantCount : occupants.length;
-  return {
-    ...currentRoom,
-    occupants,
-    occupant_count: count,
-    players: currentRoom.players ?? [],
-    npcs: currentRoom.npcs ?? [],
-  };
-}
-
 /** Derive room from game_state event */
 export function deriveRoomFromGameState(event: GameEvent): Room | null {
   const roomData = event.data.room as Room | undefined;
-  const occupants = event.data.occupants as string[] | undefined;
   if (!roomData) return null;
-  const roomWithOccupants: Room = {
+  const players = roomData.players ?? [];
+  const npcs = roomData.npcs ?? [];
+  const playersArr = Array.isArray(players) ? players : [];
+  const npcsArr = Array.isArray(npcs) ? npcs : [];
+  const occupants = [...playersArr, ...npcsArr];
+  return {
     ...roomData,
-    ...(occupants && { occupants, occupant_count: occupants.length }),
+    players: playersArr,
+    npcs: npcsArr,
+    occupants,
+    occupant_count: roomData.occupant_count ?? occupants.length,
   };
-  return roomWithOccupants;
 }
 
 /** Derive room from room_update event (pure; uses existingRoom) */
@@ -164,12 +165,19 @@ export function deriveRoomFromRoomUpdate(event: GameEvent, existingRoom: Room | 
 /** Derive room from room_state event (authoritative single source; replace, do not merge) */
 export function deriveRoomFromRoomState(event: GameEvent): Room | null {
   const roomData = event.data.room as Room | undefined;
-  const occupants = event.data.occupants as string[] | undefined;
-  const occupantCount = event.data.occupant_count as number | undefined;
   if (!roomData) return null;
+  const players = roomData.players ?? [];
+  const npcs = roomData.npcs ?? [];
+  const playersArr = Array.isArray(players) ? players : [];
+  const npcsArr = Array.isArray(npcs) ? npcs : [];
+  const occupants = [...playersArr, ...npcsArr];
+  const occupantCount = event.data.occupant_count as number | undefined;
   return {
     ...roomData,
-    ...(occupants != null && { occupants, occupant_count: occupantCount ?? occupants.length }),
+    players: playersArr,
+    npcs: npcsArr,
+    occupants,
+    occupant_count: occupantCount ?? roomData.occupant_count ?? occupants.length,
   } as Room;
 }
 
@@ -177,13 +185,12 @@ export function deriveRoomFromRoomState(event: GameEvent): Room | null {
 export function deriveRoomFromRoomOccupants(event: GameEvent, existingRoom: Room | null): Room | null {
   const players = event.data.players as string[] | undefined;
   const npcs = event.data.npcs as string[] | undefined;
-  const occupants = event.data.occupants as string[] | undefined;
   const occupantCount = event.data.count as number | undefined;
   const eventRoomId = event.room_id as string | undefined;
 
   if (!existingRoom) {
-    if (eventRoomId && (players !== undefined || npcs !== undefined || (occupants && Array.isArray(occupants)))) {
-      return createMinimalRoomFromOccupantsEvent(eventRoomId, players, npcs, occupants, occupantCount);
+    if (eventRoomId && (players !== undefined || npcs !== undefined)) {
+      return createMinimalRoomFromOccupantsEvent(eventRoomId, players, npcs, occupantCount);
     }
     return null;
   }
@@ -193,9 +200,6 @@ export function deriveRoomFromRoomOccupants(event: GameEvent, existingRoom: Room
   }
   if (players !== undefined || npcs !== undefined) {
     return handleStructuredOccupantsFormat(existingRoom, players, npcs, occupantCount);
-  }
-  if (occupants && Array.isArray(occupants)) {
-    return handleLegacyOccupantsFormat(existingRoom, occupants, occupantCount);
   }
   return null;
 }

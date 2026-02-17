@@ -1,0 +1,446 @@
+- generic [ref=e81]:
+  - generic [ref=e82]:
+    - generic [ref=e83]:
+      - generic [ref=e84]:
+        - button "Collapse header" [ref=e85]:
+          - img [ref=e86]
+        - generic [ref=e87]: "Player: Ithaqua"
+        - generic [ref=e88]: Connected
+      - generic [ref=e92]:
+        - generic [ref=e93]:
+          - generic [ref=e94]: Mythos Time
+          - generic [ref=e95]: 12:14 PM - January 4
+        - button "Exit the realm and return to login screen" [ref=e97] [cursor=pointer]:
+          - generic [ref=e98]:
+            - img [ref=e99]
+            - generic [ref=e102]: Exit the Realm
+    - generic [ref=e103]:
+      - generic [ref=e105]:
+        - generic [ref=e106]:
+          - generic [ref=e107]: Chat History
+          - generic [ref=e108]:
+            - button [ref=e109] [cursor=pointer]:
+              - img [ref=e110]
+            - button [ref=e111] [cursor=pointer]:
+              - img [ref=e112]
+        - generic [ref=e118]:
+          - generic [ref=e119]:
+            - generic [ref=e120]:
+              - img [ref=e121]
+              - heading "Chat" [level=3] [ref=e123]
+            - generic [ref=e124]:
+              - button [ref=e125] [cursor=pointer]:
+                - img [ref=e126]
+              - button [ref=e129] [cursor=pointer]:
+                - img [ref=e130]
+          - region "Channel Selection" [ref=e133]:
+            - generic [ref=e134]:
+              - generic [ref=e135]: "Channel:"
+              - generic [ref=e136]:
+                - combobox [ref=e137] [cursor=pointer]:
+                  - option "All Messages" [selected]
+                  - option "Say"
+                  - option "Local"
+                  - option "Global"
+                  - option "Whisper"
+                  - option "Party"
+                  - option "Reply"
+                  - option "System" [disabled]
+                - button "All Messages" [ref=e138] [cursor=pointer]:
+                  - img [ref=e139]
+                  - generic [ref=e141]: All Messages
+                  - img [ref=e142]
+          - generic [ref=e144]:
+            - button "All Messages" [ref=e145]
+            - generic [ref=e146]: (0 messages)
+          - log "Chat Messages" [ref=e147]:
+            - generic [ref=e149]:
+              - img [ref=e150]
+              - paragraph [ref=e152]: No messages yet. Start chatting to see messages here.
+      - generic [ref=e162]:
+        - generic [ref=e163]:
+          - generic [ref=e164]: Location
+          - generic [ref=e165]:
+            - button [ref=e166] [cursor=pointer]:
+              - img [ref=e167]
+            - button [ref=e168] [cursor=pointer]:
+              - img [ref=e169]
+        - generic [ref=e175]:
+          - generic [ref=e176]: Arkham City > Sanitarium > Main Foyer
+          - generic [ref=e177]: "Exits: East, West, South"
+      - generic [ref=e187]:
+        - generic [ref=e188]:
+          - generic [ref=e189]: Room Description
+          - generic [ref=e190]:
+            - button [ref=e191] [cursor=pointer]:
+              - img [ref=e192]
+            - button [ref=e193] [cursor=pointer]:
+              - img [ref=e194]
+        - generic [ref=e200]:
+          - generic [ref=e201]: Description
+          - generic [ref=e202]: A grand entrance hall that attempts to project an air of respectability, but fails miserably. The marble floor is cracked and stained, and the chandelier overhead flickers ominously. The walls are lined with portraits of past administrators, their stern faces seeming to judge all who pass beneath them. A reception desk stands to one side, its surface scarred and worn. The air is thick with the smell of disinfectant and something more organic - the scent of human suffering that has seeped into the very walls. The main entrance leads to a ramp, suggesting this place was designed to accommodate those who could no longer walk unaided.
+      - generic [ref=e212]:
+        - generic [ref=e213]:
+          - generic [ref=e214]: Occupants (3)
+          - generic [ref=e215]:
+            - button [ref=e216] [cursor=pointer]:
+              - img [ref=e217]
+            - button [ref=e218] [cursor=pointer]:
+              - img [ref=e219]
+        - generic [ref=e226]:
+          - generic [ref=e227]:
+            - generic [ref=e228]: Players (1)
+            - generic [ref=e230]:
+              - generic [ref=e231]: ●
+              - generic [ref=e232]: Ithaqua
+          - generic [ref=e233]:
+            - generic [ref=e234]: NPCs (2)
+            - generic [ref=e235]:
+              - generic [ref=e236]:
+                - generic [ref=e237]: ●
+                - generic [ref=e238]: Sanitarium patient
+              - generic [ref=e239]:
+                - generic [ref=e240]: ●
+                - generic [ref=e241]: Sanitarium patient
+      - generic [ref=e254]:
+        - generic [ref=e255]:
+          - generic [ref=e256]: Game Info
+          - generic [ref=e257]:
+            - button [ref=e258] [cursor=pointer]:
+              - img [ref=e259]
+            - button [ref=e260] [cursor=pointer]:
+              - img [ref=e261]
+        - generic [ref=e267]:
+          - generic [ref=e268]:
+            - generic [ref=e269]:
+              - img [ref=e270]
+              - generic [ref=e273]: Game Info
+            - generic [ref=e274]:
+              - button "Clear Filters" [ref=e275] [cursor=pointer]
+              - button "Clear Log" [ref=e276] [cursor=pointer]
+              - button "Download" [ref=e277] [cursor=pointer]
+          - generic [ref=e279]:
+            - combobox [ref=e280] [cursor=pointer]:
+              - option "All Messages" [selected]
+              - option "System"
+              - option "Emotes"
+              - option "Whispers"
+              - option "Shouts"
+              - option "Errors"
+              - option "Combat"
+            - textbox "Search messages..." [ref=e281]
+          - generic [ref=e282]:
+            - generic [ref=e478]:
+              - generic [ref=e479]: 20:29:03
+              - generic [ref=e480]: "[Tick 230]"
+            - generic [ref=e482]:
+              - generic [ref=e483]: 20:29:30
+              - generic [ref=e484]: You attack Dr. Francis Morgan for 1 damage. (19/20 DP)
+            - generic [ref=e486]:
+              - generic [ref=e487]: 20:29:30
+              - generic [ref=e488]: You attack Dr. Francis Morgan!
+            - generic [ref=e490]:
+              - generic [ref=e491]: 20:29:30
+              - generic [ref=e492]: "[Tick 460]"
+            - generic [ref=e496]:
+              - generic [ref=e497]: 20:29:37
+              - generic [ref=e498]: You attack Dr. Francis Morgan for 1 damage. (18/20 DP)
+            - generic [ref=e500]:
+              - generic [ref=e501]: 20:29:37
+              - generic [ref=e502]: Dr. Francis Morgan attacks you for 1 damage. (23/24 DP)
+            - generic [ref=e504]:
+              - generic [ref=e505]: 20:29:44
+              - generic [ref=e506]: You attack Dr. Francis Morgan for 1 damage. (17/20 DP)
+            - generic [ref=e508]:
+              - generic [ref=e509]: 20:29:44
+              - generic [ref=e510]: Dr. Francis Morgan attacks you for 1 damage. (22/24 DP)
+            - generic [ref=e512]:
+              - generic [ref=e513]: 20:29:51
+              - generic [ref=e514]: You attack Dr. Francis Morgan for 1 damage. (16/20 DP)
+            - generic [ref=e516]:
+              - generic [ref=e517]: 20:29:51
+              - generic [ref=e518]: Dr. Francis Morgan attacks you for 1 damage. (21/24 DP)
+            - generic [ref=e520]:
+              - generic [ref=e521]: 20:29:58
+              - generic [ref=e522]: "[Tick 690]"
+            - generic [ref=e524]:
+              - generic [ref=e525]: 20:29:58
+              - generic [ref=e526]: You attack Dr. Francis Morgan for 1 damage. (15/20 DP)
+            - generic [ref=e528]:
+              - generic [ref=e529]: 20:29:58
+              - generic [ref=e530]: Dr. Francis Morgan attacks you for 1 damage. (20/24 DP)
+            - generic [ref=e532]:
+              - generic [ref=e533]: 20:30:05
+              - generic [ref=e534]: You attack Dr. Francis Morgan for 1 damage. (14/20 DP)
+            - generic [ref=e536]:
+              - generic [ref=e537]: 20:30:06
+              - generic [ref=e538]: Dr. Francis Morgan attacks you for 1 damage. (19/24 DP)
+            - generic [ref=e540]:
+              - generic [ref=e541]: 20:30:13
+              - generic [ref=e542]: You attack Dr. Francis Morgan for 1 damage. (13/20 DP)
+            - generic [ref=e544]:
+              - generic [ref=e545]: 20:30:13
+              - generic [ref=e546]: Dr. Francis Morgan attacks you for 1 damage. (18/24 DP)
+            - generic [ref=e548]:
+              - generic [ref=e549]: 20:30:21
+              - generic [ref=e550]: You attack Dr. Francis Morgan for 1 damage. (12/20 DP)
+            - generic [ref=e552]:
+              - generic [ref=e553]: 20:30:21
+              - generic [ref=e554]: Dr. Francis Morgan attacks you for 1 damage. (17/24 DP)
+            - generic [ref=e556]:
+              - generic [ref=e557]: 20:30:26
+              - generic [ref=e558]: "[Tick 920]"
+            - generic [ref=e560]:
+              - generic [ref=e561]: 20:30:28
+              - generic [ref=e562]: You attack Dr. Francis Morgan for 1 damage. (11/20 DP)
+            - generic [ref=e564]:
+              - generic [ref=e565]: 20:30:29
+              - generic [ref=e566]: Dr. Francis Morgan attacks you for 1 damage. (16/24 DP)
+            - generic [ref=e568]:
+              - generic [ref=e569]: 20:30:36
+              - generic [ref=e570]: You attack Dr. Francis Morgan for 1 damage. (10/20 DP)
+            - generic [ref=e572]:
+              - generic [ref=e573]: 20:30:36
+              - generic [ref=e574]: Dr. Francis Morgan attacks you for 1 damage. (15/24 DP)
+            - generic [ref=e576]:
+              - generic [ref=e577]: 20:30:44
+              - generic [ref=e578]: You attack Dr. Francis Morgan for 1 damage. (9/20 DP)
+            - generic [ref=e580]:
+              - generic [ref=e581]: 20:30:44
+              - generic [ref=e582]: Dr. Francis Morgan attacks you for 1 damage. (14/24 DP)
+            - generic [ref=e584]:
+              - generic [ref=e585]: 20:30:51
+              - generic [ref=e586]: You attack Dr. Francis Morgan for 1 damage. (8/20 DP)
+            - generic [ref=e588]:
+              - generic [ref=e589]: 20:30:51
+              - generic [ref=e590]: Dr. Francis Morgan attacks you for 1 damage. (13/24 DP)
+            - generic [ref=e592]:
+              - generic [ref=e593]: 20:30:56
+              - generic [ref=e594]: "[Tick 1150]"
+            - generic [ref=e596]:
+              - generic [ref=e597]: 20:30:59
+              - generic [ref=e598]: You attack Dr. Francis Morgan for 1 damage. (7/20 DP)
+            - generic [ref=e600]:
+              - generic [ref=e601]: 20:30:59
+              - generic [ref=e602]: Dr. Francis Morgan attacks you for 1 damage. (12/24 DP)
+            - generic [ref=e604]:
+              - generic [ref=e605]: 20:31:07
+              - generic [ref=e606]: You attack Dr. Francis Morgan for 1 damage. (6/20 DP)
+            - generic [ref=e608]:
+              - generic [ref=e609]: 20:31:07
+              - generic [ref=e610]: Dr. Francis Morgan attacks you for 1 damage. (11/24 DP)
+            - generic [ref=e612]:
+              - generic [ref=e613]: 20:31:14
+              - generic [ref=e614]: You attack Dr. Francis Morgan for 1 damage. (5/20 DP)
+            - generic [ref=e616]:
+              - generic [ref=e617]: 20:31:14
+              - generic [ref=e618]: Dr. Francis Morgan attacks you for 1 damage. (10/24 DP)
+            - generic [ref=e620]:
+              - generic [ref=e621]: 20:31:16
+              - generic [ref=e622]: "[Time] The clock chimes 12:00 PM Mythos"
+            - generic [ref=e624]:
+              - generic [ref=e625]: 20:31:22
+              - generic [ref=e626]: You attack Dr. Francis Morgan for 1 damage. (4/20 DP)
+            - generic [ref=e628]:
+              - generic [ref=e629]: 20:31:22
+              - generic [ref=e630]: Dr. Francis Morgan attacks you for 1 damage. (9/24 DP)
+            - generic [ref=e632]:
+              - generic [ref=e633]: 20:31:25
+              - generic [ref=e634]: "[Tick 1380]"
+            - generic [ref=e636]:
+              - generic [ref=e637]: 20:31:29
+              - generic [ref=e638]: You attack Dr. Francis Morgan for 1 damage. (3/20 DP)
+            - generic [ref=e640]:
+              - generic [ref=e641]: 20:31:29
+              - generic [ref=e642]: Dr. Francis Morgan attacks you for 1 damage. (8/24 DP)
+            - generic [ref=e644]:
+              - generic [ref=e645]: 20:31:37
+              - generic [ref=e646]: You attack Dr. Francis Morgan for 1 damage. (2/20 DP)
+            - generic [ref=e648]:
+              - generic [ref=e649]: 20:31:37
+              - generic [ref=e650]: Dr. Francis Morgan attacks you for 1 damage. (7/24 DP)
+            - generic [ref=e652]:
+              - generic [ref=e653]: 20:31:44
+              - generic [ref=e654]: You attack Dr. Francis Morgan for 1 damage. (1/20 DP)
+            - generic [ref=e656]:
+              - generic [ref=e657]: 20:31:44
+              - generic [ref=e658]: Dr. Francis Morgan attacks you for 1 damage. (6/24 DP)
+            - generic [ref=e660]:
+              - generic [ref=e661]: 20:31:51
+              - generic [ref=e662]: You attack Dr. Francis Morgan for 1 damage. (0/20 DP)
+            - generic [ref=e664]:
+              - generic [ref=e665]: 20:31:51
+              - generic [ref=e666]: The Dr. Francis Morgan has been slain.
+            - generic [ref=e668]:
+              - generic [ref=e669]: 20:31:52
+              - generic [ref=e670]: Combat ended - one participant defeated
+            - generic [ref=e672]:
+              - generic [ref=e673]: 20:31:53
+              - generic [ref=e674]: "[Tick 1610]"
+            - generic [ref=e676]:
+              - generic [ref=e677]: 20:31:56
+              - generic [ref=e678]: Sanitarium patient left west.
+            - generic [ref=e680]:
+              - generic [ref=e681]: 20:31:56
+              - generic [ref=e682]: Sanitarium patient left east.
+            - generic [ref=e684]:
+              - generic [ref=e685]: 20:32:21
+              - generic [ref=e686]: "[Tick 1840]"
+            - generic [ref=e688]:
+              - generic [ref=e689]: 20:32:49
+              - generic [ref=e690]: "[Tick 2070]"
+            - generic [ref=e692]:
+              - generic [ref=e693]: 20:33:16
+              - generic [ref=e694]: "[Tick 2300]"
+            - generic [ref=e696]:
+              - generic [ref=e697]: 20:33:43
+              - generic [ref=e698]: "[Tick 2530]"
+            - generic [ref=e700]:
+              - generic [ref=e701]: 20:34:11
+              - generic [ref=e702]: "[Tick 2760]"
+            - generic [ref=e704]:
+              - generic [ref=e705]: 20:34:39
+              - generic [ref=e706]: "[Tick 2990]"
+            - generic [ref=e708]:
+              - generic [ref=e709]: 20:34:39
+              - generic [ref=e710]: No targets found matching 'Sanitarium patient'
+            - generic [ref=e712]:
+              - generic [ref=e713]: 20:34:40
+              - generic [ref=e714]: Sanitarium patient appears.
+            - generic [ref=e717]:
+              - generic [ref=e718]: 20:34:40
+              - generic [ref=e719]: Sanitarium patient appears.
+      - generic [ref=e297]:
+        - generic [ref=e298]:
+          - generic [ref=e299]: Character Info
+          - generic [ref=e300]:
+            - button [ref=e301] [cursor=pointer]:
+              - img [ref=e302]
+            - button [ref=e303] [cursor=pointer]:
+              - img [ref=e304]
+        - generic [ref=e310]:
+          - generic [ref=e311]:
+            - generic [ref=e312]:
+              - generic [ref=e313]: "Character:"
+              - generic [ref=e314]: Ithaqua
+            - generic [ref=e315]:
+              - generic [ref=e316]: "Profession:"
+              - generic [ref=e317]: Professor
+          - generic [ref=e318]:
+            - group "Health status" [ref=e319]:
+              - generic [ref=e320]:
+                - generic [ref=e321]:
+                  - generic [ref=e322]: Health
+                  - strong [ref=e323]:
+                    - text: "6"
+                    - generic [ref=e324]: / 24
+                - generic [ref=e325]:
+                  - generic [ref=e326]: Wounded
+                  - text: Vital signs wavering; invoke first-aid rites.
+              - meter [ref=e327]
+              - generic [ref=e330]:
+                - generic [ref=e331]: Posture
+                - generic [ref=e332]: standing
+            - group "Lucidity status" [ref=e333]:
+              - generic [ref=e334]:
+                - generic [ref=e335]:
+                  - generic [ref=e336]: Lucidity
+                  - strong [ref=e337]:
+                    - text: "32"
+                    - generic [ref=e338]: / 32
+                - generic [ref=e339]:
+                  - generic [ref=e340]: Lucid
+                  - text: Mind is steady and grounded.
+              - meter [ref=e341]
+            - group "Magic Points status" [ref=e343]:
+              - generic [ref=e345]:
+                - generic [ref=e346]: Magic Points
+                - strong [ref=e347]:
+                  - text: "18"
+                  - generic [ref=e348]: / 18
+              - meter [ref=e349]
+            - generic [ref=e351]:
+              - generic [ref=e352]: "Level:"
+              - generic [ref=e353]: "1"
+            - generic [ref=e354]:
+              - generic [ref=e355]: "XP:"
+              - generic [ref=e356]: "13"
+            - generic [ref=e357]:
+              - generic [ref=e358]: "Posture:"
+              - generic [ref=e359]: standing
+            - generic [ref=e360]:
+              - generic [ref=e361]: "In Combat:"
+              - generic [ref=e362]: "No"
+          - generic [ref=e363]:
+            - heading "Core Attributes:" [level=5] [ref=e364]
+            - generic [ref=e365]:
+              - generic [ref=e366]:
+                - generic [ref=e367]: "STR:"
+                - generic [ref=e368]: "75"
+              - generic [ref=e369]:
+                - generic [ref=e370]: "DEX:"
+                - generic [ref=e371]: "36"
+              - generic [ref=e372]:
+                - generic [ref=e373]: "CON:"
+                - generic [ref=e374]: "67"
+              - generic [ref=e375]:
+                - generic [ref=e376]: "SIZ:"
+                - generic [ref=e377]: "55"
+              - generic [ref=e378]:
+                - generic [ref=e379]: "INT:"
+                - generic [ref=e380]: "87"
+              - generic [ref=e381]:
+                - generic [ref=e382]: "POW:"
+                - generic [ref=e383]: "86"
+              - generic [ref=e384]:
+                - generic [ref=e385]: "EDU:"
+                - generic [ref=e386]: "32"
+              - generic [ref=e387]:
+                - generic [ref=e388]: "CHA:"
+                - generic [ref=e389]: "31"
+              - generic [ref=e390]:
+                - generic [ref=e391]: "LUCK:"
+                - generic [ref=e392]: "30"
+          - generic [ref=e393]:
+            - heading "Horror Stats:" [level=5] [ref=e394]
+            - generic [ref=e395]:
+              - generic [ref=e396]:
+                - generic [ref=e397]: "Occult:"
+                - generic [ref=e398]: "0"
+              - generic [ref=e399]:
+                - generic [ref=e400]: "Corruption:"
+                - generic [ref=e401]: "0"
+      - generic [ref=e411]:
+        - generic [ref=e412]:
+          - generic [ref=e413]: Command History
+          - generic [ref=e414]:
+            - button [ref=e415] [cursor=pointer]:
+              - img [ref=e416]
+            - button [ref=e417] [cursor=pointer]:
+              - img [ref=e418]
+        - generic [ref=e424]:
+          - generic [ref=e425]:
+            - generic [ref=e426]:
+              - img [ref=e427]
+              - heading "Command History" [level=3] [ref=e429]
+            - button "Clear" [ref=e493] [cursor=pointer]
+          - generic [ref=e431]:
+            - generic [ref=e494] [cursor=pointer]: attack Sanitarium patient
+            - generic [ref=e715] [cursor=pointer]: attack Dr. Francis Morgan
+      - generic [ref=e444]:
+        - generic [ref=e445]:
+          - generic [ref=e446]: Command Input
+          - generic [ref=e447]:
+            - button [ref=e448] [cursor=pointer]:
+              - img [ref=e449]
+            - button [ref=e450] [cursor=pointer]:
+              - img [ref=e451]
+        - generic [ref=e457]:
+          - generic [ref=e459]:
+            - img [ref=e460]
+            - generic [ref=e462]: Commands
+          - generic [ref=e464]:
+            - textbox "Enter game command (e.g., 'look', 'inventory', 'go north')..." [active] [ref=e465]
+            - button "Send Command" [disabled] [ref=e466]
+  - button "Map Error" [ref=e475] [cursor=pointer]:
+    - 'generic "Failed to construct ''URL'': Invalid URL" [ref=e476]': Map Error

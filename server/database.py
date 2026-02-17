@@ -35,7 +35,7 @@ from .database_config_helpers import (
 )
 from .exceptions import DatabaseError, ValidationError
 from .structured_logging.enhanced_logging_config import get_logger
-from .utils.error_logging import create_error_context, log_and_raise
+from .utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)
 
@@ -121,16 +121,13 @@ class DatabaseManager:
         if self._initialized:
             return
 
-        context = create_error_context()
-        context.metadata["operation"] = "database_initialization"
-
         # Check if config module is available
         config_spec = importlib.util.find_spec(".config", package=__package__)
         if config_spec is None:
             log_and_raise(
                 ValidationError,
                 "Failed to import config - configuration system unavailable",
-                context=context,
+                operation="database_initialization",
                 details={"import_error": "config module not found"},
                 user_friendly="Critical system error: configuration system not available",
             )
@@ -148,8 +145,8 @@ class DatabaseManager:
             test_url_from_config = get_test_database_url()
             _database_url_state["url"] = test_url_from_config
 
-        database_url = load_database_url(context)
-        validate_database_url(database_url, context)
+        database_url = load_database_url()
+        validate_database_url(database_url)
         self.database_url = normalize_database_url(database_url)
         logger.info("Using PostgreSQL database URL from environment", database_url=self.database_url)
 
@@ -171,13 +168,11 @@ class DatabaseManager:
 
         except (ValueError, TypeError) as e:
             # Configuration error (invalid URL format, invalid pool parameters)
-            context = create_error_context()
-            context.metadata["operation"] = "create_async_engine"
-            context.metadata["database_url_prefix"] = self.database_url[:30]  # Truncate for security
             log_and_raise(
                 ValidationError,
                 f"Invalid database configuration: {e}",
-                context=context,
+                operation="create_async_engine",
+                database_url_prefix=self.database_url[:30],  # Truncate for security
                 details={
                     "error": str(e),
                     "error_type": type(e).__name__,
@@ -187,12 +182,10 @@ class DatabaseManager:
             )
         except (ConnectionError, OSError) as e:
             # Network/connection error (database server unreachable, DNS failure)
-            context = create_error_context()
-            context.metadata["operation"] = "create_async_engine"
             log_and_raise(
                 DatabaseError,
                 f"Failed to connect to database: {e}",
-                context=context,
+                operation="create_async_engine",
                 details={
                     "error": str(e),
                     "error_type": type(e).__name__,
@@ -201,12 +194,10 @@ class DatabaseManager:
                 user_friendly="Cannot connect to database. Please check database server is running.",
             )
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: create_async_engine can raise a wide variety of exceptions depending on the driver (asyncpg), network state, and provided credentials, we catch Exception here to provide a unified, context-rich DatabaseError for any failure during this critical infrastructure setup
-            context = create_error_context()
-            context.metadata["operation"] = "create_async_engine"
             log_and_raise(
                 DatabaseError,
                 f"Failed to create database engine: {e}",
-                context=context,
+                operation="create_async_engine",
                 details={
                     "error": str(e),
                     "error_type": type(e).__name__,
@@ -326,12 +317,10 @@ class DatabaseManager:
         database_url = self.get_database_url()
 
         if database_url is None:
-            context = create_error_context()
-            context.metadata["operation"] = "get_database_path"
             log_and_raise(
                 ValidationError,
                 "Database URL is None",
-                context=context,
+                operation="get_database_path",
                 user_friendly="Database not initialized",
             )
 
@@ -339,13 +328,11 @@ class DatabaseManager:
             # PostgreSQL doesn't have a file path
             return None
 
-        context = create_error_context()
-        context.metadata["operation"] = "get_database_path"
-        context.metadata["database_url"] = database_url
         log_and_raise(
             ValidationError,
             f"Unsupported database URL: {database_url}. Only PostgreSQL is supported.",
-            context=context,
+            operation="get_database_path",
+            database_url=database_url,
             details={"database_url": database_url},
             user_friendly="Unsupported database configuration - PostgreSQL required",
         )

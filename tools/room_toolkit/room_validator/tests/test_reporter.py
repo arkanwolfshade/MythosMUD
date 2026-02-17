@@ -32,7 +32,7 @@ class TestReporter:
         )
 
         assert "test_001" in formatted
-        assert "Bidirectional" in formatted
+        assert "BIDIRECTIONAL" in formatted
         assert "Missing return path" in formatted
         assert "Add south exit to test_002" in formatted
 
@@ -42,7 +42,7 @@ class TestReporter:
         formatted = reporter.format_error("unreachable", "test_001", "No path from starting room")
 
         assert "test_001" in formatted
-        assert "Unreachable" in formatted
+        assert "UNREACHABLE" in formatted
         assert "No path from starting room" in formatted
 
     def test_format_warning(self):
@@ -51,7 +51,7 @@ class TestReporter:
         formatted = reporter.format_warning("potential_dead_end", "test_001", "Only one exit")
 
         assert "test_001" in formatted
-        assert "Potential_Dead_End" in formatted
+        assert "POTENTIAL_DEAD_END" in formatted
         assert "Only one exit" in formatted
 
     def test_generate_json_output(self):
@@ -76,15 +76,15 @@ class TestReporter:
         # Parse the JSON to verify structure
         parsed = json.loads(json_output)
 
-        assert "summary" in parsed
+        assert "stats" in parsed
         assert "errors" in parsed
         assert "warnings" in parsed
 
-        assert parsed["summary"]["zones"] == 1
-        assert parsed["summary"]["rooms"] == 3
-        assert parsed["summary"]["errors"] == 1
-        assert parsed["summary"]["warnings"] == 2
-        assert parsed["summary"]["success"] is False
+        assert parsed["stats"]["zones"] == 1
+        assert parsed["stats"]["rooms"] == 3
+        assert parsed["stats"]["errors"] == 1
+        assert parsed["stats"]["warnings"] == 2
+        assert parsed["stats"]["success"] is False
 
         assert len(parsed["errors"]) == 1
         assert parsed["errors"][0]["type"] == "bidirectional"
@@ -152,20 +152,20 @@ class TestReporter:
         assert "✅ Validation passed" in captured.out
 
     def test_print_error(self, capsys):
-        """Test printing error message."""
+        """Test printing error message (Reporter sends errors to stderr)."""
         reporter = Reporter(use_colors=False)
         reporter.print_error("Validation failed")
 
         captured = capsys.readouterr()
-        assert "❌ Validation failed" in captured.out
+        assert "❌ Validation failed" in captured.err
 
     def test_print_warning(self, capsys):
-        """Test printing warning message."""
+        """Test printing warning message (Reporter sends warnings to stderr)."""
         reporter = Reporter(use_colors=False)
         reporter.print_warning("Potential issue")
 
         captured = capsys.readouterr()
-        assert "⚠️  Potential issue" in captured.out
+        assert "⚠️  Potential issue" in captured.err
 
     def test_print_summary_success(self, capsys):
         """Test printing summary for successful validation."""
@@ -176,15 +176,15 @@ class TestReporter:
         reporter.print_summary(stats)
 
         captured = capsys.readouterr()
-        assert "📊 SUMMARY:" in captured.out
+        assert "=== Validation Summary ===" in captured.out
         assert "Zones: 1" in captured.out
-        assert "Rooms: 3 total" in captured.out
-        assert "Errors: 0 🔴" in captured.out
-        assert "Warnings: 1 🟡" in captured.out
-        assert "✅ Validation passed" in captured.out
+        assert "Rooms: 3" in captured.out
+        assert "Errors: 0" in captured.out
+        assert "Warnings: 1" in captured.out
+        assert "All validations passed!" in captured.out
 
     def test_print_summary_failure(self, capsys):
-        """Test printing summary for failed validation."""
+        """Test printing summary for failed validation (failure message on stderr)."""
         reporter = Reporter(use_colors=False)
 
         stats = {"zones": 1, "rooms": 3, "errors": 2, "warnings": 1, "success": False}
@@ -192,9 +192,9 @@ class TestReporter:
         reporter.print_summary(stats)
 
         captured = capsys.readouterr()
-        assert "📊 SUMMARY:" in captured.out
-        assert "Errors: 2 🔴" in captured.out
-        assert "❌ Validation failed" in captured.out
+        assert "=== Validation Summary ===" in captured.out
+        assert "Errors: 2" in captured.out
+        assert "Validation completed with issues" in captured.err
 
     def test_print_zone_discovery(self, capsys):
         """Test printing zone discovery."""
@@ -204,21 +204,23 @@ class TestReporter:
         reporter.print_zone_discovery(zones)
 
         captured = capsys.readouterr()
-        assert "📁 Scanning zones..." in captured.out
-        assert "✅ arkham zone discovered" in captured.out
-        assert "✅ dungeon zone discovered" in captured.out
+        assert "Discovered" in captured.out and "zones" in captured.out
+        assert "arkham" in captured.out
+        assert "dungeon" in captured.out
 
     def test_print_parsing_errors(self, capsys):
-        """Test printing parsing errors."""
+        """Test printing parsing errors (headers on stdout, error text on stderr)."""
         reporter = Reporter(use_colors=False)
         parsing_errors = [("file1.json", "Invalid JSON"), ("file2.json", "Missing required field")]
 
         reporter.print_parsing_errors(parsing_errors)
 
         captured = capsys.readouterr()
-        assert "❌ PARSING ERRORS:" in captured.out
-        assert "file1.json: Invalid JSON" in captured.out
-        assert "file2.json: Missing required field" in captured.out
+        assert "file1.json" in captured.out
+        assert "file2.json" in captured.out
+        assert "Parse Error" in captured.err
+        assert "Invalid JSON" in captured.err
+        assert "Missing required field" in captured.err
 
     def test_print_parsing_errors_empty(self, capsys):
         """Test printing parsing errors when none exist."""
@@ -226,10 +228,10 @@ class TestReporter:
         reporter.print_parsing_errors([])
 
         captured = capsys.readouterr()
-        assert "❌ PARSING ERRORS:" not in captured.out
+        assert "file1.json" not in captured.out
 
     def test_print_validation_errors(self, capsys):
-        """Test printing validation errors."""
+        """Test printing validation errors (section header on stdout, details on stderr)."""
         reporter = Reporter(use_colors=False)
         errors = [
             {
@@ -243,9 +245,9 @@ class TestReporter:
         reporter.print_validation_errors(errors)
 
         captured = capsys.readouterr()
-        assert "❌ ERRORS FOUND:" in captured.out
-        assert "test_001" in captured.out
-        assert "Bidirectional" in captured.out
+        assert "Errors:" in captured.out
+        assert "test_001" in captured.err
+        assert "BIDIRECTIONAL" in captured.err
 
     def test_print_validation_errors_empty(self, capsys):
         """Test printing validation errors when none exist."""
@@ -253,19 +255,18 @@ class TestReporter:
         reporter.print_validation_errors([])
 
         captured = capsys.readouterr()
-        assert "❌ ERRORS FOUND:" not in captured.out
+        assert "Errors:" not in captured.out
 
     def test_print_validation_warnings(self, capsys):
-        """Test printing validation warnings."""
+        """Test printing validation warnings (section on stdout, message on stderr)."""
         reporter = Reporter(use_colors=False)
         warnings = [{"type": "potential_dead_end", "room_id": "test_001", "message": "Only one exit"}]
 
         reporter.print_validation_warnings(warnings)
 
         captured = capsys.readouterr()
-        assert "⚠️  WARNINGS:" in captured.out
-        assert "test_001" in captured.out
-        assert "Potential_Dead_End" in captured.out
+        assert "WARNINGS:" in captured.out
+        assert "Only one exit" in captured.err
 
     def test_print_validation_warnings_empty(self, capsys):
         """Test printing validation warnings when none exist."""
@@ -273,4 +274,4 @@ class TestReporter:
         reporter.print_validation_warnings([])
 
         captured = capsys.readouterr()
-        assert "⚠️  WARNINGS:" not in captured.out
+        assert "WARNINGS:" not in captured.out

@@ -80,18 +80,25 @@ export const usePlayerStatusEffects = ({
     const isRespawnRoom = roomId === 'earth_arkhamcity_sanitarium_room_foyer_001';
     const skipDeadInRespawnRoom = isRespawnRoom && !isDead && hasRespawned;
 
-    // Player is dead if DP <= -10 or in limbo
-    if ((currentDp <= -10 || isInLimbo) && !skipDeadInRespawnRoom) {
+    // Player is dead only when DP <= -10 (server only moves to limbo at -10).
+    // Do not use isInLimbo alone: event ordering can deliver room=limbo before the -10 DP update,
+    // which would show the respawn modal at 0 DP.
+    // CRITICAL: Only set isDead when currentDp is actually <= -10, never at 0 DP
+    // Defensive check: ensure currentDp is a number and explicitly check it's <= -10
+    const currentDpNum = typeof currentDp === 'number' ? currentDp : 0;
+    const isActuallyDead = currentDpNum <= -10;
+
+    if (isActuallyDead && !skipDeadInRespawnRoom) {
       if (!isDead) {
         setIsDead(true);
         setHasRespawned(false);
         logger.info('GameClientV2Container', 'Player detected as dead', {
-          currentDp,
+          currentDp: currentDpNum,
           roomId,
           isInLimbo,
         });
       }
-    } else if (isDead && currentDp > -10 && !isInLimbo) {
+    } else if (isDead && (currentDpNum > -10 || !isInLimbo)) {
       // Player is no longer dead
       setIsDead(false);
       logger.info('GameClientV2Container', 'Player detected as alive', {

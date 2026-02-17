@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { debugLogger } from '../utils/debugLogger';
 import { DraggablePanel } from './DraggablePanel';
 import { RoomInfoPanel } from './RoomInfoPanel';
@@ -104,26 +104,7 @@ export const GameTerminalPresentation: React.FC<GameTerminalPresentationProps> =
   // MOTD is now handled by the interstitial screen in App.tsx
   const debug = debugLogger('GameTerminalPresentation');
 
-  // Responsive panel sizing based on viewport
-  useEffect(() => {
-    const calculatePanelSizes = () => {
-      // Panel sizing is now handled by CSS Grid layout
-      // This effect is kept for potential future use
-    };
-
-    // Calculate initial sizes
-    calculatePanelSizes();
-
-    // Handle window resize
-    const handleResize = () => {
-      calculatePanelSizes();
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []); // No dependencies to prevent infinite recursion
+  // Panel sizing reserved for future CSS Grid integration.
 
   return (
     <div

@@ -8,7 +8,7 @@ from typing import Any
 
 import pytest
 
-from server.schemas.inventory_schema import (
+from server.schemas.shared.inventory_schema import (
     InventorySchemaValidationError,
     validate_inventory_items,
     validate_inventory_payload,

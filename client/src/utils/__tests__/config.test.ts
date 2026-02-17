@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getApiBaseUrl, API_BASE_URL } from '../config';
+import { API_BASE_URL, API_V1_BASE, getApiBaseUrl, getVersionedApiBaseUrl } from '../config';
 
 // Note: import.meta.env is evaluated at build time, so we can't dynamically change it in tests
 // These tests verify the function logic works with the actual environment at test time
@@ -71,6 +71,25 @@ describe('Config Utilities', () => {
       // Assert
       // Note: This will match because both are evaluated at module load time
       expect(API_BASE_URL).toBe(getApiBaseUrl());
+    });
+  });
+
+  describe('getVersionedApiBaseUrl and API_V1_BASE', () => {
+    it('should return /v1 when base is empty', () => {
+      // When getApiBaseUrl() returns '', versioned base is '/v1'
+      const base = getApiBaseUrl();
+      const versioned = getVersionedApiBaseUrl();
+      if (base === '') {
+        expect(versioned).toBe('/v1');
+      } else {
+        expect(versioned).toBe(`${base}/v1`);
+      }
+    });
+
+    it('should be defined and a string', () => {
+      expect(API_V1_BASE).toBeDefined();
+      expect(typeof API_V1_BASE).toBe('string');
+      expect(API_V1_BASE).toMatch(/\/v1$/);
     });
   });
 });

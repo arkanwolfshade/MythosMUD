@@ -65,12 +65,15 @@ test.describe('Local Channel Basic', () => {
     await ensurePlayerInGame(ithaquaContext, 15000);
     await ensurePlayersInSameRoom(contexts, 2, 15000);
 
-    try {
-      await executeCommand(ithaquaContext.page, 'unmute ArkanWolfshade');
-      await new Promise(r => setTimeout(r, 1000));
-    } catch {
-      // Ignore if already unmuted or command fails
-    }
+    // Ensure receiver (Ithaqua) is not muting sender (AW) so local message is delivered.
+    // Wait for unmute command response so server mute state is updated before AW sends.
+    await executeCommand(ithaquaContext.page, 'unmute ArkanWolfshade');
+    await waitForMessage(
+      ithaquaContext.page,
+      /(You have unmuted ArkanWolfshade|Failed to unmute ArkanWolfshade)\./i,
+      10000
+    );
+    await new Promise(r => setTimeout(r, 500));
 
     // AW sends local channel message
     await executeCommand(awContext.page, 'local Hello everyone in the sanitarium');
@@ -102,20 +105,18 @@ test.describe('Local Channel Basic', () => {
     await ensurePlayerInGame(ithaquaContext, 15000);
     await ensurePlayersInSameRoom(contexts, 2, 15000);
 
-    try {
-      await executeCommand(awContext.page, 'unmute Ithaqua');
-      await new Promise(r => setTimeout(r, 1000));
-    } catch {
-      // Ignore if already unmuted or command fails
-    }
+    // Ensure receiver (AW) is not muting sender (Ithaqua). Wait for unmute response before send.
+    await executeCommand(awContext.page, 'unmute Ithaqua');
+    await waitForMessage(awContext.page, /(You have unmuted Ithaqua|Failed to unmute Ithaqua)\./i, 10000);
+    await new Promise(r => setTimeout(r, 500));
 
-    // Re-ensure receiver (AW) is in game and same room; brief stability wait so receiver is not
-    // linkdead when sender sends
+    // Re-ensure both players in game and same room so sender is not linkdead when sending.
     await ensurePlayerInGame(awContext, 10000);
+    await ensurePlayerInGame(ithaquaContext, 10000);
     await ensurePlayersInSameRoom(contexts, 2, 10000);
     await new Promise(r => setTimeout(r, 2000));
 
-    // Ithaqua sends local reply
+    // Ithaqua sends local reply (sender must still be in game or message is never delivered)
     await executeCommand(ithaquaContext.page, 'local Greetings ArkanWolfshade');
 
     // Wait for confirmation on Ithaqua's side

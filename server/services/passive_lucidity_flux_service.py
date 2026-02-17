@@ -789,7 +789,7 @@ class PassiveLucidityFluxService:  # pylint: disable=too-many-instance-attribute
         overrides: dict[str, float] = {}
         result_container: dict[str, Any] = {"overrides": {}, "error": None}
 
-        def run_async():
+        def run_async() -> None:
             new_loop = asyncio.new_event_loop()
             asyncio.set_event_loop(new_loop)
             try:

@@ -18,7 +18,6 @@ from fastapi import APIRouter, Request
 from ..exceptions import LoggedHTTPException
 from ..monitoring.monitoring_dashboard import get_monitoring_dashboard
 from ..structured_logging.enhanced_logging_config import get_logger
-from ..utils.error_logging import create_context_from_request
 from .monitoring_models import (
     AlertResolveResponse,
     SystemAlertsResponse,
@@ -34,7 +33,7 @@ system_monitoring_router = APIRouter(tags=["monitoring", "system"])
 
 
 @system_monitoring_router.get("/health", response_model=SystemHealthResponse)
-async def get_system_health(request: Request) -> SystemHealthResponse:
+async def get_system_health(_request: Request) -> SystemHealthResponse:
     """Enhanced health check endpoint using monitoring dashboard."""
     try:
         dashboard = get_monitoring_dashboard()
@@ -49,13 +48,15 @@ async def get_system_health(request: Request) -> SystemHealthResponse:
             active_users=system_health.active_users,
         )
     except Exception as error:
-        context = create_context_from_request(request)
-        context.metadata["operation"] = "get_system_health"
-        raise LoggedHTTPException(status_code=503, detail="Health check failed", context=context) from error
+        raise LoggedHTTPException(
+            status_code=503,
+            detail="Health check failed",
+            operation="get_system_health",
+        ) from error
 
 
 @system_monitoring_router.get("/metrics", response_model=SystemMetricsResponse)
-async def get_system_metrics(request: Request) -> SystemMetricsResponse:
+async def get_system_metrics(_request: Request) -> SystemMetricsResponse:
     """Get system metrics from monitoring dashboard."""
     try:
         dashboard = get_monitoring_dashboard()
@@ -95,9 +96,11 @@ async def get_system_metrics(request: Request) -> SystemMetricsResponse:
 
         return SystemMetricsResponse(**result_dict)
     except Exception as error:
-        context = create_context_from_request(request)
-        context.metadata["operation"] = "get_system_metrics"
-        raise LoggedHTTPException(status_code=500, detail="Metrics retrieval failed", context=context) from error
+        raise LoggedHTTPException(
+            status_code=500,
+            detail="Metrics retrieval failed",
+            operation="get_system_metrics",
+        ) from error
 
 
 @system_monitoring_router.get("/monitoring/summary", response_model=SystemMonitoringSummaryResponse)
@@ -128,13 +131,15 @@ async def get_system_monitoring_summary(request: Request) -> SystemMonitoringSum
 
         return SystemMonitoringSummaryResponse(**result_dict)
     except Exception as error:
-        context = create_context_from_request(request)
-        context.metadata["operation"] = "get_system_monitoring_summary"
-        raise LoggedHTTPException(status_code=500, detail="Monitoring summary failed", context=context) from error
+        raise LoggedHTTPException(
+            status_code=500,
+            detail="Monitoring summary failed",
+            operation="get_system_monitoring_summary",
+        ) from error
 
 
 @system_monitoring_router.get("/monitoring/alerts", response_model=SystemAlertsResponse)
-async def get_system_monitoring_alerts(request: Request) -> SystemAlertsResponse:
+async def get_system_monitoring_alerts(_request: Request) -> SystemAlertsResponse:
     """Get system alerts from monitoring dashboard."""
     try:
         dashboard = get_monitoring_dashboard()
@@ -143,13 +148,15 @@ async def get_system_monitoring_alerts(request: Request) -> SystemAlertsResponse
             alerts=[alert.to_dict() if hasattr(alert, "to_dict") else alert for alert in alerts]
         )
     except Exception as error:
-        context = create_context_from_request(request)
-        context.metadata["operation"] = "get_system_monitoring_alerts"
-        raise LoggedHTTPException(status_code=500, detail="Alert retrieval failed", context=context) from error
+        raise LoggedHTTPException(
+            status_code=500,
+            detail="Alert retrieval failed",
+            operation="get_system_monitoring_alerts",
+        ) from error
 
 
 @system_monitoring_router.post("/monitoring/alerts/{alert_id}/resolve", response_model=AlertResolveResponse)
-async def resolve_system_alert(alert_id: str, request: Request) -> AlertResolveResponse:
+async def resolve_system_alert(alert_id: str, _request: Request) -> AlertResolveResponse:
     """Resolve a system alert."""
     try:
         dashboard = get_monitoring_dashboard()
@@ -157,14 +164,18 @@ async def resolve_system_alert(alert_id: str, request: Request) -> AlertResolveR
 
         if success:
             return AlertResolveResponse(message=f"Alert {alert_id} resolved")
-        context = create_context_from_request(request)
-        context.metadata["operation"] = "resolve_system_alert"
-        context.metadata["alert_id"] = alert_id
-        raise LoggedHTTPException(status_code=404, detail="Alert not found", context=context)
+        raise LoggedHTTPException(
+            status_code=404,
+            detail="Alert not found",
+            operation="resolve_system_alert",
+            alert_id=alert_id,
+        )
     except LoggedHTTPException:
         raise
     except Exception as error:
-        context = create_context_from_request(request)
-        context.metadata["operation"] = "resolve_system_alert"
-        context.metadata["alert_id"] = alert_id
-        raise LoggedHTTPException(status_code=500, detail="Alert resolution failed", context=context) from error
+        raise LoggedHTTPException(
+            status_code=500,
+            detail="Alert resolution failed",
+            operation="resolve_system_alert",
+            alert_id=alert_id,
+        ) from error

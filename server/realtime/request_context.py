@@ -21,7 +21,7 @@ class WebSocketRequestContext:
     logic as HTTP requests, ensuring consistency across all interfaces.
     """
 
-    def __init__(self, app_state: Any, user: Any | None = None):
+    def __init__(self, app_state: Any, user: Any | None = None) -> None:
         """
         Initialize the WebSocket request context.
 

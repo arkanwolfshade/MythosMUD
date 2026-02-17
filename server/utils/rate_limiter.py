@@ -20,7 +20,7 @@ class RateLimiter:
     based on a sliding window approach.
     """
 
-    def __init__(self, max_requests: int = 10, window_seconds: int = 60):
+    def __init__(self, max_requests: int = 10, window_seconds: int = 60) -> None:
         """
         Initialize the rate limiter.
 

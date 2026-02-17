@@ -9,11 +9,13 @@ from typing import Any
 
 from anyio import run
 from sqlalchemy import select
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from server.models.npc import NPCDefinition
 from server.npc_database import get_npc_session
-from server.schemas.combat_schema import (
+from server.schemas.combat import (
+    CombatSchemaValidationError,
     add_default_combat_data_to_config,
     add_default_combat_data_to_stats,
     validate_npc_combat_data,
@@ -101,7 +103,14 @@ async def migrate_npc_combat_data(session: AsyncSession, dry_run: bool = False) 
 
             migration_results["updated_npcs"] += 1
 
-        except Exception as e:
+        except (
+            CombatSchemaValidationError,
+            SQLAlchemyError,
+            ValueError,
+            TypeError,
+            KeyError,
+            AttributeError,
+        ) as e:
             error_msg = f"Failed to migrate NPC {npc.name} (ID: {npc.id}): {str(e)}"
             logger.error(
                 "NPC migration error",
@@ -169,7 +178,14 @@ async def validate_migration_results(session: AsyncSession) -> dict[str, Any]:
                     npc_id=npc.id,
                 )
 
-        except Exception as e:
+        except (
+            CombatSchemaValidationError,
+            SQLAlchemyError,
+            ValueError,
+            TypeError,
+            KeyError,
+            AttributeError,
+        ) as e:
             error_msg = f"NPC {npc.name} validation failed: {str(e)}"
             validation_results["validation_errors"].append(error_msg)
             validation_results["invalid_npcs"] += 1
@@ -250,7 +266,14 @@ async def rollback_migration(session: AsyncSession) -> dict[str, Any]:
 
             rollback_results["rolled_back_npcs"] += 1
 
-        except Exception as e:
+        except (
+            CombatSchemaValidationError,
+            SQLAlchemyError,
+            ValueError,
+            TypeError,
+            KeyError,
+            AttributeError,
+        ) as e:
             error_msg = f"Failed to rollback NPC {npc.name} (ID: {npc.id}): {str(e)}"
             logger.error(
                 "NPC rollback error",

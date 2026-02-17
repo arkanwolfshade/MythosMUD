@@ -28,12 +28,9 @@ def set_test_database_url(url: str | None) -> None:
     _database_url_state["url"] = url
 
 
-def load_database_url(context: Any) -> str:
+def load_database_url() -> str:
     """
     Load database URL from config or test override.
-
-    Args:
-        context: Error context
 
     Returns:
         Database URL string
@@ -55,19 +52,18 @@ def load_database_url(context: Any) -> str:
         log_and_raise(
             ValidationError,
             f"Failed to load configuration: {e}",
-            context=context,
+            operation="load_database_url",
             details={"config_error": str(e), "error_type": type(e).__name__},
             user_friendly="Database cannot be initialized: configuration not loaded or invalid",
         )
 
 
-def validate_database_url(database_url: str | None, context: Any) -> None:
+def validate_database_url(database_url: str | None) -> None:
     """
     Validate database URL is set and is PostgreSQL.
 
     Args:
         database_url: Database URL to validate
-        context: Error context
 
     Raises:
         ValidationError: If URL is invalid
@@ -76,14 +72,15 @@ def validate_database_url(database_url: str | None, context: Any) -> None:
         log_and_raise(
             ValidationError,
             "Database URL is not configured",
-            context=context,
+            operation="validate_database_url",
             user_friendly="Database configuration error - URL not set",
         )
     if not database_url.startswith("postgresql"):
         log_and_raise(
             ValidationError,
             f"Unsupported database URL: {database_url}. Only PostgreSQL is supported.",
-            context=context,
+            operation="validate_database_url",
+            database_url=database_url,
             user_friendly="Database configuration error - PostgreSQL required",
         )
 

@@ -9,7 +9,7 @@ from psycopg2.extras import RealDictCursor
 
 from ..exceptions import DatabaseError
 from ..structured_logging.enhanced_logging_config import get_logger
-from ..utils.error_logging import create_error_context, log_and_raise
+from ..utils.error_logging import log_and_raise
 from .container_data import ContainerData
 from .container_helpers import fetch_container_items, parse_jsonb_column
 
@@ -62,10 +62,6 @@ def get_containers_by_room_id(conn: Any, room_id: str) -> list[ContainerData]:
     Raises:
         DatabaseError: If database operation fails
     """
-    context = create_error_context()
-    context.metadata["operation"] = "get_containers_by_room_id"
-    context.metadata["room_id"] = room_id
-
     try:
         cursor = conn.cursor(cursor_factory=RealDictCursor)
         cursor.execute(
@@ -94,7 +90,8 @@ def get_containers_by_room_id(conn: Any, room_id: str) -> list[ContainerData]:
         log_and_raise(
             DatabaseError,
             f"Database error retrieving containers by room_id: {e}",
-            context=context,
+            operation="get_containers_by_room_id",
+            room_id=room_id,
             details={"room_id": room_id, "error": str(e)},
             user_friendly="Failed to retrieve containers",
         )
@@ -114,10 +111,6 @@ def get_containers_by_entity_id(conn: Any, entity_id: UUID) -> list[ContainerDat
     Raises:
         DatabaseError: If database operation fails
     """
-    context = create_error_context()
-    context.metadata["operation"] = "get_containers_by_entity_id"
-    context.metadata["entity_id"] = str(entity_id)
-
     try:
         cursor = conn.cursor(cursor_factory=RealDictCursor)
         cursor.execute(
@@ -146,7 +139,8 @@ def get_containers_by_entity_id(conn: Any, entity_id: UUID) -> list[ContainerDat
         log_and_raise(
             DatabaseError,
             f"Database error retrieving containers by entity_id: {e}",
-            context=context,
+            operation="get_containers_by_entity_id",
+            entity_id=str(entity_id),
             details={"entity_id": str(entity_id), "error": str(e)},
             user_friendly="Failed to retrieve containers",
         )
@@ -167,9 +161,6 @@ def get_decayed_containers(conn: Any, current_time: datetime | None = None) -> l
     Raises:
         DatabaseError: If database operation fails
     """
-    context = create_error_context()
-    context.metadata["operation"] = "get_decayed_containers"
-
     if current_time is None:
         current_time = datetime.now(UTC)
         logger.debug("get_decayed_containers: Using current UTC time", current_time=current_time.isoformat())
@@ -220,7 +211,8 @@ def get_decayed_containers(conn: Any, current_time: datetime | None = None) -> l
         log_and_raise(
             DatabaseError,
             f"Database error retrieving decayed containers: {e}",
-            context=context,
+            operation="get_decayed_containers",
+            current_time=current_time.isoformat(),
             details={"current_time": current_time.isoformat(), "error": str(e)},
             user_friendly="Failed to retrieve decayed containers",
         )

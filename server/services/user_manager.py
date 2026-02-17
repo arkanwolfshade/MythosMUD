@@ -28,7 +28,7 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
     tracking with integration to AI logging systems.
     """
 
-    def __init__(self, data_dir: Path | None = None, mute_cache_ttl: int = 300):
+    def __init__(self, data_dir: Path | None = None, mute_cache_ttl: int = 300) -> None:
         """
         Initialize the user manager.
 

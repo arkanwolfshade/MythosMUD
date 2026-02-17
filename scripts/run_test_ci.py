@@ -268,18 +268,83 @@ if IN_CI:
             f"[INFO] Setting PYTHONPATH={PROJECT_ROOT}{path_sep}{venv_site_packages}... to ensure packages and project are found"
         )
 
-    # Run tests with coverage
+    # Run tests with coverage. The whole logging file_setup module crashes pytest-xdist
+    # workers (QueueListener/root logger teardown in forked process), so run that file
+    # with -n 0 and merge coverage.
+    # Node id for deselect is relative to pytest rootdir (server/), so no "server/" prefix.
+    FLAKY_XDIST_MODULE_NODE_ID = "tests/unit/structured_logging/test_logging_file_setup.py"
+    FLAKY_XDIST_MODULE_PATH = "server/tests/unit/structured_logging/test_logging_file_setup.py"
+    # Run 1: full suite excluding the logging file_setup module (coverage data to .coverage)
     safe_run_static(
         python_exe,
         "-m",
         "pytest",
         "server/tests/",
+        "--deselect",
+        FLAKY_XDIST_MODULE_NODE_ID,
         "--cov=server",
-        "--cov-report=xml",
-        "--cov-report=html",
+        "--cov-report=",
         "--cov-config=.coveragerc",
+        "--cov-fail-under=0",
         "-v",
         "--tb=short",
+        cwd=PROJECT_ROOT,
+        check=True,
+        env=env,
+    )
+    # Run 2: logging file_setup module only, no xdist (coverage to .coverage.serial)
+    env_serial = env.copy()
+    env_serial["COVERAGE_FILE"] = os.path.join(PROJECT_ROOT, ".coverage.serial")
+    safe_run_static(
+        python_exe,
+        "-m",
+        "pytest",
+        FLAKY_XDIST_MODULE_PATH,
+        "-n",
+        "0",
+        "--cov=server",
+        "--cov-report=",
+        "--cov-config=.coveragerc",
+        "--cov-fail-under=0",
+        "-v",
+        "--tb=short",
+        cwd=PROJECT_ROOT,
+        check=True,
+        env=env_serial,
+    )
+    # Merge coverage and generate reports (--keep before paths so it is not parsed as a path)
+    coverage_serial = os.path.join(PROJECT_ROOT, ".coverage.serial")
+    safe_run_static(
+        python_exe,
+        "-m",
+        "coverage",
+        "combine",
+        "--keep",
+        os.path.join(PROJECT_ROOT, ".coverage"),
+        coverage_serial,
+        cwd=PROJECT_ROOT,
+        check=True,
+        env=env,
+    )
+    coverage_xml_path = os.path.join(PROJECT_ROOT, "coverage.xml")
+    safe_run_static(
+        python_exe,
+        "-m",
+        "coverage",
+        "xml",
+        "-o",
+        coverage_xml_path,
+        cwd=PROJECT_ROOT,
+        check=True,
+        env=env,
+    )
+    safe_run_static(
+        python_exe,
+        "-m",
+        "coverage",
+        "html",
+        "--directory",
+        os.path.join(PROJECT_ROOT, "htmlcov"),
         cwd=PROJECT_ROOT,
         check=True,
         env=env,
@@ -323,15 +388,15 @@ else:
     except subprocess.CalledProcessError as e:
         # Check if error is due to corrupted Docker build cache
         # Error message typically contains "parent snapshot" and "does not exist"
-        collected_error_output = ""
+        err_parts: list[str] = []
         if e.stderr:
-            collected_error_output += str(e.stderr)
+            err_parts.append(str(e.stderr))
         if e.stdout:
-            collected_error_output += str(e.stdout)
+            err_parts.append(str(e.stdout))
         if hasattr(e, "output") and e.output:
-            collected_error_output += str(e.output)
+            err_parts.append(str(e.output))
 
-        if "parent snapshot" in collected_error_output and "does not exist" in collected_error_output:
+        if "parent snapshot" in (s := "".join(err_parts)) and "does not exist" in s:
             print("Docker build cache appears corrupted. Retrying with --no-cache...")
             safe_run_static(
                 "docker",

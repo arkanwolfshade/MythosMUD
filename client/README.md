@@ -122,6 +122,13 @@ The client implements strict security measures for authentication, transport, an
 
 These policies support COPPA-style privacy requirements and reduce the risk of token exposure, XSS, and log leakage.
 
+## Vite and imports
+
+- **Barrel files:** Prefer direct imports from submodules (e.g. `eventLog/eventStore`, `eventLog/projector`) when only one
+  or two exports are needed; use a barrel (`index.ts`) only when multiple exports from the same area are used together.
+- **File extensions:** Prefer explicit extensions in imports (e.g. `.ts`, `.tsx`) where tooling allows, for faster
+  resolution.
+
 ## Tech Stack
 
 **Framework**: React 19

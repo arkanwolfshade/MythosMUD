@@ -64,7 +64,6 @@ async def process_command_with_validation(
         )
 
         if error_message:
-            logger.warning("Command validation failed", player=player_name, error=error_message)
             return {"result": error_message}
 
         if not validated_command:

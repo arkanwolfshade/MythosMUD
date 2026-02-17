@@ -27,7 +27,7 @@ register_uuid()  # type: ignore[no-untyped-call]  # mypy: psycopg2.extras.regist
 class PostgresRow:
     """Row-like object for PostgreSQL query results."""
 
-    def __init__(self, row_dict: dict[str, Any]):
+    def __init__(self, row_dict: dict[str, Any]) -> None:
         self._row_dict = row_dict
 
     def __getitem__(self, key: str | int) -> Any:
@@ -63,7 +63,7 @@ class PostgresRow:
 class PostgresConnection:
     """PostgreSQL connection wrapper for persistence layer operations."""
 
-    def __init__(self, conn: psycopg2.extensions.connection):
+    def __init__(self, conn: psycopg2.extensions.connection) -> None:
         self._conn = conn
         self._conn.autocommit = False
 
@@ -126,7 +126,7 @@ class PostgresConnection:
 class PostgresCursor:
     """PostgreSQL cursor wrapper for query result access."""
 
-    def __init__(self, cursor: psycopg2.extensions.cursor):
+    def __init__(self, cursor: psycopg2.extensions.cursor) -> None:
         self._cursor = cursor
 
     def fetchone(self) -> PostgresRow | None:

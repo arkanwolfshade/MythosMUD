@@ -1,7 +1,10 @@
 /**
  * ANSI to HTML converter for terminal-style output
  * Handles color codes, formatting, and escape sequences
+ * Text is escaped via security.ts before embedding in HTML for defense-in-depth.
  */
+
+import { inputSanitizer } from './security';
 
 interface AnsiState {
   bold: boolean;
@@ -146,8 +149,9 @@ function updateState(state: AnsiState, code: string): void {
 }
 
 function wrapText(text: string, state: AnsiState): string {
+  const escaped = inputSanitizer.sanitizeIncomingPlainText(text);
   if (!state.bold && !state.dim && !state.italic && !state.fgColor && !state.bgColor) {
-    return text;
+    return escaped;
   }
 
   const styles: string[] = [];
@@ -169,10 +173,10 @@ function wrapText(text: string, state: AnsiState): string {
   }
 
   if (styles.length === 0) {
-    return text;
+    return escaped;
   }
 
-  return `<span style="${styles.join('; ')}">${text}</span>`;
+  return `<span style="${styles.join('; ')}">${escaped}</span>`;
 }
 
 /**

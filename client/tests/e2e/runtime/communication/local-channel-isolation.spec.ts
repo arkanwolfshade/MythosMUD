@@ -39,6 +39,16 @@ test.describe('Local Channel Isolation', () => {
     await executeCommand(ithaquaContext.page, 'go north');
     await new Promise(r => setTimeout(r, 3000));
     await ensurePlayersInSameRoom(contexts, 2, 60000);
+
+    // Unmute both so local messages are delivered (mute state may persist from previous scenarios)
+    try {
+      await executeCommand(ithaquaContext.page, 'unmute ArkanWolfshade');
+      await new Promise(r => setTimeout(r, 1000));
+      await executeCommand(awContext.page, 'unmute Ithaqua');
+      await new Promise(r => setTimeout(r, 1000));
+    } catch {
+      // Ignore unmute errors - players may not be muted
+    }
   });
 
   test.afterAll(async () => {
@@ -53,6 +63,15 @@ test.describe('Local Channel Isolation', () => {
     await ensurePlayerInGame(awContext, 15000);
     await ensurePlayerInGame(ithaquaContext, 15000);
     await ensurePlayersInSameRoom(contexts, 2, 15000);
+
+    // Ensure receiver (Ithaqua) is not muting sender (AW); wait for unmute response before send.
+    await executeCommand(ithaquaContext.page, 'unmute ArkanWolfshade');
+    await waitForMessage(
+      ithaquaContext.page,
+      /(You have unmuted ArkanWolfshade|Failed to unmute ArkanWolfshade)\./i,
+      10000
+    );
+    await new Promise(r => setTimeout(r, 500));
 
     await executeCommand(awContext.page, 'local Testing same sub-zone communication');
     await waitForMessage(awContext.page, 'You say locally: Testing same sub-zone communication');
@@ -120,6 +139,15 @@ test.describe('Local Channel Isolation', () => {
     await ensurePlayerInGame(ithaquaContext, 10000);
     await ensurePlayersInSameRoom(contexts, 2, 15000);
     await new Promise(r => setTimeout(r, 2000));
+
+    // Ensure receiver (Ithaqua) is not muting AW; wait for unmute response before send.
+    await executeCommand(ithaquaContext.page, 'unmute ArkanWolfshade');
+    await waitForMessage(
+      ithaquaContext.page,
+      /(You have unmuted ArkanWolfshade|Failed to unmute ArkanWolfshade)\./i,
+      10000
+    );
+    await new Promise(r => setTimeout(r, 500));
 
     // AW sends local message after returning to Main Foyer
     await executeCommand(awContext.page, 'local Testing same sub-zone after return');

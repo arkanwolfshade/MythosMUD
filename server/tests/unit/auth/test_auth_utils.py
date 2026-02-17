@@ -17,6 +17,7 @@ from server.auth_utils import (
 from server.exceptions import AuthenticationError
 
 
+# autouse: required for test isolation in this module - JWT encode/decode needs secret
 @pytest.fixture(autouse=True)
 def setup_jwt_secret(monkeypatch):
     """Set JWT secret for tests."""
@@ -51,7 +52,7 @@ def test_verify_password_failure():
     assert result is False
 
 
-def test_hash_password_raises_on_error(monkeypatch):
+def test_hash_password_raises_on_error():
     """Test that hash_password raises AuthenticationError on error."""
     # Mock argon2_hash_password to raise an error
     from unittest.mock import patch
@@ -61,7 +62,7 @@ def test_hash_password_raises_on_error(monkeypatch):
             hash_password("test")
 
 
-def test_verify_password_returns_false_on_error(monkeypatch):
+def test_verify_password_returns_false_on_error():
     """Test that verify_password returns False on error."""
     # Mock argon2_verify_password to raise an error
     from unittest.mock import patch
@@ -217,9 +218,10 @@ def test_hash_password_authentication_error():
     """Test hash_password raises AuthenticationError on AuthenticationError from argon2."""
     from unittest.mock import patch
 
-    from server.exceptions import AuthenticationError as AuthError
-
-    with patch("server.auth_utils.argon2_hash_password", side_effect=AuthError("Auth error")):
+    with patch(
+        "server.auth_utils.argon2_hash_password",
+        side_effect=AuthenticationError("Auth error"),
+    ):
         with pytest.raises(AuthenticationError):
             hash_password("test")
 

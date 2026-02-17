@@ -11,6 +11,7 @@ requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.128.0",
     "uvicorn[standard]>=0.40.0",
+    "gunicorn>=23.0.0",  # Production process manager with Uvicorn workers
     "pydantic>=2.12.5",
     "pydantic-settings>=2.12.0",
     "argon2-cffi>=25.1.0",
@@ -54,9 +55,13 @@ dependencies = [
     "starlette>=0.50.0",  # Fixes alert #14 - CVE-2025-62727, CVE-2025-54121, CVE-2024-47874
     "python-multipart>=0.0.22",  # Fixes alert #12 - CVE-2024-53981, CVE-2024-24762
     "fonttools>=4.60.2",  # Fixes alert #21 - CVE-2025-66034, CVE-2023-45139
+    "pillow>=12.1.1",  # Image handling (transitive from playwright/matplotlib); pin for security/consistency
     # Note: ecdsa>=0.19.1 is already latest, but CVE-2024-23342 has no patch available
     # This is a transitive dependency of python-jose. Alert #13, #20 may remain open.
 ]
+
+[project.scripts]
+room-validator = "tools.room_toolkit.room_validator.validator:main"
 
 [project.optional-dependencies]
 dev = [
@@ -118,6 +123,8 @@ max-complexity = 11
 "server/main.py" = ["E402"]  # Reason: Imports must come after load_dotenv() to ensure env vars are loaded before any modules that depend on them are imported
 # Alembic requires exact names revision, down_revision, branch_labels, depends_on; cannot use UPPER_CASE
 "server/alembic/versions/*.py" = ["N816"]
+# ast.NodeVisitor dispatches to visit_<NodeType> (e.g. visit_Import, visit_ImportFrom, visit_Call); names fixed by API
+"scripts/verify_enhanced_logging_compliance.py" = ["N802", "N815"]
 
 [tool.isort]
 profile = "black"

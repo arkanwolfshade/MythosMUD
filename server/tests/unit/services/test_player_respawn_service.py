@@ -23,6 +23,9 @@ from server.services.player_respawn_service import (
     _utc_now,
 )
 
+# pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
+# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
+
 
 @pytest.fixture
 def mock_event_bus():
@@ -62,7 +65,7 @@ def mock_session():
 
 @pytest.fixture
 def sample_player():
-    """Create a sample player for testing."""
+    """Create a sample player for testing (alive: 50 DP)."""
     player = MagicMock(spec=Player)
     player.player_id = uuid.uuid4()
     player.id = player.player_id
@@ -72,6 +75,23 @@ def sample_player():
     player.get_stats = MagicMock(return_value={"current_dp": 50, "max_dp": 100, "position": PositionState.STANDING})
     player.set_stats = MagicMock()
     player.restore_to_full_health = MagicMock(return_value=0)
+    player.is_dead = MagicMock(return_value=False)
+    return player
+
+
+@pytest.fixture
+def sample_dead_player():
+    """Create a sample player that is dead (DP <= -10) for limbo movement tests."""
+    player = MagicMock(spec=Player)
+    player.player_id = uuid.uuid4()
+    player.id = player.player_id
+    player.name = "TestPlayer"
+    player.current_room_id = "earth_arkhamcity_street_room_001"
+    player.respawn_room_id = None
+    player.get_stats = MagicMock(return_value={"current_dp": -10, "max_dp": 100, "position": PositionState.LYING})
+    player.set_stats = MagicMock()
+    player.restore_to_full_health = MagicMock(return_value=-10)
+    player.is_dead = MagicMock(return_value=True)
     return player
 
 
@@ -95,16 +115,29 @@ def test_respawn_service_initialization_no_deps(respawn_service_no_deps):
 
 
 @pytest.mark.asyncio
-async def test_move_player_to_limbo_success(respawn_service, mock_session, sample_player):
-    """Test moving player to limbo successfully."""
+async def test_move_player_to_limbo_success(respawn_service, mock_session, sample_dead_player):
+    """Test moving player to limbo successfully when player is dead (DP <= -10)."""
+    mock_session.get.return_value = sample_dead_player
+
+    result = await respawn_service.move_player_to_limbo(sample_dead_player.player_id, "death_room", mock_session)
+
+    assert result is True
+    assert sample_dead_player.current_room_id == LIMBO_ROOM_ID
+    mock_session.get.assert_awaited_once_with(Player, sample_dead_player.player_id)
+    mock_session.commit.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_move_player_to_limbo_refused_when_not_dead(respawn_service, mock_session, sample_player):
+    """Test that player is not moved to limbo when DP is above -10 (death threshold)."""
     mock_session.get.return_value = sample_player
 
     result = await respawn_service.move_player_to_limbo(sample_player.player_id, "death_room", mock_session)
 
-    assert result is True
-    assert sample_player.current_room_id == LIMBO_ROOM_ID
+    assert result is False
+    assert sample_player.current_room_id == "earth_arkhamcity_street_room_001"
     mock_session.get.assert_awaited_once_with(Player, sample_player.player_id)
-    mock_session.commit.assert_awaited_once()
+    mock_session.commit.assert_not_awaited()
 
 
 @pytest.mark.asyncio
@@ -121,24 +154,24 @@ async def test_move_player_to_limbo_player_not_found(respawn_service, mock_sessi
 
 
 @pytest.mark.asyncio
-async def test_move_player_to_limbo_database_error(respawn_service, mock_session, sample_player):
+async def test_move_player_to_limbo_database_error(respawn_service, mock_session, sample_dead_player):
     """Test moving player to limbo with database error."""
-    mock_session.get.return_value = sample_player
+    mock_session.get.return_value = sample_dead_player
     mock_session.commit.side_effect = DatabaseError("Database error")
 
-    result = await respawn_service.move_player_to_limbo(sample_player.player_id, "death_room", mock_session)
+    result = await respawn_service.move_player_to_limbo(sample_dead_player.player_id, "death_room", mock_session)
 
     assert result is False
     mock_session.rollback.assert_awaited_once()
 
 
 @pytest.mark.asyncio
-async def test_move_player_to_limbo_sqlalchemy_error(respawn_service, mock_session, sample_player):
+async def test_move_player_to_limbo_sqlalchemy_error(respawn_service, mock_session, sample_dead_player):
     """Test moving player to limbo with SQLAlchemy error."""
-    mock_session.get.return_value = sample_player
+    mock_session.get.return_value = sample_dead_player
     mock_session.commit.side_effect = SQLAlchemyError("SQL error", None, None)
 
-    result = await respawn_service.move_player_to_limbo(sample_player.player_id, "death_room", mock_session)
+    result = await respawn_service.move_player_to_limbo(sample_dead_player.player_id, "death_room", mock_session)
 
     assert result is False
     mock_session.rollback.assert_awaited_once()
@@ -308,9 +341,8 @@ async def test_respawn_player_from_delirium_success(respawn_service, mock_sessio
     assert lucidity_record.current_lcd == 10
     assert lucidity_record.current_tier == "lucid"
     assert sample_player.current_room_id == DEFAULT_RESPAWN_ROOM
-    sample_player.set_stats.assert_called_once()
-    stats = sample_player.set_stats.call_args[0][0]
-    assert stats["position"] == PositionState.STANDING
+    # Health and posture restored via Player domain method (ADR-001 / anemic model remediation)
+    sample_player.restore_to_full_health.assert_called_once()
     mock_session.commit.assert_awaited_once()
     mock_event_bus.publish.assert_called_once()
     published_event = mock_event_bus.publish.call_args[0][0]

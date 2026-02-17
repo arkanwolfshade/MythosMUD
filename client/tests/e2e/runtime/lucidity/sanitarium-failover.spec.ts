@@ -33,11 +33,7 @@ test.describe('Sanitarium Failover Escalation', () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    // Note: Failover only triggers when LCD is seeded low and passive flux drives it below floor.
-    // Without DB seeding this may not trigger; the test still asserts game remains stable.
-    await awContext.page.waitForTimeout(5000);
-
-    // Always assert: game UI still present (no crash). Test passes whether or not failover triggered.
+    // Wait for game UI to be present (no crash). Test passes whether or not failover triggered.
     const awGameUiVisible = await awContext.page
       .waitForFunction(
         () => {

@@ -2,7 +2,7 @@
  * Tests for playerHandlers.
  */
 
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Player } from '../../types';
 import {
   handlePlayerDeliriumRespawned,
@@ -45,6 +45,7 @@ describe('playerHandlers', () => {
     lucidityStatusRef: { current: null },
     lastDaypartRef: { current: null },
     lastHourRef: { current: null },
+    lastQuarterHourRef: { current: null },
     lastHolidayIdsRef: { current: [] },
     lastRoomUpdateTime: { current: 0 },
     setDpStatus: vi.fn(),
@@ -214,7 +215,19 @@ describe('playerHandlers', () => {
   });
 
   describe('handlePlayerDied', () => {
-    it('should set death location and isDead when death_location is present', () => {
+    it('should set death location and isDead when current_dp <= -10', () => {
+      const event = {
+        event_type: 'player_died',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { death_location: 'Dark Forest', current_dp: -10 },
+      };
+      handlePlayerDied(event, mockContext, mockAppendMessage);
+      expect(mockContext.setDeathLocation).toHaveBeenCalledWith('Dark Forest');
+      expect(mockContext.setIsDead).toHaveBeenCalledWith(true);
+    });
+
+    it('should not set isDead when current_dp is missing (avoid modal at 0 DP)', () => {
       const event = {
         event_type: 'player_died',
         timestamp: new Date().toISOString(),
@@ -222,28 +235,40 @@ describe('playerHandlers', () => {
         data: { death_location: 'Dark Forest' },
       };
       handlePlayerDied(event, mockContext, mockAppendMessage);
-      expect(mockContext.setDeathLocation).toHaveBeenCalledWith('Dark Forest');
-      expect(mockContext.setIsDead).toHaveBeenCalledWith(true);
+      expect(mockContext.setDeathLocation).not.toHaveBeenCalled();
+      expect(mockContext.setIsDead).not.toHaveBeenCalled();
     });
 
-    it('should use room_id as death location when death_location is missing', () => {
+    it('should not set isDead when current_dp is 0 (incapacitated, not dead)', () => {
       const event = {
         event_type: 'player_died',
         timestamp: new Date().toISOString(),
         sequence_number: 1,
-        data: { room_id: 'room_123' },
+        data: { death_location: 'Dark Forest', current_dp: 0 },
+      };
+      handlePlayerDied(event, mockContext, mockAppendMessage);
+      expect(mockContext.setDeathLocation).not.toHaveBeenCalled();
+      expect(mockContext.setIsDead).not.toHaveBeenCalled();
+    });
+
+    it('should use room_id as death location when death_location is missing and current_dp <= -10', () => {
+      const event = {
+        event_type: 'player_died',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { room_id: 'room_123', current_dp: -10 },
       };
       handlePlayerDied(event, mockContext, mockAppendMessage);
       expect(mockContext.setDeathLocation).toHaveBeenCalledWith('room_123');
       expect(mockContext.setIsDead).toHaveBeenCalledWith(true);
     });
 
-    it('should use default location when neither death_location nor room_id is present', () => {
+    it('should use default location when neither death_location nor room_id present and current_dp <= -10', () => {
       const event = {
         event_type: 'player_died',
         timestamp: new Date().toISOString(),
         sequence_number: 1,
-        data: {},
+        data: { current_dp: -10 },
       };
       handlePlayerDied(event, mockContext, mockAppendMessage);
       expect(mockContext.setDeathLocation).toHaveBeenCalledWith('Unknown Location');

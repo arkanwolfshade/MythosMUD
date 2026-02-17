@@ -7,17 +7,28 @@ This package contains all Pydantic schemas including:
 - Invite schemas (custom invite system)
 """
 
+from .admin import (
+    AdminAuditLogResponse,
+    AdminCleanupSessionsResponse,
+    AdminSessionsResponse,
+    NPCDespawnResponse,
+    NPCMoveResponse,
+    NPCPopulationStatsResponse,
+    NPCSpawnResponse,
+    NPCStatsResponse,
+    NPCSystemStatusResponse,
+    NPCZoneStatsResponse,
+)
+from .auth import InviteCreate, InviteRead, InviteUpdate, UserCreate, UserRead, UserUpdate
 from .calendar import HolidayCollection, HolidayEntry, ScheduleCollection, ScheduleEntry
-from .character_creation import CreateCharacterResponse, RollStatsResponse, ValidateStatsResponse
-from .container import (
+from .containers import (
     ContainerCloseResponse,
     ContainerLootAllResponse,
     ContainerOpenResponse,
     ContainerTransferResponse,
 )
 from .game import BroadcastMessageResponse, GameStatusResponse, MythosTimeResponse
-from .invite import InviteCreate, InviteRead, InviteUpdate
-from .map import (
+from .maps import (
     AsciiMapResponse,
     AsciiMinimapResponse,
     CoordinateRecalculationResponse,
@@ -30,37 +41,28 @@ from .metrics import (
     MetricsSummaryResponse,
     StatusMessageResponse,
 )
-from .npc_admin import (
-    AdminAuditLogResponse,
-    AdminCleanupSessionsResponse,
-    AdminSessionsResponse,
-    NPCDespawnResponse,
-    NPCMoveResponse,
-    NPCPopulationStatsResponse,
-    NPCSpawnResponse,
-    NPCStatsResponse,
-    NPCSystemStatusResponse,
-    NPCZoneStatsResponse,
-)
-from .player import (
+from .players import (
     AvailableClassesResponse,
+    CreateCharacterResponse,
     DeleteCharacterResponse,
+    EffectResponse,
     LoginGracePeriodResponse,
     MessageResponse,
     PlayerCreate,
     PlayerRead,
     PlayerUpdate,
+    ProfessionListResponse,
+    ProfessionResponse,
+    RespawnResponse,
+    RollStatsResponse,
+    ValidateStatsResponse,
 )
-from .player_effects import EffectResponse
-from .player_respawn import RespawnResponse
-from .profession import ProfessionListResponse, ProfessionResponse
 from .realtime import (
     ConnectionStatisticsResponse,
     NewGameSessionResponse,
     PlayerConnectionsResponse,
 )
-from .room import RoomListResponse, RoomPositionUpdateResponse, RoomResponse
-from .user import UserCreate, UserRead, UserUpdate
+from .rooms import RoomListResponse, RoomPositionUpdateResponse, RoomResponse
 
 __all__ = [
     "HolidayCollection",

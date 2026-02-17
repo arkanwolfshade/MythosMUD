@@ -36,7 +36,7 @@ class PayloadOptimizer:
         max_payload_size: int | None = None,
         compression_threshold: int | None = None,
         max_compressed_size: int | None = None,
-    ):
+    ) -> None:
         """
         Initialize the payload optimizer.
 

@@ -28,7 +28,7 @@ class CoordinateValidator:  # pylint: disable=too-few-public-methods  # Reason: 
     within the same zone/subzone. Conflicts must be resolved manually by admins.
     """
 
-    def __init__(self, session: AsyncSession):
+    def __init__(self, session: AsyncSession) -> None:
         """
         Initialize coordinate validator.
 

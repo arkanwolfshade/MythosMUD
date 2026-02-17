@@ -16,6 +16,7 @@ import { expect, test } from '@playwright/test';
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
+  ensurePlayerInGame,
   waitForAllPlayersInGame,
 } from '../fixtures/multiplayer';
 
@@ -23,9 +24,10 @@ test.describe('Corpse Looting with Grace Periods', () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
   test.beforeAll(async ({ browser }) => {
-    // Create contexts for both players
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
-    await waitForAllPlayersInGame(contexts);
+    // Ensure each player fully in game (including tick) with full timeout, then confirm both ready.
+    await Promise.all([ensurePlayerInGame(contexts[0], 60000), ensurePlayerInGame(contexts[1], 60000)]);
+    await waitForAllPlayersInGame(contexts, 20000);
   });
 
   test.afterAll(async () => {

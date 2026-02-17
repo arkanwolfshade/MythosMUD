@@ -58,7 +58,7 @@ class NPCSpawnRequest:
         spawn_rule: NPCSpawnRule | None = None,
         priority: int = 0,
         reason: str = "automatic",
-    ):
+    ) -> None:
         """
         Initialize spawn request.
 
@@ -91,7 +91,7 @@ class NPCSpawnResult:
         npc_instance: Any | None = None,
         error_message: str | None = None,
         spawn_request: NPCSpawnRequest | None = None,
-    ):
+    ) -> None:
         """
         Initialize spawn result.
 
@@ -133,7 +133,7 @@ class NPCSpawningService:
     - Population validation should happen at NPCPopulationController level before calling this
     """
 
-    def __init__(self, event_bus: EventBus, population_controller: "NPCPopulationController | None"):
+    def __init__(self, event_bus: EventBus, population_controller: "NPCPopulationController | None") -> None:
         """
         Initialize the NPC spawning service.
 

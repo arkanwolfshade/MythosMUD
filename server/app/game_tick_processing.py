@@ -8,6 +8,7 @@ combat, death processing, and periodic maintenance tasks.
 
 import asyncio
 import datetime
+import json
 import uuid
 from typing import TYPE_CHECKING, Any, cast
 
@@ -18,6 +19,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ..config import get_config
 from ..config.npc_config import NPCMaintenanceConfig
 from ..database import get_async_session
+from ..models.combat import CombatStatus
 from ..realtime.connection_manager_api import broadcast_game_event
 from ..realtime.login_grace_period import (
     _grace_period_expiration_handler,
@@ -347,15 +349,51 @@ async def process_casting_progress(app: FastAPI, tick_count: int) -> None:
 async def _process_mortally_wounded_player(
     container: "ApplicationContainer", player: "Player", session: AsyncSession
 ) -> None:
-    """Process a single mortally wounded player's DP decay and death check."""
+    """
+    Process a single mortally wounded player's DP decay and death check.
+
+    CRITICAL: Skip DP decay if player is in active combat - NPCs should deal damage instead.
+    DP decay should only occur when player is mortally wounded but NOT in combat.
+    """
     if not container.player_death_service:
         return
+
+    # CRITICAL: Skip DP decay if player is in active combat
+    # NPCs should continue attacking until player reaches -10 DP, not automatic decay
+    if container.combat_service:
+        from uuid import UUID
+
+        player_uuid = UUID(player.player_id) if isinstance(player.player_id, str) else player.player_id
+        combat = await container.combat_service.get_combat_by_participant(player_uuid)
+        if combat and combat.status == CombatStatus.ACTIVE:
+            # Player is in active combat - skip DP decay, let NPCs deal damage
+            logger.debug(
+                "Skipping DP decay for mortally wounded player in active combat",
+                player_id=player.player_id,
+                player_name=player.name,
+                combat_id=combat.combat_id,
+            )
+            return
 
     await container.player_death_service.process_mortally_wounded_tick(player.player_id, session)
 
     await session.refresh(player)
     stats = player.get_stats()
     new_dp = stats.get("current_dp", 0)
+    # #region agent log
+    try:
+        _debug_payload = {
+            "location": "game_tick_processing._process_mortally_wounded_player.after_decay",
+            "message": "mortally wounded tick result",
+            "data": {"player_id": str(player.player_id), "new_dp": new_dp},
+            "hypothesisId": "H3",
+            "timestamp": datetime.datetime.now(datetime.UTC).isoformat(),
+        }
+        with open("e:\\projects\\GitHub\\MythosMUD\\.cursor\\debug.log", "a", encoding="utf-8") as _f:
+            _f.write(json.dumps(_debug_payload) + "\n")
+    except Exception:  # pylint: disable=broad-except  # Reason: Debug instrumentation must not affect runtime
+        pass
+    # #endregion
 
     if container.combat_service:
         await combat_messaging_integration.send_dp_decay_message(str(player.player_id), new_dp)
@@ -376,6 +414,23 @@ async def _process_mortally_wounded_player(
         )
 
         await container.player_respawn_service.move_player_to_limbo(player.player_id, player.current_room_id, session)
+        # Ensure client receives authoritative DP (-10) so Health panel does not show 0 when in limbo
+        if container.event_bus:
+            from uuid import UUID
+
+            from ..events.event_types import PlayerDPUpdated
+
+            # Convert player_id from str to UUID for PlayerDPUpdated event
+            player_id_uuid = UUID(player.player_id) if isinstance(player.player_id, str) else player.player_id
+
+            container.event_bus.publish(
+                PlayerDPUpdated(
+                    player_id=player_id_uuid,
+                    old_dp=new_dp + 1,
+                    new_dp=new_dp,
+                    max_dp=stats.get("max_dp", 100),
+                )
+            )
 
 
 async def _process_mortally_wounded_players(
@@ -489,6 +544,21 @@ async def _process_dead_players(container: "ApplicationContainer", session: Asyn
     logger.debug("Found dead players", count=len(dead_players), player_ids=[p.player_id for p in dead_players])
 
     for player in dead_players:
+        _p_dp = player.get_stats().get("current_dp", 0)
+        # #region agent log
+        try:
+            _debug_payload = {
+                "location": "game_tick_processing._process_dead_players.loop",
+                "message": "dead player to process",
+                "data": {"player_id": str(player.player_id), "current_dp": _p_dp},
+                "hypothesisId": "H2",
+                "timestamp": datetime.datetime.now(datetime.UTC).isoformat(),
+            }
+            with open("e:\\projects\\GitHub\\MythosMUD\\.cursor\\debug.log", "a", encoding="utf-8") as _f:
+                _f.write(json.dumps(_debug_payload) + "\n")
+        except Exception:  # pylint: disable=broad-except  # Reason: Debug instrumentation must not affect runtime
+            pass
+        # #endregion
         if str(player.current_room_id) != LIMBO_ROOM_ID:
             logger.info(
                 "Moving dead player to limbo",

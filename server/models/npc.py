@@ -8,7 +8,7 @@ and relationships that support the NPC subsystem.
 # pylint: disable=too-few-public-methods  # Reason: SQLAlchemy models are data classes, no instance methods needed
 
 import json
-from datetime import UTC, datetime
+from datetime import datetime
 from enum import StrEnum
 from typing import Any, cast
 
@@ -23,6 +23,7 @@ from sqlalchemy import (
     String,
     Text,
     UniqueConstraint,
+    func,  # pylint: disable=unused-import  # func used in insert_default/onupdate
 )
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
@@ -98,15 +99,17 @@ class NPCDefinition(Base):
         Text, nullable=False, default="{}", comment="Future AI integration configuration"
     )
 
-    # Timestamps
+    # Timestamps (server-side per SQLAlchemy 2.x rule)
     created_at: Mapped[datetime] = mapped_column(
-        DateTime, default=lambda: datetime.now(UTC).replace(tzinfo=None), nullable=False
+        DateTime,
+        insert_default=func.now(),  # pylint: disable=not-callable  # func.now() callable at runtime (SQLAlchemy)
+        nullable=False,
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime,
-        default=lambda: datetime.now(UTC).replace(tzinfo=None),
+        insert_default=func.now(),  # pylint: disable=not-callable  # func.now() callable at runtime
+        onupdate=func.now(),  # pylint: disable=not-callable  # func.now() callable at runtime
         nullable=False,
-        onupdate=lambda: datetime.now(UTC).replace(tzinfo=None),
     )
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:

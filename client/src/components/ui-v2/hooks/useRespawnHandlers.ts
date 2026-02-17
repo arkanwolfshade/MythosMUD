@@ -2,6 +2,8 @@
 // Extracted from GameClientV2Container to reduce complexity
 
 import { useCallback } from 'react';
+import { isApiErrorWithDetail, isRespawnApiResponse } from '../../../utils/apiTypeGuards';
+import { API_V1_BASE } from '../../../utils/config';
 import { logger } from '../../../utils/logger';
 import type { GameEvent } from '../eventHandlers/types';
 import type { ChatMessage, Player, Room } from '../types';
@@ -36,7 +38,7 @@ export const useRespawnHandlers = ({
     setIsDeliriumRespawning(true);
 
     try {
-      const response = await fetch('/api/players/respawn-delirium', {
+      const response = await fetch(`${API_V1_BASE}/api/players/respawn-delirium`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -45,14 +47,14 @@ export const useRespawnHandlers = ({
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
+        const rawErr: unknown = await response.json();
         logger.error('GameClientV2Container', 'Delirium respawn failed', {
           status: response.status,
-          error: errorData,
+          error: rawErr,
         });
-
+        const detailMsg = isApiErrorWithDetail(rawErr) && rawErr.detail ? rawErr.detail : 'Unknown error';
         const errorMessage: ChatMessage = sanitizeChatMessageForState({
-          text: `Delirium respawn failed: ${errorData.detail || 'Unknown error'}`,
+          text: `Delirium respawn failed: ${detailMsg}`,
           timestamp: new Date().toISOString(),
           messageType: 'error',
           isHtml: false,
@@ -67,32 +69,37 @@ export const useRespawnHandlers = ({
         return;
       }
 
-      const respawnData = await response.json();
+      const raw: unknown = await response.json();
+      if (!isRespawnApiResponse(raw)) {
+        setIsDeliriumRespawning(false);
+        return;
+      }
       logger.info('GameClientV2Container', 'Delirium respawn successful', {
-        room: respawnData.room,
-        player: respawnData.player,
+        room: raw.room,
+        player: raw.player,
       });
 
       setIsDeliriumRespawning(false);
       setIsDelirious(false);
 
       // Update game state with respawned player data
+      const playerData = raw.player as Record<string, unknown>;
       setGameState(prev => ({
         ...prev,
         player: {
           ...prev.player,
-          ...respawnData.player,
+          ...(raw.player as object),
           stats: {
             ...prev.player?.stats,
-            lucidity: respawnData.player.lucidity,
-            current_dp: respawnData.player.dp,
+            lucidity: playerData?.lucidity,
+            current_dp: playerData?.dp,
           },
         } as Player,
-        room: respawnData.room as Room,
+        room: raw.room as Room,
       }));
 
       const respawnMessage: ChatMessage = sanitizeChatMessageForState({
-        text: respawnData.message || 'You have been restored to lucidity and returned to the Sanitarium',
+        text: raw.message ?? 'You have been restored to lucidity and returned to the Sanitarium',
         timestamp: new Date().toISOString(),
         messageType: 'system',
         isHtml: false,
@@ -125,7 +132,7 @@ export const useRespawnHandlers = ({
     setIsRespawning(true);
 
     try {
-      const response = await fetch('/api/players/respawn', {
+      const response = await fetch(`${API_V1_BASE}/api/players/respawn`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -134,14 +141,14 @@ export const useRespawnHandlers = ({
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
+        const rawErr: unknown = await response.json();
         logger.error('GameClientV2Container', 'Respawn failed', {
           status: response.status,
-          error: errorData,
+          error: rawErr,
         });
-
+        const detailMsg = isApiErrorWithDetail(rawErr) && rawErr.detail ? rawErr.detail : 'Unknown error';
         const errorMessage: ChatMessage = sanitizeChatMessageForState({
-          text: `Respawn failed: ${errorData.detail || 'Unknown error'}`,
+          text: `Respawn failed: ${detailMsg}`,
           timestamp: new Date().toISOString(),
           messageType: 'error',
           isHtml: false,
@@ -156,18 +163,23 @@ export const useRespawnHandlers = ({
         return;
       }
 
-      const respawnData = await response.json();
+      const raw: unknown = await response.json();
+      if (!isRespawnApiResponse(raw)) {
+        setIsRespawning(false);
+        return;
+      }
       logger.info('GameClientV2Container', 'Respawn successful', {
-        room: respawnData.room,
-        player: respawnData.player,
+        room: raw.room,
+        player: raw.player,
       });
 
+      const playerObj = raw.player as Record<string, unknown> | undefined;
       // Normalize player so event log has stats.current_dp (API may return .dp at top level).
       const normalizedPlayer = {
-        ...respawnData.player,
+        ...(raw.player as object),
         stats: {
-          ...respawnData.player?.stats,
-          current_dp: respawnData.player.dp ?? respawnData.player?.stats?.current_dp,
+          ...(playerObj?.stats as object),
+          current_dp: playerObj?.dp ?? (playerObj?.stats as Record<string, unknown>)?.current_dp,
         },
       } as Player;
 
@@ -176,13 +188,13 @@ export const useRespawnHandlers = ({
         ...prev,
         player: {
           ...prev.player,
-          ...respawnData.player,
+          ...(raw.player as object),
           stats: {
             ...prev.player?.stats,
-            current_dp: respawnData.player.dp,
+            current_dp: playerObj?.dp,
           },
         } as Player,
-        room: respawnData.room as Room,
+        room: raw.room as Room,
       }));
 
       // Append synthetic event so event-log projection keeps respawned state (stops later events from overwriting).
@@ -190,7 +202,7 @@ export const useRespawnHandlers = ({
         event_type: 'player_respawned',
         timestamp: new Date().toISOString(),
         sequence_number: 0,
-        data: { player: normalizedPlayer, room: respawnData.room },
+        data: { player: normalizedPlayer, room: raw.room },
       });
 
       setIsDead(false);

@@ -11,7 +11,7 @@ from typing import Any
 from ..exceptions import ValidationError as MythosValidationError
 from ..models.command import CommandType
 from ..structured_logging.enhanced_logging_config import get_logger
-from .enhanced_error_logging import create_error_context, log_and_raise_enhanced
+from .enhanced_error_logging import log_and_raise_enhanced
 
 logger = get_logger(__name__)
 
@@ -167,11 +167,10 @@ def get_username_from_user(user_obj: Any) -> str:
         return str(user_obj["username"])
     if isinstance(user_obj, dict) and "name" in user_obj:
         return str(user_obj["name"])
-    context = create_error_context()
-    context.metadata = {"user_obj_type": type(user_obj).__name__, "user_obj": str(user_obj)}
     log_and_raise_enhanced(
         MythosValidationError,
         "User object must have username or name attribute or key",
-        context=context,
+        user_obj_type=type(user_obj).__name__,
+        user_obj=str(user_obj),
         logger_name=__name__,
     )

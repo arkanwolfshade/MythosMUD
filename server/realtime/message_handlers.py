@@ -15,18 +15,24 @@ from ..structured_logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 
 
+async def handle_client_error_report_message(_websocket: WebSocket, player_id: str, data: dict[str, Any]) -> None:  # pylint: disable=unused-argument  # Reason: _websocket required by handler interface, not used for fire-and-forget logging
+    """Handle client_error_report: log client-reported errors to errors.log (via ERROR-level aggregator)."""
+    error_type = data.get("error_type") or "unknown"
+    message = data.get("message") or "No message"
+    context = data.get("context") or {}
+    logger.error(
+        "Client-reported error",
+        player_id=player_id,
+        error_type=error_type,
+        message=message,
+        context=context,
+    )
+
+
 async def handle_command_message(websocket: WebSocket, player_id: str, data: dict[str, Any]) -> None:
     """Handle command message type."""
     command = data.get("command", "")
     args = data.get("args", [])
-
-    logger.info(
-        "🚨 SERVER DEBUG: handle_command_message called",
-        command=command,
-        args=args,
-        player_id=player_id,
-        data=data,
-    )
 
     # Import here to avoid circular imports
     from .websocket_handler import handle_game_command

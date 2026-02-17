@@ -25,7 +25,7 @@ class AdminActionsLogger:
     administrative actions with JSON-structured log entries.
     """
 
-    def __init__(self, log_directory: str | None = None):
+    def __init__(self, log_directory: str | None = None) -> None:
         """
         Initialize the admin actions logger.
 

@@ -21,7 +21,7 @@ from .command_helpers import (  # noqa: F401  # pylint: disable=unused-import  #
     get_username_from_user,
     validate_command_safety,
 )
-from .enhanced_error_logging import create_error_context, log_and_raise_enhanced
+from .enhanced_error_logging import log_and_raise_enhanced
 
 logger = get_logger(__name__)
 
@@ -123,19 +123,19 @@ class CommandParser:
 
         # Basic input validation
         if not command_string or not command_string.strip():
-            context = create_error_context()
-            context.metadata = {"command_length": len(command_string) if command_string else 0}
             log_and_raise_enhanced(
-                MythosValidationError, "Empty command provided", context=context, logger_name=__name__
+                MythosValidationError,
+                "Empty command provided",
+                command_length=len(command_string) if command_string else 0,
+                logger_name=__name__,
             )
 
         if len(command_string) > self.max_command_length:
-            context = create_error_context()
-            context.metadata = {"command_length": len(command_string), "max_length": self.max_command_length}
             log_and_raise_enhanced(
                 MythosValidationError,
                 f"Command too long (max {self.max_command_length} characters)",
-                context=context,
+                command_length=len(command_string),
+                max_length=self.max_command_length,
                 logger_name=__name__,
             )
 
@@ -148,10 +148,12 @@ class CommandParser:
         # Validate command type (including aliases)
         valid_commands_with_aliases = self.valid_commands | {"l", "g"}  # Add aliases (no w for whisper)
         if command not in valid_commands_with_aliases:
-            context = create_error_context()
-            context.metadata = {"command": command, "valid_commands": list(valid_commands_with_aliases)}
             log_and_raise_enhanced(
-                MythosValidationError, f"Unknown command: {command}", context=context, logger_name=__name__
+                MythosValidationError,
+                f"Unknown command: {command}",
+                command=command,
+                valid_commands=list(valid_commands_with_aliases),
+                logger_name=__name__,
             )
 
         # Create and validate command object (pass normalized + original for debug e.g. empty local)
@@ -190,21 +192,20 @@ class CommandParser:
         # Defensive programming: Handle mock objects during testing
         if hasattr(command_string, "_mock_name") or hasattr(command_string, "_mock_return_value"):
             logger.warning("Mock object passed to _parse_command_parts - this should not happen in production")
-            context = create_error_context()
-            context.metadata = {"command_string": str(command_string)}
             log_and_raise_enhanced(
                 MythosValidationError,
                 "Mock object passed to command parser - test setup issue",
-                context=context,
+                command_string=str(command_string),
                 logger_name=__name__,
             )
 
         parts = command_string.split()
         if not parts:
-            context = create_error_context()
-            context.metadata = {"command_string": command_string}
             log_and_raise_enhanced(
-                MythosValidationError, "Empty command after parsing", context=context, logger_name=__name__
+                MythosValidationError,
+                "Empty command after parsing",
+                command_string=command_string,
+                logger_name=__name__,
             )
 
         command = parts[0].lower()
@@ -266,37 +267,37 @@ class CommandParser:
                     fn = cast(Callable[..., Command], create_method)
                     result = fn(args)  # fn returns Command after cast
                 return result
-            context = create_error_context()
-            context.metadata = {
-                "command": command,
-                "args": args,
-                "available_commands": list(self._command_factory.keys()),
-            }
             log_and_raise_enhanced(
-                MythosValidationError, f"Unsupported command: {command}", context=context, logger_name=__name__
+                MythosValidationError,
+                f"Unsupported command: {command}",
+                command=command,
+                args=args,
+                available_commands=list(self._command_factory.keys()),
+                logger_name=__name__,
             )
 
         except MythosValidationError:
             # Re-raise MythosValidationError without wrapping it
             raise
         except PydanticValidationError as e:
-            logger.warning("Command validation failed", command=command, args=args, errors=e.errors())
-            context = create_error_context()
-            context.metadata = {"command": command, "args": args, "validation_errors": e.errors()}
             log_and_raise_enhanced(
-                MythosValidationError, f"Invalid command format: {e}", context=context, logger_name=__name__
+                MythosValidationError,
+                f"Invalid command format: {e}",
+                command=command,
+                args=args,
+                validation_errors=e.errors(),
+                logger_name=__name__,
             )
         except (ValueError, TypeError, AttributeError, KeyError, RuntimeError) as e:
             logger.error("Command creation failed", command=command, args=args, error=str(e))
-            context = create_error_context()
-            context.metadata = {
-                "command": command,
-                "args": args,
-                "error_type": type(e).__name__,
-                "error_message": str(e),
-            }
             log_and_raise_enhanced(
-                MythosValidationError, f"Failed to create command: {e}", context=context, logger_name=__name__
+                MythosValidationError,
+                f"Failed to create command: {e}",
+                command=command,
+                args=args,
+                error_type=type(e).__name__,
+                error_message=str(e),
+                logger_name=__name__,
             )
 
     def get_command_help(self, command_name: str | None = None) -> str:

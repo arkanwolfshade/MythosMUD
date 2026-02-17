@@ -9,7 +9,7 @@ from datetime import UTC, datetime
 import pytest
 from pydantic import ValidationError
 
-from server.schemas.nats_messages import (
+from server.schemas.realtime.nats_messages import (
     BaseMessageSchema,
     ChatMessageSchema,
     EventMessageSchema,

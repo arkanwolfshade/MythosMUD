@@ -21,7 +21,6 @@ from ..schemas.realtime import (
     PlayerConnectionsResponse,
     SessionInfo,
 )
-from ..utils.error_logging import create_context_from_request, create_context_from_websocket
 
 # AI Agent: Don't import app at module level - causes circular import!
 #           Import locally in functions instead
@@ -50,9 +49,11 @@ def _ensure_connection_manager(request: Request) -> Any:
     """
     connection_manager = _resolve_connection_manager_from_state(request.app.state)
     if connection_manager is None:
-        context = create_context_from_request(request)
-        context.metadata["operation"] = "ensure_connection_manager"
-        raise LoggedHTTPException(status_code=503, detail="Service temporarily unavailable", context=context)
+        raise LoggedHTTPException(
+            status_code=503,
+            detail="Service temporarily unavailable",
+            operation="ensure_connection_manager",
+        )
     return connection_manager
 
 
@@ -140,7 +141,7 @@ def _parse_websocket_token(websocket: WebSocket, logger: Any) -> str | None:
     return token
 
 
-async def _resolve_player_id_from_test(websocket: WebSocket, player_id_str: str, logger: Any) -> uuid.UUID:
+async def _resolve_player_id_from_test(_websocket: WebSocket, player_id_str: str, logger: Any) -> uuid.UUID:
     """
     Resolve player ID from test player_id query parameter.
     Validates that the player exists before returning.
@@ -153,9 +154,11 @@ async def _resolve_player_id_from_test(websocket: WebSocket, player_id_str: str,
     player = await async_persistence.get_player_by_id(player_id_uuid)
     if not player:
         logger.warning("WebSocket connection attempt for non-existent player", player_id=player_id_str)
-        context = create_context_from_websocket(websocket)
-        context.user_id = player_id_str
-        raise LoggedHTTPException(status_code=404, detail=f"Player {player_id_str} not found", context=context)
+        raise LoggedHTTPException(
+            status_code=404,
+            detail=f"Player {player_id_str} not found",
+            user_id=player_id_str,
+        )
     # Convert player_id to UUID for consistency
     # SQLAlchemy Column[str] returns UUID at runtime, cast for type checker
     player_id_uuid_value = cast(uuid.UUID | str, player.player_id)
@@ -183,19 +186,25 @@ async def _resolve_player_id_from_token(websocket: WebSocket, payload: dict[str,
             # Validate the character belongs to the user
             player = await async_persistence.get_player_by_id(character_uuid)
             if not player:
-                context = create_context_from_websocket(websocket)
-                context.user_id = user_id
-                raise LoggedHTTPException(status_code=404, detail="Character not found", context=context)
+                raise LoggedHTTPException(
+                    status_code=404,
+                    detail="Character not found",
+                    user_id=user_id,
+                )
             # Validate character belongs to user
             if str(player.user_id) != user_id:
-                context = create_context_from_websocket(websocket)
-                context.user_id = user_id
-                raise LoggedHTTPException(status_code=403, detail="Character does not belong to user", context=context)
+                raise LoggedHTTPException(
+                    status_code=403,
+                    detail="Character does not belong to user",
+                    user_id=user_id,
+                )
             # Validate character is not deleted
             if player.is_deleted:
-                context = create_context_from_websocket(websocket)
-                context.user_id = user_id
-                raise LoggedHTTPException(status_code=404, detail="Character has been deleted", context=context)
+                raise LoggedHTTPException(
+                    status_code=404,
+                    detail="Character has been deleted",
+                    user_id=user_id,
+                )
             # Use the specified character
             player_id_value = cast(uuid.UUID | str, player.player_id)
             return uuid.UUID(str(player_id_value))
@@ -207,9 +216,11 @@ async def _resolve_player_id_from_token(websocket: WebSocket, payload: dict[str,
     player = await async_persistence.get_player_by_user_id(user_id)
 
     if not player:
-        context = create_context_from_websocket(websocket)
-        context.user_id = user_id
-        raise LoggedHTTPException(status_code=401, detail="User has no player record", context=context)
+        raise LoggedHTTPException(
+            status_code=401,
+            detail="User has no player record",
+            user_id=user_id,
+        )
     # player.player_id is a SQLAlchemy Column[str] but returns UUID at runtime
     # Convert to UUID for type safety - always convert to string first
     # Cast to tell type checker that at runtime this is UUID or str, not Column
@@ -227,12 +238,11 @@ async def _resolve_player_id(websocket: WebSocket, token: str | None, logger: An
         # Fallback: allow anonymous connection only for tests (no identity)
         player_id_str = websocket.query_params.get("player_id")
         if not player_id_str:
-            context = create_context_from_websocket(websocket)
-            raise LoggedHTTPException(status_code=401, detail="Invalid or missing token", context=context)
+            raise LoggedHTTPException(status_code=401, detail="Invalid or missing token")
         return await _resolve_player_id_from_test(websocket, player_id_str, logger)
     # Type narrowing: payload is guaranteed to be a dict with "sub" key at this point
     if payload is None or "sub" not in payload:
-        raise ValueError("Invalid payload: missing 'sub' key")
+        raise LoggedHTTPException(status_code=401, detail="Invalid payload: missing 'sub' key")
     return await _resolve_player_id_from_token(websocket, payload)
 
 
@@ -326,9 +336,11 @@ async def handle_new_game_session(player_id: uuid.UUID, request: Request) -> New
         new_session_id = body.get("session_id")
 
         if not new_session_id:
-            context = create_context_from_request(request)
-            context.user_id = str(player_id)
-            raise LoggedHTTPException(status_code=400, detail="session_id is required", context=context)
+            raise LoggedHTTPException(
+                status_code=400,
+                detail="session_id is required",
+                user_id=str(player_id),
+            )
 
         # Handle new game session
         session_results = await connection_manager.handle_new_game_session(player_id, new_session_id)
@@ -340,16 +352,18 @@ async def handle_new_game_session(player_id: uuid.UUID, request: Request) -> New
         return NewGameSessionResponse(**session_results)
 
     except json.JSONDecodeError as e:
-        context = create_context_from_request(request)
-        context.user_id = str(player_id)
-        raise LoggedHTTPException(status_code=400, detail="Invalid JSON in request body", context=context) from e
+        raise LoggedHTTPException(
+            status_code=400,
+            detail="Invalid JSON in request body",
+            user_id=str(player_id),
+        ) from e
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Session handling errors unpredictable, must log and handle
         # Structlog handles UUID objects automatically, no need to convert to string
         logger.error("Error handling new game session", player_id=player_id, error=str(e), exc_info=True)
-        context = create_context_from_request(request)
-        context.user_id = str(player_id)
         raise LoggedHTTPException(
-            status_code=500, detail=f"Error handling new game session: {str(e)}", context=context
+            status_code=500,
+            detail=f"Error handling new game session: {str(e)}",
+            user_id=str(player_id),
         ) from e
 
 
@@ -394,7 +408,7 @@ async def _validate_websocket_connection_manager(websocket: WebSocket) -> Any | 
     websocket_app = getattr(websocket, "app", None)
     websocket_state = getattr(websocket_app, "state", None)
     connection_manager = _resolve_connection_manager_from_state(websocket_state)
-    if connection_manager is None or getattr(connection_manager, "persistence", None) is None:
+    if connection_manager is None or getattr(connection_manager, "async_persistence", None) is None:
         await websocket.accept()
         await websocket.send_json({"type": "error", "message": "Service temporarily unavailable"})
         await websocket.close(code=1013)
@@ -402,13 +416,16 @@ async def _validate_websocket_connection_manager(websocket: WebSocket) -> Any | 
     return connection_manager
 
 
-async def _resolve_player_id_from_path_or_token(player_id: str, token: str | None) -> uuid.UUID | None:
+async def _resolve_player_id_from_path_or_token(
+    player_id: str, token: str | None, async_persistence: Any | None = None
+) -> uuid.UUID | None:
     """
     Resolve player ID from path parameter or token.
 
     Args:
         player_id: Player ID from path parameter
         token: JWT token from query parameters
+        async_persistence: Async persistence layer (from container/connection_manager). Required for token resolution.
 
     Returns:
         Resolved player UUID or None if resolution fails
@@ -421,13 +438,10 @@ async def _resolve_player_id_from_path_or_token(player_id: str, token: str | Non
         pass
 
     # Try to resolve from token
-    if token:
+    if token and async_persistence:
         payload = decode_access_token(token)
         if payload and "sub" in payload:
             user_id = str(payload["sub"]).strip()
-            from ..async_persistence import get_async_persistence
-
-            async_persistence = get_async_persistence()
             player = await async_persistence.get_player_by_user_id(user_id)
             if player:
                 # player.player_id is a SQLAlchemy Column[str] but returns UUID at runtime
@@ -441,9 +455,11 @@ async def _resolve_player_id_from_path_or_token(player_id: str, token: str | Non
 @realtime_router.websocket("/ws/{player_id}")
 async def websocket_endpoint_route(websocket: WebSocket, player_id: str) -> None:  # pylint: disable=too-many-locals  # Reason: WebSocket endpoint requires many intermediate variables for connection management
     """
-    Backward-compatible WebSocket endpoint that accepts a path player_id but
-    prefers JWT token identity when provided.
-    Supports session tracking for dual connection management.
+    Deprecated. Backward-compatible WebSocket endpoint that accepts a path player_id
+    but prefers JWT token identity when provided. Supports session tracking.
+
+    **Deprecation**: Use GET /api/ws with JWT (query param or subprotocol) instead.
+    This route will be removed in a future release. Migrate clients to /api/ws.
     """
     from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -464,11 +480,12 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str) -> None
             return
 
         token = websocket.query_params.get("token")
-        resolved_player_id = await _resolve_player_id_from_path_or_token(player_id, token)
+        resolved_player_id = await _resolve_player_id_from_path_or_token(
+            player_id, token, async_persistence=getattr(connection_manager, "async_persistence", None)
+        )
 
         if not resolved_player_id:
-            context = create_context_from_websocket(websocket)
-            raise LoggedHTTPException(status_code=401, detail="Unable to resolve player ID", context=context)
+            raise LoggedHTTPException(status_code=401, detail="Unable to resolve player ID")
 
         await handle_websocket_connection(
             websocket, resolved_player_id, session_id, connection_manager=connection_manager

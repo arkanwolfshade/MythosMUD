@@ -7,7 +7,7 @@ to the player's inventory in a single operation.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, cast
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 
@@ -16,7 +16,7 @@ from ..dependencies import AsyncPersistenceDep, ConnectionManagerDep
 from ..exceptions import LoggedHTTPException
 from ..models.container import ContainerComponent
 from ..models.user import User
-from ..schemas.container import ContainerLootAllResponse
+from ..schemas.containers import ContainerLootAllResponse
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.audit_logger import audit_logger
 from .container_events import emit_loot_all_event
@@ -122,9 +122,21 @@ async def loot_all_items(
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Audit log errors unpredictable, must not fail request
             logger.warning("Failed to log container loot_all to audit log", error=str(e))
 
+        # Convert container and inventory dicts to models
+        from .container_endpoints_basic import (
+            _convert_container_dict_to_container_data,
+            _convert_inventory_list_to_inventory_stacks,
+        )
+
+        container_data = _convert_container_dict_to_container_data(final_container.model_dump())
+        # Cast: inventory_service.InventoryStack (TypedDict) is dict at runtime; conversion expects list[dict]
+        player_inventory_stacks = _convert_inventory_list_to_inventory_stacks(
+            cast(list[dict[str, Any]], player_inventory)
+        )
+
         return ContainerLootAllResponse(
-            container=final_container.model_dump(),
-            player_inventory=player_inventory,
+            container=container_data,
+            player_inventory=player_inventory_stacks,
             items_looted=items_looted,
         )
 

@@ -4,8 +4,8 @@
 
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { OccupantsPanel } from '../OccupantsPanel';
 import type { Room } from '../../types';
+import { OccupantsPanel } from '../OccupantsPanel';
 
 describe('OccupantsPanel', () => {
   it('should render "No other players present" when room is null', () => {
@@ -74,19 +74,5 @@ describe('OccupantsPanel', () => {
     render(<OccupantsPanel room={room} />);
     expect(screen.getByText('Player1')).toBeInTheDocument();
     expect(screen.getByText('NPC1')).toBeInTheDocument();
-  });
-
-  it('should use legacy occupants format when structured data is not available', () => {
-    const room: Room = {
-      id: 'room1',
-      name: 'Test Room',
-      description: 'A test room',
-      exits: {},
-      occupants: ['LegacyPlayer1', 'LegacyPlayer2'],
-    };
-
-    render(<OccupantsPanel room={room} />);
-    expect(screen.getByText('LegacyPlayer1')).toBeInTheDocument();
-    expect(screen.getByText('LegacyPlayer2')).toBeInTheDocument();
   });
 });

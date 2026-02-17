@@ -85,6 +85,16 @@ class PartyInviteResponseMessageHandler(MessageHandler):
         await handle_party_invite_response_message(websocket, player_id, data)
 
 
+class ClientErrorReportMessageHandler(MessageHandler):
+    """Handler for client_error_report messages (client-reported errors for server logging)."""
+
+    async def handle(self, websocket: WebSocket, player_id: str, data: dict[str, Any]) -> None:
+        """Handle client_error_report message type."""
+        from .message_handlers import handle_client_error_report_message
+
+        await handle_client_error_report_message(websocket, player_id, data)
+
+
 class MessageHandlerFactory:
     """
     Factory for creating and managing message handlers.
@@ -104,6 +114,7 @@ class MessageHandlerFactory:
             "ping": PingMessageHandler(),
             "follow_response": FollowResponseMessageHandler(),
             "party_invite_response": PartyInviteResponseMessageHandler(),
+            "client_error_report": ClientErrorReportMessageHandler(),
         }
 
     def register_handler(self, message_type: str, handler: MessageHandler) -> None:
@@ -144,14 +155,8 @@ class MessageHandlerFactory:
         message_type = message.get("type", "unknown")
         data = message.get("data", {})
 
-        logger.info(
-            "🚨 SERVER DEBUG: message_handler_factory.handle_message called",
-            extra={"message_type": message_type, "data": data, "player_id": player_id, "full_message": message},
-        )
-
         handler = self.get_handler(message_type)
         if handler:
-            logger.info("🚨 SERVER DEBUG: Found handler for message type", message_type=message_type)
             await handler.handle(websocket, player_id, data)
         else:
             # Unknown message type - send error response

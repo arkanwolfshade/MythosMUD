@@ -37,7 +37,7 @@ class MemoryThresholdMonitor:
         memory_threshold_mb: float = 512.0,
         task_count_threshold: int = 100,
         cleanup_cooldown_seconds: float = 30.0,
-    ):
+    ) -> None:
         """
         Initialize the memory threshold monitoring service.
 

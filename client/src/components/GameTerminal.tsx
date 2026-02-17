@@ -259,26 +259,7 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
 
   const recentHallucinations = useMemo(() => hallucinations.slice(0, 3), [hallucinations]);
 
-  // Responsive panel sizing based on viewport
-  useEffect(() => {
-    const calculatePanelSizes = () => {
-      // Panel sizing is now handled by CSS Grid layout
-      // This effect is kept for potential future use
-    };
-
-    // Calculate initial sizes
-    calculatePanelSizes();
-
-    // Handle window resize
-    const handleResize = () => {
-      calculatePanelSizes();
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []); // No dependencies to prevent infinite recursion
+  // Panel sizing reserved for future CSS Grid integration.
 
   return (
     <div

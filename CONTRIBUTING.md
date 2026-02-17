@@ -1,7 +1,7 @@
 # Contributing to MythosMUD
 
 > "In the archives of Miskatonic University, we welcome those who seek knowledge, provided they understand the risks and
-respect the protocols."
+> respect the protocols."
 
 Welcome, fellow researcher! This document serves as your guide to contributing to the MythosMUD project. Whether you're
 fixing bugs, implementing features, or documenting your findings, these guidelines will help ensure your contributions
@@ -14,19 +14,17 @@ meet our academic standards.
 [Contributing to MythosMUD](#contributing-to-mythosmud)
 
 - [Contributing to MythosMUD](#contributing-to-mythosmud)
-
   - [Table of Contents](#table-of-contents)
 
   - [Code of Conduct](#code-of-conduct)
-
     - [Project-Specific Values](#project-specific-values)
-  - [Getting Started](#getting-started)
 
+  - [Getting Started](#getting-started)
     - [Prerequisites](#prerequisites)
     - [Development Environment Setup](#development-environment-setup)
     - [Understanding the Codebase](#understanding-the-codebase)
-  - [Development Workflow](#development-workflow)
 
+  - [Development Workflow](#development-workflow)
     - [Finding Tasks](#finding-tasks)
     - [Creating a Branch](#creating-a-branch)
     - [Making Changes](#making-changes)
@@ -43,8 +41,8 @@ meet our academic standards.
     - [Testing Your Changes](#testing-your-changes)
     - [Committing Your Work](#committing-your-work)
     - [Submitting a Pull Request](#submitting-a-pull-request)
-  - [Coding Standards](#coding-standards)
 
+  - [Coding Standards](#coding-standards)
     - [Python Guidelines](#python-guidelines)
     - [TypeScript/React Guidelines](#typescriptreact-guidelines)
     - [Logging Best Practices](#logging-best-practices)
@@ -53,6 +51,7 @@ meet our academic standards.
       - [❌ WRONG Usage (Will Cause Failures)](#-wrong-usage-will-cause-failures)
 
     - [Security Requirements](#security-requirements)
+
   - [Testing Requirements](#testing-requirements)
     - [Writing Tests](#writing-tests)
     - [Test Coverage](#test-coverage)
@@ -234,7 +233,6 @@ Key documentation to review:
 ### Finding Tasks
 
 1. **Review GitHub Issues**: Start by checking [GitHub Issues](https://github.com/arkanwolfshade/MythosMUD/issues)
-
    - Look for issues labeled `good first issue` or `help wanted`
    - Read issue descriptions and comments carefully
    - Ask questions if anything is unclear
@@ -247,7 +245,6 @@ Key documentation to review:
    - **Advanced**: Architecture changes, security enhancements, complex features
 
 3. **Claim Your Task**: Comment on the issue to indicate you're working on it
-
    - Example: "I'd like to work on this. My approach will be..."
    - Wait for maintainer approval before starting significant work
 
@@ -271,7 +268,7 @@ git checkout -b fix/issue-number-description
 
 **Branch Naming Conventions**:
 
-- `feature/` - New features (e.g., `feature/whisper-command`)
+- `feature/` - New features (e.g., `feature/whisper-command`). The short form `feat/` is also acceptable to match the commit type (e.g., `feat/123-add-whisper`).
 - `fix/` - Bug fixes (e.g., `fix/123-login-error`)
 - `docs/` - Documentation changes (e.g., `docs/update-contributing`)
 - `refactor/` - Code refactoring (e.g., `refactor/command-handler`)
@@ -285,6 +282,8 @@ Follow these guidelines when writing code:
 
 Never commit secrets, API keys, or passwords
 
+- Consider adding detect-secrets and `.secrets.baseline` for secret scanning (see pre-commit documentation)
+- If you add large binary files (e.g. assets, media), use Git LFS and update `.gitattributes`.
 - Always validate and sanitize user input
 - Use parameterized queries for database operations
 - Follow COPPA compliance for minor user data
@@ -314,19 +313,19 @@ Python: Follow PEP 8 via ruff (120 char line limit)
 - Use structured logging with key-value pairs
 - **NEVER** use f-strings for logging (breaks structured logging)
 
-   ```python
-   # ✅ CORRECT
+  ```python
+  # ✅ CORRECT
 
-   from server.logging.enhanced_logging_config import get_logger
-   logger = get_logger(__name__)
-   logger.info("User action completed", user_id=user.id, action="login", success=True)
+  from server.logging.enhanced_logging_config import get_logger
+  logger = get_logger(__name__)
+  logger.info("User action completed", user_id=user.id, action="login", success=True)
 
-   # ❌ WRONG
+  # ❌ WRONG
 
-   import logging
-   logger = logging.getLogger(__name__)
-   logger.info(f"User {user.id} completed login")
-   ```
+  import logging
+  logger = logging.getLogger(__name__)
+  logger.info(f"User {user.id} completed login")
+  ```
 
 #### 5. **Keep Changes Focused**
 
@@ -391,7 +390,11 @@ See [Testing Requirements](#testing-requirements) for details.
 - `refactor`: Code refactoring
 - `perf`: Performance improvements
 - `security`: Security fixes
+- `style`: Code style (formatting, whitespace; no logic change)
+- `build`: Build system or dependency changes
+- `ci`: CI configuration changes
 - `chore`: Maintenance tasks
+- `revert`: Revert a previous commit
 
 **Examples**:
 
@@ -421,7 +424,8 @@ Fixes #456
 
 - Format code with ruff (Python) and Prettier (TypeScript)
 - Run linters (ruff, ESLint)
-- Validate commit message format
+
+Commit message format is recommended; enforce via code review or add a commit-msg hook (e.g. commitlint) to validate Conventional Commits.
 
 If hooks fail, fix the issues and try again:
 
@@ -441,6 +445,8 @@ npm run lint:fix
 
 ### Submitting a Pull Request
 
+**History and merge:** Before opening a PR, rebase your branch onto `dev` and squash WIP commits if desired. Use `git fetch origin; git rebase -i origin/dev`, then `git push --force-with-lease origin your-branch` (only on your own feature branch). When merging into `dev`, use a merge commit (`--no-ff` or GitHub’s “Create a merge commit”) so branch context is preserved. Prefer configuring the repo’s default merge button to “Create a merge commit.”
+
 1. **Push your branch:**
 
    ```powershell
@@ -448,7 +454,6 @@ npm run lint:fix
    ```
 
 2. **Create Pull Request on GitHub:**
-
    - Go to the repository on GitHub
    - Click "Compare & pull request"
    - Fill out the PR template completely
@@ -456,7 +461,6 @@ npm run lint:fix
    - Add screenshots/recordings for UI changes
 
 3. **PR Description Should Include:**
-
    - What problem does this solve?
    - How does it solve it?
    - What testing was performed?
@@ -464,14 +468,12 @@ npm run lint:fix
    - Screenshots/recordings (for UI changes)
 
 4. **Wait for Review:**
-
    - Maintainers will review your PR
    - Address feedback promptly and professionally
    - Update your PR as needed
    - Be patient - reviews may take a few days
 
 5. **After Approval:**
-
    - Maintainers will merge your PR
    - Your changes will be included in the next release
    - Celebrate your contribution! 🎉
@@ -725,37 +727,31 @@ See [docs/LOGGING_BEST_PRACTICES.md](docs/LOGGING_BEST_PRACTICES.md) for compreh
 **CRITICAL SECURITY RULES** - Violation will result in PR rejection:
 
 1. **Never Commit Secrets**
-
    - No API keys, passwords, tokens, or credentials in code
    - Use environment variables for all sensitive configuration
    - Review changes carefully before committing
 
 2. **Input Validation**
-
    - Always validate and sanitize user input on the server side
    - Never trust client-side validation alone
    - Use Pydantic models for request validation
 
 3. **Database Security**
-
    - Always use parameterized queries (never string concatenation)
    - Implement proper access controls
    - Validate all file paths to prevent traversal attacks
 
 4. **Authentication & Authorization**
-
    - Always verify user permissions before allowing actions
    - Use JWT tokens properly (check expiration, validate signature)
    - Implement rate limiting for sensitive endpoints
 
 5. **COPPA Compliance**
-
    - Never collect personal information from minors
    - Implement parental consent where required
    - Minimize data collection to essential game functionality
 
 6. **Error Handling**
-
    - Never expose sensitive information in error messages
    - Log errors with context but sanitize sensitive data
    - Use generic error messages for users, detailed logs for debugging
@@ -1178,6 +1174,7 @@ We value all contributions, large and small. Contributors will be:
 - [docs/REAL_TIME_ARCHITECTURE.md](docs/REAL_TIME_ARCHITECTURE.md) - Real-time system
 - [docs/LOGGING_BEST_PRACTICES.md](docs/LOGGING_BEST_PRACTICES.md) - Logging guide
 - [docs/E2E_TESTING_GUIDE.md](docs/E2E_TESTING_GUIDE.md) - E2E testing
+- [docs/POSTGRESQL_CONTRIBUTOR_GUIDE.md](docs/POSTGRESQL_CONTRIBUTOR_GUIDE.md) - PostgreSQL standards and SQL guardrails
 
 ### Testing Resources
 
@@ -1207,8 +1204,8 @@ If you have questions about contributing:
 ---
 
 > "Together, we forge ahead into territories unknown, our tools our typewriters and terminals, our mission to chronicle
-and contain the Mythos within this digital realm. May your contributions be scholarly, your tests comprehensive, and
-your commits meaningful."
+> and contain the Mythos within this digital realm. May your contributions be scholarly, your tests comprehensive, and
+> your commits meaningful."
 >
 > — The Faculty of Miskatonic University's Department of Computer Sciences and Occult Studies
 

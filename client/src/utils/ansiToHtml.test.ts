@@ -103,6 +103,19 @@ describe('ansiToHtml', () => {
     const result = ansiToHtml(input);
     expect(result).toBe('Unknown Color');
   });
+
+  it('should escape HTML entities in text for defense-in-depth', () => {
+    const input = '\x1b[31m<script>alert(1)</script>\x1b[0m';
+    const result = ansiToHtml(input);
+    expect(result).toContain('&lt;script&gt;');
+    expect(result).not.toContain('<script>');
+  });
+
+  it('should escape angle brackets and ampersand in plain text', () => {
+    const input = 'a<b>c & d';
+    const result = ansiToHtml(input);
+    expect(result).toBe('a&lt;b&gt;c &amp; d');
+  });
 });
 
 describe('ansiToHtmlWithBreaks', () => {

@@ -23,6 +23,7 @@ from .exceptions import DatabaseError, ValidationError
 from .models.player import Player
 from .models.profession import Profession
 from .models.user import User
+from .persistence.protocols import PlayerRepositoryProtocol, RoomRepositoryProtocol
 from .persistence.repositories import (
     ContainerRepository,
     ExperienceRepository,
@@ -35,7 +36,7 @@ from .persistence.repositories import (
 )
 from .persistence.repositories.container_repository import ContainerCreateParams
 from .structured_logging.enhanced_logging_config import get_logger
-from .utils.error_logging import create_error_context, log_and_raise
+from .utils.error_logging import log_and_raise
 
 if TYPE_CHECKING:
     from .models.room import Room
@@ -96,9 +97,9 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
         # Room cache will be loaded on first access or via warmup_room_cache()
         # The _skip_room_cache parameter is deprecated but kept for backward compatibility
 
-        # Initialize repositories (facade pattern)
-        self._room_repo = RoomRepository(self._room_cache)
-        self._player_repo = PlayerRepository(self._room_cache, event_bus)
+        # Initialize repositories (facade pattern). Typed to protocols for dependency inversion (ADR-005).
+        self._room_repo: RoomRepositoryProtocol = RoomRepository(self._room_cache)
+        self._player_repo: PlayerRepositoryProtocol = PlayerRepository(self._room_cache, event_bus)
         self._profession_repo = ProfessionRepository()
         self._experience_repo = ExperienceRepository(event_bus=event_bus)
         self._health_repo = HealthRepository(event_bus=event_bus)
@@ -134,19 +135,25 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
 
             try:
                 await self._load_room_cache_async()
-                self._room_cache_loaded = True
+                # Never leave cache empty and marked loaded: validate_and_fix_player_room would
+                # overwrite every player room to arkham_square, breaking combat melee, occupants,
+                # and combat message delivery (player not in room so no broadcast received).
+                if self._room_cache:
+                    self._room_cache_loaded = True
+                else:
+                    self._room_cache_loaded = False
             except (DatabaseError, OSError, RuntimeError) as e:
-                context = create_error_context()
-                context.metadata["operation"] = "load_room_cache"
                 self._logger.error(
                     "Room cache load failed",
                     error=str(e),
                     error_type=type(e).__name__,
                     operation="load_room_cache",
                 )
-                # Fallback to empty cache on error to avoid startup failure
+                # Clear so next access retries; do NOT set _room_cache_loaded so we retry
+                # (otherwise cache stays empty forever and validate_and_fix_player_room
+                # overwrites every player room to arkham_square, breaking combat melee)
                 self._room_cache.clear()
-                self._room_cache_loaded = True  # Mark as loaded even if empty to prevent retries
+                self._room_cache_loaded = False
 
     async def _load_room_cache_async(self) -> None:
         """Load rooms from PostgreSQL database using SQLAlchemy async sessions with optimized single query."""
@@ -175,6 +182,13 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
                     room_count=len(self._room_cache),
                     mapping_count=len(self._room_mappings),
                 )
+                if not self._room_cache:
+                    # Empty cache causes validate_and_fix_player_room to overwrite every player
+                    # room to arkham_square (e.g. breaking combat melee). Surface in warnings.log.
+                    self._logger.warning(
+                        "Room cache is empty after load - player room validation will treat all rooms as invalid",
+                        room_count=0,
+                    )
                 # Debug: Log sample room IDs for troubleshooting
                 if self._room_cache:
                     sample_room_ids = list(self._room_cache.keys())[:5]
@@ -638,10 +652,6 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
         """
         from sqlalchemy import func
 
-        context = create_error_context()
-        context.metadata["operation"] = "get_user_by_username_case_insensitive"
-        context.metadata["username"] = username
-
         try:
             async for session in get_async_session():
                 # Use case-insensitive comparison
@@ -654,7 +664,8 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving user by username '{username}': {e}",
-                context=context,
+                operation="get_user_by_username_case_insensitive",
+                username=username,
                 details={"username": username, "error": str(e)},
                 user_friendly="Failed to retrieve user information",
             )
@@ -755,9 +766,6 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
 
     async def get_professions(self) -> list[Profession]:
         """Get all available professions using SQLAlchemy ORM."""
-        context = create_error_context()
-        context.metadata["operation"] = "async_get_professions"
-
         try:
             async for session in get_async_session():
                 # SQLAlchemy Column: use .is_(True) for boolean comparisons
@@ -773,7 +781,7 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving professions: {e}",
-                context=context,
+                operation="async_get_professions",
                 details={"error": str(e)},
                 user_friendly="Failed to retrieve professions",
             )

@@ -1,31 +1,7 @@
+/// <reference types="vitest/config" />
 import react from '@vitejs/plugin-react';
 import path from 'path';
-import type { Plugin } from 'vite';
 import { defineConfig } from 'vite';
-
-// Plugin to ensure Authorization header is forwarded for /professions proxy
-const professionsProxyPlugin = (): Plugin => ({
-  name: 'professions-proxy-auth',
-  configureServer(server) {
-    // Add middleware BEFORE proxy to capture Authorization header
-    server.middlewares.use('/professions', (req, _res, next) => {
-      // Log incoming request headers for debugging
-      const authHeader = req.headers.authorization || req.headers.Authorization;
-      if (authHeader) {
-        // Ensure the header is preserved in the request object
-        req.headers.authorization = authHeader as string;
-        req.headers.Authorization = authHeader as string;
-        console.log('[Vite Plugin] /professions middleware - Authorization header found:', {
-          hasAuth: !!authHeader,
-          authPreview: authHeader.toString().substring(0, 30),
-        });
-      } else {
-        console.log('[Vite Plugin] /professions middleware - NO Authorization header');
-      }
-      next();
-    });
-  },
-});
 
 // TODO: Implement AST-based console removal plugin to selectively remove
 // console.debug, console.log, console.info, console.trace while preserving
@@ -36,7 +12,6 @@ const professionsProxyPlugin = (): Plugin => ({
 export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
-    professionsProxyPlugin(),
     // Note: Console removal plugin is disabled due to regex limitations
     // For production, prefer using console.error/warn for logging
     // TODO: Implement AST-based console removal to preserve console.error/warn
@@ -51,12 +26,7 @@ export default defineConfig(({ mode }) => ({
     },
   },
 
-  define: {
-    // Remove debug code in production builds
-    ...(mode === 'production' && {
-      'process.env.NODE_ENV': '"production"',
-    }),
-  },
+  // Client code uses import.meta.env (Vite); no define for process.env.NODE_ENV needed.
   esbuild: {
     // Target modern browsers for optimal bundle size
     target: 'es2020',
@@ -104,7 +74,25 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: true, // Listen on 0.0.0.0 so dev server is reachable from LAN (e.g. http://<machine-ip>:5173)
     port: parseInt(process.env.PORT || '5173'),
+    warmup: {
+      clientFiles: ['./src/main.tsx', './src/App.tsx'],
+    },
     proxy: {
+      // Versioned API: all /v1/* requests go to the backend (including /v1/professions)
+      '/v1': {
+        target: 'http://127.0.0.1:54731',
+        changeOrigin: false,
+        ws: true,
+        configure: proxy => {
+          proxy.on('proxyReq', (proxyReq, req) => {
+            // Explicitly forward Authorization header
+            const authHeader = req.headers.authorization || req.headers.Authorization;
+            if (authHeader) {
+              proxyReq.setHeader('Authorization', authHeader as string);
+            }
+          });
+        },
+      },
       '/api': {
         target: 'http://127.0.0.1:54731',
         changeOrigin: true,
@@ -122,33 +110,106 @@ export default defineConfig(({ mode }) => ({
         target: 'http://127.0.0.1:54731',
         changeOrigin: true,
         configure: (proxy, _options) => {
-          // Access the http-proxy instance to ensure Authorization header is forwarded
+          // Ensure Authorization header is forwarded
           proxy.on('proxyReq', (proxyReq, req) => {
-            // Get Authorization header (check both cases)
             const authHeader = req.headers.authorization || req.headers.Authorization;
-
-            // Explicitly set the Authorization header on the proxy request
             if (authHeader) {
               proxyReq.setHeader('Authorization', authHeader as string);
-              console.log('[Vite Proxy] /professions proxyReq - Setting Authorization header', {
-                url: req.url,
-                method: req.method,
-                authPreview: (authHeader as string).substring(0, 30),
-              });
-            } else {
-              console.log('[Vite Proxy] /professions proxyReq - NO Authorization header found', {
-                url: req.url,
-                method: req.method,
-                allHeaders: Object.keys(req.headers),
-                headerValues: Object.entries(req.headers).map(([k, v]) => [
-                  k,
-                  typeof v === 'string' ? v.substring(0, 30) : String(v),
-                ]),
-              });
             }
           });
         },
       },
+    },
+  },
+  test: {
+    environment: 'happy-dom',
+    globals: true,
+    setupFiles: ['./src/test/setup.ts'],
+    exclude: [
+      'tests/**/*',
+      'node_modules/**/*',
+      '**/*.spec.tsx',
+      '**/components/__tests__/game-log-panel.test.tsx',
+      '**/App.integration.test.tsx',
+      '**/__tests__/CharacterCreationNavigation.test.tsx',
+      '**/__tests__/App.logout.test.tsx',
+      '**/__tests__/ProfessionPersistence.test.tsx',
+      '**/__tests__/StatRollingWithProfessionRequirements.test.tsx',
+      '**/__tests__/LogoutFlow.integration.test.tsx',
+      '**/components/__tests__/LogoutFlow.integration.test.tsx',
+    ],
+    pool: 'threads',
+    coverage: {
+      provider: 'v8',
+      enabled: true,
+      clean: false,
+      include: ['src/**/*.{ts,tsx}'],
+      exclude: [
+        'src/**/*.test.{ts,tsx}',
+        'src/test/**/*',
+        'src/**/*.d.ts',
+        'src/main.tsx',
+        'src/vite-env.d.ts',
+        'tests/**/*',
+      ],
+      thresholds: {
+        statements: 70,
+        branches: 69,
+        functions: 70,
+        lines: 70,
+        'src/utils/security.ts': { statements: 90, branches: 90, functions: 90, lines: 90 },
+        'src/utils/errorHandler.ts': { statements: 90, branches: 90, functions: 90, lines: 90 },
+        'src/utils/logoutHandler.ts': { statements: 90, branches: 90, functions: 90, lines: 90 },
+        'src/hooks/useGameConnection.ts': { statements: 90, branches: 90, functions: 90, lines: 90 },
+        'src/hooks/useWebSocketConnection.ts': { statements: 90, branches: 90, functions: 90, lines: 90 },
+        'src/hooks/useSessionManagement.ts': { statements: 90, branches: 90, functions: 90, lines: 90 },
+        'src/stores/sessionStore.ts': { statements: 90, branches: 90, functions: 90, lines: 90 },
+        'src/stores/connectionStore.ts': { statements: 90, branches: 90, functions: 90, lines: 90 },
+        'src/stores/gameStore.ts': { statements: 85, branches: 85, functions: 85, lines: 85 },
+        'src/stores/commandStore.ts': { statements: 85, branches: 85, functions: 85, lines: 85 },
+        'src/stores/containerStore.ts': { statements: 85, branches: 85, functions: 85, lines: 85 },
+        'src/stores/stateNormalization.ts': { statements: 85, branches: 85, functions: 85, lines: 85 },
+        'src/hooks/useGameTerminal.ts': { statements: 85, branches: 85, functions: 85, lines: 85 },
+        'src/hooks/useConnectionStateMachine.ts': { statements: 85, branches: 85, functions: 80, lines: 85 },
+        'src/contexts/GameTerminalContext.tsx': { statements: 85, branches: 85, functions: 85, lines: 85 },
+        'src/contexts/PanelContext.tsx': { statements: 85, branches: 85, functions: 85, lines: 85 },
+        'src/components/ui-v2/eventHandlers/messageHandlers.ts': {
+          statements: 90,
+          branches: 90,
+          functions: 90,
+          lines: 90,
+        },
+        'src/components/ui-v2/eventHandlers/playerHandlers.ts': {
+          statements: 90,
+          branches: 90,
+          functions: 90,
+          lines: 90,
+        },
+        'src/components/ui-v2/eventHandlers/roomHandlers.ts': {
+          statements: 90,
+          branches: 88,
+          functions: 90,
+          lines: 90,
+        },
+        'src/components/ui-v2/eventHandlers/systemHandlers.ts': {
+          statements: 90,
+          branches: 90,
+          functions: 90,
+          lines: 90,
+        },
+        'src/components/ui-v2/eventHandlers/combatHandlers.ts': {
+          statements: 90,
+          branches: 90,
+          functions: 90,
+          lines: 90,
+        },
+        'src/components/ui-v2/utils/stateUpdateUtils.ts': { statements: 90, branches: 90, functions: 90, lines: 90 },
+        'src/components/ui-v2/utils/messageUtils.ts': { statements: 90, branches: 90, functions: 90, lines: 90 },
+        'src/components/ui-v2/utils/roomMergeUtils.ts': { statements: 90, branches: 90, functions: 90, lines: 90 },
+        'src/components/ui-v2/hooks/useEventProcessing.ts': { statements: 90, branches: 85, functions: 90, lines: 90 },
+      },
+      reporter: ['text', 'html', 'json'],
+      reportsDirectory: './coverage',
     },
   },
 }));

@@ -20,7 +20,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..exceptions import DatabaseError, ValidationError
 from ..structured_logging.enhanced_logging_config import get_logger
-from ..utils.error_logging import create_error_context, log_and_raise
+from ..utils.error_logging import log_and_raise
 from .container_data import ContainerData
 from .container_helpers import parse_jsonb_column
 
@@ -115,15 +115,12 @@ async def create_container_async(  # pylint: disable=too-many-arguments,too-many
     """
     Create a new container (async). Returns ContainerData with generated container_instance_id.
     """
-    context = create_error_context()
-    context.metadata["operation"] = "create_container_async"
-    context.metadata["source_type"] = source_type
-
     if source_type not in ("environment", "equipment", "corpse"):
         log_and_raise(
             ValidationError,
             f"Invalid source_type: {source_type}. Must be 'environment', 'equipment', or 'corpse'",
-            context=context,
+            operation="create_container_async",
+            source_type=source_type,
             details={"source_type": source_type},
             user_friendly="Invalid container type",
         )
@@ -131,7 +128,8 @@ async def create_container_async(  # pylint: disable=too-many-arguments,too-many
         log_and_raise(
             ValidationError,
             f"Invalid capacity_slots: {capacity_slots}. Must be between 1 and 20",
-            context=context,
+            operation="create_container_async",
+            capacity_slots=capacity_slots,
             details={"capacity_slots": capacity_slots},
             user_friendly="Invalid container capacity",
         )
@@ -139,7 +137,8 @@ async def create_container_async(  # pylint: disable=too-many-arguments,too-many
         log_and_raise(
             ValidationError,
             f"Invalid lock_state: {lock_state}. Must be 'unlocked', 'locked', or 'sealed'",
-            context=context,
+            operation="create_container_async",
+            lock_state=lock_state,
             details={"lock_state": lock_state},
             user_friendly="Invalid lock state",
         )
@@ -184,7 +183,8 @@ async def create_container_async(  # pylint: disable=too-many-arguments,too-many
             log_and_raise(
                 DatabaseError,
                 "Failed to create container - no ID returned",
-                context=context,
+                operation="create_container_async",
+                source_type=source_type,
                 user_friendly="Failed to create container",
             )
         container_id = row[0]
@@ -253,7 +253,8 @@ async def create_container_async(  # pylint: disable=too-many-arguments,too-many
         log_and_raise(
             DatabaseError,
             f"Database error creating container: {e}",
-            context=context,
+            operation="create_container_async",
+            source_type=source_type,
             details={"error": str(e), "source_type": source_type},
             user_friendly="Failed to create container",
         )
@@ -261,9 +262,6 @@ async def create_container_async(  # pylint: disable=too-many-arguments,too-many
 
 async def get_container_async(session: AsyncSession, container_id: UUID) -> ContainerData | None:
     """Get a container by ID (async)."""
-    context = create_error_context()
-    context.metadata["operation"] = "get_container_async"
-    context.metadata["container_id"] = str(container_id)
     container_id_str = str(container_id) if isinstance(container_id, UUID) else container_id
     try:
         result = await session.execute(
@@ -302,7 +300,8 @@ async def get_container_async(session: AsyncSession, container_id: UUID) -> Cont
         log_and_raise(
             DatabaseError,
             f"Database error retrieving container: {e}",
-            context=context,
+            operation="get_container_async",
+            container_id=str(container_id),
             details={"container_id": str(container_id), "error": str(e)},
             user_friendly="Failed to retrieve container",
         )
@@ -319,10 +318,7 @@ async def update_container_async(  # pylint: disable=too-many-locals  # Reason: 
     """Update a container's items, lock_state, or metadata (async)."""
     from .container_helpers import validate_lock_state
 
-    context = create_error_context()
-    context.metadata["operation"] = "update_container_async"
-    context.metadata["container_id"] = str(container_id)
-    validate_lock_state(lock_state, context)
+    validate_lock_state(lock_state)
 
     container_id_str = str(container_id) if isinstance(container_id, UUID) else container_id
     now = datetime.now(UTC)
@@ -380,9 +376,6 @@ async def update_container_async(  # pylint: disable=too-many-locals  # Reason: 
 
 async def delete_container_async(session: AsyncSession, container_id: UUID) -> bool:
     """Delete a container (async). Returns True if deleted, False if not found."""
-    context = create_error_context()
-    context.metadata["operation"] = "delete_container_async"
-    context.metadata["container_id"] = str(container_id)
     container_id_str = str(container_id) if isinstance(container_id, UUID) else container_id
     try:
         result: Result[Any] = await session.execute(
@@ -398,7 +391,8 @@ async def delete_container_async(session: AsyncSession, container_id: UUID) -> b
         log_and_raise(
             DatabaseError,
             f"Database error deleting container: {e}",
-            context=context,
+            operation="delete_container_async",
+            container_id=str(container_id),
             details={"container_id": str(container_id), "error": str(e)},
             user_friendly="Failed to delete container",
         )

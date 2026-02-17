@@ -18,7 +18,7 @@ logger = get_logger(__name__)
 class MessageValidationError(Exception):
     """Raised when message validation fails."""
 
-    def __init__(self, message: str, error_type: str = "validation_error"):
+    def __init__(self, message: str, error_type: str = "validation_error") -> None:
         self.message = message
         self.error_type = error_type
         super().__init__(self.message)
@@ -40,7 +40,7 @@ class WebSocketMessageValidator:
     MAX_JSON_DEPTH = 10  # Maximum JSON nesting depth
     MAX_JSON_STRING_LENGTH = 10000  # Maximum string length in JSON
 
-    def __init__(self, max_message_size: int | None = None, max_json_depth: int | None = None):
+    def __init__(self, max_message_size: int | None = None, max_json_depth: int | None = None) -> None:
         """
         Initialize the message validator.
 

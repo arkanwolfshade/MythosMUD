@@ -16,7 +16,7 @@ from server.models.game import StatusEffect, StatusEffectType
 from server.models.spell import Spell, SpellEffectType
 from server.persistence.repositories.player_spell_repository import PlayerSpellRepository
 from server.realtime.login_grace_period import is_player_in_login_grace_period
-from server.schemas.target_resolution import TargetMatch, TargetType
+from server.schemas.shared import TargetMatch, TargetType
 from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -34,7 +34,7 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
         self,
         player_service: PlayerService,
         player_spell_repository: PlayerSpellRepository | None = None,
-    ):
+    ) -> None:
         """
         Initialize the spell effects engine.
 

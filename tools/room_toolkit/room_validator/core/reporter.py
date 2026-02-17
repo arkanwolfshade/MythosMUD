@@ -5,6 +5,8 @@ This module handles formatting and displaying validation results,
 with special consideration for dimensional anomalies and zone transitions.
 """
 
+from typing import Any
+
 import click
 
 
@@ -53,7 +55,7 @@ class Reporter:
 
     def print_bidirectional_errors(
         self, missing_returns: list[tuple[str, str, str, str, bool]], room_database: dict[str, dict]
-    ):
+    ) -> None:
         """
         Print bidirectional connection errors with zone transition awareness.
 
@@ -82,7 +84,7 @@ class Reporter:
 
             self.print_suggestion(f'Add "{dir_b}": "{room_a}" to {room_b} or flag as one_way')
 
-    def print_parsing_errors(self, errors: list[tuple[str, str]]):
+    def print_parsing_errors(self, errors: list[tuple[str, str]]) -> None:
         """Print JSON parsing errors."""
         for file_path, error in errors:
             self.print_room_header(file_path)
@@ -101,7 +103,7 @@ class Reporter:
             for warning in warnings:
                 self.print_warning(warning.get("message", "Unknown warning"))
 
-    def format_error(self, error_type: str, room_id: str, message: str, suggestion: str = None) -> str:
+    def format_error(self, error_type: str, room_id: str, message: str, suggestion: str | None = None) -> str:
         """Format an error message."""
         formatted = f"{error_type.upper()}: {room_id} - {message}"
         if suggestion:
@@ -113,13 +115,15 @@ class Reporter:
         return f"{warning_type.upper()}: {room_id} - {message}"
 
     def colorize_output(self, text: str, color: str) -> str:
-        """Colorize output text."""
+        """Legacy/programmatic use; prefer click.secho for new code. Colorize output text."""
         if not self.use_colors:
             return text
 
         colors = {"red": "\033[91m", "green": "\033[92m", "yellow": "\033[93m", "blue": "\033[94m", "reset": "\033[0m"}
+        if color not in colors or color == "reset":
+            return text
 
-        return f"{colors.get(color, '')}{text}{colors['reset']}"
+        return f"{colors[color]}{text}{colors['reset']}"
 
     def print_validation_errors(self, errors: list[dict]) -> None:
         """Print validation errors."""
@@ -134,7 +138,12 @@ class Reporter:
                 )
                 self.print_error(error_msg)
 
-    def generate_json_output(self, stats: dict, errors: list[dict], warnings: list[dict]) -> str:
+    def generate_json_output(
+        self,
+        stats: dict[str, Any],
+        errors: list[dict[str, Any]],
+        warnings: list[dict[str, Any]],
+    ) -> str:
         """Generate JSON output for machine consumption."""
         import json
 

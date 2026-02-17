@@ -24,6 +24,7 @@ from server.npc_database import (
 )
 
 
+# autouse: required for test isolation in this module - NPC DB singleton reset
 @pytest.fixture(autouse=True)
 def reset_state():
     """Reset NPC database state before each test."""

@@ -21,7 +21,7 @@ class SpellMaterialsService:
     Handles checking if players have required materials and consuming them.
     """
 
-    def __init__(self, player_service: PlayerService):
+    def __init__(self, player_service: PlayerService) -> None:
         """
         Initialize the spell materials service.
 

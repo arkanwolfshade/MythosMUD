@@ -21,7 +21,7 @@ from ..models.container import ContainerComponent, ContainerSourceType
 from ..structured_logging.enhanced_logging_config import get_logger
 
 # Removed: from ..persistence import get_persistence - now using async_persistence parameter
-from ..utils.error_logging import create_error_context, log_and_raise
+from ..utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)
 
@@ -77,7 +77,7 @@ class WearableContainerService:
     nested capacity enforcement, and inventory spill rules.
     """
 
-    def __init__(self, persistence: Any | None = None):
+    def __init__(self, persistence: Any | None = None) -> None:
         """
         Initialize the wearable container service.
 
@@ -111,11 +111,6 @@ class WearableContainerService:
             # Not a container item, nothing to do
             return None
 
-        context = create_error_context()
-        context.metadata["operation"] = "handle_equip_wearable_container"
-        context.metadata["player_id"] = str(player_id)
-        context.metadata["item_id"] = item_stack.get("item_id", "unknown")
-
         logger.info(
             "Handling equip of wearable container",
             player_id=str(player_id),
@@ -130,7 +125,9 @@ class WearableContainerService:
             log_and_raise(
                 WearableContainerServiceError,
                 f"Container capacity exceeded: {len(items)} items > {capacity_slots} capacity",
-                context=context,
+                operation="handle_equip_wearable_container",
+                player_id=str(player_id),
+                item_id=item_stack.get("item_id", "unknown"),
                 details={
                     "capacity_slots": capacity_slots,
                     "items_count": len(items),
@@ -188,7 +185,9 @@ class WearableContainerService:
             log_and_raise(
                 WearableContainerServiceError,
                 f"Failed to create wearable container: {str(e)}",
-                context=context,
+                operation="handle_equip_wearable_container",
+                player_id=str(player_id),
+                item_id=item_stack.get("item_id", "unknown"),
                 details={"player_id": str(player_id), "error": str(e)},
                 user_friendly="Failed to create container",
             )
@@ -295,18 +294,15 @@ class WearableContainerService:
         Raises:
             WearableContainerServiceError: If capacity would be exceeded
         """
-        context = create_error_context()
-        context.metadata["operation"] = "add_items_to_wearable_container"
-        context.metadata["player_id"] = str(player_id)
-        context.metadata["container_id"] = str(container_id)
-
         # Get current container
         container_data = await self.persistence.get_container(container_id)
         if not container_data:
             log_and_raise(
                 WearableContainerServiceError,
                 f"Container not found: {container_id}",
-                context=context,
+                operation="add_items_to_wearable_container",
+                player_id=str(player_id),
+                container_id=str(container_id),
                 details={"container_id": str(container_id)},
                 user_friendly="Container not found",
             )
@@ -318,7 +314,9 @@ class WearableContainerService:
             log_and_raise(
                 WearableContainerServiceError,
                 "Container is not a wearable container for this player",
-                context=context,
+                operation="add_items_to_wearable_container",
+                player_id=str(player_id),
+                container_id=str(container_id),
                 details={
                     "container_id": str(container_id),
                     "source_type": _get_enum_value(container.source_type),
@@ -332,7 +330,9 @@ class WearableContainerService:
             log_and_raise(
                 WearableContainerServiceError,
                 f"Container capacity exceeded: {len(container.items) + len(items)} > {container.capacity_slots}",
-                context=context,
+                operation="add_items_to_wearable_container",
+                player_id=str(player_id),
+                container_id=str(container_id),
                 details={
                     "current_items": len(container.items),
                     "new_items": len(items),
@@ -365,7 +365,9 @@ class WearableContainerService:
             log_and_raise(
                 WearableContainerServiceError,
                 f"Failed to update container: {container_id}",
-                context=context,
+                operation="add_items_to_wearable_container",
+                player_id=str(player_id),
+                container_id=str(container_id),
                 details={"container_id": str(container_id)},
                 user_friendly="Failed to update container",
             )
@@ -389,18 +391,15 @@ class WearableContainerService:
         Raises:
             WearableContainerServiceError: If capacity would be exceeded
         """
-        context = create_error_context()
-        context.metadata["operation"] = "update_wearable_container_items"
-        context.metadata["player_id"] = str(player_id)
-        context.metadata["container_id"] = str(container_id)
-
         # Get current container
         container_data = await self.persistence.get_container(container_id)
         if not container_data:
             log_and_raise(
                 WearableContainerServiceError,
                 f"Container not found: {container_id}",
-                context=context,
+                operation="update_wearable_container_items",
+                player_id=str(player_id),
+                container_id=str(container_id),
                 details={"container_id": str(container_id)},
                 user_friendly="Container not found",
             )
@@ -412,7 +411,9 @@ class WearableContainerService:
             log_and_raise(
                 WearableContainerServiceError,
                 "Container is not a wearable container for this player",
-                context=context,
+                operation="update_wearable_container_items",
+                player_id=str(player_id),
+                container_id=str(container_id),
                 details={
                     "container_id": str(container_id),
                     "source_type": _get_enum_value(container.source_type),
@@ -426,7 +427,9 @@ class WearableContainerService:
             log_and_raise(
                 WearableContainerServiceError,
                 f"Container capacity exceeded: {len(items)} > {container.capacity_slots}",
-                context=context,
+                operation="update_wearable_container_items",
+                player_id=str(player_id),
+                container_id=str(container_id),
                 details={
                     "items_count": len(items),
                     "capacity_slots": container.capacity_slots,
@@ -451,7 +454,9 @@ class WearableContainerService:
             log_and_raise(
                 WearableContainerServiceError,
                 f"Failed to update container: {container_id}",
-                context=context,
+                operation="update_wearable_container_items",
+                player_id=str(player_id),
+                container_id=str(container_id),
                 details={"container_id": str(container_id)},
                 user_friendly="Failed to update container",
             )
@@ -472,11 +477,6 @@ class WearableContainerService:
         Returns:
             dict with spilled_items and ground_items
         """
-        context = create_error_context()
-        context.metadata["operation"] = "handle_container_overflow"
-        context.metadata["player_id"] = str(player_id)
-        context.metadata["container_id"] = str(container_id)
-
         logger.info(
             "Handling container overflow",
             player_id=str(player_id),
@@ -490,7 +490,9 @@ class WearableContainerService:
             log_and_raise(
                 WearableContainerServiceError,
                 f"Player not found: {player_id}",
-                context=context,
+                operation="handle_container_overflow",
+                player_id=str(player_id),
+                container_id=str(container_id),
                 details={"player_id": str(player_id)},
                 user_friendly="Player not found",
             )

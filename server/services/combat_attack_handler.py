@@ -135,8 +135,26 @@ class CombatAttackHandler:
             )
             raise ValueError("Target is not in this combat")
 
+        # Allow attacking incapacitated players (0 DP) - they're not dead until -10 DP
+        # For players: is_alive() returns True if current_dp > -10 AND is_active
+        # For NPCs: is_alive() returns True if current_dp > 0 AND is_active
+        # CRITICAL: Players at 0 DP are mortally wounded but still attackable until -10 DP
+        # The is_alive() check should pass for players at 0 DP (current_dp > -10 is True)
+        # But if is_active is False, we need to allow attacks anyway for mortally wounded players
         if not target.is_alive():
-            raise ValueError("Target is already dead")
+            # Special case: allow attacking players at 0 DP (mortally wounded but not dead)
+            # They should still be attackable until they reach -10 DP, even if is_active is False
+            if target.participant_type == CombatParticipantType.PLAYER and -10 < target.current_dp <= 0:
+                # Player is mortally wounded (0 DP to -9 DP) - allow attack to continue until -10 DP
+                logger.debug(
+                    "Allowing attack on mortally wounded player",
+                    target_id=target.participant_id,
+                    target_name=target.name,
+                    current_dp=target.current_dp,
+                    is_active=target.is_active,
+                )
+            else:
+                raise ValueError("Target is already dead")
 
         current_participant = combat.participants.get(attacker_id)
         if not current_participant:

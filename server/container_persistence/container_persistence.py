@@ -21,7 +21,7 @@ from psycopg2.extras import RealDictCursor
 
 from ..exceptions import DatabaseError, ValidationError
 from ..structured_logging.enhanced_logging_config import get_logger
-from ..utils.error_logging import create_error_context, log_and_raise
+from ..utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)
 
@@ -160,7 +160,7 @@ class ContainerData:  # pylint: disable=too-many-instance-attributes,too-few-pub
         metadata_json: dict[str, Any] | None = None,
         created_at: datetime | None = None,
         updated_at: datetime | None = None,
-    ):
+    ) -> None:
         self.container_instance_id = container_instance_id
         self.source_type = source_type
         self.owner_id = owner_id
@@ -236,16 +236,13 @@ def create_container(  # pylint: disable=too-many-arguments,too-many-positional-
         ValidationError: If validation fails
         DatabaseError: If database operation fails
     """
-    context = create_error_context()
-    context.metadata["operation"] = "create_container"
-    context.metadata["source_type"] = source_type
-
     # Validate source_type
     if source_type not in ("environment", "equipment", "corpse"):
         log_and_raise(
             ValidationError,
             f"Invalid source_type: {source_type}. Must be 'environment', 'equipment', or 'corpse'",
-            context=context,
+            operation="create_container",
+            source_type=source_type,
             details={"source_type": source_type},
             user_friendly="Invalid container type",
         )
@@ -255,7 +252,9 @@ def create_container(  # pylint: disable=too-many-arguments,too-many-positional-
         log_and_raise(
             ValidationError,
             f"Invalid capacity_slots: {capacity_slots}. Must be between 1 and 20",
-            context=context,
+            operation="create_container",
+            source_type=source_type,
+            capacity_slots=capacity_slots,
             details={"capacity_slots": capacity_slots},
             user_friendly="Invalid container capacity",
         )
@@ -265,7 +264,9 @@ def create_container(  # pylint: disable=too-many-arguments,too-many-positional-
         log_and_raise(
             ValidationError,
             f"Invalid lock_state: {lock_state}. Must be 'unlocked', 'locked', or 'sealed'",
-            context=context,
+            operation="create_container",
+            source_type=source_type,
+            lock_state=lock_state,
             details={"lock_state": lock_state},
             user_friendly="Invalid lock state",
         )
@@ -316,7 +317,8 @@ def create_container(  # pylint: disable=too-many-arguments,too-many-positional-
             log_and_raise(
                 DatabaseError,
                 "Failed to create container - no ID returned",
-                context=context,
+                operation="create_container",
+                source_type=source_type,
                 user_friendly="Failed to create container",
             )
 
@@ -369,7 +371,8 @@ def create_container(  # pylint: disable=too-many-arguments,too-many-positional-
         log_and_raise(
             DatabaseError,
             f"Database error creating container: {e}",
-            context=context,
+            operation="create_container",
+            source_type=source_type,
             details={"error": str(e), "source_type": source_type},
             user_friendly="Failed to create container",
         )
@@ -389,10 +392,6 @@ def get_container(conn: Any, container_id: UUID) -> ContainerData | None:
     Raises:
         DatabaseError: If database operation fails
     """
-    context = create_error_context()
-    context.metadata["operation"] = "get_container"
-    context.metadata["container_id"] = str(container_id)
-
     try:
         cursor = conn.cursor(cursor_factory=RealDictCursor)
         cursor.execute(
@@ -438,7 +437,8 @@ def get_container(conn: Any, container_id: UUID) -> ContainerData | None:
         log_and_raise(
             DatabaseError,
             f"Database error retrieving container: {e}",
-            context=context,
+            operation="get_container",
+            container_id=str(container_id),
             details={"container_id": str(container_id), "error": str(e)},
             user_friendly="Failed to retrieve container",
         )
@@ -458,10 +458,6 @@ def get_containers_by_room_id(conn: Any, room_id: str) -> list[ContainerData]:
     Raises:
         DatabaseError: If database operation fails
     """
-    context = create_error_context()
-    context.metadata["operation"] = "get_containers_by_room_id"
-    context.metadata["room_id"] = room_id
-
     try:
         cursor = conn.cursor(cursor_factory=RealDictCursor)
         cursor.execute(
@@ -510,7 +506,8 @@ def get_containers_by_room_id(conn: Any, room_id: str) -> list[ContainerData]:
         log_and_raise(
             DatabaseError,
             f"Database error retrieving containers by room_id: {e}",
-            context=context,
+            operation="get_containers_by_room_id",
+            room_id=room_id,
             details={"room_id": room_id, "error": str(e)},
             user_friendly="Failed to retrieve containers",
         )
@@ -530,10 +527,6 @@ def get_containers_by_entity_id(conn: Any, entity_id: UUID) -> list[ContainerDat
     Raises:
         DatabaseError: If database operation fails
     """
-    context = create_error_context()
-    context.metadata["operation"] = "get_containers_by_entity_id"
-    context.metadata["entity_id"] = str(entity_id)
-
     try:
         cursor = conn.cursor(cursor_factory=RealDictCursor)
         cursor.execute(
@@ -582,7 +575,8 @@ def get_containers_by_entity_id(conn: Any, entity_id: UUID) -> list[ContainerDat
         log_and_raise(
             DatabaseError,
             f"Database error retrieving containers by entity_id: {e}",
-            context=context,
+            operation="get_containers_by_entity_id",
+            entity_id=str(entity_id),
             details={"entity_id": str(entity_id), "error": str(e)},
             user_friendly="Failed to retrieve containers",
         )
@@ -612,16 +606,14 @@ def update_container(  # pylint: disable=too-many-locals  # Reason: Container up
         ValidationError: If validation fails
         DatabaseError: If database operation fails
     """
-    context = create_error_context()
-    context.metadata["operation"] = "update_container"
-    context.metadata["container_id"] = str(container_id)
-
     # Validate lock_state if provided
     if lock_state is not None and lock_state not in ("unlocked", "locked", "sealed"):
         log_and_raise(
             ValidationError,
             f"Invalid lock_state: {lock_state}. Must be 'unlocked', 'locked', or 'sealed'",
-            context=context,
+            operation="update_container",
+            container_id=str(container_id),
+            lock_state=lock_state,
             details={"lock_state": lock_state},
             user_friendly="Invalid lock state",
         )
@@ -701,7 +693,8 @@ def update_container(  # pylint: disable=too-many-locals  # Reason: Container up
         log_and_raise(
             DatabaseError,
             f"Database error updating container: {e}",
-            context=context,
+            operation="update_container",
+            container_id=str(container_id),
             details={"container_id": str(container_id), "error": str(e)},
             user_friendly="Failed to update container",
         )
@@ -721,10 +714,6 @@ def delete_container(conn: Any, container_id: UUID) -> bool:
     Raises:
         DatabaseError: If database operation fails
     """
-    context = create_error_context()
-    context.metadata["operation"] = "delete_container"
-    context.metadata["container_id"] = str(container_id)
-
     try:
         cursor = conn.cursor()
         cursor.execute(
@@ -745,7 +734,8 @@ def delete_container(conn: Any, container_id: UUID) -> bool:
         log_and_raise(
             DatabaseError,
             f"Database error deleting container: {e}",
-            context=context,
+            operation="delete_container",
+            container_id=str(container_id),
             details={"container_id": str(container_id), "error": str(e)},
             user_friendly="Failed to delete container",
         )

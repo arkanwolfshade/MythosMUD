@@ -14,7 +14,7 @@ from ..exceptions import ValidationError
 from ..game.stats_generator import StatsGenerator
 from ..models import Stats
 from ..structured_logging.enhanced_logging_config import get_logger
-from ..utils.error_logging import create_error_context, log_and_raise
+from ..utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)
 
@@ -34,6 +34,7 @@ class CharacterCreationService:
         required_class: str | None = None,
         max_attempts: int = 50,  # Increased from 10 to improve success rate for profession requirements
         profession_id: int | None = None,
+        profession: Any | None = None,
     ) -> dict[str, Any]:
         """
         Roll random stats for character creation.
@@ -43,6 +44,8 @@ class CharacterCreationService:
             required_class: Optional class to validate against
             max_attempts: Maximum number of attempts to meet requirements
             profession_id: Optional profession ID for profession-based rolling
+            profession: Optional profession object; required when calling with profession_id from sync context
+                (stats_generator does not use asyncio.run(); use API async path or pass profession)
 
         Returns:
             dict: Stats and validation results
@@ -60,10 +63,13 @@ class CharacterCreationService:
 
         try:
             if profession_id is not None:
-                # Use profession-based stat rolling
-                # Use default timeout_seconds from RollStatsRequest (5.0) for better success rate
+                # Use profession-based stat rolling; profession must be passed when in sync context
                 stats, meets_requirements = self.stats_generator.roll_stats_with_profession(
-                    method=method, profession_id=profession_id, max_attempts=max_attempts, timeout_seconds=5.0
+                    method=method,
+                    profession_id=profession_id,
+                    max_attempts=max_attempts,
+                    timeout_seconds=5.0,
+                    profession=profession,
                 )
                 stat_summary = self.stats_generator.get_stat_summary(stats)
 
@@ -90,13 +96,11 @@ class CharacterCreationService:
             }
         except ValueError as e:
             logger.error("Invalid parameters for stats rolling", error=str(e))
-            context = create_error_context()
-            context.metadata["operation"] = "roll_stats"
-            context.metadata["error"] = str(e)
             log_and_raise(
                 ValidationError,
                 f"Invalid profession: {str(e)}",
-                context=context,
+                operation="roll_stats",
+                error=str(e),
                 details={"error": str(e)},
                 user_friendly="Invalid parameters provided",
             )
@@ -140,12 +144,10 @@ class CharacterCreationService:
             return {"available_classes": available_classes, "stat_summary": stat_summary}
         except (ValueError, PydanticValidationError) as e:
             logger.error("Stats validation failed", error=str(e))
-            context = create_error_context()
-            context.metadata["operation"] = "validate_stats"
             log_and_raise(
                 ValidationError,
                 "Invalid stats format",
-                context=context,
+                operation="validate_stats",
                 details={"error": str(e)},
                 user_friendly="Invalid stats format provided",
             )
@@ -204,13 +206,11 @@ class CharacterCreationService:
             }
         except (ValueError, PydanticValidationError, ValidationError) as e:
             logger.error("Character creation failed", name=name, error=str(e))
-            context = create_error_context()
-            context.metadata["operation"] = "create_character"
-            context.metadata["character_name"] = name
             log_and_raise(
                 ValidationError,
                 "Character creation failed",
-                context=context,
+                operation="create_character",
+                character_name=name,
                 details={"error": str(e), "character_name": name},
                 user_friendly="Failed to create character",
             )

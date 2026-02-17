@@ -32,6 +32,8 @@ test.describe('Multi-User Container Looting', () => {
     await cleanupMultiPlayerContexts(contexts);
   });
 
+  // Skipped until 'open' command is implemented
+  // eslint-disable-next-line playwright/no-skipped-test -- placeholder until container open command exists
   test.skip('both players should be able to open the same container', async () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];

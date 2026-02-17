@@ -9,7 +9,7 @@
 .DESCRIPTION
     This script provides robust server shutdown functionality for MythosMUD by:
     - Terminating processes using port 54731
-    - Killing processes by name patterns (uvicorn only)
+    - Killing processes by name patterns (uvicorn and gunicorn)
     - Terminating processes by command line patterns (MythosMUD-specific)
     - Force killing MythosMUD-related Python processes if Force flag is set
     - Verifying port is free after shutdown
@@ -238,7 +238,7 @@ function Stop-PowerShellServerProcess {
         foreach ($process in $powerShellProcesses) {
             try {
                 $commandLine = (Get-CimInstance -ClassName Win32_Process -Filter "ProcessId = $($process.Id)").CommandLine
-                if ($commandLine -and ($commandLine -like "*uvicorn*" -or $commandLine -like "*start_server.ps1*" -or $commandLine -like "*server.main:app*" -or $commandLine -like "*mythosmud*" -or $commandLine -like "*uv run*")) {
+                if ($commandLine -and ($commandLine -like "*uvicorn*" -or $commandLine -like "*gunicorn*" -or $commandLine -like "*start_server.ps1*" -or $commandLine -like "*server.main:app*" -or $commandLine -like "*mythosmud*" -or $commandLine -like "*uv run*")) {
                     Write-Host "Found PowerShell server process: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Red
                     Write-Host "  Command line: $commandLine" -ForegroundColor Gray
                     Stop-ProcessTree -ProcessId $process.Id
@@ -267,7 +267,7 @@ function Close-OrphanedTerminalWindows {
         foreach ($process in $processes) {
             try {
                 $commandLine = (Get-CimInstance -ClassName Win32_Process -Filter "ProcessId = $($process.Id)").CommandLine
-                if ($commandLine -and ($commandLine -like "*mythosmud*" -or $commandLine -like "*uvicorn*" -or $commandLine -like "*start_server.ps1*" -or $commandLine -like "*server.main*")) {
+                if ($commandLine -and ($commandLine -like "*mythosmud*" -or $commandLine -like "*uvicorn*" -or $commandLine -like "*gunicorn*" -or $commandLine -like "*start_server.ps1*" -or $commandLine -like "*server.main*")) {
                     Write-Host "Found orphaned terminal: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Red
                     Write-Host "  Command line: $commandLine" -ForegroundColor Gray
                     Stop-ProcessTree -ProcessId $process.Id
@@ -329,11 +329,13 @@ try {
 
     # Method 3: Kill processes by name patterns
     Stop-ProcessesByName -NamePattern "*uvicorn*"
+    Stop-ProcessesByName -NamePattern "*gunicorn*"
     # Note: Removed broad Python process killing to avoid affecting Playwright MCP server
     # Python processes are now targeted more specifically via command line patterns below
 
     # Method 4: Kill processes by command line patterns
     Stop-ProcessesByCommandLine -CommandPattern "uvicorn"
+    Stop-ProcessesByCommandLine -CommandPattern "gunicorn"
     Stop-ProcessesByCommandLine -CommandPattern "main:app"
     Stop-ProcessesByCommandLine -CommandPattern "start_server.ps1"
     Stop-ProcessesByCommandLine -CommandPattern "uv run"
@@ -351,6 +353,7 @@ try {
                 # Only kill Python processes that are running MythosMUD-related code
                 if ($commandLine -and (
                         $commandLine -like "*uvicorn*" -or
+                        $commandLine -like "*gunicorn*" -or
                         $commandLine -like "*main:app*" -or
                         $commandLine -like "*start_server.ps1*" -or
                         $commandLine -like "*uv run*" -or
@@ -395,10 +398,10 @@ try {
     }
 
     if ($portFree) {
-        Write-Host "`n🎉 MythosMUD Server shutdown complete!" -ForegroundColor Green
+        Write-Host "`nðŸŽ‰ MythosMUD Server shutdown complete!" -ForegroundColor Green
     }
     else {
-        Write-Host "`n⚠️  Server shutdown may be incomplete. Port 54731 is still in use." -ForegroundColor Yellow
+        Write-Host "`nâš ï¸  Server shutdown may be incomplete. Port 54731 is still in use." -ForegroundColor Yellow
         if ($Verbose) {
             Write-Host "Remaining connections on port 54731:" -ForegroundColor Yellow
             Get-NetTCPConnection -LocalPort 54731 -ErrorAction SilentlyContinue | ForEach-Object {

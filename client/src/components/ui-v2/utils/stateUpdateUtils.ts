@@ -42,25 +42,30 @@ export interface GameState {
   followingTarget?: { target_name: string; target_type: 'player' | 'npc' } | null;
 }
 
-// Helper: treat empty arrays/count as "no data" so we preserve existing
+// Helper: treat empty arrays as "no data" so we preserve existing
 // (room_update sends empty; room_occupants is authoritative).
 function hasOccupantData(room: Room): boolean {
   const hasPlayers = room.players != null && room.players.length > 0;
   const hasNpcs = room.npcs != null && room.npcs.length > 0;
-  const hasOccupants = room.occupants != null && room.occupants.length > 0;
-  return hasPlayers || hasNpcs || hasOccupants;
+  return hasPlayers || hasNpcs;
 }
 
 // Helper function to merge occupant data from two room updates
 export const mergeOccupantData = (newRoom: Room, existingRoom: Room) => {
   const useNewOccupants = hasOccupantData(newRoom);
+  const players = useNewOccupants ? (newRoom.players ?? existingRoom.players ?? []) : (existingRoom.players ?? []);
+  const npcs = useNewOccupants ? (newRoom.npcs ?? existingRoom.npcs ?? []) : (existingRoom.npcs ?? []);
+  const playersArr = Array.isArray(players) ? players : [];
+  const npcsArr = Array.isArray(npcs) ? npcs : [];
+  const occupants = [...playersArr, ...npcsArr];
+  const occupantCount = useNewOccupants
+    ? (newRoom.occupant_count ?? occupants.length)
+    : (existingRoom.occupant_count ?? occupants.length);
   return {
-    players: useNewOccupants ? (newRoom.players ?? existingRoom.players) : (existingRoom.players ?? []),
-    npcs: useNewOccupants ? (newRoom.npcs ?? existingRoom.npcs) : (existingRoom.npcs ?? []),
-    occupants: useNewOccupants ? (newRoom.occupants ?? existingRoom.occupants) : (existingRoom.occupants ?? []),
-    occupant_count: useNewOccupants
-      ? (newRoom.occupant_count ?? existingRoom.occupant_count ?? 0)
-      : (existingRoom.occupant_count ?? 0),
+    players: playersArr,
+    npcs: npcsArr,
+    occupants,
+    occupant_count: occupantCount,
   };
 };
 
@@ -144,7 +149,12 @@ export const applyEventUpdates = (
   }
 };
 
-// Helper function to sanitize and apply updates to state
+/**
+ * Sanitize and apply updates to game state.
+ * Note: When updates.room comes from an authoritative server event (e.g. room_state), room should
+ * replace rather than merge; this implementation always merges. Do not use for authoritative room
+ * updates from server, or extend the API (e.g. replaceRoom flag) to support replace.
+ */
 export const sanitizeAndApplyUpdates = (
   updates: Partial<GameState>,
   setGameState: React.Dispatch<React.SetStateAction<GameState>>

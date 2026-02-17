@@ -1496,9 +1496,14 @@ describe('useWebSocketConnection', () => {
       // Update callback before opening
       await act(async () => {
         rerender({ onConnected: onConnected2 });
-        // Flush effects to ensure refs are updated
-        await new Promise(resolve => setTimeout(resolve, 0));
       });
+      // Yield so React can commit and refs (e.g. onConnected) are updated before simulateOpen
+      await waitFor(
+        () => {
+          expect(mockWebSocketInstance).toBeDefined();
+        },
+        { timeout: 50 }
+      );
 
       act(() => {
         mockWebSocketInstance?.simulateOpen();

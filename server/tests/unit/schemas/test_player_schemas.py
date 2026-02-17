@@ -11,7 +11,7 @@ import pytest
 from pydantic import ValidationError
 
 from server.models.game import PositionState, Stats
-from server.schemas.player import CharacterInfo, PlayerBase, PlayerCreate, PlayerRead, PlayerUpdate
+from server.schemas.players import CharacterInfo, PlayerBase, PlayerCreate, PlayerRead, PlayerUpdate
 
 
 def test_player_base():

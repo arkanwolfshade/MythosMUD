@@ -27,7 +27,7 @@ def test_log_and_raise_enhanced():
 
     with patch("server.utils.enhanced_error_logging.log_with_context") as mock_log:
         with pytest.raises(ValidationError):
-            log_and_raise_enhanced(ValidationError, "Test error", context=create_error_context(), logger_name=__name__)
+            log_and_raise_enhanced(ValidationError, "Test error", operation="test_operation", logger_name=__name__)
         mock_log.assert_called_once()
 
 
@@ -36,8 +36,8 @@ def test_log_and_raise_enhanced_with_metadata():
     from server.exceptions import ValidationError
 
     with patch("server.utils.enhanced_error_logging.log_with_context") as mock_log:
-        context = create_error_context()
-        context.metadata = {"key": "value"}
         with pytest.raises(ValidationError):
-            log_and_raise_enhanced(ValidationError, "Test error", context=context, logger_name=__name__)
+            log_and_raise_enhanced(
+                ValidationError, "Test error", operation="test_operation", key="value", logger_name=__name__
+            )
         mock_log.assert_called_once()

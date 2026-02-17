@@ -3,9 +3,9 @@
  */
 
 import { describe, expect, it, vi } from 'vitest';
-import type { ChatMessage } from '../../types';
 import type { GameStateUpdates } from '../../eventHandlers/types';
-import type { Player, Room } from '../../types';
+import type { ChatMessage, Player, Room } from '../../types';
+import type { GameState } from '../stateUpdateUtils';
 import {
   applyEventUpdates,
   applyPlayerUpdate,
@@ -14,7 +14,6 @@ import {
   mergeRoomUpdate,
   sanitizeAndApplyUpdates,
 } from '../stateUpdateUtils';
-import type { GameState } from '../stateUpdateUtils';
 
 describe('stateUpdateUtils', () => {
   describe('mergeOccupantData', () => {
@@ -66,6 +65,78 @@ describe('stateUpdateUtils', () => {
       expect(result.players).toEqual(['player1']);
       expect(result.npcs).toEqual(['npc1']);
       expect(result.occupant_count).toBe(2);
+    });
+
+    it('should treat non-array players as empty array (Array.isArray branch)', () => {
+      const newRoom = {
+        id: 'room1',
+        name: 'Room 1',
+        description: '',
+        exits: {} as Record<string, string>,
+        players: 'malformed' as unknown as string[],
+        npcs: [],
+      };
+
+      const existingRoom: Room = {
+        id: 'room1',
+        name: 'Room 1',
+        description: '',
+        exits: {},
+        players: ['p1'],
+        npcs: [],
+      };
+
+      const result = mergeOccupantData(newRoom as Room, existingRoom);
+      expect(result.players).toEqual([]);
+      expect(result.npcs).toEqual([]);
+    });
+
+    it('should treat non-array npcs as empty array when new room has occupant data (Array.isArray branch)', () => {
+      const newRoom = {
+        id: 'room1',
+        name: 'Room 1',
+        description: '',
+        exits: {} as Record<string, string>,
+        players: ['p1'], // hasOccupantData true -> use newRoom values
+        npcs: { foo: 1 } as unknown as string[], // non-array -> fallback to []
+      };
+
+      const existingRoom: Room = {
+        id: 'room1',
+        name: 'Room 1',
+        description: '',
+        exits: {},
+        players: [],
+        npcs: ['n1'],
+      };
+
+      const result = mergeOccupantData(newRoom as Room, existingRoom);
+      expect(result.players).toEqual(['p1']);
+      expect(result.npcs).toEqual([]);
+    });
+
+    it('should use occupants.length when existingRoom.occupant_count is undefined (useNewOccupants false)', () => {
+      const newRoom: Room = {
+        id: 'room1',
+        name: 'Room 1',
+        description: '',
+        exits: {},
+        players: [],
+        npcs: [],
+      };
+
+      const existingRoom = {
+        id: 'room1',
+        name: 'Room 1',
+        description: '',
+        exits: {} as Record<string, string>,
+        players: ['p1', 'p2'],
+        npcs: ['n1'],
+        occupant_count: undefined,
+      };
+
+      const result = mergeOccupantData(newRoom, existingRoom as Room);
+      expect(result.occupant_count).toBe(3);
     });
 
     it('should preserve existing occupants when new room has empty arrays (room_update after room_occupants)', () => {
@@ -302,6 +373,45 @@ describe('stateUpdateUtils', () => {
       applyEventUpdates(undefined, updates, currentMessages);
 
       expect(Object.keys(updates)).toHaveLength(0);
+    });
+
+    it('should apply followingTarget when present', () => {
+      const eventUpdates: GameStateUpdates = {
+        followingTarget: { target_name: 'Alice', target_type: 'player' },
+      };
+
+      const updates: Partial<GameState> = {};
+      const currentMessages: ChatMessage[] = [];
+
+      applyEventUpdates(eventUpdates, updates, currentMessages);
+
+      expect(updates.followingTarget).toEqual({ target_name: 'Alice', target_type: 'player' });
+    });
+
+    it('should apply loginGracePeriodActive and loginGracePeriodRemaining when present', () => {
+      const eventUpdates: GameStateUpdates = {
+        loginGracePeriodActive: true,
+        loginGracePeriodRemaining: 30,
+      };
+
+      const updates: Partial<GameState> = {};
+      const currentMessages: ChatMessage[] = [];
+
+      applyEventUpdates(eventUpdates, updates, currentMessages);
+
+      expect(updates.loginGracePeriodActive).toBe(true);
+      expect(updates.loginGracePeriodRemaining).toBe(30);
+    });
+
+    it('should apply followingTarget null when explicitly set', () => {
+      const eventUpdates: GameStateUpdates = { followingTarget: null };
+
+      const updates: Partial<GameState> = { followingTarget: { target_name: 'Old', target_type: 'player' } };
+      const currentMessages: ChatMessage[] = [];
+
+      applyEventUpdates(eventUpdates, updates, currentMessages);
+
+      expect(updates.followingTarget).toBeNull();
     });
   });
 

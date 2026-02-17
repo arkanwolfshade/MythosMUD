@@ -15,8 +15,8 @@ import { LocationPanel } from './panels/LocationPanel';
 import { OccupantsPanel } from './panels/OccupantsPanel';
 import { RoomDescriptionPanel } from './panels/RoomDescriptionPanel';
 import type { ChatMessage, MythosTimeState, Player, Room } from './types';
-import type { ActiveEffectDisplay } from './utils/stateUpdateUtils';
 import { createDefaultPanelLayout } from './utils/panelLayout';
+import type { ActiveEffectDisplay } from './utils/stateUpdateUtils';
 
 // Helper function to calculate occupant count from room data
 // Extracted to reduce cyclomatic complexity
@@ -29,12 +29,7 @@ const calculateOccupantCount = (room: Room | null): number => {
   }
   const players = room.players ?? [];
   const npcs = room.npcs ?? [];
-  const calculatedCount = players.length + npcs.length;
-  if (calculatedCount > 0) {
-    return calculatedCount;
-  }
-  const legacyOccupants = room.occupants ?? [];
-  return legacyOccupants.length;
+  return players.length + npcs.length;
 };
 
 interface GameClientV2Props {

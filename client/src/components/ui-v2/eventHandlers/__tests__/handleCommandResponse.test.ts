@@ -127,6 +127,45 @@ describe('handleCommandResponse', () => {
 
     expect(result).toBeDefined();
     expect(result?.player).toBeDefined();
+    expect(result?.player?.stats?.position).toBe('sitting');
+  });
+
+  it('should apply full server player_update (all fields) with server winning', () => {
+    const contextWithPlayer = createMockContext({
+      currentPlayerRef: {
+        current: {
+          name: 'Player',
+          in_combat: false,
+          stats: {
+            current_dp: 100,
+            lucidity: 50,
+            position: 'standing',
+          },
+        } as import('../../types').Player,
+      },
+    });
+
+    const event = {
+      event_type: 'command_response',
+      timestamp: new Date().toISOString(),
+      sequence_number: 6,
+      data: {
+        result: 'You sit down.',
+        player_update: {
+          position: 'sitting',
+          in_combat: true,
+          stats: { current_dp: 95 },
+        },
+        is_html: false,
+      },
+    };
+
+    const result = handleCommandResponse(event, contextWithPlayer, mockAppendMessage);
+
+    expect(result?.player?.stats?.position).toBe('sitting');
+    expect(result?.player?.in_combat).toBe(true);
+    expect(result?.player?.stats?.current_dp).toBe(95);
+    expect(result?.player?.stats?.lucidity).toBe(50);
   });
 
   it('should filter out room name-only messages', () => {

@@ -5,15 +5,16 @@
 -- table creation.
 set client_min_messages = warning;
 set search_path = public;
--- Users table (FastAPI Users v14+ compatible with UUID primary keys)
+-- Users table (FastAPI Users v14+ compatible with UUID primary keys).
+-- Aligned with authoritative_schema: text for username/email/password_hash.
 create table if not exists users (
     id uuid primary key default gen_random_uuid(),
-    email varchar(255) not null unique,
-    hashed_password varchar(1024) not null,
+    email text not null unique,
+    hashed_password text not null,
     is_active boolean not null default true,
     is_superuser boolean not null default false,
     is_verified boolean not null default false,
-    username varchar(255) not null unique,
+    username text not null unique,
     display_name text not null default '',
     password_hash text null,
     is_admin boolean not null default false,
@@ -22,22 +23,21 @@ create table if not exists users (
 );
 create index if not exists idx_users_username on users (username);
 create index if not exists idx_users_email on users (email);
--- Players table (runtime game data)
+-- Players table (runtime game data). Aligned with authoritative_schema:
+-- player_id uuid, stats jsonb, is_deleted/deleted_at for soft delete.
 create table if not exists players (
-    player_id varchar(255) primary key,
+    player_id uuid primary key,
     user_id uuid not null unique references users (id)
         on delete cascade,
     name varchar(50) not null unique,
-    stats text not null default
-        '{"strength": 50, "dexterity": 50, "constitution": 50,'
-        ' "size": 50, "intelligence": 50, "power": 50,'
-        ' "education": 50, "charisma": 50, "luck": 50,'
-        ' "lucidity": 100, "occult": 0, "corruption": 0,'
-        ' "current_dp": 20, "magic_points": 10,'
-        ' "position": "standing"}',
+    stats jsonb not null default
+        '{"strength": 50, "dexterity": 50, "constitution": 50, "size": 50,'
+        ' "intelligence": 50, "power": 50, "education": 50, "charisma": 50,'
+        ' "luck": 50, "lucidity": 100, "occult": 0, "corruption": 0,'
+        ' "current_dp": 20, "magic_points": 10, "position": "standing"}'::jsonb,
     inventory text not null default '[]',
     status_effects text not null default '[]',
-    current_room_id varchar(50) not null default
+    current_room_id varchar(255) not null default
         'earth_arkhamcity_sanitarium_room_foyer_001',
     respawn_room_id varchar(100) default
         'earth_arkhamcity_sanitarium_room_foyer_001',
@@ -46,7 +46,9 @@ create table if not exists players (
     is_admin integer not null default 0,
     profession_id bigint references professions (id),
     created_at timestamptz not null default now(),
-    last_active timestamptz not null default now()
+    last_active timestamptz not null default now(),
+    is_deleted boolean not null default false,
+    deleted_at timestamptz
 );
 create index if not exists idx_players_name on players (name);
 create index if not exists idx_players_user_id on players (user_id);
@@ -59,7 +61,7 @@ create index if not exists idx_players_respawn_room_id
 on players (respawn_room_id);
 -- Player inventories table (JSON payload storage)
 create table if not exists player_inventories (
-    player_id varchar(255) primary key references players (player_id)
+    player_id uuid primary key references players (player_id)
         on delete cascade,
     inventory_json text not null default '[]',
     equipped_json text not null default '{}',
@@ -67,10 +69,10 @@ create table if not exists player_inventories (
 );
 create index if not exists idx_player_inventories_player_id
 on player_inventories (player_id);
--- Invites table (invite-only registration)
+-- Invites table (invite-only registration). Aligned with authoritative_schema: id uuid, invite_code text.
 create table if not exists invites (
-    id varchar(255) primary key,
-    invite_code varchar(255) not null unique,
+    id uuid primary key default gen_random_uuid(),
+    invite_code text not null unique,
     created_by_user_id uuid references users (id)
         on delete set null,
     used_by_user_id uuid references users (id)
@@ -84,7 +86,7 @@ create index if not exists idx_invites_used_by_user_id
 on invites (used_by_user_id);
 -- Player lucidity tables
 create table if not exists player_lucidity (
-    player_id varchar(255) primary key references players (player_id)
+    player_id uuid primary key references players (player_id)
         on delete cascade,
     current_luc integer not null default 100 check (
         current_luc >= -100 and current_luc <= 100
@@ -106,7 +108,7 @@ create index if not exists idx_player_sanity_tier
 on player_lucidity (current_tier);
 create table if not exists sanity_adjustment_log (
     id bigint generated always as identity primary key,
-    player_id varchar(255) not null references players (player_id)
+    player_id uuid not null references players (player_id)
         on delete cascade,
     delta integer not null,
     reason_code text not null,
@@ -120,7 +122,7 @@ create index if not exists idx_sanity_adjustment_player_id
 on sanity_adjustment_log (player_id);
 create table if not exists sanity_exposure_state (
     id bigint generated always as identity primary key,
-    player_id varchar(255) not null references players (player_id)
+    player_id uuid not null references players (player_id)
         on delete cascade,
     entity_archetype text not null,
     encounter_count integer not null default 0,
@@ -131,7 +133,7 @@ create index if not exists idx_sanity_exposure_player_id
 on sanity_exposure_state (player_id);
 create table if not exists sanity_cooldowns (
     id bigint generated always as identity primary key,
-    player_id varchar(255) not null references players (player_id)
+    player_id uuid not null references players (player_id)
         on delete cascade,
     action_code text not null,
     cooldown_expires_at timestamptz not null,
@@ -292,6 +294,8 @@ comment on column players.name is 'Character name (must be unique, case-sensitiv
 comment on column players.stats is 'JSON object containing character statistics (strength, dexterity, etc.).';
 comment on column players.inventory is 'JSON array of inventory items.';
 comment on column players.status_effects is 'JSON array of active status effects.';
+comment on column players.is_deleted is 'Soft delete flag - deleted characters are hidden but not removed from database.';
+comment on column players.deleted_at is 'Timestamp when character was soft-deleted (NULL for active characters).';
 comment on column player_lucidity.current_luc is 'Current lucidity value (-100 to +100).';
 comment on column player_lucidity.current_tier is 'Current lucidity tier: lucid, uneasy, fractured, deranged, or catatonic.';
 comment on column sanity_adjustment_log.delta is 'Change in lucidity value (positive for gain, negative for loss).';

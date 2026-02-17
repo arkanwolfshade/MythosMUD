@@ -62,28 +62,25 @@ class TestCreateErrorContext:
     """Test create_error_context function."""
 
     def test_create_error_context_with_user(self, mock_request, mock_user):
-        """Test create_error_context includes user information."""
+        """Test create_error_context includes user information (returns flat dict for **kwargs)."""
         context = create_error_context(mock_request, mock_user, operation="test", key="value")
-        assert context.metadata["operation"] == "test"
-        assert context.metadata["key"] == "value"
-        assert context.user_id == str(mock_user.id)
+        assert context["operation"] == "test"
+        assert context["key"] == "value"
+        assert context["user_id"] == str(mock_user.id)
 
     def test_create_error_context_no_user(self, mock_request):
-        """Test create_error_context handles None user."""
-        # Ensure mock_request.state doesn't have user_id to test None user case
+        """Test create_error_context handles None user (returns flat dict)."""
         if hasattr(mock_request.state, "user_id"):
             delattr(mock_request.state, "user_id")
         context = create_error_context(mock_request, None, operation="test")
-        assert context.metadata["operation"] == "test"
-        # When current_user is None, user_id should not be set from current_user
-        # (it might be set from request.state, but that's a different code path)
-        # The key is that create_error_context doesn't set it when current_user is None
-        assert context.user_id is None or not hasattr(context, "user_id")
+        assert context["operation"] == "test"
+        assert context.get("user_id") is None
 
     def test_create_error_context_no_request(self, mock_user):
-        """Test create_error_context handles None request."""
+        """Test create_error_context handles None request (returns flat dict)."""
         context = create_error_context(None, mock_user, operation="test")
-        assert context.metadata["operation"] == "test"
+        assert context["operation"] == "test"
+        assert context["user_id"] == str(mock_user.id)
 
 
 class TestGetPlayerIdFromUser:

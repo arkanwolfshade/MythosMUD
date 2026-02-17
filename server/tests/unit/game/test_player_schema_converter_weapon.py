@@ -13,6 +13,7 @@ from server.game.player_schema_converter import (
     _weapon_from_prototype_registry,
 )
 from server.models.game import InventoryItem
+from server.schemas.game.weapon import WeaponStats
 
 
 def test_weapon_from_prototype_registry_none_registry_returns_none() -> None:
@@ -58,9 +59,9 @@ def test_weapon_from_prototype_registry_weapon_present_returns_dict() -> None:
     registry.get.return_value = prototype
     result = _weapon_from_prototype_registry(registry, "weapon.main_hand.switchblade")
     assert result is not None
-    assert result["min_damage"] == 1
-    assert result["max_damage"] == 4
-    assert result["damage_types"] == ["slashing", "piercing"]
+    assert result.min_damage == 1
+    assert result.max_damage == 4
+    assert result.damage_types == ["slashing", "piercing"]
 
 
 def test_inventory_item_with_weapon_minimal_dict() -> None:
@@ -86,8 +87,12 @@ def test_inventory_item_with_weapon_with_registry_weapon() -> None:
     assert result.item_id == "weapon.main_hand.switchblade"
     assert result.quantity == 1
     assert result.weapon is not None
-    assert result.weapon["min_damage"] == 1
-    assert result.weapon["max_damage"] == 4
+    assert isinstance(result.weapon, WeaponStats)
+    # Pylint incorrectly infers result.weapon as FieldInfo instead of WeaponStats after isinstance check
+    # Runtime isinstance check ensures type safety, suppress Pylint false positive
+    weapon = result.weapon  # pylint: disable=no-member
+    assert weapon.min_damage == 1  # pylint: disable=no-member
+    assert weapon.max_damage == 4  # pylint: disable=no-member
 
 
 def test_inventory_item_with_weapon_uses_prototype_id_for_lookup() -> None:
@@ -140,5 +145,9 @@ async def test_create_player_read_from_object_enriches_inventory_weapon() -> Non
     )
     assert len(result.inventory) == 1
     assert result.inventory[0].weapon is not None
-    assert result.inventory[0].weapon["min_damage"] == 1
-    assert result.inventory[0].weapon["max_damage"] == 4
+    assert isinstance(result.inventory[0].weapon, WeaponStats)
+    # Pylint incorrectly infers result.inventory[0].weapon as FieldInfo instead of WeaponStats after isinstance check
+    # Runtime isinstance check ensures type safety, suppress Pylint false positive
+    weapon = result.inventory[0].weapon  # pylint: disable=no-member
+    assert weapon.min_damage == 1  # pylint: disable=no-member
+    assert weapon.max_damage == 4  # pylint: disable=no-member

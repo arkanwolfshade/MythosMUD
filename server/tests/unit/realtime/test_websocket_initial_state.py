@@ -235,7 +235,8 @@ async def test_check_and_send_death_notification_in_limbo(mock_websocket, mock_c
 
     mock_player = MagicMock()
     mock_player.name = "TestPlayer"
-    mock_player.get_stats.return_value = {"current_dp": 50}
+    # Death notification is only sent when current_dp <= -10 (actually dead, not just in limbo)
+    mock_player.get_stats.return_value = {"current_dp": -10}
     mock_player.current_room_id = LIMBO_ROOM_ID
 
     with patch("server.async_persistence.get_async_persistence") as mock_get_persistence:
@@ -411,9 +412,10 @@ async def test_send_occupants_snapshot_if_needed_no_handler():
 
 @pytest.mark.asyncio
 async def test_send_occupants_snapshot_if_needed_player_not_in_room():
-    """Test send_occupants_snapshot_if_needed() does nothing when player not in room."""
+    """Test send_occupants_snapshot_if_needed() calls send_occupants_snapshot_to_player when handler exists."""
     mock_event_handler = MagicMock()
     mock_player_handler = MagicMock()
+    mock_player_handler.send_occupants_snapshot_to_player = AsyncMock()
     mock_event_handler.player_handler = mock_player_handler
 
     player_id = uuid.uuid4()
@@ -425,7 +427,8 @@ async def test_send_occupants_snapshot_if_needed_player_not_in_room():
 
     await send_occupants_snapshot_if_needed(mock_event_handler, mock_room, player_id, player_id_str, canonical_room_id)
 
-    mock_player_handler.send_occupants_snapshot_to_player.assert_not_called()
+    # Implementation always sends snapshot when handler exists (connecting player may not be in room._players yet)
+    mock_player_handler.send_occupants_snapshot_to_player.assert_called_once_with(player_id, canonical_room_id)
 
 
 @pytest.mark.asyncio

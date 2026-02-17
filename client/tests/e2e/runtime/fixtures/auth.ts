@@ -5,249 +5,90 @@
  */
 
 import { expect, type Page } from '@playwright/test';
+import { CharacterSelectionPage, LoginPage, MotdPage } from '../pages';
 import { TEST_TIMEOUTS } from './test-data';
-
-const BASE_URL = 'http://localhost:5173';
 
 /**
  * Login a player and navigate through the full authentication flow.
- * Handles:
- * - Login form
- * - Character selection (if multiple characters exist)
- * - MOTD screen
- * - Game interface loading
+ * Uses LoginPage, CharacterSelectionPage, and MotdPage for stable locators and actions.
  *
  * @param page - Playwright page instance
  * @param username - Username to login with
  * @param password - Password to login with
  */
 export async function loginPlayer(page: Page, username: string, password: string): Promise<void> {
-  // Navigate to base URL
-  await page.goto(BASE_URL, { waitUntil: 'load' });
+  const loginPage = new LoginPage(page);
+  const characterSelection = new CharacterSelectionPage(page);
+  const motdPage = new MotdPage(page);
 
-  // Wait for login form
-  const usernameInput = page.locator('input[placeholder*="username" i], input[name*="username" i]');
-  await expect(usernameInput).toBeVisible({ timeout: TEST_TIMEOUTS.LOGIN });
-
-  // Fill login form
-  await usernameInput.fill(username);
-  await page.fill('input[type="password"]', password);
-
-  // Click login button
-  await page.click('button:has-text("Enter"), button:has-text("Login"), button[type="submit"]');
+  await loginPage.navigate();
+  await loginPage.login(username, password);
   await page.waitForLoadState('domcontentloaded', { timeout: 5000 }).catch(() => {});
 
-  // Wait for loading to complete
   try {
     await page.waitForFunction(
       () => {
-        const loadingElements = Array.from(document.querySelectorAll('*')).filter(
+        const loading = Array.from(document.querySelectorAll('*')).filter(
           el => el.textContent?.trim() === 'Loading...' || el.textContent?.includes('Loading...')
         );
-        return loadingElements.length === 0;
+        return loading.length === 0;
       },
       { timeout: TEST_TIMEOUTS.LOGIN }
     );
   } catch {
-    // Loading might not appear, continue anyway
+    // Loading might not appear
   }
 
-  // Wait for either character selection or game interface
   await page.waitForFunction(
     () => {
-      const hasCharacterSelection = document.querySelector('.character-selection') !== null;
-      const hasGameClient = document.querySelector('.game-client') !== null;
-      const hasCommandInput = document.querySelector('.command-input') !== null;
-      const hasTextareaCommand = document.querySelector('textarea[placeholder*="command" i]') !== null;
-      const hasMOTDButton = document.querySelector('[data-testid="motd-enter-realm"]') !== null;
-      const hasCharacterHeading = Array.from(document.querySelectorAll('h1, h2, h3')).some(el =>
-        el.textContent?.includes('Select Your Character')
-      );
       return (
-        hasCharacterSelection ||
-        hasGameClient ||
-        hasCommandInput ||
-        hasTextareaCommand ||
-        hasMOTDButton ||
-        hasCharacterHeading
+        document.querySelector('.character-selection') !== null ||
+        document.querySelector('[data-testid="command-input"]') !== null ||
+        document.querySelector('[data-testid="motd-enter-realm"]') !== null ||
+        Array.from(document.querySelectorAll('h1, h2, h3')).some(el =>
+          el.textContent?.includes('Select Your Character')
+        )
       );
     },
     { timeout: TEST_TIMEOUTS.LOGIN }
   );
 
-  // Handle character selection if present
-  const characterSelectionHeading = page.locator('h1, h2, h3').filter({ hasText: /Select Your Character/i });
-  const isCharacterSelectionVisible = await characterSelectionHeading.isVisible({ timeout: 2000 }).catch(() => false);
-  if (isCharacterSelectionVisible) {
-    const selectCharacterButton = page.locator('button:has-text("Select Character")').first();
-    if (await selectCharacterButton.isVisible({ timeout: 3000 }).catch(() => false)) {
-      await selectCharacterButton.click();
-      await page.waitForLoadState('domcontentloaded', { timeout: 5000 }).catch(() => {});
-      await new Promise(r => setTimeout(r, 1000)); // Wait for character selection to process
-    } else {
-      // Fallback: try clicking first character card or button
-      const firstCharacter = page.locator('.character-card, [data-character-id], button:has-text("Select")').first();
-      if (await firstCharacter.isVisible({ timeout: 3000 }).catch(() => false)) {
-        await firstCharacter.click();
-        await page.waitForLoadState('domcontentloaded', { timeout: 5000 }).catch(() => {});
-        await new Promise(r => setTimeout(r, 1000)); // Wait for character selection to process
-      }
-    }
-    // After character selection, wait for MOTD screen to appear (it appears after character selection in App.tsx)
-    try {
-      await Promise.race([
-        page.waitForSelector('[data-testid="motd-enter-realm"]', { state: 'visible', timeout: 10000 }),
-        page.getByRole('button', { name: /Enter the Realm/i }).waitFor({ state: 'visible', timeout: 10000 }),
-        page.waitForFunction(
-          () => {
-            const bodyText = document.body?.textContent || '';
-            return bodyText.includes('Welcome to the Dreamlands');
-          },
-          { timeout: 10000 }
-        ),
-      ]);
-      await page.waitForTimeout(500); // Small delay to ensure MOTD is fully rendered
-    } catch {
-      // MOTD might not appear immediately, continue anyway
-    }
+  if (await characterSelection.isVisible()) {
+    await characterSelection.selectFirstCharacter();
+    await page
+      .getByTestId('motd-enter-realm')
+      .waitFor({ state: 'visible', timeout: 10000 })
+      .catch(() => {});
   }
 
-  // Handle MOTD/welcome screen if present
-  // Use DOM-based detection (not visibility checks) since MOTD might be present but not "visible" to Playwright
-  // Check page content directly in DOM (more reliable than visibility checks)
   const motdCheck = await page
     .evaluate(() => {
       const bodyText = document.body?.textContent || '';
-      const hasWelcomeText = bodyText.includes('Welcome to the Dreamlands');
-      const hasMotdContent = document.querySelector('.motd-content') !== null;
-      const hasMotdButton = document.querySelector('[data-testid="motd-enter-realm"]') !== null;
-
-      // Find button by text content in DOM
-      const buttons = Array.from(document.querySelectorAll('button'));
-      const enterRealmButton = buttons.find(btn => btn.textContent?.includes('Enter the Realm'));
-
-      return {
-        hasWelcomeText,
-        hasMotdContent,
-        hasMotdButton,
-        hasEnterRealmButton: enterRealmButton !== null,
-        buttonFound: enterRealmButton !== null,
-      };
+      const hasButton = document.querySelector('[data-testid="motd-enter-realm"]') !== null;
+      const hasWelcome = bodyText.includes('Welcome to the Dreamlands');
+      return hasButton || hasWelcome;
     })
-    .catch(() => ({
-      hasWelcomeText: false,
-      hasMotdContent: false,
-      hasMotdButton: false,
-      hasEnterRealmButton: false,
-      buttonFound: false,
-    }));
+    .catch(() => false);
 
-  const isMOTDScreen =
-    motdCheck.hasWelcomeText || motdCheck.hasMotdContent || motdCheck.hasMotdButton || motdCheck.hasEnterRealmButton;
-
-  if (isMOTDScreen) {
-    // Click MOTD button - use direct DOM click since visibility checks are unreliable
-    // Try multiple click strategies in order of preference
-    let clicked = false;
-
-    // Strategy 1: Try by test ID selector (if button exists in DOM)
-    if (motdCheck.hasMotdButton && !clicked) {
-      try {
-        await page.click('[data-testid="motd-enter-realm"]', { timeout: 3000 });
-        clicked = true;
-      } catch {
-        // Continue to next strategy
-      }
-    }
-
-    // Strategy 2: Try by role/text (Playwright's getByRole)
-    if (!clicked) {
-      try {
-        await page.getByRole('button', { name: /Enter the Realm/i }).click({ timeout: 3000 });
-        clicked = true;
-      } catch {
-        // Continue to next strategy
-      }
-    }
-
-    // Strategy 3: Direct DOM click (most reliable - works even if Playwright thinks button isn't visible)
-    if (!clicked) {
-      await page.evaluate(() => {
-        // Try by test ID first
-        const testIdButton = document.querySelector('[data-testid="motd-enter-realm"]') as HTMLElement;
-        if (testIdButton) {
-          testIdButton.click();
-          return;
-        }
-
-        // Fallback: find by text content
-        const buttons = Array.from(document.querySelectorAll('button'));
-        const enterButton = buttons.find(btn => btn.textContent?.includes('Enter the Realm'));
-        if (enterButton) {
-          (enterButton as HTMLElement).click();
-        }
-      });
-    }
-
-    // Wait for game interface to load
-    await page.waitForTimeout(2000);
-    try {
-      await Promise.race([
-        page.getByText('Game Info', { exact: false }).waitFor({ state: 'visible', timeout: TEST_TIMEOUTS.GAME_LOAD }),
-        page.waitForSelector('.message-item', { state: 'visible', timeout: TEST_TIMEOUTS.GAME_LOAD }),
-        page.waitForSelector('[data-message-text]', { state: 'visible', timeout: TEST_TIMEOUTS.GAME_LOAD }),
-      ]).catch(() => {});
-    } catch {
-      // Continue anyway
-    }
+  if (motdCheck) {
+    await motdPage.enterRealm();
+    await motdPage.waitForGameReady(TEST_TIMEOUTS.GAME_LOAD);
   }
 
-  // Final wait: Verify command input is visible (confirms we're in the game)
-  // This is a best-effort check - if it fails, we still proceed
   try {
     await page.waitForFunction(
       () => {
-        const inputByPlaceholder = document.querySelector(
-          'input[placeholder*="command" i], textarea[placeholder*="command" i]'
-        );
-        const inputByTestId = document.querySelector('[data-testid="command-input"]');
-        const input = inputByPlaceholder || inputByTestId;
+        const input = document.querySelector('[data-testid="command-input"]');
         return input !== null && (input as HTMLElement).offsetParent !== null;
       },
       { timeout: TEST_TIMEOUTS.GAME_LOAD }
     );
   } catch {
-    // Command input might not be immediately visible - this is okay, tests will handle it
-    // Wait a bit more for the page to stabilize (only if page is still open)
-    try {
-      await page.waitForTimeout(2000);
-    } catch {
-      // Page might be closed, ignore
-    }
+    await page
+      .getByTestId('command-input')
+      .waitFor({ state: 'visible', timeout: 5000 })
+      .catch(() => {});
   }
-
-  // #region agent log
-  const hasCmdInput = await page
-    .evaluate(() => {
-      const input =
-        document.querySelector('input[placeholder*="command" i], textarea[placeholder*="command" i]') ||
-        document.querySelector('[data-testid="command-input"]');
-      return input !== null && (input as HTMLElement).offsetParent !== null;
-    })
-    .catch(() => false);
-  fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      location: 'auth.ts:loginPlayer:exit',
-      message: 'loginPlayer finished',
-      data: { username, hasCommandInput: hasCmdInput },
-      timestamp: Date.now(),
-      sessionId: 'debug-session',
-      hypothesisId: 'A',
-    }),
-  }).catch(() => {});
-  // #endregion
 }
 
 /**
@@ -258,14 +99,11 @@ export async function loginPlayer(page: Page, username: string, password: string
  * @returns Promise that resolves when command is sent
  */
 export async function executeCommand(page: Page, command: string): Promise<void> {
-  // First, verify we're not still on the login screen
-  const isOnLoginScreen = await page.evaluate(() => {
-    const hasLoginForm = document.querySelector('input[placeholder*="username" i], input[name*="username" i]') !== null;
-    const hasLoginButton = Array.from(document.querySelectorAll('button')).some(
-      btn => btn.textContent?.includes('Enter the Void') || btn.textContent?.includes('Login')
-    );
-    return hasLoginForm && hasLoginButton;
-  });
+  // First, verify we're not still on the login screen (check for login form by test id)
+  const isOnLoginScreen = await page
+    .getByTestId('username-input')
+    .isVisible()
+    .catch(() => false);
 
   if (isOnLoginScreen) {
     throw new Error(
@@ -273,30 +111,15 @@ export async function executeCommand(page: Page, command: string): Promise<void>
     );
   }
 
-  // Wait for command input to be available (may not be immediately visible after login)
-  await page.waitForFunction(
-    () => {
-      const inputByPlaceholder = document.querySelector(
-        'input[placeholder*="command" i], textarea[placeholder*="command" i]'
-      );
-      const inputByTestId = document.querySelector('[data-testid="command-input"]');
-      const input = inputByPlaceholder || inputByTestId;
-      return input !== null && (input as HTMLElement).offsetParent !== null;
-    },
-    { timeout: TEST_TIMEOUTS.COMMAND }
-  );
-
-  const commandInput = page.locator(
-    'input[placeholder*="command" i], textarea[placeholder*="command" i], [data-testid="command-input"]'
-  );
+  const commandInput = page.getByTestId('command-input');
   await expect(commandInput).toBeVisible({ timeout: TEST_TIMEOUTS.COMMAND });
   await commandInput.clear();
   await commandInput.fill(command);
   // Wait for input to reflect full command (avoids submitting before React state updates)
   await expect(commandInput).toHaveValue(command, { timeout: 5000 });
   await commandInput.press('Enter');
-  // Small wait for command processing
-  await page.waitForTimeout(1000);
+  // Wait for command to be processed (game log or next prompt)
+  await expect(commandInput).toBeVisible({ timeout: 3000 });
 }
 
 /**

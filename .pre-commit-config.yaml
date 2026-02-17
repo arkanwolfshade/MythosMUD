@@ -60,6 +60,7 @@ repos:
       - id: check-case-conflict
       - id: check-symlinks
       - id: check-ast
+      - id: detect-private-key
 
   - repo: local
     hooks:

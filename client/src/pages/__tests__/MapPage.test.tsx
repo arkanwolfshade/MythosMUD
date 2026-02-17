@@ -32,6 +32,8 @@ vi.mock('../../utils/security', () => ({
 
 vi.mock('../../utils/config', () => ({
   API_BASE_URL: 'http://localhost:54731',
+  API_V1_BASE: 'http://localhost:54731/v1',
+  getVersionedApiBaseUrl: () => 'http://localhost:54731/v1',
 }));
 
 vi.mock('../../utils/logger', () => ({

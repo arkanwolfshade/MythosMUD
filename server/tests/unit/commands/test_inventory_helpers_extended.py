@@ -17,7 +17,7 @@ from server.commands.inventory_command_helpers import (
 
 # Note: _render_inventory doesn't exist - may need to be removed from tests or implemented
 from server.exceptions import ValidationError as MythosValidationError
-from server.schemas.inventory_schema import InventorySchemaValidationError
+from server.schemas.shared import InventorySchemaValidationError
 
 
 def test_clone_inventory():

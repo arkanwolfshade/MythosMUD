@@ -59,7 +59,9 @@ class LogAggregator:
     collection, processing, filtering, and export functionality.
     """
 
-    def __init__(self, max_entries: int = 50000, aggregation_interval: float = 60.0, export_path: str | None = None):
+    def __init__(
+        self, max_entries: int = 50000, aggregation_interval: float = 60.0, export_path: str | None = None
+    ) -> None:
         """
         Initialize the log aggregator.
 

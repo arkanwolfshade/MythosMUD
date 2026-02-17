@@ -11,10 +11,8 @@ import uuid
 from typing import Any
 
 from server.config import get_config
-from server.game.weapons import resolve_weapon_attack_from_equipped
 from server.models.combat import CombatAction, CombatInstance, CombatParticipant, CombatParticipantType, CombatStatus
-from server.npc.combat_integration import NPCCombatIntegration
-from server.services.nats_exceptions import NATSError
+from server.services import combat_turn_participant_actions
 from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -76,6 +74,95 @@ class CombatTurnProcessor:
                 )
                 await self._execute_round(combat, current_tick)
 
+    def _load_round_actions(self, combat: CombatInstance, next_round: int) -> None:
+        """
+        Load queued actions for the next round into combat.round_actions.
+
+        Actions are queued with round = combat.combat_round + 1. When executing a round,
+        combat.combat_round has not been incremented yet, so we match actions for next_round.
+        """
+        combat.round_actions.clear()
+        for participant_id, queued_actions_list in combat.queued_actions.items():
+            for action in queued_actions_list:
+                if action.round == next_round:
+                    combat.round_actions[participant_id] = action
+                    break
+
+    def _log_round_start_debug(
+        self, combat: CombatInstance, participants_by_initiative: list[CombatParticipant]
+    ) -> None:
+        """Write debug log when any participant has zero or negative DP at round start (agent hypothesis H6)."""
+        try:
+            any_zero_or_neg = any(p.current_dp <= 0 for p in combat.participants.values())
+            if not any_zero_or_neg:
+                return
+            import json
+
+            parts = [
+                {
+                    "id": str(p.participant_id),
+                    "type": str(p.participant_type),
+                    "current_dp": p.current_dp,
+                    "is_alive": p.is_alive(),
+                }
+                for p in combat.participants.values()
+            ]
+            by_init = [{"id": str(p.participant_id), "current_dp": p.current_dp} for p in participants_by_initiative]
+            with open("e:\\projects\\GitHub\\MythosMUD\\.cursor\\debug.log", "a", encoding="utf-8") as _f:
+                _f.write(
+                    json.dumps(
+                        {
+                            "hypothesisId": "H6",
+                            "location": "combat_turn_processor:_execute_round",
+                            "message": "round start with participant at 0 or below",
+                            "data": {
+                                "participants": parts,
+                                "by_initiative": by_init,
+                                "count": len(participants_by_initiative),
+                            },
+                            "timestamp": __import__("time", fromlist=["time"]).time() * 1000,
+                        },
+                        ensure_ascii=True,
+                    )
+                    + "\n"
+                )
+        except (OSError, TypeError, AttributeError, ValueError):
+            # Debug log must never affect combat; absorb file/serialization/attribute errors
+            pass
+
+    async def _execute_participant_action(
+        self,
+        combat: CombatInstance,
+        participant: CombatParticipant,
+        next_round: int,
+        current_tick: int,
+    ) -> None:
+        """
+        Execute one participant's action for the round (queued or default).
+        Call only for participants that are alive.
+        """
+        if participant.participant_id not in combat.round_actions:
+            await self._execute_default_action(combat, participant, current_tick)
+            return
+        action = combat.round_actions[participant.participant_id]
+        if action.action_type == "attack":
+            target_in_combat = combat.participants.get(action.target_id)
+            # CRITICAL: Use is_dead() instead of is_alive() to allow attacking mortally wounded players (0 DP)
+            # Players at 0 DP are not dead yet and should still be attackable until -10 DP
+            if not target_in_combat or target_in_combat.is_dead():
+                logger.warning(
+                    "Stale queued attack target (not in combat or dead), using default action",
+                    combat_id=combat.combat_id,
+                    participant_id=participant.participant_id,
+                    queued_target_id=action.target_id,
+                    participant_ids=[str(pid) for pid in combat.participants.keys()],
+                )
+                combat.clear_queued_actions(participant.participant_id, round_number=next_round)
+                await self._execute_default_action(combat, participant, current_tick)
+                return
+        await self._execute_queued_action(combat, participant, action, current_tick)
+        combat.clear_queued_actions(participant.participant_id, round_number=next_round)
+
     async def _execute_round(self, combat: CombatInstance, current_tick: int) -> None:
         """
         Execute all actions for a round - all participants act sequentially in initiative order.
@@ -84,24 +171,11 @@ class CombatTurnProcessor:
             combat: Combat instance to process
             current_tick: Current game tick
         """
-        # Update activity
         combat.update_activity(current_tick)
-
-        # Load queued actions into round_actions for this round
-        # Actions are queued with round = combat.combat_round + 1 (the round they should execute)
-        # When we're executing a round, combat.combat_round hasn't been incremented yet,
-        # so we check for actions queued for combat.combat_round + 1
         next_round = combat.combat_round + 1
-        combat.round_actions.clear()
-        for participant_id, queued_actions_list in combat.queued_actions.items():
-            # Get actions queued for this round (next_round)
-            for action in queued_actions_list:
-                if action.round == next_round:
-                    combat.round_actions[participant_id] = action
-                    break  # Only one action per participant per round
-
-        # Get all alive participants sorted by initiative (dexterity, highest first)
+        self._load_round_actions(combat, next_round)
         participants_by_initiative = combat.get_participants_by_initiative()
+        self._log_round_start_debug(combat, participants_by_initiative)
 
         if not participants_by_initiative:
             logger.warning("No alive participants in combat", combat_id=combat.combat_id)
@@ -116,36 +190,14 @@ class CombatTurnProcessor:
             queued_actions_count=len(combat.round_actions),
         )
 
-        # Execute actions for all participants in initiative order
         for participant in participants_by_initiative:
-            if not participant.is_alive():
+            # CRITICAL: Use is_dead() instead of is_alive() to ensure mortally wounded players
+            # (0 DP) remain in combat and can be attacked until -10 DP
+            # is_alive() requires is_active=True, which might be False for incapacitated players
+            if participant.is_dead():
                 continue
+            await self._execute_participant_action(combat, participant, next_round, current_tick)
 
-            # Check if participant has a queued action for this round
-            if participant.participant_id in combat.round_actions:
-                action = combat.round_actions[participant.participant_id]
-                # Defensive: if queued attack target is not in this combat or is dead, use default action
-                if action.action_type == "attack":
-                    target_in_combat = combat.participants.get(action.target_id)
-                    if not target_in_combat or not target_in_combat.is_alive():
-                        logger.warning(
-                            "Stale queued attack target (not in combat or dead), using default action",
-                            combat_id=combat.combat_id,
-                            participant_id=participant.participant_id,
-                            queued_target_id=action.target_id,
-                            participant_ids=[str(pid) for pid in combat.participants.keys()],
-                        )
-                        combat.clear_queued_actions(participant.participant_id, round_number=next_round)
-                        await self._execute_default_action(combat, participant, current_tick)
-                        continue
-                await self._execute_queued_action(combat, participant, action, current_tick)
-                # Clear only this specific queued action (may have others queued for future rounds)
-                combat.clear_queued_actions(participant.participant_id, round_number=next_round)
-            else:
-                # Generate and execute default action (basic attack)
-                await self._execute_default_action(combat, participant, current_tick)
-
-        # Advance to next round
         combat.advance_turn(current_tick)
 
     async def _execute_queued_action(  # pylint: disable=too-many-locals,too-many-branches,too-many-nested-blocks  # Reason: Method handles complex spell execution with multiple nested conditions - refactoring would reduce clarity of action flow
@@ -206,7 +258,7 @@ class CombatTurnProcessor:
                             if player:
                                 room_id = player.current_room_id or combat.room_id
                                 # Recreate target from action data
-                                from server.schemas.target_resolution import (  # noqa: PLC0415  # Reason: Local import
+                                from server.schemas.shared import (  # noqa: PLC0415  # Reason: Local import
                                     TargetMatch,
                                     TargetType,
                                 )
@@ -296,6 +348,39 @@ class CombatTurnProcessor:
                 target = p
                 break
 
+        # #region agent log
+        try:
+            import json
+
+            _alive = [
+                {"id": str(p.participant_id), "current_dp": p.current_dp, "is_alive": p.is_alive()}
+                for p in combat.participants.values()
+            ]
+            with open("e:\\projects\\GitHub\\MythosMUD\\.cursor\\debug.log", "a", encoding="utf-8") as _f:
+                _f.write(
+                    json.dumps(
+                        {
+                            "hypothesisId": "H5",
+                            "location": "combat_turn_processor:_execute_default_action",
+                            "message": "default action target selection",
+                            "data": {
+                                "actor_id": str(participant.participant_id),
+                                "target_id": str(target.participant_id) if target else None,
+                                "target_current_dp": target.current_dp if target else None,
+                                "target_is_alive": target.is_alive() if target else None,
+                                "participants": _alive,
+                            },
+                            "timestamp": __import__("time", fromlist=["time"]).time() * 1000,
+                        },
+                        ensure_ascii=True,
+                    )
+                    + "\n"
+                )
+        except (OSError, TypeError, AttributeError, ValueError):
+            # Debug log must never affect combat; absorb file/serialization/attribute errors
+            pass
+        # #endregion
+
         if not target:
             logger.warning("No target found for default action", participant_id=participant.participant_id)
             participant.last_action_tick = current_tick
@@ -308,236 +393,9 @@ class CombatTurnProcessor:
             await self._process_player_turn(combat, participant, current_tick)
 
     async def _process_npc_turn(self, combat: CombatInstance, npc: CombatParticipant, current_tick: int) -> None:
-        """
-        Process NPC turn with actual combat attack.
-
-        Args:
-            combat: Combat instance
-            npc: NPC participant
-            current_tick: Current game tick
-        """
-        try:
-            # Debug logging to understand what we're receiving
-            logger.debug("_process_npc_turn called", npc_type=type(npc).__name__, npc=npc)
-            if hasattr(npc, "participant_id"):
-                logger.debug(
-                    "NPC participant_id", participant_id=npc.participant_id, id_type=type(npc.participant_id).__name__
-                )
-            else:
-                logger.error("NPC object missing participant_id attribute", npc=npc)
-                return
-
-            # BUGFIX: Check if NPC can act (DP > 0) before allowing actions
-            # NPCs die at DP <= 0; use domain model method
-            if not npc.can_act_in_combat():
-                logger.info(
-                    "NPC cannot act (dead or inactive)",
-                    npc_name=npc.name,
-                    current_dp=npc.current_dp,
-                    combat_id=combat.combat_id,
-                )
-                npc.last_action_tick = current_tick
-                return
-
-            # Find the target (other participant in combat)
-            target = None
-            for participant in combat.participants.values():
-                if participant.participant_id != npc.participant_id:
-                    target = participant
-                    break
-            if not target:
-                logger.warning("No target found for NPC", npc_name=npc.name, combat_id=combat.combat_id)
-                return
-
-            # Perform automatic basic attack
-            logger.debug("NPC performing automatic attack", npc_name=npc.name, target_name=target.name)
-
-            # Use configured damage for automatic attacks
-            config = get_config()
-            damage = config.game.basic_unarmed_damage
-            # Process the attack
-            combat_result = await self._combat_service.process_attack(
-                attacker_id=npc.participant_id, target_id=target.participant_id, damage=damage
-            )
-            if combat_result.success:
-                logger.info("NPC automatically attacked", npc_name=npc.name, target_name=target.name, damage=damage)
-            else:
-                logger.warning("NPC automatic attack failed", npc_name=npc.name, message=combat_result.message)
-
-            # Update NPC's last action tick
-            npc.last_action_tick = current_tick
-
-        except (AttributeError, ValueError, TypeError, RuntimeError, NATSError, ConnectionError, KeyError) as e:
-            logger.error("Error processing NPC turn", npc_name=npc.name, error=str(e), exc_info=True)
-
-    def _get_combat_container_services(self, config: Any) -> tuple[Any, Any, Any]:
-        """Return (player_service, registry, async_persistence) from app container, or (None, None, None)."""
-        app = getattr(config, "_app_instance", None)
-        if not app or not hasattr(app.state, "container"):
-            return None, None, None
-        container = app.state.container
-        return (
-            getattr(container, "player_service", None),
-            getattr(container, "item_prototype_registry", None),
-            getattr(container, "async_persistence", None),
-        )
-
-    async def _get_target_stats_for_damage(self, target: CombatParticipant, async_persistence: Any) -> dict[str, Any]:
-        """Resolve target stats dict for damage calculation (player or default)."""
-        if target.participant_type != CombatParticipantType.PLAYER or not async_persistence:
-            return {"constitution": 50}
-        try:
-            target_player = await async_persistence.get_player_by_id(target.participant_id)
-            stats = target_player.get_stats() if target_player and hasattr(target_player, "get_stats") else {}
-        except (TypeError, ValueError, AttributeError):
-            return {"constitution": 50}
-        return stats if isinstance(stats, dict) else {"constitution": 50}
-
-    async def _resolve_player_attack_damage(
-        self,
-        player: CombatParticipant,
-        target: CombatParticipant,
-        config: Any,
-    ) -> tuple[int, str]:
-        """
-        Resolve damage and damage_type for a player auto-attack from equipped main_hand or unarmed fallback.
-
-        Returns:
-            (damage, damage_type) for use with process_attack.
-        """
-        damage = config.game.basic_unarmed_damage
-        damage_type = "physical"
-
-        player_service, registry, async_persistence = self._get_combat_container_services(config)
-        if not player_service or not registry:
-            return damage, damage_type
-
-        full_player = await player_service.persistence.get_player_by_id(player.participant_id)
-        if not full_player:
-            return damage, damage_type
-
-        main_hand_stack = (full_player.get_equipped_items() or {}).get("main_hand")
-        weapon_info = resolve_weapon_attack_from_equipped(main_hand_stack, registry)
-
-        if not weapon_info:
-            return damage, damage_type
-
-        damage_type = weapon_info.damage_type
-        attacker_stats = full_player.get_stats() if hasattr(full_player, "get_stats") else {}
-        if not isinstance(attacker_stats, dict):
-            attacker_stats = {}
-
-        target_stats = await self._get_target_stats_for_damage(target, async_persistence)
-        integration = NPCCombatIntegration(async_persistence=async_persistence)
-        damage = integration.calculate_damage(
-            attacker_stats=attacker_stats,
-            target_stats=target_stats,
-            weapon_damage=weapon_info.base_damage,
-            damage_type=damage_type,
-        )
-        return damage, damage_type
+        """Delegate to participant actions module."""
+        await combat_turn_participant_actions.process_npc_turn(self._combat_service, combat, npc, current_tick)
 
     async def _process_player_turn(self, combat: CombatInstance, player: CombatParticipant, current_tick: int) -> None:
-        """
-        Process player turn with automatic basic attack.
-
-        Args:
-            combat: Combat instance
-            player: Player participant
-            current_tick: Current game tick
-        """
-        try:
-            # Debug logging to understand what we're receiving
-            logger.debug("_process_player_turn called", player_type=type(player), player=player)
-            if hasattr(player, "participant_id"):
-                logger.debug(
-                    "Player participant_id",
-                    participant_id=player.participant_id,
-                    participant_id_type=type(player.participant_id),
-                )
-            else:
-                logger.error("Player object missing participant_id attribute", player=player)
-                return
-
-            # BUGFIX #243: Check if player can act (DP > 0) before allowing actions
-            # Unconscious entities (DP <= 0) cannot perform voluntary actions
-            if not player.can_act_in_combat():
-                logger.info(
-                    "Player cannot act (unconscious or inactive)",
-                    player_name=player.name,
-                    current_dp=player.current_dp,
-                    combat_id=combat.combat_id,
-                )
-                player.last_action_tick = current_tick
-                return
-
-            # Find the target (other participant in combat)
-            target = None
-            for participant in combat.participants.values():
-                if participant.participant_id != player.participant_id:
-                    target = participant
-                    break
-
-            if not target:
-                logger.warning("No target found for player", player_name=player.name, combat_id=combat.combat_id)
-                return
-
-            # Note: Players in grace period (disconnected but still in-game) can still auto-attack.
-            # Commands are blocked for grace period players, but combat auto-attack continues normally.
-            # Grace period players use normal auto-attack (with weapons, no special abilities).
-
-            # Check if player is casting a spell - if so, skip autoattack
-            # Casting spells takes priority over autoattacks
-            try:
-                # Access magic_service through combat_service
-                magic_service = getattr(self._combat_service, "magic_service", None)
-                if magic_service and magic_service.casting_state_manager.is_casting(player.participant_id):
-                    casting_state = magic_service.casting_state_manager.get_casting_state(player.participant_id)
-                    logger.debug(
-                        "Player is casting, skipping autoattack",
-                        player_name=player.name,
-                        spell_name=casting_state.spell_name if casting_state else "unknown",
-                    )
-                    # Update player's last action tick but don't attack
-                    player.last_action_tick = current_tick
-                    return
-            except (AttributeError, TypeError, KeyError) as e:
-                # If we can't check casting state, allow autoattack to proceed
-                logger.debug("Could not check casting state for autoattack", player_name=player.name, error=str(e))
-
-            # Perform automatic basic attack
-            logger.info(
-                "Executing default attack (no queued action)",
-                combat_id=combat.combat_id,
-                attacker_id=player.participant_id,
-                target_id=target.participant_id,
-                participant_ids=[str(pid) for pid in combat.participants.keys()],
-            )
-            logger.debug("Player performing automatic attack", player_name=player.name, target_name=target.name)
-
-            config = get_config()
-            damage, damage_type = await self._resolve_player_attack_damage(player, target, config)
-
-            # Process the attack
-            combat_result = await self._combat_service.process_attack(
-                attacker_id=player.participant_id,
-                target_id=target.participant_id,
-                damage=damage,
-                damage_type=damage_type,
-            )
-
-            if combat_result.success:
-                logger.info(
-                    "Player automatically attacked", player_name=player.name, target_name=target.name, damage=damage
-                )
-            else:
-                logger.warning("Player automatic attack failed", player_name=player.name, message=combat_result.message)
-
-            # Update player's last action tick
-            player.last_action_tick = current_tick
-
-        except (AttributeError, ValueError, TypeError, RuntimeError, NATSError, ConnectionError, KeyError) as e:
-            # Handle case where player might not be a CombatParticipant
-            player_type = type(player)
-            player_name = getattr(player, "name", f"Unknown Player (type: {player_type})")
-            logger.error("Error processing player turn", player_name=player_name, error=str(e), exc_info=True)
+        """Delegate to participant actions module."""
+        await combat_turn_participant_actions.process_player_turn(self._combat_service, combat, player, current_tick)

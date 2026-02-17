@@ -26,7 +26,7 @@ class PassiveMobNPC(NPCBase):
         npc_id: str,
         event_bus: "EventBus | None" = None,
         event_reaction_system: "NPCEventReactionSystem | None" = None,
-    ):
+    ) -> None:
         """Initialize passive mob NPC."""
         super().__init__(definition, npc_id, event_bus, event_reaction_system)
         self._setup_passive_mob_behavior_rules()

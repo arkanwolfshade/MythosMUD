@@ -172,11 +172,14 @@ describe('App', () => {
       fireEvent.click(loginButton);
 
       await waitFor(() => {
-        expect(fetchSpy).toHaveBeenCalledWith('/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username: 'testuser', password: 'testpass' }),
-        });
+        expect(fetchSpy).toHaveBeenCalledWith(
+          expect.stringContaining('/v1/auth/login'),
+          expect.objectContaining({
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: 'testuser', password: 'testpass' }),
+          })
+        );
       });
 
       await waitFor(() => {
@@ -327,15 +330,18 @@ describe('App', () => {
       fireEvent.click(registerButton);
 
       await waitFor(() => {
-        expect(fetchSpy).toHaveBeenCalledWith('/auth/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            username: 'newuser',
-            password: 'newpass',
-            invite_code: 'INVITE123',
-          }),
-        });
+        expect(fetchSpy).toHaveBeenCalledWith(
+          expect.stringContaining('/v1/auth/register'),
+          expect.objectContaining({
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              username: 'newuser',
+              password: 'newpass',
+              invite_code: 'INVITE123',
+            }),
+          })
+        );
       });
 
       await waitFor(() => {
@@ -690,7 +696,7 @@ describe('App', () => {
       fireEvent.keyDown(passwordInput, { key: 'Enter', code: 'Enter' });
 
       await waitFor(() => {
-        expect(fetchSpy).toHaveBeenCalledWith('/auth/login', expect.any(Object));
+        expect(fetchSpy).toHaveBeenCalledWith(expect.stringContaining('/v1/auth/login'), expect.any(Object));
       });
     });
 
@@ -745,7 +751,7 @@ describe('App', () => {
       fireEvent.keyDown(inviteInput, { key: 'Enter', code: 'Enter' });
 
       await waitFor(() => {
-        expect(fetchSpy).toHaveBeenCalledWith('/auth/register', expect.any(Object));
+        expect(fetchSpy).toHaveBeenCalledWith(expect.stringContaining('/v1/auth/register'), expect.any(Object));
       });
     });
 
@@ -1187,8 +1193,7 @@ describe('App', () => {
           ])
         ),
       };
-      // LEGITIMATE: Using setTimeout to simulate network delay for testing loading states
-      // This is not polling - it's simulating async behavior in the mock
+      vi.useFakeTimers();
       fetchSpy.mockImplementation(
         () =>
           new Promise<Response>(resolve =>
@@ -1212,6 +1217,8 @@ describe('App', () => {
       expect(screen.getByText('Authenticating…')).toBeInTheDocument();
       expect(loginButton).toBeDisabled();
 
+      await vi.advanceTimersByTimeAsync(100);
+      vi.useRealTimers();
       await waitFor(() => {
         expect(screen.getByTestId('game-terminal')).toBeInTheDocument();
       });
@@ -1242,8 +1249,7 @@ describe('App', () => {
         }),
       };
 
-      // LEGITIMATE: Using setTimeout to simulate network delay for testing loading states
-      // This is not polling - it's simulating async behavior in the mock
+      vi.useFakeTimers();
       fetchSpy.mockImplementation((url: string | URL | Request) => {
         const urlString = typeof url === 'string' ? url : url instanceof URL ? url.toString() : url.url;
         if (urlString.includes('/auth/register')) {
@@ -1278,6 +1284,8 @@ describe('App', () => {
       expect(screen.getByText('Registering…')).toBeInTheDocument();
       expect(registerButton).toBeDisabled();
 
+      await vi.advanceTimersByTimeAsync(100);
+      vi.useRealTimers();
       await waitFor(() => {
         expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
       });

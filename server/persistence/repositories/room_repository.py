@@ -23,7 +23,7 @@ class RoomRepository:
     at startup and cached in memory for fast access.
     """
 
-    def __init__(self, room_cache: dict[str, "Room"]):
+    def __init__(self, room_cache: dict[str, "Room"]) -> None:
         """
         Initialize the room repository.
 

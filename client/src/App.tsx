@@ -7,7 +7,7 @@ import {
   isServerCharacterResponseArray,
   type ServerCharacterResponse,
 } from './utils/apiTypeGuards.js';
-import { API_BASE_URL } from './utils/config.js';
+import { API_V1_BASE } from './utils/config.js';
 import { getErrorMessage, isErrorResponse } from './utils/errorHandler.js';
 import { logoutHandler } from './utils/logoutHandler.js';
 import { memoryMonitor } from './utils/memoryMonitor.js';
@@ -111,7 +111,7 @@ function App() {
   // FIX: Use sessionStorage flag to prevent clearing tokens on component remount
   // (e.g., when Playwright switches tabs). Only clear on actual page load.
 
-  // Dependencies intentionally omitted: API_BASE_URL and secureTokenStorage are stable module-level
+  // Dependencies intentionally omitted: API_V1_BASE and secureTokenStorage are stable module-level
   // references that never change. All setState functions are stable references from useState.
   // This effect should only run once on mount to check for existing authentication state.
   useEffect(() => {
@@ -144,7 +144,7 @@ function App() {
 
       // Try to restore characters list from API to fully restore session state
       // This allows the component to properly render the game interface after remount
-      fetch(`${API_BASE_URL}/api/players/characters`, {
+      fetch(`${API_V1_BASE}/api/players/characters`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -215,8 +215,8 @@ function App() {
           setAuthToken('');
         });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Only run on mount - dependencies intentionally omitted to prevent re-running on state changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- Only run on mount; omit deps to prevent re-run on state changes
+  }, []);
 
   const handleLoginClick = async () => {
     // Sanitize inputs
@@ -230,7 +230,7 @@ function App() {
     setIsSubmitting(true);
     setError(null);
     try {
-      const response = await fetch('/auth/login', {
+      const response = await fetch(`${API_V1_BASE}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: sanitizedUsername, password: sanitizedPassword }),
@@ -309,7 +309,7 @@ function App() {
     setIsSubmitting(true);
     setError(null);
     try {
-      const response = await fetch('/auth/register', {
+      const response = await fetch(`${API_V1_BASE}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -482,7 +482,7 @@ function App() {
   const handleStatsAccepted = async (_stats: Stats, _characterName: string) => {
     // MULTI-CHARACTER: Refresh characters list after creation
     try {
-      const response = await fetch(`${API_BASE_URL}/api/players/characters`, {
+      const response = await fetch(`${API_V1_BASE}/api/players/characters`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -649,7 +649,7 @@ function App() {
   // MULTI-CHARACTER: Character selection handler
   const handleCharacterSelected = async (characterId: string) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/players/select-character`, {
+      const response = await fetch(`${API_V1_BASE}/api/players/select-character`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -723,7 +723,7 @@ function App() {
   // MULTI-CHARACTER: Character deletion handler
   const handleDeleteCharacter = async (characterId: string) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/players/characters/${characterId}`, {
+      const response = await fetch(`${API_V1_BASE}/api/players/characters/${characterId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -759,7 +759,7 @@ function App() {
       }
 
       // Refresh characters list after deletion
-      const charactersResponse = await fetch(`${API_BASE_URL}/api/players/characters`, {
+      const charactersResponse = await fetch(`${API_V1_BASE}/api/players/characters`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -875,7 +875,7 @@ function App() {
     // Start login grace period when MOTD is dismissed
     if (selectedCharacterId) {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/players/${selectedCharacterId}/start-login-grace-period`, {
+        const response = await fetch(`${API_V1_BASE}/api/players/${selectedCharacterId}/start-login-grace-period`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -1161,7 +1161,7 @@ function App() {
             onCreateCharacter={handleCreateCharacter}
             onDeleteCharacter={handleDeleteCharacter}
             onError={setError}
-            baseUrl={API_BASE_URL}
+            baseUrl={API_V1_BASE}
             authToken={authToken}
           />
         </Suspense>
@@ -1182,7 +1182,7 @@ function App() {
               onProfessionSelected={handleProfessionSelected}
               onError={handleProfessionSelectionError}
               onBack={handleProfessionSelectionBack}
-              baseUrl={API_BASE_URL}
+              baseUrl={API_V1_BASE}
               authToken={authToken}
             />
           </Suspense>
@@ -1205,7 +1205,7 @@ function App() {
             onStatsAccepted={handleStatsAccepted}
             onError={handleStatsError}
             onBack={handleStatsRollingBack}
-            baseUrl={API_BASE_URL}
+            baseUrl={API_V1_BASE}
             authToken={authToken}
             professionId={selectedProfession.id}
             profession={selectedProfession}
@@ -1227,7 +1227,7 @@ function App() {
               onProfessionSelected={handleProfessionSelected}
               onError={handleProfessionSelectionError}
               onBack={handleProfessionSelectionBack}
-              baseUrl={API_BASE_URL}
+              baseUrl={API_V1_BASE}
               authToken={authToken}
             />
           </Suspense>
@@ -1243,7 +1243,7 @@ function App() {
             onStatsAccepted={handleStatsAccepted}
             onError={handleStatsError}
             onBack={handleStatsRollingBack}
-            baseUrl={API_BASE_URL}
+            baseUrl={API_V1_BASE}
             authToken={authToken}
             professionId={selectedProfession?.id}
             profession={selectedProfession as Profession | undefined}

@@ -18,7 +18,6 @@ from .database import DatabaseManager
 from .database_config_helpers import get_test_database_url
 from .exceptions import ValidationError
 from .structured_logging.enhanced_logging_config import get_logger
-from .utils.error_logging import create_error_context
 
 logger = get_logger(__name__)
 
@@ -88,10 +87,7 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
         AsyncSession: Database session for async operations
     """
 
-    context = create_error_context()
-    context.metadata["operation"] = "database_session"
-
-    logger.debug("Creating database session")
+    logger.debug("Creating database session", operation="database_session")
     session_maker = get_session_maker()  # Initialize if needed
     async with session_maker() as session:
         try:
@@ -104,11 +100,9 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
             raise
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Top-level dependency handler for database sessions must catch any exception during session usage to perform safety rollback before session is automatically closed, ensuring data integrity for any partial operations
             # Only log actual database-related exceptions
-            context.metadata["error_type"] = type(e).__name__
-            context.metadata["error_message"] = str(e)
             logger.error(
                 "Database session error",
-                context=context.to_dict(),
+                operation="database_session",
                 error=str(e),
                 error_type=type(e).__name__,
             )
@@ -118,7 +112,7 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
             except Exception as rollback_error:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Safety catch during error handling, if session rollback itself fails we log the failure but must re-raise the original exception to avoid masking the initial root cause
                 logger.error(
                     "Failed to rollback database session",
-                    context=context.to_dict(),
+                    operation="database_session",
                     rollback_error=str(rollback_error),
                 )
             raise
@@ -143,10 +137,7 @@ async def init_db() -> None:
 
     To create tables, use the SQL script db/authoritative_schema.sql.
     """
-    context = create_error_context()
-    context.metadata["operation"] = "init_db"
-
-    logger.info("Initializing database connection")
+    logger.info("Initializing database connection", operation="init_db")
 
     try:
         # Import all models to ensure they're registered with metadata
@@ -189,11 +180,9 @@ async def init_db() -> None:
 
         logger.info("Database initialization complete - DDL must be applied separately via SQL scripts")
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Top-level database initialization must catch any exception to ensure failures during mapper configuration or connectivity checks are logged with structured context before application fails to start
-        context.metadata["error_type"] = type(e).__name__
-        context.metadata["error_message"] = str(e)
         logger.error(
             "Database initialization failed",
-            context=context.to_dict(),
+            operation="init_db",
             error=str(e),
             error_type=type(e).__name__,
         )
@@ -202,10 +191,7 @@ async def init_db() -> None:
 
 async def close_db() -> None:
     """Close database connections."""
-    context = create_error_context()
-    context.metadata["operation"] = "close_db"
-
-    logger.info("Closing database connections")
+    logger.info("Closing database connections", operation="close_db")
     try:
         db_manager = DatabaseManager.get_instance()
         # Ensure engine is initialized so dispose is meaningful
@@ -214,11 +200,9 @@ async def close_db() -> None:
         logger.info("Database connections closed")
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Global database closure function must catch any error during resource cleanup to ensure failures are logged with structured context, then re-raises
         # RuntimeError as expected by the application's lifecycle management.
-        context.metadata["error_type"] = type(e).__name__
-        context.metadata["error_message"] = str(e)
         logger.error(
             "Error closing database connections",
-            context=context.to_dict(),
+            operation="close_db",
             error=str(e),
             error_type=type(e).__name__,
         )

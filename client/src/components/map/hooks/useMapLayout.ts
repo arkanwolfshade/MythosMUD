@@ -237,7 +237,7 @@ export function useMapLayout(options: UseMapLayoutOptions): UseMapLayoutResult {
       return true;
     }).length;
     // Debug logging: log count of nodes needing layout
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.DEV) {
       console.debug(`[useMapLayout] Nodes needing layout: ${nodesNeedingLayoutCount} of ${layoutNodes.length}`);
     }
   }, [layoutNodes, initialNodes.length, useStoredCoordinates, layoutAlgorithm, edges.length]);

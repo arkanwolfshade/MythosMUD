@@ -88,7 +88,8 @@ test.describe('Party Commands', () => {
     expect(seesIthaqua).toBe(true);
   });
 
-  // Skip: Party chat delivery to receiver not yet reliable; receiver never sees message in [data-message-text]
+  // Skip: Party chat delivery to receiver not yet reliable
+  // eslint-disable-next-line playwright/no-skipped-test -- party chat delivery to receiver not yet reliable
   test.skip('party chat from AW is received by Ithaqua', async () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];

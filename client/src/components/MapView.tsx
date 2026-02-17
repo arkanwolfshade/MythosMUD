@@ -10,8 +10,8 @@
  */
 
 import React, { useEffect } from 'react';
+import { getVersionedApiBaseUrl } from '../utils/config';
 import { AsciiMapViewer } from './map/AsciiMapViewer';
-import { getApiBaseUrl } from '../utils/config';
 
 // Room type compatible with both gameStore and ui-v2 types
 interface Room {
@@ -117,7 +117,7 @@ export const MapView: React.FC<MapViewProps> = ({
             zone={zone}
             subZone={subZone}
             currentRoomId={currentRoomId}
-            baseUrl={baseUrl || getApiBaseUrl()}
+            baseUrl={baseUrl || getVersionedApiBaseUrl()}
             authToken={authToken}
           />
         ) : (

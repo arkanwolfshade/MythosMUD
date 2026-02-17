@@ -1,4 +1,7 @@
 /// <reference types="node" />
+// Vitest: use afterEach(vi.clearAllMocks()) or afterEach(spy.mockRestore()) when using vi.mock or vi.spyOn(global).
+// TypeScript: In tests, `as any` for mock setup (e.g. vi.mock return values, global overrides) is acceptable when
+// typing the mock is impractical. Prefer vi.mocked(module) or typed mock interfaces where feasible.
 import '@testing-library/jest-dom/vitest';
 import { mkdirSync } from 'fs';
 import { join } from 'path';

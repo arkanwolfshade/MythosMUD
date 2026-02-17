@@ -1,13 +1,12 @@
-import { expect } from '@playwright/test';
 import { render } from '@testing-library/react';
-import { beforeEach, describe, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { PerformanceTester, type PerformanceTestResult } from '../../utils/performanceTester';
 import { ChatPanel } from '../panels/ChatPanel';
 import { CommandPanel } from '../panels/CommandPanel';
 import { GameLogPanel } from '../panels/GameLogPanel';
 
 // Mock the dependencies
-vi.mock('../src/components/ui/EldritchIcon', () => ({
+vi.mock('../ui/EldritchIcon', () => ({
   EldritchIcon: ({ name, className }: { name: string; className?: string }) => (
     <span data-testid={`icon-${name}`} className={className}>
       {name}
@@ -27,7 +26,7 @@ interface TerminalButtonProps {
   [key: string]: unknown;
 }
 
-vi.mock('../src/components/ui/TerminalButton', () => ({
+vi.mock('../ui/TerminalButton', () => ({
   TerminalButton: ({ children, onClick, disabled, ...props }: TerminalButtonProps) => (
     <button onClick={onClick} disabled={disabled} {...props}>
       {children}
@@ -41,7 +40,7 @@ interface PerformanceChartProps {
   [key: string]: unknown;
 }
 
-vi.mock('../src/components/ui/PerformanceChart', () => ({
+vi.mock('../ui/PerformanceChart', () => ({
   PerformanceChart: ({ data, title, ...props }: PerformanceChartProps) => (
     <div data-testid="performance-chart" {...props}>
       <h3>{title}</h3>
@@ -57,7 +56,7 @@ interface MemoryUsageDisplayProps {
   [key: string]: unknown;
 }
 
-vi.mock('../src/components/ui/MemoryUsageDisplay', () => ({
+vi.mock('../ui/MemoryUsageDisplay', () => ({
   MemoryUsageDisplay: ({ current, peak, average, ...props }: MemoryUsageDisplayProps) => (
     <div data-testid="memory-usage" {...props}>
       <span>Current: {current}MB</span>
@@ -74,7 +73,7 @@ interface TerminalInputProps {
   [key: string]: unknown;
 }
 
-vi.mock('../src/components/ui/TerminalInput', () => ({
+vi.mock('../ui/TerminalInput', () => ({
   TerminalInput: ({ value, onChange, onKeyDown, ...props }: TerminalInputProps) => (
     <input value={value} onChange={onChange} onKeyDown={onKeyDown} {...props} />
   ),
@@ -92,7 +91,7 @@ interface ChannelSelectorProps {
   disabled?: boolean;
 }
 
-vi.mock('../src/components/ui/ChannelSelector', () => ({
+vi.mock('../ui/ChannelSelector', () => ({
   ChannelSelector: ({ channels, selectedChannel, onChannelSelect, disabled }: ChannelSelectorProps) => (
     <select
       value={selectedChannel}
@@ -109,11 +108,11 @@ vi.mock('../src/components/ui/ChannelSelector', () => ({
   ),
 }));
 
-vi.mock('../src/utils/ansiToHtml', () => ({
+vi.mock('../../utils/ansiToHtml', () => ({
   ansiToHtmlWithBreaks: (text: string) => text.replace(/\n/g, '<br>'),
 }));
 
-vi.mock('../src/config/channels', () => {
+vi.mock('../../config/channels', () => {
   const baseChannels = [
     { id: 'local', name: 'Local', shortcut: 'l' },
     { id: 'global', name: 'Global', shortcut: 'g' },

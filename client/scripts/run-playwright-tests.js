@@ -20,7 +20,7 @@ if (!existsSync(testsDir)) {
 async function checkBackendServer() {
   if (process.env.CI === 'true') {
     try {
-      const response = await fetch('http://localhost:54731/health', {
+      const response = await fetch('http://localhost:54731/v1/monitoring/health', {
         signal: AbortSignal.timeout(2000),
       });
       if (!response.ok) {
@@ -44,6 +44,14 @@ await checkBackendServer();
 // On Windows, we need shell: true to resolve npx from PATH
 // On Unix systems, we can use shell: false for better security
 const isWindows = process.platform === 'win32';
+
+// Avoid "NO_COLOR is ignored due to FORCE_COLOR" warning: when NO_COLOR is set,
+// omit FORCE_COLOR so Node respects the no-color preference.
+const env = { ...process.env };
+if ('NO_COLOR' in process.env) {
+  delete env.FORCE_COLOR;
+}
+
 // Shell is only enabled on Windows to resolve npx from PATH. The command ('npx') and
 // arguments (['playwright', 'test']) are hardcoded constants with no user input, so
 // shell injection is not possible. This is a build script, not user-facing code.
@@ -52,6 +60,7 @@ const playwright = spawn('npx', ['playwright', 'test'], {
   stdio: 'inherit',
   shell: isWindows, // Use shell on Windows to resolve npx from PATH
   cwd: clientRoot,
+  env,
 });
 
 playwright.on('close', code => {

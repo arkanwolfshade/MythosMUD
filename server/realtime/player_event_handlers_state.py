@@ -170,6 +170,29 @@ class PlayerStateEventHandler:
             else:
                 posture = "standing"
 
+            # #region agent log
+            try:
+                import json
+
+                with open("e:\\projects\\GitHub\\MythosMUD\\.cursor\\debug.log", "a", encoding="utf-8") as _f:
+                    _f.write(
+                        json.dumps(
+                            {
+                                "hypothesisId": "H1",
+                                "location": "player_event_handlers_state:DP_update",
+                                "message": "DP update sending posture to client",
+                                "data": {"new_dp": event.new_dp, "posture": posture, "stats_position": position},
+                                "timestamp": __import__("time", fromlist=["time"]).time() * 1000,
+                            },
+                            ensure_ascii=True,
+                        )
+                        + "\n"
+                    )
+            except (OSError, TypeError, AttributeError, ValueError):
+                # Debug log must never affect DP update flow; absorb file/serialization errors
+                pass
+            # #endregion
+
             # Create player update event with new DP and full stats
             player_update_data = {
                 "player_id": player_id_str,
@@ -242,12 +265,14 @@ class PlayerStateEventHandler:
             from .envelope import build_event
 
             death_location_value = event.death_location or event.room_id
+            # Client requires current_dp <= -10 to show respawn modal; we only send death at -10
             death_event = build_event(
                 "player_died",
                 {
                     "player_id": player_id_str,
                     "player_name": event.player_name,
                     "death_location": death_location_value,  # Use death_location if available, fallback to room_id
+                    "current_dp": -10,  # Death is only sent at -10 DP so client can gate modal
                     "killer_id": event.killer_id,
                     "killer_name": event.killer_name,
                     "message": "You have died. The darkness claims you utterly.",

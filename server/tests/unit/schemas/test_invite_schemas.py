@@ -9,7 +9,7 @@ from datetime import UTC, datetime
 import pytest
 from pydantic import ValidationError
 
-from server.schemas.invite import InviteBase, InviteCreate, InviteRead, InviteUpdate
+from server.schemas.auth import InviteBase, InviteCreate, InviteRead, InviteUpdate
 
 
 def test_invite_base():

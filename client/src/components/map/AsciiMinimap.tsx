@@ -9,7 +9,8 @@
  */
 
 import React, { useCallback, useEffect, useState } from 'react';
-import { getApiBaseUrl } from '../../utils/config';
+import { isAsciiMapApiResponse } from '../../utils/apiTypeGuards';
+import { getVersionedApiBaseUrl } from '../../utils/config';
 import { SafeHtml } from '../common/SafeHtml';
 
 export interface AsciiMinimapProps {
@@ -63,7 +64,7 @@ export const AsciiMinimap: React.FC<AsciiMinimapProps> = ({
     setError(null);
 
     try {
-      const url = new URL(`${baseUrl || getApiBaseUrl()}/api/maps/ascii/minimap`);
+      const url = new URL(`${baseUrl || getVersionedApiBaseUrl()}/api/maps/ascii/minimap`);
       url.searchParams.set('plane', plane);
       url.searchParams.set('zone', zone);
       if (subZone) {
@@ -88,8 +89,12 @@ export const AsciiMinimap: React.FC<AsciiMinimapProps> = ({
         throw new Error(`Failed to fetch minimap: ${response.statusText}`);
       }
 
-      const data = await response.json();
-      setMapHtml(data.map_html || '');
+      const raw: unknown = await response.json();
+      if (!isAsciiMapApiResponse(raw)) {
+        setMapHtml('');
+        return;
+      }
+      setMapHtml(raw.map_html ?? '');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch minimap');
       setMapHtml('');

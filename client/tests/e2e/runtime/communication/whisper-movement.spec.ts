@@ -14,6 +14,7 @@ import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
   ensurePlayerInGame,
+  ensurePlayersInSameRoom,
   getPlayerMessages,
   waitForAllPlayersInGame,
   waitForCrossPlayerMessage,
@@ -44,17 +45,16 @@ test.describe('Whisper Movement', () => {
 
     await executeCommand(awContext.page, 'whisper Ithaqua Testing whisper in same room');
 
-    // Wait for confirmation
+    // Wait for confirmation on sender
     await waitForMessage(awContext.page, 'You whisper to Ithaqua: Testing whisper in same room', 10000).catch(() => {
       // Message may succeed even if format differs
     });
 
-    // Verify Ithaqua receives the whisper
-    await waitForCrossPlayerMessage(
-      ithaquaContext,
-      'ArkanWolfshade whispers to you: Testing whisper in same room',
-      10000
-    );
+    // Brief delay so server/NATS can deliver to receiver before we assert
+    await new Promise(r => setTimeout(r, 500));
+
+    // Verify Ithaqua receives the whisper (use default timeout; cross-player delivery can take >10s)
+    await waitForCrossPlayerMessage(ithaquaContext, 'ArkanWolfshade whispers to you: Testing whisper in same room');
     const ithaquaMessages = await getPlayerMessages(ithaquaContext);
     const seesMessage = ithaquaMessages.some(msg =>
       msg.includes('ArkanWolfshade whispers to you: Testing whisper in same room')
@@ -68,30 +68,39 @@ test.describe('Whisper Movement', () => {
 
     await ensurePlayerInGame(awContext, 15000);
     await ensurePlayerInGame(ithaquaContext, 15000);
+    await ensurePlayersInSameRoom(contexts, 2, 15000);
+
+    // Ensure we're in a room that has an east exit (e.g. Main Foyer). From Laundry: south -> west -> north.
+    await ensureStanding(awContext.page, 5000);
+    await executeCommand(awContext.page, 'go south');
+    await new Promise(r => setTimeout(r, 1500));
+    await executeCommand(awContext.page, 'go west');
+    await new Promise(r => setTimeout(r, 1500));
+    await executeCommand(awContext.page, 'go north');
+    await new Promise(r => setTimeout(r, 1500));
+    await ensureStanding(ithaquaContext.page, 5000);
+    await executeCommand(ithaquaContext.page, 'go south');
+    await new Promise(r => setTimeout(r, 1500));
+    await executeCommand(ithaquaContext.page, 'go west');
+    await new Promise(r => setTimeout(r, 1500));
+    await executeCommand(ithaquaContext.page, 'go north');
+    await new Promise(r => setTimeout(r, 2000));
+    await ensurePlayersInSameRoom(contexts, 2, 15000);
 
     await ensureStanding(awContext.page, 5000);
-    // AW moves to different room
     await executeCommand(awContext.page, 'go east');
-    await waitForMessage(awContext.page, 'You move east', 10000).catch(() => {
-      // Movement may succeed even if message format differs
-    });
+    await waitForMessage(awContext.page, /You move east|You go east|Eastern Hallway/i, 10000).catch(() => {});
     await new Promise(r => setTimeout(r, 2000));
 
-    // AW sends whisper from different room
     await executeCommand(awContext.page, 'whisper Ithaqua Testing whisper from different room');
-
-    // Wait for confirmation
     await waitForMessage(awContext.page, 'You whisper to Ithaqua: Testing whisper from different room', 10000).catch(
-      () => {
-        // Message may succeed even if format differs
-      }
+      () => {}
     );
+    await new Promise(r => setTimeout(r, 500));
 
-    // Verify Ithaqua receives the whisper (whispers work across rooms; Game Info + Chat use data-message-text)
     await waitForCrossPlayerMessage(
       ithaquaContext,
-      'ArkanWolfshade whispers to you: Testing whisper from different room',
-      30000
+      'ArkanWolfshade whispers to you: Testing whisper from different room'
     );
     const ithaquaMessages = await getPlayerMessages(ithaquaContext);
     const seesMessage = ithaquaMessages.some(msg =>

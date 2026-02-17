@@ -8,7 +8,7 @@
  * essential for maintaining the integrity of our dimensional mappings.
  */
 
-import type { Node, Edge } from 'reactflow';
+import type { Edge, Node } from 'reactflow';
 
 /**
  * Room node data structure for React Flow.
@@ -36,6 +36,10 @@ export interface RoomNodeData {
   occupants?: string[];
   /** Occupant count */
   occupantCount?: number;
+  /** Stored x position from layout (admin edit / persistence) */
+  map_x?: number | null;
+  /** Stored y position from layout (admin edit / persistence) */
+  map_y?: number | null;
 }
 
 /**

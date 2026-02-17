@@ -6,12 +6,13 @@ This script creates invite codes using the database storage system
 instead of the old JSON file approach.
 """
 
-import asyncio
 import os
 import random
 import sys
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
+
+from anyio import run
 
 # Add the server directory to the path so we can import models
 sys.path.append(str(Path(__file__).parent.parent.parent / "server"))
@@ -236,4 +237,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    run(main)

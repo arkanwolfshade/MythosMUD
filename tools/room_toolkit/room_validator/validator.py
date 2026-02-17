@@ -5,6 +5,10 @@ Room Pathing Validator CLI
 Main command-line interface for validating room connectivity and structure
 in the MythosMUD world. Implements the dimensional mapping techniques
 described in the Pnakotic Manuscripts.
+
+This CLI is intentionally a single-command tool. If subcommands are added later
+(e.g. validate, report, fix), the layout will be refactored to a click Group
+and a commands/ package (e.g. commands/validate.py) with cli.add_command(...).
 """
 
 import sys

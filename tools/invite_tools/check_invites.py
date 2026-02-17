@@ -6,7 +6,6 @@ This script provides utilities to check the status of invite codes,
 list existing codes, and verify their validity.
 """
 
-import asyncio
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
@@ -14,6 +13,7 @@ from pathlib import Path
 # Add server directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "server"))
 
+from anyio import run
 from sqlalchemy import text
 
 from server.database import get_session_maker
@@ -161,4 +161,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    run(main)

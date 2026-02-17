@@ -31,6 +31,7 @@ class ValidationResult:
 class TestHierarchicalSchema(unittest.TestCase):
     """Test the hierarchical room schema validation."""
 
+    # No tearDown needed: validators are stateless, no resources to release.
     def setUp(self) -> None:
         """Set up test fixtures."""
         # Schema file paths
@@ -73,6 +74,7 @@ class TestHierarchicalSchema(unittest.TestCase):
 
     def test_invalid_room_missing_description_field(self) -> None:
         """Test that rooms missing description field fail validation."""
+        # Single outcome: validation fails with description-related error.
         room_data = {
             "id": "test_room",
             "name": "Test Room",
@@ -202,23 +204,13 @@ class TestHierarchicalSchema(unittest.TestCase):
             result = self._validate_room(room_data, "room")
             self.assertFalse(result.is_valid, f"Invalid ID '{room_id}' passed validation")
 
-    def test_exit_validation(self) -> None:
-        """Test that room exits are properly validated."""
+    def test_valid_exits_pass_validation(self) -> None:
+        """Test that valid room exits pass validation."""
         valid_exits = {
             "north": "target_room_id",
             "south": None,
             "east": {"target": "target_room_id", "flags": ["one_way"]},
         }
-
-        invalid_exits = {
-            "north": "invalid-room-id",  # Contains hyphens
-            "south": {
-                "target": "valid_id",
-                "flags": ["invalid_flag"],  # Invalid flag
-            },
-        }
-
-        # Test valid exits
         room_data = {
             "id": "test_room",
             "name": "Test Room",
@@ -231,8 +223,24 @@ class TestHierarchicalSchema(unittest.TestCase):
         result = self._validate_room(room_data, "room")
         self.assertTrue(result.is_valid, f"Valid exits failed validation: {result.errors}")
 
-        # Test invalid exits
-        room_data["exits"] = invalid_exits
+    def test_invalid_exits_fail_validation(self) -> None:
+        """Test that invalid room exits fail validation."""
+        invalid_exits = {
+            "north": "invalid-room-id",  # Contains hyphens
+            "south": {
+                "target": "valid_id",
+                "flags": ["invalid_flag"],  # Invalid flag
+            },
+        }
+        room_data = {
+            "id": "test_room",
+            "name": "Test Room",
+            "description": "A test room.",
+            "plane": "earth",
+            "zone": "test_zone",
+            "sub_zone": "test_subzone",
+            "exits": invalid_exits,
+        }
         result = self._validate_room(room_data, "room")
         self.assertFalse(result.is_valid)
 

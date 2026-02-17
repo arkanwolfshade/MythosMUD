@@ -34,6 +34,7 @@ def _copy_then_truncate(src_path: str, dst_path: str, retries: int = 3, delay: f
             return
         except Exception as exc:  # noqa: B904,BLE001 - we want resilience here  # pylint: disable=broad-exception-caught  # Reason: File operation errors unpredictable, must retry with backoff
             last_exc = exc
+            # Rotation runs in sync context only; not used from async request path.
             time.sleep(delay)
             delay = min(delay * 2, 1.0)
     if last_exc:

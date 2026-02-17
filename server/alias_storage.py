@@ -57,7 +57,7 @@ class AliasStorage:
     data/players/aliases/{player_name}_aliases.json
     """
 
-    def __init__(self, storage_dir: str | None = None):
+    def __init__(self, storage_dir: str | None = None) -> None:
         if storage_dir:
             self.storage_dir = Path(storage_dir)
         else:

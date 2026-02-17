@@ -168,9 +168,7 @@ export const EdgeCreationModal: React.FC<EdgeCreationModalProps> = ({
   useEffect(() => {
     if (!isOpen) {
       // Reset form state when modal closes
-
-      // Reset state on modal close is intentional side effect, not dependent on effect dependencies
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Reset form state on modal close
       setTargetRoomId('');
 
       setDirection('');

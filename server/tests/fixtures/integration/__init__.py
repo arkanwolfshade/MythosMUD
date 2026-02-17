@@ -103,6 +103,7 @@ async def session_factory(integration_engine: AsyncEngine) -> AsyncGenerator[asy
     # Tables persist - cleaned by db_cleanup fixture
 
 
+# autouse: required for test isolation - truncates tables after every integration test
 @pytest.fixture(scope="function", autouse=True)
 async def db_cleanup(session_factory: async_sessionmaker[AsyncSession]) -> AsyncGenerator[None, None]:
     """
@@ -150,6 +151,7 @@ async def db_cleanup(session_factory: async_sessionmaker[AsyncSession]) -> Async
         pass
     except Exception as e:
         # Other exceptions should be logged but not fail the test
-        import logging
+        from server.structured_logging.enhanced_logging_config import get_logger
 
-        logging.getLogger(__name__).debug(f"Database cleanup warning: {e}")
+        logger = get_logger(__name__)
+        logger.warning("Database cleanup warning", error=str(e), error_type=type(e).__name__)

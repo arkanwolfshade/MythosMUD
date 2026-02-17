@@ -49,14 +49,15 @@ test.describe('Logout Accessibility', () => {
   test('logout button should be keyboard navigable', async () => {
     const awContext = contexts[0];
 
-    // Test keyboard navigation to logout button
     await awContext.page.keyboard.press('Tab');
-    await awContext.page.waitForTimeout(500);
+    await awContext.page
+      .getByTestId('logout-button')
+      .waitFor({ state: 'visible', timeout: 1000 })
+      .catch(() => {});
 
-    // Check if logout button is focused
-    const logoutButton = awContext.page.locator(
-      '[data-testid="logout-button"], button:has-text("Logout"), button:has-text("Log out")'
-    );
+    const logoutButton = awContext.page
+      .getByTestId('logout-button')
+      .or(awContext.page.getByRole('button', { name: /Log out/i }));
     // Note: Focus state may be checked here in future implementations
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const _isFocused = await logoutButton.evaluate(el => el === document.activeElement).catch(() => false);

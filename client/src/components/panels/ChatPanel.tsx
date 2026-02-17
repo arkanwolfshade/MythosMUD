@@ -86,7 +86,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
   useEffect(() => {
     if (selectedChannel !== undefined) {
       // Sync local state with prop changes, controlled mode requires state update when prop changes
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Controlled sync: update local channel when prop changes
       setCurrentChannel(prev => (prev === selectedChannel ? prev : selectedChannel));
     }
   }, [selectedChannel]);

@@ -9,12 +9,20 @@ import { useEffect } from 'react';
 import { getClientMetricsCollector } from '../utils/clientMetricsCollector.js';
 
 /**
- * Hook to track Zustand store subscription
+ * Hook to track Zustand store subscription for metrics (e.g. leak detection).
+ *
+ * Pass a stable reference as the second argument so the component does not
+ * subscribe to the entire store. Prefer the store's getState reference:
  *
  * Usage:
  * ```tsx
- * const store = useConnectionStore();
- * useStoreSubscriptionTracking('connectionStore', store);
+ * useStoreSubscriptionTracking('connectionStore', useConnectionStore.getState);
+ * ```
+ *
+ * Avoid subscribing to the whole store just for tracking:
+ * ```tsx
+ * const state = useConnectionStore(); // BAD: re-renders on any connection change
+ * useStoreSubscriptionTracking('connectionStore', state);
  * ```
  */
 export function useStoreSubscriptionTracking<T>(storeName: string, store: T): void {

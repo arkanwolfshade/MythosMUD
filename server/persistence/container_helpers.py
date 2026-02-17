@@ -133,13 +133,12 @@ def fetch_container_items(conn: Any, container_id: UUID) -> list[dict[str, Any]]
     return items
 
 
-def validate_lock_state(lock_state: str | None, context: Any) -> None:
+def validate_lock_state(lock_state: str | None) -> None:
     """
     Validate lock_state parameter.
 
     Args:
         lock_state: Lock state to validate
-        context: Error context for logging
 
     Raises:
         ValidationError: If lock_state is invalid
@@ -148,7 +147,8 @@ def validate_lock_state(lock_state: str | None, context: Any) -> None:
         log_and_raise(
             ValidationError,
             f"Invalid lock_state: {lock_state}. Must be 'unlocked', 'locked', or 'sealed'",
-            context=context,
+            operation="validate_lock_state",
+            lock_state=lock_state,
             details={"lock_state": lock_state},
             user_friendly="Invalid lock state",
         )

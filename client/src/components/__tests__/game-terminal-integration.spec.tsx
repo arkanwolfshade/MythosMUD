@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { GameTerminal } from '../GameTerminal';
 
 // Mock the dependencies
-vi.mock('../src/components/ui/EldritchIcon', () => ({
+vi.mock('../ui/EldritchIcon', () => ({
   EldritchIcon: ({ name, className }: { name: string; className?: string }) => (
     <span data-testid={`icon-${name}`} className={className}>
       {name}
@@ -27,7 +27,7 @@ interface TerminalButtonProps {
   [key: string]: unknown;
 }
 
-vi.mock('../src/components/ui/TerminalButton', () => ({
+vi.mock('../ui/TerminalButton', () => ({
   TerminalButton: ({ children, onClick, disabled, ...props }: TerminalButtonProps) => (
     <button onClick={onClick} disabled={disabled} {...props}>
       {children}
@@ -42,7 +42,7 @@ interface TerminalInputProps {
   [key: string]: unknown;
 }
 
-vi.mock('../src/components/ui/TerminalInput', () => ({
+vi.mock('../ui/TerminalInput', () => ({
   TerminalInput: ({ value, onChange, onKeyDown, ...props }: TerminalInputProps) => (
     <input value={value} onChange={onChange} onKeyDown={onKeyDown} {...props} />
   ),
@@ -60,7 +60,7 @@ interface ChannelSelectorProps {
   disabled?: boolean;
 }
 
-vi.mock('../src/components/ui/ChannelSelector', () => ({
+vi.mock('../ui/ChannelSelector', () => ({
   ChannelSelector: ({ channels, selectedChannel, onChannelSelect, disabled }: ChannelSelectorProps) => (
     <select
       value={selectedChannel}
@@ -83,7 +83,7 @@ interface DraggablePanelProps {
   [key: string]: unknown;
 }
 
-vi.mock('../src/components/ui/DraggablePanel', () => ({
+vi.mock('../DraggablePanel', () => ({
   DraggablePanel: ({ children, title, ...props }: DraggablePanelProps) => (
     <div data-testid={`panel-${title.toLowerCase().replace(/\s+/g, '-')}`} {...props}>
       <h3>{title}</h3>
@@ -92,11 +92,11 @@ vi.mock('../src/components/ui/DraggablePanel', () => ({
   ),
 }));
 
-vi.mock('../src/utils/ansiToHtml', () => ({
+vi.mock('../../utils/ansiToHtml', () => ({
   ansiToHtmlWithBreaks: (text: string) => text.replace(/\n/g, '<br>'),
 }));
 
-vi.mock('../src/config/channels', () => {
+vi.mock('../../config/channels', () => {
   const baseChannels = [
     { id: 'local', name: 'Local', shortcut: 'l' },
     { id: 'global', name: 'Global', shortcut: 'g' },

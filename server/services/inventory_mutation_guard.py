@@ -64,7 +64,7 @@ class InventoryMutationGuard:
     - Use `acquire_async()` for async contexts (async with statement)
     """
 
-    def __init__(self, *, token_ttl_seconds: float = 300.0, max_tokens: int = 128):
+    def __init__(self, *, token_ttl_seconds: float = 300.0, max_tokens: int = 128) -> None:
         self._token_ttl = token_ttl_seconds
         self._max_tokens = max_tokens
         self._global_lock = threading.Lock()

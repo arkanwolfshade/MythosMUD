@@ -10,6 +10,8 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import type { Room } from '../../../stores/gameStore';
+import { isApiErrorWithDetail, isRoomsListApiResponse } from '../../../utils/apiTypeGuards';
+import { getVersionedApiBaseUrl } from '../../../utils/config';
 
 export interface UseRoomMapDataOptions {
   /** Plane name (required) */
@@ -49,6 +51,7 @@ export interface UseRoomMapDataResult {
  */
 export function useRoomMapData(options: UseRoomMapDataOptions): UseRoomMapDataResult {
   const { plane, zone, subZone, includeExits = true, filterExplored = false, baseUrl = '', authToken } = options;
+  const effectiveBaseUrl = baseUrl || getVersionedApiBaseUrl();
 
   const [rooms, setRooms] = useState<Room[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -88,19 +91,26 @@ export function useRoomMapData(options: UseRoomMapDataOptions): UseRoomMapDataRe
       }
 
       // Fetch room data
-      const response = await fetch(`${baseUrl}/api/rooms/list?${params.toString()}`, {
+      const response = await fetch(`${effectiveBaseUrl}/api/rooms/list?${params.toString()}`, {
         method: 'GET',
         headers,
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ detail: 'Failed to fetch rooms' }));
-        throw new Error(errorData.detail || `Failed to fetch rooms: ${response.status}`);
+        const rawErr: unknown = await response.json().catch(() => ({ detail: 'Failed to fetch rooms' }));
+        const message =
+          isApiErrorWithDetail(rawErr) && rawErr.detail ? rawErr.detail : `Failed to fetch rooms: ${response.status}`;
+        throw new Error(message);
       }
 
-      const data = await response.json();
-      setRooms(data.rooms || []);
-      setTotal(data.total || 0);
+      const raw: unknown = await response.json();
+      if (!isRoomsListApiResponse(raw)) {
+        setRooms([]);
+        setTotal(0);
+        return;
+      }
+      setRooms(Array.isArray(raw.rooms) ? (raw.rooms as Room[]) : []);
+      setTotal(typeof raw.total === 'number' ? raw.total : 0);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch room data';
       setError(errorMessage);
@@ -109,7 +119,7 @@ export function useRoomMapData(options: UseRoomMapDataOptions): UseRoomMapDataRe
     } finally {
       setIsLoading(false);
     }
-  }, [plane, zone, subZone, includeExits, filterExplored, baseUrl, authToken]);
+  }, [plane, zone, subZone, includeExits, filterExplored, effectiveBaseUrl, authToken]);
 
   // Fetch data when dependencies change
   useEffect(() => {

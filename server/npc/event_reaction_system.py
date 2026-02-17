@@ -50,7 +50,7 @@ class NPCEventReaction:
         condition: Callable[[Any, dict[str, Any]], bool] | None = None,
         action: Callable[[Any, dict[str, Any]], bool] | None = None,
         priority: int = 0,
-    ):
+    ) -> None:
         """
         Initialize an NPC event reaction.
 
@@ -121,7 +121,7 @@ class NPCEventReactionSystem:
     and coordinates their reactions based on behavior configuration.
     """
 
-    def __init__(self, event_bus: EventBus):
+    def __init__(self, event_bus: EventBus) -> None:
         """
         Initialize the NPC event reaction system.
 

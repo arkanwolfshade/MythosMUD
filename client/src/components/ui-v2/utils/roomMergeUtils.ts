@@ -19,8 +19,8 @@ const getNpcsArray = (room: Room): string[] => {
 
 /**
  * Determines which players array to use based on update state.
- * Uses updates when it provides a populated array; preserves prev when updates has
- * undefined, empty array, or non-array (invalid) so we don't clear or corrupt occupants.
+ * Uses updates when it provides an array (including empty); preserves prev only when
+ * updates omits the key (undefined) so room_occupants can clear occupants authoritatively.
  */
 const selectPlayersArray = (updatesRoom: Room, prevRoom: Room, roomIdChanged: boolean): string[] => {
   const updatesPlayersRaw = updatesRoom.players;
@@ -36,16 +36,13 @@ const selectPlayersArray = (updatesRoom: Room, prevRoom: Room, roomIdChanged: bo
   if (!updatesIsValidArray) {
     return prevPlayers;
   }
-  if (updatesPlayersRaw.length > 0) {
-    return updatesPlayersRaw;
-  }
-  return prevPlayers;
+  return updatesPlayersRaw;
 };
 
 /**
  * Determines which NPCs array to use based on update state.
- * Uses updates when it provides a populated array; preserves prev when updates has
- * undefined, empty array, or non-array (invalid) so we don't clear or corrupt occupants.
+ * Uses updates when it provides an array (including empty); preserves prev only when
+ * updates omits the key (undefined) so room_occupants can clear occupants authoritatively.
  */
 const selectNpcsArray = (updatesRoom: Room, prevRoom: Room, roomIdChanged: boolean): string[] => {
   const updatesNpcsRaw = updatesRoom.npcs;
@@ -61,10 +58,7 @@ const selectNpcsArray = (updatesRoom: Room, prevRoom: Room, roomIdChanged: boole
   if (!updatesIsValidArray) {
     return prevNpcs;
   }
-  if (updatesNpcsRaw.length > 0) {
-    return updatesNpcsRaw;
-  }
-  return prevNpcs;
+  return updatesNpcsRaw;
 };
 
 /**

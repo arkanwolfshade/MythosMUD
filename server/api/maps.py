@@ -21,7 +21,7 @@ from ..dependencies import AsyncPersistenceDep, ExplorationServiceDep, RoomServi
 from ..exceptions import DatabaseError, LoggedHTTPException
 from ..game.room_service import RoomService
 from ..models.user import User
-from ..schemas.map import (
+from ..schemas.maps import (
     AsciiMapResponse,
     AsciiMinimapResponse,
     CoordinateRecalculationResponse,
@@ -33,7 +33,6 @@ from ..services.coordinate_generator import CoordinateGenerator
 from ..services.coordinate_validator import CoordinateValidator
 from ..services.exploration_service import ExplorationService
 from ..structured_logging.enhanced_logging_config import get_logger
-from ..utils.error_logging import create_context_from_request
 
 if TYPE_CHECKING:
     from ..async_persistence import AsyncPersistenceLayer
@@ -256,11 +255,9 @@ async def get_ascii_map(  # pylint: disable=too-many-arguments,too-many-position
             sub_zone=sub_zone,
             exc_info=True,
         )
-        context = create_context_from_request(request)
         raise LoggedHTTPException(
             status_code=500,
             detail="Failed to generate ASCII map",
-            context=context,
         ) from e
 
 
@@ -284,15 +281,13 @@ async def get_ascii_minimap(  # pylint: disable=too-many-arguments,too-many-posi
     """
     try:
         if not current_user:
-            context = create_context_from_request(request)
-            raise LoggedHTTPException(status_code=401, detail="Authentication required", context=context)
+            raise LoggedHTTPException(status_code=401, detail="Authentication required")
 
         # Get player object (needed for exploration filtering)
         user_id = str(current_user.id)
         player = await persistence.get_player_by_user_id(user_id)
         if not player:
-            context = create_context_from_request(request)
-            raise LoggedHTTPException(status_code=404, detail="Player not found", context=context)
+            raise LoggedHTTPException(status_code=404, detail="Player not found")
 
         # Get current room ID - prefer client-provided value, fallback to database
         current_room_id = request.query_params.get("current_room_id") or player.current_room_id
@@ -345,11 +340,9 @@ async def get_ascii_minimap(  # pylint: disable=too-many-arguments,too-many-posi
             sub_zone=sub_zone,
             exc_info=True,
         )
-        context = create_context_from_request(request)
         raise LoggedHTTPException(
             status_code=500,
             detail="Failed to generate ASCII minimap",
-            context=context,
         ) from e
 
 
@@ -491,8 +484,7 @@ async def recalculate_coordinates(  # pylint: disable=too-many-arguments,too-man
     try:
         # Validate admin permissions
         if not current_user:
-            context = create_context_from_request(request)
-            raise LoggedHTTPException(status_code=401, detail="Authentication required", context=context)
+            raise LoggedHTTPException(status_code=401, detail="Authentication required")
 
         auth_service = get_admin_auth_service()
         auth_service.validate_permission(current_user, AdminAction.UPDATE_ROOM_POSITION, request)
@@ -532,11 +524,9 @@ async def recalculate_coordinates(  # pylint: disable=too-many-arguments,too-man
             sub_zone=sub_zone,
             exc_info=True,
         )
-        context = create_context_from_request(request)
         raise LoggedHTTPException(
             status_code=500,
             detail="Failed to recalculate coordinates",
-            context=context,
         ) from e
 
 
@@ -564,9 +554,11 @@ async def set_map_origin(  # pylint: disable=too-many-locals  # Reason: Map orig
     try:
         # Validate admin permissions
         if not current_user:
-            context = create_context_from_request(request)
-            context.metadata["requested_room_id"] = room_id
-            raise LoggedHTTPException(status_code=401, detail="Authentication required", context=context)
+            raise LoggedHTTPException(
+                status_code=401,
+                detail="Authentication required",
+                requested_room_id=room_id,
+            )
 
         auth_service = get_admin_auth_service()
         auth_service.validate_permission(current_user, AdminAction.UPDATE_ROOM_POSITION, request)
@@ -604,9 +596,11 @@ async def set_map_origin(  # pylint: disable=too-many-locals  # Reason: Map orig
 
         # SQLAlchemy Result objects have rowcount attribute at runtime, but mypy stubs don't reflect this
         if not update_result.rowcount:  # type: ignore[attr-defined]  # Reason: SQLAlchemy Result objects have rowcount attribute at runtime, but mypy stubs don't reflect this
-            context = create_context_from_request(request)
-            context.metadata["requested_room_id"] = room_id
-            raise LoggedHTTPException(status_code=404, detail="Room not found", context=context)
+            raise LoggedHTTPException(
+                status_code=404,
+                detail="Room not found",
+                requested_room_id=room_id,
+            )
 
         # Trigger coordinate recalculation
         generator = CoordinateGenerator(session)
@@ -646,10 +640,8 @@ async def set_map_origin(  # pylint: disable=too-many-locals  # Reason: Map orig
             room_id=room_id,
             exc_info=True,
         )
-        context = create_context_from_request(request)
-        context.metadata["requested_room_id"] = room_id
         raise LoggedHTTPException(
             status_code=500,
             detail="Failed to set map origin",
-            context=context,
+            requested_room_id=room_id,
         ) from e

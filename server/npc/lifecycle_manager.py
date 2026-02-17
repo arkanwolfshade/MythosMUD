@@ -63,7 +63,7 @@ class NPCLifecycleEvent(StrEnum):
 class NPCLifecycleRecord:  # pylint: disable=too-many-instance-attributes  # Reason: Lifecycle record requires many fields to capture complete NPC lifecycle state
     """Record of an NPC's lifecycle events and state changes."""
 
-    def __init__(self, npc_id: str, definition: NPCDefinition):
+    def __init__(self, npc_id: str, definition: NPCDefinition) -> None:
         """
         Initialize lifecycle record.
 
@@ -188,7 +188,7 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
         spawning_service: NPCSpawningService,
         persistence: "AsyncPersistenceLayer | None" = None,
         thread_manager: "NPCThreadManager | None" = None,
-    ):
+    ) -> None:
         """
         Initialize the NPC lifecycle manager.
 
@@ -444,13 +444,8 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
             try:
                 import asyncio
 
-                loop = asyncio.get_event_loop()
-                if loop.is_running():
-                    # Note: _start_npc_thread_async should be defined elsewhere or this should call the actual start method
-                    # For now, queue it to avoid recursion
-                    asyncio.create_task(self._start_npc_thread_async(npc_id, definition))
-                else:
-                    self._pending_thread_starts.append((npc_id, definition))
+                asyncio.get_running_loop()
+                asyncio.create_task(self._start_npc_thread_async(npc_id, definition))
             except RuntimeError:
                 self._pending_thread_starts.append((npc_id, definition))
         else:

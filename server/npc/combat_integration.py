@@ -36,7 +36,9 @@ class NPCCombatIntegration:
     game mechanics service for lucidity, fear, and corruption effects.
     """
 
-    def __init__(self, event_bus: EventBus | None = None, async_persistence: AsyncPersistenceLayer | None = None):
+    def __init__(
+        self, event_bus: EventBus | None = None, async_persistence: AsyncPersistenceLayer | None = None
+    ) -> None:
         """
         Initialize the NPC combat integration.
 
@@ -75,9 +77,9 @@ class NPCCombatIntegration:
             # Base damage calculation
             base_damage = weapon_damage
 
-            # Add strength modifier for physical and melee damage types (physical, slashing, piercing)
-            # These are all melee attacks where physical strength contributes to damage
-            if damage_type in ("physical", "slashing", "piercing"):
+            # Add strength modifier only for unarmed (physical) attacks.
+            # Weapon attacks (slashing, piercing, etc.) use weapon dice only (e.g. 1d4+0).
+            if damage_type == "physical":
                 strength_mod = attacker_stats.get("strength", 50)
                 strength_bonus = max(0, (strength_mod - 50) // 2)
                 base_damage += strength_bonus

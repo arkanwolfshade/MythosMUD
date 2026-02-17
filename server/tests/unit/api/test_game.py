@@ -468,5 +468,6 @@ class TestBroadcastMessageEdgeCases:
         message = "Test broadcast"
         result = await broadcast_message(message, mock_user, mock_connection_manager)
         assert result.recipients == 10
-        assert result.broadcast_stats["total_recipients"] == 12
-        assert result.broadcast_stats["delivery_time_ms"] == 150
+        assert result.broadcast_stats.total_recipients == 12
+        assert result.broadcast_stats.successful_deliveries == 10
+        assert result.broadcast_stats.failed_deliveries == 2

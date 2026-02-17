@@ -20,6 +20,9 @@ from server.infrastructure.message_broker import (
 )
 from server.infrastructure.nats_broker import NATSMessageBroker
 
+# pylint: disable=redefined-outer-name  # Reason: Pytest fixtures are injected as function parameters, which triggers this warning but is the standard pytest pattern
+# pylint: disable=protected-access  # Reason: Tests need to access protected members to verify internal state and behavior
+
 
 @pytest.fixture
 def nats_config():
@@ -98,6 +101,41 @@ async def test_connect_sets_callbacks(nats_broker):
             assert "error_cb" in call_kwargs
             assert "disconnected_cb" in call_kwargs
             assert "reconnected_cb" in call_kwargs
+
+
+@pytest.mark.asyncio
+async def test_connect_with_tls_enabled_passes_tls_options(tmp_path):
+    """Test connect() passes TLS options to nats.connect when tls_enabled=True."""
+    cert_file = tmp_path / "client.crt"
+    key_file = tmp_path / "client.key"
+    cert_file.write_text("")
+    key_file.write_text("")
+    tls_config = NATSConfig.model_construct(
+        url="nats://localhost:4222",
+        max_reconnect_attempts=2,
+        reconnect_time_wait=1.0,
+        enable_subject_validation=False,
+        tls_enabled=True,
+        tls_cert_file=str(cert_file),
+        tls_key_file=str(key_file),
+        tls_verify=False,
+    )
+    broker = NATSMessageBroker(tls_config, enable_message_validation=False)
+    mock_client = MagicMock()
+    mock_client.is_connected = True
+    mock_ssl_ctx = MagicMock()
+    with patch(
+        "server.infrastructure.nats_broker.nats.connect", new_callable=AsyncMock, return_value=mock_client
+    ) as mock_connect:
+        with patch(
+            "server.infrastructure.nats_broker.ssl.create_default_context",
+            return_value=mock_ssl_ctx,
+        ):
+            with patch.object(broker, "_start_health_monitoring", new_callable=AsyncMock):
+                await broker.connect()
+            call_kwargs = mock_connect.call_args[1]
+            assert "tls" in call_kwargs
+            assert call_kwargs["tls"] is mock_ssl_ctx
 
 
 @pytest.mark.asyncio

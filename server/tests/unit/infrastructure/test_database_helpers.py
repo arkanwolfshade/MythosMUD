@@ -30,6 +30,7 @@ from server.database_helpers import (
 from server.exceptions import ValidationError
 
 
+# autouse: required for test isolation in this module - DatabaseManager singleton reset
 @pytest.fixture(autouse=True)
 def reset_db():
     """Reset database state before each test."""

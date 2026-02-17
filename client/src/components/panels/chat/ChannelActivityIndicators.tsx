@@ -36,8 +36,9 @@ export const ChannelActivityIndicators: React.FC<ChannelActivityIndicatorsProps>
       <span className="text-xs text-mythos-terminal-text-secondary">Activity:</span>
       <div className="flex flex-wrap items-center gap-2">
         {AVAILABLE_CHANNELS.map(channel => {
-          const activityLevel = 'none';
           const unreadCount = unreadCounts[channel.id] || 0;
+          const activityLevel: 'none' | 'low' | 'medium' | 'high' =
+            unreadCount >= 10 ? 'high' : unreadCount >= 4 ? 'medium' : unreadCount >= 1 ? 'low' : 'none';
 
           return (
             <div
@@ -46,6 +47,7 @@ export const ChannelActivityIndicators: React.FC<ChannelActivityIndicatorsProps>
               role="button"
               tabIndex={0}
               aria-label={`${channel.name} channel - ${activityLevel} activity${unreadCount > 0 ? `, ${unreadCount} unread messages` : ''}`}
+              onClick={() => onChannelSelect(channel.id)}
               onKeyDown={e => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();

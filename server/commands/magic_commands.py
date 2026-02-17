@@ -43,7 +43,7 @@ class MagicCommandHandler:
         player_spell_repository: PlayerSpellRepository | None = None,
         spell_learning_service: SpellLearningService | None = None,
         chat_service: ChatService | None = None,
-    ):
+    ) -> None:
         """
         Initialize the magic command handler.
 
@@ -89,6 +89,11 @@ class MagicCommandHandler:
         if not player:
             return {"result": "You are not recognized by the cosmic forces."}
 
+        # Incapacitated (0 to -9 DP): cannot cast; must reach -10 to die and respawn
+        current_dp = (player.get_stats() or {}).get("current_dp", 1)
+        if current_dp <= 0:
+            return {"result": "You are incapacitated and cannot cast spells."}
+
         # Extract spell name and optional target
         spell_name = command_data.get("spell_name") or command_data.get("spell")
         target_name = command_data.get("target")
@@ -96,29 +101,7 @@ class MagicCommandHandler:
         if not spell_name:
             return {"result": "Usage: /cast <spell_name> [target]"}
 
-        # Check if player is resting and interrupt rest
-        # Get connection_manager from magic_service if available
-        try:
-            app = getattr(self.magic_service, "_app_instance", None)
-            if not app:
-                # Try to get from player_service
-                app = getattr(self.magic_service.player_service, "_app_instance", None)
-
-            if app:
-                connection_manager = getattr(app.state, "connection_manager", None)
-                if connection_manager:
-                    player_id = uuid.UUID(player.player_id) if isinstance(player.player_id, str) else player.player_id
-
-                    if is_player_resting(player_id, connection_manager):
-                        await _cancel_rest_countdown(player_id, connection_manager)
-                        logger.info(
-                            "Rest interrupted by spellcasting",
-                            player_id=player_id,
-                            player_name=player_name,
-                            spell=spell_name,
-                        )
-        except (AttributeError, ImportError, TypeError) as e:
-            logger.debug("Could not check rest state for spellcasting", player_name=player_name, error=str(e))
+        await self._interrupt_rest_for_cast(player, player_name, spell_name)
 
         # Cast spell
         result = await self.magic_service.cast_spell(player.player_id, spell_name, target_name)
@@ -137,6 +120,30 @@ class MagicCommandHandler:
                 message += f" {effect_msg}"
 
         return {"result": message}
+
+    async def _interrupt_rest_for_cast(self, player: Any, player_name: str, spell_name: str) -> None:
+        """If player is resting, cancel rest countdown so they can cast. Swallows errors so cast can proceed."""
+        try:
+            app = getattr(self.magic_service, "_app_instance", None)
+            if not app:
+                app = getattr(self.magic_service.player_service, "_app_instance", None)
+            if not app:
+                return
+            connection_manager = getattr(app.state, "connection_manager", None)
+            if not connection_manager:
+                return
+            player_id = uuid.UUID(player.player_id) if isinstance(player.player_id, str) else player.player_id
+            if not is_player_resting(player_id, connection_manager):
+                return
+            await _cancel_rest_countdown(player_id, connection_manager)
+            logger.info(
+                "Rest interrupted by spellcasting",
+                player_id=player_id,
+                player_name=player_name,
+                spell=spell_name,
+            )
+        except (AttributeError, ImportError, TypeError) as e:
+            logger.debug("Could not check rest state for spellcasting", player_name=player_name, error=str(e))
 
     async def handle_spells_command(
         self,

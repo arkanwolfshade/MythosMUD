@@ -3,8 +3,9 @@
  */
 
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { GameClientV2 } from '../GameClientV2';
+import type { Player, Room } from '../types';
 
 // Mock all dependencies
 vi.mock('../HeaderBar', () => ({
@@ -152,38 +153,32 @@ describe('GameClientV2', () => {
       },
       in_combat: false,
     };
-    render(<GameClientV2 {...defaultProps} player={playerWithStats as unknown} />);
+    render(<GameClientV2 {...defaultProps} player={playerWithStats as Player} />);
     expect(screen.getByTestId('character-info-panel')).toBeInTheDocument();
   });
 
   it('should handle room with occupant_count', () => {
-    const roomWithOccupants = {
+    const roomWithOccupants: Room = {
       id: 'room1',
       name: 'Test Room',
+      description: '',
+      exits: {},
       occupant_count: 5,
     };
-    render(<GameClientV2 {...defaultProps} room={roomWithOccupants as unknown} />);
+    render(<GameClientV2 {...defaultProps} room={roomWithOccupants} />);
     expect(screen.getByTestId('occupants-panel')).toBeInTheDocument();
   });
 
   it('should handle room with players array', () => {
-    const roomWithPlayers = {
+    const roomWithPlayers: Room = {
       id: 'room1',
       name: 'Test Room',
-      players: [{ id: 'p1', name: 'Player1' }],
+      description: '',
+      exits: {},
+      players: ['Player1'],
       npcs: [],
     };
-    render(<GameClientV2 {...defaultProps} room={roomWithPlayers as unknown} />);
-    expect(screen.getByTestId('occupants-panel')).toBeInTheDocument();
-  });
-
-  it('should handle room with legacy occupants', () => {
-    const roomWithLegacyOccupants = {
-      id: 'room1',
-      name: 'Test Room',
-      occupants: ['player1', 'player2'],
-    };
-    render(<GameClientV2 {...defaultProps} room={roomWithLegacyOccupants as unknown} />);
+    render(<GameClientV2 {...defaultProps} room={roomWithPlayers} />);
     expect(screen.getByTestId('occupants-panel')).toBeInTheDocument();
   });
 

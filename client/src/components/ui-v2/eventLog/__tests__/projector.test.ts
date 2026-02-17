@@ -5,6 +5,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import type { GameEvent } from '../../eventHandlers/types';
 import type { ChatMessage } from '../../types';
+import type { GameState } from '../../utils/stateUpdateUtils';
 import { getInitialGameState, projectEvent, projectState } from '../projector';
 import type { EventLog } from '../types';
 
@@ -61,8 +62,9 @@ describe('projector', () => {
             name: 'Test Room',
             description: 'A room',
             exits: {},
+            players: ['TestPlayer', 'OtherPlayer'],
+            npcs: [],
           },
-          occupants: ['TestPlayer', 'OtherPlayer'],
           login_grace_period_active: true,
           login_grace_period_remaining: 60,
         },
@@ -174,6 +176,47 @@ describe('projector', () => {
       };
       const next = projectEvent(prev, event);
       expect(next.player?.in_combat).toBe(false);
+    });
+
+    it('game_state with room replaces previous room (server-authoritative, no merge)', () => {
+      const prev = getInitialGameState();
+      const withRoom: GameState = {
+        ...prev,
+        room: {
+          id: 'room1',
+          name: 'Old Name',
+          description: 'Old',
+          exits: {},
+          players: ['OldPlayer'],
+          npcs: [],
+          occupants: ['OldPlayer'],
+          occupant_count: 1,
+        },
+      };
+      const event: GameEvent = {
+        event_type: 'game_state',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          player: { name: 'NewPlayer' },
+          room: {
+            id: 'room1',
+            name: 'New Name',
+            description: 'New',
+            exits: { north: 'room2' },
+            players: ['NewPlayer'],
+            npcs: [],
+            occupants: ['NewPlayer'],
+            occupant_count: 1,
+          },
+          occupants: ['NewPlayer'],
+        },
+      };
+      const next = projectEvent(withRoom, event);
+      expect(next.room?.id).toBe('room1');
+      expect(next.room?.name).toBe('New Name');
+      expect(next.room?.occupants).toEqual(['NewPlayer']);
+      expect(next.room?.occupant_count).toBe(1);
     });
   });
 
@@ -305,8 +348,9 @@ describe('projector', () => {
                   name: 'New Room',
                   description: 'A new room.',
                   exits: { south: 'old' },
+                  players: ['Player1', 'Other'],
+                  npcs: [],
                 },
-                occupants: ['Player1', 'Other'],
                 occupant_count: 2,
               },
             },
@@ -318,6 +362,42 @@ describe('projector', () => {
       expect(state.room?.name).toBe('New Room');
       expect(state.room?.occupants).toEqual(['Player1', 'Other']);
       expect(state.room?.occupant_count).toBe(2);
+    });
+
+    it('command_response with full player_update applies all server fields (position, in_combat, stats)', () => {
+      const log: EventLog = [
+        {
+          event_type: 'game_state',
+          timestamp: new Date().toISOString(),
+          sequence_number: 1,
+          data: {
+            player: {
+              name: 'Player1',
+              in_combat: false,
+              stats: { current_dp: 100, lucidity: 50, position: 'standing' },
+            },
+            room: { id: 'r1', name: 'Room 1', description: 'D', exits: {} },
+          },
+        },
+        {
+          event_type: 'command_response',
+          timestamp: new Date().toISOString(),
+          sequence_number: 2,
+          data: {
+            result: 'You sit down.',
+            player_update: {
+              position: 'sitting',
+              in_combat: true,
+              stats: { current_dp: 95 },
+            },
+          },
+        },
+      ];
+      const state = projectState(log);
+      expect(state.player?.stats?.position).toBe('sitting');
+      expect(state.player?.in_combat).toBe(true);
+      expect(state.player?.stats?.current_dp).toBe(95);
+      expect(state.player?.stats?.lucidity).toBe(50);
     });
   });
 

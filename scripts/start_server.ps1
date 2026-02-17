@@ -229,7 +229,8 @@ function Start-NatsServerForMythosMUD {
         if (-not (Test-NatsServerRunning)) {
             if ($PSCmdlet.ShouldProcess("NATS server for MythosMUD", "Start")) {
                 Write-Host "Starting NATS server for MythosMUD..." -ForegroundColor Yellow
-                $natsStarted = Start-NatsServer -UseConfig -Background
+                # Do not use -UseConfig so nats_manager uses default config and TLS from certs/nats/ when present
+                $natsStarted = Start-NatsServer -Background
             }
             else {
                 $natsStarted = $false

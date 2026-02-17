@@ -23,7 +23,7 @@ class SpellCostsService:
     Handles MP, lucidity, and corruption costs for spellcasting.
     """
 
-    def __init__(self, player_service: PlayerService):
+    def __init__(self, player_service: PlayerService) -> None:
         """
         Initialize the spell costs service.
 

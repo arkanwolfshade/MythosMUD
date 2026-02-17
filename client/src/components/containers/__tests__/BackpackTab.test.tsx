@@ -6,13 +6,13 @@
  * with wearable container items.
  */
 
-import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { BackpackTab } from '../BackpackTab';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ContainerComponent, InventoryStack } from '../../../stores/containerStore';
+import { BackpackTab } from '../BackpackTab';
 
-// Mock the stores
-const mockGetWearableContainersForPlayer = vi.fn();
+// Mock the stores. BackpackTab subscribes to openContainers and derives wearable list in useMemo.
+let mockOpenContainers: Record<string, ContainerComponent> = {};
 const mockSelectContainer = vi.fn();
 const mockDeselectContainer = vi.fn();
 const mockSelectedContainerId = vi.fn();
@@ -20,7 +20,7 @@ const mockSelectedContainerId = vi.fn();
 vi.mock('../../../stores/containerStore', () => ({
   useContainerStore: (selector: (state: unknown) => unknown) => {
     const mockState = {
-      getWearableContainersForPlayer: mockGetWearableContainersForPlayer,
+      openContainers: mockOpenContainers,
       selectContainer: mockSelectContainer,
       deselectContainer: mockDeselectContainer,
       selectedContainerId: mockSelectedContainerId(),
@@ -85,8 +85,7 @@ describe('BackpackTab', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-
-    mockGetWearableContainersForPlayer.mockReturnValue([mockWearableContainer]);
+    mockOpenContainers = { 'backpack-1': mockWearableContainer };
     mockSelectedContainerId.mockReturnValue(null);
     mockPlayer.inventory = mockPlayerInventory;
   });
@@ -99,7 +98,7 @@ describe('BackpackTab', () => {
     });
 
     it('should not render when player has no wearable containers', () => {
-      mockGetWearableContainersForPlayer.mockReturnValue([]);
+      mockOpenContainers = {};
       mockPlayer.inventory = [];
 
       const { container } = render(<BackpackTab />);
@@ -173,7 +172,10 @@ describe('BackpackTab', () => {
         },
       };
 
-      mockGetWearableContainersForPlayer.mockReturnValue([mockWearableContainer, container2]);
+      mockOpenContainers = {
+        'backpack-1': mockWearableContainer,
+        'backpack-2': container2,
+      };
 
       render(<BackpackTab />);
 
@@ -196,7 +198,10 @@ describe('BackpackTab', () => {
         },
       };
 
-      mockGetWearableContainersForPlayer.mockReturnValue([mockWearableContainer, container2]);
+      mockOpenContainers = {
+        'backpack-1': mockWearableContainer,
+        'backpack-2': container2,
+      };
 
       render(<BackpackTab />);
 
@@ -245,7 +250,7 @@ describe('BackpackTab', () => {
   describe('Empty State', () => {
     it('should show empty indicator when container has no items', () => {
       const emptyContainer = { ...mockWearableContainer, items: [] };
-      mockGetWearableContainersForPlayer.mockReturnValue([emptyContainer]);
+      mockOpenContainers = { 'backpack-1': emptyContainer };
 
       render(<BackpackTab />);
 
@@ -267,7 +272,7 @@ describe('BackpackTab', () => {
           item_id: 'backpack',
         },
       };
-      mockGetWearableContainersForPlayer.mockReturnValue([containerWithoutName]);
+      mockOpenContainers = { 'backpack-1': containerWithoutName };
 
       render(<BackpackTab />);
 

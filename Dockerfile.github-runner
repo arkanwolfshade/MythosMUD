@@ -93,8 +93,8 @@ COPY client/scripts ./client/scripts/
 WORKDIR /workspace/client
 # Human reader: use npm ci for reproducible builds, fallback to npm install if lock file is out of sync.
 # AI reader: npm ci requires lock file to be in sync with package.json. If it fails, clean and reinstall.
-# If npm ci fails, remove node_modules and package-lock.json, then run npm install to ensure optional dependencies are installed.
-RUN npm ci || (rm -rf node_modules package-lock.json && npm install)
+# --legacy-peer-deps: resolve eslint 10 vs eslint-plugin-react-hooks peer conflict (eslint-plugin requires ^3-9).
+RUN npm ci --legacy-peer-deps || (rm -rf node_modules package-lock.json && npm install --legacy-peer-deps)
 
 # Copy full source after dependency layers are cached.
 WORKDIR /workspace

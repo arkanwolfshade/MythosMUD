@@ -35,7 +35,7 @@ class PeriodicOrphanAuditor:  # pylint: disable=too-many-instance-attributes  # 
         check_interval_seconds: float = 60.0,
         memory_threshold_mb: float = 512.0,
         auto_cleanup_enabled: bool = True,
-    ):
+    ) -> None:
         """
         Initialize the periodic orphan auditor.
 

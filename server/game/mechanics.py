@@ -10,7 +10,7 @@ from typing import Any
 
 from ..exceptions import ValidationError
 from ..structured_logging.enhanced_logging_config import get_logger
-from ..utils.error_logging import create_error_context, log_and_raise
+from ..utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)
 
@@ -31,15 +31,13 @@ class GameMechanicsService:
         player = await self.persistence.get_player_by_id(player_uuid)
         if not player:
             logger.warning("Lucidity loss failed - player not found", player_id=player_id)
-            context = create_error_context()
-            context.metadata["player_id"] = player_id
-            context.metadata["amount"] = amount
-            context.metadata["source"] = source
-            context.metadata["operation"] = "apply_lucidity_loss"
             log_and_raise(
                 ValidationError,
                 "Player not found for lucidity loss",
-                context=context,
+                player_id=player_id,
+                amount=amount,
+                source=source,
+                operation="apply_lucidity_loss",
                 details={"player_id": player_id, "amount": amount, "source": source},
                 user_friendly="Player not found",
             )
@@ -56,15 +54,13 @@ class GameMechanicsService:
         player = await self.persistence.get_player_by_id(player_uuid)
         if not player:
             logger.warning("Fear application failed - player not found", player_id=player_id)
-            context = create_error_context()
-            context.metadata["player_id"] = player_id
-            context.metadata["amount"] = amount
-            context.metadata["source"] = source
-            context.metadata["operation"] = "apply_fear"
             log_and_raise(
                 ValidationError,
                 "Player not found for fear application",
-                context=context,
+                player_id=player_id,
+                amount=amount,
+                source=source,
+                operation="apply_fear",
                 details={"player_id": player_id, "amount": amount, "source": source},
                 user_friendly="Player not found",
             )
@@ -81,15 +77,13 @@ class GameMechanicsService:
         player = await self.persistence.get_player_by_id(player_uuid)
         if not player:
             logger.warning("Corruption application failed - player not found", player_id=player_id)
-            context = create_error_context()
-            context.metadata["player_id"] = player_id
-            context.metadata["amount"] = amount
-            context.metadata["source"] = source
-            context.metadata["operation"] = "apply_corruption"
             log_and_raise(
                 ValidationError,
                 "Player not found for corruption application",
-                context=context,
+                player_id=player_id,
+                amount=amount,
+                source=source,
+                operation="apply_corruption",
                 details={"player_id": player_id, "amount": amount, "source": source},
                 user_friendly="Player not found",
             )
@@ -106,15 +100,13 @@ class GameMechanicsService:
         player = await self.persistence.get_player_by_id(player_uuid)
         if not player:
             logger.warning("Occult knowledge gain failed - player not found", player_id=player_id)
-            context = create_error_context()
-            context.metadata["player_id"] = player_id
-            context.metadata["amount"] = amount
-            context.metadata["source"] = source
-            context.metadata["operation"] = "gain_occult_knowledge"
             log_and_raise(
                 ValidationError,
                 "Player not found for occult knowledge gain",
-                context=context,
+                player_id=player_id,
+                amount=amount,
+                source=source,
+                operation="gain_occult_knowledge",
                 details={"player_id": player_id, "amount": amount, "source": source},
                 user_friendly="Player not found",
             )
@@ -138,14 +130,12 @@ class GameMechanicsService:
         player = await self.persistence.get_player_by_id(player_uuid)
         if not player:
             logger.warning("Healing failed - player not found", player_id=player_id)
-            context = create_error_context()
-            context.metadata["player_id"] = player_id
-            context.metadata["amount"] = amount
-            context.metadata["operation"] = "heal_player"
             log_and_raise(
                 ValidationError,
                 "Player not found for healing",
-                context=context,
+                player_id=player_id,
+                amount=amount,
+                operation="heal_player",
                 details={"player_id": player_id, "amount": amount},
                 user_friendly="Player not found",
             )
@@ -162,15 +152,13 @@ class GameMechanicsService:
         player = await self.persistence.get_player_by_id(player_uuid)
         if not player:
             logger.warning("Damage failed - player not found", player_id=player_id)
-            context = create_error_context()
-            context.metadata["player_id"] = player_id
-            context.metadata["amount"] = amount
-            context.metadata["damage_type"] = damage_type
-            context.metadata["operation"] = "damage_player"
             log_and_raise(
                 ValidationError,
                 "Player not found for damage",
-                context=context,
+                player_id=player_id,
+                amount=amount,
+                damage_type=damage_type,
+                operation="damage_player",
                 details={"player_id": player_id, "amount": amount, "damage_type": damage_type},
                 user_friendly="Player not found",
             )
@@ -201,15 +189,13 @@ class GameMechanicsService:
         player = await self.persistence.get_player_by_id(player_uuid)
         if not player:
             logger.warning("XP gain failed - player not found", player_id=player_id)
-            context = create_error_context()
-            context.metadata["player_id"] = player_id
-            context.metadata["amount"] = amount
-            context.metadata["source"] = source
-            context.metadata["operation"] = "gain_experience"
             log_and_raise(
                 ValidationError,
                 "Player not found for XP gain",
-                context=context,
+                player_id=player_id,
+                amount=amount,
+                source=source,
+                operation="gain_experience",
                 details={"player_id": player_id, "amount": amount, "source": source},
                 user_friendly="Player not found",
             )

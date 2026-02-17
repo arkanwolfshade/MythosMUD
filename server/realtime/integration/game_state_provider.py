@@ -387,7 +387,12 @@ class GameStateProvider:
                 player_service = getattr(app_state, "player_service", None)
 
             if player_service:
-                complete_player_data = await player_service.convert_player_to_schema(player)
+                # Server authority: fetch player from persistence for authoritative stats (current_dp, etc.)
+                # The passed-in player may be a connection-cached copy with stale stats
+                async_persistence = self.get_async_persistence()
+                fresh_player = await async_persistence.get_player_by_id(player_id) if async_persistence else None
+                player_to_convert = fresh_player if fresh_player else player
+                complete_player_data = await player_service.convert_player_to_schema(player_to_convert)
                 logger.debug(
                     "GameStateProvider: Retrieved complete player data with profession",
                     player_id=player_id,

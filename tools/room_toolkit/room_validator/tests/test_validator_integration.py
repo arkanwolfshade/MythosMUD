@@ -144,7 +144,7 @@ class TestValidatorComponents:
         json_output = reporter.generate_json_output(stats, errors, warnings)
         parsed = json.loads(json_output)
 
-        assert parsed["summary"]["success"] is True
+        assert parsed["stats"]["success"] is True
         assert len(parsed["errors"]) == 0
         assert len(parsed["warnings"]) == 0
 
@@ -228,11 +228,11 @@ class TestValidatorComponents:
         json_output = reporter.generate_json_output(stats, errors, warnings)
         parsed = json.loads(json_output)
 
-        assert "summary" in parsed
+        assert "stats" in parsed
         assert "errors" in parsed
         assert "warnings" in parsed
-        assert parsed["summary"]["rooms"] == 3
-        assert parsed["summary"]["success"] is True  # Should be valid
+        assert parsed["stats"]["rooms"] == 3
+        assert parsed["stats"]["success"] is True  # Should be valid
 
 
 class TestValidatorEdgeCases:

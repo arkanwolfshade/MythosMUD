@@ -37,7 +37,7 @@ class NPCCommunicationIntegration:
     communication channels.
     """
 
-    def __init__(self, event_bus: EventBus | None = None, chat_service: ChatService | None = None):
+    def __init__(self, event_bus: EventBus | None = None, chat_service: ChatService | None = None) -> None:
         """
         Initialize the NPC communication integration.
 

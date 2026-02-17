@@ -31,7 +31,7 @@ class NPCCombatHandlers:
         combat_memory: NPCCombatMemory,
         lifecycle: NPCCombatLifecycle,
         messaging_integration: Any,
-    ):
+    ) -> None:
         """
         Initialize the combat handlers.
 

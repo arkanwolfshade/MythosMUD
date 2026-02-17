@@ -27,7 +27,9 @@ export default {
             secondary: '#ff9800',
             background: '#0a0a0a',
             surface: '#1a1a1a',
+            border: '#333333',
             text: '#00ff00',
+            'text-primary': '#00ff00',
             'text-secondary': '#4caf50',
             error: '#f44336',
             warning: '#ff9800',
@@ -57,6 +59,7 @@ export default {
       minHeight: {
         'panel-sm': '150px',
         'panel-md': '300px',
+        'panel-test': '600px',
         touch: '44px',
       },
       maxHeight: {

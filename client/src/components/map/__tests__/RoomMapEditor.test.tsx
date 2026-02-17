@@ -437,6 +437,7 @@ describe('RoomMapEditor', () => {
       // Override the default mock for this test
       vi.mocked(useRoomMapData).mockReturnValueOnce({
         rooms: [],
+        total: 0,
         isLoading: false,
         error: null,
         refetch: vi.fn(),

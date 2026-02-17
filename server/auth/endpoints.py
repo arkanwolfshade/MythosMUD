@@ -19,9 +19,8 @@ from ..database import get_async_session
 from ..dependencies import get_container
 from ..exceptions import LoggedHTTPException
 from ..models.user import User
-from ..schemas.invite import InviteRead
+from ..schemas.auth import InviteRead
 from ..structured_logging.enhanced_logging_config import get_logger
-from ..utils.error_logging import create_context_from_request
 from .dependencies import get_current_active_user, get_current_superuser
 from .invites import InviteManager, get_invite_manager
 from .token_epoch import get_auth_epoch
@@ -108,10 +107,12 @@ def _check_shutdown_status(request: Request, operation: str = "register_user") -
     from ..commands.admin_shutdown_command import get_shutdown_blocking_message, is_shutdown_pending
 
     if is_shutdown_pending(request.app):
-        context = create_context_from_request(request)
-        context.metadata["operation"] = operation
-        context.metadata["reason"] = "server_shutdown"
-        raise LoggedHTTPException(status_code=503, detail=get_shutdown_blocking_message("login"), context=context)
+        raise LoggedHTTPException(
+            status_code=503,
+            detail=get_shutdown_blocking_message("login"),
+            operation=operation,
+            reason="server_shutdown",
+        )
 
 
 def _ensure_user_email(user_create: UserCreate) -> None:
@@ -132,7 +133,7 @@ async def _validate_invite_code(user_create: UserCreate, invite_manager: InviteM
         raise e
 
 
-async def _check_username_exists(session: AsyncSession, username: str, request: Request) -> None:
+async def _check_username_exists(session: AsyncSession, username: str, _request: Request) -> None:
     """Check if username already exists and raise exception if so."""
     from sqlalchemy import func, select
 
@@ -141,13 +142,11 @@ async def _check_username_exists(session: AsyncSession, username: str, request: 
     existing_user = result.scalar_one_or_none()
 
     if existing_user:
-        context = create_context_from_request(request)
-        context.metadata["username"] = username
-        context.metadata["operation"] = "register_user"
         raise LoggedHTTPException(
             status_code=400,
             detail="Username already exists (names are case-insensitive)",
-            context=context,
+            username=username,
+            operation="register_user",
         )
 
 
@@ -213,7 +212,7 @@ async def _mark_invite_as_used(
         )
 
 
-def _handle_integrity_error(e: IntegrityError, username: str, request: Request) -> None:
+def _handle_integrity_error(e: IntegrityError, username: str, _request: Request) -> None:
     """Handle IntegrityError during registration."""
     error_str = str(e).lower()
     orig_error_str = str(e.orig).lower() if hasattr(e, "orig") else ""
@@ -226,12 +225,14 @@ def _handle_integrity_error(e: IntegrityError, username: str, request: Request) 
     else:
         detail = "A user with this information already exists"
 
-    context = create_context_from_request(request)
-    context.metadata["username"] = username
-    context.metadata["operation"] = "register_user"
-    context.metadata["constraint_error"] = str(e)
-    context.metadata["original_error"] = orig_error_str if hasattr(e, "orig") else ""
-    raise LoggedHTTPException(status_code=400, detail=detail, context=context) from e
+    raise LoggedHTTPException(
+        status_code=400,
+        detail=detail,
+        username=username,
+        operation="register_user",
+        constraint_error=str(e),
+        original_error=orig_error_str if hasattr(e, "orig") else "",
+    ) from e
 
 
 def _generate_jwt_token(user: User) -> str:
@@ -331,7 +332,7 @@ async def register_user(
     )
 
 
-async def _find_user_by_username(session: AsyncSession, username: str, http_request: Request) -> User:
+async def _find_user_by_username(session: AsyncSession, username: str, _http_request: Request) -> User:
     """Find user by username (case-insensitive). Raises exception if not found."""
     from sqlalchemy import func, select
 
@@ -343,27 +344,31 @@ async def _find_user_by_username(session: AsyncSession, username: str, http_requ
 
     if not user:
         logger.info("User not found", username=username)
-        context = create_context_from_request(http_request)
-        context.metadata["username"] = username
-        context.metadata["operation"] = "login_user"
-        raise LoggedHTTPException(status_code=401, detail="Invalid credentials", context=context)
+        raise LoggedHTTPException(
+            status_code=401,
+            detail="Invalid credentials",
+            username=username,
+            operation="login_user",
+        )
 
     return user
 
 
 async def _authenticate_user_credentials(
-    user: User, password: str, username: str, user_manager: UserManager, http_request: Request
+    user: User, password: str, username: str, user_manager: UserManager, _http_request: Request
 ) -> None:
     """Authenticate user credentials. Raises exception if authentication fails."""
     try:
         user_email = user.email
         if not user_email:
             logger.error("User has no email address", username=username)
-            context = create_context_from_request(http_request)
-            context.metadata["username"] = username
-            context.metadata["user_id"] = str(user.id)
-            context.metadata["operation"] = "login_user"
-            raise LoggedHTTPException(status_code=401, detail="Invalid credentials", context=context)
+            raise LoggedHTTPException(
+                status_code=401,
+                detail="Invalid credentials",
+                username=username,
+                user_id=str(user.id),
+                operation="login_user",
+            )
 
         from fastapi.security import OAuth2PasswordRequestForm
 
@@ -378,34 +383,40 @@ async def _authenticate_user_credentials(
 
         authenticated_user = await user_manager.authenticate(credentials)
         if not authenticated_user:
-            context = create_context_from_request(http_request)
-            context.metadata["username"] = username
-            context.metadata["user_id"] = str(user.id)
-            context.metadata["operation"] = "login_user"
-            raise LoggedHTTPException(status_code=401, detail="Invalid credentials", context=context)
+            raise LoggedHTTPException(
+                status_code=401,
+                detail="Invalid credentials",
+                username=username,
+                user_id=str(user.id),
+                operation="login_user",
+            )
 
         if authenticated_user.id != user.id:
             logger.error("User ID mismatch", expected_id=user.id, got_id=authenticated_user.id)
-            context = create_context_from_request(http_request)
-            context.metadata["username"] = username
-            context.metadata["expected_user_id"] = str(user.id)
-            context.metadata["actual_user_id"] = str(authenticated_user.id)
-            context.metadata["operation"] = "login_user"
-            raise LoggedHTTPException(status_code=401, detail="Invalid credentials", context=context)
+            raise LoggedHTTPException(
+                status_code=401,
+                detail="Invalid credentials",
+                username=username,
+                expected_user_id=str(user.id),
+                actual_user_id=str(authenticated_user.id),
+                operation="login_user",
+            )
     except (LoggedHTTPException, HTTPException):
         raise
     except Exception as e:
         logger.error("Authentication failed", error=str(e), error_type=type(e).__name__)
-        context = create_context_from_request(http_request)
-        context.metadata["username"] = username
-        context.metadata["operation"] = "login_user"
-        context.metadata["error"] = str(e)
-        raise LoggedHTTPException(status_code=401, detail="Invalid credentials", context=context) from None
+        raise LoggedHTTPException(
+            status_code=401,
+            detail="Invalid credentials",
+            username=username,
+            operation="login_user",
+            error=str(e),
+        ) from None
 
 
 async def _get_user_characters(user: User, async_persistence: "AsyncPersistenceLayer") -> list[dict[str, Any]]:
     """Get all active characters for user."""
-    from ..schemas.player import CharacterInfo
+    from ..schemas.players import CharacterInfo
 
     active_players = await async_persistence.get_active_players_by_user_id(str(user.id))
 

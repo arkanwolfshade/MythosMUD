@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CommandPanel } from '../CommandPanel';
 
 // Mock the dependencies
-vi.mock('../src/components/ui/EldritchIcon', () => ({
+vi.mock('../../ui/EldritchIcon', () => ({
   EldritchIcon: ({ name, className }: { name: string; className?: string }) => (
     <span data-testid={`icon-${name}`} className={className}>
       {name}
@@ -26,7 +26,7 @@ interface TerminalButtonProps {
   [key: string]: unknown;
 }
 
-vi.mock('../src/components/ui/TerminalButton', () => ({
+vi.mock('../../ui/TerminalButton', () => ({
   TerminalButton: ({ children, onClick, disabled, ...props }: TerminalButtonProps) => (
     <button onClick={onClick} disabled={disabled} {...props}>
       {children}
@@ -41,7 +41,7 @@ interface TerminalInputProps {
   [key: string]: unknown;
 }
 
-vi.mock('../src/components/ui/TerminalInput', () => ({
+vi.mock('../../ui/TerminalInput', () => ({
   TerminalInput: ({ value, onChange, onKeyDown, ...props }: TerminalInputProps) => (
     <input value={value} onChange={onChange} onKeyDown={onKeyDown} {...props} />
   ),

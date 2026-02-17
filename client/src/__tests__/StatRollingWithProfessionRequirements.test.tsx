@@ -2,9 +2,20 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { App } from '../App';
 
-// Mock fetch globally
-const fetchSpy = vi.fn();
-global.fetch = fetchSpy;
+// Mock fetch via spy so afterEach(mockRestore) restores global.fetch
+const fetchSpy = vi.spyOn(global, 'fetch');
+
+function mockJsonResponse(data: unknown): Response {
+  return new Response(JSON.stringify(data), {
+    status: 200,
+    headers: { 'Content-Type': 'application/json' },
+  });
+}
+
+function urlMatches(input: string | URL | Request, pattern: string): boolean {
+  const url = typeof input === 'string' ? input : input instanceof Request ? input.url : input.href;
+  return url.includes(pattern);
+}
 
 // Mock the logger
 vi.mock('../utils/logger', () => ({
@@ -19,6 +30,7 @@ vi.mock('../utils/logger', () => ({
 // Mock secure token storage
 vi.mock('../utils/security', () => ({
   secureTokenStorage: {
+    getToken: vi.fn().mockReturnValue(null),
     setToken: vi.fn(),
     setRefreshToken: vi.fn(),
     clearAllTokens: vi.fn(),
@@ -89,40 +101,25 @@ describe('Stat Rolling with Profession Requirements Validation', () => {
   ];
 
   const setupBasicMocks = () => {
-    const registrationResponse = {
-      ok: true,
-      json: vi.fn().mockResolvedValue({
-        access_token: 'mock-token',
-        has_character: false,
-        character_name: '',
-      }),
-    };
-
-    const professionsResponse = {
-      ok: true,
-      json: vi.fn().mockResolvedValue({
-        professions: createMockProfessions(),
-      }),
-    };
-
-    const characterCreationResponse = {
-      ok: true,
-      json: vi.fn().mockResolvedValue({
-        player: {
-          id: 1,
-          name: 'testuser',
-          profession_id: 0,
-        },
-      }),
-    };
-
-    fetchSpy.mockImplementation(url => {
-      if (url.includes('/auth/register')) {
-        return Promise.resolve(registrationResponse);
-      } else if (url.includes('/professions')) {
-        return Promise.resolve(professionsResponse);
-      } else if (url.includes('/players/create-character')) {
-        return Promise.resolve(characterCreationResponse);
+    fetchSpy.mockImplementation(input => {
+      if (urlMatches(input, '/auth/register')) {
+        return Promise.resolve(
+          mockJsonResponse({
+            access_token: 'mock-token',
+            has_character: false,
+            character_name: '',
+          })
+        );
+      }
+      if (urlMatches(input, '/professions')) {
+        return Promise.resolve(mockJsonResponse({ professions: createMockProfessions() }));
+      }
+      if (urlMatches(input, '/players/create-character')) {
+        return Promise.resolve(
+          mockJsonResponse({
+            player: { id: 1, name: 'testuser', profession_id: 0 },
+          })
+        );
       }
       return Promise.reject(new Error('Unexpected URL'));
     });
@@ -131,60 +128,48 @@ describe('Stat Rolling with Profession Requirements Validation', () => {
   it('should roll stats that meet Scholar profession requirements', async () => {
     setupBasicMocks();
 
-    // Mock stats response that meets Scholar requirements
-    const statsResponse = {
-      ok: true,
-      json: vi.fn().mockResolvedValue({
-        stats: {
-          strength: 10,
-          dexterity: 12,
-          constitution: 11,
-          intelligence: 15, // Meets requirement (>= 14)
-          wisdom: 13, // Meets requirement (>= 12)
-          charisma: 9,
-        },
-        stat_summary: {
-          total: 70,
-          average: 11.67,
-          highest: 15,
-          lowest: 9,
-        },
-        profession_id: 2,
-        meets_requirements: true,
-        method_used: '3d6',
-      }),
-    };
+    const statsResponse = mockJsonResponse({
+      stats: {
+        strength: 10,
+        dexterity: 12,
+        constitution: 11,
+        intelligence: 15, // Meets requirement (>= 14)
+        wisdom: 13, // Meets requirement (>= 12)
+        charisma: 9,
+      },
+      stat_summary: {
+        total: 70,
+        average: 11.67,
+        highest: 15,
+        lowest: 9,
+      },
+      profession_id: 2,
+      meets_requirements: true,
+      method_used: '3d6',
+    });
 
-    fetchSpy.mockImplementation(url => {
-      if (url.includes('/auth/register')) {
-        return Promise.resolve({
-          ok: true,
-          json: vi.fn().mockResolvedValue({
+    fetchSpy.mockImplementation(input => {
+      if (urlMatches(input, '/auth/register')) {
+        return Promise.resolve(
+          mockJsonResponse({
             access_token: 'mock-token',
             has_character: false,
             character_name: '',
-          }),
-        });
-      } else if (url.includes('/professions')) {
-        return Promise.resolve({
-          ok: true,
-          json: vi.fn().mockResolvedValue({
-            professions: createMockProfessions(),
-          }),
-        });
-      } else if (url.includes('/players/roll-stats')) {
+          })
+        );
+      }
+      if (urlMatches(input, '/professions')) {
+        return Promise.resolve(mockJsonResponse({ professions: createMockProfessions() }));
+      }
+      if (urlMatches(input, '/players/roll-stats')) {
         return Promise.resolve(statsResponse);
-      } else if (url.includes('/players/create-character')) {
-        return Promise.resolve({
-          ok: true,
-          json: vi.fn().mockResolvedValue({
-            player: {
-              id: 1,
-              name: 'testuser',
-              profession_id: 2,
-            },
-          }),
-        });
+      }
+      if (urlMatches(input, '/players/create-character')) {
+        return Promise.resolve(
+          mockJsonResponse({
+            player: { id: 1, name: 'testuser', profession_id: 2 },
+          })
+        );
       }
       return Promise.reject(new Error('Unexpected URL'));
     });
@@ -238,60 +223,48 @@ describe('Stat Rolling with Profession Requirements Validation', () => {
   it('should roll stats that meet Soldier profession requirements', async () => {
     setupBasicMocks();
 
-    // Mock stats response that meets Soldier requirements
-    const statsResponse = {
-      ok: true,
-      json: vi.fn().mockResolvedValue({
-        stats: {
-          strength: 14, // Meets requirement (>= 13)
-          dexterity: 12,
-          constitution: 13, // Meets requirement (>= 12)
-          intelligence: 10,
-          wisdom: 11,
-          charisma: 9,
-        },
-        stat_summary: {
-          total: 69,
-          average: 11.5,
-          highest: 14,
-          lowest: 9,
-        },
-        profession_id: 3,
-        meets_requirements: true,
-        method_used: '3d6',
-      }),
-    };
+    const statsResponse = mockJsonResponse({
+      stats: {
+        strength: 14, // Meets requirement (>= 13)
+        dexterity: 12,
+        constitution: 13, // Meets requirement (>= 12)
+        intelligence: 10,
+        wisdom: 11,
+        charisma: 9,
+      },
+      stat_summary: {
+        total: 69,
+        average: 11.5,
+        highest: 14,
+        lowest: 9,
+      },
+      profession_id: 3,
+      meets_requirements: true,
+      method_used: '3d6',
+    });
 
-    fetchSpy.mockImplementation(url => {
-      if (url.includes('/auth/register')) {
-        return Promise.resolve({
-          ok: true,
-          json: vi.fn().mockResolvedValue({
+    fetchSpy.mockImplementation(input => {
+      if (urlMatches(input, '/auth/register')) {
+        return Promise.resolve(
+          mockJsonResponse({
             access_token: 'mock-token',
             has_character: false,
             character_name: '',
-          }),
-        });
-      } else if (url.includes('/professions')) {
-        return Promise.resolve({
-          ok: true,
-          json: vi.fn().mockResolvedValue({
-            professions: createMockProfessions(),
-          }),
-        });
-      } else if (url.includes('/players/roll-stats')) {
+          })
+        );
+      }
+      if (urlMatches(input, '/professions')) {
+        return Promise.resolve(mockJsonResponse({ professions: createMockProfessions() }));
+      }
+      if (urlMatches(input, '/players/roll-stats')) {
         return Promise.resolve(statsResponse);
-      } else if (url.includes('/players/create-character')) {
-        return Promise.resolve({
-          ok: true,
-          json: vi.fn().mockResolvedValue({
-            player: {
-              id: 1,
-              name: 'testuser',
-              profession_id: 3,
-            },
-          }),
-        });
+      }
+      if (urlMatches(input, '/players/create-character')) {
+        return Promise.resolve(
+          mockJsonResponse({
+            player: { id: 1, name: 'testuser', profession_id: 3 },
+          })
+        );
       }
       return Promise.reject(new Error('Unexpected URL'));
     });
@@ -345,60 +318,48 @@ describe('Stat Rolling with Profession Requirements Validation', () => {
   it('should roll stats that meet Detective profession requirements', async () => {
     setupBasicMocks();
 
-    // Mock stats response that meets Detective requirements
-    const statsResponse = {
-      ok: true,
-      json: vi.fn().mockResolvedValue({
-        stats: {
-          strength: 10,
-          dexterity: 12, // Meets requirement (>= 11)
-          constitution: 11,
-          intelligence: 13, // Meets requirement (>= 12)
-          wisdom: 14, // Meets requirement (>= 13)
-          charisma: 9,
-        },
-        stat_summary: {
-          total: 69,
-          average: 11.5,
-          highest: 14,
-          lowest: 9,
-        },
-        profession_id: 4,
-        meets_requirements: true,
-        method_used: '3d6',
-      }),
-    };
+    const statsResponse = mockJsonResponse({
+      stats: {
+        strength: 10,
+        dexterity: 12, // Meets requirement (>= 11)
+        constitution: 11,
+        intelligence: 13, // Meets requirement (>= 12)
+        wisdom: 14, // Meets requirement (>= 13)
+        charisma: 9,
+      },
+      stat_summary: {
+        total: 69,
+        average: 11.5,
+        highest: 14,
+        lowest: 9,
+      },
+      profession_id: 4,
+      meets_requirements: true,
+      method_used: '3d6',
+    });
 
-    fetchSpy.mockImplementation(url => {
-      if (url.includes('/auth/register')) {
-        return Promise.resolve({
-          ok: true,
-          json: vi.fn().mockResolvedValue({
+    fetchSpy.mockImplementation(input => {
+      if (urlMatches(input, '/auth/register')) {
+        return Promise.resolve(
+          mockJsonResponse({
             access_token: 'mock-token',
             has_character: false,
             character_name: '',
-          }),
-        });
-      } else if (url.includes('/professions')) {
-        return Promise.resolve({
-          ok: true,
-          json: vi.fn().mockResolvedValue({
-            professions: createMockProfessions(),
-          }),
-        });
-      } else if (url.includes('/players/roll-stats')) {
+          })
+        );
+      }
+      if (urlMatches(input, '/professions')) {
+        return Promise.resolve(mockJsonResponse({ professions: createMockProfessions() }));
+      }
+      if (urlMatches(input, '/players/roll-stats')) {
         return Promise.resolve(statsResponse);
-      } else if (url.includes('/players/create-character')) {
-        return Promise.resolve({
-          ok: true,
-          json: vi.fn().mockResolvedValue({
-            player: {
-              id: 1,
-              name: 'testuser',
-              profession_id: 4,
-            },
-          }),
-        });
+      }
+      if (urlMatches(input, '/players/create-character')) {
+        return Promise.resolve(
+          mockJsonResponse({
+            player: { id: 1, name: 'testuser', profession_id: 4 },
+          })
+        );
       }
       return Promise.reject(new Error('Unexpected URL'));
     });
@@ -453,60 +414,48 @@ describe('Stat Rolling with Profession Requirements Validation', () => {
   it('should handle stats that do not meet profession requirements', async () => {
     setupBasicMocks();
 
-    // Mock stats response that does NOT meet Scholar requirements
-    const statsResponse = {
-      ok: true,
-      json: vi.fn().mockResolvedValue({
-        stats: {
-          strength: 10,
-          dexterity: 12,
-          constitution: 11,
-          intelligence: 12, // Does NOT meet requirement (>= 14)
-          wisdom: 10, // Does NOT meet requirement (>= 12)
-          charisma: 9,
-        },
-        stat_summary: {
-          total: 64,
-          average: 10.67,
-          highest: 12,
-          lowest: 9,
-        },
-        profession_id: 2,
-        meets_requirements: false, // Important: this should be false
-        method_used: '3d6',
-      }),
-    };
+    const statsResponse = mockJsonResponse({
+      stats: {
+        strength: 10,
+        dexterity: 12,
+        constitution: 11,
+        intelligence: 12, // Does NOT meet requirement (>= 14)
+        wisdom: 10, // Does NOT meet requirement (>= 12)
+        charisma: 9,
+      },
+      stat_summary: {
+        total: 64,
+        average: 10.67,
+        highest: 12,
+        lowest: 9,
+      },
+      profession_id: 2,
+      meets_requirements: false, // Important: this should be false
+      method_used: '3d6',
+    });
 
-    fetchSpy.mockImplementation(url => {
-      if (url.includes('/auth/register')) {
-        return Promise.resolve({
-          ok: true,
-          json: vi.fn().mockResolvedValue({
+    fetchSpy.mockImplementation(input => {
+      if (urlMatches(input, '/auth/register')) {
+        return Promise.resolve(
+          mockJsonResponse({
             access_token: 'mock-token',
             has_character: false,
             character_name: '',
-          }),
-        });
-      } else if (url.includes('/professions')) {
-        return Promise.resolve({
-          ok: true,
-          json: vi.fn().mockResolvedValue({
-            professions: createMockProfessions(),
-          }),
-        });
-      } else if (url.includes('/players/roll-stats')) {
+          })
+        );
+      }
+      if (urlMatches(input, '/professions')) {
+        return Promise.resolve(mockJsonResponse({ professions: createMockProfessions() }));
+      }
+      if (urlMatches(input, '/players/roll-stats')) {
         return Promise.resolve(statsResponse);
-      } else if (url.includes('/players/create-character')) {
-        return Promise.resolve({
-          ok: true,
-          json: vi.fn().mockResolvedValue({
-            player: {
-              id: 1,
-              name: 'testuser',
-              profession_id: 2,
-            },
-          }),
-        });
+      }
+      if (urlMatches(input, '/players/create-character')) {
+        return Promise.resolve(
+          mockJsonResponse({
+            player: { id: 1, name: 'testuser', profession_id: 2 },
+          })
+        );
       }
       return Promise.reject(new Error('Unexpected URL'));
     });
@@ -561,60 +510,48 @@ describe('Stat Rolling with Profession Requirements Validation', () => {
   it('should handle professions with no requirements (Tramp and Gutter Rat)', async () => {
     setupBasicMocks();
 
-    // Mock stats response for profession with no requirements
-    const statsResponse = {
-      ok: true,
-      json: vi.fn().mockResolvedValue({
-        stats: {
-          strength: 10,
-          dexterity: 12,
-          constitution: 11,
-          intelligence: 13,
-          wisdom: 10,
-          charisma: 9,
-        },
-        stat_summary: {
-          total: 65,
-          average: 10.83,
-          highest: 13,
-          lowest: 9,
-        },
-        profession_id: 0, // Tramp
-        meets_requirements: true, // Always true for professions with no requirements
-        method_used: '3d6',
-      }),
-    };
+    const statsResponse = mockJsonResponse({
+      stats: {
+        strength: 10,
+        dexterity: 12,
+        constitution: 11,
+        intelligence: 13,
+        wisdom: 10,
+        charisma: 9,
+      },
+      stat_summary: {
+        total: 65,
+        average: 10.83,
+        highest: 13,
+        lowest: 9,
+      },
+      profession_id: 0, // Tramp
+      meets_requirements: true, // Always true for professions with no requirements
+      method_used: '3d6',
+    });
 
-    fetchSpy.mockImplementation(url => {
-      if (url.includes('/auth/register')) {
-        return Promise.resolve({
-          ok: true,
-          json: vi.fn().mockResolvedValue({
+    fetchSpy.mockImplementation(input => {
+      if (urlMatches(input, '/auth/register')) {
+        return Promise.resolve(
+          mockJsonResponse({
             access_token: 'mock-token',
             has_character: false,
             character_name: '',
-          }),
-        });
-      } else if (url.includes('/professions')) {
-        return Promise.resolve({
-          ok: true,
-          json: vi.fn().mockResolvedValue({
-            professions: createMockProfessions(),
-          }),
-        });
-      } else if (url.includes('/players/roll-stats')) {
+          })
+        );
+      }
+      if (urlMatches(input, '/professions')) {
+        return Promise.resolve(mockJsonResponse({ professions: createMockProfessions() }));
+      }
+      if (urlMatches(input, '/players/roll-stats')) {
         return Promise.resolve(statsResponse);
-      } else if (url.includes('/players/create-character')) {
-        return Promise.resolve({
-          ok: true,
-          json: vi.fn().mockResolvedValue({
-            player: {
-              id: 1,
-              name: 'testuser',
-              profession_id: 0,
-            },
-          }),
-        });
+      }
+      if (urlMatches(input, '/players/create-character')) {
+        return Promise.resolve(
+          mockJsonResponse({
+            player: { id: 1, name: 'testuser', profession_id: 0 },
+          })
+        );
       }
       return Promise.reject(new Error('Unexpected URL'));
     });
@@ -672,87 +609,72 @@ describe('Stat Rolling with Profession Requirements Validation', () => {
   it('should allow rerolling stats for professions with requirements', async () => {
     setupBasicMocks();
 
-    // Mock multiple stats responses - first one doesn't meet requirements, second one does
     let rollCount = 0;
     const statsResponses = [
-      {
-        ok: true,
-        json: vi.fn().mockResolvedValue({
-          stats: {
-            strength: 10,
-            dexterity: 12,
-            constitution: 11,
-            intelligence: 12, // Does NOT meet requirement (>= 14)
-            wisdom: 10, // Does NOT meet requirement (>= 12)
-            charisma: 9,
-          },
-          stat_summary: {
-            total: 64,
-            average: 10.67,
-            highest: 12,
-            lowest: 9,
-          },
-          profession_id: 2,
-          meets_requirements: false,
-          method_used: '3d6',
-        }),
-      },
-      {
-        ok: true,
-        json: vi.fn().mockResolvedValue({
-          stats: {
-            strength: 10,
-            dexterity: 12,
-            constitution: 11,
-            intelligence: 15, // Meets requirement (>= 14)
-            wisdom: 13, // Meets requirement (>= 12)
-            charisma: 9,
-          },
-          stat_summary: {
-            total: 70,
-            average: 11.67,
-            highest: 15,
-            lowest: 9,
-          },
-          profession_id: 2,
-          meets_requirements: true,
-          method_used: '3d6',
-        }),
-      },
+      mockJsonResponse({
+        stats: {
+          strength: 10,
+          dexterity: 12,
+          constitution: 11,
+          intelligence: 12, // Does NOT meet requirement (>= 14)
+          wisdom: 10, // Does NOT meet requirement (>= 12)
+          charisma: 9,
+        },
+        stat_summary: {
+          total: 64,
+          average: 10.67,
+          highest: 12,
+          lowest: 9,
+        },
+        profession_id: 2,
+        meets_requirements: false,
+        method_used: '3d6',
+      }),
+      mockJsonResponse({
+        stats: {
+          strength: 10,
+          dexterity: 12,
+          constitution: 11,
+          intelligence: 15, // Meets requirement (>= 14)
+          wisdom: 13, // Meets requirement (>= 12)
+          charisma: 9,
+        },
+        stat_summary: {
+          total: 70,
+          average: 11.67,
+          highest: 15,
+          lowest: 9,
+        },
+        profession_id: 2,
+        meets_requirements: true,
+        method_used: '3d6',
+      }),
     ];
 
-    fetchSpy.mockImplementation(url => {
-      if (url.includes('/auth/register')) {
-        return Promise.resolve({
-          ok: true,
-          json: vi.fn().mockResolvedValue({
+    fetchSpy.mockImplementation(input => {
+      if (urlMatches(input, '/auth/register')) {
+        return Promise.resolve(
+          mockJsonResponse({
             access_token: 'mock-token',
             has_character: false,
             character_name: '',
-          }),
-        });
-      } else if (url.includes('/professions')) {
-        return Promise.resolve({
-          ok: true,
-          json: vi.fn().mockResolvedValue({
-            professions: createMockProfessions(),
-          }),
-        });
-      } else if (url.includes('/players/roll-stats')) {
+          })
+        );
+      }
+      if (urlMatches(input, '/professions')) {
+        return Promise.resolve(mockJsonResponse({ professions: createMockProfessions() }));
+      }
+      if (urlMatches(input, '/players/roll-stats')) {
         const response = statsResponses[rollCount];
         rollCount++;
         return Promise.resolve(response);
-      } else if (url.includes('/players/create-character')) {
-        return Promise.resolve({
-          ok: true,
-          json: vi.fn().mockResolvedValue({
-            player: {
-              id: 1,
-              name: 'testuser',
-              profession_id: 2,
-            },
-          }),
-        });
+      }
+      if (urlMatches(input, '/players/create-character')) {
+        return Promise.resolve(
+          mockJsonResponse({
+            player: { id: 1, name: 'testuser', profession_id: 2 },
+          })
+        );
       }
       return Promise.reject(new Error('Unexpected URL'));
     });

@@ -25,7 +25,6 @@ from ..models.health import HealthErrorResponse, HealthResponse, HealthStatus
 from ..realtime.connection_manager import resolve_connection_manager
 from ..services.health_service import get_health_service
 from ..structured_logging.enhanced_logging_config import get_logger
-from ..utils.error_logging import create_context_from_request
 from .monitoring_models import (
     AlertsResponse,
     CacheMetricsResponse,
@@ -68,7 +67,7 @@ def _resolve_connection_manager_from_request(request: Request) -> Any:
 
 
 @monitoring_router.get("/metrics", response_model=MetricsResponse)
-async def get_movement_metrics(request: Request) -> MetricsResponse:
+async def get_movement_metrics(_request: Request) -> MetricsResponse:
     """Get comprehensive movement system metrics."""
     try:
         monitor = get_movement_monitor()
@@ -83,14 +82,16 @@ async def get_movement_metrics(request: Request) -> MetricsResponse:
 
         return MetricsResponse(**metrics)
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Metrics retrieval errors unpredictable, must create error context
-        context = create_context_from_request(request)
-        context.metadata["operation"] = "get_movement_metrics"
-        raise LoggedHTTPException(status_code=500, detail=f"Error retrieving metrics: {str(e)}", context=context) from e
+        raise LoggedHTTPException(
+            status_code=500,
+            detail=f"Error retrieving metrics: {str(e)}",
+            operation="get_movement_metrics",
+        ) from e
 
 
 @monitoring_router.get("/integrity", response_model=IntegrityResponse)
 async def validate_room_integrity(
-    request: Request, persistence: AsyncPersistenceLayer = AsyncPersistenceDep
+    _request: Request, persistence: AsyncPersistenceLayer = AsyncPersistenceDep
 ) -> IntegrityResponse:
     """Validate room data integrity and return results."""
     try:
@@ -107,15 +108,15 @@ async def validate_room_integrity(
 
         return IntegrityResponse(**result)
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Integrity validation errors unpredictable, must create error context
-        context = create_context_from_request(request)
-        context.metadata["operation"] = "validate_room_integrity"
         raise LoggedHTTPException(
-            status_code=500, detail=f"Error validating integrity: {str(e)}", context=context
+            status_code=500,
+            detail=f"Error validating integrity: {str(e)}",
+            operation="validate_room_integrity",
         ) from e
 
 
 @monitoring_router.get("/alerts", response_model=AlertsResponse)
-async def get_system_alerts(request: Request) -> AlertsResponse:
+async def get_system_alerts(_request: Request) -> AlertsResponse:
     """Get current system alerts."""
     try:
         monitor = get_movement_monitor()
@@ -127,13 +128,15 @@ async def get_system_alerts(request: Request) -> AlertsResponse:
             timestamp=get_movement_monitor().get_metrics()["timestamp"].isoformat(),
         )
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Alert retrieval errors unpredictable, must create error context
-        context = create_context_from_request(request)
-        context.metadata["operation"] = "get_system_alerts"
-        raise LoggedHTTPException(status_code=500, detail=f"Error retrieving alerts: {str(e)}", context=context) from e
+        raise LoggedHTTPException(
+            status_code=500,
+            detail=f"Error retrieving alerts: {str(e)}",
+            operation="get_system_alerts",
+        ) from e
 
 
 @monitoring_router.post("/reset", response_model=MessageResponse)
-async def reset_metrics(request: Request) -> MessageResponse:
+async def reset_metrics(_request: Request) -> MessageResponse:
     """Reset all movement metrics (admin only)."""
     try:
         from ..game.movement_monitor import reset_movement_monitor
@@ -141,13 +144,15 @@ async def reset_metrics(request: Request) -> MessageResponse:
         reset_movement_monitor()
         return MessageResponse(message="Metrics reset successfully")
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Metrics reset errors unpredictable, must create error context
-        context = create_context_from_request(request)
-        context.metadata["operation"] = "reset_metrics"
-        raise LoggedHTTPException(status_code=500, detail=f"Error resetting metrics: {str(e)}", context=context) from e
+        raise LoggedHTTPException(
+            status_code=500,
+            detail=f"Error resetting metrics: {str(e)}",
+            operation="reset_metrics",
+        ) from e
 
 
 @monitoring_router.get("/performance-summary", response_model=PerformanceSummaryResponse)
-async def get_performance_summary(request: Request) -> PerformanceSummaryResponse:
+async def get_performance_summary(_request: Request) -> PerformanceSummaryResponse:
     """Get a human-readable performance summary."""
     try:
         monitor = get_movement_monitor()
@@ -156,17 +161,19 @@ async def get_performance_summary(request: Request) -> PerformanceSummaryRespons
 
         return PerformanceSummaryResponse(**summary)
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Performance summary errors unpredictable, must create error context
-        context = create_context_from_request(request)
-        context.metadata["operation"] = "get_performance_summary"
-        raise LoggedHTTPException(status_code=500, detail=f"Error retrieving summary: {str(e)}", context=context) from e
+        raise LoggedHTTPException(
+            status_code=500,
+            detail=f"Error retrieving summary: {str(e)}",
+            operation="get_performance_summary",
+        ) from e
 
 
 @monitoring_router.get("/memory", response_model=MemoryStatsResponse)
-async def get_memory_stats(request: Request) -> MemoryStatsResponse:
+async def get_memory_stats(_request: Request) -> MemoryStatsResponse:
     """Get comprehensive memory and connection statistics."""
     try:
         # AI Agent: Get connection_manager from container instead of global import
-        connection_manager = _resolve_connection_manager_from_request(request)
+        connection_manager = _resolve_connection_manager_from_request(_request)
         memory_stats = connection_manager.get_memory_stats()
         memory_stats["timestamp"] = datetime.now(UTC).isoformat()
 
@@ -189,10 +196,10 @@ async def get_memory_stats(request: Request) -> MemoryStatsResponse:
 
         return MemoryStatsResponse(**memory_stats)
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Memory stats errors unpredictable, must create error context
-        context = create_context_from_request(request)
-        context.metadata["operation"] = "get_memory_stats"
         raise LoggedHTTPException(
-            status_code=500, detail=f"Error retrieving memory stats: {str(e)}", context=context
+            status_code=500,
+            detail=f"Error retrieving memory stats: {str(e)}",
+            operation="get_memory_stats",
         ) from e
 
 
@@ -206,10 +213,10 @@ async def get_memory_alerts(request: Request) -> MemoryAlertsResponse:
 
         return MemoryAlertsResponse(alerts=alerts, alert_count=len(alerts), timestamp=datetime.now(UTC).isoformat())
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Memory alerts errors unpredictable, must create error context
-        context = create_context_from_request(request)
-        context.metadata["operation"] = "get_memory_alerts"
         raise LoggedHTTPException(
-            status_code=500, detail=f"Error retrieving memory alerts: {str(e)}", context=context
+            status_code=500,
+            detail=f"Error retrieving memory alerts: {str(e)}",
+            operation="get_memory_alerts",
         ) from e
 
 
@@ -222,10 +229,10 @@ async def force_memory_cleanup(request: Request) -> MessageResponse:
         await connection_manager.force_cleanup()
         return MessageResponse(message="Memory cleanup completed successfully")
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Memory cleanup errors unpredictable, must create error context
-        context = create_context_from_request(request)
-        context.metadata["operation"] = "force_memory_cleanup"
         raise LoggedHTTPException(
-            status_code=500, detail=f"Error during memory cleanup: {str(e)}", context=context
+            status_code=500,
+            detail=f"Error during memory cleanup: {str(e)}",
+            operation="force_memory_cleanup",
         ) from e
 
 
@@ -250,10 +257,10 @@ async def get_dual_connection_stats(request: Request) -> DualConnectionStatsResp
 
         return DualConnectionStatsResponse(**dual_connection_stats)
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Connection stats errors unpredictable, must create error context
-        context = create_context_from_request(request)
-        context.metadata["operation"] = "get_dual_connection_stats"
         raise LoggedHTTPException(
-            status_code=500, detail=f"Error retrieving dual connection stats: {str(e)}", context=context
+            status_code=500,
+            detail=f"Error retrieving dual connection stats: {str(e)}",
+            operation="get_dual_connection_stats",
         ) from e
 
 
@@ -266,10 +273,10 @@ async def get_performance_stats(request: Request) -> PerformanceStatsResponse:
         performance_stats = connection_manager.get_performance_stats()
         return PerformanceStatsResponse(**performance_stats)
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Performance stats errors unpredictable, must create error context
-        context = create_context_from_request(request)
-        context.metadata["operation"] = "get_performance_stats"
         raise LoggedHTTPException(
-            status_code=500, detail=f"Error retrieving performance stats: {str(e)}", context=context
+            status_code=500,
+            detail=f"Error retrieving performance stats: {str(e)}",
+            operation="get_performance_stats",
         ) from e
 
 
@@ -294,10 +301,10 @@ async def get_connection_health_stats(request: Request) -> ConnectionHealthStats
 
         return ConnectionHealthStatsResponse(**health_stats)
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Health stats errors unpredictable, must create error context
-        context = create_context_from_request(request)
-        context.metadata["operation"] = "get_connection_health_stats"
         raise LoggedHTTPException(
-            status_code=500, detail=f"Error retrieving connection health stats: {str(e)}", context=context
+            status_code=500,
+            detail=f"Error retrieving connection health stats: {str(e)}",
+            operation="get_connection_health_stats",
         ) from e
 
 
@@ -352,10 +359,10 @@ async def get_eventbus_metrics(request: Request) -> EventBusMetricsResponse:
             timestamp=datetime.now(UTC).isoformat(),
         )
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: EventBus metrics errors unpredictable, must create error context
-        context = create_context_from_request(request)
-        context.metadata["operation"] = "get_eventbus_metrics"
         raise LoggedHTTPException(
-            status_code=500, detail=f"Error retrieving EventBus metrics: {str(e)}", context=context
+            status_code=500,
+            detail=f"Error retrieving EventBus metrics: {str(e)}",
+            operation="get_eventbus_metrics",
         ) from e
 
 
@@ -419,10 +426,10 @@ async def get_cache_metrics(request: Request) -> CacheMetricsResponse:
             timestamp=datetime.now(UTC).isoformat(),
         )
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Cache metrics errors unpredictable, must create error context
-        context = create_context_from_request(request)
-        context.metadata["operation"] = "get_cache_metrics"
         raise LoggedHTTPException(
-            status_code=500, detail=f"Error retrieving cache metrics: {str(e)}", context=context
+            status_code=500,
+            detail=f"Error retrieving cache metrics: {str(e)}",
+            operation="get_cache_metrics",
         ) from e
 
 
@@ -439,7 +446,7 @@ def _resolve_task_registry() -> Any:
 
 
 @monitoring_router.get("/tasks", response_model=TaskMetricsResponse)
-async def get_task_metrics(request: Request) -> TaskMetricsResponse:
+async def get_task_metrics(_request: Request) -> TaskMetricsResponse:
     """
     Get TaskRegistry metrics including task counts and lifecycle information.
 
@@ -472,10 +479,10 @@ async def get_task_metrics(request: Request) -> TaskMetricsResponse:
             timestamp=datetime.now(UTC).isoformat(),
         )
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Task metrics errors unpredictable, must create error context
-        context = create_context_from_request(request)
-        context.metadata["operation"] = "get_task_metrics"
         raise LoggedHTTPException(
-            status_code=500, detail=f"Error retrieving task metrics: {str(e)}", context=context
+            status_code=500,
+            detail=f"Error retrieving task metrics: {str(e)}",
+            operation="get_task_metrics",
         ) from e
 
 
@@ -499,7 +506,7 @@ def _resolve_memory_leak_collector() -> Any:
 
 
 @monitoring_router.get("/memory-leaks", response_model=MemoryLeakMetricsResponse)
-async def get_memory_leak_metrics(request: Request) -> MemoryLeakMetricsResponse:
+async def get_memory_leak_metrics(_request: Request) -> MemoryLeakMetricsResponse:
     """
     Get comprehensive memory leak metrics from all sources.
 
@@ -553,10 +560,10 @@ async def get_memory_leak_metrics(request: Request) -> MemoryLeakMetricsResponse
             timestamp=metrics.get("timestamp", 0.0),
         )
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Memory leak metrics errors unpredictable, must create error context
-        context = create_context_from_request(request)
-        context.metadata["operation"] = "get_memory_leak_metrics"
         raise LoggedHTTPException(
-            status_code=500, detail=f"Error retrieving memory leak metrics: {str(e)}", context=context
+            status_code=500,
+            detail=f"Error retrieving memory leak metrics: {str(e)}",
+            operation="get_memory_leak_metrics",
         ) from e
 
 
@@ -646,16 +653,20 @@ async def get_health_status(request: Request) -> HealthResponse | JSONResponse: 
                 detail=f"Health check exceeded timeout of {health_service.health_check_timeout_seconds}s",
                 timestamp=datetime.now(UTC).isoformat(),
             )
-            context = create_context_from_request(request)
-            context.metadata["operation"] = "get_health_status"
-            context.metadata["timeout"] = health_service.health_check_timeout_seconds
-            raise LoggedHTTPException(status_code=503, detail=error_response.model_dump(), context=context) from None  # type: ignore[arg-type]  # Reason: LoggedHTTPException accepts context parameter, but mypy cannot infer it from FastAPI exception base class signature
+            raise LoggedHTTPException(
+                status_code=503,
+                detail=error_response.detail,
+                operation="get_health_status",
+                timeout=health_service.health_check_timeout_seconds,
+            ) from None
 
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Health check errors unpredictable, must return error response
         # Return 500 Internal Server Error if health check itself fails
         error_response = HealthErrorResponse(
             error="Health check failed", detail=str(e), timestamp=datetime.now(UTC).isoformat()
         )
-        context = create_context_from_request(request)
-        context.metadata["operation"] = "get_health_status"
-        raise LoggedHTTPException(status_code=500, detail=error_response.model_dump(), context=context) from e  # type: ignore[arg-type]  # Reason: LoggedHTTPException accepts context parameter, but mypy cannot infer it from FastAPI exception base class signature
+        raise LoggedHTTPException(
+            status_code=500,
+            detail=error_response.detail,
+            operation="get_health_status",
+        ) from e

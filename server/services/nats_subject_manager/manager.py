@@ -67,7 +67,7 @@ class NATSSubjectManager:  # pylint: disable=too-many-instance-attributes  # Rea
         max_subject_length: int = 255,
         strict_validation: bool = False,
         enable_metrics: bool = True,
-    ):
+    ) -> None:
         """
         Initialize NATS Subject Manager.
 

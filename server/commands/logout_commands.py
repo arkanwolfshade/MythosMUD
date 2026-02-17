@@ -248,8 +248,7 @@ async def handle_logout_command(
     _alias_storage: AliasStorage | None,
     player_name: str,
 ) -> dict[str, Any]:
-    """
-    Handle the logout command for cleanly disconnecting from the game.
+    """Handle the logout command for cleanly disconnecting from the game.
 
     This command performs a complete logout process including:
     - Updating player's last active timestamp
@@ -257,15 +256,12 @@ async def handle_logout_command(
     - Disconnecting all connections
     - Returning success confirmation
 
-    Args:
-        command_data: Command data dictionary containing args and other info
-        current_user: Current user information
-        request: FastAPI request object
-        alias_storage: Alias storage instance
-        player_name: Player name for logging
-
-    Returns:
-        dict: Logout command result with success status and metadata
+    :param command_data: Command data dictionary containing args and other info.
+    :param current_user: Current user information.
+    :param request: FastAPI request object.
+    :param _alias_storage: Alias storage instance (unused, for signature compatibility).
+    :param player_name: Player name for logging.
+    :return: Logout command result with success status and metadata.
     """
     # Extract args from command_data (not used in this command)
     _args: list[Any] = command_data.get("args", [])

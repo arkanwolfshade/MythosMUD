@@ -49,7 +49,7 @@ class NPCInstanceService:
         spawning_service: NPCSpawningService,
         population_controller: NPCPopulationController,
         event_bus: EventBus,
-    ):
+    ) -> None:
         """
         Initialize the NPC instance service.
 

@@ -15,7 +15,7 @@ from server.models.combat import CombatParticipant, CombatParticipantType
 from server.models.game import StatusEffectType
 from server.npc.combat_integration import NPCCombatIntegration
 from server.realtime.login_grace_period import start_login_grace_period
-from server.schemas.target_resolution import TargetMatch, TargetType
+from server.schemas.shared import TargetMatch, TargetType
 from server.services.combat_attack_handler import CombatAttackHandler
 
 

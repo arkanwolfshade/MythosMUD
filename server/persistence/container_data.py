@@ -24,7 +24,7 @@ class ContainerData:  # pylint: disable=too-many-instance-attributes,too-few-pub
         metadata_json: dict[str, Any] | None = None,
         created_at: datetime | None = None,
         updated_at: datetime | None = None,
-    ):
+    ) -> None:
         self.container_instance_id = container_instance_id
         self.source_type = source_type
         self.owner_id = owner_id

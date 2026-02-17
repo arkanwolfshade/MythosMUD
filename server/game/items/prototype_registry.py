@@ -27,7 +27,7 @@ class PrototypeRegistryError(Exception):
 class PrototypeRegistry:
     """In-memory registry for validated item prototypes."""
 
-    def __init__(self, prototypes: dict[str, ItemPrototypeModel], invalid_entries: list[dict[str, Any]]):
+    def __init__(self, prototypes: dict[str, ItemPrototypeModel], invalid_entries: list[dict[str, Any]]) -> None:
         self._prototypes = prototypes
         self._invalid_entries = invalid_entries
 
