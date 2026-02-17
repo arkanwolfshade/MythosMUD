@@ -1,6 +1,8 @@
 # GitHub Copilot Instructions for MythosMUD
 
-Repository-specific instructions for GitHub Copilot to generate code aligned with MythosMUD standards.
+Repository-specific instructions for GitHub Copilot to generate code aligned with MythosMUD standards. Canonical
+project rules for Cursor IDE are in `.cursor/rules/`; the repo root `CLAUDE.md` is a supporting consolidated
+reference (kept in sync when Cursor rules change).
 
 ---
 
@@ -72,7 +74,7 @@ All secrets via environment variables only (never hardcode)
 
 - Use PostgreSQL (SQLite is deprecated)
 - Prefer PostgreSQL CLI over Python for debugging
-- Do not create *.db files without explicit permission
+- Do not create \*.db files without explicit permission
 
 ---
 

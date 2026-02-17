@@ -5,11 +5,12 @@ description: "Security-focused code review, vulnerability analysis, and complian
 
 # Security Auditor Subagent
 
-*"In the shadowed archives, we learn that security is not optional. This subagent examines our code with the vigilance of a guardian of forbidden knowledge, ensuring that sensitive information remains protected."*
+_"In the shadowed archives, we learn that security is not optional. This subagent examines our code with the vigilance of a guardian of forbidden knowledge, ensuring that sensitive information remains protected."_
 
 ## Purpose
 
 The Security Auditor subagent performs security-focused code review and vulnerability analysis. It excels at:
+
 - Security vulnerability scanning and identification
 - COPPA compliance verification for minor users
 - Input validation review and sanitization checks
@@ -18,12 +19,14 @@ The Security Auditor subagent performs security-focused code review and vulnerab
 ## Capabilities
 
 ### Vulnerability Scanning
+
 - Identify common security vulnerabilities (XSS, SQL injection, CSRF, etc.)
 - Review authentication and session management
 - Analyze password handling and storage
 - Check for insecure API endpoints
 
 ### COPPA Compliance
+
 - Verify no personal information collection from minors
 - Check for parental consent mechanisms
 - Review data minimization practices
@@ -32,6 +35,7 @@ The Security Auditor subagent performs security-focused code review and vulnerab
 - Confirm no behavioral tracking of minors
 
 ### Input Validation
+
 - Review server-side input validation
 - Check for path traversal vulnerabilities
 - Analyze file upload security
@@ -39,6 +43,7 @@ The Security Auditor subagent performs security-focused code review and vulnerab
 - Verify SQL injection prevention
 
 ### Authentication & Authorization
+
 - Review authentication flows
 - Check authorization checks
 - Analyze JWT token handling
@@ -46,6 +51,7 @@ The Security Auditor subagent performs security-focused code review and vulnerab
 - Verify access control implementation
 
 ### Security Headers & Configuration
+
 - Review HTTP security headers
 - Check SSL/TLS configuration
 - Analyze environment variable usage
@@ -55,12 +61,14 @@ The Security Auditor subagent performs security-focused code review and vulnerab
 ## Usage
 
 This subagent is automatically invoked when:
+
 - Security review is requested
 - COPPA compliance verification is needed
 - Vulnerability scanning is required
 - Authentication/authorization review is requested
 
 You can also explicitly request its use:
+
 ```
 "Perform security audit of the authentication module"
 "Verify COPPA compliance for user data handling"
@@ -79,6 +87,7 @@ You can also explicitly request its use:
 ## Output Format
 
 The subagent returns:
+
 - **Vulnerability Report**: Identified security issues with severity ratings
 - **Compliance Status**: COPPA compliance verification results
 - **Input Validation Issues**: Problems with input handling
@@ -88,14 +97,15 @@ The subagent returns:
 ## Integration
 
 - Works with `.cursor/rules/security.mdc` for security best practices
-- Integrates with `.cursorrules` security requirements
-- References COPPA compliance rules from main rules file
+- Integrates with project security rules in `.cursor/rules/` and CLAUDE.md (consolidated reference)
+- References COPPA compliance from `.cursor/rules/` and CLAUDE.md
 - Uses Codacy security scanning tools when available
 - Supports security-first development workflow
 
 ## Security Requirements
 
 ### COPPA Compliance (Critical)
+
 - **No Personal Information**: Never collect personal information from minors
 - **Parental Consent**: All data collection requires explicit parental consent
 - **Data Minimization**: Collect only data essential for game functionality
@@ -104,6 +114,7 @@ The subagent returns:
 - **No Tracking**: No behavioral tracking or profiling of minors
 
 ### Security Implementation Standards
+
 - **Privacy by Design**: Privacy considerations built into every feature
 - **Secure by Default**: All features must be secure without additional configuration
 - **Environment Variables**: All secrets via environment variables only
@@ -116,6 +127,7 @@ The subagent returns:
 ## Example Scenarios
 
 ### Authentication Security Review
+
 ```
 Goal: Review authentication module for security issues
 Process:
@@ -128,6 +140,7 @@ Process:
 ```
 
 ### COPPA Compliance Verification
+
 ```
 Goal: Verify user data handling is COPPA compliant
 Process:
@@ -141,6 +154,7 @@ Process:
 ```
 
 ### Input Validation Review
+
 ```
 Goal: Review API endpoints for input validation
 Process:
@@ -173,4 +187,4 @@ Process:
 - This subagent prioritizes security issues by severity
 - COPPA compliance is treated as critical priority
 - Integrates with existing security scanning tools
-- Follows security-first development principles from `.cursorrules`
+- Follows security-first development principles from `.cursor/rules/` and CLAUDE.md

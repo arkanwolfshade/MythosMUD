@@ -5,11 +5,12 @@ description: "Comprehensive test analysis, coverage reporting, and test quality 
 
 # Test Suite Analyzer Subagent
 
-*"According to my research in the restricted archives, proper validation requires systematic examination. This subagent analyzes our test suite with the rigor of a Miskatonic University examination board."*
+_"According to my research in the restricted archives, proper validation requires systematic examination. This subagent analyzes our test suite with the rigor of a Miskatonic University examination board."_
 
 ## Purpose
 
 The Test Suite Analyzer subagent performs comprehensive analysis of test suites. It excels at:
+
 - Analyzing test coverage gaps and identifying untested code
 - Finding untested code paths and edge cases
 - Identifying test quality issues and anti-patterns
@@ -18,24 +19,28 @@ The Test Suite Analyzer subagent performs comprehensive analysis of test suites.
 ## Capabilities
 
 ### Coverage Analysis
+
 - Analyze test coverage reports (pytest-cov, vitest coverage)
 - Identify files and modules with low coverage
 - Find specific functions and methods without tests
 - Compare coverage across different test suites (unit, integration, e2e)
 
 ### Test Quality Assessment
+
 - Identify test anti-patterns (testing test infrastructure, testing Python built-ins)
 - Review test organization and structure
 - Assess test maintainability and readability
 - Evaluate test naming conventions
 
 ### Gap Identification
+
 - Find critical code paths without tests
 - Identify untested error handling
 - Locate missing edge case coverage
 - Discover integration points without tests
 
 ### Recommendations
+
 - Suggest specific tests to write
 - Recommend test improvements
 - Identify flaky or unreliable tests
@@ -44,12 +49,14 @@ The Test Suite Analyzer subagent performs comprehensive analysis of test suites.
 ## Usage
 
 This subagent is automatically invoked when:
+
 - Test coverage analysis is needed
 - Test quality review is requested
 - Test gaps need identification
 - Test improvement recommendations are required
 
 You can also explicitly request its use:
+
 ```
 "Analyze test coverage and find gaps"
 "Review test quality in server/tests/unit"
@@ -68,6 +75,7 @@ You can also explicitly request its use:
 ## Output Format
 
 The subagent returns:
+
 - **Coverage Summary**: Overall coverage metrics and trends
 - **Gap Analysis**: Specific files, functions, and code paths without tests
 - **Quality Assessment**: Test quality issues and anti-patterns found
@@ -80,17 +88,19 @@ The subagent returns:
 - Integrates with `client-test-remediation.md` command for client test analysis
 - Uses `.cursor/rules/pytest.mdc` for Python test best practices
 - Supports `make test` and `make test-comprehensive` workflows
-- References `.cursorrules` test coverage requirements (70% minimum, 90% critical)
+- References project test coverage requirements in `.cursor/rules/` and CLAUDE.md (70% minimum, 90% critical)
 
 ## Test Quality Standards
 
 ### Forbidden Test Patterns
+
 - Testing Python built-ins or test infrastructure
 - Testing mock behavior instead of server code
 - Testing test utilities instead of application code
 - Only verifying exceptions can be raised without testing actual behavior
 
 ### Required Test Patterns
+
 - Tests must call actual server code
 - Tests must verify server behavior, not just that exceptions work
 - Tests must use mocks to test server code, not to test mocks
@@ -99,11 +109,13 @@ The subagent returns:
 ## Coverage Requirements
 
 ### Overall Coverage
+
 - **Minimum**: 70% overall test coverage (enforced in CI)
 - **Target**: 82%+ overall coverage
 - **Critical Code**: 98% minimum (security, core features, user-facing code)
 
 ### Critical Files Requiring High Coverage
+
 - Security-related code (authentication, authorization, data protection)
 - Core game features (combat, magic, persistence)
 - User-facing functionality (API endpoints, real-time messaging)
@@ -112,6 +124,7 @@ The subagent returns:
 ## Example Scenarios
 
 ### Coverage Gap Analysis
+
 ```
 Goal: Find untested code in server/services/
 Process:
@@ -123,6 +136,7 @@ Process:
 ```
 
 ### Test Quality Review
+
 ```
 Goal: Review test quality in server/tests/unit/
 Process:
@@ -134,6 +148,7 @@ Process:
 ```
 
 ### Critical Path Coverage
+
 ```
 Goal: Ensure critical authentication code has 98% coverage
 Process:
@@ -160,7 +175,7 @@ Process:
 
 ## Notes
 
-- This subagent follows project test quality requirements from `.cursorrules`
+- This subagent follows project test quality requirements from `.cursor/rules/` and CLAUDE.md
 - Respects test exclusions (e.g., test_player_stats.py)
 - Understands two-tier testing strategy (fast suite vs comprehensive suite)
 - Integrates with existing test remediation workflows

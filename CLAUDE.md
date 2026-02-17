@@ -1,7 +1,15 @@
 # Claude AI Assistant Rules for MythosMUD
 
 > "In the shadowed halls of Miskatonic University, knowledge and code intertwine in ways that defy mortal
-comprehension."
+> comprehension."
+
+---
+
+## Canonical rules (Cursor)
+
+**For Cursor IDE, the canonical project rules are in `.cursor/rules/`.** This file is a consolidated reference for
+other tools (e.g. Claude Code, Agent OS) and for humans. When you add or change rules in `.cursor/rules/` or Cursor
+agents/skills, update this file and `.github/copilot-instructions.md` so Claude and Copilot stay in sync.
 
 ---
 
@@ -119,7 +127,7 @@ client-held state as the source of truth when it conflicts with server responses
 
 **NEVER** create database files in `/server/server/tests/data/players/`, `/server/server/tests/data/npcs/`, or any
 
-  other location
+other location
 
 **ALWAYS** verify database file location before creating or modifying any database files
 
@@ -137,7 +145,7 @@ client-held state as the source of truth when it conflicts with server responses
   implementing
 
 - Prefer interacting with the database files using the postgresql CLI over python when debugging
-- Do not create *.db files without explicit permission
+- Do not create \*.db files without explicit permission
 
 ---
 
@@ -195,7 +203,7 @@ Use ruff as the sole pre-commit linter/formatter (black and flake8 have been ban
 ### Code Suppression Rules
 
 Any time we suppress a tool finding, e.g. mypy, pylint, ruff, etc., add a comment justifying why it is necessary to
-  suppress instead of fixing it
+suppress instead of fixing it
 
 ### Code Organization
 
@@ -271,25 +279,21 @@ Use PowerShell syntax, never bash-style && for command chaining
 When multiple tasks are pending, prioritize in this order:
 
 1. **🔴 Critical Security Issues** (Fix immediately)
-
    - Security vulnerabilities
    - Privacy compliance issues
    - Data protection problems
 
 2. **🟡 High Priority** (Complete within current session)
-
    - Core functionality bugs
    - Authentication/authorization issues
    - Critical user experience problems
 
 3. **🟢 Medium Priority** (Plan for next session)
-
    - Feature enhancements
    - Performance improvements
    - Code quality improvements
 
 4. **🔵 Low Priority** (Nice to have)
-
    - UI/UX polish
    - Documentation improvements
    - Advanced features
@@ -412,7 +416,7 @@ Reference both canonical Lovecraft works and invented academic sources
 ## ❓ COMMUNICATION GUIDELINES
 
 Always ask me questions one at a time. Do not ask multiple questions in one response unless the questions are very
-  closely related to each other or are asked with the goal of having a single answer for all of them.
+closely related to each other or are asked with the goal of having a single answer for all of them.
 
 - Don't tell me, "You're right" (or any permutation) unless you have actually confirmed that I am correct.
 - If you detect a problem with terminal output, stop and ask me for help.
@@ -422,13 +426,15 @@ Always ask me questions one at a time. Do not ask multiple questions in one resp
 
 ## 📚 REFERENCES
 
-Primary rules file: `.cursorrules`
-
-- Additional rule files: `.cursor/rules/*.mdc`
+- **Canonical rules (Cursor):** `.cursor/rules/` (source of truth for Cursor IDE)
+- **Legacy root file:** `.cursorrules` (minimal stub; see .cursor/rules/ and AGENTS.md)
+- **Consolidated reference:** this file (CLAUDE.md) for non-Cursor tools and humans
+- **Sync policy:** When you add or change rules in `.cursor/rules/` or Cursor agents/skills, update this file and
+  `.github/copilot-instructions.md` so Claude and Copilot stay in sync
 - User-specific rules: `USER_RULES.md`
 - Task tracking: [GitHub Issues](https://github.com/arkanwolfshade/MythosMUD/issues)
 
 ---
 
 > "Ph'nglui mglw'nafh Cthulhu R'lyeh wgah'nagl fhtagn... and may our code be as unfathomable yet functional as the
-depths themselves."
+> depths themselves."
