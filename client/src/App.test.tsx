@@ -1030,14 +1030,13 @@ describe('App', () => {
         expect(screen.getByText(/Welcome to the Dreamlands/)).toBeInTheDocument();
       });
 
-      // Click continue button to proceed to game terminal
+      // Click continue button to proceed to game terminal (triggers async handleMotdContinue + fetch)
       const continueButton = screen.getByText('Enter the Realm');
       fireEvent.click(continueButton);
 
-      // Now game terminal should appear
-      await waitFor(() => {
-        expect(screen.getByTestId('game-terminal')).toBeInTheDocument();
-      });
+      // Wait for async MOTD dismiss and GameClientV2Container to render (mock has data-testid="game-terminal")
+      const gameTerminal = await screen.findByTestId('game-terminal', {}, { timeout: 5000 });
+      expect(gameTerminal).toBeInTheDocument();
 
       // Verify token is passed to GameClientV2Container
       expect(screen.getByText(/token: present/)).toBeInTheDocument();

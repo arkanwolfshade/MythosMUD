@@ -24,6 +24,7 @@ SQL_DIRS = [
     "db/schema",
     "db/verification",
     "db/migrations",
+    "data/db/migrations",
     "server/scripts",
 ]
 
@@ -90,6 +91,7 @@ def check_not_in_subquery(path: Path, content: str) -> list[str]:
 
 
 def main() -> int:
+    """Run SQL guardrail checks and return 1 if any issues found, 0 otherwise."""
     files = _collect_sql_files()
     all_issues: list[str] = []
     for path in files:

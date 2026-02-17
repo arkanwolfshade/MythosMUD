@@ -36,16 +36,30 @@ class CombatAttackHandler:
         # is not needed. Attacks can happen anytime during a round.
         # Note: is_initial_attack flag is kept for backward compatibility but not used for validation
 
-    def _apply_damage(self, target: CombatParticipant, damage: int) -> tuple[int, bool, bool]:
+    def _apply_damage(
+        self, target: CombatParticipant, damage: int, combat: CombatInstance | None = None
+    ) -> tuple[int, bool, bool]:
         """
         Apply damage to target and check death states.
 
         Delegates domain logic to CombatParticipant.apply_damage; handles
-        infrastructure concerns (login grace period) here.
+        infrastructure concerns (login grace period, no_death rooms) here.
 
         Returns:
             Tuple of (old_dp, target_died, target_mortally_wounded)
         """
+        # no_death rooms: cap damage so player DP never goes below 0
+        if (
+            combat
+            and target.participant_type == CombatParticipantType.PLAYER
+            and self._room_has_no_death(combat.room_id)
+        ):
+            cap_damage = max(0, target.current_dp)  # Only allow damage that keeps DP >= 0
+            if damage > cap_damage:
+                damage = cap_damage
+                if damage <= 0:
+                    return target.current_dp, False, False
+
         # Check if target is in login grace period - block damage if so (infrastructure concern)
         if target.participant_type == CombatParticipantType.PLAYER:
             try:
@@ -72,6 +86,19 @@ class CombatAttackHandler:
         # Delegate damage application and death-state logic to domain model
         return target.apply_damage(damage)
 
+    def _room_has_no_death(self, room_id: str) -> bool:
+        """Check if room has no_death attribute (tutorial/safe zones)."""
+        try:
+            from ..async_persistence import get_async_persistence
+
+            persistence = get_async_persistence()
+            if not persistence:
+                return False
+            room = persistence.get_room_by_id(room_id)
+            return bool(room and getattr(room, "attributes", {}) and room.attributes.get("no_death"))
+        except (AttributeError, ImportError, TypeError) as _:
+            return False
+
     async def apply_attack_damage(
         self, combat: CombatInstance, target: CombatParticipant, damage: int
     ) -> tuple[int, bool, bool]:
@@ -86,7 +113,7 @@ class CombatAttackHandler:
         Returns:
             Tuple of (old_dp, target_died, target_mortally_wounded)
         """
-        old_dp, target_died, target_mortally_wounded = self._apply_damage(target, damage)
+        old_dp, target_died, target_mortally_wounded = self._apply_damage(target, damage, combat)
 
         combat.update_activity(0)
         return old_dp, target_died, target_mortally_wounded

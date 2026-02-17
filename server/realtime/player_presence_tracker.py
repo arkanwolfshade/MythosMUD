@@ -95,6 +95,66 @@ def _resolve_room_id(player: Any, manager: Any) -> str | None:
     return cast(str | None, room_id)
 
 
+async def _resolve_room_id_for_tutorial_reconnect(player: Any, manager: Any) -> str | None:
+    """
+    For players with tutorial_instance_id, ensure instance exists and return first room.
+
+    Per plan: on reconnect, place player at the beginning of the tutorial instance.
+    If instance was lost (e.g. server restart), recreate it.
+
+    Returns:
+        First room ID if tutorial player, None to fall back to normal resolution
+    """
+    instance_id = getattr(player, "tutorial_instance_id", None)
+    if not instance_id:
+        return None
+
+    instance_manager = _get_instance_manager_from_manager(manager)
+    if not instance_manager:
+        logger.warning("InstanceManager not available for tutorial reconnect", player_id=player.player_id)
+        return None
+
+    instance = instance_manager.get_instance(instance_id)
+    if not instance:
+        logger.info(
+            "Tutorial instance missing on reconnect, recreating",
+            player_id=player.player_id,
+            instance_id=instance_id,
+        )
+        from ..game.player_creation_service import TUTORIAL_TEMPLATE_ID
+
+        instance = instance_manager.create_instance(
+            template_id=TUTORIAL_TEMPLATE_ID,
+            owner_player_id=player.player_id,
+        )
+        instance_id = instance.instance_id
+        setattr(player, "tutorial_instance_id", instance_id)  # noqa: B010  # Reason: SQLAlchemy column
+
+    first_room_id = instance_manager.get_first_room_id(instance_id)
+    if not first_room_id:
+        logger.warning("Tutorial instance has no rooms", instance_id=instance_id)
+        return None
+
+    setattr(player, "current_room_id", first_room_id)  # noqa: B010  # Reason: SQLAlchemy column
+    if manager.async_persistence:
+        await manager.async_persistence.save_player(player)
+    return cast(str, first_room_id)
+
+
+def _get_instance_manager_from_manager(manager: Any) -> Any:
+    """Extract InstanceManager from ConnectionManager via app.container."""
+    app_state = getattr(manager, "app", None)
+    if not app_state:
+        return None
+    app_state = getattr(app_state, "state", None)
+    if not app_state:
+        return None
+    container = getattr(app_state, "container", None)
+    if not container:
+        return None
+    return getattr(container, "instance_manager", None)
+
+
 async def track_player_connected_impl(
     player_id: Any,
     player: Any,  # Player
@@ -119,7 +179,9 @@ async def track_player_connected_impl(
         manager.mark_player_seen(player_id)
 
         if is_new_connection:
-            room_id = _resolve_room_id(player, manager)
+            room_id = await _resolve_room_id_for_tutorial_reconnect(player, manager)
+            if not room_id:
+                room_id = _resolve_room_id(player, manager)
             if room_id:
                 await handle_new_connection_setup(player_id, player, room_id, manager)
             logger.info("Player presence tracked as connected (new connection)", player_id=player_id)

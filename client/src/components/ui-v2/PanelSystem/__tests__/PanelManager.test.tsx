@@ -122,6 +122,9 @@ describe('PanelManager', () => {
     it('should handle corrupted localStorage data gracefully', () => {
       localStorageMock.setItem('mythosmud-ui-v2-panel-layout', 'invalid-json');
 
+      // Suppress expected console.warn from loadPanelLayout catch (invalid JSON)
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
       const { result } = renderHook(() => usePanelManager(), { wrapper });
 
       // Should initialize with default panels (empty in this case)
@@ -129,6 +132,8 @@ describe('PanelManager', () => {
         // Wait for useEffect
       });
       expect(result.current.panels).toEqual({});
+
+      warnSpy.mockRestore();
     });
 
     it('should update panel position', () => {

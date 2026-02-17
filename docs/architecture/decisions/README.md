@@ -24,6 +24,7 @@ Each ADR follows this structure:
 | [ADR-006](ADR-006-postgresql-primary-datastore.md)               | PostgreSQL as Primary Datastore                   | Accepted | 2026-02-02 |
 | [ADR-007](ADR-007-fastapi-async-await.md)                        | FastAPI with Async/Await                          | Accepted | 2026-02-02 |
 | [ADR-008](ADR-008-react-typescript-client.md)                    | React 18+ with TypeScript for Client              | Accepted | 2026-02-02 |
+| [ADR-009](ADR-009-instanced-rooms.md)                            | Instanced Rooms for Tutorial and Future Content   | Accepted | 2026-02-17 |
 
 ## Related Documentation
 

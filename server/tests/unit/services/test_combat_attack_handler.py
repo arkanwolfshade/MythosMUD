@@ -221,6 +221,49 @@ def test_apply_damage_player_grace_period_error(attack_handler, mock_target_play
         assert mock_target_player.current_dp == 30  # Damage applied
 
 
+def test_apply_damage_player_no_death_room_caps_damage(attack_handler, mock_target_player):
+    """Test _apply_damage caps damage in no_death rooms so player DP never goes below 0."""
+    mock_target_player.current_dp = 10
+    mock_combat = MagicMock(spec=CombatInstance)
+    mock_combat.room_id = "tutorial_room_001"
+
+    with patch("server.async_persistence.get_async_persistence") as mock_get_persist:
+        mock_persistence = MagicMock()
+        mock_room = MagicMock()
+        mock_room.attributes = {"no_death": True}
+        mock_persistence.get_room_by_id.return_value = mock_room
+        mock_get_persist.return_value = mock_persistence
+
+        old_dp, died, mortally_wounded = attack_handler._apply_damage(mock_target_player, 50, mock_combat)
+
+        # Damage capped to 10 (only enough to bring to 0), no death
+        assert old_dp == 10
+        assert mock_target_player.current_dp == 0
+        assert died is False
+        assert mortally_wounded is True
+
+
+def test_apply_damage_player_no_death_room_zero_damage_when_at_zero(attack_handler, mock_target_player):
+    """Test _apply_damage in no_death room when player already at 0 DP - no further damage."""
+    mock_target_player.current_dp = 0
+    mock_combat = MagicMock(spec=CombatInstance)
+    mock_combat.room_id = "tutorial_room_001"
+
+    with patch("server.async_persistence.get_async_persistence") as mock_get_persist:
+        mock_persistence = MagicMock()
+        mock_room = MagicMock()
+        mock_room.attributes = {"no_death": True}
+        mock_persistence.get_room_by_id.return_value = mock_room
+        mock_get_persist.return_value = mock_persistence
+
+        old_dp, died, mortally_wounded = attack_handler._apply_damage(mock_target_player, 50, mock_combat)
+
+        assert old_dp == 0
+        assert mock_target_player.current_dp == 0
+        assert died is False
+        assert mortally_wounded is False
+
+
 @pytest.mark.asyncio
 async def test_apply_attack_damage(attack_handler, mock_combat, mock_target_player):
     """Test apply_attack_damage applies damage and updates combat."""

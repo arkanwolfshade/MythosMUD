@@ -5543,6 +5543,12 @@
             "title": "Profession Id",
             "description": "Profession ID",
             "default": 0
+          },
+          "start_in_tutorial": {
+            "type": "boolean",
+            "title": "Start In Tutorial",
+            "description": "Start in tutorial instance (per-player)",
+            "default": true
           }
         },
         "type": "object",

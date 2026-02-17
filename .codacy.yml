@@ -138,7 +138,7 @@ ignore_patterns:
   # - DO blocks for verification (not data queries)
   - pattern_id: "sql:RAC_TABLE_REQUIRED"
     file_paths:
-      - "db/migrations/020_migrate_weekday_names.sql"
+      - "data/db/migrations/11_migrate_weekday_names.sql"
   # Semgrep: RAC table access - internal verification/migration scripts that do not use RAC_ prefix
   # Exclude scripts that run one-off migrations or verification (not production data access).
   - pattern_id: "Semgrep_codacy.generic.sql.rac-table-access"
@@ -146,6 +146,7 @@ ignore_patterns:
       - "scripts/verify_*.py"
       - "scripts/apply_*.py"
       - "db/migrations/*.sql"
+      - "data/db/migrations/*.sql"
   # Semgrep: Python random - game mechanics (dice rolls, stat generation) where crypto is not required
   # Suppress for server/game/ and server/npc/ per Codacy PR feedback.
   - pattern_id: "Semgrep_python_random_rule-random"

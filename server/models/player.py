@@ -94,6 +94,8 @@ class Player(Base):
     respawn_room_id: Mapped[str | None] = mapped_column(
         String(length=100), nullable=True, default="earth_arkhamcity_sanitarium_room_foyer_001"
     )  # Player's respawn location (NULL = use default)
+    # Instanced rooms: when set, player is in tutorial instance; cleared on exit
+    tutorial_instance_id: Mapped[str | None] = mapped_column(String(length=255), nullable=True, default=None)
     experience_points: Mapped[int] = mapped_column(Integer(), default=0, nullable=False)
     level: Mapped[int] = mapped_column(Integer(), default=1, nullable=False)
 

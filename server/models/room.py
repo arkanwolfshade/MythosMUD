@@ -56,6 +56,7 @@ class Room:  # pylint: disable=too-many-instance-attributes  # Reason: Room requ
         self.environment = room_data.get("resolved_environment", "outdoors")
         self.exits = room_data.get("exits", {})
         self.rest_location: bool = room_data.get("rest_location", False)
+        self.attributes: dict[str, Any] = dict(room_data.get("attributes", {}) or {})
 
         # Containers in this room (loaded from PostgreSQL)
         self._containers: list[Any] = room_data.get("containers", [])

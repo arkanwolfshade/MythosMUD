@@ -142,6 +142,7 @@ async def test_track_player_connected_impl_new_connection():
     player_id = uuid.uuid4()
     mock_player = MagicMock()
     mock_player.current_room_id = "room_123"
+    mock_player.tutorial_instance_id = None  # Skip tutorial reconnect path
     mock_manager = MagicMock()
     mock_manager.online_players = {}
     mock_manager.player_websockets = {player_id: ["conn_1"]}
@@ -151,7 +152,9 @@ async def test_track_player_connected_impl_new_connection():
     mock_room.id = "room_123"
     mock_manager.async_persistence.get_room_by_id = MagicMock(return_value=mock_room)
 
-    with patch("server.realtime.player_presence_tracker.handle_new_connection_setup") as mock_setup:
+    with patch(
+        "server.realtime.player_presence_tracker.handle_new_connection_setup", new_callable=AsyncMock
+    ) as mock_setup:
         with patch("server.realtime.player_presence_tracker.get_player_position", return_value="standing"):
             with patch("server.realtime.player_presence_tracker.extract_player_name", return_value="TestPlayer"):
                 with patch("server.realtime.player_presence_tracker.logger") as mock_logger:
@@ -189,12 +192,15 @@ async def test_track_player_connected_impl_no_room_id():
     player_id = uuid.uuid4()
     mock_player = MagicMock()
     del mock_player.current_room_id
+    mock_player.tutorial_instance_id = None  # Skip tutorial reconnect path
     mock_manager = MagicMock()
     mock_manager.online_players = {}
     mock_manager.player_websockets = {player_id: ["conn_1"]}
     mock_manager.mark_player_seen = MagicMock()
 
-    with patch("server.realtime.player_presence_tracker.handle_new_connection_setup") as mock_setup:
+    with patch(
+        "server.realtime.player_presence_tracker.handle_new_connection_setup", new_callable=AsyncMock
+    ) as mock_setup:
         with patch("server.realtime.player_presence_tracker.get_player_position", return_value="standing"):
             with patch("server.realtime.player_presence_tracker.extract_player_name", return_value="TestPlayer"):
                 await track_player_connected_impl(player_id, mock_player, "websocket", mock_manager)

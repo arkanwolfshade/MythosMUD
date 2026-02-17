@@ -58,7 +58,7 @@ $env:PGPASSWORD = $plainPassword
 # Get migration file path
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $projectRoot = Split-Path -Parent $scriptDir
-$migrationFile = Join-Path $projectRoot "db\migrations\022_heal_self_heal_other_rename.sql"
+$migrationFile = Join-Path $projectRoot "data\db\migrations\10_heal_self_heal_other_rename.sql"
 
 if (-not (Test-Path $migrationFile)) {
     Write-Host "[ERROR] Migration file not found: $migrationFile" -ForegroundColor Red
@@ -82,7 +82,7 @@ if ($DryRun) {
 }
 
 # Apply migration
-Write-Host "[INFO] Applying migration: 022_heal_self_heal_other_rename.sql" -ForegroundColor Yellow
+Write-Host "[INFO] Applying migration: 10_heal_self_heal_other_rename.sql" -ForegroundColor Yellow
 Write-Host ""
 
 try {
@@ -107,12 +107,12 @@ try {
             Write-Host "[WARNING] Migration completed but had warnings:" -ForegroundColor Yellow
             Write-Host $stderrContent -ForegroundColor Yellow
         }
-        Write-Host "[OK] Migration 022 applied successfully" -ForegroundColor Green
+        Write-Host "[OK] Migration 10 (heal_self/heal_other rename) applied successfully" -ForegroundColor Green
         Write-Host "[INFO] Verifying spells..." -ForegroundColor Yellow
         $verifyResult = & $psqlPath -h $DbHost -p $Port -U $User -d $Database -c "SELECT spell_id, name FROM spells WHERE spell_id IN ('heal_self','heal_other') ORDER BY spell_id;" 2>&1
         Write-Host $verifyResult
         Write-Host ""
-        Write-Host "[SUCCESS] Migration 022 completed!" -ForegroundColor Green
+        Write-Host "[SUCCESS] Migration 10 (heal_self/heal_other rename) completed!" -ForegroundColor Green
     }
     else {
         Write-Host "[ERROR] Migration failed with exit code $exitCode" -ForegroundColor Red
