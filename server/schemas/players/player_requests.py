@@ -17,6 +17,7 @@ class CreateCharacterRequest(BaseModel):
     name: str = Field(..., min_length=1, max_length=50, description="Character name")
     stats: dict[str, Any] = Field(..., description="Character stats dictionary")
     profession_id: int = Field(default=0, ge=0, description="Profession ID")
+    start_in_tutorial: bool = Field(default=True, description="Start in tutorial instance (per-player)")
 
     @field_validator("name")
     @classmethod

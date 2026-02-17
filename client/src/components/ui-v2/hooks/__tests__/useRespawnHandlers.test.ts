@@ -2,8 +2,8 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useRespawnHandlers } from '../useRespawnHandlers';
 
-// Mock dependencies
-vi.mock('../../../utils/logger', () => ({
+// Mock logger so error-path tests do not write to stderr (same module as useRespawnHandlers)
+vi.mock('@/utils/logger', () => ({
   logger: {
     info: vi.fn(),
     error: vi.fn(),

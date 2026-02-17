@@ -51,6 +51,7 @@ class MovementService:
         player_combat_service: "PlayerCombatService | None" = None,
         async_persistence: "AsyncPersistenceLayer | None" = None,
         exploration_service: Any | None = None,
+        instance_manager: Any | None = None,
     ) -> None:
         """
         Initialize the movement service.
@@ -60,11 +61,13 @@ class MovementService:
             player_combat_service: Optional PlayerCombatService for combat state checking
             async_persistence: Optional AsyncPersistenceLayer instance (required for persistence operations)
             exploration_service: Optional ExplorationService for tracking room exploration
+            instance_manager: Optional InstanceManager for tutorial exit handling
         """
         self._event_bus = event_bus
         if async_persistence is None:
             raise ValueError("async_persistence is required for MovementService")
         self._persistence = async_persistence
+        self._instance_manager = instance_manager
         self._lock = threading.RLock()
         self._logger = get_logger("MovementService")
         self._player_combat_service = player_combat_service
@@ -215,6 +218,25 @@ class MovementService:
         db_write_end = time.time()
         timing_breakdown["db_write_ms"] = (db_write_end - db_write_start) * 1000
 
+    async def _handle_tutorial_exit_if_applicable(self, player: Any, to_room_id: str) -> None:
+        """If player exited tutorial instance (moved to fixed exit room), clear and destroy instance."""
+        if not self._instance_manager:
+            return
+        instance_id = getattr(player, "tutorial_instance_id", None)
+        if not instance_id:
+            return
+        exit_room_id = self._instance_manager.get_exit_room_id(instance_id)
+        if to_room_id != exit_room_id:
+            return
+        setattr(player, "tutorial_instance_id", None)  # noqa: B010  # Reason: SQLAlchemy column
+        await self._persistence.save_player(player)
+        self._instance_manager.destroy_instance(instance_id)
+        self._logger.info(
+            "Tutorial exit: cleared instance",
+            player_id=player.player_id,
+            instance_id=instance_id,
+        )
+
     def _mark_room_explored(self, resolved_player_id: uuid.UUID | str, to_room_id: str) -> None:
         """Mark destination room as explored (non-blocking)."""
         try:
@@ -328,6 +350,9 @@ class MovementService:
 
                 self._execute_room_transfer(from_room, to_room, resolved_player_id, timing_breakdown)
                 await self._persist_player_location(player, to_room_id, timing_breakdown)
+
+                # Tutorial exit: if player left instance and entered fixed exit room, clear and destroy
+                await self._handle_tutorial_exit_if_applicable(player, to_room_id)
 
                 duration_ms = (time.time() - start_time) * 1000
                 timing_breakdown["total_ms"] = duration_ms

@@ -26,6 +26,7 @@ if TYPE_CHECKING:
 logger = get_logger(__name__)
 
 GAME_ATTRS = (
+    "instance_manager",
     "movement_service",
     "follow_service",
     "party_service",
@@ -47,6 +48,7 @@ GAME_ATTRS = (
 class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public-methods
     """Game services: movement, player, room, user, container, caches, temporal, items."""
 
+    instance_manager: Any = None
     movement_service: Any = None
     follow_service: Any = None
     party_service: Any = None
@@ -84,10 +86,19 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
         from server.services.exploration_service import ExplorationService
 
         self.exploration_service = ExplorationService(database_manager=database_manager)
+        from server.game.instance_manager import InstanceManager
+
+        instance_manager = InstanceManager(
+            room_cache=async_persistence._room_cache,  # pylint: disable=protected-access  # Reason: InstanceManager needs shared room cache reference for template lookup
+            event_bus=event_bus,
+        )
+        async_persistence.set_instance_manager(instance_manager)
+        self.instance_manager = instance_manager
         self.movement_service = MovementService(
             event_bus=event_bus,
             async_persistence=async_persistence,
             exploration_service=self.exploration_service,
+            instance_manager=instance_manager,
         )
         from server.game.follow_service import FollowService
         from server.services.player_position_service import PlayerPositionService
@@ -168,7 +179,10 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
         from server.game.room_service import RoomService
         from server.services.user_manager import UserManager
 
-        self.player_service = PlayerService(persistence=persistence)
+        self.player_service = PlayerService(
+            persistence=persistence,
+            instance_manager=self.instance_manager,
+        )
         self.room_service = RoomService(persistence=persistence)
 
         user_management_dir = get_environment_data_dir(normalized_environment) / "user_management"

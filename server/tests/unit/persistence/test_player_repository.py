@@ -22,7 +22,11 @@ from server.persistence.repositories.player_repository import PlayerRepository
 @pytest.fixture
 def player_repository():
     """Create a PlayerRepository instance."""
-    room_cache = {"arkham_square": MagicMock(), "room1": MagicMock()}
+    room_cache = {
+        "arkham_square": MagicMock(),
+        "room1": MagicMock(),
+        "earth_arkhamcity_sanitarium_room_foyer_001": MagicMock(),  # Fallback room
+    }
     # Reason: Using MagicMock for Room objects in tests - compatible at runtime
     return PlayerRepository(room_cache=room_cache)  # type: ignore[arg-type]
 
@@ -87,7 +91,7 @@ def test_validate_and_fix_player_room_invalid(player_repository, mock_player):
     result = player_repository.validate_and_fix_player_room(mock_player)
 
     assert result is True
-    assert mock_player.current_room_id == "arkham_square"
+    assert mock_player.current_room_id == "earth_arkhamcity_sanitarium_room_foyer_001"
 
 
 @pytest.mark.asyncio

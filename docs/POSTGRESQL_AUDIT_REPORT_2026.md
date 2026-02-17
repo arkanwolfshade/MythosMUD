@@ -50,13 +50,13 @@ The codebase shows strong adherence to many PostgreSQL best practices (explicit 
 
 ### 3.1. Explicit Joins (GOOD)
 
-**Status:** Compliant. No implicit comma joins found in SQL or application code. `server/async_persistence.py` uses explicit `LEFT JOIN` in `_query_rooms_with_exits_async`; `db/migrations/022_heal_self_heal_other_rename.sql` uses `FROM spells AS s` with subqueries.
+**Status:** Compliant. No implicit comma joins found in SQL or application code. `server/async_persistence.py` uses explicit `LEFT JOIN` in `_query_rooms_with_exits_async`; `data/db/migrations/10_heal_self_heal_other_rename.sql` uses `FROM spells AS s` with subqueries.
 
 ### 3.2. `NOT IN` Avoidance
 
 | File | Location | Issue | Rule | Impact |
 |------|----------|-------|------|--------|
-| `db/migrations/020_migrate_weekday_names.sql` | line 44 | `OR day_value NOT IN ('Monday', 'Tuesday', ...)` | §2.3: Prefer `NOT EXISTS` or `LEFT JOIN ... IS NULL` over `NOT IN` | **Low** |
+| `data/db/migrations/11_migrate_weekday_names.sql` | line 44 | `OR day_value NOT IN ('Monday', 'Tuesday', ...)` | §2.3: Prefer `NOT EXISTS` or `LEFT JOIN ... IS NULL` over `NOT IN` | **Low** |
 
 **Context:** `NOT IN` here is against a literal list, not a subquery. The `NULL`-semantics issue applies when the subquery can return NULL. Risk is low but the pattern could be refactored for consistency (e.g. `day_value NOT IN (...)` → `day_value NOT IN (SELECT unnest(...))` or `day_value NOT IN (...)` → `NOT (day_value = ANY(...))`).
 
@@ -198,7 +198,7 @@ No `timestamp without time zone` usage found.
 
 ### Low Priority
 
-6. **`db/migrations/020_migrate_weekday_names.sql`** — Refactor `NOT IN` to `NOT EXISTS` or `IN` + `NOT` for consistency.
+6. **`data/db/migrations/11_migrate_weekday_names.sql`** — Refactor `NOT IN` to `NOT EXISTS` or `IN` + `NOT` for consistency.
 7. **`db/authoritative_schema.sql`** — Review quoted `"position"` column; consider renaming to avoid reserved-word conflict.
 8. **`scripts/apply_container_migrations.py`**, **`server/alembic/versions/2025_11_25_normalize_container_schema.py`** — Replace `SELECT * FROM jsonb_array_elements(...)` with explicit column list if desired for strict compliance.
 

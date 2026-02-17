@@ -323,12 +323,14 @@ async def create_character_with_stats(
         starting_room_id = player_service.get_default_starting_room(requested_room_id)
 
         # Create player with stats
+        start_in_tutorial = getattr(request_data, "start_in_tutorial", True)
         player = await player_service.create_player_with_stats(
             name=request_data.name,
             stats=stats_obj,
             profession_id=request_data.profession_id,
             starting_room_id=starting_room_id,
             user_id=current_user.id,
+            start_in_tutorial=start_in_tutorial,
         )
 
         # Note: Invite codes are now marked as used during registration, not during character creation

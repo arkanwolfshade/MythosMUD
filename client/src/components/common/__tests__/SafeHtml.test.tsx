@@ -103,7 +103,8 @@ describe('SafeHtml', () => {
   });
 
   it('should sanitize iframe tags', () => {
-    const maliciousHtml = '<iframe src="evil.com"></iframe><p>Safe</p>';
+    // Use about:blank to avoid happy-dom resolving relative URLs and attempting fetch to localhost
+    const maliciousHtml = '<iframe src="about:blank"></iframe><p>Safe</p>';
     const { container } = render(<SafeHtml html={maliciousHtml} />);
 
     expect(container.querySelector('iframe')).toBeNull();

@@ -55,6 +55,12 @@ global.IntersectionObserver = vi.fn().mockImplementation(() => ({
 // Mock scrollIntoView for DOM elements
 Element.prototype.scrollIntoView = vi.fn();
 
+// Default fetch mock: avoids happy-dom's AsyncTaskManager so unmocked fetches (e.g. from
+// components that fetch on mount) do not run after the frame is destroyed. Tests that need
+// specific fetch behavior can override with vi.spyOn(global, 'fetch').mockResolvedValue(...).
+const defaultFetchMock = vi.fn().mockImplementation(() => Promise.resolve(new Response('{}', { status: 200 })));
+globalThis.fetch = defaultFetchMock;
+
 // Mock console methods to reduce noise in tests
 const originalError = console.error;
 const originalWarn = console.warn;

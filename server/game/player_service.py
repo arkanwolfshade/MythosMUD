@@ -41,6 +41,7 @@ class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-pu
         combat_service: Any = None,
         player_combat_service: Any = None,
         item_prototype_registry: Any = None,
+        instance_manager: Any = None,
     ) -> None:
         """Initialize the player service with a persistence layer and optional combat service and prototype registry."""
         self.persistence = persistence
@@ -50,7 +51,9 @@ class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-pu
         self._schema_converter = PlayerSchemaConverter(
             persistence, player_combat_service, item_prototype_registry=item_prototype_registry
         )
-        self._creation_service = PlayerCreationService(persistence, self._schema_converter)
+        self._creation_service = PlayerCreationService(
+            persistence, self._schema_converter, instance_manager=instance_manager
+        )
         self._search_service = PlayerSearchService(self)
         self._state_service = PlayerStateService(persistence)
         self._respawn_wrapper = PlayerRespawnWrapper(persistence)
@@ -66,6 +69,7 @@ class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-pu
         profession_id: int = 0,
         starting_room_id: str = "earth_arkhamcity_sanitarium_room_foyer_001",
         user_id: uuid.UUID | None = None,
+        start_in_tutorial: bool = True,
     ) -> PlayerRead:
         """
         Create a new player character.
@@ -75,6 +79,7 @@ class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-pu
             profession_id: The profession ID for the character (default: 0 for Tramp)
             starting_room_id: The room ID where the player starts
             user_id: Optional user ID (will be generated if not provided)
+            start_in_tutorial: If True, start in tutorial instance (per-player)
 
         Returns:
             PlayerRead: The created player data
@@ -82,7 +87,9 @@ class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-pu
         Raises:
             ValueError: If player name already exists
         """
-        return await self._creation_service.create_player(name, profession_id, starting_room_id, user_id)
+        return await self._creation_service.create_player(
+            name, profession_id, starting_room_id, user_id, start_in_tutorial
+        )
 
     def get_default_starting_room(self, requested_room_id: str | None = None) -> str:
         """
@@ -115,6 +122,7 @@ class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-pu
         profession_id: int = 0,
         starting_room_id: str = "earth_arkhamcity_sanitarium_room_foyer_001",
         user_id: uuid.UUID | None = None,
+        start_in_tutorial: bool = True,
     ) -> PlayerRead:
         """
         Create a new player character with specific stats.
@@ -125,6 +133,7 @@ class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-pu
             profession_id: The profession ID for the character (default: 0 for Tramp)
             starting_room_id: The room ID where the player starts
             user_id: Optional user ID (will be generated if not provided)
+            start_in_tutorial: If True, start in tutorial instance (per-player)
 
         Returns:
             PlayerRead: The created player data
@@ -133,7 +142,7 @@ class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-pu
             ValueError: If player name already exists
         """
         return await self._creation_service.create_player_with_stats(
-            name, stats, profession_id, starting_room_id, user_id
+            name, stats, profession_id, starting_room_id, user_id, start_in_tutorial
         )
 
     async def get_player_by_id(self, player_id: uuid.UUID) -> PlayerRead | None:

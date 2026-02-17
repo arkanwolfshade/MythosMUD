@@ -108,6 +108,11 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
             None
         )  # ItemRepository handles None persistence layer by using sync persistence internally if needed
         self._player_effect_repo = PlayerEffectRepository()
+        self._instance_manager: Any = None
+
+    def set_instance_manager(self, instance_manager: Any) -> None:
+        """Set the instance manager for instanced room lookup (instance-first)."""
+        self._instance_manager = instance_manager
 
     async def _ensure_room_cache_loaded(self) -> None:
         """
@@ -589,6 +594,7 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
                 if isinstance(attributes, dict)
                 else "outdoors",
                 "exits": exits,
+                "attributes": attributes if isinstance(attributes, dict) else {},
             }
 
             result_container["rooms"][room_id] = Room(room_data, self._event_bus)
@@ -682,12 +688,15 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
 
     def get_room_by_id(self, room_id: str) -> "Room | None":
         """
-        Get a room by ID from the cache. Delegates to RoomRepository.
+        Get a room by ID. Checks instance manager first, then cache.
 
-        Note: This is a synchronous method for backward compatibility.
-        The room cache is loaded lazily on first async access via warmup_room_cache()
-        or when async methods are called.
+        Instanced room IDs (instance_*) are looked up via InstanceManager.
+        Static rooms are resolved from the room cache.
         """
+        if self._instance_manager and room_id and room_id.startswith("instance_"):
+            inst_room = self._instance_manager.get_room_by_id(room_id)
+            if inst_room is not None:
+                return cast("Room", inst_room)
         return self._room_repo.get_room_by_id(room_id)
 
     async def warmup_room_cache(self) -> None:

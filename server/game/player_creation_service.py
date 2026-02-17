@@ -21,13 +21,46 @@ if TYPE_CHECKING:
 logger = get_logger(__name__)
 
 
+# Tutorial template ID for instanced rooms
+TUTORIAL_TEMPLATE_ID = "tutorial_sanitarium"
+
+
 class PlayerCreationService:
     """Service for player creation operations."""
 
-    def __init__(self, persistence: Any, schema_converter: Any) -> None:
-        """Initialize with persistence layer and schema converter."""
+    def __init__(self, persistence: Any, schema_converter: Any, instance_manager: Any = None) -> None:
+        """Initialize with persistence layer, schema converter, and optional instance manager."""
         self.persistence = persistence
         self._schema_converter = schema_converter
+        self._instance_manager = instance_manager
+
+    def _resolve_tutorial_start_room(
+        self, player_id: uuid.UUID, starting_room_id: str, start_in_tutorial: bool
+    ) -> tuple[str, str | None]:
+        """
+        Resolve starting room and tutorial instance ID.
+
+        For tutorial players, returns the stable_id of the tutorial bedroom (not the instanced ID).
+        The stable_id is saved to the database and resolved to the instance on load/reconnect.
+
+        Returns:
+            Tuple of (effective_starting_room_id (stable_id for tutorial), tutorial_instance_id or None)
+        """
+        if not start_in_tutorial or not self._instance_manager:
+            return starting_room_id, None
+        try:
+            instance = self._instance_manager.create_instance(TUTORIAL_TEMPLATE_ID, owner_player_id=player_id)
+            # Return the stable_id of the tutorial bedroom, not the instanced room ID
+            # The stable_id is persistent and will be resolved to the instance on reconnect
+            tutorial_bedroom_stable_id = "earth_arkhamcity_sanitarium_room_tutorial_bedroom_001"
+            return tutorial_bedroom_stable_id, instance.instance_id
+        except (ValueError, AttributeError) as e:
+            logger.warning(
+                "Failed to create tutorial instance, using default starting room",
+                error=str(e),
+                template_id=TUTORIAL_TEMPLATE_ID,
+            )
+        return starting_room_id, None
 
     async def create_player(
         self,
@@ -35,6 +68,7 @@ class PlayerCreationService:
         profession_id: int = 0,
         starting_room_id: str = "earth_arkhamcity_sanitarium_room_foyer_001",
         user_id: uuid.UUID | None = None,
+        start_in_tutorial: bool = True,
     ) -> PlayerRead:
         """
         Create a new player character.
@@ -81,18 +115,27 @@ class PlayerCreationService:
         from datetime import UTC
 
         current_time = datetime.datetime.now(UTC).replace(tzinfo=None)
-        # Generate UUID for player_id - Player model now uses UUID type
+        player_id = uuid.uuid4()
+
+        effective_starting_room_id, tutorial_instance_id = self._resolve_tutorial_start_room(
+            player_id, starting_room_id, start_in_tutorial
+        )
+
         player = Player(
-            player_id=uuid.uuid4(),
+            player_id=player_id,
             user_id=user_id,
             name=name,
-            current_room_id=starting_room_id,
+            current_room_id=effective_starting_room_id,
             profession_id=profession_id,
             experience_points=0,
             level=1,
             created_at=current_time,
             last_active=current_time,
         )
+        if tutorial_instance_id:
+            player.tutorial_instance_id = tutorial_instance_id
+            # Set respawn_room_id to tutorial bedroom for tutorial players
+            player.respawn_room_id = "earth_arkhamcity_sanitarium_room_tutorial_bedroom_001"
 
         # Save player to persistence
         await self.persistence.save_player(player)
@@ -108,6 +151,7 @@ class PlayerCreationService:
         profession_id: int = 0,
         starting_room_id: str = "earth_arkhamcity_sanitarium_room_foyer_001",
         user_id: uuid.UUID | None = None,
+        start_in_tutorial: bool = True,
     ) -> PlayerRead:
         """
         Create a new player character with specific stats.
@@ -171,18 +215,27 @@ class PlayerCreationService:
         from datetime import UTC
 
         current_time = datetime.datetime.now(UTC).replace(tzinfo=None)
-        # Generate UUID for player_id - Player model now uses UUID type
+        player_id = uuid.uuid4()
+
+        effective_starting_room_id, tutorial_instance_id = self._resolve_tutorial_start_room(
+            player_id, starting_room_id, start_in_tutorial
+        )
+
         player = Player(
-            player_id=uuid.uuid4(),
+            player_id=player_id,
             user_id=user_id,
             name=name,
-            current_room_id=starting_room_id,
+            current_room_id=effective_starting_room_id,
             profession_id=profession_id,
             experience_points=0,
             level=1,
             created_at=current_time,
             last_active=current_time,
         )
+        if tutorial_instance_id:
+            player.tutorial_instance_id = tutorial_instance_id
+            # Set respawn_room_id to tutorial bedroom for tutorial players
+            player.respawn_room_id = "earth_arkhamcity_sanitarium_room_tutorial_bedroom_001"
 
         # Set the player's stats
         if hasattr(stats, "model_dump"):

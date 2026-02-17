@@ -1128,6 +1128,7 @@ CREATE TABLE public.players (
     status_effects text DEFAULT '[]'::text CONSTRAINT players_new_status_effects_not_null NOT NULL,
     current_room_id character varying(255) DEFAULT 'earth_arkhamcity_sanitarium_room_foyer_001'::character varying CONSTRAINT players_new_current_room_id_not_null NOT NULL,
     respawn_room_id character varying(100) DEFAULT 'earth_arkhamcity_sanitarium_room_foyer_001'::character varying,
+    tutorial_instance_id character varying(255),
     experience_points integer DEFAULT 0 CONSTRAINT players_new_experience_points_not_null NOT NULL,
     level integer DEFAULT 1 CONSTRAINT players_new_level_not_null NOT NULL,
     is_admin integer DEFAULT 0 CONSTRAINT players_new_is_admin_not_null NOT NULL,

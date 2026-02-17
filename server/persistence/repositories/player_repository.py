@@ -75,19 +75,70 @@ class PlayerRepository:
         Note: This is synchronous as it only accesses the in-memory cache.
         When the room cache is empty we cannot validate; do not overwrite the player's
         room (avoids breaking combat melee when cache has not yet loaded).
+        Instanced rooms (starting with 'instance_') are managed by InstanceManager
+        and should not be validated against the static room cache.
+        Tutorial bedroom stable_id is also valid for players with tutorial_instance_id.
         """
         if not self._room_cache:
             return False
+        # Skip validation for instanced rooms - they're managed by InstanceManager
+        if player.current_room_id and player.current_room_id.startswith("instance_"):
+            return False
+        # Skip validation for tutorial bedroom if player has tutorial_instance_id
+        # The tutorial bedroom is a template room that gets instanced
+        if player.current_room_id == "earth_arkhamcity_sanitarium_room_tutorial_bedroom_001" and getattr(
+            player, "tutorial_instance_id", None
+        ):
+            return False
         if player.current_room_id not in self._room_cache:
-            self._logger.warning(
-                "Player in invalid room, moving to Arkham Square",
+            # Use Main Foyer as fallback (default starting room)
+            fallback_room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
+            # Prevent infinite loop: if fallback room is also not in cache, don't change
+            if fallback_room_id not in self._room_cache:
+                self._logger.debug(
+                    "Player in invalid room and fallback room not in cache, skipping fix",
+                    player_id=player.player_id,
+                    player_name=player.name,
+                    invalid_room_id=player.current_room_id,
+                    fallback_room_id=fallback_room_id,
+                )
+                return False
+            # Don't move if already at fallback room (prevents loop)
+            if player.current_room_id == fallback_room_id:
+                return False
+            self._logger.info(
+                "Player in invalid room, moving to Main Foyer",
                 player_id=player.player_id,
                 player_name=player.name,
                 invalid_room_id=player.current_room_id,
+                fallback_room_id=fallback_room_id,
             )
-            player.current_room_id = "arkham_square"
+            player.current_room_id = fallback_room_id
             return True
         return False
+
+    async def _validate_and_fix_player_room_with_persistence(self, player: Player, session: Any) -> bool:
+        """
+        Validate and fix player room, persisting the fix if needed.
+
+        Args:
+            player: Player to validate
+            session: SQLAlchemy session for persisting fixes
+
+        Returns:
+            bool: True if room was fixed and persisted, False if valid or not fixed
+        """
+        room_fixed = self.validate_and_fix_player_room(player)
+        if room_fixed:
+            # Persist the room fix immediately to prevent repeated warnings
+            await session.commit()
+            self._logger.debug(
+                "Fixed and persisted invalid room for player",
+                player_id=player.player_id,
+                player_name=player.name,
+                new_room_id=player.current_room_id,
+            )
+        return room_fixed
 
     @retry_with_backoff(max_attempts=3, initial_delay=1.0, max_delay=10.0)
     async def get_player_by_name(self, name: str) -> Player | None:
@@ -119,7 +170,7 @@ class PlayerRepository:
                 result = await session.execute(stmt)
                 player = result.scalar_one_or_none()
                 if player:
-                    self.validate_and_fix_player_room(player)
+                    await self._validate_and_fix_player_room_with_persistence(player, session)
                     result_player: Player | None = cast(Player | None, player)
                     return result_player
         except (DatabaseError, SQLAlchemyError) as e:
@@ -159,7 +210,7 @@ class PlayerRepository:
                 result = await session.execute(stmt)
                 player = result.scalar_one_or_none()
                 if player:
-                    self.validate_and_fix_player_room(player)
+                    await self._validate_and_fix_player_room_with_persistence(player, session)
                     result_player: Player | None = cast(Player | None, player)
                     return result_player
         except (DatabaseError, SQLAlchemyError) as e:
@@ -197,9 +248,9 @@ class PlayerRepository:
                 stmt = select(Player).options(selectinload(Player.inventory_record)).where(Player.user_id == user_id)
                 result = await session.execute(stmt)
                 players = list(result.scalars().all())
-                # Validate and fix room for each player
+                # Validate and fix room for each player, persist fixes
                 for player in players:
-                    self.validate_and_fix_player_room(player)
+                    await self._validate_and_fix_player_room_with_persistence(player, session)
                 return players
         except (DatabaseError, SQLAlchemyError) as e:
             log_and_raise(
@@ -239,9 +290,9 @@ class PlayerRepository:
                 )
                 result = await session.execute(stmt)
                 players = list(result.scalars().all())
-                # Validate and fix room for each player
+                # Validate and fix room for each player, persist fixes
                 for player in players:
-                    self.validate_and_fix_player_room(player)
+                    await self._validate_and_fix_player_room_with_persistence(player, session)
                 return players
         except (DatabaseError, SQLAlchemyError) as e:
             log_and_raise(
@@ -336,9 +387,9 @@ class PlayerRepository:
                 stmt = select(Player)
                 result = await session.execute(stmt)
                 players = list(result.scalars().all())
-                # Validate and fix room for each player
+                # Validate and fix room for each player, persist fixes
                 for player in players:
-                    self.validate_and_fix_player_room(player)
+                    await self._validate_and_fix_player_room_with_persistence(player, session)
                 return players
         except (DatabaseError, SQLAlchemyError) as e:
             log_and_raise(
@@ -368,9 +419,9 @@ class PlayerRepository:
                 stmt = select(Player).where(Player.current_room_id == room_id)
                 result = await session.execute(stmt)
                 players = list(result.scalars().all())
-                # Validate and fix room for each player
+                # Validate and fix room for each player, persist fixes
                 for player in players:
-                    self.validate_and_fix_player_room(player)
+                    await self._validate_and_fix_player_room_with_persistence(player, session)
                 return players
         except (DatabaseError, SQLAlchemyError) as e:
             log_and_raise(
@@ -570,9 +621,9 @@ class PlayerRepository:
                 result = await session.execute(stmt)
                 players = list(result.scalars().all())
 
-                # Validate and fix room for each player
+                # Validate and fix room for each player, persist fixes
                 for player in players:
-                    self.validate_and_fix_player_room(player)
+                    await self._validate_and_fix_player_room_with_persistence(player, session)
 
                 self._logger.debug(
                     "Batch loaded players",

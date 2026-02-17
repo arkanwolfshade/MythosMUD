@@ -366,7 +366,8 @@ async def test_process_player_turn_fallback_to_basic_unarmed_damage_when_no_app(
     combat_turn_processor._combat_service.process_attack = AsyncMock()  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test assertion requires mock
     combat_turn_processor._combat_service.magic_service = None  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Ensure casting check does not skip autoattack
 
-    monkeypatch.setattr("server.services.combat_turn_processor.get_config", lambda: mock_config)
+    # Patch get_config where it is used: combat_turn_participant_actions (player turn runs there)
+    monkeypatch.setattr("server.services.combat_turn_participant_actions.get_config", lambda: mock_config)
     await combat_turn_processor._process_player_turn(mock_combat, player, 100)  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test requires direct access to protected method
 
     combat_turn_processor._combat_service.process_attack.assert_called_once()  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test assertion
@@ -418,7 +419,8 @@ async def test_process_player_turn_fallback_to_basic_unarmed_damage_when_no_play
     combat_turn_processor._combat_service.process_attack = AsyncMock()  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test assertion requires mock
     combat_turn_processor._combat_service.magic_service = None  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Ensure casting check does not skip autoattack
 
-    monkeypatch.setattr("server.services.combat_turn_processor.get_config", lambda: mock_config)
+    # Patch get_config where it is used: combat_turn_participant_actions (player turn runs there)
+    monkeypatch.setattr("server.services.combat_turn_participant_actions.get_config", lambda: mock_config)
     await combat_turn_processor._process_player_turn(mock_combat, player, 100)  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test requires direct access to protected method
 
     combat_turn_processor._combat_service.process_attack.assert_called_once()  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test assertion

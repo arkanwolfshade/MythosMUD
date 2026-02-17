@@ -307,6 +307,11 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
 
             room_id = player.current_room_id
 
+            # Tutorial and no_combat rooms: block combat
+            room = self._get_room_data(room_id)
+            if room and getattr(room, "attributes", {}) and room.attributes.get("no_combat"):
+                return {"result": "The cosmic forces forbid violence in this place."}
+
             # Resolve combat target
             target_match, target_error = await self._resolve_combat_target(player, target_name)
             if target_error:
