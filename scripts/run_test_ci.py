@@ -312,16 +312,16 @@ if IN_CI:
         check=True,
         env=env_serial,
     )
-    # Merge coverage and generate reports
+    # Merge coverage and generate reports (--keep before paths so it is not parsed as a path)
     coverage_serial = os.path.join(PROJECT_ROOT, ".coverage.serial")
     safe_run_static(
         python_exe,
         "-m",
         "coverage",
         "combine",
+        "--keep",
         os.path.join(PROJECT_ROOT, ".coverage"),
         coverage_serial,
-        "--keep",
         cwd=PROJECT_ROOT,
         check=True,
         env=env,
