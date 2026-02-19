@@ -548,7 +548,8 @@ function App() {
         setError('Character created, but failed to refresh character list. Please refresh the page.');
         // Reset character creation state to allow retry
         setSelectedProfession(undefined);
-        setCreationStep('stats');
+        setCreationStep(null);
+        setShowCharacterSelection(true);
         setShowCharacterSelection(false);
       }
     } catch (error) {
