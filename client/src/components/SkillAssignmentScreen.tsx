@@ -43,7 +43,7 @@ export const SkillAssignmentScreen: React.FC<SkillAssignmentScreenProps> = ({
 
   useEffect(() => {
     let cancelled = false;
-    (async () => {
+    void (async () => {
       try {
         const res = await fetch(`${baseUrl}/skills/`, {
           headers: { Authorization: `Bearer ${authToken}` },
@@ -177,7 +177,7 @@ export const SkillAssignmentScreen: React.FC<SkillAssignmentScreenProps> = ({
               <select
                 value={occupationSlots[i] ?? ''}
                 onChange={e => {
-                  setOccupationSlot(i, e.target.value ? Number(e.target.value) : null);
+                  void setOccupationSlot(i, e.target.value ? Number(e.target.value) : null);
                 }}
               >
                 <option value="">Select skill...</option>
@@ -203,7 +203,7 @@ export const SkillAssignmentScreen: React.FC<SkillAssignmentScreenProps> = ({
               <select
                 value={personalInterest[i] ?? ''}
                 onChange={e => {
-                  setPersonalSlot(i, e.target.value ? Number(e.target.value) : null);
+                  void setPersonalSlot(i, e.target.value ? Number(e.target.value) : null);
                 }}
               >
                 <option value="">Select skill...</option>

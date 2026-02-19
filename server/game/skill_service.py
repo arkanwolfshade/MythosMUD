@@ -69,33 +69,112 @@ class SkillService:
         values = sorted((s["value"] for s in occupation_slots), reverse=True)
         if values != sorted(OCCUPATION_VALUES, reverse=True):
             raise ValueError("occupation_slots must have exactly one 70, two 60, three 50, three 40")
+        occ_skill_ids = []
         for s in occupation_slots:
             skill_id = s.get("skill_id")
             if skill_id is None:
                 raise ValueError("occupation_slots entries must have skill_id")
+            occ_skill_ids.append(skill_id)
             skill = skills_by_id.get(skill_id)
             if not skill:
                 raise ValueError(f"Unknown skill_id {skill_id}")
             if not skill.allow_at_creation:
                 raise ValueError(f"Skill {skill.key} cannot be chosen in occupation (e.g. Cthulhu Mythos)")
+        if len(set(occ_skill_ids)) != 9:
+            raise ValueError("occupation_slots must have unique skill_id per slot (no duplicate skills)")
 
     def _validate_personal_interest(
         self,
         personal_interest: list[dict[str, Any]],
         skills_by_id: dict[int, Skill],
     ) -> None:
-        """Require exactly 4 skill_ids; Cthulhu Mythos not allowed."""
+        """Require exactly 4 skill_ids; Cthulhu Mythos not allowed; all skill_ids unique."""
         if len(personal_interest) != 4:
             raise ValueError(f"personal_interest must have exactly 4 entries, got {len(personal_interest)}")
+        pers_skill_ids = []
         for entry in personal_interest:
             skill_id = entry.get("skill_id")
             if skill_id is None:
                 raise ValueError("personal_interest entries must have skill_id")
+            pers_skill_ids.append(skill_id)
             skill = skills_by_id.get(skill_id)
             if not skill:
                 raise ValueError(f"Unknown skill_id {skill_id}")
             if not skill.allow_at_creation:
                 raise ValueError(f"Skill {skill.key} cannot be chosen in personal interest (e.g. Cthulhu Mythos)")
+        if len(set(pers_skill_ids)) != 4:
+            raise ValueError("personal_interest must have unique skill_id per slot (no duplicate skills)")
+
+    def _validate_no_overlap(
+        self,
+        occupation_slots: list[dict[str, Any]],
+        personal_interest: list[dict[str, Any]],
+    ) -> None:
+        """Raise ValueError if any skill_id appears in both occupation and personal interest."""
+        occ_ids = {s["skill_id"] for s in occupation_slots}
+        pers_ids = {e["skill_id"] for e in personal_interest}
+        overlap = occ_ids & pers_ids
+        if overlap:
+            raise ValueError(
+                "Occupation and personal interest must not share any skill (each skill in at most one category)"
+            )
+
+    def _build_profession_mod_by_key(
+        self,
+        skill_mods: list[dict[str, Any]],
+        skills: list[Skill],
+    ) -> dict[str, int]:
+        """Build skill_key -> total modifier from profession skill_modifiers (supports skill_key or skill_id)."""
+        mod_by_key: dict[str, int] = {}
+        for m in skill_mods:
+            key = m.get("skill_key") or m.get("skill_id")
+            if isinstance(key, int):
+                key = next((s.key for s in skills if s.id == key), None)
+            if key:
+                mod_by_key[key] = mod_by_key.get(key, 0) + int(m.get("value", 0))
+        return mod_by_key
+
+    def _compute_final_skill_values(
+        self,
+        skills: list[Skill],
+        skills_by_id: dict[int, Skill],
+        skills_by_key: dict[str, Skill],
+        mod_by_key: dict[str, int],
+        occupation_slots: list[dict[str, Any]],
+        personal_interest: list[dict[str, Any]],
+        stats_for_edu: int,
+    ) -> dict[int, int]:
+        """
+        Compute final skill_id -> value: base + profession mod, then occupation overlay, personal overlay, Own Language.
+        """
+        final: dict[int, int] = {}
+        for skill in skills:
+            base = skill.base_value
+            delta = mod_by_key.get(skill.key, 0)
+            final[skill.id] = max(0, min(MAX_SKILL_VALUE, base + delta))
+
+        for slot in occupation_slots:
+            sid = slot["skill_id"]
+            val = slot["value"]
+            delta = mod_by_key.get(skills_by_id[sid].key, 0)
+            final[sid] = max(0, min(MAX_SKILL_VALUE, val + delta))
+
+        for entry in personal_interest:
+            sid = entry["skill_id"]
+            skill = skills_by_id[sid]
+            base = skill.base_value
+            delta = mod_by_key.get(skill.key, 0)
+            final[sid] = max(0, min(MAX_SKILL_VALUE, base + PERSONAL_INTEREST_BONUS + delta))
+
+        own_lang = skills_by_key.get(OWN_LANGUAGE_KEY)
+        if own_lang:
+            in_occupation = own_lang.id in {s["skill_id"] for s in occupation_slots}
+            in_personal = own_lang.id in {e["skill_id"] for e in personal_interest}
+            if not in_occupation and not in_personal:
+                delta = mod_by_key.get(OWN_LANGUAGE_KEY, 0)
+                final[own_lang.id] = max(0, min(MAX_SKILL_VALUE, stats_for_edu + delta))
+
+        return final
 
     async def validate_skills_payload(
         self,
@@ -112,6 +191,7 @@ class SkillService:
         skills_by_id = {s.id: s for s in skills}
         self._validate_occupation_slots(occupation_slots, skills_by_id)
         self._validate_personal_interest(personal_interest, skills_by_id)
+        self._validate_no_overlap(occupation_slots, personal_interest)
         profession = await self._persistence.get_profession_by_id(profession_id)
         if not profession:
             raise ValueError(f"Profession {profession_id} not found")
@@ -139,52 +219,23 @@ class SkillService:
 
         self._validate_occupation_slots(occupation_slots, skills_by_id)
         self._validate_personal_interest(personal_interest, skills_by_id)
+        self._validate_no_overlap(occupation_slots, personal_interest)
 
         profession = await self._persistence.get_profession_by_id(profession_id)
         if not profession:
             raise ValueError(f"Profession {profession_id} not found")
 
-        # Build base: every skill with base_value gets base + profession modifier
-        skill_mods = profession.get_skill_modifiers()
-        mod_by_key: dict[str, int] = {}
-        for m in skill_mods:
-            key = m.get("skill_key") or m.get("skill_id")
-            if isinstance(key, int):
-                key = next((s.key for s in skills if s.id == key), None)
-            if key:
-                mod_by_key[key] = mod_by_key.get(key, 0) + int(m.get("value", 0))
+        mod_by_key = self._build_profession_mod_by_key(profession.get_skill_modifiers(), skills)
+        final = self._compute_final_skill_values(
+            skills,
+            skills_by_id,
+            skills_by_key,
+            mod_by_key,
+            occupation_slots,
+            personal_interest,
+            stats_for_edu,
+        )
 
-        final: dict[int, int] = {}
-        for skill in skills:
-            base = skill.base_value
-            delta = mod_by_key.get(skill.key, 0)
-            final[skill.id] = max(0, min(MAX_SKILL_VALUE, base + delta))
-
-        # Overlay occupation slots
-        for slot in occupation_slots:
-            sid = slot["skill_id"]
-            val = slot["value"]
-            delta = mod_by_key.get(skills_by_id[sid].key, 0)
-            final[sid] = max(0, min(MAX_SKILL_VALUE, val + delta))
-
-        # Overlay personal interest (base + 20)
-        for entry in personal_interest:
-            sid = entry["skill_id"]
-            skill = skills_by_id[sid]
-            base = skill.base_value
-            delta = mod_by_key.get(skill.key, 0)
-            final[sid] = max(0, min(MAX_SKILL_VALUE, base + PERSONAL_INTEREST_BONUS + delta))
-
-        # Own Language: if not allocated in occupation or personal, set to EDU
-        own_lang = skills_by_key.get(OWN_LANGUAGE_KEY)
-        if own_lang:
-            in_occupation = own_lang.id in {s["skill_id"] for s in occupation_slots}
-            in_personal = own_lang.id in {e["skill_id"] for e in personal_interest}
-            if not in_occupation and not in_personal:
-                delta = mod_by_key.get(OWN_LANGUAGE_KEY, 0)
-                final[own_lang.id] = max(0, min(MAX_SKILL_VALUE, stats_for_edu + delta))
-
-        # Persist: replace all
         await self._player_skill_repo.delete_for_player(player_id)
         rows = list(final.items())
         await self._player_skill_repo.insert_many(player_id, rows)

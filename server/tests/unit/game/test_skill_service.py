@@ -66,6 +66,28 @@ def catalog_with_own_language_and_mythos():
             allow_at_creation=True,
             category="physical",
         ),
+        Skill(id=6, key="skill_6", name="Skill 6", description="", base_value=0, allow_at_creation=True, category=""),
+        Skill(id=7, key="skill_7", name="Skill 7", description="", base_value=0, allow_at_creation=True, category=""),
+        Skill(id=8, key="skill_8", name="Skill 8", description="", base_value=0, allow_at_creation=True, category=""),
+        Skill(id=9, key="skill_9", name="Skill 9", description="", base_value=0, allow_at_creation=True, category=""),
+        Skill(
+            id=10, key="skill_10", name="Skill 10", description="", base_value=0, allow_at_creation=True, category=""
+        ),
+        Skill(
+            id=11, key="skill_11", name="Skill 11", description="", base_value=0, allow_at_creation=True, category=""
+        ),
+        Skill(
+            id=12, key="skill_12", name="Skill 12", description="", base_value=0, allow_at_creation=True, category=""
+        ),
+        Skill(
+            id=13, key="skill_13", name="Skill 13", description="", base_value=0, allow_at_creation=True, category=""
+        ),
+        Skill(
+            id=14, key="skill_14", name="Skill 14", description="", base_value=0, allow_at_creation=True, category=""
+        ),
+        Skill(
+            id=15, key="skill_15", name="Skill 15", description="", base_value=0, allow_at_creation=True, category=""
+        ),
     ]
 
 
@@ -115,23 +137,23 @@ def skill_service(mock_skill_repo, mock_player_skill_repo, mock_skill_use_log_re
 
 
 def _occupation_slots_9():
-    """Valid 9 slots: one 70, two 60, three 50, three 40. Use skill ids 1,2,5 (no own_language)."""
+    """Valid 9 slots: one 70, two 60, three 50, three 40; 9 distinct skill_ids (no overlap with personal)."""
     return [
         {"skill_id": 1, "value": 70},
         {"skill_id": 2, "value": 60},
         {"skill_id": 5, "value": 60},
-        {"skill_id": 2, "value": 50},
-        {"skill_id": 1, "value": 50},
-        {"skill_id": 5, "value": 50},
-        {"skill_id": 1, "value": 40},
-        {"skill_id": 2, "value": 40},
-        {"skill_id": 5, "value": 40},
+        {"skill_id": 6, "value": 50},
+        {"skill_id": 7, "value": 50},
+        {"skill_id": 8, "value": 50},
+        {"skill_id": 9, "value": 40},
+        {"skill_id": 10, "value": 40},
+        {"skill_id": 11, "value": 40},
     ]
 
 
 def _personal_interest_4():
-    """Four personal interest (skill_ids only). Exclude own_language so we test EDU."""
-    return [{"skill_id": 1}, {"skill_id": 2}, {"skill_id": 5}, {"skill_id": 1}]
+    """Four personal interest (skill_ids only); distinct and no overlap with occupation. Exclude own_language for EDU."""
+    return [{"skill_id": 12}, {"skill_id": 13}, {"skill_id": 14}, {"skill_id": 15}]
 
 
 @pytest.mark.asyncio
@@ -139,7 +161,7 @@ async def test_get_skills_catalog_returns_list(skill_service, mock_skill_repo):
     """get_skills_catalog returns list of skill dicts."""
     result = await skill_service.get_skills_catalog()
     assert isinstance(result, list)
-    assert len(result) == 5
+    assert len(result) == 15
     assert result[0]["id"] == 1
     assert result[0]["key"] == "accounting"
     assert result[0]["base_value"] == 5
@@ -174,7 +196,7 @@ async def test_set_player_skills_valid_creates_rows(
     assert call_args[0][0] == player_id
     rows = call_args[0][1]
     assert isinstance(rows, list)
-    assert len(rows) == 5
+    assert len(rows) == 15
     skill_ids = {r[0] for r in rows}
     assert 3 in skill_ids
     for row in rows:
@@ -243,7 +265,7 @@ async def test_set_player_skills_cthulhu_mythos_in_personal_rejected(
     mock_profession.get_skill_modifiers = MagicMock(return_value=[])
     mock_persistence.get_profession_by_id = AsyncMock(return_value=mock_profession)
 
-    personal = [{"skill_id": 1}, {"skill_id": 2}, {"skill_id": 5}, {"skill_id": 4}]
+    personal = [{"skill_id": 12}, {"skill_id": 13}, {"skill_id": 14}, {"skill_id": 4}]
 
     with pytest.raises(ValueError, match="cannot be chosen in personal interest"):
         await skill_service.set_player_skills(
@@ -302,6 +324,64 @@ async def test_set_player_skills_personal_interest_not_four_raises(skill_service
             player_id=uuid.uuid4(),
             occupation_slots=_occupation_slots_9(),
             personal_interest=[{"skill_id": 1}],
+            profession_id=1,
+            stats_for_edu=65,
+        )
+
+
+@pytest.mark.asyncio
+async def test_set_player_skills_duplicate_occupation_skill_ids_raises(skill_service, mock_persistence):
+    """occupation_slots with duplicate skill_id raises ValueError."""
+    mock_profession = MagicMock()
+    mock_profession.get_skill_modifiers = MagicMock(return_value=[])
+    mock_persistence.get_profession_by_id = AsyncMock(return_value=mock_profession)
+
+    slots = _occupation_slots_9()
+    slots[1] = {"skill_id": 1, "value": 60}
+
+    with pytest.raises(ValueError, match="unique skill_id per slot"):
+        await skill_service.set_player_skills(
+            player_id=uuid.uuid4(),
+            occupation_slots=slots,
+            personal_interest=_personal_interest_4(),
+            profession_id=1,
+            stats_for_edu=65,
+        )
+
+
+@pytest.mark.asyncio
+async def test_set_player_skills_duplicate_personal_skill_ids_raises(skill_service, mock_persistence):
+    """personal_interest with duplicate skill_id raises ValueError."""
+    mock_profession = MagicMock()
+    mock_profession.get_skill_modifiers = MagicMock(return_value=[])
+    mock_persistence.get_profession_by_id = AsyncMock(return_value=mock_profession)
+
+    personal = [{"skill_id": 12}, {"skill_id": 13}, {"skill_id": 14}, {"skill_id": 12}]
+
+    with pytest.raises(ValueError, match="unique skill_id per slot"):
+        await skill_service.set_player_skills(
+            player_id=uuid.uuid4(),
+            occupation_slots=_occupation_slots_9(),
+            personal_interest=personal,
+            profession_id=1,
+            stats_for_edu=65,
+        )
+
+
+@pytest.mark.asyncio
+async def test_set_player_skills_overlap_occupation_and_personal_raises(skill_service, mock_persistence):
+    """Occupation and personal interest sharing a skill_id raises ValueError."""
+    mock_profession = MagicMock()
+    mock_profession.get_skill_modifiers = MagicMock(return_value=[])
+    mock_persistence.get_profession_by_id = AsyncMock(return_value=mock_profession)
+
+    personal_with_overlap = [{"skill_id": 12}, {"skill_id": 13}, {"skill_id": 14}, {"skill_id": 1}]
+
+    with pytest.raises(ValueError, match="must not share any skill"):
+        await skill_service.set_player_skills(
+            player_id=uuid.uuid4(),
+            occupation_slots=_occupation_slots_9(),
+            personal_interest=personal_with_overlap,
             profession_id=1,
             stats_for_edu=65,
         )
