@@ -131,7 +131,7 @@ def _apply_stat_modifiers(stats_dict: dict[str, Any], modifiers: list[dict[str, 
     for m in modifiers:
         stat_name = m.get("stat")
         delta = m.get("value", 0)
-        if stat_name and isinstance(delta, (int, float)):
+        if stat_name and isinstance(delta, int | float):
             current = result.get(stat_name)
             if current is not None:
                 result[stat_name] = max(1, min(99, int(current) + int(delta)))

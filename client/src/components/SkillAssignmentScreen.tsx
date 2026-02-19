@@ -177,7 +177,7 @@ export const SkillAssignmentScreen: React.FC<SkillAssignmentScreenProps> = ({
               <select
                 value={occupationSlots[i] ?? ''}
                 onChange={e => {
-                  void setOccupationSlot(i, e.target.value ? Number(e.target.value) : null);
+                  setOccupationSlot(i, e.target.value ? Number(e.target.value) : null);
                 }}
               >
                 <option value="">Select skill...</option>
@@ -203,7 +203,7 @@ export const SkillAssignmentScreen: React.FC<SkillAssignmentScreenProps> = ({
               <select
                 value={personalInterest[i] ?? ''}
                 onChange={e => {
-                  void setPersonalSlot(i, e.target.value ? Number(e.target.value) : null);
+                  setPersonalSlot(i, e.target.value ? Number(e.target.value) : null);
                 }}
               >
                 <option value="">Select skill...</option>
