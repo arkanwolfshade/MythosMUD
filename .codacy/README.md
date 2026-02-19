@@ -21,6 +21,7 @@ The following Codacy CLI commands will **overwrite** this file and remove manual
 **Node Version**: 24.11.0 (matches project Node version from .nvmrc)
 
 **Lizard Tool**: Manually added for NLOC and complexity analysis (`lizard@1.17.31`)
+
 - **Tools** (aligned with MythosMUD Codacy coding standard):
   - `bandit@1.7.8` - Python security analysis
   - `eslint@9.39.1` - JavaScript/TypeScript linting (ESLint 9)
@@ -66,7 +67,6 @@ If this file is modified by Codacy extension or CLI:
 3. **Restore from git**: `git checkout .codacy/codacy.yaml`
 
 4. **Verify tools**: Ensure all tools from the MythosMUD Codacy coding standard are present:
-
    - `lizard@1.17.31`, `semgrep`, `eslint@9.39.1`, `ruff`, `bandit`, `pylint`
 
    - `hadolint`, `jackson-linter`, `markdownlint`, `psscriptanalyzer`
@@ -84,3 +84,32 @@ If the file keeps getting modified:
 2. Disable Codacy extension entirely if not needed
 3. Check for any scripts or CI/CD that might run `codacy-cli config discover`
 4. Review extension logs for Codacy-related activity
+
+## 🪟 Codacy CLI on Windows (WSL)
+
+Codacy CLI v2 supports **Windows via WSL only** (see [codacy/codacy-cli-v2](https://github.com/codacy/codacy-cli-v2)).
+
+**Install (one-time):**
+
+1. Open a **WSL terminal** (e.g. Ubuntu from the Start menu).
+2. Run the official installer:
+
+   ```bash
+   bash <(curl -Ls https://raw.githubusercontent.com/codacy/codacy-cli-v2/main/codacy-cli.sh)
+   ```
+
+3. Add the CLI to your shell so `codacy-cli` is available in future sessions. Either paste the block from `.codacy/wsl-bashrc-codacy.sh` into `~/.bashrc`, or run:
+
+   ```bash
+   sed 's/\r$//' /mnt/e/projects/GitHub/MythosMUD/.codacy/wsl-bashrc-codacy.sh >> ~/.bashrc
+   ```
+
+4. Start a **new** WSL terminal (or run `source ~/.bashrc`), then run:
+
+   ```bash
+   codacy-cli version
+   ```
+
+**Note:** The alias/PATH in `.bashrc` runs only in **interactive** WSL sessions. From PowerShell, run Codacy via WSL, e.g.:
+
+`wsl ~/.cache/codacy/codacy-cli-v2/<version>/codacy-cli-v2 analyze` (replace `<version>` with the folder name under `~/.cache/codacy/codacy-cli-v2/`).

@@ -8,11 +8,11 @@ This document describes the architectural improvements made to the MythosMUD Fas
 
 ### 1. Service Layer Pattern Implementation
 
-#### Purpose
+#### Service Layer Purpose
 
 The service layer pattern separates business logic from API endpoints, improving code organization, testability, and maintainability.
 
-#### Implementation
+#### Service Layer Implementation
 
 **PlayerService**: Handles all player-related business logic
 
@@ -20,7 +20,7 @@ The service layer pattern separates business logic from API endpoints, improving
 
 **Location**: `server/game/player_service.py`, `server/game/room_service.py`
 
-#### Key Features
+#### Service Layer Key Features
 
 Business logic extraction from API endpoints
 
@@ -28,7 +28,7 @@ Business logic extraction from API endpoints
 - Consistent data transformation
 - Improved testability through dependency injection
 
-#### Example Usage
+#### Service Layer Example Usage
 
 ```python
 # Before (business logic in API endpoint)
@@ -60,11 +60,11 @@ async def create_player(
 
 ### 2. Dependency Injection System
 
-#### Purpose
+#### Dependency Injection Purpose
 
 FastAPI's dependency injection system provides clean separation of concerns and improved testability.
 
-#### Implementation
+#### Dependency Injection Implementation
 
 **Dependency Functions**: `server/dependencies.py`
 
@@ -72,7 +72,7 @@ FastAPI's dependency injection system provides clean separation of concerns and 
 
 **Request-based Injection**: Services receive persistence layer from request context
 
-#### Key Features
+#### Dependency Injection Key Features
 
 Automatic service instantiation
 
@@ -80,7 +80,7 @@ Automatic service instantiation
 - Easy testing with mock injection
 - Type-safe dependency resolution
 
-#### Example Usage
+#### Dependency Injection Example Usage
 
 ```python
 from server.dependencies import PlayerServiceDep
@@ -95,11 +95,11 @@ async def get_player(
 
 ### 3. Async Operations Implementation
 
-#### Purpose
+#### Async Operations Purpose
 
 Converting synchronous operations to async improves performance and scalability by preventing blocking I/O operations.
 
-#### Implementation
+#### Async Operations Implementation
 
 **Async Route Handlers**: All I/O operations converted to async
 
@@ -107,7 +107,7 @@ Converting synchronous operations to async improves performance and scalability 
 
 **Async Persistence Layer**: Database operations wrapped with async interfaces
 
-#### Key Features
+#### Async Operations Key Features
 
 Non-blocking I/O operations
 
@@ -115,7 +115,7 @@ Non-blocking I/O operations
 - Better resource utilization
 - Scalable request processing
 
-#### Example Usage
+#### Async Operations Example Usage
 
 ```python
 # Before (synchronous)
@@ -134,20 +134,21 @@ async def list_players(player_service: PlayerService = PlayerServiceDep):
 
 ### 4. Comprehensive Middleware Stack
 
-#### Purpose
+#### Middleware Purpose
 
 Middleware provides cross-cutting concerns like security, logging, and CORS handling.
 
-#### Implementation
+#### Middleware Implementation
 
 **Security Headers Middleware**: Comprehensive security headers
 
 **CORS Middleware**: Configurable cross-origin resource sharing
 
 **Logging Middleware**: Request/response logging with structured data
+
 - **Error Handling Middleware**: Centralized error processing
 
-#### Key Features
+#### Middleware Key Features
 
 Environment-configurable settings
 
@@ -178,20 +179,21 @@ CORS_HEADERS = ["Content-Type", "Authorization", "X-Requested-With"]
 
 ### 5. Error Handling and Logging
 
-#### Purpose
+#### Error Handling Purpose
 
 Centralized error handling and comprehensive logging improve debugging and monitoring.
 
-#### Implementation
+#### Error Handling Implementation
 
 **LoggedHTTPException**: Structured error logging
 
 **Error Context**: Request context attached to errors
 
 **Structured Logging**: JSON-formatted log entries
+
 - **Error Recovery**: Graceful error handling
 
-#### Key Features
+#### Error Handling Key Features
 
 Contextual error information
 
@@ -199,7 +201,7 @@ Contextual error information
 - Error categorization
 - Request tracing
 
-#### Example Usage
+#### Error Handling Example Usage
 
 ```python
 try:
@@ -325,7 +327,7 @@ def create_app() -> FastAPI:
 
 ## Performance Improvements
 
-### 1. Async Operations
+### 1. Async Operations Performance
 
 **Non-blocking I/O**: Database operations don't block request processing
 
@@ -358,6 +360,7 @@ def create_app() -> FastAPI:
 **Strict Transport Security**: Enforces HTTPS
 
 **X-Frame-Options**: Prevents clickjacking
+
 - **X-Content-Type-Options**: Prevents MIME sniffing
 
 ### 2. Input Validation
@@ -368,7 +371,7 @@ def create_app() -> FastAPI:
 
 **Sanitization**: Input sanitization at service layer
 
-### 3. Error Handling
+### 3. Security Error Handling
 
 **Information Disclosure Prevention**: Errors don't leak sensitive information
 
@@ -483,7 +486,7 @@ Keep business logic in service layer
 - Implement proper error handling
 - Write comprehensive tests
 
-### 2. Async Operations
+### 2. Async Operations Best Practices
 
 Use async for all I/O operations
 
@@ -491,7 +494,7 @@ Use async for all I/O operations
 - Handle async errors properly
 - Test async functionality thoroughly
 
-### 3. Error Handling
+### 3. Error Handling Best Practices
 
 Use structured error responses
 
@@ -556,6 +559,9 @@ Key benefits:
 **Testability**: Comprehensive test coverage
 
 **Performance**: Async operations and optimized middleware
+
+**Performance**: Async operations and optimized middleware
+
 - **Security**: Comprehensive security headers and validation
 - **Observability**: Structured logging and monitoring
 - **Scalability**: Non-blocking I/O and efficient resource usage

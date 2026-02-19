@@ -3,12 +3,14 @@
 # These warnings are informational - package-lock.json locks exact versions
 
 # Exclude paths from analysis
+# data/ is the mythosmud_data git submodule (Main (Integration)/data) - excluded from Codacy
 exclude_paths:
   - "**/node_modules/**"
   - "**/dist/**"
   - "**/build/**"
   - "**/mythosmud_data/**"
   - ".data/**"
+  - "data/**"
 
 # Ignore assert and hardcoded secrets in test files (Prospector_bandit B101/B106)
 # Assert and test passwords are standard in tests; bandit.yml skips them but Codacy
@@ -131,6 +133,12 @@ ignore_patterns:
   - pattern_id: "Pylint_consider-using-in"
     file_paths:
       - "scripts/run_test_ci.py"
+  # CSSLint: False positives from deprecated CSSLint tool (doesn't understand modern CSS Grid syntax)
+  # CSSLint is deprecated and flags valid modern CSS like repeat(auto-fit, minmax(...))
+  # Pattern for "Expected RBRACE" errors on valid CSS Grid syntax
+  - pattern_id: "CSSLint_errors"
+    file_paths:
+      - "client/src/**/*.css"
   # SQL: RAC_TABLE_REQUIRED false positives in migration file
   # Pattern for "All queries must target RAC_* tables" - false positives for:
   # - PostgreSQL configuration commands (SET)
