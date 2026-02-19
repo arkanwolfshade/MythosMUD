@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { vi } from 'vitest';
+import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ChatPanel } from '../panels/ChatPanel';
 
 // Mock the child components to isolate testing
@@ -192,7 +192,7 @@ describe('ChatPanel', () => {
     it('should render chat panel with correct structure', () => {
       render(<ChatPanel {...defaultProps} />);
 
-      expect(screen.getByText('Chat')).toBeInTheDocument();
+      expect(screen.getByRole('region', { name: 'Channel Selection' })).toBeInTheDocument();
       expect(screen.getByTestId('channel-selector')).toBeInTheDocument();
       expect(screen.getByText('Chat History')).toBeInTheDocument();
       expect(screen.getByText('Viewing: Local')).toBeInTheDocument();
@@ -542,7 +542,6 @@ describe('ChatPanel', () => {
       // Note: ChatPanel does not display connection status in statistics
       // The component shows channel selection and message counts, but not connection status
       // Connection status is handled at a higher level (GameTerminal)
-      expect(screen.getByText('Chat')).toBeInTheDocument();
       expect(screen.getByRole('region', { name: 'Channel Selection' })).toBeInTheDocument();
     });
   });

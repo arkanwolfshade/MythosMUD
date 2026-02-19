@@ -474,7 +474,6 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
       <div className="flex items-center justify-between p-3 border-b border-gray-700 bg-mythos-terminal-surface">
         <div className="flex items-center gap-2">
           <EldritchIcon name={MythosIcons.chat} size={20} variant="primary" />
-          <h3 className="text-mythos-terminal-primary font-bold">Chat</h3>
         </div>
         <div className="flex items-center gap-2">
           {onClearMessages && (

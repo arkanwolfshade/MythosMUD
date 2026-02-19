@@ -285,7 +285,7 @@ describe('CommandPanel with LogoutButton Integration', () => {
       render(<CommandPanel {...defaultProps} />);
 
       // Check that all sections are present in correct order
-      expect(screen.getByText('Commands')).toBeInTheDocument(); // Header
+      expect(screen.getByTestId('command-panel')).toBeInTheDocument(); // Panel container
       expect(screen.getByText('Recent Commands')).toBeInTheDocument(); // Command History
       // Note: Quick Commands section was removed - feature not implemented
       expect(screen.getByTestId('logout-button')).toBeInTheDocument(); // Logout Button
