@@ -1,37 +1,22 @@
-import React, { useState } from 'react';
-import { getErrorMessage, isErrorResponse } from '../utils/errorHandler.js';
+import React from 'react';
+import { useStatsRolling, type Stats } from '../hooks/useStatsRolling.js';
 import { logger } from '../utils/logger.js';
 import type { Profession } from './ProfessionCard.jsx';
-import { useStatsRolling, type Stats } from '../hooks/useStatsRolling.js';
 import './StatsRollingScreen.css';
 
-const SERVER_UNAVAILABLE_PATTERNS = [
-  'failed to fetch',
-  'network error',
-  'network request failed',
-  'connection refused',
-  'connection reset',
-  'connection closed',
-  'connection timeout',
-  'server is unavailable',
-  'service unavailable',
-  'bad gateway',
-  'gateway timeout',
-];
-
+/** Plan 10.6 F2: Stats-first flow; name and create-character happen on CharacterNameScreen. */
 interface StatsRollingScreenProps {
-  characterName?: string; // MULTI-CHARACTER: Made optional - character name is now entered by user
-  onStatsAccepted: (stats: Stats, characterName: string) => void;
+  onStatsAccepted: (stats: Stats) => void;
   onError: (error: string) => void;
   onBack?: () => void;
   baseUrl: string;
   authToken: string;
+  /** Optional: when set, roll uses profession for preview; when omitted, raw roll (stats-first step). */
   professionId?: number;
   profession?: Profession;
 }
 
 export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
-  characterName: initialCharacterName,
   onStatsAccepted,
   onError,
   onBack,
@@ -59,112 +44,15 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
     rollOnMount: true,
   });
 
-  // MULTI-CHARACTER: Character name is now entered by user
-  const [characterName, setCharacterName] = useState(initialCharacterName || '');
-  const [isCreatingCharacter, setIsCreatingCharacter] = useState(false);
-
-  const handleAcceptStats = async () => {
+  const handleAcceptStats = () => {
     if (!currentStats) {
       setError('No stats to accept');
       return;
     }
 
-    const trimmedName = characterName.trim();
-    if (!trimmedName) {
-      setError('Please enter a character name');
-      return;
-    }
-
-    setIsCreatingCharacter(true);
     setError('');
-
-    try {
-      const response = await fetch(`${baseUrl}/api/players/create-character`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${authToken}`,
-        },
-        body: JSON.stringify({
-          name: trimmedName,
-          stats: currentStats,
-          profession_id: professionId || 0,
-        }),
-      });
-
-      if (response.ok) {
-        const rawData: unknown = await response.json();
-        let playerId: string | undefined;
-        if (typeof rawData === 'object' && rawData !== null) {
-          const data = rawData as Record<string, unknown>;
-          playerId =
-            (typeof data.id === 'string' ? data.id : null) ||
-            (typeof data.player_id === 'string' ? data.player_id : undefined);
-        }
-        logger.info('StatsRollingScreen', 'Character created successfully', {
-          characterName: trimmedName,
-          playerId: playerId || 'unknown',
-        });
-        onStatsAccepted(currentStats, trimmedName);
-      } else if (response.status >= 500 && response.status < 600) {
-        const errorMessage = 'Server is unavailable. Please try again later.';
-        setError(errorMessage);
-        onError(errorMessage);
-        logger.error('StatsRollingScreen', 'Server unavailable when creating character', {
-          status: response.status,
-        });
-      } else {
-        let errorMessage = 'Failed to create character';
-        try {
-          const rawData: unknown = await response.json();
-          if (isErrorResponse(rawData)) {
-            errorMessage = getErrorMessage(rawData);
-          } else if (typeof rawData === 'object' && rawData !== null) {
-            const errorData = rawData as Record<string, unknown>;
-            if (errorData.detail) {
-              if (Array.isArray(errorData.detail)) {
-                errorMessage = (errorData.detail as Array<Record<string, unknown>>)
-                  .map((err: Record<string, unknown>) =>
-                    typeof err.msg === 'string'
-                      ? err.msg
-                      : typeof err.message === 'string'
-                        ? err.message
-                        : 'Validation error'
-                  )
-                  .join(', ');
-              } else if (typeof errorData.detail === 'object' && errorData.detail !== null) {
-                const detail = errorData.detail as Record<string, unknown>;
-                errorMessage = typeof detail.message === 'string' ? detail.message : 'Validation error';
-              } else if (typeof errorData.detail === 'string') {
-                errorMessage = errorData.detail;
-              }
-            }
-          }
-        } catch {
-          // Use default error message if JSON parsing fails
-        }
-        setError(errorMessage);
-        logger.error('StatsRollingScreen', 'Failed to create character', { error: errorMessage });
-      }
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : String(err);
-      const errorLower = errorMessage.toLowerCase();
-      if (SERVER_UNAVAILABLE_PATTERNS.some(pattern => errorLower.includes(pattern))) {
-        const unavailableMessage = 'Server is unavailable. Please try again later.';
-        setError(unavailableMessage);
-        onError(unavailableMessage);
-        logger.error('StatsRollingScreen', 'Server unavailable when creating character', {
-          error: errorMessage,
-        });
-      } else {
-        const connectMessage = 'Failed to connect to server';
-        setError(connectMessage);
-        onError(connectMessage);
-        logger.error('StatsRollingScreen', 'Network error creating character', { error: errorMessage });
-      }
-    } finally {
-      setIsCreatingCharacter(false);
-    }
+    logger.info('StatsRollingScreen', 'Stats accepted', { hasStats: true });
+    onStatsAccepted(currentStats);
   };
 
   if (isLoading && !currentStats) {
@@ -196,23 +84,6 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
     <div className="stats-rolling-screen" data-testid="stats-rolling-screen">
       <div className="stats-header">
         <h2>Character Creation</h2>
-        <div className="character-name-input-container">
-          <label htmlFor="character-name-input" className="character-name-label">
-            Character Name:
-          </label>
-          <input
-            id="character-name-input"
-            type="text"
-            value={characterName}
-            onChange={e => setCharacterName(e.target.value)}
-            placeholder="Enter your character's name"
-            maxLength={50}
-            minLength={1}
-            className="character-name-input"
-            disabled={isCreatingCharacter}
-          />
-          {characterName.trim() && <p className="character-name-preview">Preview: {characterName.trim()}</p>}
-        </div>
         {profession && (
           <div className="profession-display">
             <p className="profession-name">Profession: {profession.name}</p>
@@ -286,8 +157,8 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
           {isRerolling ? 'Rerolling...' : rerollCooldown > 0 ? `Reroll (${rerollCooldown}s)` : 'Reroll Stats'}
         </button>
 
-        <button onClick={handleAcceptStats} disabled={isCreatingCharacter} className="accept-button">
-          {isCreatingCharacter ? 'Creating Character...' : 'Accept Stats & Create Character'}
+        <button onClick={handleAcceptStats} className="accept-button">
+          Accept Stats
         </button>
       </div>
 

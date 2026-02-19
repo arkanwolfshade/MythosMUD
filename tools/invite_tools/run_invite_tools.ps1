@@ -25,12 +25,22 @@ param(
     [string]$Command,
 
     [Parameter(Mandatory = $false)]
-    [string]$InviteCode
+    [string]$InviteCode,
+
+    [Parameter(Mandatory = $false)]
+    [int]$Count = 100,
+
+    [Parameter(Mandatory = $false)]
+    [string]$Expires
 )
 
-# Set required environment variables
-$env:DATABASE_URL = "sqlite+aiosqlite:///./data/local/players/local_players.db"
-$env:MYTHOSMUD_SECRET_KEY = "dev-secret-key-for-invite-generation"
+# Use existing DATABASE_URL if set (e.g. PostgreSQL mythos_dev); otherwise default to SQLite
+if (-not $env:DATABASE_URL) {
+    $env:DATABASE_URL = "sqlite+aiosqlite:///./data/local/players/local_players.db"
+}
+if (-not $env:MYTHOSMUD_SECRET_KEY) {
+    $env:MYTHOSMUD_SECRET_KEY = "dev-secret-key-for-invite-generation"
+}
 
 # Get the script directory
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -43,7 +53,9 @@ switch ($Command) {
     }
     'generate_db' {
         Write-Host "Generating invite codes using generate_invites_db.py..." -ForegroundColor Green
-        python "$scriptDir\generate_invites_db.py"
+        $args = @("--count", $Count)
+        if ($Expires) { $args += "--expires"; $args += $Expires }
+        python "$scriptDir\generate_invites_db.py" @args
     }
     'check' {
         if (-not $InviteCode) {

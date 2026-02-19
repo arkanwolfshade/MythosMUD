@@ -84,6 +84,10 @@ test.describe('Local Channel Integration', () => {
     // Wait for confirmation on AW's side
     await waitForMessage(awContext.page, 'You say locally: Testing player management integration');
 
+    // Verify both players are still co-located before waiting for cross-player message
+    // Ithaqua may have left/disconnected between setup and message send
+    await ensurePlayersInSameRoom(contexts, 2, 10000);
+
     // Wait for message to appear on Ithaqua's side
     // Local channel format is: "{sender_name} (local): {content}"
     await waitForCrossPlayerMessage(

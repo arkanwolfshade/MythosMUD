@@ -30,42 +30,51 @@ test.describe('Administrative Set Stat Command', () => {
 
   test('AW should be able to set player stats', async () => {
     const awContext = contexts[0];
+    const ithaquaContext = contexts[1];
 
-    // AW sets Ithaqua's STR
-    await executeCommand(awContext.page, 'admin set STR Ithaqua 75');
+    // Server resolves target by character name; get Ithaqua's current character name
+    await ithaquaContext.page.getByTestId('current-character-name').waitFor({ state: 'visible', timeout: 10000 });
+    const ithaquaCharName =
+      (await ithaquaContext.page.getByTestId('current-character-name').textContent())?.trim() ?? 'Ithaqua';
 
-    // Wait for success message
-    await waitForMessage(awContext.page, 'Set Ithaqua', 10000).catch(() => {
-      // Message may succeed even if format differs
-    });
+    await executeCommand(awContext.page, `admin set STR ${ithaquaCharName} 75`);
 
-    // Verify success message appears
+    // Wait for success or permission-denied (server returns "You do not have permission" if issuer is not admin)
+    await waitForMessage(awContext.page, /Set .* (STR|strength)|do not have permission/, 10000).catch(() => {});
+
     const messages = await getMessages(awContext.page);
-    const seesSuccess = messages.some(msg => msg.includes('Set') || msg.includes('Ithaqua') || msg.includes('STR'));
+    const seesSuccess = messages.some(
+      msg => (msg.includes('Set') && (msg.includes('STR') || msg.includes('75'))) || msg.includes("'s STR")
+    );
+    const seesPermissionDenied = messages.some(msg => msg.includes('do not have permission'));
+    expect(
+      seesPermissionDenied,
+      "Admin set stat returned 'You do not have permission'. Ensure ArkanWolfshade's character has is_admin set in the test database."
+    ).toBe(false);
     expect(seesSuccess).toBe(true);
   });
 
   test('Ithaqua should not be able to set stats', async () => {
+    const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    // Ithaqua tries to set stats (should fail - not admin)
-    await executeCommand(ithaquaContext.page, 'admin set STR ArkanWolfshade 50');
+    // Target by character name so server finds the player and returns permission denied (not "not found")
+    await awContext.page.getByTestId('current-character-name').waitFor({ state: 'visible', timeout: 10000 });
+    const awCharName =
+      (await awContext.page.getByTestId('current-character-name').textContent())?.trim() ?? 'ArkanWolfshade';
 
-    // Wait for error message
-    await waitForMessage(ithaquaContext.page, 'You do not have permission', 10000).catch(() => {
-      // Error may not appear if message format differs
-    });
+    await executeCommand(ithaquaContext.page, `admin set STR ${awCharName} 50`);
 
-    // Verify error message appears
+    await waitForMessage(ithaquaContext.page, /do not have permission|not found/, 10000).catch(() => {});
+
     const messages = await ithaquaContext.page.evaluate(() => {
-      const messages = Array.from(document.querySelectorAll('[data-message-text]'));
-      return messages.map(msg => (msg.getAttribute('data-message-text') || '').trim());
+      const msgs = Array.from(document.querySelectorAll('[data-message-text]'));
+      return msgs.map(msg => (msg.getAttribute('data-message-text') || '').trim());
     });
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const _seesError = messages.some(
-      msg => msg.includes('permission') || msg.includes('admin') || msg.includes('not allowed')
+    const seesError = messages.some(
+      msg =>
+        msg.includes('permission') || msg.includes('admin') || msg.includes('not allowed') || msg.includes('not found')
     );
-    // This test verifies permission check exists
-    expect(messages.length).toBeGreaterThan(0);
+    expect(seesError).toBe(true);
   });
 });

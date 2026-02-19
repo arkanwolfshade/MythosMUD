@@ -111,7 +111,7 @@ Running 114 tests using 1 worker
 
 ## Test Credentials
 
-The E2E tests use these pre-seeded test players:
+The E2E tests use these test accounts. **Global setup runs `scripts/seed_e2e_users.py`** to create the TestAdmin auth user only (for character-creation E2E). ArkanWolfshade and Ithaqua must already exist; the seed does not create them. If you see 401 Invalid credentials for TestAdmin, run the seed once manually (see below).
 
 | Username       | Password | Role      | Player ID               |
 | -------------- | -------- | --------- | ----------------------- |
@@ -120,6 +120,8 @@ The E2E tests use these pre-seeded test players:
 | TestAdmin      | Cthulhu1 | Superuser | test-player-admin-001   |
 
 All players start in: `earth_arkhamcity_sanitarium_room_foyer_001`
+
+To seed E2E auth users manually (e.g. after resetting the E2E database): from project root run `uv run python scripts/seed_e2e_users.py`. Use the same `DATABASE_URL` as the server (e.g. set in `.env.e2e_test` or default `mythos_e2e`).
 
 ## Viewing Test Results
 

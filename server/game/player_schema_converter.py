@@ -135,30 +135,38 @@ class PlayerSchemaConverter:
 
         return stats, inventory, status_effects
 
-    def compute_derived_stats_fields(self, stats: dict[str, Any]) -> None:
-        """Compute derived stats fields (max_dp, max_magic_points, max_lucidity)."""
+    def compute_derived_stats_fields(self, stats: dict[str, Any]) -> dict[str, Any]:
+        """Compute derived stats fields (max_dp, max_magic_points, max_lucidity).
+
+        Returns a plain dict with computed fields. Caller should use the return value:
+        stats may be a SQLAlchemy MutableDict; mutating it in place can raise when
+        parent.obj() is None (e.g. during create-character before flush).
+        """
         try:
             import math
 
-            con = stats.get("constitution", 50)
-            siz = stats.get("size", 50)
-            pow_val = stats.get("power", 50)
-            edu = stats.get("education", 50)
+            # Work on a shallow copy to avoid mutating SQLAlchemy MutableDict when parent is None
+            out = dict(stats)
+            con = out.get("constitution", 50)
+            siz = out.get("size", 50)
+            pow_val = out.get("power", 50)
+            edu = out.get("education", 50)
 
-            if "max_dp" not in stats:
-                stats["max_dp"] = (con + siz) // 5
-            if "max_magic_points" not in stats:
-                stats["max_magic_points"] = math.ceil(pow_val * 0.2)
-            if "max_lucidity" not in stats:
-                stats["max_lucidity"] = edu
+            if "max_dp" not in out:
+                out["max_dp"] = (con + siz) // 5
+            if "max_magic_points" not in out:
+                out["max_magic_points"] = math.ceil(pow_val * 0.2)
+            if "max_lucidity" not in out:
+                out["max_lucidity"] = edu
 
             # Initialize magic_points to max if it's 0 (full MP at character creation)
-            if not stats.get("magic_points", 0) and stats.get("max_magic_points", 0) > 0:
-                stats["magic_points"] = stats["max_magic_points"]
+            if not out.get("magic_points", 0) and out.get("max_magic_points", 0) > 0:
+                out["magic_points"] = out["max_magic_points"]
             # Cap lucidity to max_lucidity if it exceeds max
-            max_lucidity_val = stats.get("max_lucidity", edu)
-            if stats.get("lucidity", 100) > max_lucidity_val:
-                stats["lucidity"] = max_lucidity_val
+            max_lucidity_val = out.get("max_lucidity", edu)
+            if out.get("lucidity", 100) > max_lucidity_val:
+                out["lucidity"] = max_lucidity_val
+            return out
         except (DatabaseError, AttributeError) as e:
             logger.error(
                 "Error adding computed fields to stats",
@@ -166,6 +174,7 @@ class PlayerSchemaConverter:
                 error=str(e),
                 exc_info=True,
             )
+            return dict(stats)
 
     def get_position_state(self, position_value: str | int, player_id: Any | None = None) -> PositionState:
         """Get PositionState from position value, with fallback to STANDING."""
@@ -194,7 +203,7 @@ class PlayerSchemaConverter:
         position_value = stats.get("position", PositionState.STANDING.value)
         position_state = self.get_position_state(position_value, getattr(player, "player_id", None))
 
-        self.compute_derived_stats_fields(stats)
+        stats = self.compute_derived_stats_fields(stats)
 
         # Convert dicts to typed models; enrich inventory items with weapon stats from prototype registry
         stats_model = Stats(**stats) if isinstance(stats, dict) else stats

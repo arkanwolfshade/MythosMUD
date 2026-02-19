@@ -100,83 +100,86 @@ describe('Stat Rolling with Profession Requirements Validation', () => {
     },
   ];
 
-  const setupBasicMocks = () => {
-    fetchSpy.mockImplementation(input => {
-      if (urlMatches(input, '/auth/register')) {
-        return Promise.resolve(
-          mockJsonResponse({
-            access_token: 'mock-token',
-            has_character: false,
-            character_name: '',
-          })
-        );
-      }
-      if (urlMatches(input, '/professions')) {
-        return Promise.resolve(mockJsonResponse({ professions: createMockProfessions() }));
-      }
-      if (urlMatches(input, '/players/create-character')) {
-        return Promise.resolve(
-          mockJsonResponse({
-            player: { id: 1, name: 'testuser', profession_id: 0 },
-          })
-        );
-      }
-      return Promise.reject(new Error('Unexpected URL'));
+  const mockLoginResponse = () =>
+    mockJsonResponse({
+      access_token: 'mock-token',
+      token_type: 'Bearer',
+      user_id: 'test-user-id',
+      characters: [],
     });
+
+  const createMockSkills = () =>
+    Array.from({ length: 20 }, (_, i) => ({
+      id: i + 1,
+      key: `skill_${i + 1}`,
+      name: `Skill ${i + 1}`,
+      base_value: 5 + (i % 50),
+      allow_at_creation: true,
+    }));
+
+  const mockCharactersList = () =>
+    mockJsonResponse([
+      {
+        player_id: 'char-1',
+        name: 'testuser',
+        profession_id: 0,
+        level: 1,
+        created_at: new Date().toISOString(),
+        last_active: new Date().toISOString(),
+      },
+    ]);
+
+  const fillSkillSlotsAndConfirm = async () => {
+    await waitFor(() => {
+      expect(screen.getByText('Skill Allocation')).toBeInTheDocument();
+    });
+    const comboboxes = screen.getAllByRole('combobox');
+    expect(comboboxes.length).toBeGreaterThanOrEqual(13);
+    for (let i = 0; i < 13; i++) {
+      fireEvent.change(comboboxes[i], { target: { value: String((i % 20) + 1) } });
+    }
+    fireEvent.click(screen.getByRole('button', { name: /Next: Name character/i }));
   };
 
   it('should roll stats that meet Scholar profession requirements', async () => {
-    setupBasicMocks();
-
     const statsResponse = mockJsonResponse({
       stats: {
         strength: 10,
         dexterity: 12,
         constitution: 11,
-        intelligence: 15, // Meets requirement (>= 14)
-        wisdom: 13, // Meets requirement (>= 12)
+        size: 55,
+        intelligence: 15,
+        power: 50,
+        education: 40,
         charisma: 9,
+        luck: 50,
       },
-      stat_summary: {
-        total: 70,
-        average: 11.67,
-        highest: 15,
-        lowest: 9,
-      },
+      stat_summary: { total: 70, average: 11.67, highest: 15, lowest: 9 },
       profession_id: 2,
       meets_requirements: true,
       method_used: '3d6',
     });
 
     fetchSpy.mockImplementation(input => {
-      if (urlMatches(input, '/auth/register')) {
-        return Promise.resolve(
-          mockJsonResponse({
-            access_token: 'mock-token',
-            has_character: false,
-            character_name: '',
-          })
-        );
-      }
+      if (urlMatches(input, '/auth/register')) return Promise.resolve(mockLoginResponse());
       if (urlMatches(input, '/professions')) {
         return Promise.resolve(mockJsonResponse({ professions: createMockProfessions() }));
       }
-      if (urlMatches(input, '/players/roll-stats')) {
-        return Promise.resolve(statsResponse);
+      if (urlMatches(input, '/players/roll-stats')) return Promise.resolve(statsResponse);
+      if (urlMatches(input, '/skills/')) {
+        return Promise.resolve(mockJsonResponse({ skills: createMockSkills() }));
       }
       if (urlMatches(input, '/players/create-character')) {
-        return Promise.resolve(
-          mockJsonResponse({
-            player: { id: 1, name: 'testuser', profession_id: 2 },
-          })
-        );
+        return Promise.resolve(mockJsonResponse({ player: { id: 1, name: 'testuser', profession_id: 2 } }));
+      }
+      if (urlMatches(input, '/players/characters') && !String(input).includes('create-character')) {
+        return Promise.resolve(mockCharactersList());
       }
       return Promise.reject(new Error('Unexpected URL'));
     });
 
     render(<App />);
 
-    // Register user
     const toggleButton = screen.getByText('Need an account? Register');
     fireEvent.click(toggleButton);
 
@@ -190,88 +193,73 @@ describe('Stat Rolling with Profession Requirements Validation', () => {
     fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
     fireEvent.click(registerButton);
 
-    // Select Scholar profession
+    await waitFor(() => {
+      expect(screen.getByText('Character Creation')).toBeInTheDocument();
+    });
+    expect(screen.getByText('Intelligence:')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText('Accept Stats'));
+
     await waitFor(() => {
       expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
     });
 
     const scholarCard = screen.getByText('Scholar').closest('.profession-card');
     fireEvent.click(scholarCard!);
+    fireEvent.click(screen.getByText('Next'));
 
-    const nextButton = screen.getByText('Next');
-    fireEvent.click(nextButton);
+    await fillSkillSlotsAndConfirm();
 
-    // Should show stats rolling screen
     await waitFor(() => {
-      expect(screen.getByText('Character Creation')).toBeInTheDocument();
+      expect(screen.getByPlaceholderText('Enter name')).toBeInTheDocument();
     });
+    fireEvent.change(screen.getByPlaceholderText('Enter name'), { target: { value: 'testuser' } });
+    fireEvent.click(screen.getByText('Create Character'));
 
-    // Should show stats that meet the requirements
-    expect(screen.getByText('Intelligence:')).toBeInTheDocument();
-    expect(screen.getByText('Wisdom:')).toBeInTheDocument();
-
-    // Accept stats and create character
-    const acceptButton = screen.getByText('Accept Stats & Create Character');
-    fireEvent.click(acceptButton);
-
-    // Should show game terminal
     await waitFor(() => {
       expect(screen.getByTestId('game-terminal')).toBeInTheDocument();
     });
   });
 
   it('should roll stats that meet Soldier profession requirements', async () => {
-    setupBasicMocks();
-
     const statsResponse = mockJsonResponse({
       stats: {
-        strength: 14, // Meets requirement (>= 13)
+        strength: 14,
         dexterity: 12,
-        constitution: 13, // Meets requirement (>= 12)
+        constitution: 13,
+        size: 55,
         intelligence: 10,
-        wisdom: 11,
+        power: 50,
+        education: 40,
         charisma: 9,
+        luck: 50,
       },
-      stat_summary: {
-        total: 69,
-        average: 11.5,
-        highest: 14,
-        lowest: 9,
-      },
+      stat_summary: { total: 69, average: 11.5, highest: 14, lowest: 9 },
       profession_id: 3,
       meets_requirements: true,
       method_used: '3d6',
     });
 
     fetchSpy.mockImplementation(input => {
-      if (urlMatches(input, '/auth/register')) {
-        return Promise.resolve(
-          mockJsonResponse({
-            access_token: 'mock-token',
-            has_character: false,
-            character_name: '',
-          })
-        );
-      }
+      if (urlMatches(input, '/auth/register')) return Promise.resolve(mockLoginResponse());
       if (urlMatches(input, '/professions')) {
         return Promise.resolve(mockJsonResponse({ professions: createMockProfessions() }));
       }
-      if (urlMatches(input, '/players/roll-stats')) {
-        return Promise.resolve(statsResponse);
+      if (urlMatches(input, '/players/roll-stats')) return Promise.resolve(statsResponse);
+      if (urlMatches(input, '/skills/')) {
+        return Promise.resolve(mockJsonResponse({ skills: createMockSkills() }));
       }
       if (urlMatches(input, '/players/create-character')) {
-        return Promise.resolve(
-          mockJsonResponse({
-            player: { id: 1, name: 'testuser', profession_id: 3 },
-          })
-        );
+        return Promise.resolve(mockJsonResponse({ player: { id: 1, name: 'testuser', profession_id: 3 } }));
+      }
+      if (urlMatches(input, '/players/characters') && !String(input).includes('create-character')) {
+        return Promise.resolve(mockCharactersList());
       }
       return Promise.reject(new Error('Unexpected URL'));
     });
 
     render(<App />);
 
-    // Register user
     const toggleButton = screen.getByText('Need an account? Register');
     fireEvent.click(toggleButton);
 
@@ -285,88 +273,74 @@ describe('Stat Rolling with Profession Requirements Validation', () => {
     fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
     fireEvent.click(registerButton);
 
-    // Select Soldier profession
+    await waitFor(() => {
+      expect(screen.getByText('Character Creation')).toBeInTheDocument();
+    });
+    expect(screen.getByText('Strength:')).toBeInTheDocument();
+    expect(screen.getByText('Constitution:')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText('Accept Stats'));
+
     await waitFor(() => {
       expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
     });
 
     const soldierCard = screen.getByText('Soldier').closest('.profession-card');
     fireEvent.click(soldierCard!);
+    fireEvent.click(screen.getByText('Next'));
 
-    const nextButton = screen.getByText('Next');
-    fireEvent.click(nextButton);
+    await fillSkillSlotsAndConfirm();
 
-    // Should show stats rolling screen
     await waitFor(() => {
-      expect(screen.getByText('Character Creation')).toBeInTheDocument();
+      expect(screen.getByPlaceholderText('Enter name')).toBeInTheDocument();
     });
+    fireEvent.change(screen.getByPlaceholderText('Enter name'), { target: { value: 'testuser' } });
+    fireEvent.click(screen.getByText('Create Character'));
 
-    // Should show stats that meet the requirements
-    expect(screen.getByText('Strength:')).toBeInTheDocument();
-    expect(screen.getByText('Constitution:')).toBeInTheDocument();
-
-    // Accept stats and create character
-    const acceptButton = screen.getByText('Accept Stats & Create Character');
-    fireEvent.click(acceptButton);
-
-    // Should show game terminal
     await waitFor(() => {
       expect(screen.getByTestId('game-terminal')).toBeInTheDocument();
     });
   });
 
   it('should roll stats that meet Detective profession requirements', async () => {
-    setupBasicMocks();
-
     const statsResponse = mockJsonResponse({
       stats: {
         strength: 10,
-        dexterity: 12, // Meets requirement (>= 11)
+        dexterity: 12,
         constitution: 11,
-        intelligence: 13, // Meets requirement (>= 12)
-        wisdom: 14, // Meets requirement (>= 13)
+        size: 55,
+        intelligence: 13,
+        power: 50,
+        education: 40,
         charisma: 9,
+        luck: 50,
       },
-      stat_summary: {
-        total: 69,
-        average: 11.5,
-        highest: 14,
-        lowest: 9,
-      },
+      stat_summary: { total: 69, average: 11.5, highest: 14, lowest: 9 },
       profession_id: 4,
       meets_requirements: true,
       method_used: '3d6',
     });
 
     fetchSpy.mockImplementation(input => {
-      if (urlMatches(input, '/auth/register')) {
-        return Promise.resolve(
-          mockJsonResponse({
-            access_token: 'mock-token',
-            has_character: false,
-            character_name: '',
-          })
-        );
-      }
+      if (urlMatches(input, '/auth/register')) return Promise.resolve(mockLoginResponse());
       if (urlMatches(input, '/professions')) {
         return Promise.resolve(mockJsonResponse({ professions: createMockProfessions() }));
       }
-      if (urlMatches(input, '/players/roll-stats')) {
-        return Promise.resolve(statsResponse);
+      if (urlMatches(input, '/players/roll-stats')) return Promise.resolve(statsResponse);
+      if (urlMatches(input, '/skills/')) {
+        return Promise.resolve(mockJsonResponse({ skills: createMockSkills() }));
       }
       if (urlMatches(input, '/players/create-character')) {
-        return Promise.resolve(
-          mockJsonResponse({
-            player: { id: 1, name: 'testuser', profession_id: 4 },
-          })
-        );
+        return Promise.resolve(mockJsonResponse({ player: { id: 1, name: 'testuser', profession_id: 4 } }));
+      }
+      if (urlMatches(input, '/players/characters') && !String(input).includes('create-character')) {
+        return Promise.resolve(mockCharactersList());
       }
       return Promise.reject(new Error('Unexpected URL'));
     });
 
     render(<App />);
 
-    // Register user
     const toggleButton = screen.getByText('Need an account? Register');
     fireEvent.click(toggleButton);
 
@@ -380,89 +354,75 @@ describe('Stat Rolling with Profession Requirements Validation', () => {
     fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
     fireEvent.click(registerButton);
 
-    // Select Detective profession
+    await waitFor(() => {
+      expect(screen.getByText('Character Creation')).toBeInTheDocument();
+    });
+    expect(screen.getByText('Intelligence:')).toBeInTheDocument();
+    expect(screen.getByText('Wisdom:')).toBeInTheDocument();
+    expect(screen.getByText('Dexterity:')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText('Accept Stats'));
+
     await waitFor(() => {
       expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
     });
 
     const detectiveCard = screen.getByText('Detective').closest('.profession-card');
     fireEvent.click(detectiveCard!);
+    fireEvent.click(screen.getByText('Next'));
 
-    const nextButton = screen.getByText('Next');
-    fireEvent.click(nextButton);
+    await fillSkillSlotsAndConfirm();
 
-    // Should show stats rolling screen
     await waitFor(() => {
-      expect(screen.getByText('Character Creation')).toBeInTheDocument();
+      expect(screen.getByPlaceholderText('Enter name')).toBeInTheDocument();
     });
+    fireEvent.change(screen.getByPlaceholderText('Enter name'), { target: { value: 'testuser' } });
+    fireEvent.click(screen.getByText('Create Character'));
 
-    // Should show stats that meet the requirements
-    expect(screen.getByText('Intelligence:')).toBeInTheDocument();
-    expect(screen.getByText('Wisdom:')).toBeInTheDocument();
-    expect(screen.getByText('Dexterity:')).toBeInTheDocument();
-
-    // Accept stats and create character
-    const acceptButton = screen.getByText('Accept Stats & Create Character');
-    fireEvent.click(acceptButton);
-
-    // Should show game terminal
     await waitFor(() => {
       expect(screen.getByTestId('game-terminal')).toBeInTheDocument();
     });
   });
 
   it('should handle stats that do not meet profession requirements', async () => {
-    setupBasicMocks();
-
     const statsResponse = mockJsonResponse({
       stats: {
         strength: 10,
         dexterity: 12,
         constitution: 11,
-        intelligence: 12, // Does NOT meet requirement (>= 14)
-        wisdom: 10, // Does NOT meet requirement (>= 12)
+        size: 55,
+        intelligence: 12,
+        power: 50,
+        education: 40,
         charisma: 9,
+        luck: 50,
       },
-      stat_summary: {
-        total: 64,
-        average: 10.67,
-        highest: 12,
-        lowest: 9,
-      },
+      stat_summary: { total: 64, average: 10.67, highest: 12, lowest: 9 },
       profession_id: 2,
-      meets_requirements: false, // Important: this should be false
+      meets_requirements: false,
       method_used: '3d6',
     });
 
     fetchSpy.mockImplementation(input => {
-      if (urlMatches(input, '/auth/register')) {
-        return Promise.resolve(
-          mockJsonResponse({
-            access_token: 'mock-token',
-            has_character: false,
-            character_name: '',
-          })
-        );
-      }
+      if (urlMatches(input, '/auth/register')) return Promise.resolve(mockLoginResponse());
       if (urlMatches(input, '/professions')) {
         return Promise.resolve(mockJsonResponse({ professions: createMockProfessions() }));
       }
-      if (urlMatches(input, '/players/roll-stats')) {
-        return Promise.resolve(statsResponse);
+      if (urlMatches(input, '/players/roll-stats')) return Promise.resolve(statsResponse);
+      if (urlMatches(input, '/skills/')) {
+        return Promise.resolve(mockJsonResponse({ skills: createMockSkills() }));
       }
       if (urlMatches(input, '/players/create-character')) {
-        return Promise.resolve(
-          mockJsonResponse({
-            player: { id: 1, name: 'testuser', profession_id: 2 },
-          })
-        );
+        return Promise.resolve(mockJsonResponse({ player: { id: 1, name: 'testuser', profession_id: 2 } }));
+      }
+      if (urlMatches(input, '/players/characters') && !String(input).includes('create-character')) {
+        return Promise.resolve(mockCharactersList());
       }
       return Promise.reject(new Error('Unexpected URL'));
     });
 
     render(<App />);
 
-    // Register user
     const toggleButton = screen.getByText('Need an account? Register');
     fireEvent.click(toggleButton);
 
@@ -476,89 +436,74 @@ describe('Stat Rolling with Profession Requirements Validation', () => {
     fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
     fireEvent.click(registerButton);
 
-    // Select Scholar profession
+    await waitFor(() => {
+      expect(screen.getByText('Character Creation')).toBeInTheDocument();
+    });
+    expect(screen.getByText('Intelligence:')).toBeInTheDocument();
+    expect(screen.getByText('Wisdom:')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText('Accept Stats'));
+
     await waitFor(() => {
       expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
     });
 
     const scholarCard = screen.getByText('Scholar').closest('.profession-card');
     fireEvent.click(scholarCard!);
+    fireEvent.click(screen.getByText('Next'));
 
-    const nextButton = screen.getByText('Next');
-    fireEvent.click(nextButton);
+    await fillSkillSlotsAndConfirm();
 
-    // Should show stats rolling screen
     await waitFor(() => {
-      expect(screen.getByText('Character Creation')).toBeInTheDocument();
+      expect(screen.getByPlaceholderText('Enter name')).toBeInTheDocument();
     });
+    fireEvent.change(screen.getByPlaceholderText('Enter name'), { target: { value: 'testuser' } });
+    fireEvent.click(screen.getByText('Create Character'));
 
-    // Should show stats (even if they don't meet requirements)
-    expect(screen.getByText('Intelligence:')).toBeInTheDocument();
-    expect(screen.getByText('Wisdom:')).toBeInTheDocument();
-
-    // Should still be able to accept stats and create character
-    // (The system allows this, but marks meets_requirements as false)
-    const acceptButton = screen.getByText('Accept Stats & Create Character');
-    fireEvent.click(acceptButton);
-
-    // Should show game terminal
     await waitFor(() => {
       expect(screen.getByTestId('game-terminal')).toBeInTheDocument();
     });
   });
 
   it('should handle professions with no requirements (Tramp and Gutter Rat)', async () => {
-    setupBasicMocks();
-
     const statsResponse = mockJsonResponse({
       stats: {
         strength: 10,
         dexterity: 12,
         constitution: 11,
+        size: 55,
         intelligence: 13,
-        wisdom: 10,
+        power: 50,
+        education: 40,
         charisma: 9,
+        luck: 50,
       },
-      stat_summary: {
-        total: 65,
-        average: 10.83,
-        highest: 13,
-        lowest: 9,
-      },
-      profession_id: 0, // Tramp
-      meets_requirements: true, // Always true for professions with no requirements
+      stat_summary: { total: 65, average: 10.83, highest: 13, lowest: 9 },
+      profession_id: 0,
+      meets_requirements: true,
       method_used: '3d6',
     });
 
     fetchSpy.mockImplementation(input => {
-      if (urlMatches(input, '/auth/register')) {
-        return Promise.resolve(
-          mockJsonResponse({
-            access_token: 'mock-token',
-            has_character: false,
-            character_name: '',
-          })
-        );
-      }
+      if (urlMatches(input, '/auth/register')) return Promise.resolve(mockLoginResponse());
       if (urlMatches(input, '/professions')) {
         return Promise.resolve(mockJsonResponse({ professions: createMockProfessions() }));
       }
-      if (urlMatches(input, '/players/roll-stats')) {
-        return Promise.resolve(statsResponse);
+      if (urlMatches(input, '/players/roll-stats')) return Promise.resolve(statsResponse);
+      if (urlMatches(input, '/skills/')) {
+        return Promise.resolve(mockJsonResponse({ skills: createMockSkills() }));
       }
       if (urlMatches(input, '/players/create-character')) {
-        return Promise.resolve(
-          mockJsonResponse({
-            player: { id: 1, name: 'testuser', profession_id: 0 },
-          })
-        );
+        return Promise.resolve(mockJsonResponse({ player: { id: 1, name: 'testuser', profession_id: 0 } }));
+      }
+      if (urlMatches(input, '/players/characters') && !String(input).includes('create-character')) {
+        return Promise.resolve(mockCharactersList());
       }
       return Promise.reject(new Error('Unexpected URL'));
     });
 
     render(<App />);
 
-    // Register user
     const toggleButton = screen.getByText('Need an account? Register');
     fireEvent.click(toggleButton);
 
@@ -572,43 +517,38 @@ describe('Stat Rolling with Profession Requirements Validation', () => {
     fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
     fireEvent.click(registerButton);
 
-    // Select Tramp profession
+    await waitFor(() => {
+      expect(screen.getByText('Character Creation')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Accept Stats'));
+
     await waitFor(() => {
       expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
     });
 
     const trampCard = screen.getByText('Tramp').closest('.profession-card');
     fireEvent.click(trampCard!);
+    fireEvent.click(screen.getByText('Next'));
 
-    const nextButton = screen.getByText('Next');
-    fireEvent.click(nextButton);
-
-    // Should show stats rolling screen
     await waitFor(() => {
-      expect(screen.getByText('Character Creation')).toBeInTheDocument();
+      expect(screen.getByText('Skill Allocation')).toBeInTheDocument();
     });
 
-    // Should show all stats
-    expect(screen.getByText('Strength:')).toBeInTheDocument();
-    expect(screen.getByText('Dexterity:')).toBeInTheDocument();
-    expect(screen.getByText('Constitution:')).toBeInTheDocument();
-    expect(screen.getByText('Intelligence:')).toBeInTheDocument();
-    expect(screen.getByText('Wisdom:')).toBeInTheDocument();
-    expect(screen.getByText('Charisma:')).toBeInTheDocument();
+    await fillSkillSlotsAndConfirm();
 
-    // Accept stats and create character
-    const acceptButton = screen.getByText('Accept Stats & Create Character');
-    fireEvent.click(acceptButton);
+    await waitFor(() => {
+      expect(screen.getByPlaceholderText('Enter name')).toBeInTheDocument();
+    });
+    fireEvent.change(screen.getByPlaceholderText('Enter name'), { target: { value: 'testuser' } });
+    fireEvent.click(screen.getByText('Create Character'));
 
-    // Should show game terminal
     await waitFor(() => {
       expect(screen.getByTestId('game-terminal')).toBeInTheDocument();
     });
   });
 
   it('should allow rerolling stats for professions with requirements', async () => {
-    setupBasicMocks();
-
     let rollCount = 0;
     const statsResponses = [
       mockJsonResponse({
@@ -616,16 +556,14 @@ describe('Stat Rolling with Profession Requirements Validation', () => {
           strength: 10,
           dexterity: 12,
           constitution: 11,
-          intelligence: 12, // Does NOT meet requirement (>= 14)
-          wisdom: 10, // Does NOT meet requirement (>= 12)
+          size: 55,
+          intelligence: 12,
+          power: 50,
+          education: 40,
           charisma: 9,
+          luck: 50,
         },
-        stat_summary: {
-          total: 64,
-          average: 10.67,
-          highest: 12,
-          lowest: 9,
-        },
+        stat_summary: { total: 64, average: 10.67, highest: 12, lowest: 9 },
         profession_id: 2,
         meets_requirements: false,
         method_used: '3d6',
@@ -635,16 +573,14 @@ describe('Stat Rolling with Profession Requirements Validation', () => {
           strength: 10,
           dexterity: 12,
           constitution: 11,
-          intelligence: 15, // Meets requirement (>= 14)
-          wisdom: 13, // Meets requirement (>= 12)
+          size: 55,
+          intelligence: 15,
+          power: 50,
+          education: 40,
           charisma: 9,
+          luck: 50,
         },
-        stat_summary: {
-          total: 70,
-          average: 11.67,
-          highest: 15,
-          lowest: 9,
-        },
+        stat_summary: { total: 70, average: 11.67, highest: 15, lowest: 9 },
         profession_id: 2,
         meets_requirements: true,
         method_used: '3d6',
@@ -652,15 +588,7 @@ describe('Stat Rolling with Profession Requirements Validation', () => {
     ];
 
     fetchSpy.mockImplementation(input => {
-      if (urlMatches(input, '/auth/register')) {
-        return Promise.resolve(
-          mockJsonResponse({
-            access_token: 'mock-token',
-            has_character: false,
-            character_name: '',
-          })
-        );
-      }
+      if (urlMatches(input, '/auth/register')) return Promise.resolve(mockLoginResponse());
       if (urlMatches(input, '/professions')) {
         return Promise.resolve(mockJsonResponse({ professions: createMockProfessions() }));
       }
@@ -669,19 +597,20 @@ describe('Stat Rolling with Profession Requirements Validation', () => {
         rollCount++;
         return Promise.resolve(response);
       }
+      if (urlMatches(input, '/skills/')) {
+        return Promise.resolve(mockJsonResponse({ skills: createMockSkills() }));
+      }
       if (urlMatches(input, '/players/create-character')) {
-        return Promise.resolve(
-          mockJsonResponse({
-            player: { id: 1, name: 'testuser', profession_id: 2 },
-          })
-        );
+        return Promise.resolve(mockJsonResponse({ player: { id: 1, name: 'testuser', profession_id: 2 } }));
+      }
+      if (urlMatches(input, '/players/characters') && !String(input).includes('create-character')) {
+        return Promise.resolve(mockCharactersList());
       }
       return Promise.reject(new Error('Unexpected URL'));
     });
 
     render(<App />);
 
-    // Register user
     const toggleButton = screen.getByText('Need an account? Register');
     fireEvent.click(toggleButton);
 
@@ -695,41 +624,38 @@ describe('Stat Rolling with Profession Requirements Validation', () => {
     fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
     fireEvent.click(registerButton);
 
-    // Select Scholar profession
+    await waitFor(() => {
+      expect(screen.getByText('Character Creation')).toBeInTheDocument();
+    });
+    expect(screen.getByText('Intelligence:')).toBeInTheDocument();
+    expect(screen.getByText('Wisdom:')).toBeInTheDocument();
+
+    const rerollButton = screen.getByText('Reroll Stats');
+    fireEvent.click(rerollButton);
+
+    await waitFor(() => {
+      expect(screen.getByText('Intelligence:')).toBeInTheDocument();
+      expect(screen.getByText('Wisdom:')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Accept Stats'));
+
     await waitFor(() => {
       expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
     });
 
     const scholarCard = screen.getByText('Scholar').closest('.profession-card');
     fireEvent.click(scholarCard!);
+    fireEvent.click(screen.getByText('Next'));
 
-    const nextButton = screen.getByText('Next');
-    fireEvent.click(nextButton);
+    await fillSkillSlotsAndConfirm();
 
-    // Should show stats rolling screen
     await waitFor(() => {
-      expect(screen.getByText('Character Creation')).toBeInTheDocument();
+      expect(screen.getByPlaceholderText('Enter name')).toBeInTheDocument();
     });
+    fireEvent.change(screen.getByPlaceholderText('Enter name'), { target: { value: 'testuser' } });
+    fireEvent.click(screen.getByText('Create Character'));
 
-    // Should show first set of stats
-    expect(screen.getByText('Intelligence:')).toBeInTheDocument();
-    expect(screen.getByText('Wisdom:')).toBeInTheDocument();
-
-    // Click reroll button
-    const rerollButton = screen.getByText('Reroll Stats');
-    fireEvent.click(rerollButton);
-
-    // Should show second set of stats (that meet requirements)
-    await waitFor(() => {
-      expect(screen.getByText('Intelligence:')).toBeInTheDocument();
-      expect(screen.getByText('Wisdom:')).toBeInTheDocument();
-    });
-
-    // Accept stats and create character
-    const acceptButton = screen.getByText('Accept Stats & Create Character');
-    fireEvent.click(acceptButton);
-
-    // Should show game terminal
     await waitFor(() => {
       expect(screen.getByTestId('game-terminal')).toBeInTheDocument();
     });

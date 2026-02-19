@@ -6,6 +6,7 @@ This script creates invite codes using the database storage system
 instead of the old JSON file approach.
 """
 
+import argparse
 import os
 import random
 import sys
@@ -14,11 +15,19 @@ from pathlib import Path
 
 from anyio import run
 
-# Add the server directory to the path so we can import models
-sys.path.append(str(Path(__file__).parent.parent.parent / "server"))
+# Add project root so server can be imported (same as other scripts)
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
+import server.models  # noqa: F401 -- ensure all mappers registered before first session use
 from server.database import get_session_maker
 from server.models.invite import Invite
+
+
+def parse_expires_date(s: str) -> datetime:
+    """Parse YYYY-MM-DD to end-of-day UTC (naive). Invite valid through that date."""
+    dt = datetime.strptime(s, "%Y-%m-%d")
+    return (dt + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
+
 
 MYTHOS_WORDS = [
     "Cthulhu",
@@ -172,33 +181,50 @@ async def get_existing_codes():
         return {row[0] for row in result.fetchall()}
 
 
-async def create_invite_in_db(invite_code: str, expires_in_days: int = 30):
+async def create_invite_in_db(
+    invite_code: str,
+    expires_at: datetime | None = None,
+    expires_in_days: int = 30,
+):
     """Create an invite in the database."""
+    if expires_at is None:
+        expires_at = (datetime.now(UTC) + timedelta(days=expires_in_days)).replace(tzinfo=None)
+    else:
+        expires_at = expires_at.replace(tzinfo=None) if expires_at.tzinfo else expires_at
+
     async with get_session_maker()() as session:
-        # Create new invite
         invite = Invite(
             invite_code=invite_code,
             is_active=True,
-            # Persist naive UTC to DB (PostgreSQL stores as TIMESTAMP WITHOUT TIME ZONE)
-            expires_at=(datetime.now(UTC) + timedelta(days=expires_in_days)).replace(tzinfo=None),
-            created_at=datetime.now(UTC).replace(tzinfo=None),
+            expires_at=expires_at,
         )
-
         session.add(invite)
         await session.commit()
         return invite
 
 
-async def main():
+def _set_database_url_from_env() -> None:
+    """Use DATABASE_URL so scripts can run without full AppConfig."""
+    url = os.getenv("DATABASE_URL")
+    if not url:
+        return
+    from server.database_config_helpers import normalize_database_url, set_test_database_url
+
+    set_test_database_url(normalize_database_url(url))
+
+
+async def main(count: int = 100, expires: str | None = None):
     """Generate invite codes and store them in the database."""
     print("Generating Mythos-themed invite codes for database storage...")
 
-    # Set environment variable for database connection
     if not os.getenv("MYTHOSMUD_SECRET_KEY"):
         os.environ["MYTHOSMUD_SECRET_KEY"] = "dev-secret-key-for-invite-generation"
 
-    # Generate new codes
-    new_codes = generate_unique_codes(100)
+    _set_database_url_from_env()
+
+    expires_at = parse_expires_date(expires) if expires else None
+
+    new_codes = generate_unique_codes(count)
 
     # Get existing codes to avoid duplicates
     try:
@@ -215,19 +241,17 @@ async def main():
         print("No new unique codes to generate!")
         return
 
-    # Create invites in database
     created_count = 0
     for code in unique_new_codes:
         try:
-            await create_invite_in_db(code)
+            await create_invite_in_db(code, expires_at=expires_at)
             created_count += 1
         except Exception as e:
             print(f"Warning: Could not create invite {code}: {e}")
 
-    print(f"✓ Generated {created_count} new invite codes")
-    print("✓ Stored in database successfully")
+    print(f"Generated {created_count} new invite codes")
+    print("Stored in database successfully")
 
-    # Show some examples
     print("\nExample invite codes:")
     for i, code in enumerate(unique_new_codes[:10], 1):
         print(f"  {i:2d}. {code}")
@@ -237,4 +261,13 @@ async def main():
 
 
 if __name__ == "__main__":
-    run(main)
+    parser = argparse.ArgumentParser(description="Generate Mythos-themed invite codes in the DB.")
+    parser.add_argument("--count", type=int, default=100, help="Number of invites (default: 100)")
+    parser.add_argument(
+        "--expires",
+        metavar="YYYY-MM-DD",
+        default=None,
+        help="Last valid date (e.g. 2026-12-31). Default: 30 days from now.",
+    )
+    args = parser.parse_args()
+    run(main, args.count, args.expires)

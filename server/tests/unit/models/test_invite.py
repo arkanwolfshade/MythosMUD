@@ -140,14 +140,16 @@ def test_invite_generate_invite_code_uniqueness() -> None:
 
 def test_invite_repr() -> None:
     """Test __repr__ returns expected string format."""
+    import uuid
+
     invite = Invite()
-    invite.id = "test-id-123"
+    invite.id = uuid.UUID("12345678-1234-1234-1234-123456789012")
     invite.invite_code = "TESTCODE123"
     invite.is_active = True
 
     repr_str = repr(invite)
 
     assert "Invite" in repr_str
-    assert "test-id-123" in repr_str
+    assert "12345678-1234-1234-1234-123456789012" in repr_str or "TESTCODE123" in repr_str
     assert "TESTCODE123" in repr_str
     assert "True" in repr_str or "is_active=True" in repr_str

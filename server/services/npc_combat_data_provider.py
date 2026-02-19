@@ -115,19 +115,26 @@ class NPCCombatDataProvider:
         Get the current room ID for a player.
 
         Args:
-            player_id: ID of the player
+            player_id: ID of the player (must be a valid UUID string)
 
         Returns:
             Room ID if found, None otherwise
         """
         try:
-            # Convert player_id to UUID if it's a string
-            player_id_uuid = UUID(player_id) if isinstance(player_id, str) else player_id
+            # Convert player_id to UUID; invalid format (e.g. test placeholder "player_001") returns None without error log
+            try:
+                player_id_uuid = UUID(player_id)
+            except ValueError:
+                logger.debug(
+                    "Invalid player_id format for room lookup, returning None",
+                    player_id=player_id,
+                )
+                return None
             player = await self._persistence.get_player_by_id(player_id_uuid)
             if player:
                 return str(player.current_room_id)
             return None
-        except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError) as e:
+        except (AttributeError, ImportError, SQLAlchemyError, TypeError) as e:
             logger.error("Error getting player room ID", player_id=player_id, error=str(e))
             return None
 

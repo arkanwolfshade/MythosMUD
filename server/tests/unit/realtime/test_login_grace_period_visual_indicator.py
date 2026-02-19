@@ -32,6 +32,8 @@ def mock_connection_manager():
     manager.login_grace_period_start_times = {}
     manager.grace_period_players = {}  # For disconnect grace period
     manager.player_websockets = {}
+    # get_room_occupants is awaited in get_player_occupants; use AsyncMock to avoid "can't be used in await"
+    manager.get_room_occupants = AsyncMock(return_value=[])
     return manager
 
 

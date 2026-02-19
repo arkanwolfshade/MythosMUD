@@ -29,6 +29,7 @@ if TYPE_CHECKING:
         PlayerLucidity,
     )
     from .player_effect import PlayerEffect
+    from .player_skill import PlayerSkill
     from .player_spells import PlayerSpell
     from .user import User
 
@@ -112,6 +113,10 @@ class Player(Base):
     # Effects system (ADR-009): persistent tick-based effects in player_effects table
     player_effects: Mapped[list["PlayerEffect"]] = relationship(
         "PlayerEffect", back_populates="player", cascade="all, delete-orphan"
+    )
+    # Character creation revamp 4.3: per-character skill values
+    player_skills: Mapped[list["PlayerSkill"]] = relationship(
+        "PlayerSkill", back_populates="player", cascade="all, delete-orphan"
     )
 
     # Profession - add index for queries filtering by profession

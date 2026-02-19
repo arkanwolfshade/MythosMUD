@@ -35,6 +35,8 @@ GAME_ATTRS = (
     "room_service",
     "user_manager",
     "container_service",
+    "level_service",
+    "skill_service",
     "room_cache_service",
     "profession_cache_service",
     "holiday_service",
@@ -57,6 +59,8 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
     room_service: Any = None
     user_manager: Any = None
     container_service: Any = None
+    level_service: Any = None
+    skill_service: Any = None
     room_cache_service: Any = None
     profession_cache_service: Any = None
     holiday_service: Any = None
@@ -196,7 +200,28 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
         from server.services.container_service import ContainerService
 
         self.container_service = ContainerService(persistence=persistence)
-        logger.info("Container service initialized")
+        from server.game.skill_service import SkillService
+        from server.persistence.repositories.player_skill_repository import PlayerSkillRepository
+        from server.persistence.repositories.skill_repository import SkillRepository
+        from server.persistence.repositories.skill_use_log_repository import SkillUseLogRepository
+
+        self.skill_service = SkillService(
+            skill_repository=SkillRepository(),
+            player_skill_repository=PlayerSkillRepository(),
+            skill_use_log_repository=SkillUseLogRepository(),
+            persistence=async_persistence,
+        )
+
+        async def _skill_improvement_on_level_up(player_id: Any, new_level: int) -> None:
+            await self.skill_service.run_improvement_rolls(player_id, new_level)
+
+        from server.game.level_service import LevelService
+
+        self.level_service = LevelService(
+            async_persistence=async_persistence,
+            level_up_hook=_skill_improvement_on_level_up,
+        )
+        logger.info("Container, level and skill services initialized")
         logger.info("Game services initialized")
 
         # Item services

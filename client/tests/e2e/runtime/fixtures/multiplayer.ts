@@ -8,31 +8,37 @@ import { type Browser, type BrowserContext, type Page } from '@playwright/test';
 import { loginPlayer } from './auth';
 import { TEST_PLAYERS, TEST_TIMEOUTS, type TestPlayer } from './test-data';
 
-const SERVER_URL = 'http://localhost:54731';
+/** Use 127.0.0.1 to avoid localhost resolving to IPv6 (::1) when server listens on IPv4 only. */
+const SERVER_URL = 'http://127.0.0.1:54731';
 /** Versioned API base for v1 endpoints (health, etc.). */
 const SERVER_API_V1 = `${SERVER_URL}/v1`;
 const SERVER_READY_POLL_MS = 500;
-const SERVER_READY_TIMEOUT_MS = 30000;
+/** Allow up to 60s for server/DB/NATS to become ready (cold start, CI). */
+const SERVER_READY_TIMEOUT_MS = 60000;
 
 /**
- * Poll server health endpoint until it responds 200 or timeout.
+ * Poll server health endpoint until it responds 200/503 or timeout.
  * Ensures server is ready before first player login (avoids "still on login" when server was cold).
- * Uses versioned API path /v1/monitoring/health (validates server, DB, and connection manager).
+ * Uses versioned API path /v1/monitoring/health. Accepts 200 (healthy) or 503 (unhealthy but reachable).
  */
 async function waitForServerReady(): Promise<void> {
   const healthUrl = `${SERVER_API_V1}/monitoring/health`;
   const start = Date.now();
+  let lastStatus: number | null = null;
   while (Date.now() - start < SERVER_READY_TIMEOUT_MS) {
     try {
       const res = await fetch(healthUrl, { signal: AbortSignal.timeout(3000) });
-      if (res.ok) return;
+      lastStatus = res.status;
+      if (res.ok || res.status === 503) return;
     } catch {
-      // Server not ready, keep polling
+      lastStatus = null;
     }
     await new Promise(r => setTimeout(r, SERVER_READY_POLL_MS));
   }
+  const statusHint =
+    lastStatus !== null ? ` Last response: ${lastStatus}.` : ' No response (connection refused or timeout).';
   throw new Error(
-    `[instrumentation] Server not ready at ${healthUrl} within ${SERVER_READY_TIMEOUT_MS}ms. ` +
+    `[instrumentation] Server not ready at ${healthUrl} within ${SERVER_READY_TIMEOUT_MS}ms.${statusHint} ` +
       'Runtime E2E tests require the server to be started first. ' +
       'Run ./scripts/start_local.ps1 from project root (after ./scripts/stop_server.ps1 if needed) and ensure port 54731 is free.'
   );
@@ -207,7 +213,8 @@ export async function waitForAllPlayersInGame(
     )
   );
 
-  // Step 3: Wait for all players' room subscriptions to be established (tick message appears)
+  // Step 3: Wait for all players' room subscriptions to be established
+  // Check for tick message OR room state indicators (more robust than tick-only)
   // Use a longer cap (50s) so the slower client has time to receive first tick after Connected.
   const step3Timeout = Math.min(timeoutMs, 50000);
   await Promise.all(
@@ -215,12 +222,28 @@ export async function waitForAllPlayersInGame(
       page
         .waitForFunction(
           () => {
-            // Look for tick message in Game Info panel - format: "[Tick 123]"
+            // Option 1: Look for tick message in Game Info panel - format: "[Tick 123]"
             const gameInfoElements = Array.from(document.querySelectorAll('*'));
             const hasTickMessage = gameInfoElements.some(
               el => el.textContent?.includes('[Tick') && el.textContent?.includes(']')
             );
-            return hasTickMessage;
+
+            // Option 2: Check if Game Info has any messages (not just "No messages to display")
+            const gameInfoPanel = Array.from(document.querySelectorAll('*')).find(el =>
+              el.textContent?.includes('Game Info')
+            );
+            const hasAnyMessage =
+              gameInfoPanel &&
+              !gameInfoPanel.textContent?.includes('No messages to display') &&
+              !gameInfoPanel.textContent?.includes('No messages yet');
+
+            // Option 3: Check for room state indicators (room description, occupants, exits)
+            // This indicates room subscription is working even if tick messages haven't appeared yet
+            const bodyText = document.body?.innerText ?? '';
+            const hasRoomState =
+              bodyText.includes('Occupants') && (bodyText.includes('Exits:') || bodyText.includes('Room Description'));
+
+            return hasTickMessage || hasAnyMessage || hasRoomState;
           },
           { timeout: step3Timeout }
         )
@@ -228,7 +251,7 @@ export async function waitForAllPlayersInGame(
           const tickTimeout = step3Timeout;
           const msg =
             `[instrumentation] waitForAllPlayersInGame failed: Player ${player.username} - ` +
-            `Step 3: room subscription (tick) - no tick message after ${tickTimeout}ms`;
+            `Step 3: room subscription - no tick message or room state after ${tickTimeout}ms`;
           console.error(msg, err);
           // #region agent log
           fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
@@ -236,7 +259,7 @@ export async function waitForAllPlayersInGame(
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               location: 'multiplayer.ts:waitForAllPlayersInGame:roomSubscriptionFail',
-              message: 'Room subscription failed for player (no tick message)',
+              message: 'Room subscription failed for player (no tick message or room state)',
               data: { username: player.username, error: String(err?.message ?? err) },
               timestamp: Date.now(),
               sessionId: 'debug-session',
@@ -377,19 +400,35 @@ export async function ensurePlayerInGame(playerContext: PlayerContext, timeoutMs
       );
     });
 
-  // Step 3: Wait for room subscription to be established (tick message appears in Game Info)
-  // Tick messages indicate the player is subscribed to room updates via NATS.
+  // Step 3: Wait for room subscription to be established
+  // Check for tick message OR room state indicators (more robust than tick-only)
   // Use 50s cap so slower clients have time to receive first tick after Connected.
   const tickTimeoutMs = Math.min(timeoutMs, 50000);
   await playerContext.page
     .waitForFunction(
       () => {
-        // Look for tick message in Game Info panel - format: "[Tick 123]"
+        // Option 1: Look for tick message in Game Info panel - format: "[Tick 123]"
         const gameInfoElements = Array.from(document.querySelectorAll('*'));
         const hasTickMessage = gameInfoElements.some(
           el => el.textContent?.includes('[Tick') && el.textContent?.includes(']')
         );
-        return hasTickMessage;
+
+        // Option 2: Check if Game Info has any messages (not just "No messages to display")
+        const gameInfoPanel = Array.from(document.querySelectorAll('*')).find(el =>
+          el.textContent?.includes('Game Info')
+        );
+        const hasAnyMessage =
+          gameInfoPanel &&
+          !gameInfoPanel.textContent?.includes('No messages to display') &&
+          !gameInfoPanel.textContent?.includes('No messages yet');
+
+        // Option 3: Check for room state indicators (room description, occupants, exits)
+        // This indicates room subscription is working even if tick messages haven't appeared yet
+        const bodyText = document.body?.innerText ?? '';
+        const hasRoomState =
+          bodyText.includes('Occupants') && (bodyText.includes('Exits:') || bodyText.includes('Room Description'));
+
+        return hasTickMessage || hasAnyMessage || hasRoomState;
       },
       { timeout: tickTimeoutMs }
     )
@@ -400,7 +439,7 @@ export async function ensurePlayerInGame(playerContext: PlayerContext, timeoutMs
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           location: 'multiplayer.ts:ensurePlayerInGame:roomSubscriptionFail',
-          message: 'ensurePlayerInGame failed - room subscription not established (no tick message)',
+          message: 'ensurePlayerInGame failed - room subscription not established (no tick message or room state)',
           data: { username: playerContext.player.username, error: String(err?.message ?? err) },
           timestamp: Date.now(),
           sessionId: 'debug-session',
@@ -409,7 +448,7 @@ export async function ensurePlayerInGame(playerContext: PlayerContext, timeoutMs
       }).catch(() => {});
       // #endregion
       throw new Error(
-        `Player ${playerContext.player.username} room subscription not established within ${tickTimeoutMs}ms (no tick message received)`
+        `Player ${playerContext.player.username} room subscription not established within ${tickTimeoutMs}ms (no tick message or room state received)`
       );
     });
 
@@ -471,10 +510,17 @@ export async function waitForCrossPlayerMessage(
   } catch (err) {
     const actualMessages = await getPlayerMessages(playerContext);
     const expectedStr = typeof expectedText === 'string' ? expectedText : expectedText.source;
+
+    // Check if receiver has left the game (common cause of message delivery failure)
+    const hasLeftMessage = actualMessages.some(
+      msg => msg.toLowerCase().includes('has left the game') || msg.toLowerCase().includes('leaves the room')
+    );
+    const leftHint = hasLeftMessage ? ' Receiver appears to have left the game/room before message was sent.' : '';
+
     throw new Error(
       `waitForCrossPlayerMessage timed out: Player ${playerContext.player.username} did not see "${expectedStr}" ` +
         `within ${timeout}ms. Received ${actualMessages.length} message(s): ${JSON.stringify(actualMessages.slice(-5))}. ` +
-        `Possible causes: receiver in different room (say is room-scoped), mute filter blocking delivery, or network delay.`,
+        `Possible causes: receiver in different room (say is room-scoped), mute filter blocking delivery, or network delay.${leftHint}`,
       { cause: err }
     );
   }

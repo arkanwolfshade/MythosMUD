@@ -82,6 +82,7 @@ class CommandParser:
             CommandType.STAND.value: self.factory.create_stand_command,
             CommandType.LIE.value: self.factory.create_lie_command,
             CommandType.REST.value: self.factory.create_rest_command,
+            CommandType.SKILLS.value: self.factory.create_skills_command,
             CommandType.GROUND.value: self.factory.create_ground_command,
             CommandType.FOLLOW.value: self.factory.create_follow_command,
             CommandType.UNFOLLOW.value: self.factory.create_unfollow_command,

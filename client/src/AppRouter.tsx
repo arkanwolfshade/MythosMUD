@@ -6,11 +6,12 @@
  */
 
 import { lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { App } from './App';
 
-// Lazy load MapPage for code splitting
+// Lazy load MapPage and SkillsPage for code splitting
 const MapPage = lazy(() => import('./pages/MapPage').then(m => ({ default: m.MapPage })));
+const SkillsPage = lazy(() => import('./pages/SkillsPage').then(m => ({ default: m.SkillsPage })));
 
 function LoadingFallback() {
   return (
@@ -35,6 +36,14 @@ export function AppRouter() {
           element={
             <Suspense fallback={<LoadingFallback />}>
               <MapPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/skills"
+          element={
+            <Suspense fallback={<LoadingFallback />}>
+              <SkillsPage />
             </Suspense>
           }
         />

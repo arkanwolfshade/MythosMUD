@@ -61,9 +61,10 @@ class NPCCombatLifecycle:  # pylint: disable=too-few-public-methods  # Reason: L
             _room_id: ID of the room (unused, kept for compatibility)
         """
         try:
-            # Try lifecycle manager if available
-            if hasattr(self._persistence, "get_npc_lifecycle_manager"):
-                lifecycle_manager = await asyncio.to_thread(self._persistence.get_npc_lifecycle_manager)
+            # Try lifecycle manager if available (guard: getter must be callable to avoid None())
+            getter = getattr(self._persistence, "get_npc_lifecycle_manager", None)
+            if getter is not None and callable(getter):
+                lifecycle_manager = await asyncio.to_thread(getter)
                 if lifecycle_manager:
                     # Record the death for 30-second respawn suppression
                     lifecycle_manager.record_npc_death(npc_id)
@@ -71,8 +72,8 @@ class NPCCombatLifecycle:  # pylint: disable=too-few-public-methods  # Reason: L
                     return
 
             # Fallback: try lifecycle manager if available
-            if hasattr(self._persistence, "get_npc_lifecycle_manager"):
-                lifecycle_manager = await asyncio.to_thread(self._persistence.get_npc_lifecycle_manager)
+            if getter is not None and callable(getter):
+                lifecycle_manager = await asyncio.to_thread(getter)
                 if lifecycle_manager and npc_id in lifecycle_manager.active_npcs:
                     del lifecycle_manager.active_npcs[npc_id]
 

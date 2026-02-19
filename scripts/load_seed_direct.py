@@ -26,32 +26,42 @@ conn = psycopg2.connect(
     port=parsed.port or 5432,
     user=parsed.username or "postgres",
     password=parsed.password,
-    database=parsed.path.lstrip("/") if parsed.path else "mythos_dev"
+    database=parsed.path.lstrip("/") if parsed.path else "mythos_dev",
 )
 
 cur = conn.cursor()
 
-# Fix missing flavor_text column if needed
+# Fix missing profession columns if needed (character creation revamp 4.3/4.4)
 print("=== Checking Professions Table Schema ===\n")
-cur.execute("""
-    SELECT column_name
-    FROM information_schema.columns
-    WHERE table_name = 'professions' AND column_name = 'flavor_text';
-""")
-
-if not cur.fetchone():
-    print("Adding missing flavor_text column to professions table...")
-    cur.execute("ALTER TABLE professions ADD COLUMN flavor_text TEXT NOT NULL DEFAULT '';")
-    conn.commit()
-    print("✓ Added flavor_text column\n")
-else:
-    print("✓ flavor_text column exists\n")
+for col, default in [
+    ("flavor_text", "''"),
+    ("stat_modifiers", "'[]'"),
+    ("skill_modifiers", "'[]'"),
+]:
+    cur.execute(
+        """
+        SELECT column_name
+        FROM information_schema.columns
+        WHERE table_name = 'professions' AND column_name = %s;
+        """,
+        (col,),
+    )
+    if not cur.fetchone():
+        print(f"Adding missing {col} column to professions table...")
+        cur.execute(f"ALTER TABLE professions ADD COLUMN {col} TEXT NOT NULL DEFAULT {default};")
+        conn.commit()
+        print(f"  [OK] Added {col} column")
+    else:
+        print(f"  [OK] {col} column exists")
+print()
 
 # Load seed files
 seed_files = [
     "data/db/01_professions.sql",
     "data/db/02_item_prototypes.sql",
     "data/db/03_npc_definitions.sql",
+    "data/db/04_skills.sql",
+    "data/db/05_profession_modifiers.sql",
 ]
 
 print("=== Loading MythosMUD Seed Data ===\n")
@@ -68,7 +78,7 @@ for seed_file in seed_files:
     try:
         cur.execute(sql)
         conn.commit()
-        print(f"  ✓ Successfully loaded {seed_file}")
+        print(f"  [OK] Successfully loaded {seed_file}")
     except Exception as e:
         print(f"  ✗ ERROR loading {seed_file}: {e}")
         conn.rollback()

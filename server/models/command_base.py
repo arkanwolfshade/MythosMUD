@@ -69,6 +69,7 @@ class CommandType(StrEnum):
     REST = "rest"
     GROUND = "ground"
     TIME = "time"
+    SKILLS = "skills"
     # Communication commands
     WHISPER = "whisper"
     REPLY = "reply"

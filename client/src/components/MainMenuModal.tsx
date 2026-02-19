@@ -30,30 +30,41 @@ export interface MainMenuModalProps {
   } | null;
   /** @deprecated Always opens in new tab now */
   openMapInNewTab?: boolean;
+  /** Active character id (player_id) for Skills (New Tab) URL; when set, Skills button opens /skills?playerId=... */
+  playerId?: string | null;
 }
 
 /**
  * Main Menu Modal component.
  */
-export const MainMenuModal: React.FC<MainMenuModalProps> = ({ isOpen, onClose, onLogoutClick, currentRoom }) => {
+export const MainMenuModal: React.FC<MainMenuModalProps> = ({
+  isOpen,
+  onClose,
+  onLogoutClick,
+  currentRoom,
+  playerId,
+}) => {
   const handleMapClick = () => {
-    // Always open map in new tab
+    // Always open map in new tab (plan 10.7 V5: include playerId for ownership)
+    const params = new URLSearchParams();
+    if (playerId) params.set('playerId', playerId);
     if (currentRoom) {
-      // Build URL with room parameters
-      const params = new URLSearchParams();
       params.set('roomId', currentRoom.id);
       if (currentRoom.plane) params.set('plane', currentRoom.plane);
       if (currentRoom.zone) params.set('zone', currentRoom.zone);
       if (currentRoom.subZone) params.set('subZone', currentRoom.subZone);
-
-      // Open map in new tab
-      window.open(`/map?${params.toString()}`, '_blank');
-    } else {
-      // Fallback: open in new tab without room info
-      window.open('/map', '_blank');
     }
+    const query = params.toString();
+    window.open(query ? `/map?${query}` : '/map', '_blank');
     onClose();
   };
+
+  const handleSkillsClick = () => {
+    const url = playerId ? `/skills?playerId=${encodeURIComponent(playerId)}` : '/skills';
+    window.open(url, '_blank');
+    onClose();
+  };
+
   // Handle ESC key to close modal
   useEffect(() => {
     if (!isOpen) return;
@@ -137,6 +148,16 @@ export const MainMenuModal: React.FC<MainMenuModalProps> = ({ isOpen, onClose, o
             type="button"
           >
             Map (New Tab)
+          </button>
+
+          {/* Skills (New Tab) - plan 10.7 V1 */}
+          <button
+            onClick={handleSkillsClick}
+            className="w-full px-4 py-3 bg-mythos-terminal-primary text-white rounded hover:bg-mythos-terminal-primary/80 transition-colors text-left font-medium"
+            style={{ pointerEvents: 'auto' }}
+            type="button"
+          >
+            Skills (New Tab)
           </button>
 
           {/* Settings Button (Placeholder - Inactive) */}

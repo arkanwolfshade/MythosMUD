@@ -41,6 +41,7 @@ describe('MainMenuModal', () => {
     // Assert
     expect(screen.getByText('Main Menu')).toBeInTheDocument();
     expect(screen.getByText('Map (New Tab)')).toBeInTheDocument();
+    expect(screen.getByText('Skills (New Tab)')).toBeInTheDocument();
     expect(screen.getByText('Logout')).toBeInTheDocument();
   });
 
@@ -159,6 +160,57 @@ describe('MainMenuModal', () => {
     expect(windowOpenSpy).toHaveBeenCalledWith('/map', '_blank');
     expect(defaultProps.onClose).toHaveBeenCalled();
 
+    windowOpenSpy.mockRestore();
+  });
+
+  it('should open map in new tab with playerId in URL when playerId is set (plan 10.7 V5)', () => {
+    const windowOpenSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
+    render(<MainMenuModal {...defaultProps} playerId="char-uuid-123" />);
+
+    const mapButton = screen.getByText(/^Map/);
+    fireEvent.click(mapButton);
+
+    expect(windowOpenSpy).toHaveBeenCalledWith('/map?playerId=char-uuid-123', '_blank');
+    expect(defaultProps.onClose).toHaveBeenCalled();
+    windowOpenSpy.mockRestore();
+  });
+
+  it('should open map with both playerId and room params when both set', () => {
+    const windowOpenSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
+    const currentRoom = { id: 'room-123', plane: 'earth', zone: 'arkhamcity' };
+    render(<MainMenuModal {...defaultProps} currentRoom={currentRoom} playerId="char-uuid-456" />);
+
+    const mapButton = screen.getByText(/^Map/);
+    fireEvent.click(mapButton);
+
+    expect(windowOpenSpy).toHaveBeenCalledWith(
+      '/map?playerId=char-uuid-456&roomId=room-123&plane=earth&zone=arkhamcity',
+      '_blank'
+    );
+    windowOpenSpy.mockRestore();
+  });
+
+  it('should open skills in new tab with playerId when playerId is set', () => {
+    const windowOpenSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
+    render(<MainMenuModal {...defaultProps} playerId="char-uuid-123" />);
+
+    const skillsButton = screen.getByText('Skills (New Tab)');
+    fireEvent.click(skillsButton);
+
+    expect(windowOpenSpy).toHaveBeenCalledWith('/skills?playerId=char-uuid-123', '_blank');
+    expect(defaultProps.onClose).toHaveBeenCalled();
+    windowOpenSpy.mockRestore();
+  });
+
+  it('should open skills in new tab without playerId when playerId is not set', () => {
+    const windowOpenSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
+    render(<MainMenuModal {...defaultProps} />);
+
+    const skillsButton = screen.getByText('Skills (New Tab)');
+    fireEvent.click(skillsButton);
+
+    expect(windowOpenSpy).toHaveBeenCalledWith('/skills', '_blank');
+    expect(defaultProps.onClose).toHaveBeenCalled();
     windowOpenSpy.mockRestore();
   });
 

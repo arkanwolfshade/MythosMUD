@@ -65,8 +65,9 @@ describe('Profession Choice Persistence to Database', () => {
       ok: true,
       json: vi.fn().mockResolvedValue({
         access_token: 'mock-token',
-        has_character: false,
-        character_name: '',
+        token_type: 'Bearer',
+        user_id: 'test-user-id',
+        characters: [],
       }),
     };
 
@@ -84,9 +85,12 @@ describe('Profession Choice Persistence to Database', () => {
           strength: 12,
           dexterity: 14,
           constitution: 10,
+          size: 55,
           intelligence: 16,
-          wisdom: 8,
+          power: 50,
+          education: 40,
           charisma: 13,
+          luck: 50,
         },
         stat_summary: {
           total: 73,
@@ -111,6 +115,29 @@ describe('Profession Choice Persistence to Database', () => {
       }),
     };
 
+    const createMockSkills = () =>
+      Array.from({ length: 20 }, (_, i) => ({
+        id: i + 1,
+        key: `skill_${i + 1}`,
+        name: `Skill ${i + 1}`,
+        base_value: 5 + (i % 50),
+        allow_at_creation: true,
+      }));
+
+    const charactersListResponse = {
+      ok: true,
+      json: vi.fn().mockResolvedValue([
+        {
+          player_id: 'char-1',
+          name: 'testuser',
+          profession_id: 0,
+          level: 1,
+          created_at: new Date().toISOString(),
+          last_active: new Date().toISOString(),
+        },
+      ]),
+    };
+
     fetchSpy.mockImplementation((url: string | URL | Request) => {
       const urlString = typeof url === 'string' ? url : url instanceof URL ? url.toString() : url.url;
       if (urlString.includes('/auth/register')) {
@@ -119,11 +146,30 @@ describe('Profession Choice Persistence to Database', () => {
         return Promise.resolve(professionsResponse as unknown as Response);
       } else if (urlString.includes('/players/roll-stats')) {
         return Promise.resolve(statsResponse as unknown as Response);
+      } else if (urlString.includes('/skills/')) {
+        return Promise.resolve({
+          ok: true,
+          json: vi.fn().mockResolvedValue({ skills: createMockSkills() }),
+        } as unknown as Response);
       } else if (urlString.includes('/players/create-character')) {
         return Promise.resolve(characterCreationResponse as unknown as Response);
+      } else if (urlString.includes('/players/characters') && !urlString.includes('create-character')) {
+        return Promise.resolve(charactersListResponse as unknown as Response);
       }
       return Promise.reject(new Error('Unknown endpoint'));
     });
+  };
+
+  const fillSkillSlotsAndConfirm = async () => {
+    await waitFor(() => {
+      expect(screen.getByText('Skill Allocation')).toBeInTheDocument();
+    });
+    const comboboxes = screen.getAllByRole('combobox');
+    expect(comboboxes.length).toBeGreaterThanOrEqual(13);
+    for (let i = 0; i < 13; i++) {
+      fireEvent.change(comboboxes[i], { target: { value: String((i % 20) + 1) } });
+    }
+    fireEvent.click(screen.getByRole('button', { name: /Next: Name character/i }));
   };
 
   describe('Profession Persistence Verification', () => {
@@ -131,7 +177,6 @@ describe('Profession Choice Persistence to Database', () => {
       setupBasicMocks();
       render(<App />);
 
-      // Navigate through the complete character creation flow
       fireEvent.click(screen.getByText('Need an account? Register'));
       fireEvent.click(screen.getByText('Enter the Void'));
 
@@ -145,24 +190,26 @@ describe('Profession Choice Persistence to Database', () => {
       fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
       fireEvent.click(registerButton);
 
-      // Select Tramp profession
+      await waitFor(() => {
+        expect(screen.getByText('Character Creation')).toBeInTheDocument();
+      });
+      fireEvent.click(screen.getByText('Accept Stats'));
+
       await waitFor(() => {
         expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
       });
 
       const trampCard = screen.getByText('Tramp').closest('.profession-card');
       fireEvent.click(trampCard!);
+      fireEvent.click(screen.getByText('Next'));
 
-      const nextButton = screen.getByText('Next');
-      fireEvent.click(nextButton);
+      await fillSkillSlotsAndConfirm();
 
-      // Accept stats and create character
       await waitFor(() => {
-        expect(screen.getByText('Character Creation')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Enter name')).toBeInTheDocument();
       });
-
-      const acceptButton = screen.getByText('Accept Stats & Create Character');
-      fireEvent.click(acceptButton);
+      fireEvent.change(screen.getByPlaceholderText('Enter name'), { target: { value: 'testuser' } });
+      fireEvent.click(screen.getByText('Create Character'));
 
       // Verify that the character creation API was called with the correct profession_id
       await waitFor(() => {
@@ -188,7 +235,6 @@ describe('Profession Choice Persistence to Database', () => {
       setupBasicMocks();
       render(<App />);
 
-      // Navigate through the complete character creation flow
       fireEvent.click(screen.getByText('Need an account? Register'));
       fireEvent.click(screen.getByText('Enter the Void'));
 
@@ -202,24 +248,26 @@ describe('Profession Choice Persistence to Database', () => {
       fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
       fireEvent.click(registerButton);
 
-      // Select Gutter Rat profession
+      await waitFor(() => {
+        expect(screen.getByText('Character Creation')).toBeInTheDocument();
+      });
+      fireEvent.click(screen.getByText('Accept Stats'));
+
       await waitFor(() => {
         expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
       });
 
       const gutterRatCard = screen.getByText('Gutter Rat').closest('.profession-card');
       fireEvent.click(gutterRatCard!);
+      fireEvent.click(screen.getByText('Next'));
 
-      const nextButton = screen.getByText('Next');
-      fireEvent.click(nextButton);
+      await fillSkillSlotsAndConfirm();
 
-      // Accept stats and create character
       await waitFor(() => {
-        expect(screen.getByText('Character Creation')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Enter name')).toBeInTheDocument();
       });
-
-      const acceptButton = screen.getByText('Accept Stats & Create Character');
-      fireEvent.click(acceptButton);
+      fireEvent.change(screen.getByPlaceholderText('Enter name'), { target: { value: 'testuser' } });
+      fireEvent.click(screen.getByText('Create Character'));
 
       // Verify that the character creation API was called with the correct profession_id
       await waitFor(() => {
@@ -259,28 +307,28 @@ describe('Profession Choice Persistence to Database', () => {
       fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
       fireEvent.click(registerButton);
 
-      // Select Tramp profession first
+      await waitFor(() => {
+        expect(screen.getByText('Character Creation')).toBeInTheDocument();
+      });
+      fireEvent.click(screen.getByText('Accept Stats'));
+
       await waitFor(() => {
         expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
       });
 
       const trampCard = screen.getByText('Tramp').closest('.profession-card');
       fireEvent.click(trampCard!);
-
-      // Switch to Gutter Rat profession
       const gutterRatCard = screen.getByText('Gutter Rat').closest('.profession-card');
       fireEvent.click(gutterRatCard!);
+      fireEvent.click(screen.getByText('Next'));
 
-      const nextButton = screen.getByText('Next');
-      fireEvent.click(nextButton);
+      await fillSkillSlotsAndConfirm();
 
-      // Accept stats and create character
       await waitFor(() => {
-        expect(screen.getByText('Character Creation')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Enter name')).toBeInTheDocument();
       });
-
-      const acceptButton = screen.getByText('Accept Stats & Create Character');
-      fireEvent.click(acceptButton);
+      fireEvent.change(screen.getByPlaceholderText('Enter name'), { target: { value: 'testuser' } });
+      fireEvent.click(screen.getByText('Create Character'));
 
       // Verify that the character creation API was called with the correct profession_id (Gutter Rat)
       await waitFor(() => {
@@ -320,44 +368,39 @@ describe('Profession Choice Persistence to Database', () => {
       fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
       fireEvent.click(registerButton);
 
-      // Select Tramp profession
+      await waitFor(() => {
+        expect(screen.getByText('Character Creation')).toBeInTheDocument();
+      });
+      fireEvent.click(screen.getByText('Accept Stats'));
+
       await waitFor(() => {
         expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
       });
 
       const trampCard = screen.getByText('Tramp').closest('.profession-card');
       fireEvent.click(trampCard!);
+      fireEvent.click(screen.getByText('Next'));
 
-      const nextButton = screen.getByText('Next');
-      fireEvent.click(nextButton);
-
-      // Navigate back to profession selection
       await waitFor(() => {
-        expect(screen.getByText('Character Creation')).toBeInTheDocument();
+        expect(screen.getByText('Skill Allocation')).toBeInTheDocument();
       });
+      fireEvent.click(screen.getByText('Back'));
 
-      const backButton = screen.getByText('Back');
-      fireEvent.click(backButton);
-
-      // Verify we're back at profession selection
       await waitFor(() => {
         expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
       });
 
-      // Select Gutter Rat profession
       const gutterRatCard = screen.getByText('Gutter Rat').closest('.profession-card');
       fireEvent.click(gutterRatCard!);
+      fireEvent.click(screen.getByText('Next'));
 
-      const nextButton2 = screen.getByText('Next');
-      fireEvent.click(nextButton2);
+      await fillSkillSlotsAndConfirm();
 
-      // Accept stats and create character
       await waitFor(() => {
-        expect(screen.getByText('Character Creation')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Enter name')).toBeInTheDocument();
       });
-
-      const acceptButton = screen.getByText('Accept Stats & Create Character');
-      fireEvent.click(acceptButton);
+      fireEvent.change(screen.getByPlaceholderText('Enter name'), { target: { value: 'testuser' } });
+      fireEvent.click(screen.getByText('Create Character'));
 
       // Verify that the character creation API was called with the correct profession_id (Gutter Rat)
       await waitFor(() => {
@@ -397,18 +440,6 @@ describe('Profession Choice Persistence to Database', () => {
       fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
       fireEvent.click(registerButton);
 
-      // Select Tramp profession
-      await waitFor(() => {
-        expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
-      });
-
-      const trampCard = screen.getByText('Tramp').closest('.profession-card');
-      fireEvent.click(trampCard!);
-
-      const nextButton = screen.getByText('Next');
-      fireEvent.click(nextButton);
-
-      // Reroll stats multiple times
       await waitFor(() => {
         expect(screen.getByText('Character Creation')).toBeInTheDocument();
       });
@@ -418,9 +449,23 @@ describe('Profession Choice Persistence to Database', () => {
       fireEvent.click(rerollButton);
       fireEvent.click(rerollButton);
 
-      // Accept stats and create character
-      const acceptButton = screen.getByText('Accept Stats & Create Character');
-      fireEvent.click(acceptButton);
+      fireEvent.click(screen.getByText('Accept Stats'));
+
+      await waitFor(() => {
+        expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
+      });
+
+      const trampCard = screen.getByText('Tramp').closest('.profession-card');
+      fireEvent.click(trampCard!);
+      fireEvent.click(screen.getByText('Next'));
+
+      await fillSkillSlotsAndConfirm();
+
+      await waitFor(() => {
+        expect(screen.getByPlaceholderText('Enter name')).toBeInTheDocument();
+      });
+      fireEvent.change(screen.getByPlaceholderText('Enter name'), { target: { value: 'testuser' } });
+      fireEvent.click(screen.getByText('Create Character'));
 
       // Verify that the character creation API was called with the correct profession_id
       await waitFor(() => {
@@ -443,7 +488,15 @@ describe('Profession Choice Persistence to Database', () => {
     });
 
     it('should persist profession choice with malformed profession data', async () => {
-      // Mock malformed profession data
+      const createMockSkills = () =>
+        Array.from({ length: 20 }, (_, i) => ({
+          id: i + 1,
+          key: `skill_${i + 1}`,
+          name: `Skill ${i + 1}`,
+          base_value: 5 + (i % 50),
+          allow_at_creation: true,
+        }));
+
       fetchSpy.mockImplementation((url: string | URL | Request) => {
         const urlString = typeof url === 'string' ? url : url instanceof URL ? url.toString() : url.url;
         if (urlString.includes('/auth/register')) {
@@ -451,8 +504,9 @@ describe('Profession Choice Persistence to Database', () => {
             ok: true,
             json: vi.fn().mockResolvedValue({
               access_token: 'mock-token',
-              has_character: false,
-              character_name: '',
+              token_type: 'Bearer',
+              user_id: 'test-user-id',
+              characters: [],
             }),
           } as unknown as Response);
         } else if (urlString.includes('/professions')) {
@@ -477,9 +531,12 @@ describe('Profession Choice Persistence to Database', () => {
                 strength: 12,
                 dexterity: 14,
                 constitution: 10,
+                size: 55,
                 intelligence: 16,
-                wisdom: 8,
+                power: 50,
+                education: 40,
                 charisma: 13,
+                luck: 50,
               },
               stat_summary: {
                 total: 73,
@@ -492,6 +549,11 @@ describe('Profession Choice Persistence to Database', () => {
               method_used: '3d6',
             }),
           } as unknown as Response);
+        } else if (urlString.includes('/skills/')) {
+          return Promise.resolve({
+            ok: true,
+            json: vi.fn().mockResolvedValue({ skills: createMockSkills() }),
+          } as unknown as Response);
         } else if (urlString.includes('/players/create-character')) {
           return Promise.resolve({
             ok: true,
@@ -503,13 +565,26 @@ describe('Profession Choice Persistence to Database', () => {
               },
             }),
           } as unknown as Response);
+        } else if (urlString.includes('/players/characters') && !urlString.includes('create-character')) {
+          return Promise.resolve({
+            ok: true,
+            json: vi.fn().mockResolvedValue([
+              {
+                player_id: 'char-1',
+                name: 'testuser',
+                profession_id: 0,
+                level: 1,
+                created_at: new Date().toISOString(),
+                last_active: new Date().toISOString(),
+              },
+            ]),
+          } as unknown as Response);
         }
         return Promise.reject(new Error('Unknown endpoint'));
       });
 
       render(<App />);
 
-      // Navigate through the complete character creation flow
       fireEvent.click(screen.getByText('Need an account? Register'));
       fireEvent.click(screen.getByText('Enter the Void'));
 
@@ -523,24 +598,26 @@ describe('Profession Choice Persistence to Database', () => {
       fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
       fireEvent.click(registerButton);
 
-      // Select profession (even with malformed data)
+      await waitFor(() => {
+        expect(screen.getByText('Character Creation')).toBeInTheDocument();
+      });
+      fireEvent.click(screen.getByText('Accept Stats'));
+
       await waitFor(() => {
         expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
       });
 
       const trampCard = screen.getByText('Tramp').closest('.profession-card');
       fireEvent.click(trampCard!);
+      fireEvent.click(screen.getByText('Next'));
 
-      const nextButton = screen.getByText('Next');
-      fireEvent.click(nextButton);
+      await fillSkillSlotsAndConfirm();
 
-      // Accept stats and create character
       await waitFor(() => {
-        expect(screen.getByText('Character Creation')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Enter name')).toBeInTheDocument();
       });
-
-      const acceptButton = screen.getByText('Accept Stats & Create Character');
-      fireEvent.click(acceptButton);
+      fireEvent.change(screen.getByPlaceholderText('Enter name'), { target: { value: 'testuser' } });
+      fireEvent.click(screen.getByText('Create Character'));
 
       // Verify that the character creation API was called with the correct profession_id
       await waitFor(() => {

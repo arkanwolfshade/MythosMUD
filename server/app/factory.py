@@ -23,6 +23,7 @@ from ..api.players import player_router
 from ..api.professions import profession_router
 from ..api.real_time import realtime_router
 from ..api.rooms import room_router
+from ..api.skills import skills_router
 from ..api.system_monitoring import system_monitoring_router
 from ..auth.endpoints import UserCreate, UserRead, UserUpdate, auth_router
 from ..auth.users import auth_backend, fastapi_users
@@ -267,6 +268,7 @@ def create_app() -> FastAPI:  # pylint: disable=too-many-locals,too-many-stateme
     v1_router.include_router(command_router)
     v1_router.include_router(player_router)
     v1_router.include_router(profession_router)
+    v1_router.include_router(skills_router)
     v1_router.include_router(game_router)
     v1_router.include_router(monitoring_router)
     v1_router.include_router(system_monitoring_router)

@@ -38,6 +38,12 @@ const StatsRollingScreen = lazy(() =>
 const CharacterSelectionScreen = lazy(() =>
   import('./components/CharacterSelectionScreen.jsx').then(m => ({ default: m.CharacterSelectionScreen }))
 );
+const SkillAssignmentScreen = lazy(() =>
+  import('./components/SkillAssignmentScreen.jsx').then(m => ({ default: m.SkillAssignmentScreen }))
+);
+const CharacterNameScreen = lazy(() =>
+  import('./components/CharacterNameScreen.jsx').then(m => ({ default: m.CharacterNameScreen }))
+);
 
 // Import types that are needed for props
 import type { Profession } from './components/ProfessionCard.jsx';
@@ -56,6 +62,9 @@ interface Stats {
   charisma: number;
   luck: number;
 }
+
+/** Plan 10.6: creation flow steps (stats → profession → skills → name). */
+type CreationStep = 'stats' | 'profession' | 'skills' | 'name';
 
 // ServerCharacterResponse is now imported from apiTypeGuards.ts
 
@@ -82,9 +91,14 @@ function App() {
   // MULTI-CHARACTER: Character selection screen
   const [showCharacterSelection, setShowCharacterSelection] = useState(false);
 
-  // Character creation flow state
+  // Character creation flow state (plan 10.6: stats → profession → skills → name)
+  const [creationStep, setCreationStep] = useState<CreationStep | null>(null);
+  const [pendingStats, setPendingStats] = useState<Stats | null>(null);
   const [selectedProfession, setSelectedProfession] = useState<Profession | undefined>(undefined);
-  const [showProfessionSelection, setShowProfessionSelection] = useState(false);
+  const [pendingSkillsPayload, setPendingSkillsPayload] = useState<{
+    occupation_slots: { skill_id: number; value: number }[];
+    personal_interest: { skill_id: number }[];
+  } | null>(null);
 
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -186,7 +200,7 @@ function App() {
 
             // If only one character, auto-select it (common case after remount)
             // BUT: Don't auto-select if we're in character creation flow
-            const inCharacterCreation = showProfessionSelection || selectedProfession !== undefined;
+            const inCharacterCreation = creationStep !== null;
 
             if (mappedCharacters.length === 1 && !inCharacterCreation) {
               const singleChar = mappedCharacters[0];
@@ -202,8 +216,8 @@ function App() {
             // If in character creation, don't change the flow - let character creation continue
             return;
           } else if (charactersList && charactersList.length === 0) {
-            // No characters - user needs to create one
-            setShowProfessionSelection(true);
+            // No characters - user needs to create one (plan 10.6: start at stats step)
+            setCreationStep('stats');
             setShowCharacterSelection(false);
           }
         })
@@ -282,12 +296,12 @@ function App() {
 
       // For new users without characters, show profession selection
       if (charactersList.length === 0) {
-        setShowProfessionSelection(true);
+        setCreationStep('stats');
         setShowCharacterSelection(false);
       } else {
         // For existing users with characters, show character selection screen
         setShowCharacterSelection(true);
-        setShowProfessionSelection(false);
+        setCreationStep(null);
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
@@ -417,12 +431,12 @@ function App() {
 
       // For new users without characters, show profession selection
       if (charactersList.length === 0) {
-        setShowProfessionSelection(true);
+        setCreationStep('stats');
         setShowCharacterSelection(false);
       } else {
         // For existing users with characters, show character selection screen
         setShowCharacterSelection(true);
-        setShowProfessionSelection(false);
+        setCreationStep(null);
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
@@ -433,25 +447,11 @@ function App() {
 
   const handleProfessionSelected = (profession: Profession) => {
     setSelectedProfession(profession);
-    setShowProfessionSelection(false);
+    setCreationStep('skills');
   };
 
   const handleProfessionSelectionBack = () => {
-    setShowProfessionSelection(false);
-    setSelectedProfession(undefined);
-    // Go back to character selection or login
-    if (characters.length > 0) {
-      setShowCharacterSelection(true);
-    } else {
-      setIsAuthenticated(false);
-      setCharacters([]);
-      setSelectedCharacterName('');
-      setSelectedCharacterId('');
-      setPlayerName('');
-      setPassword('');
-      setInviteCode('');
-      setAuthToken('');
-    }
+    setCreationStep('stats');
   };
 
   const handleProfessionSelectionError = (error: string) => {
@@ -479,8 +479,14 @@ function App() {
     setError(error);
   };
 
-  const handleStatsAccepted = async (_stats: Stats, _characterName: string) => {
-    // MULTI-CHARACTER: Refresh characters list after creation
+  /** Plan 10.6: called when user accepts stats (stats step); advance to profession step. */
+  const handleStatsAccepted = (stats: Stats) => {
+    setPendingStats(stats);
+    setCreationStep('profession');
+  };
+
+  /** Plan 10.6: called when CharacterNameScreen create-character succeeds; refresh list and exit creation. */
+  const handleCreationComplete = async () => {
     try {
       const response = await fetch(`${API_V1_BASE}/api/players/characters`, {
         method: 'GET',
@@ -496,7 +502,6 @@ function App() {
           rawData,
           'Invalid API response: expected ServerCharacterResponse[]'
         );
-        // Map server response (id) to client interface (player_id)
         const mappedCharacters = charactersList.map(
           (c: ServerCharacterResponse): CharacterInfo => ({
             player_id: c.player_id || c.id || '',
@@ -509,11 +514,10 @@ function App() {
           })
         );
         setCharacters(mappedCharacters);
-
-        // Reset character creation state
+        setPendingStats(null);
         setSelectedProfession(undefined);
-        setShowProfessionSelection(false);
-        // Show character selection screen after creation
+        setPendingSkillsPayload(null);
+        setCreationStep(null);
         setShowCharacterSelection(true);
       } else {
         // Check if server is unavailable
@@ -544,7 +548,7 @@ function App() {
         setError('Character created, but failed to refresh character list. Please refresh the page.');
         // Reset character creation state to allow retry
         setSelectedProfession(undefined);
-        setShowProfessionSelection(true);
+        setCreationStep('stats');
         setShowCharacterSelection(false);
       }
     } catch (error) {
@@ -560,7 +564,7 @@ function App() {
       setError('Character created, but failed to refresh character list. Please refresh the page.');
       // Reset character creation state to allow retry
       setSelectedProfession(undefined);
-      setShowProfessionSelection(true);
+      setCreationStep('stats');
       setShowCharacterSelection(false);
     }
   };
@@ -592,11 +596,16 @@ function App() {
     // Don't clear authentication on stats error - allow user to retry
     // Reset character creation state
     setSelectedProfession(undefined);
-    setShowProfessionSelection(false);
+    setCreationStep(null);
   };
 
   const handleStatsRollingBack = () => {
-    setShowProfessionSelection(true);
+    setCreationStep(null);
+    if (characters.length > 0) {
+      setShowCharacterSelection(true);
+    } else {
+      returnToLogin();
+    }
   };
 
   // Helper function to detect server unavailability
@@ -640,7 +649,7 @@ function App() {
     setSelectedCharacterId('');
     setShowCharacterSelection(false);
     setShowMotd(false);
-    setShowProfessionSelection(false);
+    setCreationStep(null);
     setAuthToken('');
     secureTokenStorage.clearAllTokens();
     setError('Server is unavailable. Please try again later.');
@@ -790,7 +799,7 @@ function App() {
         // If last character was deleted, show profession selection screen for character creation
         if (mappedCharacters.length === 0) {
           setShowCharacterSelection(false);
-          setShowProfessionSelection(true);
+          setCreationStep('stats');
           setSelectedProfession(undefined);
         }
       } else {
@@ -843,13 +852,12 @@ function App() {
     }
   };
 
-  // MULTI-CHARACTER: Create new character handler
   const handleCreateCharacter = () => {
-    // Reset character creation state to start fresh
+    setPendingStats(null);
     setSelectedProfession(undefined);
+    setPendingSkillsPayload(null);
+    setCreationStep('stats');
     setShowCharacterSelection(false);
-    setShowProfessionSelection(true);
-    // Clear selected character to prevent auto-entry into game
     setSelectedCharacterName('');
     setSelectedCharacterId('');
   };
@@ -1169,16 +1177,28 @@ function App() {
     );
   }
 
-  // MULTI-CHARACTER: Show character creation flow for users with existing characters
-  // This handles the case when user clicks "Create New Character" while having existing characters
-  if (isAuthenticated && characters.length > 0 && (showProfessionSelection || selectedProfession)) {
-    // Show profession selection screen first
-    if (showProfessionSelection) {
+  // Plan 10.6: character creation flow (stats -> profession -> skills -> name)
+  if (isAuthenticated && creationStep !== null) {
+    if (creationStep === 'stats') {
+      return (
+        <div className="App">
+          <Suspense fallback={<LoadingFallback />}>
+            <StatsRollingScreen
+              onStatsAccepted={handleStatsAccepted}
+              onError={handleStatsError}
+              onBack={handleStatsRollingBack}
+              baseUrl={API_V1_BASE}
+              authToken={authToken}
+            />
+          </Suspense>
+        </div>
+      );
+    }
+    if (creationStep === 'profession') {
       return (
         <div className="App">
           <Suspense fallback={<LoadingFallback />}>
             <ProfessionSelectionScreen
-              characterName={playerName}
               onProfessionSelected={handleProfessionSelected}
               onError={handleProfessionSelectionError}
               onBack={handleProfessionSelectionBack}
@@ -1189,79 +1209,46 @@ function App() {
         </div>
       );
     }
-
-    // Show stats rolling screen after profession selection
-    // Defensive check: if selectedProfession is undefined here, something went wrong
-    if (!selectedProfession) {
-      // Reset to profession selection if profession is missing
-      setShowProfessionSelection(true);
+    if (creationStep === 'skills') {
+      return (
+        <div className="App">
+          <Suspense fallback={<LoadingFallback />}>
+            <SkillAssignmentScreen
+              baseUrl={API_V1_BASE}
+              authToken={authToken}
+              onSkillsConfirmed={payload => {
+                setPendingSkillsPayload(payload);
+                setCreationStep('name');
+              }}
+              onBack={() => setCreationStep('profession')}
+              onError={handleStatsError}
+            />
+          </Suspense>
+        </div>
+      );
+    }
+    if (creationStep === 'name' && pendingStats && selectedProfession && pendingSkillsPayload) {
+      return (
+        <div className="App">
+          <Suspense fallback={<LoadingFallback />}>
+            <CharacterNameScreen
+              stats={pendingStats}
+              profession={selectedProfession}
+              skillsPayload={pendingSkillsPayload}
+              baseUrl={API_V1_BASE}
+              authToken={authToken}
+              onComplete={handleCreationComplete}
+              onError={handleStatsError}
+              onBack={() => setCreationStep('skills')}
+            />
+          </Suspense>
+        </div>
+      );
+    }
+    if (creationStep === 'name') {
+      setCreationStep('skills');
       return null;
     }
-
-    return (
-      <div className="App">
-        <Suspense fallback={<LoadingFallback />}>
-          <StatsRollingScreen
-            onStatsAccepted={handleStatsAccepted}
-            onError={handleStatsError}
-            onBack={handleStatsRollingBack}
-            baseUrl={API_V1_BASE}
-            authToken={authToken}
-            professionId={selectedProfession.id}
-            profession={selectedProfession}
-          />
-        </Suspense>
-      </div>
-    );
-  }
-
-  // If authenticated but no characters, show character creation flow
-  if (isAuthenticated && characters.length === 0) {
-    // Show profession selection screen first
-    if (showProfessionSelection) {
-      return (
-        <div className="App">
-          <Suspense fallback={<LoadingFallback />}>
-            <ProfessionSelectionScreen
-              characterName={playerName}
-              onProfessionSelected={handleProfessionSelected}
-              onError={handleProfessionSelectionError}
-              onBack={handleProfessionSelectionBack}
-              baseUrl={API_V1_BASE}
-              authToken={authToken}
-            />
-          </Suspense>
-        </div>
-      );
-    }
-
-    // Show stats rolling screen after profession selection
-    return (
-      <div className="App">
-        <Suspense fallback={<LoadingFallback />}>
-          <StatsRollingScreen
-            onStatsAccepted={handleStatsAccepted}
-            onError={handleStatsError}
-            onBack={handleStatsRollingBack}
-            baseUrl={API_V1_BASE}
-            authToken={authToken}
-            professionId={selectedProfession?.id}
-            profession={selectedProfession as Profession | undefined}
-          />
-        </Suspense>
-      </div>
-    );
-  }
-
-  // If authenticated and has character, show MOTD screen or game terminal
-  // BUT: Don't show game terminal if we're in character creation flow
-  // This is a defensive check - character creation should have been handled above
-  // but if we somehow reach here during character creation, prevent game terminal from rendering
-  const inCharacterCreation = showProfessionSelection || !!selectedProfession;
-  if (inCharacterCreation) {
-    // Return null to prevent rendering - character creation flow should handle this
-    // This should not normally be reached, but protects against state inconsistencies
-    return null;
   }
 
   if (showMotd) {

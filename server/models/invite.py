@@ -33,7 +33,7 @@ class Invite(Base):
 
     __tablename__ = "invites"
 
-    id: Mapped[str] = mapped_column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     invite_code: Mapped[str] = mapped_column(String, unique=True, nullable=False, index=True)
     # Add indexes on foreign keys for query performance
     created_by_user_id: Mapped[str | None] = mapped_column(

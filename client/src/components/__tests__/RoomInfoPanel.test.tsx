@@ -3,6 +3,18 @@ import { render, screen } from '@testing-library/react';
 import { vi } from 'vitest';
 import { RoomInfoPanel } from '../RoomInfoPanel';
 
+const { mockDebug } = vi.hoisted(() => ({
+  mockDebug: vi.fn(),
+}));
+vi.mock('../../utils/logger', () => ({
+  logger: {
+    debug: mockDebug,
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+  },
+}));
+
 interface Room {
   id: string;
   name: string;
@@ -16,16 +28,9 @@ interface Room {
   occupant_count?: number;
 }
 
-// Mock console.log to avoid noise in tests
-const mockConsoleLog = vi.spyOn(console, 'log').mockImplementation(() => {});
-
 describe('RoomInfoPanel', () => {
   afterEach(() => {
-    mockConsoleLog.mockClear();
-  });
-
-  afterAll(() => {
-    mockConsoleLog.mockRestore();
+    mockDebug.mockClear();
   });
 
   const mockRoom = {
@@ -315,19 +320,26 @@ describe('RoomInfoPanel', () => {
   });
 
   describe('Debug logging and development features', () => {
-    it('should log debug information in development mode', () => {
+    it('should log debug information when rendering with room', () => {
       render(<RoomInfoPanel room={mockRoom} debugInfo={mockDebugInfo} />);
 
-      // Verify that console.log was called for debug information
-      expect(mockConsoleLog).toHaveBeenCalledWith('🔍 RoomInfoPanel render called with room:', mockRoom);
-      expect(mockConsoleLog).toHaveBeenCalledWith('🔍 RoomInfoPanel room type:', 'object');
+      expect(mockDebug).toHaveBeenCalledWith(
+        'RoomInfoPanel',
+        'render called with room',
+        expect.objectContaining({
+          room: mockRoom,
+          roomType: 'object',
+          roomKeys: expect.any(Array),
+        })
+      );
     });
 
     it('should log room data details for debugging', () => {
       render(<RoomInfoPanel room={mockRoom} debugInfo={mockDebugInfo} />);
 
-      expect(mockConsoleLog).toHaveBeenCalledWith(
-        '🔍 RoomInfoPanel: Rendering room data:',
+      expect(mockDebug).toHaveBeenCalledWith(
+        'RoomInfoPanel',
+        'Rendering room data',
         expect.objectContaining({
           name: 'Test Room',
           description: 'A test room for testing purposes.',
@@ -337,11 +349,17 @@ describe('RoomInfoPanel', () => {
       );
     });
 
-    it('should log occupant count debugging information', () => {
+    it('should log occupant count in room data debug payload', () => {
       render(<RoomInfoPanel room={mockRoom} debugInfo={mockDebugInfo} />);
 
-      expect(mockConsoleLog).toHaveBeenCalledWith('🔍 DEBUG: occupant_count value:', 2, 'type:', 'number');
-      expect(mockConsoleLog).toHaveBeenCalledWith('🔍 DEBUG: occupants array:', ['Player1', 'Player2'], 'length:', 2);
+      expect(mockDebug).toHaveBeenCalledWith(
+        'RoomInfoPanel',
+        'Rendering room data',
+        expect.objectContaining({
+          occupant_count: 2,
+          occupants_length: 2,
+        })
+      );
     });
   });
 

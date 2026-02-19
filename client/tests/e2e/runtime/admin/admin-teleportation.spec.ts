@@ -38,43 +38,54 @@ test.describe('Admin Teleportation', () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    // AW teleports Ithaqua (use south - storage room has south exit to hallway_009)
-    await executeCommand(awContext.page, 'teleport Ithaqua south');
+    await ensurePlayerInGame(awContext, 15000);
+    await ensurePlayerInGame(ithaquaContext, 15000);
 
-    // Wait for teleportation confirmation
-    await waitForMessage(awContext.page, 'You teleport Ithaqua to the south', 10000).catch(() => {
-      // Message may succeed even if format differs
-    });
+    // Server resolves teleport target by character name (connection manager). Use Ithaqua's
+    // current character name so the server finds her as online.
+    await ithaquaContext.page.getByTestId('current-character-name').waitFor({ state: 'visible', timeout: 10000 });
+    const ithaquaCharacterName =
+      (await ithaquaContext.page.getByTestId('current-character-name').textContent())?.trim() || 'Ithaqua';
 
-    // Verify Ithaqua sees teleportation message (server sends with trailing period)
-    await waitForCrossPlayerMessage(ithaquaContext, /You are teleported to the south by ArkanWolfshade\.?/, 30000);
+    await executeCommand(awContext.page, `teleport ${ithaquaCharacterName} south`);
+
+    // Wait for either success or permission denied on AW's page (fail fast if not admin)
+    await waitForMessage(
+      awContext.page,
+      new RegExp(`You teleport ${ithaquaCharacterName} to the south|You do not have permission`),
+      10000
+    ).catch(() => {});
+    const awMessages = await getPlayerMessages(awContext);
+    const seesPermissionDenied = awMessages.some(msg => msg.includes('You do not have permission'));
+    expect(
+      seesPermissionDenied,
+      "Teleport returned 'You do not have permission'. Ensure ArkanWolfshade's character has is_admin set in the test database."
+    ).toBe(false);
+
+    // Verify Ithaqua sees teleportation message (server sends with trailing period; admin name is character name)
+    await waitForCrossPlayerMessage(ithaquaContext, /You are teleported to the south by .+\.?/, 30000);
     const ithaquaMessages = await getPlayerMessages(ithaquaContext);
-    const seesTeleportMessage = ithaquaMessages.some(
-      msg => msg.includes('teleported') || msg.includes('ArkanWolfshade')
-    );
+    const seesTeleportMessage = ithaquaMessages.some(msg => /teleported.*south/.test(msg));
     expect(seesTeleportMessage).toBe(true);
   });
 
   test('Ithaqua should not be able to teleport AW', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const _awContext = contexts[0];
+    const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    // Ithaqua tries to teleport AW (should fail - not admin)
-    await executeCommand(ithaquaContext.page, 'teleport ArkanWolfshade west');
+    // Target by character name so server finds AW and returns permission denied (not "not found")
+    await awContext.page.getByTestId('current-character-name').waitFor({ state: 'visible', timeout: 10000 });
+    const awCharName =
+      (await awContext.page.getByTestId('current-character-name').textContent())?.trim() ?? 'ArkanWolfshade';
 
-    // Wait for error message
-    await waitForMessage(ithaquaContext.page, 'You do not have permission', 10000).catch(() => {
-      // Error may not appear if message format differs
-    });
+    await executeCommand(ithaquaContext.page, `teleport ${awCharName} west`);
 
-    // Verify error message appears
+    await waitForMessage(ithaquaContext.page, /do not have permission|not found/, 10000).catch(() => {});
+
     const ithaquaMessages = await getPlayerMessages(ithaquaContext);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const _seesError = ithaquaMessages.some(
-      msg => msg.includes('permission') || msg.includes('admin') || msg.includes('not allowed')
+    const seesError = ithaquaMessages.some(
+      msg => msg.includes('permission') || msg.includes('not allowed') || msg.includes('not found')
     );
-    // This test verifies permission check exists
-    expect(ithaquaMessages.length).toBeGreaterThan(0);
+    expect(seesError).toBe(true);
   });
 });

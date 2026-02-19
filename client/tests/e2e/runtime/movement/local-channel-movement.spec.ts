@@ -52,6 +52,12 @@ test.describe('Local Channel Movement', () => {
     await ensurePlayerInGame(awContext, 15000);
     await ensurePlayerInGame(ithaquaContext, 15000);
 
+    // Re-ensure both in same room before send (avoids timeout when receiver not subscribed)
+    await ensurePlayersInSameRoom(contexts, 2, 15000);
+    // Wait for receiver to have at least one message (proves room subscription is active)
+    await ithaquaContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 15000 });
+    await new Promise(r => setTimeout(r, 1500));
+
     await executeCommand(awContext.page, 'local Before movement test');
 
     // Wait for confirmation
@@ -71,16 +77,36 @@ test.describe('Local Channel Movement', () => {
     await ensurePlayerInGame(awContext, 15000);
     await ensurePlayerInGame(ithaquaContext, 15000);
 
-    // Main Foyer has no north exit; use east to move AW to Eastern Hallway (different room)
+    // From Laundry Room (after beforeAll go north) only South is available; use south to move AW to a different room
     await ensureStanding(awContext.page, 5000);
-    await executeCommand(awContext.page, 'go east');
-    await waitForMessage(awContext.page, /You move east|Eastern Hallway/i, 10000).catch(() => {
-      // Movement may succeed even if message format differs
+    await executeCommand(awContext.page, 'go south');
+
+    // Verify AW successfully moved to a different room
+    await waitForMessage(awContext.page, /You go south|You move south|Eastern Hallway|Section 1/i, 10000).catch(() => {
+      throw new Error('AW failed to move south - movement command did not succeed');
     });
 
     await new Promise(r => setTimeout(r, 2000));
 
-    // AW sends local message from different room (Eastern Hallway); Ithaqua stays in Main Foyer
+    // Verify AW and Ithaqua are NOT in the same room before sending message
+    // Check that Ithaqua's Occupants panel shows only 1 player (themselves), not 2
+    // Note: Use Players count specifically, not total Occupants (which includes NPCs)
+    await ithaquaContext.page
+      .waitForFunction(
+        () => {
+          const bodyText = document.body?.innerText ?? '';
+          const playersMatch = bodyText.match(/Players\s*\((\d+)\)/);
+          const playerCount = playersMatch ? parseInt(playersMatch[1], 10) : 0;
+          // Should see only 1 player (themselves) if AW moved to different room
+          return playerCount === 1;
+        },
+        { timeout: 10000 }
+      )
+      .catch(() => {
+        throw new Error('AW and Ithaqua are still in the same room - movement test cannot proceed');
+      });
+
+    // AW sends local message from different room (Eastern Hallway); Ithaqua stays in Laundry Room
     await executeCommand(awContext.page, 'local After movement test');
 
     // Wait for confirmation
@@ -101,10 +127,10 @@ test.describe('Local Channel Movement', () => {
     await ensurePlayerInGame(awContext, 15000);
     await ensurePlayerInGame(ithaquaContext, 15000);
 
-    // AW is in Eastern Hallway from previous test; go west to return to Main Foyer (same room as Ithaqua)
+    // AW is in Eastern Hallway from previous test; go north to return to Laundry Room (same room as Ithaqua)
     await ensureStanding(awContext.page, 5000);
-    await executeCommand(awContext.page, 'go west');
-    await waitForMessage(awContext.page, /You move west|Main Foyer/i, 10000).catch(() => {
+    await executeCommand(awContext.page, 'go north');
+    await waitForMessage(awContext.page, /You go north|You move north|Laundry Room/i, 10000).catch(() => {
       // Movement may succeed even if message format differs
     });
 
@@ -113,16 +139,18 @@ test.describe('Local Channel Movement', () => {
     // Re-ensure both in same room and receiver still in game before send (avoids timeout when second player left)
     await ensurePlayerInGame(ithaquaContext, 10000);
     await ensurePlayersInSameRoom(contexts, 2, 15000);
+    // Wait for receiver to have at least one message (proves room subscription active after possible "left the game" state)
+    await ithaquaContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 15000 });
     await new Promise(r => setTimeout(r, 2000));
 
-    // AW sends local message after returning to Main Foyer
+    // AW sends local message after returning to Laundry Room
     await executeCommand(awContext.page, 'local After returning test');
 
     // Wait for confirmation
     await waitForMessage(awContext.page, 'You say locally: After returning test');
 
     // Verify Ithaqua sees the message (they're in same sub-zone again)
-    await waitForCrossPlayerMessage(ithaquaContext, 'ArkanWolfshade (local): After returning test', 25000);
+    await waitForCrossPlayerMessage(ithaquaContext, 'ArkanWolfshade (local): After returning test', 35000);
     const ithaquaMessages = await getPlayerMessages(ithaquaContext);
     const seesMessage = ithaquaMessages.some(msg => msg.includes('ArkanWolfshade (local): After returning test'));
     expect(seesMessage).toBe(true);

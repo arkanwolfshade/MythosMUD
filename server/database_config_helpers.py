@@ -100,9 +100,21 @@ def normalize_database_url(database_url: str) -> str:
     return database_url
 
 
+# Default pool settings when config is unavailable (e.g. scripts with only DATABASE_URL set).
+# Matches DatabaseConfig defaults in config/models.py.
+_DEFAULT_POOL_SETTINGS: dict[str, Any] = {
+    "pool_size": 5,
+    "max_overflow": 10,
+    "pool_timeout": 30,
+}
+
+
 def configure_pool_settings(database_url: str) -> dict[str, Any]:
     """
     Configure pool settings based on database URL and config.
+
+    When full config is not available (e.g. script with only DATABASE_URL),
+    uses default pool settings so the script can run without AppConfig.
 
     Args:
         database_url: Database URL
@@ -114,15 +126,19 @@ def configure_pool_settings(database_url: str) -> dict[str, Any]:
     if "test" in database_url:
         pool_kwargs["poolclass"] = NullPool
     else:
-        from .config import get_config
+        try:
+            from .config import get_config
 
-        config = get_config()
-        db_config_dict = config.database.model_dump()
-        pool_kwargs.update(
-            {
-                "pool_size": db_config_dict["pool_size"],
-                "max_overflow": db_config_dict["max_overflow"],
-                "pool_timeout": db_config_dict["pool_timeout"],
-            }
-        )
+            config = get_config()
+            db_config_dict = config.database.model_dump()
+            pool_kwargs.update(
+                {
+                    "pool_size": db_config_dict["pool_size"],
+                    "max_overflow": db_config_dict["max_overflow"],
+                    "pool_timeout": db_config_dict["pool_timeout"],
+                }
+            )
+        except (PydanticValidationError, ImportError, RuntimeError):
+            # Script or minimal env: use defaults so DB can connect without full AppConfig
+            pool_kwargs.update(_DEFAULT_POOL_SETTINGS)
     return pool_kwargs

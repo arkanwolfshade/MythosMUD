@@ -29,9 +29,14 @@ test.describe('Local Channel Errors', () => {
     await ensurePlayerInGame(contexts[1], 60000);
 
     // Local channel tests require both players in same room. Co-locate via admin teleport (reliable).
-    const [awContext] = contexts;
+    // Server resolves teleport target by character name; use Ithaqua's current character name.
+    const [awContext, ithaquaContext] = contexts;
+    await ithaquaContext.page.getByTestId('current-character-name').waitFor({ state: 'visible', timeout: 15000 });
+    const ithaquaCharacterName =
+      (await ithaquaContext.page.getByTestId('current-character-name').textContent())?.trim() || 'Ithaqua';
+
     await ensureStanding(awContext.page, 10000);
-    await executeCommand(awContext.page, 'teleport Ithaqua');
+    await executeCommand(awContext.page, `teleport ${ithaquaCharacterName}`);
     await new Promise(r => setTimeout(r, 3000));
     await ensurePlayersInSameRoom(contexts, 2, 60000);
   });
@@ -107,10 +112,13 @@ test.describe('Local Channel Errors', () => {
 
     await ensurePlayerInGame(awContext, 15000);
     await ensurePlayerInGame(ithaquaContext, 15000);
-    await ensurePlayersInSameRoom(contexts, 2, 15000);
-    // Re-ensure co-location immediately before sending (local is room-scoped; if receiver left room we'd timeout).
-    await ensurePlayerInGame(ithaquaContext, 10000);
-    await ensurePlayersInSameRoom(contexts, 2, 10000);
+    // Re-teleport Ithaqua to AW so we're co-located (previous tests may have left them in different rooms)
+    const ithaquaCharName =
+      (await ithaquaContext.page.getByTestId('current-character-name').textContent())?.trim() || 'Ithaqua';
+    await ensureStanding(awContext.page, 5000);
+    await executeCommand(awContext.page, `teleport ${ithaquaCharName}`);
+    await new Promise(r => setTimeout(r, 4000));
+    await ensurePlayersInSameRoom(contexts, 2, 20000);
     await new Promise(r => setTimeout(r, 2000));
 
     // Test special characters
@@ -193,7 +201,15 @@ test.describe('Local Channel Errors', () => {
 
     await ensurePlayerInGame(awContext, 15000);
     await ensurePlayerInGame(ithaquaContext, 15000);
-    await ensurePlayersInSameRoom(contexts, 2, 15000);
+    // Re-teleport so Ithaqua is in same room (earlier tests may show "Ithaqua has left the game")
+    const ithaquaName =
+      (await ithaquaContext.page.getByTestId('current-character-name').textContent())?.trim() || 'Ithaqua';
+    await ensureStanding(awContext.page, 5000);
+    await executeCommand(awContext.page, `teleport ${ithaquaName}`);
+    await new Promise(r => setTimeout(r, 4000));
+    await ensurePlayersInSameRoom(contexts, 2, 20000);
+    await ithaquaContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 15000 });
+    await new Promise(r => setTimeout(r, 1500));
 
     // Send valid local message after errors
     await executeCommand(awContext.page, 'local Valid message after errors');

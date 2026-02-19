@@ -157,8 +157,11 @@ class TestRollCharacterStats:
 
         request_data = RollStatsRequest(method="4d6", profession_id=1)
         mock_profession = MagicMock()
-        mock_stats_generator.roll_stats_with_profession = Mock(return_value=(mock_stats, True))
-        mock_stats_generator.get_stat_summary = Mock(return_value={"total_points": 60, "average_stat": 10.0})
+        mock_profession.get_stat_modifiers = Mock(return_value=[])
+        mock_stats_generator.roll_stats = Mock(return_value=mock_stats)
+        mock_stats_generator.get_stat_summary = Mock(
+            return_value={"total_points": 60, "average_stat": 10.0, "total": 60}
+        )
 
         mock_profession_service = AsyncMock()
         mock_profession_service.validate_and_get_profession = AsyncMock(return_value=mock_profession)

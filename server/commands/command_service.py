@@ -84,6 +84,7 @@ from .position_commands import handle_lie_command, handle_sit_command, handle_st
 from .read_command import handle_read_command
 from .rescue_commands import handle_ground_command
 from .rest_command import handle_rest_command
+from .skills_commands import handle_skills_command
 from .system_commands import handle_help_command
 from .teach_command import handle_teach_command
 from .utility_commands import (
@@ -162,6 +163,7 @@ class CommandService:
             "logout": handle_logout_command,
             "status": handle_status_command,
             "time": handle_time_command,
+            "skills": handle_skills_command,
             "inventory": handle_inventory_command,
             # Magic commands
             "cast": handle_cast_command,

@@ -23,9 +23,13 @@ class StatSummary(BaseModel):
 class RollStatsResponse(BaseModel):
     """Response model for rolling character stats."""
 
-    stats: RolledStats = Field(..., description="Rolled character stats")
+    stats: RolledStats = Field(..., description="Rolled character stats (send these on create-character)")
     stat_summary: StatSummary = Field(..., description="Summary of the rolled stats")
     profession_id: int | None = Field(default=None, description="Profession ID (if profession-based rolling)")
+    stats_with_profession_modifiers: RolledStats | None = Field(
+        default=None,
+        description="Rolled stats with profession stat_modifiers applied (preview only)",
+    )
     available_classes: list[str] | None = Field(default=None, description="Available classes (if class-based rolling)")
     meets_requirements: bool | None = Field(default=None, description="Whether stats meet profession requirements")
     meets_class_requirements: bool | None = Field(default=None, description="Whether stats meet class requirements")

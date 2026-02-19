@@ -198,7 +198,6 @@ describe('Profession Selection - Different Profession Choices', () => {
     setupBasicMocks();
     render(<App />);
 
-    // Register user
     const toggleButton = screen.getByText('Need an account? Register');
     fireEvent.click(toggleButton);
 
@@ -212,7 +211,11 @@ describe('Profession Selection - Different Profession Choices', () => {
     fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
     fireEvent.click(registerButton);
 
-    // Should show profession selection
+    await waitFor(() => {
+      expect(screen.getByText('Character Creation')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByText('Accept Stats'));
+
     await waitFor(() => {
       expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
     });
@@ -237,7 +240,6 @@ describe('Profession Selection - Different Profession Choices', () => {
     setupBasicMocks();
     render(<App />);
 
-    // Register user
     const toggleButton = screen.getByText('Need an account? Register');
     fireEvent.click(toggleButton);
 
@@ -251,7 +253,11 @@ describe('Profession Selection - Different Profession Choices', () => {
     fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
     fireEvent.click(registerButton);
 
-    // Should show profession selection
+    await waitFor(() => {
+      expect(screen.getByText('Character Creation')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByText('Accept Stats'));
+
     await waitFor(() => {
       expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
     });
@@ -276,7 +282,6 @@ describe('Profession Selection - Different Profession Choices', () => {
     setupBasicMocks();
     render(<App />);
 
-    // Register user
     const toggleButton = screen.getByText('Need an account? Register');
     fireEvent.click(toggleButton);
 
@@ -290,7 +295,11 @@ describe('Profession Selection - Different Profession Choices', () => {
     fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
     fireEvent.click(registerButton);
 
-    // Should show profession selection
+    await waitFor(() => {
+      expect(screen.getByText('Character Creation')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByText('Accept Stats'));
+
     await waitFor(() => {
       expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
     });
@@ -313,7 +322,6 @@ describe('Profession Selection - Different Profession Choices', () => {
     setupBasicMocks();
     render(<App />);
 
-    // Register user
     const toggleButton = screen.getByText('Need an account? Register');
     fireEvent.click(toggleButton);
 
@@ -327,7 +335,11 @@ describe('Profession Selection - Different Profession Choices', () => {
     fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
     fireEvent.click(registerButton);
 
-    // Should show profession selection
+    await waitFor(() => {
+      expect(screen.getByText('Character Creation')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByText('Accept Stats'));
+
     await waitFor(() => {
       expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
     });
@@ -350,7 +362,6 @@ describe('Profession Selection - Different Profession Choices', () => {
     setupBasicMocks();
     render(<App />);
 
-    // Register user
     const toggleButton = screen.getByText('Need an account? Register');
     fireEvent.click(toggleButton);
 
@@ -364,7 +375,11 @@ describe('Profession Selection - Different Profession Choices', () => {
     fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
     fireEvent.click(registerButton);
 
-    // Should show profession selection
+    await waitFor(() => {
+      expect(screen.getByText('Character Creation')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByText('Accept Stats'));
+
     await waitFor(() => {
       expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
     });
@@ -387,7 +402,6 @@ describe('Profession Selection - Different Profession Choices', () => {
     setupBasicMocks();
     render(<App />);
 
-    // Register user
     const toggleButton = screen.getByText('Need an account? Register');
     fireEvent.click(toggleButton);
 
@@ -401,7 +415,11 @@ describe('Profession Selection - Different Profession Choices', () => {
     fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
     fireEvent.click(registerButton);
 
-    // Should show profession selection
+    await waitFor(() => {
+      expect(screen.getByText('Character Creation')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByText('Accept Stats'));
+
     await waitFor(() => {
       expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
     });
@@ -446,7 +464,6 @@ describe('Profession Selection - Different Profession Choices', () => {
     setupBasicMocks();
     render(<App />);
 
-    // Register user
     const toggleButton = screen.getByText('Need an account? Register');
     fireEvent.click(toggleButton);
 
@@ -460,7 +477,11 @@ describe('Profession Selection - Different Profession Choices', () => {
     fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
     fireEvent.click(registerButton);
 
-    // Should show profession selection
+    await waitFor(() => {
+      expect(screen.getByText('Character Creation')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByText('Accept Stats'));
+
     await waitFor(() => {
       expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
     });

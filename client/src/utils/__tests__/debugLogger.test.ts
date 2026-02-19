@@ -47,7 +47,7 @@ describe('debugLogger', () => {
         value: { ...originalImportMeta, PROD: false, DEV: true },
         writable: true,
       });
-      const logger = debugLogger('TestComponent');
+      const logger = debugLogger('TestComponent', { level: 'DEBUG' });
 
       logger.debug('Test debug message', { test: 'data' });
 
@@ -130,7 +130,7 @@ describe('debugLogger', () => {
     });
 
     it('should log info messages correctly', () => {
-      const logger = debugLogger('TestComponent');
+      const logger = debugLogger('TestComponent', { level: 'INFO' });
 
       logger.info('Test info message', { info: 'data' });
 
@@ -173,7 +173,7 @@ describe('debugLogger', () => {
     });
 
     it('should include timestamp in log format', () => {
-      const logger = debugLogger('TestComponent');
+      const logger = debugLogger('TestComponent', { level: 'INFO' });
       const beforeTime = new Date().toISOString();
 
       logger.info('Test message');
@@ -190,7 +190,7 @@ describe('debugLogger', () => {
     });
 
     it('should include component name in log format', () => {
-      const logger = debugLogger('MyComponent');
+      const logger = debugLogger('MyComponent', { level: 'INFO' });
 
       logger.info('Test message');
 
@@ -198,7 +198,7 @@ describe('debugLogger', () => {
     });
 
     it('should handle messages without data', () => {
-      const logger = debugLogger('TestComponent');
+      const logger = debugLogger('TestComponent', { level: 'INFO' });
 
       logger.info('Simple message');
 
@@ -246,7 +246,7 @@ describe('debugLogger', () => {
     });
 
     it('should add entries to log buffer', () => {
-      const logger = debugLogger('TestComponent');
+      const logger = debugLogger('TestComponent', { level: 'INFO' });
       logger.info('Test message', { data: 'test' });
 
       const buffer = logger.getLogBuffer();
@@ -256,7 +256,7 @@ describe('debugLogger', () => {
     });
 
     it('should clear log buffer', () => {
-      const logger = debugLogger('TestComponent');
+      const logger = debugLogger('TestComponent', { level: 'INFO' });
       logger.info('Test message 1');
       logger.info('Test message 2');
 
@@ -268,7 +268,7 @@ describe('debugLogger', () => {
     });
 
     it('should trim buffer when it exceeds max size', () => {
-      const logger = debugLogger('TestComponent');
+      const logger = debugLogger('TestComponent', { level: 'INFO' });
       // Fill buffer beyond max size (1000)
       for (let i = 0; i < 1500; i++) {
         logger.info(`Message ${i}`);
@@ -280,7 +280,7 @@ describe('debugLogger', () => {
     });
 
     it('should get logs as formatted string', () => {
-      const logger = debugLogger('TestComponent');
+      const logger = debugLogger('TestComponent', { level: 'INFO' });
       logger.info('Test message 1', { key: 'value' });
       logger.warn('Test message 2');
 
@@ -291,7 +291,7 @@ describe('debugLogger', () => {
     });
 
     it('should get logs as formatted string without data', () => {
-      const logger = debugLogger('TestComponent');
+      const logger = debugLogger('TestComponent', { level: 'INFO' });
       logger.info('Test message');
 
       const logsString = logger.getLogsAsString();
@@ -311,18 +311,18 @@ describe('debugLogger', () => {
 
     it('should set and get log level', () => {
       const logger = debugLogger('TestComponent');
-      expect(logger.getLogLevel()).toBe('DEBUG');
-
-      logger.setLogLevel('WARN');
+      // In Vitest default level is WARN (reduces test output)
       expect(logger.getLogLevel()).toBe('WARN');
+
+      logger.setLogLevel('DEBUG');
+      expect(logger.getLogLevel()).toBe('DEBUG');
 
       logger.setLogLevel('ERROR');
       expect(logger.getLogLevel()).toBe('ERROR');
     });
 
     it('should respect log level when filtering messages', () => {
-      const logger = debugLogger('TestComponent');
-      logger.setLogLevel('WARN');
+      const logger = debugLogger('TestComponent', { level: 'WARN' });
 
       logger.debug('Debug message');
       logger.info('Info message');
@@ -346,7 +346,7 @@ describe('debugLogger', () => {
     });
 
     it('should not log to console when enableConsole is false', () => {
-      const logger = debugLogger('TestComponent', { enableConsole: false });
+      const logger = debugLogger('TestComponent', { enableConsole: false, level: 'INFO' });
       logger.info('Test message');
 
       expect(mockConsole.log).not.toHaveBeenCalled();
@@ -355,7 +355,7 @@ describe('debugLogger', () => {
     });
 
     it('should log to console when enableConsole is true', () => {
-      const logger = debugLogger('TestComponent', { enableConsole: true });
+      const logger = debugLogger('TestComponent', { enableConsole: true, level: 'INFO' });
       logger.info('Test message');
 
       expect(mockConsole.log).toHaveBeenCalled();
@@ -392,7 +392,7 @@ describe('debugLogger', () => {
     });
 
     it('should download logs when buffer has entries', () => {
-      const logger = debugLogger('TestComponent');
+      const logger = debugLogger('TestComponent', { level: 'INFO' });
       logger.info('Test message 1');
       logger.warn('Test message 2');
 
@@ -423,7 +423,7 @@ describe('debugLogger', () => {
     });
 
     it('should handle download errors gracefully', () => {
-      const logger = debugLogger('TestComponent');
+      const logger = debugLogger('TestComponent', { level: 'INFO' });
       logger.info('Test message');
 
       // Mock URL.createObjectURL to throw an error
@@ -452,21 +452,13 @@ describe('debugLogger', () => {
       expect(['DEBUG', 'INFO', 'WARN', 'ERROR']).toContain(level);
     });
 
-    it.skip('should return WARN in production when VITE_LOG_LEVEL is not set', () => {
-      // import.meta.env cannot be reliably overridden at runtime in Vitest; verified at build time.
-    });
+    // VITE_LOG_LEVEL / production WARN behavior not tested here: import.meta.env cannot be
+    // reliably overridden at runtime in Vitest; verified at build time.
 
-    it('should return DEBUG in development when VITE_LOG_LEVEL is not set', () => {
-      Object.defineProperty(import.meta, 'env', {
-        value: { ...originalImportMeta, PROD: false, DEV: true },
-        writable: true,
-      });
-      const logger = debugLogger('TestComponent');
+    it('should return DEBUG when explicitly configured', () => {
+      // In Vitest, getDefaultLogLevel() returns WARN; config override is reliable
+      const logger = debugLogger('TestComponent', { level: 'DEBUG' });
       expect(logger.getLogLevel()).toBe('DEBUG');
-    });
-
-    it.skip('should return custom level from VITE_LOG_LEVEL when valid', () => {
-      // import.meta.env cannot be reliably overridden at runtime in Vitest; verified at build time.
     });
   });
 });

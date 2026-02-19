@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ChatMessage } from '../../stores/gameStore';
 import { GameTerminalPresentation, GameTerminalPresentationProps } from '../GameTerminalPresentation';
@@ -273,42 +273,7 @@ describe('GameTerminalPresentation', () => {
       expect(screen.getByText('10')).toBeInTheDocument();
     });
 
-    it.skip('should display message and command counts in status panel', () => {
-      // UI changed: GameTerminalPresentation no longer shows message/command counts in status panel.
-      render(<GameTerminalPresentation {...defaultProps} />);
-
-      expect(screen.getByText('Messages:')).toBeInTheDocument();
-      // Look for the specific message count in the status panel context
-      const messagesLabel = screen.getByText('Messages:');
-      const messagesValue = messagesLabel.parentElement?.querySelector('span:last-child');
-      expect(messagesValue).toHaveTextContent('1');
-
-      expect(screen.getByText('Commands:')).toBeInTheDocument();
-      // Look for the specific command count in the status panel context
-      const commandsLabel = screen.getByText('Commands:');
-      const commandsValue = commandsLabel.parentElement?.querySelector('span:last-child');
-      expect(commandsValue).toHaveTextContent('3');
-    });
-  });
-
-  describe.skip('MOTD Overlay', () => {
-    // MOTD moved to App.tsx; these tests are outdated.
-    it('should show MOTD overlay by default', () => {
-      render(<GameTerminalPresentation {...defaultProps} />);
-
-      expect(screen.getByTestId('motd-content')).toBeInTheDocument();
-    });
-
-    it('should hide MOTD overlay when continue button is clicked', async () => {
-      render(<GameTerminalPresentation {...defaultProps} />);
-
-      const continueButton = screen.getByText('Continue');
-      fireEvent.click(continueButton);
-
-      await waitFor(() => {
-        expect(screen.queryByTestId('motd-content')).not.toBeInTheDocument();
-      });
-    });
+    // Message/command counts and MOTD overlay moved elsewhere; no longer part of GameTerminalPresentation.
   });
 
   describe('Panel Interactions', () => {

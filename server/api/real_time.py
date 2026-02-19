@@ -274,7 +274,16 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
             websocket, player_id, session_id, connection_manager=connection_manager, token=token
         )
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: WebSocket errors unpredictable, must log and re-raise
-        logger.error("Error in WebSocket endpoint", player_id=player_id, error=str(e), exc_info=True)
+        from starlette.websockets import WebSocketDisconnect
+
+        # Client disconnect (e.g. E2E tab close) is expected; log at debug to avoid polluting errors.log
+        is_client_gone = isinstance(e, WebSocketDisconnect) or (
+            isinstance(e, RuntimeError) and "close message has been sent" in str(e)
+        )
+        if is_client_gone:
+            logger.debug("WebSocket client disconnected", player_id=player_id, error=str(e))
+        else:
+            logger.error("Error in WebSocket endpoint", player_id=player_id, error=str(e), exc_info=True)
         raise
 
 
