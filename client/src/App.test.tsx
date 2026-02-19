@@ -43,7 +43,13 @@ vi.mock('./components/StatsRollingScreen', () => ({
       <div data-testid="stats-rolling-screen">
         <h2>Character Creation</h2>
         {error && <div className="error-message">{error}</div>}
-        <button onClick={() => onStatsAccepted({ strength: 10 })}>Accept Stats</button>
+        <button
+          onClick={() => {
+            onStatsAccepted({ strength: 10 });
+          }}
+        >
+          Accept Stats
+        </button>
         <button onClick={handleError}>Trigger Error</button>
       </div>
     );
@@ -1090,7 +1096,7 @@ describe('App', () => {
 
   describe('Loading States', () => {
     it('should show loading state during login', async () => {
-      let resolveLogin: (value: Response) => void;
+      let resolveLogin!: (value: Response) => void;
       const loginPromise = new Promise<Response>(resolve => {
         resolveLogin = resolve;
       });
@@ -1133,7 +1139,7 @@ describe('App', () => {
       });
       expect(screen.getByRole('button', { name: 'Authenticating…' })).toBeDisabled();
 
-      resolveLogin!(mockResponse as unknown as Response);
+      resolveLogin(mockResponse as unknown as Response);
       await waitFor(() => {
         expect(
           screen.queryByRole('heading', { name: /Select Your Character/i }) ?? screen.queryByTestId('game-terminal')

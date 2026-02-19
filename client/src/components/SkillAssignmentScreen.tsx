@@ -176,7 +176,9 @@ export const SkillAssignmentScreen: React.FC<SkillAssignmentScreenProps> = ({
               <label>{value}%</label>
               <select
                 value={occupationSlots[i] ?? ''}
-                onChange={e => setOccupationSlot(i, e.target.value ? Number(e.target.value) : null)}
+                onChange={e => {
+                  setOccupationSlot(i, e.target.value ? Number(e.target.value) : null);
+                }}
               >
                 <option value="">Select skill...</option>
                 {options.map(s => (
@@ -200,7 +202,9 @@ export const SkillAssignmentScreen: React.FC<SkillAssignmentScreenProps> = ({
               <label>Personal {i + 1}</label>
               <select
                 value={personalInterest[i] ?? ''}
-                onChange={e => setPersonalSlot(i, e.target.value ? Number(e.target.value) : null)}
+                onChange={e => {
+                  setPersonalSlot(i, e.target.value ? Number(e.target.value) : null);
+                }}
               >
                 <option value="">Select skill...</option>
                 {options.map(s => (

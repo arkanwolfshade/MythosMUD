@@ -1220,7 +1220,9 @@ function App() {
                 setPendingSkillsPayload(payload);
                 setCreationStep('name');
               }}
-              onBack={() => setCreationStep('profession')}
+              onBack={() => {
+                setCreationStep('profession');
+              }}
               onError={handleStatsError}
             />
           </Suspense>
@@ -1239,7 +1241,9 @@ function App() {
               authToken={authToken}
               onComplete={handleCreationComplete}
               onError={handleStatsError}
-              onBack={() => setCreationStep('skills')}
+              onBack={() => {
+                setCreationStep('skills');
+              }}
             />
           </Suspense>
         </div>

@@ -23,6 +23,7 @@ test.describe('Revised Character Creation', () => {
       await page.close();
     }
   });
+
   test('should complete stats → profession → skills → name → create and show character', async ({ page }) => {
     const loginPage = new LoginPage(page);
     await loginPage.navigate();

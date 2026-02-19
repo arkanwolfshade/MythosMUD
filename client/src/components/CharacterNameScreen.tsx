@@ -4,10 +4,10 @@
  */
 
 import React, { useState } from 'react';
+import type { Stats } from '../hooks/useStatsRolling.js';
 import { getErrorMessage, isErrorResponse } from '../utils/errorHandler.js';
 import { logger } from '../utils/logger.js';
 import type { Profession } from './ProfessionCard.jsx';
-import type { Stats } from '../hooks/useStatsRolling.js';
 
 export interface OccupationSlotPayload {
   skill_id: number;
@@ -116,7 +116,9 @@ export const CharacterNameScreen: React.FC<CharacterNameScreenProps> = ({
             id="character-name-input"
             type="text"
             value={name}
-            onChange={e => setName(e.target.value)}
+            onChange={e => {
+              setName(e.target.value);
+            }}
             placeholder="Enter name"
             maxLength={50}
             minLength={1}

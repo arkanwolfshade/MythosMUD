@@ -134,7 +134,9 @@ export const SkillsPage: React.FC = () => {
         <div className="mt-8">
           <button
             type="button"
-            onClick={() => window.close()}
+            onClick={() => {
+              window.close();
+            }}
             className="px-4 py-2 bg-mythos-terminal-primary text-white rounded hover:bg-mythos-terminal-primary/80"
           >
             Close
