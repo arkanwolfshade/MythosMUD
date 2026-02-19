@@ -71,10 +71,6 @@ GRANT USAGE ON SCHEMA public TO mythos_app_e2e;
 ALTER DEFAULT PRIVILEGES FOR ROLE mythos_owner_e2e IN SCHEMA public
     GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO mythos_app_e2e;
 ALTER DEFAULT PRIVILEGES FOR ROLE mythos_owner_e2e IN SCHEMA public
-    -- nosemgrep: Semgrep_codacy.generic.sql.rac-table-access
-    -- This is a GRANT statement on SEQUENCES, not a table query.
-    -- The RAC rule applies to SELECT/INSERT/UPDATE/DELETE queries on tables,
-    -- not to DDL statements granting permissions on sequences.
     GRANT USAGE, SELECT, UPDATE ON SEQUENCES TO mythos_app_e2e;
 ALTER DEFAULT PRIVILEGES FOR ROLE mythos_owner_e2e IN SCHEMA public
     GRANT EXECUTE ON FUNCTIONS TO mythos_app_e2e;
