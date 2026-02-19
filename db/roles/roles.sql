@@ -27,6 +27,10 @@ BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'mythos_app_dev') THEN
         CREATE ROLE mythos_app_dev NOLOGIN;
     END IF;
+    -- nosemgrep: Semgrep_codacy.generic.sql.rac-table-access
+    -- This queries pg_roles (PostgreSQL system catalog), not application data tables.
+    -- The RAC rule applies to SELECT/INSERT/UPDATE/DELETE queries on data tables,
+    -- not to system catalog queries for role management.
     IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'mythos_app_unit') THEN
         CREATE ROLE mythos_app_unit NOLOGIN;
     END IF;

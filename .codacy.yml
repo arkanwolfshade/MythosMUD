@@ -176,6 +176,10 @@ ignore_patterns:
       - "client/src/**/*.css"
   # GLOBAL: RAC_* table rules (Opengrep / Semgrep) - this project does not use RAC_ prefix.
   # Tables use standard names (container_contents, zones, players, etc.). Ignore everywhere.
+  # SQL: RAC_TABLE_REQUIRED false positives in migration and configuration files:
+  # - PostgreSQL configuration commands (SET)
+  # - Comment lines
+  # - DO blocks for verification (not data queries)
   - pattern_id: "sql:RAC_TABLE_REQUIRED"
     file_paths:
       - "**"
