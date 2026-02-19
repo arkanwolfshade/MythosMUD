@@ -10,7 +10,7 @@ MythosMUD uses a **hybrid E2E testing approach**:
 
 **Location**: `client/tests/e2e/runtime/`
 
-**Execution**: `make test-client-runtime` or `npm run test:e2e:runtime`
+**Execution**: `make test-playwright` or `npm run test:e2e:runtime`
 
 **Runtime**: <5 minutes for all automated tests
 

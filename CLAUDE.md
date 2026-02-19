@@ -226,7 +226,7 @@ When dealing with technical jargon and programming design, do not use "master"; 
 
 ### CRITICAL: Enhanced Logging System
 
-**ALWAYS use**: `from server.logging.enhanced_logging_config import get_logger`
+**ALWAYS use**: `from server.structured_logging.enhanced_logging_config import get_logger`
 
 **NEVER use**: `import logging` or `logging.getLogger()` - these will cause failures
 
@@ -246,7 +246,7 @@ Use structured logging with key-value pairs: `logger.info("message", key=value)`
 ```python
 # ✅ CORRECT - Enhanced logging import
 
-from server.logging.enhanced_logging_config import get_logger
+from server.structured_logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 
 # ✅ CORRECT - Structured logging with key-value pairs
