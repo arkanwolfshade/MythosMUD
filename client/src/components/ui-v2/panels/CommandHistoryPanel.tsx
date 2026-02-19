@@ -32,7 +32,6 @@ export const CommandHistoryPanel: React.FC<CommandHistoryPanelProps> = ({
       <div className="flex-1 overflow-y-auto p-3 space-y-1 min-h-panel-sm">
         {commandHistory.length === 0 ? (
           <div className="text-center text-mythos-terminal-text-secondary py-4">
-            <EldritchIcon name={MythosIcons.command} size={24} className="mx-auto mb-2 opacity-50" />
             <p className="text-xs">No commands yet</p>
           </div>
         ) : (

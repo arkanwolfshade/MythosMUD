@@ -135,10 +135,10 @@ describe('ChatPanel', () => {
     it('renders chat panel with all sections', () => {
       render(<ChatPanel {...defaultProps} />);
 
-      expect(screen.getByText('Chat')).toBeInTheDocument();
+      expect(screen.getByLabelText('Channel Selection')).toBeInTheDocument();
       expect(screen.getByTestId('channel-selector')).toBeInTheDocument();
-      expect(screen.getByPlaceholderText('Type your message here...')).toBeInTheDocument();
-      expect(screen.getByText('Send')).toBeInTheDocument();
+      expect(screen.getByPlaceholderText('Search messages...')).toBeInTheDocument();
+      expect(screen.getByText('Chat History')).toBeInTheDocument();
     });
 
     it('displays messages correctly', () => {

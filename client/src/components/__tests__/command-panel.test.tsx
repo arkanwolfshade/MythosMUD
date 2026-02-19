@@ -66,8 +66,8 @@ describe('CommandPanel (components)', () => {
     it('renders command panel with header', () => {
       render(<CommandPanel {...defaultProps} />);
 
-      expect(screen.getByText('Commands')).toBeInTheDocument();
       expect(screen.getByTestId('command-panel')).toBeInTheDocument();
+      expect(screen.getByText('Recent Commands')).toBeInTheDocument();
     });
 
     it('displays command input field', () => {

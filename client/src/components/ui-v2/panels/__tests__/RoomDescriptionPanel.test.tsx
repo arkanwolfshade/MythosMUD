@@ -1,7 +1,7 @@
-import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { RoomDescriptionPanel } from '../RoomDescriptionPanel';
+import { describe, expect, it } from 'vitest';
 import type { Room } from '../../types';
+import { RoomDescriptionPanel } from '../RoomDescriptionPanel';
 
 describe('RoomDescriptionPanel', () => {
   describe('rendering', () => {
@@ -19,7 +19,6 @@ describe('RoomDescriptionPanel', () => {
       };
 
       render(<RoomDescriptionPanel room={room} />);
-      expect(screen.getByText('Description')).toBeInTheDocument();
       expect(screen.getByText('This is a test room description.')).toBeInTheDocument();
     });
 

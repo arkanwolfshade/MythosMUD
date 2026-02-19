@@ -66,7 +66,7 @@ describe('CommandPanel', () => {
     it('renders command panel with header', () => {
       render(<CommandPanel {...defaultProps} />);
 
-      expect(screen.getByText('Commands')).toBeInTheDocument();
+      expect(screen.getByTestId('command-panel')).toBeInTheDocument();
       expect(screen.getByTestId('icon-command')).toBeInTheDocument();
     });
 

@@ -23,7 +23,6 @@ export const RoomDescriptionPanel: React.FC<RoomDescriptionPanelProps> = ({ room
 
   return (
     <div className="p-4 space-y-2">
-      <div className="text-sm font-bold text-mythos-terminal-primary">Description</div>
       <div className="text-sm text-mythos-terminal-text leading-relaxed whitespace-pre-wrap">
         {formatDescription(room.description)}
       </div>
