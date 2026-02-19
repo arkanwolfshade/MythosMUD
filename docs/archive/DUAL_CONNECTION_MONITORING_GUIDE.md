@@ -42,6 +42,7 @@ This guide provides comprehensive documentation for monitoring and logging the d
 **Visualization**: Grafana
 
 **Alerting**: Alertmanager
+
 - **Logging**: Structured logging with JSON format
 - **Health Checks**: Custom health endpoints
 
@@ -852,63 +853,63 @@ async def send_personal_message(self, player_id: str, message: Dict[str, Any]) -
 
 ```yaml
 groups:
-- name: mythos_connection_alerts
-  rules:
-  - alert: HighConnectionFailureRate
-    expr: rate(mythos_connection_failures_total[5m]) > 0.1
-    for: 2m
-    labels:
-      severity: warning
-    annotations:
-      summary: "High connection failure rate detected"
-      description: "Connection failure rate is {{ $value }} failures per second"
+  - name: mythos_connection_alerts
+    rules:
+      - alert: HighConnectionFailureRate
+        expr: rate(mythos_connection_failures_total[5m]) > 0.1
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High connection failure rate detected"
+          description: "Connection failure rate is {{ $value }} failures per second"
 
-  - alert: LowConnectionHealth
-    expr: mythos_connection_health_percentage < 90
-    for: 1m
-    labels:
-      severity: critical
-    annotations:
-      summary: "Connection health is low"
-      description: "Connection health is {{ $value }}%"
+      - alert: LowConnectionHealth
+        expr: mythos_connection_health_percentage < 90
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Connection health is low"
+          description: "Connection health is {{ $value }}%"
 
-  - alert: HighMemoryUsage
-    expr: mythos_memory_usage_percent > 85
-    for: 5m
-    labels:
-      severity: warning
-    annotations:
-      summary: "High memory usage detected"
-      description: "Memory usage is {{ $value }}%"
+      - alert: HighMemoryUsage
+        expr: mythos_memory_usage_percent > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage detected"
+          description: "Memory usage is {{ $value }}%"
 
-  - alert: HighErrorRate
-    expr: rate(mythos_errors_total[5m]) > 0.05
-    for: 2m
-    labels:
-      severity: warning
-    annotations:
-      summary: "High error rate detected"
-      description: "Error rate is {{ $value }} errors per second"
+      - alert: HighErrorRate
+        expr: rate(mythos_errors_total[5m]) > 0.05
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is {{ $value }} errors per second"
 
-- name: mythos_performance_alerts
-  rules:
-  - alert: SlowConnectionEstablishment
-    expr: histogram_quantile(0.95, mythos_connection_establishment_seconds) > 2
-    for: 5m
-    labels:
-      severity: warning
-    annotations:
-      summary: "Slow connection establishment"
-      description: "95th percentile connection establishment time is {{ $value }}s"
+  - name: mythos_performance_alerts
+    rules:
+      - alert: SlowConnectionEstablishment
+        expr: histogram_quantile(0.95, mythos_connection_establishment_seconds) > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Slow connection establishment"
+          description: "95th percentile connection establishment time is {{ $value }}s"
 
-  - alert: SlowMessageDelivery
-    expr: histogram_quantile(0.95, mythos_message_delivery_seconds) > 0.5
-    for: 5m
-    labels:
-      severity: warning
-    annotations:
-      summary: "Slow message delivery"
-      description: "95th percentile message delivery time is {{ $value }}s"
+      - alert: SlowMessageDelivery
+        expr: histogram_quantile(0.95, mythos_message_delivery_seconds) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Slow message delivery"
+          description: "95th percentile message delivery time is {{ $value }}s"
 ```
 
 ### Alertmanager Configuration
@@ -917,52 +918,52 @@ groups:
 
 ```yaml
 global:
-  smtp_smarthost: 'localhost:587'
-  smtp_from: 'alerts@yourdomain.com'
+  smtp_smarthost: "localhost:587"
+  smtp_from: "alerts@yourdomain.com"
 
 route:
-  group_by: ['alertname']
+  group_by: ["alertname"]
   group_wait: 10s
   group_interval: 10s
   repeat_interval: 1h
-  receiver: 'web.hook'
+  receiver: "web.hook"
   routes:
-  - match:
-      severity: critical
-    receiver: 'critical-alerts'
-  - match:
-      severity: warning
-    receiver: 'warning-alerts'
+    - match:
+        severity: critical
+      receiver: "critical-alerts"
+    - match:
+        severity: warning
+      receiver: "warning-alerts"
 
 receivers:
-- name: 'web.hook'
-  webhook_configs:
-  - url: 'http://localhost:5001/'
+  - name: "web.hook"
+    webhook_configs:
+      - url: "http://localhost:5001/"
 
-- name: 'critical-alerts'
-  email_configs:
-  - to: 'admin@yourdomain.com'
-    subject: 'CRITICAL: {{ .GroupLabels.alertname }}'
-    body: |
-      {{ range .Alerts }}
-      Alert: {{ .Annotations.summary }}
-      Description: {{ .Annotations.description }}
-      {{ end }}
-  slack_configs:
-  - api_url: 'YOUR_SLACK_WEBHOOK_URL'
-    channel: '#alerts'
-    title: 'CRITICAL Alert'
-    text: '{{ range .Alerts }}{{ .Annotations.summary }}{{ end }}'
+  - name: "critical-alerts"
+    email_configs:
+      - to: "admin@yourdomain.com"
+        subject: "CRITICAL: {{ .GroupLabels.alertname }}"
+        body: |
+          {{ range .Alerts }}
+          Alert: {{ .Annotations.summary }}
+          Description: {{ .Annotations.description }}
+          {{ end }}
+    slack_configs:
+      - api_url: "YOUR_SLACK_WEBHOOK_URL"
+        channel: "#alerts"
+        title: "CRITICAL Alert"
+        text: "{{ range .Alerts }}{{ .Annotations.summary }}{{ end }}"
 
-- name: 'warning-alerts'
-  email_configs:
-  - to: 'dev-team@yourdomain.com'
-    subject: 'WARNING: {{ .GroupLabels.alertname }}'
-    body: |
-      {{ range .Alerts }}
-      Alert: {{ .Annotations.summary }}
-      Description: {{ .Annotations.description }}
-      {{ end }}
+  - name: "warning-alerts"
+    email_configs:
+      - to: "dev-team@yourdomain.com"
+        subject: "WARNING: {{ .GroupLabels.alertname }}"
+        body: |
+          {{ range .Alerts }}
+          Alert: {{ .Annotations.summary }}
+          Description: {{ .Annotations.description }}
+          {{ end }}
 ```
 
 ## Dashboard Configuration
@@ -992,9 +993,9 @@ receivers:
             },
             "thresholds": {
               "steps": [
-                {"color": "green", "value": null},
-                {"color": "yellow", "value": 100},
-                {"color": "red", "value": 200}
+                { "color": "green", "value": null },
+                { "color": "yellow", "value": 100 },
+                { "color": "red", "value": 200 }
               ]
             }
           }
@@ -1015,9 +1016,9 @@ receivers:
             "max": 100,
             "thresholds": {
               "steps": [
-                {"color": "red", "value": 0},
-                {"color": "yellow", "value": 80},
-                {"color": "green", "value": 95}
+                { "color": "red", "value": 0 },
+                { "color": "yellow", "value": 80 },
+                { "color": "green", "value": 95 }
               ]
             }
           }
@@ -1304,4 +1305,4 @@ gc.set_threshold(700, 10, 10)
 
 ---
 
-*This monitoring guide is maintained as part of the MythosMUD dual connection system implementation. Last updated: 2025-01-06*
+This monitoring guide is maintained as part of the MythosMUD dual connection system implementation. Last updated: 2025-01-06

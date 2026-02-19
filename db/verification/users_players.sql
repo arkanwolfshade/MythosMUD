@@ -5,6 +5,10 @@ set client_min_messages = warning;
 set search_path = public;
 
 -- Row counts for live tables only
+-- nosemgrep: Semgrep_codacy.generic.sql.rac-table-access
+-- This verification script queries game tables (users, players, id_map_*) directly.
+-- RAC_* table wrappers are not used in this schema, so the generic RAC_* enforcement
+-- rule does not apply here.
 select
     (select count(*) as cnt from users) as users_count,
     (select count(*) as cnt from players) as players_count,

@@ -3,12 +3,14 @@
 # These warnings are informational - package-lock.json locks exact versions
 
 # Exclude paths from analysis
+# data/ is the mythosmud_data git submodule (Main (Integration)/data) - excluded from Codacy
 exclude_paths:
   - "**/node_modules/**"
   - "**/dist/**"
   - "**/build/**"
   - "**/mythosmud_data/**"
   - ".data/**"
+  - "data/**"
 
 # Ignore assert and hardcoded secrets in test files (Prospector_bandit B101/B106)
 # Assert and test passwords are standard in tests; bandit.yml skips them but Codacy
@@ -131,6 +133,12 @@ ignore_patterns:
   - pattern_id: "Pylint_consider-using-in"
     file_paths:
       - "scripts/run_test_ci.py"
+  # CSSLint: False positives from deprecated CSSLint tool (doesn't understand modern CSS Grid syntax)
+  # CSSLint is deprecated and flags valid modern CSS like repeat(auto-fit, minmax(...))
+  # Pattern for "Expected RBRACE" errors on valid CSS Grid syntax
+  - pattern_id: "CSSLint_errors"
+    file_paths:
+      - "client/src/**/*.css"
   # SQL: RAC_TABLE_REQUIRED false positives in migration file
   # Pattern for "All queries must target RAC_* tables" - false positives for:
   # - PostgreSQL configuration commands (SET)
@@ -141,11 +149,16 @@ ignore_patterns:
       - "data/db/migrations/11_migrate_weekday_names.sql"
   # Semgrep: RAC table access - internal verification/migration scripts that do not use RAC_ prefix
   # Exclude scripts that run one-off migrations or verification (not production data access).
+  # db/databases/databases.sql: GRANT on SEQUENCES is DDL, not a table query; RAC rule is for data tables.
+  # db/roles/roles.sql: queries pg_roles (PostgreSQL system catalog), not application data tables.
+  # db/migrations/019_*: queries information_schema and migration data tables; RAC rule is for app data access.
   - pattern_id: "Semgrep_codacy.generic.sql.rac-table-access"
     file_paths:
       - "scripts/verify_*.py"
       - "scripts/apply_*.py"
       - "db/migrations/*.sql"
+      - "db/databases/databases.sql"
+      - "db/roles/roles.sql"
       - "data/db/migrations/*.sql"
   # Semgrep: Python random - game mechanics (dice rolls, stat generation) where crypto is not required
   # Suppress for server/game/ and server/npc/ per Codacy PR feedback.

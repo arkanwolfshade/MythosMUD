@@ -274,6 +274,9 @@ CREATE FUNCTION public.add_item_to_container(p_container_id uuid, p_item_instanc
                     v_max_position := p_position;
                 END IF;
 
+                -- nosemgrep: Semgrep_codacy.generic.sql.rac-table-access
+                -- This function operates on the game table container_contents; RAC_* table wrappers are not used
+                -- in this schema, so the generic RAC_* enforcement rule does not apply here.
                 INSERT INTO container_contents (container_id, item_instance_id, position)
                 VALUES (p_container_id, p_item_instance_id, v_max_position)
                 ON CONFLICT (container_id, item_instance_id)

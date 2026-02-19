@@ -5,8 +5,7 @@
 set client_min_messages = warning;
 set search_path = public;
 
--- Optional: list existing rows that would violate the constraint (run before add)
--- select name from npc_definitions where name ~ '.*-[0-9]+$';
+-- Optional: before running this script, manually verify there are no existing NPC names ending with hyphen-number.
 
 alter table npc_definitions
     drop constraint if exists npc_definitions_name_no_disambiguation_suffix;

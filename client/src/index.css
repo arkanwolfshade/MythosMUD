@@ -982,33 +982,23 @@ input[type='file']:hover {
   .game-terminal-panels {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: repeat(3, 1fr);
-
-    /* Adjust panel positioning for 2-column layout */
-    .panel-chat {
-      grid-area: 1 / 1 / 2 / 2;
-    }
-    .panel-gameLog {
-      grid-area: 1 / 2 / 2 / 3;
-    }
-    .panel-status {
-      grid-area: 2 / 1 / 3 / 2;
-    }
-    .panel-command {
-      grid-area: 2 / 2 / 3 / 3;
-    }
-    .panel-roomInfo {
-      grid-area: 3 / 1 / 4 / 3;
-    }
   }
-}
 
-@media (max-width: 768px) {
-  .game-terminal-panels {
-    grid-template-columns: 1fr;
-    grid-template-rows: repeat(5, 1fr);
-    gap: 15px;
-    padding: 15px;
-    padding-top: calc(var(--header-height) + 15px);
+  /* Adjust panel positioning for 2-column layout */
+  .game-terminal-panels .panel-chat {
+    grid-area: 1 / 1 / 2 / 2;
+  }
+  .game-terminal-panels .panel-gameLog {
+    grid-area: 1 / 2 / 2 / 3;
+  }
+  .game-terminal-panels .panel-status {
+    grid-area: 2 / 1 / 3 / 2;
+  }
+  .game-terminal-panels .panel-command {
+    grid-area: 2 / 2 / 3 / 3;
+  }
+  .game-terminal-panels .panel-roomInfo {
+    grid-area: 3 / 1 / 4 / 3;
   }
 }
 
@@ -1019,23 +1009,23 @@ input[type='file']:hover {
     gap: 15px;
     padding: 15px;
     padding-top: calc(var(--header-height) + 15px);
+  }
 
-    /* Single column layout */
-    .panel-chat {
-      grid-area: 1 / 1 / 2 / 2;
-    }
-    .panel-gameLog {
-      grid-area: 2 / 1 / 3 / 2;
-    }
-    .panel-status {
-      grid-area: 3 / 1 / 4 / 2;
-    }
-    .panel-command {
-      grid-area: 4 / 1 / 5 / 2;
-    }
-    .panel-roomInfo {
-      grid-area: 5 / 1 / 6 / 2;
-    }
+  /* Single column layout */
+  .game-terminal-panels .panel-chat {
+    grid-area: 1 / 1 / 2 / 2;
+  }
+  .game-terminal-panels .panel-gameLog {
+    grid-area: 2 / 1 / 3 / 2;
+  }
+  .game-terminal-panels .panel-status {
+    grid-area: 3 / 1 / 4 / 2;
+  }
+  .game-terminal-panels .panel-command {
+    grid-area: 4 / 1 / 5 / 2;
+  }
+  .game-terminal-panels .panel-roomInfo {
+    grid-area: 5 / 1 / 6 / 2;
   }
 }
 
