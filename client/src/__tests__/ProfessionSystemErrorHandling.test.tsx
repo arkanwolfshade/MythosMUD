@@ -1,6 +1,7 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { App } from '../App';
+import { CharacterNameScreen } from '../components/CharacterNameScreen.jsx';
 
 // Mock fetch globally
 const mockFetch = vi.fn();
@@ -85,6 +86,28 @@ describe('Profession System Error Handling and Edge Cases', () => {
     },
   ];
 
+  /** Plan 10.6: skills step needs catalog; 13+ skills for 9 occupation + 4 personal slots. */
+  const createMockSkills = () =>
+    Array.from({ length: 20 }, (_, i) => ({
+      id: i + 1,
+      key: `skill_${i + 1}`,
+      name: `Skill ${i + 1}`,
+      base_value: 5 + (i % 50),
+      allow_at_creation: true,
+    }));
+
+  const fillSkillSlotsAndConfirm = async () => {
+    await waitFor(() => {
+      expect(screen.getByText('Skill Allocation')).toBeInTheDocument();
+    });
+    const comboboxes = screen.getAllByRole('combobox');
+    expect(comboboxes.length).toBeGreaterThanOrEqual(13);
+    for (let i = 0; i < 13; i++) {
+      fireEvent.change(comboboxes[i], { target: { value: String((i % 20) + 1) } });
+    }
+    fireEvent.click(screen.getByRole('button', { name: /Next: Name character/i }));
+  };
+
   const setupBasicMocks = () => {
     const registrationResponse = {
       ok: true,
@@ -152,13 +175,35 @@ describe('Profession System Error Handling and Edge Cases', () => {
 
   describe('Profession Selection Error Handling', () => {
     it('should handle profession API failure gracefully', async () => {
-      // Mock profession API failure
+      const statsResponse = {
+        ok: true,
+        json: vi.fn().mockResolvedValue({
+          stats: {
+            strength: 12,
+            dexterity: 14,
+            constitution: 10,
+            size: 55,
+            intelligence: 16,
+            power: 50,
+            education: 40,
+            wisdom: 8,
+            charisma: 13,
+            luck: 50,
+          },
+          stat_summary: { total: 73, average: 12.17, highest: 16, lowest: 8 },
+          profession_id: 0,
+          meets_requirements: true,
+          method_used: '3d6',
+        }),
+      };
       mockFetch.mockImplementation(url => {
         if (url.includes('/auth/register')) {
           return Promise.resolve({
             ok: true,
             json: vi.fn().mockResolvedValue(createMockLoginResponse([])),
           });
+        } else if (url.includes('/players/roll-stats')) {
+          return Promise.resolve(statsResponse);
         } else if (url.includes('/professions')) {
           return Promise.reject(new Error('Network error'));
         }
@@ -181,8 +226,12 @@ describe('Profession System Error Handling and Edge Cases', () => {
       fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
       fireEvent.click(registerButton);
 
-      // Should return to login screen when server unavailability is detected
-      // Wait for the app to navigate back to login
+      // Plan 10.6: stats first; advance to profession so profession fetch runs and fails
+      await waitFor(() => {
+        expect(screen.getByText('Character Creation')).toBeInTheDocument();
+      });
+      fireEvent.click(screen.getByText('Accept Stats'));
+
       await waitFor(
         () => {
           // When server unavailability is detected, the app returns to login screen
@@ -194,17 +243,39 @@ describe('Profession System Error Handling and Edge Cases', () => {
     });
 
     it('should handle empty profession list gracefully', async () => {
-      // Mock empty profession list
+      const statsResponse = {
+        ok: true,
+        json: vi.fn().mockResolvedValue({
+          stats: {
+            strength: 12,
+            dexterity: 14,
+            constitution: 10,
+            size: 55,
+            intelligence: 16,
+            power: 50,
+            education: 40,
+            wisdom: 8,
+            charisma: 13,
+            luck: 50,
+          },
+          stat_summary: { total: 73, average: 12.17, highest: 16, lowest: 8 },
+          profession_id: 0,
+          meets_requirements: true,
+          method_used: '3d6',
+        }),
+      };
       mockFetch.mockImplementation(url => {
         if (url.includes('/auth/register')) {
           return Promise.resolve({
             ok: true,
             json: vi.fn().mockResolvedValue(createMockLoginResponse([])),
           });
+        } else if (url.includes('/players/roll-stats')) {
+          return Promise.resolve(statsResponse);
         } else if (url.includes('/professions')) {
           return Promise.resolve({
             ok: true,
-            json: vi.fn().mockResolvedValue([]),
+            json: vi.fn().mockResolvedValue({ professions: [] }),
           });
         }
         return Promise.reject(new Error('Unknown endpoint'));
@@ -212,7 +283,6 @@ describe('Profession System Error Handling and Edge Cases', () => {
 
       render(<App />);
 
-      // Register user
       fireEvent.click(screen.getByText('Need an account? Register'));
       fireEvent.click(screen.getByText('Enter the Void'));
 
@@ -226,21 +296,47 @@ describe('Profession System Error Handling and Edge Cases', () => {
       fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
       fireEvent.click(registerButton);
 
-      // Should show profession selection screen with empty state
+      // Plan 10.6: stats first, then profession
+      await waitFor(() => {
+        expect(screen.getByText('Character Creation')).toBeInTheDocument();
+      });
+      fireEvent.click(screen.getByText('Accept Stats'));
+
       await waitFor(() => {
         expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
-        expect(screen.getByText('Welcome, testuser')).toBeInTheDocument();
       });
     });
 
     it('should handle malformed profession data gracefully', async () => {
-      // Mock malformed profession data
+      const statsResponse = {
+        ok: true,
+        json: vi.fn().mockResolvedValue({
+          stats: {
+            strength: 12,
+            dexterity: 14,
+            constitution: 10,
+            size: 55,
+            intelligence: 16,
+            power: 50,
+            education: 40,
+            wisdom: 8,
+            charisma: 13,
+            luck: 50,
+          },
+          stat_summary: { total: 73, average: 12.17, highest: 16, lowest: 8 },
+          profession_id: 0,
+          meets_requirements: true,
+          method_used: '3d6',
+        }),
+      };
       mockFetch.mockImplementation(url => {
         if (url.includes('/auth/register')) {
           return Promise.resolve({
             ok: true,
             json: vi.fn().mockResolvedValue(createMockLoginResponse([])),
           });
+        } else if (url.includes('/players/roll-stats')) {
+          return Promise.resolve(statsResponse);
         } else if (url.includes('/professions')) {
           return Promise.resolve({
             ok: true,
@@ -248,7 +344,6 @@ describe('Profession System Error Handling and Edge Cases', () => {
               {
                 id: 0,
                 name: 'Tramp',
-                // Missing required fields
                 description: 'A wandering soul',
               },
             ]),
@@ -259,7 +354,6 @@ describe('Profession System Error Handling and Edge Cases', () => {
 
       render(<App />);
 
-      // Register user
       fireEvent.click(screen.getByText('Need an account? Register'));
       fireEvent.click(screen.getByText('Enter the Void'));
 
@@ -273,7 +367,11 @@ describe('Profession System Error Handling and Edge Cases', () => {
       fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
       fireEvent.click(registerButton);
 
-      // Should handle malformed data gracefully by showing error
+      await waitFor(() => {
+        expect(screen.getByText('Character Creation')).toBeInTheDocument();
+      });
+      fireEvent.click(screen.getByText('Accept Stats'));
+
       await waitFor(() => {
         expect(screen.getByText('Error Loading Professions')).toBeInTheDocument();
         expect(screen.getByText(/Invalid API response: expected Profession\[\]/)).toBeInTheDocument();
@@ -283,21 +381,11 @@ describe('Profession System Error Handling and Edge Cases', () => {
 
   describe('Stat Rolling Error Handling', () => {
     it('should handle stat rolling API failure gracefully', async () => {
-      setupBasicMocks();
-
-      // Mock stat rolling API failure
       mockFetch.mockImplementation(url => {
         if (url.includes('/auth/register')) {
           return Promise.resolve({
             ok: true,
             json: vi.fn().mockResolvedValue(createMockLoginResponse([])),
-          });
-        } else if (url.includes('/professions')) {
-          return Promise.resolve({
-            ok: true,
-            json: vi.fn().mockResolvedValue({
-              professions: createMockProfessions(),
-            }),
           });
         } else if (url.includes('/players/roll-stats')) {
           return Promise.reject(new Error('Stat rolling failed'));
@@ -307,7 +395,6 @@ describe('Profession System Error Handling and Edge Cases', () => {
 
       render(<App />);
 
-      // Navigate to profession selection
       fireEvent.click(screen.getByText('Need an account? Register'));
       fireEvent.click(screen.getByText('Enter the Void'));
 
@@ -321,45 +408,22 @@ describe('Profession System Error Handling and Edge Cases', () => {
       fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
       fireEvent.click(registerButton);
 
-      // Select profession and proceed to stats rolling
-      await waitFor(() => {
-        expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
-      });
-
-      const trampCard = screen.getByText('Tramp').closest('.profession-card');
-      fireEvent.click(trampCard!);
-
-      const nextButton = screen.getByText('Next');
-      fireEvent.click(nextButton);
-
-      // Should return to login when stat rolling fails
-      // "Stat rolling failed" doesn't match server unavailability patterns,
-      // so it calls onError('Failed to connect to server'), which triggers returnToLogin()
+      // Plan 10.6: stats step loads and calls roll-stats on mount; when it fails we return to login
       await waitFor(
         () => {
           expect(screen.getByText('MythosMUD')).toBeInTheDocument();
           expect(screen.getByText('Server is unavailable. Please try again later.')).toBeInTheDocument();
         },
-        { timeout: 3000 }
+        { timeout: 5000 }
       );
     });
 
     it('should handle invalid profession ID in stat rolling', async () => {
-      setupBasicMocks();
-
-      // Mock stat rolling with invalid profession ID
       mockFetch.mockImplementation(url => {
         if (url.includes('/auth/register')) {
           return Promise.resolve({
             ok: true,
             json: vi.fn().mockResolvedValue(createMockLoginResponse([])),
-          });
-        } else if (url.includes('/professions')) {
-          return Promise.resolve({
-            ok: true,
-            json: vi.fn().mockResolvedValue({
-              professions: createMockProfessions(),
-            }),
           });
         } else if (url.includes('/players/roll-stats')) {
           return Promise.resolve({
@@ -375,7 +439,6 @@ describe('Profession System Error Handling and Edge Cases', () => {
 
       render(<App />);
 
-      // Navigate to profession selection
       fireEvent.click(screen.getByText('Need an account? Register'));
       fireEvent.click(screen.getByText('Enter the Void'));
 
@@ -389,45 +452,24 @@ describe('Profession System Error Handling and Edge Cases', () => {
       fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
       fireEvent.click(registerButton);
 
-      // Select profession and proceed to stats rolling
+      // When roll-stats returns 400, stats screen shows error view (no "Character Creation" header)
       await waitFor(() => {
-        expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
+        expect(screen.getByText('Invalid profession ID')).toBeInTheDocument();
       });
-
-      const trampCard = screen.getByText('Tramp').closest('.profession-card');
-      fireEvent.click(trampCard!);
-
-      const nextButton = screen.getByText('Next');
-      fireEvent.click(nextButton);
-
-      // Should show error for invalid profession ID
-      await waitFor(() => {
-        expect(screen.getByText('Failed to load stats. Please try again.')).toBeInTheDocument();
-      });
+      expect(screen.getByText('Failed to load stats. Please try again.')).toBeInTheDocument();
     });
 
     it('should handle malformed stat response gracefully', async () => {
-      setupBasicMocks();
-
-      // Mock malformed stat response
       mockFetch.mockImplementation(url => {
         if (url.includes('/auth/register')) {
           return Promise.resolve({
             ok: true,
             json: vi.fn().mockResolvedValue(createMockLoginResponse([])),
           });
-        } else if (url.includes('/professions')) {
-          return Promise.resolve({
-            ok: true,
-            json: vi.fn().mockResolvedValue({
-              professions: createMockProfessions(),
-            }),
-          });
         } else if (url.includes('/players/roll-stats')) {
           return Promise.resolve({
             ok: true,
             json: vi.fn().mockResolvedValue({
-              // Missing required stats fields
               profession_id: 0,
               meets_requirements: true,
             }),
@@ -438,7 +480,6 @@ describe('Profession System Error Handling and Edge Cases', () => {
 
       render(<App />);
 
-      // Navigate to profession selection
       fireEvent.click(screen.getByText('Need an account? Register'));
       fireEvent.click(screen.getByText('Enter the Void'));
 
@@ -452,34 +493,24 @@ describe('Profession System Error Handling and Edge Cases', () => {
       fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
       fireEvent.click(registerButton);
 
-      // Select profession and proceed to stats rolling
-      await waitFor(() => {
-        expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
-      });
-
-      const trampCard = screen.getByText('Tramp').closest('.profession-card');
-      fireEvent.click(trampCard!);
-
-      const nextButton = screen.getByText('Next');
-      fireEvent.click(nextButton);
-
-      // Should handle malformed response gracefully
-      // Validation error triggers onError('Failed to connect to server'), which returns to login
       await waitFor(
         () => {
           expect(screen.getByText('MythosMUD')).toBeInTheDocument();
           expect(screen.getByText('Server is unavailable. Please try again later.')).toBeInTheDocument();
         },
-        { timeout: 3000 }
+        { timeout: 5000 }
       );
     });
   });
 
   describe('Character Creation Error Handling', () => {
+    beforeEach(() => {
+      vi.stubGlobal('fetch', mockFetch);
+    });
+
     it('should handle character creation API failure gracefully', async () => {
       setupBasicMocks();
 
-      // Mock character creation API failure
       mockFetch.mockImplementation(url => {
         if (url.includes('/auth/register')) {
           return Promise.resolve({
@@ -509,19 +540,18 @@ describe('Profession System Error Handling and Edge Cases', () => {
                 charisma: 13,
                 luck: 50,
               },
-              stat_summary: {
-                total: 73,
-                average: 12.17,
-                highest: 16,
-                lowest: 8,
-              },
+              stat_summary: { total: 73, average: 12.17, highest: 16, lowest: 8 },
               profession_id: 0,
               meets_requirements: true,
               method_used: '3d6',
             }),
           });
+        } else if (url.includes('/skills/')) {
+          return Promise.resolve({
+            ok: true,
+            json: vi.fn().mockResolvedValue({ skills: createMockSkills() }),
+          });
         } else if (url.includes('/players/create-character')) {
-          // Mock fetch rejection to trigger catch block in component
           return Promise.reject(new Error('Character creation failed'));
         }
         return Promise.reject(new Error('Unknown endpoint'));
@@ -529,7 +559,6 @@ describe('Profession System Error Handling and Edge Cases', () => {
 
       render(<App />);
 
-      // Navigate through the flow
       fireEvent.click(screen.getByText('Need an account? Register'));
       fireEvent.click(screen.getByText('Enter the Void'));
 
@@ -543,154 +572,101 @@ describe('Profession System Error Handling and Edge Cases', () => {
       fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
       fireEvent.click(registerButton);
 
-      // Select profession
-      await waitFor(() => {
-        expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
-      });
-
-      const trampCard = screen.getByText('Tramp').closest('.profession-card');
-      fireEvent.click(trampCard!);
-
-      const nextButton = screen.getByText('Next');
-      fireEvent.click(nextButton);
-
-      // Accept stats
       await waitFor(() => {
         expect(screen.getByText('Character Creation')).toBeInTheDocument();
       });
+      fireEvent.click(screen.getByText('Accept Stats'));
 
-      // Enter character name (required for multi-character support)
-      const nameInput = screen.getByPlaceholderText("Enter your character's name");
+      await waitFor(() => {
+        expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
+      });
+      const trampCard = screen.getByText('Tramp').closest('.profession-card');
+      fireEvent.click(trampCard!);
+      fireEvent.click(screen.getByText('Next'));
+
+      await fillSkillSlotsAndConfirm();
+
+      await waitFor(() => {
+        expect(screen.getByPlaceholderText('Enter name')).toBeInTheDocument();
+      });
+      const nameInput = screen.getByPlaceholderText('Enter name');
       await act(async () => {
         fireEvent.change(nameInput, { target: { value: 'TestCharacter' } });
       });
-
-      const acceptButton = screen.getByText('Accept Stats & Create Character');
-
-      // Click and verify error is handled gracefully (no uncaught exception)
-      // The error handling should catch the Promise.reject and call onError
-      // which sets error state without crashing the app
       await act(async () => {
-        fireEvent.click(acceptButton);
+        fireEvent.click(screen.getByText('Create Character'));
       });
 
-      // Verify graceful error handling: the error should be caught and handled
-      // The component's catch block should call onError and set error state
-      // We verify this by ensuring the app doesn't crash and remains functional
       await waitFor(
         () => {
-          // App should still be rendered (error handled gracefully)
-          const appElement = document.querySelector('.App');
-          expect(appElement).toBeInTheDocument();
+          expect(document.querySelector('.App')).toBeInTheDocument();
         },
         { timeout: 2000 }
       );
     });
 
+    // Isolated test: render CharacterNameScreen only and mock fetch so create-character returns 409.
+    // Full App flow is not used so we avoid other fetches/navigation overriding the mock.
     it('should handle duplicate character name error', async () => {
-      setupBasicMocks();
-
-      // Mock duplicate character name error
-      mockFetch.mockImplementation(url => {
-        if (url.includes('/auth/register')) {
-          return Promise.resolve({
-            ok: true,
-            json: vi.fn().mockResolvedValue(createMockLoginResponse([])),
-          });
-        } else if (url.includes('/professions')) {
-          return Promise.resolve({
-            ok: true,
-            json: vi.fn().mockResolvedValue({
-              professions: createMockProfessions(),
-            }),
-          });
-        } else if (url.includes('/players/roll-stats')) {
-          return Promise.resolve({
-            ok: true,
-            json: vi.fn().mockResolvedValue({
-              stats: {
-                strength: 12,
-                dexterity: 14,
-                constitution: 10,
-                size: 55,
-                intelligence: 16,
-                power: 50,
-                education: 40,
-                wisdom: 8,
-                charisma: 13,
-                luck: 50,
-              },
-              stat_summary: {
-                total: 73,
-                average: 12.17,
-                highest: 16,
-                lowest: 8,
-              },
-              profession_id: 0,
-              meets_requirements: true,
-              method_used: '3d6',
-            }),
-          });
-        } else if (url.includes('/players/create-character')) {
-          return Promise.resolve({
-            ok: false,
-            status: 409,
-            json: vi.fn().mockResolvedValue({
-              detail: 'Character name already exists',
-            }),
-          });
+      const createCharacterDetail = { detail: 'Character name already exists' };
+      mockFetch.mockImplementation((input: string | URL | Request) => {
+        const urlString =
+          typeof input === 'string' ? input : input instanceof URL ? input.toString() : ((input as Request).url ?? '');
+        if (urlString.includes('create-character')) {
+          return Promise.resolve(
+            new Response(JSON.stringify(createCharacterDetail), { status: 409, statusText: 'Conflict' })
+          );
         }
-        return Promise.reject(new Error('Unknown endpoint'));
+        return Promise.reject(new Error('Unexpected request'));
       });
 
-      render(<App />);
+      const stats = {
+        strength: 12,
+        dexterity: 14,
+        constitution: 10,
+        size: 55,
+        intelligence: 16,
+        power: 50,
+        education: 40,
+        wisdom: 8,
+        charisma: 13,
+        luck: 50,
+      };
+      const profession = {
+        id: 1,
+        name: 'Tramp',
+        description: 'A wanderer',
+        flavor_text: null,
+        stat_requirements: [],
+      };
+      const skillsPayload = { occupation_slots: [], personal_interest: [] };
+      const onComplete = vi.fn();
+      const onError = vi.fn();
+      const onBack = vi.fn();
 
-      // Navigate through the flow
-      fireEvent.click(screen.getByText('Need an account? Register'));
-      fireEvent.click(screen.getByText('Enter the Void'));
-
-      const usernameInput = screen.getByPlaceholderText('Username');
-      const passwordInput = screen.getByPlaceholderText('Password');
-      const inviteCodeInput = screen.getByPlaceholderText('Invite Code');
-      const registerButton = screen.getByText('Enter the Void');
-
-      fireEvent.change(usernameInput, { target: { value: 'testuser' } });
-      fireEvent.change(passwordInput, { target: { value: 'testpass' } });
-      fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
-      fireEvent.click(registerButton);
-
-      // Select profession
-      await waitFor(() => {
-        expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
-      });
-
-      const trampCard = screen.getByText('Tramp').closest('.profession-card');
-      fireEvent.click(trampCard!);
-
-      const nextButton = screen.getByText('Next');
-      fireEvent.click(nextButton);
-
-      // Accept stats
-      await waitFor(() => {
-        expect(screen.getByText('Character Creation')).toBeInTheDocument();
-      });
-
-      // Enter character name (required for multi-character support)
-      const nameInput = screen.getByPlaceholderText("Enter your character's name");
-      fireEvent.change(nameInput, { target: { value: 'TestCharacter' } });
-
-      const acceptButton = screen.getByText('Accept Stats & Create Character');
-      await act(async () => {
-        fireEvent.click(acceptButton);
-      });
-
-      // Should show specific error for duplicate character name
-      await waitFor(
-        () => {
-          expect(screen.getByText('Character name already exists')).toBeInTheDocument();
-        },
-        { timeout: 3000 }
+      render(
+        <CharacterNameScreen
+          stats={stats}
+          profession={profession}
+          skillsPayload={skillsPayload}
+          baseUrl="https://test.example/v1"
+          authToken="test-token"
+          onComplete={onComplete}
+          onError={onError}
+          onBack={onBack}
+        />
       );
+
+      fireEvent.change(screen.getByPlaceholderText('Enter name'), { target: { value: 'TestCharacter' } });
+      await act(async () => {
+        fireEvent.click(screen.getByRole('button', { name: /Create Character/i }));
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText('Character name already exists')).toBeInTheDocument();
+      });
+      expect(onComplete).not.toHaveBeenCalled();
+      expect(onError).toHaveBeenCalledWith('Character name already exists');
     });
   });
 
@@ -699,7 +675,6 @@ describe('Profession System Error Handling and Edge Cases', () => {
       setupBasicMocks();
       render(<App />);
 
-      // Navigate to profession selection
       fireEvent.click(screen.getByText('Need an account? Register'));
       fireEvent.click(screen.getByText('Enter the Void'));
 
@@ -714,10 +689,14 @@ describe('Profession System Error Handling and Edge Cases', () => {
       fireEvent.click(registerButton);
 
       await waitFor(() => {
+        expect(screen.getByText('Character Creation')).toBeInTheDocument();
+      });
+      fireEvent.click(screen.getByText('Accept Stats'));
+
+      await waitFor(() => {
         expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
       });
 
-      // Rapidly click between professions
       const trampCard = screen.getByText('Tramp').closest('.profession-card');
       const gutterRatCard = screen.getByText('Gutter Rat').closest('.profession-card');
 
@@ -726,7 +705,6 @@ describe('Profession System Error Handling and Edge Cases', () => {
       fireEvent.click(trampCard!);
       fireEvent.click(gutterRatCard!);
 
-      // Should handle rapid changes gracefully
       expect(screen.getByText('Next')).toBeInTheDocument();
     });
 
@@ -734,7 +712,6 @@ describe('Profession System Error Handling and Edge Cases', () => {
       setupBasicMocks();
       render(<App />);
 
-      // Navigate to stats rolling
       fireEvent.click(screen.getByText('Need an account? Register'));
       fireEvent.click(screen.getByText('Enter the Void'));
 
@@ -748,17 +725,7 @@ describe('Profession System Error Handling and Edge Cases', () => {
       fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
       fireEvent.click(registerButton);
 
-      // Select profession
-      await waitFor(() => {
-        expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
-      });
-
-      const trampCard = screen.getByText('Tramp').closest('.profession-card');
-      fireEvent.click(trampCard!);
-
-      const nextButton = screen.getByText('Next');
-      fireEvent.click(nextButton);
-
+      // Plan 10.6: stats first; wait for stats screen
       await waitFor(() => {
         expect(screen.getByText('Character Creation')).toBeInTheDocument();
       });
@@ -809,9 +776,50 @@ describe('Profession System Error Handling and Edge Cases', () => {
 
     it('should handle concurrent API calls gracefully', async () => {
       setupBasicMocks();
+      mockFetch.mockImplementation(url => {
+        if (url.includes('/auth/register')) {
+          return Promise.resolve({
+            ok: true,
+            json: vi.fn().mockResolvedValue(createMockLoginResponse([])),
+          });
+        } else if (url.includes('/professions')) {
+          return Promise.resolve({
+            ok: true,
+            json: vi.fn().mockResolvedValue({ professions: createMockProfessions() }),
+          });
+        } else if (url.includes('/players/roll-stats')) {
+          return Promise.resolve({
+            ok: true,
+            json: vi.fn().mockResolvedValue({
+              stats: {
+                strength: 12,
+                dexterity: 14,
+                constitution: 10,
+                size: 55,
+                intelligence: 16,
+                power: 50,
+                education: 40,
+                wisdom: 8,
+                charisma: 13,
+                luck: 50,
+              },
+              stat_summary: { total: 73, average: 12.17, highest: 16, lowest: 8 },
+              profession_id: 0,
+              meets_requirements: true,
+              method_used: '3d6',
+            }),
+          });
+        } else if (url.includes('/skills/')) {
+          return Promise.resolve({
+            ok: true,
+            json: vi.fn().mockResolvedValue({ skills: createMockSkills() }),
+          });
+        }
+        return Promise.reject(new Error('Unknown endpoint'));
+      });
+
       render(<App />);
 
-      // Navigate to profession selection
       fireEvent.click(screen.getByText('Need an account? Register'));
       fireEvent.click(screen.getByText('Enter the Void'));
 
@@ -826,19 +834,19 @@ describe('Profession System Error Handling and Edge Cases', () => {
       fireEvent.click(registerButton);
 
       await waitFor(() => {
+        expect(screen.getByText('Character Creation')).toBeInTheDocument();
+      });
+      fireEvent.click(screen.getByText('Accept Stats'));
+
+      await waitFor(() => {
         expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
       });
-
-      // Select profession and proceed
       const trampCard = screen.getByText('Tramp').closest('.profession-card');
       fireEvent.click(trampCard!);
+      fireEvent.click(screen.getByText('Next'));
 
-      const nextButton = screen.getByText('Next');
-      fireEvent.click(nextButton);
-
-      // Should handle concurrent calls gracefully
       await waitFor(() => {
-        expect(screen.getByText('Character Creation')).toBeInTheDocument();
+        expect(screen.getByText('Skill Allocation')).toBeInTheDocument();
       });
     });
   });

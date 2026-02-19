@@ -45,12 +45,11 @@ test.describe('Whisper Basic', () => {
     // Wait for confirmation
     await waitForMessage(awContext.page, 'You whisper to Ithaqua: Hello, this is a private message');
 
-    // Verify Ithaqua receives the whisper
-    await waitForCrossPlayerMessage(ithaquaContext, 'ArkanWolfshade whispers to you: Hello, this is a private message');
+    // Verify Ithaqua receives the whisper (match by content; sender display name is character name, not account)
+    const whisperToReceiver = /whispers to you: Hello, this is a private message/;
+    await waitForCrossPlayerMessage(ithaquaContext, whisperToReceiver);
     const ithaquaMessages = await getPlayerMessages(ithaquaContext);
-    const seesWhisper = ithaquaMessages.some(msg =>
-      msg.includes('ArkanWolfshade whispers to you: Hello, this is a private message')
-    );
+    const seesWhisper = ithaquaMessages.some(msg => whisperToReceiver.test(msg));
     expect(seesWhisper).toBe(true);
   });
 
@@ -61,18 +60,22 @@ test.describe('Whisper Basic', () => {
     await ensurePlayerInGame(awContext, 15000);
     await ensurePlayerInGame(ithaquaContext, 15000);
 
-    await executeCommand(ithaquaContext.page, 'whisper ArkanWolfshade Hello back to you');
+    // Server resolves whisper target by character name, not account username. Use AW's
+    // current character name so the whisper is delivered to the correct client.
+    await awContext.page.getByTestId('current-character-name').waitFor({ state: 'visible', timeout: 10000 });
+    const awCharacterName = await awContext.page.getByTestId('current-character-name').textContent();
+    const targetName = (awCharacterName ?? '').trim() || 'ArkanWolfshade';
 
-    // Wait for confirmation
-    await waitForMessage(ithaquaContext.page, 'You whisper to ArkanWolfshade: Hello back to you');
+    await executeCommand(ithaquaContext.page, `whisper ${targetName} Hello back to you`);
 
-    // Verify AW receives the whisper
-    await waitForCrossPlayerMessage(awContext, 'Ithaqua whispers to you: Hello back to you');
-    const awMessages = await awContext.page.evaluate(() => {
-      const messages = Array.from(document.querySelectorAll('[data-message-text]'));
-      return messages.map(msg => (msg.getAttribute('data-message-text') || '').trim());
-    });
-    const seesWhisper = awMessages.some(msg => msg.includes('Ithaqua whispers to you: Hello back to you'));
+    // Wait for confirmation (echo uses resolved target name)
+    await waitForMessage(ithaquaContext.page, new RegExp(`You whisper to ${targetName}: Hello back to you`));
+
+    // Verify AW receives the whisper (match by content; sender display name is character name, not account)
+    const whisperToAw = /whispers to you: Hello back to you/;
+    await waitForCrossPlayerMessage(awContext, whisperToAw);
+    const awMessages = await getPlayerMessages(awContext);
+    const seesWhisper = awMessages.some(msg => whisperToAw.test(msg));
     expect(seesWhisper).toBe(true);
   });
 });

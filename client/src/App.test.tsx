@@ -23,12 +23,10 @@ vi.mock('./components/ui-v2/GameClientV2Container', () => ({
 
 vi.mock('./components/StatsRollingScreen', () => ({
   StatsRollingScreen: ({
-    characterName,
     onStatsAccepted,
     onError,
   }: {
-    characterName: string;
-    onStatsAccepted: (stats: Record<string, unknown>, characterName: string) => void;
+    onStatsAccepted: (stats: Record<string, unknown>) => void;
     onError: (error: string) => void;
     _baseUrl: string;
     _authToken: string;
@@ -44,14 +42,13 @@ vi.mock('./components/StatsRollingScreen', () => ({
     return (
       <div data-testid="stats-rolling-screen">
         <h2>Character Creation</h2>
-        <p>Character: {characterName}</p>
         {error && <div className="error-message">{error}</div>}
         <button
           onClick={() => {
-            onStatsAccepted({ strength: 10 }, characterName || 'TestCharacter');
+            onStatsAccepted({ strength: 10 });
           }}
         >
-          Accept Stats & Create Character
+          Accept Stats
         </button>
         <button onClick={handleError}>Trigger Error</button>
       </div>
@@ -142,22 +139,21 @@ describe('App', () => {
       });
     });
 
-    it.skip('should handle successful login', async () => {
+    it('should handle successful login', async () => {
+      const charList = [
+        {
+          player_id: 'char-1',
+          name: 'testuser',
+          profession_id: 1,
+          profession_name: 'Professor',
+          level: 1,
+          created_at: new Date().toISOString(),
+          last_active: new Date().toISOString(),
+        },
+      ];
       const mockResponse = {
         ok: true,
-        json: vi.fn().mockResolvedValue(
-          createMockLoginResponse([
-            {
-              player_id: 'char-1',
-              name: 'testuser',
-              profession_id: 1,
-              profession_name: 'Professor',
-              level: 1,
-              created_at: new Date().toISOString(),
-              last_active: new Date().toISOString(),
-            },
-          ])
-        ),
+        json: vi.fn().mockResolvedValue(createMockLoginResponse(charList)),
       };
       fetchSpy.mockResolvedValue(mockResponse as unknown as Response);
 
@@ -182,9 +178,15 @@ describe('App', () => {
         );
       });
 
-      await waitFor(() => {
-        expect(screen.getByTestId('game-terminal')).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          const heading = screen.queryByRole('heading', { name: /Select Your Character/i });
+          const motd = screen.queryByRole('button', { name: /Enter the Realm/i });
+          const game = screen.queryByTestId('game-terminal');
+          expect(heading ?? motd ?? game).toBeTruthy();
+        },
+        { timeout: 3000 }
+      );
     });
 
     it('should handle login failure', async () => {
@@ -345,7 +347,7 @@ describe('App', () => {
       });
 
       await waitFor(() => {
-        expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
+        expect(screen.getByText('Character Creation')).toBeInTheDocument();
       });
     });
 
@@ -426,11 +428,11 @@ describe('App', () => {
       fireEvent.click(loginButton);
 
       await waitFor(() => {
-        expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
+        expect(screen.getByText('Character Creation')).toBeInTheDocument();
       });
     });
 
-    it.skip('should handle stats acceptance', async () => {
+    it('should handle stats acceptance', async () => {
       const mockResponse = {
         ok: true,
         json: vi.fn().mockResolvedValue(createMockLoginResponse([])),
@@ -458,7 +460,8 @@ describe('App', () => {
         const urlString = typeof url === 'string' ? url : url instanceof URL ? url.toString() : url.url;
         if (urlString.includes('/auth/login')) {
           return Promise.resolve(mockResponse as unknown as Response);
-        } else if (urlString.includes('/professions')) {
+        }
+        if (urlString.includes('/professions')) {
           return Promise.resolve(mockProfessionsResponse as unknown as Response);
         }
         return Promise.reject(new Error('Unexpected URL'));
@@ -466,7 +469,6 @@ describe('App', () => {
 
       render(<App />);
 
-      // Login with new user
       const usernameInput = screen.getByPlaceholderText('Username');
       const passwordInput = screen.getByPlaceholderText('Password');
       const loginButton = screen.getByText('Enter the Void');
@@ -476,27 +478,14 @@ describe('App', () => {
       fireEvent.click(loginButton);
 
       await waitFor(() => {
-        expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
-      });
-
-      // Select profession first
-      const trampCard = screen.getByText('Tramp').closest('.profession-card');
-      fireEvent.click(trampCard!);
-
-      const nextButton = screen.getByText('Next');
-      fireEvent.click(nextButton);
-
-      // Wait for stats rolling screen
-      await waitFor(() => {
         expect(screen.getByText('Character Creation')).toBeInTheDocument();
       });
 
-      // Accept stats
-      const acceptButton = screen.getByText('Accept Stats & Create Character');
+      const acceptButton = screen.getByText('Accept Stats');
       fireEvent.click(acceptButton);
 
       await waitFor(() => {
-        expect(screen.getByTestId('game-terminal')).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: /Choose Your Profession/i })).toBeInTheDocument();
       });
     });
 
@@ -546,86 +535,18 @@ describe('App', () => {
       fireEvent.click(loginButton);
 
       await waitFor(() => {
-        expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
-      });
-
-      // Select profession and go to stats rolling
-      const trampCard = screen.getByText('Tramp').closest('.profession-card');
-      fireEvent.click(trampCard!);
-
-      const nextButton = screen.getByText('Next');
-      fireEvent.click(nextButton);
-
-      // Wait for stats rolling screen
-      await waitFor(() => {
         expect(screen.getByText('Character Creation')).toBeInTheDocument();
       });
 
-      // Mock an error response for character creation
-      fetchSpy.mockImplementation((url: string | URL | Request) => {
-        const urlString = typeof url === 'string' ? url : url instanceof URL ? url.toString() : url.url;
-        if (urlString.includes('/auth/login')) {
-          return Promise.resolve({
-            ok: true,
-            json: vi.fn().mockResolvedValue(createMockLoginResponse([])),
-          } as unknown as Response);
-        } else if (urlString.includes('/professions')) {
-          return Promise.resolve({
-            ok: true,
-            json: vi.fn().mockResolvedValue([
-              {
-                id: 0,
-                name: 'Tramp',
-                description: 'A wandering soul with no particular skills or connections.',
-                flavor_text:
-                  'You have spent your days drifting from place to place, learning to survive on your wits alone.',
-                stat_requirements: {},
-                mechanical_effects: {},
-                is_available: true,
-              },
-            ]),
-          } as unknown as Response);
-        } else if (urlString.includes('/players/roll-stats')) {
-          return Promise.resolve({
-            ok: true,
-            json: vi.fn().mockResolvedValue({
-              stats: {
-                strength: 12,
-                dexterity: 14,
-                constitution: 10,
-                intelligence: 16,
-                wisdom: 8,
-                charisma: 13,
-              },
-              stat_summary: {
-                total: 73,
-                average: 12.17,
-                highest: 16,
-                lowest: 8,
-              },
-              profession_id: 0,
-              meets_requirements: true,
-              method_used: '3d6',
-            }),
-          } as unknown as Response);
-        } else if (urlString.includes('/players/create-character')) {
-          return Promise.resolve({
-            ok: false,
-            status: 500,
-            json: vi.fn().mockResolvedValue({ detail: 'Character creation failed' }),
-          } as unknown as Response);
-        }
-        return Promise.reject(new Error('Unexpected URL'));
-      });
-
-      // Trigger error by clicking the error button
+      // Trigger error from stats step (plan 10.6: we are already on stats screen)
       const errorButton = screen.getByText('Trigger Error');
       fireEvent.click(errorButton);
 
-      // The error should appear in the stats rolling screen
+      // App handles stats error by clearing creation and showing main app (game terminal when no character)
       await waitFor(() => {
-        expect(screen.getByText('Stats error')).toBeInTheDocument();
+        expect(screen.getByTestId('game-terminal')).toBeInTheDocument();
       });
+      expect(screen.queryByTestId('stats-rolling-screen')).not.toBeInTheDocument();
     });
   });
 
@@ -1174,8 +1095,11 @@ describe('App', () => {
   });
 
   describe('Loading States', () => {
-    it.skip('should show loading state during login', async () => {
-      // Mock a slow response
+    it('should show loading state during login', async () => {
+      let resolveLogin!: (value: Response) => void;
+      const loginPromise = new Promise<Response>(resolve => {
+        resolveLogin = resolve;
+      });
       const mockResponse = {
         ok: true,
         json: vi.fn().mockResolvedValue(
@@ -1192,15 +1116,13 @@ describe('App', () => {
           ])
         ),
       };
-      vi.useFakeTimers();
-      fetchSpy.mockImplementation(
-        () =>
-          new Promise<Response>(resolve =>
-            setTimeout(() => {
-              resolve(mockResponse as unknown as Response);
-            }, 100)
-          )
-      );
+      fetchSpy.mockImplementation((url: string | URL | Request) => {
+        const urlString = typeof url === 'string' ? url : url instanceof URL ? url.toString() : (url as Request).url;
+        if (String(urlString).includes('auth/login')) {
+          return loginPromise;
+        }
+        return Promise.reject(new Error('Unexpected URL'));
+      });
 
       render(<App />);
 
@@ -1212,14 +1134,16 @@ describe('App', () => {
       fireEvent.change(passwordInput, { target: { value: 'testpass' } });
       fireEvent.click(loginButton);
 
-      // Should show loading state
-      expect(screen.getByText('Authenticating…')).toBeInTheDocument();
-      expect(loginButton).toBeDisabled();
-
-      await vi.advanceTimersByTimeAsync(100);
-      vi.useRealTimers();
       await waitFor(() => {
-        expect(screen.getByTestId('game-terminal')).toBeInTheDocument();
+        expect(screen.getByText('Authenticating…')).toBeInTheDocument();
+      });
+      expect(screen.getByRole('button', { name: 'Authenticating…' })).toBeDisabled();
+
+      resolveLogin(mockResponse as unknown as Response);
+      await waitFor(() => {
+        expect(
+          screen.queryByRole('heading', { name: /Select Your Character/i }) ?? screen.queryByTestId('game-terminal')
+        ).toBeTruthy();
       });
     });
 
@@ -1286,7 +1210,7 @@ describe('App', () => {
       await vi.advanceTimersByTimeAsync(100);
       vi.useRealTimers();
       await waitFor(() => {
-        expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
+        expect(screen.getByText('Character Creation')).toBeInTheDocument();
       });
     });
   });

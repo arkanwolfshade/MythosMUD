@@ -82,6 +82,7 @@ def get_command_help(command_type: str | None = None) -> str:
             CommandType.SUMMON.value: "summon <prototype_id> [quantity] [item|npc] - Admin: conjure items or NPCs",
             CommandType.WHO.value: "who [player] - List online players with optional filtering",
             CommandType.STATUS.value: "status - Show your character status",
+            CommandType.SKILLS.value: "skills - Show your character's skills",
             CommandType.TIME.value: "time - Show the current Mythos time",
             CommandType.WHOAMI.value: "whoami - Show your personal status (alias of status)",
             CommandType.INVENTORY.value: "inventory - Show your inventory",

@@ -2,7 +2,13 @@
  * Test Data Constants
  *
  * Centralized test data for E2E runtime tests.
- * These constants define test players, rooms, and other test data.
+ *
+ * Canonical accounts for all E2E tests (except character creation/deletion):
+ * - ArkanWolfshade / Cthulhu1 / character name ArkanWolfshade
+ * - Ithaqua / Cthulhu1 / character name Ithaqua
+ *
+ * The test environment must provide these account/character mappings. All other
+ * players (e.g. TestAdmin) are only for character creation or deletion tests.
  */
 
 export interface TestPlayer {
@@ -16,6 +22,7 @@ export interface TestPlayer {
   startingRoom: string;
 }
 
+/** Canonical players for general E2E. Use only these in createMultiPlayerContexts unless testing character creation/deletion. */
 export const TEST_PLAYERS: TestPlayer[] = [
   {
     username: 'ArkanWolfshade',
@@ -37,6 +44,7 @@ export const TEST_PLAYERS: TestPlayer[] = [
     isSuperuser: false,
     startingRoom: 'earth_arkhamcity_sanitarium_room_foyer_001',
   },
+  /** Only for character creation/deletion tests; do not use in general E2E. */
   {
     username: 'TestAdmin',
     password: 'Cthulhu1',

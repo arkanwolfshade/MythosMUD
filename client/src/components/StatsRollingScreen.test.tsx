@@ -16,7 +16,6 @@ vi.mock('../utils/logger', () => ({
 
 describe('StatsRollingScreen', () => {
   const defaultProps = {
-    characterName: 'TestCharacter',
     onStatsAccepted: vi.fn(),
     onError: vi.fn(),
     baseUrl: 'http://localhost:54731/v1',
@@ -62,14 +61,57 @@ describe('StatsRollingScreen', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.stubGlobal('fetch', mockFetch);
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
   });
 
+  describe('Stats Rerolling', () => {
+    const rerollStatsData = createMockStatsResponse({
+      strength: 60,
+      dexterity: 70,
+      constitution: 50,
+      size: 55,
+      intelligence: 80,
+      power: 65,
+      education: 40,
+      charisma: 65,
+      luck: 50,
+    });
+    const rerollResponseLike = {
+      ok: true,
+      json: () => Promise.resolve(rerollStatsData),
+    };
+
+    beforeEach(() => {
+      vi.stubGlobal('fetch', mockFetch);
+      mockFetch.mockImplementation(() => Promise.resolve(rerollResponseLike as unknown as Response));
+    });
+
+    it('should allow rerolling stats', async () => {
+      await act(async () => {
+        render(<StatsRollingScreen {...defaultProps} />);
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText('Reroll Stats')).toBeInTheDocument();
+      });
+
+      const rerollButton = screen.getByText('Reroll Stats');
+      await act(async () => {
+        fireEvent.click(rerollButton);
+      });
+
+      await waitFor(() => {
+        expect(mockFetch).toHaveBeenCalledTimes(2);
+      });
+    });
+  });
+
   describe('Initial Rendering', () => {
-    it('should render with character name', async () => {
+    it('should render stats and accept button', async () => {
       const mockResponse = {
         ok: true,
         json: vi.fn().mockResolvedValue(
@@ -94,7 +136,7 @@ describe('StatsRollingScreen', () => {
 
       await waitFor(() => {
         expect(screen.getByText('Character Creation')).toBeInTheDocument();
-        expect(screen.getByText('Preview: TestCharacter')).toBeInTheDocument();
+        expect(screen.getByText('Accept Stats')).toBeInTheDocument();
       });
     });
 
@@ -283,7 +325,7 @@ describe('StatsRollingScreen', () => {
         expect(within(luckItem as HTMLElement).getByText('50')).toBeInTheDocument();
       });
 
-      expect(screen.getByText('Accept Stats & Create Character')).toBeInTheDocument();
+      expect(screen.getByText('Accept Stats')).toBeInTheDocument();
       expect(screen.getByText('Reroll Stats')).toBeInTheDocument();
     });
 
@@ -359,70 +401,27 @@ describe('StatsRollingScreen', () => {
       });
 
       await waitFor(() => {
-        expect(screen.getByText('Accept Stats & Create Character')).toBeInTheDocument();
+        expect(screen.getByText('Accept Stats')).toBeInTheDocument();
       });
 
-      const acceptButton = screen.getByText('Accept Stats & Create Character');
+      const acceptButton = screen.getByText('Accept Stats');
       await act(async () => {
         fireEvent.click(acceptButton);
       });
 
       await waitFor(() => {
-        expect(defaultProps.onStatsAccepted).toHaveBeenCalledWith(
-          {
-            strength: 60,
-            dexterity: 70,
-            constitution: 50,
-            size: 55,
-            intelligence: 80,
-            power: 65,
-            education: 40,
-            wisdom: 50,
-            charisma: 65,
-            luck: 50,
-          },
-          'TestCharacter'
-        );
-      });
-    });
-  });
-
-  describe('Stats Rerolling', () => {
-    it('should allow rerolling stats', async () => {
-      const mockResponse = {
-        ok: true,
-        json: vi.fn().mockResolvedValue(
-          createMockStatsResponse({
-            strength: 60,
-            dexterity: 70,
-            constitution: 50,
-            size: 55,
-            intelligence: 80,
-            power: 65,
-            education: 40,
-            charisma: 65,
-            luck: 50,
-          })
-        ),
-      };
-      mockFetch.mockResolvedValue(mockResponse);
-
-      await act(async () => {
-        render(<StatsRollingScreen {...defaultProps} />);
-      });
-
-      await waitFor(() => {
-        expect(screen.getByText('Reroll Stats')).toBeInTheDocument();
-      });
-
-      const rerollButton = screen.getByText('Reroll Stats');
-      await act(async () => {
-        fireEvent.click(rerollButton);
-      });
-
-      // Should make another API call
-      await waitFor(() => {
-        expect(mockFetch).toHaveBeenCalledTimes(2);
+        expect(defaultProps.onStatsAccepted).toHaveBeenCalledWith({
+          strength: 60,
+          dexterity: 70,
+          constitution: 50,
+          size: 55,
+          intelligence: 80,
+          power: 65,
+          education: 40,
+          wisdom: 50,
+          charisma: 65,
+          luck: 50,
+        });
       });
     });
   });

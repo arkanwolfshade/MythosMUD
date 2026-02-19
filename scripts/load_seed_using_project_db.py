@@ -25,6 +25,8 @@ async def load_seed_data():
                 "data/db/01_professions.sql",
                 "data/db/02_item_prototypes.sql",
                 "data/db/03_npc_definitions.sql",
+                "data/db/04_skills.sql",
+                "data/db/05_profession_modifiers.sql",
             ]
 
             for seed_file in seed_files:
@@ -59,6 +61,10 @@ async def load_seed_data():
             npc_result = await session.execute(text("SELECT COUNT(*) FROM npc_definitions"))
             npc_count = npc_result.scalar()
             print(f"NPC Definitions: {npc_count}")
+
+            skill_result = await session.execute(text("SELECT COUNT(*) FROM skills"))
+            skill_count = skill_result.scalar()
+            print(f"Skills: {skill_count}")
 
             print("\n=== Complete ===")
             break  # Only run once

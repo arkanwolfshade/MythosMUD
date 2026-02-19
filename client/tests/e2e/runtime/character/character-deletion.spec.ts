@@ -1,8 +1,8 @@
 /**
  * Scenario 29: Character Deletion
  *
- * Tests soft deletion of characters, including deletion confirmation,
- * list updates, and name reuse after deletion.
+ * Tests soft deletion of characters. Uses TestAdmin so canonical E2E accounts
+ * (ArkanWolfshade/Ithaqua) are not polluted.
  */
 
 import { expect, test } from '@playwright/test';
@@ -10,8 +10,7 @@ import { loginPlayer } from '../fixtures/auth';
 
 test.describe('Character Deletion', () => {
   test('should show deletion confirmation dialog', async ({ page }) => {
-    // Login as user with multiple characters
-    await loginPlayer(page, 'ArkanWolfshade', 'Cthulhu1');
+    await loginPlayer(page, 'TestAdmin', 'Cthulhu1');
 
     // Check if character selection screen appears (defensive: UI may not be in selection state)
     const characterSelection = page.locator('h1, h2, h3').filter({ hasText: /Select Your Character/i });

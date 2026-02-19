@@ -31,21 +31,40 @@ class InviteManager:
         self.session = session
         logger.info("InviteManager initialized")
 
-    async def create_invite(self, expires_in_days: int = 30) -> Invite:
+    async def create_invite(
+        self,
+        expires_in_days: int = 30,
+        expires_at: datetime | None = None,
+    ) -> Invite:
         """Create a new invite."""
-        logger.info("Creating new invite", expires_in_days=expires_in_days)
+        if expires_at is not None:
+            # Use explicit expiration (naive UTC for PostgreSQL)
+            expires_at_naive = expires_at.replace(tzinfo=None) if expires_at.tzinfo else expires_at
+        else:
+            # Persist naive UTC timestamps
+            expires_at_naive = (datetime.now(UTC) + timedelta(days=expires_in_days)).replace(tzinfo=None)
+        logger.info(
+            "Creating new invite",
+            expires_in_days=expires_in_days,
+            expires_at=expires_at_naive,
+        )
 
         invite_code = Invite._generate_invite_code()  # pylint: disable=protected-access  # Reason: Class method access required for invite code generation
-        # Persist naive UTC timestamps
-        expires_at = (datetime.now(UTC) + timedelta(days=expires_in_days)).replace(tzinfo=None)
-
-        invite = Invite(invite_code=invite_code, is_active=True, expires_at=expires_at)
+        invite = Invite(
+            invite_code=invite_code,
+            is_active=True,
+            expires_at=expires_at_naive,
+        )
 
         self.session.add(invite)
         await self.session.commit()
         await self.session.refresh(invite)
 
-        logger.info("Invite created successfully", invite_code=invite_code, expires_at=expires_at)
+        logger.info(
+            "Invite created successfully",
+            invite_code=invite_code,
+            expires_at=expires_at_naive,
+        )
         return invite
 
     async def list_invites(self) -> list[Invite]:

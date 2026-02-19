@@ -41,6 +41,9 @@ class Profession(Base):
     # Game mechanics stored as JSON in TEXT fields
     stat_requirements: Mapped[str] = mapped_column(Text(), nullable=False, default="{}")
     mechanical_effects: Mapped[str] = mapped_column(Text(), nullable=False, default="{}")
+    # Character creation revamp 4.4, 4.3: modifiers applied at creation
+    stat_modifiers: Mapped[str] = mapped_column(Text(), nullable=False, default="[]")
+    skill_modifiers: Mapped[str] = mapped_column(Text(), nullable=False, default="[]")
 
     # Availability status
     is_available: Mapped[bool] = mapped_column(Boolean(), default=True, nullable=False)
@@ -70,6 +73,28 @@ class Profession(Base):
     def set_mechanical_effects(self, effects: dict[str, Any]) -> None:
         """Set profession mechanical effects from dictionary."""
         self.mechanical_effects = json.dumps(effects)
+
+    def get_stat_modifiers(self) -> list[dict[str, Any]]:
+        """Get stat modifiers as list of {stat, value}."""
+        try:
+            return cast(list[dict[str, Any]], json.loads(self.stat_modifiers))
+        except (json.JSONDecodeError, TypeError):
+            return []
+
+    def set_stat_modifiers(self, modifiers: list[dict[str, Any]]) -> None:
+        """Set stat modifiers from list of {stat, value}."""
+        self.stat_modifiers = json.dumps(modifiers)
+
+    def get_skill_modifiers(self) -> list[dict[str, Any]]:
+        """Get skill modifiers as list of {skill_key, value}."""
+        try:
+            return cast(list[dict[str, Any]], json.loads(self.skill_modifiers))
+        except (json.JSONDecodeError, TypeError):
+            return []
+
+    def set_skill_modifiers(self, modifiers: list[dict[str, Any]]) -> None:
+        """Set skill modifiers from list of {skill_key, value}."""
+        self.skill_modifiers = json.dumps(modifiers)
 
     def meets_stat_requirements(self, stats: dict[str, int]) -> bool:
         """

@@ -353,6 +353,13 @@ class PlayerRepository:
                 record.inventory_json = inventory_json
                 record.equipped_json = equipped_json
 
+            # Normalize timestamps to naive UTC for TIMESTAMP WITHOUT TIME ZONE columns (asyncpg rejects
+            # offset-aware datetimes with "can't subtract offset-naive and offset-aware datetimes").
+            if getattr(player, "last_active", None) is not None and player.last_active.tzinfo is not None:
+                player.last_active = player.last_active.astimezone(UTC).replace(tzinfo=None)
+            if getattr(player, "created_at", None) is not None and player.created_at.tzinfo is not None:
+                player.created_at = player.created_at.astimezone(UTC).replace(tzinfo=None)
+
             session_maker = get_session_maker()
             async with session_maker() as session:
                 # Use merge() for upsert behavior - inserts if new, updates if exists
@@ -444,10 +451,14 @@ class PlayerRepository:
             DatabaseError: If database operation fails
         """
         try:
-            # Ensure is_admin is an integer for all players
+            # Ensure is_admin is an integer and timestamps are naive UTC for all players
             for player in players:
                 if isinstance(getattr(player, "is_admin", None), bool):
                     player.is_admin = 1 if player.is_admin else 0
+                if getattr(player, "last_active", None) is not None and player.last_active.tzinfo is not None:
+                    player.last_active = player.last_active.astimezone(UTC).replace(tzinfo=None)
+                if getattr(player, "created_at", None) is not None and player.created_at.tzinfo is not None:
+                    player.created_at = player.created_at.astimezone(UTC).replace(tzinfo=None)
 
             session_maker = get_session_maker()
             async with session_maker() as session:

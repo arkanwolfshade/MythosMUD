@@ -50,8 +50,23 @@ logger = get_logger(__name__)
 
 
 def _is_websocket_disconnected(error_message: str) -> bool:
-    """Check if error message indicates WebSocket disconnection."""
-    return "WebSocket is not connected" in error_message or 'Need to call "accept" first' in error_message
+    """Check if error message indicates WebSocket disconnection or send-after-close."""
+    return (
+        "WebSocket is not connected" in error_message
+        or 'Need to call "accept" first' in error_message
+        or "close message has been sent" in error_message
+        or 'Cannot call "send"' in error_message
+    )
+
+
+def _is_client_gone_error(exc: BaseException) -> bool:
+    """True if the exception indicates the client disconnected (e.g. E2E tab close, navigate away)."""
+    if isinstance(exc, WebSocketDisconnect):
+        return True
+    if isinstance(exc, RuntimeError):
+        msg = str(exc)
+        return "close message has been sent" in msg or 'Cannot call "send"' in msg
+    return False
 
 
 async def _check_rate_limit(
@@ -401,12 +416,20 @@ async def _send_welcome_event(websocket: WebSocket, player_id: uuid.UUID, player
         welcome_event = build_event("welcome", {"message": "Connected to MythosMUD"}, player_id=player_id_str)
         await websocket.send_json(welcome_event)
         return True
-    except (WebSocketDisconnect, RuntimeError) as e:
+    except WebSocketDisconnect as e:
+        # Client closed before/during welcome (e.g. tab close, E2E context close). Expected; do not log as error.
+        logger.debug(
+            "WebSocket closed before welcome event could be sent",
+            player_id=player_id,
+            code=getattr(e, "code", None),
+            reason=getattr(e, "reason", None),
+        )
+        return False
+    except RuntimeError as e:
         error_message = str(e)
         if "close message has been sent" in error_message or "Cannot call" in error_message:
             logger.debug("WebSocket closed before welcome event could be sent", player_id=player_id)
             return False
-        # Re-raise if it's a different error
         raise
 
 
@@ -475,14 +498,22 @@ async def handle_websocket_message(websocket: WebSocket, player_id: str, message
         await message_handler_factory.handle_message(websocket, player_id, message)
 
     except (WebSocketDisconnect, RuntimeError) as e:
-        logger.error("Error processing WebSocket message", player_id=player_id, error=str(e))
+        if _is_client_gone_error(e):
+            logger.debug("Client disconnected during message processing", player_id=player_id, error=str(e))
+        else:
+            logger.error("Error processing WebSocket message", player_id=player_id, error=str(e))
         error_response = create_websocket_error_response(
             ErrorType.MESSAGE_PROCESSING_ERROR,
             f"Error processing message: {str(e)}",
             ErrorMessages.MESSAGE_PROCESSING_ERROR,
             {"player_id": player_id},
         )
-        await websocket.send_json(error_response)
+        try:
+            await websocket.send_json(error_response)
+        except (WebSocketDisconnect, RuntimeError) as send_err:
+            if not _is_client_gone_error(send_err):
+                raise
+            logger.debug("Could not send error response; client already disconnected", player_id=player_id)
 
 
 def _resolve_connection_manager(connection_manager: "ConnectionManager | None") -> "ConnectionManager":
@@ -567,14 +598,22 @@ async def handle_game_command(
         logger.debug("Command completed, room updates handled via EventBus flow", command=cmd)
 
     except (WebSocketDisconnect, RuntimeError) as e:
-        logger.error("Error processing command", command=command, player_id=player_id, error=str(e))
+        if _is_client_gone_error(e):
+            logger.debug("Client disconnected during command", command=command, player_id=player_id, error=str(e))
+        else:
+            logger.error("Error processing command", command=command, player_id=player_id, error=str(e))
         error_response = create_websocket_error_response(
             ErrorType.MESSAGE_PROCESSING_ERROR,
             f"Error processing command: {str(e)}",
             ErrorMessages.MESSAGE_PROCESSING_ERROR,
             {"player_id": player_id, "command": command},
         )
-        await websocket.send_json(error_response)
+        try:
+            await websocket.send_json(error_response)
+        except (WebSocketDisconnect, RuntimeError) as send_err:
+            if not _is_client_gone_error(send_err):
+                raise
+            logger.debug("Could not send command error response; client already disconnected", player_id=player_id)
 
 
 async def _validate_player_and_persistence(

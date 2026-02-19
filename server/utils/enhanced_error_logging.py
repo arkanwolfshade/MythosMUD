@@ -74,6 +74,7 @@ def log_and_raise_enhanced(  # pylint: disable=too-many-arguments,too-many-posit
     user_friendly: str | None = None,
     logger_name: str | None = None,
     skip_log_validation: bool = True,
+    log_as_error: bool = False,
     **kwargs: Any,
 ) -> NoReturn:
     """
@@ -89,6 +90,7 @@ def log_and_raise_enhanced(  # pylint: disable=too-many-arguments,too-many-posit
         details: Additional error details
         user_friendly: User-friendly error message
         logger_name: Specific logger name to use (defaults to current module)
+        log_as_error: If True, log at error level even for ValidationError (so entry goes to errors.log)
         **kwargs: Additional structured logging data (e.g., operation, user_id, etc.)
 
     Raises:
@@ -118,8 +120,9 @@ def log_and_raise_enhanced(  # pylint: disable=too-many-arguments,too-many-posit
         **kwargs,
     }
 
-    # ValidationError is expected user input error (e.g. empty local message); log as warning not error
-    log_level = "warning" if exception_class is ValidationError else "error"
+    # ValidationError is normally expected user input (e.g. empty local); log as warning.
+    # Use error level when log_as_error=True so command-usage failures go to errors.log.
+    log_level = "error" if (log_as_error or exception_class is not ValidationError) else "warning"
     log_with_context(error_logger, log_level, "Error logged and exception raised", **log_data)
 
     # Increment exception counter for monitoring

@@ -1,3 +1,4 @@
+import { logger } from '../utils/logger.js';
 import './RoomInfoPanel.css';
 
 interface Room {
@@ -33,11 +34,11 @@ interface RoomInfoPanelProps {
  */
 function validateAndFixRoomData(room: Room | null): Room | null {
   if (!room) {
-    console.log('🔍 RoomInfoPanel: No room data to validate');
+    logger.debug('RoomInfoPanel', 'No room data to validate');
     return null;
   }
 
-  console.log('🔍 RoomInfoPanel: Validating room data', {
+  logger.debug('RoomInfoPanel', 'Validating room data', {
     roomId: room.id,
     roomName: room.name,
     hasDescription: !!room.description,
@@ -59,42 +60,42 @@ function validateAndFixRoomData(room: Room | null): Room | null {
   if (!validatedRoom.description || validatedRoom.description.trim() === '') {
     validatedRoom.description = 'No description available';
     fixesApplied++;
-    console.log('🔍 RoomInfoPanel: Applied fix - added default description');
+    logger.debug('RoomInfoPanel', 'Applied fix - added default description');
   }
 
   // Fix missing zone
   if (!validatedRoom.zone) {
     validatedRoom.zone = 'Unknown';
     fixesApplied++;
-    console.log('🔍 RoomInfoPanel: Applied fix - added default zone');
+    logger.debug('RoomInfoPanel', 'Applied fix - added default zone');
   }
 
   // Fix missing sub_zone
   if (!validatedRoom.sub_zone) {
     validatedRoom.sub_zone = 'Unknown';
     fixesApplied++;
-    console.log('🔍 RoomInfoPanel: Applied fix - added default sub_zone');
+    logger.debug('RoomInfoPanel', 'Applied fix - added default sub_zone');
   }
 
   // Fix missing exits
   if (!validatedRoom.exits) {
     validatedRoom.exits = {};
     fixesApplied++;
-    console.log('🔍 RoomInfoPanel: Applied fix - added empty exits object');
+    logger.debug('RoomInfoPanel', 'Applied fix - added empty exits object');
   }
 
   // Fix missing occupants array
   if (!validatedRoom.occupants) {
     validatedRoom.occupants = [];
     fixesApplied++;
-    console.log('🔍 RoomInfoPanel: Applied fix - added empty occupants array');
+    logger.debug('RoomInfoPanel', 'Applied fix - added empty occupants array');
   }
 
   // Validate occupant count consistency
   if (validatedRoom.occupants && validatedRoom.occupant_count !== undefined) {
     const actualCount = validatedRoom.occupants.length;
     if (actualCount !== validatedRoom.occupant_count) {
-      console.warn('🔍 RoomInfoPanel: Occupant count mismatch detected', {
+      logger.warn('RoomInfoPanel', 'Occupant count mismatch detected', {
         expected: validatedRoom.occupant_count,
         actual: actualCount,
         roomId: validatedRoom.id,
@@ -104,13 +105,13 @@ function validateAndFixRoomData(room: Room | null): Room | null {
       // Fix the count to match the actual occupants array
       validatedRoom.occupant_count = actualCount;
       fixesApplied++;
-      console.log('🔍 RoomInfoPanel: Applied fix - corrected occupant count to match occupants array');
+      logger.debug('RoomInfoPanel', 'Applied fix - corrected occupant count to match occupants array');
     }
   }
 
   // Validate room data structure
   if (!validatedRoom.id || !validatedRoom.name) {
-    console.error('🔍 RoomInfoPanel: Critical room data missing', {
+    logger.error('RoomInfoPanel', 'Critical room data missing', {
       hasId: !!validatedRoom.id,
       hasName: !!validatedRoom.name,
     });
@@ -118,13 +119,13 @@ function validateAndFixRoomData(room: Room | null): Room | null {
   }
 
   if (fixesApplied > 0) {
-    console.log('🔍 RoomInfoPanel: Room data validation completed', {
+    logger.debug('RoomInfoPanel', 'Room data validation completed', {
       roomId: validatedRoom.id,
       roomName: validatedRoom.name,
       fixesApplied,
     });
   } else {
-    console.log('🔍 RoomInfoPanel: Room data is valid, no fixes needed', {
+    logger.debug('RoomInfoPanel', 'Room data is valid, no fixes needed', {
       roomId: validatedRoom.id,
       roomName: validatedRoom.name,
     });
@@ -134,9 +135,11 @@ function validateAndFixRoomData(room: Room | null): Room | null {
 }
 
 export function RoomInfoPanel({ room, debugInfo }: RoomInfoPanelProps) {
-  console.log('🔍 RoomInfoPanel render called with room:', room);
-  console.log('🔍 RoomInfoPanel room type:', typeof room);
-  console.log('🔍 RoomInfoPanel room keys:', room ? Object.keys(room) : []);
+  logger.debug('RoomInfoPanel', 'render called with room', {
+    room,
+    roomType: typeof room,
+    roomKeys: room ? Object.keys(room) : [],
+  });
 
   // Validate room data consistency and apply fixes
   const validatedRoom = validateAndFixRoomData(room);
@@ -162,7 +165,7 @@ export function RoomInfoPanel({ room, debugInfo }: RoomInfoPanelProps) {
   };
 
   if (!room && !debugInfo) {
-    console.log('🔍 RoomInfoPanel: No room data, showing no-room message');
+    logger.debug('RoomInfoPanel', 'No room data, showing no-room message');
     return (
       <div className="room-info-panel">
         <div className="room-info-content">
@@ -172,7 +175,7 @@ export function RoomInfoPanel({ room, debugInfo }: RoomInfoPanelProps) {
     );
   }
 
-  console.log('🔍 RoomInfoPanel: Rendering room data:', {
+  logger.debug('RoomInfoPanel', 'Rendering room data', {
     name: displayRoom.name,
     description: displayRoom.description,
     zone: displayRoom.zone,
@@ -180,16 +183,9 @@ export function RoomInfoPanel({ room, debugInfo }: RoomInfoPanelProps) {
     exits: displayRoom.exits,
     occupants: displayRoom.occupants,
     occupant_count: displayRoom.occupant_count,
+    occupant_count_type: typeof displayRoom.occupant_count,
+    occupants_length: displayRoom.occupants?.length,
   });
-
-  // Debug: Log the actual occupant_count value
-  console.log(
-    '🔍 DEBUG: occupant_count value:',
-    displayRoom.occupant_count,
-    'type:',
-    typeof displayRoom.occupant_count
-  );
-  console.log('🔍 DEBUG: occupants array:', displayRoom.occupants, 'length:', displayRoom.occupants?.length);
 
   const formatLocationName = (location: string): string => {
     if (!location || location === 'Unknown') return 'Unknown';

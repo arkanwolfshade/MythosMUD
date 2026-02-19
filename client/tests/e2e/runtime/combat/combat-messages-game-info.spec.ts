@@ -62,11 +62,26 @@ test.describe('Combat messages in Game Info', () => {
 
     await ensurePlayerInGame(awContext, 15000);
 
-    // Dr. Francis Morgan is in Main Foyer. Navigate there and wait until location actually shows Main Foyer.
-    const inFoyer = await page.evaluate(() => (document.body?.innerText ?? '').includes('Main Foyer'));
+    // Wait for room state so Location/Exits are loaded (avoids "Unknown" and "You can't go that way").
+    await page
+      .getByText(/Exits:/)
+      .first()
+      .waitFor({ state: 'visible', timeout: 15000 });
+
+    // Dr. Francis Morgan is in Main Foyer. Navigate there if needed, then wait for Main Foyer (locator, not
+    // waitForFunction).
+    const inFoyer = await page
+      .getByText('Main Foyer')
+      .first()
+      .isVisible()
+      .catch(() => false);
     /* eslint-disable playwright/no-conditional-in-test -- optional navigation when not already in Foyer */
     if (!inFoyer) {
-      const hasLaundry = await page.evaluate(() => document.body?.innerText?.includes('Laundry Room') ?? false);
+      const hasLaundry = await page
+        .getByText('Laundry Room')
+        .first()
+        .isVisible()
+        .catch(() => false);
       if (hasLaundry) {
         await executeCommand(page, 'go south');
         await waitForMessage(page, /You go south|Eastern Hallway/i, 10000).catch(() => {});
@@ -75,7 +90,7 @@ test.describe('Combat messages in Game Info', () => {
       await waitForMessage(page, /You go west|Main Foyer/i, 10000).catch(() => {});
     }
     /* eslint-enable playwright/no-conditional-in-test */
-    await page.waitForFunction(() => (document.body?.innerText ?? '').includes('Main Foyer'), { timeout: 10000 });
+    await page.getByText('Main Foyer').first().waitFor({ state: 'visible', timeout: 15000 });
 
     await executeCommand(page, 'attack Dr. Francis Morgan');
 

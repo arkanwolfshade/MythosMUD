@@ -10,6 +10,7 @@ from ..models.command import (
     LogoutCommand,
     QuitCommand,
     RestCommand,
+    SkillsCommand,
     StatusCommand,
     TimeCommand,
     WhoamiCommand,
@@ -81,3 +82,12 @@ class PlayerStateCommandFactory:
                 MythosValidationError, "Rest command takes no arguments", args=args, logger_name=__name__
             )
         return RestCommand()
+
+    @staticmethod
+    def create_skills_command(args: list[str]) -> SkillsCommand:
+        """Create SkillsCommand from arguments (plan 10.7 V4)."""
+        if args:
+            log_and_raise_enhanced(
+                MythosValidationError, "Skills command takes no arguments", args=args, logger_name=__name__
+            )
+        return SkillsCommand()

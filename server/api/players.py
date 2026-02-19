@@ -14,10 +14,11 @@ from fastapi import Request as FastAPIRequest
 
 from ..app.game_tick_processing import get_current_tick, get_tick_interval
 from ..auth.users import get_current_active_user, get_current_user
-from ..dependencies import PlayerServiceDep, StatsGeneratorDep
+from ..dependencies import PlayerServiceDep, SkillServiceDep, StatsGeneratorDep
 from ..error_types import ErrorMessages
 from ..exceptions import DatabaseError, LoggedHTTPException, ValidationError
 from ..game.player_service import PlayerService
+from ..game.skill_service import SkillService
 from ..game.stats_generator import StatsGenerator
 from ..models.user import User
 from ..realtime.login_grace_period import (
@@ -33,6 +34,7 @@ from ..schemas.players import (
     PlayerRead,
     SelectCharacterRequest,
 )
+from ..schemas.players.skill import PlayerSkillEntry, PlayerSkillsResponse
 from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -171,6 +173,41 @@ async def get_user_characters(
             user_id=str(current_user.id) if current_user else None,
             operation="get_user_characters",
         ) from e
+
+
+@player_router.get("/{player_id}/skills", response_model=PlayerSkillsResponse)
+async def get_player_skills(
+    player_id: uuid.UUID,
+    _request: FastAPIRequest,
+    current_user: User = Depends(get_current_user),
+    skill_service: SkillService = SkillServiceDep,
+) -> PlayerSkillsResponse:
+    """Get that character's skills. Requires ownership (403 if not owner)."""
+    if not current_user:
+        raise LoggedHTTPException(
+            status_code=401,
+            detail=ErrorMessages.AUTHENTICATION_REQUIRED,
+            operation="get_player_skills",
+        )
+    skills = await skill_service.get_player_skills(player_id, current_user.id)
+    if skills is None:
+        raise LoggedHTTPException(
+            status_code=403,
+            detail="Not authorized to view this character's skills",
+            operation="get_player_skills",
+            player_id=str(player_id),
+        )
+    return PlayerSkillsResponse(
+        skills=[
+            PlayerSkillEntry(
+                skill_id=s["skill_id"],
+                skill_key=s["skill_key"],
+                skill_name=s["skill_name"],
+                value=s["value"],
+            )
+            for s in skills
+        ]
+    )
 
 
 @player_router.get("/{player_id}", response_model=PlayerRead)

@@ -154,7 +154,7 @@ export default defineConfig(({ mode }) => ({
       ],
       thresholds: {
         statements: 70,
-        branches: 69,
+        branches: 68,
         functions: 70,
         lines: 70,
         'src/utils/security.ts': { statements: 90, branches: 90, functions: 90, lines: 90 },

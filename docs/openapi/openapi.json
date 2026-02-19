@@ -709,7 +709,7 @@
           "players"
         ],
         "summary": "Create Character With Stats",
-        "description": "Create a new character with specific stats.\n\nThis endpoint creates a new player character with the provided stats\nand automatically logs the user in with the new character.\n\nRate limited to 5 creations per 5 minutes per user.",
+        "description": "Create a new character with specific stats.\n\nThis endpoint creates a new player character with the provided stats\nand automatically logs the user in with the new character.\nServer applies profession stat_modifiers to rolled stats; if occupation_slots\nand personal_interest are provided, sets player skills.\n\nRate limited to 5 creations per 5 minutes per user.",
         "operationId": "create_character_with_stats_v1_api_players_create_character_post",
         "requestBody": {
           "content": {
@@ -1370,6 +1370,55 @@
         ]
       }
     },
+    "/v1/api/players/{player_id}/skills": {
+      "get": {
+        "tags": [
+          "players"
+        ],
+        "summary": "Get Player Skills",
+        "description": "Get that character's skills. Requires ownership (403 if not owner).",
+        "operationId": "get_player_skills_v1_api_players__player_id__skills_get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "player_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Player Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayerSkillsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/api/players/{player_id}": {
       "get": {
         "tags": [
@@ -1448,7 +1497,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/server__schemas__players__player__MessageResponse"
+                  "$ref": "#/components/schemas/MessageResponse"
                 }
               }
             }
@@ -1733,6 +1782,33 @@
         }
       }
     },
+    "/v1/skills/": {
+      "get": {
+        "tags": [
+          "skills"
+        ],
+        "summary": "Get Skills Catalog",
+        "description": "Return the  skills catalog (base values, allow_at_creation).\n\nCthulhu Mythos is included with allow_at_creation=false.\nUsed by the client for skill allocation during character creation.",
+        "operationId": "get_skills_catalog_v1_skills__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkillListResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
     "/v1/game/status": {
       "get": {
         "tags": [
@@ -1839,7 +1915,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/server__api__monitoring_models__MetricsResponse"
+                  "$ref": "#/components/schemas/MetricsResponse"
                 }
               }
             }
@@ -1906,7 +1982,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MessageResponse"
+                  "$ref": "#/components/schemas/server__api__monitoring_models__MessageResponse"
                 }
               }
             }
@@ -1994,7 +2070,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MessageResponse"
+                  "$ref": "#/components/schemas/server__api__monitoring_models__MessageResponse"
                 }
               }
             }
@@ -2215,7 +2291,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MetricsResponse"
+                  "$ref": "#/components/schemas/server__schemas__metrics__metrics__MetricsResponse"
                 }
               }
             }
@@ -5535,7 +5611,7 @@
             "additionalProperties": true,
             "type": "object",
             "title": "Stats",
-            "description": "Character stats dictionary"
+            "description": "Rolled character stats (server applies profession stat_modifiers)"
           },
           "profession_id": {
             "type": "integer",
@@ -5543,6 +5619,36 @@
             "title": "Profession Id",
             "description": "Profession ID",
             "default": 0
+          },
+          "occupation_slots": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/OccupationSlot"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Occupation Slots",
+            "description": "Nine slots: one 70, two 60, three 50, three 40. Omit for legacy flow."
+          },
+          "personal_interest": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/PersonalInterestSlot"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Personal Interest",
+            "description": "Four skill_ids (base+20 each). Omit for legacy flow."
           },
           "start_in_tutorial": {
             "type": "boolean",
@@ -7028,15 +7134,20 @@
         "properties": {
           "message": {
             "type": "string",
-            "title": "Message"
+            "title": "Message",
+            "description": "Success or status message"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
           "message"
         ],
         "title": "MessageResponse",
-        "description": "Generic response model for operations that return a simple message."
+        "description": "Generic response model for operations that return a simple message.",
+        "example": {
+          "message": "Operation completed successfully"
+        }
       },
       "MetricsData": {
         "properties": {
@@ -7125,30 +7236,132 @@
       },
       "MetricsResponse": {
         "properties": {
-          "metrics": {
-            "$ref": "#/components/schemas/MetricsData",
-            "description": "Comprehensive system metrics including NATS, circuit breaker, and DLQ stats"
+          "total_movements": {
+            "type": "integer",
+            "title": "Total Movements"
+          },
+          "successful_movements": {
+            "type": "integer",
+            "title": "Successful Movements"
+          },
+          "failed_movements": {
+            "type": "integer",
+            "title": "Failed Movements"
+          },
+          "success_rate": {
+            "type": "number",
+            "title": "Success Rate"
+          },
+          "failure_rate": {
+            "type": "number",
+            "title": "Failure Rate"
+          },
+          "current_concurrent_movements": {
+            "type": "integer",
+            "title": "Current Concurrent Movements"
+          },
+          "max_concurrent_movements": {
+            "type": "integer",
+            "title": "Max Concurrent Movements"
+          },
+          "avg_movement_time_ms": {
+            "type": "number",
+            "title": "Avg Movement Time Ms"
+          },
+          "max_movement_time_ms": {
+            "type": "number",
+            "title": "Max Movement Time Ms"
+          },
+          "min_movement_time_ms": {
+            "type": "number",
+            "title": "Min Movement Time Ms"
+          },
+          "movements_per_second": {
+            "type": "number",
+            "title": "Movements Per Second"
+          },
+          "uptime_seconds": {
+            "type": "number",
+            "title": "Uptime Seconds"
+          },
+          "integrity_checks": {
+            "type": "integer",
+            "title": "Integrity Checks"
+          },
+          "integrity_violations": {
+            "type": "integer",
+            "title": "Integrity Violations"
+          },
+          "integrity_rate": {
+            "type": "number",
+            "title": "Integrity Rate"
+          },
+          "last_movement_time": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Movement Time"
+          },
+          "last_validation_time": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Validation Time"
+          },
+          "room_occupancy": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Room Occupancy"
+          },
+          "player_movement_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Player Movement Counts"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
           }
         },
         "type": "object",
         "required": [
-          "metrics"
+          "total_movements",
+          "successful_movements",
+          "failed_movements",
+          "success_rate",
+          "failure_rate",
+          "current_concurrent_movements",
+          "max_concurrent_movements",
+          "avg_movement_time_ms",
+          "max_movement_time_ms",
+          "min_movement_time_ms",
+          "movements_per_second",
+          "uptime_seconds",
+          "integrity_checks",
+          "integrity_violations",
+          "integrity_rate",
+          "last_movement_time",
+          "last_validation_time",
+          "room_occupancy",
+          "player_movement_counts",
+          "timestamp"
         ],
         "title": "MetricsResponse",
-        "description": "Response model for comprehensive system metrics.",
-        "example": {
-          "metrics": {
-            "circuit_breaker": {
-              "state": "closed"
-            },
-            "dead_letter_queue": {
-              "total_messages": 0
-            },
-            "nats_connection": {
-              "status": "connected"
-            }
-          }
-        }
+        "description": "Response model for movement metrics."
       },
       "MetricsSummary": {
         "properties": {
@@ -8169,6 +8382,27 @@
         "title": "OccultKnowledgeRequest",
         "description": "Request model for gaining occult knowledge."
       },
+      "OccupationSlot": {
+        "properties": {
+          "skill_id": {
+            "type": "integer",
+            "title": "Skill Id",
+            "description": "Skill catalog id"
+          },
+          "value": {
+            "type": "integer",
+            "title": "Value",
+            "description": "Percentage (70, 60, 50, or 40)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "skill_id",
+          "value"
+        ],
+        "title": "OccupationSlot",
+        "description": "One occupation skill slot: skill_id and fixed value (70, 60, 50, or 40)."
+      },
       "OpenContainerRequest": {
         "properties": {
           "container_id": {
@@ -8280,6 +8514,21 @@
         ],
         "title": "PerformanceSummaryResponse",
         "description": "Response model for performance summary endpoint."
+      },
+      "PersonalInterestSlot": {
+        "properties": {
+          "skill_id": {
+            "type": "integer",
+            "title": "Skill Id",
+            "description": "Skill catalog id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "skill_id"
+        ],
+        "title": "PersonalInterestSlot",
+        "description": "One personal interest skill: skill_id only (server applies base + 20)."
       },
       "PlayerConnectionsResponse": {
         "properties": {
@@ -8513,6 +8762,59 @@
           ],
           "user_id": "123e4567-e89b-12d3-a456-426614174000"
         }
+      },
+      "PlayerSkillEntry": {
+        "properties": {
+          "skill_id": {
+            "type": "integer",
+            "title": "Skill Id",
+            "description": "Skill catalog id"
+          },
+          "skill_key": {
+            "type": "string",
+            "title": "Skill Key",
+            "description": "Skill key (e.g. accounting)"
+          },
+          "skill_name": {
+            "type": "string",
+            "title": "Skill Name",
+            "description": "Display name"
+          },
+          "value": {
+            "type": "integer",
+            "title": "Value",
+            "description": "Current percentage 0-99"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "skill_id",
+          "skill_key",
+          "skill_name",
+          "value"
+        ],
+        "title": "PlayerSkillEntry",
+        "description": "Single player skill (character creation revamp 4.3)."
+      },
+      "PlayerSkillsResponse": {
+        "properties": {
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/PlayerSkillEntry"
+            },
+            "type": "array",
+            "title": "Skills",
+            "description": "That character's skills"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "skills"
+        ],
+        "title": "PlayerSkillsResponse",
+        "description": "Response for GET /v1/api/players/{player_id}/skills."
       },
       "PositionState": {
         "type": "string",
@@ -9002,7 +9304,7 @@
         "properties": {
           "stats": {
             "$ref": "#/components/schemas/RolledStats",
-            "description": "Rolled character stats"
+            "description": "Rolled character stats (send these on create-character)"
           },
           "stat_summary": {
             "$ref": "#/components/schemas/StatSummary",
@@ -9019,6 +9321,17 @@
             ],
             "title": "Profession Id",
             "description": "Profession ID (if profession-based rolling)"
+          },
+          "stats_with_profession_modifiers": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RolledStats"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Rolled stats with profession stat_modifiers applied (preview only)"
           },
           "available_classes": {
             "anyOf": [
@@ -9643,6 +9956,89 @@
         ],
         "title": "SetOriginRequest",
         "description": "Request model for setting map origin."
+      },
+      "SkillData": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id",
+            "description": "Skill primary key"
+          },
+          "key": {
+            "type": "string",
+            "title": "Key",
+            "description": "Stable identifier (e.g. accounting, cthulhu_mythos)"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "description": "Display name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "description": "Optional description"
+          },
+          "base_value": {
+            "type": "integer",
+            "title": "Base Value",
+            "description": "Base percentage 0-100 from CoC sheet"
+          },
+          "allow_at_creation": {
+            "type": "boolean",
+            "title": "Allow At Creation",
+            "description": "If false, cannot be chosen in occupation/personal slots (e.g. Cthulhu Mythos)"
+          },
+          "category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category",
+            "description": "Optional category for UI grouping"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "key",
+          "name",
+          "base_value",
+          "allow_at_creation"
+        ],
+        "title": "SkillData",
+        "description": "Single skill catalog entry."
+      },
+      "SkillListResponse": {
+        "properties": {
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/SkillData"
+            },
+            "type": "array",
+            "title": "Skills",
+            "description": "List of skills in the catalog"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "skills"
+        ],
+        "title": "SkillListResponse",
+        "description": "Response model for skills catalog list."
       },
       "StatRequirement": {
         "properties": {
@@ -10573,152 +10969,45 @@
         "title": "WeaponStats",
         "description": "Weapon statistics for items that can be used as weapons.\n\nThis model represents the combat properties of a weapon item, including\ndamage range, modifiers, damage types, and magical properties."
       },
-      "server__api__monitoring_models__MetricsResponse": {
-        "properties": {
-          "total_movements": {
-            "type": "integer",
-            "title": "Total Movements"
-          },
-          "successful_movements": {
-            "type": "integer",
-            "title": "Successful Movements"
-          },
-          "failed_movements": {
-            "type": "integer",
-            "title": "Failed Movements"
-          },
-          "success_rate": {
-            "type": "number",
-            "title": "Success Rate"
-          },
-          "failure_rate": {
-            "type": "number",
-            "title": "Failure Rate"
-          },
-          "current_concurrent_movements": {
-            "type": "integer",
-            "title": "Current Concurrent Movements"
-          },
-          "max_concurrent_movements": {
-            "type": "integer",
-            "title": "Max Concurrent Movements"
-          },
-          "avg_movement_time_ms": {
-            "type": "number",
-            "title": "Avg Movement Time Ms"
-          },
-          "max_movement_time_ms": {
-            "type": "number",
-            "title": "Max Movement Time Ms"
-          },
-          "min_movement_time_ms": {
-            "type": "number",
-            "title": "Min Movement Time Ms"
-          },
-          "movements_per_second": {
-            "type": "number",
-            "title": "Movements Per Second"
-          },
-          "uptime_seconds": {
-            "type": "number",
-            "title": "Uptime Seconds"
-          },
-          "integrity_checks": {
-            "type": "integer",
-            "title": "Integrity Checks"
-          },
-          "integrity_violations": {
-            "type": "integer",
-            "title": "Integrity Violations"
-          },
-          "integrity_rate": {
-            "type": "number",
-            "title": "Integrity Rate"
-          },
-          "last_movement_time": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Last Movement Time"
-          },
-          "last_validation_time": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Last Validation Time"
-          },
-          "room_occupancy": {
-            "additionalProperties": {
-              "type": "integer"
-            },
-            "type": "object",
-            "title": "Room Occupancy"
-          },
-          "player_movement_counts": {
-            "additionalProperties": {
-              "type": "integer"
-            },
-            "type": "object",
-            "title": "Player Movement Counts"
-          },
-          "timestamp": {
-            "type": "string",
-            "title": "Timestamp"
-          }
-        },
-        "type": "object",
-        "required": [
-          "total_movements",
-          "successful_movements",
-          "failed_movements",
-          "success_rate",
-          "failure_rate",
-          "current_concurrent_movements",
-          "max_concurrent_movements",
-          "avg_movement_time_ms",
-          "max_movement_time_ms",
-          "min_movement_time_ms",
-          "movements_per_second",
-          "uptime_seconds",
-          "integrity_checks",
-          "integrity_violations",
-          "integrity_rate",
-          "last_movement_time",
-          "last_validation_time",
-          "room_occupancy",
-          "player_movement_counts",
-          "timestamp"
-        ],
-        "title": "MetricsResponse",
-        "description": "Response model for movement metrics."
-      },
-      "server__schemas__players__player__MessageResponse": {
+      "server__api__monitoring_models__MessageResponse": {
         "properties": {
           "message": {
             "type": "string",
-            "title": "Message",
-            "description": "Success or status message"
+            "title": "Message"
           }
         },
-        "additionalProperties": false,
         "type": "object",
         "required": [
           "message"
         ],
         "title": "MessageResponse",
-        "description": "Generic response model for operations that return a simple message.",
+        "description": "Generic response model for operations that return a simple message."
+      },
+      "server__schemas__metrics__metrics__MetricsResponse": {
+        "properties": {
+          "metrics": {
+            "$ref": "#/components/schemas/MetricsData",
+            "description": "Comprehensive system metrics including NATS, circuit breaker, and DLQ stats"
+          }
+        },
+        "type": "object",
+        "required": [
+          "metrics"
+        ],
+        "title": "MetricsResponse",
+        "description": "Response model for comprehensive system metrics.",
         "example": {
-          "message": "Operation completed successfully"
+          "metrics": {
+            "circuit_breaker": {
+              "state": "closed"
+            },
+            "dead_letter_queue": {
+              "total_messages": 0
+            },
+            "nats_connection": {
+              "status": "connected"
+            }
+          }
         }
       }
     },

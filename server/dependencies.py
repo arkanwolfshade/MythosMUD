@@ -23,14 +23,17 @@ from fastapi import Depends, Request
 
 from .container import ApplicationContainer
 from .game.chat_service import ChatService
+from .game.level_service import LevelService
 from .game.magic.mp_regeneration_service import MPRegenerationService
 from .game.player_service import PlayerService
 from .game.profession_service import ProfessionService
 from .game.room_service import RoomService
+from .game.skill_service import SkillService
 from .game.stats_generator import StatsGenerator
 from .npc.lifecycle_manager import NPCLifecycleManager
 from .npc.population_control import NPCPopulationController
 from .npc.spawning_service import NPCSpawningService
+from .persistence.repositories.skill_repository import SkillRepository
 from .services.catatonia_registry import CatatoniaRegistry
 from .services.combat_service import CombatService
 from .services.passive_lucidity_flux_service import PassiveLucidityFluxService
@@ -98,6 +101,22 @@ def get_player_service(request: Request) -> PlayerService:
         raise RuntimeError("PlayerService not initialized in container")
 
     return cast(PlayerService, container.player_service)
+
+
+def get_level_service(request: Request) -> LevelService:
+    """
+    Get a LevelService instance with dependency injection.
+
+    LevelService provides grant_xp and check_level_up; the level-up hook
+    is wired when skill improvement is implemented (character creation revamp 4.5).
+    """
+    logger.debug("Retrieving LevelService from container")
+    container = get_container(request)
+
+    if container.level_service is None:
+        raise RuntimeError("LevelService not initialized in container")
+
+    return cast(LevelService, container.level_service)
 
 
 def get_player_service_for_testing(player_service: PlayerService | None = None) -> PlayerService:
@@ -265,6 +284,7 @@ def get_player_respawn_service(request: Request) -> "PlayerRespawnService":
 # Dependency injection type aliases for use in route handlers
 ContainerDep = Depends(get_container)  # pylint: disable=invalid-name  # Reason: FastAPI dependency name follows FastAPI conventions
 PlayerServiceDep = Depends(get_player_service)  # pylint: disable=invalid-name  # Reason: FastAPI dependency name follows FastAPI conventions
+LevelServiceDep = Depends(get_level_service)  # pylint: disable=invalid-name  # Reason: FastAPI dependency name follows FastAPI conventions
 RoomServiceDep = Depends(get_room_service)  # pylint: disable=invalid-name  # Reason: FastAPI dependency name follows FastAPI conventions
 StatsGeneratorDep = Depends(get_stats_generator)  # pylint: disable=invalid-name  # Reason: FastAPI dependency name follows FastAPI conventions
 ConnectionManagerDep = Depends(get_connection_manager)  # pylint: disable=invalid-name  # Reason: FastAPI dependency name follows FastAPI conventions
@@ -292,6 +312,30 @@ def get_profession_service(request: Request) -> ProfessionService:
 
 
 ProfessionServiceDep = Depends(get_profession_service)  # pylint: disable=invalid-name  # Reason: FastAPI dependency name follows FastAPI conventions
+
+
+def get_skill_repository() -> SkillRepository:
+    """
+    Get a SkillRepository instance for skills catalog queries.
+
+    Used by GET /v1/skills (character creation revamp 4.2).
+    """
+    return SkillRepository()
+
+
+SkillRepositoryDep = Depends(get_skill_repository)  # pylint: disable=invalid-name  # Reason: FastAPI dependency name follows FastAPI conventions
+
+
+def get_skill_service(request: Request) -> SkillService:
+    """Get SkillService from container (set_player_skills, get_player_skills)."""
+    logger.debug("Retrieving SkillService from container")
+    container = get_container(request)
+    if container.skill_service is None:
+        raise RuntimeError("SkillService not initialized in container")
+    return cast(SkillService, container.skill_service)
+
+
+SkillServiceDep = Depends(get_skill_service)  # pylint: disable=invalid-name  # Reason: FastAPI dependency name follows FastAPI conventions
 
 
 # Combat service dependency injection functions

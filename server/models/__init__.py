@@ -20,7 +20,9 @@ from .lucidity import LucidityAdjustmentLog, LucidityCooldown, LucidityExposureS
 from .npc import NPCDefinition, NPCDefinitionType, NPCRelationship, NPCSpawnRule
 from .player import Player, PlayerExploration, PlayerInventory
 from .player_effect import PlayerEffect
+from .player_skill import PlayerSkill
 from .player_spells import PlayerSpell
+from .skill import Skill
 from .spell import Spell, SpellEffectType, SpellMaterial, SpellRangeType, SpellSchool, SpellTargetType
 from .spell_db import SpellDB
 from .user import User
@@ -68,7 +70,9 @@ __all__ = [
     "SpellEffectType",
     "SpellMaterial",
     "PlayerEffect",
+    "PlayerSkill",
     "PlayerSpell",
+    "Skill",
     "SpellDB",
     "Zone",
     "Subzone",

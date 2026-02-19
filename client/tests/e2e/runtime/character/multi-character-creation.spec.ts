@@ -1,8 +1,8 @@
 /**
  * Scenario 28: Multi-Character Creation
  *
- * Tests creating multiple characters for a single user, including character
- * limit enforcement and character name validation.
+ * Tests creating multiple characters. Uses TestAdmin so canonical E2E accounts
+ * (ArkanWolfshade/Ithaqua) are not polluted.
  */
 
 import { expect, test } from '@playwright/test';
@@ -10,8 +10,7 @@ import { loginPlayer } from '../fixtures/auth';
 
 test.describe('Multi-Character Creation', () => {
   test('should allow creating multiple characters up to limit', async ({ page }) => {
-    // Login as user
-    await loginPlayer(page, 'ArkanWolfshade', 'Cthulhu1');
+    await loginPlayer(page, 'TestAdmin', 'Cthulhu1');
 
     // Check if character selection screen appears (defensive: UI may not be in selection state)
     const characterSelection = page.locator('h1, h2, h3').filter({ hasText: /Select Your Character/i });

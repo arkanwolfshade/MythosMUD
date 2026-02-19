@@ -80,7 +80,7 @@ from .command_player_state import (
 )
 
 # Import utility commands
-from .command_utility import HelpCommand, StatusCommand, TimeCommand, WhoamiCommand, WhoCommand
+from .command_utility import HelpCommand, SkillsCommand, StatusCommand, TimeCommand, WhoamiCommand, WhoCommand
 
 # Re-export all imports for backward compatibility
 __all__ = [
@@ -130,6 +130,7 @@ __all__ = [
     "StatusCommand",
     "TimeCommand",
     "WhoamiCommand",
+    "SkillsCommand",
     "HelpCommand",
     # Inventory commands
     "InventoryCommand",
@@ -191,6 +192,7 @@ Command = (
     | GotoCommand
     | WhoCommand
     | StatusCommand
+    | SkillsCommand
     | InventoryCommand
     | PickupCommand
     | DropCommand

@@ -2,8 +2,7 @@
  * Scenario 27: Character Selection at Login
  *
  * Tests the character selection flow when a user has multiple characters.
- * Verifies that users with multiple characters see the selection screen,
- * can select a character, and that the selected character is used for game connection.
+ * Uses TestAdmin so canonical E2E accounts (ArkanWolfshade/Ithaqua) are not polluted.
  */
 
 import { expect, test } from '@playwright/test';
@@ -12,7 +11,7 @@ import { loginPlayer } from '../fixtures/auth';
 test.describe('Character Selection at Login', () => {
   test('should show character selection screen when user has multiple characters', async ({ page }) => {
     // Login as user with multiple characters
-    await loginPlayer(page, 'ArkanWolfshade', 'Cthulhu1');
+    await loginPlayer(page, 'TestAdmin', 'Cthulhu1');
 
     // Verify character selection screen appears (if user has multiple characters)
     const characterSelection = page.locator('h1, h2, h3').filter({ hasText: /Select Your Character/i });
@@ -25,7 +24,7 @@ test.describe('Character Selection at Login', () => {
 
   test('should allow selecting a character', async ({ page }) => {
     // Login as user
-    await loginPlayer(page, 'ArkanWolfshade', 'Cthulhu1');
+    await loginPlayer(page, 'TestAdmin', 'Cthulhu1');
 
     // Check if character selection screen appears (defensive: UI may not be in selection state)
     const characterSelection = page.locator('h1, h2, h3').filter({ hasText: /Select Your Character/i });

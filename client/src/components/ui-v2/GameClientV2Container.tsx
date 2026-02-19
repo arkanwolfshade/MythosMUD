@@ -529,6 +529,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
             : null
         }
         openMapInNewTab={false}
+        playerId={gameState.player?.id ?? null}
       />
 
       {/* Tabbed Interface Overlay */}

@@ -48,6 +48,11 @@ class DebugLogger {
       return envLogLevel;
     }
 
+    // Reduce test output: in Vitest do not log DEBUG
+    if (import.meta.env.VITEST) {
+      return 'WARN';
+    }
+
     // Default based on environment
     if (import.meta.env.PROD) {
       return 'WARN';

@@ -31,6 +31,8 @@ SEED_FILES = [
     "data/db/01_professions.sql",
     "data/db/02_item_prototypes.sql",
     "data/db/03_npc_definitions.sql",
+    "data/db/04_skills.sql",
+    "data/db/05_profession_modifiers.sql",
 ]
 
 

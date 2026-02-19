@@ -63,6 +63,8 @@ class ApplicationContainer:
         self.exploration_service: Any = None
         self.user_manager: Any = None
         self.container_service: Any = None
+        self.level_service: Any = None
+        self.skill_service: Any = None
 
         self.room_cache_service: Any = None
         self.profession_cache_service: Any = None

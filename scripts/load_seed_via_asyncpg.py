@@ -32,6 +32,8 @@ async def load_seed_data():
             "data/db/01_professions.sql",
             "data/db/02_item_prototypes.sql",
             "data/db/03_npc_definitions.sql",
+            "data/db/04_skills.sql",
+            "data/db/05_profession_modifiers.sql",
         ]
 
         for seed_file in seed_files:
@@ -59,6 +61,9 @@ async def load_seed_data():
 
         npc_count = await conn.fetchval("SELECT COUNT(*) FROM npc_definitions")
         print(f"NPC Definitions: {npc_count}")
+
+        skill_count = await conn.fetchval("SELECT COUNT(*) FROM skills")
+        print(f"Skills: {skill_count}")
 
         print("\n=== Complete ===")
 

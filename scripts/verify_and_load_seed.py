@@ -45,6 +45,8 @@ async def main():
                 ("data/db/01_professions.sql", "Professions"),
                 ("data/db/02_item_prototypes.sql", "Item Prototypes"),
                 ("data/db/03_npc_definitions.sql", "NPC Definitions"),
+                ("data/db/04_skills.sql", "Skills"),
+                ("data/db/05_profession_modifiers.sql", "Profession Modifiers"),
             ]
 
             print("\nLoading seed data...")
@@ -76,6 +78,10 @@ async def main():
             npc_result = await session.execute(text("SELECT COUNT(*) FROM npc_definitions"))
             npc_count = npc_result.scalar()
             print(f"  NPC Definitions: {npc_count}")
+
+            skill_result = await session.execute(text("SELECT COUNT(*) FROM skills"))
+            skill_count = skill_result.scalar()
+            print(f"  Skills: {skill_count}")
 
             print("\n" + "=" * 60)
             print("SEED DATA LOADING COMPLETE")

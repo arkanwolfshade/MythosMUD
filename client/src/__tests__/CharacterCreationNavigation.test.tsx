@@ -65,8 +65,9 @@ describe('Character Creation Navigation Flow', () => {
       ok: true,
       json: vi.fn().mockResolvedValue({
         access_token: 'mock-token',
-        has_character: false,
-        character_name: '',
+        token_type: 'Bearer',
+        user_id: 'test-user-id',
+        characters: [],
       }),
     };
 
@@ -84,9 +85,12 @@ describe('Character Creation Navigation Flow', () => {
           strength: 12,
           dexterity: 14,
           constitution: 10,
+          size: 55,
           intelligence: 16,
-          wisdom: 8,
+          power: 50,
+          education: 40,
           charisma: 13,
+          luck: 50,
         },
         stat_summary: {
           total: 73,
@@ -111,6 +115,29 @@ describe('Character Creation Navigation Flow', () => {
       }),
     };
 
+    const createMockSkills = () =>
+      Array.from({ length: 20 }, (_, i) => ({
+        id: i + 1,
+        key: `skill_${i + 1}`,
+        name: `Skill ${i + 1}`,
+        base_value: 5 + (i % 50),
+        allow_at_creation: true,
+      }));
+
+    const charactersListResponse = {
+      ok: true,
+      json: vi.fn().mockResolvedValue([
+        {
+          player_id: 'char-1',
+          name: 'testuser',
+          profession_id: 0,
+          level: 1,
+          created_at: new Date().toISOString(),
+          last_active: new Date().toISOString(),
+        },
+      ]),
+    };
+
     fetchSpy.mockImplementation((url: string | URL | Request) => {
       const urlString = typeof url === 'string' ? url : url instanceof URL ? url.toString() : url.url;
       if (urlString.includes('/auth/register')) {
@@ -119,25 +146,41 @@ describe('Character Creation Navigation Flow', () => {
         return Promise.resolve(professionsResponse as unknown as Response);
       } else if (urlString.includes('/players/roll-stats')) {
         return Promise.resolve(statsResponse as unknown as Response);
+      } else if (urlString.includes('/skills/')) {
+        return Promise.resolve({
+          ok: true,
+          json: vi.fn().mockResolvedValue({ skills: createMockSkills() }),
+        } as unknown as Response);
       } else if (urlString.includes('/players/create-character')) {
         return Promise.resolve(characterCreationResponse as unknown as Response);
+      } else if (urlString.includes('/players/characters') && !urlString.includes('create-character')) {
+        return Promise.resolve(charactersListResponse as unknown as Response);
       }
       return Promise.reject(new Error('Unexpected URL'));
     });
+  };
+
+  const fillSkillSlotsAndConfirm = async () => {
+    await waitFor(() => {
+      expect(screen.getByText('Skill Allocation')).toBeInTheDocument();
+    });
+    const comboboxes = screen.getAllByRole('combobox');
+    expect(comboboxes.length).toBeGreaterThanOrEqual(13);
+    for (let i = 0; i < 13; i++) {
+      fireEvent.change(comboboxes[i], { target: { value: String((i % 20) + 1) } });
+    }
+    fireEvent.click(screen.getByRole('button', { name: /Next: Name character/i }));
   };
 
   it('should navigate from login to profession selection to stats rolling to game', async () => {
     setupBasicMocks();
     render(<App />);
 
-    // Step 1: Start at login screen
     expect(screen.getByText('Enter the Void')).toBeInTheDocument();
 
-    // Step 2: Switch to registration mode
     const toggleButton = screen.getByText('Need an account? Register');
     fireEvent.click(toggleButton);
 
-    // Step 3: Register user
     const usernameInput = screen.getByPlaceholderText('Username');
     const passwordInput = screen.getByPlaceholderText('Password');
     const inviteCodeInput = screen.getByPlaceholderText('Invite Code');
@@ -148,30 +191,28 @@ describe('Character Creation Navigation Flow', () => {
     fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
     fireEvent.click(registerButton);
 
-    // Step 4: Should navigate to profession selection
+    await waitFor(() => {
+      expect(screen.getByText('Character Creation')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByText('Accept Stats'));
+
     await waitFor(() => {
       expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
       expect(screen.getByText('Welcome, testuser')).toBeInTheDocument();
     });
 
-    // Step 5: Select profession and navigate to stats rolling
     const trampCard = screen.getByText('Tramp').closest('.profession-card');
     fireEvent.click(trampCard!);
+    fireEvent.click(screen.getByText('Next'));
 
-    const nextButton = screen.getByText('Next');
-    fireEvent.click(nextButton);
+    await fillSkillSlotsAndConfirm();
 
-    // Step 6: Should navigate to stats rolling screen
     await waitFor(() => {
-      expect(screen.getByText('Character Creation')).toBeInTheDocument();
-      expect(screen.getByText(/testuser/)).toBeInTheDocument();
+      expect(screen.getByPlaceholderText('Enter name')).toBeInTheDocument();
     });
+    fireEvent.change(screen.getByPlaceholderText('Enter name'), { target: { value: 'testuser' } });
+    fireEvent.click(screen.getByText('Create Character'));
 
-    // Step 7: Accept stats and navigate to game
-    const acceptButton = screen.getByText('Accept Stats & Create Character');
-    fireEvent.click(acceptButton);
-
-    // Step 8: Should navigate to game terminal
     await waitFor(() => {
       expect(screen.getByTestId('game-terminal')).toBeInTheDocument();
     });
@@ -181,7 +222,6 @@ describe('Character Creation Navigation Flow', () => {
     setupBasicMocks();
     render(<App />);
 
-    // Register user and navigate to profession selection
     const toggleButton = screen.getByText('Need an account? Register');
     fireEvent.click(toggleButton);
 
@@ -195,34 +235,29 @@ describe('Character Creation Navigation Flow', () => {
     fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
     fireEvent.click(registerButton);
 
-    // Navigate to profession selection
+    await waitFor(() => {
+      expect(screen.getByText('Character Creation')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByText('Accept Stats'));
+
     await waitFor(() => {
       expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
     });
 
-    // Select profession and navigate to stats rolling
     const trampCard = screen.getByText('Tramp').closest('.profession-card');
     fireEvent.click(trampCard!);
+    fireEvent.click(screen.getByText('Next'));
 
-    const nextButton = screen.getByText('Next');
-    fireEvent.click(nextButton);
-
-    // Should be on stats rolling screen
     await waitFor(() => {
-      expect(screen.getByText('Character Creation')).toBeInTheDocument();
+      expect(screen.getByText('Skill Allocation')).toBeInTheDocument();
     });
+    fireEvent.click(screen.getByText('Back'));
 
-    // Navigate back to profession selection
-    const backButton = screen.getByText('Back');
-    fireEvent.click(backButton);
-
-    // Should be back on profession selection screen
     await waitFor(() => {
       expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
       expect(screen.getByText(/Welcome, testuser/)).toBeInTheDocument();
     });
 
-    // Should be able to select a different profession
     const gutterRatCard = screen.getByText('Gutter Rat').closest('.profession-card');
     fireEvent.click(gutterRatCard!);
 
@@ -230,16 +265,13 @@ describe('Character Creation Navigation Flow', () => {
       expect(gutterRatCard).toHaveClass('selected');
     });
 
-    // Should be able to proceed again
-    const nextButtonAgain = screen.getByText('Next');
-    expect(nextButtonAgain).not.toBeDisabled();
+    expect(screen.getByText('Next')).not.toBeDisabled();
   });
 
   it('should allow navigation back from profession selection to login', async () => {
     setupBasicMocks();
     render(<App />);
 
-    // Register user and navigate to profession selection
     const toggleButton = screen.getByText('Need an account? Register');
     fireEvent.click(toggleButton);
 
@@ -253,22 +285,24 @@ describe('Character Creation Navigation Flow', () => {
     fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
     fireEvent.click(registerButton);
 
-    // Navigate to profession selection
+    await waitFor(() => {
+      expect(screen.getByText('Character Creation')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByText('Accept Stats'));
+
     await waitFor(() => {
       expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
     });
 
-    // Navigate back to login
-    const backButton = screen.getByText('Back');
-    fireEvent.click(backButton);
+    fireEvent.click(screen.getByText('Back'));
 
-    // The back button from profession selection should go back to login
-    // But the current implementation might not support this fully
-    // Let's check what actually happens
     await waitFor(() => {
-      // The back button should go back to login screen
-      const loginButton = screen.queryByText('Enter the Void');
-      expect(loginButton).toBeInTheDocument();
+      expect(screen.getByText('Character Creation')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByText('Back'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Enter the Void')).toBeInTheDocument();
     });
   });
 
@@ -276,7 +310,6 @@ describe('Character Creation Navigation Flow', () => {
     setupBasicMocks();
     render(<App />);
 
-    // Register user and navigate to profession selection
     const toggleButton = screen.getByText('Need an account? Register');
     fireEvent.click(toggleButton);
 
@@ -290,12 +323,15 @@ describe('Character Creation Navigation Flow', () => {
     fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
     fireEvent.click(registerButton);
 
-    // Navigate to profession selection
+    await waitFor(() => {
+      expect(screen.getByText('Character Creation')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByText('Accept Stats'));
+
     await waitFor(() => {
       expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
     });
 
-    // Select Tramp profession
     const trampCard = screen.getByText('Tramp').closest('.profession-card');
     fireEvent.click(trampCard!);
 
@@ -303,48 +339,34 @@ describe('Character Creation Navigation Flow', () => {
       expect(trampCard).toHaveClass('selected');
     });
 
-    // Navigate to stats rolling
-    const nextButton = screen.getByText('Next');
-    fireEvent.click(nextButton);
+    fireEvent.click(screen.getByText('Next'));
 
     await waitFor(() => {
-      expect(screen.getByText('Character Creation')).toBeInTheDocument();
+      expect(screen.getByText('Skill Allocation')).toBeInTheDocument();
     });
 
-    // Navigate back to profession selection
-    const backButton = screen.getByText('Back');
-    fireEvent.click(backButton);
+    fireEvent.click(screen.getByText('Back'));
 
-    // Should still have Tramp selected
     await waitFor(() => {
       expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
       expect(trampCard).toHaveClass('selected');
     });
 
-    // Change to Gutter Rat
     const gutterRatCard = screen.getByText('Gutter Rat').closest('.profession-card');
     fireEvent.click(gutterRatCard!);
 
     await waitFor(() => {
-      // Check that Gutter Rat is selected
       expect(gutterRatCard).toHaveClass('selected');
-      // Tramp should not be selected (but it might still have the class due to state management)
-      // Let's just verify that Gutter Rat is selected
     });
 
-    // Navigate to stats rolling again
-    const nextButtonAgain = screen.getByText('Next');
-    fireEvent.click(nextButtonAgain);
+    fireEvent.click(screen.getByText('Next'));
 
     await waitFor(() => {
-      expect(screen.getByText('Character Creation')).toBeInTheDocument();
+      expect(screen.getByText('Skill Allocation')).toBeInTheDocument();
     });
 
-    // Navigate back again
-    const backButtonAgain = screen.getByText('Back');
-    fireEvent.click(backButtonAgain);
+    fireEvent.click(screen.getByText('Back'));
 
-    // Should still have Gutter Rat selected
     await waitFor(() => {
       expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
       expect(gutterRatCard).toHaveClass('selected');
@@ -355,7 +377,6 @@ describe('Character Creation Navigation Flow', () => {
     setupBasicMocks();
     render(<App />);
 
-    // Register user and navigate to profession selection
     const toggleButton = screen.getByText('Need an account? Register');
     fireEvent.click(toggleButton);
 
@@ -369,50 +390,61 @@ describe('Character Creation Navigation Flow', () => {
     fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
     fireEvent.click(registerButton);
 
-    // Should show loading state during registration
-    // (The loading state is handled internally by the component)
+    await waitFor(() => {
+      expect(screen.getByText('Character Creation')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByText('Accept Stats'));
 
-    // Navigate to profession selection
     await waitFor(() => {
       expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
     });
 
-    // Select profession and navigate to stats rolling
     const trampCard = screen.getByText('Tramp').closest('.profession-card');
     fireEvent.click(trampCard!);
+    fireEvent.click(screen.getByText('Next'));
 
-    const nextButton = screen.getByText('Next');
-    fireEvent.click(nextButton);
+    await fillSkillSlotsAndConfirm();
 
-    // Should show loading state during stats rolling
-    // (The loading state is handled internally by the component)
-
-    // Should navigate to stats rolling screen
     await waitFor(() => {
-      expect(screen.getByText('Character Creation')).toBeInTheDocument();
+      expect(screen.getByPlaceholderText('Enter name')).toBeInTheDocument();
     });
+    fireEvent.change(screen.getByPlaceholderText('Enter name'), { target: { value: 'testuser' } });
+    fireEvent.click(screen.getByText('Create Character'));
 
-    // Accept stats and navigate to game
-    const acceptButton = screen.getByText('Accept Stats & Create Character');
-    fireEvent.click(acceptButton);
-
-    // Should show loading state during character creation
-    // (The loading state is handled internally by the component)
-
-    // Should navigate to game terminal
     await waitFor(() => {
       expect(screen.getByTestId('game-terminal')).toBeInTheDocument();
     });
   });
 
   it('should handle navigation with error states', async () => {
-    // Mock error response for professions
     const registrationResponse = {
       ok: true,
       json: vi.fn().mockResolvedValue({
         access_token: 'mock-token',
-        has_character: false,
-        character_name: '',
+        token_type: 'Bearer',
+        user_id: 'test-user-id',
+        characters: [],
+      }),
+    };
+
+    const statsResponse = {
+      ok: true,
+      json: vi.fn().mockResolvedValue({
+        stats: {
+          strength: 12,
+          dexterity: 14,
+          constitution: 10,
+          size: 55,
+          intelligence: 16,
+          power: 50,
+          education: 40,
+          charisma: 13,
+          luck: 50,
+        },
+        stat_summary: { total: 73, average: 12.17, highest: 16, lowest: 8 },
+        profession_id: 0,
+        meets_requirements: true,
+        method_used: '3d6',
       }),
     };
 
@@ -426,6 +458,8 @@ describe('Character Creation Navigation Flow', () => {
       const urlString = typeof url === 'string' ? url : url instanceof URL ? url.toString() : url.url;
       if (urlString.includes('/auth/register')) {
         return Promise.resolve(registrationResponse as unknown as Response);
+      } else if (urlString.includes('/players/roll-stats')) {
+        return Promise.resolve(statsResponse as unknown as Response);
       } else if (urlString.includes('/professions')) {
         return Promise.resolve(professionsErrorResponse as unknown as Response);
       }
@@ -434,7 +468,6 @@ describe('Character Creation Navigation Flow', () => {
 
     render(<App />);
 
-    // Register user
     const toggleButton = screen.getByText('Need an account? Register');
     fireEvent.click(toggleButton);
 
@@ -448,7 +481,11 @@ describe('Character Creation Navigation Flow', () => {
     fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
     fireEvent.click(registerButton);
 
-    // Should show error state
+    await waitFor(() => {
+      expect(screen.getByText('Character Creation')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByText('Accept Stats'));
+
     await waitFor(() => {
       expect(screen.getByText('Error Loading Professions')).toBeInTheDocument();
       expect(screen.getByText('Internal server error')).toBeInTheDocument();
@@ -471,7 +508,6 @@ describe('Character Creation Navigation Flow', () => {
     setupBasicMocks();
     render(<App />);
 
-    // Register user and navigate to profession selection
     const toggleButton = screen.getByText('Need an account? Register');
     fireEvent.click(toggleButton);
 
@@ -485,33 +521,38 @@ describe('Character Creation Navigation Flow', () => {
     fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
     fireEvent.click(registerButton);
 
-    // Navigate to profession selection
+    await waitFor(() => {
+      expect(screen.getByText('Character Creation')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByText('Accept Stats'));
+
     await waitFor(() => {
       expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
     });
 
-    // Next button should be disabled until profession is selected
     const nextButton = screen.getByText('Next');
     expect(nextButton).toBeDisabled();
 
-    // Select profession
     const trampCard = screen.getByText('Tramp').closest('.profession-card');
     fireEvent.click(trampCard!);
 
-    // Next button should now be enabled
     await waitFor(() => {
       expect(nextButton).not.toBeDisabled();
     });
 
-    // Navigate to stats rolling
     fireEvent.click(nextButton);
 
     await waitFor(() => {
-      expect(screen.getByText('Character Creation')).toBeInTheDocument();
+      expect(screen.getByText('Skill Allocation')).toBeInTheDocument();
     });
 
-    // Accept button should be available
-    const acceptButton = screen.getByText('Accept Stats & Create Character');
+    await fillSkillSlotsAndConfirm();
+
+    await waitFor(() => {
+      expect(screen.getByPlaceholderText('Enter name')).toBeInTheDocument();
+    });
+
+    const acceptButton = screen.getByText('Create Character');
     expect(acceptButton).toBeInTheDocument();
     expect(acceptButton).not.toBeDisabled();
   });

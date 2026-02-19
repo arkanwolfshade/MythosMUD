@@ -58,3 +58,9 @@ class WhoamiCommand(BaseCommand):
     """Command for viewing the caller's status (alias of status)."""
 
     command_type: Literal[CommandType.WHOAMI] = CommandType.WHOAMI
+
+
+class SkillsCommand(BaseCommand):
+    """Command for viewing the active character's skills (plan 10.7 V4)."""
+
+    command_type: Literal[CommandType.SKILLS] = CommandType.SKILLS

@@ -9,14 +9,35 @@ from typing import Any
 from pydantic import BaseModel, Field, field_validator
 
 
+class OccupationSlot(BaseModel):
+    """One occupation skill slot: skill_id and fixed value (70, 60, 50, or 40)."""
+
+    skill_id: int = Field(..., description="Skill catalog id")
+    value: int = Field(..., description="Percentage (70, 60, 50, or 40)")
+
+
+class PersonalInterestSlot(BaseModel):
+    """One personal interest skill: skill_id only (server applies base + 20)."""
+
+    skill_id: int = Field(..., description="Skill catalog id")
+
+
 class CreateCharacterRequest(BaseModel):
     """Request model for character creation."""
 
     __slots__ = ()  # Performance optimization
 
     name: str = Field(..., min_length=1, max_length=50, description="Character name")
-    stats: dict[str, Any] = Field(..., description="Character stats dictionary")
+    stats: dict[str, Any] = Field(..., description="Rolled character stats (server applies profession stat_modifiers)")
     profession_id: int = Field(default=0, ge=0, description="Profession ID")
+    occupation_slots: list[OccupationSlot] | None = Field(
+        default=None,
+        description="Nine slots: one 70, two 60, three 50, three 40. Omit for legacy flow.",
+    )
+    personal_interest: list[PersonalInterestSlot] | None = Field(
+        default=None,
+        description="Four skill_ids (base+20 each). Omit for legacy flow.",
+    )
     start_in_tutorial: bool = Field(default=True, description="Start in tutorial instance (per-player)")
 
     @field_validator("name")

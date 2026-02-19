@@ -46,7 +46,9 @@ export const CharacterInfoPanel: React.FC<CharacterInfoPanelProps> = ({ player, 
         <div className="border-b border-mythos-terminal-border pb-2">
           <div className="flex items-center justify-between">
             <span className="text-base text-mythos-terminal-text-secondary">Character:</span>
-            <span className="text-base text-mythos-terminal-text font-bold">{player.name}</span>
+            <span className="text-base text-mythos-terminal-text font-bold" data-testid="current-character-name">
+              {player.name}
+            </span>
           </div>
           {player.profession_name && (
             <div className="flex items-center justify-between mt-1">

@@ -2,6 +2,8 @@
 // Type definitions for UI v2 components
 
 export interface Player {
+  /** Character/player UUID from server (player_id). Used for Skills tab URL, etc. */
+  id?: string;
   name: string;
   profession_id?: number;
   profession_name?: string;
