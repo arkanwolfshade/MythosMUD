@@ -251,10 +251,6 @@ begin
         and data_type = 'integer'
     ) then
         -- Get current max ID value
-        -- nosemgrep: Semgrep_codacy.generic.sql.rac-table-access
-        -- This migration script queries the professions game table to determine the current max ID
-        -- before converting the column type. RAC_* table wrappers are not used in this schema,
-        -- so the generic RAC_* enforcement rule does not apply here.
         select coalesce(max(id), 0) into current_max from professions;
 
         -- Drop default if it exists (needed before adding identity)
@@ -483,10 +479,6 @@ comment on table invites is 'Manages invite-only registration system with expira
 comment on table player_lucidity is 'Tracks player lucidity (sanity) state and tier.';
 do $$
 begin
-    -- nosemgrep: Semgrep_codacy.generic.sql.rac-table-access
-    -- This queries information_schema (metadata), not application data tables.
-    -- The RAC rule applies to SELECT/INSERT/UPDATE/DELETE queries on data tables,
-    -- not to metadata queries checking table existence.
     if exists (select 1 from information_schema.tables where table_schema = 'public' and table_name = 'lucidity_adjustment_log') then
         comment on table lucidity_adjustment_log is 'Immutable ledger for every lucidity gain or loss event.';
     end if;

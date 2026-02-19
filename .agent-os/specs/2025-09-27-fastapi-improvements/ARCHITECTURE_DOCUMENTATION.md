@@ -560,8 +560,6 @@ Key benefits:
 
 **Performance**: Async operations and optimized middleware
 
-**Performance**: Async operations and optimized middleware
-
 - **Security**: Comprehensive security headers and validation
 - **Observability**: Structured logging and monitoring
 - **Scalability**: Non-blocking I/O and efficient resource usage

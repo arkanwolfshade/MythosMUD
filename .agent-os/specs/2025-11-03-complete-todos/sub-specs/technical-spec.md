@@ -279,15 +279,6 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 - Use pytest-benchmark for proper performance measurement
 - Set reasonable performance thresholds
 - Remove skip decorator
-
-**File**: `server/tests/unit/commands/test_utility_commands.py:1714`
-
-**Implementation**:
-
-- Reduce dataset from 2000 to 200 mock players
-- Use pytest-benchmark for proper performance measurement
-- Set reasonable performance thresholds
-- Remove skip decorator
 - Add memory profiling for leak detection
 - **Testing**: Verify test runs in < 5 seconds, verify no hangs
 

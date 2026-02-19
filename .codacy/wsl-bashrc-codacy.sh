@@ -1,3 +1,4 @@
+#!/bin/bash
 # Codacy CLI v2 - add to WSL ~/.bashrc (https://github.com/codacy/codacy-cli-v2)
 # Paste this block into your WSL terminal, or: cat .codacy/wsl-bashrc-codacy.sh >> ~/.bashrc
 # Then run: source ~/.bashrc
