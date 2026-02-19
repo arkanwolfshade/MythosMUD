@@ -313,7 +313,7 @@ MythosMUD/
 │   ├── events/                # Event system (event_bus, event_types)
 │   ├── app/                   # Application factory (factory, lifespan, memory management)
 │   ├── npc/                   # NPC system (behaviors, combat, communication, state machines)
-│   ├── logging/               # Enhanced logging (MDC, correlation IDs, security sanitization)
+│   ├── structured_logging/    # Enhanced logging (MDC, correlation IDs, security sanitization)
 │   ├── tests/                 # Hierarchical test suite (304 test files organized by type)
 │   │   ├── unit/              # Unit tests
 │   │   ├── integration/       # Integration tests

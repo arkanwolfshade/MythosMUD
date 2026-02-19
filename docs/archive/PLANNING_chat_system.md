@@ -508,7 +508,7 @@ def resolve_player_name(self, identifier: str) -> Player | None:
 
 **Timing**: Implemented when adding `/party` channel in Phase 3
 **Scope**: Party management, party chat functionality. See
-[docs/PLANNING_ephemeral_grouping.md](../PLANNING_ephemeral_grouping.md) for consolidated
+[PLANNING_ephemeral_grouping.md](PLANNING_ephemeral_grouping.md) for consolidated
 ephemeral grouping plan.
 
 ## Implementation Phases

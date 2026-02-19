@@ -15,14 +15,11 @@ in `data/local/rooms/`)
 
 **Status Effects**: Dynamic status effect system for horror mechanics
 
-### Player Data Storage (NEW)
+### Player Data Storage
 
-Player data is stored as individual files in `data/local/players/player_<GUID>.json`.
-
-- There is no longer a single `players.json` file.
-- The server dynamically loads player data from these files after authentication.
-- Example: `data/local/players/player_3ff4b997-1bed-42b9-a96e-0892c9e25357.json`
-- A sample player file for tests is provided as `data/local/players/player_test-id-123.json`.
+Player data is stored in **PostgreSQL** (primary datastore). The server uses async persistence and
+SQLAlchemy ORM; see [docs/DATABASE_ACCESS_PATTERNS.md](../docs/DATABASE_ACCESS_PATTERNS.md) and
+[docs/PERSISTENCE_REPOSITORY_ARCHITECTURE.md](../docs/PERSISTENCE_REPOSITORY_ARCHITECTURE.md).
 
 ### Player Stats System
 

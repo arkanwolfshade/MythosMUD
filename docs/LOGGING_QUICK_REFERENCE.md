@@ -28,7 +28,7 @@ logger.info("Login", username=user, password=password)
 ```python
 # ✅ REQUIRED - Enhanced logging import
 
-from server.logging.enhanced_logging_config import get_logger
+from server.structured_logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 
 # ✅ REQUIRED - Structured logging
@@ -143,4 +143,4 @@ clear_request_context()
 
 ---
 
-### For complete documentation, see [LOGGING_BEST_PRACTICES.md](LOGGING_BEST_PRACTICES.md)
+### For complete documentation, see [ENHANCED_LOGGING_GUIDE.md](ENHANCED_LOGGING_GUIDE.md)
