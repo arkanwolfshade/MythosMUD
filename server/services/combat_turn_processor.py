@@ -88,48 +88,6 @@ class CombatTurnProcessor:
                     combat.round_actions[participant_id] = action
                     break
 
-    def _log_round_start_debug(
-        self, combat: CombatInstance, participants_by_initiative: list[CombatParticipant]
-    ) -> None:
-        """Write debug log when any participant has zero or negative DP at round start (agent hypothesis H6)."""
-        try:
-            any_zero_or_neg = any(p.current_dp <= 0 for p in combat.participants.values())
-            if not any_zero_or_neg:
-                return
-            import json
-
-            parts = [
-                {
-                    "id": str(p.participant_id),
-                    "type": str(p.participant_type),
-                    "current_dp": p.current_dp,
-                    "is_alive": p.is_alive(),
-                }
-                for p in combat.participants.values()
-            ]
-            by_init = [{"id": str(p.participant_id), "current_dp": p.current_dp} for p in participants_by_initiative]
-            with open("e:\\projects\\GitHub\\MythosMUD\\.cursor\\debug.log", "a", encoding="utf-8") as _f:
-                _f.write(
-                    json.dumps(
-                        {
-                            "hypothesisId": "H6",
-                            "location": "combat_turn_processor:_execute_round",
-                            "message": "round start with participant at 0 or below",
-                            "data": {
-                                "participants": parts,
-                                "by_initiative": by_init,
-                                "count": len(participants_by_initiative),
-                            },
-                            "timestamp": __import__("time", fromlist=["time"]).time() * 1000,
-                        },
-                        ensure_ascii=True,
-                    )
-                    + "\n"
-                )
-        except (OSError, TypeError, AttributeError, ValueError):
-            # Debug log must never affect combat; absorb file/serialization/attribute errors
-            pass
-
     async def _execute_participant_action(
         self,
         combat: CombatInstance,
@@ -175,7 +133,6 @@ class CombatTurnProcessor:
         next_round = combat.combat_round + 1
         self._load_round_actions(combat, next_round)
         participants_by_initiative = combat.get_participants_by_initiative()
-        self._log_round_start_debug(combat, participants_by_initiative)
 
         if not participants_by_initiative:
             logger.warning("No alive participants in combat", combat_id=combat.combat_id)
@@ -347,39 +304,6 @@ class CombatTurnProcessor:
             if p.participant_id != participant.participant_id and p.is_alive():
                 target = p
                 break
-
-        # #region agent log
-        try:
-            import json
-
-            _alive = [
-                {"id": str(p.participant_id), "current_dp": p.current_dp, "is_alive": p.is_alive()}
-                for p in combat.participants.values()
-            ]
-            with open("e:\\projects\\GitHub\\MythosMUD\\.cursor\\debug.log", "a", encoding="utf-8") as _f:
-                _f.write(
-                    json.dumps(
-                        {
-                            "hypothesisId": "H5",
-                            "location": "combat_turn_processor:_execute_default_action",
-                            "message": "default action target selection",
-                            "data": {
-                                "actor_id": str(participant.participant_id),
-                                "target_id": str(target.participant_id) if target else None,
-                                "target_current_dp": target.current_dp if target else None,
-                                "target_is_alive": target.is_alive() if target else None,
-                                "participants": _alive,
-                            },
-                            "timestamp": __import__("time", fromlist=["time"]).time() * 1000,
-                        },
-                        ensure_ascii=True,
-                    )
-                    + "\n"
-                )
-        except (OSError, TypeError, AttributeError, ValueError):
-            # Debug log must never affect combat; absorb file/serialization/attribute errors
-            pass
-        # #endregion
 
         if not target:
             logger.warning("No target found for default action", participant_id=participant.participant_id)

@@ -113,5 +113,16 @@ export const createDefaultPanelLayout = (viewportWidth: number, viewportHeight: 
       zIndex: 1007,
       minSize: { width: 200, height: 100 },
     },
+    questLog: {
+      id: 'questLog',
+      title: 'Journal',
+      position: { x: middleColumnX, y: headerHeight + padding + availableHeight * 0.5 },
+      size: { width: middleColumnWidth * 0.5, height: availableHeight * 0.4 },
+      isMinimized: false,
+      isMaximized: false,
+      isVisible: true,
+      zIndex: 1008,
+      minSize: { width: 250, height: 180 },
+    },
   };
 };

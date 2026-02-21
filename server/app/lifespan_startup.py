@@ -151,6 +151,40 @@ def _subscribe_room_occupants_refresh(container: ApplicationContainer) -> None:
     logger.debug("Subscribed to RoomOccupantsRefreshRequested for Occupants panel updates")
 
 
+def _subscribe_quest_events(container: ApplicationContainer) -> None:
+    """Subscribe to room events for quest triggers and progress (start on enter, complete_activity on exit)."""
+    from server.game.quest.quest_events import subscribe_quest_events
+
+    subscribe_quest_events(container)
+
+    # Push updated quest log to player when a quest completes so Journal panel refreshes
+    event_bus = getattr(container, "event_bus", None)
+    if not event_bus:
+        return
+
+    from server.events.event_types import QuestCompleted
+    from server.realtime.envelope import build_event
+
+    async def _on_quest_completed_push_log(event: QuestCompleted) -> None:
+        quest_service = getattr(container, "quest_service", None)
+        conn_mgr = getattr(container, "connection_manager", None)
+        if not quest_service or not conn_mgr:
+            return
+        try:
+            player_id = uuid_lib.UUID(event.player_id)
+            log = await quest_service.get_quest_log(player_id, include_completed=True)
+            ev = build_event("quest_log_updated", {"quest_log": log}, player_id=event.player_id)
+            await conn_mgr.send_personal_message(player_id, ev)
+        except (ValueError, TypeError, AttributeError) as e:
+            logger.warning(
+                "Failed to push quest log after completion",
+                player_id=event.player_id,
+                error=str(e),
+            )
+
+    event_bus.subscribe(QuestCompleted, _on_quest_completed_push_log, service_id="quest_push_log")
+
+
 async def setup_connection_manager(app: FastAPI, container: ApplicationContainer) -> None:
     """Set up connection manager with dependencies."""
     if container.connection_manager is None:
@@ -164,6 +198,7 @@ async def setup_connection_manager(app: FastAPI, container: ApplicationContainer
     logger.info("Cleared stale pending messages from previous server sessions")
 
     _subscribe_room_occupants_refresh(container)
+    _subscribe_quest_events(container)
 
 
 async def initialize_npc_services(app: FastAPI, container: ApplicationContainer) -> None:
@@ -361,8 +396,25 @@ async def initialize_npc_startup_spawning(_app: FastAPI) -> None:
             # Verify cache was loaded successfully - if empty, NPC spawning will fail
             cache_size = len(container.async_persistence._room_cache)  # pylint: disable=protected-access  # Reason: Need to verify cache was loaded for NPC startup
             if not cache_size:
-                logger.error(
-                    "Room cache is empty after warmup - NPC spawning may fail",
+                env = getattr(container.config.logging, "environment", "local") if container.config else "local"
+                if env == "production":
+                    # In production, empty room cache is a hard failure: rooms table was not populated
+                    logger.error(
+                        "Room cache is empty after warmup - rooms table has no data. "
+                        "Populate world data: run scripts/load_world_seed.py (with DATABASE_URL) or "
+                        "psql -d your_db -f data/db/00_world_and_emotes.sql. See data/db/README.md.",
+                        cache_size=cache_size,
+                        cache_loaded=container.async_persistence._room_cache_loaded,  # pylint: disable=protected-access  # Reason: Need to check cache load status
+                    )
+                    raise RuntimeError(
+                        "Room cache is empty in production. The rooms table must be populated with world seed data. "
+                        "Run: scripts/load_world_seed.py (set DATABASE_URL) or psql -d your_db -f data/db/00_world_and_emotes.sql. "
+                        "See data/db/README.md."
+                    )
+                # In local/test, log warning only so dev without world data can still start
+                logger.warning(
+                    "Room cache is empty after warmup - NPC spawning may fail. "
+                    "To populate: run scripts/load_world_seed.py or psql -d your_db -f data/db/00_world_and_emotes.sql",
                     cache_size=cache_size,
                     cache_loaded=container.async_persistence._room_cache_loaded,  # pylint: disable=protected-access  # Reason: Need to check cache load status
                 )

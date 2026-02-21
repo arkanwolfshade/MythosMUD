@@ -413,6 +413,30 @@ describe('stateUpdateUtils', () => {
 
       expect(updates.followingTarget).toBeNull();
     });
+
+    it('should apply questLog when present', () => {
+      const eventUpdates: GameStateUpdates = {
+        questLog: [
+          {
+            quest_id: 'q1',
+            name: 'leave_the_tutorial',
+            title: 'Leave the Tutorial',
+            description: 'Find your way out.',
+            goals_with_progress: [{ target: 'exit', current: 0, required: 1, done: false }],
+            state: 'active',
+          },
+        ],
+      };
+
+      const updates: Partial<GameState> = {};
+      const currentMessages: ChatMessage[] = [];
+
+      applyEventUpdates(eventUpdates, updates, currentMessages);
+
+      expect(updates.questLog).toHaveLength(1);
+      expect(updates.questLog?.[0].name).toBe('leave_the_tutorial');
+      expect(updates.questLog?.[0].state).toBe('active');
+    });
   });
 
   describe('sanitizeAndApplyUpdates', () => {

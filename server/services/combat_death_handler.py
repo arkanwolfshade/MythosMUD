@@ -92,7 +92,13 @@ class CombatDeathHandler:
                 exc_info=True,
             )
 
-    async def _handle_npc_death(self, target: CombatParticipant, combat: CombatInstance, xp_reward: int) -> None:  # pylint: disable=too-many-locals  # Reason: NPC death handling requires many intermediate variables for complex death processing logic
+    async def _handle_npc_death(
+        self,
+        target: CombatParticipant,
+        combat: CombatInstance,
+        xp_reward: int,
+        killer_id: str | None = None,
+    ) -> None:  # pylint: disable=too-many-locals  # Reason: NPC death handling requires many intermediate variables for complex death processing logic
         """Handle NPC death event publishing and ID resolution."""
         try:
             from ..container import ApplicationContainer
@@ -161,6 +167,7 @@ class CombatDeathHandler:
                     npc_id=original_npc_id,
                     npc_name=target.name,
                     xp_reward=xp_reward,
+                    killer_id=killer_id,
                 )
                 await combat_event_publisher.publish_npc_died(death_event)
                 logger.info("NPCDiedEvent published successfully", npc_id=original_npc_id, combat_id=combat.combat_id)
@@ -218,7 +225,13 @@ class CombatDeathHandler:
         if target_died and target.participant_type == CombatParticipantType.PLAYER:
             await self._handle_player_death_events(target, combat)
 
-    async def handle_npc_death(self, target: CombatParticipant, combat: CombatInstance, xp_reward: int) -> None:
+    async def handle_npc_death(
+        self,
+        target: CombatParticipant,
+        combat: CombatInstance,
+        xp_reward: int,
+        killer_id: str | None = None,
+    ) -> None:
         """
         Handle NPC death event publishing and ID resolution.
 
@@ -226,5 +239,6 @@ class CombatDeathHandler:
             target: NPC participant that died
             combat: Combat instance
             xp_reward: XP reward amount for defeating the NPC
+            killer_id: Optional player UUID string who killed the NPC (for quest/NATS payload)
         """
-        await self._handle_npc_death(target, combat, xp_reward)
+        await self._handle_npc_death(target, combat, xp_reward, killer_id=killer_id)

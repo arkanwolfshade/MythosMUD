@@ -1419,6 +1419,65 @@
         }
       }
     },
+    "/v1/api/players/{player_id}/quests": {
+      "get": {
+        "tags": [
+          "players"
+        ],
+        "summary": "Get Player Quests",
+        "description": "Get quest log for a character. Requires ownership (403 if not owner).",
+        "operationId": "get_player_quests_v1_api_players__player_id__quests_get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "player_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Player Id"
+            }
+          },
+          {
+            "name": "include_completed",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": true,
+              "title": "Include Completed"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestLogResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/api/players/{player_id}": {
       "get": {
         "tags": [
@@ -9096,6 +9155,71 @@
             }
           ]
         }
+      },
+      "QuestLogEntryResponse": {
+        "properties": {
+          "quest_id": {
+            "type": "string",
+            "title": "Quest Id",
+            "description": "Internal quest ID"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "description": "Quest common name (player-facing)"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title",
+            "description": "Display title"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "description": "Quest description",
+            "default": ""
+          },
+          "goals_with_progress": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Goals With Progress",
+            "description": "Goals with current progress (e.g. { goal_type, target, current, required, done })"
+          },
+          "state": {
+            "type": "string",
+            "title": "State",
+            "description": "Instance state: active, completed, abandoned"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "quest_id",
+          "name",
+          "title",
+          "state"
+        ],
+        "title": "QuestLogEntryResponse",
+        "description": "Single quest entry in GET /quests (quest log) response."
+      },
+      "QuestLogResponse": {
+        "properties": {
+          "quests": {
+            "items": {
+              "$ref": "#/components/schemas/QuestLogEntryResponse"
+            },
+            "type": "array",
+            "title": "Quests",
+            "description": "Active and optionally completed quests"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "QuestLogResponse",
+        "description": "Response model for GET /quests (quest log)."
       },
       "RegisterPatternRequest": {
         "properties": {

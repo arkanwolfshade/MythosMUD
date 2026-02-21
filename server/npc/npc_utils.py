@@ -78,25 +78,34 @@ def extract_definition_id_from_npc(npc_instance: Any, npc_id: str, lifecycle_man
     return None
 
 
+def _stable_room_id_for_zone(room_id: str) -> str:
+    """Return stable room id for zone parsing; strip instance_<uuid>_ prefix if present."""
+    if room_id.startswith("instance_") and room_id.count("_") >= 2:
+        parts = room_id.split("_", 2)
+        if len(parts) > 2:
+            return parts[2]
+    return room_id
+
+
 def get_zone_key_from_room_id(room_id: str) -> str:
     """
     Extract zone key from room ID.
 
     Args:
-        room_id: The room identifier
+        room_id: The room identifier (stable id or instance_<uuid>_<stable_id>)
 
     Returns:
         Zone key in format "zone/sub_zone"
     """
-    # Room IDs are in format: "plane_zone_sub_zone_[room_description]_number" or "plane_zone_sub_zone_[room_description]"
+    # Instanced rooms: instance_<uuid>_<stable_id> -> use stable_id for zone lookup
+    stable_id = _stable_room_id_for_zone(room_id)
+    # Stable IDs: "plane_zone_sub_zone_[room_description]_number"
     # Examples: "earth_arkhamcity_downtown_001" -> "arkhamcity/downtown"
     #           "earth_arkhamcity_sanitarium_room_foyer_entrance_001" -> "arkhamcity/sanitarium"
-    #           "earth_arkhamcity_downtown_intersection_derby_garrison" -> "arkhamcity/downtown"
     #           "earth_innsmouth_waterfront_dock_002" -> "innsmouth/waterfront"
-    parts = room_id.split("_")
+    parts = stable_id.split("_")
     if len(parts) >= 4:
-        # We need exactly the zone (parts[1]) and sub_zone (parts[2])
-        # Everything after parts[2] is room description (with or without numeric suffix)
+        # zone = parts[1], sub_zone = parts[2]; rest is room description
         zone = parts[1]  # arkhamcity, innsmouth, katmandu
         sub_zone = parts[2]  # sanitarium, downtown, waterfront, etc.
         return f"{zone}/{sub_zone}"

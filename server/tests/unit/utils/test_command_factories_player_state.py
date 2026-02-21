@@ -92,3 +92,53 @@ def test_create_rest_command_with_args():
     """Test create_rest_command() raises error with args."""
     with pytest.raises(ValidationError):
         PlayerStateCommandFactory.create_rest_command(["quickly"])
+
+
+def test_create_skills_command():
+    """Test create_skills_command() creates SkillsCommand."""
+    command = PlayerStateCommandFactory.create_skills_command([])
+    assert command is not None
+
+
+def test_create_skills_command_with_args():
+    """Test create_skills_command() raises error with args."""
+    with pytest.raises(ValidationError):
+        PlayerStateCommandFactory.create_skills_command(["list"])
+
+
+def test_create_journal_command():
+    """Test create_journal_command() creates JournalCommand."""
+    command = PlayerStateCommandFactory.create_journal_command([])
+    assert command is not None
+
+
+def test_create_journal_command_with_args():
+    """Test create_journal_command() raises error with args."""
+    with pytest.raises(ValidationError):
+        PlayerStateCommandFactory.create_journal_command(["view"])
+
+
+def test_create_quests_command():
+    """Test create_quests_command() creates QuestsCommand."""
+    command = PlayerStateCommandFactory.create_quests_command([])
+    assert command is not None
+
+
+def test_create_quests_command_with_args():
+    """Test create_quests_command() raises error with args."""
+    with pytest.raises(ValidationError):
+        PlayerStateCommandFactory.create_quests_command(["active"])
+
+
+def test_create_quest_command_empty_args():
+    """Test create_quest_command() with no args creates QuestCommand with empty list."""
+    command = PlayerStateCommandFactory.create_quest_command([])
+    assert command is not None
+    assert command.args == []
+
+
+def test_create_quest_command_with_args():
+    """Test create_quest_command() with args passes them to QuestCommand."""
+    command = PlayerStateCommandFactory.create_quest_command(["abandon", "lost-artifact"])
+    assert command is not None
+    assert command.args == ["abandon", "lost-artifact"]

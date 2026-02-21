@@ -8,7 +8,6 @@ the spaces between worlds.
 
 # pylint: disable=too-many-locals,too-many-statements  # Reason: Respawn service requires many intermediate variables for complex respawn logic. Respawn service legitimately requires many statements for comprehensive respawn operations.
 
-import json
 import uuid
 from datetime import UTC, datetime
 from typing import Any
@@ -85,20 +84,6 @@ class PlayerRespawnService:
             True if player was moved to limbo, False otherwise
         """
         try:
-            # #region agent log
-            try:
-                _debug_payload = {
-                    "location": "player_respawn_service.move_player_to_limbo.entry",
-                    "message": "move_player_to_limbo called",
-                    "data": {"player_id": str(player_id), "death_location": death_location},
-                    "hypothesisId": "H1",
-                    "timestamp": datetime.now(UTC).isoformat(),
-                }
-                with open("e:\\projects\\GitHub\\MythosMUD\\.cursor\\debug.log", "a", encoding="utf-8") as _f:
-                    _f.write(json.dumps(_debug_payload) + "\n")
-            except Exception:  # pylint: disable=broad-except  # Reason: Debug instrumentation must not affect runtime
-                pass
-            # #endregion
             # Retrieve player from database using async API
             player = await session.get(Player, player_id)
             if not player:
@@ -116,25 +101,6 @@ class PlayerRespawnService:
             else:
                 current_dp_int = 0
             player_is_dead = player.is_dead()
-            # #region agent log
-            try:
-                _debug_payload = {
-                    "location": "player_respawn_service.move_player_to_limbo.guard",
-                    "message": "guard check",
-                    "data": {
-                        "player_id": str(player_id),
-                        "current_dp": current_dp_int,
-                        "is_dead": player_is_dead,
-                        "is_catatonia_failover": is_catatonia_failover,
-                    },
-                    "hypothesisId": "H1",
-                    "timestamp": datetime.now(UTC).isoformat(),
-                }
-                with open("e:\\projects\\GitHub\\MythosMUD\\.cursor\\debug.log", "a", encoding="utf-8") as _f:
-                    _f.write(json.dumps(_debug_payload) + "\n")
-            except Exception:  # pylint: disable=broad-except  # Reason: Debug instrumentation must not affect runtime
-                pass
-            # #endregion
             # Require actual DP <= -10; do not rely on is_dead() alone (defense against bad/stale stats)
             if not is_catatonia_failover and (current_dp_int > -10 or not player_is_dead):
                 logger.warning(
@@ -158,20 +124,6 @@ class PlayerRespawnService:
                 from_room=old_room,
                 death_location=death_location,
             )
-            # #region agent log
-            try:
-                _debug_payload = {
-                    "location": "player_respawn_service.move_player_to_limbo.did_move",
-                    "message": "player moved to limbo",
-                    "data": {"player_id": str(player_id), "current_dp": current_dp},
-                    "hypothesisId": "H1",
-                    "timestamp": datetime.now(UTC).isoformat(),
-                }
-                with open("e:\\projects\\GitHub\\MythosMUD\\.cursor\\debug.log", "a", encoding="utf-8") as _f:
-                    _f.write(json.dumps(_debug_payload) + "\n")
-            except Exception:  # pylint: disable=broad-except  # Reason: Debug instrumentation must not affect runtime
-                pass
-            # #endregion
 
             return True
 

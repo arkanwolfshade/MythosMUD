@@ -22,6 +22,7 @@ from .player import Player, PlayerExploration, PlayerInventory
 from .player_effect import PlayerEffect
 from .player_skill import PlayerSkill
 from .player_spells import PlayerSpell
+from .quest import QuestDefinition, QuestInstance, QuestOffer
 from .skill import Skill
 from .spell import Spell, SpellEffectType, SpellMaterial, SpellRangeType, SpellSchool, SpellTargetType
 from .spell_db import SpellDB
@@ -72,6 +73,9 @@ __all__ = [
     "PlayerEffect",
     "PlayerSkill",
     "PlayerSpell",
+    "QuestDefinition",
+    "QuestInstance",
+    "QuestOffer",
     "Skill",
     "SpellDB",
     "Zone",

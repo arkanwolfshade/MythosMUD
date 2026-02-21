@@ -95,6 +95,10 @@ class CommandType(StrEnum):
     FOLLOWING = "following"
     # Party commands (ephemeral grouping)
     PARTY = "party"
+    # Quest commands
+    JOURNAL = "journal"
+    QUESTS = "quests"
+    QUEST = "quest"
 
 
 class BaseCommand(BaseModel):

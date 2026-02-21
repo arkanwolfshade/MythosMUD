@@ -15,6 +15,7 @@ describe('panelLayout', () => {
       expect(layout.characterInfo).toBeDefined();
       expect(layout.commandHistory).toBeDefined();
       expect(layout.commandInput).toBeDefined();
+      expect(layout.questLog).toBeDefined();
     });
 
     it('should create panels with correct IDs', () => {
@@ -28,6 +29,7 @@ describe('panelLayout', () => {
       expect(layout.characterInfo.id).toBe('characterInfo');
       expect(layout.commandHistory.id).toBe('commandHistory');
       expect(layout.commandInput.id).toBe('commandInput');
+      expect(layout.questLog.id).toBe('questLog');
     });
 
     it('should create panels with correct titles', () => {
@@ -41,6 +43,7 @@ describe('panelLayout', () => {
       expect(layout.characterInfo.title).toBe('Character Info');
       expect(layout.commandHistory.title).toBe('Command History');
       expect(layout.commandInput.title).toBe('Command Input');
+      expect(layout.questLog.title).toBe('Journal');
     });
 
     it('should create panels with correct initial state', () => {

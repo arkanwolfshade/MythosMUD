@@ -64,3 +64,24 @@ class SkillsCommand(BaseCommand):
     """Command for viewing the active character's skills (plan 10.7 V4)."""
 
     command_type: Literal[CommandType.SKILLS] = CommandType.SKILLS
+
+
+class JournalCommand(BaseCommand):
+    """Command for viewing the active character's quest log (journal)."""
+
+    command_type: Literal[CommandType.JOURNAL] = CommandType.JOURNAL
+
+
+class QuestsCommand(BaseCommand):
+    """Command for viewing the active character's quest log (alias of journal)."""
+
+    command_type: Literal[CommandType.QUESTS] = CommandType.QUESTS
+
+
+class QuestCommand(BaseCommand):
+    """Command for quest subcommands (e.g. abandon <quest name>)."""
+
+    command_type: Literal[CommandType.QUEST] = CommandType.QUEST
+    args: list[str] = Field(
+        default_factory=list, description="Subcommand and arguments, e.g. ['abandon', 'quest_name']"
+    )

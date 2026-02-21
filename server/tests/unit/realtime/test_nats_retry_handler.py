@@ -4,10 +4,10 @@ Unit tests for NATS retry handler.
 Tests the NATSRetryHandler class and related retry logic.
 """
 
+import time
 from datetime import UTC, datetime
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, patch
 
-import anyio
 import pytest
 
 from server.realtime.nats_retry_handler import NATSRetryHandler, RetryableMessage, RetryConfig
@@ -153,15 +153,17 @@ async def test_retry_async_calls_function():
 
 @pytest.mark.asyncio
 async def test_retry_async_waits_for_backoff():
-    """Test retry_async() waits for backoff delay."""
+    """Test retry_async() requests backoff delay (sleep called with positive delay)."""
     handler = NATSRetryHandler(base_delay=0.1, max_delay=1.0)
     message = RetryableMessage(subject="test", data={}, attempt=0, first_attempt_time=datetime.now(UTC))
     func = AsyncMock()
-    start_time = anyio.current_time()
-    await handler.retry_async(func, message)
-    elapsed = anyio.current_time() - start_time
-    # Should have waited at least some time (with jitter, could be 0.075-0.125)
-    assert elapsed >= 0.05  # Allow some margin for jitter
+    with patch("server.realtime.nats_retry_handler.sleep", new_callable=AsyncMock) as mock_sleep:
+        await handler.retry_async(func, message)
+        mock_sleep.assert_awaited_once()
+        (delay,) = mock_sleep.await_args[0]
+        # With base_delay=0.1 and jitter ±25%, delay should be in [0.075, 0.125]
+        assert delay >= 0.05, "Backoff delay should be at least 0.05s"
+        assert delay <= 0.2, "Backoff delay should be at most 0.2s with jitter"
 
 
 @pytest.mark.asyncio
@@ -224,9 +226,9 @@ async def test_retry_with_backoff_no_sleep_after_last_attempt():
     """Test retry_with_backoff() doesn't sleep after last attempt."""
     handler = NATSRetryHandler(max_retries=2, base_delay=0.1, max_delay=1.0)
     func = AsyncMock(side_effect=Exception("Error"))
-    start_time = anyio.current_time()
+    start_time = time.monotonic()
     await handler.retry_with_backoff(func)
-    elapsed = anyio.current_time() - start_time
+    elapsed = time.monotonic() - start_time
     # Should only sleep once (after first attempt), not after last
     # With base_delay=0.1 and jitter, should be ~0.075-0.125
     assert elapsed < 0.2  # Should not wait after last attempt

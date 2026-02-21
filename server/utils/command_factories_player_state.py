@@ -7,7 +7,10 @@ status, time, whoami, who, quit, logout.
 
 from ..exceptions import ValidationError as MythosValidationError
 from ..models.command import (
+    JournalCommand,
     LogoutCommand,
+    QuestCommand,
+    QuestsCommand,
     QuitCommand,
     RestCommand,
     SkillsCommand,
@@ -91,3 +94,26 @@ class PlayerStateCommandFactory:
                 MythosValidationError, "Skills command takes no arguments", args=args, logger_name=__name__
             )
         return SkillsCommand()
+
+    @staticmethod
+    def create_journal_command(args: list[str]) -> JournalCommand:
+        """Create JournalCommand from arguments (quest log view)."""
+        if args:
+            log_and_raise_enhanced(
+                MythosValidationError, "Journal command takes no arguments", args=args, logger_name=__name__
+            )
+        return JournalCommand()
+
+    @staticmethod
+    def create_quests_command(args: list[str]) -> QuestsCommand:
+        """Create QuestsCommand from arguments (alias of journal)."""
+        if args:
+            log_and_raise_enhanced(
+                MythosValidationError, "Quests command takes no arguments", args=args, logger_name=__name__
+            )
+        return QuestsCommand()
+
+    @staticmethod
+    def create_quest_command(args: list[str]) -> QuestCommand:
+        """Create QuestCommand from arguments (e.g. abandon <quest name>)."""
+        return QuestCommand(args=args or [])
