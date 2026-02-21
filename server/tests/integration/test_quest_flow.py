@@ -190,3 +190,10 @@ async def test_quest_start_by_trigger_then_abandon(  # pylint: disable=redefined
         assert abandon_result.get("success") is True
         log_after = await quest_service.get_quest_log(player_id, include_completed=True)
         assert len(log_after) == 0
+
+        # Re-accept: start again (avoids UNIQUE violation by updating abandoned row)
+        start_again = await quest_service.start_quest(player_id, "leave_the_tutorial")
+        assert start_again.get("success") is True, start_again.get("message", "re-start failed")
+        log_reaccept = await quest_service.get_quest_log(player_id, include_completed=False)
+        assert len(log_reaccept) == 1 and log_reaccept[0]["quest_id"] == "leave_the_tutorial"
+        assert log_reaccept[0]["state"] == "active"

@@ -101,6 +101,17 @@ class QuestService:
         if not await self._check_prerequisites(player_id, definition):
             return {"success": False, "message": "Prerequisites not met."}
 
+        # Re-accept abandoned quest: update existing row to avoid UNIQUE (player_id, quest_id) violation
+        if existing and existing.state == "abandoned":
+            await self._instance_repo.update_state_and_progress(existing.id, state="active", progress={})
+            logger.info(
+                "Quest re-started (was abandoned)",
+                player_id=pid,
+                quest_id=quest_id,
+                quest_name=definition.name,
+            )
+            return {"success": True, "message": f"Quest started: {definition.title}"}
+
         await self._instance_repo.create(player_id, quest_id, state="active", progress={})
         logger.info("Quest started", player_id=pid, quest_id=quest_id, quest_name=definition.name)
         return {"success": True, "message": f"Quest started: {definition.title}"}

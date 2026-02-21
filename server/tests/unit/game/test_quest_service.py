@@ -152,6 +152,26 @@ async def test_start_quest_already_completed(quest_service, mock_def_repo, mock_
 
 
 @pytest.mark.asyncio
+async def test_start_quest_reaccept_after_abandon(quest_service, mock_def_repo, mock_instance_repo):
+    """start_quest re-activates abandoned instance instead of INSERT (avoids UNIQUE violation)."""
+    player_id = uuid.uuid4()
+    row = _make_definition_row()
+    existing = MagicMock()
+    existing.id = uuid.uuid4()
+    existing.state = "abandoned"
+    mock_def_repo.get_by_id = AsyncMock(return_value=row)
+    mock_instance_repo.get_by_player_and_quest = AsyncMock(return_value=existing)
+    mock_instance_repo.update_state_and_progress = AsyncMock()
+
+    result = await quest_service.start_quest(player_id, "leave_the_tutorial")
+
+    assert result["success"] is True
+    assert "started" in result["message"].lower()
+    mock_instance_repo.update_state_and_progress.assert_awaited_once_with(existing.id, state="active", progress={})
+    mock_instance_repo.create.assert_not_awaited()
+
+
+@pytest.mark.asyncio
 async def test_start_quest_prereq_not_met(quest_service, mock_def_repo, mock_instance_repo):
     """start_quest returns error when requires_all not satisfied."""
     player_id = uuid.uuid4()
