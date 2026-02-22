@@ -130,7 +130,7 @@ async def test_quest_abandon_usage_when_no_subcommand(current_user, mock_request
         current_user=current_user,
         request=mock_request,
         _alias_storage=None,
-        player_name="testuser",
+        _player_name="testuser",
     )
 
     assert "result" in result
@@ -145,7 +145,7 @@ async def test_quest_abandon_usage_when_wrong_subcommand(current_user, mock_requ
         current_user=current_user,
         request=mock_request,
         _alias_storage=None,
-        player_name="testuser",
+        _player_name="testuser",
     )
 
     assert "Usage" in result["result"] or "abandon" in result["result"].lower()
@@ -159,7 +159,7 @@ async def test_quest_abandon_usage_when_no_quest_name(current_user, mock_request
         current_user=current_user,
         request=mock_request,
         _alias_storage=None,
-        player_name="testuser",
+        _player_name="testuser",
     )
 
     assert "Usage" in result["result"] or "quest name" in result["result"].lower()
@@ -190,7 +190,7 @@ async def test_quest_abandon_success(current_user, mock_request):
             current_user=current_user,
             request=mock_request,
             _alias_storage=None,
-            player_name="testuser",
+            _player_name="testuser",
         )
 
     assert "result" in result
@@ -223,7 +223,7 @@ async def test_quest_abandon_failure_message(current_user, mock_request):
             current_user=current_user,
             request=mock_request,
             _alias_storage=None,
-            player_name="testuser",
+            _player_name="testuser",
         )
 
     assert "result" in result

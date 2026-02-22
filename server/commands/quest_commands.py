@@ -82,7 +82,7 @@ async def _resolve_quest_command_context(
         return None, None, "Quest system is not available."
     try:
         player = await persistence.get_player_by_name(get_username_from_user(current_user))
-    except Exception:
+    except Exception:  # pylint: disable=broad-exception-caught  # Reason: Resolver must return message, not crash; caller returns "Failed to load character"
         return None, None, "Failed to load character."
     if not player:
         return None, None, "Character not found."
@@ -163,7 +163,7 @@ async def handle_quest_command(
     current_user: dict[str, Any],
     request: Any,
     _alias_storage: AliasStorage | None,
-    player_name: str,
+    _player_name: str,
 ) -> dict[str, str]:
     """
     Handle quest command: subcommand "abandon <quest_name>" abandons an active quest by name.
