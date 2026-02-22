@@ -274,12 +274,15 @@ if IN_CI:
     # Node id for deselect is relative to pytest rootdir (server/), so no "server/" prefix.
     FLAKY_XDIST_MODULE_NODE_ID = "tests/unit/structured_logging/test_logging_file_setup.py"
     FLAKY_XDIST_MODULE_PATH = "server/tests/unit/structured_logging/test_logging_file_setup.py"
-    # Run 1: full suite excluding the logging file_setup module (coverage data to .coverage)
+    # Run 1: full suite excluding integration and the logging file_setup module (coverage to .coverage).
+    # Integration tests run under test-playwright (runtime DB, single worker); exclude here to match make test-server.
     safe_run_static(
         python_exe,
         "-m",
         "pytest",
         "server/tests/",
+        "-m",
+        "not integration",
         "--deselect",
         FLAKY_XDIST_MODULE_NODE_ID,
         "--cov=server",
@@ -448,8 +451,8 @@ else:
         # pytest-xdist is required for -n auto in pytest.ini
         "cd /workspace && source .venv-ci/bin/activate && "
         "uv pip install pytest-mock>=3.14.0 pytest-xdist>=3.8.0 && "
-        "PYTHONUNBUFFERED=1 pytest server/tests/ --cov=server --cov-report=xml --cov-report=html "
-        "--cov-config=.coveragerc -v --tb=short && "
+        "PYTHONUNBUFFERED=1 pytest server/tests/ -m 'not integration' --cov=server --cov-report=xml "
+        "--cov-report=html --cov-config=.coveragerc -v --tb=short && "
         "python scripts/check_coverage_thresholds.py"
     )
 

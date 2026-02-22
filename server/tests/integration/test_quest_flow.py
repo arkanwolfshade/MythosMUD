@@ -5,6 +5,9 @@ Uses real PostgreSQL (session_factory), patches get_session_maker so QuestServic
 and repositories use the test DB. Seeds leave_the_tutorial definition and offer
 via ON CONFLICT DO NOTHING (safe for parallel workers); tests start_quest,
 get_quest_log, and abandon.
+
+Uses a single shared session per test so all repo operations see the same
+transaction and committed rows (avoids cross-session visibility issues under xdist).
 """
 
 # Ensure quest and player tables are registered on Base.metadata before create_all
@@ -37,6 +40,22 @@ LEAVE_THE_TUTORIAL_DEFINITION = {
     "auto_complete": True,
     "turn_in_entities": [],
 }
+
+
+def _make_shared_session_factory(shared_session):
+    """
+    Return a callable that behaves like a session maker but always yields the same
+    session. Ensures all repo operations in a test see the same session and committed data.
+    """
+
+    class _SharedSessionCtx:
+        async def __aenter__(self):
+            return shared_session
+
+        async def __aexit__(self, exc_type, exc_val, exc_tb):
+            pass  # Do not close; outer scope owns the session
+
+    return lambda: _SharedSessionCtx()
 
 
 @pytest.fixture
@@ -107,47 +126,49 @@ async def test_quest_start_log_abandon_flow(
     """
     player_id, _user_id = quest_seed_data
 
-    with (
-        patch(
-            "server.persistence.repositories.quest_definition_repository.get_session_maker",
-            return_value=session_factory,
-        ),
-        patch(
-            "server.persistence.repositories.quest_instance_repository.get_session_maker",
-            return_value=session_factory,
-        ),
-    ):
-        def_repo = QuestDefinitionRepository()
-        instance_repo = QuestInstanceRepository()
-        quest_service = QuestService(
-            quest_definition_repository=def_repo,
-            quest_instance_repository=instance_repo,
-        )
+    async with session_factory() as shared_session:
+        shared_maker = _make_shared_session_factory(shared_session)
+        with (
+            patch(
+                "server.persistence.repositories.quest_definition_repository.get_session_maker",
+                return_value=shared_maker,
+            ),
+            patch(
+                "server.persistence.repositories.quest_instance_repository.get_session_maker",
+                return_value=shared_maker,
+            ),
+        ):
+            def_repo = QuestDefinitionRepository()
+            instance_repo = QuestInstanceRepository()
+            quest_service = QuestService(
+                quest_definition_repository=def_repo,
+                quest_instance_repository=instance_repo,
+            )
 
-        # Start quest
-        start_result = await quest_service.start_quest(player_id, "leave_the_tutorial")
-        assert start_result.get("success") is True, start_result.get("message", "start failed")
-        assert "started" in start_result.get("message", "").lower()
+            # Start quest
+            start_result = await quest_service.start_quest(player_id, "leave_the_tutorial")
+            assert start_result.get("success") is True, start_result.get("message", "start failed")
+            assert "started" in start_result.get("message", "").lower()
 
-        # Quest log shows one active entry (same shape as GET /api/players/{id}/quests)
-        log = await quest_service.get_quest_log(player_id, include_completed=True)
-        assert len(log) == 1
-        entry = log[0]
-        assert set(entry.keys()) >= {"quest_id", "name", "title", "description", "goals_with_progress", "state"}
-        assert entry["quest_id"] == "leave_the_tutorial"
-        assert entry["name"] == "leave_the_tutorial"
-        assert entry["state"] == "active"
-        assert len(entry["goals_with_progress"]) == 1
-        assert entry["goals_with_progress"][0]["goal_type"] == "complete_activity"
+            # Quest log shows one active entry (same shape as GET /api/players/{id}/quests)
+            log = await quest_service.get_quest_log(player_id, include_completed=True)
+            assert len(log) == 1
+            entry = log[0]
+            assert set(entry.keys()) >= {"quest_id", "name", "title", "description", "goals_with_progress", "state"}
+            assert entry["quest_id"] == "leave_the_tutorial"
+            assert entry["name"] == "leave_the_tutorial"
+            assert entry["state"] == "active"
+            assert len(entry["goals_with_progress"]) == 1
+            assert entry["goals_with_progress"][0]["goal_type"] == "complete_activity"
 
-        # Abandon by common name
-        abandon_result = await quest_service.abandon(player_id, "leave_the_tutorial")
-        assert abandon_result.get("success") is True, abandon_result.get("message", "abandon failed")
-        assert "abandoned" in abandon_result.get("message", "").lower()
+            # Abandon by common name
+            abandon_result = await quest_service.abandon(player_id, "leave_the_tutorial")
+            assert abandon_result.get("success") is True, abandon_result.get("message", "abandon failed")
+            assert "abandoned" in abandon_result.get("message", "").lower()
 
-        # Quest log no longer includes abandoned (only active + completed)
-        log_after = await quest_service.get_quest_log(player_id, include_completed=True)
-        assert len(log_after) == 0
+            # Quest log no longer includes abandoned (only active + completed)
+            log_after = await quest_service.get_quest_log(player_id, include_completed=True)
+            assert len(log_after) == 0
 
 
 @pytest.mark.asyncio
@@ -162,38 +183,40 @@ async def test_quest_start_by_trigger_then_abandon(  # pylint: disable=redefined
     """
     player_id, _user_id = quest_seed_data
 
-    with (
-        patch(
-            "server.persistence.repositories.quest_definition_repository.get_session_maker",
-            return_value=session_factory,
-        ),
-        patch(
-            "server.persistence.repositories.quest_instance_repository.get_session_maker",
-            return_value=session_factory,
-        ),
-    ):
-        def_repo = QuestDefinitionRepository()
-        instance_repo = QuestInstanceRepository()
-        quest_service = QuestService(
-            quest_definition_repository=def_repo,
-            quest_instance_repository=instance_repo,
-        )
+    async with session_factory() as shared_session:
+        shared_maker = _make_shared_session_factory(shared_session)
+        with (
+            patch(
+                "server.persistence.repositories.quest_definition_repository.get_session_maker",
+                return_value=shared_maker,
+            ),
+            patch(
+                "server.persistence.repositories.quest_instance_repository.get_session_maker",
+                return_value=shared_maker,
+            ),
+        ):
+            def_repo = QuestDefinitionRepository()
+            instance_repo = QuestInstanceRepository()
+            quest_service = QuestService(
+                quest_definition_repository=def_repo,
+                quest_instance_repository=instance_repo,
+            )
 
-        results = await quest_service.start_quest_by_trigger(player_id, "room", TUTORIAL_ROOM_ID)
-        assert len(results) == 1
-        assert results[0].get("success") is True
+            results = await quest_service.start_quest_by_trigger(player_id, "room", TUTORIAL_ROOM_ID)
+            assert len(results) == 1
+            assert results[0].get("success") is True
 
-        log = await quest_service.get_quest_log(player_id, include_completed=False)
-        assert len(log) == 1 and log[0]["quest_id"] == "leave_the_tutorial"
+            log = await quest_service.get_quest_log(player_id, include_completed=False)
+            assert len(log) == 1 and log[0]["quest_id"] == "leave_the_tutorial"
 
-        abandon_result = await quest_service.abandon(player_id, "leave_the_tutorial")
-        assert abandon_result.get("success") is True
-        log_after = await quest_service.get_quest_log(player_id, include_completed=True)
-        assert len(log_after) == 0
+            abandon_result = await quest_service.abandon(player_id, "leave_the_tutorial")
+            assert abandon_result.get("success") is True
+            log_after = await quest_service.get_quest_log(player_id, include_completed=True)
+            assert len(log_after) == 0
 
-        # Re-accept: start again (avoids UNIQUE violation by updating abandoned row)
-        start_again = await quest_service.start_quest(player_id, "leave_the_tutorial")
-        assert start_again.get("success") is True, start_again.get("message", "re-start failed")
-        log_reaccept = await quest_service.get_quest_log(player_id, include_completed=False)
-        assert len(log_reaccept) == 1 and log_reaccept[0]["quest_id"] == "leave_the_tutorial"
-        assert log_reaccept[0]["state"] == "active"
+            # Re-accept: start again (avoids UNIQUE violation by updating abandoned row)
+            start_again = await quest_service.start_quest(player_id, "leave_the_tutorial")
+            assert start_again.get("success") is True, start_again.get("message", "re-start failed")
+            log_reaccept = await quest_service.get_quest_log(player_id, include_completed=False)
+            assert len(log_reaccept) == 1 and log_reaccept[0]["quest_id"] == "leave_the_tutorial"
+            assert log_reaccept[0]["state"] == "active"
