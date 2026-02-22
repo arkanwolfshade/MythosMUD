@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { vi } from 'vitest';
+import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { CommandPanel } from '../panels/CommandPanel';
 
 // Mock the child components to isolate testing
@@ -182,7 +182,7 @@ describe('CommandPanel', () => {
       render(<CommandPanel {...defaultProps} />);
 
       expect(screen.getByTestId('command-panel')).toBeInTheDocument();
-      expect(screen.getByText('Commands')).toBeInTheDocument();
+      expect(screen.getByText('Recent Commands')).toBeInTheDocument();
       // Note: ChannelSelector is not rendered in CommandPanel - channel selection is handled differently
       expect(screen.getByTestId('command-input')).toBeInTheDocument();
       expect(screen.getByText('Send Command')).toBeInTheDocument();
@@ -603,8 +603,8 @@ describe('CommandPanel', () => {
 
       const input = screen.getByTestId('command-input');
 
-      // Click elsewhere
-      await user.click(screen.getByText('Commands'));
+      // Click elsewhere (header area - use Recent Commands label)
+      await user.click(screen.getByText('Recent Commands'));
 
       // Click on history item should refocus input
       const historyItems = screen.getAllByText('look');

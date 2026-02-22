@@ -168,7 +168,6 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
       <div className="flex items-center justify-between p-3 border-b border-gray-700 bg-mythos-terminal-background">
         <div className="flex items-center space-x-2">
           <EldritchIcon name={MythosIcons.command} size={20} className="text-mythos-terminal-primary" />
-          <span className="text-sm font-bold text-mythos-terminal-primary">Commands</span>
         </div>
       </div>
 
@@ -211,7 +210,6 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
         </div>
         {commandHistory.length === 0 ? (
           <div className="text-center text-mythos-terminal-text-secondary py-4">
-            <EldritchIcon name={MythosIcons.command} size={24} className="mx-auto mb-2 opacity-50" />
             <p className="text-xs">No commands yet</p>
           </div>
         ) : (

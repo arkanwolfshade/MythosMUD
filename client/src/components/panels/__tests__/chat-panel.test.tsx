@@ -132,8 +132,8 @@ describe('ChatPanel', () => {
     it('renders chat panel with header', () => {
       render(<ChatPanel {...defaultProps} />);
 
-      expect(screen.getByText('Chat')).toBeInTheDocument();
       expect(screen.getByTestId('icon-chat')).toBeInTheDocument();
+      expect(screen.getByLabelText('Channel Selection')).toBeInTheDocument();
     });
 
     it('renders channel selector', () => {
