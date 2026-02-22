@@ -51,28 +51,71 @@ def _resolve_player_id(player: Any) -> uuid.UUID | None:
         return None
 
 
+def _parse_quest_abandon_args(command_data: dict[str, Any]) -> tuple[str | None, str | None]:
+    """
+    Parse 'quest abandon <name>' from command_data.
+    Returns (quest_name, error_message). If error_message is not None, quest_name is None.
+    """
+    args: list[Any] = command_data.get("args", []) or []
+    first = (args[0] if isinstance(args[0], str) else "") if args else ""
+    if not args or first.lower() != "abandon":
+        return None, "Usage: quest abandon <quest name>. Use 'journal' or 'quests' to see your quest log."
+    quest_name = " ".join(str(p) for p in args[1:]).strip()
+    if not quest_name:
+        return None, "Usage: quest abandon <quest name>."
+    return quest_name, None
+
+
+async def _resolve_quest_command_context(
+    request: Any, current_user: dict[str, Any]
+) -> tuple[uuid.UUID | None, QuestService | None, str | None]:
+    """
+    Resolve player_id and QuestService from request and current_user.
+    Returns (player_id, quest_service, error_message). If error_message is not None, use it.
+    """
+    services = _get_container_and_persistence(request)
+    if not services:
+        return None, None, "Quest system is not available."
+    _container, persistence = services
+    quest_service = _get_quest_service(request)
+    if not quest_service:
+        return None, None, "Quest system is not available."
+    try:
+        player = await persistence.get_player_by_name(get_username_from_user(current_user))
+    except Exception:
+        return None, None, "Failed to load character."
+    if not player:
+        return None, None, "Character not found."
+    player_id = _resolve_player_id(player)
+    if not player_id:
+        return None, None, "Character id is invalid."
+    return player_id, quest_service, None
+
+
+def _format_one_quest_entry(e: dict[str, Any]) -> list[str]:
+    """Return lines for a single quest log entry."""
+    state = e.get("state", "?")
+    title = e.get("title") or e.get("name") or "Unknown"
+    lines = [f"  [{state.upper()}] {title}"]
+    desc = (e.get("description") or "").strip()
+    if desc:
+        lines.append(f"      {desc}")
+    for g in e.get("goals_with_progress") or []:
+        current = g.get("current", 0)
+        required = g.get("required", 1)
+        done = g.get("done", False)
+        target = g.get("target") or "?"
+        lines.append(f"      - {target}: done" if done else f"      - {target}: {current}/{required}")
+    return lines
+
+
 def _format_quest_log(entries: list[dict[str, Any]]) -> str:
     """Format quest log entries as text for the player."""
     if not entries:
         return "You have no active or completed quests."
     lines = ["Quest log", "---"]
     for e in entries:
-        state = e.get("state", "?")
-        title = e.get("title") or e.get("name") or "Unknown"
-        lines.append(f"  [{state.upper()}] {title}")
-        desc = (e.get("description") or "").strip()
-        if desc:
-            lines.append(f"      {desc}")
-        goals = e.get("goals_with_progress") or []
-        for g in goals:
-            current = g.get("current", 0)
-            required = g.get("required", 1)
-            done = g.get("done", False)
-            target = g.get("target") or "?"
-            if done:
-                lines.append(f"      - {target}: done")
-            else:
-                lines.append(f"      - {target}: {current}/{required}")
+        lines.extend(_format_one_quest_entry(e))
     lines.append("---")
     return "\n".join(lines)
 
@@ -127,35 +170,21 @@ async def handle_quest_command(
 
     Usage: quest abandon <quest common name>
     """
-    args: list[Any] = command_data.get("args", []) or []
-    if not args or (args[0] if isinstance(args[0], str) else "").lower() != "abandon":
-        return {"result": "Usage: quest abandon <quest name>. Use 'journal' or 'quests' to see your quest log."}
-
-    quest_name_parts = args[1:] if len(args) > 1 else []
-    quest_name = " ".join(str(p) for p in quest_name_parts).strip()
-    if not quest_name:
-        return {"result": "Usage: quest abandon <quest name>."}
-
-    services = _get_container_and_persistence(request)
-    if not services:
-        return {"result": "Quest system is not available."}
-    _container, persistence = services
-    quest_service = _get_quest_service(request)
-    if not quest_service:
-        return {"result": "Quest system is not available."}
-
+    quest_name, parse_error = _parse_quest_abandon_args(command_data)
+    if parse_error:
+        return {"result": parse_error}
+    player_id, quest_service, ctx_error = await _resolve_quest_command_context(request, current_user)
+    if ctx_error:
+        return {"result": ctx_error}
+    # Type narrow: when ctx_error is None, resolver returns (player_id, quest_service, None)
+    assert quest_service is not None
+    assert player_id is not None
+    assert quest_name is not None
     try:
-        player = await persistence.get_player_by_name(get_username_from_user(current_user))
-        if not player:
-            return {"result": "Character not found."}
-        player_id = _resolve_player_id(player)
-        if not player_id:
-            return {"result": "Character id is invalid."}
-
         result = await quest_service.abandon(player_id, quest_name)
         if result.get("success"):
             return {"result": result.get("message", "Quest abandoned.")}
         return {"result": result.get("message", "Could not abandon quest.")}
     except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Command must return user message, not crash; log and return generic message
-        logger.exception("Quest abandon command failed", player=player_name, error=str(e))
+        logger.exception("Quest abandon command failed", player_id=str(player_id), quest_name=quest_name, error=str(e))
         return {"result": "Failed to abandon quest."}

@@ -4,6 +4,7 @@
 
 # Exclude paths from analysis
 # data/ is the mythosmud_data git submodule (Main (Integration)/data) - excluded from Codacy
+# .cursor/ contains Cursor IDE plans and rules - not production code, exclude from Codacy
 exclude_paths:
   - "**/node_modules/**"
   - "**/dist/**"
@@ -11,24 +12,34 @@ exclude_paths:
   - "**/mythosmud_data/**"
   - ".data/**"
   - "data/**"
+  - ".cursor/**"
 
-# Ignore assert and hardcoded secrets in test files (Prospector_bandit B101/B106)
-# Assert and test passwords are standard in tests; bandit.yml skips them but Codacy
-# may still report via Prospector_bandit - these patterns suppress for **/tests/**.
+# Ignore assert and hardcoded secrets in test files (Bandit/Prospector B101/B106)
+# Assert and test passwords are standard in pytest; bandit.yml skips them but Codacy
+# may still report - these patterns suppress for all pytest-related paths.
 ignore_patterns:
-  # Bandit B101: Use of assert detected (security warning that's acceptable in tests)
+  # Bandit B101: Use of assert detected (acceptable in pytest - assert is the test API)
   # NOTE: Also configured in bandit.yml - see bandit.yml for native Bandit runs.
   - pattern_id: "Bandit_B101"
     file_paths:
       - "**/test_*.py"
       - "**/tests/**/*.py"
       - "**/*_test.py"
+      - "**/conftest.py"
+  # Prospector/Bandit B101 (alternative tool ID if Codacy reports via Prospector)
+  - pattern_id: "Prospector_bandit_B101"
+    file_paths:
+      - "**/test_*.py"
+      - "**/tests/**/*.py"
+      - "**/*_test.py"
+      - "**/conftest.py"
   # Bandit B106: Hardcoded password in tests (test fixtures, mock credentials)
   - pattern_id: "Bandit_B106"
     file_paths:
       - "**/test_*.py"
       - "**/tests/**/*.py"
       - "**/*_test.py"
+      - "**/conftest.py"
   # Bandit B105: Hardcoded password (acceptable for development defaults with environment variable fallback)
   - pattern_id: "Bandit_B105"
     file_paths:

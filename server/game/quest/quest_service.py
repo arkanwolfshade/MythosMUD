@@ -76,6 +76,21 @@ class QuestService:
         quest_def = await self._def_repo.get_by_name(name)
         return quest_def.id if quest_def else None
 
+    async def _start_quest_validation_error(
+        self,
+        player_id: uuid.UUID,
+        definition: QuestDefinitionSchema,
+        existing: QuestInstance | None,
+    ) -> dict[str, Any] | None:
+        """Return an error dict if the player cannot start this quest; otherwise None."""
+        if existing and existing.state == "active":
+            return {"success": False, "message": "You already have this quest."}
+        if existing and existing.state == "completed":
+            return {"success": False, "message": "You have already completed this quest."}
+        if not await self._check_prerequisites(player_id, definition):
+            return {"success": False, "message": "Prerequisites not met."}
+        return None
+
     async def start_quest(
         self,
         player_id: uuid.UUID,
@@ -91,17 +106,10 @@ class QuestService:
         if not definition_row:
             return {"success": False, "message": "Quest not found."}
         definition = _parse_definition(dict(definition_row.definition))
-
         existing = await self._instance_repo.get_by_player_and_quest(player_id, quest_id)
-        if existing and existing.state == "active":
-            return {"success": False, "message": "You already have this quest."}
-        if existing and existing.state == "completed":
-            return {"success": False, "message": "You have already completed this quest."}
-
-        if not await self._check_prerequisites(player_id, definition):
-            return {"success": False, "message": "Prerequisites not met."}
-
-        # Re-accept abandoned quest: update existing row to avoid UNIQUE (player_id, quest_id) violation
+        err = await self._start_quest_validation_error(player_id, definition, existing)
+        if err:
+            return err
         if existing and existing.state == "abandoned":
             await self._instance_repo.update_state_and_progress(existing.id, state="active", progress={})
             logger.info(
@@ -111,26 +119,32 @@ class QuestService:
                 quest_name=definition.name,
             )
             return {"success": True, "message": f"Quest started: {definition.title}"}
-
         await self._instance_repo.create(player_id, quest_id, state="active", progress={})
         logger.info("Quest started", player_id=pid, quest_id=quest_id, quest_name=definition.name)
         return {"success": True, "message": f"Quest started: {definition.title}"}
 
-    async def _check_prerequisites(self, player_id: uuid.UUID, definition: QuestDefinitionSchema) -> bool:
-        """Check DAG: requires_all (all must be completed) and requires_any (at least one)."""
-        for qid in definition.requires_all:
+    async def _all_required_completed(self, player_id: uuid.UUID, quest_ids: list[str]) -> bool:
+        """Return True if the player has completed every quest in quest_ids."""
+        for qid in quest_ids:
             inst = await self._instance_repo.get_by_player_and_quest(player_id, qid)
             if not inst or inst.state != "completed":
                 return False
-        if definition.requires_any:
-            any_done = False
-            for qid in definition.requires_any:
-                inst = await self._instance_repo.get_by_player_and_quest(player_id, qid)
-                if inst and inst.state == "completed":
-                    any_done = True
-                    break
-            if not any_done:
-                return False
+        return True
+
+    async def _any_required_completed(self, player_id: uuid.UUID, quest_ids: list[str]) -> bool:
+        """Return True if the player has completed at least one quest in quest_ids."""
+        for qid in quest_ids:
+            inst = await self._instance_repo.get_by_player_and_quest(player_id, qid)
+            if inst and inst.state == "completed":
+                return True
+        return False
+
+    async def _check_prerequisites(self, player_id: uuid.UUID, definition: QuestDefinitionSchema) -> bool:
+        """Check DAG: requires_all (all must be completed) and requires_any (at least one)."""
+        if not await self._all_required_completed(player_id, definition.requires_all):
+            return False
+        if definition.requires_any and not await self._any_required_completed(player_id, definition.requires_any):
+            return False
         return True
 
     async def start_quest_by_trigger(
@@ -173,6 +187,31 @@ class QuestService:
             return {**progress, key: current + 1}
         return progress
 
+    async def _apply_activity_progress(
+        self,
+        player_id: uuid.UUID,
+        instance: QuestInstance,
+        definition: QuestDefinitionSchema,
+        activity_target: str,
+        goal_type: str,
+    ) -> bool:
+        """Update progress for matching goal; complete if auto_complete and all goals met. Returns True if updated."""
+        for i, goal in enumerate(definition.goals):
+            if goal.type != goal_type:
+                continue
+            if goal_type == "kill_n":
+                target = goal.target or (goal.config or {}).get("npc_id", "")
+            else:
+                target = goal.target or ""
+            if target != activity_target:
+                continue
+            new_progress = self._progress_goal(dict(instance.progress), i, goal_type, goal.config or {})
+            await self._instance_repo.update_state_and_progress(instance.id, progress=new_progress)
+            if _goals_met(new_progress, definition) and definition.auto_complete:
+                await self._complete_instance(player_id, instance, definition)
+            return True
+        return False
+
     async def record_complete_activity(self, player_id: uuid.UUID, activity_target: str) -> None:
         """Record a complete_activity event; update matching active instances and complete if auto_complete."""
         active = await self._instance_repo.list_active_by_player(player_id)
@@ -181,17 +220,9 @@ class QuestService:
             if not definition_row:
                 continue
             definition = _parse_definition(dict(definition_row.definition))
-            for i, goal in enumerate(definition.goals):
-                if goal.type != "complete_activity":
-                    continue
-                target = goal.target or ""
-                if target != activity_target:
-                    continue
-                new_progress = self._progress_goal(dict(instance.progress), i, "complete_activity", goal.config or {})
-                await self._instance_repo.update_state_and_progress(instance.id, progress=new_progress)
-                if _goals_met(new_progress, definition):
-                    if definition.auto_complete:
-                        await self._complete_instance(player_id, instance, definition)
+            if await self._apply_activity_progress(
+                player_id, instance, definition, activity_target, "complete_activity"
+            ):
                 break
 
     async def record_kill(self, player_id: uuid.UUID, npc_definition_id: str) -> None:
@@ -202,17 +233,7 @@ class QuestService:
             if not definition_row:
                 continue
             definition = _parse_definition(dict(definition_row.definition))
-            for i, goal in enumerate(definition.goals):
-                if goal.type != "kill_n":
-                    continue
-                target = goal.target or goal.config.get("npc_id") or ""
-                if target != npc_definition_id:
-                    continue
-                new_progress = self._progress_goal(dict(instance.progress), i, "kill_n", goal.config or {})
-                await self._instance_repo.update_state_and_progress(instance.id, progress=new_progress)
-                if _goals_met(new_progress, definition):
-                    if definition.auto_complete:
-                        await self._complete_instance(player_id, instance, definition)
+            if await self._apply_activity_progress(player_id, instance, definition, npc_definition_id, "kill_n"):
                 break
 
     async def _complete_instance(
@@ -315,6 +336,35 @@ class QuestService:
             elif reward.type == "item":
                 await self._apply_item_reward(player_id, quest_id, reward)
 
+    def _turn_in_validation_error(
+        self,
+        player_id: uuid.UUID,
+        definition: QuestDefinitionSchema,
+        instance: QuestInstance | None,
+        at_entity_id: str,
+    ) -> dict[str, Any] | None:
+        """Return an error dict if turn-in is invalid; otherwise None."""
+        if definition.auto_complete:
+            return {"success": False, "message": "This quest completes automatically."}
+        allowed_ids = list(definition.turn_in_entities or [])
+        if not allowed_ids:
+            return {"success": False, "message": "This quest has no turn-in location."}
+        if at_entity_id not in allowed_ids:
+            return {"success": False, "message": "You cannot turn in this quest here."}
+        if not instance or instance.state != "active":
+            return {"success": False, "message": "You do not have this quest active."}
+        if not _goals_met(dict(instance.progress), definition):
+            return {"success": False, "message": "Quest objectives not yet complete."}
+        for reward in definition.rewards:
+            if reward.type == "item" and self._inventory_service:
+                has_slot = getattr(self._inventory_service, "has_inventory_slot", lambda _: True)(player_id)
+                if not has_slot:
+                    return {
+                        "success": False,
+                        "message": "Your inventory is full. Free a slot before turning in.",
+                    }
+        return None
+
     async def turn_in(
         self,
         player_id: uuid.UUID,
@@ -330,26 +380,11 @@ class QuestService:
         if not definition_row:
             return {"success": False, "message": "Quest not found."}
         definition = _parse_definition(dict(definition_row.definition))
-        if definition.auto_complete:
-            return {"success": False, "message": "This quest completes automatically."}
-        allowed_ids = list(definition.turn_in_entities or [])
-        if not allowed_ids:
-            return {"success": False, "message": "This quest has no turn-in location."}
-        if at_entity_id not in allowed_ids:
-            return {"success": False, "message": "You cannot turn in this quest here."}
         instance = await self._instance_repo.get_by_player_and_quest(player_id, quest_id)
-        if not instance or instance.state != "active":
-            return {"success": False, "message": "You do not have this quest active."}
-        if not _goals_met(dict(instance.progress), definition):
-            return {"success": False, "message": "Quest objectives not yet complete."}
-        for reward in definition.rewards:
-            if reward.type == "item" and self._inventory_service:
-                has_slot = getattr(self._inventory_service, "has_inventory_slot", lambda _: True)(player_id)
-                if not has_slot:
-                    return {
-                        "success": False,
-                        "message": "Your inventory is full. Free a slot before turning in.",
-                    }
+        err = self._turn_in_validation_error(player_id, definition, instance, at_entity_id)
+        if err:
+            return err
+        assert instance is not None  # Validation guarantees active instance when err is None
         await self._complete_instance(player_id, instance, definition)
         return {"success": True, "message": f"Quest completed: {definition.title}"}
 
