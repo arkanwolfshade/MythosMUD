@@ -20,10 +20,10 @@ Code is treated as the source of truth; docs are updated or corrected to match.
   updated for PostgreSQL and make target.
 - **Link validation:** Performed per-doc during audit. Internal links fixed in NATS_SUBJECT_PATTERNS,
   LOGGING_QUICK_REFERENCE; references and paths corrected across multiple docs.
-- **Subsystem design docs:** Added [docs/subsystems/](docs/subsystems/) with 15 reverse-engineered
+- **Subsystem design docs:** Added [subsystems/](subsystems/) with 15 reverse-engineered
   design documents (Movement, Follow, Rest, Rescue, Emote/Pose, Who, Party, Combat, Status effects,
-  Magic, Skills/Level, Lucidity, Respawn, NPC, Admin commands). See [docs/subsystems/README.md]
-  (docs/subsystems/README.md) for the index.
+  Magic, Skills/Level, Lucidity, Respawn, NPC, Admin commands). See [subsystems/README.md]
+  (subsystems/README.md) for the index.
 
 ## Changes by document
 

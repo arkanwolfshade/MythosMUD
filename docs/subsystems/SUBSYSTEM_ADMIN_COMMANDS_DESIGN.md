@@ -121,7 +121,7 @@ flowchart LR
   command_data.subcommand and args reconstruction (command_service CRITICAL comment for admin
   subcommands).
 
-See also [GAME_BUG_INVESTIGATION_PLAYBOOK](.cursor/rules/GAME_BUG_INVESTIGATION_PLAYBOOK.mdc) and
+See also [GAME_BUG_INVESTIGATION_PLAYBOOK](../../.cursor/rules/GAME_BUG_INVESTIGATION_PLAYBOOK.mdc) and
 security/COPPA requirements in project rules.
 
 ## Related docs

@@ -125,7 +125,7 @@ clear_request_context()
 
 | Problem                                        | Fix                                                                 |
 | ---------------------------------------------- | ------------------------------------------------------------------- |
-| `ImportError: cannot import name 'get_logger'` | Use `from server.logging.enhanced_logging_config import get_logger` |
+| `ImportError: cannot import name 'get_logger'` | Use `from server.structured_logging.enhanced_logging_config import get_logger` |
 | `TypeError: context parameter`                 | Remove `context=` and use direct key-value pairs                    |
 | Logs not appearing                             | Check log levels and configuration                                  |
 | Sensitive data in logs                         | Enhanced logging automatically sanitizes                            |

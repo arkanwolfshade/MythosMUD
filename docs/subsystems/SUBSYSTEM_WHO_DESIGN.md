@@ -56,7 +56,7 @@ flowchart LR
   persistence-based. Players who disconnected but had activity in last 5 minutes still appear.
 - **Optional name filter**: command_data.target_player; if present, filter_players_by_name (partial
   case-insensitive match) before formatting.
-- **Room ID parsing**: format*player_location splits room_id on "*" and expects at least 4 parts
+- **Room ID parsing**: format_player_location splits room_id on "\*" and expects at least 4 parts
   (earth_zone_subzone_room...) to build "Zone: Subzone: Room" display.
 - **Admin indicator**: format_player_entry adds " [ADMIN]" when player.is_admin.
 
