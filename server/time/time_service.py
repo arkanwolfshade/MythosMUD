@@ -209,6 +209,8 @@ class MythosChronicle:
         week_of_month = ((day_of_month - 1 + first_day_weekday) // 7) + 1
         # Use standard Python datetime.weekday() (0=Monday, 6=Sunday)
         day_of_week = normalized.weekday()
+        # Standard English Western-hemisphere weekday name (Sunday, Monday, ...)
+        day_name = calendar.day_name[day_of_week]
         components = MythosCalendarComponents(
             mythos_datetime=normalized,
             year=normalized.year,
@@ -217,7 +219,7 @@ class MythosChronicle:
             day_of_month=day_of_month,
             week_of_month=week_of_month,
             day_of_week=day_of_week,
-            day_name=calendar.day_name[day_of_week],
+            day_name=day_name,
             season=_season_for_month(normalized.month),
             is_daytime=self.is_daytime(normalized),
             is_witching_hour=self.is_witching_hour(normalized),

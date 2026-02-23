@@ -18,6 +18,8 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 _TRADITIONS = {"catholic", "islamic", "jewish", "neo_pagan", "mythos"}
 _SEASONS = {"winter", "spring", "summer", "autumn"}
+# Standard English Western-hemisphere weekday names: Sunday, Monday, ..., Saturday.
+# Order below matches Python datetime.weekday() (0=Monday, 6=Sunday); validation is set membership.
 _MYTHOS_WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
 
@@ -154,7 +156,7 @@ class ScheduleEntry(BaseModel):
     @field_validator("days")
     @classmethod
     def validate_days(cls, value: Sequence[str]) -> list[str]:
-        """Validate schedule entry days."""
+        """Validate schedule entry days are standard English weekday names (Sunday, Monday, ...)."""
         if not value:
             raise ValueError("days must contain at least one weekday")
         invalid = [day for day in value if day not in _MYTHOS_WEEKDAYS]

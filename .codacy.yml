@@ -236,3 +236,7 @@ ignore_patterns:
 # - Standard npm caret ranges (^) are used, which is best practice
 # - package-lock.json locks exact versions at install time
 # - No actual security risk exists when package-lock.json is committed
+#
+# PR #409 discussion r2842724151: client/package.json was verified to have no
+# duplicate dependency keys (e.g. cross-env appears once). Suppress the variant
+# versions warning for client/package.json in Codacy UI if it still appears.

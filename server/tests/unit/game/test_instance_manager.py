@@ -11,6 +11,9 @@ import pytest
 from server.game.instance_manager import InstanceManager
 from server.models.room import Room
 
+# pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
+# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
+
 
 @pytest.fixture
 def tutorial_room():
@@ -23,7 +26,7 @@ def tutorial_room():
             "plane": "earth",
             "zone": "arkhamcity",
             "sub_zone": "sanitarium",
-            "exits": {"out": "earth_arkhamcity_sanitarium_room_foyer_001"},
+            "exits": {"down": "earth_arkhamcity_sanitarium_room_foyer_001"},
             "attributes": {
                 "is_instanced": True,
                 "instance_template_id": "tutorial_sanitarium",
@@ -46,7 +49,7 @@ def instance_manager(room_cache):
     return InstanceManager(room_cache=room_cache, event_bus=None)
 
 
-def test_create_instance(instance_manager, room_cache):
+def test_create_instance(instance_manager):
     """Test create_instance creates instance with cloned rooms."""
     owner_id = uuid.uuid4()
     instance = instance_manager.create_instance(
@@ -66,8 +69,8 @@ def test_create_instance(instance_manager, room_cache):
 
     room = instance.rooms[room_id]
     assert room.name == "Patient Bedroom"
-    assert "out" in room.exits
-    assert room.exits["out"] == "earth_arkhamcity_sanitarium_room_foyer_001"
+    assert "down" in room.exits
+    assert room.exits["down"] == "earth_arkhamcity_sanitarium_room_foyer_001"
 
 
 def test_create_instance_raises_when_no_templates(instance_manager):

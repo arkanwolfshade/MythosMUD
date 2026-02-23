@@ -17,6 +17,24 @@ from server.schemas.calendar import ScheduleCollection, ScheduleEntry
 from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.project_paths import get_calendar_paths_for_environment, normalize_environment
 
+# Map legacy Latin weekday names (pre-migration 11) to standard English Western-hemisphere
+# names (Sunday, Monday, ...) so DB rows load correctly with or without migration 11.
+_LATIN_TO_STANDARD_WEEKDAY = {
+    "Primus": "Monday",
+    "Secundus": "Tuesday",
+    "Tertius": "Wednesday",
+    "Quartus": "Thursday",
+    "Quintus": "Friday",
+    "Sextus": "Saturday",
+    "Septimus": "Sunday",
+}
+
+
+def normalize_weekday_names(days: list[str]) -> list[str]:
+    """Map Latin weekday names to standard English (Sunday, Monday, ...); pass-through if already standard."""
+    return [_LATIN_TO_STANDARD_WEEKDAY.get(d, d) for d in days]
+
+
 if TYPE_CHECKING:
     from server.async_persistence import AsyncPersistenceLayer
 
@@ -127,6 +145,10 @@ class ScheduleService:
                     # Normalize applies_to and effects to lowercase to match validation requirements
                     applies_to = [item.lower() for item in (row["applies_to"] or [])]
                     effects = [item.lower() for item in (row["effects"] or [])]
+                    # Normalize weekday names: accept Latin (Primus–Septimus) from DB and map to
+                    # standard English (Sunday, Monday, ...) so ScheduleEntry validation passes.
+                    raw_days = list(row["days"]) if row["days"] else []
+                    days = normalize_weekday_names(raw_days)
 
                     schedule_entry = ScheduleEntry(
                         id=row["stable_id"],
@@ -134,7 +156,7 @@ class ScheduleService:
                         category=row["category"],
                         start_hour=row["start_hour"],
                         end_hour=row["end_hour"],
-                        days=list(row["days"]) if row["days"] else [],  # Convert array to list
+                        days=days,
                         applies_to=applies_to,
                         effects=effects,
                         notes=row["notes"],

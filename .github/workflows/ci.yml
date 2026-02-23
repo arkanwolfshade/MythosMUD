@@ -103,6 +103,10 @@ jobs:
           source .venv-ci/bin/activate
           # Use pre-commit to run mypy with identical config to local development
           pre-commit run mypy --all-files
+      - name: Dead code check (vulture)
+        run: |
+          source .venv-ci/bin/activate
+          uv run vulture
       - name: Install Playwright browsers
         run: |
           source .venv-ci/bin/activate
@@ -322,6 +326,9 @@ jobs:
       - name: Lint with ESLint
         run: |
           npx eslint .
+      - name: Dead code check (knip)
+        continue-on-error: true # Baseline has many findings; reduce over time, then remove this
+        run: npm run knip
       - name: Run unit tests with coverage
         run: npm run test:coverage
       - name: Run E2E tests
