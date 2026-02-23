@@ -17,6 +17,9 @@ from server.persistence.repositories.quest_instance_repository import (
     QuestInstanceRepository,
 )
 
+# pylint: disable=redefined-outer-name  # Reason: Pytest fixtures are injected as function parameters, which triggers this warning but is the standard pytest pattern
+# pylint: disable=protected-access  # Reason: Tests need to access protected members to verify internal state and behavior
+
 
 @pytest.fixture
 def quest_instance_repository():

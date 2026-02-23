@@ -136,4 +136,5 @@ async def test_get_player_quests_403_when_not_owner(
         )
 
     assert exc_info.value.status_code == 403
+    mock_player_service.validate_character_access.assert_awaited_once_with(player_id, mock_user.id)
     mock_quest_service.get_quest_log.assert_not_awaited()

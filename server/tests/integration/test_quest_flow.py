@@ -55,7 +55,10 @@ def _make_shared_session_factory(shared_session):
         async def __aexit__(self, exc_type, exc_val, exc_tb):
             pass  # Do not close; outer scope owns the session
 
-    return lambda: _SharedSessionCtx()
+    def factory():
+        return _SharedSessionCtx()
+
+    return factory
 
 
 @pytest.fixture
