@@ -11,9 +11,9 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-# Get project root directory
+# Get project root directory; .env.unit_test lives in project root (same as env.unit_test.example)
 $ProjectRoot = Split-Path -Parent $PSScriptRoot
-$TestEnvPath = Join-Path -Path $ProjectRoot -ChildPath "server" | Join-Path -ChildPath "tests" | Join-Path -ChildPath ".env.unit_test"
+$TestEnvPath = Join-Path -Path $ProjectRoot -ChildPath ".env.unit_test"
 $ExampleEnvPath = Join-Path -Path $ProjectRoot -ChildPath "env.unit_test.example"
 
 Write-Host "MythosMUD Test Environment Setup" -ForegroundColor Green

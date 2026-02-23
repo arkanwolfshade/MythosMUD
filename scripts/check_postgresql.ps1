@@ -38,11 +38,18 @@ if (-not $DatabaseUrl) {
     }
 }
 
-# Parse PostgreSQL URL
+# Parse PostgreSQL URL (SQLite is deprecated; unit tests require PostgreSQL)
 # Format: postgresql+asyncpg://user:password@host:port/database
 if ($DatabaseUrl -notmatch 'postgresql\+?asyncpg?://([^:]+):([^@]+)@([^:]+):(\d+)/(.+)') {
-    Write-Host "[ERROR] Invalid PostgreSQL URL format: $DatabaseUrl" -ForegroundColor Red
-    Write-Host "[EXPECTED] postgresql+asyncpg://user:password@host:port/database" -ForegroundColor Yellow
+    Write-Host "[ERROR] DATABASE_URL is not a PostgreSQL URL: $DatabaseUrl" -ForegroundColor Red
+    if ($DatabaseUrl -match 'sqlite') {
+        Write-Host "[INFO] SQLite is deprecated. Unit tests use PostgreSQL (e.g. mythos_unit)." -ForegroundColor Yellow
+        Write-Host "[SOLUTION] Refresh .env.unit_test from template: make setup-test-env-force" -ForegroundColor Yellow
+        Write-Host "  Or: powershell -File scripts/setup_test_environment.ps1 -Force" -ForegroundColor Cyan
+    }
+    else {
+        Write-Host "[EXPECTED] postgresql+asyncpg://user:password@host:port/database" -ForegroundColor Yellow
+    }
     exit 1
 }
 
