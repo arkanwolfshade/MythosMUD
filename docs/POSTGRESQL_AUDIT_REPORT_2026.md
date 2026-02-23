@@ -132,6 +132,7 @@ No `timestamp without time zone` usage found.
 ### 7.1. Parameterized Queries (GOOD)
 
 **Status:** Compliant. No string interpolation with user input into SQL found. All application code uses:
+
 - `%s` placeholders with `params` tuple
 - `psycopg2.sql.SQL.format()` with `sql.SQL(clause)` for column names (hardcoded)
 - SQLAlchemy `text()` with bound parameters
@@ -192,15 +193,15 @@ No `timestamp without time zone` usage found.
 
 ### Medium Priority
 
-3. **`scripts/populate_test_npc_databases.py`**, **`scripts/init_npc_database.py`** — Replace `SELECT *` with explicit column lists.
-4. **`db/schema/04_runtime_tables.sql`** — Align with `authoritative_schema.sql` (e.g. `player_id uuid`, `text` over `varchar` where appropriate).
-5. **`db/authoritative_schema.sql`** — If schema regeneration is controlled, consider post-processing to lowercase keywords (or document that pg_dump output is acceptable).
+1. **`scripts/populate_test_npc_databases.py`**, **`scripts/init_npc_database.py`** — Replace `SELECT *` with explicit column lists.
+2. **`db/schema/04_runtime_tables.sql`** — Align with `authoritative_schema.sql` (e.g. `player_id uuid`, `text` over `varchar` where appropriate).
+3. **`db/authoritative_schema.sql`** — If schema regeneration is controlled, consider post-processing to lowercase keywords (or document that pg_dump output is acceptable).
 
 ### Low Priority
 
-6. **`data/db/migrations/11_migrate_weekday_names.sql`** — Refactor `NOT IN` to `NOT EXISTS` or `IN` + `NOT` for consistency.
-7. **`db/authoritative_schema.sql`** — Review quoted `"position"` column; consider renaming to avoid reserved-word conflict.
-8. **`scripts/apply_container_migrations.py`**, **`server/alembic/versions/2025_11_25_normalize_container_schema.py`** — Replace `SELECT * FROM jsonb_array_elements(...)` with explicit column list if desired for strict compliance.
+1. **`data/db/migrations/11_migrate_weekday_names.sql`** — Refactor `NOT IN` to `NOT EXISTS` or `IN` + `NOT` for consistency.
+2. **`db/authoritative_schema.sql`** — Review quoted `"position"` column; consider renaming to avoid reserved-word conflict.
+3. **`scripts/apply_container_migrations.py`**, **`server/alembic/versions/2025_11_25_normalize_container_schema.py`** — Replace `SELECT * FROM jsonb_array_elements(...)` with explicit column list if desired for strict compliance.
 
 ---
 
