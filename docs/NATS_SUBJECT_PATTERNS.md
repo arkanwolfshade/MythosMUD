@@ -701,19 +701,15 @@ The following utility functions are marked as deprecated:
 
 ## Related Documentation
 
-[NATS Integration Guide](./NATS_INTEGRATION_GUIDE.md) - NATS setup and configuration
-
-- [Chat Service Documentation](./CHAT_SERVICE_GUIDE.md) - Chat system architecture
-- [Real-Time Architecture](./REAL_TIME_ARCHITECTURE.md) - Overall real-time system design
-- [Enhanced Logging Guide](./ENHANCED_LOGGING_GUIDE.md) - Structured logging practices
+- [Real-Time Architecture](REAL_TIME_ARCHITECTURE.md) - Overall real-time system design
+- [Enhanced Logging Guide](ENHANCED_LOGGING_GUIDE.md) - Structured logging practices
+- [realtime.md](realtime.md) - WebSocket authentication and production deployment
 
 ## References
 
 [NATS Subject-Based Messaging](https://docs.nats.io/nats-concepts/subjects)
 
 - [NATS Best Practices](https://docs.nats.io/running-a-nats-service/nats_admin/best_practices)
-- Source: `server/services/nats_subject_manager.py`
-- Tests: `server/tests/test_nats_subject_manager.py`
-- Performance Tests: `server/tests/performance/test_subject_manager_performance.py`
+- Source: `server/services/nats_subject_manager/` (package)
+- Tests: `server/tests/unit/services/nats_subject_manager/`
 - API Controller: `server/api/admin/subject_controller.py`
-- Migration Spec: `.agent-os/specs/2025-10-25-subject-naming-standardization/tasks.md`

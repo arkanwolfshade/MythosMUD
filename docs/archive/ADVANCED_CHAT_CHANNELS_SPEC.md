@@ -707,7 +707,7 @@ Architecture decisions
 
 ### 14.1 Party Channel
 
-Group-based communication. See [PLANNING_ephemeral_grouping.md](../PLANNING_ephemeral_grouping.md)
+Group-based communication. See [PLANNING_ephemeral_grouping.md](PLANNING_ephemeral_grouping.md)
 for the consolidated ephemeral grouping (party) plan.
 
 - Party formation and management

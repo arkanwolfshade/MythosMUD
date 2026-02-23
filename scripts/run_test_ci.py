@@ -19,10 +19,14 @@ if sys.platform == "win32":
         # Python < 3.7 doesn't have reconfigure, use buffer directly
         pass
 
-# Determine project root
-PROJECT_ROOT = os.getcwd()
-if "MythosMUD-" in PROJECT_ROOT:
-    PROJECT_ROOT = os.path.dirname(PROJECT_ROOT)
+# Determine project root. In GitHub Actions use GITHUB_WORKSPACE so coverage
+# reports (e.g. htmlcov/) are always written to the workspace for artifact upload.
+_PROJECT_ROOT = os.getenv("GITHUB_WORKSPACE") or os.getcwd()
+# Only strip MythosMUD-* parent dir when NOT in GitHub Actions; in CI,
+# GITHUB_WORKSPACE is already the correct root.
+if not os.getenv("GITHUB_ACTIONS") and "MythosMUD-" in _PROJECT_ROOT:
+    _PROJECT_ROOT = os.path.dirname(_PROJECT_ROOT)
+PROJECT_ROOT = _PROJECT_ROOT
 
 # Check if we're in CI environment
 CI = os.getenv("CI")
