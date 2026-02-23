@@ -154,6 +154,7 @@ class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: St
 
         logger.info("Spawning required NPCs", count=len(required_npcs))
 
+        empty_cache_error_added = False
         for npc_def in required_npcs:
             results["attempted"] += 1
 
@@ -161,9 +162,26 @@ class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: St
                 # Determine spawn room
                 spawn_room = await self._determine_spawn_room(npc_def)
                 if not spawn_room:
-                    error_msg = f"No valid spawn room found for required NPC {npc_def.name}"
-                    logger.error(error_msg)
-                    results["errors"].append(error_msg)
+                    # When room cache is empty (e.g. no world data loaded), log once and at debug per NPC
+                    from ..container import ApplicationContainer
+
+                    container = ApplicationContainer.get_instance()
+                    async_persistence = getattr(container, "async_persistence", None) if container else None
+                    cache_size = len(async_persistence._room_cache) if async_persistence else -1  # pylint: disable=protected-access  # Reason: Check if empty cache to avoid per-NPC error spam
+                    if not cache_size:
+                        if not empty_cache_error_added:
+                            results["errors"].append(
+                                "Room cache empty; required NPC spawns skipped (world data not loaded)"
+                            )
+                            empty_cache_error_added = True
+                        logger.debug(
+                            "No valid spawn room for required NPC (cache empty)",
+                            npc_name=npc_def.name,
+                        )
+                    else:
+                        error_msg = f"No valid spawn room found for required NPC {npc_def.name}"
+                        logger.warning(error_msg)
+                        results["errors"].append(error_msg)
                     results["failed"] += 1
                     continue
 
@@ -348,11 +366,20 @@ class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: St
             if room:
                 logger.debug("Using fallback room for NPC", npc_name=npc_def.name, room_id=fallback_room_id)
                 return fallback_room_id
-            logger.error(
-                "Fallback room not found in database",
-                npc_name=npc_def.name,
-                room_id=fallback_room_id,
-            )
+            # Empty cache: expected when DB has no world data (e.g. local dev) -> debug only
+            cache_size = len(async_persistence._room_cache)  # pylint: disable=protected-access  # Reason: Distinguish empty-DB vs missing fallback room
+            if not cache_size:
+                logger.debug(
+                    "Fallback room not found (room cache empty; world data may not be loaded)",
+                    npc_name=npc_def.name,
+                    room_id=fallback_room_id,
+                )
+            else:
+                logger.warning(
+                    "Fallback room not found in database",
+                    npc_name=npc_def.name,
+                    room_id=fallback_room_id,
+                )
             return None
 
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Room determination errors unpredictable, must return None

@@ -364,7 +364,13 @@ class EventHandler:
             #           This ensures ALL NPCs (required and optional) respect respawn delay
             event_bus = self.connection_manager.event_bus
             if event_bus:
-                npc_died_event = NPCDied(npc_id=str(npc_id), room_id=room_id, cause=data.get("cause", "combat"))
+                killer_id = data.get("killer_id")
+                npc_died_event = NPCDied(
+                    npc_id=str(npc_id),
+                    room_id=room_id,
+                    cause=data.get("cause", "combat"),
+                    killer_id=str(killer_id) if killer_id else None,
+                )
                 event_bus.publish(npc_died_event)
                 logger.info(
                     "NPCDied event published to EventBus for respawn queue",

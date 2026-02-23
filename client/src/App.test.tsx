@@ -542,10 +542,10 @@ describe('App', () => {
       const errorButton = screen.getByText('Trigger Error');
       fireEvent.click(errorButton);
 
-      // App handles stats error by clearing creation and showing main app (game terminal when no character)
-      await waitFor(() => {
-        expect(screen.getByTestId('game-terminal')).toBeInTheDocument();
-      });
+      // App handles stats error by clearing creation and showing main app (game terminal when no character).
+      // Wait for lazy GameClientV2Container to resolve (Suspense can show Loading in CI).
+      const gameTerminal = await screen.findByTestId('game-terminal', {}, { timeout: 5000 });
+      expect(gameTerminal).toBeInTheDocument();
       expect(screen.queryByTestId('stats-rolling-screen')).not.toBeInTheDocument();
     });
   });
@@ -946,10 +946,8 @@ describe('App', () => {
       const selectButton = screen.getByText('Select Character');
       fireEvent.click(selectButton);
 
-      // Wait for MOTD screen to appear after character selection
-      await waitFor(() => {
-        expect(screen.getByText(/Welcome to the Dreamlands/)).toBeInTheDocument();
-      });
+      // Wait for lazy MotdInterstitialScreen to resolve (Suspense can show Loading in CI)
+      await screen.findByText(/Welcome to the Dreamlands/, {}, { timeout: 5000 });
 
       // Click continue button to proceed to game terminal (triggers async handleMotdContinue + fetch)
       const continueButton = screen.getByText('Enter the Realm');

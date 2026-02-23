@@ -14,10 +14,11 @@ from fastapi import Request as FastAPIRequest
 
 from ..app.game_tick_processing import get_current_tick, get_tick_interval
 from ..auth.users import get_current_active_user, get_current_user
-from ..dependencies import PlayerServiceDep, SkillServiceDep, StatsGeneratorDep
+from ..dependencies import PlayerServiceDep, QuestServiceDep, SkillServiceDep, StatsGeneratorDep
 from ..error_types import ErrorMessages
 from ..exceptions import DatabaseError, LoggedHTTPException, ValidationError
 from ..game.player_service import PlayerService
+from ..game.quest import QuestService
 from ..game.skill_service import SkillService
 from ..game.stats_generator import StatsGenerator
 from ..models.user import User
@@ -35,6 +36,7 @@ from ..schemas.players import (
     SelectCharacterRequest,
 )
 from ..schemas.players.skill import PlayerSkillEntry, PlayerSkillsResponse
+from ..schemas.quest import QuestLogEntryResponse, QuestLogResponse
 from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -206,6 +208,46 @@ async def get_player_skills(
                 value=s["value"],
             )
             for s in skills
+        ]
+    )
+
+
+@player_router.get("/{player_id}/quests", response_model=QuestLogResponse)
+async def get_player_quests(
+    player_id: uuid.UUID,
+    _request: FastAPIRequest,
+    current_user: User = Depends(get_current_user),
+    player_service: PlayerService = PlayerServiceDep,
+    quest_service: QuestService = QuestServiceDep,
+    include_completed: bool = True,
+) -> QuestLogResponse:
+    """Get quest log for a character. Requires ownership (403 if not owner)."""
+    if not current_user:
+        raise LoggedHTTPException(
+            status_code=401,
+            detail=ErrorMessages.AUTHENTICATION_REQUIRED,
+            operation="get_player_quests",
+        )
+    ok, _player, msg = await player_service.validate_character_access(player_id, current_user.id)
+    if not ok:
+        raise LoggedHTTPException(
+            status_code=403,
+            detail=msg or "Not authorized to view this character's quests",
+            operation="get_player_quests",
+            player_id=str(player_id),
+        )
+    entries = await quest_service.get_quest_log(player_id, include_completed=include_completed)
+    return QuestLogResponse(
+        quests=[
+            QuestLogEntryResponse(
+                quest_id=e["quest_id"],
+                name=e["name"],
+                title=e["title"],
+                description=e["description"],
+                goals_with_progress=e["goals_with_progress"],
+                state=e["state"],
+            )
+            for e in entries
         ]
     )
 

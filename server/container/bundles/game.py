@@ -44,6 +44,9 @@ GAME_ATTRS = (
     "mythos_tick_scheduler",
     "item_prototype_registry",
     "item_factory",
+    "quest_definition_repository",
+    "quest_instance_repository",
+    "quest_service",
 )
 
 
@@ -68,6 +71,9 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
     mythos_tick_scheduler: Any = None
     item_prototype_registry: Any = None
     item_factory: Any = None
+    quest_definition_repository: Any = None
+    quest_instance_repository: Any = None
+    quest_service: Any = None
 
     async def initialize(self, container: ApplicationContainer) -> None:  # pylint: disable=too-many-locals,too-many-statements
         """Initialize game services. Requires Core and Realtime."""
@@ -221,7 +227,23 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
             async_persistence=async_persistence,
             level_up_hook=_skill_improvement_on_level_up,
         )
-        logger.info("Container, level and skill services initialized")
+
+        from server.game.quest import QuestService
+        from server.persistence.repositories.quest_definition_repository import QuestDefinitionRepository
+        from server.persistence.repositories.quest_instance_repository import QuestInstanceRepository
+
+        self.quest_definition_repository = QuestDefinitionRepository()
+        self.quest_instance_repository = QuestInstanceRepository()
+        self.quest_service = QuestService(
+            quest_definition_repository=self.quest_definition_repository,
+            quest_instance_repository=self.quest_instance_repository,
+            level_service=self.level_service,
+            spell_learning_service=None,  # Wired in container main after Magic bundle
+            inventory_service=self.container_service,
+            event_bus=getattr(container, "event_bus", None),
+        )
+
+        logger.info("Container, level, skill and quest services initialized")
         logger.info("Game services initialized")
 
         # Item services

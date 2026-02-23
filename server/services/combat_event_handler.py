@@ -154,7 +154,12 @@ class CombatEventHandler:
                         )
                     death_handler = getattr(self._combat_service, "_death_handler", None)
                     if death_handler:
-                        await death_handler.handle_npc_death(target, combat, xp_awarded or 0)
+                        killer_id = (
+                            str(current_participant.participant_id)
+                            if current_participant.participant_type == CombatParticipantType.PLAYER
+                            else None
+                        )
+                        await death_handler.handle_npc_death(target, combat, xp_awarded or 0, killer_id=killer_id)
                 return xp_awarded
 
         except (NATSError, ValueError, RuntimeError, AttributeError, ConnectionError, TypeError, KeyError) as e:

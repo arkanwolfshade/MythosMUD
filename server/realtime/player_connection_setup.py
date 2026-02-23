@@ -37,16 +37,51 @@ async def _update_player_last_active(player_id: uuid.UUID, manager: Any) -> None
         logger.warning("Failed to update last_active for player", player_id=player_id, error=str(e))
 
 
+def _stable_room_id_for_quest(room_id: str) -> str:
+    """Return stable room id for quest_offers lookup; strip instance_<uuid>_ prefix if present."""
+    if room_id.startswith("instance_") and room_id.count("_") >= 2:
+        parts = room_id.split("_", 2)
+        if len(parts) > 2:
+            return parts[2]
+    return room_id
+
+
+async def _trigger_quests_for_room_on_spawn(player_id: uuid.UUID, room_id: str, manager: Any) -> None:
+    """
+    On spawn, explicitly start quests offered by this room (e.g. Leave the Tutorial).
+
+    Entering via exit is handled by PlayerEnteredRoom -> quest_events; spawn does not
+    emit that event, so we trigger room-offered quests here. Uses stable room id so
+    quest_offers (keyed by stable id) are found for instanced rooms.
+    """
+    quest_service = None
+    try:
+        app = getattr(manager, "app", None)
+        if app and getattr(app, "state", None) and getattr(app.state, "container", None):
+            quest_service = getattr(app.state.container, "quest_service", None)
+    except (AttributeError, TypeError):
+        pass
+    if not quest_service:
+        return
+    entity_id = _stable_room_id_for_quest(room_id)
+    try:
+        await quest_service.start_quest_by_trigger(player_id, "room", entity_id)
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Quest trigger on spawn must not crash connection setup; log and continue
+        logger.warning(
+            "Quest trigger on spawn failed",
+            player_id=player_id,
+            room_id=room_id,
+            entity_id=entity_id,
+            error=str(e),
+        )
+
+
 async def _add_player_to_room_silently(player_id: uuid.UUID, room_id: str, manager: Any) -> None:
     """
-    Add player to the Room object WITHOUT triggering player_entered event.
+    Add player to the Room object without triggering PlayerEnteredRoom.
 
-    On initial connection, we only send player_entered_game, not player_entered.
-
-    Args:
-        player_id: The player's ID
-        room_id: The room ID
-        manager: ConnectionManager instance
+    Movement between rooms uses Room.player_entered() and emits the event; spawn uses this.
+    Quest triggers for the spawn room are handled by _trigger_quests_for_room_on_spawn.
     """
     if not manager.async_persistence:
         return
@@ -214,8 +249,9 @@ async def handle_new_connection_setup(
     online_players_str = {str(k): v for k, v in manager.online_players.items()}
     manager.room_manager.reconcile_room_presence(room_id, online_players_str)
 
-    # Add player to the Room object WITHOUT triggering player_entered event
+    # Add player to the Room without event (spawn path); then trigger room-offered quests explicitly
     await _add_player_to_room_silently(player_id, room_id, manager)
+    await _trigger_quests_for_room_on_spawn(player_id, room_id, manager)
 
     # Start login grace period for the newly connected player
     # This provides 10 seconds of immunity to damage and negative effects

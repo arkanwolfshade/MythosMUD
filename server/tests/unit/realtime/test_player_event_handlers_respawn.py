@@ -4,6 +4,7 @@ Unit tests for player respawn event handlers.
 Tests the PlayerRespawnEventHandler class.
 """
 
+import asyncio
 import uuid
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -12,6 +13,9 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from server.realtime.player_event_handlers_respawn import PlayerRespawnEventHandler
 from server.realtime.player_event_handlers_utils import PlayerEventHandlerUtils
+
+# pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
+# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
 
 
 @pytest.fixture
@@ -173,10 +177,10 @@ async def test_send_respawn_event_with_retry_waits_for_connection(
         await asyncio.sleep(0.1)
         mock_connection_manager.player_websockets[player_id] = MagicMock()
 
-    import asyncio
-
-    asyncio.create_task(add_connection_after_delay())
-    await player_respawn_event_handler.send_respawn_event_with_retry(player_id, respawn_event, max_wait_time=1.0)
+    # Handler uses anyio.sleep; under pytest-asyncio it must yield to the loop so the task can add the connection
+    with patch("server.realtime.player_event_handlers_respawn.sleep", side_effect=asyncio.sleep):
+        asyncio.create_task(add_connection_after_delay())
+        await player_respawn_event_handler.send_respawn_event_with_retry(player_id, respawn_event, max_wait_time=1.0)
     mock_connection_manager.send_personal_message.assert_awaited()
 
 
@@ -222,9 +226,7 @@ async def test_handle_player_respawned_success(player_respawn_event_handler, moc
 
 
 @pytest.mark.asyncio
-async def test_handle_player_respawned_error_handling(
-    player_respawn_event_handler, mock_connection_manager, mock_logger
-):
+async def test_handle_player_respawned_error_handling(player_respawn_event_handler, mock_logger):
     """Test handle_player_respawned() handles errors."""
     event = MagicMock()
     event.player_id = uuid.uuid4()
@@ -369,9 +371,7 @@ async def test_handle_player_delirium_respawned_success(player_respawn_event_han
 
 
 @pytest.mark.asyncio
-async def test_handle_player_delirium_respawned_error_handling(
-    player_respawn_event_handler, mock_connection_manager, mock_logger
-):
+async def test_handle_player_delirium_respawned_error_handling(player_respawn_event_handler, mock_logger):
     """Test handle_player_delirium_respawned() handles errors."""
     event = MagicMock()
     event.player_id = uuid.uuid4()

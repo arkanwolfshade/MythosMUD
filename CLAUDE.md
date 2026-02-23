@@ -134,6 +134,12 @@ other location
 - If you see database files in wrong locations, immediately delete and inform the user
 - These rules are ABSOLUTE and apply to ALL database operations (player databases AND NPC databases)
 
+### PostgreSQL database names (which may be reset)
+
+- **mythos_unit** and **mythos_e2e**: May be reset at will; tests may truncate.
+- **mythos_dev**: **PROTECTED.** Do NOT delete or truncate anything in mythos_dev unless the user gives a direct,
+  explicit instruction. Tests and automation must never use mythos_dev for cleanup.
+
 ### Database Type Rules
 
 **player_id is a UUID datatype. It is not a string datatype.**

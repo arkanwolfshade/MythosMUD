@@ -73,7 +73,7 @@ export const createDefaultPanelLayout = (viewportWidth: number, viewportHeight: 
       id: 'gameInfo',
       title: 'Game Info',
       position: { x: middleColumnX, y: headerHeight + padding },
-      size: { width: middleColumnWidth, height: availableHeight },
+      size: { width: middleColumnWidth, height: availableHeight * 0.55 },
       isMinimized: false,
       isMaximized: false,
       isVisible: true,
@@ -112,6 +112,17 @@ export const createDefaultPanelLayout = (viewportWidth: number, viewportHeight: 
       isVisible: true,
       zIndex: 1007,
       minSize: { width: 200, height: 100 },
+    },
+    questLog: {
+      id: 'questLog',
+      title: 'Journal',
+      position: { x: middleColumnX, y: headerHeight + padding + availableHeight * 0.55 },
+      size: { width: middleColumnWidth, height: availableHeight * 0.45 },
+      isMinimized: false,
+      isMaximized: false,
+      isVisible: true,
+      zIndex: 1008,
+      minSize: { width: 250, height: 180 },
     },
   };
 };

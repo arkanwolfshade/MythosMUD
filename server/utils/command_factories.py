@@ -210,6 +210,18 @@ class CommandFactory:
         """Create SkillsCommand from arguments (plan 10.7 V4)."""
         return self._player_state.create_skills_command(args)
 
+    def create_journal_command(self, args: list[str]) -> BaseCommand:
+        """Create JournalCommand from arguments (quest log view)."""
+        return self._player_state.create_journal_command(args)
+
+    def create_quests_command(self, args: list[str]) -> BaseCommand:
+        """Create QuestsCommand from arguments (alias of journal)."""
+        return self._player_state.create_quests_command(args)
+
+    def create_quest_command(self, args: list[str]) -> BaseCommand:
+        """Create QuestCommand from arguments (e.g. abandon <quest name>)."""
+        return self._player_state.create_quest_command(args)
+
     # Combat commands
     def create_attack_command(self, args: list[str]) -> BaseCommand:
         """Create AttackCommand from arguments."""

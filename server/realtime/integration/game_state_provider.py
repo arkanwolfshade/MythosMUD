@@ -7,6 +7,7 @@ players, including player data, room information, and occupant lists.
 AI Agent: Extracted from ConnectionManager to follow Single Responsibility Principle.
 Game state generation is now a focused, independently testable component.
 """
+# pylint: disable=too-many-lines  # Module consolidates game-state for connections; refactor when adding more
 
 import json
 import uuid
@@ -461,6 +462,27 @@ class GameStateProvider:
             logger.debug("Could not check login grace period for game state", player_id=player_id, error=str(e))
         return False, 0.0
 
+    async def _get_quest_log_for_client(self, player_id: uuid.UUID) -> list[dict[str, Any]]:
+        """
+        Get quest log entries for the player (same shape as GET /api/players/{id}/quests).
+
+        Returns empty list if QuestService is unavailable.
+        """
+        try:
+            app = self.get_app()
+            container = getattr(getattr(app, "state", None), "container", None) if app else None
+            quest_service = getattr(container, "quest_service", None) if container else None
+            if quest_service and hasattr(quest_service, "get_quest_log"):
+                result = await quest_service.get_quest_log(player_id, include_completed=True)
+                return cast(list[dict[str, Any]], result)
+        except (AttributeError, ImportError, TypeError, ValueError) as e:
+            logger.debug(
+                "Could not get quest log for game state",
+                player_id=player_id,
+                error=str(e),
+            )
+        return []
+
     async def send_initial_game_state(
         self, player_id: uuid.UUID, player: Player, room_id: str, online_players: dict[uuid.UUID, dict[str, Any]]
     ) -> None:
@@ -497,6 +519,8 @@ class GameStateProvider:
 
             # Who this player is following (for title panel)
             following_for_client = await self._get_following_for_client(player_id)
+            # Quest log (same shape as GET /api/players/{player_id}/quests); client can also refresh via that API
+            quest_log = await self._get_quest_log_for_client(player_id)
             game_state_data = {
                 "player": player_data_for_client,
                 "room": room_data,
@@ -504,6 +528,7 @@ class GameStateProvider:
                 "login_grace_period_active": login_grace_period_active,
                 "login_grace_period_remaining": login_grace_period_remaining,
                 "following": following_for_client,
+                "quest_log": quest_log,
             }
 
             # BUGFIX: Populate room_data with structured player/NPC arrays for new UI

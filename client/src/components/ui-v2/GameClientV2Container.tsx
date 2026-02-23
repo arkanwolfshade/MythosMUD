@@ -359,6 +359,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
               : [])
           }
           followingTarget={gameState.followingTarget ?? null}
+          questLog={gameState.questLog ?? []}
           onSendCommand={handleCommandSubmit}
           onSendChatMessage={handleChatMessage}
           onClearMessages={handleClearMessages}
