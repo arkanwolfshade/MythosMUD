@@ -19,7 +19,7 @@ This guide explains when to use each approach, how to run tests locally, and how
 ```bash
 # Run all automated E2E runtime tests
 
-make test-client-runtime
+make test-playwright
 
 # Or directly with npm
 

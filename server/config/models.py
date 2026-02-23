@@ -170,6 +170,10 @@ class NATSConfig(BaseSettings):
 
     # Connection pooling configuration
     connection_pool_size: int = Field(default=5, description="Number of connections in pool")
+    pool_wait_timeout: float = Field(
+        default=10.0,
+        description="Seconds to wait for an available pool connection when exhausted before raising",
+    )
     enable_connection_pooling: bool = Field(default=True, description="Enable connection pooling")
 
     # Message batching configuration

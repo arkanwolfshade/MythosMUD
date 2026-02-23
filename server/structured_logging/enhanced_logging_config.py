@@ -227,6 +227,9 @@ def setup_enhanced_logging(
     # Configure uvicorn to use our enhanced StructLog system
     _configure_enhanced_uvicorn_logging()
 
+    # Suppress third-party ERROR logs that would flood errors.log (e.g. NATS reconnect on shutdown)
+    _configure_third_party_log_levels()
+
     # Log the setup
     setup_logger = get_logger("server.structured_logging.enhanced")
     setup_logger.info(
@@ -266,6 +269,14 @@ def _configure_enhanced_uvicorn_logging() -> None:
     uvicorn_logger.setLevel(logging.DEBUG)
 
     config_logger.info("Enhanced uvicorn logging configured")
+
+
+def _configure_third_party_log_levels() -> None:
+    """Set third-party loggers to avoid ERROR noise in errors.log (e.g. NATS disconnect on shutdown)."""
+    # NATS aio client logs ERROR on reconnect/disconnect; expected when NATS stops or network drops
+    for logger_name in ("nats", "nats.aio", "nats.aio.client"):
+        third_party = logging.getLogger(logger_name)
+        third_party.setLevel(logging.CRITICAL)
 
 
 def get_enhanced_logger(name: str) -> Any:  # Returns BoundLogger but typed as Any for flexibility

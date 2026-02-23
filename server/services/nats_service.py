@@ -11,11 +11,11 @@ and Windows-native solution.
 import asyncio
 import json
 import ssl
+import time
 from collections.abc import Callable, Coroutine
 from pathlib import Path
 from typing import Any, cast
 
-import anyio
 import nats
 from anyio import sleep
 
@@ -291,7 +291,6 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
 
     async def _close_all_subscriptions(self) -> None:
         """Close and unsubscribe from all subscriptions."""
-        import time
 
         for subject, subscription in self.subscriptions.items():
             try:
@@ -308,7 +307,6 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
 
     def _verify_subscription_cleanup(self, subscriptions_before_cleanup: list[str]) -> None:
         """Verify all subscriptions were cleaned up and log warnings if any remain."""
-        import time
 
         self._last_cleanup_time = time.time()
         remaining_subscriptions = list(self.subscriptions.keys())
@@ -478,7 +476,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
 
                 if health_ok:
                     self._consecutive_health_failures = 0
-                    self._last_health_check = anyio.current_time()
+                    self._last_health_check = time.monotonic()
                     # Update health score in metrics
                     self.metrics.update_connection_health(100.0)
                 else:
@@ -550,10 +548,16 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             logger.error("Connection pool not initialized", subject=subject)
             raise NATSPublishError(error_msg, subject=subject)
 
+        # When pool is exhausted, wait for a connection to become available instead of failing immediately
+        pool_wait_timeout = self.config.pool_wait_timeout
         if self.available_connections.empty():
-            error_msg = "No available connections in pool"
-            logger.error("No available connections in pool", subject=subject, pool_size=self.pool_size)
-            raise NATSPublishError(error_msg, subject=subject)
+            try:
+                conn = await asyncio.wait_for(self.available_connections.get(), timeout=pool_wait_timeout)
+                await self.available_connections.put(conn)
+            except TimeoutError as err:
+                error_msg = "No available connections in pool"
+                logger.error("No available connections in pool", subject=subject, pool_size=self.pool_size)
+                raise NATSPublishError(error_msg, subject=subject) from err
 
         # Use connection pool
         await self.publish_with_pool(subject, data)
@@ -676,7 +680,6 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
 
             subscription = await self.nc.subscribe(subject, cb=message_handler)
             # Track subscription for metrics
-            import time
 
             self._subscription_count += 1
             self._subscription_timestamps.append((subject, time.time()))
@@ -816,12 +819,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
         # If health checks are enabled and we haven't had one recently, consider disconnected
         health_check_interval = getattr(self.config, "health_check_interval", 30)
         if health_check_interval > 0:
-            try:
-                current_time = anyio.current_time()
-            except RuntimeError:
-                # No event loop running, can't check time - assume connected if nc and _running are True
-                return True
-
+            current_time = time.monotonic()
             time_since_last_check = current_time - self._last_health_check
 
             # If it's been more than 2x the interval since last check, consider unhealthy
@@ -1006,11 +1004,8 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
 
         AI: For monitoring dashboards and health checks.
         """
-        try:
-            current_time = anyio.current_time()
-            time_since_last_check = current_time - self._last_health_check if self._last_health_check > 0 else None
-        except RuntimeError:
-            time_since_last_check = None
+        current_time = time.monotonic()
+        time_since_last_check = current_time - self._last_health_check if self._last_health_check > 0 else None
 
         return {
             "nats_connected": self._running,
@@ -1163,7 +1158,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
 
         AI: Raises exceptions instead of returning False for better error handling.
         """
-        start_time = anyio.current_time()
+        start_time = time.monotonic()
         success = False
         connection = None
 
@@ -1225,7 +1220,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             if connection:
                 await self._return_connection(connection)
             # Record metrics
-            processing_time = anyio.current_time() - start_time
+            processing_time = time.monotonic() - start_time
             self.metrics.record_publish(success, processing_time)
 
     async def _cleanup_connection_pool(self) -> None:
@@ -1351,7 +1346,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             batch_data = {
                 "messages": messages,
                 "count": len(messages),
-                "batch_timestamp": anyio.current_time(),
+                "batch_timestamp": time.monotonic(),
             }
 
             try:
@@ -1435,7 +1430,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             batch_data = {
                 "messages": messages,
                 "count": len(messages),
-                "batch_timestamp": anyio.current_time(),
+                "batch_timestamp": time.monotonic(),
             }
 
             try:

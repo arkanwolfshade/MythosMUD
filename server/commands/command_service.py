@@ -81,6 +81,7 @@ from .magic_commands import (
 from .npc_admin_commands import handle_npc_command
 from .party_commands import handle_party_command
 from .position_commands import handle_lie_command, handle_sit_command, handle_stand_command
+from .quest_commands import handle_journal_command, handle_quest_command
 from .read_command import handle_read_command
 from .rescue_commands import handle_ground_command
 from .rest_command import handle_rest_command
@@ -164,6 +165,9 @@ class CommandService:
             "status": handle_status_command,
             "time": handle_time_command,
             "skills": handle_skills_command,
+            "journal": handle_journal_command,
+            "quests": handle_journal_command,
+            "quest": handle_quest_command,
             "inventory": handle_inventory_command,
             # Magic commands
             "cast": handle_cast_command,

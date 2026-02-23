@@ -4,7 +4,7 @@
 
 import type { MythosTimeState } from '../../../types/mythosTime';
 import type { GameStateUpdates } from '../eventHandlers/types';
-import type { ChatMessage, Player, Room } from '../types';
+import type { ChatMessage, Player, QuestLogEntry, Room } from '../types';
 import { sanitizeChatMessageForState } from './messageUtils';
 import { mergeRoomState } from './roomMergeUtils';
 
@@ -40,6 +40,8 @@ export interface GameState {
   pendingPartyInvite?: { invite_id: string; inviter_name: string } | null;
   /** Who the player is following (for title panel). Server-authoritative. */
   followingTarget?: { target_name: string; target_type: 'player' | 'npc' } | null;
+  /** Quest log (from game_state.quest_log or GET /quests). Server-authoritative. */
+  questLog?: QuestLogEntry[];
 }
 
 // Helper: treat empty arrays as "no data" so we preserve existing
@@ -146,6 +148,9 @@ export const applyEventUpdates = (
   applyGracePeriodUpdate(eventUpdates, updates);
   if (eventUpdates.followingTarget !== undefined) {
     updates.followingTarget = eventUpdates.followingTarget;
+  }
+  if (eventUpdates.questLog !== undefined) {
+    updates.questLog = eventUpdates.questLog;
   }
 };
 

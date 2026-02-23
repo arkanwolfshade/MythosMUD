@@ -88,6 +88,7 @@ class NPCDiedEvent(BaseEvent):
     npc_id: str | UUID  # AI Agent: Accept both string IDs (from lifecycle) and UUIDs (from combat)
     npc_name: str
     xp_reward: int
+    killer_id: str | None = None  # Player UUID string who killed the NPC (for quest/XP attribution)
 
 
 @dataclass

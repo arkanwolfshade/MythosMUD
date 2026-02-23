@@ -57,6 +57,7 @@ from .players import (
     RollStatsResponse,
     ValidateStatsResponse,
 )
+from .quest import QuestLogEntryResponse, QuestLogResponse
 from .realtime import (
     ConnectionStatisticsResponse,
     NewGameSessionResponse,
@@ -121,4 +122,6 @@ __all__ = [
     "InviteCreate",
     "InviteRead",
     "InviteUpdate",
+    "QuestLogEntryResponse",
+    "QuestLogResponse",
 ]

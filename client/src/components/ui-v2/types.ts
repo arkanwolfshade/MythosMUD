@@ -57,6 +57,23 @@ export interface Room {
   }>;
 }
 
+/** Single quest log entry (same shape as GET /api/players/{id}/quests and game_state.quest_log). */
+export interface QuestLogEntry {
+  quest_id: string;
+  name: string;
+  title: string;
+  description: string;
+  goals_with_progress: Array<{
+    goal_type?: string;
+    target?: string;
+    current?: number;
+    required?: number;
+    done?: boolean;
+    [key: string]: unknown;
+  }>;
+  state: string;
+}
+
 export interface ChatMessage {
   text: string;
   timestamp: string;

@@ -19,10 +19,14 @@ if sys.platform == "win32":
         # Python < 3.7 doesn't have reconfigure, use buffer directly
         pass
 
-# Determine project root
-PROJECT_ROOT = os.getcwd()
-if "MythosMUD-" in PROJECT_ROOT:
-    PROJECT_ROOT = os.path.dirname(PROJECT_ROOT)
+# Determine project root. In GitHub Actions use GITHUB_WORKSPACE so coverage
+# reports (e.g. htmlcov/) are always written to the workspace for artifact upload.
+_PROJECT_ROOT = os.getenv("GITHUB_WORKSPACE") or os.getcwd()
+# Only strip MythosMUD-* parent dir when NOT in GitHub Actions; in CI,
+# GITHUB_WORKSPACE is already the correct root.
+if not os.getenv("GITHUB_ACTIONS") and "MythosMUD-" in _PROJECT_ROOT:
+    _PROJECT_ROOT = os.path.dirname(_PROJECT_ROOT)
+PROJECT_ROOT = _PROJECT_ROOT
 
 # Check if we're in CI environment
 CI = os.getenv("CI")
@@ -274,12 +278,18 @@ if IN_CI:
     # Node id for deselect is relative to pytest rootdir (server/), so no "server/" prefix.
     FLAKY_XDIST_MODULE_NODE_ID = "tests/unit/structured_logging/test_logging_file_setup.py"
     FLAKY_XDIST_MODULE_PATH = "server/tests/unit/structured_logging/test_logging_file_setup.py"
-    # Run 1: full suite excluding the logging file_setup module (coverage data to .coverage)
+    # Run 1: full suite excluding integration and the logging file_setup module (coverage to .coverage).
+    # Integration tests (-m integration) are excluded here by design (not for flakiness): they require
+    # a runtime DB and single-worker execution and run under 'make test-playwright' (Makefile).
+    # Repository/EventBus and other integration paths are verified in that flow. This keeps the CI
+    # backend job fast and stable without a dedicated integration DB; coverage here is unit-only.
     safe_run_static(
         python_exe,
         "-m",
         "pytest",
         "server/tests/",
+        "-m",
+        "not integration",
         "--deselect",
         FLAKY_XDIST_MODULE_NODE_ID,
         "--cov=server",
@@ -446,10 +456,11 @@ else:
         # Use .venv-ci from Docker volume (preserved from build, not overwritten by mount)
         # Ensure pytest-mock and pytest-xdist are installed in the venv before running tests
         # pytest-xdist is required for -n auto in pytest.ini
+        # -m 'not integration': integration tests run under make test-playwright (see Makefile).
         "cd /workspace && source .venv-ci/bin/activate && "
         "uv pip install pytest-mock>=3.14.0 pytest-xdist>=3.8.0 && "
-        "PYTHONUNBUFFERED=1 pytest server/tests/ --cov=server --cov-report=xml --cov-report=html "
-        "--cov-config=.coveragerc -v --tb=short && "
+        "PYTHONUNBUFFERED=1 pytest server/tests/ -m 'not integration' --cov=server --cov-report=xml "
+        "--cov-report=html --cov-config=.coveragerc -v --tb=short && "
         "python scripts/check_coverage_thresholds.py"
     )
 

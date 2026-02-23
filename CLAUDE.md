@@ -134,6 +134,12 @@ other location
 - If you see database files in wrong locations, immediately delete and inform the user
 - These rules are ABSOLUTE and apply to ALL database operations (player databases AND NPC databases)
 
+### PostgreSQL database names (which may be reset)
+
+- **mythos_unit** and **mythos_e2e**: May be reset at will; tests may truncate.
+- **mythos_dev**: **PROTECTED.** Do NOT delete or truncate anything in mythos_dev unless the user gives a direct,
+  explicit instruction. Tests and automation must never use mythos_dev for cleanup.
+
 ### Database Type Rules
 
 **player_id is a UUID datatype. It is not a string datatype.**
@@ -226,7 +232,7 @@ When dealing with technical jargon and programming design, do not use "master"; 
 
 ### CRITICAL: Enhanced Logging System
 
-**ALWAYS use**: `from server.logging.enhanced_logging_config import get_logger`
+**ALWAYS use**: `from server.structured_logging.enhanced_logging_config import get_logger`
 
 **NEVER use**: `import logging` or `logging.getLogger()` - these will cause failures
 
@@ -246,7 +252,7 @@ Use structured logging with key-value pairs: `logger.info("message", key=value)`
 ```python
 # ✅ CORRECT - Enhanced logging import
 
-from server.logging.enhanced_logging_config import get_logger
+from server.structured_logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 
 # ✅ CORRECT - Structured logging with key-value pairs
