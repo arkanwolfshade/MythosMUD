@@ -239,7 +239,7 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
             quest_instance_repository=self.quest_instance_repository,
             level_service=self.level_service,
             spell_learning_service=None,  # Wired in container main after Magic bundle
-            inventory_service=None,
+            inventory_service=self.container_service,
             event_bus=getattr(container, "event_bus", None),
         )
 

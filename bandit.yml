@@ -3,24 +3,48 @@
 # Test files contain test data, mock values, and intentional patterns that trigger
 # security warnings but are not actual security issues
 
-# Configure assert_used plugin to skip B101 checks only for test files
-# Assert statements are standard and expected in test files (pytest uses them extensively)
-# but should still be flagged in production code for security reasons
+# Configure assert_used plugin to skip B101 checks only for test files.
+# Assert statements are standard in pytest. Bandit matches skips with fnmatch against full path;
+# * does not match /, so we need one pattern per depth for nested dirs (e.g. server/tests/unit/...).
 assert_used:
   skips:
-    - '*/test_*.py'     # Matches test_*.py files at any directory depth (e.g., server/tests/unit/services/test_models.py)
-    - '*_test.py'       # Matches *_test.py files (alternative naming convention)
-    - '*/tests/*.py'    # Matches all Python files directly in tests directories (e.g., server/tests/conftest.py)
+    - "*_test.py"
+    - "*/test_*.py"
+    - "*/*/test_*.py"
+    - "*/*/*/test_*.py"
+    - "*/*/*/*/test_*.py"
+    - "*/*/*/*/*/test_*.py"
+    - "*/*/*/*/*/*/test_*.py"
+    - "*/tests/*.py"
+    - "*/*/tests/*.py"
+    - "*/*/*/tests/*.py"
+    - "*/*/*/*/tests/*.py"
+    - "*/*/*/*/*/tests/*.py"
+    - "*/conftest.py"
+    - "*/*/conftest.py"
+    - "*/*/*/conftest.py"
+    - "*/*/*/*/conftest.py"
 
-# Configure hardcoded_password_string plugin to skip B105/B106 checks in test files
-# Test files contain hardcoded test passwords, tokens, and secrets for testing purposes
-# These are not security issues as they are only used in test environments
-# Using the plugin name that bandit uses internally for B105/B106 checks
+# Configure hardcoded_password_string plugin to skip B105/B106 checks in test files.
+# Same multi-level path patterns as assert_used (fnmatch * does not match /).
 hardcoded_password_string:
   skips:
-    - '*/test_*.py'
-    - '*_test.py'
-    - '*/tests/*.py'
+    - "*_test.py"
+    - "*/test_*.py"
+    - "*/*/test_*.py"
+    - "*/*/*/test_*.py"
+    - "*/*/*/*/test_*.py"
+    - "*/*/*/*/*/test_*.py"
+    - "*/*/*/*/*/*/test_*.py"
+    - "*/tests/*.py"
+    - "*/*/tests/*.py"
+    - "*/*/*/tests/*.py"
+    - "*/*/*/*/tests/*.py"
+    - "*/*/*/*/*/tests/*.py"
+    - "*/conftest.py"
+    - "*/*/conftest.py"
+    - "*/*/*/conftest.py"
+    - "*/*/*/*/conftest.py"
 
 # Note: B101, B105, and B106 will remain enabled for production code files to catch
 # inappropriate use of assert statements and hardcoded credentials in production code.

@@ -1,3 +1,4 @@
+---
 # Codacy configuration file
 # Suppresses specific rules for package.json dependency version warnings
 # These warnings are informational - package-lock.json locks exact versions
@@ -14,13 +15,31 @@ exclude_paths:
   - "data/**"
   - ".cursor/**"
 
+# Bandit: exclude test paths so B101 (assert) and B106 (hardcoded pwd) are not reported in tests.
+# Codacy uses engines.<tool>.exclude_paths; ignore_patterns are not applied to tool analysis.
+# See PR #408 discussion r2838345213.
+engines:
+  bandit:
+    exclude_paths:
+      - "**/tests/**/*.py"
+      - "**/test_*.py"
+      - "**/*_test.py"
+      - "**/conftest.py"
+
 # Ignore assert and hardcoded secrets in test files (Bandit/Prospector B101/B106)
 # Assert and test passwords are standard in pytest; bandit.yml skips them but Codacy
 # may still report - these patterns suppress for all pytest-related paths.
 ignore_patterns:
   # Bandit B101: Use of assert detected (acceptable in pytest - assert is the test API)
   # NOTE: Also configured in bandit.yml - see bandit.yml for native Bandit runs.
+  # Multiple pattern_id variants for Codacy/Prospector (Bandit_B101, bandit.B101, etc.)
   - pattern_id: "Bandit_B101"
+    file_paths:
+      - "**/test_*.py"
+      - "**/tests/**/*.py"
+      - "**/*_test.py"
+      - "**/conftest.py"
+  - pattern_id: "bandit.B101"
     file_paths:
       - "**/test_*.py"
       - "**/tests/**/*.py"
@@ -40,6 +59,11 @@ ignore_patterns:
       - "**/tests/**/*.py"
       - "**/*_test.py"
       - "**/conftest.py"
+  # Bandit B608: SQL injection false positive in integration fixtures (db_name used only in ValueError
+  # messages for protected-DB checks, not in any SQL; see PR #408 discussion r2838388474)
+  - pattern_id: "Bandit_B608"
+    file_paths:
+      - "server/tests/fixtures/integration/__init__.py"
   # Bandit B105: Hardcoded password (acceptable for development defaults with environment variable fallback)
   - pattern_id: "Bandit_B105"
     file_paths:

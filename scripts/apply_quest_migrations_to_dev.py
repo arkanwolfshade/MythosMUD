@@ -18,25 +18,8 @@ load_dotenv()
 TUTORIAL_ROOM_ID = "earth_arkhamcity_sanitarium_room_tutorial_bedroom_001"
 
 
-def main() -> None:
-    """Connect to DB from DATABASE_URL, run quest DDL and seed (leave_the_tutorial), then exit."""
-    url = os.getenv(
-        "DATABASE_URL",
-        "postgresql://postgres:Cthulhu1@localhost:5432/mythos_dev",
-    ).replace("postgresql+asyncpg://", "postgresql://")
-    parsed = urlparse(url)
-    dbname = (parsed.path or "/mythos_dev").lstrip("/") or "mythos_dev"
-
-    conn = psycopg2.connect(
-        host=parsed.hostname or "localhost",
-        port=parsed.port or 5432,
-        user=parsed.username or "postgres",
-        password=parsed.password,
-        database=dbname,
-    )
-    cur = conn.cursor()
-
-    # DDL: quest_definitions, quest_instances, quest_offers
+def _run_quest_ddl(cur: psycopg2.extensions.cursor) -> None:
+    """Create quest_definitions, quest_instances, quest_offers tables and indexes."""
     cur.execute("""
         CREATE TABLE IF NOT EXISTS quest_definitions (
             id TEXT NOT NULL PRIMARY KEY,
@@ -52,7 +35,6 @@ def main() -> None:
             "triggers, requires_all/requires_any, auto_complete, turn_in_entities.",
         ),
     )
-
     cur.execute("""
         CREATE TABLE IF NOT EXISTS quest_instances (
             id UUID NOT NULL PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -72,7 +54,6 @@ def main() -> None:
     cur.execute("CREATE INDEX IF NOT EXISTS idx_quest_instances_player_id ON quest_instances (player_id)")
     cur.execute("CREATE INDEX IF NOT EXISTS idx_quest_instances_quest_id ON quest_instances (quest_id)")
     cur.execute("CREATE INDEX IF NOT EXISTS idx_quest_instances_state ON quest_instances (state)")
-
     cur.execute("""
         CREATE TABLE IF NOT EXISTS quest_offers (
             quest_id TEXT NOT NULL REFERENCES quest_definitions (id) ON DELETE CASCADE,
@@ -89,7 +70,9 @@ def main() -> None:
         "CREATE INDEX IF NOT EXISTS idx_quest_offers_entity ON quest_offers (offer_entity_type, offer_entity_id)"
     )
 
-    # Seed: leave_the_tutorial
+
+def _seed_leave_the_tutorial(cur: psycopg2.extensions.cursor) -> None:
+    """Insert leave_the_tutorial quest definition and room offer (idempotent)."""
     exit_target = f"exit_{TUTORIAL_ROOM_ID}"
     definition_json = (
         '{"name": "leave_the_tutorial", "title": "Leave the tutorial", '
@@ -116,6 +99,25 @@ def main() -> None:
         (TUTORIAL_ROOM_ID,),
     )
 
+
+def main() -> None:
+    """Connect to DB from DATABASE_URL, run quest DDL and seed (leave_the_tutorial), then exit."""
+    url = os.getenv(
+        "DATABASE_URL",
+        "postgresql://postgres:Cthulhu1@localhost:5432/mythos_dev",
+    ).replace("postgresql+asyncpg://", "postgresql://")
+    parsed = urlparse(url)
+    dbname = (parsed.path or "/mythos_dev").lstrip("/") or "mythos_dev"
+    conn = psycopg2.connect(
+        host=parsed.hostname or "localhost",
+        port=parsed.port or 5432,
+        user=parsed.username or "postgres",
+        password=parsed.password,
+        database=dbname,
+    )
+    cur = conn.cursor()
+    _run_quest_ddl(cur)
+    _seed_leave_the_tutorial(cur)
     conn.commit()
     cur.close()
     conn.close()

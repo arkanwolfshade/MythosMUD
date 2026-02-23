@@ -92,6 +92,14 @@ async def _resolve_quest_command_context(
     return player_id, quest_service, None
 
 
+def _format_goal_line(goal: dict[str, Any]) -> str:
+    """Return a single goal progress line for the quest log."""
+    target = goal.get("target") or "?"
+    if goal.get("done", False):
+        return f"      - {target}: done"
+    return f"      - {target}: {goal.get('current', 0)}/{goal.get('required', 1)}"
+
+
 def _format_one_quest_entry(e: dict[str, Any]) -> list[str]:
     """Return lines for a single quest log entry."""
     state = e.get("state", "?")
@@ -101,11 +109,7 @@ def _format_one_quest_entry(e: dict[str, Any]) -> list[str]:
     if desc:
         lines.append(f"      {desc}")
     for g in e.get("goals_with_progress") or []:
-        current = g.get("current", 0)
-        required = g.get("required", 1)
-        done = g.get("done", False)
-        target = g.get("target") or "?"
-        lines.append(f"      - {target}: done" if done else f"      - {target}: {current}/{required}")
+        lines.append(_format_goal_line(g))
     return lines
 
 
@@ -176,10 +180,10 @@ async def handle_quest_command(
     player_id, quest_service, ctx_error = await _resolve_quest_command_context(request, current_user)
     if ctx_error:
         return {"result": ctx_error}
-    # Type narrow: when ctx_error is None, resolver returns (player_id, quest_service, None)
-    assert quest_service is not None
-    assert player_id is not None
-    assert quest_name is not None
+    # Explicit checks: when ctx_error is None the resolver should return non-None ids/service;
+    # avoid assert so validation is not stripped under python -O (Codacy B101).
+    if not quest_service or not player_id or quest_name is None:
+        return {"result": "Quest system error. Please try again."}
     try:
         result = await quest_service.abandon(player_id, quest_name)
         if result.get("success"):

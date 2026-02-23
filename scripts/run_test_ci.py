@@ -275,7 +275,10 @@ if IN_CI:
     FLAKY_XDIST_MODULE_NODE_ID = "tests/unit/structured_logging/test_logging_file_setup.py"
     FLAKY_XDIST_MODULE_PATH = "server/tests/unit/structured_logging/test_logging_file_setup.py"
     # Run 1: full suite excluding integration and the logging file_setup module (coverage to .coverage).
-    # Integration tests run under test-playwright (runtime DB, single worker); exclude here to match make test-server.
+    # Integration tests (-m integration) are excluded here by design: they require a runtime DB and
+    # single-worker execution; they run under 'make test-playwright' (see Makefile). This keeps the
+    # CI backend job fast and stable without a dedicated integration DB. Coverage reported here
+    # is unit + non-integration only; integration paths are verified in the test-playwright flow.
     safe_run_static(
         python_exe,
         "-m",
