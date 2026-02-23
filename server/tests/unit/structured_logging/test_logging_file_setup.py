@@ -8,6 +8,7 @@ receiving records (H5).
 """
 
 import logging
+import time
 from pathlib import Path
 
 import pytest
@@ -95,6 +96,8 @@ def test_warning_and_error_reach_aggregator_files(temp_log_base, default_log_con
     root = logging.getLogger()
     before = _root_handlers_snapshot()
     try:
+        # Ensure a fresh listener for this test's temp path (module-level listener is reused)
+        stop_queue_listener()
         setup_enhanced_file_logging(
             environment="test",
             log_config=default_log_config,
@@ -109,6 +112,8 @@ def test_warning_and_error_reach_aggregator_files(temp_log_base, default_log_con
         root.error("aggregator_test_error_placeholder")
 
         stop_queue_listener()
+        # Allow listener thread to finish writing and OS to flush file buffers
+        time.sleep(0.15)
 
         warnings_log = temp_log_base / "test" / "warnings.log"
         errors_log = temp_log_base / "test" / "errors.log"

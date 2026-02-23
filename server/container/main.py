@@ -92,6 +92,9 @@ class ApplicationContainer:
         self.spell_effects: Any = None
         self.spell_learning_service: Any = None
         self.mp_regeneration_service: Any = None
+        self.quest_definition_repository: Any = None
+        self.quest_instance_repository: Any = None
+        self.quest_service: Any = None
 
         self.npc_lifecycle_manager: Any = None
         self.npc_spawning_service: Any = None
@@ -201,6 +204,9 @@ class ApplicationContainer:
                 if self.combat_service and self.magic_service:
                     self.combat_service.magic_service = self.magic_service
                     logger.info("MagicService linked to CombatService")
+                if self.quest_service and self.spell_learning_service:
+                    self.quest_service.set_spell_learning_service(self.spell_learning_service)
+                    logger.info("SpellLearningService linked to QuestService")
 
                 chat = ChatBundle()
                 await chat.initialize(self)

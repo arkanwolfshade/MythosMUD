@@ -74,6 +74,8 @@ def test_extract_npc_metadata_defaults() -> None:
 
     # Use a simple object without attributes instead of MagicMock
     class SimpleNPC:
+        """Minimal NPC-like object with no attributes for testing defaults."""
+
         pass
 
     npc = SimpleNPC()
@@ -220,3 +222,10 @@ def test_get_zone_key_from_room_id_many_parts() -> None:
     room_id = "earth_arkhamcity_downtown_intersection_derby_garrison_001"
     result = get_zone_key_from_room_id(room_id)
     assert result == "arkhamcity/downtown"
+
+
+def test_get_zone_key_from_room_id_instanced() -> None:
+    """Instanced room IDs (instance_<uuid>_<stable_id>) use stable id for zone key."""
+    room_id = "instance_e4857769-81a3-40dd-bf65-b1811a1904ee_earth_arkhamcity_sanitarium_room_tutorial_bedroom_001"
+    result = get_zone_key_from_room_id(room_id)
+    assert result == "arkhamcity/sanitarium"

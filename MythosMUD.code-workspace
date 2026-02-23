@@ -142,7 +142,7 @@
       "*.yaml": "yaml",
       "*.yml": "yaml",
     },
-    "powershell.cwd": "🐍 Server (Python/Backend)",
+    "powershell.cwd": "📁 Main (Integration)",
     "window.title": "${dirty}${activeEditorShort}${separator}${rootName}${separator}${appName}",
     "window.titleBarStyle": "custom",
     "statusBar.items": {
@@ -158,9 +158,6 @@
         "alignment": "left",
         "priority": 80,
       },
-    },
-    "[sql]": {
-      "editor.defaultFormatter": "mtxr.sqltools",
     },
     "[powershell]": {
       "editor.defaultFormatter": "ms-vscode.powershell",

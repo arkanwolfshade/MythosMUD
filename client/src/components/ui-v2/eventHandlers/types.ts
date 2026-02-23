@@ -4,7 +4,7 @@
 import type { HealthStatus } from '../../../types/health';
 import type { LucidityStatus, RescueState } from '../../../types/lucidity';
 import type { MythosTimeState } from '../../../types/mythosTime';
-import type { ChatMessage, Player, Room } from '../types';
+import type { ChatMessage, Player, QuestLogEntry, Room } from '../types';
 
 export interface GameEvent {
   event_type: string;
@@ -28,6 +28,8 @@ export interface GameStateUpdates {
   loginGracePeriodRemaining?: number;
   /** Who the player is following (for title panel). */
   followingTarget?: { target_name: string; target_type: 'player' | 'npc' } | null;
+  /** Quest log (from game_state.quest_log). */
+  questLog?: QuestLogEntry[];
 }
 
 export interface EventHandlerContext {

@@ -27,6 +27,7 @@ from .game.level_service import LevelService
 from .game.magic.mp_regeneration_service import MPRegenerationService
 from .game.player_service import PlayerService
 from .game.profession_service import ProfessionService
+from .game.quest import QuestService
 from .game.room_service import RoomService
 from .game.skill_service import SkillService
 from .game.stats_generator import StatsGenerator
@@ -336,6 +337,18 @@ def get_skill_service(request: Request) -> SkillService:
 
 
 SkillServiceDep = Depends(get_skill_service)  # pylint: disable=invalid-name  # Reason: FastAPI dependency name follows FastAPI conventions
+
+
+def get_quest_service(request: Request) -> QuestService:
+    """Get QuestService from container (quest log, start, progress, abandon)."""
+    logger.debug("Retrieving QuestService from container")
+    container = get_container(request)
+    if container.quest_service is None:
+        raise RuntimeError("QuestService not initialized in container")
+    return cast(QuestService, container.quest_service)
+
+
+QuestServiceDep = Depends(get_quest_service)  # pylint: disable=invalid-name  # Reason: FastAPI dependency name follows FastAPI conventions
 
 
 # Combat service dependency injection functions

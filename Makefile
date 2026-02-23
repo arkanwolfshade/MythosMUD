@@ -71,7 +71,7 @@ help:
 	@echo "  test-coverage         - Run all tests with coverage"
 	@echo "  test-client           - Run client unit tests only (no coverage)"
 	@echo "  test-client-e2e       - Run client E2E tests (Playwright)"
-	@echo "  test-playwright   - Run client E2E runtime tests (Playwright CLI)"
+	@echo "  test-playwright   - Run client E2E + server integration tests (requires running server; mucks with runtime data)"
 	@echo "  test-client-coverage  - Run client unit tests with coverage"
 	@echo "  test-server           - Run server tests only (no coverage)"
 	@echo "  test-server-coverage  - Run server tests with coverage"
@@ -84,8 +84,8 @@ help:
 	@echo "  run               - Start the development server (Uvicorn)"
 	@echo "  run-production    - Start the server for production (Gunicorn + Uvicorn workers)"
 	@echo ""
-	@echo "Note: For tiered server testing (unit/integration/e2e), use pytest markers directly:"
-	@echo "  uv run pytest -m unit server/tests"
+	@echo "Note: Server integration tests run under test-playwright (with running server). Unit only: make test-server."
+	@echo "  uv run pytest -m unit server/tests   # unit only"
 	@echo "  See TESTING.md for details."
 
 # ============================================================================
@@ -206,9 +206,13 @@ test-client-e2e:
 	@echo "Running client E2E tests (Playwright)..."
 	cd $(PROJECT_ROOT)/client && npm run test
 
-test-playwright:
+# Integration tests (server pytest -m integration) run here: they muck with runtime data
+# and belong in the same flow as Playwright (running server context). They are NOT run by make test-server.
+test-playwright: setup-test-env
 	@echo "Running client E2E runtime tests (Playwright CLI)..."
 	cd $(PROJECT_ROOT)/client && npm run test:e2e:runtime
+	@echo "Running server integration tests (runtime DB, single worker)..."
+	$(UV) pytest server/tests/ -m integration -n 1 $(PYTEST_OPTS)
 
 test-client-coverage:
 	@echo "Running client unit tests with coverage..."
@@ -216,11 +220,11 @@ test-client-coverage:
 
 test-server: setup-test-env
 	@echo "Running server tests (no coverage)..."
-	$(UV) pytest server/tests/ $(PYTEST_OPTS)
+	$(UV) pytest server/tests/ -m "not integration" $(PYTEST_OPTS)
 
 test-server-coverage: setup-test-env
 	@echo "Running server tests with coverage..."
-	$(UV) pytest server/tests/ $(PYTEST_OPTS) $(PYTEST_COV_OPTS)
+	$(UV) pytest server/tests/ -m "not integration" $(PYTEST_OPTS) $(PYTEST_COV_OPTS)
 
 test: test-client test-server
 

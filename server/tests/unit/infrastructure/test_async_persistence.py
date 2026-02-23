@@ -91,6 +91,8 @@ async def test_close(async_persistence_layer):
 @pytest.mark.asyncio
 async def test_get_player_by_name_delegates(async_persistence_layer):
     """Test get_player_by_name delegates to PlayerRepository."""
+    # Mock _ensure_room_cache_loaded to avoid database/session operations (same as test_get_player_by_name_not_found)
+    async_persistence_layer._ensure_room_cache_loaded = AsyncMock()
     mock_player = MagicMock(spec=Player)
     async_persistence_layer._player_repo.get_player_by_name = AsyncMock(return_value=mock_player)
 

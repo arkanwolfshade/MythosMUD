@@ -616,6 +616,12 @@ def setup_enhanced_file_logging(  # pylint: disable=too-many-locals  # Reason: F
             "server.commands.party_commands",
             "server.realtime.channel_broadcasting_strategies",
         ],
+        "quests": [
+            "server.game.quest",
+            "server.persistence.repositories.quest_definition_repository",
+            "server.persistence.repositories.quest_instance_repository",
+            "server.commands.quest_commands",
+        ],
         "access": ["access", "uvicorn.access"],
         "security": [
             "security",

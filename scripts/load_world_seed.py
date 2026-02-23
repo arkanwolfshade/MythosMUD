@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
-"""Load world seed data (rooms, zones, zone configs, holidays, schedules, emotes) into PostgreSQL database."""
+"""Load world seed data (rooms, zones, zone configs, holidays, schedules, emotes) into PostgreSQL database.
+
+WARNING: This script applies db/authoritative_schema.sql FIRST, which DROPS ALL TABLES
+(rooms, zones, players, users, etc.) and recreates an empty schema, then loads only
+world/emotes data. Running it against a database that has data you care about will
+DESTROY that data. Use a separate DB for seeding, or run only the seed file:
+  psql -d your_db -f data/db/00_world_and_emotes.sql
+"""
 
 import os
 import sys
@@ -17,6 +24,21 @@ def _validate_environment_and_files() -> tuple[str, Path, Path]:
     database_url = os.getenv("DATABASE_URL", "")
     if not database_url:
         print("ERROR: DATABASE_URL not set")
+        sys.exit(1)
+
+    # Require explicit confirmation: this script DROPS ALL TABLES
+    if os.getenv("CONFIRM_LOAD_WORLD_SEED") != "1":
+        db_name = database_url.split("/")[-1].split("?")[0]
+        print("=" * 60)
+        print("DESTRUCTIVE: This script applies authoritative_schema.sql which")
+        print("DROPS ALL TABLES (rooms, zones, players, users, etc.) then loads")
+        print("world seed. All existing data in the database will be LOST.")
+        print("")
+        print(f"Database: {db_name}")
+        print("")
+        print("To run anyway, set: CONFIRM_LOAD_WORLD_SEED=1")
+        print("  e.g. CONFIRM_LOAD_WORLD_SEED=1 python scripts/load_world_seed.py")
+        print("=" * 60)
         sys.exit(1)
 
     schema_file = Path("db/authoritative_schema.sql")

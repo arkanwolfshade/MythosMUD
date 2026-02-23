@@ -8,7 +8,7 @@ import { logger } from '../../../utils/logger';
 import { determineMessageType } from '../../../utils/messageTypeUtils';
 import { buildMythosTimeState, formatMythosTime12Hour } from '../../../utils/mythosTime';
 import type { GameEvent } from '../eventHandlers/types';
-import type { ChatMessage, Player, Room } from '../types';
+import type { ChatMessage, Player, QuestLogEntry, Room } from '../types';
 import { sanitizeChatMessageForState } from '../utils/messageUtils';
 import { mergeRoomState } from '../utils/roomMergeUtils';
 import type { GameState } from '../utils/stateUpdateUtils';
@@ -78,6 +78,7 @@ export function getInitialGameState(): GameState {
 /** Known event types that affect state (allowlist for projector) */
 const PROJECTED_EVENT_TYPES = new Set([
   'game_state',
+  'quest_log_updated',
   'effects_update',
   'room_update',
   'room_state',
@@ -136,6 +137,7 @@ export function projectEvent(prevState: GameState, event: GameEvent): GameState 
         | { target_name: string; target_type: 'player' | 'npc' }
         | null
         | undefined;
+      const questLog = event.data.quest_log as unknown[] | undefined;
       const player =
         playerData &&
         typeof playerData === 'object' &&
@@ -152,6 +154,15 @@ export function projectEvent(prevState: GameState, event: GameEvent): GameState 
         ...(loginGracePeriodActive !== undefined && { loginGracePeriodActive }),
         ...(loginGracePeriodRemaining !== undefined && { loginGracePeriodRemaining }),
         ...(following !== undefined && { followingTarget: following ?? null }),
+        ...(Array.isArray(questLog) && { questLog: questLog as QuestLogEntry[] }),
+      };
+      break;
+    }
+    case 'quest_log_updated': {
+      const questLog = event.data.quest_log as unknown[] | undefined;
+      nextState = {
+        ...prevState,
+        ...(Array.isArray(questLog) && { questLog: questLog as QuestLogEntry[] }),
       };
       break;
     }

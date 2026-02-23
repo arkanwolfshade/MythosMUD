@@ -5,7 +5,7 @@ Tests the sit, stand, lie, and ground commands.
 """
 
 import uuid
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -107,8 +107,28 @@ async def test_handle_ground_command():
     mock_app.state = mock_state
     mock_request.app = mock_app
 
-    result = await handle_ground_command(
-        {"target": "OtherPlayer"}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer"
-    )
+    # handle_ground_command uses get_async_session() and session.get(PlayerLucidity, ...); patch to avoid DB/send
+    mock_lucidity = MagicMock()
+    mock_lucidity.current_tier = "catatonic"
+    mock_session = MagicMock()
+    mock_session.get = AsyncMock(return_value=mock_lucidity)
+    mock_session.commit = AsyncMock()
+    mock_session.rollback = AsyncMock()
+
+    async def mock_get_async_session():
+        yield mock_session
+
+    with (
+        patch("server.commands.rescue_commands.get_async_session", side_effect=mock_get_async_session),
+        patch("server.commands.rescue_commands.send_rescue_update_event", new_callable=AsyncMock),
+        patch(
+            "server.commands.rescue_commands._apply_grounding_adjustment",
+            new_callable=AsyncMock,
+            return_value=MagicMock(new_lcd=1),
+        ),
+    ):
+        result = await handle_ground_command(
+            {"target": "OtherPlayer"}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer"
+        )
 
     assert "result" in result

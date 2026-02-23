@@ -699,6 +699,8 @@ class CombatEventPublisher:
                 "xp_reward": event.xp_reward,
                 "timestamp": event.timestamp.isoformat(),
             }
+            if getattr(event, "killer_id", None):
+                event_data["killer_id"] = event.killer_id
 
             # Create properly formatted message matching EventMessageSchema
             message_data = self._create_event_message(

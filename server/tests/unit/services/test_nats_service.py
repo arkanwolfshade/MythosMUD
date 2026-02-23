@@ -351,9 +351,10 @@ async def test_publish_not_initialized(nats_service):
 
 @pytest.mark.asyncio
 async def test_publish_no_available_connections(nats_service):
-    """Test publish() raises error when no connections available."""
+    """Test publish() raises error when no connections available after waiting for pool_wait_timeout."""
     nats_service._pool_initialized = True
-    # available_connections is empty
+    nats_service.config.pool_wait_timeout = 0.01  # Short timeout so test does not block
+    # available_connections is empty; no other task will return a connection
     with pytest.raises(NATSPublishError, match="No available connections in pool"):
         await nats_service.publish("test.subject", {"key": "value"})
 

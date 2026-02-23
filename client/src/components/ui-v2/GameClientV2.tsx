@@ -13,8 +13,9 @@ import { CommandInputPanel } from './panels/CommandInputPanel';
 import { GameInfoPanel } from './panels/GameInfoPanel';
 import { LocationPanel } from './panels/LocationPanel';
 import { OccupantsPanel } from './panels/OccupantsPanel';
+import { QuestLogPanel } from './panels/QuestLogPanel';
 import { RoomDescriptionPanel } from './panels/RoomDescriptionPanel';
-import type { ChatMessage, MythosTimeState, Player, Room } from './types';
+import type { ChatMessage, MythosTimeState, Player, QuestLogEntry, Room } from './types';
 import { createDefaultPanelLayout } from './utils/panelLayout';
 import type { ActiveEffectDisplay } from './utils/stateUpdateUtils';
 
@@ -58,6 +59,8 @@ interface GameClientV2Props {
   onDownloadLogs: () => void;
   activeEffects?: ActiveEffectDisplay[];
   followingTarget?: { target_name: string; target_type: 'player' | 'npc' } | null;
+  /** Quest log (from game_state.quest_log). */
+  questLog?: QuestLogEntry[];
 }
 
 // Main game client component with three-column layout
@@ -84,6 +87,7 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
   onDownloadLogs,
   activeEffects = [],
   followingTarget = null,
+  questLog = [],
 }) => {
   const panelManager = usePanelManager();
 
@@ -170,6 +174,7 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
   const characterInfoPanel = panelManager.getPanel('characterInfo');
   const commandHistoryPanel = panelManager.getPanel('commandHistory');
   const commandInputPanel = panelManager.getPanel('commandInput');
+  const questLogPanel = panelManager.getPanel('questLog');
 
   // Render panels only if they exist in the panel manager
   return (
@@ -302,6 +307,28 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
             onFocus={panelManager.focusPanel}
           >
             <GameInfoPanel messages={messages} onClearMessages={onClearMessages} onDownloadLogs={onDownloadLogs} />
+          </PanelContainer>
+        )}
+
+        {questLogPanel && questLogPanel.isVisible && (
+          <PanelContainer
+            id={questLogPanel.id}
+            title={questLogPanel.title}
+            position={questLogPanel.position}
+            size={questLogPanel.size}
+            zIndex={questLogPanel.zIndex}
+            isMinimized={questLogPanel.isMinimized}
+            isMaximized={questLogPanel.isMaximized}
+            isVisible={questLogPanel.isVisible}
+            minSize={questLogPanel.minSize}
+            variant="default"
+            onPositionChange={panelManager.updatePosition}
+            onSizeChange={panelManager.updateSize}
+            onMinimize={panelManager.toggleMinimize}
+            onMaximize={panelManager.toggleMaximize}
+            onFocus={panelManager.focusPanel}
+          >
+            <QuestLogPanel questLog={questLog} />
           </PanelContainer>
         )}
 

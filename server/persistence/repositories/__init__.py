@@ -8,6 +8,8 @@ from .player_effect_repository import PlayerEffectRepository
 from .player_repository import PlayerRepository
 from .player_skill_repository import PlayerSkillRepository
 from .profession_repository import ProfessionRepository
+from .quest_definition_repository import QuestDefinitionRepository
+from .quest_instance_repository import QuestInstanceRepository
 from .room_repository import RoomRepository
 from .skill_repository import SkillRepository
 from .skill_use_log_repository import SkillUseLogRepository
@@ -22,6 +24,8 @@ __all__ = [
     "ItemRepository",
     "PlayerSkillRepository",
     "ProfessionRepository",
+    "QuestDefinitionRepository",
+    "QuestInstanceRepository",
     "SkillRepository",
     "SkillUseLogRepository",
 ]

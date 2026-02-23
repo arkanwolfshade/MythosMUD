@@ -8,7 +8,6 @@ combat, death processing, and periodic maintenance tasks.
 
 import asyncio
 import datetime
-import json
 import uuid
 from typing import TYPE_CHECKING, Any, cast
 
@@ -380,20 +379,6 @@ async def _process_mortally_wounded_player(
     await session.refresh(player)
     stats = player.get_stats()
     new_dp = stats.get("current_dp", 0)
-    # #region agent log
-    try:
-        _debug_payload = {
-            "location": "game_tick_processing._process_mortally_wounded_player.after_decay",
-            "message": "mortally wounded tick result",
-            "data": {"player_id": str(player.player_id), "new_dp": new_dp},
-            "hypothesisId": "H3",
-            "timestamp": datetime.datetime.now(datetime.UTC).isoformat(),
-        }
-        with open("e:\\projects\\GitHub\\MythosMUD\\.cursor\\debug.log", "a", encoding="utf-8") as _f:
-            _f.write(json.dumps(_debug_payload) + "\n")
-    except Exception:  # pylint: disable=broad-except  # Reason: Debug instrumentation must not affect runtime
-        pass
-    # #endregion
 
     if container.combat_service:
         await combat_messaging_integration.send_dp_decay_message(str(player.player_id), new_dp)
@@ -544,21 +529,6 @@ async def _process_dead_players(container: "ApplicationContainer", session: Asyn
     logger.debug("Found dead players", count=len(dead_players), player_ids=[p.player_id for p in dead_players])
 
     for player in dead_players:
-        _p_dp = player.get_stats().get("current_dp", 0)
-        # #region agent log
-        try:
-            _debug_payload = {
-                "location": "game_tick_processing._process_dead_players.loop",
-                "message": "dead player to process",
-                "data": {"player_id": str(player.player_id), "current_dp": _p_dp},
-                "hypothesisId": "H2",
-                "timestamp": datetime.datetime.now(datetime.UTC).isoformat(),
-            }
-            with open("e:\\projects\\GitHub\\MythosMUD\\.cursor\\debug.log", "a", encoding="utf-8") as _f:
-                _f.write(json.dumps(_debug_payload) + "\n")
-        except Exception:  # pylint: disable=broad-except  # Reason: Debug instrumentation must not affect runtime
-            pass
-        # #endregion
         if str(player.current_room_id) != LIMBO_ROOM_ID:
             logger.info(
                 "Moving dead player to limbo",

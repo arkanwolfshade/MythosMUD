@@ -1419,6 +1419,65 @@
         }
       }
     },
+    "/v1/api/players/{player_id}/quests": {
+      "get": {
+        "tags": [
+          "players"
+        ],
+        "summary": "Get Player Quests",
+        "description": "Get quest log for a character. Requires ownership (403 if not owner).",
+        "operationId": "get_player_quests_v1_api_players__player_id__quests_get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "player_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Player Id"
+            }
+          },
+          {
+            "name": "include_completed",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": true,
+              "title": "Include Completed"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestLogResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/api/players/{player_id}": {
       "get": {
         "tags": [
@@ -1497,7 +1556,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/server__schemas__players__player__MessageResponse"
+                  "$ref": "#/components/schemas/MessageResponse"
                 }
               }
             }
@@ -1915,7 +1974,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MetricsResponse"
+                  "$ref": "#/components/schemas/server__api__monitoring_models__MetricsResponse"
                 }
               }
             }
@@ -1982,7 +2041,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MessageResponse"
+                  "$ref": "#/components/schemas/server__api__monitoring_models__MessageResponse"
                 }
               }
             }
@@ -2070,7 +2129,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MessageResponse"
+                  "$ref": "#/components/schemas/server__api__monitoring_models__MessageResponse"
                 }
               }
             }
@@ -2291,7 +2350,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/server__schemas__metrics__metrics__MetricsResponse"
+                  "$ref": "#/components/schemas/MetricsResponse"
                 }
               }
             }
@@ -7134,15 +7193,20 @@
         "properties": {
           "message": {
             "type": "string",
-            "title": "Message"
+            "title": "Message",
+            "description": "Success or status message"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
           "message"
         ],
         "title": "MessageResponse",
-        "description": "Generic response model for operations that return a simple message."
+        "description": "Generic response model for operations that return a simple message.",
+        "example": {
+          "message": "Operation completed successfully"
+        }
       },
       "MetricsData": {
         "properties": {
@@ -7231,132 +7295,30 @@
       },
       "MetricsResponse": {
         "properties": {
-          "total_movements": {
-            "type": "integer",
-            "title": "Total Movements"
-          },
-          "successful_movements": {
-            "type": "integer",
-            "title": "Successful Movements"
-          },
-          "failed_movements": {
-            "type": "integer",
-            "title": "Failed Movements"
-          },
-          "success_rate": {
-            "type": "number",
-            "title": "Success Rate"
-          },
-          "failure_rate": {
-            "type": "number",
-            "title": "Failure Rate"
-          },
-          "current_concurrent_movements": {
-            "type": "integer",
-            "title": "Current Concurrent Movements"
-          },
-          "max_concurrent_movements": {
-            "type": "integer",
-            "title": "Max Concurrent Movements"
-          },
-          "avg_movement_time_ms": {
-            "type": "number",
-            "title": "Avg Movement Time Ms"
-          },
-          "max_movement_time_ms": {
-            "type": "number",
-            "title": "Max Movement Time Ms"
-          },
-          "min_movement_time_ms": {
-            "type": "number",
-            "title": "Min Movement Time Ms"
-          },
-          "movements_per_second": {
-            "type": "number",
-            "title": "Movements Per Second"
-          },
-          "uptime_seconds": {
-            "type": "number",
-            "title": "Uptime Seconds"
-          },
-          "integrity_checks": {
-            "type": "integer",
-            "title": "Integrity Checks"
-          },
-          "integrity_violations": {
-            "type": "integer",
-            "title": "Integrity Violations"
-          },
-          "integrity_rate": {
-            "type": "number",
-            "title": "Integrity Rate"
-          },
-          "last_movement_time": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Last Movement Time"
-          },
-          "last_validation_time": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Last Validation Time"
-          },
-          "room_occupancy": {
-            "additionalProperties": {
-              "type": "integer"
-            },
-            "type": "object",
-            "title": "Room Occupancy"
-          },
-          "player_movement_counts": {
-            "additionalProperties": {
-              "type": "integer"
-            },
-            "type": "object",
-            "title": "Player Movement Counts"
-          },
-          "timestamp": {
-            "type": "string",
-            "title": "Timestamp"
+          "metrics": {
+            "$ref": "#/components/schemas/MetricsData",
+            "description": "Comprehensive system metrics including NATS, circuit breaker, and DLQ stats"
           }
         },
         "type": "object",
         "required": [
-          "total_movements",
-          "successful_movements",
-          "failed_movements",
-          "success_rate",
-          "failure_rate",
-          "current_concurrent_movements",
-          "max_concurrent_movements",
-          "avg_movement_time_ms",
-          "max_movement_time_ms",
-          "min_movement_time_ms",
-          "movements_per_second",
-          "uptime_seconds",
-          "integrity_checks",
-          "integrity_violations",
-          "integrity_rate",
-          "last_movement_time",
-          "last_validation_time",
-          "room_occupancy",
-          "player_movement_counts",
-          "timestamp"
+          "metrics"
         ],
         "title": "MetricsResponse",
-        "description": "Response model for movement metrics."
+        "description": "Response model for comprehensive system metrics.",
+        "example": {
+          "metrics": {
+            "circuit_breaker": {
+              "state": "closed"
+            },
+            "dead_letter_queue": {
+              "total_messages": 0
+            },
+            "nats_connection": {
+              "status": "connected"
+            }
+          }
+        }
       },
       "MetricsSummary": {
         "properties": {
@@ -9096,6 +9058,71 @@
             }
           ]
         }
+      },
+      "QuestLogEntryResponse": {
+        "properties": {
+          "quest_id": {
+            "type": "string",
+            "title": "Quest Id",
+            "description": "Internal quest ID"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "description": "Quest common name (player-facing)"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title",
+            "description": "Display title"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "description": "Quest description",
+            "default": ""
+          },
+          "goals_with_progress": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Goals With Progress",
+            "description": "Goals with current progress (e.g. { goal_type, target, current, required, done })"
+          },
+          "state": {
+            "type": "string",
+            "title": "State",
+            "description": "Instance state: active, completed, abandoned"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "quest_id",
+          "name",
+          "title",
+          "state"
+        ],
+        "title": "QuestLogEntryResponse",
+        "description": "Single quest entry in GET /quests (quest log) response."
+      },
+      "QuestLogResponse": {
+        "properties": {
+          "quests": {
+            "items": {
+              "$ref": "#/components/schemas/QuestLogEntryResponse"
+            },
+            "type": "array",
+            "title": "Quests",
+            "description": "Active and optionally completed quests"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "QuestLogResponse",
+        "description": "Response model for GET /quests (quest log)."
       },
       "RegisterPatternRequest": {
         "properties": {
@@ -10964,51 +10991,148 @@
         "title": "WeaponStats",
         "description": "Weapon statistics for items that can be used as weapons.\n\nThis model represents the combat properties of a weapon item, including\ndamage range, modifiers, damage types, and magical properties."
       },
-      "server__schemas__metrics__metrics__MetricsResponse": {
-        "properties": {
-          "metrics": {
-            "$ref": "#/components/schemas/MetricsData",
-            "description": "Comprehensive system metrics including NATS, circuit breaker, and DLQ stats"
-          }
-        },
-        "type": "object",
-        "required": [
-          "metrics"
-        ],
-        "title": "MetricsResponse",
-        "description": "Response model for comprehensive system metrics.",
-        "example": {
-          "metrics": {
-            "circuit_breaker": {
-              "state": "closed"
-            },
-            "dead_letter_queue": {
-              "total_messages": 0
-            },
-            "nats_connection": {
-              "status": "connected"
-            }
-          }
-        }
-      },
-      "server__schemas__players__player__MessageResponse": {
+      "server__api__monitoring_models__MessageResponse": {
         "properties": {
           "message": {
             "type": "string",
-            "title": "Message",
-            "description": "Success or status message"
+            "title": "Message"
           }
         },
-        "additionalProperties": false,
         "type": "object",
         "required": [
           "message"
         ],
         "title": "MessageResponse",
-        "description": "Generic response model for operations that return a simple message.",
-        "example": {
-          "message": "Operation completed successfully"
-        }
+        "description": "Generic response model for operations that return a simple message."
+      },
+      "server__api__monitoring_models__MetricsResponse": {
+        "properties": {
+          "total_movements": {
+            "type": "integer",
+            "title": "Total Movements"
+          },
+          "successful_movements": {
+            "type": "integer",
+            "title": "Successful Movements"
+          },
+          "failed_movements": {
+            "type": "integer",
+            "title": "Failed Movements"
+          },
+          "success_rate": {
+            "type": "number",
+            "title": "Success Rate"
+          },
+          "failure_rate": {
+            "type": "number",
+            "title": "Failure Rate"
+          },
+          "current_concurrent_movements": {
+            "type": "integer",
+            "title": "Current Concurrent Movements"
+          },
+          "max_concurrent_movements": {
+            "type": "integer",
+            "title": "Max Concurrent Movements"
+          },
+          "avg_movement_time_ms": {
+            "type": "number",
+            "title": "Avg Movement Time Ms"
+          },
+          "max_movement_time_ms": {
+            "type": "number",
+            "title": "Max Movement Time Ms"
+          },
+          "min_movement_time_ms": {
+            "type": "number",
+            "title": "Min Movement Time Ms"
+          },
+          "movements_per_second": {
+            "type": "number",
+            "title": "Movements Per Second"
+          },
+          "uptime_seconds": {
+            "type": "number",
+            "title": "Uptime Seconds"
+          },
+          "integrity_checks": {
+            "type": "integer",
+            "title": "Integrity Checks"
+          },
+          "integrity_violations": {
+            "type": "integer",
+            "title": "Integrity Violations"
+          },
+          "integrity_rate": {
+            "type": "number",
+            "title": "Integrity Rate"
+          },
+          "last_movement_time": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Movement Time"
+          },
+          "last_validation_time": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Validation Time"
+          },
+          "room_occupancy": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Room Occupancy"
+          },
+          "player_movement_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Player Movement Counts"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_movements",
+          "successful_movements",
+          "failed_movements",
+          "success_rate",
+          "failure_rate",
+          "current_concurrent_movements",
+          "max_concurrent_movements",
+          "avg_movement_time_ms",
+          "max_movement_time_ms",
+          "min_movement_time_ms",
+          "movements_per_second",
+          "uptime_seconds",
+          "integrity_checks",
+          "integrity_violations",
+          "integrity_rate",
+          "last_movement_time",
+          "last_validation_time",
+          "room_occupancy",
+          "player_movement_counts",
+          "timestamp"
+        ],
+        "title": "MetricsResponse",
+        "description": "Response model for movement metrics."
       }
     },
     "securitySchemes": {

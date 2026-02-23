@@ -460,3 +460,20 @@ class PartyUpdated(BaseEvent):
     def __post_init__(self) -> None:
         super().__post_init__()
         self.event_type = "PartyUpdated"
+
+
+@dataclass
+class QuestCompleted(BaseEvent):
+    """
+    Event fired when a quest instance is completed (rewards applied, state set to completed).
+
+    Emitted by QuestService after _complete_instance. Subscribers can push updated
+    quest_log to the player's client so the Journal panel refreshes.
+    """
+
+    player_id: str
+    quest_id: str
+
+    def __post_init__(self) -> None:
+        super().__post_init__()
+        self.event_type = "QuestCompleted"
