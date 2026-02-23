@@ -10,8 +10,25 @@ import random
 from collections.abc import Generator
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlparse
 
 import pytest
+
+# Protected DBs: tests must NEVER run against these (integration tests truncate tables).
+# If DATABASE_URL points here, we overwrite with mythos_unit so pytest cannot touch mythos_dev.
+_PROTECTED_DB_NAMES = ("mythos_dev", "mythos_stage", "mythos_prod")
+_DEFAULT_TEST_DATABASE_URL = "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
+
+
+def _get_db_name_from_url(url: str) -> str:
+    """Extract database name from a PostgreSQL URL. Returns empty string on parse failure."""
+    try:
+        parsed = urlparse(url)
+        path = (parsed.path or "").strip("/")
+        return path.split("/")[0] if path else ""
+    except (ValueError, AttributeError, IndexError, TypeError):
+        return ""
+
 
 # Set critical environment variables immediately to prevent module-level config loading failures
 # Use explicit assignment if empty, not setdefault (which only sets if key doesn't exist)
@@ -28,7 +45,14 @@ if not os.environ.get("MYTHOSMUD_VERIFICATION_TOKEN_SECRET"):
 os.environ.setdefault("SERVER_PORT", "54731")
 os.environ.setdefault("SERVER_HOST", "127.0.0.1")
 os.environ.setdefault("LOGGING_ENVIRONMENT", "unit_test")
-os.environ.setdefault("DATABASE_URL", "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit")
+# CRITICAL: Never run tests against mythos_dev. If DATABASE_URL points at a protected DB, force mythos_unit.
+# setdefault alone would leave mythos_dev in place if e.g. .env or shell had it set, allowing truncation.
+_current_db_url = os.environ.get("DATABASE_URL", "")
+_current_db_name = _get_db_name_from_url(_current_db_url)
+if _current_db_name in _PROTECTED_DB_NAMES:
+    os.environ["DATABASE_URL"] = _DEFAULT_TEST_DATABASE_URL
+else:
+    os.environ.setdefault("DATABASE_URL", _DEFAULT_TEST_DATABASE_URL)
 # Use explicit assignment to ensure DATABASE_NPC_URL is always set (not just setdefault)
 # This prevents test isolation issues where env vars might be cleared by other tests
 if not os.environ.get("DATABASE_NPC_URL"):

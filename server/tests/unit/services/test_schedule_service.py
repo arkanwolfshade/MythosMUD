@@ -11,7 +11,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from server.schemas.calendar import ScheduleEntry
-from server.services.schedule_service import ScheduleService
+from server.services.schedule_service import ScheduleService, normalize_weekday_names
 
 
 class TestScheduleService:
@@ -179,6 +179,32 @@ class TestScheduleService:
         # Verify it's a copy, not the same list
         # Accessing protected member to verify property returns a copy
         assert entries is not service._entries  # pylint: disable=protected-access  # nosec B101  # Reason: pytest uses assert statements for test assertions
+
+    def test_normalize_weekday_names_latin_to_standard(self):
+        """Latin weekday names from DB are normalized to standard names (regression for errors.log)."""
+        assert normalize_weekday_names(["Primus", "Sextus"]) == ["Monday", "Saturday"]
+        assert normalize_weekday_names(["Primus", "Secundus", "Tertius", "Quartus", "Quintus", "Sextus"]) == [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+        ]
+        assert normalize_weekday_names(["Monday", "Tuesday"]) == ["Monday", "Tuesday"]
+        # ScheduleEntry accepts normalized days
+        entry = ScheduleEntry(
+            id="test_latin",
+            name="Test",
+            category="npc",
+            start_hour=0,
+            end_hour=24,
+            days=normalize_weekday_names(["Primus", "Sextus"]),
+            applies_to=[],
+            effects=[],
+            notes=None,
+        )
+        assert entry.days == ["Monday", "Saturday"]
 
     def test_entry_count_property(self):
         """Test entry_count property returns count."""
