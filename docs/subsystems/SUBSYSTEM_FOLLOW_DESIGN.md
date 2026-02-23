@@ -123,7 +123,7 @@ flowchart LR
 - **Followers not moving**: Ensure PlayerEnteredRoom/NPCEnteredRoom are published with from_room_id;
   check FollowService is subscribed to EventBus; check movement_service is injected.
 
-See also [GAME_BUG_INVESTIGATION_PLAYBOOK](.cursor/rules/GAME_BUG_INVESTIGATION_PLAYBOOK.mdc).
+See also [GAME_BUG_INVESTIGATION_PLAYBOOK](../../.cursor/rules/GAME_BUG_INVESTIGATION_PLAYBOOK.mdc).
 
 ## Related docs
 

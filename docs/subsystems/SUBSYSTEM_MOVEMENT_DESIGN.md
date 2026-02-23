@@ -138,8 +138,8 @@ from_room_id=...)`, `save_player` (current_room_id), optional tutorial exit and 
 - **Integrity**: `MovementMonitor.validate_room_integrity(rooms)` checks for players in multiple rooms
   or orphaned players. Use for debugging duplicate occupancy.
 
-See also [GAME_BUG_INVESTIGATION_PLAYBOOK](.cursor/rules/GAME_BUG_INVESTIGATION_PLAYBOOK.mdc) and
-[MYTHOSMUD_DEBUGGING_AGENT](.cursor/rules/MYTHOSMUD_DEBUGGING_AGENT.mdc).
+See also [GAME_BUG_INVESTIGATION_PLAYBOOK](../../.cursor/rules/GAME_BUG_INVESTIGATION_PLAYBOOK.mdc) and
+[MYTHOSMUD_DEBUGGING_AGENT](../../.cursor/rules/MYTHOSMUD_DEBUGGING_AGENT.mdc).
 
 ## Related docs
 

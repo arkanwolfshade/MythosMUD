@@ -120,7 +120,7 @@ flowchart LR
   before force_disconnect_player and that disconnect tracking (e.g. track_player_disconnected_impl)
   respects intentional_disconnects.
 
-See also [GAME_BUG_INVESTIGATION_PLAYBOOK](.cursor/rules/GAME_BUG_INVESTIGATION_PLAYBOOK.mdc).
+See also [GAME_BUG_INVESTIGATION_PLAYBOOK](../../.cursor/rules/GAME_BUG_INVESTIGATION_PLAYBOOK.mdc).
 
 ## Related docs
 

@@ -116,7 +116,7 @@ flowchart LR
   client subscribes to rescue_update; check connection_manager.send_personal_message or equivalent.
 
 See also [SUBSYSTEM_LUCIDITY_DESIGN.md](SUBSYSTEM_LUCIDITY_DESIGN.md) and
-[GAME_BUG_INVESTIGATION_PLAYBOOK](.cursor/rules/GAME_BUG_INVESTIGATION_PLAYBOOK.mdc).
+[GAME_BUG_INVESTIGATION_PLAYBOOK](../../.cursor/rules/GAME_BUG_INVESTIGATION_PLAYBOOK.mdc).
 
 ## Related docs
 

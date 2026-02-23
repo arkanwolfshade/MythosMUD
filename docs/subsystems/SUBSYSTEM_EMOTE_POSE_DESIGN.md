@@ -108,7 +108,7 @@ flowchart LR
 - **Pose not showing**: Ensure look/room state code includes player.pose in description; client
   must consume pose from room_state or player_update.
 
-See also [GAME_BUG_INVESTIGATION_PLAYBOOK](.cursor/rules/GAME_BUG_INVESTIGATION_PLAYBOOK.mdc).
+See also [GAME_BUG_INVESTIGATION_PLAYBOOK](../../.cursor/rules/GAME_BUG_INVESTIGATION_PLAYBOOK.mdc).
 
 ## Related docs
 

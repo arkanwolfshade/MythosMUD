@@ -101,7 +101,7 @@ flowchart LR
 - **Who slow**: list_players() loads all players; if DB is large, consider indexing last_active
   and filtering in DB.
 
-See also [GAME_BUG_INVESTIGATION_PLAYBOOK](.cursor/rules/GAME_BUG_INVESTIGATION_PLAYBOOK.mdc).
+See also [GAME_BUG_INVESTIGATION_PLAYBOOK](../../.cursor/rules/GAME_BUG_INVESTIGATION_PLAYBOOK.mdc).
 Archived spec: [docs/archive/WHO_COMMAND_FRD.md](../archive/WHO_COMMAND_FRD.md).
 
 ## Related docs

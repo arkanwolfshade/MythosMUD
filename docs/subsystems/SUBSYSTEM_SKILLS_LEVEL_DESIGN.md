@@ -113,7 +113,7 @@ flowchart LR
 - **Skill not in catalog**: Ensure skill exists in SkillRepository and is returned by get_all_skills.
 
 See also [SUBSYSTEM_MAGIC_DESIGN.md](SUBSYSTEM_MAGIC_DESIGN.md) (teach/learn),
-[GAME_BUG_INVESTIGATION_PLAYBOOK](.cursor/rules/GAME_BUG_INVESTIGATION_PLAYBOOK.mdc).
+[GAME_BUG_INVESTIGATION_PLAYBOOK](../../.cursor/rules/GAME_BUG_INVESTIGATION_PLAYBOOK.mdc).
 
 ## Related docs
 

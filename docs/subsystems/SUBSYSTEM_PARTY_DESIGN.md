@@ -121,7 +121,7 @@ flowchart LR
   is_in_same_party; check party_service is same instance as command layer.
 
 See also [SUBSYSTEM_COMBAT_DESIGN.md](SUBSYSTEM_COMBAT_DESIGN.md) and
-[GAME_BUG_INVESTIGATION_PLAYBOOK](.cursor/rules/GAME_BUG_INVESTIGATION_PLAYBOOK.mdc). Archived:
+[GAME_BUG_INVESTIGATION_PLAYBOOK](../../.cursor/rules/GAME_BUG_INVESTIGATION_PLAYBOOK.mdc). Archived:
 [docs/archive/PARTY_SYSTEM_REFERENCE.md](../archive/PARTY_SYSTEM_REFERENCE.md).
 
 ## Related docs
