@@ -27,8 +27,8 @@ Choose one of these methods:
 This will:
 
 - Stop any running servers
-- Start server with `server/server_config.e2e_test.yaml`
-- Use test database: `data/unit_test/players/unit_test_players.db`
+- Start server with E2E test configuration (see `scripts/start_e2e_test.ps1`)
+- Use PostgreSQL test database (see `make setup-postgresql-test-db` and test env)
 - Open in new window
 
 ### Method B: Manual startup (More control)

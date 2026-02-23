@@ -1,6 +1,12 @@
 {
   "plugins": {
-    "figma": {
+    "continual-learning": {
+      "enabled": true
+    },
+    "context7-plugin": {
+      "enabled": true
+    },
+    "cursor-team-kit": {
       "enabled": true
     }
   }

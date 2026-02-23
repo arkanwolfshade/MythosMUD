@@ -37,5 +37,4 @@ See [deployment.md](deployment.md) for production server setup.
 
 - **`GET /api/ws/{player_id}`**: Deprecated. Use `GET /api/ws` with JWT (query param or
   subprotocol) and optional `session_id` and `character_id` instead. This route will
-  be removed in a future release. Validation matches the primary route (async\_
-  persistence).
+  be removed in a future release. Validation matches the primary route (async persistence).
