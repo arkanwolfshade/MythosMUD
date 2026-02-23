@@ -1,90 +1,72 @@
 # Database Schema Management
 
-This directory contains the authoritative database schema definition for MythosMUD.
+This directory contains environment-specific DDL and supporting scripts for MythosMUD.
 
-## Authoritative Schema
+## Environment DDL Files
 
-The `authoritative_schema.sql` file is the single source of truth for the database schema. It is generated directly from
-the `mythos_dev` PostgreSQL database using `pg_dump`.
+Schema is maintained per environment using these DDL files (generated from the corresponding
+PostgreSQL database via `pg_dump`):
 
-### Regenerating the Schema
+- **`mythos_dev_ddl.sql`** - Development database schema (source of truth for structure)
+- **`mythos_unit_ddl.sql`** - Unit test database schema
+- **`mythos_e2e_ddl.sql`** - E2E test database schema
 
-When you make schema changes to the `mythos_dev` database, regenerate the authoritative schema file:
+Each file creates a PostgreSQL schema with the same name as the database (e.g. `mythos_dev`)
+and defines all tables in that schema (not `public`).
 
-**Linux/Mac:**
+### Regenerating DDL
 
-```bash
-./scripts/generate_schema_from_dev.sh
-```
+When you make schema changes to a database, regenerate the corresponding DDL file.
 
-**Windows:**
+**Windows (from project root):**
 
 ```powershell
 .\scripts\generate_schema_from_dev.ps1
 ```
 
-The script will:
-
-1. Connect to the `mythos_dev` database
-2. Extract the complete DDL (Data Definition Language) using `pg_dump`
-3. Write the schema to `db/authoritative_schema.sql`
-4. Add header comments explaining the generation process
+The script connects to the configured database (e.g. `mythos_dev`), runs `pg_dump`, and writes
+the DDL to the appropriate `db/mythos_<env>_ddl.sql` file.
 
 ### Verification
 
-To verify that the schema file matches the current database:
+To verify that a DDL file matches the current database:
 
 ```bash
 make verify-schema
 ```
 
-This will compare `db/authoritative_schema.sql` with the current `mythos_dev` database structure and report any drift.
-
-### Schema Update Process
-
-1. Make schema changes directly in the `mythos_dev` database (using `psql`, migrations, or your preferred tool)
-2. Regenerate the schema file using the generation script
-3. Review the generated file to ensure it captures your changes correctly
-4. Commit the updated `authoritative_schema.sql` to git
+This uses `scripts/verify_schema_match.ps1`, which reads `DATABASE_URL` from `.env.local` (or
+`.env`) and compares `db/mythos_<dbname>_ddl.sql` with the live database.
 
 ### Directory Structure
 
-**`authoritative_schema.sql`** - Baseline DDL schema (committed to git)
+**`mythos_dev_ddl.sql`**, **`mythos_unit_ddl.sql`**, **`mythos_e2e_ddl.sql`** - Authoritative
+environment DDL (committed to git).
 
-**`migrations/`** - DDL migration scripts for existing databases (see `migrations/README.md`)
+**`databases/`** - Database provisioning scripts (see `databases/README.md`).
 
-**`databases/`** - Database provisioning scripts (see `databases/README.md`)
+**`roles/`** - PostgreSQL role creation scripts (see `roles/README.md`).
 
-**`roles/`** - PostgreSQL role creation scripts (see `roles/README.md`)
+**Seed data (DML)** - Authoritative per-environment DML lives in **`data/db/`**:
+`mythos_dev_dml.sql`, `mythos_unit_dml.sql`, `mythos_e2e_dml.sql`. Load with
+`search_path` set to the schema name (e.g. `mythos_unit`).
 
-- **`schema/`** - ⚠️ Legacy schema files kept for historical reference only (see `schema/README.md`)
-  - `01_world_and_calendar.sql`
-  - `02_items_and_npcs.sql`
-  - `03_identity_and_moderation.sql`
-  - `04_runtime_tables.sql`
-
-See `LEGACY_FILES.md` for complete status of all database-related files.
+See `LEGACY_FILES.md` for historical file status.
 
 ### Usage in CI/CD
 
-The authoritative schema is used by:
+Environment DDL is used as follows:
 
-**Dockerfile.github-runner** - Applies schema to test databases during image build
+- **GitHub Actions CI** - Applies `db/mythos_unit_ddl.sql` to the `mythos_unit` database, then
+  loads `data/db/mythos_unit_dml.sql` with `search_path` set to `mythos_unit`.
+- **Dockerfile.github-runner** - Applies `db/mythos_unit_ddl.sql` then
+  `data/db/mythos_unit_dml.sql` with `search_path` set to `mythos_unit`.
 
-**GitHub Actions CI** - Applies schema to test databases during workflow execution
-
-Both use a single command:
-
-```bash
-psql -d mythos_unit -f db/authoritative_schema.sql
-```
-
-This replaces the previous approach of applying 4 separate schema files sequentially.
+For local or other environments, use the DDL that matches your database name (e.g. `mythos_dev`
+-> `db/mythos_dev_ddl.sql`).
 
 ### Notes
 
-The schema file is **committed to git** (not generated on-demand)
-
-- The schema file includes `SET` statements for clean execution
-- Owner and privilege commands are excluded for portability
-- The schema includes `--clean` and `--if-exists` flags for idempotent execution
+- DDL files are committed to git (not generated on-demand in CI).
+- Each DDL creates a named schema (e.g. `mythos_unit`) and sets `search_path`; applications
+  use `POSTGRES_SEARCH_PATH` in `.env` to target that schema.

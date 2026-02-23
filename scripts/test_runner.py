@@ -77,8 +77,8 @@ class TestRunner:
         """
         env = os.environ.copy()
 
-        # Load test environment variables from .env.unit_test if not already set
-        test_env_file = self.server_dir / "tests" / ".env.unit_test"
+        # Load test environment variables from .env.unit_test (project root) if not already set
+        test_env_file = self.project_root / ".env.unit_test"
         if test_env_file.exists() and "DATABASE_URL" not in env:
             from dotenv import load_dotenv
 
@@ -105,6 +105,10 @@ class TestRunner:
                 "DATABASE_URL not set, using default PostgreSQL URL",
                 database_url=env["DATABASE_URL"],
             )
+
+        # Unit tests use schema mythos_unit in database mythos_unit (not public)
+        if "POSTGRES_SEARCH_PATH" not in env:
+            env["POSTGRES_SEARCH_PATH"] = "mythos_unit"
 
         # Ensure DATABASE_NPC_URL is set (should come from .env.unit_test or environment)
         if "DATABASE_NPC_URL" not in env:

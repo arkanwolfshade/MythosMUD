@@ -1,8 +1,8 @@
 -- Verification checks for users and players (PostgreSQL).
--- Aligns with public.users and public.players; no staging tables.
+-- Tables live in named schemas (mythos_dev, mythos_unit, mythos_e2e). Set search_path
+-- before running, e.g. psql -d mythos_dev -c "SET search_path TO mythos_dev;" -f users_players.sql
 -- Reference: .cursor/rules/postgresql.mdc
 set client_min_messages = warning;
-set search_path = public;
 
 -- Row counts for live tables only
 -- nosemgrep: Semgrep_codacy.generic.sql.rac-table-access

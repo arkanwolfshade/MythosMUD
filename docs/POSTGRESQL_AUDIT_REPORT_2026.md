@@ -16,17 +16,17 @@ The codebase shows strong adherence to many PostgreSQL best practices (explicit 
 
 ### 1.1. Snake_case (GOOD)
 
-| Rule | Status | Notes |
-|------|--------|-------|
-| Tables and columns use snake_case | **Compliant** | `authoritative_schema.sql` and schema files use snake_case throughout |
+| Rule                              | Status        | Notes                                                                               |
+| --------------------------------- | ------------- | ----------------------------------------------------------------------------------- |
+| Tables and columns use snake_case | **Compliant** | environment DDL (db/mythos\_\*\_ddl.sql) and schema files use snake_case throughout |
 
 ### 1.2. Quoted Identifier
 
-| File | Location | Issue | Rule | Impact |
-|------|----------|-------|------|--------|
-| `db/authoritative_schema.sql` | `container_contents` table | Column `"position"` is quoted (line 423) | §1.1: snake_case preferred; quoted identifiers can cause case-sensitivity issues | **Medium** |
-| `db/schema/01_world_and_calendar.sql` | `calendar_holidays`, `calendar_npc_schedules` | `"name"`, `"month"`, `"day"` quoted | Same | **Low** |
-| `db/verification/users_players.sql` | line 37 | `"name"` quoted | Acceptable for reserved-word avoidance | **Low** |
+| File                                  | Location                                      | Issue                                    | Rule                                                                             | Impact     |
+| ------------------------------------- | --------------------------------------------- | ---------------------------------------- | -------------------------------------------------------------------------------- | ---------- |
+| `db/mythos_*_ddl.sql`                 | `container_contents` table                    | Column `"position"` is quoted (line 423) | §1.1: snake_case preferred; quoted identifiers can cause case-sensitivity issues | **Medium** |
+| `db/schema/01_world_and_calendar.sql` | `calendar_holidays`, `calendar_npc_schedules` | `"name"`, `"month"`, `"day"` quoted      | Same                                                                             | **Low**    |
+| `db/verification/users_players.sql`   | line 37                                       | `"name"` quoted                          | Acceptable for reserved-word avoidance                                           | **Low**    |
 
 ---
 
@@ -34,15 +34,15 @@ The codebase shows strong adherence to many PostgreSQL best practices (explicit 
 
 ### 2.1. Uppercase SQL Keywords
 
-| File | Issue | Rule | Impact |
-|------|-------|------|--------|
-| `db/authoritative_schema.sql` | `CREATE`, `ALTER`, `DROP`, `SELECT`, `INSERT`, `DELETE`, `UPDATE`, `JOIN`, etc. in UPPERCASE | §1.1: SQL keywords must be lowercase | **Low** |
-| `db/authoritative_schema.sql` | PL/pgSQL functions: `SELECT`, `INSERT`, `DELETE`, `UPDATE`, `JOIN`, `COALESCE`, `MAX`, `NOW` | Same | **Low** |
-| `db/roles/roles.sql` | `CREATE ROLE`, `IF NOT EXISTS`, `SELECT` | Same | **Low** |
-| `db/databases/databases.sql` | Likely uppercase DDL | Same | **Low** |
-| Migration files | `db/migrations/*.sql` | Mixed—some use lowercase (e.g. `019_postgresql_anti_patterns_fixes.sql`), others uppercase | Same | **Low** |
+| File                         | Issue                                                                                        | Rule                                                                                       | Impact  |
+| ---------------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ------- | ------- |
+| `db/mythos_*_ddl.sql`        | `CREATE`, `ALTER`, `DROP`, `SELECT`, `INSERT`, `DELETE`, `UPDATE`, `JOIN`, etc. in UPPERCASE | §1.1: SQL keywords must be lowercase                                                       | **Low** |
+| `db/mythos_*_ddl.sql`        | PL/pgSQL functions: `SELECT`, `INSERT`, `DELETE`, `UPDATE`, `JOIN`, `COALESCE`, `MAX`, `NOW` | Same                                                                                       | **Low** |
+| `db/roles/roles.sql`         | `CREATE ROLE`, `IF NOT EXISTS`, `SELECT`                                                     | Same                                                                                       | **Low** |
+| `db/databases/databases.sql` | Likely uppercase DDL                                                                         | Same                                                                                       | **Low** |
+| Migration files              | `db/migrations/*.sql`                                                                        | Mixed—some use lowercase (e.g. `019_postgresql_anti_patterns_fixes.sql`), others uppercase | Same    | **Low** |
 
-**Note:** `authoritative_schema.sql` is generated by `pg_dump`; the generator controls output format. Migration `019` explicitly standardizes to lowercase.
+**Note:** environment DDL (db/mythos\_\*\_ddl.sql) is generated by `pg_dump`; the generator controls output format. Migration `019` explicitly standardizes to lowercase.
 
 ---
 
@@ -54,29 +54,29 @@ The codebase shows strong adherence to many PostgreSQL best practices (explicit 
 
 ### 3.2. `NOT IN` Avoidance
 
-| File | Location | Issue | Rule | Impact |
-|------|----------|-------|------|--------|
-| `data/db/migrations/11_migrate_weekday_names.sql` | line 44 | `OR day_value NOT IN ('Monday', 'Tuesday', ...)` | §2.3: Prefer `NOT EXISTS` or `LEFT JOIN ... IS NULL` over `NOT IN` | **Low** |
+| File                                              | Location | Issue                                            | Rule                                                               | Impact  |
+| ------------------------------------------------- | -------- | ------------------------------------------------ | ------------------------------------------------------------------ | ------- |
+| `data/db/migrations/11_migrate_weekday_names.sql` | line 44  | `OR day_value NOT IN ('Monday', 'Tuesday', ...)` | §2.3: Prefer `NOT EXISTS` or `LEFT JOIN ... IS NULL` over `NOT IN` | **Low** |
 
 **Context:** `NOT IN` here is against a literal list, not a subquery. The `NULL`-semantics issue applies when the subquery can return NULL. Risk is low but the pattern could be refactored for consistency (e.g. `day_value NOT IN (...)` → `day_value NOT IN (SELECT unnest(...))` or `day_value NOT IN (...)` → `NOT (day_value = ANY(...))`).
 
 ### 3.3. `SELECT *` in Non-Test, Non-Migration Code
 
-| File | Location | Issue | Rule | Impact |
-|------|----------|-------|------|--------|
-| `scripts/populate_test_npc_databases.py` | lines 81, 91 | `SELECT * FROM npc_definitions`, `SELECT * FROM npc_spawn_rules` | §3.1: Avoid `SELECT *` in production code | **Medium** |
-| `scripts/init_npc_database.py` | lines 71, 81 | Same | Same | **Medium** |
-| `scripts/apply_container_migrations.py` | line 298 | `FOR v_item IN SELECT * FROM jsonb_array_elements(...)` | Same | **Low** (PL/pgSQL migration pattern; `jsonb_array_elements` returns structured rows) |
-| `server/alembic/versions/2025_11_25_normalize_container_schema.py` | line 261 | Same | Same | **Low** |
-| `server/scripts/add_npc_name_constraint.sql` | line 31 | `INSERT INTO npc_definitions_new SELECT * FROM npc_definitions` | Same | **N/A** (schema migration; file is SQLite-specific) |
+| File                                                               | Location     | Issue                                                            | Rule                                      | Impact                                                                               |
+| ------------------------------------------------------------------ | ------------ | ---------------------------------------------------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------ |
+| `scripts/populate_test_npc_databases.py`                           | lines 81, 91 | `SELECT * FROM npc_definitions`, `SELECT * FROM npc_spawn_rules` | §3.1: Avoid `SELECT *` in production code | **Medium**                                                                           |
+| `scripts/init_npc_database.py`                                     | lines 71, 81 | Same                                                             | Same                                      | **Medium**                                                                           |
+| `scripts/apply_container_migrations.py`                            | line 298     | `FOR v_item IN SELECT * FROM jsonb_array_elements(...)`          | Same                                      | **Low** (PL/pgSQL migration pattern; `jsonb_array_elements` returns structured rows) |
+| `server/alembic/versions/2025_11_25_normalize_container_schema.py` | line 261     | Same                                                             | Same                                      | **Low**                                                                              |
+| `server/scripts/add_npc_name_constraint.sql`                       | line 31      | `INSERT INTO npc_definitions_new SELECT * FROM npc_definitions`  | Same                                      | **N/A** (schema migration; file is SQLite-specific)                                  |
 
 ### 3.4. `SELECT *` in Test and Documentation
 
-| File | Context | Impact |
-|------|---------|--------|
-| `server/tests/unit/infrastructure/test_postgres_adapter.py` | `SELECT * FROM test` | **Low** (test fixture) |
-| `docs/examples/logging/*.py` | Example queries | **Low** (documentation) |
-| `db/migrations/021_add_partial_indexes_for_active_players.sql` | Comment only | **Low** |
+| File                                                           | Context              | Impact                  |
+| -------------------------------------------------------------- | -------------------- | ----------------------- |
+| `server/tests/unit/infrastructure/test_postgres_adapter.py`    | `SELECT * FROM test` | **Low** (test fixture)  |
+| `docs/examples/logging/*.py`                                   | Example queries      | **Low** (documentation) |
+| `db/migrations/021_add_partial_indexes_for_active_players.sql` | Comment only         | **Low**                 |
 
 ---
 
@@ -84,7 +84,7 @@ The codebase shows strong adherence to many PostgreSQL best practices (explicit 
 
 ### 4.1. IDs: `serial` / `bigserial` (GOOD)
 
-**Status:** Compliant. Migration `019_postgresql_anti_patterns_fixes.sql` converted `serial`/`SERIAL` to `bigint generated always as identity`. `authoritative_schema.sql` uses `bigint generated always as identity` throughout.
+**Status:** Compliant. Migration `019_postgresql_anti_patterns_fixes.sql` converted `serial`/`SERIAL` to `bigint generated always as identity`. environment DDL (db/mythos\_\*\_ddl.sql) uses `bigint generated always as identity` throughout.
 
 ### 4.2. `char(n)` (GOOD)
 
@@ -96,13 +96,13 @@ The codebase shows strong adherence to many PostgreSQL best practices (explicit 
 
 ### 4.4. Unnecessary `varchar(n)` / `character varying(n)`
 
-| File | Columns | Rule | Impact |
-|------|---------|------|--------|
-| `db/authoritative_schema.sql` | `item_instance_id varchar(64)`, `item_prototypes.name varchar(120)`, `item_prototypes.short_description varchar(255)`, `item_instances.custom_name varchar(255)`, `item_instances.owner_id varchar(255)`, `item_instances.location_context varchar(255)`, `item_instances.binding_state varchar(32)`, etc. | §4.3: Prefer `text` over `varchar(n)` unless strict length constraint needed | **Medium** |
-| `db/schema/04_runtime_tables.sql` | `email varchar(255)`, `hashed_password varchar(1024)`, `username varchar(255)`, `player_id varchar(255)`, `name varchar(50)`, etc. | Same | **Medium** |
-| `db/migrations/015_add_magic_system_tables.sql` | `spell_id varchar(255)`, `name varchar(100)`, `school varchar(50)`, etc. | Same | **Medium** |
+| File                                            | Columns                                                                                                                                                                                                                                                                                                    | Rule                                                                         | Impact     |
+| ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------- |
+| `db/mythos_*_ddl.sql`                           | `item_instance_id varchar(64)`, `item_prototypes.name varchar(120)`, `item_prototypes.short_description varchar(255)`, `item_instances.custom_name varchar(255)`, `item_instances.owner_id varchar(255)`, `item_instances.location_context varchar(255)`, `item_instances.binding_state varchar(32)`, etc. | §4.3: Prefer `text` over `varchar(n)` unless strict length constraint needed | **Medium** |
+| `db/schema/04_runtime_tables.sql`               | `email varchar(255)`, `hashed_password varchar(1024)`, `username varchar(255)`, `player_id varchar(255)`, `name varchar(50)`, etc.                                                                                                                                                                         | Same                                                                         | **Medium** |
+| `db/migrations/015_add_magic_system_tables.sql` | `spell_id varchar(255)`, `name varchar(100)`, `school varchar(50)`, etc.                                                                                                                                                                                                                                   | Same                                                                         | **Medium** |
 
-**Note:** `authoritative_schema.sql` is generated; `character varying` comes from pg_dump. Schema sources (`db/schema/*.sql`) are manually authored and should be aligned with `text` where length is not business-critical.
+**Note:** environment DDL (db/mythos\__\_ddl.sql) is generated; `character varying` comes from pg_dump. Schema sources (`db/schema/_.sql`) are manually authored and should be aligned with `text` where length is not business-critical.
 
 ---
 
@@ -110,7 +110,7 @@ The codebase shows strong adherence to many PostgreSQL best practices (explicit 
 
 ### 5.1. `timestamp with time zone` (GOOD)
 
-**Status:** Compliant. `authoritative_schema.sql` and schema files use `timestamp with time zone` / `timestamptz`.
+**Status:** Compliant. environment DDL (db/mythos\_\*\_ddl.sql) and schema files use `timestamp with time zone` / `timestamptz`.
 No `timestamp without time zone` usage found.
 
 ### 5.2. `BETWEEN` on Timestamps
@@ -139,17 +139,17 @@ No `timestamp without time zone` usage found.
 
 ### 7.2. Raw SQL Formatting
 
-| File | Issue | Rule | Impact |
-|------|-------|------|--------|
-| `server/async_persistence.py` | `_query_rooms_with_exits_async` uses multi-line `text()` with explicit column list; good structure | §1.2: Keywords on separate lines, explicit aliases | **Low** (minor formatting) |
-| `server/container_persistence/container_persistence.py` | `UPDATE containers SET {} WHERE ...` uses `sql.SQL().format(set_clauses)`; column names from `update_fields` dict | §5.1: Prepared statements | **Low** (safe—column names hardcoded) |
+| File                                                    | Issue                                                                                                             | Rule                                               | Impact                                |
+| ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- | ------------------------------------- |
+| `server/async_persistence.py`                           | `_query_rooms_with_exits_async` uses multi-line `text()` with explicit column list; good structure                | §1.2: Keywords on separate lines, explicit aliases | **Low** (minor formatting)            |
+| `server/container_persistence/container_persistence.py` | `UPDATE containers SET {} WHERE ...` uses `sql.SQL().format(set_clauses)`; column names from `update_fields` dict | §5.1: Prepared statements                          | **Low** (safe—column names hardcoded) |
 
 ### 7.3. Hardcoded Schema/Table Names
 
-| File | Issue | Impact |
-|------|-------|--------|
-| `scripts/populate_test_npc_databases.py`, `scripts/init_npc_database.py` | Hardcoded `npc_definitions`, `npc_spawn_rules` | **Low** (scripts; not user-facing) |
-| `server/persistence/*.py` | Hardcoded table names in SQL | **Low** (standard for persistence layer) |
+| File                                                                     | Issue                                          | Impact                                   |
+| ------------------------------------------------------------------------ | ---------------------------------------------- | ---------------------------------------- |
+| `scripts/populate_test_npc_databases.py`, `scripts/init_npc_database.py` | Hardcoded `npc_definitions`, `npc_spawn_rules` | **Low** (scripts; not user-facing)       |
+| `server/persistence/*.py`                                                | Hardcoded table names in SQL                   | **Low** (standard for persistence layer) |
 
 ---
 
@@ -157,10 +157,10 @@ No `timestamp without time zone` usage found.
 
 ### 8.1. Outdated Patterns
 
-| File | Issue | Rule | Impact |
-|------|-------|------|--------|
-| `db/verification/users_players.sql` | References `staging_users`, `staging_players`, `sanity_score` | Schema may not match current `authoritative_schema.sql` | **High** (verification script may fail) |
-| `server/scripts/add_npc_name_constraint.sql` | SQLite syntax: `REGEXP`, `PRAGMA`, `INTEGER PRIMARY KEY`, `DATETIME` | Project uses PostgreSQL; file is obsolete | **Medium** |
+| File                                         | Issue                                                                | Rule                                                                  | Impact                                  |
+| -------------------------------------------- | -------------------------------------------------------------------- | --------------------------------------------------------------------- | --------------------------------------- |
+| `db/verification/users_players.sql`          | References `staging_users`, `staging_players`, `sanity_score`        | Schema may not match current environment DDL (db/mythos\_\*\_ddl.sql) | **High** (verification script may fail) |
+| `server/scripts/add_npc_name_constraint.sql` | SQLite syntax: `REGEXP`, `PRAGMA`, `INTEGER PRIMARY KEY`, `DATETIME` | Project uses PostgreSQL; file is obsolete                             | **Medium**                              |
 
 **Context:** `add_npc_name_constraint.sql` appears to be legacy SQLite migration. PostgreSQL `REGEXP` uses `~` operator, not `REGEXP`; `PRAGMA` and `DATETIME` are SQLite-specific.
 
@@ -170,17 +170,17 @@ No `timestamp without time zone` usage found.
 
 ### 9.1. Schema Drift
 
-| Issue | Files | Impact |
-|------|-------|--------|
-| `db/schema/04_runtime_tables.sql` | Uses `varchar` and `player_id varchar(255)`; `authoritative_schema.sql` uses `player_id uuid` | **Medium** — schema sources may be out of sync |
-| `db/schema/01_world_and_calendar.sql` | Uses `"name"`, `"month"`, `"day"` quoted identifiers | **Low** |
-| `db/verification/users_players.sql` | References `sanity_score` (renamed to `stats` with lucidity) and staging tables | **High** — verification may fail |
+| Issue                                 | Files                                                                                                       | Impact                                         |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| `db/schema/04_runtime_tables.sql`     | Uses `varchar` and `player_id varchar(255)`; environment DDL (db/mythos\_\*\_ddl.sql) uses `player_id uuid` | **Medium** — schema sources may be out of sync |
+| `db/schema/01_world_and_calendar.sql` | Uses `"name"`, `"month"`, `"day"` quoted identifiers                                                        | **Low**                                        |
+| `db/verification/users_players.sql`   | References `sanity_score` (renamed to `stats` with lucidity) and staging tables                             | **High** — verification may fail               |
 
 ### 9.2. Index Naming
 
-| File | Issue | Impact |
-|------|-------|--------|
-| `db/authoritative_schema.sql` | `ix_container_contents_*` vs `idx_*` naming | **Low** (cosmetic) |
+| File                  | Issue                                       | Impact             |
+| --------------------- | ------------------------------------------- | ------------------ |
+| `db/mythos_*_ddl.sql` | `ix_container_contents_*` vs `idx_*` naming | **Low** (cosmetic) |
 
 ---
 
@@ -194,35 +194,35 @@ No `timestamp without time zone` usage found.
 ### Medium Priority
 
 1. **`scripts/populate_test_npc_databases.py`**, **`scripts/init_npc_database.py`** — Replace `SELECT *` with explicit column lists.
-2. **`db/schema/04_runtime_tables.sql`** — Align with `authoritative_schema.sql` (e.g. `player_id uuid`, `text` over `varchar` where appropriate).
-3. **`db/authoritative_schema.sql`** — If schema regeneration is controlled, consider post-processing to lowercase keywords (or document that pg_dump output is acceptable).
+2. **`db/schema/04_runtime_tables.sql`** — Align with environment DDL (db/mythos\_\*\_ddl.sql) (e.g. `player_id uuid`, `text` over `varchar` where appropriate).
+3. **`db/mythos_*_ddl.sql`** — If schema regeneration is controlled, consider post-processing to lowercase keywords (or document that pg_dump output is acceptable).
 
 ### Low Priority
 
 1. **`data/db/migrations/11_migrate_weekday_names.sql`** — Refactor `NOT IN` to `NOT EXISTS` or `IN` + `NOT` for consistency.
-2. **`db/authoritative_schema.sql`** — Review quoted `"position"` column; consider renaming to avoid reserved-word conflict.
+2. **`db/mythos_*_ddl.sql`** — Review quoted `"position"` column; consider renaming to avoid reserved-word conflict.
 3. **`scripts/apply_container_migrations.py`**, **`server/alembic/versions/2025_11_25_normalize_container_schema.py`** — Replace `SELECT * FROM jsonb_array_elements(...)` with explicit column list if desired for strict compliance.
 
 ---
 
 ## 11. Summary Table
 
-| Category | Compliant | Violations | Notes |
-|----------|-----------|------------|-------|
-| Naming (snake_case) | Yes | Minor (quoted identifiers) | |
-| SQL keywords lowercase | Partial | `authoritative_schema.sql`, migrations | pg_dump output |
-| Explicit JOINs | Yes | 0 | |
-| NOT IN | Partial | 1 (literal list) | Low risk |
-| SELECT * | Partial | 4 files (scripts, migrations) | |
-| serial/bigserial | Yes | 0 | |
-| char(n), money | Yes | 0 | |
-| varchar(n) | Partial | Numerous | Prefer text where length not critical |
-| timestamptz | Yes | 0 | |
-| BETWEEN timestamps | Yes | 0 | |
-| Rules / inheritance | Yes | 0 | |
-| Prepared statements | Yes | 0 | |
-| Verification / schema drift | No | 2 files | High priority |
+| Category                    | Compliant | Violations                                           | Notes                                 |
+| --------------------------- | --------- | ---------------------------------------------------- | ------------------------------------- |
+| Naming (snake_case)         | Yes       | Minor (quoted identifiers)                           |                                       |
+| SQL keywords lowercase      | Partial   | environment DDL (db/mythos\_\*\_ddl.sql), migrations | pg_dump output                        |
+| Explicit JOINs              | Yes       | 0                                                    |                                       |
+| NOT IN                      | Partial   | 1 (literal list)                                     | Low risk                              |
+| SELECT \*                   | Partial   | 4 files (scripts, migrations)                        |                                       |
+| serial/bigserial            | Yes       | 0                                                    |                                       |
+| char(n), money              | Yes       | 0                                                    |                                       |
+| varchar(n)                  | Partial   | Numerous                                             | Prefer text where length not critical |
+| timestamptz                 | Yes       | 0                                                    |                                       |
+| BETWEEN timestamps          | Yes       | 0                                                    |                                       |
+| Rules / inheritance         | Yes       | 0                                                    |                                       |
+| Prepared statements         | Yes       | 0                                                    |                                       |
+| Verification / schema drift | No        | 2 files                                              | High priority                         |
 
 ---
 
-*Report generated by audit against `.cursor/rules/postgresql.mdc`. No fixes proposed; main agent will turn findings into a remediation plan.*
+_Report generated by audit against `.cursor/rules/postgresql.mdc`. No fixes proposed; main agent will turn findings into a remediation plan._

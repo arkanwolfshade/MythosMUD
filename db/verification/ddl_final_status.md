@@ -1,5 +1,8 @@
 # DDL Application Final Status
 
+\_Historical: this snapshot reflects status before the switch to authoritative DDL
+(`db/mythos\__\_ddl.sql`). Current schema is defined only in those files.\*
+
 ## Summary
 
 All required DDL has been applied to all three databases. Some databases have schema variations due to existing data

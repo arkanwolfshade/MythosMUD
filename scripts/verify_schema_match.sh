@@ -1,6 +1,6 @@
 #!/bin/bash
-# Verify that db/authoritative_schema.sql matches the current mythos_dev database structure
-# This script compares the schema file with the actual database to detect drift
+# Verify that environment DDL (db/mythos_<dbname>_ddl.sql) matches the current database structure
+# This script compares the DDL file with the actual database to detect drift
 
 set -euo pipefail
 
@@ -111,7 +111,8 @@ if [ -z "${DB_PASSWORD:-}" ]; then
     exit 1
 fi
 
-SCHEMA_FILE="${SCHEMA_FILE:-db/authoritative_schema.sql}"
+# Environment DDL: db/mythos_dev_ddl.sql, db/mythos_unit_ddl.sql, db/mythos_e2e_ddl.sql
+SCHEMA_FILE="${SCHEMA_FILE:-db/${DB_NAME}_ddl.sql}"
 
 # Debug: Check if DATABASE_URL was loaded (only if DEBUG is set)
 if [ "${DEBUG:-0}" = "1" ]; then

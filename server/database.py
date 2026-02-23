@@ -27,6 +27,7 @@ from sqlalchemy.ext.asyncio import (
 
 from .database_config_helpers import (
     configure_pool_settings,
+    get_postgres_connect_args,
     get_test_database_url,
     load_database_url,
     normalize_database_url,
@@ -151,6 +152,7 @@ class DatabaseManager:
         logger.info("Using PostgreSQL database URL from environment", database_url=self.database_url)
 
         pool_kwargs = configure_pool_settings(self.database_url)
+        connect_args = get_postgres_connect_args()
 
         # Create async engine with PostgreSQL configuration
         # CRITICAL FIX: Add proper exception handling for engine creation
@@ -160,6 +162,7 @@ class DatabaseManager:
                 self.database_url,
                 echo=False,
                 pool_pre_ping=True,
+                connect_args=connect_args,
                 **pool_kwargs,
             )
 

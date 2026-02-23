@@ -61,7 +61,7 @@ help:
 	@echo "  setup-test-env         - Create test environment files"
 	@echo "  check-postgresql       - Verify PostgreSQL connectivity"
 	@echo "  setup-postgresql-test-db - Create PostgreSQL test database"
-	@echo "  verify-schema          - Verify authoritative_schema.sql matches mythos_dev"
+	@echo "  verify-schema          - Verify db/mythos_<env>_ddl.sql matches database"
 	@echo ""
 	@echo "Documentation:"
 	@echo "  openapi-spec          - Generate OpenAPI spec to docs/openapi/openapi.json"
@@ -183,7 +183,7 @@ setup-postgresql-test-db:
 	$(POWERSHELL) scripts/setup_postgresql_test_db.ps1
 
 verify-schema:
-	@echo "Verifying authoritative_schema.sql matches mythos_dev..."
+	@echo "Verifying environment DDL matches database (from .env.local or .env)..."
 	$(POWERSHELL) scripts/verify_schema_match.ps1
 
 # ============================================================================

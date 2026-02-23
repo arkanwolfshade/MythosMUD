@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 """Load world seed data (rooms, zones, zone configs, holidays, schedules, emotes) into PostgreSQL database.
 
-WARNING: This script applies db/authoritative_schema.sql FIRST, which DROPS ALL TABLES
-(rooms, zones, players, users, etc.) and recreates an empty schema, then loads only
-world/emotes data. Running it against a database that has data you care about will
-DESTROY that data. Use a separate DB for seeding, or run only the seed file:
-  psql -d your_db -f data/db/00_world_and_emotes.sql
+WARNING: This script applies the environment-specific DDL (db/mythos_<dbname>_ddl.sql) FIRST,
+which DROPS ALL TABLES (rooms, zones, players, users, etc.) and recreates an empty schema,
+then loads the environment DML (world, professions, items, NPCs, etc.). Running it against a
+database that has data you care about will DESTROY that data. Use a separate DB for seeding,
+or run only the DML file: psql -d your_db -f data/db/mythos_<env>_dml.sql
+
+The DDL and DML files are chosen from DATABASE_URL: mythos_dev -> db/mythos_dev_ddl.sql +
+data/db/mythos_dev_dml.sql, mythos_unit -> mythos_unit_ddl + mythos_unit_dml, mythos_e2e ->
+mythos_e2e_ddl + mythos_e2e_dml.
 """
 
 import os
@@ -26,11 +30,16 @@ def _validate_environment_and_files() -> tuple[str, Path, Path]:
         print("ERROR: DATABASE_URL not set")
         sys.exit(1)
 
+    db_name = database_url.split("/")[-1].split("?")[0].strip()
+    allowed = ("mythos_dev", "mythos_unit", "mythos_e2e")
+    if db_name not in allowed:
+        print(f"ERROR: DATABASE_URL database name must be one of {allowed!r}, got {db_name!r}")
+        sys.exit(1)
+
     # Require explicit confirmation: this script DROPS ALL TABLES
     if os.getenv("CONFIRM_LOAD_WORLD_SEED") != "1":
-        db_name = database_url.split("/")[-1].split("?")[0]
         print("=" * 60)
-        print("DESTRUCTIVE: This script applies authoritative_schema.sql which")
+        print("DESTRUCTIVE: This script applies the environment DDL which")
         print("DROPS ALL TABLES (rooms, zones, players, users, etc.) then loads")
         print("world seed. All existing data in the database will be LOST.")
         print("")
@@ -41,19 +50,20 @@ def _validate_environment_and_files() -> tuple[str, Path, Path]:
         print("=" * 60)
         sys.exit(1)
 
-    schema_file = Path("db/authoritative_schema.sql")
-    seed_file = Path("data/db/00_world_and_emotes.sql")
+    schema_file = Path(f"db/{db_name}_ddl.sql")
+    dml_file = Path(f"data/db/{db_name}_dml.sql")
 
     if not schema_file.exists():
-        print(f"ERROR: Schema file not found: {schema_file}")
-        print("       Run: ./scripts/generate_schema_from_dev.sh to generate it")
+        print(f"ERROR: DDL file not found: {schema_file}")
+        print("       Use db/mythos_dev_ddl.sql, db/mythos_unit_ddl.sql, or db/mythos_e2e_ddl.sql")
         sys.exit(1)
 
-    if not seed_file.exists():
-        print(f"ERROR: Seed file not found: {seed_file}")
+    if not dml_file.exists():
+        print(f"ERROR: DML file not found: {dml_file}")
+        print("       Use data/db/mythos_dev_dml.sql, mythos_unit_dml.sql, or mythos_e2e_dml.sql")
         sys.exit(1)
 
-    return database_url, schema_file, seed_file
+    return database_url, schema_file, dml_file
 
 
 async def _print_current_table_counts(conn: asyncpg.Connection) -> None:
@@ -159,7 +169,7 @@ async def _execute_seed_statements(conn: asyncpg.Connection, clean_sql: str) -> 
                 # Normalize SQL statement termination - ensure it ends with exactly one semicolon
                 # SAFETY: statement comes from trusted SQL files in repository (not user input)
                 # This normalization is safe because:
-                # 1. statement is from trusted seed data files (data/db/00_world_and_emotes.sql)
+                # 1. statement is from trusted DML files (data/db/mythos_*_dml.sql)
                 # 2. We're only normalizing statement termination, not building SQL from user input
                 # 3. No user-controlled data is involved in SQL construction
                 normalized_statement = statement.rstrip().rstrip(";")
@@ -167,7 +177,7 @@ async def _execute_seed_statements(conn: asyncpg.Connection, clean_sql: str) -> 
                 # The semicolon is a constant, and normalized_statement is from trusted source
                 # nosemgrep: python.lang.security.audit.formatted-sql-query.formatted-sql-query
                 sql_statement = f"{normalized_statement};"
-                # Loading seed data from trusted SQL files in repository (data/db/00_world_and_emotes.sql).
+                # Loading seed data from trusted DML files in repository (data/db/mythos_*_dml.sql).
                 # No user input is involved - we're only normalizing statement termination (adding semicolon).
                 # The SQL statements are from trusted seed files checked into the repository.
                 # nosec B608: Loading seed data from trusted SQL files in repository (not user input)
@@ -206,10 +216,10 @@ async def _execute_seed_statements(conn: asyncpg.Connection, clean_sql: str) -> 
         sys.exit(1)
 
 
-async def _load_seed_data(conn: asyncpg.Connection, seed_file: Path) -> None:
-    """Load seed data from file."""
-    print(f"\nLoading seed data from {seed_file}...")
-    sql = _read_seed_file(seed_file)
+async def _load_seed_data(conn: asyncpg.Connection, dml_file: Path) -> None:
+    """Load seed data from environment DML file."""
+    print(f"\nLoading DML from {dml_file}...")
+    sql = _read_seed_file(dml_file)
     clean_sql = _clean_psql_commands(sql)
     await _execute_seed_statements(conn, clean_sql)
 
@@ -239,7 +249,7 @@ async def main():
     print("MYTHOSMUD WORLD SEED DATA LOADER")
     print("=" * 60)
 
-    database_url, schema_file, seed_file = _validate_environment_and_files()
+    database_url, schema_file, dml_file = _validate_environment_and_files()
 
     # Convert asyncpg URL to connection params
     url = database_url.replace("postgresql+asyncpg://", "postgresql://")
@@ -250,7 +260,7 @@ async def main():
     try:
         await _print_current_table_counts(conn)
         await _apply_schema(conn, schema_file)
-        await _load_seed_data(conn, seed_file)
+        await _load_seed_data(conn, dml_file)
         await _print_final_table_counts(conn)
 
         print("\n" + "=" * 60)

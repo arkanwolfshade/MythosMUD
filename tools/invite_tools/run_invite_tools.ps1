@@ -31,12 +31,20 @@ param(
     [int]$Count = 100,
 
     [Parameter(Mandatory = $false)]
-    [string]$Expires
+    [string]$Expires,
+
+    # PostgreSQL schema (e.g. mythos_dev). Sets POSTGRES_SEARCH_PATH so tables are resolved in that schema.
+    [Parameter(Mandatory = $false)]
+    [string]$Schema
 )
 
 # Use existing DATABASE_URL if set (e.g. PostgreSQL mythos_dev); otherwise default to SQLite
 if (-not $env:DATABASE_URL) {
     $env:DATABASE_URL = "sqlite+aiosqlite:///./data/local/players/local_players.db"
+}
+# When targeting a named schema (e.g. [mythos_dev].[mythos_dev]), set search_path so "invites" resolves correctly
+if ($Schema) {
+    $env:POSTGRES_SEARCH_PATH = $Schema
 }
 if (-not $env:MYTHOSMUD_SECRET_KEY) {
     $env:MYTHOSMUD_SECRET_KEY = "dev-secret-key-for-invite-generation"

@@ -1,5 +1,8 @@
 # DDL Verification Summary
 
+\_Historical: this snapshot reflects verification before the switch to authoritative DDL
+(`db/mythos\__\_ddl.sql`). Current schema is defined only in those files.\*
+
 ## Final Status
 
 ### mythos_dev (local development)
@@ -9,7 +12,7 @@
 **All Required Tables Present**:
 
 ✅ Static tables (9): calendar_holidays, calendar_npc_schedules, emotes, emote_aliases, zones, subzones, rooms,
-  room_links, aliases
+room_links, aliases
 
 ✅ NPC tables (3): npc_definitions, npc_relationships, npc_spawn_rules
 
@@ -17,7 +20,7 @@
 
 ✅ Runtime tables (8): users, players, player_inventories, invites, player_sanity, sanity_adjustment_log,
 
-  sanity_exposure_state, sanity_cooldowns
+sanity_exposure_state, sanity_cooldowns
 
 ✅ Item tables (3): item_prototypes, item_instances, item_component_states
 
@@ -37,7 +40,7 @@ existing `players.id` column.
 
 ✅ All identity tables
 
-✅ All runtime tables (including player_inventories, player_sanity, sanity_* tables)
+✅ All runtime tables (including player*inventories, player_sanity, sanity*\* tables)
 
 - ✅ All item tables
 
@@ -55,7 +58,7 @@ existing `players.id` column.
 
 ✅ Runtime tables (8): users, players, player_inventories, invites, player_sanity, sanity_adjustment_log,
 
-  sanity_exposure_state, sanity_cooldowns
+sanity_exposure_state, sanity_cooldowns
 
 ✅ Item tables (3)
 
@@ -71,12 +74,12 @@ All schema files have been applied to all three databases:
 ## Notes
 
 **mythos_dev schema difference**: The existing `players` table uses UUID `id` as primary key instead of VARCHAR
-  `player_id`. This is from the old SQLAlchemy-created schema. The runtime tables (player_sanity, sanity_*,
-  player_inventories) have been created with foreign keys referencing `players.id` to match the existing structure.
+`player_id`. This is from the old SQLAlchemy-created schema. The runtime tables (player*sanity, sanity*\*,
+player_inventories) have been created with foreign keys referencing `players.id` to match the existing structure.
 
 **Migration consideration**: If `mythos_dev` needs to match the DDL specification exactly, a migration script would be
-  needed to:
+needed to:
 
-  1. Rename `players.id` to `players.player_id` and change type to VARCHAR(255)
-  2. Update all foreign key references
-  3. Migrate existing data
+1. Rename `players.id` to `players.player_id` and change type to VARCHAR(255)
+2. Update all foreign key references
+3. Migrate existing data

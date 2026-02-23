@@ -11,8 +11,8 @@ echo "MythosMUD PostgreSQL Test Database Setup"
 echo "========================================="
 echo ""
 
-# Load database URL from environment or .env.unit_test
-TEST_ENV_PATH="server/tests/.env.unit_test"
+# Load database URL from environment or .env.unit_test (project root)
+TEST_ENV_PATH=".env.unit_test"
 
 if [ -f "$TEST_ENV_PATH" ]; then
     echo "[INFO] Loading configuration from $TEST_ENV_PATH"

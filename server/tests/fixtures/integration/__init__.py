@@ -14,6 +14,7 @@ from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 # Ensure all table metadata is registered so create_all creates every table
 # (e.g. quest_definitions, quest_offers) regardless of which test runs first.
 import server.models  # noqa: F401  # Reason: Import for side effect so create_all registers all table metadata (e.g. quest_*)
+from server.database_config_helpers import get_postgres_connect_args
 from server.models.base import Base
 
 # Databases that integration tests MAY truncate (reset at will).
@@ -95,6 +96,7 @@ def integration_engine(request: pytest.FixtureRequest) -> Generator[AsyncEngine,
 
     pool_class = NullPool
     db_url = request.getfixturevalue("integration_db_url")
+    connect_args = get_postgres_connect_args()
 
     # Create engine with connection pool settings optimized for tests
     engine = create_async_engine(
@@ -103,6 +105,7 @@ def integration_engine(request: pytest.FixtureRequest) -> Generator[AsyncEngine,
         echo=False,
         poolclass=pool_class,  # NullPool prevents cross-loop connection reuse on all platforms
         pool_pre_ping=True,  # Verify connections before using (if using a pool)
+        connect_args=connect_args,
     )
     yield engine
     # Cleanup: properly dispose engine and close all connections

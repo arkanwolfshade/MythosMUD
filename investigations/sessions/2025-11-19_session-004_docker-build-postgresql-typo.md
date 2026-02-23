@@ -5,6 +5,9 @@
 **Session ID**: 2025-11-19_session-004_docker-build-postgresql-typo
 **Bug Type**: Build/Infrastructure Issue
 
+**Note (2026)**: This report references `db/authoritative_schema.sql`, which has since been deprecated and
+removed. CI and Docker now use environment DDL (`db/mythos_unit_ddl.sql`, etc.).
+
 ---
 
 ## Executive Summary
@@ -286,13 +289,14 @@ The evidence clearly shows:
 **Tools Used**: grep, file reading, Docker commands, git history
 
 **Files Examined**: `Dockerfile.github-runner`, `Makefile`, `.github/workflows/ci.yml`
+
 - **Commands Executed**: Docker image listing, file content searches, git log
 - **Time Spent**: ~15 minutes
 - **Investigation Status**: ✅ **COMPLETE** - Root cause identified
 
 ---
 
-*"In the restricted archives of Miskatonic University, we learn that even the most arcane build systems can be understood through methodical investigation. The typo, like a misplaced rune in an ancient incantation, reveals itself not in the source, but in the cached layers of the Docker image - a reminder that the ephemeral state of build artifacts must be examined as carefully as the source code itself."*
+_"In the restricted archives of Miskatonic University, we learn that even the most arcane build systems can be understood through methodical investigation. The typo, like a misplaced rune in an ancient incantation, reveals itself not in the source, but in the cached layers of the Docker image - a reminder that the ephemeral state of build artifacts must be examined as carefully as the source code itself."_
 
 ---
 

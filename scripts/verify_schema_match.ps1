@@ -1,6 +1,6 @@
 #!/usr/bin/env pwsh
 # MythosMUD Schema Verification Script
-# Verifies that db/authoritative_schema.sql matches the current mythos_dev database structure
+# Verifies that the environment-specific DDL (db/mythos_<dbname>_ddl.sql) matches the current database structure
 
 # Suppress PSAvoidUsingWriteHost: This script uses Write-Host for status/output messages
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Status and output messages require Write-Host for proper display')]
@@ -20,7 +20,7 @@ $DbUser = "postgres"
 $DbPassword = $null
 $DbHost = "localhost"
 $DbName = "mythos_dev"
-$SchemaFile = Join-Path (Join-Path $ProjectRoot "db") "authoritative_schema.sql"
+# SchemaFile set after DbName is known (below)
 
 if (Test-Path $EnvFile) {
     Write-Host "Loading environment from $EnvFile" -ForegroundColor Cyan
@@ -59,13 +59,22 @@ if ($script:DatabaseUrl) {
     }
 }
 
+# Environment-specific DDL: db/mythos_dev_ddl.sql, db/mythos_unit_ddl.sql, db/mythos_e2e_ddl.sql
+$allowedDbs = @("mythos_dev", "mythos_unit", "mythos_e2e")
+if ($DbName -notin $allowedDbs) {
+    Write-Host "Error: Database name must be one of: $($allowedDbs -join ', ')" -ForegroundColor Red
+    exit 1
+}
+$SchemaFile = Join-Path (Join-Path $ProjectRoot "db") "${DbName}_ddl.sql"
+
 Write-Host "Verifying schema match between $SchemaFile and $DbName..." -ForegroundColor Green
 
 # Find pg_dump
 $PgDump = $null
 if (Get-Command pg_dump -ErrorAction SilentlyContinue) {
     $PgDump = "pg_dump"
-} else {
+}
+else {
     # Check common PostgreSQL installation paths
     $drives = @("C", "D", "E", "F")
     $versions = @("18", "17", "16", "15", "14", "13", "12")
@@ -90,8 +99,8 @@ if (-not $PgDump) {
 
 # Check if schema file exists
 if (-not (Test-Path $SchemaFile)) {
-    Write-Host "Error: Schema file not found: $SchemaFile" -ForegroundColor Red
-    Write-Host "Run ./scripts/generate_schema_from_dev.sh to generate it." -ForegroundColor Yellow
+    Write-Host "Error: DDL file not found: $SchemaFile" -ForegroundColor Red
+    Write-Host "Use db/mythos_dev_ddl.sql, db/mythos_unit_ddl.sql, or db/mythos_e2e_ddl.sql" -ForegroundColor Yellow
     exit 1
 }
 
@@ -100,7 +109,8 @@ $env:PGPASSWORD = $DbPassword
 try {
     $pgIsready = if (Get-Command pg_isready -ErrorAction SilentlyContinue) {
         "pg_isready"
-    } else {
+    }
+    else {
         # Find pg_isready in same location as pg_dump
         $pgDumpDir = Split-Path -Parent $PgDump
         Join-Path $pgDumpDir "pg_isready.exe"
@@ -112,7 +122,8 @@ try {
         Write-Host "Schema file exists but cannot verify against database." -ForegroundColor Yellow
         exit 0
     }
-} catch {
+}
+catch {
     Write-Host "Warning: Cannot verify database connectivity." -ForegroundColor Yellow
     Write-Host "Schema file exists but cannot verify against database." -ForegroundColor Yellow
     exit 0
@@ -145,24 +156,24 @@ try {
     # Read and normalize both schema files for comparison
     # Remove comments, SET statements, pg_dump metadata commands, and empty lines, then sort
     $schemaContent = Get-Content $SchemaFile |
-        Where-Object {
-            $_ -notmatch '^\s*--' -and
-            $_ -notmatch '^\s*SET\s+' -and
-            $_ -notmatch '^\\restrict' -and
-            $_ -notmatch '^\\unrestrict' -and
-            $_ -match '\S'
-        } |
-        Sort-Object
+    Where-Object {
+        $_ -notmatch '^\s*--' -and
+        $_ -notmatch '^\s*SET\s+' -and
+        $_ -notmatch '^\\restrict' -and
+        $_ -notmatch '^\\unrestrict' -and
+        $_ -match '\S'
+    } |
+    Sort-Object
 
     $currentContent = Get-Content $TempSchema |
-        Where-Object {
-            $_ -notmatch '^\s*--' -and
-            $_ -notmatch '^\s*SET\s+' -and
-            $_ -notmatch '^\\restrict' -and
-            $_ -notmatch '^\\unrestrict' -and
-            $_ -match '\S'
-        } |
-        Sort-Object
+    Where-Object {
+        $_ -notmatch '^\s*--' -and
+        $_ -notmatch '^\s*SET\s+' -and
+        $_ -notmatch '^\\restrict' -and
+        $_ -notmatch '^\\unrestrict' -and
+        $_ -match '\S'
+    } |
+    Sort-Object
 
     # Compare schemas
     $schemaText = $schemaContent -join "`n"
@@ -171,10 +182,11 @@ try {
     if ($schemaText -eq $currentText) {
         Write-Host "[OK] Schema matches! $SchemaFile is up-to-date with $DbName" -ForegroundColor Green
         exit 0
-    } else {
+    }
+    else {
         Write-Host "[ERROR] Schema drift detected!" -ForegroundColor Red
         Write-Host "The schema file does not match the current database structure." -ForegroundColor Yellow
-        Write-Host "Run ./scripts/generate_schema_from_dev.sh to regenerate the schema file." -ForegroundColor Yellow
+        Write-Host "Regenerate the DDL file for $DbName (e.g. scripts/generate_schema_from_dev.ps1)." -ForegroundColor Yellow
         Write-Host ""
         Write-Host "Differences (first 20 lines):" -ForegroundColor Yellow
 
@@ -189,7 +201,8 @@ try {
 
         exit 1
     }
-} finally {
+}
+finally {
     # Clean up temp file
     if (Test-Path $TempSchema) {
         Remove-Item $TempSchema -Force -ErrorAction SilentlyContinue

@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env pwsh
+#!/usr/bin/env pwsh
 # MythosMUD PostgreSQL Connection Diagnostic Script
 # Checks PostgreSQL connectivity and configuration for tests
 # Suppress PSAvoidUsingWriteHost: This script uses Write-Host for status/output messages
@@ -15,9 +15,10 @@ Write-Host "MythosMUD PostgreSQL Diagnostic" -ForegroundColor Green
 Write-Host "===============================" -ForegroundColor Green
 Write-Host ""
 
-# Load database URL from .env.unit_test if not provided
+# Load database URL from .env.unit_test in project root if not provided
 if (-not $DatabaseUrl) {
-    $TestEnvPath = Join-Path -Path $PSScriptRoot -ChildPath ".." | Join-Path -ChildPath "server" | Join-Path -ChildPath "tests" | Join-Path -ChildPath ".env.unit_test"
+    $ProjectRoot = Split-Path $PSScriptRoot -Parent
+    $TestEnvPath = Join-Path -Path $ProjectRoot -ChildPath ".env.unit_test"
 
     if (Test-Path $TestEnvPath) {
         Write-Host "[INFO] Loading DATABASE_URL from $TestEnvPath" -ForegroundColor Cyan
@@ -211,5 +212,5 @@ finally {
 }
 
 Write-Host ""
-Write-Host "All diagnostic tests passed! ✓" -ForegroundColor Green
+Write-Host "All diagnostic tests passed!" -ForegroundColor Green
 Write-Host "PostgreSQL is properly configured for tests." -ForegroundColor Green

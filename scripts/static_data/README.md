@@ -20,11 +20,14 @@ INSERT statements for:
 
 The script generates a single SQL file:
 
-**Output location**: `data/db/00_world_and_emotes.sql`
+**Output location**: `data/static/generated_sql/world_and_emotes_generated.sql`
 
 **Format**: PostgreSQL-compatible INSERT statements with `ON CONFLICT` handling
 
 **Structure**: Transaction-wrapped with proper dependency ordering
+
+**Canonical seed**: This file is **not** loaded directly. Maintainers merge its content into the
+authoritative DML files (`data/db/mythos_dev_dml.sql`, etc.) when updating world/calendar/emotes data.
 
 ## Usage
 
@@ -58,7 +61,7 @@ The script will:
 1. Validate all JSON files against their schemas
 2. Generate deterministic UUIDs using v5 UUIDs with a project namespace
 3. Create INSERT statements with proper SQL escaping
-4. Write the output to `data/db/00_world_and_emotes.sql`
+4. Write the output to `data/static/generated_sql/world_and_emotes_generated.sql`
 
 ## Source Data
 
@@ -106,11 +109,11 @@ All IDs are generated using UUID v5 with a deterministic namespace:
 
 ## Integration
 
-The generated SQL file (`data/db/00_world_and_emotes.sql`) is:
+The generated file (`data/static/generated_sql/world_and_emotes_generated.sql`) is:
 
-- Used by seed data loading scripts
-- Referenced in `data/db/README.md`
-- Part of the DML baseline (see `data/db/README.md`)
+- **Merged** into authoritative DML (`data/db/mythos_*_dml.sql`) when world/emotes/calendar data changes
+- Documented in `data/static/generated_sql/README.md` and `data/db/README.md`
+- Not loaded directly; canonical seed is the `mythos_*_dml.sql` files
 
 ## Notes
 

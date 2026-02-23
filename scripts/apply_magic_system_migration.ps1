@@ -1,6 +1,8 @@
-# Apply Magic System Migration
-# This script applies the magic system migration (015_add_magic_system_tables.sql)
-# and seed data (seed_spells.sql) to all databases (mythos_dev, mythos_unit, mythos_e2e)
+# DEPRECATED: Apply Magic System Migration
+# This script is deprecated. The migration (015_add_magic_system_tables.sql) and seed file
+# (data/spells/seed_spells.sql) have been removed. Schema and spell data are now in authoritative
+# DDL (db/mythos_*_ddl.sql) and DML (data/db/mythos_*_dml.sql). Use scripts/load_world_seed.py or
+# apply the appropriate mythos_*_ddl.sql and mythos_*_dml.sql for your environment.
 
 # Suppress PSAvoidUsingWriteHost: This script uses Write-Host for status/output messages
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Status and output messages require Write-Host for proper display')]
@@ -14,7 +16,15 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-# PostgreSQL psql executable path
+# Deprecation: exit with instructions (migration and seed files no longer exist)
+Write-Host "[DEPRECATED] This script applied 015_add_magic_system_tables.sql and seed_spells.sql." -ForegroundColor Yellow
+Write-Host "Those files have been removed. Use authoritative DDL and DML instead:" -ForegroundColor Yellow
+Write-Host "  - DDL: db/mythos_dev_ddl.sql, db/mythos_unit_ddl.sql, db/mythos_e2e_ddl.sql" -ForegroundColor Cyan
+Write-Host "  - DML: data/db/mythos_dev_dml.sql, mythos_unit_dml.sql, mythos_e2e_dml.sql" -ForegroundColor Cyan
+Write-Host "  - Full reset: CONFIRM_LOAD_WORLD_SEED=1 python scripts/load_world_seed.py" -ForegroundColor Cyan
+exit 1
+
+# PostgreSQL psql executable path (unreachable; script deprecated)
 $psqlPath = "E:\Program Files\PostgreSQL\18\bin\psql.exe"
 
 if (-not (Test-Path $psqlPath)) {

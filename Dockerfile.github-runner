@@ -137,14 +137,14 @@ RUN service postgresql start && \
     su postgres -c "psql -c \"ALTER USER postgres PASSWORD '${POSTGRES_PASSWORD}';\"" && \
     su postgres -c "psql -f /workspace/db/roles/roles.sql" && \
     su postgres -c "psql -f /workspace/db/databases/databases.sql" && \
-    su postgres -c "psql -d mythos_unit -f /workspace/db/authoritative_schema.sql" && \
-    su postgres -c "psql -d mythos_unit -f /workspace/data/db/00_world_and_emotes.sql" && \
-    su postgres -c "psql -d mythos_unit -f /workspace/data/db/01_professions.sql" && \
-    su postgres -c "psql -d mythos_unit -f /workspace/data/db/02_item_prototypes.sql" && \
-    su postgres -c "psql -d mythos_unit -f /workspace/data/db/03_npc_definitions.sql" && \
+    su postgres -c "psql -d mythos_unit -f /workspace/db/mythos_unit_ddl.sql" && \
+    su postgres -c "psql -d mythos_unit -c \"SET search_path TO mythos_unit;\" -f /workspace/data/db/00_world_and_emotes.sql" && \
+    su postgres -c "psql -d mythos_unit -c \"SET search_path TO mythos_unit;\" -f /workspace/data/db/01_professions.sql" && \
+    su postgres -c "psql -d mythos_unit -c \"SET search_path TO mythos_unit;\" -f /workspace/data/db/02_item_prototypes.sql" && \
+    su postgres -c "psql -d mythos_unit -c \"SET search_path TO mythos_unit;\" -f /workspace/data/db/03_npc_definitions.sql" && \
     su postgres -c "psql -c '\\l'" | grep -q "mythos_unit" && \
-    su postgres -c "psql -d mythos_unit -c '\\dt'" | grep -q "users" && \
-    su postgres -c "psql -d mythos_unit -c '\\dt'" | grep -q "players"
+    su postgres -c "psql -d mythos_unit -c 'SET search_path TO mythos_unit; \\dt'" | grep -q "users" && \
+    su postgres -c "psql -d mythos_unit -c 'SET search_path TO mythos_unit; \\dt'" | grep -q "players"
 
 # Set environment variables for test execution (matches CI workflow expectations).
 # Human reader: supply actual secrets via docker run -e / compose; do NOT bake them into the image.

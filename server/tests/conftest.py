@@ -58,6 +58,8 @@ else:
 if not os.environ.get("DATABASE_NPC_URL"):
     os.environ["DATABASE_NPC_URL"] = "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
 os.environ.setdefault("GAME_ALIASES_DIR", "data/unit_test/players/aliases")
+# Unit tests use schema mythos_unit in database mythos_unit (not public)
+os.environ.setdefault("POSTGRES_SEARCH_PATH", "mythos_unit")
 # Force NATS TLS off for unit tests so config validation does not require cert files (not present in CI)
 os.environ["NATS_TLS_ENABLED"] = "false"
 

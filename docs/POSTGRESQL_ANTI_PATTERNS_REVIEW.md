@@ -194,7 +194,7 @@ name varchar(50) not null unique,  -- Only if 50 char limit is business requirem
 **Severity:** CRITICAL
 **Impact:** Poor documentation, harder to understand schema intent, violates best practices
 
-**Location:** All schema files except `db/authoritative_schema.sql`
+**Location:** All schema files except environment DDL (db/mythos\_\*\_ddl.sql)
 
 **Violation:** PostgreSQL best practices state: "Always add descriptive comments to tables and columns using `COMMENT
 ON`."
@@ -207,7 +207,7 @@ ON`."
 - `db/schema/04_runtime_tables.sql` - No comments
 - `server/scripts/create_professions_table.sql` - No comments
 
-**Note:** `db/authoritative_schema.sql` contains some comments (44 instances), but these appear to be generated from the
+**Note:** Environment DDL (db/mythos\_\*\_ddl.sql) contains some comments, but these appear to be generated from the
 database.
 
 **Recommendation:**
@@ -548,5 +548,5 @@ names.
 ---
 
 **Review Complete**
-*"In the archives of database design, we find that consistency and adherence to best practices are not mere suggestions,
-but the foundation upon which maintainable systems are built."*
+_"In the archives of database design, we find that consistency and adherence to best practices are not mere suggestions,
+but the foundation upon which maintainable systems are built."_
