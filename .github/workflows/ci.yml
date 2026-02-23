@@ -253,7 +253,7 @@ jobs:
           if [ ! -d htmlcov ] || [ -z "$(ls -A htmlcov 2>/dev/null)" ]; then
             if [ -f .coverage ]; then
               echo "htmlcov missing or empty; generating from .coverage..."
-              .venv-ci/bin/python -m coverage html -d htmlcov
+              .venv-ci/bin/python -m coverage html -d htmlcov --fail-under=0
             else
               echo "No .coverage or htmlcov; skipping coverage artifact."
               mkdir -p htmlcov
