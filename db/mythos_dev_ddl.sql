@@ -1592,7 +1592,7 @@ CREATE TABLE mythos_dev.spells (
     CONSTRAINT spells_corruption_on_learn_check CHECK ((corruption_on_learn >= 0)),
     CONSTRAINT spells_lucidity_cost_check CHECK ((lucidity_cost >= 0)),
     CONSTRAINT spells_mp_cost_check CHECK ((mp_cost >= 0)),
-    CONSTRAINT spells_range_type_check CHECK (((range_type)::text = ANY ((ARRAY['touch'::character varying, 'same_room'::character varying, 'adjacent_room'::character varying, 'unlimited'::character varying])::text[]))),
+    CONSTRAINT spells_range_type_check CHECK ((range_type)::text = ANY(ARRAY['touch'::character varying, 'same_room'::character varying, 'adjacent_room'::character varying, 'unlimited'::character varying]::text[])),
     CONSTRAINT spells_school_check CHECK (((school)::text = ANY ((ARRAY['mythos'::character varying, 'clerical'::character varying, 'elemental'::character varying, 'other'::character varying])::text[]))),
     CONSTRAINT spells_target_type_check CHECK (((target_type)::text = ANY ((ARRAY['self'::character varying, 'entity'::character varying, 'location'::character varying, 'area'::character varying, 'all'::character varying])::text[])))
 );
