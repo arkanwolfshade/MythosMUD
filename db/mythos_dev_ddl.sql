@@ -904,7 +904,7 @@ CREATE TABLE mythos_dev.npc_definitions (
     ai_integration_stub text DEFAULT '{}'::text NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
-    CONSTRAINT npc_definitions_npc_type_check CHECK (((npc_type)::text = ANY ((ARRAY['shopkeeper'::character varying, 'quest_giver'::character varying, 'passive_mob'::character varying, 'aggressive_mob'::character varying])::text[])))
+    CONSTRAINT npc_definitions_npc_type_check CHECK (((npc_type)::text = ANY(ARRAY['shopkeeper'::character varying, 'quest_giver'::character varying, 'passive_mob'::character varying, 'aggressive_mob'::character varying]::text[])))
 );
 
 
