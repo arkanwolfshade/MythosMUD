@@ -4,16 +4,16 @@ overview: Systematically reduce and resolve all ~8,100+ High and Critical Codacy
 todos:
   - id: wave-0-baseline
     content: Capture and document the current High/Critical Codacy baseline for the MythosMUD repo (total counts, top patterns, and distribution).
-    status: pending
+    status: completed
   - id: wave-1-config-noise-reduction
     content: Align .codacy.yml ignore patterns with actual Codacy pattern IDs for tests, RAC_* rules, CSS and other known-safe patterns to eliminate systematic noise (Bucket C).
-    status: pending
+    status: completed
   - id: wave-2-criticals-and-asserts
     content: Eliminate all Critical issues and remove or replace assert usage in production code so High "Use of assert detected" only applies (and is suppressed) in tests.
-    status: pending
+    status: completed
   - id: wave-3-security-backend
     content: Run iterative security remediation waves on Python backend patterns (Detect Common Security Issues in Python Code, SQL risks, subprocess) until High counts in those patterns are substantially reduced.
-    status: pending
+    status: in_progress
   - id: wave-4-security-frontend
     content: Run iterative remediation on High frontend security patterns (XSS, DOM misuse) in client/src, reinforcing SafeHtml and sanitization paths and suppressing only proven false positives.
     status: pending
