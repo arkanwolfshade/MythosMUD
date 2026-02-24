@@ -10,8 +10,9 @@
 -- To regenerate this file:
 --   1. Make schema changes in the mythos_e2e database
 --   2. Run: .\scripts\generate_schema_from_dev.ps1
---   3. Review the changes
---   4. Commit the updated file to git
+--   3. Remove "SET transaction_timeout = 0;" if present (PG 17+ only; CI uses older PG)
+--   4. Review the changes
+--   5. Commit the updated file to git
 --
 -- SET statements for clean execution
 SET client_min_messages = WARNING;
@@ -27,7 +28,6 @@ SET search_path = mythos_e2e;
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
-SET transaction_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', 'mythos_e2e', false);

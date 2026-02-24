@@ -2,8 +2,7 @@
 # MythosMUD Schema Verification Script
 # Verifies that the environment-specific DDL (db/mythos_<dbname>_ddl.sql) matches the current database structure
 
-# Suppress PSAvoidUsingWriteHost: This script uses Write-Host for status/output messages
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Status and output messages require Write-Host for proper display')]
+# Use Write-Output/Write-Error/Write-Warning instead of Write-Host for redirectability and Codacy compliance
 $ErrorActionPreference = "Stop"
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -23,7 +22,7 @@ $DbName = "mythos_dev"
 # SchemaFile set after DbName is known (below)
 
 if (Test-Path $EnvFile) {
-    Write-Host "Loading environment from $EnvFile" -ForegroundColor Cyan
+    Write-Output "Loading environment from $EnvFile"
     Get-Content $EnvFile | Where-Object {
         $_ -match '^\s*[^#]' -and $_ -match '='
     } | ForEach-Object {
@@ -55,19 +54,19 @@ if ($script:DatabaseUrl) {
         $DbHost = $matches[3]
         # $DbPort is parsed but not used - PostgreSQL uses default port if not specified
         $DbName = $matches[6]
-        Write-Host "Parsed DATABASE_URL: user=$DbUser, host=$DbHost, database=$DbName" -ForegroundColor Cyan
+        Write-Output "Parsed DATABASE_URL: user=$DbUser, host=$DbHost, database=$DbName"
     }
 }
 
 # Environment-specific DDL: db/mythos_dev_ddl.sql, db/mythos_unit_ddl.sql, db/mythos_e2e_ddl.sql
 $allowedDbs = @("mythos_dev", "mythos_unit", "mythos_e2e")
 if ($DbName -notin $allowedDbs) {
-    Write-Host "Error: Database name must be one of: $($allowedDbs -join ', ')" -ForegroundColor Red
+    Write-Output "Error: Database name must be one of: $($allowedDbs -join ', ')"
     exit 1
 }
 $SchemaFile = Join-Path (Join-Path $ProjectRoot "db") "${DbName}_ddl.sql"
 
-Write-Host "Verifying schema match between $SchemaFile and $DbName..." -ForegroundColor Green
+Write-Output "Verifying schema match between $SchemaFile and $DbName..."
 
 # Find pg_dump
 $PgDump = $null
@@ -92,15 +91,13 @@ else {
 }
 
 if (-not $PgDump) {
-    Write-Host "Error: pg_dump is not installed or not in PATH" -ForegroundColor Red
-    Write-Host "Please install PostgreSQL or add it to your PATH" -ForegroundColor Yellow
+    Write-Output "Error: pg_dump is not installed or not in PATH. Please install PostgreSQL or add it to your PATH."
     exit 1
 }
 
 # Check if schema file exists
 if (-not (Test-Path $SchemaFile)) {
-    Write-Host "Error: DDL file not found: $SchemaFile" -ForegroundColor Red
-    Write-Host "Use db/mythos_dev_ddl.sql, db/mythos_unit_ddl.sql, or db/mythos_e2e_ddl.sql" -ForegroundColor Yellow
+    Write-Output "Error: DDL file not found: $SchemaFile. Use db/mythos_dev_ddl.sql, db/mythos_unit_ddl.sql, or db/mythos_e2e_ddl.sql"
     exit 1
 }
 
@@ -118,14 +115,12 @@ try {
 
     & $pgIsready -h $DbHost -U $DbUser -d $DbName 2>&1 | Out-Null
     if ($LASTEXITCODE -ne 0) {
-        Write-Host "Warning: Cannot verify database connectivity." -ForegroundColor Yellow
-        Write-Host "Schema file exists but cannot verify against database." -ForegroundColor Yellow
+        Write-Output "Warning: Cannot verify database connectivity. Schema file exists but cannot verify against database."
         exit 0
     }
 }
 catch {
-    Write-Host "Warning: Cannot verify database connectivity." -ForegroundColor Yellow
-    Write-Host "Schema file exists but cannot verify against database." -ForegroundColor Yellow
+    Write-Output "Warning: Cannot verify database connectivity. Schema file exists but cannot verify against database."
     exit 0
 }
 
@@ -133,7 +128,7 @@ catch {
 $TempSchema = [System.IO.Path]::GetTempFileName()
 
 try {
-    Write-Host "Extracting current schema from database..." -ForegroundColor Green
+    Write-Output "Extracting current schema from database..."
 
     $pgDumpArgs = @(
         "-h", $DbHost
@@ -149,7 +144,7 @@ try {
 
     & $PgDump $pgDumpArgs
     if ($LASTEXITCODE -ne 0) {
-        Write-Host "Error: Failed to extract schema from database" -ForegroundColor Red
+        Write-Output "Error: Failed to extract schema from database"
         exit 1
     }
 
@@ -180,23 +175,20 @@ try {
     $currentText = $currentContent -join "`n"
 
     if ($schemaText -eq $currentText) {
-        Write-Host "[OK] Schema matches! $SchemaFile is up-to-date with $DbName" -ForegroundColor Green
+        Write-Output "[OK] Schema matches! $SchemaFile is up-to-date with $DbName"
         exit 0
     }
     else {
-        Write-Host "[ERROR] Schema drift detected!" -ForegroundColor Red
-        Write-Host "The schema file does not match the current database structure." -ForegroundColor Yellow
-        Write-Host "Regenerate the DDL file for $DbName (e.g. scripts/generate_schema_from_dev.ps1)." -ForegroundColor Yellow
-        Write-Host ""
-        Write-Host "Differences (first 20 lines):" -ForegroundColor Yellow
+        Write-Output "Error: Schema drift detected! The schema file does not match the current database structure. Regenerate the DDL file for $DbName (e.g. scripts/generate_schema_from_dev.ps1)."
+        Write-Output ""
+        Write-Output "Differences (first 20 lines):"
 
         # Use Compare-Object to show differences
         $diff = Compare-Object -ReferenceObject $schemaContent -DifferenceObject $currentContent | Select-Object -First 20
         foreach ($line in $diff) {
             $side = if ($line.SideIndicator -eq "<=") { "<" } else { ">" }
-            $color = if ($line.SideIndicator -eq "<=") { "Red" } else { "Green" }
             $lineText = $line.InputObject.ToString()
-            Write-Host ("{0} {1}" -f $side, $lineText) -ForegroundColor $color
+            Write-Output ("{0} {1}" -f $side, $lineText)
         }
 
         exit 1
