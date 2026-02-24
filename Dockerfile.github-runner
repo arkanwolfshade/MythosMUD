@@ -94,7 +94,13 @@ WORKDIR /workspace/client
 # Human reader: use npm ci for reproducible builds, fallback to npm install if lock file is out of sync.
 # AI reader: npm ci requires lock file to be in sync with package.json. If it fails, clean and reinstall.
 # --legacy-peer-deps: resolve eslint 10 vs eslint-plugin-react-hooks peer conflict (eslint-plugin requires ^3-9).
-RUN npm ci --legacy-peer-deps || (rm -rf node_modules package-lock.json && npm install --legacy-peer-deps)
+# Diagnostic: set -x prints each command before it runs so we see exactly where it hangs.
+RUN set -x && echo "[npm] Starting npm ci..." && \
+    (npm ci --legacy-peer-deps --loglevel verbose || \
+    (echo "[npm] npm ci failed, running fallback npm install..." && \
+    rm -rf node_modules package-lock.json && \
+    echo "[npm] Starting npm install..." && \
+    npm install --legacy-peer-deps --loglevel verbose))
 
 # Copy full source after dependency layers are cached.
 WORKDIR /workspace
@@ -138,13 +144,10 @@ RUN service postgresql start && \
     su postgres -c "psql -f /workspace/db/roles/roles.sql" && \
     su postgres -c "psql -f /workspace/db/databases/databases.sql" && \
     su postgres -c "psql -d mythos_unit -f /workspace/db/mythos_unit_ddl.sql" && \
-    su postgres -c "psql -d mythos_unit -c \"SET search_path TO mythos_unit;\" -f /workspace/data/db/00_world_and_emotes.sql" && \
-    su postgres -c "psql -d mythos_unit -c \"SET search_path TO mythos_unit;\" -f /workspace/data/db/01_professions.sql" && \
-    su postgres -c "psql -d mythos_unit -c \"SET search_path TO mythos_unit;\" -f /workspace/data/db/02_item_prototypes.sql" && \
-    su postgres -c "psql -d mythos_unit -c \"SET search_path TO mythos_unit;\" -f /workspace/data/db/03_npc_definitions.sql" && \
-    su postgres -c "psql -c '\\l'" | grep -q "mythos_unit" && \
-    su postgres -c "psql -d mythos_unit -c 'SET search_path TO mythos_unit; \\dt'" | grep -q "users" && \
-    su postgres -c "psql -d mythos_unit -c 'SET search_path TO mythos_unit; \\dt'" | grep -q "players"
+    su postgres -c "psql -d mythos_unit -c \"SET search_path TO mythos_unit;\" -f /workspace/data/db/mythos_unit_dml.sql" && \
+    su postgres -c "psql -t -c \"SELECT datname FROM pg_database WHERE datname = 'mythos_unit';\"" | grep -q "mythos_unit" && \
+    su postgres -c "psql -d mythos_unit -t -c \"SELECT 1 FROM information_schema.tables WHERE table_schema = 'mythos_unit' AND table_name = 'users';\"" | grep -q 1 && \
+    su postgres -c "psql -d mythos_unit -t -c \"SELECT 1 FROM information_schema.tables WHERE table_schema = 'mythos_unit' AND table_name = 'players';\"" | grep -q 1
 
 # Set environment variables for test execution (matches CI workflow expectations).
 # Human reader: supply actual secrets via docker run -e / compose; do NOT bake them into the image.
