@@ -1108,7 +1108,7 @@ CREATE TABLE mythos_e2e.player_lucidity (
     last_updated_at timestamp with time zone DEFAULT now() CONSTRAINT player_sanity_last_updated_at_not_null NOT NULL,
     catatonia_entered_at timestamp with time zone,
     CONSTRAINT player_lucidity_current_lcd_check CHECK (((current_lcd >= '-100'::integer) AND (current_lcd <= 100))),
-    CONSTRAINT player_lucidity_current_tier_check CHECK (((current_tier)::text = ANY ((ARRAY['lucid'::character varying, 'uneasy'::character varying, 'fractured'::character varying, 'deranged'::character varying, 'catatonic'::character varying])::text[])))
+    CONSTRAINT player_lucidity_current_tier_check CHECK (current_tier::text = ANY (ARRAY['lucid'::character varying, 'uneasy'::character varying, 'fractured'::character varying, 'deranged'::character varying, 'catatonic'::character varying]::text[]))
 );
 
 
