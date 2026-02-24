@@ -1587,14 +1587,14 @@ CREATE TABLE mythos_unit.spells (
     effect_data jsonb DEFAULT '{}'::jsonb NOT NULL,
     materials jsonb DEFAULT '[]'::jsonb NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
-    CONSTRAINT spells_casting_time_seconds_check CHECK ((casting_time_seconds >= 0)),
-    CONSTRAINT spells_corruption_on_cast_check CHECK ((corruption_on_cast >= 0)),
-    CONSTRAINT spells_corruption_on_learn_check CHECK ((corruption_on_learn >= 0)),
-    CONSTRAINT spells_lucidity_cost_check CHECK ((lucidity_cost >= 0)),
-    CONSTRAINT spells_mp_cost_check CHECK ((mp_cost >= 0)),
-    CONSTRAINT spells_range_type_check CHECK (((range_type)::text = ANY ((ARRAY['touch'::character varying, 'same_room'::character varying, 'adjacent_room'::character varying, 'unlimited'::character varying])::text[]))),
-    CONSTRAINT spells_school_check CHECK (((school)::text = ANY ((ARRAY['mythos'::character varying, 'clerical'::character varying, 'elemental'::character varying, 'other'::character varying])::text[]))),
-    CONSTRAINT spells_target_type_check CHECK (((target_type)::text = ANY ((ARRAY['self'::character varying, 'entity'::character varying, 'location'::character varying, 'area'::character varying, 'all'::character varying])::text[])))
+    CONSTRAINT spells_casting_time_seconds_check CHECK (casting_time_seconds >= 0),
+    CONSTRAINT spells_corruption_on_cast_check CHECK (corruption_on_cast >= 0),
+    CONSTRAINT spells_corruption_on_learn_check CHECK (corruption_on_learn >= 0),
+    CONSTRAINT spells_lucidity_cost_check CHECK (lucidity_cost >= 0),
+    CONSTRAINT spells_mp_cost_check CHECK (mp_cost >= 0),
+    CONSTRAINT spells_range_type_check CHECK (range_type::text = ANY(ARRAY['touch'::character varying, 'same_room'::character varying, 'adjacent_room'::character varying, 'unlimited'::character varying]::text[])),
+    CONSTRAINT spells_school_check CHECK (school::text = ANY(ARRAY['mythos'::character varying, 'clerical'::character varying, 'elemental'::character varying, 'other'::character varying]::text[])),
+    CONSTRAINT spells_target_type_check CHECK (target_type::text = ANY(ARRAY['self'::character varying, 'entity'::character varying, 'location'::character varying, 'area'::character varying, 'all'::character varying]::text[]))
 );
 
 
@@ -2835,7 +2835,7 @@ ALTER TABLE ONLY mythos_unit.emote_aliases
 --
 
 ALTER TABLE ONLY mythos_unit.containers
-    ADD CONSTRAINT fk_containers_container_item_instance FOREIGN KEY (container_item_instance_id) REFERENCES mythos_unit.item_instances(item_instance_id) ON DELETE SET NULL;
+    ADD CONSTRAINT fk_containers_container_item_instance FOREIGN KEY (container_item_instance_id) REFERENCES mythos_unit.item_instances (item_instance_id) ON DELETE SET NULL;
 
 
 --
@@ -3027,7 +3027,7 @@ ALTER TABLE ONLY mythos_unit.players
 --
 
 ALTER TABLE ONLY mythos_unit.quest_instances
-    ADD CONSTRAINT quest_instances_player_id_fkey FOREIGN KEY (player_id) REFERENCES mythos_unit.players(player_id) ON DELETE CASCADE;
+    ADD CONSTRAINT quest_instances_player_id_fkey FOREIGN KEY (player_id) REFERENCES mythos_unit.players (player_id) ON DELETE CASCADE;
 
 
 --

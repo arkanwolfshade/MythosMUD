@@ -92,7 +92,8 @@ class NATSConnectionStateMachine(StateMachine):
         so mypy accepts .id and state comparisons. CI uses stricter mypy than some locals.
         """
         current = self.current_state
-        assert isinstance(current, State)
+        if not isinstance(current, State):
+            raise TypeError(f"Expected single State for this FSM, got {type(current).__name__}")
         return current
 
     def __init__(self, connection_id: str, max_reconnect_attempts: int = 5) -> None:

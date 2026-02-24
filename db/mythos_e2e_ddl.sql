@@ -482,10 +482,10 @@ CREATE TABLE mythos_e2e.containers (
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
     container_item_instance_id character varying(64),
     items_json jsonb DEFAULT '[]'::jsonb NOT NULL,
-    CONSTRAINT containers_capacity_slots_check CHECK (((capacity_slots > 0) AND (capacity_slots <= 20))),
-    CONSTRAINT containers_lock_state_check CHECK ((lock_state = ANY(ARRAY['unlocked'::text, 'locked'::text, 'sealed'::text]))),
-    CONSTRAINT containers_source_type_check CHECK ((source_type = ANY(ARRAY['environment'::text, 'equipment'::text, 'corpse'::text]))),
-    CONSTRAINT containers_weight_limit_check CHECK (((weight_limit IS NULL) OR (weight_limit > 0)))
+    CONSTRAINT containers_capacity_slots_check CHECK ((capacity_slots > 0) AND (capacity_slots <= 20)),
+    CONSTRAINT containers_lock_state_check CHECK (lock_state = ANY(ARRAY['unlocked'::text, 'locked'::text, 'sealed'::te]))),
+    CONSTRAINT containers_source_type_check CHECK (source_type = ANY(ARRAY['environment'::text, 'equipment'::text, 'corpse'::text])),
+    CONSTRAINT containers_weight_limit_check CHECK ((weight_limit IS NULL) OR (weight_limit > 0))
 );
 
 
@@ -2867,7 +2867,7 @@ ALTER TABLE ONLY mythos_e2e.invites
 --
 
 ALTER TABLE ONLY mythos_e2e.item_component_states
-    ADD CONSTRAINT item_component_states_item_instance_id_fkey FOREIGN KEY (item_instance_id) REFERENCES mythos_e2e.item_instances(item_instance_id) ON DELETE CASCADE;
+    ADD CONSTRAINT item_component_states_item_instance_id_fkey FOREIGN KEY (item_instance_id) REFERENCES mythos_e2e.item_instances (item_instance_id) ON DELETE CASCADE;
 
 
 --
