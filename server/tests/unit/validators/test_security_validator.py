@@ -120,11 +120,12 @@ def test_comprehensive_sanitize_input_removes_control_chars():
     assert "\x03" not in result
 
 
-def test_comprehensive_sanitize_input_preserves_newlines():
-    """Test that comprehensive sanitization preserves newlines."""
+def test_comprehensive_sanitize_input_normalizes_newlines():
+    """Test that comprehensive sanitization normalizes newlines to spaces."""
     text = "Hello\nworld"
     result = comprehensive_sanitize_input(text)
-    assert "\n" in result
+    assert "\n" not in result
+    assert "Hello world" in result
 
 
 def test_comprehensive_sanitize_input_preserves_tabs():

@@ -45,8 +45,10 @@ PLAYER_NAME_PATTERN = re.compile(r"^[a-zA-Z][a-zA-Z0-9_-]*$")
 ALIAS_NAME_PATTERN = re.compile(r"^[a-zA-Z][a-zA-Z0-9_]*$")
 HELP_TOPIC_PATTERN = re.compile(r"^[a-zA-Z][a-zA-Z0-9_-]*$")
 
-# Pre-compile ANSI pattern
+# Pre-compile ANSI and control character patterns
 ANSI_PATTERN = re.compile(r"\x1b\[[0-9;]*[a-zA-Z]")
+CONTROL_CHARS_PATTERN = re.compile(r"[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]")
+ZERO_WIDTH_PATTERN = re.compile(r"[\u200B-\u200D\uFEFF]")
 
 # Dangerous characters set for fast lookup
 DANGEROUS_CHARS = set("<>\"'&")
@@ -128,6 +130,17 @@ def optimized_comprehensive_sanitize_input(text: str) -> str:
 
     # Step 2: ANSI code removal (cached)
     sanitized = optimized_strip_ansi_codes(sanitized)
+
+    # Step 3: Additional security checks (mirrors non-optimized validator)
+    # Remove null bytes and other control characters (except newlines and tabs)
+    sanitized = CONTROL_CHARS_PATTERN.sub("", sanitized)
+    # Remove zero-width characters and other invisible Unicode
+    sanitized = ZERO_WIDTH_PATTERN.sub("", sanitized)
+
+    # Step 4: Normalize line breaks to prevent CRLF injection in logs and headers
+    sanitized = sanitized.replace("\r\n", " ")
+    sanitized = sanitized.replace("\r", " ")
+    sanitized = sanitized.replace("\n", " ")
 
     return sanitized
 

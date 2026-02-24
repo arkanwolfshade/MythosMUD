@@ -21,6 +21,13 @@ print("This will check for known vulnerabilities...")
 
 # Scan Python dependencies (pyproject.toml)
 print("\nScanning Python dependencies...")
+# SAFETY NOTES:
+# - Executable path (trivy_path) comes from shutil.which("trivy") and is validated above.
+# - All arguments are static strings; there is no user input in the command.
+# - List form with shell=False prevents shell injection.
+# - This script is a privileged security scanner, not exposed to untrusted input.
+# nosemgrep: python.lang.security.audit.subprocess-shell-true.subprocess-shell-true
+# nosec B603: trivy_path is from shutil.which (trusted PATH), args are static list
 result = subprocess.run(
     [trivy_path, "fs", "--security-checks", "vuln", "."],
     check=False,
@@ -49,6 +56,8 @@ else:
 
 # Scan Node dependencies (package.json in client)
 print("\nScanning Node.js dependencies...")
+# nosemgrep: python.lang.security.audit.subprocess-shell-true.subprocess-shell-true
+# nosec B603: trivy_path is from shutil.which (trusted PATH), args are static list
 result = subprocess.run(
     [trivy_path, "fs", "--security-checks", "vuln", "client"],
     check=False,

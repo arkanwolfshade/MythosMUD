@@ -20,7 +20,14 @@ print("Running Lizard complexity analysis...")
 print("This will analyze code complexity...")
 
 # Run lizard on server directory
-# Exclude test files and other non-production code
+# Exclude test files and other non-production code.
+# SAFETY NOTES:
+# - Executable path (lizard_path) comes from shutil.which("lizard") and is validated above.
+# - All arguments are static strings; there is no user input in the command.
+# - List form with shell=False prevents shell injection.
+# - This script is a local analysis tool, not a code path handling untrusted user data.
+# nosemgrep: python.lang.security.audit.subprocess-shell-true.subprocess-shell-true
+# nosec B603: lizard_path is from shutil.which (trusted PATH), args are static list
 result = subprocess.run(
     [
         lizard_path,

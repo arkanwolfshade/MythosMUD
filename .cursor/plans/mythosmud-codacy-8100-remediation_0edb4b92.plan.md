@@ -13,16 +13,16 @@ todos:
     status: completed
   - id: wave-3-security-backend
     content: Run iterative security remediation waves on Python backend patterns (Detect Common Security Issues in Python Code, SQL risks, subprocess) until High counts in those patterns are substantially reduced.
-    status: in_progress
+    status: completed
   - id: wave-4-security-frontend
     content: Run iterative remediation on High frontend security patterns (XSS, DOM misuse) in client/src, reinforcing SafeHtml and sanitization paths and suppressing only proven false positives.
-    status: pending
+    status: completed
   - id: wave-5-complexity-refactors
     content: Tackle the worst Lizard CCN and parameter-count findings with targeted refactors that preserve behavior and reduce design risk.
-    status: pending
+    status: completed
   - id: wave-6-metrics-and-hardening
     content: Maintain progress logs, tighten any remaining suppressions, and iterate until Codacy reports zero Criticals and only justified Highs for MythosMUD.
-    status: pending
+    status: completed
 isProject: false
 ---
 

@@ -15,6 +15,7 @@ gateways, lest the ancient ones find a way through the cracks in our defenses."
 # pylint: disable=too-many-return-statements  # Reason: Security validators require multiple return statements for different validation patterns and security check scenarios
 
 import re
+from collections.abc import Callable
 
 import ftfy
 import strip_ansi
@@ -148,6 +149,15 @@ def comprehensive_sanitize_input(text: str) -> str:
     sanitized = re.sub(
         r"[\u200B-\u200D\uFEFF]", "", sanitized
     )  # Zero-width space, zero-width non-joiner, zero-width joiner, zero-width no-break space
+
+    # Step 4: Normalize line breaks to prevent CRLF injection in logs and headers
+    # Newlines and carriage returns can be used to inject additional log lines
+    # or manipulate protocol headers. Normalize them to spaces to preserve
+    # readability while ensuring a single logical line for security-sensitive
+    # sinks such as logging.
+    sanitized = sanitized.replace("\r\n", " ")
+    sanitized = sanitized.replace("\r", " ")
+    sanitized = sanitized.replace("\n", " ")
 
     return sanitized
 
@@ -578,6 +588,21 @@ def check_injection_patterns(text: str) -> tuple[bool, list[str]]:
     return len(matched_patterns) > 0, matched_patterns
 
 
+# Dispatch table for validate_security_comprehensive (reduces CCN; single lookup + call)
+_FIELD_VALIDATORS: dict[str, Callable[[str], str]] = {
+    "message": validate_message_content,
+    "reason": validate_message_content,
+    "pose": validate_message_content,
+    "action": validate_action_content,
+    "player_name": validate_player_name,
+    "alias_name": validate_alias_name,
+    "command": validate_command_content,
+    "filter_name": validate_filter_name,
+    "target": validate_target_player,
+    "combat_target": validate_combat_target,
+}
+
+
 def validate_security_comprehensive(text: str, field_type: str = "message") -> str:
     """
     Comprehensive security validation for any text field.
@@ -598,22 +623,5 @@ def validate_security_comprehensive(text: str, field_type: str = "message") -> s
     if not text:
         return text
 
-    # Apply appropriate validation based on field type
-    if field_type in ["message", "reason", "pose"]:
-        return validate_message_content(text)
-    if field_type == "action":
-        return validate_action_content(text)
-    if field_type == "player_name":
-        return validate_player_name(text)
-    if field_type == "alias_name":
-        return validate_alias_name(text)
-    if field_type == "command":
-        return validate_command_content(text)
-    if field_type == "filter_name":
-        return validate_filter_name(text)
-    if field_type == "target":
-        return validate_target_player(text)
-    if field_type == "combat_target":
-        return validate_combat_target(text)
-    # Default to message validation for unknown field types
-    return validate_message_content(text)
+    validator = _FIELD_VALIDATORS.get(field_type, validate_message_content)
+    return validator(text)
