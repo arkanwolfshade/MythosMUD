@@ -2883,7 +2883,7 @@ ALTER TABLE ONLY mythos_dev.item_instances
 --
 
 ALTER TABLE ONLY mythos_dev.lucidity_adjustment_log
-    ADD CONSTRAINT lucidity_adjustment_log_player_id_fkey FOREIGN KEY (player_id) REFERENCES mythos_dev.players(player_id) ON DELETE CASCADE;
+    ADD CONSTRAINT lucidity_adjustment_log_player_id_fkey FOREIGN KEY ( player_id ) REFERENCES mythos_dev.players(player_id) ON DELETE CASCADE;
 
 
 --
