@@ -483,8 +483,8 @@ CREATE TABLE mythos_unit.containers (
     container_item_instance_id character varying(64),
     items_json jsonb DEFAULT '[]'::jsonb NOT NULL,
     CONSTRAINT containers_capacity_slots_check CHECK (((capacity_slots > 0) AND (capacity_slots <= 20))),
-    CONSTRAINT containers_lock_state_check CHECK ((lock_state = ANY (ARRAY['unlocked'::text, 'locked'::text, 'sealed'::text]))),
-    CONSTRAINT containers_source_type_check CHECK ((source_type = ANY (ARRAY['environment'::text, 'equipment'::text, 'corpse'::text]))),
+    CONSTRAINT containers_lock_state_check CHECK ((lock_state = ANY(ARRAY['unlocked'::text, 'locked'::text, 'sealed'::text]))),
+    CONSTRAINT containers_source_type_check CHECK ((source_type = ANY(ARRAY['environment'::text, 'equipment'::text, 'corpse'::text]))),
     CONSTRAINT containers_weight_limit_check CHECK (((weight_limit IS NULL) OR (weight_limit > 0)))
 );
 
@@ -1381,7 +1381,7 @@ CREATE TABLE mythos_unit.quest_instances (
     progress jsonb DEFAULT '{}'::jsonb NOT NULL,
     accepted_at timestamp with time zone DEFAULT now() NOT NULL,
     completed_at timestamp with time zone,
-    CONSTRAINT quest_instances_state_check CHECK ((state = ANY (ARRAY['active'::text, 'completed'::text, 'abandoned'::text])))
+    CONSTRAINT quest_instances_state_check CHECK ((state = ANY(ARRAY['active'::text, 'completed'::text, 'abandoned'::text])))
 );
 
 
@@ -1617,7 +1617,7 @@ CREATE TABLE mythos_unit.subzones (
     environment text,
     description text,
     special_rules jsonb DEFAULT '{}'::jsonb,
-    CONSTRAINT chk_subzones_environment CHECK (((environment IS NULL) OR (environment = ANY (ARRAY['indoors'::text, 'outdoors'::text, 'underwater'::text, 'void'::text]))))
+    CONSTRAINT chk_subzones_environment CHECK (((environment IS NULL) OR (environment = ANY(ARRAY['indoors'::text, 'outdoors'::text, 'underwater'::text, 'void'::text]))))
 );
 
 
@@ -1693,8 +1693,8 @@ CREATE TABLE mythos_unit.zones (
     description text,
     weather_patterns jsonb DEFAULT '[]'::jsonb,
     special_rules jsonb DEFAULT '{}'::jsonb,
-    CONSTRAINT chk_zones_environment CHECK (((environment IS NULL) OR (environment = ANY (ARRAY['indoors'::text, 'outdoors'::text, 'underwater'::text, 'void'::text])))),
-    CONSTRAINT chk_zones_zone_type CHECK (((zone_type IS NULL) OR (zone_type = ANY (ARRAY['city'::text, 'countryside'::text, 'mountains'::text, 'swamp'::text, 'tundra'::text, 'desert'::text, 'death'::text]))))
+    CONSTRAINT chk_zones_environment CHECK (((environment IS NULL) OR (environment = ANY(ARRAY['indoors'::text, 'outdoors'::text, 'underwater'::text, 'void'::text])))),
+    CONSTRAINT chk_zones_zone_type CHECK (((zone_type IS NULL) OR (zone_type = ANY(ARRAY['city'::text, 'countryside'::text, 'mountains'::text, 'swamp'::text, 'tundra'::text, 'desert'::text, 'death'::text]))))
 );
 
 
@@ -2827,7 +2827,7 @@ ALTER TABLE ONLY mythos_unit.containers
 --
 
 ALTER TABLE ONLY mythos_unit.emote_aliases
-    ADD CONSTRAINT emote_aliases_emote_id_fkey FOREIGN KEY (emote_id) REFERENCES mythos_unit.emotes(id) ON DELETE CASCADE;
+    ADD CONSTRAINT emote_aliases_emote_id_fkey FOREIGN KEY (emote_id) REFERENCES mythos_unit.emotes (id) ON DELETE CASCADE;
 
 
 --
