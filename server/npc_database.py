@@ -96,7 +96,18 @@ def _initialize_npc_database() -> None:
     logger.info("Using NPC database URL from configuration", npc_database_url=_npc_database_url)
 
     # PostgreSQL connection args (schema via POSTGRES_SEARCH_PATH when set)
-    connect_args: dict[str, Any] = dict(get_postgres_connect_args())
+    connect_args = dict(get_postgres_connect_args())
+    # Normalize search_path to database name for known env DBs (same as database.py)
+    _db_name = _npc_database_url.split("/")[-1].split("?")[0] if _npc_database_url else ""
+    if _db_name in ("mythos_dev", "mythos_unit", "mythos_e2e"):
+        _current = (connect_args.get("server_settings") or {}).get("search_path", "").strip()
+        if _current != _db_name:
+            connect_args = {"server_settings": {"search_path": _db_name}}
+            logger.info(
+                "NPC PostgreSQL search_path set to database name",
+                database=_db_name,
+                previous_search_path=_current or None,
+            )
     if not _npc_database_url.startswith("postgresql"):
         log_and_raise(
             ValidationError,

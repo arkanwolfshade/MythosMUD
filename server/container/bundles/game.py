@@ -336,5 +336,11 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
                 error=str(exc),
                 error_type=type(exc).__name__,
             )
+            # UndefinedTableError usually means: missing POSTGRES_SEARCH_PATH, or DDL not applied
+            if "does not exist" in str(exc).lower() or "UndefinedTableError" in type(exc).__name__:
+                logger.warning(
+                    "Ensure POSTGRES_SEARCH_PATH is set (e.g. mythos_dev in .env.local) and that "
+                    "the schema DDL has been applied (e.g. psql -d mythos_dev -f db/mythos_dev_ddl.sql)",
+                )
             self.item_prototype_registry = None
             self.item_factory = None
