@@ -296,7 +296,11 @@ The evidence clearly shows:
 
 ---
 
-_"In the restricted archives of Miskatonic University, we learn that even the most arcane build systems can be understood through methodical investigation. The typo, like a misplaced rune in an ancient incantation, reveals itself not in the source, but in the cached layers of the Docker image - a reminder that the ephemeral state of build artifacts must be examined as carefully as the source code itself."_
+> "In the restricted archives of Miskatonic University, we learn that even the most arcane build
+> systems can be understood through methodical investigation. The typo, like a misplaced rune in an
+> ancient incantation, reveals itself not in the source, but in the cached layers of the Docker
+> image - a reminder that the ephemeral state of build artifacts must be examined as carefully as
+> the source code itself."
 
 ---
 

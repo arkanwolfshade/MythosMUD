@@ -21,8 +21,6 @@ SET search_path = mythos_e2e;
 -- PostgreSQL database dump
 --
 
-\restrict 7VRX0IaLK4vKUsJPZni7l75Ot9ur8QnnjCSzWP29nHhh2c61m9UJZr8hap2TNG6
-
 -- Dumped from database version 18.1
 -- Dumped by pg_dump version 18.1
 
@@ -3115,5 +3113,3 @@ ALTER TABLE ONLY mythos_e2e.zone_configurations
 --
 -- PostgreSQL database dump complete
 --
-
-\unrestrict 7VRX0IaLK4vKUsJPZni7l75Ot9ur8QnnjCSzWP29nHhh2c61m9UJZr8hap2TNG6

@@ -144,7 +144,7 @@ RUN service postgresql start && \
     su postgres -c "psql -f /workspace/db/roles/roles.sql" && \
     su postgres -c "psql -f /workspace/db/databases/databases.sql" && \
     su postgres -c "psql -d mythos_unit -f /workspace/db/mythos_unit_ddl.sql" && \
-    su postgres -c "psql -d mythos_unit -c \"SET search_path TO mythos_unit;\" -f /workspace/data/db/mythos_unit_dml.sql" && \
+    ( [ -f /workspace/data/db/mythos_unit_dml.sql ] && su postgres -c "psql -d mythos_unit -c \"SET search_path TO mythos_unit;\" -f /workspace/data/db/mythos_unit_dml.sql" || true ) && \
     su postgres -c "psql -t -c \"SELECT datname FROM pg_database WHERE datname = 'mythos_unit';\"" | grep -q "mythos_unit" && \
     su postgres -c "psql -d mythos_unit -t -c \"SELECT 1 FROM information_schema.tables WHERE table_schema = 'mythos_unit' AND table_name = 'users';\"" | grep -q 1 && \
     su postgres -c "psql -d mythos_unit -t -c \"SELECT 1 FROM information_schema.tables WHERE table_schema = 'mythos_unit' AND table_name = 'players';\"" | grep -q 1

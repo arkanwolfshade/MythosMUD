@@ -174,16 +174,20 @@ ignore_patterns:
   - pattern_id: "CSSLint_errors"
     file_paths:
       - "client/src/**/*.css"
-  # SQL: RAC_TABLE_REQUIRED false positives in migration file
+  # SQL: RAC_TABLE_REQUIRED false positives in migration and DDL files
   # Pattern for "All queries must target RAC_* tables" - false positives for:
-  # - PostgreSQL configuration commands (SET)
-  # - Comment lines
-  # - DO blocks for verification (not data queries)
+  # - PostgreSQL configuration commands (SET), DDL (CREATE TABLE/FUNCTION), plpgsql
+  # - This schema uses standard table names (container_contents, zones, etc.), not RAC_*
+  # See PR #417 discussion r2848435497.
   - pattern_id: "sql:RAC_TABLE_REQUIRED"
     file_paths:
       - "data/db/migrations/11_migrate_weekday_names.sql"
-  # Semgrep: RAC table access - internal verification/migration scripts that do not use RAC_ prefix
+      - "db/mythos_dev_ddl.sql"
+      - "db/mythos_unit_ddl.sql"
+      - "db/mythos_e2e_ddl.sql"
+  # Semgrep: RAC table access - internal verification/migration/DDL scripts that do not use RAC_ prefix
   # Exclude scripts that run one-off migrations or verification (not production data access).
+  # db/mythos_*_ddl.sql: schema DDL and plpgsql (CREATE TABLE/FUNCTION); no RAC_* tables in this schema.
   # db/databases/databases.sql: GRANT on SEQUENCES is DDL, not a table query; RAC rule is for data tables.
   # db/roles/roles.sql: queries pg_roles (PostgreSQL system catalog), not application data tables.
   # db/migrations/019_*: queries information_schema and migration data tables; RAC rule is for app data access.
@@ -192,6 +196,9 @@ ignore_patterns:
       - "scripts/verify_*.py"
       - "scripts/apply_*.py"
       - "db/migrations/*.sql"
+      - "db/mythos_dev_ddl.sql"
+      - "db/mythos_unit_ddl.sql"
+      - "db/mythos_e2e_ddl.sql"
       - "db/databases/databases.sql"
       - "db/roles/roles.sql"
       - "data/db/migrations/*.sql"
