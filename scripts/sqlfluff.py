@@ -30,18 +30,18 @@ sql_dirs = ["db", "data/db"]
 sql_files = []
 exclude_patterns = [
     "db/databases/databases.sql",  # Contains psql meta-commands (\connect, \gexec)
-    "db/authoritative_schema.sql",  # Too large, skipped by SQLFluff
+    "db/mythos_dev_ddl.sql",  # Large generated DDL, skipped by SQLFluff
+    "db/mythos_unit_ddl.sql",
+    "db/mythos_e2e_ddl.sql",
+    "data/db/",  # pg_dump DML (COPY ... FROM stdin); not parseable as SQL by sqlfluff
 ]
 for sql_dir in sql_dirs:
     sql_path = Path(sql_dir)
     if sql_path.exists():
         for sql_file in sql_path.rglob("*.sql"):
             # Skip excluded files
-            relative_path = str(sql_file).replace("\\", "/")
-            if not any(
-                relative_path.endswith(pattern) or pattern in relative_path
-                for pattern in exclude_patterns
-            ):
+            RELATIVE_PATH = str(sql_file).replace("\\", "/")
+            if not any(RELATIVE_PATH.endswith(pattern) or pattern in RELATIVE_PATH for pattern in exclude_patterns):
                 sql_files.append(sql_file)
 
 if not sql_files:
@@ -67,7 +67,8 @@ try:
         if result.stderr:
             print("Errors:", result.stderr)
         sys.exit(1)
-except Exception as e:
+except (ValueError, OSError) as e:
+    # ValueError: path/command validation in safe_run_static; OSError: executable not found, etc.
     print(f"[ERROR] Error running sqlfluff: {e}")
     sys.exit(1)
 

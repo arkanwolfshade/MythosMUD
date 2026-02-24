@@ -38,8 +38,8 @@ The correct order is:
 
 1. `db/roles/roles.sql` - Create roles (users)
 2. `db/databases/databases.sql` - Create databases with owners
-3. `db/authoritative_schema.sql` - Apply schema
-4. `data/db/*.sql` - Load seed data
+3. `db/mythos_<env>_ddl.sql` - Apply environment DDL (e.g. mythos_unit_ddl.sql for unit tests)
+4. `data/db/mythos_<env>_dml.sql` - Load seed data (authoritative DML per environment)
 
 ## Security
 

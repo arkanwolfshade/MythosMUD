@@ -371,6 +371,35 @@ if IN_CI:
     )
 else:
     # Non-CI execution path (local development)
+    # Ensure data submodule is initialized so data/db/mythos_unit_dml.sql is available for Docker build
+    data_dml = os.path.join(PROJECT_ROOT, "data", "db", "mythos_unit_dml.sql")
+    if not os.path.isfile(data_dml):
+        print("Initializing data submodule (required for Docker build: data/db/mythos_unit_dml.sql)...")
+        submodule_result = safe_run_static(
+            "git",
+            "submodule",
+            "update",
+            "--init",
+            "--recursive",
+            "data",
+            cwd=PROJECT_ROOT,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        if submodule_result.returncode != 0:
+            print(
+                "WARNING: Could not initialize data submodule. "
+                "Docker build may fail with 'mythos_unit_dml.sql: No such file or directory'."
+            )
+            if submodule_result.stderr:
+                print(f"  git submodule error: {submodule_result.stderr.strip()}")
+        elif not os.path.isfile(data_dml):
+            print(
+                "WARNING: data/db/mythos_unit_dml.sql still missing after submodule init. "
+                "Ensure the mythosmud_data repo contains data/db/mythos_unit_dml.sql."
+            )
+
     print("Building Docker runner image (this ensures dependencies are up-to-date)...")
     ACT_RUNNER_IMAGE = "mythosmud-gha-runner:latest"
     ACT_RUNNER_DOCKERFILE = "Dockerfile.github-runner"

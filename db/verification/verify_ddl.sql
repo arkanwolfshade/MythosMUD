@@ -1,13 +1,16 @@
 -- Verification script to check if all required tables exist in the database
 -- Run this against each database (mythos_dev, mythos_unit, mythos_e2e)
+-- Tables are defined in authoritative DDL: db/mythos_dev_ddl.sql, db/mythos_unit_ddl.sql,
+-- db/mythos_e2e_ddl.sql. (This script checks schema 'public'; for named schemas, adjust
+-- table_schema in the queries below.)
 
 SET client_min_messages = WARNING;
 
--- Expected tables from schema files
+-- Expected tables from authoritative DDL
 DO $$
 DECLARE
     expected_tables text[] := ARRAY[
-        -- 01_world_and_calendar.sql
+        -- world and calendar
         'calendar_holidays',
         'calendar_npc_schedules',
         'emotes',
@@ -22,12 +25,12 @@ DECLARE
         'npc_definitions',
         'npc_relationships',
         'npc_spawn_rules',
-        -- 03_identity_and_moderation.sql
+        -- identity and moderation
         'professions',
         'muting_rules',
         'id_map_users',
         'id_map_players',
-        -- 04_runtime_tables.sql
+        -- runtime tables
         'users',
         'players',
         'player_inventories',

@@ -24,6 +24,9 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.pool import NullPool
 
+from .database_config_helpers import (
+    get_postgres_connect_args,  # pylint: disable=unused-import  # Reason: used in _initialize_npc_database for connect_args
+)
 from .exceptions import ValidationError
 from .structured_logging.enhanced_logging_config import get_logger
 from .utils.error_logging import log_and_raise
@@ -92,8 +95,19 @@ def _initialize_npc_database() -> None:
     _npc_database_url = npc_database_url
     logger.info("Using NPC database URL from configuration", npc_database_url=_npc_database_url)
 
-    # PostgreSQL connection args (no SQLite-specific args)
-    connect_args: dict[str, Any] = {}
+    # PostgreSQL connection args (schema via POSTGRES_SEARCH_PATH when set)
+    connect_args = dict(get_postgres_connect_args())
+    # Normalize search_path to database name for known env DBs (same as database.py)
+    _db_name = _npc_database_url.split("/")[-1].split("?")[0] if _npc_database_url else ""
+    if _db_name in ("mythos_dev", "mythos_unit", "mythos_e2e"):
+        _current = (connect_args.get("server_settings") or {}).get("search_path", "").strip()
+        if _current != _db_name:
+            connect_args = {"server_settings": {"search_path": _db_name}}
+            logger.info(
+                "NPC PostgreSQL search_path set to database name",
+                database=_db_name,
+                previous_search_path=_current or None,
+            )
     if not _npc_database_url.startswith("postgresql"):
         log_and_raise(
             ValidationError,
@@ -265,7 +279,8 @@ async def init_npc_db() -> None:
     Initialize NPC database connection and verify configuration.
 
     NOTE: DDL (table creation) is NOT managed by this function.
-    All database schema must be created via SQL script db/authoritative_schema.sql
+    All database schema must be created via environment-specific DDL (db/mythos_dev_ddl.sql,
+    db/mythos_unit_ddl.sql, db/mythos_e2e_ddl.sql).
     and applied using database management scripts (e.g., psql).
 
     This function only:
@@ -273,7 +288,7 @@ async def init_npc_db() -> None:
     - Configures SQLAlchemy mappers for ORM relationships
     - Verifies database connectivity
 
-    To create tables, use the SQL script db/authoritative_schema.sql.
+    To create tables, use the appropriate db/mythos_<env>_ddl.sql for your database.
     """
     logger.info("Initializing NPC database connection", operation="init_npc_db")
 

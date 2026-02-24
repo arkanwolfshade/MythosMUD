@@ -11,9 +11,9 @@ echo "MythosMUD PostgreSQL Diagnostic"
 echo "==============================="
 echo ""
 
-# Load database URL from .env.unit_test if not provided
+# Load database URL from .env.unit_test (project root) if not provided
 if [ -z "$DATABASE_URL" ]; then
-    TEST_ENV_PATH="server/tests/.env.unit_test"
+    TEST_ENV_PATH=".env.unit_test"
 
     if [ -f "$TEST_ENV_PATH" ]; then
         echo "[INFO] Loading DATABASE_URL from $TEST_ENV_PATH"

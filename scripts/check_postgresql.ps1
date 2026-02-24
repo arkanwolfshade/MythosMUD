@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env pwsh
+#!/usr/bin/env pwsh
 # MythosMUD PostgreSQL Connection Diagnostic Script
 # Checks PostgreSQL connectivity and configuration for tests
 # Suppress PSAvoidUsingWriteHost: This script uses Write-Host for status/output messages
@@ -15,9 +15,10 @@ Write-Host "MythosMUD PostgreSQL Diagnostic" -ForegroundColor Green
 Write-Host "===============================" -ForegroundColor Green
 Write-Host ""
 
-# Load database URL from .env.unit_test if not provided
+# Load database URL from .env.unit_test in project root if not provided
 if (-not $DatabaseUrl) {
-    $TestEnvPath = Join-Path -Path $PSScriptRoot -ChildPath ".." | Join-Path -ChildPath "server" | Join-Path -ChildPath "tests" | Join-Path -ChildPath ".env.unit_test"
+    $ProjectRoot = Split-Path $PSScriptRoot -Parent
+    $TestEnvPath = Join-Path -Path $ProjectRoot -ChildPath ".env.unit_test"
 
     if (Test-Path $TestEnvPath) {
         Write-Host "[INFO] Loading DATABASE_URL from $TestEnvPath" -ForegroundColor Cyan
@@ -37,11 +38,18 @@ if (-not $DatabaseUrl) {
     }
 }
 
-# Parse PostgreSQL URL
+# Parse PostgreSQL URL (SQLite is deprecated; unit tests require PostgreSQL)
 # Format: postgresql+asyncpg://user:password@host:port/database
 if ($DatabaseUrl -notmatch 'postgresql\+?asyncpg?://([^:]+):([^@]+)@([^:]+):(\d+)/(.+)') {
-    Write-Host "[ERROR] Invalid PostgreSQL URL format: $DatabaseUrl" -ForegroundColor Red
-    Write-Host "[EXPECTED] postgresql+asyncpg://user:password@host:port/database" -ForegroundColor Yellow
+    Write-Host "[ERROR] DATABASE_URL is not a PostgreSQL URL: $DatabaseUrl" -ForegroundColor Red
+    if ($DatabaseUrl -match 'sqlite') {
+        Write-Host "[INFO] SQLite is deprecated. Unit tests use PostgreSQL (e.g. mythos_unit)." -ForegroundColor Yellow
+        Write-Host "[SOLUTION] Refresh .env.unit_test from template: make setup-test-env-force" -ForegroundColor Yellow
+        Write-Host "  Or: powershell -File scripts/setup_test_environment.ps1 -Force" -ForegroundColor Cyan
+    }
+    else {
+        Write-Host "[EXPECTED] postgresql+asyncpg://user:password@host:port/database" -ForegroundColor Yellow
+    }
     exit 1
 }
 
@@ -211,5 +219,5 @@ finally {
 }
 
 Write-Host ""
-Write-Host "All diagnostic tests passed! ✓" -ForegroundColor Green
+Write-Host "All diagnostic tests passed!" -ForegroundColor Green
 Write-Host "PostgreSQL is properly configured for tests." -ForegroundColor Green

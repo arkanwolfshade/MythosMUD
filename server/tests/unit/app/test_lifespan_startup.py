@@ -109,8 +109,10 @@ async def test_setup_connection_manager_no_manager(mock_app, mock_container):  #
 @pytest.mark.asyncio
 async def test_initialize_npc_services(mock_app, mock_container):  # pylint: disable=redefined-outer-name
     """Test initialize_npc_services() initializes NPC services."""
-    # Parameter names must match fixture names for pytest automatic injection
-    await initialize_npc_services(mock_app, mock_container)
+    # Parameter names must match fixture names for pytest automatic injection.
+    # Patch zone config loader so NPCPopulationController does not hit the database.
+    with patch("server.npc.population_control.load_zone_configurations", return_value={}):
+        await initialize_npc_services(mock_app, mock_container)
     assert hasattr(mock_app.state, "npc_spawning_service")
     assert hasattr(mock_app.state, "npc_lifecycle_manager")
     assert hasattr(mock_app.state, "npc_population_controller")

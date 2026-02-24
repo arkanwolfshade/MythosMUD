@@ -34,7 +34,8 @@ rationale, see [.cursor/rules/postgresql.mdc](../.cursor/rules/postgresql.mdc).
 - Run **`make sqlfluff`** (and optionally **`make lint-sql-guardrails`**) before committing SQL
   changes.
 - Hand-maintained SQL lives in `db/schema/`, `db/verification/`, `db/migrations/`, and
-  `server/scripts/`. The authoritative schema is generated: `db/authoritative_schema.sql`.
+  `server/scripts/`. Environment DDL is in `db/mythos_dev_ddl.sql`, `db/mythos_unit_ddl.sql`,
+  and `db/mythos_e2e_ddl.sql` (generated from the corresponding database).
 
 ## References
 

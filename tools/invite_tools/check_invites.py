@@ -24,7 +24,7 @@ async def list_all_invites():
     async with get_session_maker()() as session:
         result = await session.execute(
             text("""
-                SELECT invite_code, used, expires_at, created_at
+                SELECT invite_code, is_active, expires_at, created_at
                 FROM invites
                 ORDER BY created_at DESC
             """)
@@ -41,8 +41,8 @@ async def list_all_invites():
         print("-" * 80)
 
         for invite in invites:
-            code, used, expires_at, created_at = invite
-            used_str = "Yes" if used else "No"
+            code, is_active, expires_at, created_at = invite
+            used_str = "No" if is_active else "Yes"
 
             # Handle date strings from database
             if expires_at and isinstance(expires_at, str):
@@ -66,7 +66,8 @@ async def check_invite_status(invite_code: str):
     """Check the status of a specific invite code."""
     async with get_session_maker()() as session:
         result = await session.execute(
-            text("SELECT used, expires_at, created_at FROM invites WHERE invite_code = :code"), {"code": invite_code}
+            text("SELECT is_active, expires_at, created_at FROM invites WHERE invite_code = :code"),
+            {"code": invite_code},
         )
         invite = result.fetchone()
 
@@ -74,7 +75,7 @@ async def check_invite_status(invite_code: str):
             print(f"❌ Invite code '{invite_code}' not found in database.")
             return
 
-        used, expires_at, created_at = invite
+        is_active, expires_at, created_at = invite
         now = datetime.now(UTC)
 
         # Handle date strings from database
@@ -91,7 +92,7 @@ async def check_invite_status(invite_code: str):
                 created_at = None
 
         print(f"Invite Code: {invite_code}")
-        print(f"Used: {'Yes' if used else 'No'}")
+        print(f"Used: {'No' if is_active else 'Yes'}")
         print(f"Created: {created_at.strftime('%Y-%m-%d %H:%M:%S') if created_at else 'Unknown'}")
 
         if expires_at:

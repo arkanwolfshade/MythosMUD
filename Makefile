@@ -23,7 +23,7 @@ PYTEST_COV_OPTS := --cov=server --cov-report=html --cov-report=term-missing --co
 .PHONY: stylelint markdownlint jackson-linter
 .PHONY: trivy lizard
 .PHONY: codacy-tools
-.PHONY: setup-test-env check-postgresql setup-postgresql-test-db verify-schema
+.PHONY: setup-test-env setup-test-env-force check-postgresql setup-postgresql-test-db verify-schema
 .PHONY: test test-coverage test-client test-client-e2e test-playwright test-client-coverage test-server test-server-coverage test-ci
 .PHONY: coverage all
 
@@ -59,9 +59,10 @@ help:
 	@echo ""
 	@echo "Database Setup:"
 	@echo "  setup-test-env         - Create test environment files"
+	@echo "  setup-test-env-force  - Overwrite .env.unit_test from template (PostgreSQL)"
 	@echo "  check-postgresql       - Verify PostgreSQL connectivity"
 	@echo "  setup-postgresql-test-db - Create PostgreSQL test database"
-	@echo "  verify-schema          - Verify authoritative_schema.sql matches mythos_dev"
+	@echo "  verify-schema          - Verify db/mythos_<env>_ddl.sql matches database"
 	@echo ""
 	@echo "Documentation:"
 	@echo "  openapi-spec          - Generate OpenAPI spec to docs/openapi/openapi.json"
@@ -174,6 +175,11 @@ setup-test-env:
 	@echo "Setting up test environment files..."
 	$(POWERSHELL) scripts/setup_test_environment.ps1
 
+# Overwrite .env.unit_test from env.unit_test.example (use when file has stale SQLite URL)
+setup-test-env-force:
+	@echo "Refreshing test environment from template (overwrite)..."
+	$(POWERSHELL) scripts/setup_test_environment.ps1 -Force
+
 check-postgresql:
 	@echo "Checking PostgreSQL connectivity..."
 	$(POWERSHELL) scripts/check_postgresql.ps1
@@ -183,7 +189,7 @@ setup-postgresql-test-db:
 	$(POWERSHELL) scripts/setup_postgresql_test_db.ps1
 
 verify-schema:
-	@echo "Verifying authoritative_schema.sql matches mythos_dev..."
+	@echo "Verifying environment DDL matches database (from .env.local or .env)..."
 	$(POWERSHELL) scripts/verify_schema_match.ps1
 
 # ============================================================================

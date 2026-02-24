@@ -17,9 +17,14 @@ This is the easiest way to use the tools.
 
 .\tools\invite_tools\run_invite_tools.ps1 generate
 
-# Generate codes using alternative method
+# Generate codes using alternative method (with optional count and expiry)
 
 .\tools\invite_tools\run_invite_tools.ps1 generate_db
+
+# Generate 100 invites valid through 2026-12-31 in mythos_dev schema (PostgreSQL)
+
+$env:DATABASE_URL = "postgresql+asyncpg://user:pass@localhost/mythos_dev"
+.\tools\invite_tools\run_invite_tools.ps1 generate_db -Count 100 -Expires "2026-12-31" -Schema mythos_dev
 
 # List all invite codes
 
@@ -33,6 +38,10 @@ This is the easiest way to use the tools.
 
 .\tools\invite_tools\run_invite_tools.ps1 check "Cthulhu"
 ```
+
+**Schema (PostgreSQL):** For databases that use a named schema (e.g. `mythos_dev` in database
+`mythos_dev`), set `DATABASE_URL` to the database and pass `-Schema mythos_dev`. The script sets
+`POSTGRES_SEARCH_PATH` so the `invites` table is resolved in that schema instead of `public`.
 
 ### `generate_invites.py`
 

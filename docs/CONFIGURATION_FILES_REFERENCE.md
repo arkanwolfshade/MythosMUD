@@ -6,12 +6,12 @@ MythosMUD uses **paired configuration files** for each environment:
 
 ### Configuration Tuples
 
-| Environment           | Structural Config (YAML)               | Secrets (.env)                | Purpose                |
-| --------------------- | -------------------------------------- | ----------------------------- | ---------------------- |
-| **Local Development** | `server/server_config.local.yaml`      | `.env.local`                  | Daily development work |
-| **Unit Testing**      | `server/server_config.unit_test.yaml`  | `server/tests/.env.unit_test` | pytest test runs       |
-| **E2E Testing**       | `server/server_config.e2e_test.yaml`   | `.env.e2e_test`               | Playwright E2E tests   |
-| **Production**        | `server/server_config.production.yaml` | `.env.production`             | Production deployment  |
+| Environment           | Structural Config (YAML)               | Secrets (.env)    | Purpose                |
+| --------------------- | -------------------------------------- | ----------------- | ---------------------- |
+| **Local Development** | `server/server_config.local.yaml`      | `.env.local`      | Daily development work |
+| **Unit Testing**      | `server/server_config.unit_test.yaml`  | `.env.unit_test`  | pytest test runs       |
+| **E2E Testing**       | `server/server_config.e2e_test.yaml`   | `.env.e2e_test`   | Playwright E2E tests   |
+| **Production**        | `server/server_config.production.yaml` | `.env.production` | Production deployment  |
 
 ### File Responsibilities
 
@@ -59,9 +59,9 @@ notepad .env.local
 ### 2. Unit Testing
 
 ```powershell
-# Create secrets file
+# Create secrets file (project root)
 
-cp server/tests/env.unit_test.example server/tests/.env.unit_test
+cp env.unit_test.example .env.unit_test
 
 # No editing needed - defaults work!
 
@@ -73,7 +73,7 @@ make test
 **Files Used**:
 ✅ `server/server_config.unit_test.yaml` (already in git)
 
-✅ `server/tests/.env.unit_test` (you create from template)
+✅ `.env.unit_test` (you create from template at project root)
 
 ### 3. E2E Testing
 
@@ -124,20 +124,20 @@ cp env.production.example .env.production
 
 ## Complete File Matrix
 
-| File Name                       | Location        | Committed? | Created By | Purpose                            |
-| ------------------------------- | --------------- | ---------- | ---------- | ---------------------------------- |
-| `server_config.local.yaml`      | `server/`       | ✅ Yes      | Git        | Local dev behavior                 |
-| `.env.local`                    | project root    | ❌ No       | Developer  | Local dev secrets                  |
-| `env.local.example`             | project root    | ✅ Yes      | Git        | Template for .env.local            |
-| `server_config.unit_test.yaml`  | `server/`       | ✅ Yes      | Git        | Unit test behavior                 |
-| `.env.unit_test`                | `server/tests/` | ❌ No       | Developer  | Unit test secrets                  |
-| `env.unit_test.example`         | `server/tests/` | ✅ Yes      | Git        | Template for .env.unit_test        |
-| `server_config.e2e_test.yaml`   | `server/`       | ✅ Yes      | Git        | E2E test behavior                  |
-| `.env.e2e_test`                 | project root    | ❌ No       | Developer  | E2E test secrets                   |
-| `env.e2e_test.example`          | project root    | ✅ Yes      | Git        | Template for .env.e2e_test         |
-| `server_config.production.yaml` | `server/`       | ✅ Yes      | Developer  | Production behavior (when created) |
-| `.env.production`               | project root    | ❌ No       | DevOps     | Production secrets                 |
-| `env.production.example`        | project root    | ✅ Yes      | Git        | Template for .env.production       |
+| File Name                       | Location     | Committed? | Created By | Purpose                            |
+| ------------------------------- | ------------ | ---------- | ---------- | ---------------------------------- |
+| `server_config.local.yaml`      | `server/`    | ✅ Yes     | Git        | Local dev behavior                 |
+| `.env.local`                    | project root | ❌ No      | Developer  | Local dev secrets                  |
+| `env.local.example`             | project root | ✅ Yes     | Git        | Template for .env.local            |
+| `server_config.unit_test.yaml`  | `server/`    | ✅ Yes     | Git        | Unit test behavior                 |
+| `.env.unit_test`                | project root | ❌ No      | Developer  | Unit test secrets                  |
+| `env.unit_test.example`         | project root | ✅ Yes     | Git        | Template for .env.unit_test        |
+| `server_config.e2e_test.yaml`   | `server/`    | ✅ Yes     | Git        | E2E test behavior                  |
+| `.env.e2e_test`                 | project root | ❌ No      | Developer  | E2E test secrets                   |
+| `env.e2e_test.example`          | project root | ✅ Yes     | Git        | Template for .env.e2e_test         |
+| `server_config.production.yaml` | `server/`    | ✅ Yes     | Developer  | Production behavior (when created) |
+| `.env.production`               | project root | ❌ No      | DevOps     | Production secrets                 |
+| `env.production.example`        | project root | ✅ Yes     | Git        | Template for .env.production       |
 
 ## Environment Variable Priority
 
@@ -191,13 +191,13 @@ cd client; npm run test:e2e:runtime  # Terminal 2
 ✅ **3 Complete Tuples**:
 
 1. `server_config.local.yaml` ↔ `.env.local`
-2. `server_config.unit_test.yaml` ↔ `server/tests/.env.unit_test`
+2. `server_config.unit_test.yaml` ↔ `.env.unit_test`
 3. `server_config.e2e_test.yaml` ↔ `.env.e2e_test`
 
 ✅ **3 Example Templates**:
 
 1. `env.local.example`
-2. `server/tests/env.unit_test.example`
+2. `env.unit_test.example`
 3. `env.e2e_test.example`
 
 ✅ **Explicit Configuration**:

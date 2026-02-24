@@ -27,6 +27,7 @@ from sqlalchemy.ext.asyncio import (
 
 from .database_config_helpers import (
     configure_pool_settings,
+    get_postgres_connect_args,
     get_test_database_url,
     load_database_url,
     normalize_database_url,
@@ -151,6 +152,20 @@ class DatabaseManager:
         logger.info("Using PostgreSQL database URL from environment", database_url=self.database_url)
 
         pool_kwargs = configure_pool_settings(self.database_url)
+        connect_args = get_postgres_connect_args()
+
+        # Normalize search_path to database name for known env DBs (runtime evidence: search_path "mythos"
+        # was used while tables live in mythos_dev, causing UndefinedTableError)
+        _db_name = self.database_url.split("/")[-1].split("?")[0] if self.database_url else ""
+        if _db_name in ("mythos_dev", "mythos_unit", "mythos_e2e"):
+            _current = (connect_args.get("server_settings") or {}).get("search_path", "").strip()
+            if _current != _db_name:
+                connect_args = {"server_settings": {"search_path": _db_name}}
+                logger.info(
+                    "PostgreSQL search_path set to database name",
+                    database=_db_name,
+                    previous_search_path=_current or None,
+                )
 
         # Create async engine with PostgreSQL configuration
         # CRITICAL FIX: Add proper exception handling for engine creation
@@ -160,6 +175,7 @@ class DatabaseManager:
                 self.database_url,
                 echo=False,
                 pool_pre_ping=True,
+                connect_args=connect_args,
                 **pool_kwargs,
             )
 

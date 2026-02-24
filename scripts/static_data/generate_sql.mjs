@@ -469,7 +469,7 @@ async function generateZoneConfigs() {
 }
 
 async function main() {
-  const outDir = resolve(root, "data/db");
+  const outDir = resolve(root, "data/static/generated_sql");
   await ensureDir(outDir);
 
   const sections = [];
@@ -486,9 +486,10 @@ async function main() {
   sections.push("COMMIT;");
 
   const sql = sections.join("\n");
-  const target = resolve(outDir, "00_world_and_emotes.sql");
+  const target = resolve(outDir, "world_and_emotes_generated.sql");
   await fs.writeFile(target, sql, "utf-8");
   console.log(`Wrote ${target}`);
+  console.log("Merge this output into data/db/mythos_*_dml.sql as needed (authoritative DML).");
 }
 
 main().catch((err) => {

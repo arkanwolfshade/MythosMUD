@@ -6,7 +6,7 @@ Warns on:
 - not in ( with a subquery (select) in the same file
 
 Scoped to developer-authored SQL only (db/schema, db/verification, db/migrations,
-server/scripts). Auto-generated dumps (e.g. db/authoritative_schema.sql) are excluded.
+server/scripts). Auto-generated environment DDL (db/mythos_*_ddl.sql) are excluded.
 
 Usage: python scripts/lint_sql_guardrails.py
 Exit: 0 if no issues, 1 if any warning (so CI can enforce).
@@ -29,7 +29,8 @@ SQL_DIRS = [
 ]
 
 # Files to skip (e.g. generated or legacy)
-SKIP_FILES = {"authoritative_schema.sql"}
+# Skip generated/large environment DDL files (lint guardrails target hand-authored SQL)
+SKIP_FILES = {"mythos_dev_ddl.sql", "mythos_unit_ddl.sql", "mythos_e2e_ddl.sql"}
 
 
 def _collect_sql_files() -> list[Path]:

@@ -5,6 +5,7 @@ This module provides utility functions for loading, validating, and configuring
 database URLs and connection pool settings.
 """
 
+import os
 from typing import Any
 
 from pydantic import ValidationError as PydanticValidationError
@@ -107,6 +108,22 @@ _DEFAULT_POOL_SETTINGS: dict[str, Any] = {
     "max_overflow": 10,
     "pool_timeout": 30,
 }
+
+
+def get_postgres_connect_args() -> dict[str, Any]:
+    """
+    Build connect_args for asyncpg when POSTGRES_SEARCH_PATH is set.
+
+    Used so unit tests (and any env) can target [database].[schema] (e.g. mythos_unit.mythos_unit)
+    instead of the default public schema. Returns empty dict if POSTGRES_SEARCH_PATH is not set.
+
+    Returns:
+        Dict suitable for create_async_engine(..., connect_args=...).
+    """
+    search_path = os.environ.get("POSTGRES_SEARCH_PATH", "").strip()
+    if not search_path:
+        return {}
+    return {"server_settings": {"search_path": search_path}}
 
 
 def configure_pool_settings(database_url: str) -> dict[str, Any]:

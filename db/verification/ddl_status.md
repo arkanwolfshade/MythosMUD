@@ -1,5 +1,8 @@
 # DDL Application Status
 
+\_Historical: this snapshot reflects status before the switch to authoritative DDL
+(`db/mythos\__\_ddl.sql`). Current schema is defined only in those files.\*
+
 ## Database Verification Results
 
 ### mythos_dev (local development)
@@ -9,7 +12,7 @@
 **Existing Tables (21)**:
 
 ✅ Static tables: calendar_holidays, calendar_npc_schedules, emotes, emote_aliases, zones, subzones, rooms, room_links,
-  aliases
+aliases
 
 ✅ NPC tables: npc_definitions, npc_relationships, npc_spawn_rules
 
@@ -37,7 +40,7 @@ needs migration.
 
 ✅ All runtime tables including: player_inventories, player_sanity, sanity_adjustment_log, sanity_exposure_state,
 
-  sanity_cooldowns
+sanity_cooldowns
 
 ✅ All item tables
 
@@ -48,7 +51,7 @@ needs migration.
 **Existing Tables (21)**:
 
 ✅ Static tables: calendar_holidays, calendar_npc_schedules, emotes, emote_aliases, zones, subzones, rooms, room_links,
-  aliases
+aliases
 
 ✅ NPC tables: npc_definitions, npc_relationships, npc_spawn_rules
 
@@ -60,12 +63,12 @@ needs migration.
 
 ❌ **MISSING**: players, player_inventories, player_sanity, sanity_adjustment_log, sanity_exposure_state,
 
-  sanity_cooldowns
+sanity_cooldowns
 
 ## Required Actions
 
-1. **mythos_dev**: Apply missing runtime tables (player_inventories, player_sanity, sanity_* tables)
-2. **mythos_e2e**: Apply missing runtime tables (players, player_inventories, player_sanity, sanity_* tables)
+1. **mythos_dev**: Apply missing runtime tables (player*inventories, player_sanity, sanity*\* tables)
+2. **mythos_e2e**: Apply missing runtime tables (players, player*inventories, player_sanity, sanity*\* tables)
 3. **mythos_unit**: ✅ No action needed - all tables exist
 
 ## Schema Files to Apply

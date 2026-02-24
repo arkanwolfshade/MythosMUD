@@ -59,6 +59,11 @@ class NPCService:
 
         except SQLAlchemyError as e:
             logger.error("Database error retrieving NPC definitions", error=str(e), error_type=type(e).__name__)
+            if "does not exist" in str(e).lower() or "UndefinedTableError" in type(e).__name__:
+                logger.warning(
+                    "Ensure POSTGRES_SEARCH_PATH is set (e.g. mythos_dev in .env.local) and that "
+                    "the schema DDL has been applied (e.g. psql -d mythos_dev -f db/mythos_dev_ddl.sql)",
+                )
             raise DatabaseError(f"Failed to retrieve NPC definitions: {e}") from e
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC retrieval errors unpredictable, must re-raise
             logger.error("Unexpected error retrieving NPC definitions", error=str(e), error_type=type(e).__name__)

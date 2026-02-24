@@ -99,8 +99,9 @@ Installs project dependencies.
 
 ### Database Initialization (PostgreSQL)
 
-Database initialization is now handled via the authoritative schema file `db/authoritative_schema.sql`.
-See `db/README.md` for database setup instructions.
+Database initialization is handled via environment-specific DDL files: `db/mythos_dev_ddl.sql`,
+`db/mythos_unit_ddl.sql`, and `db/mythos_e2e_ddl.sql`. Use the one that matches your database.
+See `data/db/README.md` and `db/` for database setup instructions.
 
 **Note:** SQLite database initialization scripts have been removed as the project
 now uses PostgreSQL exclusively.

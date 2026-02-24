@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env pwsh
+#!/usr/bin/env pwsh
 # MythosMUD PostgreSQL Test Database Setup Script
 # Creates and initializes the PostgreSQL test database
 
@@ -15,8 +15,9 @@ Write-Host "MythosMUD PostgreSQL Test Database Setup" -ForegroundColor Green
 Write-Host "=========================================" -ForegroundColor Green
 Write-Host ""
 
-# Load database URL from .env.unit_test
-$TestEnvPath = Join-Path -Path $PSScriptRoot -ChildPath ".." | Join-Path -ChildPath "server" | Join-Path -ChildPath "tests" | Join-Path -ChildPath ".env.unit_test"
+# Load database URL from .env.unit_test (project root)
+$ProjectRoot = Split-Path $PSScriptRoot -Parent
+$TestEnvPath = Join-Path -Path $ProjectRoot -ChildPath ".env.unit_test"
 
 if (-not (Test-Path $TestEnvPath)) {
     Write-Host "[ERROR] .env.unit_test file not found at: $TestEnvPath" -ForegroundColor Red
@@ -129,21 +130,27 @@ try {
         }
     }
 
-    # Apply authoritative schema if it exists
-    $schemaFile = Join-Path -Path $PSScriptRoot -ChildPath ".." | Join-Path -ChildPath "db" | Join-Path -ChildPath "authoritative_schema.sql"
-    if (Test-Path $schemaFile) {
-        Write-Host "Applying authoritative schema..." -ForegroundColor Yellow
-        $schemaResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d $dbName -f $schemaFile 2>&1
-        if ($LASTEXITCODE -eq 0) {
-            Write-Host "[OK] Authoritative schema applied" -ForegroundColor Green
+    # Apply environment-specific DDL (db/mythos_<dbname>_ddl.sql)
+    $allowedDbs = @("mythos_unit", "mythos_e2e", "mythos_dev")
+    if ($dbName -in $allowedDbs) {
+        $schemaFile = Join-Path -Path (Join-Path -Path $ProjectRoot -ChildPath "db") -ChildPath "${dbName}_ddl.sql"
+        if (Test-Path $schemaFile) {
+            Write-Host "Applying environment DDL ($dbName)..." -ForegroundColor Yellow
+            $schemaResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d $dbName -f $schemaFile 2>&1
+            if ($LASTEXITCODE -eq 0) {
+                Write-Host "[OK] DDL applied ($schemaFile)" -ForegroundColor Green
+            }
+            else {
+                Write-Host "[WARNING] Failed to apply DDL: $schemaResult" -ForegroundColor Yellow
+                Write-Host "[INFO] Schema may be initialized by test fixtures instead" -ForegroundColor Cyan
+            }
         }
         else {
-            Write-Host "[WARNING] Failed to apply authoritative schema: $schemaResult" -ForegroundColor Yellow
-            Write-Host "[INFO] Schema may be initialized by test fixtures instead" -ForegroundColor Cyan
+            Write-Host "[INFO] DDL file not found: $schemaFile" -ForegroundColor Cyan
         }
     }
     else {
-        Write-Host "[INFO] Authoritative schema file not found, schema will be initialized by test fixtures" -ForegroundColor Cyan
+        Write-Host "[INFO] Database $dbName not in (mythos_unit, mythos_e2e, mythos_dev); skipping DDL" -ForegroundColor Cyan
     }
 
     # Apply container table creation migration (must run before 011)
@@ -181,7 +188,7 @@ try {
     }
 
     Write-Host ""
-    Write-Host "Setup completed successfully! ✓" -ForegroundColor Green
+    Write-Host "Setup completed successfully!" -ForegroundColor Green
     Write-Host "You can now run: scripts/check_postgresql.ps1 to verify the connection" -ForegroundColor Cyan
 
 }

@@ -30,36 +30,49 @@ These files are **actively used** and should **not** be removed:
 
 - **See**: `db/databases/README.md`
 
-## Deprecated/Legacy Files
+## Removed DDL/DML (Authoritative Files Only)
 
-These files are **kept for historical reference** but should **not** be used for new work:
+All non-authoritative DDL and DML migration files have been **removed**. Only these are used:
 
-### ⚠️ `db/schema/*.sql` (4 files)
+- **DDL**: `db/mythos_dev_ddl.sql`, `db/mythos_unit_ddl.sql`, `db/mythos_e2e_ddl.sql`
+- **DML**: `data/db/mythos_dev_dml.sql`, `data/db/mythos_unit_dml.sql`, `data/db/mythos_e2e_dml.sql`
 
-**Status**: Deprecated - Replaced by `db/authoritative_schema.sql`
+### ❌ `db/schema/*.sql` (removed)
 
-**Files**:
+**Status**: Removed
 
-- `01_world_and_calendar.sql`
-- `02_items_and_npcs.sql`
-- `03_identity_and_moderation.sql`
-- `04_runtime_tables.sql`
-- **Replacement**: `db/authoritative_schema.sql`
-- **Location**: `db/schema/`
-- **See**: `db/schema/README.md`
-- **Action**: Do not use - kept for historical reference only
+**Reason**: Replaced by environment DDL (`db/mythos_*_ddl.sql`). The four legacy schema files
+were deleted.
+
+### ❌ `db/migrations/*.sql` (removed)
+
+**Status**: Removed
+
+**Reason**: DDL migrations removed in favor of applying a single authoritative DDL file per
+environment. New databases use `db/mythos_<env>_ddl.sql` only.
+
+### ❌ `data/db/00_world_and_emotes.sql`, `01_professions.sql`, etc. (removed)
+
+**Status**: Removed
+
+**Reason**: Replaced by authoritative per-environment DML: `data/db/mythos_<env>_dml.sql`.
+
+### ❌ `data/db/migrations/*.sql` (removed)
+
+**Status**: Removed
+
+**Reason**: DML migrations removed; seed data is in the authoritative `data/db/mythos_*_dml.sql`
+files only.
 
 ### ⚠️ `data/static/generated_sql/static_seed.sql`
 
-**Status**: Deprecated - Replaced by `data/db/00_world_and_emotes.sql`
+**Status**: Deprecated - Replaced by authoritative DML in `data/db/`
 
-**Replacement**: `data/db/00_world_and_emotes.sql`
+**Replacement**: Content is incorporated into `data/db/mythos_dev_dml.sql` (and other env DML).
 
 **Location**: `data/static/generated_sql/`
 
-**See**: `data/static/generated_sql/README.md`
-
-- **Action**: Do not use - kept for historical reference only
+- **Action**: Do not use - use `data/db/mythos_<env>_dml.sql` for seed data
 
 ## Active Scripts
 
@@ -69,9 +82,10 @@ These scripts are **actively used** for data generation:
 
 **Status**: Active
 
-**Purpose**: Generates `data/db/00_world_and_emotes.sql` from JSON source data
+**Purpose**: Generates world/calendar/emotes SQL from JSON source data (for inclusion in
+authoritative DML or dev workflows).
 
-**Output**: DML baseline file for world data, calendars, and emotes
+**Output**: World data, calendars, and emotes (incorporate into `data/db/mythos_*_dml.sql` as needed)
 
 **Location**: `scripts/static_data/`
 
@@ -83,25 +97,15 @@ These directories have been **removed** after migration:
 
 ### ❌ `db/migration/` (removed)
 
-**Status**: Removed
-
-**Reason**: All files moved to `db/migrations/` (note: plural)
-
-**Migration**:
-
-- SQL files → `db/migrations/`
-- Utility scripts → `scripts/`
-- Documentation → `db/migrations/`
+**Status**: Removed (consolidated into `db/migrations/`, then migrations removed in favor of
+authoritative DDL).
 
 ### ❌ `scripts/migrations/` (removed)
 
 **Status**: Removed
 
-**Reason**: Migration files belong in `db/migrations/`, not `scripts/`
-
-**Migration**:
-
-- `add_respawn_room_id.sql` → `db/migrations/add_respawn_room_id.sql` (marked as deprecated)
+**Reason**: Migration files were moved to `db/migrations/`; DDL migrations have since been
+removed in favor of `db/mythos_*_ddl.sql`.
 
 ### ⚠️ `server/sql/` (legacy - kept for reference)
 
@@ -109,12 +113,12 @@ These directories have been **removed** after migration:
 
 **Files**:
 
-- `items_schema.sql` - SQLite schema (replaced by `db/authoritative_schema.sql`)
-- `npc_schema.sql` - SQLite schema (replaced by `db/authoritative_schema.sql`)
-- `items_seed_data.sql` - SQLite seed data (replaced by `data/db/02_item_prototypes.sql`)
+- `items_schema.sql` - SQLite schema (replaced by environment DDL in `db/mythos_*_ddl.sql`)
+- `npc_schema.sql` - SQLite schema (replaced by environment DDL in `db/mythos_*_ddl.sql`)
+- `items_seed_data.sql` - SQLite seed data (replaced by authoritative `data/db/mythos_*_dml.sql`)
 - `npc_sample_data.sql` - SQLite seed data (still referenced, should be migrated)
 - `migrations/001_add_player_channel_preferences.sql` - SQLite migration (legacy)
-- `migrations/002-009_*.sql` - PostgreSQL migrations (moved to `db/migrations/`, marked as deprecated)
+- `migrations/002-009_*.sql` - PostgreSQL migrations (removed; use `db/mythos_*_ddl.sql`)
 - **Location**: `server/sql/`
 - **See**: `server/sql/README.md`
 - **Action**: Do not use - all functionality replaced by PostgreSQL schema and migrations
@@ -131,41 +135,32 @@ These directories have been **removed** after migration:
 
 **Status**: Removed
 
-**Reason**: CSV files moved to `data/db/migrations/`
-
-**Migration**: CSV files moved to `data/db/migrations/`
+**Reason**: CSV files were in `data/db/migrations/`; DML migrations have been removed in favor
+of authoritative `data/db/mythos_*_dml.sql`.
 
 ## Current Directory Structure
 
 ```
 db/
-├── authoritative_schema.sql    ✅ Active - Single source of truth
+├── mythos_dev_ddl.sql         ✅ Authoritative - Dev DDL
+├── mythos_unit_ddl.sql        ✅ Authoritative - Unit test DDL
+├── mythos_e2e_ddl.sql         ✅ Authoritative - E2E test DDL
 ├── databases/                  ✅ Active - Database provisioning
 │   ├── databases.sql
 │   └── README.md
-├── migrations/                 ✅ Active - DDL migrations
-│   ├── *.sql (22 files)
+├── migrations/                 ❌ DDL migration .sql files removed (README only)
 │   └── README.md
 ├── roles/                      ✅ Active - Role creation
 │   ├── roles.sql
 │   └── README.md
-└── schema/                     ⚠️ Legacy - Historical reference only
-    ├── 01_world_and_calendar.sql
-    ├── 02_items_and_npcs.sql
-    ├── 03_identity_and_moderation.sql
-    ├── 04_runtime_tables.sql
+└── schema/                     ❌ Schema .sql files removed (README only)
     └── README.md
 
 data/
-├── db/                         ✅ Active - DML baseline
-│   ├── 00_world_and_emotes.sql
-│   ├── 01_professions.sql
-│   ├── 02_item_prototypes.sql
-│   ├── 03_npc_definitions.sql
-│   ├── migrations/             ✅ Active - DML migrations
-│   │   ├── *.csv (historical)
-│   │   └── README.md
-│   └── README.md
+├── db/                         ✅ Authoritative DML only
+│   ├── mythos_dev_dml.sql
+│   ├── mythos_unit_dml.sql
+│   └── mythos_e2e_dml.sql
 └── static/
     └── generated_sql/          ⚠️ Legacy - Historical reference only
         ├── static_seed.sql
@@ -176,11 +171,10 @@ data/
 
 When updating code that references legacy files:
 
-- [ ] Replace `db/schema/*.sql` → `db/authoritative_schema.sql`
-- [ ] Replace `data/seed/*.sql` → `data/db/*.sql`
-- [ ] Replace `data/static/generated_sql/static_seed.sql` → `data/db/00_world_and_emotes.sql`
-- [ ] Replace `db/migration/*.sql` → `db/migrations/*.sql` (note: plural)
-- [ ] Update any hardcoded paths in scripts
+- [x] Replace `db/schema/*.sql` with environment DDL (`db/mythos_*_ddl.sql`) — done
+- [x] Use only authoritative DML (`data/db/mythos_*_dml.sql`) — done
+- [x] Remove DDL/DML migration files in favor of authoritative DDL/DML — done
+- [ ] Update any remaining hardcoded paths in scripts
 - [ ] Update comments and documentation
 
 ## Questions?
