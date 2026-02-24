@@ -83,6 +83,18 @@ class NATSConnectionStateMachine(StateMachine):
     open_circuit = reconnecting.to(circuit_open)
     close_circuit = circuit_open.to(disconnected)
 
+    @property
+    def state(self) -> State:
+        """
+        Current FSM state as a single State.
+
+        Narrows base class type (Any | MutableSet[State]) for this single-state FSM
+        so mypy accepts .id and state comparisons. CI uses stricter mypy than some locals.
+        """
+        current = self.current_state
+        assert isinstance(current, State)
+        return current
+
     def __init__(self, connection_id: str, max_reconnect_attempts: int = 5) -> None:
         """
         Initialize connection state machine.
@@ -110,7 +122,7 @@ class NATSConnectionStateMachine(StateMachine):
         logger.info(
             "NATS connection state machine initialized",
             connection_id=connection_id,
-            initial_state=self.current_state.id,
+            initial_state=self.state.id,
         )
 
     def on_enter_state(self, state: State, event: Any | None = None, **_kwargs: Any) -> None:  # pylint: disable=unused-argument  # Reason: Parameter required by state machine interface
@@ -290,7 +302,7 @@ class NATSConnectionStateMachine(StateMachine):
 
         AI: Guard method prevents invalid connection attempts.
         """
-        return self.current_state in [self.disconnected, self.reconnecting, self.connecting]
+        return self.state in [self.disconnected, self.reconnecting, self.connecting]
 
     def should_open_circuit(self) -> bool:
         """
@@ -314,7 +326,7 @@ class NATSConnectionStateMachine(StateMachine):
         """
         return {
             "connection_id": self.connection_id,
-            "current_state": self.current_state.id,
+            "current_state": self.state.id,
             "reconnect_attempts": self.reconnect_attempts,
             "max_reconnect_attempts": self.max_reconnect_attempts,
             "total_connections": self.total_connections,
@@ -332,14 +344,14 @@ class NATSConnectionStateMachine(StateMachine):
         AI: For testing and manual recovery.
         """
         # Transition to disconnected if not already there
-        if self.current_state != self.disconnected:
-            if self.current_state == self.connected:
+        if self.state != self.disconnected:
+            if self.state == self.connected:
                 self.disconnect()
-            elif self.current_state == self.circuit_open:
+            elif self.state == self.circuit_open:
                 self.close_circuit()
-            elif self.current_state in [self.connecting, self.reconnecting]:
+            elif self.state in [self.connecting, self.reconnecting]:
                 self.connection_failed()
-            elif self.current_state == self.degraded:
+            elif self.state == self.degraded:
                 self.disconnect()
 
         # Reset counters

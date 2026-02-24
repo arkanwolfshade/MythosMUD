@@ -141,14 +141,14 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
         if not self.state_machine.can_attempt_connection():
             logger.warning(
                 "Connection attempt blocked by state machine",
-                current_state=self.state_machine.current_state.id,
+                current_state=self.state_machine.state.id,
                 reconnect_attempts=self.state_machine.reconnect_attempts,
             )
             return False
 
-        if self.state_machine.current_state.id == "disconnected":
+        if self.state_machine.state.id == "disconnected":
             self.state_machine.connect()
-        elif self.state_machine.current_state.id == "reconnecting":
+        elif self.state_machine.state.id == "reconnecting":
             pass
 
         return True
@@ -230,7 +230,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
                 "Connecting to NATS server",
                 url=nats_url,
                 tls_enabled=self.config.tls_enabled,
-                state=self.state_machine.current_state.id,
+                state=self.state_machine.state.id,
             )
 
             self.nc = await nats.connect(nats_url, **connect_options)
@@ -247,7 +247,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             logger.info(
                 "Connected to NATS server successfully",
                 url=nats_url,
-                state=self.state_machine.current_state.id,
+                state=self.state_machine.state.id,
                 pool_size=self.pool_size,
             )
             return True
@@ -264,18 +264,18 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
                 url=self.config.url,
                 retry_count=self._connection_retries,
                 max_retries=self._max_retries,
-                state=self.state_machine.current_state.id,
+                state=self.state_machine.state.id,
             )
 
             # Check if circuit breaker should be triggered
             if self.state_machine.should_open_circuit():
-                if self.state_machine.current_state.id == "disconnected":
+                if self.state_machine.state.id == "disconnected":
                     # Need to be in reconnecting to open circuit
                     self.state_machine.start_reconnect()
                 self.state_machine.open_circuit()
                 logger.critical(
                     "NATS connection circuit breaker opened",
-                    state=self.state_machine.current_state.id,
+                    state=self.state_machine.state.id,
                 )
 
             return False
@@ -333,10 +333,10 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
         self._running = False
 
         # Transition to disconnected state
-        if self.state_machine.current_state.id in ["connected", "degraded"]:
+        if self.state_machine.state.id in ["connected", "degraded"]:
             self.state_machine.disconnect()
 
-        logger.info("Disconnected from NATS server", state=self.state_machine.current_state.id)
+        logger.info("Disconnected from NATS server", state=self.state_machine.state.id)
 
     async def disconnect(self) -> None:
         """
@@ -487,7 +487,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
 
                     # Transition to degraded state if too many failures
                     if self._consecutive_health_failures >= 3:
-                        if self.state_machine.current_state.id == "connected":
+                        if self.state_machine.state.id == "connected":
                             self.state_machine.degrade()
                             logger.warning(
                                 "NATS connection degraded due to health check failures",
@@ -922,10 +922,10 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
     async def _handle_error_async(self, error: Any) -> None:
         """Async handler for NATS connection errors."""
         try:
-            logger.error("NATS connection error", error=str(error), state=self.state_machine.current_state.id)
+            logger.error("NATS connection error", error=str(error), state=self.state_machine.state.id)
 
             # Degrade connection if currently connected
-            if self.state_machine.current_state.id == "connected":
+            if self.state_machine.state.id == "connected":
                 self.state_machine.degrade()
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Error handler errors unpredictable, must log but not fail
             logger.error("Error in async error handler", error=str(e), original_error=str(error))
@@ -951,11 +951,11 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
     async def _handle_disconnect_async(self) -> None:
         """Async handler for NATS disconnection events."""
         try:
-            logger.warning("NATS client disconnected", state=self.state_machine.current_state.id)
+            logger.warning("NATS client disconnected", state=self.state_machine.state.id)
             self._running = False
 
             # Transition to reconnecting if we were connected
-            if self.state_machine.current_state.id in ["connected", "degraded"]:
+            if self.state_machine.state.id in ["connected", "degraded"]:
                 self.state_machine.disconnect()
                 self.state_machine.start_reconnect()
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Disconnect handler errors unpredictable, must log but not fail
@@ -983,14 +983,14 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
     async def _handle_reconnect_async(self) -> None:
         """Async handler for NATS reconnection events."""
         try:
-            logger.info("NATS client reconnected", state=self.state_machine.current_state.id)
+            logger.info("NATS client reconnected", state=self.state_machine.state.id)
             self._running = True
             self._connection_retries = 0
 
             # Transition to connected if we were reconnecting
-            if self.state_machine.current_state.id == "reconnecting":
+            if self.state_machine.state.id == "reconnecting":
                 self.state_machine.connected_successfully()
-            elif self.state_machine.current_state.id == "degraded":
+            elif self.state_machine.state.id == "degraded":
                 self.state_machine.recover()
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Reconnect handler errors unpredictable, must log but not fail
             logger.error("Error in async reconnect handler", error=str(e))
