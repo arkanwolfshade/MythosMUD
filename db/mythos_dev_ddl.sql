@@ -2931,7 +2931,7 @@ ALTER TABLE ONLY mythos_dev.npc_relationships
 --
 
 ALTER TABLE ONLY mythos_dev.npc_spawn_rules
-    ADD CONSTRAINT npc_spawn_rules_npc_definition_id_fkey FOREIGN KEY (npc_definition_id) REFERENCES mythos_dev.npc_definitions(id) ON DELETE CASCADE;
+    ADD CONSTRAINT npc_spawn_rules_npc_definition_id_fkey FOREIGN KEY ( npc_definition_id) REFERENCES mythos_dev.npc_definitions(id) ON DELETE CASCADE;
 
 
 --
