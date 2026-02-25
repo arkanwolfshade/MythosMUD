@@ -67,7 +67,7 @@ jobs:
           curl -LsSf https://astral.sh/uv/install.sh | sh
           echo "$HOME/.local/bin" >> $GITHUB_PATH
       - name: Cache uv virtual environment
-        uses: actions/cache@v4
+        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
         with:
           path: .venv-ci
           key: ${{ runner.os }}-uv-${{ hashFiles('**/pyproject.toml', '**/uv.lock') }}
@@ -305,7 +305,7 @@ jobs:
         with:
           node-version: "22"
       - name: Cache npm dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
         with:
           path: client/node_modules
           key: ${{ runner.os }}-npm-${{ hashFiles('client/package-lock.json') }}
