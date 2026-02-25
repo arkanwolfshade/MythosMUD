@@ -93,6 +93,7 @@
 **CI/CD:** GitHub Actions
 
 **Environment Management:** Environment variables with .env files
+
 - **Process Management:** uvicorn for Python, npm scripts for Node.js
 
 ## Code Repository URL
@@ -120,6 +121,7 @@
 **Token System:** JWT with configurable expiration
 
 **Rate Limiting:** Per-user and per-endpoint sliding window
+
 - **Input Validation:** Pydantic models with comprehensive validation
 
 ### Testing & Quality
@@ -129,6 +131,7 @@
 **Code Coverage:** 80%+ (target: 80% minimum, 82%+ preferred)
 
 **Linting:** ruff (replaces black/flake8)
+
 - **Pre-commit Hooks:** Automated code quality checks
 
 ### Development Tools
@@ -138,4 +141,5 @@
 **Node.js Management:** NVM for Windows
 
 **IDE Support:** VS Code with Cursor integration
+
 - **Documentation:** Comprehensive markdown documentation

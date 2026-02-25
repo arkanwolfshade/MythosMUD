@@ -11,10 +11,11 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Purpose**: Centralized subject pattern management and validation
 
 **Key Methods**:
-  - `build_subject(pattern_name: str, **params) -> str`: Build subject from pattern with parameters
+
+- `build_subject(pattern_name: str, **params) -> str`: Build subject from pattern with parameters
 - `validate_subject(subject: str) -> bool`: Validate subject against registered patterns
-  - `register_pattern(name: str, pattern: str, required_params: list)`: Register new subject patterns
-  - `get_pattern_info(pattern_name: str) -> dict`: Get pattern information and requirements
+- `register_pattern(name: str, pattern: str, required_params: list)`: Register new subject patterns
+- `get_pattern_info(pattern_name: str) -> dict`: Get pattern information and requirements
 
 ### Subject Pattern Registry
 
@@ -23,6 +24,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Service Types**: `chat`, `system`, `admin`, `player`
 
 **Channel Types**: `say`, `local`, `global`, `whisper`, `system`, `emote`, `pose`
+
 - **Scope Types**: `room`, `subzone`, `player`, `global`
 - **Identifier Types**: Room IDs, Player IDs, Subzone names
 
@@ -75,6 +77,7 @@ SUBJECT_PATTERNS = {
 **Pattern Matching**: Validate subject matches registered patterns
 
 **Type Checking**: Ensure parameter types match expected formats
+
 - **Length Limits**: Enforce maximum subject length constraints
 - **Character Validation**: Ensure only valid characters in subject components
 
@@ -85,6 +88,7 @@ SUBJECT_PATTERNS = {
 **NATSService**: Add subject validation before publishing
 
 **Message Handlers**: Use standardized subjects for subscription patterns
+
 - **Configuration**: Add subject pattern configuration options
 
 ### Performance Considerations
@@ -94,6 +98,7 @@ SUBJECT_PATTERNS = {
 **Lazy Loading**: Load patterns on first use to reduce startup time
 
 **Memory Efficiency**: Use string templates instead of regex for better performance
+
 - **Validation Caching**: Cache validation results for repeated subjects
 
 ### Error Handling
@@ -103,6 +108,7 @@ SUBJECT_PATTERNS = {
 **Missing Parameters**: Detailed error for missing required parameters
 
 **Invalid Parameters**: Type and format validation errors
+
 - **Subject Too Long**: Length limit enforcement with helpful messages
 
 ### Migration Strategy
@@ -120,6 +126,7 @@ SUBJECT_PATTERNS = {
 **Integration Tests**: Test with actual NATS message publishing
 
 **Performance Tests**: Validate performance impact of subject validation
+
 - **Migration Tests**: Ensure backward compatibility during migration
 
 ### Configuration Options
@@ -139,4 +146,5 @@ class SubjectConfig(BaseSettings):
 **Validation Failures**: Log validation errors with context
 
 **Performance Metrics**: Track subject building and validation performance
+
 - **Pattern Statistics**: Monitor most-used patterns for optimization

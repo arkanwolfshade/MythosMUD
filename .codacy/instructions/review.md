@@ -19,7 +19,7 @@ and COPPA compliance are mandatory.
 - `server/` — FastAPI backend, game logic, persistence, WebSocket handlers
 - `server/tests/` — Unit (`unit`), integration (`integration`), fixtures in `fixtures/`
 - `client/` — React/TypeScript SPA, Vite build
-- `data/players/`, `data/npcs/` — Production DB paths (PostgreSQL; no SQLite)
+- `data/` - Private git submodule, IGNORE
 - `scripts/` — PowerShell and Python tooling (lint, format, server start/stop)
 - `docs/` — Documentation, OpenAPI spec
 

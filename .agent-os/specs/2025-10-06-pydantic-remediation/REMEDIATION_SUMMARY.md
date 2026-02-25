@@ -11,6 +11,7 @@ This document summarizes the remediation work completed to fix test failures int
 **Passing**: 3,172 (98.8%)
 
 **Failing**: 26 (0.8%)
+
 - **Skipped**: 13
 - **Collection errors**: 0 (previously fixed)
 
@@ -50,16 +51,16 @@ The 26 failing tests were primarily related to:
 
 **`Player`**: Complete Pydantic model with:
 
-  - Core attributes: `id`, `name`, `current_room_id`, `experience_points`, `level`
-  - Nested models: `stats` (Stats), `inventory` (list[InventoryItem]), `status_effects` (list[StatusEffect])
-  - Game logic methods:
-    - `add_item()` - Add items to inventory with quantity stacking
-    - `remove_item()` - Remove items from inventory
-    - `add_status_effect()` - Apply status effects
-    - `remove_status_effect()` - Remove status effects
-    - `get_active_status_effects()` - Filter active effects by game tick
-    - `update_last_active()` - Update activity timestamp
-    - `can_carry_weight()` - Check carrying capacity based on strength
+- Core attributes: `id`, `name`, `current_room_id`, `experience_points`, `level`
+- Nested models: `stats` (Stats), `inventory` (list[InventoryItem]), `status_effects` (list[StatusEffect])
+- Game logic methods:
+  - `add_item()` - Add items to inventory with quantity stacking
+  - `remove_item()` - Remove items from inventory
+  - `add_status_effect()` - Apply status effects
+  - `remove_status_effect()` - Remove status effects
+  - `get_active_status_effects()` - Filter active effects by game tick
+  - `update_last_active()` - Update activity timestamp
+  - `can_carry_weight()` - Check carrying capacity based on strength
 
 **Test Import Update**: Changed `server/tests/test_models.py` import from ORM Player to Pydantic Player:
 
@@ -94,6 +95,7 @@ from ..models.game import AttributeType, Player, Stats, StatusEffect, StatusEffe
 **Passing**: 3,191 (99.4%)
 
 **Failing**: 7 (0.2%)
+
 - **Skipped**: 13
 - **Execution time**: 3m 37s
 
@@ -103,22 +105,20 @@ from ..models.game import AttributeType, Player, Stats, StatusEffect, StatusEffe
 
 **Remaining**: 7 failures unrelated to Pydantic audit:
 
-  - `test_character_recovery_flow.py`: 1 failure (application logic issue)
-  - `test_lazy_loading_optimization.py`: 3 failures (optimization validation)
-  - `test_memory_profiling.py`: 3 failures (performance validation)
+- `test_character_recovery_flow.py`: 1 failure (application logic issue)
+- `test_lazy_loading_optimization.py`: 3 failures (optimization validation)
+- `test_memory_profiling.py`: 3 failures (performance validation)
 
 ## Architecture Benefits
 
 ### Clear Model Separation
 
 1. **SQLAlchemy ORM Models** (`server/models/player.py`):
-
    - Used for database persistence
    - Handles data storage and retrieval
    - Maps to database schema
 
 2. **Pydantic Game Models** (`server/models/game.py`):
-
    - Used for game logic and validation
    - Provides type safety and validation
    - Implements game rules and behaviors
@@ -166,4 +166,5 @@ from ..models.game import AttributeType, Player, Stats, StatusEffect, StatusEffe
 - `tasks.md`: Tracks overall Pydantic audit task progress
 
 ---
-*As noted in the Pnakotic Manuscripts: "The proper organization of models brings clarity to chaos, much like the sorting of tomes in the Miskatonic library."*
+
+_As noted in the Pnakotic Manuscripts: "The proper organization of models brings clarity to chaos, much like the sorting of tomes in the Miskatonic library."_

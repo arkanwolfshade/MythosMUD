@@ -30,25 +30,21 @@ Combat damage was updating player health in memory but not persisting to databas
 ### Solution Implemented ✅
 
 1. **Added four new methods to `PersistenceLayer`**:
-
    - `damage_player(player, amount, damage_type)` - Sync version
    - `heal_player(player, amount)` - Sync version
    - `async_damage_player(player, amount, damage_type)` - Async wrapper
    - `async_heal_player(player, amount)` - Async wrapper
 
 2. **Enhanced error logging**:
-
    - Added `global_errors_handler` to root logger in `enhanced_logging_config.py`
    - Ensures ALL ERROR/CRITICAL logs from any module are captured in `errors.log`
    - Updated `combat_integration.py` to re-raise `AttributeError` as CRITICAL
 
 3. **Added `gain_experience()` to `GameMechanicsService`**:
-
    - Prevents XP awards from overwriting combat damage
    - Properly routes through persistence layer
 
 4. **Test Coverage**:
-
    - Created 12 unit tests in `test_player_health_persistence.py`
    - All tests passing ✅
    - Full test suite: 4,953 tests passing, 90% coverage ✅
@@ -60,6 +56,7 @@ Combat damage was updating player health in memory but not persisting to databas
 ✅ `server/game/mechanics.py` - Added `gain_experience()` method
 
 ✅ `server/services/npc_combat_integration_service.py` - Use new XP method
+
 - ✅ `server/logging/enhanced_logging_config.py` - Global error handler
 - ✅ `server/npc/combat_integration.py` - Re-raise critical errors
 - ✅ `server/tests/unit/persistence/test_player_health_persistence.py` - New tests
@@ -195,6 +192,7 @@ def update_player_field(self, player_id: str, field_path: str, value: Any) -> No
 ✅ Solves race condition immediately
 
 ✅ Minimal code changes
+
 - ✅ No cache invalidation logic needed
 
 **Cons**:
@@ -207,7 +205,6 @@ def update_player_field(self, player_id: str, field_path: str, value: Any) -> No
 **Files to Modify**:
 
 1. `server/persistence.py`:
-
    - Add `update_player_field()` method
    - Add `update_player_health()` convenience method
    - Add `update_player_xp()` convenience method
@@ -408,6 +405,7 @@ class PersistenceLayer:
 ❌ High database load
 
 ❌ May require database connection pooling
+
 - ❌ Latency increases for player operations
 
 **Estimated Time**: 1-2 hours (removal) + performance testing
@@ -572,12 +570,10 @@ async def test_combat_death_xp_award_preserves_health():
    ```
 
 2. **Emergency Hotfix**:
-
    - Disable XP awards temporarily
    - Or revert to old XP award code (loads/saves entire player)
 
 3. **Data Recovery**:
-
    - Restore player health from backup
    - Or manual database query to reset health to reasonable values
 
@@ -588,19 +584,16 @@ async def test_combat_death_xp_award_preserves_health():
 ### Metrics to Track
 
 1. **Database Performance**:
-
    - Query time for field updates vs full player saves
    - Number of concurrent updates per second
    - Lock contention on players table
 
 2. **Cache Performance** (Phase 2B):
-
    - Cache hit rate
    - Cache invalidation rate
    - Average cache age
 
 3. **Error Rates**:
-
    - `errors.log` entries for persistence errors
    - Failed save operations
    - Stale data exceptions (Phase 2C)
@@ -820,5 +813,5 @@ CREATE TABLE players (
 
 ---
 
-*"In the restricted archives of Miskatonic University, we have learned that data persistence is as critical as the lucidity of our investigators. Let us ensure no knowledge is lost to the void."*
+_"In the restricted archives of Miskatonic University, we have learned that data persistence is as critical as the lucidity of our investigators. Let us ensure no knowledge is lost to the void."_
 — From the Digital Pnakotic Manuscripts

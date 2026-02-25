@@ -42,6 +42,7 @@ Channel selection is handled in CommandPanel
 **Channel Selector**: Move channel selection from CommandPanel to ChatPanel
 
 **Chat History**: Display recent chat messages with better organization
+
 - **Quick Chat Commands**: Channel-specific quick commands
 - **Chat Statistics**: Message counts, channel activity, etc.
 
@@ -90,6 +91,7 @@ interface EnhancedChatPanelProps {
 **Message Types**: Chat messages, system messages, room updates, player events, etc.
 
 **Comprehensive Logging**: Complete game activity history
+
 - **No Input Capabilities**: Read-only display of game events
 
 #### Game Log Panel Layout Structure
@@ -216,6 +218,7 @@ if (!command.startsWith('/') && !isGameCommand) {
 **GameLogPanel**: Display all game events and messages (read-only)
 
 **CommandPanel**: Handle all game commands (look, inventory, movement, etc.)
+
 - **GameTerminalWithPanels**: Route commands to appropriate panel based on command type
 
 ### 3. State Management
@@ -255,10 +258,10 @@ Chat-related state moves to ChatPanel
 
 ```typescript
 const handleCommandSubmit = (command: string) => {
-  const chatCommands = ['say', 'local', 'global', 'whisper', 'reply'];
-  const firstWord = command.split(' ')[0].toLowerCase();
+  const chatCommands = ["say", "local", "global", "whisper", "reply"];
+  const firstWord = command.split(" ")[0].toLowerCase();
 
-  if (chatCommands.includes(firstWord) || command.startsWith('/')) {
+  if (chatCommands.includes(firstWord) || command.startsWith("/")) {
     // Route to ChatPanel
     onSendChatMessage(command, selectedChannel);
   } else {
@@ -277,6 +280,7 @@ const handleCommandSubmit = (command: string) => {
 **GameLogPanel**: Use log-themed icons and colors (document, list, etc.)
 
 **CommandPanel**: Use command-themed icons and colors (terminal, search, etc.)
+
 - Clear visual separation between chat, game log, and command functionality
 
 ### 2. Panel Positioning
@@ -286,6 +290,7 @@ const handleCommandSubmit = (command: string) => {
 **GameLogPanel**: Default position on center-left (comprehensive game activity view)
 
 **CommandPanel**: Default position on right side (typical command placement)
+
 - All panels should be draggable and resizable
 
 ### 3. Responsive Design
