@@ -121,6 +121,7 @@ Phase 4 completion
 **S:** 2-3 days
 
 **M:** 1 week
+
 - **L:** 2 weeks
 - **XL:** 3+ weeks
 
@@ -131,6 +132,7 @@ Phase 4 completion
 ✅ Multiplayer messaging system (completed)
 
 ✅ Admin teleport system (completed)
+
 - ✅ Enhanced who command (completed)
 - ✅ Dead code cleanup (completed)
 - ⏳ Advanced chat channels (planned)

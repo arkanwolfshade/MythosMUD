@@ -1,6 +1,6 @@
 # Test Suite Refactoring - Executive Summary
 
-> *"In bringing order to chaos, we must first understand the nature of the chaos itself."*
+> _"In bringing order to chaos, we must first understand the nature of the chaos itself."_
 
 ## Overview
 
@@ -12,6 +12,7 @@ This refactoring initiative will reorganize the test suite into a clear, hierarc
 **Domain/feature area** (API, commands, chat, NPC, etc.)
 
 **Consistent naming conventions**
+
 - **Best practices from pytest and industry standards**
 
 ## Key Documents
@@ -84,6 +85,7 @@ python server/tests/scripts/track_migration.py --report
 **Easy navigation** - find tests quickly
 
 **Logical grouping** of related tests
+
 - **Reduced duplication** through consolidation
 
 ### Better Maintainability
@@ -93,6 +95,7 @@ python server/tests/scripts/track_migration.py --report
 **Standardized naming** conventions
 
 **Clear test categories** (unit/integration/e2e)
+
 - **Easier onboarding** for new developers
 
 ### Enhanced Testing
@@ -102,6 +105,7 @@ python server/tests/scripts/track_migration.py --report
 **Improved coverage** through better organization
 
 **Easier to identify gaps** in test coverage
+
 - **Clear patterns** for adding new tests
 
 ### Developer Experience
@@ -111,6 +115,7 @@ python server/tests/scripts/track_migration.py --report
 **Clear guidelines** for test placement
 
 **Reduced cognitive load** when writing tests
+
 - **Better code review** process
 
 ## Key Metrics
@@ -122,6 +127,7 @@ python server/tests/scripts/track_migration.py --report
 **Total Test Functions/Classes:** 519+
 
 **Organization:** Flat structure with some subdirectories
+
 - **Naming:** Inconsistent patterns and suffixes
 
 ### Target State
@@ -131,9 +137,10 @@ python server/tests/scripts/track_migration.py --report
 **Organization:** Hierarchical structure with 9 main categories
 
 **Categories:**
-  - `unit/` (15 subdirectories)
-  - `integration/` (8 subdirectories)
-  - `e2e/`, `performance/`, `security/`, `coverage/`, `regression/`, `monitoring/`, `verification/`
+
+- `unit/` (15 subdirectories)
+- `integration/` (8 subdirectories)
+- `e2e/`, `performance/`, `security/`, `coverage/`, `regression/`, `monitoring/`, `verification/`
 - **Consolidation:** 35 files merged into 20
 - **Removed:** 1 obsolete test file
 
@@ -144,6 +151,7 @@ python server/tests/scripts/track_migration.py --report
 **Phase 2:** Core Infrastructure (Week 2)
 
 **Phase 3:** Feature Domains (Week 3)
+
 - **Phase 4:** Integration & Specialized (Week 4)
 - **Phase 5:** Coverage & Bug Fixes (Week 5)
 - **Phase 6:** Validation & Cleanup (Week 6)
@@ -261,6 +269,7 @@ Be independent and isolated
 ✅ Test coverage maintained or improved (currently ~85%)
 
 ✅ All tests passing after migration
+
 - ✅ CI/CD pipeline updated and passing
 - ✅ ~18% reduction in file count through consolidation
 
@@ -271,6 +280,7 @@ Be independent and isolated
 ✅ Easy to locate tests for any feature
 
 ✅ Consistent naming conventions
+
 - ✅ Improved test discoverability
 - ✅ Better separation of concerns
 - ✅ Reduced duplication
@@ -370,6 +380,6 @@ The new structure will:
 
 ---
 
-*"The cataloguing of forbidden knowledge requires patience, precision, and a systematic approach. Only then can we hope to wield it effectively."*
+_"The cataloguing of forbidden knowledge requires patience, precision, and a systematic approach. Only then can we hope to wield it effectively."_
 
 — Dr. Henry Armitage, Chief Cataloguer, Miskatonic University Library

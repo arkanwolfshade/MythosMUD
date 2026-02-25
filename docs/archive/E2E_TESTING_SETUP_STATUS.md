@@ -9,6 +9,7 @@
 ✅ Created `server/server_config.unit_test.yaml` (unit test structural config)
 
 ✅ Created `server/server_config.e2e_test.yaml` (E2E test structural config)
+
 - ✅ Created `env.local.example` (local dev secrets template)
 - ✅ Created `server/tests/env.unit_test.example` (unit test secrets template)
 - ✅ Updated `server/tests/conftest.py` to use `.env.unit_test`
@@ -22,6 +23,7 @@
 ✅ Created test fixtures: `auth.ts`, `database.ts`, `player.ts`, `test-data.ts`
 
 ✅ Created 10 test spec files (114 automated tests total)
+
 - ✅ Added test IDs to UI components (`data-testid` attributes)
 - ✅ Installed Playwright browsers (Chromium, Firefox, Webkit)
 - ✅ Test database seeds correctly to `data/unit_test/players/unit_test_players.db`
@@ -33,6 +35,7 @@
 ✅ Added `data-testid="password-input"` to login form
 
 ✅ Added `data-testid="login-button"` to login button
+
 - ✅ Added `data-testid="continue-button"` to MOTD continue button
 - ✅ Confirmed `data-testid="command-input"` exists in CommandPanel
 - ✅ Confirmed `data-testid="logout-button"` exists in LogoutButton

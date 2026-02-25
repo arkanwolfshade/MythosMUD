@@ -269,6 +269,61 @@ describe('projector', () => {
       expect(state.room?.name).toBe('Sanitarium Foyer');
     });
 
+    it('player_respawned with message appends message to GameInfo (issue #395)', () => {
+      const prev = getInitialGameState();
+      const ts = new Date().toISOString();
+      const event: GameEvent = {
+        event_type: 'player_respawned',
+        timestamp: ts,
+        sequence_number: 1,
+        data: {
+          player: { name: 'TestPlayer', stats: { current_dp: 27 } },
+          room: { id: 'sanitarium', name: 'Sanitarium Foyer', description: 'Here.', exits: {} },
+          message: 'The sanitarium calls you back from the threshold. You have been restored to life.',
+        },
+      };
+      const next = projectEvent(prev, event);
+      expect(next.messages).toHaveLength(1);
+      expect(next.messages[0].text).toBe(
+        'The sanitarium calls you back from the threshold. You have been restored to life.'
+      );
+      expect(next.messages[0].messageType).toBe('system');
+      expect(next.messages[0].timestamp).toBe(ts);
+    });
+
+    it('player_delirium_respawned with message appends message to GameInfo (issue #395)', () => {
+      const prev = getInitialGameState();
+      const ts = new Date().toISOString();
+      const event: GameEvent = {
+        event_type: 'player_delirium_respawned',
+        timestamp: ts,
+        sequence_number: 1,
+        data: {
+          player: { name: 'TestPlayer', stats: { lucidity: 100 } },
+          message: 'You have been restored to lucidity and returned to the Sanitarium.',
+        },
+      };
+      const next = projectEvent(prev, event);
+      expect(next.messages).toHaveLength(1);
+      expect(next.messages[0].text).toBe('You have been restored to lucidity and returned to the Sanitarium.');
+      expect(next.messages[0].messageType).toBe('system');
+    });
+
+    it('player_respawned without message does not append to messages', () => {
+      const prev = getInitialGameState();
+      const event: GameEvent = {
+        event_type: 'player_respawned',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          player: { name: 'TestPlayer', stats: {} },
+          room: { id: 'r1', name: 'Room', description: '', exits: {} },
+        },
+      };
+      const next = projectEvent(prev, event);
+      expect(next.messages).toHaveLength(0);
+    });
+
     it('room_state is authoritative (replaces room for same id)', () => {
       const log: EventLog = [
         {

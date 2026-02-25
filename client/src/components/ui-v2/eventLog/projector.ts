@@ -292,11 +292,20 @@ export function projectEvent(prevState: GameState, event: GameEvent): GameState 
     case 'playerdeliriumrespawned': {
       const player = event.data.player as Player | undefined;
       const room = event.data.room as Room | undefined;
+      const messageText = typeof event.data.message === 'string' ? event.data.message.trim() : '';
       if (player) {
         nextState = { ...prevState, player };
       }
       if (room) {
         nextState = { ...nextState, room };
+      }
+      // Issue #395: Server-initiated position changes must print to GameInfo panel
+      if (messageText) {
+        const msg = buildChatMessage(messageText, event.timestamp, {
+          messageType: 'system',
+          channel: GAME_LOG_CHANNEL,
+        });
+        nextState = { ...nextState, messages: appendMessage(nextState.messages, msg) };
       }
       break;
     }

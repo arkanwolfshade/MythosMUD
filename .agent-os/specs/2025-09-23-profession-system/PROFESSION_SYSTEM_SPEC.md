@@ -69,16 +69,16 @@ POST /api/character/roll-stats
 
 ```json
 {
-    "stats": {
-        "strength": 12,
-        "intelligence": 10,
-        "constitution": 14,
-        "dexterity": 11,
-        "wisdom": 13,
-        "charisma": 9
-    },
-    "profession_id": 0,
-    "meets_requirements": true
+  "stats": {
+    "strength": 12,
+    "intelligence": 10,
+    "constitution": 14,
+    "dexterity": 11,
+    "wisdom": 13,
+    "charisma": 9
+  },
+  "profession_id": 0,
+  "meets_requirements": true
 }
 ```
 
@@ -97,10 +97,10 @@ GET /api/professions/{id}
 
 **Card Content**:
 
-  - Profession name (header)
-  - Description (body text)
-  - Stat requirements (highlighted box)
-  - Flavor text (italic, smaller text)
+- Profession name (header)
+- Description (body text)
+- Stat requirements (highlighted box)
+- Flavor text (italic, smaller text)
 - **Interaction**: Click anywhere on card to select
 - **Navigation**: Back to registration, Next to stat rolling (disabled until selection)
 
@@ -121,7 +121,6 @@ GET /api/professions/{id}
 2. Check if combination meets profession requirements
 
 3. If requirements not met:
-
    - Discard roll
 
    - Apply weighted probabilities to favor valid combinations
@@ -162,6 +161,7 @@ Parse `stat_requirements` JSON from profession data
 **Navigation**: Update character creation flow
 
 **Components**: Create profession card component
+
 - **API**: Add profession API calls
 
 ## MVP Professions
@@ -173,6 +173,7 @@ Parse `stat_requirements` JSON from profession data
 **Flavor Text**: You have learned to survive on the streets, finding shelter where you can and making do with what you have.
 
 **Requirements**: None
+
 - **Effects**: None (MVP)
 
 ### Gutter Rat (ID: 1)
@@ -182,6 +183,7 @@ Parse `stat_requirements` JSON from profession data
 **Flavor Text**: You know the hidden passages and dark corners of the city, where others fear to tread.
 
 **Requirements**: None
+
 - **Effects**: None (MVP)
 
 ## Future Considerations

@@ -20,6 +20,7 @@ The Server-Sent Events (SSE) authentication system provides secure, real-time co
 **Security Headers**: `get_sse_auth_headers()` function in `auth.py`
 
 **Rate Limiting**: Built into `ConnectionManager` class in `real_time.py`
+
 - **SSE Endpoint**: `/events/{player_id}` with token validation
 - **WebSocket Endpoint**: `/ws/{player_id}` with token validation
 
@@ -60,6 +61,7 @@ def validate_sse_token(token: str, users_file: str = None) -> dict:
 **Time Window**: 60 seconds
 
 **Per-Player**: Rate limits are tracked separately for each player
+
 - **Automatic Reset**: Limits reset after the time window expires
 
 ```python
@@ -136,14 +138,13 @@ curl -H "Accept: text/event-stream" \
 **4001 Close Code**: Missing authentication token
 
 **4001 Close Code**: Invalid authentication token
+
 - **4003 Close Code**: Token doesn't match player ID
 
 **Example**:
 
 ```javascript
-const ws = new WebSocket(
-    `ws://localhost:54731/ws/testuser?token=${jwtToken}`
-);
+const ws = new WebSocket(`ws://localhost:54731/ws/testuser?token=${jwtToken}`);
 ```
 
 ## Error Handling
@@ -162,20 +163,20 @@ When rate limits are exceeded, SSE connections return an error event:
 
 ```json
 {
-    "event_type": "error",
-    "sequence_number": 123,
-    "player_id": "testuser",
-    "data": {
-        "error": "rate_limited",
-        "message": "Too many connection attempts",
-        "rate_limit_info": {
-            "attempts": 5,
-            "max_attempts": 5,
-            "window_seconds": 60,
-            "attempts_remaining": 0,
-            "reset_time": 1640995200.0
-        }
+  "event_type": "error",
+  "sequence_number": 123,
+  "player_id": "testuser",
+  "data": {
+    "error": "rate_limited",
+    "message": "Too many connection attempts",
+    "rate_limit_info": {
+      "attempts": 5,
+      "max_attempts": 5,
+      "window_seconds": 60,
+      "attempts_remaining": 0,
+      "reset_time": 1640995200.0
     }
+  }
 }
 ```
 
@@ -190,6 +191,7 @@ The SSE authentication system includes comprehensive tests:
 **Security Headers**: Verification of all security headers
 
 **Rate Limiting**: Tests for rate limit enforcement and reset
+
 - **Integration**: End-to-end authentication flow testing
 
 ### Running Tests
@@ -215,6 +217,7 @@ python -m pytest tests/test_sse_auth.py::TestSSEEndpointAuthentication -v
 **Algorithm**: Uses HS256 for token signing
 
 **Secret Key**: Stored in environment variable `MYTHOSMUD_SECRET_KEY`
+
 - **Validation**: Tokens are validated on every connection attempt
 
 ### Connection Security
@@ -224,6 +227,7 @@ python -m pytest tests/test_sse_auth.py::TestSSEEndpointAuthentication -v
 **CORS**: Configured for specific origins only
 
 **Rate Limiting**: Prevents connection flooding attacks
+
 - **Security Headers**: Comprehensive protection against common attacks
 
 ### Best Practices

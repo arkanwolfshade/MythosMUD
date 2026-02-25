@@ -33,6 +33,7 @@ Circular dependency in `useEffect` hook with `calculateNonOverlappingPositions`
 **Mathematical Precision**: Grid-based positioning eliminates positioning errors
 
 **Responsive Design**: Automatic breakpoint handling for different screen sizes
+
 - **Professional Grade**: Used by major applications (Grafana, Kibana)
 
 #### Technical Benefits
@@ -53,6 +54,7 @@ Automatic collision detection and resolution
 **Performance**: Hardware-accelerated layout calculations
 
 **Fallback Strategy**: Works even if JavaScript fails
+
 - **Learning Foundation**: Understanding grid concepts for future development
 
 ### Enhancement: React DnD (react-dnd)
@@ -64,6 +66,7 @@ Automatic collision detection and resolution
 **Customization**: Tailored drag handles and drop zones
 
 **Animation Control**: Smooth transitions and visual feedback
+
 - **Integration**: Works seamlessly with React Grid Layout
 
 ## Implementation Plan
@@ -75,21 +78,18 @@ Automatic collision detection and resolution
 #### Tasks
 
 1. **CSS Grid Implementation**
-
    - Create CSS Grid container for panel layout
    - Define grid areas for each panel type
    - Implement responsive grid templates
    - Test overlap prevention
 
 2. **Panel Container Refactoring**
-
    - Wrap panels in CSS Grid container
    - Remove current positioning logic
    - Implement grid-area assignments
    - Test responsive behavior
 
 3. **Font Size Resolution**
-
    - Audit all CSS files for font size conflicts
    - Resolve specificity issues
    - Ensure consistent typography application
@@ -110,21 +110,18 @@ All panels visible without overlap
 #### Tasks
 
 1. **Library Installation & Setup**
-
    - Install `react-grid-layout` and dependencies
    - Configure TypeScript types
    - Set up responsive breakpoints
    - Create layout configuration
 
 2. **Panel Component Migration**
-
    - Migrate from `DraggablePanel` to React Grid Layout
    - Implement grid item configuration
    - Add resize and drag constraints
    - Test panel interactions
 
 3. **Layout State Management**
-
    - Implement layout state persistence
    - Add layout change handlers
    - Create layout reset functionality
@@ -145,21 +142,18 @@ Professional-grade panel management
 #### Tasks
 
 1. **React DnD Integration**
-
    - Install and configure `react-dnd`
    - Implement custom drag handles
    - Add drop zone indicators
    - Test drag-and-drop interactions
 
 2. **Animation & Transitions**
-
    - Smooth panel movement animations
    - Resize transition effects
    - Layout change animations
    - Performance optimization
 
 3. **Advanced Features**
-
    - Panel docking system
    - Tabbed panel support
    - Panel grouping
@@ -178,34 +172,34 @@ Smooth, professional animations
 ### React Grid Layout Configuration
 
 ```typescript
-import { Responsive, WidthProvider } from 'react-grid-layout';
-import 'react-grid-layout/css/styles.css';
-import 'react-resizable/css/styles.css';
+import { Responsive, WidthProvider } from "react-grid-layout";
+import "react-grid-layout/css/styles.css";
+import "react-resizable/css/styles.css";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const layoutConfig = {
   lg: [
-    { i: 'chat', x: 0, y: 0, w: 6, h: 8 },
-    { i: 'gameLog', x: 6, y: 0, w: 6, h: 8 },
-    { i: 'command', x: 12, y: 0, w: 4, h: 6 },
-    { i: 'roomInfo', x: 0, y: 8, w: 6, h: 4 },
-    { i: 'status', x: 12, y: 6, w: 4, h: 6 }
+    { i: "chat", x: 0, y: 0, w: 6, h: 8 },
+    { i: "gameLog", x: 6, y: 0, w: 6, h: 8 },
+    { i: "command", x: 12, y: 0, w: 4, h: 6 },
+    { i: "roomInfo", x: 0, y: 8, w: 6, h: 4 },
+    { i: "status", x: 12, y: 6, w: 4, h: 6 },
   ],
   md: [
-    { i: 'chat', x: 0, y: 0, w: 8, h: 6 },
-    { i: 'gameLog', x: 8, y: 0, w: 4, h: 6 },
-    { i: 'command', x: 0, y: 6, w: 6, h: 4 },
-    { i: 'roomInfo', x: 6, y: 6, w: 6, h: 4 },
-    { i: 'status', x: 0, y: 10, w: 12, h: 3 }
+    { i: "chat", x: 0, y: 0, w: 8, h: 6 },
+    { i: "gameLog", x: 8, y: 0, w: 4, h: 6 },
+    { i: "command", x: 0, y: 6, w: 6, h: 4 },
+    { i: "roomInfo", x: 6, y: 6, w: 6, h: 4 },
+    { i: "status", x: 0, y: 10, w: 12, h: 3 },
   ],
   sm: [
-    { i: 'chat', x: 0, y: 0, w: 12, h: 5 },
-    { i: 'gameLog', x: 0, y: 5, w: 12, h: 5 },
-    { i: 'command', x: 0, y: 10, w: 12, h: 4 },
-    { i: 'roomInfo', x: 0, y: 14, w: 12, h: 4 },
-    { i: 'status', x: 0, y: 18, w: 12, h: 3 }
-  ]
+    { i: "chat", x: 0, y: 0, w: 12, h: 5 },
+    { i: "gameLog", x: 0, y: 5, w: 12, h: 5 },
+    { i: "command", x: 0, y: 10, w: 12, h: 4 },
+    { i: "roomInfo", x: 0, y: 14, w: 12, h: 4 },
+    { i: "status", x: 0, y: 18, w: 12, h: 3 },
+  ],
 };
 ```
 
@@ -226,11 +220,21 @@ const layoutConfig = {
   height: calc(100vh - 70px);
 }
 
-.panel-chat { grid-area: chat; }
-.panel-gameLog { grid-area: gameLog; }
-.panel-command { grid-area: command; }
-.panel-roomInfo { grid-area: roomInfo; }
-.panel-status { grid-area: status; }
+.panel-chat {
+  grid-area: chat;
+}
+.panel-gameLog {
+  grid-area: gameLog;
+}
+.panel-command {
+  grid-area: command;
+}
+.panel-roomInfo {
+  grid-area: roomInfo;
+}
+.panel-status {
+  grid-area: status;
+}
 ```
 
 ### Font Size Resolution Strategy
@@ -238,16 +242,16 @@ const layoutConfig = {
 ```typescript
 // Create a centralized font size system
 export const fontSizes = {
-  xs: 'text-sm',      // 14px (was 12px)
-  sm: 'text-base',    // 16px (was 14px)
-  base: 'text-lg',    // 18px (was 16px)
-  lg: 'text-xl',      // 20px (was 18px)
-  xl: 'text-2xl',     // 24px (was 20px)
-  '2xl': 'text-3xl',  // 30px (was 24px)
+  xs: "text-sm", // 14px (was 12px)
+  sm: "text-base", // 16px (was 14px)
+  base: "text-lg", // 18px (was 16px)
+  lg: "text-xl", // 20px (was 18px)
+  xl: "text-2xl", // 24px (was 20px)
+  "2xl": "text-3xl", // 30px (was 24px)
 } as const;
 
 // Apply consistently across components
-const getFontSizeClass = (size: keyof typeof fontSizes = 'base') => {
+const getFontSizeClass = (size: keyof typeof fontSizes = "base") => {
   return fontSizes[size];
 };
 ```
@@ -257,19 +261,16 @@ const getFontSizeClass = (size: keyof typeof fontSizes = 'base') => {
 ### Primary Files
 
 1. **`client/src/components/GameTerminal.tsx`**
-
    - Replace positioning logic with React Grid Layout
    - Remove infinite recursion code
    - Implement grid-based panel management
 
 2. **`client/src/components/DraggablePanel.tsx`**
-
    - Adapt for React Grid Layout integration
    - Maintain existing API compatibility
    - Add grid-specific props
 
 3. **`client/src/theme/mythosTheme.ts`**
-
    - Resolve font size conflicts
    - Ensure consistent typography application
    - Clean up commented code
@@ -277,13 +278,11 @@ const getFontSizeClass = (size: keyof typeof fontSizes = 'base') => {
 ### CSS Files
 
 1. **`client/src/index.css`**
-
    - Add CSS Grid fallback styles
    - Resolve font size specificity issues
    - Ensure consistent styling
 
 2. **`client/src/App.css`**
-
    - Update component-specific styles
    - Align with new layout system
    - Maintain visual consistency
@@ -291,13 +290,11 @@ const getFontSizeClass = (size: keyof typeof fontSizes = 'base') => {
 ### New Files
 
 1. **`client/src/components/layout/GridLayoutManager.tsx`**
-
    - React Grid Layout configuration
    - Layout state management
    - Responsive breakpoint handling
 
 2. **`client/src/hooks/useGridLayout.ts`**
-
    - Custom hook for layout management
    - State persistence logic
    - Layout change handlers
@@ -345,6 +342,7 @@ Panel positioning accuracy
 **Fallback Systems**: CSS Grid as backup
 
 **Comprehensive Testing**: Extensive validation at each phase
+
 - **Rollback Plan**: Ability to revert to previous system
 
 ### Medium Risk
@@ -372,6 +370,7 @@ Panel positioning accuracy
 **Performance**: <16ms layout calculations
 
 **Responsiveness**: <100ms resize/drag response
+
 - **Reliability**: 99.9% uptime for layout system
 
 ### User Experience Metrics
@@ -381,6 +380,7 @@ Panel positioning accuracy
 **Typography**: Font sizes properly applied
 
 **Interaction**: Smooth drag-and-drop operations
+
 - **Responsiveness**: Proper behavior across screen sizes
 
 ### Development Metrics
@@ -390,6 +390,7 @@ Panel positioning accuracy
 **Maintainability**: Reduced complexity in positioning logic
 
 **Documentation**: Complete API documentation
+
 - **Performance**: No memory leaks or infinite loops
 
 ## Timeline & Milestones
@@ -453,7 +454,7 @@ This specification provides a comprehensive roadmap for implementing professiona
 
 The phased approach ensures minimal disruption to development while building toward a production-ready layout system. The combination of React Grid Layout, CSS Grid fallbacks, and enhanced drag-and-drop will deliver the mathematical precision and user experience quality that befits our eldritch research into forbidden UI territories.
 
-*"As the Pnakotic Manuscripts speak of geometric perfection in the architecture of lost civilizations, so too shall our panel system achieve mathematical certainty in the realm of user interface design."*
+_"As the Pnakotic Manuscripts speak of geometric perfection in the architecture of lost civilizations, so too shall our panel system achieve mathematical certainty in the realm of user interface design."_
 
 ---
 
