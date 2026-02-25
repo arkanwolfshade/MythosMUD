@@ -8,13 +8,13 @@ with risk assessment and migration guidance.
 """
 
 import json
-import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Any
 
 from packaging import version
+from utils.safe_subprocess import safe_run_static
 
 
 class DependencyAnalyzer:
@@ -47,13 +47,15 @@ class DependencyAnalyzer:
         print("📦 Analyzing NPM dependencies...")
 
         try:
-            # Run npm outdated
-            result = subprocess.run(
-                ["npm", "outdated", "--json"],
+            # Run npm outdated using safe subprocess wrapper with static arguments
+            result = safe_run_static(
+                "npm",
+                "outdated",
+                "--json",
                 cwd=self.client_dir,
                 capture_output=True,
                 text=True,
-                shell=False,  # Use shell=True for Windows compatibility
+                check=False,
             )
 
             if result.returncode != 0 and result.stdout:
@@ -85,13 +87,16 @@ class DependencyAnalyzer:
         print("🐍 Analyzing Python dependencies...")
 
         try:
-            # Run uv pip list --outdated
-            result = subprocess.run(
-                ["uv", "pip", "list", "--outdated"],
+            # Run uv pip list --outdated using safe subprocess wrapper with static arguments
+            result = safe_run_static(
+                "uv",
+                "pip",
+                "list",
+                "--outdated",
                 cwd=self.project_root,
                 capture_output=True,
                 text=True,
-                shell=False,  # Use shell=True for Windows compatibility
+                check=False,
             )
 
             if result.returncode == 0 and result.stdout:
@@ -309,87 +314,100 @@ class DependencyAnalyzer:
 
         return priority_order
 
-    def generate_report(self) -> str:
-        """Generate comprehensive upgrade report"""
-        if not self.analysis_results:
-            self.analyze_all_dependencies()
-
-        report = f"""
+    def _report_executive_and_stats(self) -> str:
+        """Build report header, executive summary, and update statistics section."""
+        r = self.analysis_results
+        return f"""
 # MythosMUD Dependency Upgrade Report
-Generated: {self.analysis_results["timestamp"]}
+Generated: {r["timestamp"]}
 
 ## Executive Summary
 
-**Overall Strategy**: {self.analysis_results["update_strategy"]["strategy"]}
-**Priority Level**: {self.analysis_results["update_strategy"]["priority"]}
-**Total Packages**: {self.analysis_results["update_strategy"]["total_packages"]}
-**Overall Risk**: {self.analysis_results["risk_assessment"]["overall_risk"]}
+**Overall Strategy**: {r["update_strategy"]["strategy"]}
+**Priority Level**: {r["update_strategy"]["priority"]}
+**Total Packages**: {r["update_strategy"]["total_packages"]}
+**Overall Risk**: {r["risk_assessment"]["overall_risk"]}
 
 ## Update Statistics
 
 ### By Update Type
-- Major Updates: {self.analysis_results["update_strategy"]["update_counts"]["major"]}
-- Minor Updates: {self.analysis_results["update_strategy"]["update_counts"]["minor"]}
-- Patch Updates: {self.analysis_results["update_strategy"]["update_counts"]["patch"]}
+- Major Updates: {r["update_strategy"]["update_counts"]["major"]}
+- Minor Updates: {r["update_strategy"]["update_counts"]["minor"]}
+- Patch Updates: {r["update_strategy"]["update_counts"]["patch"]}
 
 ### By Risk Level
-- High Risk: {self.analysis_results["update_strategy"]["risk_counts"]["HIGH"]}
-- Medium Risk: {self.analysis_results["update_strategy"]["risk_counts"]["MEDIUM"]}
-- Low Risk: {self.analysis_results["update_strategy"]["risk_counts"]["LOW"]}
+- High Risk: {r["update_strategy"]["risk_counts"]["HIGH"]}
+- Medium Risk: {r["update_strategy"]["risk_counts"]["MEDIUM"]}
+- Low Risk: {r["update_strategy"]["risk_counts"]["LOW"]}
 
 ## Priority Update List
 
 """
 
-        for i, item in enumerate(self.analysis_results["priority_order"][:10], 1):
-            risk_emoji = {"HIGH": "🔴", "MEDIUM": "🟡", "LOW": "🟢"}[item["risk_level"]]
-            update_emoji = {"major": "⚡", "minor": "📈", "patch": "🔧"}[item["update_type"]]
-
-            report += f"""
-### {i}. {item["package"]} {risk_emoji} {update_emoji}
+    def _report_priority_list(self, items: list[dict[str, Any]], top_n: int = 10) -> str:
+        """Format the top N priority items as markdown."""
+        risk_emoji = {"HIGH": "🔴", "MEDIUM": "🟡", "LOW": "🟢"}
+        update_emoji = {"major": "⚡", "minor": "📈", "patch": "🔧"}
+        parts = []
+        for i, item in enumerate(items[:top_n], 1):
+            re_ = risk_emoji.get(item["risk_level"], "🟢")
+            ue_ = update_emoji.get(item["update_type"], "🔧")
+            parts.append(f"""
+### {i}. {item["package"]} {re_} {ue_}
 - **Current**: {item["current"]} → **Latest**: {item["latest"]}
 - **Update Type**: {item["update_type"]}
 - **Risk Level**: {item["risk_level"]}
 - **Ecosystem**: {item["ecosystem"]}
 - **Priority Score**: {item["priority_score"]}
-"""
+""")
+        return "".join(parts)
 
-        # Breaking changes section
-        if self.analysis_results["risk_assessment"]["breaking_changes"]:
-            report += "\n## ⚠️ Breaking Changes Detected\n\n"
-            for change in self.analysis_results["risk_assessment"]["breaking_changes"]:
-                report += (
-                    f"- **{change['package']}**: {change['current']} → {change['latest']} ({change['ecosystem']})\n"
-                )
+    def _report_breaking_changes(self, breaking_changes: list[dict[str, Any]]) -> str:
+        """Format breaking changes section."""
+        if not breaking_changes:
+            return ""
+        lines = ["\n## ⚠️ Breaking Changes Detected\n\n"]
+        for change in breaking_changes:
+            lines.append(
+                f"- **{change['package']}**: {change['current']} → {change['latest']} ({change['ecosystem']})\n"
+            )
+        return "".join(lines)
 
-        # Recommendations
-        report += "\n## 📋 Recommendations\n\n"
-
-        strategy = self.analysis_results["update_strategy"]["strategy"]
+    def _report_recommendations(self, strategy: str) -> str:
+        """Format recommendations section based on strategy."""
         if strategy == "INCREMENTAL":
-            report += """
+            return """
 ### Incremental Upgrade Strategy
 1. **Phase 1**: Update patch versions (low risk)
 2. **Phase 2**: Update minor versions (medium risk)
 3. **Phase 3**: Plan major version updates (high risk)
 4. **Testing**: Full test suite after each phase
 """
-        elif strategy == "BATCHED":
-            report += """
+        if strategy == "BATCHED":
+            return """
 ### Batched Upgrade Strategy
 1. **Batch 1**: All patch updates together
 2. **Batch 2**: Minor updates in groups of 3-5
 3. **Batch 3**: Major updates individually
 4. **Testing**: Regression testing after each batch
 """
-        else:
-            report += """
+        return """
 ### Immediate Upgrade Strategy
 1. **All Updates**: Can be applied immediately
 2. **Testing**: Standard test suite
 3. **Monitoring**: Watch for any issues
 """
 
+    def generate_report(self) -> str:
+        """Generate comprehensive upgrade report."""
+        if not self.analysis_results:
+            self.analyze_all_dependencies()
+
+        report = self._report_executive_and_stats()
+        report += self._report_priority_list(self.analysis_results["priority_order"])
+        report += self._report_breaking_changes(self.analysis_results["risk_assessment"]["breaking_changes"])
+        report += "\n## 📋 Recommendations\n\n"
+        report += self._report_recommendations(self.analysis_results["update_strategy"]["strategy"])
         return report
 
 

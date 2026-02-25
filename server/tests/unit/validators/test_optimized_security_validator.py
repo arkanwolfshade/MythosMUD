@@ -80,6 +80,14 @@ def test_optimized_comprehensive_sanitize_input_normal():
     assert isinstance(result, str)
 
 
+def test_optimized_comprehensive_sanitize_input_normalizes_newlines():
+    """Test that optimized comprehensive sanitization normalizes newlines to spaces."""
+    text = "Hello\nworld"
+    result = optimized_comprehensive_sanitize_input(text)
+    assert "\n" not in result
+    assert "Hello world" in result
+
+
 def test_optimized_validate_message_content_empty():
     """Test validating empty message."""
     assert optimized_validate_message_content("") == ""

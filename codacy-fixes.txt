@@ -1,0 +1,2999 @@
+diff --git a/docs/archive/PLANNING_movement_system.md b/docs/archive/PLANNING_movement_system.md
+--- a/docs/archive/PLANNING_movement_system.md
++++ b/docs/archive/PLANNING_movement_system.md
+@@ -53,1 +53,1 @@
+-- **Monitoring**: Real-time metrics and integrity validation
++
+- **Monitoring**: Real-time metrics and integrity validation
+@@ -63,1 +63,1 @@
+-- â `server/game/movement_service.py` - Movement service
++
+- â `server/game/movement_service.py` - Movement service
+@@ -88,1 +88,1 @@
+-- **â Event-driven API**: Room methods trigger events for state changes
++
+- **â Event-driven API**: Room methods trigger events for state changes
+@@ -103,1 +103,1 @@
+-- **â Integration**: EventBus for notifications
++
+- **â Integration**: EventBus for notifications
+@@ -112,1 +112,1 @@
+-- **â Coordination**: Between Room objects and PersistenceLayer
++
+- **â Coordination**: Between Room objects and PersistenceLayer
+@@ -121,1 +121,1 @@
+-- **â Architecture**: In-memory pub/sub (migratable to Redis)
++
+- **â Architecture**: In-memory pub/sub (migratable to Redis)
+@@ -135,1 +135,1 @@
+-- â Event logging and debugging capabilities
++
+- â Event logging and debugging capabilities
+@@ -147,1 +147,1 @@
+-- â Integration with EventBus
++
+- â Integration with EventBus
+@@ -161,1 +161,1 @@
+-- â Integration with EventBus for movement events
++
+- â Integration with EventBus for movement events
+@@ -175,1 +175,1 @@
+-- **â Testing**: Integration tests for room loading and access
++
+- **â Testing**: Integration tests for room loading and access
+@@ -186,1 +186,1 @@
+-- **â Testing**: Integration tests for complete movement flow
++
+- **â Testing**: Integration tests for complete movement flow
+@@ -199,1 +199,1 @@
+-- **â Patterns**: Follow existing test patterns in `server/tests/`
++
+- **â Patterns**: Follow existing test patterns in `server/tests/`
+@@ -209,1 +209,1 @@
+-- â Event propagation and handling
++
+- â Event propagation and handling
+@@ -297,1 +297,1 @@
+-- â Events are properly triggered and processed
++
+- â Events are properly triggered and processed
+@@ -315,1 +315,1 @@
+-- â Proper error logging and debugging capabilities
++
+- â Proper error logging and debugging capabilities
+@@ -342,1 +342,1 @@
+-- **Distributed events**: Redis integration for multi-server support
++
+- **Distributed events**: Redis integration for multi-server support
+@@ -363,1 +363,1 @@
+-- **Extensive test coverage** across all components
++
+- **Extensive test coverage** across all components
+diff --git a/.agent-os/specs/2025-09-13-occupant-count-display-fix/tasks.md b/.agent-os/specs/2025-09-13-occupant-count-display-fix/tasks.md
+--- a/.agent-os/specs/2025-09-13-occupant-count-display-fix/tasks.md
++++ b/.agent-os/specs/2025-09-13-occupant-count-display-fix/tasks.md
+@@ -50,1 +50,1 @@
+-- **Validation**: Validates event data (occupants array, count number)
++
+- **Validation**: Validates event data (occupants array, count number)
+diff --git a/docs/archive/PLANNING_redis_to_nats_migration.md b/docs/archive/PLANNING_redis_to_nats_migration.md
+--- a/docs/archive/PLANNING_redis_to_nats_migration.md
++++ b/docs/archive/PLANNING_redis_to_nats_migration.md
+@@ -53,1 +53,1 @@
+-- **User Management**: Comprehensive muting and permission system
++
+- **User Management**: Comprehensive muting and permission system
+@@ -64,1 +64,1 @@
+-- â `server/services/rate_limiter.py` - Rate limiting system
++
+- â `server/services/rate_limiter.py` - Rate limiting system
+@@ -87,1 +87,1 @@
+-- **Resource Usage**: Redis is more resource-intensive than needed for our use case
++
+- **Resource Usage**: Redis is more resource-intensive than needed for our use case
+@@ -96,1 +96,1 @@
+-- **Simple Setup**: Easy installation and configuration
++
+- **Simple Setup**: Easy installation and configuration
+@@ -311,1 +311,1 @@
+-- **Scalability**: More efficient as player count increases
++
+- **Scalability**: More efficient as player count increases
+@@ -843,1 +843,1 @@
+-- **â Data Migration**: Mitigated by maintaining backward compatibility during transition
++
+- **â Data Migration**: Mitigated by maintaining backward compatibility during transition
+@@ -872,1 +872,1 @@
+-- **â Message Persistence**: AI-optimized logging implemented
++
+- **â Message Persistence**: AI-optimized logging implemented
+@@ -891,1 +891,1 @@
+-- **â Phase 4 (API and Frontend)**: 1 week - PARTIALLY COMPLETED
++
+- **â Phase 4 (API and Frontend)**: 1 week - PARTIALLY COMPLETED
+@@ -918,1 +918,1 @@
+-- **Server-Side Filtering**: Optimized message routing for reduced network traffic
++
+- **Server-Side Filtering**: Optimized message routing for reduced network traffic
+diff --git a/.agent-os/specs/2025-11-15-container-system/container-system-plan.md b/.agent-os/specs/2025-11-15-container-system/container-system-plan.md
+--- a/.agent-os/specs/2025-11-15-container-system/container-system-plan.md
++++ b/.agent-os/specs/2025-11-15-container-system/container-system-plan.md
+@@ -66,1 +66,1 @@
+-- **Rollout Plan**: feature flag `containers.v1`; phased enablingâQA rooms â limited production zones â corpse looting after monitoring grief metrics.
++
+- **Rollout Plan**: feature flag `containers.v1`; phased enablingâQA rooms â limited production zones â corpse looting after monitoring grief metrics.
+diff --git a/.agent-os/specs/2025-09-04-multiplayer-connection-messaging/sub-specs/technical-spec.md b/.agent-os/specs/2025-09-04-multiplayer-connection-messaging/sub-specs/technical-spec.md
+--- a/.agent-os/specs/2025-09-04-multiplayer-connection-messaging/sub-specs/technical-spec.md
++++ b/.agent-os/specs/2025-09-04-multiplayer-connection-messaging/sub-specs/technical-spec.md
+@@ -12,1 +12,1 @@
+-- **Event Broadcasting Logic** - Ensure that when a player enters/leaves a room, the event is broadcast to all other players in that room, but not to the player who is entering/leaving
++
+- **Event Broadcasting Logic** - Ensure that when a player enters/leaves a room, the event is broadcast to all other players in that room, but not to the player who is entering/leaving
+diff --git a/.agent-os/specs/2025-11-03-complete-todos/spec.md b/.agent-os/specs/2025-11-03-complete-todos/spec.md
+--- a/.agent-os/specs/2025-11-03-complete-todos/spec.md
++++ b/.agent-os/specs/2025-11-03-complete-todos/spec.md
+@@ -47,1 +47,1 @@
+-- **Architecture: Alternate Database Backends** - Defer to production scaling initiative
++
+- **Architecture: Alternate Database Backends** - Defer to production scaling initiative
+diff --git a/docs/archive/E2E_TESTING_SETUP_STATUS.md b/docs/archive/E2E_TESTING_SETUP_STATUS.md
+--- a/docs/archive/E2E_TESTING_SETUP_STATUS.md
++++ b/docs/archive/E2E_TESTING_SETUP_STATUS.md
+@@ -12,1 +12,1 @@
+-- â Created `env.local.example` (local dev secrets template)
++
+- â Created `env.local.example` (local dev secrets template)
+@@ -25,1 +25,1 @@
+-- â Added test IDs to UI components (`data-testid` attributes)
++
+- â Added test IDs to UI components (`data-testid` attributes)
+@@ -36,1 +36,1 @@
+-- â Added `data-testid="continue-button"` to MOTD continue button
++
+- â Added `data-testid="continue-button"` to MOTD continue button
+diff --git a/docs/archive/DEPENDENCY_UPGRADE_SPEC/dependency_upgrade_report.md b/docs/archive/DEPENDENCY_UPGRADE_SPEC/dependency_upgrade_report.md
+--- a/docs/archive/DEPENDENCY_UPGRADE_SPEC/dependency_upgrade_report.md
++++ b/docs/archive/DEPENDENCY_UPGRADE_SPEC/dependency_upgrade_report.md
+@@ -38,1 +38,1 @@
+-- **Ecosystem**: pip
++
+- **Ecosystem**: pip
+@@ -128,1 +128,1 @@
+-- **Ecosystem**: npm
++
+- **Ecosystem**: npm
+@@ -188,1 +188,1 @@
+-- **glom**: 22.1.0 â 24.11.0 (pip)
++
+- **glom**: 22.1.0 â 24.11.0 (pip)
+diff --git a/docs/archive/CLEANUP_SUMMARY.md b/docs/archive/CLEANUP_SUMMARY.md
+--- a/docs/archive/CLEANUP_SUMMARY.md
++++ b/docs/archive/CLEANUP_SUMMARY.md
+@@ -90,1 +90,1 @@
+-- â Consistent architecture pattern
++
+- â Consistent architecture pattern
+@@ -120,1 +120,1 @@
+-- â `server/tests/env.unit_test.example` - Unit test secrets template
++
+- â `server/tests/env.unit_test.example` - Unit test secrets template
+@@ -131,1 +131,1 @@
+-- â `server/tests/mock_data.py` - Mock data reference
++
+- â `server/tests/mock_data.py` - Mock data reference
+@@ -140,1 +140,1 @@
+-- â `scripts/bootstrap_db.py` - Database bootstrapping
++
+- â `scripts/bootstrap_db.py` - Database bootstrapping
+@@ -153,1 +153,1 @@
+-- â Plus 17 other documentation files
++
+- â Plus 17 other documentation files
+@@ -177,1 +177,1 @@
+-- â **Better isolation**: Test data clearly separated from test code
++
+- â **Better isolation**: Test data clearly separated from test code
+@@ -203,1 +203,1 @@
+-- â `scripts/init_npc_database.py` - NPC database setup
++
+- â `scripts/init_npc_database.py` - NPC database setup
+@@ -214,1 +214,1 @@
+-- â `scripts/generate_html_visualization_fixed.py`
++
+- â `scripts/generate_html_visualization_fixed.py`
+@@ -230,1 +230,1 @@
+-- â `tools/room_toolkit/room_validator/tests/test_room_loader.py`
++
+- â `tools/room_toolkit/room_validator/tests/test_room_loader.py`
+@@ -247,1 +247,1 @@
+-- â `DEVELOPMENT.md` - Development guide (updated by user)
++
+- â `DEVELOPMENT.md` - Development guide (updated by user)
+@@ -275,1 +275,1 @@
+-- â **Consistent naming**: `local_players.db` clearly indicates local dev database
++
+- â **Consistent naming**: `local_players.db` clearly indicates local dev database
+diff --git a/investigations/sessions/2025-01-XX_verification-ui-panel-resize-fix.md b/investigations/sessions/2025-01-XX_verification-ui-panel-resize-fix.md
+--- a/investigations/sessions/2025-01-XX_verification-ui-panel-resize-fix.md
++++ b/investigations/sessions/2025-01-XX_verification-ui-panel-resize-fix.md
+@@ -18,1 +18,1 @@
+-- â Panel sizes adjust to fit within viewport
++
+- â Panel sizes adjust to fit within viewport
+@@ -54,1 +54,1 @@
+-- **Room Description:** Position adjusted (x:23, y:199, was y:484) â **ADJUSTED**
++
+- **Room Description:** Position adjusted (x:23, y:199, was y:484) â **ADJUSTED**
+@@ -217,1 +217,1 @@
+-- â Debounced resize handler prevents performance issues
++
+- â Debounced resize handler prevents performance issues
+diff --git a/docs/archive/PLANNING_main_refactor.md b/docs/archive/PLANNING_main_refactor.md
+--- a/docs/archive/PLANNING_main_refactor.md
++++ b/docs/archive/PLANNING_main_refactor.md
+@@ -29,1 +29,1 @@
+-- **Maintainability**: Clear separation of concerns, reduced coupling
++
+- **Maintainability**: Clear separation of concerns, reduced coupling
+@@ -355,1 +355,1 @@
+-- **Improved Collaboration**: Multiple developers can work on different modules
++
+- **Improved Collaboration**: Multiple developers can work on different modules
+@@ -364,1 +364,1 @@
+-- **Enhanced Readability**: Clear structure and organization
++
+- **Enhanced Readability**: Clear structure and organization
+@@ -373,1 +373,1 @@
+-- **Enhanced Reusability**: Utilities can be reused across modules
++
+- **Enhanced Reusability**: Utilities can be reused across modules
+@@ -402,1 +402,1 @@
+-- â **Command Processor**: Fixed enum value access issues
++
+- â **Command Processor**: Fixed enum value access issues
+@@ -412,1 +412,1 @@
+-- â **Command Injection Protection**: Pattern detection and blocking active
++
+- â **Command Injection Protection**: Pattern detection and blocking active
+@@ -422,1 +422,1 @@
+-- â **Error Handling**: Comprehensive error handling with structured logging
++
+- â **Error Handling**: Comprehensive error handling with structured logging
+@@ -446,1 +446,1 @@
+-- **User Experience**: Ensures fair access for all players
++
+- **User Experience**: Ensures fair access for all players
+@@ -515,1 +515,1 @@
+-- **Comprehensive Testing**: 77 tests covering all validation scenarios
++
+- **Comprehensive Testing**: 77 tests covering all validation scenarios
+@@ -537,1 +537,1 @@
+-- â Command injection pattern detection
++
+- â Command injection pattern detection
+@@ -548,1 +548,1 @@
+-- â Comprehensive error handling
++
+- â Comprehensive error handling
+diff --git a/docs/archive/PLANNING_multiplayer.md b/docs/archive/PLANNING_multiplayer.md
+--- a/docs/archive/PLANNING_multiplayer.md
++++ b/docs/archive/PLANNING_multiplayer.md
+@@ -57,1 +57,1 @@
+-- **Weather System**: Dynamic weather updates
++
+- **Weather System**: Dynamic weather updates
+@@ -66,1 +66,1 @@
+-- **Cross-server Communication**: Multi-server player interaction
++
+- **Cross-server Communication**: Multi-server player interaction
+@@ -171,1 +171,1 @@
+-- â Protected endpoint access
++
+- â Protected endpoint access
+@@ -206,1 +206,1 @@
+-- **Secure Headers**: Proper security headers for web endpoints
++
+- **Secure Headers**: Proper security headers for web endpoints
+@@ -237,1 +237,1 @@
+-- **Test Coverage**: >80% for multiplayer features
++
+- **Test Coverage**: >80% for multiplayer features
+diff --git a/.agent-os/specs/2025-10-10-critical-architecture-fixes/sub-specs/api-spec.md b/.agent-os/specs/2025-10-10-critical-architecture-fixes/sub-specs/api-spec.md
+--- a/.agent-os/specs/2025-10-10-critical-architecture-fixes/sub-specs/api-spec.md
++++ b/.agent-os/specs/2025-10-10-critical-architecture-fixes/sub-specs/api-spec.md
+@@ -342,1 +342,1 @@
+-- **Warning:** Message delivery rate <99%
++
+- **Warning:** Message delivery rate <99%
+diff --git a/.agent-os/specs/2025-09-04-multiplayer-connection-messaging/tasks.md b/.agent-os/specs/2025-09-04-multiplayer-connection-messaging/tasks.md
+--- a/.agent-os/specs/2025-09-04-multiplayer-connection-messaging/tasks.md
++++ b/.agent-os/specs/2025-09-04-multiplayer-connection-messaging/tasks.md
+@@ -46,1 +46,1 @@
+-- **Test Coverage**: All comprehensive tests pass (16/16 tests across 4 test suites)
++
+- **Test Coverage**: All comprehensive tests pass (16/16 tests across 4 test suites)
+diff --git a/docs/archive/TEST_SUITE_REFACTORING_PLAN.md b/docs/archive/TEST_SUITE_REFACTORING_PLAN.md
+--- a/docs/archive/TEST_SUITE_REFACTORING_PLAN.md
++++ b/docs/archive/TEST_SUITE_REFACTORING_PLAN.md
+@@ -27,1 +27,1 @@
+-- **Player Management**: ~15 files (player_*, character_*, auth_*)
++
+- **Player Management**: ~15 files (player_*, character_*, auth_*)
+@@ -45,1 +45,1 @@
+-- **Security Tests**: ~5% (security validation)
++
+- **Security Tests**: ~5% (security validation)
+diff --git a/docs/archive/COMBAT_HEALTH_PERSISTENCE_REMEDIATION_PLAN.md b/docs/archive/COMBAT_HEALTH_PERSISTENCE_REMEDIATION_PLAN.md
+--- a/docs/archive/COMBAT_HEALTH_PERSISTENCE_REMEDIATION_PLAN.md
++++ b/docs/archive/COMBAT_HEALTH_PERSISTENCE_REMEDIATION_PLAN.md
+@@ -63,1 +63,1 @@
+-- â `server/logging/enhanced_logging_config.py` - Global error handler
++
+- â `server/logging/enhanced_logging_config.py` - Global error handler
+@@ -198,1 +198,1 @@
+-- â No cache invalidation logic needed
++
+- â No cache invalidation logic needed
+@@ -411,1 +411,1 @@
+-- â Latency increases for player operations
++
+- â Latency increases for player operations
+diff --git a/.agent-os/specs/2025-10-10-critical-architecture-fixes/FRONTEND_INTEGRATION_COMPLETE.md b/.agent-os/specs/2025-10-10-critical-architecture-fixes/FRONTEND_INTEGRATION_COMPLETE.md
+--- a/.agent-os/specs/2025-10-10-critical-architecture-fixes/FRONTEND_INTEGRATION_COMPLETE.md
++++ b/.agent-os/specs/2025-10-10-critical-architecture-fixes/FRONTEND_INTEGRATION_COMPLETE.md
+@@ -24,1 +24,1 @@
+-- **Impact**: Main game terminal now uses XState FSM for connection management
++
+- **Impact**: Main game terminal now uses XState FSM for connection management
+@@ -104,1 +104,1 @@
+-- â **Debuggability**: XState Inspector provides visual state tracking
++
+- â **Debuggability**: XState Inspector provides visual state tracking
+@@ -207,1 +207,1 @@
+-- â **Code Quality**: No linting or TypeScript errors
++
+- â **Code Quality**: No linting or TypeScript errors
+@@ -221,1 +221,1 @@
+-- **99% overall test pass rate** (944/951 tests)
++
+- **99% overall test pass rate** (944/951 tests)
+diff --git a/.agent-os/specs/2025-10-08-e2e-playwright-cli-conversion/sub-specs/tasks.md b/.agent-os/specs/2025-10-08-e2e-playwright-cli-conversion/sub-specs/tasks.md
+--- a/.agent-os/specs/2025-10-08-e2e-playwright-cli-conversion/sub-specs/tasks.md
++++ b/.agent-os/specs/2025-10-08-e2e-playwright-cli-conversion/sub-specs/tasks.md
+@@ -764,1 +764,1 @@
+-- **Reliability**: >95% test pass rate on repeated runs
++
+- **Reliability**: >95% test pass rate on repeated runs
+diff --git a/.agent-os/specs/2025-09-22-npc-subsystem/sub-specs/technical-spec.md b/.agent-os/specs/2025-09-22-npc-subsystem/sub-specs/technical-spec.md
+--- a/.agent-os/specs/2025-09-22-npc-subsystem/sub-specs/technical-spec.md
++++ b/.agent-os/specs/2025-09-22-npc-subsystem/sub-specs/technical-spec.md
+@@ -14,1 +14,1 @@
+-- **State Management**: Static NPC definitions in database, dynamic state in memory
++
+- **State Management**: Static NPC definitions in database, dynamic state in memory
+@@ -24,1 +24,1 @@
+-- **Aggressive Mobs**: Hunt players, deterministic combat behavior, territorial behavior
++
+- **Aggressive Mobs**: Hunt players, deterministic combat behavior, territorial behavior
+@@ -33,1 +33,1 @@
+-- **Resource Isolation**: NPC processing isolated from main game loop
++
+- **Resource Isolation**: NPC processing isolated from main game loop
+@@ -42,1 +42,1 @@
+-- **Movement Integration**: NPCs use same movement system as players
++
+- **Movement Integration**: NPCs use same movement system as players
+@@ -51,1 +51,1 @@
+-- **Runtime Configuration**: Behavior parameters configurable without code changes
++
+- **Runtime Configuration**: Behavior parameters configurable without code changes
+@@ -60,1 +60,1 @@
+-- **Fallback System**: Deterministic behaviors as fallback for AI failures
++
+- **Fallback System**: Deterministic behaviors as fallback for AI failures
+diff --git a/docs/archive/BUG_FIX_CHAT_MESSAGE_ROUTING.md b/docs/archive/BUG_FIX_CHAT_MESSAGE_ROUTING.md
+--- a/docs/archive/BUG_FIX_CHAT_MESSAGE_ROUTING.md
++++ b/docs/archive/BUG_FIX_CHAT_MESSAGE_ROUTING.md
+@@ -97,1 +97,1 @@
+-- â **Command Responses**: Still correctly appear in Game Log Panel only
++
+- â **Command Responses**: Still correctly appear in Game Log Panel only
+@@ -115,1 +115,1 @@
+-- â Consistent with existing Chat Panel exclusion logic
++
+- â Consistent with existing Chat Panel exclusion logic
+@@ -124,1 +124,1 @@
+-- â No performance impact (simple filter check)
++
+- â No performance impact (simple filter check)
+@@ -133,1 +133,1 @@
+-- **Consistency**: â Follows same pattern as ChatPanel exclusion logic
++
+- **Consistency**: â Follows same pattern as ChatPanel exclusion logic
+diff --git a/docs/archive/TEST_OPTIMIZATION_SUMMARY.md b/docs/archive/TEST_OPTIMIZATION_SUMMARY.md
+--- a/docs/archive/TEST_OPTIMIZATION_SUMMARY.md
++++ b/docs/archive/TEST_OPTIMIZATION_SUMMARY.md
+@@ -137,1 +137,1 @@
+-- **Target:** 26 minutes (-4 minutes total)
++
+- **Target:** 26 minutes (-4 minutes total)
+diff --git a/.agent-os/specs/2025-10-10-critical-architecture-fixes/adrs/ADR-001-xstate-frontend-fsm.md b/.agent-os/specs/2025-10-10-critical-architecture-fixes/adrs/ADR-001-xstate-frontend-fsm.md
+--- a/.agent-os/specs/2025-10-10-critical-architecture-fixes/adrs/ADR-001-xstate-frontend-fsm.md
++++ b/.agent-os/specs/2025-10-10-critical-architecture-fixes/adrs/ADR-001-xstate-frontend-fsm.md
+@@ -30,1 +30,1 @@
+-- **React Integration**: Must integrate cleanly with React hooks
++
+- **React Integration**: Must integrate cleanly with React hooks
+@@ -180,1 +180,1 @@
+-- â Bundle size increase within acceptable limits (<100KB)
++
+- â Bundle size increase within acceptable limits (<100KB)
+diff --git a/docs/archive/HEALTH_ENDPOINT_SPEC.md b/docs/archive/HEALTH_ENDPOINT_SPEC.md
+--- a/docs/archive/HEALTH_ENDPOINT_SPEC.md
++++ b/docs/archive/HEALTH_ENDPOINT_SPEC.md
+@@ -16,1 +16,1 @@
+-- **Authentication**: None required
++
+- **Authentication**: None required
+diff --git a/.agent-os/specs/2025-09-27-fastapi-improvements/IMPLEMENTATION_SUMMARY.md b/.agent-os/specs/2025-09-27-fastapi-improvements/IMPLEMENTATION_SUMMARY.md
+--- a/.agent-os/specs/2025-09-27-fastapi-improvements/IMPLEMENTATION_SUMMARY.md
++++ b/.agent-os/specs/2025-09-27-fastapi-improvements/IMPLEMENTATION_SUMMARY.md
+@@ -16,1 +16,1 @@
+-- â **1.4**: Update player router endpoints to use PlayerService dependency injection
++
+- â **1.4**: Update player router endpoints to use PlayerService dependency injection
+@@ -27,1 +27,1 @@
+-- â **2.4**: Implement Access Logging Middleware
++
+- â **2.4**: Implement Access Logging Middleware
+@@ -41,1 +41,1 @@
+-- â **3.4**: Ensure all database operations use async patterns
++
+- â **3.4**: Ensure all database operations use async patterns
+@@ -51,1 +51,1 @@
+-- â **4.4**: Verify CORS configuration works with environment variables
++
+- â **4.4**: Verify CORS configuration works with environment variables
+@@ -294,1 +294,1 @@
+-- â **Security enhancements** (Headers, CORS, validation)
++
+- â **Security enhancements** (Headers, CORS, validation)
+diff --git a/docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md b/docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md
+--- a/docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md
++++ b/docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md
+@@ -18,1 +18,1 @@
+-- **Located 10 patch updates** (LOW RISK) for immediate application
++
+- **Located 10 patch updates** (LOW RISK) for immediate application
+@@ -93,1 +93,1 @@
+-- â Post-upgrade verification
++
+- â Post-upgrade verification
+@@ -113,1 +113,1 @@
+-- **Detailed logging** of all changes
++
+- **Detailed logging** of all changes
+@@ -145,1 +145,1 @@
+-- **Detailed documentation** for all changes
++
+- **Detailed documentation** for all changes
+@@ -155,1 +155,1 @@
+-- **Monitoring plans** for ongoing health
++
+- **Monitoring plans** for ongoing health
+diff --git a/.agent-os/specs/2025-09-24-npc-room-integration/implementation-tasks.md b/.agent-os/specs/2025-09-24-npc-room-integration/implementation-tasks.md
+--- a/.agent-os/specs/2025-09-24-npc-room-integration/implementation-tasks.md
++++ b/.agent-os/specs/2025-09-24-npc-room-integration/implementation-tasks.md
+@@ -14,1 +14,1 @@
+-  - Subscribe to `NPCEnteredRoom` and `NPCLeftRoom` events
++
+  - Subscribe to `NPCEnteredRoom` and `NPCLeftRoom` events
+@@ -26,1 +26,1 @@
+-  - Import and instantiate NPC room integration service
++
+  - Import and instantiate NPC room integration service
+@@ -40,1 +40,1 @@
+-  - `handle_npc_entered_room(event: NPCEnteredRoom)` - Add NPC to room
++
+  - `handle_npc_entered_room(event: NPCEnteredRoom)` - Add NPC to room
+@@ -52,1 +52,1 @@
+-  - `resolve_npc_name(npc_id: str) -> str` method
++
+  - `resolve_npc_name(npc_id: str) -> str` method
+@@ -67,1 +67,1 @@
+-  - Modify `_get_room_occupants()` method to include NPCs
++
+  - Modify `_get_room_occupants()` method to include NPCs
+@@ -79,1 +79,1 @@
+-  - `broadcast_room_occupants_update(room_id: str)` method
++
+  - `broadcast_room_occupants_update(room_id: str)` method
+@@ -93,1 +93,1 @@
+-  - Test NPC event handling
++
+  - Test NPC event handling
+@@ -106,1 +106,1 @@
+-  - Test complete NPC spawning to room occupant display flow
++
+  - Test complete NPC spawning to room occupant display flow
+@@ -131,1 +131,1 @@
+-  - Update API documentation if needed
++
+  - Update API documentation if needed
+diff --git a/docs/archive/EXPLICIT_CONFIGURATION_MIGRATION.md b/docs/archive/EXPLICIT_CONFIGURATION_MIGRATION.md
+--- a/docs/archive/EXPLICIT_CONFIGURATION_MIGRATION.md
++++ b/docs/archive/EXPLICIT_CONFIGURATION_MIGRATION.md
+@@ -16,1 +16,1 @@
+-- â Silent failures from misconfiguration
++
+- â Silent failures from misconfiguration
+@@ -23,1 +23,1 @@
+-- â No ambiguity about which config is loaded
++
+- â No ambiguity about which config is loaded
+@@ -157,1 +157,1 @@
+-- â Updated `start_server.ps1` to use environment-based config selection
++
+- â Updated `start_server.ps1` to use environment-based config selection
+diff --git a/docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md b/docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md
+--- a/docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md
++++ b/docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md
+@@ -59,1 +59,1 @@
+-- **Containers**: Bags, chests, cosmic reliquaries; may modify inventory capacity or apply dimensional effects.
++
+- **Containers**: Bags, chests, cosmic reliquaries; may modify inventory capacity or apply dimensional effects.
+@@ -260,1 +260,1 @@
+-- **Playwright Scenarios**: Multi-client equipment flows, lucidity effect propagation.
++
+- **Playwright Scenarios**: Multi-client equipment flows, lucidity effect propagation.
+diff --git a/docs/archive/LOGGING_MIGRATION_COMPLETE.md b/docs/archive/LOGGING_MIGRATION_COMPLETE.md
+--- a/docs/archive/LOGGING_MIGRATION_COMPLETE.md
++++ b/docs/archive/LOGGING_MIGRATION_COMPLETE.md
+@@ -16,1 +16,1 @@
+-- **Result**: 0 data loss - all context information preserved in structured format
++
+- **Result**: 0 data loss - all context information preserved in structured format
+@@ -25,1 +25,1 @@
+-- **Result**: Clean codebase with consistent enhanced logging usage
++
+- **Result**: Clean codebase with consistent enhanced logging usage
+@@ -34,1 +34,1 @@
+-- **Result**: Comprehensive documentation reflecting new system
++
+- **Result**: Comprehensive documentation reflecting new system
+@@ -43,1 +43,1 @@
+-- **Result**: Development rules reflect enhanced logging system
++
+- **Result**: Development rules reflect enhanced logging system
+@@ -52,1 +52,1 @@
+-- **Result**: All references to MDC updated in documentation
++
+- **Result**: All references to MDC updated in documentation
+@@ -75,1 +75,1 @@
+-- **Performance Monitoring**: Built-in metrics collection
++
+- **Performance Monitoring**: Built-in metrics collection
+@@ -97,1 +97,1 @@
+-- **Documentation Updated**: 4 major documentation files
++
+- **Documentation Updated**: 4 major documentation files
+@@ -156,1 +156,1 @@
+-- **100% exception tracking** for comprehensive error monitoring
++
+- **100% exception tracking** for comprehensive error monitoring
+@@ -200,1 +200,1 @@
+-- **AI Agent Guide**: [docs/DEVELOPMENT_AI.md](docs/DEVELOPMENT_AI.md)
++
+- **AI Agent Guide**: [docs/DEVELOPMENT_AI.md](docs/DEVELOPMENT_AI.md)
+@@ -224,1 +224,1 @@
+-- **Documentation**: 4 files updated with enhanced logging features
++
+- **Documentation**: 4 files updated with enhanced logging features
+diff --git a/docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md b/docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md
+--- a/docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md
++++ b/docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md
+@@ -35,1 +35,1 @@
+-- **ROI:** 60x efficiency gain through automation
++
+- **ROI:** 60x efficiency gain through automation
+@@ -351,1 +351,1 @@
+-- â Comprehensive documentation
++
+- â Comprehensive documentation
+@@ -388,1 +388,1 @@
+-- â Risk mitigation strategies
++
+- â Risk mitigation strategies
+@@ -397,1 +397,1 @@
+-- â All import paths fixed
++
+- â All import paths fixed
+@@ -407,1 +407,1 @@
+-- â conftest.py updated
++
+- â conftest.py updated
+@@ -416,1 +416,1 @@
+-- â Ready for test execution
++
+- â Ready for test execution
+@@ -425,1 +425,1 @@
+-- â Migration history
++
+- â Migration history
+@@ -434,1 +434,1 @@
+-- â Consolidation utilities
++
+- â Consolidation utilities
+@@ -479,1 +479,1 @@
+-- â Consistent naming conventions â **Achieved**
++
+- â Consistent naming conventions â **Achieved**
+@@ -489,1 +489,1 @@
+-- â Validation system â **Full validation suite**
++
+- â Validation system â **Full validation suite**
+@@ -660,1 +660,1 @@
+-- **Documentation Created:** 3,718+ lines
++
+- **Documentation Created:** 3,718+ lines
+@@ -672,1 +672,1 @@
+-- **Documentation Completeness:** 100%
++
+- **Documentation Completeness:** 100%
+@@ -698,1 +698,1 @@
+-- **Fully documented** â
++
+- **Fully documented** â
+diff --git a/docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md b/docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md
+--- a/docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md
++++ b/docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md
+@@ -45,1 +45,1 @@
+-- **Quick Chat Commands**: Channel-specific quick commands
++
+- **Quick Chat Commands**: Channel-specific quick commands
+@@ -93,1 +93,1 @@
+-- **No Input Capabilities**: Read-only display of game events
++
+- **No Input Capabilities**: Read-only display of game events
+@@ -219,1 +219,1 @@
+-- **GameTerminalWithPanels**: Route commands to appropriate panel based on command type
++
+- **GameTerminalWithPanels**: Route commands to appropriate panel based on command type
+@@ -280,1 +280,1 @@
+-- Clear visual separation between chat, game log, and command functionality
++
+- Clear visual separation between chat, game log, and command functionality
+@@ -289,1 +289,1 @@
+-- All panels should be draggable and resizable
++
+- All panels should be draggable and resizable
+diff --git a/.agent-os/specs/2025-09-19-player-guid-logging/sub-specs/technical-spec.md b/.agent-os/specs/2025-09-19-player-guid-logging/sub-specs/technical-spec.md
+--- a/.agent-os/specs/2025-09-19-player-guid-logging/sub-specs/technical-spec.md
++++ b/.agent-os/specs/2025-09-19-player-guid-logging/sub-specs/technical-spec.md
+@@ -30,1 +30,1 @@
+-- **All Log Files**: Apply to all log categories (server, persistence, authentication, world, communications, commands, errors, access, console)
++
+- **All Log Files**: Apply to all log categories (server, persistence, authentication, world, communications, commands, errors, access, console)
+diff --git a/.agent-os/specs/2025-10-17-combat-system/sub-specs/database-schema.md b/.agent-os/specs/2025-10-17-combat-system/sub-specs/database-schema.md
+--- a/.agent-os/specs/2025-10-17-combat-system/sub-specs/database-schema.md
++++ b/.agent-os/specs/2025-10-17-combat-system/sub-specs/database-schema.md
+@@ -182,1 +182,1 @@
+-- **Server Restart**: All in-memory health values reset to database base values
++
+- **Server Restart**: All in-memory health values reset to database base values
+diff --git a/investigations/sessions/2025-11-30_session-001_npc-combat-start-failure.md b/investigations/sessions/2025-11-30_session-001_npc-combat-start-failure.md
+--- a/investigations/sessions/2025-11-30_session-001_npc-combat-start-failure.md
++++ b/investigations/sessions/2025-11-30_session-001_npc-combat-start-failure.md
+@@ -226,1 +226,1 @@
+-- **Affected NPCs:** Potentially all NPCs, though evidence shows specific failure with "Dr. Francis Morgan"
++
+- **Affected NPCs:** Potentially all NPCs, though evidence shows specific failure with "Dr. Francis Morgan"
+diff --git a/.agent-os/specs/2025-08-27-pydantic-config-migration/sub-specs/technical-spec.md b/.agent-os/specs/2025-08-27-pydantic-config-migration/sub-specs/technical-spec.md
+--- a/.agent-os/specs/2025-08-27-pydantic-config-migration/sub-specs/technical-spec.md
++++ b/.agent-os/specs/2025-08-27-pydantic-config-migration/sub-specs/technical-spec.md
+@@ -12,1 +12,1 @@
+-- **Pattern Consistency**: Follow the same pattern already established in `server/schemas/` files
++
+- **Pattern Consistency**: Follow the same pattern already established in `server/schemas/` files
+diff --git a/docs/archive/GRACEFUL_DEGRADATION_IMPLEMENTATION_PLANNING.md b/docs/archive/GRACEFUL_DEGRADATION_IMPLEMENTATION_PLANNING.md
+--- a/docs/archive/GRACEFUL_DEGRADATION_IMPLEMENTATION_PLANNING.md
++++ b/docs/archive/GRACEFUL_DEGRADATION_IMPLEMENTATION_PLANNING.md
+@@ -18,1 +18,1 @@
+-- **Missing Error Types**: No specific error handling for different failure scenarios
++
+- **Missing Error Types**: No specific error handling for different failure scenarios
+@@ -27,1 +27,1 @@
+-- **Operational Continuity**: Allows core functionality to continue during partial failures
++
+- **Operational Continuity**: Allows core functionality to continue during partial failures
+@@ -343,1 +343,1 @@
+-- **ConnectionError**: Network connectivity issues
++
+- **ConnectionError**: Network connectivity issues
+@@ -355,1 +355,1 @@
+-- **Error Level**: Unexpected or critical degradation events
++
+- **Error Level**: Unexpected or critical degradation events
+@@ -442,1 +442,1 @@
+-- **Documentation**: Clear guidelines for proper usage
++
+- **Documentation**: Clear guidelines for proper usage
+diff --git a/investigations/sessions/2025-11-21_e2e-multiplayer-playbook-findings.md b/investigations/sessions/2025-11-21_e2e-multiplayer-playbook-findings.md
+--- a/investigations/sessions/2025-11-21_e2e-multiplayer-playbook-findings.md
++++ b/investigations/sessions/2025-11-21_e2e-multiplayer-playbook-findings.md
+@@ -81,1 +81,1 @@
+-- **Impact**: Medium - players don't see when others leave
++
+- **Impact**: Medium - players don't see when others leave
+@@ -159,1 +159,1 @@
+-- â Ithaqua sees NO stale messages from previous sessions (verified via Game Log)
++
+- â Ithaqua sees NO stale messages from previous sessions (verified via Game Log)
+@@ -212,1 +212,1 @@
+-  - **File**: `client/src/hooks/useSSEConnection.ts`
++
+  - **File**: `client/src/hooks/useSSEConnection.ts`
+@@ -232,1 +232,1 @@
+-  - â ï¸ Connection timeout occurred after movement (SSE connection timeout)
++
+  - â ï¸ Connection timeout occurred after movement (SSE connection timeout)
+@@ -244,1 +244,1 @@
+-- â AW's room info correctly updated after movement
++
+- â AW's room info correctly updated after movement
+@@ -279,1 +279,1 @@
+-- **Connection Loss**: SSE connection is actually being lost during movement (not a false positive)
++
+- **Connection Loss**: SSE connection is actually being lost during movement (not a false positive)
+@@ -406,1 +406,1 @@
+-  - **Unit Test Created**: `server/tests/unit/realtime/test_emote_mute_bug_reproduction.py`
++
+  - **Unit Test Created**: `server/tests/unit/realtime/test_emote_mute_bug_reproduction.py`
+@@ -437,1 +437,1 @@
+-- â Server logs confirm emote processed through NATS path with mute filtering: "Broadcasted room message with server-side filtering" at 12:06:51
++
+- â Server logs confirm emote processed through NATS path with mute filtering: "Broadcasted room message with server-side filtering" at 12:06:51
+@@ -476,1 +476,1 @@
+-- **Evidence from Logs**:
++
+- **Evidence from Logs**:
+diff --git a/.agent-os/product/tech-stack.md b/.agent-os/product/tech-stack.md
+--- a/.agent-os/product/tech-stack.md
++++ b/.agent-os/product/tech-stack.md
+@@ -96,1 +96,1 @@
+-- **Process Management:** uvicorn for Python, npm scripts for Node.js
++
+- **Process Management:** uvicorn for Python, npm scripts for Node.js
+@@ -123,1 +123,1 @@
+-- **Input Validation:** Pydantic models with comprehensive validation
++
+- **Input Validation:** Pydantic models with comprehensive validation
+@@ -132,1 +132,1 @@
+-- **Pre-commit Hooks:** Automated code quality checks
++
+- **Pre-commit Hooks:** Automated code quality checks
+@@ -141,1 +141,1 @@
+-- **Documentation:** Comprehensive markdown documentation
++
+- **Documentation:** Comprehensive markdown documentation
+diff --git a/investigations/sessions/2025-11-19_session-001_catatonic-movement-and-exit-bugs.md b/investigations/sessions/2025-11-19_session-001_catatonic-movement-and-exit-bugs.md
+--- a/investigations/sessions/2025-11-19_session-001_catatonic-movement-and-exit-bugs.md
++++ b/investigations/sessions/2025-11-19_session-001_catatonic-movement-and-exit-bugs.md
+@@ -123,1 +123,1 @@
+-- **Security**: Low (gameplay issue, not security vulnerability)
++
+- **Security**: Low (gameplay issue, not security vulnerability)
+@@ -244,1 +244,1 @@
+-- **Security**: None
++
+- **Security**: None
+diff --git a/.agent-os/instructions/core/analyze-product.md b/.agent-os/instructions/core/analyze-product.md
+--- a/.agent-os/instructions/core/analyze-product.md
++++ b/.agent-os/instructions/core/analyze-product.md
+@@ -229,1 +229,1 @@
+-- **Current Phase**: [IDENTIFIED_DEVELOPMENT_STAGE]
++
+- **Current Phase**: [IDENTIFIED_DEVELOPMENT_STAGE]
+diff --git a/docs/archive/STRUCTURED_ERROR_LOGGING_TASKS.md b/docs/archive/STRUCTURED_ERROR_LOGGING_TASKS.md
+--- a/docs/archive/STRUCTURED_ERROR_LOGGING_TASKS.md
++++ b/docs/archive/STRUCTURED_ERROR_LOGGING_TASKS.md
+@@ -631,1 +631,1 @@
+-- **Real-time Monitoring**: Continuous monitoring with alert conditions and rate calculations
++
+- **Real-time Monitoring**: Continuous monitoring with alert conditions and rate calculations
+@@ -711,1 +711,1 @@
+-- **Troubleshooting Guide**: Diagnostic procedures, common issues, emergency procedures, and prevention strategies
++
+- **Troubleshooting Guide**: Diagnostic procedures, common issues, emergency procedures, and prevention strategies
+diff --git a/.agent-os/specs/2025-01-27-dead-code-cleanup/tasks.md b/.agent-os/specs/2025-01-27-dead-code-cleanup/tasks.md
+--- a/.agent-os/specs/2025-01-27-dead-code-cleanup/tasks.md
++++ b/.agent-os/specs/2025-01-27-dead-code-cleanup/tasks.md
+@@ -104,1 +104,1 @@
+-- **Multiplayer Scenarios**: All 7 scenarios pass successfully
++
+- **Multiplayer Scenarios**: All 7 scenarios pass successfully
+@@ -114,1 +114,1 @@
+-- **Functionality**: All existing features remain intact and functional
++
+- **Functionality**: All existing features remain intact and functional
+diff --git a/.agent-os/specs/2025-01-27-pydantic-remediation/spec.md b/.agent-os/specs/2025-01-27-pydantic-remediation/spec.md
+--- a/.agent-os/specs/2025-01-27-pydantic-remediation/spec.md
++++ b/.agent-os/specs/2025-01-27-pydantic-remediation/spec.md
+@@ -177,1 +177,1 @@
+-- **Testing & Documentation**: 2-3 days
++
+- **Testing & Documentation**: 2-3 days
+diff --git a/.agent-os/specs/2025-10-10-critical-architecture-fixes/spec.md b/.agent-os/specs/2025-10-10-critical-architecture-fixes/spec.md
+--- a/.agent-os/specs/2025-10-10-critical-architecture-fixes/spec.md
++++ b/.agent-os/specs/2025-10-10-critical-architecture-fixes/spec.md
+@@ -63,1 +63,1 @@
+-- **Rate Limiting Middleware** - API-level rate limiting (HIGH-3) deferred to next initiative
++
+- **Rate Limiting Middleware** - API-level rate limiting (HIGH-3) deferred to next initiative
+diff --git a/.agent-os/specs/2025-10-07-error-handler-migration/sub-specs/test-strategy.md b/.agent-os/specs/2025-10-07-error-handler-migration/sub-specs/test-strategy.md
+--- a/.agent-os/specs/2025-10-07-error-handler-migration/sub-specs/test-strategy.md
++++ b/.agent-os/specs/2025-10-07-error-handler-migration/sub-specs/test-strategy.md
+@@ -88,1 +88,1 @@
+-- â `sanitize_context()` - Test context extraction and sanitization
++
+- â `sanitize_context()` - Test context extraction and sanitization
+@@ -246,1 +246,1 @@
+-- â No linting errors
++
+- â No linting errors
+@@ -260,1 +260,1 @@
+-- â Error responses expose sensitive information
++
+- â Error responses expose sensitive information
+diff --git a/docs/archive/ENVIRONMENT_CONFIGURATION_REFACTORING.md b/docs/archive/ENVIRONMENT_CONFIGURATION_REFACTORING.md
+--- a/docs/archive/ENVIRONMENT_CONFIGURATION_REFACTORING.md
++++ b/docs/archive/ENVIRONMENT_CONFIGURATION_REFACTORING.md
+@@ -15,1 +15,1 @@
+-- â Configuration drift between environments was hard to track
++
+- â Configuration drift between environments was hard to track
+diff --git a/docs/archive/IMPLEMENTATION_COMPLETE.md b/docs/archive/IMPLEMENTATION_COMPLETE.md
+--- a/docs/archive/IMPLEMENTATION_COMPLETE.md
++++ b/docs/archive/IMPLEMENTATION_COMPLETE.md
+@@ -64,1 +64,1 @@
+-- **Coverage**: 100% of modules using structured logging
++
+- **Coverage**: 100% of modules using structured logging
+@@ -127,1 +127,1 @@
+-- **Log Injection Prevention**: Structured logging prevents injection attacks
++
+- **Log Injection Prevention**: Structured logging prevents injection attacks
+@@ -146,1 +146,1 @@
+-- **Integration**: All components properly integrated
++
+- **Integration**: All components properly integrated
+@@ -161,1 +161,1 @@
+-- **Files Updated**: 26 existing files
++
+- **Files Updated**: 26 existing files
+diff --git a/investigations/sessions/2025-11-30_session-001_passive-sanity-flux-performance.md b/investigations/sessions/2025-11-30_session-001_passive-sanity-flux-performance.md
+--- a/investigations/sessions/2025-11-30_session-001_passive-sanity-flux-performance.md
++++ b/investigations/sessions/2025-11-30_session-001_passive-sanity-flux-performance.md
+@@ -349,1 +349,1 @@
+-- **User experience**: Players may notice unresponsiveness during tick processing
++
+- **User experience**: Players may notice unresponsiveness during tick processing
+@@ -357,1 +357,1 @@
+-- **Scalability**: Issue will worsen with more players
++
+- **Scalability**: Issue will worsen with more players
+diff --git a/.agent-os/specs/2025-01-27-isort-remediation/sub-specs/technical-spec.md b/.agent-os/specs/2025-01-27-isort-remediation/sub-specs/technical-spec.md
+--- a/.agent-os/specs/2025-01-27-isort-remediation/sub-specs/technical-spec.md
++++ b/.agent-os/specs/2025-01-27-isort-remediation/sub-specs/technical-spec.md
+@@ -12,1 +12,1 @@
+-- **Import Grouping Standardization**: Implementation of consistent three-tier import grouping (standard library, third-party, local)
++
+- **Import Grouping Standardization**: Implementation of consistent three-tier import grouping (standard library, third-party, local)
+diff --git a/investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md b/investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md
+--- a/investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md
++++ b/investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md
+@@ -125,1 +125,1 @@
+-- **Game Functionality**: Combat system operates but UI doesn't update
++
+- **Game Functionality**: Combat system operates but UI doesn't update
+diff --git a/docs/archive/PLANNING_tailwind.md b/docs/archive/PLANNING_tailwind.md
+--- a/docs/archive/PLANNING_tailwind.md
++++ b/docs/archive/PLANNING_tailwind.md
+@@ -134,1 +134,1 @@
+-- â Ensure no TailwindCSS interference
++
+- â Ensure no TailwindCSS interference
+@@ -143,1 +143,1 @@
+-- â Confirmed custom theme colors and animations working
++
+- â Confirmed custom theme colors and animations working
+@@ -152,1 +152,1 @@
+-- â Build process working correctly
++
+- â Build process working correctly
+@@ -208,1 +208,1 @@
+-- â Added subtle eldritch elements (corner decorations, enhanced borders)
++
+- â Added subtle eldritch elements (corner decorations, enhanced borders)
+@@ -221,1 +221,1 @@
+-- â **Mythos Icon Integration**: Replaced MUI icons with our EldritchIcon system
++
+- â **Mythos Icon Integration**: Replaced MUI icons with our EldritchIcon system
+@@ -231,1 +231,1 @@
+-- â **Improved Resize Handles**: Better hover effects and visual indicators
++
+- â **Improved Resize Handles**: Better hover effects and visual indicators
+@@ -241,1 +241,1 @@
+-- â **Real-time Feedback**: Shows position, size, and variant information
++
+- â **Real-time Feedback**: Shows position, size, and variant information
+@@ -251,1 +251,1 @@
+-- â Improved accessibility and user experience
++
+- â Improved accessibility and user experience
+@@ -263,1 +263,1 @@
+-- â **Improved Alias Expansion**: Visual display of command aliases with eldritch icons
++
+- â **Improved Alias Expansion**: Visual display of command aliases with eldritch icons
+@@ -273,1 +273,1 @@
+-- â **Status Footer**: Connection status and message count display
++
+- â **Status Footer**: Connection status and message count display
+@@ -283,1 +283,1 @@
+-- â **Statistics Panel**: Real-time message statistics and counts
++
+- â **Statistics Panel**: Real-time message statistics and counts
+@@ -293,1 +293,1 @@
+-- â Added comprehensive message type styling system
++
+- â Added comprehensive message type styling system
+@@ -305,1 +305,1 @@
+-- â **Better Error Message Display**: Enhanced error handling with eldritch styling
++
+- â **Better Error Message Display**: Enhanced error handling with eldritch styling
+@@ -315,1 +315,1 @@
+-- â **Better Keyboard Shortcuts**: Improved keyboard navigation with eldritch styling
++
+- â **Better Keyboard Shortcuts**: Improved keyboard navigation with eldritch styling
+@@ -325,1 +325,1 @@
+-- â **Statistics Panel**: Real-time command statistics and categorization
++
+- â **Statistics Panel**: Real-time command statistics and categorization
+@@ -335,1 +335,1 @@
+-- â Added comprehensive command categorization system
++
+- â Added comprehensive command categorization system
+@@ -440,1 +440,1 @@
+-- **Progress**: Phase 1, 2, 3.1, 3.2, and 3.3 completed â
++
+- **Progress**: Phase 1, 2, 3.1, 3.2, and 3.3 completed â
+diff --git a/docs/archive/README.md b/docs/archive/README.md
+--- a/docs/archive/README.md
++++ b/docs/archive/README.md
+@@ -22,1 +22,1 @@
+-- **`ROOM_PLANNING.md`** â Room hierarchy and world loading system
++
+- **`ROOM_PLANNING.md`** â Room hierarchy and world loading system
+@@ -40,1 +40,1 @@
+-- **`INTEGRATION_SUMMARY.md`** â System integration summary
++
+- **`INTEGRATION_SUMMARY.md`** â System integration summary
+@@ -51,1 +51,1 @@
+-- **`PLANNING_unified_command_handler.md`** â Command handler unification (planning complete, ready for implementation)
++
+- **`PLANNING_unified_command_handler.md`** â Command handler unification (planning complete, ready for implementation)
+@@ -119,1 +119,1 @@
+-- **`DEVELOPMENT.md`** â Development setup and procedures
++
+- **`DEVELOPMENT.md`** â Development setup and procedures
+@@ -129,1 +129,1 @@
+-- **`SSE_AUTHENTICATION.md`** â Server-Sent Events authentication
++
+- **`SSE_AUTHENTICATION.md`** â Server-Sent Events authentication
+diff --git a/investigations/sessions/2025-12-14_session-001_spell-commands-failure.md b/investigations/sessions/2025-12-14_session-001_spell-commands-failure.md
+--- a/investigations/sessions/2025-12-14_session-001_spell-commands-failure.md
++++ b/investigations/sessions/2025-12-14_session-001_spell-commands-failure.md
+@@ -249,1 +249,1 @@
+-- â Parser factory: `create_learn_command` in command parser
++
+- â Parser factory: `create_learn_command` in command parser
+diff --git a/docs/archive/TEST_REFACTORING_FINAL_SUMMARY.md b/docs/archive/TEST_REFACTORING_FINAL_SUMMARY.md
+--- a/docs/archive/TEST_REFACTORING_FINAL_SUMMARY.md
++++ b/docs/archive/TEST_REFACTORING_FINAL_SUMMARY.md
+@@ -28,1 +28,1 @@
+-- â New hierarchical structure with 9 categories, 23+ subdirectories
++
+- â New hierarchical structure with 9 categories, 23+ subdirectories
+@@ -208,1 +208,1 @@
+-- **Automation Impact:** 95% reduction in manual effort
++
+- **Automation Impact:** 95% reduction in manual effort
+@@ -217,1 +217,1 @@
+-- **Total Files:** 255
++
+- **Total Files:** 255
+@@ -227,1 +227,1 @@
+-- **Legacy Tests:** 13.3% (28 files - for future consolidation)
++
+- **Legacy Tests:** 13.3% (28 files - for future consolidation)
+@@ -463,1 +463,1 @@
+-- â Completion Report
++
+- â Completion Report
+@@ -477,1 +477,1 @@
+-- â Specialized migration script
++
+- â Specialized migration script
+@@ -488,1 +488,1 @@
+-- â conftest.py updated
++
+- â conftest.py updated
+@@ -497,1 +497,1 @@
+-- â Legacy files documented (28 files)
++
+- â Legacy files documented (28 files)
+@@ -571,1 +571,1 @@
+-- **Reduction:** 29 files (13.8%) from original 210
++
+- **Reduction:** 29 files (13.8%) from original 210
+@@ -608,1 +608,1 @@
+-- â Consistent naming conventions
++
+- â Consistent naming conventions
+@@ -618,1 +618,1 @@
+-- â Multiple audience documentation
++
+- â Multiple audience documentation
+diff --git a/.agent-os/specs/2025-10-07-error-handler-migration/sub-specs/migration-plan.md b/.agent-os/specs/2025-10-07-error-handler-migration/sub-specs/migration-plan.md
+--- a/.agent-os/specs/2025-10-07-error-handler-migration/sub-specs/migration-plan.md
++++ b/.agent-os/specs/2025-10-07-error-handler-migration/sub-specs/migration-plan.md
+@@ -162,1 +162,1 @@
+-- â File `server/legacy_error_handlers.py` deleted
++
+- â File `server/legacy_error_handlers.py` deleted
+diff --git a/docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md b/docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md
+--- a/docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md
++++ b/docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md
+@@ -35,1 +35,1 @@
+-- **Validation**: Standard test suite + basic functionality checks
++
+- **Validation**: Standard test suite + basic functionality checks
+@@ -44,1 +44,1 @@
+-- **Validation**: Comprehensive test suite + user workflow testing
++
+- **Validation**: Comprehensive test suite + user workflow testing
+@@ -53,1 +53,1 @@
+-- **Validation**: Full system integration testing + security audit
++
+- **Validation**: Full system integration testing + security audit
+diff --git a/docs/archive/FIXTURE_OPTIMIZATION_COMPLETE.md b/docs/archive/FIXTURE_OPTIMIZATION_COMPLETE.md
+--- a/docs/archive/FIXTURE_OPTIMIZATION_COMPLETE.md
++++ b/docs/archive/FIXTURE_OPTIMIZATION_COMPLETE.md
+@@ -16,1 +16,1 @@
+-- **Impact**: Reduces 26-30 second setup from per-test to per-class
++
+- **Impact**: Reduces 26-30 second setup from per-test to per-class
+@@ -27,1 +27,1 @@
+-- â `test_game_api_broadcast.py::TestGameApiBroadcast` (2 tests)
++
+- â `test_game_api_broadcast.py::TestGameApiBroadcast` (2 tests)
+diff --git a/investigations/sessions/2025-12-03_session-001_character-info-panel.md b/investigations/sessions/2025-12-03_session-001_character-info-panel.md
+--- a/investigations/sessions/2025-12-03_session-001_character-info-panel.md
++++ b/investigations/sessions/2025-12-03_session-001_character-info-panel.md
+@@ -264,1 +264,1 @@
+-- â Poor user experience - looks broken
++
+- â Poor user experience - looks broken
+@@ -273,1 +273,1 @@
+-- â Profession information included
++
+- â Profession information included
+@@ -298,1 +298,1 @@
+-- â **Complete Data**: Includes stats, profession, inventory, status_effects
++
+- â **Complete Data**: Includes stats, profession, inventory, status_effects
+diff --git a/docs/archive/NPC_STARTUP_DUPLICATION_ANALYSIS.md b/docs/archive/NPC_STARTUP_DUPLICATION_ANALYSIS.md
+--- a/docs/archive/NPC_STARTUP_DUPLICATION_ANALYSIS.md
++++ b/docs/archive/NPC_STARTUP_DUPLICATION_ANALYSIS.md
+@@ -98,1 +98,1 @@
+-- **Game Balance:** Population limits violated
++
+- **Game Balance:** Population limits violated
+diff --git a/docs/archive/PLANNING_users_db.md b/docs/archive/PLANNING_users_db.md
+--- a/docs/archive/PLANNING_users_db.md
++++ b/docs/archive/PLANNING_users_db.md
+@@ -57,1 +57,1 @@
+-- **Database Schema**: Users, invites, and players tables with proper relationships
++
+- **Database Schema**: Users, invites, and players tables with proper relationships
+@@ -68,1 +68,1 @@
+-- â `server/models/invite.py` - Invite model
++
+- â `server/models/invite.py` - Invite model
+@@ -95,1 +95,1 @@
+-- **Player data**: Stored separately in individual JSON files
++
+- **Player data**: Stored separately in individual JSON files
+@@ -348,1 +348,1 @@
+-- â Keep existing `auth.py` as backup during transition
++
+- â Keep existing `auth.py` as backup during transition
+@@ -357,1 +357,1 @@
+-- **â Performance tests**: Database query optimization
++
+- **â Performance tests**: Database query optimization
+@@ -373,1 +373,1 @@
+-- **â Session management**: Improved token handling
++
+- **â Session management**: Improved token handling
+@@ -383,1 +383,1 @@
+-- **â Token security testing**: Validate JWT token handling
++
+- **â Token security testing**: Validate JWT token handling
+@@ -398,1 +398,1 @@
+-- **â Caching**: Redis integration for future scalability
++
+- **â Caching**: Redis integration for future scalability
+@@ -428,1 +428,1 @@
+-- **â Logging**: Database operation logging
++
+- **â Logging**: Database operation logging
+@@ -527,1 +527,1 @@
+-- **â Phase 4**: 1-2 hours (Integration and testing) - COMPLETED
++
+- **â Phase 4**: 1-2 hours (Integration and testing) - COMPLETED
+@@ -553,1 +553,1 @@
+-- **Invite System**: Maintained invite-only functionality with database-based management
++
+- **Invite System**: Maintained invite-only functionality with database-based management
+diff --git a/investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md b/investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md
+--- a/investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md
++++ b/investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md
+@@ -171,1 +171,1 @@
+-- **Parameter Binding**: Named parameters (`:parameter_name`)
++
+- **Parameter Binding**: Named parameters (`:parameter_name`)
+@@ -241,1 +241,1 @@
+-- **Code Block**: Exploration filtering logic (lines 130-173)
++
+- **Code Block**: Exploration filtering logic (lines 130-173)
+diff --git a/.agent-os/specs/2025-09-24-npc-room-integration/sub-specs/technical-spec.md b/.agent-os/specs/2025-09-24-npc-room-integration/sub-specs/technical-spec.md
+--- a/.agent-os/specs/2025-09-24-npc-room-integration/sub-specs/technical-spec.md
++++ b/.agent-os/specs/2025-09-24-npc-room-integration/sub-specs/technical-spec.md
+@@ -12,1 +12,1 @@
+-- **NPC Name Resolution** - Implement NPC ID to display name mapping using the NPC lifecycle manager's active NPC registry or NPC instance service
++
+- **NPC Name Resolution** - Implement NPC ID to display name mapping using the NPC lifecycle manager's active NPC registry or NPC instance service
+@@ -25,1 +25,1 @@
+-- **Persistence Layer** - Alternative location for event subscription and room data management
++
+- **Persistence Layer** - Alternative location for event subscription and room data management
+@@ -36,1 +36,1 @@
+-- **Data Consistency** - Ensure room occupant data remains consistent across all connected players
++
+- **Data Consistency** - Ensure room occupant data remains consistent across all connected players
+diff --git a/.agent-os/specs/2025-10-27-player-death-respawn/sub-specs/database-schema.md b/.agent-os/specs/2025-10-27-player-death-respawn/sub-specs/database-schema.md
+--- a/.agent-os/specs/2025-10-27-player-death-respawn/sub-specs/database-schema.md
++++ b/.agent-os/specs/2025-10-27-player-death-respawn/sub-specs/database-schema.md
+@@ -23,1 +23,1 @@
+-- **Nullable:** `YES` (NULL means use default)
++
+- **Nullable:** `YES` (NULL means use default)
+diff --git a/docs/archive/CONFIGURATION_ARCHITECTURE_FINAL.md b/docs/archive/CONFIGURATION_ARCHITECTURE_FINAL.md
+--- a/docs/archive/CONFIGURATION_ARCHITECTURE_FINAL.md
++++ b/docs/archive/CONFIGURATION_ARCHITECTURE_FINAL.md
+@@ -102,1 +102,1 @@
+-- â `scripts/start_e2e_test.ps1` - Uses E2E test config, loads .env.e2e_test
++
+- â `scripts/start_e2e_test.ps1` - Uses E2E test config, loads .env.e2e_test
+diff --git a/client/src/components/ui-v2/eventHandlers/roomHandlers.ts b/client/src/components/ui-v2/eventHandlers/roomHandlers.ts
+--- a/client/src/components/ui-v2/eventHandlers/roomHandlers.ts
++++ b/client/src/components/ui-v2/eventHandlers/roomHandlers.ts
+@@ -112,1 +112,1 @@
+-      occupants: payloadRoom?.occupants?.length ?? 0,
++      occupants: payloadRoom.occupants?.length ?? 0,
+@@ -116,1 +116,1 @@
+-  const players = usePayloadOccupants ? (payloadRoom?.players ?? []) : (existingRoom.players ?? []);
++  const players = usePayloadOccupants ? (payloadRoom.players ?? []) : (existingRoom.players ?? []);
+@@ -118,1 +118,1 @@
+-    ? payloadRoom?.npcs !== undefined
++    ? payloadRoom.npcs !== undefined
+@@ -132,1 +132,1 @@
+-    occupant_count: usePayloadOccupants ? (payloadRoom?.occupant_count ?? occupants.length) : occupants.length,
++    occupant_count: usePayloadOccupants ? (payloadRoom.occupant_count ?? occupants.length) : occupants.length,
+diff --git a/docs/archive/fixture-optimization-plan.md b/docs/archive/fixture-optimization-plan.md
+--- a/docs/archive/fixture-optimization-plan.md
++++ b/docs/archive/fixture-optimization-plan.md
+@@ -14,1 +14,1 @@
+-- **Affected tests**: ~60 tests across multiple files
++
+- **Affected tests**: ~60 tests across multiple files
+@@ -109,1 +109,1 @@
+-- **New total test time**: ~6-8 minutes (within target range)
++
+- **New total test time**: ~6-8 minutes (within target range)
+diff --git a/.agent-os/specs/2025-10-10-critical-architecture-fixes/adrs/ADR-003-pydantic-configuration.md b/.agent-os/specs/2025-10-10-critical-architecture-fixes/adrs/ADR-003-pydantic-configuration.md
+--- a/.agent-os/specs/2025-10-10-critical-architecture-fixes/adrs/ADR-003-pydantic-configuration.md
++++ b/.agent-os/specs/2025-10-10-critical-architecture-fixes/adrs/ADR-003-pydantic-configuration.md
+@@ -31,1 +31,1 @@
+-- **No Secrets in Code**: Must prevent hardcoded secrets
++
+- **No Secrets in Code**: Must prevent hardcoded secrets
+@@ -188,1 +188,1 @@
+-- â All tests passing (3,226 tests)
++
+- â All tests passing (3,226 tests)
+diff --git a/.agent-os/specs/2025-11-13-mythos-time-system/sub-specs/technical-spec.md b/.agent-os/specs/2025-11-13-mythos-time-system/sub-specs/technical-spec.md
+--- a/.agent-os/specs/2025-11-13-mythos-time-system/sub-specs/technical-spec.md
++++ b/.agent-os/specs/2025-11-13-mythos-time-system/sub-specs/technical-spec.md
+@@ -36,1 +36,1 @@
+-- **Holiday engine**: Add middleware or dedicated manager (`server/game/holiday_service.py`) to track active holidays, trigger celebratory events, and ensure bonuses automatically sunset after 48 Mythos hours.
++
+- **Holiday engine**: Add middleware or dedicated manager (`server/game/holiday_service.py`) to track active holidays, trigger celebratory events, and ensure bonuses automatically sunset after 48 Mythos hours.
+@@ -50,1 +50,1 @@
+-- **Playwright scenario**: Add `e2e-tests/scenarios/scenario-XX-mythos-time.md` automating two clients witnessing day/night and holiday transitions.
++
+- **Playwright scenario**: Add `e2e-tests/scenarios/scenario-XX-mythos-time.md` automating two clients witnessing day/night and holiday transitions.
+diff --git a/.agent-os/specs/2025-10-15-shutdown-command/IMPLEMENTATION_SUMMARY.md b/.agent-os/specs/2025-10-15-shutdown-command/IMPLEMENTATION_SUMMARY.md
+--- a/.agent-os/specs/2025-10-15-shutdown-command/IMPLEMENTATION_SUMMARY.md
++++ b/.agent-os/specs/2025-10-15-shutdown-command/IMPLEMENTATION_SUMMARY.md
+@@ -21,1 +21,1 @@
+-- **Thematic Denial**: Non-admin players receive: *"You lack the proper authorization to invoke such rituals."*
++
+- **Thematic Denial**: Non-admin players receive: *"You lack the proper authorization to invoke such rituals."*
+@@ -160,1 +160,1 @@
+-  - `/shutdown` - Shutdown in 10 seconds
++
+  - `/shutdown` - Shutdown in 10 seconds
+@@ -262,1 +262,1 @@
+-- **Test Categories**:
++
+- **Test Categories**:
+diff --git a/docs/archive/NPC_DUPLICATION_BUG_FIX_PLAN.md b/docs/archive/NPC_DUPLICATION_BUG_FIX_PLAN.md
+--- a/docs/archive/NPC_DUPLICATION_BUG_FIX_PLAN.md
++++ b/docs/archive/NPC_DUPLICATION_BUG_FIX_PLAN.md
+@@ -34,1 +34,1 @@
+-- **Performance:** Double NPC instances consume unnecessary resources
++
+- **Performance:** Double NPC instances consume unnecessary resources
+@@ -82,1 +82,1 @@
+-- **Risk:** Low - spawning service still handles NPC creation when called
++
+- **Risk:** Low - spawning service still handles NPC creation when called
+@@ -132,1 +132,1 @@
+-- **Remove:** Independent spawn requirement evaluation
++
+- **Remove:** Independent spawn requirement evaluation
+@@ -141,1 +141,1 @@
+-- **Spawning Service:** NPC instance creation, lifecycle management
++
+- **Spawning Service:** NPC instance creation, lifecycle management
+diff --git a/.agent-os/specs/2025-11-22-map-editor/sub-specs/technical-spec.md b/.agent-os/specs/2025-11-22-map-editor/sub-specs/technical-spec.md
+--- a/.agent-os/specs/2025-11-22-map-editor/sub-specs/technical-spec.md
++++ b/.agent-os/specs/2025-11-22-map-editor/sub-specs/technical-spec.md
+@@ -12,1 +12,1 @@
+-- **Data loading hook**: Create `useRoomMapData.ts` hook to fetch room data from server API, transform to map format, handle loading/error states, and support filtering by zone/subzone with efficient data processing for large room sets (100+ rooms).
++
+- **Data loading hook**: Create `useRoomMapData.ts` hook to fetch room data from server API, transform to map format, handle loading/error states, and support filtering by zone/subzone with efficient data processing for large room sets (100+ rooms).
+@@ -27,1 +27,1 @@
+-- **Alternative considered**: D3.js (already in project but more complex for this use case), Cytoscape.js (less React-integrated)
++
+- **Alternative considered**: D3.js (already in project but more complex for this use case), Cytoscape.js (less React-integrated)
+diff --git a/.agent-os/specs/2025-01-27-dead-code-cleanup/sub-specs/technical-spec.md b/.agent-os/specs/2025-01-27-dead-code-cleanup/sub-specs/technical-spec.md
+--- a/.agent-os/specs/2025-01-27-dead-code-cleanup/sub-specs/technical-spec.md
++++ b/.agent-os/specs/2025-01-27-dead-code-cleanup/sub-specs/technical-spec.md
+@@ -14,1 +14,1 @@
+-- **Documentation**: Update any documentation that references removed files
++
+- **Documentation**: Update any documentation that references removed files
+@@ -23,1 +23,1 @@
+-- **Import Updates**: Update all imports to reference new location
++
+- **Import Updates**: Update all imports to reference new location
+@@ -33,1 +33,1 @@
+-- **Documentation**: Remove any documentation referencing these classes
++
+- **Documentation**: Remove any documentation referencing these classes
+@@ -42,1 +42,1 @@
+-- **Testing**: Ensure removal doesn't break any test cases
++
+- **Testing**: Ensure removal doesn't break any test cases
+@@ -51,1 +51,1 @@
+-- **Linting**: Ensure no linting errors introduced by import changes
++
+- **Linting**: Ensure no linting errors introduced by import changes
+@@ -60,1 +60,1 @@
+-- **Functionality Testing**: Core game features must continue to work
++
+- **Functionality Testing**: Core game features must continue to work
+@@ -77,1 +77,1 @@
+-- **Git History**: Maintain clean git history with descriptive commit messages
++
+- **Git History**: Maintain clean git history with descriptive commit messages
+diff --git a/investigations/sessions/2025-12-03_session-002_room-occupants-display.md b/investigations/sessions/2025-12-03_session-002_room-occupants-display.md
+--- a/investigations/sessions/2025-12-03_session-002_room-occupants-display.md
++++ b/investigations/sessions/2025-12-03_session-002_room-occupants-display.md
+@@ -41,1 +41,1 @@
+-- **Verification**: Runtime logs confirm stats now included, panel renders correctly
++
+- **Verification**: Runtime logs confirm stats now included, panel renders correctly
+@@ -51,1 +51,1 @@
+-- **Problem 3**: Authentication hung due to blocking operations
++
+- **Problem 3**: Authentication hung due to blocking operations
+diff --git a/docs/archive/TEST_REFACTORING_SUMMARY.md b/docs/archive/TEST_REFACTORING_SUMMARY.md
+--- a/docs/archive/TEST_REFACTORING_SUMMARY.md
++++ b/docs/archive/TEST_REFACTORING_SUMMARY.md
+@@ -15,1 +15,1 @@
+-- **Best practices from pytest and industry standards**
++
+- **Best practices from pytest and industry standards**
+@@ -87,1 +87,1 @@
+-- **Reduced duplication** through consolidation
++
+- **Reduced duplication** through consolidation
+@@ -96,1 +96,1 @@
+-- **Easier onboarding** for new developers
++
+- **Easier onboarding** for new developers
+@@ -105,1 +105,1 @@
+-- **Clear patterns** for adding new tests
++
+- **Clear patterns** for adding new tests
+@@ -114,1 +114,1 @@
+-- **Better code review** process
++
+- **Better code review** process
+@@ -125,1 +125,1 @@
+-- **Naming:** Inconsistent patterns and suffixes
++
+- **Naming:** Inconsistent patterns and suffixes
+@@ -134,1 +134,1 @@
+-  - `unit/` (15 subdirectories)
++
+  - `unit/` (15 subdirectories)
+@@ -147,1 +147,1 @@
+-- **Phase 4:** Integration & Specialized (Week 4)
++
+- **Phase 4:** Integration & Specialized (Week 4)
+@@ -264,1 +264,1 @@
+-- â CI/CD pipeline updated and passing
++
+- â CI/CD pipeline updated and passing
+@@ -274,1 +274,1 @@
+-- â Improved test discoverability
++
+- â Improved test discoverability
+diff --git a/.agent-os/specs/2025-10-08-e2e-playwright-cli-conversion/IMPLEMENTATION_SUMMARY.md b/.agent-os/specs/2025-10-08-e2e-playwright-cli-conversion/IMPLEMENTATION_SUMMARY.md
+--- a/.agent-os/specs/2025-10-08-e2e-playwright-cli-conversion/IMPLEMENTATION_SUMMARY.md
++++ b/.agent-os/specs/2025-10-08-e2e-playwright-cli-conversion/IMPLEMENTATION_SUMMARY.md
+@@ -275,1 +275,1 @@
+-- **Documentation Coverage**: Complete
++
+- **Documentation Coverage**: Complete
+diff --git a/docs/archive/.ENV_REFACTORING_SUMMARY.md b/docs/archive/.ENV_REFACTORING_SUMMARY.md
+--- a/docs/archive/.ENV_REFACTORING_SUMMARY.md
++++ b/docs/archive/.ENV_REFACTORING_SUMMARY.md
+@@ -66,1 +66,1 @@
+-- â Non-sensitive paths (data directories, log locations)
++
+- â Non-sensitive paths (data directories, log locations)
+@@ -89,1 +89,1 @@
+-- **Existing**: `server/server_config.e2e_test.yaml` (E2E test structural config)
++
+- **Existing**: `server/server_config.e2e_test.yaml` (E2E test structural config)
+diff --git a/docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md b/docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md
+--- a/docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md
++++ b/docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md
+@@ -47,1 +47,1 @@
+-- â **Validation**: Reject text with combining characters
++
+- â **Validation**: Reject text with combining characters
+@@ -58,1 +58,1 @@
+-  - Mojibake detection and correction
++
+  - Mojibake detection and correction
+@@ -71,1 +71,1 @@
+-  - ANSI color code removal
++
+  - ANSI color code removal
+diff --git a/.agent-os/specs/2025-09-19-player-guid-logging/tasks.md b/.agent-os/specs/2025-09-19-player-guid-logging/tasks.md
+--- a/.agent-os/specs/2025-09-19-player-guid-logging/tasks.md
++++ b/.agent-os/specs/2025-09-19-player-guid-logging/tasks.md
+@@ -58,1 +58,1 @@
+-- **Task 4**: Performance testing completed with optimized efficiency and thread safety validation
++
+- **Task 4**: Performance testing completed with optimized efficiency and thread safety validation
+diff --git a/docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md b/docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md
+--- a/docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md
++++ b/docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md
+@@ -41,1 +41,1 @@
+-- **HealthResponse model**: ~3,052 bytes per instance (complex nested structure)
++
+- **HealthResponse model**: ~3,052 bytes per instance (complex nested structure)
+@@ -60,1 +60,1 @@
+-- **LookCommand**: 0.000002s per instance
++
+- **LookCommand**: 0.000002s per instance
+@@ -198,1 +198,1 @@
+-- **Code Quality**: Standardized configuration and improved error handling
++
+- **Code Quality**: Standardized configuration and improved error handling
+diff --git a/.agent-os/specs/2025-10-15-shutdown-command/sub-specs/technical-spec.md b/.agent-os/specs/2025-10-15-shutdown-command/sub-specs/technical-spec.md
+--- a/.agent-os/specs/2025-10-15-shutdown-command/sub-specs/technical-spec.md
++++ b/.agent-os/specs/2025-10-15-shutdown-command/sub-specs/technical-spec.md
+@@ -14,1 +14,1 @@
+-- **Parameter Validation:**
++
+- **Parameter Validation:**
+@@ -26,1 +26,1 @@
+-- **No Logging:** Permission denials not logged to avoid log clutter
++
+- **No Logging:** Permission denials not logged to avoid log clutter
+@@ -35,1 +35,1 @@
+-- **Superseding Shutdowns:** New shutdown command overwrites existing shutdown_data
++
+- **Superseding Shutdowns:** New shutdown command overwrites existing shutdown_data
+@@ -44,1 +44,1 @@
+-  - Countdown > 10 seconds: notifications every 10 seconds
++
+  - Countdown > 10 seconds: notifications every 10 seconds
+@@ -58,1 +58,1 @@
+-- **Notification:** Send cancellation message to Announcements channel (thematic message)
++
+- **Notification:** Send cancellation message to Announcements channel (thematic message)
+@@ -122,1 +122,1 @@
+-  - `command`: "/shutdown"
++
+  - `command`: "/shutdown"
+@@ -136,1 +136,1 @@
+-- **Service Shutdown Errors:** Log and continue to next service
++
+- **Service Shutdown Errors:** Log and continue to next service
+@@ -146,1 +146,1 @@
+-- **Memory Cleanup:** Ensure all references cleared to allow garbage collection
++
+- **Memory Cleanup:** Ensure all references cleared to allow garbage collection
+@@ -155,1 +155,1 @@
+-- **Test Coverage:** Minimum 80% code coverage for new shutdown module
++
+- **Test Coverage:** Minimum 80% code coverage for new shutdown module
+diff --git a/docs/archive/DUAL_CONNECTION_SYSTEM_TASKS.md b/docs/archive/DUAL_CONNECTION_SYSTEM_TASKS.md
+--- a/docs/archive/DUAL_CONNECTION_SYSTEM_TASKS.md
++++ b/docs/archive/DUAL_CONNECTION_SYSTEM_TASKS.md
+@@ -16,1 +16,1 @@
+-- **Task 2.1**: Implement Multi-Connection Message Delivery (COMPLETED)
++
+- **Task 2.1**: Implement Multi-Connection Message Delivery (COMPLETED)
+@@ -34,1 +34,1 @@
+-- **Task 6.1**: Update Documentation (COMPLETED)
++
+- **Task 6.1**: Update Documentation (COMPLETED)
+@@ -44,1 +44,1 @@
+-- **Phase 5**: Testing and Validation
++
+- **Phase 5**: Testing and Validation
+@@ -769,1 +769,1 @@
+-- **Backward Compatibility Tests**: All existing functionality preserved â
++
+- **Backward Compatibility Tests**: All existing functionality preserved â
+diff --git a/.agent-os/specs/2025-10-06-pydantic-remediation/REMEDIATION_SUMMARY.md b/.agent-os/specs/2025-10-06-pydantic-remediation/REMEDIATION_SUMMARY.md
+--- a/.agent-os/specs/2025-10-06-pydantic-remediation/REMEDIATION_SUMMARY.md
++++ b/.agent-os/specs/2025-10-06-pydantic-remediation/REMEDIATION_SUMMARY.md
+@@ -14,1 +14,1 @@
+-- **Skipped**: 13
++
+- **Skipped**: 13
+diff --git a/.agent-os/specs/2025-09-20-nats-env-config/sub-specs/technical-spec.md b/.agent-os/specs/2025-09-20-nats-env-config/sub-specs/technical-spec.md
+--- a/.agent-os/specs/2025-09-20-nats-env-config/sub-specs/technical-spec.md
++++ b/.agent-os/specs/2025-09-20-nats-env-config/sub-specs/technical-spec.md
+@@ -38,1 +38,1 @@
+-- Maintain all existing function signatures and return values for backward compatibility
++
+- Maintain all existing function signatures and return values for backward compatibility
+diff --git a/docs/archive/PLANNING_e2e.md b/docs/archive/PLANNING_e2e.md
+--- a/docs/archive/PLANNING_e2e.md
++++ b/docs/archive/PLANNING_e2e.md
+@@ -18,1 +18,1 @@
+-- **Mock-based testing** for isolation and speed
++
+- **Mock-based testing** for isolation and speed
+@@ -28,1 +28,1 @@
+-- **Mock-based approach** limits real-world validation
++
+- **Mock-based approach** limits real-world validation
+@@ -41,1 +41,1 @@
+-- **Test Orchestration**: Coordinate server/client startup and teardown
++
+- **Test Orchestration**: Coordinate server/client startup and teardown
+@@ -149,1 +149,1 @@
+-- **Resource Monitoring**: Memory usage, CPU utilization
++
+- **Resource Monitoring**: Memory usage, CPU utilization
+@@ -223,1 +223,1 @@
+-- **Test Runner**: Playwright with custom orchestration
++
+- **Test Runner**: Playwright with custom orchestration
+@@ -232,1 +232,1 @@
+-- **Memory Usage**: â¤ 512MB per browser instance
++
+- **Memory Usage**: â¤ 512MB per browser instance
+@@ -241,1 +241,1 @@
+-- **Debugging**: Root cause identifiable within 5 minutes
++
+- **Debugging**: Root cause identifiable within 5 minutes
+@@ -252,1 +252,1 @@
+-- **Timing Controls**: Add appropriate waits and timeouts
++
+- **Timing Controls**: Add appropriate waits and timeouts
+@@ -261,1 +261,1 @@
+-- **Regular Review**: Update tests with feature changes
++
+- **Regular Review**: Update tests with feature changes
+diff --git a/docs/archive/CONFIGURATION_REFACTORING_COMPLETE.md b/docs/archive/CONFIGURATION_REFACTORING_COMPLETE.md
+--- a/docs/archive/CONFIGURATION_REFACTORING_COMPLETE.md
++++ b/docs/archive/CONFIGURATION_REFACTORING_COMPLETE.md
+@@ -34,1 +34,1 @@
+-- â `E2E_TESTING_SETUP_STATUS.md` - E2E testing status
++
+- â `E2E_TESTING_SETUP_STATUS.md` - E2E testing status
+@@ -44,1 +44,1 @@
+-- â Database seeding with Argon2 password hashing
++
+- â Database seeding with Argon2 password hashing
+@@ -52,1 +52,1 @@
+-- â 40 integration tests
++
+- â 40 integration tests
+diff --git a/docs/archive/PLANNING_unified_command_handler.md b/docs/archive/PLANNING_unified_command_handler.md
+--- a/docs/archive/PLANNING_unified_command_handler.md
++++ b/docs/archive/PLANNING_unified_command_handler.md
+@@ -299,1 +299,1 @@
+-- **Phase 4**: Testing and Validation (2-3 days)
++
+- **Phase 4**: Testing and Validation (2-3 days)
+diff --git a/investigations/sessions/2025-12-17_session-001_create-character-bug.md b/investigations/sessions/2025-12-17_session-001_create-character-bug.md
+--- a/investigations/sessions/2025-12-17_session-001_create-character-bug.md
++++ b/investigations/sessions/2025-12-17_session-001_create-character-bug.md
+@@ -211,1 +211,1 @@
+-- **Feature Blocked**: Multi-character creation (core feature)
++
+- **Feature Blocked**: Multi-character creation (core feature)
+diff --git a/docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md b/docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md
+--- a/docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md
++++ b/docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md
+@@ -41,1 +41,1 @@
+-- **Process-level monitoring**: Using `psutil` for accurate system metrics
++
+- **Process-level monitoring**: Using `psutil` for accurate system metrics
+@@ -50,1 +50,1 @@
+-- **Stale connection cleanup**: Closes connections older than 1 hour
++
+- **Stale connection cleanup**: Closes connections older than 1 hour
+@@ -60,1 +60,1 @@
+-- **Memory leak prevention**: Clean up all references when connections are closed
++
+- **Memory leak prevention**: Clean up all references when connections are closed
+@@ -69,1 +69,1 @@
+-- **Automatic pruning**: Remove empty data structures
++
+- **Automatic pruning**: Remove empty data structures
+@@ -78,1 +78,1 @@
+-- **Real-time monitoring**: Continuous alert generation
++
+- **Real-time monitoring**: Continuous alert generation
+@@ -139,1 +139,1 @@
+-- **Integration tests**: End-to-end memory monitoring and cleanup workflows
++
+- **Integration tests**: End-to-end memory monitoring and cleanup workflows
+@@ -175,1 +175,1 @@
+-- **Resource protection**: Prevents memory exhaustion attacks
++
+- **Resource protection**: Prevents memory exhaustion attacks
+@@ -184,1 +184,1 @@
+-- **Asynchronous operations**: Non-blocking cleanup processes
++
+- **Asynchronous operations**: Non-blocking cleanup processes
+@@ -206,1 +206,1 @@
+-- **Connection age**: 1 hour maximum for WebSocket connections
++
+- **Connection age**: 1 hour maximum for WebSocket connections
+@@ -278,1 +278,1 @@
+-- **Scalability**: Configurable thresholds for different environments
++
+- **Scalability**: Configurable thresholds for different environments
+@@ -287,1 +287,1 @@
+-- **Debugging support**: Detailed statistics and alert information
++
+- **Debugging support**: Detailed statistics and alert information
+@@ -306,1 +306,1 @@
+-- **Automation**: Automated scaling based on memory usage
++
+- **Automation**: Automated scaling based on memory usage
+@@ -317,1 +317,1 @@
+-- **Admin controls** for emergency situations
++
+- **Admin controls** for emergency situations
+diff --git a/docs/archive/PLANNING_code_coverage.md b/docs/archive/PLANNING_code_coverage.md
+--- a/docs/archive/PLANNING_code_coverage.md
++++ b/docs/archive/PLANNING_code_coverage.md
+@@ -108,1 +108,1 @@
+-- **100%** for critical error handling paths
++
+- **100%** for critical error handling paths
+diff --git a/.agent-os/specs/2025-10-10-critical-architecture-fixes/adrs/ADR-004-nats-error-boundaries.md b/.agent-os/specs/2025-10-10-critical-architecture-fixes/adrs/ADR-004-nats-error-boundaries.md
+--- a/.agent-os/specs/2025-10-10-critical-architecture-fixes/adrs/ADR-004-nats-error-boundaries.md
++++ b/.agent-os/specs/2025-10-10-critical-architecture-fixes/adrs/ADR-004-nats-error-boundaries.md
+@@ -31,1 +31,1 @@
+-- **Performance**: Must not significantly impact message delivery performance
++
+- **Performance**: Must not significantly impact message delivery performance
+@@ -217,1 +217,1 @@
+-- â Circuit Breaker: 16/16 tests passing
++
+- â Circuit Breaker: 16/16 tests passing
+diff --git a/.agent-os/specs/2025-09-14-nats-event-integration/sub-specs/api-spec.md b/.agent-os/specs/2025-09-14-nats-event-integration/sub-specs/api-spec.md
+--- a/.agent-os/specs/2025-09-14-nats-event-integration/sub-specs/api-spec.md
++++ b/.agent-os/specs/2025-09-14-nats-event-integration/sub-specs/api-spec.md
+@@ -66,1 +66,1 @@
+-- **Game Tick Loop**: Publishes periodic game state updates
++
+- **Game Tick Loop**: Publishes periodic game state updates
+diff --git a/investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md b/investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md
+--- a/investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md
++++ b/investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md
+@@ -30,1 +30,1 @@
+-- **Actual Behavior**: No NPC death messages appear in Game Info panel
++
+- **Actual Behavior**: No NPC death messages appear in Game Info panel
+@@ -249,1 +249,1 @@
+-- **Client Message Display**: `client/src/components/ui-v2/panels/GameInfoPanel.tsx:37-38` - supports combat message type
++
+- **Client Message Display**: `client/src/components/ui-v2/panels/GameInfoPanel.tsx:37-38` - supports combat message type
+@@ -287,1 +287,1 @@
+-- **Client Event Queue**: Successfully receives events but doesn't process NPC death types
++
+- **Client Event Queue**: Successfully receives events but doesn't process NPC death types
+diff --git a/docs/archive/ROOM_PLANNING.md b/docs/archive/ROOM_PLANNING.md
+--- a/docs/archive/ROOM_PLANNING.md
++++ b/docs/archive/ROOM_PLANNING.md
+@@ -68,1 +68,1 @@
+-- **Schema Validation**: Comprehensive JSON schema validation system
++
+- **Schema Validation**: Comprehensive JSON schema validation system
+@@ -121,1 +121,1 @@
+-- â Add validation for environment inheritance
++
+- â Add validation for environment inheritance
+@@ -278,1 +278,1 @@
+-- â `update_room_references()` - Update exit references to new format
++
+- â `update_room_references()` - Update exit references to new format
+@@ -316,1 +316,1 @@
+-- â Backward compatibility with old format
++
+- â Backward compatibility with old format
+@@ -330,1 +330,1 @@
+-- â Environment inheritance
++
+- â Environment inheritance
+@@ -344,1 +344,1 @@
+-- â Data integrity validation
++
+- â Data integrity validation
+@@ -553,1 +553,1 @@
+-- **Schema Validation**: Comprehensive JSON schema validation system with backward compatibility
++
+- **Schema Validation**: Comprehensive JSON schema validation system with backward compatibility
+diff --git a/.agent-os/specs/2025-09-22-npc-subsystem/sub-specs/database-schema.md b/.agent-os/specs/2025-09-22-npc-subsystem/sub-specs/database-schema.md
+--- a/.agent-os/specs/2025-09-22-npc-subsystem/sub-specs/database-schema.md
++++ b/.agent-os/specs/2025-09-22-npc-subsystem/sub-specs/database-schema.md
+@@ -83,1 +83,1 @@
+-- **Population Control**: Max population and spawn probability for zone management
++
+- **Population Control**: Max population and spawn probability for zone management
+@@ -108,1 +108,1 @@
+-- **JSON Storage**: Balances flexibility with query performance for configuration data
++
+- **JSON Storage**: Balances flexibility with query performance for configuration data
+@@ -117,1 +117,1 @@
+-- **Cascade Deletes**: Maintains data consistency when NPCs are removed
++
+- **Cascade Deletes**: Maintains data consistency when NPCs are removed
+diff --git a/.agent-os/specs/2025-10-08-e2e-playwright-cli-conversion/sub-specs/implementation-guide.md b/.agent-os/specs/2025-10-08-e2e-playwright-cli-conversion/sub-specs/implementation-guide.md
+--- a/.agent-os/specs/2025-10-08-e2e-playwright-cli-conversion/sub-specs/implementation-guide.md
++++ b/.agent-os/specs/2025-10-08-e2e-playwright-cli-conversion/sub-specs/implementation-guide.md
+@@ -843,1 +843,1 @@
+-- **Use kebab-case for directories**: `error-handling/`, `accessibility/`
++
+- **Use kebab-case for directories**: `error-handling/`, `accessibility/`
+diff --git a/.agent-os/specs/2025-10-15-shutdown-command/COMPLETION_REPORT.md b/.agent-os/specs/2025-10-15-shutdown-command/COMPLETION_REPORT.md
+--- a/.agent-os/specs/2025-10-15-shutdown-command/COMPLETION_REPORT.md
++++ b/.agent-os/specs/2025-10-15-shutdown-command/COMPLETION_REPORT.md
+@@ -188,1 +188,1 @@
+-- **Shutdown Sequence**: 5 tests
++
+- **Shutdown Sequence**: 5 tests
+@@ -201,1 +201,1 @@
+-- â Structured logging throughout
++
+- â Structured logging throughout
+@@ -213,1 +213,1 @@
+-- â Graceful degradation on errors
++
+- â Graceful degradation on errors
+@@ -224,1 +224,1 @@
+-- â Comprehensive test coverage
++
+- â Comprehensive test coverage
+diff --git a/investigations/sessions/2025-11-19_session-003_combat-messages-dual-panel-display.md b/investigations/sessions/2025-11-19_session-003_combat-messages-dual-panel-display.md
+--- a/investigations/sessions/2025-11-19_session-003_combat-messages-dual-panel-display.md
++++ b/investigations/sessions/2025-11-19_session-003_combat-messages-dual-panel-display.md
+@@ -135,1 +135,1 @@
+-- â **DOES NOT exclude messages with `messageType === 'combat'`**
++
+- â **DOES NOT exclude messages with `messageType === 'combat'`**
+@@ -282,1 +282,1 @@
+-- **Message Overload**: Combat-heavy sessions will fill the Chat panel with irrelevant messages
++
+- **Message Overload**: Combat-heavy sessions will fill the Chat panel with irrelevant messages
+diff --git a/docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md b/docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md
+--- a/docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md
++++ b/docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md
+@@ -22,1 +22,1 @@
+-- **Time Taken:** Single session (October 14, 2025)
++
+- **Time Taken:** Single session (October 14, 2025)
+@@ -373,1 +373,1 @@
+-- â Improved test discoverability
++
+- â Improved test discoverability
+@@ -587,1 +587,1 @@
+-- â CI/CD updated
++
+- â CI/CD updated
+@@ -726,1 +726,1 @@
+-- **Phased Approach:** Step-by-step execution
++
+- **Phased Approach:** Step-by-step execution
+@@ -740,1 +740,1 @@
+-- â Better separation of concerns
++
+- â Better separation of concerns
+diff --git a/docs/archive/lucidity-system.md b/docs/archive/lucidity-system.md
+--- a/docs/archive/lucidity-system.md
++++ b/docs/archive/lucidity-system.md
+@@ -24,1 +24,1 @@
+-- **Negative values:** expose the character to catatonic rescue rules before final institutionalization
++
+- **Negative values:** expose the character to catatonic rescue rules before final institutionalization
+@@ -190,1 +190,1 @@
+-- **Cooldown registry:** Centralize recovery-action cooldowns in player state so effects persist across reconnects.
++
+- **Cooldown registry:** Centralize recovery-action cooldowns in player state so effects persist across reconnects.
+diff --git a/docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md b/docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md
+--- a/docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md
++++ b/docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md
+@@ -36,1 +36,1 @@
+-- **Professional Grade**: Used by major applications (Grafana, Kibana)
++
+- **Professional Grade**: Used by major applications (Grafana, Kibana)
+@@ -56,1 +56,1 @@
+-- **Learning Foundation**: Understanding grid concepts for future development
++
+- **Learning Foundation**: Understanding grid concepts for future development
+@@ -67,1 +67,1 @@
+-- **Integration**: Works seamlessly with React Grid Layout
++
+- **Integration**: Works seamlessly with React Grid Layout
+@@ -348,1 +348,1 @@
+-- **Rollback Plan**: Ability to revert to previous system
++
+- **Rollback Plan**: Ability to revert to previous system
+@@ -375,1 +375,1 @@
+-- **Reliability**: 99.9% uptime for layout system
++
+- **Reliability**: 99.9% uptime for layout system
+@@ -384,1 +384,1 @@
+-- **Responsiveness**: Proper behavior across screen sizes
++
+- **Responsiveness**: Proper behavior across screen sizes
+@@ -393,1 +393,1 @@
+-- **Performance**: No memory leaks or infinite loops
++
+- **Performance**: No memory leaks or infinite loops
+diff --git a/.agent-os/specs/2025-09-13-occupant-count-display-fix/sub-specs/technical-spec.md b/.agent-os/specs/2025-09-13-occupant-count-display-fix/sub-specs/technical-spec.md
+--- a/.agent-os/specs/2025-09-13-occupant-count-display-fix/sub-specs/technical-spec.md
++++ b/.agent-os/specs/2025-09-13-occupant-count-display-fix/sub-specs/technical-spec.md
+@@ -12,1 +12,1 @@
+-- **State Management**: Update the client's room state with new occupant count and occupant list when `room_occupants` events are received
++
+- **State Management**: Update the client's room state with new occupant count and occupant list when `room_occupants` events are received
+@@ -65,1 +65,1 @@
+-- **Edge Cases**: Test with rapid player movements and connection/disconnection scenarios
++
+- **Edge Cases**: Test with rapid player movements and connection/disconnection scenarios
+diff --git a/docs/archive/COMBAT_HEALTH_PERSISTENCE_FIX_PLAN.md b/docs/archive/COMBAT_HEALTH_PERSISTENCE_FIX_PLAN.md
+--- a/docs/archive/COMBAT_HEALTH_PERSISTENCE_FIX_PLAN.md
++++ b/docs/archive/COMBAT_HEALTH_PERSISTENCE_FIX_PLAN.md
+@@ -343,1 +343,1 @@
+-- â Using existing `get_stats()` and `set_stats()` methods
++
+- â Using existing `get_stats()` and `set_stats()` methods
+@@ -439,1 +439,1 @@
+-- â **ALL critical failures are invisible in errors.log!**
++
+- â **ALL critical failures are invisible in errors.log!**
+diff --git a/docs/archive/SEMGREP_UNICODE_FIX.md b/docs/archive/SEMGREP_UNICODE_FIX.md
+--- a/docs/archive/SEMGREP_UNICODE_FIX.md
++++ b/docs/archive/SEMGREP_UNICODE_FIX.md
+@@ -119,1 +119,1 @@
+-- â Proper error reporting maintained
++
+- â Proper error reporting maintained
+diff --git a/docs/archive/ADMIN_TELEPORT_FRD.md b/docs/archive/ADMIN_TELEPORT_FRD.md
+--- a/docs/archive/ADMIN_TELEPORT_FRD.md
++++ b/docs/archive/ADMIN_TELEPORT_FRD.md
+@@ -255,1 +255,1 @@
+-- **Security**: 0% unauthorized teleport attempts succeed
++
+- **Security**: 0% unauthorized teleport attempts succeed
+@@ -264,1 +264,1 @@
+-- **Emergency Override**: Bypass confirmation for emergency situations
++
+- **Emergency Override**: Bypass confirmation for emergency situations
+diff --git a/.agent-os/specs/2025-09-22-npc-subsystem/tasks.md b/.agent-os/specs/2025-09-22-npc-subsystem/tasks.md
+--- a/.agent-os/specs/2025-09-22-npc-subsystem/tasks.md
++++ b/.agent-os/specs/2025-09-22-npc-subsystem/tasks.md
+@@ -12,1 +12,1 @@
+-- **Database Models**: Updated NPC models to use separate database metadata and session management
++
+- **Database Models**: Updated NPC models to use separate database metadata and session management
+@@ -26,1 +26,1 @@
+-- **Environment Variables**:
++
+- **Environment Variables**:
+diff --git a/.agent-os/specs/2025-09-27-isort-remediation/sub-specs/tasks.md b/.agent-os/specs/2025-09-27-isort-remediation/sub-specs/tasks.md
+--- a/.agent-os/specs/2025-09-27-isort-remediation/sub-specs/tasks.md
++++ b/.agent-os/specs/2025-09-27-isort-remediation/sub-specs/tasks.md
+@@ -91,1 +91,1 @@
+-- â Improved server startup performance
++
+- â Improved server startup performance
+@@ -145,1 +145,1 @@
+-- **Performance Impact:** Positive - cleaner import logic reduces startup overhead
++
+- **Performance Impact:** Positive - cleaner import logic reduces startup overhead
+diff --git a/docs/archive/TEST_REFACTORING_STATUS.md b/docs/archive/TEST_REFACTORING_STATUS.md
+--- a/docs/archive/TEST_REFACTORING_STATUS.md
++++ b/docs/archive/TEST_REFACTORING_STATUS.md
+@@ -184,1 +184,1 @@
+-- â conftest.py updated
++
+- â conftest.py updated
+@@ -196,1 +196,1 @@
+-- â Dependency injection tests migrated (3 files)
++
+- â Dependency injection tests migrated (3 files)
+@@ -205,1 +205,1 @@
+-- â World/Room domain (9 files)
++
+- â World/Room domain (9 files)
+@@ -222,1 +222,1 @@
+-- â Performance tests (4 files)
++
+- â Performance tests (4 files)
+@@ -235,1 +235,1 @@
+-- â Documentation updated
++
+- â Documentation updated
+@@ -345,1 +345,1 @@
+-- **Tools:** 4 automation scripts
++
+- **Tools:** 4 automation scripts
+@@ -359,1 +359,1 @@
+-- â Validated for correctness
++
+- â Validated for correctness
+diff --git a/docs/archive/PLANNING_argon2.md b/docs/archive/PLANNING_argon2.md
+--- a/docs/archive/PLANNING_argon2.md
++++ b/docs/archive/PLANNING_argon2.md
+@@ -44,1 +44,1 @@
+-- **Performance**: Optimized for web application use
++
+- **Performance**: Optimized for web application use
+@@ -54,1 +54,1 @@
+-- â `pyproject.toml` - Added argon2-cffi dependency
++
+- â `pyproject.toml` - Added argon2-cffi dependency
+@@ -80,1 +80,1 @@
+-- â `server/tests/` - Update test fixtures and mocks (COMPLETED)
++
+- â `server/tests/` - Update test fixtures and mocks (COMPLETED)
+@@ -174,1 +174,1 @@
+-- **Hash Type**: Argon2id (hybrid approach, recommended)
++
+- **Hash Type**: Argon2id (hybrid approach, recommended)
+@@ -183,1 +183,1 @@
+-- â Implementation follows security best practices
++
+- â Implementation follows security best practices
+@@ -194,1 +194,1 @@
+-- â Test performance benchmarking
++
+- â Test performance benchmarking
+@@ -203,1 +203,1 @@
+-- â Test security properties
++
+- â Test security properties
+@@ -212,1 +212,1 @@
+-- â Test memory usage patterns
++
+- â Test memory usage patterns
+@@ -252,1 +252,1 @@
+-- â Monitor performance metrics
++
+- â Monitor performance metrics
+@@ -263,1 +263,1 @@
+-- â Write comprehensive tests
++
+- â Write comprehensive tests
+@@ -272,1 +272,1 @@
+-- â Performance testing
++
+- â Performance testing
+@@ -281,1 +281,1 @@
+-- â Production deployment
++
+- â Production deployment
+@@ -290,1 +290,1 @@
+-- â Final validation
++
+- â Final validation
+@@ -301,1 +301,1 @@
+-- â No authentication failures
++
+- â No authentication failures
+@@ -321,1 +321,1 @@
+-- â Documentation updated
++
+- â Documentation updated
+@@ -359,1 +359,1 @@
+-- â Quick rollback capability
++
+- â Quick rollback capability
+@@ -368,1 +368,1 @@
+-- â Code review and validation
++
+- â Code review and validation
+@@ -377,1 +377,1 @@
+-- â Load testing with realistic scenarios
++
+- â Load testing with realistic scenarios
+diff --git a/docs/archive/SCENARIO_CONVERSION_GUIDE.md b/docs/archive/SCENARIO_CONVERSION_GUIDE.md
+--- a/docs/archive/SCENARIO_CONVERSION_GUIDE.md
++++ b/docs/archive/SCENARIO_CONVERSION_GUIDE.md
+@@ -174,1 +174,1 @@
+-- â Slow feedback loop
++
+- â Slow feedback loop
+@@ -202,1 +202,1 @@
+-- â ~50% time reduction
++
+- â ~50% time reduction
+@@ -360,1 +360,1 @@
+-- **100% CI/CD integration** for automated scenarios
++
+- **100% CI/CD integration** for automated scenarios
+diff --git a/docs/archive/DEPENDENCY_UPGRADE_SPEC/react_node_upgrade_plan.md b/docs/archive/DEPENDENCY_UPGRADE_SPEC/react_node_upgrade_plan.md
+--- a/docs/archive/DEPENDENCY_UPGRADE_SPEC/react_node_upgrade_plan.md
++++ b/docs/archive/DEPENDENCY_UPGRADE_SPEC/react_node_upgrade_plan.md
+@@ -22,1 +22,1 @@
+-- **Testing Library**: Current with minor updates available
++
+- **Testing Library**: Current with minor updates available
+@@ -31,1 +31,1 @@
+-- **Suspense**: Better performance
++
+- **Suspense**: Better performance
+@@ -49,1 +49,1 @@
+-- **Vitest**: 3.2.4 (current)
++
+- **Vitest**: 3.2.4 (current)
+@@ -58,1 +58,1 @@
+-- **Typescript**: Full TypeScript 5.9+ support
++
+- **Typescript**: Full TypeScript 5.9+ support
+@@ -119,1 +119,1 @@
+-- **Suspense Improvements**: Better loading states
++
+- **Suspense Improvements**: Better loading states
+@@ -128,1 +128,1 @@
+-- **Build Tools**: Vite 7.1.4 fully supports React 19
++
+- **Build Tools**: Vite 7.1.4 fully supports React 19
+@@ -165,1 +165,1 @@
+-- **Total**: 4-5 days
++
+- **Total**: 4-5 days
+diff --git a/.agent-os/specs/2025-10-25-subject-naming-standardization/sub-specs/technical-spec.md b/.agent-os/specs/2025-10-25-subject-naming-standardization/sub-specs/technical-spec.md
+--- a/.agent-os/specs/2025-10-25-subject-naming-standardization/sub-specs/technical-spec.md
++++ b/.agent-os/specs/2025-10-25-subject-naming-standardization/sub-specs/technical-spec.md
+@@ -14,1 +14,1 @@
+-  - `build_subject(pattern_name: str, **params) -> str`: Build subject from pattern with parameters
++
+  - `build_subject(pattern_name: str, **params) -> str`: Build subject from pattern with parameters
+@@ -26,1 +26,1 @@
+-- **Scope Types**: `room`, `subzone`, `player`, `global`
++
+- **Scope Types**: `room`, `subzone`, `player`, `global`
+@@ -78,1 +78,1 @@
+-- **Length Limits**: Enforce maximum subject length constraints
++
+- **Length Limits**: Enforce maximum subject length constraints
+@@ -88,1 +88,1 @@
+-- **Configuration**: Add subject pattern configuration options
++
+- **Configuration**: Add subject pattern configuration options
+@@ -97,1 +97,1 @@
+-- **Validation Caching**: Cache validation results for repeated subjects
++
+- **Validation Caching**: Cache validation results for repeated subjects
+@@ -106,1 +106,1 @@
+-- **Subject Too Long**: Length limit enforcement with helpful messages
++
+- **Subject Too Long**: Length limit enforcement with helpful messages
+@@ -123,1 +123,1 @@
+-- **Migration Tests**: Ensure backward compatibility during migration
++
+- **Migration Tests**: Ensure backward compatibility during migration
+@@ -142,1 +142,1 @@
+-- **Pattern Statistics**: Monitor most-used patterns for optimization
++
+- **Pattern Statistics**: Monitor most-used patterns for optimization
+diff --git a/.agent-os/specs/2025-10-06-pydantic-remediation/PYDANTIC_AUDIT_SPEC.md b/.agent-os/specs/2025-10-06-pydantic-remediation/PYDANTIC_AUDIT_SPEC.md
+--- a/.agent-os/specs/2025-10-06-pydantic-remediation/PYDANTIC_AUDIT_SPEC.md
++++ b/.agent-os/specs/2025-10-06-pydantic-remediation/PYDANTIC_AUDIT_SPEC.md
+@@ -18,1 +18,1 @@
+-- **Risk**: High - Incorrect error handling could lead to security bypasses
++
+- **Risk**: High - Incorrect error handling could lead to security bypasses
+@@ -27,1 +27,1 @@
+-- **Specific Vulnerabilities**:
++
+- **Specific Vulnerabilities**:
+diff --git a/docs/archive/early-logging-initialization.plan.md b/docs/archive/early-logging-initialization.plan.md
+--- a/docs/archive/early-logging-initialization.plan.md
++++ b/docs/archive/early-logging-initialization.plan.md
+@@ -98,1 +98,1 @@
+-- â Config still accessible for later use
++
+- â Config still accessible for later use
+diff --git a/docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_DOCUMENTATION.md b/docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_DOCUMENTATION.md
+--- a/docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_DOCUMENTATION.md
++++ b/docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_DOCUMENTATION.md
+@@ -60,1 +60,1 @@
+-- **Activity Indicators**: Visual feedback for channel activity
++
+- **Activity Indicators**: Visual feedback for channel activity
+@@ -108,1 +108,1 @@
+-- **Search**: Full-text search with history
++
+- **Search**: Full-text search with history
+@@ -144,1 +144,1 @@
+-- **Command Suggestions**: Auto-completion based on history
++
+- **Command Suggestions**: Auto-completion based on history
+diff --git a/.agent-os/specs/2025-11-03-complete-todos/sub-specs/api-spec.md b/.agent-os/specs/2025-11-03-complete-todos/sub-specs/api-spec.md
+--- a/.agent-os/specs/2025-11-03-complete-todos/sub-specs/api-spec.md
++++ b/.agent-os/specs/2025-11-03-complete-todos/sub-specs/api-spec.md
+@@ -303,1 +303,1 @@
+-- **NPC Methods**: +5-10ms per admin command (acceptable for admin operations)
++
+- **NPC Methods**: +5-10ms per admin command (acceptable for admin operations)
+diff --git a/.agent-os/specs/2025-08-27-health-endpoint/sub-specs/technical-spec.md b/.agent-os/specs/2025-08-27-health-endpoint/sub-specs/technical-spec.md
+--- a/.agent-os/specs/2025-08-27-health-endpoint/sub-specs/technical-spec.md
++++ b/.agent-os/specs/2025-08-27-health-endpoint/sub-specs/technical-spec.md
+@@ -14,1 +14,1 @@
+-- **Authentication**: None required (public endpoint)
++
+- **Authentication**: None required (public endpoint)
+diff --git a/docs/archive/DEAD_CODE_CLEANUP_PLANNING.md b/docs/archive/DEAD_CODE_CLEANUP_PLANNING.md
+--- a/docs/archive/DEAD_CODE_CLEANUP_PLANNING.md
++++ b/docs/archive/DEAD_CODE_CLEANUP_PLANNING.md
+@@ -51,1 +51,1 @@
+-- **Files to modify**: None (deletion only)
++
+- **Files to modify**: None (deletion only)
+@@ -119,1 +119,1 @@
+-- **Files to modify**: `server/logging_config.py`
++
+- **Files to modify**: `server/logging_config.py`
+@@ -129,1 +129,1 @@
+-- **Files to modify**:
++
+- **Files to modify**:
+diff --git a/.agent-os/specs/2025-10-10-critical-architecture-fixes/sub-specs/technical-spec.md b/.agent-os/specs/2025-10-10-critical-architecture-fixes/sub-specs/technical-spec.md
+--- a/.agent-os/specs/2025-10-10-critical-architecture-fixes/sub-specs/technical-spec.md
++++ b/.agent-os/specs/2025-10-10-critical-architecture-fixes/sub-specs/technical-spec.md
+@@ -33,1 +33,1 @@
+-- **Error Handling:** Map all connection errors to state transitions
++
+- **Error Handling:** Map all connection errors to state transitions
+@@ -42,1 +42,1 @@
+-  - NATS connection lifecycle
++
+  - NATS connection lifecycle
+@@ -853,1 +853,1 @@
+-- **Installation:** `npm install xstate@^4.38.0`
++
+- **Installation:** `npm install xstate@^4.38.0`
+@@ -890,1 +890,1 @@
+-- **Configuration Startup:** Faster startup with early validation failures
++
+- **Configuration Startup:** Faster startup with early validation failures
+@@ -899,1 +899,1 @@
+-- **Frontend Bundle Size:** +50KB gzipped (XState)
++
+- **Frontend Bundle Size:** +50KB gzipped (XState)
+@@ -954,1 +954,1 @@
+-- **Audit Testing:** Verify all security-sensitive commands are logged
++
+- **Audit Testing:** Verify all security-sensitive commands are logged
+diff --git a/investigations/sessions/2025-01-XX_session-ui-panel-resize-bug.md b/investigations/sessions/2025-01-XX_session-ui-panel-resize-bug.md
+--- a/investigations/sessions/2025-01-XX_session-ui-panel-resize-bug.md
++++ b/investigations/sessions/2025-01-XX_session-ui-panel-resize-bug.md
+@@ -108,1 +108,1 @@
+-- **Screenshot:** `investigations/sessions/2025-01-XX_session-ui-panel-resize-800x600.png`
++
+- **Screenshot:** `investigations/sessions/2025-01-XX_session-ui-panel-resize-800x600.png`
+@@ -118,1 +118,1 @@
+-- **Observation:** Panels did not expand to utilize the larger viewport.
++
+- **Observation:** Panels did not expand to utilize the larger viewport.
+@@ -189,1 +189,1 @@
+-- **Functionality:** Panels may become inaccessible or overlap when window is resized to smaller sizes
++
+- **Functionality:** Panels may become inaccessible or overlap when window is resized to smaller sizes
+diff --git a/.agent-os/specs/2025-09-26-asyncio-remediation/sub-specs/technical-spec.md b/.agent-os/specs/2025-09-26-asyncio-remediation/sub-specs/technical-spec.md
+--- a/.agent-os/specs/2025-09-26-asyncio-remediation/sub-specs/technical-spec.md
++++ b/.agent-os/specs/2025-09-26-asyncio-remediation/sub-specs/technical-spec.md
+@@ -12,1 +12,1 @@
+-- **Phase 2 - Memory Leak Prevention:** Replace implicit task creation with tracked task references stored in dedicated manager object enabling full lifecycle tracking
++
+- **Phase 2 - Memory Leak Prevention:** Replace implicit task creation with tracked task references stored in dedicated manager object enabling full lifecycle tracking
+@@ -28,1 +28,1 @@
+-- **aiomonitor** - [IF runtime task visibility requirements exceed current development environment monitoring capabilities for orphaned thread detection.]
++
+- **aiomonitor** - [IF runtime task visibility requirements exceed current development environment monitoring capabilities for orphaned thread detection.]
+diff --git a/.agent-os/specs/2025-09-23-profession-system/sub-specs/technical-spec.md b/.agent-os/specs/2025-09-23-profession-system/sub-specs/technical-spec.md
+--- a/.agent-os/specs/2025-09-23-profession-system/sub-specs/technical-spec.md
++++ b/.agent-os/specs/2025-09-23-profession-system/sub-specs/technical-spec.md
+@@ -12,1 +12,1 @@
+-- **Frontend UI Components**: Create profession selection screen with card-based layout, profession card component, and updated character creation navigation flow
++
+- **Frontend UI Components**: Create profession selection screen with card-based layout, profession card component, and updated character creation navigation flow
+diff --git a/client/src/components/ui-v2/eventLog/projectorRoom.ts b/client/src/components/ui-v2/eventLog/projectorRoom.ts
+--- a/client/src/components/ui-v2/eventLog/projectorRoom.ts
++++ b/client/src/components/ui-v2/eventLog/projectorRoom.ts
+@@ -69,1 +69,1 @@
+-  const players = usePayloadOccupants ? (payloadRoom?.players ?? []) : (existingRoom.players ?? []);
++  const players = usePayloadOccupants ? (payloadRoom.players ?? []) : (existingRoom.players ?? []);
+diff --git a/.agent-os/specs/2025-11-15-container-system/sub-specs/api-spec.md b/.agent-os/specs/2025-11-15-container-system/sub-specs/api-spec.md
+--- a/.agent-os/specs/2025-11-15-container-system/sub-specs/api-spec.md
++++ b/.agent-os/specs/2025-11-15-container-system/sub-specs/api-spec.md
+@@ -42,1 +42,1 @@
+-- **container.decayed**: `{ "container_id": "string", "room_id": "string" }`
++
+- **container.decayed**: `{ "container_id": "string", "room_id": "string" }`
+@@ -51,1 +51,1 @@
+-- **Error Handling**: map domain exceptions (`InventoryCapacityError`, `ContainerLockedError`, `MutationConflictError`) to HTTP/WS error payloads with actionable codes/messages.
++
+- **Error Handling**: map domain exceptions (`InventoryCapacityError`, `ContainerLockedError`, `MutationConflictError`) to HTTP/WS error payloads with actionable codes/messages.
+diff --git a/docs/archive/connection_termination_demo.md b/docs/archive/connection_termination_demo.md
+--- a/docs/archive/connection_termination_demo.md
++++ b/docs/archive/connection_termination_demo.md
+@@ -206,1 +206,1 @@
+-- â Proper cleanup of all session state and resources
++
+- â Proper cleanup of all session state and resources
+diff --git a/docs/archive/LOGGING_IMPLEMENTATION_SUMMARY.md b/docs/archive/LOGGING_IMPLEMENTATION_SUMMARY.md
+--- a/docs/archive/LOGGING_IMPLEMENTATION_SUMMARY.md
++++ b/docs/archive/LOGGING_IMPLEMENTATION_SUMMARY.md
+@@ -142,1 +142,1 @@
+-- **Coverage**: 100% of modules using structured logging
++
+- **Coverage**: 100% of modules using structured logging
+@@ -235,1 +235,1 @@
+-- **Performance Tests**: Validation of async processing performance
++
+- **Performance Tests**: Validation of async processing performance
+@@ -244,1 +244,1 @@
+-- **Troubleshooting Guide**: Common issues and solutions
++
+- **Troubleshooting Guide**: Common issues and solutions
+@@ -319,1 +319,1 @@
+-- **Reduces performance**: String formatting is slower than structured data
++
+- **Reduces performance**: String formatting is slower than structured data
+@@ -330,1 +330,1 @@
+-- **AI Agent Guide**: [docs/DEVELOPMENT_AI.md](../../docs/DEVELOPMENT_AI.md)
++
+- **AI Agent Guide**: [docs/DEVELOPMENT_AI.md](../../docs/DEVELOPMENT_AI.md)
+diff --git a/investigations/sessions/2025-01-XX_session-rooms-api-user-object-attribute-error.md b/investigations/sessions/2025-01-XX_session-rooms-api-user-object-attribute-error.md
+--- a/investigations/sessions/2025-01-XX_session-rooms-api-user-object-attribute-error.md
++++ b/investigations/sessions/2025-01-XX_session-rooms-api-user-object-attribute-error.md
+@@ -276,1 +276,1 @@
+-- **Error Type**: `AttributeError`
++
+- **Error Type**: `AttributeError`
+@@ -405,1 +405,1 @@
+-- â Incorrect: `current_user.get("id")` (dictionary access on object)
++
+- â Incorrect: `current_user.get("id")` (dictionary access on object)
+diff --git a/docs/archive/STRUCTURED_ERROR_LOGGING_SPEC.md b/docs/archive/STRUCTURED_ERROR_LOGGING_SPEC.md
+--- a/docs/archive/STRUCTURED_ERROR_LOGGING_SPEC.md
++++ b/docs/archive/STRUCTURED_ERROR_LOGGING_SPEC.md
+@@ -150,1 +150,1 @@
+-- **DEBUG**: Detailed diagnostic information
++
+- **DEBUG**: Detailed diagnostic information
+diff --git a/docs/archive/TEST_OPTIMIZATION_STATUS.md b/docs/archive/TEST_OPTIMIZATION_STATUS.md
+--- a/docs/archive/TEST_OPTIMIZATION_STATUS.md
++++ b/docs/archive/TEST_OPTIMIZATION_STATUS.md
+@@ -23,1 +23,1 @@
+-- **Previous:** 70% minimum (CI), 82% actual
++
+- **Previous:** 70% minimum (CI), 82% actual
+@@ -146,1 +146,1 @@
+-- **Status:** Complete
++
+- **Status:** Complete
+diff --git a/docs/archive/DEPENDENCY_UPGRADE_SPEC/upgrade_implementation_plan.md b/docs/archive/DEPENDENCY_UPGRADE_SPEC/upgrade_implementation_plan.md
+--- a/docs/archive/DEPENDENCY_UPGRADE_SPEC/upgrade_implementation_plan.md
++++ b/docs/archive/DEPENDENCY_UPGRADE_SPEC/upgrade_implementation_plan.md
+@@ -21,1 +21,1 @@
+-- **Testing**: Comprehensive at each phase
++
+- **Testing**: Comprehensive at each phase
+@@ -393,1 +393,1 @@
+-- **Authentication**: Test login/logout flows
++
+- **Authentication**: Test login/logout flows
+@@ -403,1 +403,1 @@
+-- **User feedback**: Monitor for user-reported issues
++
+- **User feedback**: Monitor for user-reported issues
+@@ -413,1 +413,1 @@
+-- **Dependency updates**: Plan next upgrade cycle
++
+- **Dependency updates**: Plan next upgrade cycle
+@@ -422,1 +422,1 @@
+-- **Error tracking**: Monitor error rates and patterns
++
+- **Error tracking**: Monitor error rates and patterns
+@@ -431,1 +431,1 @@
+-- **Test failures**: Any test failures
++
+- **Test failures**: Any test failures
+diff --git a/docs/archive/INTEGRATION_SUMMARY.md b/docs/archive/INTEGRATION_SUMMARY.md
+--- a/docs/archive/INTEGRATION_SUMMARY.md
++++ b/docs/archive/INTEGRATION_SUMMARY.md
+@@ -64,1 +64,1 @@
+-- â Shell metacharacter injection
++
+- â Shell metacharacter injection
+@@ -113,1 +113,1 @@
+-- â Legacy function support maintained
++
+- â Legacy function support maintained
+@@ -122,1 +122,1 @@
+-- â Detailed logging for debugging
++
+- â Detailed logging for debugging
+@@ -133,1 +133,1 @@
+-- â Optimized error handling
++
+- â Optimized error handling
+@@ -190,1 +190,1 @@
+-- â Database schema unchanged
++
+- â Database schema unchanged
+@@ -208,1 +208,1 @@
+-- **Input sanitization** prevents data corruption
++
+- **Input sanitization** prevents data corruption
+@@ -217,1 +217,1 @@
+-- **Type safety** reduces debugging time
++
+- **Type safety** reduces debugging time
+@@ -226,1 +226,1 @@
+-- **Clear documentation** improves onboarding
++
+- **Clear documentation** improves onboarding
+@@ -272,1 +272,1 @@
+-- â **Improved code quality** with type safety and modularity
++
+- â **Improved code quality** with type safety and modularity
+diff --git a/.agent-os/specs/2025-09-13-logout-button/sub-specs/technical-spec.md b/.agent-os/specs/2025-09-13-logout-button/sub-specs/technical-spec.md
+--- a/.agent-os/specs/2025-09-13-logout-button/sub-specs/technical-spec.md
++++ b/.agent-os/specs/2025-09-13-logout-button/sub-specs/technical-spec.md
+@@ -14,1 +14,1 @@
+-- **State Management**: Implement logout handler that triggers full state reset in `App.tsx`
++
+- **State Management**: Implement logout handler that triggers full state reset in `App.tsx`
+@@ -25,1 +25,1 @@
+-- **Connection Management**: Leverage existing dual connection system (WebSocket + SSE) cleanup
++
+- **Connection Management**: Leverage existing dual connection system (WebSocket + SSE) cleanup
+@@ -34,1 +34,1 @@
+-- **Connection State**: Reset connection state and cleanup resources via existing `disconnect()` function
++
+- **Connection State**: Reset connection state and cleanup resources via existing `disconnect()` function
+@@ -43,1 +43,1 @@
+-- **Loading States**: Provide visual feedback during logout process (button disabled state)
++
+- **Loading States**: Provide visual feedback during logout process (button disabled state)
+@@ -53,1 +53,1 @@
+-- **Focus Management**: Proper focus restoration when returning to login screen
++
+- **Focus Management**: Proper focus restoration when returning to login screen
+@@ -63,1 +63,1 @@
+-- **User Feedback**: Provide appropriate error messaging without blocking logout completion
++
+- **User Feedback**: Provide appropriate error messaging without blocking logout completion
+diff --git a/.agent-os/specs/2025-09-24-npc-startup-spawning/sub-specs/technical-spec.md b/.agent-os/specs/2025-09-24-npc-startup-spawning/sub-specs/technical-spec.md
+--- a/.agent-os/specs/2025-09-24-npc-startup-spawning/sub-specs/technical-spec.md
++++ b/.agent-os/specs/2025-09-24-npc-startup-spawning/sub-specs/technical-spec.md
+@@ -14,1 +14,1 @@
+-- **Logging Integration** - Comprehensive logging of startup spawning process
++
+- **Logging Integration** - Comprehensive logging of startup spawning process
+@@ -23,1 +23,1 @@
+-- **Room Validation** - Ensure target rooms exist before spawning NPCs
++
+- **Room Validation** - Ensure target rooms exist before spawning NPCs
+@@ -40,1 +40,1 @@
+-- **Database Integration** - Use existing NPC database and session management
++
+- **Database Integration** - Use existing NPC database and session management
+@@ -49,1 +49,1 @@
+-- **Health Monitoring** - Track startup spawning success/failure rates
++
+- **Health Monitoring** - Track startup spawning success/failure rates
+diff --git a/docs/archive/SSE_AUTHENTICATION.md b/docs/archive/SSE_AUTHENTICATION.md
+--- a/docs/archive/SSE_AUTHENTICATION.md
++++ b/docs/archive/SSE_AUTHENTICATION.md
+@@ -23,1 +23,1 @@
+-- **SSE Endpoint**: `/events/{player_id}` with token validation
++
+- **SSE Endpoint**: `/events/{player_id}` with token validation
+@@ -63,1 +63,1 @@
+-- **Automatic Reset**: Limits reset after the time window expires
++
+- **Automatic Reset**: Limits reset after the time window expires
+@@ -139,1 +139,1 @@
+-- **4003 Close Code**: Token doesn't match player ID
++
+- **4003 Close Code**: Token doesn't match player ID
+@@ -193,1 +193,1 @@
+-- **Integration**: End-to-end authentication flow testing
++
+- **Integration**: End-to-end authentication flow testing
+@@ -218,1 +218,1 @@
+-- **Validation**: Tokens are validated on every connection attempt
++
+- **Validation**: Tokens are validated on every connection attempt
+@@ -227,1 +227,1 @@
+-- **Security Headers**: Comprehensive protection against common attacks
++
+- **Security Headers**: Comprehensive protection against common attacks
+diff --git a/.agent-os/specs/2025-10-10-critical-architecture-fixes/INCOMPLETE_ITEMS.md b/.agent-os/specs/2025-10-10-critical-architecture-fixes/INCOMPLETE_ITEMS.md
+--- a/.agent-os/specs/2025-10-10-critical-architecture-fixes/INCOMPLETE_ITEMS.md
++++ b/.agent-os/specs/2025-10-10-critical-architecture-fixes/INCOMPLETE_ITEMS.md
+@@ -19,1 +19,1 @@
+-- â CRITICAL-4: NATS Error Boundaries
++
+- â CRITICAL-4: NATS Error Boundaries
+@@ -370,1 +370,1 @@
+-- **E2E Testing**: â³ **0% COMPLETE** (connection E2E tests not written)
++
+- **E2E Testing**: â³ **0% COMPLETE** (connection E2E tests not written)
+@@ -415,1 +415,1 @@
+-- â API-Level Rate Limiting (deferred to future)
++
+- â API-Level Rate Limiting (deferred to future)
+@@ -488,1 +488,1 @@
+-- **Required**: Document which failures existed before this work
++
+- **Required**: Document which failures existed before this work
+diff --git a/.agent-os/specs/2025-09-14-nats-event-integration/sub-specs/technical-spec.md b/.agent-os/specs/2025-09-14-nats-event-integration/sub-specs/technical-spec.md
+--- a/.agent-os/specs/2025-09-14-nats-event-integration/sub-specs/technical-spec.md
++++ b/.agent-os/specs/2025-09-14-nats-event-integration/sub-specs/technical-spec.md
+@@ -12,1 +12,1 @@
+-- **ConnectionManager Integration**: Replace direct broadcasting calls in `_handle_player_entered_room()` and `_handle_player_left_room()` methods with NATS publication
++
+- **ConnectionManager Integration**: Replace direct broadcasting calls in `_handle_player_entered_room()` and `_handle_player_left_room()` methods with NATS publication
+diff --git a/investigations/sessions/2025-01-XX_verification-wireframe-match.md b/investigations/sessions/2025-01-XX_verification-wireframe-match.md
+--- a/investigations/sessions/2025-01-XX_verification-wireframe-match.md
++++ b/investigations/sessions/2025-01-XX_verification-wireframe-match.md
+@@ -18,1 +18,1 @@
+-- â Panels scale proportionally on window resize
++
+- â Panels scale proportionally on window resize
+@@ -78,1 +78,1 @@
+-- â Column widths: All 613px (equal)
++
+- â Column widths: All 613px (equal)
+@@ -93,1 +93,1 @@
+-- **Right Column:** Character Info, Command History, Command Input â
++
+- **Right Column:** Character Info, Command History, Command Input â
+diff --git a/.agent-os/specs/muting-bug-fix/MUTING_BUG_FIX_PROMPT.md b/.agent-os/specs/muting-bug-fix/MUTING_BUG_FIX_PROMPT.md
+--- a/.agent-os/specs/muting-bug-fix/MUTING_BUG_FIX_PROMPT.md
++++ b/.agent-os/specs/muting-bug-fix/MUTING_BUG_FIX_PROMPT.md
+@@ -37,1 +37,1 @@
+-- **NATS Subject**: Published to `chat.emote.{room_id}`
++
+- **NATS Subject**: Published to `chat.emote.{room_id}`
+@@ -139,1 +139,1 @@
+-- **Mute File**: `data/user_management/mutes_ArkanWolfshade.json`
++
+- **Mute File**: `data/user_management/mutes_ArkanWolfshade.json`
+diff --git a/investigations/sessions/2025-12-11_session-001_admin-stats-bug.md b/investigations/sessions/2025-12-11_session-001_admin-stats-bug.md
+--- a/investigations/sessions/2025-12-11_session-001_admin-stats-bug.md
++++ b/investigations/sessions/2025-12-11_session-001_admin-stats-bug.md
+@@ -212,1 +212,1 @@
+-- **User Impact**: Admins cannot view detailed NPC statistics through the look command
++
+- **User Impact**: Admins cannot view detailed NPC statistics through the look command
+@@ -234,1 +234,1 @@
+-- â Other admin commands: **Unaffected**
++
+- â Other admin commands: **Unaffected**
+diff --git a/.agent-os/specs/2025-11-15-container-system/sub-specs/technical-spec.md b/.agent-os/specs/2025-11-15-container-system/sub-specs/technical-spec.md
+--- a/.agent-os/specs/2025-11-15-container-system/sub-specs/technical-spec.md
++++ b/.agent-os/specs/2025-11-15-container-system/sub-specs/technical-spec.md
+@@ -12,1 +12,1 @@
+-- **Corpse lifecycle automation**: hook death events to instantiate containers, enforce configurable owner-only windows, bind decay timers into `time_service`, and flush unclaimed items to room drops with audit logs.
++
+- **Corpse lifecycle automation**: hook death events to instantiate containers, enforce configurable owner-only windows, bind decay timers into `time_service`, and flush unclaimed items to room drops with audit logs.
+diff --git a/investigations/sessions/2025-12-14_session-002_xp-award-error-investigation.md b/investigations/sessions/2025-12-14_session-002_xp-award-error-investigation.md
+--- a/investigations/sessions/2025-12-14_session-002_xp-award-error-investigation.md
++++ b/investigations/sessions/2025-12-14_session-002_xp-award-error-investigation.md
+@@ -48,1 +48,1 @@
+-- **Missing Attribute**: `async_get_player`
++
+- **Missing Attribute**: `async_get_player`
+@@ -165,1 +165,1 @@
+-- **Event System**: Affected - XP award events are not published
++
+- **Event System**: Affected - XP award events are not published
+@@ -173,1 +173,1 @@
+-- **Data Integrity**: No data corruption, but XP awards are silently lost
++
+- **Data Integrity**: No data corruption, but XP awards are silently lost
+diff --git a/.agent-os/specs/2025-10-10-critical-architecture-fixes/adrs/ADR-002-python-statemachine-backend.md b/.agent-os/specs/2025-10-10-critical-architecture-fixes/adrs/ADR-002-python-statemachine-backend.md
+--- a/.agent-os/specs/2025-10-10-critical-architecture-fixes/adrs/ADR-002-python-statemachine-backend.md
++++ b/.agent-os/specs/2025-10-10-critical-architecture-fixes/adrs/ADR-002-python-statemachine-backend.md
+@@ -30,1 +30,1 @@
+-- **Testing**: Must be testable with pytest
++
+- **Testing**: Must be testable with pytest
+@@ -178,1 +178,1 @@
+-- â Successfully integrated with NATS service
++
+- â Successfully integrated with NATS service
+diff --git a/.agent-os/specs/2025-09-26-asyncio-remediation/tasks.md b/.agent-os/specs/2025-09-26-asyncio-remediation/tasks.md
+--- a/.agent-os/specs/2025-09-26-asyncio-remediation/tasks.md
++++ b/.agent-os/specs/2025-09-26-asyncio-remediation/tasks.md
+@@ -26,1 +26,1 @@
+-- **Implemented task lifecycle management** â `_active_tasks` tracking for proper cancellation
++
+- **Implemented task lifecycle management** â `_active_tasks` tracking for proper cancellation
+@@ -53,1 +53,1 @@
+-- **Added timeout protection for cleanup_orphaned_data()** â Prevents blocking during cleanup operations
++
+- **Added timeout protection for cleanup_orphaned_data()** â Prevents blocking during cleanup operations
+@@ -71,1 +71,1 @@
+-- **Integrated event handler task tracking** â RealTimeEventHandler uses registry for room update task lifecycle management
++
+- **Integrated event handler task tracking** â RealTimeEventHandler uses registry for room update task lifecycle management
+@@ -115,1 +115,1 @@
+-- **Replaced direct task creation** â EventBus and SSE systems now use tracked task creation patterns
++
+- **Replaced direct task creation** â EventBus and SSE systems now use tracked task creation patterns
+@@ -145,1 +145,1 @@
+-- â **Updated conftest.py** â Global fixture coordination completed
++
+- â **Updated conftest.py** â Global fixture coordination completed
+diff --git a/.agent-os/specs/2025-09-23-profession-system/PROFESSION_SYSTEM_SPEC.md b/.agent-os/specs/2025-09-23-profession-system/PROFESSION_SYSTEM_SPEC.md
+--- a/.agent-os/specs/2025-09-23-profession-system/PROFESSION_SYSTEM_SPEC.md
++++ b/.agent-os/specs/2025-09-23-profession-system/PROFESSION_SYSTEM_SPEC.md
+@@ -165,1 +165,1 @@
+-- **API**: Add profession API calls
++
+- **API**: Add profession API calls
+@@ -176,1 +176,1 @@
+-- **Effects**: None (MVP)
++
+- **Effects**: None (MVP)
+diff --git a/docs/archive/BUG_PREVENTION_TESTING_STRATEGY.md b/docs/archive/BUG_PREVENTION_TESTING_STRATEGY.md
+--- a/docs/archive/BUG_PREVENTION_TESTING_STRATEGY.md
++++ b/docs/archive/BUG_PREVENTION_TESTING_STRATEGY.md
+@@ -16,1 +16,1 @@
+-- **Tests**: `test_twibble_emote_end_to_end()`, `test_single_word_emote_processing()`
++
+- **Tests**: `test_twibble_emote_end_to_end()`, `test_single_word_emote_processing()`
+@@ -25,1 +25,1 @@
+-- **Tests**: `test_player_left_excludes_leaving_player()`, `test_connection_manager_broadcast_exclusion_logic()`
++
+- **Tests**: `test_player_left_excludes_leaving_player()`, `test_connection_manager_broadcast_exclusion_logic()`
+@@ -34,1 +34,1 @@
+-- **Tests**: `test_client_reconnection_clears_chat_buffer()`, `test_chat_buffer_persistence_bugs()`
++
+- **Tests**: `test_client_reconnection_clears_chat_buffer()`, `test_chat_buffer_persistence_bugs()`
+@@ -43,1 +43,1 @@
+-- **Tests**: `test_movement_service_uses_shared_event_bus()`, `test_multiple_movement_services_dont_create_duplicate_events()`
++
+- **Tests**: `test_movement_service_uses_shared_event_bus()`, `test_multiple_movement_services_dont_create_duplicate_events()`
+@@ -52,1 +52,1 @@
+-- **Tests**: `test_connection_cleanup_respects_timeout()`, `test_memory_monitor_timeout_configuration()`
++
+- **Tests**: `test_connection_cleanup_respects_timeout()`, `test_memory_monitor_timeout_configuration()`
+@@ -61,1 +61,1 @@
+-- **Tests**: `test_uuid_conversion_to_string()`, `test_event_handler_converts_uuids_to_strings()`
++
+- **Tests**: `test_uuid_conversion_to_string()`, `test_event_handler_converts_uuids_to_strings()`
+@@ -145,1 +145,1 @@
+-- **Connection Timeout Integration**: Timeout configuration and cleanup
++
+- **Connection Timeout Integration**: Timeout configuration and cleanup
+@@ -232,1 +232,1 @@
+-- **Connection Management**: 100% coverage of timeout and cleanup logic
++
+- **Connection Management**: 100% coverage of timeout and cleanup logic
+@@ -242,1 +242,1 @@
+-- **Connection Handling**: 100% coverage of connection state management
++
+- **Connection Handling**: 100% coverage of connection state management
+diff --git a/.agent-os/specs/2025-09-27-isort-remediation/sub-specs/technical-spec.md b/.agent-os/specs/2025-09-27-isort-remediation/sub-specs/technical-spec.md
+--- a/.agent-os/specs/2025-09-27-isort-remediation/sub-specs/technical-spec.md
++++ b/.agent-os/specs/2025-09-27-isort-remediation/sub-specs/technical-spec.md
+@@ -30,1 +30,1 @@
+-- **Line Length**: Align with project's 120-character line length limit
++
+- **Line Length**: Align with project's 120-character line length limit
+diff --git a/docs/archive/MERGE_REFACTORING_SUMMARY.md b/docs/archive/MERGE_REFACTORING_SUMMARY.md
+--- a/docs/archive/MERGE_REFACTORING_SUMMARY.md
++++ b/docs/archive/MERGE_REFACTORING_SUMMARY.md
+@@ -72,1 +72,1 @@
+-  - Old: `earth_arkhamcity_northside_intersection_derby_high`
++
+  - Old: `earth_arkhamcity_northside_intersection_derby_high`
+diff --git a/investigations/sessions/2025-12-03_FINAL_SUMMARY.md b/investigations/sessions/2025-12-03_FINAL_SUMMARY.md
+--- a/investigations/sessions/2025-12-03_FINAL_SUMMARY.md
++++ b/investigations/sessions/2025-12-03_FINAL_SUMMARY.md
+@@ -78,1 +78,1 @@
+-- â Comprehensive error handling preserved
++
+- â Comprehensive error handling preserved
+@@ -190,1 +190,1 @@
+-- â **Occupants**:
++
+- â **Occupants**:
+@@ -203,1 +203,1 @@
+-- â All async migration changes operational
++
+- â All async migration changes operational
+diff --git a/docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md b/docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md
+--- a/docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md
++++ b/docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md
+@@ -312,1 +312,1 @@
+-- **Log Analysis**: Verify no error messages or warnings
++
+- **Log Analysis**: Verify no error messages or warnings
+@@ -321,1 +321,1 @@
+-- â No self-movement messages
++
+- â No self-movement messages
+diff --git a/docs/archive/WARNING_REMEDIATION_PLAN.md b/docs/archive/WARNING_REMEDIATION_PLAN.md
+--- a/docs/archive/WARNING_REMEDIATION_PLAN.md
++++ b/docs/archive/WARNING_REMEDIATION_PLAN.md
+@@ -388,1 +388,1 @@
+-- â Performance benchmarks unchanged
++
+- â Performance benchmarks unchanged
+diff --git a/docs/archive/WHO_COMMAND_TASKS.md b/docs/archive/WHO_COMMAND_TASKS.md
+--- a/docs/archive/WHO_COMMAND_TASKS.md
++++ b/docs/archive/WHO_COMMAND_TASKS.md
+@@ -21,1 +21,1 @@
+-- â Comprehensive test coverage (18 test cases)
++
+- â Comprehensive test coverage (18 test cases)
+@@ -385,1 +385,1 @@
+-- **Phase 4**: 3-4 hours (Deployment)
++
+- **Phase 4**: 3-4 hours (Deployment)
+diff --git a/docs/archive/BUG_FIX_ROOM_DESCRIPTION_ROUTING.md b/docs/archive/BUG_FIX_ROOM_DESCRIPTION_ROUTING.md
+--- a/docs/archive/BUG_FIX_ROOM_DESCRIPTION_ROUTING.md
++++ b/docs/archive/BUG_FIX_ROOM_DESCRIPTION_ROUTING.md
+@@ -81,1 +81,1 @@
+-- â Handles both "Exit:" and "Exits:"
++
+- â Handles both "Exit:" and "Exits:"
+@@ -179,1 +179,1 @@
+-- **Case-insensitive**: Handles "Exits:", "Exit:", "exits:", or "exit:"
++
+- **Case-insensitive**: Handles "Exits:", "Exit:", "exits:", or "exit:"
+@@ -212,1 +212,1 @@
+-- â­ï¸ Monitor for edge cases with different room descriptions
++
+- â­ï¸ Monitor for edge cases with different room descriptions
+diff --git a/investigations/sessions/2025-11-20_movement-bug-investigation.md b/investigations/sessions/2025-11-20_movement-bug-investigation.md
+--- a/investigations/sessions/2025-11-20_movement-bug-investigation.md
++++ b/investigations/sessions/2025-11-20_movement-bug-investigation.md
+@@ -18,1 +18,1 @@
+-- **Error Message**: "You can't go that way"
++
+- **Error Message**: "You can't go that way"
+diff --git a/docs/archive/WARNING_FIXES_SESSION_SUMMARY.md b/docs/archive/WARNING_FIXES_SESSION_SUMMARY.md
+--- a/docs/archive/WARNING_FIXES_SESSION_SUMMARY.md
++++ b/docs/archive/WARNING_FIXES_SESSION_SUMMARY.md
+@@ -126,1 +126,1 @@
+-- â³ Phase 3: RuntimeWarning - Unawaited coroutines (PENDING)
++
+- â³ Phase 3: RuntimeWarning - Unawaited coroutines (PENDING)
+@@ -536,1 +536,1 @@
+-- **Comprehensive documentation** for team
++
+- **Comprehensive documentation** for team
+diff --git a/docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md b/docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md
+--- a/docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md
++++ b/docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md
+@@ -88,1 +88,1 @@
+-- **Scenario 4**: Muting System and Chat Channels - â PASSED
++
+- **Scenario 4**: Muting System and Chat Channels - â PASSED
+@@ -102,1 +102,1 @@
+-- **Status**: â All core functionality remains intact
++
+- **Status**: â All core functionality remains intact
+@@ -167,1 +167,1 @@
+-- â No new linting errors introduced
++
+- â No new linting errors introduced
+@@ -181,1 +181,1 @@
+-- **Project Planning**: `PLANNING.md`
++
+- **Project Planning**: `PLANNING.md`
+diff --git a/docs/archive/TEST_REFACTORING_IMPLEMENTATION_SUMMARY.md b/docs/archive/TEST_REFACTORING_IMPLEMENTATION_SUMMARY.md
+--- a/docs/archive/TEST_REFACTORING_IMPLEMENTATION_SUMMARY.md
++++ b/docs/archive/TEST_REFACTORING_IMPLEMENTATION_SUMMARY.md
+@@ -23,1 +23,1 @@
+-- â Updated `conftest.py` with new paths and documentation
++
+- â Updated `conftest.py` with new paths and documentation
+@@ -323,1 +323,1 @@
+-- â Improved test discoverability
++
+- â Improved test discoverability
+@@ -414,1 +414,1 @@
+-- â Developer confusion â Comprehensive documentation provided
++
+- â Developer confusion â Comprehensive documentation provided
+@@ -435,1 +435,1 @@
+-- â Tools created
++
+- â Tools created
+diff --git a/docs/archive/CI_CD_LOGGING_VALIDATION.md b/docs/archive/CI_CD_LOGGING_VALIDATION.md
+--- a/docs/archive/CI_CD_LOGGING_VALIDATION.md
++++ b/docs/archive/CI_CD_LOGGING_VALIDATION.md
+@@ -673,1 +673,1 @@
+-- **Security Guide**: [SECURITY.md](SECURITY.md)
++
+- **Security Guide**: [SECURITY.md](SECURITY.md)
+diff --git a/investigations/sessions/2025-12-08_session-combat-start-failure.md b/investigations/sessions/2025-12-08_session-combat-start-failure.md
+--- a/investigations/sessions/2025-12-08_session-combat-start-failure.md
++++ b/investigations/sessions/2025-12-08_session-combat-start-failure.md
+@@ -230,1 +230,1 @@
+-- **Line**: 169 (error location)
++
+- **Line**: 169 (error location)
+diff --git a/.agent-os/specs/2025-10-10-critical-architecture-fixes/sub-specs/adr-template.md b/.agent-os/specs/2025-10-10-critical-architecture-fixes/sub-specs/adr-template.md
+--- a/.agent-os/specs/2025-10-10-critical-architecture-fixes/sub-specs/adr-template.md
++++ b/.agent-os/specs/2025-10-10-critical-architecture-fixes/sub-specs/adr-template.md
+@@ -204,1 +204,1 @@
+-- **Three layers** provide defense in depth
++
+- **Three layers** provide defense in depth
+diff --git a/docs/archive/DEPENDENCY_UPGRADE_SPEC/REACT_NODE_UPGRADE_SUMMARY.md b/docs/archive/DEPENDENCY_UPGRADE_SPEC/REACT_NODE_UPGRADE_SUMMARY.md
+--- a/docs/archive/DEPENDENCY_UPGRADE_SPEC/REACT_NODE_UPGRADE_SUMMARY.md
++++ b/docs/archive/DEPENDENCY_UPGRADE_SPEC/REACT_NODE_UPGRADE_SUMMARY.md
+@@ -18,1 +18,1 @@
+-- **Testing Libraries**: Current with minor updates available
++
+- **Testing Libraries**: Current with minor updates available
+@@ -28,1 +28,1 @@
+-- **Vitest**: 3.2.4 (current)
++
+- **Vitest**: 3.2.4 (current)
+@@ -38,1 +38,1 @@
+-- **All updates are LOW to MEDIUM risk**
++
+- **All updates are LOW to MEDIUM risk**
+@@ -56,1 +56,1 @@
+-- **Overall Risk**: LOW
++
+- **Overall Risk**: LOW
+@@ -73,1 +73,1 @@
+-- **Suspense Improvements**: Better loading states
++
+- **Suspense Improvements**: Better loading states
+@@ -117,1 +117,1 @@
+-- â **React 19 Verification**: Ensures React 19 features work correctly
++
+- â **React 19 Verification**: Ensures React 19 features work correctly
+@@ -163,1 +163,1 @@
+-- **Python**: 9 major version updates with breaking changes
++
+- **Python**: 9 major version updates with breaking changes
+diff --git a/docs/archive/NPC_POPULATION_FIELD_RENAME.md b/docs/archive/NPC_POPULATION_FIELD_RENAME.md
+--- a/docs/archive/NPC_POPULATION_FIELD_RENAME.md
++++ b/docs/archive/NPC_POPULATION_FIELD_RENAME.md
+@@ -28,1 +28,1 @@
+-- â Updated method logic to check NPC population instead of player count
++
+- â Updated method logic to check NPC population instead of player count
+diff --git a/docs/archive/PLANNING_stats.md b/docs/archive/PLANNING_stats.md
+--- a/docs/archive/PLANNING_stats.md
++++ b/docs/archive/PLANNING_stats.md
+@@ -53,1 +53,1 @@
+-- **Frontend Integration**: React component with real-time feedback
++
+- **Frontend Integration**: React component with real-time feedback
+@@ -64,1 +64,1 @@
+-- â `client/src/components/StatsRollingScreen.css` - Styling for stats screen
++
+- â `client/src/components/StatsRollingScreen.css` - Styling for stats screen
+@@ -211,1 +211,1 @@
+-- **â Implementation**: React error boundaries + try/catch
++
+- **â Implementation**: React error boundaries + try/catch
+@@ -220,1 +220,1 @@
+-- **â Mobile**: Responsive design with touch-friendly buttons
++
+- **â Mobile**: Responsive design with touch-friendly buttons
+@@ -344,1 +344,1 @@
+-- **Rate Limiting**: Both client-side and server-side protection against abuse
++
+- **Rate Limiting**: Both client-side and server-side protection against abuse
+diff --git a/.agent-os/specs/2025-09-27-fastapi-improvements/sub-specs/technical-spec.md b/.agent-os/specs/2025-09-27-fastapi-improvements/sub-specs/technical-spec.md
+--- a/.agent-os/specs/2025-09-27-fastapi-improvements/sub-specs/technical-spec.md
++++ b/.agent-os/specs/2025-09-27-fastapi-improvements/sub-specs/technical-spec.md
+@@ -12,1 +12,1 @@
+-- **Service Layer Pattern**: Extract business logic from route handlers into dedicated service classes (PlayerService, RoomService, etc.) with proper dependency injection using FastAPI's Depends system
++
+- **Service Layer Pattern**: Extract business logic from route handlers into dedicated service classes (PlayerService, RoomService, etc.) with proper dependency injection using FastAPI's Depends system
+diff --git a/docs/archive/PLANNING_COMPLETION_SUMMARY.md b/docs/archive/PLANNING_COMPLETION_SUMMARY.md
+--- a/docs/archive/PLANNING_COMPLETION_SUMMARY.md
++++ b/docs/archive/PLANNING_COMPLETION_SUMMARY.md
+@@ -20,1 +20,1 @@
+-- â **Database Configuration** - database.py with async session management
++
+- â **Database Configuration** - database.py with async session management
+@@ -32,1 +32,1 @@
+-- â **Data Types** - Consistent TEXT fields for SQLite compatibility
++
+- â **Data Types** - Consistent TEXT fields for SQLite compatibility
+@@ -43,1 +43,1 @@
+-- â Maintained CLI interface compatibility
++
+- â Maintained CLI interface compatibility
+@@ -74,1 +74,1 @@
+-- â **Alias Management Commands** - alias, aliases, unalias commands implemented
++
+- â **Alias Management Commands** - alias, aliases, unalias commands implemented
+@@ -84,1 +84,1 @@
+-- â **Data Persistence** - Reliable save/load operations
++
+- â **Data Persistence** - Reliable save/load operations
+@@ -93,1 +93,1 @@
+-- â Add success/error message handling for alias operations
++
+- â Add success/error message handling for alias operations
+@@ -129,1 +129,1 @@
+-- â Test client-side visual indicators
++
+- â Test client-side visual indicators
+@@ -148,1 +148,1 @@
+-- â **Production Code Cleanup** - Removed all test-specific code from production modules
++
+- â **Production Code Cleanup** - Removed all test-specific code from production modules
+@@ -157,1 +157,1 @@
+-- â **Real-time Communication** - api/real_time.py with WebSocket/SSE handling
++
+- â **Real-time Communication** - api/real_time.py with WebSocket/SSE handling
+@@ -167,1 +167,1 @@
+-- â **Room Service** - game/room_service.py with room operations
++
+- â **Room Service** - game/room_service.py with room operations
+@@ -184,1 +184,1 @@
+-- â **Maintainable Structure** - 547-line main.py reduced to 95 lines with clear separation
++
+- â **Maintainable Structure** - 547-line main.py reduced to 95 lines with clear separation
+@@ -197,1 +197,1 @@
+-- **Testing**: 85% â (tests passing, coverage at 87% - exceeds target)
++
+- **Testing**: 85% â (tests passing, coverage at 87% - exceeds target)
+@@ -207,1 +207,1 @@
+-- **Security**: 60% â (needs enhancement)
++
+- **Security**: 60% â (needs enhancement)
+@@ -217,1 +217,1 @@
+-- **Testing**: 100% â (all tests passing)
++
+- **Testing**: 100% â (all tests passing)
+@@ -250,1 +250,1 @@
+-- â ï¸ Security features need completion
++
+- â ï¸ Security features need completion
+diff --git a/docs/archive/SECURITY_FIXES.md b/docs/archive/SECURITY_FIXES.md
+--- a/docs/archive/SECURITY_FIXES.md
++++ b/docs/archive/SECURITY_FIXES.md
+@@ -60,1 +60,1 @@
+-- â `semgrep.yml` - `permissions: contents: read`
++
+- â `semgrep.yml` - `permissions: contents: read`
+@@ -86,1 +86,1 @@
+-- **Features**:
++
+- **Features**:
+@@ -116,1 +116,1 @@
+-- **Dependency Review**: Vulnerability scanning for dependencies
++
+- **Dependency Review**: Vulnerability scanning for dependencies
+diff --git a/docs/archive/DATETIME_FIX_SUMMARY.md b/docs/archive/DATETIME_FIX_SUMMARY.md
+--- a/docs/archive/DATETIME_FIX_SUMMARY.md
++++ b/docs/archive/DATETIME_FIX_SUMMARY.md
+@@ -231,1 +231,1 @@
+-- â **Code Clarity:** Explicit UTC intent in all datetime operations
++
+- â **Code Clarity:** Explicit UTC intent in all datetime operations
+diff --git a/.agent-os/product/roadmap.md b/.agent-os/product/roadmap.md
+--- a/.agent-os/product/roadmap.md
++++ b/.agent-os/product/roadmap.md
+@@ -124,1 +124,1 @@
+-- **L:** 2 weeks
++
+- **L:** 2 weeks
+@@ -134,1 +134,1 @@
+-- â Enhanced who command (completed)
++
+- â Enhanced who command (completed)
+diff --git a/docs/archive/TEST_REFACTORING_DELIVERABLES.md b/docs/archive/TEST_REFACTORING_DELIVERABLES.md
+--- a/docs/archive/TEST_REFACTORING_DELIVERABLES.md
++++ b/docs/archive/TEST_REFACTORING_DELIVERABLES.md
+@@ -156,1 +156,1 @@
+-- **Issues:** Difficult to navigate, inconsistent naming
++
+- **Issues:** Difficult to navigate, inconsistent naming
+@@ -165,1 +165,1 @@
+-- **Benefits:** Easy navigation, consistent patterns
++
+- **Benefits:** Easy navigation, consistent patterns
+@@ -317,1 +317,1 @@
+-- â Team onboarded
++
+- â Team onboarded
+diff --git a/docs/archive/ROOM_HIERARCHY_FRD.md b/docs/archive/ROOM_HIERARCHY_FRD.md
+--- a/docs/archive/ROOM_HIERARCHY_FRD.md
++++ b/docs/archive/ROOM_HIERARCHY_FRD.md
+@@ -16,1 +16,1 @@
+-- **Example**: `data/local/rooms/arkham/arkham_001.json`
++
+- **Example**: `data/local/rooms/arkham/arkham_001.json`
+diff --git a/investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md b/investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md
+--- a/investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md
++++ b/investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md
+@@ -157,1 +157,1 @@
+-- **Line 193**: `await session.commit()` - Commit without explicit change flagging
++
+- **Line 193**: `await session.commit()` - Commit without explicit change flagging
+diff --git a/investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md b/investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md
+--- a/investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md
++++ b/investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md
+@@ -30,1 +30,1 @@
+-- **Affected Component**: Client-side Occupants panel UI, Server-side NPC filtering
++
+- **Affected Component**: Client-side Occupants panel UI, Server-side NPC filtering
+@@ -257,1 +257,1 @@
+-- â Client-side UI display: **WORKING** (correctly shows "None" when array is empty)
++
+- â Client-side UI display: **WORKING** (correctly shows "None" when array is empty)
+diff --git a/.agent-os/specs/2025-10-10-critical-architecture-fixes/IMPLEMENTATION_SUMMARY.md b/.agent-os/specs/2025-10-10-critical-architecture-fixes/IMPLEMENTATION_SUMMARY.md
+--- a/.agent-os/specs/2025-10-10-critical-architecture-fixes/IMPLEMENTATION_SUMMARY.md
++++ b/.agent-os/specs/2025-10-10-critical-architecture-fixes/IMPLEMENTATION_SUMMARY.md
+@@ -21,1 +21,1 @@
+-- â Zero regressions introduced
++
+- â Zero regressions introduced
+@@ -140,1 +140,1 @@
+-- â Content validation before execution
++
+- â Content validation before execution
+@@ -203,1 +203,1 @@
+-- â Registered in FastAPI router
++
+- â Registered in FastAPI router
+@@ -295,1 +295,1 @@
+-- **Migration**: Update all environment files from templates
++
+- **Migration**: Update all environment files from templates
+@@ -401,1 +401,1 @@
+-- **Investigation**: `GET /api/metrics/dlq?limit=100`
++
+- **Investigation**: `GET /api/metrics/dlq?limit=100`
+@@ -415,1 +415,1 @@
+-- â Null byte injection prevented
++
+- â Null byte injection prevented
+@@ -425,1 +425,1 @@
+-- â JSON Lines format for forensics
++
+- â JSON Lines format for forensics
+@@ -435,1 +435,1 @@
+-- â DoS attack prevention
++
+- â DoS attack prevention
+@@ -456,1 +456,1 @@
+-- **Metrics Collection**: Lock-based, minimal overhead
++
+- **Metrics Collection**: Lock-based, minimal overhead
+@@ -548,1 +548,1 @@
+-- â NATS messaging resilient
++
+- â NATS messaging resilient
+@@ -558,1 +558,1 @@
+-- â Coverage maintained >80%
++
+- â Coverage maintained >80%
+@@ -567,1 +567,1 @@
+-- â No security vulnerabilities introduced
++
+- â No security vulnerabilities introduced
+@@ -576,1 +576,1 @@
+-- â Implementation summary complete
++
+- â Implementation summary complete
+@@ -589,1 +589,1 @@
+-- **Explicit state management** preventing implicit state bugs
++
+- **Explicit state management** preventing implicit state bugs
+diff --git a/.agent-os/specs/2025-10-08-e2e-playwright-cli-conversion/sub-specs/technical-spec.md b/.agent-os/specs/2025-10-08-e2e-playwright-cli-conversion/sub-specs/technical-spec.md
+--- a/.agent-os/specs/2025-10-08-e2e-playwright-cli-conversion/sub-specs/technical-spec.md
++++ b/.agent-os/specs/2025-10-08-e2e-playwright-cli-conversion/sub-specs/technical-spec.md
+@@ -50,1 +50,1 @@
+-- **Player Creation Fixture**: `createTestPlayer(username, stats)` - creates test player with specific attributes
++
+- **Player Creation Fixture**: `createTestPlayer(username, stats)` - creates test player with specific attributes
+@@ -237,1 +237,1 @@
+-- **Seeding Strategy**:
++
+- **Seeding Strategy**:
+@@ -375,1 +375,1 @@
+-- **Server Startup Optimization**: Reuse server instance across test suites when possible
++
+- **Server Startup Optimization**: Reuse server instance across test suites when possible
+@@ -385,1 +385,1 @@
+-- **Console Log Capture**: Capture browser console logs and errors
++
+- **Console Log Capture**: Capture browser console logs and errors
+@@ -396,1 +396,1 @@
+-- **CI Secret Management**: Use GitHub Actions secrets for sensitive configuration
++
+- **CI Secret Management**: Use GitHub Actions secrets for sensitive configuration
+@@ -407,1 +407,1 @@
+-- **Adding New Tests Guide**: Provide template and guidelines for adding new automated tests
++
+- **Adding New Tests Guide**: Provide template and guidelines for adding new automated tests

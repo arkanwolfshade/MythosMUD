@@ -83,6 +83,13 @@ if args.fix:
 
 # Run markdownlint on all .md files
 # Exclude node_modules, dist, build, investigations, archive, and generated test files
+# SAFETY NOTES:
+# - Executable path (npx_path) comes from shutil.which("npx") and is validated above.
+# - All command arguments in cmd_args are static strings; no user input is passed.
+# - List form with shell=False prevents shell injection.
+# - This script is a privileged developer tool, not exposed to untrusted inputs.
+# nosemgrep: python.lang.security.audit.subprocess-shell-true.subprocess-shell-true
+# nosec B603: npx_path is from shutil.which (trusted PATH), args are static list
 result = subprocess.run(
     cmd_args,
     check=False,

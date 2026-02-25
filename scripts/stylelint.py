@@ -18,7 +18,12 @@ print("Running Stylelint on CSS files...")
 print("This will check for CSS quality issues...")
 
 # Run stylelint in client directory
-# Configuration file (.stylelintrc.json) handles ignoring generated directories
+# Configuration file (.stylelintrc.json) handles ignoring generated directories.
+# SAFETY NOTES:
+# - Executable path (npx_path) comes from shutil.which("npx") and is validated above.
+# - All arguments are static strings; there is no user input in the command.
+# - List form with shell=False prevents shell injection.
+# - This script is a privileged developer tool, not exposed directly to untrusted input.
 # nosemgrep: python.lang.security.audit.subprocess-shell-true.subprocess-shell-true
 # nosec B603: npx_path is from shutil.which (trusted system PATH), args are static list
 result = subprocess.run(
