@@ -74,6 +74,13 @@ class TestVerticalExitCharBetween:
         char = renderer._vertical_exit_char_between(None, None, next_y=2, x=1, y=1)
         assert char is None
 
+    def test_one_way_north_uses_caret_bidirectional_uses_pipe(self, renderer: AsciiMapRenderer) -> None:
+        """One-way North-only exit renders ^; bidirectional vertical exit renders |."""
+        north_only = renderer._vertical_exit_char_between(None, {"target": (1, 1)}, next_y=2, x=1, y=1)
+        assert north_only == "^"
+        bidirectional = renderer._vertical_exit_char_between({"target": (1, 2)}, {"target": (1, 1)}, next_y=2, x=1, y=1)
+        assert bidirectional == "|"
+
 
 class TestResolveExitTarget:
     """Tests for _resolve_exit_target."""

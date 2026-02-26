@@ -124,11 +124,26 @@ describe('maps API', () => {
     it('throws on non-OK response', async () => {
       vi.mocked(fetch).mockResolvedValue({
         ok: false,
+        status: 500,
         statusText: 'Internal Server Error',
+        json: async () => ({}),
       } as Response);
 
       await expect(fetchAsciiMap({ plane: 'p', zone: 'z' })).rejects.toThrow(
         'Failed to fetch map: Internal Server Error'
+      );
+    });
+
+    it('bubbles and formats 500-series error with server detail from JSON body', async () => {
+      vi.mocked(fetch).mockResolvedValue({
+        ok: false,
+        status: 500,
+        statusText: 'Internal Server Error',
+        json: async () => ({ detail: 'Database connection timeout' }),
+      } as Response);
+
+      await expect(fetchAsciiMap({ plane: 'p', zone: 'z' })).rejects.toThrow(
+        'Failed to fetch map: Internal Server Error: Database connection timeout'
       );
     });
 

@@ -56,6 +56,40 @@ function buildHeaders(authToken?: string): HeadersInit {
 }
 
 /**
+ * Build an error message from a failed map/minimap response.
+ * For 5xx responses, attempts to include server detail from JSON body.
+ */
+async function formatMapErrorResponse(response: Response, target: 'map' | 'minimap' = 'map'): Promise<string> {
+  const status = response.status;
+  const statusText = response.statusText || `HTTP ${status}`;
+  const prefix = `Failed to fetch ${target}: ${statusText}`;
+  const is5xx = status >= 500 && status < 600;
+  if (!is5xx) {
+    return prefix;
+  }
+  try {
+    const body: unknown = await response.json();
+    if (body !== null && typeof body === 'object' && 'detail' in body) {
+      const detail = (body as { detail?: unknown }).detail;
+      if (typeof detail === 'string') {
+        return `${prefix}: ${detail}`;
+      }
+      if (Array.isArray(detail) && detail.length > 0) {
+        const first = detail[0];
+        const msg =
+          typeof first === 'object' && first !== null && 'msg' in first
+            ? String((first as { msg?: unknown }).msg)
+            : String(first);
+        return `${prefix}: ${msg}`;
+      }
+    }
+  } catch {
+    // non-JSON or unreadable body: fall back to status text
+  }
+  return prefix;
+}
+
+/**
  * Fetch ASCII minimap HTML from the server.
  *
  * @returns Validated response with map_html
@@ -75,7 +109,8 @@ export async function fetchAsciiMinimap(params: FetchAsciiMinimapParams): Promis
   const response = await fetch(url, { headers: buildHeaders(authToken) });
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch minimap: ${response.statusText}`);
+    const message = await formatMapErrorResponse(response, 'minimap');
+    throw new Error(message);
   }
 
   const raw: unknown = await response.json();
@@ -120,7 +155,8 @@ export async function fetchAsciiMap(params: FetchAsciiMapParams): Promise<AsciiM
   const response = await fetch(url, { headers: buildHeaders(authToken) });
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch map: ${response.statusText}`);
+    const message = await formatMapErrorResponse(response, 'map');
+    throw new Error(message);
   }
 
   const raw: unknown = await response.json();

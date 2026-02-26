@@ -61,6 +61,22 @@ class TestApplyMinimapFallbackCoordinates:
         assert rooms[2]["map_x"] == 0.0
         assert rooms[2]["map_y"] == 1.0
 
+    def test_fallback_grid_wraps_by_fallback_grid_width(self) -> None:
+        """Fallback grid assigns coords so rooms wrap at fallback_grid_width (e.g. width=3)."""
+        rooms = [
+            {"id": "r0", "map_x": None, "map_y": None},
+            {"id": "r1", "map_x": None, "map_y": None},
+            {"id": "r2", "map_x": None, "map_y": None},
+            {"id": "r3", "map_x": None, "map_y": None},
+            {"id": "r4", "map_x": None, "map_y": None},
+        ]
+        _apply_minimap_fallback_coordinates(rooms, current_room_id=None, is_admin=True, fallback_grid_width=3)
+        assert rooms[0]["map_x"] == 0.0 and rooms[0]["map_y"] == 0.0
+        assert rooms[1]["map_x"] == 1.0 and rooms[1]["map_y"] == 0.0
+        assert rooms[2]["map_x"] == 2.0 and rooms[2]["map_y"] == 0.0
+        assert rooms[3]["map_x"] == 0.0 and rooms[3]["map_y"] == 1.0
+        assert rooms[4]["map_x"] == 1.0 and rooms[4]["map_y"] == 1.0
+
     def test_non_admin_gets_fallback_only_for_current_room(self) -> None:
         """Non-admin gets fallback coords only for the current room; others stay None."""
         rooms = [
