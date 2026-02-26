@@ -20,6 +20,13 @@ body {
   flex-direction: column !important;
 }
 
+/* Server-rendered ASCII map/minimap: styling via class only (no inline style to avoid XSS) */
+.ascii-map {
+  font-family: monospace;
+  white-space: pre;
+  line-height: 1.2;
+}
+
 /* Ensure the main game container fills the viewport */
 .game-terminal-container {
   flex: 1 !important;

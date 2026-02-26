@@ -8,11 +8,50 @@
  * is essential for navigating the eldritch architecture of our world.
  */
 
-import React, { useCallback, useEffect, useState } from 'react';
-import { isAsciiMapApiResponse } from '../../utils/apiTypeGuards';
-import { getVersionedApiBaseUrl } from '../../utils/config';
-import { SafeHtml } from '../common/SafeHtml';
-import { MapControls } from './MapControls';
+import React, { useCallback, useEffect } from 'react';
+
+import { AsciiMapViewerContent, AsciiMapViewerError, AsciiMapViewerLoading } from './AsciiMapViewerViews';
+import { createViewportKeyHandler } from './asciiMapViewerUtils';
+import type { UseAsciiMapResult } from './useAsciiMap';
+import { useAsciiMap } from './useAsciiMap';
+
+/** Encapsulates map state + key listener + click handler so AsciiMapViewer stays under complexity limit. */
+function useAsciiMapViewerBindings(props: AsciiMapViewerProps): {
+  state: UseAsciiMapResult;
+  handleMapClick: (e: React.MouseEvent<HTMLDivElement>) => void;
+} {
+  const {
+    plane,
+    zone,
+    subZone,
+    currentRoomId,
+    baseUrl = '',
+    authToken,
+    onRoomSelect,
+    viewportWidth = 80,
+    viewportHeight = 24,
+  } = props;
+  const state = useAsciiMap({
+    plane,
+    zone,
+    subZone,
+    currentRoomId,
+    viewportWidth,
+    viewportHeight,
+    baseUrl,
+    authToken,
+  });
+  useEffect(() => {
+    const handleKeyDown = createViewportKeyHandler(state.setViewportX, state.setViewportY);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [state.setViewportX, state.setViewportY]);
+  const handleMapClick = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => getMapClickHandler(onRoomSelect)(e),
+    [onRoomSelect]
+  );
+  return { state, handleMapClick };
+}
 
 export interface AsciiMapViewerProps {
   /** Plane name (required) */
@@ -35,284 +74,47 @@ export interface AsciiMapViewerProps {
   viewportHeight?: number;
 }
 
+function getMapClickHandler(
+  onRoomSelect: AsciiMapViewerProps['onRoomSelect']
+): (event: React.MouseEvent<HTMLDivElement>) => void {
+  return (event: React.MouseEvent<HTMLDivElement>) => {
+    const roomId = (event.target as HTMLElement).getAttribute('data-room-id');
+    if (roomId && onRoomSelect) onRoomSelect(roomId);
+  };
+}
+
+function chooseMapView(
+  state: UseAsciiMapResult,
+  plane: string,
+  zone: string,
+  onMapClick: (event: React.MouseEvent<HTMLDivElement>) => void
+): React.ReactElement {
+  if (state.isLoading) return <AsciiMapViewerLoading />;
+  if (state.error) return <AsciiMapViewerError error={state.error} onRetry={() => state.fetchMap()} />;
+  return (
+    <AsciiMapViewerContent
+      plane={plane}
+      zone={zone}
+      mapHtml={state.mapHtml}
+      viewport={state.viewport}
+      setViewportX={state.setViewportX}
+      setViewportY={state.setViewportY}
+      selectedPlane={state.selectedPlane}
+      selectedZone={state.selectedZone}
+      selectedSubZone={state.selectedSubZone}
+      setSelectedPlane={state.setSelectedPlane}
+      setSelectedZone={state.setSelectedZone}
+      setSelectedSubZone={state.setSelectedSubZone}
+      onMapClick={onMapClick}
+    />
+  );
+}
+
 /**
  * ASCII Map Viewer component.
+ * All logic lives in useAsciiMapViewerBindings and chooseMapView to keep this function under complexity limit.
  */
-export const AsciiMapViewer: React.FC<AsciiMapViewerProps> = ({
-  plane,
-  zone,
-  subZone,
-  currentRoomId,
-  baseUrl = '',
-  authToken,
-  onRoomSelect,
-  viewportWidth = 80,
-  viewportHeight = 24,
-}) => {
-  const [mapHtml, setMapHtml] = useState<string>('');
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [viewportX, setViewportX] = useState(0);
-  const [viewportY, setViewportY] = useState(0);
-  const [selectedPlane, setSelectedPlane] = useState(plane);
-  const [selectedZone, setSelectedZone] = useState(zone);
-  const [selectedSubZone, setSelectedSubZone] = useState<string | undefined>(subZone);
-
-  // Update selected plane/zone/subZone when props change (player moved to different zone)
-  useEffect(() => {
-    setSelectedPlane(plane);
-    setSelectedZone(zone);
-    setSelectedSubZone(subZone);
-    // Reset viewport when zone changes
-    setViewportX(0);
-    setViewportY(0);
-  }, [plane, zone, subZone]);
-
-  // Reset viewport when room changes (player moved) to trigger server-side auto-centering
-  // The server always auto-centers on the player's current room when current_room_id is provided
-  useEffect(() => {
-    if (currentRoomId) {
-      // Reset viewport - server will auto-center on player's new room
-      // We'll sync the actual viewport from the server response
-      setViewportX(0);
-      setViewportY(0);
-    }
-  }, [currentRoomId]);
-
-  // Fetch ASCII map from server
-  const fetchMap = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const url = new URL(`${baseUrl || getVersionedApiBaseUrl()}/api/maps/ascii`);
-      url.searchParams.set('plane', selectedPlane);
-      url.searchParams.set('zone', selectedZone);
-      if (selectedSubZone) {
-        url.searchParams.set('sub_zone', selectedSubZone);
-      }
-      // Pass currentRoomId to server so it uses the most up-to-date value
-      if (currentRoomId) {
-        url.searchParams.set('current_room_id', currentRoomId);
-      }
-      url.searchParams.set('viewport_x', viewportX.toString());
-      url.searchParams.set('viewport_y', viewportY.toString());
-      url.searchParams.set('viewport_width', viewportWidth.toString());
-      url.searchParams.set('viewport_height', viewportHeight.toString());
-
-      const headers: HeadersInit = {
-        'Content-Type': 'application/json',
-      };
-      if (authToken) {
-        headers['Authorization'] = `Bearer ${authToken}`;
-      }
-
-      const response = await fetch(url.toString(), { headers });
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch map: ${response.statusText}`);
-      }
-
-      const raw: unknown = await response.json();
-      if (!isAsciiMapApiResponse(raw)) {
-        setMapHtml('');
-        return;
-      }
-      setMapHtml(raw.map_html ?? '');
-
-      // Sync viewport with server response (server auto-centers on player's room)
-      // Only update if different to avoid unnecessary re-renders
-      if (raw.viewport) {
-        const serverX = raw.viewport.x ?? 0;
-        const serverY = raw.viewport.y ?? 0;
-        // Update viewport if server changed it (auto-centering)
-        if (serverX !== viewportX || serverY !== viewportY) {
-          setViewportX(serverX);
-          setViewportY(serverY);
-        }
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch map');
-      setMapHtml('');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [
-    baseUrl,
-    selectedPlane,
-    selectedZone,
-    selectedSubZone,
-    viewportX,
-    viewportY,
-    viewportWidth,
-    viewportHeight,
-    authToken,
-    currentRoomId, // Refresh map when player moves to a new room
-  ]);
-
-  // Fetch map when dependencies change
-  useEffect(() => {
-    void fetchMap();
-  }, [fetchMap]);
-
-  // Handle keyboard navigation
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
-        return; // Don't handle if typing in input
-      }
-
-      switch (event.key) {
-        case 'ArrowUp':
-          event.preventDefault();
-          setViewportY(prev => prev - 1);
-          break;
-        case 'ArrowDown':
-          event.preventDefault();
-          setViewportY(prev => prev + 1);
-          break;
-        case 'ArrowLeft':
-          event.preventDefault();
-          setViewportX(prev => prev - 1);
-          break;
-        case 'ArrowRight':
-          event.preventDefault();
-          setViewportX(prev => prev + 1);
-          break;
-        case 'Home':
-          event.preventDefault();
-          setViewportX(0);
-          setViewportY(0);
-          break;
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, []);
-
-  // Handle map cell click (for room selection)
-  const handleMapClick = useCallback(
-    (event: React.MouseEvent<HTMLDivElement>) => {
-      // Extract room info from clicked element if available
-      const target = event.target as HTMLElement;
-      const roomId = target.getAttribute('data-room-id');
-      if (roomId && onRoomSelect) {
-        onRoomSelect(roomId);
-      }
-    },
-    [onRoomSelect]
-  );
-
-  // Loading state
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-full w-full bg-mythos-terminal-background">
-        <div className="text-mythos-terminal-text">Loading map...</div>
-      </div>
-    );
-  }
-
-  // Error state
-  if (error) {
-    return (
-      <div className="flex flex-col items-center justify-center h-full w-full bg-mythos-terminal-background p-4">
-        <div className="text-mythos-terminal-error mb-4">Error: {error}</div>
-        <button
-          onClick={() => fetchMap()}
-          className="px-4 py-2 bg-mythos-terminal-primary text-white rounded hover:bg-mythos-terminal-primary/80"
-        >
-          Retry
-        </button>
-      </div>
-    );
-  }
-
-  return (
-    <div className="relative h-full w-full bg-mythos-terminal-background">
-      {/* Map controls */}
-      <div className="absolute top-4 left-4 z-10">
-        <MapControls
-          searchQuery=""
-          onSearchChange={() => {}}
-          plane={selectedPlane}
-          zone={selectedZone}
-          subZone={selectedSubZone}
-          onPlaneChange={setSelectedPlane}
-          onZoneChange={setSelectedZone}
-          onSubZoneChange={setSelectedSubZone}
-          availablePlanes={[plane]}
-          availableZones={[zone]}
-          availableSubZones={[]}
-        />
-      </div>
-
-      {/* Viewport controls */}
-      <div className="absolute top-4 right-4 z-10 flex gap-2">
-        <button
-          onClick={() => {
-            setViewportX(prev => prev - 1);
-          }}
-          className="px-2 py-1 bg-mythos-terminal-background border border-mythos-terminal-border text-mythos-terminal-text rounded hover:bg-mythos-terminal-border"
-          title="Scroll left"
-        >
-          ←
-        </button>
-        <button
-          onClick={() => {
-            setViewportX(prev => prev + 1);
-          }}
-          className="px-2 py-1 bg-mythos-terminal-background border border-mythos-terminal-border text-mythos-terminal-text rounded hover:bg-mythos-terminal-border"
-          title="Scroll right"
-        >
-          →
-        </button>
-        <button
-          onClick={() => {
-            setViewportY(prev => prev - 1);
-          }}
-          className="px-2 py-1 bg-mythos-terminal-background border border-mythos-terminal-border text-mythos-terminal-text rounded hover:bg-mythos-terminal-border"
-          title="Scroll up"
-        >
-          ↑
-        </button>
-        <button
-          onClick={() => {
-            setViewportY(prev => prev + 1);
-          }}
-          className="px-2 py-1 bg-mythos-terminal-background border border-mythos-terminal-border text-mythos-terminal-text rounded hover:bg-mythos-terminal-border"
-          title="Scroll down"
-        >
-          ↓
-        </button>
-        <button
-          onClick={() => {
-            setViewportX(0);
-            setViewportY(0);
-          }}
-          className="px-2 py-1 bg-mythos-terminal-background border border-mythos-terminal-border text-mythos-terminal-text rounded hover:bg-mythos-terminal-border"
-          title="Reset viewport"
-        >
-          ⌂
-        </button>
-      </div>
-
-      {/* ASCII map display */}
-      <SafeHtml
-        html={mapHtml}
-        className="flex items-center justify-center h-full w-full overflow-auto"
-        tag="div"
-        role="img"
-        aria-label="Room map; click to select room, use arrow keys to scroll"
-        onClick={handleMapClick}
-      />
-
-      {/* Viewport info */}
-      <div className="absolute bottom-4 left-4 z-10 text-xs text-mythos-terminal-text bg-mythos-terminal-background/80 px-2 py-1 rounded">
-        Viewport: ({viewportX}, {viewportY}) | Use arrow keys to scroll
-      </div>
-    </div>
-  );
-};
+export function AsciiMapViewer(props: AsciiMapViewerProps): React.ReactElement {
+  const { state, handleMapClick } = useAsciiMapViewerBindings(props);
+  return chooseMapView(state, props.plane, props.zone, handleMapClick);
+}

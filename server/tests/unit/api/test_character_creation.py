@@ -13,9 +13,6 @@ from unittest.mock import AsyncMock, MagicMock, Mock, patch
 import pytest
 from fastapi import Request
 
-# Ensure module under test is loaded so patch("server.api.character_creation.*") can resolve.
-import server.api.character_creation  # noqa: F401
-
 # Lazy imports to avoid circular import issues
 # Import inside functions that need them to avoid triggering circular import chain
 from server.exceptions import LoggedHTTPException, RateLimitError

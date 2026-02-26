@@ -1,7 +1,9 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
+
 import type { HealthStatus } from '../../types/health';
 import { determineDpTier } from '../../types/health';
 import type { LucidityStatus } from '../../types/lucidity';
+import { AsciiMinimap } from '../map/AsciiMinimap';
 import { HeaderBar } from './HeaderBar';
 import { PanelContainer } from './PanelSystem/PanelContainer';
 import { PanelManagerProvider } from './PanelSystem/PanelManager';
@@ -61,6 +63,8 @@ interface GameClientV2Props {
   followingTarget?: { target_name: string; target_type: 'player' | 'npc' } | null;
   /** Quest log (from game_state.quest_log). */
   questLog?: QuestLogEntry[];
+  /** Called when user clicks minimap to open full map. */
+  onMapClick?: () => void;
 }
 
 // Main game client component with three-column layout
@@ -88,6 +92,8 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
   activeEffects = [],
   followingTarget = null,
   questLog = [],
+  onMapClick,
+  authToken,
 }) => {
   const panelManager = usePanelManager();
 
@@ -175,6 +181,7 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
   const commandHistoryPanel = panelManager.getPanel('commandHistory');
   const commandInputPanel = panelManager.getPanel('commandInput');
   const questLogPanel = panelManager.getPanel('questLog');
+  const minimapPanel = panelManager.getPanel('minimap');
 
   // Render panels only if they exist in the panel manager
   return (
@@ -355,6 +362,60 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
               healthStatus={derivedHealthStatus}
               lucidityStatus={derivedLucidityStatus}
             />
+          </PanelContainer>
+        )}
+
+        {minimapPanel && minimapPanel.isVisible && (
+          <PanelContainer
+            id={minimapPanel.id}
+            title={minimapPanel.title}
+            position={minimapPanel.position}
+            size={minimapPanel.size}
+            zIndex={minimapPanel.zIndex}
+            isMinimized={minimapPanel.isMinimized}
+            isMaximized={minimapPanel.isMaximized}
+            isVisible={minimapPanel.isVisible}
+            minSize={minimapPanel.minSize}
+            variant="default"
+            onPositionChange={panelManager.updatePosition}
+            onSizeChange={panelManager.updateSize}
+            onMinimize={panelManager.toggleMinimize}
+            onMaximize={panelManager.toggleMaximize}
+            onFocus={panelManager.focusPanel}
+          >
+            <div className="min-h-[100px] h-full w-full flex flex-col" data-panel="minimap-content">
+              <div className="text-mythos-terminal-text/80 text-xs shrink-0 px-1 pb-1">Click map to open full view</div>
+              <button
+                type="button"
+                className="appearance-none w-full text-left flex-1 min-h-[80px] flex flex-col overflow-auto cursor-pointer border border-mythos-terminal-border/50 rounded p-1.5 text-mythos-terminal-text bg-transparent"
+                onClick={onMapClick}
+                title="Click to open full map"
+              >
+                {room?.id ? (
+                  <>
+                    <div className="text-xs text-mythos-terminal-text/70 shrink-0 truncate" title={room.id}>
+                      {room.id}
+                    </div>
+                    <div className="flex-1 min-h-[64px] mt-1">
+                      <AsciiMinimap
+                        plane={room.plane ?? ''}
+                        zone={room.zone ?? ''}
+                        subZone={room.sub_zone}
+                        currentRoomId={room.id}
+                        authToken={authToken}
+                        size={5}
+                        variant="inline"
+                        onClick={onMapClick}
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <div className="w-full h-full min-h-[60px] flex items-center justify-center text-mythos-terminal-text/70 text-sm">
+                    No location — click to open map
+                  </div>
+                )}
+              </button>
+            </div>
           </PanelContainer>
         )}
 

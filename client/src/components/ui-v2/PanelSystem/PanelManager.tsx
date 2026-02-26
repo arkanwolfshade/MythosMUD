@@ -1,16 +1,24 @@
 import React, { useCallback, useEffect, useMemo, useReducer } from 'react';
+
 import type { PanelPosition, PanelSize, PanelState } from '../types';
 import { PanelManagerContext } from './PanelManagerContext';
+import { loadPanelLayout } from './panelLayoutValidation';
+import {
+  handleClosePanel,
+  handleFocusPanel,
+  handleInitPanels,
+  handleScaleToViewport,
+  handleSetVisibility,
+  handleToggleMaximize,
+  handleToggleMinimize,
+  handleUpdatePosition,
+  handleUpdateSize,
+  type PanelManagerState,
+} from './panelReducerHandlers';
 
 // Panel manager state and actions
 // Implementing centralized panel state management using useReducer pattern
 // Based on findings from "State Management in Non-Euclidean Interfaces" - Dr. Armitage, 1928
-
-interface PanelManagerState {
-  panels: Record<string, PanelState>;
-  focusedPanelId: string | null;
-  nextZIndex: number;
-}
 
 type PanelAction =
   | { type: 'INIT_PANELS'; payload: Record<string, PanelState> }
@@ -30,21 +38,6 @@ type PanelAction =
       };
     };
 
-const STORAGE_KEY = 'mythosmud-ui-v2-panel-layout';
-
-// Load panel layout from localStorage
-const loadPanelLayout = (): Record<string, PanelState> | null => {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      return JSON.parse(stored);
-    }
-  } catch (error) {
-    console.warn('Failed to load panel layout from localStorage', error);
-  }
-  return null;
-};
-
 // Stored layout may be from a different resolution (e.g. another machine). Use it only if it fits.
 const storedLayoutFitsViewport = (
   panels: Record<string, PanelState>,
@@ -63,213 +56,24 @@ const storedLayoutFitsViewport = (
   );
 };
 
-// Save panel layout to localStorage
-const savePanelLayout = (panels: Record<string, PanelState>): void => {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(panels));
-  } catch (error) {
-    console.warn('Failed to save panel layout to localStorage', error);
-  }
+type PanelReducerHandler = (state: PanelManagerState, payload: unknown) => PanelManagerState;
+
+const panelActionHandlers: Record<PanelAction['type'], PanelReducerHandler> = {
+  INIT_PANELS: handleInitPanels as PanelReducerHandler,
+  UPDATE_POSITION: handleUpdatePosition as PanelReducerHandler,
+  UPDATE_SIZE: handleUpdateSize as PanelReducerHandler,
+  TOGGLE_MINIMIZE: handleToggleMinimize as PanelReducerHandler,
+  TOGGLE_MAXIMIZE: handleToggleMaximize as PanelReducerHandler,
+  SET_VISIBILITY: handleSetVisibility as PanelReducerHandler,
+  FOCUS_PANEL: handleFocusPanel as PanelReducerHandler,
+  CLOSE_PANEL: handleClosePanel as PanelReducerHandler,
+  SCALE_TO_VIEWPORT: handleScaleToViewport as PanelReducerHandler,
 };
 
-// Panel reducer
-const panelReducer = (state: PanelManagerState, action: PanelAction): PanelManagerState => {
-  switch (action.type) {
-    case 'INIT_PANELS': {
-      return {
-        ...state,
-        panels: action.payload,
-        nextZIndex: Math.max(...Object.values(action.payload).map(p => p.zIndex), 1000) + 1,
-      };
-    }
-
-    case 'UPDATE_POSITION': {
-      const { id, position } = action.payload;
-      const panel = state.panels[id];
-      if (!panel) return state;
-
-      const updatedPanels = {
-        ...state.panels,
-        [id]: { ...panel, position },
-      };
-
-      savePanelLayout(updatedPanels);
-      return {
-        ...state,
-        panels: updatedPanels,
-      };
-    }
-
-    case 'UPDATE_SIZE': {
-      const { id, size } = action.payload;
-      const panel = state.panels[id];
-      if (!panel) return state;
-
-      const updatedPanels = {
-        ...state.panels,
-        [id]: { ...panel, size },
-      };
-
-      savePanelLayout(updatedPanels);
-      return {
-        ...state,
-        panels: updatedPanels,
-      };
-    }
-
-    case 'TOGGLE_MINIMIZE': {
-      const { id } = action.payload;
-      const panel = state.panels[id];
-      if (!panel) return state;
-
-      const updatedPanels = {
-        ...state.panels,
-        [id]: { ...panel, isMinimized: !panel.isMinimized, isMaximized: false },
-      };
-
-      savePanelLayout(updatedPanels);
-      return {
-        ...state,
-        panels: updatedPanels,
-      };
-    }
-
-    case 'TOGGLE_MAXIMIZE': {
-      const { id } = action.payload;
-      const panel = state.panels[id];
-      if (!panel) return state;
-
-      // If maximizing, minimize all other panels first
-      const updatedPanels = { ...state.panels };
-      if (!panel.isMaximized) {
-        Object.keys(updatedPanels).forEach(panelId => {
-          if (panelId !== id && updatedPanels[panelId].isMaximized) {
-            updatedPanels[panelId] = { ...updatedPanels[panelId], isMaximized: false };
-          }
-        });
-      }
-
-      updatedPanels[id] = {
-        ...panel,
-        isMaximized: !panel.isMaximized,
-        isMinimized: false,
-      };
-
-      savePanelLayout(updatedPanels);
-      return {
-        ...state,
-        panels: updatedPanels,
-      };
-    }
-
-    case 'SET_VISIBILITY': {
-      const { id, isVisible } = action.payload;
-      const panel = state.panels[id];
-      if (!panel) return state;
-
-      const updatedPanels = {
-        ...state.panels,
-        [id]: { ...panel, isVisible },
-      };
-
-      savePanelLayout(updatedPanels);
-      return {
-        ...state,
-        panels: updatedPanels,
-      };
-    }
-
-    case 'FOCUS_PANEL': {
-      const { id } = action.payload;
-      const panel = state.panels[id];
-      if (!panel) return state;
-
-      // Bring focused panel to front
-      const updatedPanels = {
-        ...state.panels,
-        [id]: { ...panel, zIndex: state.nextZIndex },
-      };
-
-      return {
-        ...state,
-        panels: updatedPanels,
-        focusedPanelId: id,
-        nextZIndex: state.nextZIndex + 1,
-      };
-    }
-
-    case 'CLOSE_PANEL': {
-      const { id } = action.payload;
-
-      // Destructuring removes panel id from state, _removed variable intentionally unused
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { [id]: _removed, ...remainingPanels } = state.panels;
-
-      savePanelLayout(remainingPanels);
-      return {
-        ...state,
-        panels: remainingPanels,
-        focusedPanelId: state.focusedPanelId === id ? null : state.focusedPanelId,
-      };
-    }
-
-    case 'SCALE_TO_VIEWPORT': {
-      const { viewportWidth, viewportHeight, scaleFunction } = action.payload;
-      const newLayout = scaleFunction(viewportWidth, viewportHeight);
-      const updatedPanels = { ...state.panels };
-      const headerHeight = 48;
-      const padding = 20;
-
-      // Update panel positions and sizes based on new layout
-      // Only update if panel exists in new layout and isn't minimized/maximized
-      Object.keys(newLayout).forEach(panelId => {
-        const newPanel = newLayout[panelId];
-        const currentPanel = updatedPanels[panelId];
-
-        if (currentPanel && !currentPanel.isMinimized && !currentPanel.isMaximized) {
-          // Ensure panel fits within viewport bounds
-          // Position must be within viewport
-          const constrainedPosition = {
-            x: Math.max(0, Math.min(newPanel.position.x, viewportWidth - padding)),
-            y: Math.max(headerHeight, Math.min(newPanel.position.y, viewportHeight - padding)),
-          };
-
-          // Calculate maximum size that fits in viewport
-          const maxWidth = viewportWidth - constrainedPosition.x - padding;
-          const maxHeight = viewportHeight - constrainedPosition.y - padding;
-
-          // Use the smaller of: new size, maximum fit size, or minimum size
-          // Allow panels to be smaller than minimum if viewport is too small
-          const constrainedSize = {
-            width: Math.max(
-              Math.min(newPanel.size.width, maxWidth),
-              Math.min(currentPanel.minSize?.width || 200, maxWidth)
-            ),
-            height: Math.max(
-              Math.min(newPanel.size.height, maxHeight),
-              Math.min(currentPanel.minSize?.height || 150, maxHeight)
-            ),
-          };
-
-          updatedPanels[panelId] = {
-            ...currentPanel,
-            position: constrainedPosition,
-            size: constrainedSize,
-          };
-        }
-      });
-
-      savePanelLayout(updatedPanels);
-      return {
-        ...state,
-        panels: updatedPanels,
-      };
-    }
-
-    default:
-      return state;
-  }
-};
+function panelReducer(state: PanelManagerState, action: PanelAction): PanelManagerState {
+  const handler = panelActionHandlers[action.type];
+  return handler(state, action.payload);
+}
 
 interface PanelManagerProviderProps {
   children: React.ReactNode;

@@ -8,9 +8,9 @@
  * one's spatial position is essential for navigating eldritch spaces.
  */
 
-import React, { useCallback, useEffect, useState } from 'react';
-import { isAsciiMapApiResponse } from '../../utils/apiTypeGuards';
-import { getVersionedApiBaseUrl } from '../../utils/config';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+
+import { fetchAsciiMinimap } from '../../api/maps';
 import { SafeHtml } from '../common/SafeHtml';
 
 export interface AsciiMinimapProps {
@@ -32,6 +32,8 @@ export interface AsciiMinimapProps {
   position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
   /** Callback when minimap is clicked (opens full map) */
   onClick?: () => void;
+  /** When 'inline', fit inside a container (e.g. panel); when 'floating', use fixed position in corner */
+  variant?: 'floating' | 'inline';
 }
 
 /**
@@ -47,12 +49,23 @@ export const AsciiMinimap: React.FC<AsciiMinimapProps> = ({
   size = 5,
   position = 'bottom-right',
   onClick,
+  variant = 'floating',
 }) => {
   const [mapHtml, setMapHtml] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const containerRef = useRef<HTMLButtonElement>(null);
 
-  // Fetch minimap from server
+  // Fallback when plane/zone/subZone props are missing (e.g. after zone change before room_state
+  // has full fields). Contract: server room.id (stable_id) format is plane_zone_subzone_... ; we
+  // derive the first segments so the minimap can still request the correct zone. Prefer server-
+  // provided plane/zone/sub_zone when available (room_state always includes them per server schema).
+  const parts = currentRoomId ? currentRoomId.split('_') : [];
+  const effectivePlane = plane || parts[0] || '';
+  const effectiveZone = zone || (parts.length >= 2 ? parts[1] : '');
+  const effectiveSubZone = subZone || (parts.length >= 3 ? parts[2] : undefined);
+
+  // Fetch minimap from server via shared map API layer
   const fetchMinimap = useCallback(async () => {
     if (!currentRoomId) {
       setMapHtml('');
@@ -64,44 +77,24 @@ export const AsciiMinimap: React.FC<AsciiMinimapProps> = ({
     setError(null);
 
     try {
-      const url = new URL(`${baseUrl || getVersionedApiBaseUrl()}/api/maps/ascii/minimap`);
-      url.searchParams.set('plane', plane);
-      url.searchParams.set('zone', zone);
-      if (subZone) {
-        url.searchParams.set('sub_zone', subZone);
-      }
-      // Pass currentRoomId to server so it uses the most up-to-date value
-      if (currentRoomId) {
-        url.searchParams.set('current_room_id', currentRoomId);
-      }
-      url.searchParams.set('size', size.toString());
-
-      const headers: HeadersInit = {
-        'Content-Type': 'application/json',
-      };
-      if (authToken) {
-        headers['Authorization'] = `Bearer ${authToken}`;
-      }
-
-      const response = await fetch(url.toString(), { headers });
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch minimap: ${response.statusText}`);
-      }
-
-      const raw: unknown = await response.json();
-      if (!isAsciiMapApiResponse(raw)) {
-        setMapHtml('');
-        return;
-      }
+      const raw = await fetchAsciiMinimap({
+        plane: effectivePlane,
+        zone: effectiveZone,
+        subZone: effectiveSubZone,
+        currentRoomId,
+        size,
+        baseUrl,
+        authToken,
+      });
       setMapHtml(raw.map_html ?? '');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch minimap');
+      const errMsg = err instanceof Error ? err.message : 'Failed to fetch minimap';
+      setError(errMsg);
       setMapHtml('');
     } finally {
       setIsLoading(false);
     }
-  }, [baseUrl, plane, zone, subZone, currentRoomId, size, authToken]);
+  }, [baseUrl, effectivePlane, effectiveZone, effectiveSubZone, currentRoomId, size, authToken]);
 
   // Fetch minimap when dependencies change
   useEffect(() => {
@@ -116,27 +109,36 @@ export const AsciiMinimap: React.FC<AsciiMinimapProps> = ({
     'bottom-right': 'bottom-4 right-4',
   };
 
+  const isInline = variant === 'inline';
   if (!currentRoomId) {
+    if (isInline) {
+      return (
+        <button
+          type="button"
+          className="appearance-none w-full h-full min-h-[80px] flex items-center justify-center text-mythos-terminal-text/80 text-sm cursor-pointer border border-mythos-terminal-border rounded p-2 bg-transparent"
+          onClick={onClick}
+          title="Click to open full map"
+        >
+          No location — click to open map
+        </button>
+      );
+    }
     return null;
   }
-
-  const className =
-    `absolute ${positionClasses[position]} z-50 bg-mythos-terminal-background ` +
-    `border border-mythos-terminal-border rounded p-2 shadow-lg cursor-pointer ` +
-    `hover:border-mythos-terminal-primary transition-colors`;
+  const className = isInline
+    ? 'w-full h-full min-h-[80px] bg-mythos-terminal-background border border-mythos-terminal-border rounded p-2 ' +
+      'cursor-pointer hover:border-mythos-terminal-primary transition-colors flex flex-col'
+    : `fixed ${positionClasses[position]} z-[9998] bg-mythos-terminal-background ` +
+      `border border-mythos-terminal-border rounded p-2 shadow-lg cursor-pointer ` +
+      `hover:border-mythos-terminal-primary transition-colors`;
 
   return (
-    <div
-      className={className}
+    <button
+      type="button"
+      ref={containerRef}
+      className={`appearance-none text-left ${className}`}
       onClick={onClick}
       title="Click to open full map"
-      role="button"
-      tabIndex={0}
-      onKeyDown={e => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          onClick?.();
-        }
-      }}
     >
       {isLoading && <div className="text-xs text-mythos-terminal-text p-2">Loading...</div>}
       {error && (
@@ -144,7 +146,17 @@ export const AsciiMinimap: React.FC<AsciiMinimapProps> = ({
           Map Error
         </div>
       )}
-      {!isLoading && !error && mapHtml && <SafeHtml html={mapHtml} className="minimap-container" tag="div" />}
-    </div>
+      {!isLoading && !error && mapHtml && (
+        <SafeHtml
+          html={mapHtml}
+          className={
+            isInline
+              ? 'minimap-container flex-1 min-h-0 overflow-auto flex justify-center items-center text-mythos-terminal-text font-mono text-xs whitespace-pre'
+              : 'minimap-container'
+          }
+          tag="div"
+        />
+      )}
+    </button>
   );
 };

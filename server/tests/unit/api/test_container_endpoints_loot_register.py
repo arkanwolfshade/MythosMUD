@@ -11,8 +11,6 @@ from unittest.mock import AsyncMock, MagicMock, Mock, patch
 import pytest
 from fastapi import APIRouter
 
-# Ensure module under test is loaded so patch("server.api.container_endpoints_loot.*") can resolve.
-import server.api.container_endpoints_loot  # noqa: F401
 from server.exceptions import LoggedHTTPException
 from server.models.container import ContainerComponent
 

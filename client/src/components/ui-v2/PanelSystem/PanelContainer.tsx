@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Rnd } from 'react-rnd';
+
 import { EldritchIcon, MythosIcons } from '../../ui/EldritchIcon';
 import { TerminalButton } from '../../ui/TerminalButton';
 import type { PanelPosition, PanelSize, PanelVariant } from '../types';
@@ -146,7 +147,10 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
     }, [variant]);
 
     // Calculate current display size (maximized or normal)
-    const displaySize = isMaximized && maximizedSize ? maximizedSize : size;
+    // Minimap panel: ensure minimum height so inline map is visible (avoids collapsed ~2px content area)
+    const effectiveSize =
+      id === 'minimap' && size.height < 100 ? { ...size, height: Math.max(size.height, 100) } : size;
+    const displaySize = isMaximized && maximizedSize ? maximizedSize : effectiveSize;
     const displayPosition = isMaximized && maximizedPosition ? maximizedPosition : position;
 
     if (isMinimized) {
@@ -162,10 +166,11 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
           enableResizing={false}
           onDragStop={handleDragStop}
           onDragStart={handleDragStart}
+          dragHandleClassName="panel-drag-handle"
           style={{ zIndex }}
           className={`${variantClasses} border rounded ${className}`}
         >
-          <div className="flex items-center justify-between h-full px-3 bg-mythos-terminal-background">
+          <div className="panel-drag-handle flex items-center justify-between h-full px-3 bg-mythos-terminal-background cursor-move">
             <span className="text-sm font-bold text-mythos-terminal-primary">{title}</span>
             <div className="flex items-center gap-2">
               <TerminalButton variant="secondary" size="sm" onClick={handleMaximize} className="p-1 h-6 w-6">
@@ -207,14 +212,15 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
         onDragStop={handleDragStop}
         onDragStart={handleDragStart}
         onResizeStop={handleResizeStop}
+        dragHandleClassName="panel-drag-handle"
         style={{ zIndex }}
         className={`${variantClasses} border rounded ${className}`}
         bounds="window"
       >
         <div className="h-full flex flex-col bg-mythos-terminal-background">
-          {/* Panel Header */}
+          {/* Panel Header: only this area triggers drag; scrolling content no longer moves the panel */}
           <div
-            className="flex items-center justify-between p-2 border-b border-gray-700 bg-mythos-terminal-surface cursor-move"
+            className="panel-drag-handle flex items-center justify-between p-2 border-b border-gray-700 bg-mythos-terminal-surface cursor-move"
             onMouseDown={() => onFocus(id)}
           >
             <span className="text-sm font-bold text-mythos-terminal-primary">{title}</span>
@@ -237,8 +243,8 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
             </div>
           </div>
 
-          {/* Panel Content: min-h-0 lets flex item shrink so overflow-auto can show scrollbar on any resolution */}
-          <div className="flex-1 min-h-0 overflow-auto">{children}</div>
+          {/* Panel Content: min-h-0 lets flex item shrink; minimap needs min height so content is visible */}
+          <div className={`flex-1 min-h-0 overflow-auto ${id === 'minimap' ? 'min-h-[120px]' : ''}`}>{children}</div>
         </div>
       </Rnd>
     );
