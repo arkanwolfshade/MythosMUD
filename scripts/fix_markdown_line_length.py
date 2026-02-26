@@ -277,7 +277,6 @@ def main():
         print(f"Warning: {output_file} not found. Processing all markdown files...")
         # Fallback: process all markdown files in common directories
         directories = [
-            project_root / ".agent-os",
             project_root / "docs",
             project_root / "e2e-tests",
         ]

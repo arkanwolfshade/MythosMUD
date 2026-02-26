@@ -99,7 +99,7 @@ The project is now **leaner** and **more maintainable**!
 
 **Migrated test data from `/server/tests/data/` to `/data/unit_test/`**
 
-> **Note**: Historical references in archived docs (`.agent-os/specs/`, `docs/archive/`) intentionally left unchanged to preserve historical accuracy.
+> **Note**: Historical references in archived docs (`.agent-os/specs/`, `docs/archive/`) intentionally left unchanged to preserve historical accuracy. The `.agent-os/` directory has since been removed; planning now uses Cursor Agent.
 
 ### Rationale
 

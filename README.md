@@ -365,7 +365,6 @@ MythosMUD/
 │
 ├── .github/                   # GitHub Actions workflows (CI, CodeQL)
 ├── .cursor/                   # Cursor IDE configuration
-├── .agent-os/                 # AI agent specifications and tasks
 ├── PLANNING.md                # Comprehensive project planning
 ├── docs/DEVELOPMENT.md         # Development environment setup
 ├── docs/DEVELOPMENT_AI.md     # AI agent development guide

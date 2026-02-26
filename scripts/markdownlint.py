@@ -62,8 +62,6 @@ cmd_args = [
     "--ignore",
     "**/investigations/**",
     "--ignore",
-    "**/.agent-os/**",
-    "--ignore",
     "**/docs/archive/**",
     "--ignore",
     "**/test-results/**",
