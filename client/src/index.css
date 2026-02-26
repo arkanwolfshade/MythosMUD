@@ -27,6 +27,30 @@ body {
   line-height: 1.2;
 }
 
+/* Room and exit colors by map style (server emits ascii-map-room-*, ascii-map-exit-*) */
+.ascii-map-player {
+  color: #ffd700;
+  font-weight: bold;
+}
+.ascii-map-room-world {
+  color: #8b7355;
+}
+.ascii-map-room-city {
+  color: #696969;
+}
+.ascii-map-room-interior {
+  color: #2f4f4f;
+}
+.ascii-map-exit-world {
+  color: #654321;
+}
+.ascii-map-exit-city {
+  color: #808080;
+}
+.ascii-map-exit-interior {
+  color: #708090;
+}
+
 /* Ensure the main game container fills the viewport */
 .game-terminal-container {
   flex: 1 !important;

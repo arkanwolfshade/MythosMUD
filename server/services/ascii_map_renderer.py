@@ -187,13 +187,13 @@ class AsciiMapRenderer:
                 symbol = cell.get("symbol", " ")
                 is_player = cell.get("is_player", False)
                 room_name = cell.get("room_name", "")
-                style = self.style_colors[map_style]["player"] if is_player else self.style_colors[map_style]["room"]
+                # Use class so client SafeHtml (ALLOWED_ATTR: ['class']) preserves styling
+                room_class = "ascii-map-player" if is_player else f"ascii-map-room ascii-map-room-{map_style}"
                 title_attr = f' title="{room_name}"' if room_name else ""
-                line.append(f'<span style="{style}"{title_attr}>{symbol}</span>')
+                line.append(f'<span class="{room_class}"{title_attr}>{symbol}</span>')
                 exit_char = self._get_horizontal_exit_char(x, y, exit_from, grid, viewport_x, viewport_width)
                 if exit_char:
-                    exit_style = self.style_colors[map_style]["exit"]
-                    line.append(f'<span style="{exit_style}">{exit_char}</span>')
+                    line.append(f'<span class="ascii-map-exit ascii-map-exit-{map_style}">{exit_char}</span>')
                 else:
                     line.append(" ")
             else:
@@ -221,8 +221,7 @@ class AsciiMapRenderer:
             if isinstance(cell, dict) and isinstance(next_cell, dict):
                 exit_char = self._get_vertical_exit_char(x, y, exit_from, grid, viewport_y, viewport_height)
                 if exit_char:
-                    exit_style = self.style_colors[map_style]["exit"]
-                    exit_line.append(f'<span style="{exit_style}">{exit_char}</span>')
+                    exit_line.append(f'<span class="ascii-map-exit ascii-map-exit-{map_style}">{exit_char}</span>')
                     exit_line.append(" ")
                 else:
                     exit_line.append("  ")
@@ -264,7 +263,7 @@ class AsciiMapRenderer:
         exit_from = self._build_exit_lookup(rooms)
 
         html_lines = []
-        html_lines.append('<div class="ascii-map" style="font-family: monospace; white-space: pre; line-height: 1.2;">')
+        html_lines.append('<div class="ascii-map">')
 
         for y in range(viewport_y, viewport_y + viewport_height):
             html_lines.append(self._render_room_row(y, grid, exit_from, map_style, viewport_x, viewport_width))
@@ -443,6 +442,12 @@ class AsciiMapRenderer:
             # Compare with current_room_id (convert to string if needed)
             current_id_str = str(current_room_id) if current_room_id else ""
             is_player = room_id == current_id_str
+            # When multiple rooms share the same (x,y), later one overwrites; preserve player
+            # highlight so the current room is always shown (log evidence: in_room_positions
+            # true but any_is_player false when duplicate coords overwrote the cell).
+            existing = grid.get((x, y))
+            if isinstance(existing, dict) and existing.get("is_player"):
+                is_player = True
 
             grid[(x, y)] = {
                 "symbol": symbol,
@@ -527,7 +532,7 @@ class AsciiMapRenderer:
             HTML string with empty map
         """
         html_lines = []
-        html_lines.append('<div class="ascii-map" style="font-family: monospace; white-space: pre; line-height: 1.2;">')
+        html_lines.append('<div class="ascii-map">')
         for _ in range(height):
             html_lines.append(" " * width)
         html_lines.append("</div>")
