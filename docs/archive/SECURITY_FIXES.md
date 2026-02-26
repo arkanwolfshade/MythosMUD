@@ -57,6 +57,7 @@ This document tracks security vulnerabilities that have been identified and fixe
 ✅ `codeql.yml` - `permissions: contents: read`
 
 ✅ `dependency-review.yml` - `permissions: contents: read`
+
 - ✅ `semgrep.yml` - `permissions: contents: read`
 - ✅ `scorecards.yml` - `permissions: contents: read` (updated)
 
@@ -83,6 +84,7 @@ This document tracks security vulnerabilities that have been identified and fixe
 **Purpose**: HTML content sanitization to prevent XSS attacks
 
 **Usage**: Integrated into error handling and general content sanitization
+
 - **Features**:
   - Removes dangerous HTML tags and attributes
   - Whitelist-based sanitization
@@ -113,6 +115,7 @@ This document tracks security vulnerabilities that have been identified and fixe
 **Semgrep**: Pattern-based security scanning
 
 **Scorecards**: Security best practices assessment
+
 - **Dependency Review**: Vulnerability scanning for dependencies
 
 ### Manual Security Reviews

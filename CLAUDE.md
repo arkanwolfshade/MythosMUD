@@ -8,7 +8,7 @@
 ## Canonical rules (Cursor)
 
 **For Cursor IDE, the canonical project rules are in `.cursor/rules/`.** This file is a consolidated reference for
-other tools (e.g. Claude Code, Agent OS) and for humans. When you add or change rules in `.cursor/rules/` or Cursor
+other tools (e.g. Claude Code) and for humans. When you add or change rules in `.cursor/rules/` or Cursor
 agents/skills, update this file and `.github/copilot-instructions.md` so Claude and Copilot stay in sync.
 
 ---

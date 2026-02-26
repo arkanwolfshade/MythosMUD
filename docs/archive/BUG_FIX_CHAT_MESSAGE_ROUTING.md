@@ -94,6 +94,7 @@ Chat messages appeared in BOTH Chat Panel and Game Log Panel
 ✅ **Game Log Panel**: Shows "No messages to display" when only chat messages exist
 
 ✅ **System Messages**: Still correctly appear in Game Log Panel only
+
 - ✅ **Command Responses**: Still correctly appear in Game Log Panel only
 
 ### Verification Method
@@ -112,6 +113,7 @@ Chat messages appeared in BOTH Chat Panel and Game Log Panel
 ✅ Cleaner Game Log Panel (only system/command messages)
 
 ✅ Better user experience with logical message organization
+
 - ✅ Consistent with existing Chat Panel exclusion logic
 
 ### No Negative Impact
@@ -121,6 +123,7 @@ Chat messages appeared in BOTH Chat Panel and Game Log Panel
 ✅ Command responses still appear in Game Log Panel
 
 ✅ All existing filtering (time, search, type) still works
+
 - ✅ No performance impact (simple filter check)
 
 ## Code Quality
@@ -130,6 +133,7 @@ Chat messages appeared in BOTH Chat Panel and Game Log Panel
 **Type Safety**: ✅ TypeScript compilation successful
 
 **Minimal Change**: ✅ Only 3 lines added, no complex logic
+
 - **Consistency**: ✅ Follows same pattern as ChatPanel exclusion logic
 
 ## Conclusion

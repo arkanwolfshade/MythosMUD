@@ -50,6 +50,7 @@
 **Class Validation**: Lovecraftian investigator archetypes with prerequisites
 
 **Rate Limiting**: Server-side enforcement with client-side cooldown
+
 - **Frontend Integration**: React component with real-time feedback
 - **Error Handling**: Comprehensive error states and user feedback
 - **Testing**: Full test coverage across all components
@@ -61,6 +62,7 @@
 ✅ `server/api/players.py` - Stats rolling and character creation endpoints
 
 ✅ `client/src/components/StatsRollingScreen.tsx` - Frontend stats rolling interface
+
 - ✅ `client/src/components/StatsRollingScreen.css` - Styling for stats screen
 - ✅ `server/tests/test_stats_generator.py` - Comprehensive stats generator tests
 - ✅ `server/tests/test_character_recovery_flow.py` - Character creation flow tests
@@ -208,6 +210,7 @@ API Endpoints
 **✅ API errors**: Show specific error message
 
 **✅ Critical failures**: Redirect to registration
+
 - **✅ Implementation**: React error boundaries + try/catch
 
 ### ✅ 4. UI/UX Decisions - IMPLEMENTED
@@ -217,6 +220,7 @@ API Endpoints
 **✅ Button layout**: Reroll (primary) + Accept (success)
 
 **✅ Loading states**: Spinner + disabled buttons
+
 - **✅ Mobile**: Responsive design with touch-friendly buttons
 
 ## Risk Mitigation
@@ -341,6 +345,7 @@ API Endpoints
 **Complete Stats Generation**: Multiple rolling methods with class validation
 
 **Frontend Integration**: Responsive React component with real-time feedback
+
 - **Rate Limiting**: Both client-side and server-side protection against abuse
 - **Error Handling**: Comprehensive error states and user-friendly messages
 - **Testing**: Full test coverage across all components

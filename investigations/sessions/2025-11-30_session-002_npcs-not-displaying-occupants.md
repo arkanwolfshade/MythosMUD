@@ -27,6 +27,7 @@
 **Expected Behavior**: NPCs should appear in the Occupants panel under the "NPCs" section
 
 **Actual Behavior**: Occupants panel shows "None" under NPCs even when NPCs are present
+
 - **Affected Component**: Client-side Occupants panel UI, Server-side NPC filtering
 - **Related Systems**: NPC lifecycle management, Room occupants retrieval, is_alive status tracking
 
@@ -254,6 +255,7 @@ const npcs = room?.npcs ?? [];
 ✅ Server-side NPC retrieval: **WORKING** (NPCs are retrieved, but filtered out)
 
 ✅ Server-side data transmission: **WORKING** (empty array sent correctly)
+
 - ✅ Client-side UI display: **WORKING** (correctly shows "None" when array is empty)
 
 **User Impact**:

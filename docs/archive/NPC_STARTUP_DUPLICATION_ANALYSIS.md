@@ -95,6 +95,7 @@ All systems spawn simultaneously during startup
 **All NPCs:** Potentially affected by the same duplication
 
 **Server Performance:** Unnecessary resource consumption
+
 - **Game Balance:** Population limits violated
 
 ### Evidence from Browser Testing

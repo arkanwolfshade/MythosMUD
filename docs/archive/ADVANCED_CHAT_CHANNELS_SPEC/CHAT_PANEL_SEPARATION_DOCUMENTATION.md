@@ -57,6 +57,7 @@ The ChatPanel is responsible for all chat-related functionality.
 **Chat Input**: Rich text input with emotes and formatting
 
 **Quick Commands**: Pre-defined chat phrases for common interactions
+
 - **Activity Indicators**: Visual feedback for channel activity
 - **Emotes**: Click-to-insert emoji and text emotes
 - **Text Formatting**: Markdown-style formatting options
@@ -105,6 +106,7 @@ The GameLogPanel displays all game messages with advanced filtering and search c
 **Message Filtering**: Filter by type (chat, system, error, move)
 
 **Time Filtering**: Filter by time range (last 5 minutes, hour, day, etc.)
+
 - **Search**: Full-text search with history
 - **Message Grouping**: Group messages by time periods
 - **Statistics**: Message counts and type breakdown
@@ -141,6 +143,7 @@ The CommandPanel handles all game command input and history.
 **Command History**: Navigable history of previous commands
 
 **Quick Commands**: Common game commands as clickable buttons
+
 - **Command Suggestions**: Auto-completion based on history
 - **Common Commands**: Categorized common commands (movement, actions)
 

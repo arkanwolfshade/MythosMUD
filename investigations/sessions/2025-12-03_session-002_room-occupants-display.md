@@ -38,6 +38,7 @@
 **Problem**: Player data missing `stats` field
 
 **Solution**: Use PlayerService._convert_player_to_schema() for complete player data
+
 - **Verification**: Runtime logs confirm stats now included, panel renders correctly
 
 ### Problematic Code (Session 002)
@@ -48,6 +49,7 @@
 **Problem 1**: `room.to_dict()` returns empty `players`/`npcs` arrays
 
 **Problem 2**: Attempted to query database for players caused event loop blocking
+
 - **Problem 3**: Authentication hung due to blocking operations
 - **Action**: Reverted all occupants-related changes to restore stability
 

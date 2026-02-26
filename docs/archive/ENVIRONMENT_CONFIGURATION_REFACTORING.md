@@ -12,6 +12,7 @@ Previously, `.env` files contained a mix of:
 ❌ Structural config (rate limits, feature flags) - SHOULD be committed
 
 ❌ This mixing made it unclear what should/shouldn't be in git
+
 - ❌ Configuration drift between environments was hard to track
 
 ## The Solution

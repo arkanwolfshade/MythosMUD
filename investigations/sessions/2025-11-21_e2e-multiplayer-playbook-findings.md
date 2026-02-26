@@ -78,6 +78,7 @@ findings and remediation steps.
 **Expected**: May be related to timing artifact or session loss issue
 
 **Root Cause**: Could be timing artifact or consequence of session loss
+
 - **Impact**: Medium - players don't see when others leave
 - **Remediation**: Investigate after fixing session loss issue
 
@@ -156,6 +157,7 @@ findings and remediation steps.
 ✅ AW sees NO stale messages from previous sessions (verified via Game Log)
 
 ✅ Ithaqua successfully logged in and entered game in separate tab
+
 - ✅ Ithaqua sees NO stale messages from previous sessions (verified via Game Log)
 - ✅ Clean game state verified for both players
 - ✅ Message isolation working correctly between sessions
@@ -209,6 +211,7 @@ findings and remediation steps.
     - ✅ Let state machine and `useEffect` hooks handle connection sequencing
     - ✅ Added refs to track connection state for use in callbacks
     - ✅ Modified error callbacks to only notify state machine if connections were actually established
+
   - **File**: `client/src/hooks/useSSEConnection.ts`
     - ✅ Enhanced connection check to verify `readyState` (CONNECTING or OPEN) before skipping
     - ✅ Clean up closed EventSource before reconnecting
@@ -229,6 +232,7 @@ findings and remediation steps.
   ✅ AW's room info correctly updated to show new room
 
   ✅ Movement command executed successfully despite connection timeout
+
   - ⚠️ Connection timeout occurred after movement (SSE connection timeout)
   - ⚠️ Connection automatically attempting to reconnect (improved behavior)
   - ⚠️ Ithaqua's connection state shows "connecting_sse" during AW's movement
@@ -241,6 +245,7 @@ findings and remediation steps.
 ✅ Both players initially in Main Foyer (correct starting room)
 
 ✅ AW successfully moved east to "Eastern Hallway - Section 1"
+
 - ✅ AW's room info correctly updated after movement
 - ⚠️ Connection timeout occurred after movement (SSE connection timeout)
 - ⚠️ Connection automatically reconnecting (improved behavior vs. immediate failure)
@@ -276,6 +281,7 @@ findings and remediation steps.
 **State Transitions**: `sse_connected` state does NOT have timeout (only `connecting_sse` does)
 
 **Error Handling**: `onError` callback in `useGameConnectionRefactored.ts` checks `isSSEConnectedRef.current` before notifying state machine
+
 - **Connection Loss**: SSE connection is actually being lost during movement (not a false positive)
 
 **Potential Causes**:
@@ -403,6 +409,7 @@ findings and remediation steps.
 
     - Emotes now go through the NATS path with mute filtering, just like `say` and `local` commands
     - This ensures emotes use `_broadcast_to_room_with_filtering()` which includes mute filtering logic
+
   - **Unit Test Created**: `server/tests/unit/realtime/test_emote_mute_bug_reproduction.py`
     - Test reproduces the exact bug scenario: AW mutes Ithaqua, Ithaqua sends emote, AW should NOT receive it
     - Uses real UserManager instance (not mocked) to catch actual implementation bugs
@@ -434,6 +441,7 @@ findings and remediation steps.
 ✅ Ithaqua successfully used dance emote - saw own confirmation: "You dance like nobody's watching."
 
 ✅ **FIX VERIFIED**: AW did NOT see Ithaqua's emote message after muting (correct behavior)
+
 - ✅ Server logs confirm emote processed through NATS path with mute filtering: "Broadcasted room message with server-side filtering" at 12:06:51
 - ✅ Unit test passes: `test_emote_mute_bug_reproduction.py` confirms mute filtering works correctly
 
@@ -473,6 +481,7 @@ findings and remediation steps.
 **Expected**: Chat messages should be broadcast between players who are not muted
 
 **Root Cause**: **IDENTIFIED** - AW muted Ithaqua during scenario-04, and the mute state persisted into scenario-05. The mute filtering logic is working correctly - it's filtering messages as expected when a mute is active. The issue is that scenario-05 starts with a mute state from the previous scenario.
+
 - **Evidence from Logs**:
   - `receiver_id='d839d857-1601-45dc-ac16-0960e034a52e' sender_id='22e6240f-11a1-4ea8-a5ab-e9b8e1a60670' is_personally_muted=True`
   - `Message FILTERED OUT due to mute`

@@ -105,6 +105,7 @@ server/tests/test_api_players.py
 **80% minimum** (project requirement)
 
 **90% target** for comprehensive coverage
+
 - **100%** for critical error handling paths
 
 **Branch Coverage Goals:**

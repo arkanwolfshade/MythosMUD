@@ -132,6 +132,7 @@ Combat messages are incorrectly displaying in both the Game Info panel (GameLogP
 ✅ Excludes messages with `messageType === 'system'` (line 91)
 
 ✅ Excludes messages with `messageType === 'command'` (line 99)
+
 - ❌ **DOES NOT exclude messages with `messageType === 'combat'`**
 
 **Critical Issue**: When `isAllChannelSelected` is `true` (line 95), the filter returns `true` for ALL messages that aren't excluded, including combat messages. This causes combat messages to appear in the Chat panel when viewing "All" channels.
@@ -279,6 +280,7 @@ The ChatPanel filter should exclude combat messages similar to how it excludes s
 **UI Confusion**: Users may not understand why combat messages appear in the Chat panel
 
 **Separation of Concerns**: Violates the intended separation between game system messages (Game Info) and player communications (Chat)
+
 - **Message Overload**: Combat-heavy sessions will fill the Chat panel with irrelevant messages
 
 **Affected Users**: All players engaged in combat

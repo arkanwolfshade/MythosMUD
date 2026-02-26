@@ -11,6 +11,7 @@
 **Scope**: `function` (recreated for every test)
 
 **Current setup time**: 26-30 seconds per test
+
 - **Affected tests**: ~60 tests across multiple files
 
 ### Root Causes of Slow Setup
@@ -106,6 +107,7 @@ def container_test_client_class():
 **After class-scope**: ~6-8 classes × 27s setup = 162-216 seconds overhead
 
 **Time saved**: ~1,400 seconds (23+ minutes)
+
 - **New total test time**: ~6-8 minutes (within target range)
 
 ## Risk Assessment

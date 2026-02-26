@@ -154,6 +154,7 @@ def get_stats(self) -> dict[str, Any]:
 **Line 165**: `stats["current_health"] = 100` - In-place mutation
 
 **Line 173**: `player.set_stats(stats)` - Reassignment of same object
+
 - **Line 193**: `await session.commit()` - Commit without explicit change flagging
 
 **File**: `server/models/player.py`

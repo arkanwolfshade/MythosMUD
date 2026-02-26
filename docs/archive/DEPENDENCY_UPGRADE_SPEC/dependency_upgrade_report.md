@@ -35,6 +35,7 @@ High Risk: 9
 **Update Type**: major
 
 **Risk Level**: HIGH
+
 - **Ecosystem**: pip
 - **Priority Score**: 120
 
@@ -125,6 +126,7 @@ High Risk: 9
 **Update Type**: minor
 
 **Risk Level**: MEDIUM
+
 - **Ecosystem**: npm
 - **Priority Score**: 60
 
@@ -185,6 +187,7 @@ High Risk: 9
 **argon2-cffi-bindings**: 21.2.0 → 25.1.0 (pip)
 
 **boltons**: 21.0.0 → 25.0.0 (pip)
+
 - **glom**: 22.1.0 → 24.11.0 (pip)
 - **importlib-metadata**: 7.1.0 → 8.7.0 (pip)
 - **protobuf**: 4.25.8 → 6.32.0 (pip)

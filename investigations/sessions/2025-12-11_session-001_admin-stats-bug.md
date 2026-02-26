@@ -209,6 +209,7 @@ as a boolean property. When `getattr()` retrieves the boolean value (`True` or
 **Severity**: Medium - Admin functionality broken, but regular gameplay unaffected
 
 **Frequency**: 100% reproduction rate when admin uses `/look <npc>` command
+
 - **User Impact**: Admins cannot view detailed NPC statistics through the look command
 
 **Affected Components**:
@@ -231,6 +232,7 @@ as a boolean property. When `getattr()` retrieves the boolean value (`True` or
 ❌ Admin stats display: **Broken**
 
 ✅ NPC lifecycle and combat: **Unaffected** (uses property directly)
+
 - ✅ Other admin commands: **Unaffected**
 
 **Performance Impact**: None - error occurs immediately, no resource leaks

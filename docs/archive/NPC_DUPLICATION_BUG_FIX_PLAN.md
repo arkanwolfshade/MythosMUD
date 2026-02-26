@@ -31,6 +31,7 @@ Dr. Francis Morgan NPC spawns twice in sanitarium foyer entrance
 **Severity:** HIGH - Population limits being violated
 
 **User Experience:** Breaks immersion and game balance
+
 - **Performance:** Double NPC instances consume unnecessary resources
 
 ---
@@ -79,6 +80,7 @@ Dr. Francis Morgan NPC spawns twice in sanitarium foyer entrance
 **Action:** Remove `PlayerEnteredRoom` event subscription from spawning service
 
 **Rationale:** Population controller should be sole authority for spawn decisions
+
 - **Risk:** Low - spawning service still handles NPC creation when called
 
 #### 1.2 Verify Population Controller Authority
@@ -129,6 +131,7 @@ Dr. Francis Morgan NPC spawns twice in sanitarium foyer entrance
 **Action:** Remove spawn decision logic from spawning service
 
 **Keep:** NPC instance creation and management
+
 - **Remove:** Independent spawn requirement evaluation
 
 #### 3.2 Improve Service Integration
@@ -138,6 +141,7 @@ Dr. Francis Morgan NPC spawns twice in sanitarium foyer entrance
 **Action:** Ensure clean separation of concerns
 
 **Population Controller:** Spawn decisions, population tracking
+
 - **Spawning Service:** NPC instance creation, lifecycle management
 
 ### Phase 4: Testing & Validation (MEDIUM - 2 hours)

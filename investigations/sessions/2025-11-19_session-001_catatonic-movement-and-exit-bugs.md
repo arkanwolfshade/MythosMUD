@@ -120,6 +120,7 @@ def resolve_tier(lucidity_value: int) -> Tier:
 **Scope**: All players with lucidity <= 0
 
 **Impact**: Game balance violation - catatonic players should be immobile
+
 - **Security**: Low (gameplay issue, not security vulnerability)
 
 ---
@@ -241,6 +242,7 @@ From `earth_arkhamcity_sanitarium_room_foyer_entrance_001` (Sanitarium Entrance)
 **Scope**: Specific room pair (sanitarium foyer rooms)
 
 **Impact**: Player navigation blocked, potential game progression issue
+
 - **Security**: None
 
 ---

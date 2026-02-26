@@ -69,6 +69,7 @@ This ensures consistency with the refactored test suite and prevents import path
 **Issue**: Test expected old default starting room
 
 **Fix**: Updated assertion to reflect new default:
+
   - Old: `earth_arkhamcity_northside_intersection_derby_high`
   - New: `earth_arkhamcity_sanitarium_room_foyer_001`
 

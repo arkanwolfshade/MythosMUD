@@ -34,8 +34,7 @@ Code is treated as the source of truth; docs are updated or corrected to match.
   `REAL_TIME_ARCHITECTURE.md`, `ENHANCED_LOGGING_GUIDE.md`; added link to `realtime.md`.
 - **References section:** Updated source path from `server/services/nats_subject_manager.py` to
   `server/services/nats_subject_manager/` (package). Updated tests path to
-  `server/tests/unit/services/nats_subject_manager/`. Removed non-existent performance tests path
-  and `.agent-os/specs/` migration spec path.
+  `server/tests/unit/services/nats_subject_manager/`. Removed non-existent performance tests path.
 - **Content:** Verified import paths and API (build_subject, validate_subject, get_subscription_pattern,
   get_chat_subscription_patterns, get_performance_metrics, register_pattern) against code; no changes needed.
 

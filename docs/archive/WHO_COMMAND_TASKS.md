@@ -18,6 +18,7 @@ This document provides a detailed breakdown of tasks required to implement the e
 ✅ Location formatting (Zone: Sub-zone: Room)
 
 ✅ Admin indicator display ([ADMIN])
+
 - ✅ Comprehensive test coverage (18 test cases)
 - ✅ Performance optimization
 - ✅ Help documentation
@@ -382,6 +383,7 @@ All Previous Tasks
 **Phase 2**: 7-10 hours (Testing)
 
 **Phase 3**: 3-4 hours (Documentation)
+
 - **Phase 4**: 3-4 hours (Deployment)
 
 ### **Recommended Schedule**

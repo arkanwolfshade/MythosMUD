@@ -13,6 +13,7 @@ This document outlines the comprehensive testing strategy implemented to catch t
 **Root Cause**: Command parser expected `emote twibble` format, but users typed just `twibble`
 
 **Fix**: Modified `command_handler_unified.py` to detect single-word emotes and convert them
+
 - **Tests**: `test_twibble_emote_end_to_end()`, `test_single_word_emote_processing()`
 
 ### 2. **Self-Message Exclusion Bug**
@@ -22,6 +23,7 @@ This document outlines the comprehensive testing strategy implemented to catch t
 **Root Cause**: Room events were broadcast to all players without excluding the moving player
 
 **Fix**: Added `exclude_player` parameter to broadcast methods
+
 - **Tests**: `test_player_left_excludes_leaving_player()`, `test_connection_manager_broadcast_exclusion_logic()`
 
 ### 3. **Chat Buffer Persistence Bug**
@@ -31,6 +33,7 @@ This document outlines the comprehensive testing strategy implemented to catch t
 **Root Cause**: Client-side React state wasn't cleared on connection
 
 **Fix**: Added logic to clear `messages` array in `onConnect` callback
+
 - **Tests**: `test_client_reconnection_clears_chat_buffer()`, `test_chat_buffer_persistence_bugs()`
 
 ### 4. **Event Storm Bug**
@@ -40,6 +43,7 @@ This document outlines the comprehensive testing strategy implemented to catch t
 **Root Cause**: MovementService created its own EventBus instead of using shared instance
 
 **Fix**: Explicitly pass shared EventBus from PersistenceLayer to MovementService
+
 - **Tests**: `test_movement_service_uses_shared_event_bus()`, `test_multiple_movement_services_dont_create_duplicate_events()`
 
 ### 5. **Connection Timeout Bug**
@@ -49,6 +53,7 @@ This document outlines the comprehensive testing strategy implemented to catch t
 **Root Cause**: Connection timeout was too short (1 hour default, but cleanup was aggressive)
 
 **Fix**: Increased timeout to 300 seconds (5 minutes) and improved cleanup logic
+
 - **Tests**: `test_connection_cleanup_respects_timeout()`, `test_memory_monitor_timeout_configuration()`
 
 ### 6. **UUID Serialization Bug**
@@ -58,6 +63,7 @@ This document outlines the comprehensive testing strategy implemented to catch t
 **Root Cause**: Room events contained UUID objects directly
 
 **Fix**: Convert UUIDs to strings before JSON serialization
+
 - **Tests**: `test_uuid_conversion_to_string()`, `test_event_handler_converts_uuids_to_strings()`
 
 ## Test Categories
@@ -142,6 +148,7 @@ Test failed message delivery handling
 **Self-Message Exclusion Integration**: Movement and emote command exclusion
 
 **Event Storm Prevention**: Shared EventBus usage and isolation
+
 - **Connection Timeout Integration**: Timeout configuration and cleanup
 - **UUID Serialization Integration**: Event handler and connection manager serialization
 - **Chat Buffer Persistence Integration**: Client reconnection handling
@@ -229,6 +236,7 @@ npm test
 **Message Exclusion**: 100% coverage of exclude_player functionality
 
 **Event Broadcasting**: 100% coverage of room event broadcasting
+
 - **Connection Management**: 100% coverage of timeout and cleanup logic
 - **UUID Serialization**: 100% coverage of UUID conversion methods
 
@@ -239,6 +247,7 @@ npm test
 **Event Display**: 100% coverage of room event message formatting
 
 **Self-Message Filtering**: 100% coverage of client-side exclusion logic
+
 - **Connection Handling**: 100% coverage of connection state management
 
 ### Integration Coverage

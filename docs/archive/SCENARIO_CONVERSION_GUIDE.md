@@ -171,6 +171,7 @@ This document explains the conversion of E2E test scenarios from AI Agent + Play
 ❌ Manual execution required
 
 ❌ Expensive AI Agent resources
+
 - ❌ Slow feedback loop
 - ❌ No automated regression detection
 
@@ -199,6 +200,7 @@ make test-client-runtime
 ✅ Full CI/CD integration
 
 ✅ Immediate feedback on PRs
+
 - ✅ ~50% time reduction
 - ✅ ~50% AI Agent cost reduction
 - ✅ Automated regression detection
@@ -357,6 +359,7 @@ The conversion from MCP scenarios to automated Playwright CLI tests has achieved
 **~50% time reduction** in total E2E test execution
 
 **~50% cost reduction** in AI Agent resource usage
+
 - **100% CI/CD integration** for automated scenarios
 - **Improved reliability** through consistent test execution
 - **Faster feedback loops** for developers

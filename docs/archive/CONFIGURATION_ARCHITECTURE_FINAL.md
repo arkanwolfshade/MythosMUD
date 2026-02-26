@@ -99,6 +99,7 @@ server_config.<env>.yaml + .env.<env> + env.<env>.example
 ✅ `scripts/start_server.ps1` - Environment-based config selection
 
 ✅ `scripts/start_local.ps1` - Uses local config
+
 - ✅ `scripts/start_e2e_test.ps1` - Uses E2E test config, loads .env.e2e_test
 - ✅ `server/tests/conftest.py` - Uses unit test config
 - ✅ `.gitignore` - Ignores all .env secret files

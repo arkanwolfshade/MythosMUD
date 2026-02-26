@@ -95,5 +95,6 @@ Logging is now initialized at the earliest possible point (immediately after imp
 ✅ No linter errors
 
 ✅ All logger references updated correctly
+
 - ✅ Config still accessible for later use
 - ✅ Early logging in imported modules verified

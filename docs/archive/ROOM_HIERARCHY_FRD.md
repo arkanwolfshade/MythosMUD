@@ -13,6 +13,7 @@ This document outlines the requirements for extending the MythosMUD room schema 
 **File Organization**: `data/local/rooms/{zone}/{zone}_{room_number}.json`
 
 **Schema Location**: `room_validator/schemas/room_schema.json`
+
 - **Example**: `data/local/rooms/arkham/arkham_001.json`
 
 ### Current Limitations

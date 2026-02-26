@@ -670,5 +670,6 @@ make validate-all
 **Quick Reference**: [LOGGING_QUICK_REFERENCE.md](LOGGING_QUICK_REFERENCE.md)
 
 **Pre-commit Validation**: [PRE_COMMIT_LOGGING_VALIDATION.md](PRE_COMMIT_LOGGING_VALIDATION.md)
+
 - **Security Guide**: [SECURITY.md](SECURITY.md)
 - **Testing Examples**: [docs/examples/logging/](examples/logging/)

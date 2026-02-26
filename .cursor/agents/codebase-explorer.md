@@ -85,7 +85,7 @@ The subagent returns:
 
 - Works with `.cursor/rules/architecture-review.mdc` for architectural analysis
 - Integrates with `multiplayer-playwright-testing.md` command for test discovery
-- Supports Agent OS workflows for codebase analysis
+- Supports Cursor Agent and codebase analysis workflows
 - Can be used by other subagents for codebase research
 
 ## Best Practices

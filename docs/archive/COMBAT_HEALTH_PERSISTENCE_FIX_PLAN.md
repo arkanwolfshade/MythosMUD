@@ -340,6 +340,7 @@ Expected results:
 ✅ Following established patterns in codebase
 
 ✅ Using existing `save_player()` method (already tested)
+
 - ✅ Using existing `get_stats()` and `set_stats()` methods
 
 ### Medium Risk
@@ -436,6 +437,7 @@ This means:
 ❌ `server.game.mechanics` errors → NOT in errors.log
 
 ❌ `server.persistence` errors → NOT in errors.log
+
 - ❌ **ALL critical failures are invisible in errors.log!**
 
 ### Solution: Enhanced Error Handler

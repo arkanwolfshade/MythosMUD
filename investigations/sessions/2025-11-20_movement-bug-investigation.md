@@ -15,6 +15,7 @@
 **Displayed Exits**: East, West, South (capitalized in UI)
 
 **Player Commands Attempted**: "go north", "go south" (per screenshot)
+
 - **Error Message**: "You can't go that way"
 
 ### 2. Database Investigation
