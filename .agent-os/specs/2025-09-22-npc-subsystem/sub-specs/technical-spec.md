@@ -11,6 +11,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Message Queue System**: Event-driven architecture using message queues for NPC actions (move, attack, speak, etc.)
 
 **Database Integration**: Separate database connection pool for NPC operations
+
 - **State Management**: Static NPC definitions in database, dynamic state in memory
 - **Integration Points**: Use existing movement, combat, and communication systems
 
@@ -21,6 +22,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Quest Givers**: Basic interaction framework (quest system integration stubbed)
 
 **Passive Mobs**: Wander, respond to attacks, basic interactions
+
 - **Aggressive Mobs**: Hunt players, deterministic combat behavior, territorial behavior
 
 ### Performance and Scalability
@@ -30,6 +32,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Update Frequency**: Event-driven + game tick-based decision making
 
 **Memory Management**: All NPCs stay in memory during server operation
+
 - **Resource Isolation**: NPC processing isolated from main game loop
 
 ### Communication and Integration
@@ -39,6 +42,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **NPC-to-NPC Communication**: NPCs can react to each other's actions
 
 **Event Subscription**: NPCs subscribe to game events (player entering room, combat starting, etc.)
+
 - **Movement Integration**: NPCs use same movement system as players
 
 ### Configuration and Management
@@ -48,6 +52,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **YAML Configuration**: Zone population settings and global NPC parameters
 
 **Admin API**: Endpoints for NPC management, debugging, and monitoring
+
 - **Runtime Configuration**: Behavior parameters configurable without code changes
 
 ### AI Integration Framework
@@ -57,6 +62,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Behavior Interface**: Abstract behavior system supporting both deterministic and AI-driven actions
 
 **Message Compatibility**: AI responses integrated through same message queue system
+
 - **Fallback System**: Deterministic behaviors as fallback for AI failures
 
 ## External Dependencies

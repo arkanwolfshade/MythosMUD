@@ -60,6 +60,7 @@ As a **player**, I want to reliably receive all chat messages and game events, s
 **Database Migration** - PostgreSQL migration deferred to future sprints
 
 **Distributed Tracing** - OpenTelemetry integration deferred to future work
+
 - **Rate Limiting Middleware** - API-level rate limiting (HIGH-3) deferred to next initiative
 - **Backward Compatibility** - Breaking changes acceptable; no migration scripts for old configurations or aliases
 - **UI/UX Changes** - No visual design changes except connection status indicators

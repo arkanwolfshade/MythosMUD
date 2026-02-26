@@ -38,6 +38,7 @@ This document summarizes the comprehensive performance optimizations implemented
 **StatusEffect model**: ~20 bytes per instance (excellent memory efficiency)
 
 **Alias model**: ~471 bytes per instance (includes validation overhead)
+
 - **HealthResponse model**: ~3,052 bytes per instance (complex nested structure)
 
 **Memory Profiling Tools**:
@@ -57,6 +58,7 @@ This document summarizes the comprehensive performance optimizations implemented
 **Stats**: 0.000010s per instance
 
 **StatusEffect**: 0.000002s per instance
+
 - **LookCommand**: 0.000002s per instance
 - **SayCommand**: 0.000029s per instance (includes complex validation)
 - **HealthResponse**: 0.000006s per instance
@@ -195,6 +197,7 @@ The performance optimization initiative has successfully achieved significant im
 **Memory Efficiency**: Optimized memory usage with profiling infrastructure
 
 **Model Instantiation**: Sub-millisecond instantiation times for all models
+
 - **Code Quality**: Standardized configuration and improved error handling
 - **Security**: Enhanced security validation with improved performance
 

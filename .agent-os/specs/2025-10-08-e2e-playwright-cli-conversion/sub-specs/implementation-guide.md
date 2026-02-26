@@ -840,6 +840,7 @@ test.describe('[Feature] Integration', () => {
 **Test Suite Names**: `[Feature] [Aspect]` (e.g., `Local Channel Error Handling`)
 
 **Test Names**: `should [expected behavior]` (e.g., `should reject empty local messages`)
+
 - **Use kebab-case for directories**: `error-handling/`, `accessibility/`
 - **Use PascalCase for test data types**: `TestPlayer`, `TestMessage`
 

@@ -208,6 +208,7 @@ However, the requirement for **existing users to create additional characters** 
 **Frequency**: 100% - Affects all users with existing characters
 
 **User Base Affected**: All users who have already created at least one character
+
 - **Feature Blocked**: Multi-character creation (core feature)
 
 ### System State

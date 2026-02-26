@@ -203,6 +203,7 @@ INFO: WebSocket connected for player testuser
 ✅ Subsequent successful connections terminate previous connections entirely
 
 ✅ Only one active real-time connection per user
+
 - ✅ Proper cleanup of all session state and resources
 - ✅ Secure single-session-per-user model
 - ✅ Enhanced user experience with consistent state

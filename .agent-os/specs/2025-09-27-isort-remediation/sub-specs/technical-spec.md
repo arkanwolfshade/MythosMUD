@@ -27,6 +27,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Profile Selection**: Use appropriate isort profile (e.g., "black" for compatibility with existing formatting)
 
 **Import Sections**: Configure import section ordering (stdlib, third-party, local)
+
 - **Line Length**: Align with project's 120-character line length limit
 - **Skip Configuration**: Configure appropriate skip patterns for generated files and special cases
 

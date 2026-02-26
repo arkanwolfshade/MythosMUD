@@ -27,6 +27,7 @@ The backend NATS service had manual connection retry logic with implicit state t
 **Async Support**: Must support asynchronous state transitions
 
 **Simplicity**: Should be easy to understand and maintain
+
 - **Testing**: Must be testable with pytest
 - **Documentation**: Should have clear documentation
 - **Active Maintenance**: Should be actively maintained
@@ -175,6 +176,7 @@ class NATSService:
 ✅ No import errors
 
 ✅ No linting errors
+
 - ✅ Successfully integrated with NATS service
 - ✅ State transitions logged for debugging
 - ✅ Circuit breaker integration working

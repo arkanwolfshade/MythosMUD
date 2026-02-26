@@ -13,6 +13,7 @@ This document provides a comprehensive specification for the MythosMUD health en
 **Method**: `GET`
 
 **Content-Type**: `application/json`
+
 - **Authentication**: None required
 - **Response Format**: JSON
 

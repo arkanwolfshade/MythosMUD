@@ -47,6 +47,7 @@
 **New Event Handler**: Added `room_occupants` case to event processing switch statement
 
 **State Updates**: Updates room state with new occupant count and occupant list
+
 - **Validation**: Validates event data (occupants array, count number)
 - **Error Handling**: Graceful handling of invalid event data with warning logs
 - **Test Coverage**: Basic integration tests created

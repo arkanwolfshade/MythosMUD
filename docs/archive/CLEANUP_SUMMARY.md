@@ -87,6 +87,7 @@ Fewer files to maintain
 ✅ Explicit configuration requirement
 
 ✅ No ambiguity in startup procedures
+
 - ✅ Consistent architecture pattern
 - ✅ Better security posture
 
@@ -117,6 +118,7 @@ The project is now **leaner** and **more maintainable**!
 ✅ `server/server_config.unit_test.yaml` - Unit test config
 
 ✅ `server/server_config.e2e_test.yaml` - E2E test config
+
 - ✅ `server/tests/env.unit_test.example` - Unit test secrets template
 - ✅ `env.e2e_test.example` - E2E test secrets template
 - ✅ `client/tests/e2e/runtime/fixtures/database.ts` - E2E database seeding
@@ -128,6 +130,7 @@ The project is now **leaner** and **more maintainable**!
 ✅ `server/tests/test_file_containment.py` - File location validation
 
 ✅ `server/tests/test_service_dependency_injection.py` - DI tests
+
 - ✅ `server/tests/mock_data.py` - Mock data reference
 
 #### Scripts ✅
@@ -137,6 +140,7 @@ The project is now **leaner** and **more maintainable**!
 ✅ `scripts/coverage.py` - Coverage runner (2 path updates)
 
 ✅ `scripts/init_database.py` - Database initialization
+
 - ✅ `scripts/bootstrap_db.py` - Database bootstrapping
 - ✅ `scripts/init_npc_database.py` - NPC database setup
 - ✅ `scripts/populate_npc_sample_data.py` - NPC data population
@@ -150,6 +154,7 @@ The project is now **leaner** and **more maintainable**!
 ✅ `server/tests/README.md` - Test suite documentation
 
 ✅ `QUICK_START_E2E_TESTS.md` - E2E testing guide
+
 - ✅ Plus 17 other documentation files
 
 ### New Test Data Structure
@@ -174,6 +179,7 @@ data/unit_test/
 ✅ **Unified location**: One place for ALL test databases (players, NPCs, users)
 
 ✅ **Easier to find**: No need to navigate into `/server/tests/data/`
+
 - ✅ **Better isolation**: Test data clearly separated from test code
 - ✅ **Symmetric structure**: Mirrors production data layout
 
@@ -200,6 +206,7 @@ data/unit_test/
 ✅ `scripts/bootstrap_db.py` - Database bootstrapping
 
 ✅ `scripts/init_database.py` - Database initialization examples
+
 - ✅ `scripts/init_npc_database.py` - NPC database setup
 - ✅ `scripts/populate_npc_sample_data.py` - NPC data population
 - ✅ `scripts/init_prod_db.ps1` - Production database initialization
@@ -211,6 +218,7 @@ data/unit_test/
 ✅ `scripts/fix_room_references.py`
 
 ✅ `scripts/generate_html_visualization.py`
+
 - ✅ `scripts/generate_html_visualization_fixed.py`
 - ✅ `scripts/simple_room_graph.py`
 - ✅ `scripts/visualize_arkham_rooms.py`
@@ -227,6 +235,7 @@ data/unit_test/
 ✅ `tools/room_toolkit/room_validator/validator.py`
 
 ✅ `tools/room_toolkit/room_validator/core/fixer.py`
+
 - ✅ `tools/room_toolkit/room_validator/tests/test_room_loader.py`
 - ✅ `tools/room_toolkit/room_validator/room_validator_instructions.md`
 - ✅ `tools/room_toolkit/room_validator/README.md`
@@ -244,6 +253,7 @@ data/unit_test/
 ✅ `scripts/README.md` - Scripts documentation
 
 ✅ `docs/ROOM_HIERARCHY_FRD.md` - Room hierarchy design
+
 - ✅ `DEVELOPMENT.md` - Development guide (updated by user)
 - ✅ `DEVELOPMENT_AI.md` - AI development guide (updated by user)
 - ✅ `e2e-tests/MULTIPLAYER_TEST_RULES.md` - E2E test rules (updated by user)
@@ -272,4 +282,5 @@ data/local/
 ✅ **Predictable paths**: Always know which data you're working with
 
 ✅ **No accidental overwrites**: Test data and local dev data completely isolated
+
 - ✅ **Consistent naming**: `local_players.db` clearly indicates local dev database

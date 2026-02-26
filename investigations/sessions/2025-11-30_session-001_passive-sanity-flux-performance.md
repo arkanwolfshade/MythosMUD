@@ -346,6 +346,7 @@ The `passive_lucidity_flux_tick` operation calls `self._persistence.get_room()` 
 **Game tick delays**: Other tick operations may be delayed
 
 **Cascading effects**: Slow ticks may cause other systems to slow down
+
 - **User experience**: Players may notice unresponsiveness during tick processing
 
 **System Impact**:
@@ -354,6 +355,7 @@ The `passive_lucidity_flux_tick` operation calls `self._persistence.get_room()` 
 **Database performance**: Multiple flushes and blocking operations may cause database slowdown
 
 **Resource consumption**: Progressive degradation suggests resource leaks or exhaustion
+
 - **Scalability**: Issue will worsen with more players
 
 **Performance Metrics**:

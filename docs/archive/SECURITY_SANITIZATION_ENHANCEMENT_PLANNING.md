@@ -44,6 +44,7 @@ Basic injection pattern detection via regex in `security_validator.py`
 ❌ **Validation**: Reject "Hello \033[31mWorld\033[0m" entirely
 
 ✅ **Sanitization**: Fix Unicode "café" (combining characters) → "café" (composed)
+
 - ❌ **Validation**: Reject text with combining characters
 
 ### Libraries to Implement
@@ -55,6 +56,7 @@ Basic injection pattern detection via regex in `security_validator.py`
 **Version**: `>=6.1.3`
 
 **Key Features**:
+
   - Mojibake detection and correction
   - Combining character normalization
   - Invisible Unicode character removal
@@ -68,6 +70,7 @@ Basic injection pattern detection via regex in `security_validator.py`
 **Version**: `>=0.1.1`
 
 **Key Features**:
+
   - ANSI color code removal
   - Cursor movement code removal
   - Terminal escape sequence cleanup

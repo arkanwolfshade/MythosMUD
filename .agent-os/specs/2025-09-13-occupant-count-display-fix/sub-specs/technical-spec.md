@@ -9,6 +9,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Server-Side Event Broadcasting**: Broadcast `room_occupants` events to all room occupants when players enter or leave rooms, using the existing event broadcasting infrastructure
 
 **Client-Side Event Processing**: Add `room_occupants` case to the switch statement in `GameTerminalWithPanels.tsx` to handle occupant count updates
+
 - **State Management**: Update the client's room state with new occupant count and occupant list when `room_occupants` events are received
 - **Event Format Consistency**: Ensure `room_occupants` events use the same format as existing events: `{"occupants": names, "count": len(names)}`
 
@@ -62,4 +63,5 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Integration Tests**: Verify end-to-end flow from player movement to UI update
 
 **Multi-Client Tests**: Test occupant count synchronization across multiple browser instances
+
 - **Edge Cases**: Test with rapid player movements and connection/disconnection scenarios

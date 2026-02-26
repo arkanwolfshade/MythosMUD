@@ -85,6 +85,7 @@ Update any found test files following the same pattern.
 ✅ `is_safe_detail_key()` - Verify safe keys allowed, unsafe patterns blocked
 
 ✅ `sanitize_detail_value()` - Test string, dict, list, and other types
+
 - ✅ `sanitize_context()` - Test context extraction and sanitization
 - ✅ `sanitize_html_content()` - Test XSS prevention, tag filtering
 - ✅ `sanitize_text_content()` - Test length limits, HTML removal
@@ -243,6 +244,7 @@ Tests are successful when:
 ✅ Test coverage ≥ 80% (same or better than before)
 
 ✅ No import errors
+
 - ✅ No linting errors
 - ✅ Manual integration tests pass
 - ✅ Error responses format correctly
@@ -257,6 +259,7 @@ Roll back migration if:
 ❌ Critical security tests fail
 
 ❌ Server fails to start
+
 - ❌ Error responses expose sensitive information
 - ❌ Sanitization fails to prevent XSS
 

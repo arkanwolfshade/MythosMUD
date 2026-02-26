@@ -80,6 +80,7 @@ CREATE UNIQUE INDEX idx_npc_definitions_name_zone ON npc_definitions(name, zone_
 **JSON Fields**: Flexible configuration for stats and behaviors without schema changes
 
 **Required NPC Flag**: Ensures critical NPCs (shopkeepers) always spawn
+
 - **Population Control**: Max population and spawn probability for zone management
 
 ### npc_spawn_rules Table
@@ -105,6 +106,7 @@ CREATE UNIQUE INDEX idx_npc_definitions_name_zone ON npc_definitions(name, zone_
 **Type-based Indexes**: Efficient filtering by NPC type for behavior processing
 
 **Relationship Indexes**: Quick access to NPC relationships for social behaviors
+
 - **JSON Storage**: Balances flexibility with query performance for configuration data
 
 ### Data Integrity Rules
@@ -114,4 +116,5 @@ CREATE UNIQUE INDEX idx_npc_definitions_name_zone ON npc_definitions(name, zone_
 **Check Constraints**: Validates NPC types and relationship types at database level
 
 **Unique Constraints**: Prevents duplicate NPC names within zones
+
 - **Cascade Deletes**: Maintains data consistency when NPCs are removed

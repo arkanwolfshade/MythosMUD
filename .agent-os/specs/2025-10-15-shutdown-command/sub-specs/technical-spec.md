@@ -11,6 +11,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Integration:** Register handler in `CommandService.command_handlers` dictionary
 
 **Command Format:** `/shutdown [seconds|cancel]`
+
 - **Parameter Validation:**
   - Seconds parameter: positive integer, no maximum enforced
   - Default: 10 seconds if not provided
@@ -23,6 +24,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Implementation:** Use existing `validate_admin_permission()` from `server/services/admin_auth_service.py`
 
 **Denial Message:** Thematic message for non-admin attempts (e.g., "You lack the proper authorization to invoke such rituals...")
+
 - **No Logging:** Permission denials not logged to avoid log clutter
 
 ### Shutdown State Management
@@ -32,6 +34,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Shutdown Data:** `app.state.shutdown_data` (dict containing countdown time, start time, admin username)
 
 **State Access:** All authentication and character creation endpoints must check shutdown flag
+
 - **Superseding Shutdowns:** New shutdown command overwrites existing shutdown_data
 
 ### Countdown Notification System
@@ -41,6 +44,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Task Registration:** Register with `app.state.task_registry` for proper lifecycle management
 
 **Notification Frequency:**
+
   - Countdown > 10 seconds: notifications every 10 seconds
   - Final 10 seconds: notifications every 1 second
   - Example for 30 seconds: messages at 30, 20, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1
@@ -55,6 +59,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Task Cancellation:** Cancel countdown task via `task.cancel()` and await with `asyncio.CancelledError` handling
 
 **State Cleanup:** Clear `app.state.server_shutdown_pending` flag and `app.state.shutdown_data`
+
 - **Notification:** Send cancellation message to Announcements channel (thematic message)
 - **Login Restoration:** Immediately allow new logins/character creation after cancellation
 
@@ -119,6 +124,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Method:** `log_admin_command(admin_name, command, success, additional_data)`
 
 **Shutdown Initiation Data:**
+
   - `command`: "/shutdown"
   - `additional_data`: `{"countdown_seconds": <seconds>, "scheduled_time": <timestamp>}`
 - **Cancellation Data:**
@@ -133,6 +139,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Persistence Failures:** Log but don't halt shutdown sequence
 
 **Disconnection Failures:** Log but continue with remaining disconnections
+
 - **Service Shutdown Errors:** Log and continue to next service
 - **All Errors:** Log via structured logging with full context
 
@@ -143,6 +150,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Player Persistence:** Sequential persistence acceptable for MVP, parallel optimization if needed
 
 **Graceful Timeouts:** Use `asyncio.wait_for()` with 5-second timeouts for service shutdowns
+
 - **Memory Cleanup:** Ensure all references cleared to allow garbage collection
 
 ### Testing Requirements
@@ -152,4 +160,5 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Integration Tests:** Full shutdown sequence with mock connections and services
 
 **Manual Testing:** Real server shutdown with multiple connected players
+
 - **Test Coverage:** Minimum 80% code coverage for new shutdown module

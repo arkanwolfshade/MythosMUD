@@ -45,6 +45,7 @@ level='error'
 **Affected Player**: UUID('9a2a5560-fb0e-471a-8652-aad7043d7dc6')
 
 **Error Type**: AttributeError
+
 - **Missing Attribute**: `async_get_player`
 - **Service**: `server.services.player_combat_service`
 - **Event**: Error awarding XP to player
@@ -162,6 +163,7 @@ player = await self.persistence.get_player_by_id(player_id)
 **Player Progression**: Affected - Players cannot gain XP from combat
 
 **Combat System**: Indirectly affected - Combat completes but rewards fail
+
 - **Event System**: Affected - XP award events are not published
 
 **Scope**:
@@ -170,6 +172,7 @@ player = await self.persistence.get_player_by_id(player_id)
 **Frequency**: Every time a player defeats an NPC
 
 **User Impact**: Players do not receive XP rewards, blocking progression
+
 - **Data Integrity**: No data corruption, but XP awards are silently lost
 
 **Affected Players**:

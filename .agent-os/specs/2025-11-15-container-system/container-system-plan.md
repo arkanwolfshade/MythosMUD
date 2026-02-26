@@ -63,4 +63,5 @@ Author: GPT-5.1 Codex (Occult Studies Dept.)
 **Client Tests**: Vitest component tests for panes and countdown UI; Playwright MCP scenarios for multi-user looting and lockouts.
 
 **Telemetry**: assert structured logs in CI; metrics for loot attempts, lock violations.
+
 - **Rollout Plan**: feature flag `containers.v1`; phased enabling—QA rooms → limited production zones → corpse looting after monitoring grief metrics.

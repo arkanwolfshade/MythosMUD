@@ -11,6 +11,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Commands Panel Integration**: Add the logout button to the bottom of the existing Commands panel in `client/src/components/panels/CommandPanel.tsx`
 
 **Styling**: Apply distinctive eldritch-themed CSS with hover effects, transitions, and visual feedback
+
 - **State Management**: Implement logout handler that triggers full state reset in `App.tsx`
 - **Connection Cleanup**: Utilize existing `useGameConnection` hook's disconnect functionality
 - **Accessibility**: Implement ARIA labels, tab navigation support, and keyboard event handling for Ctrl+Q shortcut
@@ -22,6 +23,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Timeout Handling**: Implement 5-second timeout for server response with Promise-based error handling
 
 **Error Recovery**: Proceed with client-side logout regardless of server response status
+
 - **Connection Management**: Leverage existing dual connection system (WebSocket + SSE) cleanup
 
 ### State Management
@@ -31,6 +33,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Game State Cleanup**: Reset all game state including messages, command history, room data, and player data
 
 **Token Storage**: Clear secure token storage using existing `secureTokenStorage.clearToken()`
+
 - **Connection State**: Reset connection state and cleanup resources via existing `disconnect()` function
 
 ### UI/UX Specifications
@@ -40,6 +43,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Visual Design**: Portal/gateway icon with eldritch styling matching MythosMUD theme
 
 **Responsive Behavior**: Maintain button visibility and accessibility across different screen sizes
+
 - **Loading States**: Provide visual feedback during logout process (button disabled state)
 - **Focus Management**: Ensure proper focus handling when returning to login screen
 
@@ -50,6 +54,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Screen Reader Support**: ARIA labels describing button function and state
 
 **Keyboard Shortcut**: Ctrl+Q hotkey for quick logout access
+
 - **Focus Management**: Proper focus restoration when returning to login screen
 - **Error Announcements**: Screen reader accessible error messages if logout fails
 
@@ -60,6 +65,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Network Errors**: Proceed with logout even if server communication fails
 
 **State Corruption**: Ensure cleanup always completes even if errors occur during process
+
 - **User Feedback**: Provide appropriate error messaging without blocking logout completion
 
 ### Performance Considerations

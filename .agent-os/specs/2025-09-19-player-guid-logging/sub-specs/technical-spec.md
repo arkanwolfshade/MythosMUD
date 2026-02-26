@@ -27,6 +27,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Output-Level Processing**: Apply conversion at the formatter level, not at individual log statements
 
 **Format Preservation**: Maintain existing log format while enhancing GUID display
+
 - **All Log Files**: Apply to all log categories (server, persistence, authentication, world, communications, commands, errors, access, console)
 
 ### Error Handling and Fallback

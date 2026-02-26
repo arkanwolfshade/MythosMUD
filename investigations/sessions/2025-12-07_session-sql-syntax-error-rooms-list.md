@@ -168,6 +168,7 @@ SELECT stable_id FROM rooms WHERE id = ANY(:room_ids::uuid[])
 **ORM Layer**: SQLAlchemy 2.0+ with async support
 
 **Query Method**: `text()` wrapper for raw SQL
+
 - **Parameter Binding**: Named parameters (`:parameter_name`)
 - **Parameter Value**: Python list of UUID strings
 
@@ -238,6 +239,7 @@ SELECT stable_id FROM rooms WHERE id = ANY(:room_ids::uuid[])
 **Line**: 148
 
 **Function**: `list_rooms()` endpoint handler
+
 - **Code Block**: Exploration filtering logic (lines 130-173)
 
 **SQL Query**:

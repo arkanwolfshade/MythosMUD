@@ -122,6 +122,7 @@ data = message_data.get("data", {})  # <-- Looking for "data" instead of "event_
 **Real-Time Updates**: Clients do not receive combat state updates
 
 **User Experience**: Players cannot see combat progress in real-time
+
 - **Game Functionality**: Combat system operates but UI doesn't update
 
 **Affected Components**:

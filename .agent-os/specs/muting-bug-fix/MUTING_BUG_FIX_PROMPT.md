@@ -34,6 +34,7 @@ The muting system has **inconsistent filtering logic** for emote messages. While
 **Method**: `send_emote_message()` (lines 752-873)
 
 **Channel Type**: Uses "emote" channel type
+
 - **NATS Subject**: Published to `chat.emote.{room_id}`
 
 #### 2. Broadcasting Strategy
@@ -136,6 +137,7 @@ def _is_player_muted_by_receiver(self, receiver_id: str, sender_id: str) -> bool
 **Player B**: Ithaqua (muted player)
 
 **Room**: `earth_arkhamcity_sanitarium_room_hallway_001`
+
 - **Mute File**: `data/user_management/mutes_ArkanWolfshade.json`
 
 ### Test Commands

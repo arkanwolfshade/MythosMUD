@@ -15,6 +15,7 @@ The UI panel layout has been verified to match the wireframe specification. Afte
 ✅ Three-column layout matches wireframe exactly
 
 ✅ No panel overlaps detected
+
 - ✅ Panels scale proportionally on window resize
 - ✅ Equal column widths maintained
 - ⚠️ Old localStorage data can override default layout (expected behavior)
@@ -75,6 +76,7 @@ According to `client/wireframe.png`, the layout should have:
 ✅ `layoutMatches: true`
 
 ✅ `hasOverlaps: false`
+
 - ✅ Column widths: All 613px (equal)
 - ✅ Column positions: Left (20), Center (653), Right (1287)
 
@@ -90,6 +92,7 @@ According to `client/wireframe.png`, the layout should have:
 **Left Column:** Chat History, Location, Room Description, Occupants ✅
 
 **Center Column:** Game Info ✅
+
 - **Right Column:** Character Info, Command History, Command Input ✅
 
 **Column Widths:**

@@ -33,6 +33,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **NPC behavior**: Extend relevant services (`server/game/npc_*`) to subscribe to `mythos.hour.tick` for shift changes (shop open/close, patrols).
 
 **Environment**: Update `room_service` to request current Mythos daypart and apply lighting descriptions; integrate with passive lucidity flux to adjust the witching hour logic.
+
 - **Holiday engine**: Add middleware or dedicated manager (`server/game/holiday_service.py`) to track active holidays, trigger celebratory events, and ensure bonuses automatically sunset after 48 Mythos hours.
 - **Admin tooling**: Provide `/admin/time` command returning current Mythos timestamp, active holidays, next three triggers, and freeze status.
 
@@ -47,6 +48,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Unit tests**: Add `server/tests/unit/time/test_chronicle.py` covering conversions, freeze/resume, and duration limits.
 
 **Integration tests**: Add `server/tests/integration/time/test_scheduler.py` to simulate accelerated ticks and verify event bus payloads; ensure fixtures write temp JSON configs.
+
 - **Playwright scenario**: Add `e2e-tests/scenarios/scenario-XX-mythos-time.md` automating two clients witnessing day/night and holiday transitions.
 - **Load testing**: Extend performance suite (`artifacts/perf/`) to ensure hourly processing stays under 10 ms average per tick.
 - Update CI lint/test pipelines to include schema validation step (`make lint` runs `scripts/validate_calendar.py`).

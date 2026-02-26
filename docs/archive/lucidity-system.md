@@ -21,6 +21,7 @@ Implementation notes throughout call out tracking requirements, cooldown expecta
 **Starting LCD:** 100 for newly created characters (subject to heritage modifiers later)
 
 **Floor/ceiling:** LCD cannot exceed 100 and can drop as low as −100
+
 - **Negative values:** expose the character to catatonic rescue rules before final institutionalization
 
 ### 2.2 Tier Thresholds
@@ -187,6 +188,7 @@ When LCD reaches −100:
 **Passive loop:** Align LCD tick evaluation with existing stamina/health regen ticks to minimize scheduler load.
 
 **Hallucination controller:** Maintain a weighted queue to avoid repeating identical hallucinations within a 5-minute window for the same player.
+
 - **Cooldown registry:** Centralize recovery-action cooldowns in player state so effects persist across reconnects.
 - **Logging:** Route all LCD adjustments through the enhanced logging system (`get_logger`) with structured fields `san_change`, `reason`, `tier_before`, `tier_after`.
 

@@ -19,6 +19,7 @@ This directory contains planning and technical documentation that has been conso
 **`PLANNING_redis_to_nats_migration.md`** → NATS migration and real-time communication
 
 **`PLANNING_movement_system.md`** → Room tracking and movement system
+
 - **`ROOM_PLANNING.md`** → Room hierarchy and world loading system
 - **`SECURITY.md`** → Security implementation and best practices
 
@@ -37,6 +38,7 @@ This directory contains planning and technical documentation that has been conso
 **`PLANNING_logging.md`** → Structured logging implementation
 
 **`BUG_PREVENTION_TESTING_STRATEGY.md`** → Testing strategy for bug prevention
+
 - **`INTEGRATION_SUMMARY.md`** → System integration summary
 
 ### 🔄 In Progress Systems (Consolidated but Active)
@@ -48,6 +50,7 @@ This directory contains planning and technical documentation that has been conso
 **`PLANNING_e2e.md`** → End-to-end testing framework (infrastructure setup in progress)
 
 **`PLANNING_tailwind.md`** → MUI to TailwindCSS migration (Phases 1-3 completed, Phase 4 in progress)
+
 - **`PLANNING_unified_command_handler.md`** → Command handler unification (planning complete, ready for implementation)
 
 ### ✅ Completed Systems (Fully Consolidated)
@@ -116,6 +119,7 @@ This directory contains planning and technical documentation that has been conso
 **`TASKS.md`** → Task tracking reference
 
 **`README.md`** → Project overview
+
 - **`DEVELOPMENT.md`** → Development setup and procedures
 - **`DEVELOPMENT_AI.md`** → AI agent development guide
 
@@ -126,6 +130,7 @@ This directory contains planning and technical documentation that has been conso
 **`REAL_TIME_ARCHITECTURE.md`** → Real-time architecture specifications
 
 **`ROOM_HIERARCHY_FRD.md`** → Room hierarchy functional requirements
+
 - **`SSE_AUTHENTICATION.md`** → Server-Sent Events authentication
 - **`DATABASE_MIGRATION.md`** → Database migration procedures
 

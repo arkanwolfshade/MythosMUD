@@ -9,6 +9,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Configuration Migration**: Replace `class Config:` with `model_config = ConfigDict()` in the `HealthResponse` model
 
 **Schema Preservation**: Maintain the exact same `json_schema_extra` configuration in the new format
+
 - **Pattern Consistency**: Follow the same pattern already established in `server/schemas/` files
 - **Backward Compatibility**: Ensure no breaking changes to model behavior or API responses
 

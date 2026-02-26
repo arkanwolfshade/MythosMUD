@@ -252,6 +252,7 @@ As an admin, I should be able to teleport any online player to my location or te
 **Performance**: Average teleport time < 1 second
 
 **Reliability**: 0% data corruption from teleport operations
+
 - **Security**: 0% unauthorized teleport attempts succeed
 
 ## Future Enhancements
@@ -261,6 +262,7 @@ As an admin, I should be able to teleport any online player to my location or te
 **Teleport History**: View recent teleport actions
 
 **Teleport Restrictions**: Limit teleport frequency or destinations
+
 - **Emergency Override**: Bypass confirmation for emergency situations
 - **Teleport Zones**: Define safe zones for teleportation
 

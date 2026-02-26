@@ -159,6 +159,7 @@ Migration is complete when:
 ✅ All tests passing with updated imports
 
 ✅ No imports from `legacy_error_handlers.py` remain
+
 - ✅ File `server/legacy_error_handlers.py` deleted
 - ✅ Linting passes
 - ✅ Test coverage remains ≥80%

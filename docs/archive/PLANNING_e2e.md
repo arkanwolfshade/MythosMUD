@@ -15,6 +15,7 @@ This document outlines the comprehensive strategy for transforming our existing 
 **Comprehensive coverage** of authentication, movement, chat, game mechanics
 
 **SQLite test database** at `/server/tests/data/players/unit_test_players.db`
+
 - **Mock-based testing** for isolation and speed
 - **70% minimum coverage** requirement (targeting 80%)
 
@@ -25,6 +26,7 @@ This document outlines the comprehensive strategy for transforming our existing 
 **Browser automation** for UI testing
 
 **Limited scope** - basic login and help command testing
+
 - **Mock-based approach** limits real-world validation
 
 ## E2E Testing Strategy
@@ -38,6 +40,7 @@ This document outlines the comprehensive strategy for transforming our existing 
 **Test Data Generation**: Create bespoke test data for E2E scenarios
 
 **Environment Isolation**: Reuse server instances with strong state validation
+
 - **Test Orchestration**: Coordinate server/client startup and teardown
 
 #### 1.2 Test Framework Architecture
@@ -146,6 +149,7 @@ tests/
 **Browser Strategy**: Chromium-focused for CI speed
 
 **Parallel Execution**: Where possible without interference
+
 - **Resource Monitoring**: Memory usage, CPU utilization
 
 #### 3.2 Debugging & Failure Analysis
@@ -220,6 +224,7 @@ tests/
 **Client**: React/TypeScript with real WebSocket connections
 
 **Browser**: Chromium (primary), Firefox/WebKit (secondary)
+
 - **Test Runner**: Playwright with custom orchestration
 
 ### Performance Targets
@@ -229,6 +234,7 @@ tests/
 **Individual Test**: ≤ 30 seconds
 
 **Setup/Teardown**: ≤ 5 seconds per test
+
 - **Memory Usage**: ≤ 512MB per browser instance
 
 ### Quality Gates
@@ -238,6 +244,7 @@ tests/
 **Coverage**: All critical user journeys
 
 **Performance**: No regression in test execution time
+
 - **Debugging**: Root cause identifiable within 5 minutes
 
 ## Risk Mitigation
@@ -249,6 +256,7 @@ tests/
 **Isolation Checks**: Validate no cross-test contamination
 
 **Deterministic Data**: Use predictable test data
+
 - **Timing Controls**: Add appropriate waits and timeouts
 
 ### Test Maintenance
@@ -258,6 +266,7 @@ tests/
 **Modular Design**: Reusable test utilities
 
 **Version Control**: Track test data changes
+
 - **Regular Review**: Update tests with feature changes
 
 ## Success Metrics

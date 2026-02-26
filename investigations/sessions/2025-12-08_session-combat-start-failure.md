@@ -227,6 +227,7 @@ The code compiles/runs without syntax errors (missing await is a runtime
 **Method**: `CombatCommandHandler.handle_attack_command()`
 
 **Line**: 160 (missing await)
+
 - **Line**: 169 (error location)
 
 ### Secondary Component

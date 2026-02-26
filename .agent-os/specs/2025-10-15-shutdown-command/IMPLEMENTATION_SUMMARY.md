@@ -18,6 +18,7 @@ The `/shutdown` administrative command has been fully implemented and tested. Th
 **Registration**: Added to `CommandService.command_handlers` dictionary
 
 **Authorization**: Uses `validate_shutdown_admin_permission()` to check `is_admin` flag
+
 - **Thematic Denial**: Non-admin players receive: *"You lack the proper authorization to invoke such rituals."*
 - **Tests**: `server/tests/unit/commands/test_admin_shutdown_command.py`
 
@@ -157,6 +158,7 @@ Uses `connection_manager.broadcast_global_event()` for announcements
 **Default**: 10 seconds if no parameter provided
 
 **Examples**:
+
   - `/shutdown` - Shutdown in 10 seconds
   - `/shutdown 60` - Shutdown in 60 seconds
   - `/shutdown 300` - Shutdown in 5 minutes
@@ -259,6 +261,7 @@ Stops NATS message handler
 **New Tests**: 35 tests across 6 test files
 
 **Coverage**: 81.04% (exceeds 80% requirement)
+
 - **Test Categories**:
   - Unit tests for command parsing and authorization
   - Unit tests for countdown and notifications

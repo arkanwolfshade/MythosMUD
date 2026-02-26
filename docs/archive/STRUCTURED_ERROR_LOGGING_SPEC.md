@@ -147,6 +147,7 @@ class ErrorContext:
 **WARNING**: Recoverable issues, deprecated usage, rate limiting
 
 **INFO**: Normal operations, successful authentications
+
 - **DEBUG**: Detailed diagnostic information
 
 ## Implementation Tasks

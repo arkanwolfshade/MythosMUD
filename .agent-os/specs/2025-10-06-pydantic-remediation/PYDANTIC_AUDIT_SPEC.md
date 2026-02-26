@@ -15,6 +15,7 @@ This document presents a comprehensive audit of the MythosMUD server's Pydantic 
 **Issue**: Conflicting imports create ambiguity in error handling
 
 **Files Affected**: `server/utils/command_processor.py`, `server/utils/command_parser.py`
+
 - **Risk**: High - Incorrect error handling could lead to security bypasses
 
 #### 2. **Command Injection Vulnerabilities**
@@ -24,6 +25,7 @@ This document presents a comprehensive audit of the MythosMUD server's Pydantic 
 **Issue**: Inconsistent validation patterns across command types
 
 **Risk**: High - Potential for command injection attacks
+
 - **Specific Vulnerabilities**:
   - Different regex patterns for similar validation
   - Missing validation in some command types

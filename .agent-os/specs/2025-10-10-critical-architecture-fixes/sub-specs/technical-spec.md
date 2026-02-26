@@ -30,6 +30,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **State Persistence:** Use XState context for connection metadata (attempts, session_id, last_error)
 
 **Visualization:** Enable XState inspector for debugging (dev mode only)
+
 - **Error Handling:** Map all connection errors to state transitions
 
 **Backend (Python/FastAPI):**
@@ -39,6 +40,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Implementation Location:** New module `server/realtime/connection_state_machine.py`
 
 **Use Cases:**
+
   - NATS connection lifecycle
   - WebSocket health tracking
   - Circuit breaker state management
@@ -850,6 +852,7 @@ async def get_metrics():
 **Justification:** Industry-standard FSM library with excellent TypeScript support, visualization tools, and testing utilities. Provides robust connection state management with timeout guards and transition logging.
 
 **Bundle Impact:** ~50KB gzipped (acceptable for reliability gains)
+
 - **Installation:** `npm install xstate@^4.38.0`
 
 **@xstate/react** (3.2.x) - React hooks for XState
@@ -887,6 +890,7 @@ async def get_metrics():
 **Server Stability:** Elimination of alias bomb DoS vulnerability
 
 **Message Delivery:** 99.9% message delivery success rate (up from ~95%)
+
 - **Configuration Startup:** Faster startup with early validation failures
 
 **Potential Performance Costs:**
@@ -896,6 +900,7 @@ async def get_metrics():
 **Command Rate Limiting:** +1-2ms per command (timestamp checking)
 
 **NATS Message Processing:** +10-20ms per message (retry logic overhead)
+
 - **Frontend Bundle Size:** +50KB gzipped (XState)
 
 **Mitigation Strategies:**
@@ -951,6 +956,7 @@ async def get_metrics():
 **Fuzz Testing:** Random command generation to find validation bypasses
 
 **Load Testing:** Verify rate limiting under attack conditions
+
 - **Audit Testing:** Verify all security-sensitive commands are logged
 
 ---

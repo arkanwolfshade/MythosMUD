@@ -78,6 +78,7 @@ This pattern:
 ✅ Works regardless of room name
 
 ✅ Works regardless of description text structure
+
 - ✅ Handles both "Exit:" and "Exits:"
 - ✅ No positional anchors (`^` or `$`) so it matches anywhere in the message
 
@@ -176,6 +177,7 @@ The `/Exits?:/i` pattern is:
 **Reliable**: Definitive marker present in ALL room descriptions
 
 **Flexible**: Works with any room name or description text
+
 - **Case-insensitive**: Handles "Exits:", "Exit:", "exits:", or "exit:"
 - **Position-independent**: Matches anywhere in the message
 
@@ -209,6 +211,7 @@ The `/Exits?:/i` pattern is:
 ✅ Debug logging cleaned up
 
 ✅ Code ready for commit
+
 - ⏭️ Monitor for edge cases with different room descriptions
 - ⏭️ Consider adding unit tests for message categorization
 

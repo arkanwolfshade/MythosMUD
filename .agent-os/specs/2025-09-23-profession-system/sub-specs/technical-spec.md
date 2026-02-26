@@ -9,6 +9,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **API Endpoint Modifications**: Modify existing stat rolling endpoint to accept profession_id parameter and implement weighted probability stat rolling logic
 
 **New API Endpoints**: Create GET /api/professions and GET /api/professions/{id} endpoints for profession data retrieval
+
 - **Frontend UI Components**: Create profession selection screen with card-based layout, profession card component, and updated character creation navigation flow
 - **Stat Rolling Algorithm**: Implement weighted probability system that favors stat combinations meeting profession requirements and discards invalid rolls
 - **Database Integration**: Add profession data to existing database initialization scripts and create DDL script for professions table creation

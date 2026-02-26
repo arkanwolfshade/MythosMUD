@@ -300,6 +300,7 @@ Legacy chat subscription patterns (`chat.local.*`) - will be removed after verif
 **Admin Role Check**: +2-5ms per admin endpoint call (acceptable for infrequent admin operations)
 
 **CSRF Validation**: +1-3ms per WebSocket message (minimal impact)
+
 - **NPC Methods**: +5-10ms per admin command (acceptable for admin operations)
 - **Damage Calculation**: +2-5ms per combat action (significant improvement over basic damage)
 - **Name Resolution**: +1-2ms per event with caching (acceptable)

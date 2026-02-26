@@ -56,6 +56,7 @@ granting modern extensibility akin to Evennia-style component stacks.
 **Equipment**: Weapons, armor, talismans; support wear locations, durability, attribute modifiers.
 
 **Artifacts & Relics**: Unique lore-bound items with lucidity effects or progression gating.
+
 - **Containers**: Bags, chests, cosmic reliquaries; may modify inventory capacity or apply dimensional effects.
 - **Quest Items**: Progression-critical objects, often soulbound and tracked via journal metadata.
 - **Environmental Objects**: Placeable or interactive props (torches, glyphs, wards) with scripted world hooks.
@@ -257,6 +258,7 @@ Enforce COPPA compliance: no item metadata captures personal data.
 **Property Tests**: Ensure flag masks remain invertible and collision-free.
 
 **Integration Tests**: Inventory command coverage (`server/tests/unit/commands/test_inventory_commands.py` extensions).
+
 - **Playwright Scenarios**: Multi-client equipment flows, lucidity effect propagation.
 - **Load Tests**: Monitor mutation guard pressure during mass loot events.
 

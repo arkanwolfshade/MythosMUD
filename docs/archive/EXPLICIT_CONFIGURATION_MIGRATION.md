@@ -13,6 +13,7 @@
 ❌ Dangerous in production (might use wrong config)
 
 ❌ Unclear which config is actually being used
+
 - ❌ Silent failures from misconfiguration
 
 **After**: Server REQUIRES explicit configuration via `MYTHOSMUD_CONFIG_PATH`.
@@ -20,6 +21,7 @@
 ✅ Fatal error if no config specified
 
 ✅ Clear, explicit configuration
+
 - ✅ No ambiguity about which config is loaded
 - ✅ Prevents accidental production misconfiguration
 
@@ -154,6 +156,7 @@ Please verify the path is correct.
 ✅ Deleted `scripts/start_dev.ps1` (merged into start_local.ps1)
 
 ✅ Updated `config_loader.py` to require explicit configuration
+
 - ✅ Updated `start_server.ps1` to use environment-based config selection
 - ✅ Updated `start_local.ps1` to use local configuration
 - ✅ Updated `start_e2e_test.ps1` to use E2E test configuration

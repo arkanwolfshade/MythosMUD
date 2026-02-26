@@ -20,6 +20,7 @@ ADD COLUMN respawn_room_id VARCHAR(100) DEFAULT 'earth_arkhamcity_sanitarium_roo
 **Name:** `respawn_room_id`
 
 **Type:** `VARCHAR(100)`
+
 - **Nullable:** `YES` (NULL means use default)
 - **Default:** `'earth_arkhamcity_sanitarium_room_foyer_001'`
 - **Purpose:** Store player's chosen respawn location

@@ -63,4 +63,5 @@ All real-time events follow this standardized format:
 **NATSMessageHandler**: Subscribes to NATS subjects and routes to WebSocket clients
 
 **ConnectionManager**: Manages WebSocket connections and room subscriptions
+
 - **Game Tick Loop**: Publishes periodic game state updates

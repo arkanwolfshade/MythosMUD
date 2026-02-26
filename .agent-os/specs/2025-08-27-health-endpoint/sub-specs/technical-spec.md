@@ -11,6 +11,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Path**: `/health`
 
 **Response Format**: JSON
+
 - **Authentication**: None required (public endpoint)
 - **Rate Limiting**: None (health checks should be lightweight)
 

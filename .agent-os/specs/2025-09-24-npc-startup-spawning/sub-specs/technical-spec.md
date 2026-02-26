@@ -11,6 +11,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Service Integration** - Leverage existing `NPCService`, `NPCInstanceService`, and `NPCSpawningService`
 
 **Error Isolation** - Startup spawning failures should not prevent server startup from completing
+
 - **Logging Integration** - Comprehensive logging of startup spawning process
 
 ### Startup Spawning Logic
@@ -20,6 +21,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Optional NPC Spawning** - Spawn optional NPCs based on configuration and spawn probabilities
 
 **Population Limits** - Respect existing zone population limits during startup
+
 - **Room Validation** - Ensure target rooms exist before spawning NPCs
 
 ### Configuration System
@@ -37,6 +39,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Existing Spawning Service** - Use `NPCInstanceService.spawn_npc_instance()` for actual spawning
 
 **EventBus Integration** - Publish startup spawning events through existing EventBus
+
 - **Database Integration** - Use existing NPC database and session management
 
 ### Error Handling and Recovery
@@ -46,6 +49,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Error Logging** - Log all spawning failures with detailed error information
 
 **Retry Logic** - Optional retry mechanism for failed spawns
+
 - **Health Monitoring** - Track startup spawning success/failure rates
 
 ## External Dependencies

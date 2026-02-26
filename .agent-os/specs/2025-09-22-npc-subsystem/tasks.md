@@ -9,6 +9,7 @@
 **Production Database**: Created `/data/npcs/npcs.db` with complete schema and all indexes
 
 **Test Database**: Created `/server/tests/data/npcs/test_npcs.db` with same schema
+
 - **Database Models**: Updated NPC models to use separate database metadata and session management
 - **Environment Configuration**: Added `NPC_DATABASE_URL` to both production and test configurations
 - **IDE Configuration**: Updated Cursor workspace settings to allow access to non-production environment files
@@ -23,6 +24,7 @@
 **Indexes**: Complete indexing strategy for performance optimization
 
 **Constraints**: Foreign key relationships and unique constraints properly enforced
+
 - **Environment Variables**:
   - Production: `NPC_DATABASE_URL=sqlite+aiosqlite:///../../data/npcs/npcs.db`
   - Tests: `NPC_DATABASE_URL=sqlite+aiosqlite:///server/tests/data/npcs/test_npcs.db`

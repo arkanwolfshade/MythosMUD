@@ -105,6 +105,7 @@ The UI panels in the MythosMUD game client do not automatically adjust their siz
 **Resized Viewport:** 800x600
 
 **Result:** Panels maintained original size and position
+
 - **Screenshot:** `investigations/sessions/2025-01-XX_session-ui-panel-resize-800x600.png`
 - **Observation:** Panels did not adjust to fit the smaller viewport. Large empty space on right side.
 
@@ -115,6 +116,7 @@ The UI panels in the MythosMUD game client do not automatically adjust their siz
 **Result:** Panels maintained size from 800x600 test
 
 **Screenshot:** `investigations/sessions/2025-01-XX_session-ui-panel-resize-1920x1080.png`
+
 - **Observation:** Panels did not expand to utilize the larger viewport.
 
 **DOM Analysis:**
@@ -186,6 +188,7 @@ The UI panels do not autoscale on browser resize due to two main issues:
 **Responsive Design:** UI does not adapt to viewport changes
 
 **Accessibility:** May cause issues for users with different screen sizes or window configurations
+
 - **Functionality:** Panels may become inaccessible or overlap when window is resized to smaller sizes
 
 ---

@@ -339,6 +339,7 @@ port
 **Critical:** DLQ messages >100
 
 **Warning:** Connection success rate <95%
+
 - **Warning:** Message delivery rate <99%
 - **Info:** Admin command executed
 

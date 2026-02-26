@@ -47,6 +47,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Database Seeding Fixture**: `seedTestDatabase()` - populates `data/players/unit_test_players.db` with known test players
 
 **Database Cleanup Fixture**: `cleanupTestDatabase()` - resets database to known state after tests
+
 - **Player Creation Fixture**: `createTestPlayer(username, stats)` - creates test player with specific attributes
 - **Room Setup Fixture**: `setupTestRooms()` - ensures test rooms exist in `data/rooms/` structure
 
@@ -234,6 +235,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Test NPC Database**: `data/npcs/test_npcs.db` (for NPC interaction tests)
 
 **Test Rooms**: Use existing `data/rooms/` structure with test-specific room configurations
+
 - **Seeding Strategy**:
   - Create known test players with predictable credentials
   - Use existing `DualConnectionTestData` pattern from `server/tests/data/dual_connection_test_data.py`
@@ -372,6 +374,7 @@ test: test-server test-client test-runtime
 **Parallel Execution**: Configure Playwright to run tests in parallel where possible
 
 **Selective Test Running**: Support test filtering by tag/category for faster iteration
+
 - **Server Startup Optimization**: Reuse server instance across test suites when possible
 - **Database Optimization**: Use in-memory SQLite for faster test data operations
 
@@ -382,6 +385,7 @@ test: test-server test-client test-runtime
 **Video Recording**: Record video of test execution (on failure in CI, always in debug mode)
 
 **Trace Collection**: Collect Playwright traces on first retry for detailed debugging
+
 - **Console Log Capture**: Capture browser console logs and errors
 - **Network Request Logging**: Log failed network requests for debugging
 - **Test Retry Strategy**: Retry failed tests once to handle transient failures
@@ -393,6 +397,7 @@ test: test-server test-client test-runtime
 **Database Isolation**: Test database must be completely separate from development database
 
 **No Secrets in Code**: All credentials via environment variables
+
 - **CI Secret Management**: Use GitHub Actions secrets for sensitive configuration
 - **Network Isolation**: Tests run against local server only, no external API calls
 - **Data Privacy**: Test data contains no real user information
@@ -404,6 +409,7 @@ test: test-server test-client test-runtime
 **Testing Guide**: Create comprehensive testing guide explaining automated vs MCP tests
 
 **Scenario Conversion Guide**: Document which scenarios were converted and why
+
 - **Adding New Tests Guide**: Provide template and guidelines for adding new automated tests
 - **Troubleshooting Guide**: Common test failures and resolution steps
 - **CI/CD Documentation**: Explain GitHub Actions workflow and test reporting

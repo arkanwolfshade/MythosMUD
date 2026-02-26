@@ -20,6 +20,7 @@
 **Minimum:** 80% (enforced in CI)
 
 **Target:** 82%+ (maintained from baseline)
+
 - **Previous:** 70% minimum (CI), 82% actual
 
 **Critical Coverage:**
@@ -143,6 +144,7 @@
 **Added:** Explicit coverage targets (80% minimum, 98% critical)
 
 **Added:** Test quality focus guidance
+
 - **Status:** Complete
 
 ---

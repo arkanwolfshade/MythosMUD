@@ -223,6 +223,7 @@ There is a race condition window between NPC state checks:
 **Affected Feature:** Core combat system - NPC attack initiation
 
 **Affected Players:** All players attempting to attack NPCs
+
 - **Affected NPCs:** Potentially all NPCs, though evidence shows specific failure with "Dr. Francis Morgan"
 - **Reproducibility:** Likely intermittent, dependent on timing and NPC state
 

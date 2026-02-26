@@ -35,6 +35,7 @@ Validate that `NATS_SERVER_PATH` points to existing file
 **nats_status.ps1**: Update detailed information display to show environment variable source
 
 **start_server.ps1**: Ensure environment variables are loaded before NATS server startup
+
 - Maintain all existing function signatures and return values for backward compatibility
 
 ### Configuration Examples

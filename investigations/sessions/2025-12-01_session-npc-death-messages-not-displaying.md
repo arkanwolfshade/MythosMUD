@@ -27,6 +27,7 @@ NPC death messages are not appearing in the Game Info panel because the client-s
 **Affected Component**: Client-side UI (Game Info Panel)
 
 **Expected Behavior**: NPC death messages should appear in Game Info panel when NPCs die
+
 - **Actual Behavior**: No NPC death messages appear in Game Info panel
 
 **Affected Systems Identified**:
@@ -246,6 +247,7 @@ The `GameInfoPanel` correctly receives and displays messages from the `messages`
 **Server Combat Death Event**: `server/services/combat_messaging_integration.py:273-274` - creates `"combat_death"` events (currently unused)
 
 **Client Event Processing**: `client/src/components/ui-v2/GameClientV2Container.tsx:866-872` - default case for unhandled events
+
 - **Client Message Display**: `client/src/components/ui-v2/panels/GameInfoPanel.tsx:37-38` - supports combat message type
 
 ---
@@ -284,6 +286,7 @@ Based on code comments and architecture:
 **NATS Message System**: Correctly routes NPC death events to clients
 
 **WebSocket Broadcasting**: Successfully delivers events to connected clients
+
 - **Client Event Queue**: Successfully receives events but doesn't process NPC death types
 
 ---

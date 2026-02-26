@@ -179,6 +179,7 @@ No additional indexes required. Existing indexes on `npc_definitions` table will
 **Player Health**: Persisted to database through existing player service
 
 **Combat State**: In-memory combat state includes current health values for all participants
+
 - **Server Restart**: All in-memory health values reset to database base values
 
 #### Query Optimization

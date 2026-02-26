@@ -25,6 +25,7 @@ The original field names were misleading:
 ✅ Renamed column: `max_players` → `max_population`
 
 ✅ Renamed method: `can_spawn_for_player_count()` → `can_spawn_with_population()`
+
 - ✅ Updated method logic to check NPC population instead of player count
 
 **Before:**

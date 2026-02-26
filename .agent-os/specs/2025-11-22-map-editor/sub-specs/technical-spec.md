@@ -9,6 +9,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Component architecture**: Create modular component structure with `RoomMapViewer.tsx` as main container, `RoomNode.tsx` and `IntersectionNode.tsx` for custom nodes, `ExitEdge.tsx` for directional edges, `MapControls.tsx` toolbar, and `RoomDetailsPanel.tsx` sidebar, following existing React/TypeScript patterns in client codebase.
 
 **Data transformation utilities**: Implement `mapUtils.ts` to convert room JSON structure (from existing Room interface) to React Flow format, handling exits dictionary (`{north: "room_id", south: null, ...}`) and exit objects with flags/description, merging both formats into single edges with flag metadata, room types, and using stored coordinates (map_x, map_y) from database when available.
+
 - **Data loading hook**: Create `useRoomMapData.ts` hook to fetch room data from server API, transform to map format, handle loading/error states, and support filtering by zone/subzone with efficient data processing for large room sets (100+ rooms).
 - **Layout management**: Implement `useMapLayout.ts` hook supporting multiple layout algorithms, auto-layout from coordinates if available, manual positioning persistence, and smooth layout updates with performance optimization (debouncing, memoization).
 - **Edit mode functionality**: Create `useMapEditing.ts` hook for admin edit operations including node drag/reposition (with visual indicator for unsaved changes), edge creation via modal form/dialog (source room pre-selected, target from searchable dropdown, with preview and real-time validation), edge deletion, node property editing (all room schema properties, with tabs/sections, inline validation), and comprehensive validation (target room exists, valid direction, bidirectional pairing warnings, data integrity). All operations tracked in undo/redo system.
@@ -24,6 +25,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Version**: Latest stable (^11.x recommended)
 
 **Justification**: Modern, well-maintained library specifically designed for React interactive graph visualization with excellent TypeScript support, custom node/edge capabilities, and performance optimizations for large graphs
+
 - **Alternative considered**: D3.js (already in project but more complex for this use case), Cytoscape.js (less React-integrated)
 
 ## Database Schema Changes

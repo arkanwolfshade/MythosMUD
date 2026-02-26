@@ -273,6 +273,7 @@ The root cause is a **type annotation mismatch** combined with **incorrect attri
 **Timestamp**: 2025-11-27 19:57:38
 
 **Error**: `'User' object has no attribute 'get'`
+
 - **Error Type**: `AttributeError`
 - **Location**: `server.api.rooms`
 - **Endpoint**: `/api/rooms/list`
@@ -402,6 +403,7 @@ This investigation revealed a **recurring pattern** of type annotation mismatche
 ✅ Correct: `current_user.id`, `current_user.username` (attribute access)
 
 ❌ Incorrect: `current_user: dict | None` (wrong type)
+
 - ❌ Incorrect: `current_user.get("id")` (dictionary access on object)
 
 ---
