@@ -91,9 +91,13 @@ export const MapView: React.FC<MapViewProps> = ({
   const subZone = currentRoom?.sub_zone;
   const currentRoomId = currentRoom?.id;
 
+  const opaqueStyle = hideHeader
+    ? { backgroundColor: '#0a0a0a', opacity: 1 }
+    : { backgroundColor: '#0a0a0a', opacity: 1, zIndex: 2147483647 };
   return (
     <div
-      className={`${hideHeader ? 'h-full w-full' : 'fixed inset-0'} bg-mythos-terminal-background ${hideHeader ? '' : 'z-50'} flex flex-col`}
+      className={`${hideHeader ? 'h-full w-full' : 'fixed inset-0'} bg-mythos-terminal-background flex flex-col`}
+      style={opaqueStyle}
     >
       {/* Header with close button - only show if not hidden */}
       {!hideHeader && (
@@ -109,8 +113,8 @@ export const MapView: React.FC<MapViewProps> = ({
         </div>
       )}
 
-      {/* Map viewer */}
-      <div className="flex-1 overflow-hidden">
+      {/* Map viewer: opaque so game UI never shows through */}
+      <div className="flex-1 overflow-hidden min-h-0" style={{ backgroundColor: '#0a0a0a' }}>
         {currentRoom ? (
           <AsciiMapViewer
             plane={plane}

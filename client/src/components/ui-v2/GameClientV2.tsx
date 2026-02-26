@@ -365,29 +365,66 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
           </PanelContainer>
         )}
 
+        {/* Opaque backdrop behind minimap popout: same positioning as Rnd, always on top of other panels */}
+        {minimapPanel &&
+          minimapPanel.isVisible &&
+          (() => {
+            const headerHeight = 48;
+            const isMax = minimapPanel.isMaximized;
+            const pos = isMax ? { x: 0, y: headerHeight } : minimapPanel.position;
+            const sz = isMax
+              ? {
+                  width: typeof window !== 'undefined' ? window.innerWidth : 800,
+                  height: (typeof window !== 'undefined' ? window.innerHeight : 600) - headerHeight,
+                }
+              : minimapPanel.isMinimized
+                ? { width: 200, height: 40 }
+                : minimapPanel.size;
+            const minimapBackdropZ = 2147483646;
+            return (
+              <div
+                aria-hidden
+                className="pointer-events-none rounded border border-gray-700"
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  top: 0,
+                  width: sz.width,
+                  height: sz.height,
+                  transform: `translate(${pos.x}px, ${pos.y}px)`,
+                  zIndex: minimapBackdropZ,
+                  backgroundColor: '#0a0a0a',
+                }}
+              />
+            );
+          })()}
         {minimapPanel && minimapPanel.isVisible && (
           <PanelContainer
             id={minimapPanel.id}
             title={minimapPanel.title}
             position={minimapPanel.position}
             size={minimapPanel.size}
-            zIndex={minimapPanel.zIndex}
+            zIndex={2147483647}
             isMinimized={minimapPanel.isMinimized}
             isMaximized={minimapPanel.isMaximized}
             isVisible={minimapPanel.isVisible}
             minSize={minimapPanel.minSize}
             variant="default"
+            className="panel-minimap-opaque"
             onPositionChange={panelManager.updatePosition}
             onSizeChange={panelManager.updateSize}
             onMinimize={panelManager.toggleMinimize}
             onMaximize={panelManager.toggleMaximize}
             onFocus={panelManager.focusPanel}
           >
-            <div className="min-h-[100px] h-full w-full flex flex-col" data-panel="minimap-content">
+            <div
+              className="min-h-[100px] h-full w-full flex flex-col bg-mythos-terminal-background"
+              data-panel="minimap-content"
+            >
               <div className="text-mythos-terminal-text/80 text-xs shrink-0 px-1 pb-1">Click map to open full view</div>
               <button
                 type="button"
-                className="appearance-none w-full text-left flex-1 min-h-[80px] flex flex-col overflow-auto cursor-pointer border border-mythos-terminal-border/50 rounded p-1.5 text-mythos-terminal-text bg-transparent"
+                className="appearance-none w-full text-left flex-1 min-h-[80px] flex flex-col overflow-auto cursor-pointer border border-mythos-terminal-border/50 rounded p-1.5 text-mythos-terminal-text bg-mythos-terminal-background"
                 onClick={onMapClick}
                 title="Click to open full map"
               >

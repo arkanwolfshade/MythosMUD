@@ -134,17 +134,21 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
       }
     }, [id, onClose]);
 
-    // Get variant classes
+    // Get variant classes; minimap panel uses opaque background so it stays readable over other panels
     const variantClasses = useMemo(() => {
+      const base = 'bg-mythos-terminal-surface border-gray-700';
+      if (id === 'minimap') {
+        return `${base} bg-opacity-100`;
+      }
       switch (variant) {
         case 'eldritch':
           return 'bg-mythos-terminal-surface border-mythos-terminal-primary';
         case 'elevated':
           return 'bg-mythos-terminal-surface border-gray-600 shadow-lg';
         default:
-          return 'bg-mythos-terminal-surface border-gray-700';
+          return base;
       }
-    }, [variant]);
+    }, [variant, id]);
 
     // Calculate current display size (maximized or normal)
     // Minimap panel: ensure minimum height so inline map is visible (avoids collapsed ~2px content area)
@@ -167,10 +171,27 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
           onDragStop={handleDragStop}
           onDragStart={handleDragStart}
           dragHandleClassName="panel-drag-handle"
-          style={{ zIndex }}
+          style={id === 'minimap' ? { zIndex, backgroundColor: '#0a0a0a', opacity: 1 } : { zIndex }}
           className={`${variantClasses} border rounded ${className}`}
+          {...(id === 'minimap' ? { 'data-minimap-popout': 'true' } : {})}
         >
-          <div className="panel-drag-handle flex items-center justify-between h-full px-3 bg-mythos-terminal-background cursor-move">
+          {id === 'minimap' && (
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                backgroundColor: '#0a0a0a',
+                zIndex: 0,
+                pointerEvents: 'none',
+                borderRadius: 'inherit',
+              }}
+              aria-hidden
+            />
+          )}
+          <div
+            className="panel-drag-handle flex items-center justify-between h-full px-3 bg-mythos-terminal-background cursor-move"
+            style={id === 'minimap' ? { position: 'relative', zIndex: 1 } : undefined}
+          >
             <span className="text-sm font-bold text-mythos-terminal-primary">{title}</span>
             <div className="flex items-center gap-2">
               <TerminalButton variant="secondary" size="sm" onClick={handleMaximize} className="p-1 h-6 w-6">
@@ -213,11 +234,31 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
         onDragStart={handleDragStart}
         onResizeStop={handleResizeStop}
         dragHandleClassName="panel-drag-handle"
-        style={{ zIndex }}
+        style={id === 'minimap' ? { zIndex, backgroundColor: '#0a0a0a', opacity: 1 } : { zIndex }}
         className={`${variantClasses} border rounded ${className}`}
+        {...(id === 'minimap' ? { 'data-minimap-popout': 'true' } : {})}
         bounds="window"
       >
-        <div className="h-full flex flex-col bg-mythos-terminal-background">
+        {/* Opaque underlay for minimap popout so other panels never show through */}
+        {id === 'minimap' && (
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              backgroundColor: '#0a0a0a',
+              zIndex: 0,
+              pointerEvents: 'none',
+              borderRadius: 'inherit',
+            }}
+            aria-hidden
+          />
+        )}
+        <div
+          className="h-full flex flex-col bg-mythos-terminal-background"
+          style={
+            id === 'minimap' ? { position: 'relative', zIndex: 1, backgroundColor: '#0a0a0a', opacity: 1 } : undefined
+          }
+        >
           {/* Panel Header: only this area triggers drag; scrolling content no longer moves the panel */}
           <div
             className="panel-drag-handle flex items-center justify-between p-2 border-b border-gray-700 bg-mythos-terminal-surface cursor-move"
@@ -243,8 +284,12 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
             </div>
           </div>
 
-          {/* Panel Content: min-h-0 lets flex item shrink; minimap needs min height so content is visible */}
-          <div className={`flex-1 min-h-0 overflow-auto ${id === 'minimap' ? 'min-h-[120px]' : ''}`}>{children}</div>
+          {/* Panel Content: min-h-0 lets flex item shrink; minimap needs min height and opaque bg so popout is readable */}
+          <div
+            className={`flex-1 min-h-0 overflow-auto ${id === 'minimap' ? 'min-h-[120px] bg-mythos-terminal-background' : ''}`}
+          >
+            {children}
+          </div>
         </div>
       </Rnd>
     );

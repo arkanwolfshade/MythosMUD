@@ -51,6 +51,31 @@ body {
   color: #708090;
 }
 
+/* Minimap popout: force fully opaque background so other panels do not show through */
+.panel-minimap-opaque,
+.panel-minimap-opaque > div,
+.panel-minimap-opaque > div > div:last-child,
+.panel-minimap-opaque [data-panel='minimap-content'],
+.panel-minimap-opaque [data-panel='minimap-content'] > button {
+  background-color: #0a0a0a !important;
+  opacity: 1 !important;
+}
+
+/* Opaque layer via pseudo-element so minimap popout never shows panels through */
+[data-minimap-popout]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: #0a0a0a;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: inherit;
+}
+[data-minimap-popout] > * {
+  position: relative;
+  z-index: 1;
+}
+
 /* Ensure the main game container fills the viewport */
 .game-terminal-container {
   flex: 1 !important;
