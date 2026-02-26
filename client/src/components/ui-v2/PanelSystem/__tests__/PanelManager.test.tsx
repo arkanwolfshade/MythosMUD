@@ -2,14 +2,13 @@
  * Tests for PanelManager component and hook.
  */
 
-import { act, renderHook } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { act, render, renderHook, screen } from '@testing-library/react';
 import React from 'react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { PanelManager } from '../../../../components/PanelManager';
+import type { PanelState } from '../../types';
 import { PanelManagerProvider } from '../PanelManager';
 import { usePanelManager } from '../usePanelManager';
-import type { PanelState } from '../../types';
 
 // Mock localStorage
 const localStorageMock = (() => {
@@ -97,6 +96,7 @@ describe('PanelManager', () => {
       const savedPanels: Record<string, PanelState> = {
         panel1: {
           id: 'panel1',
+          title: 'Panel 1',
           position: { x: 100, y: 100 },
           size: { width: 400, height: 300 },
           zIndex: 1000,
@@ -136,10 +136,27 @@ describe('PanelManager', () => {
       warnSpy.mockRestore();
     });
 
+    it('should reject valid JSON with invalid panel shape and use default panels', () => {
+      // Valid JSON but missing required PanelState fields (e.g. title, size)
+      localStorageMock.setItem('mythosmud-ui-v2-panel-layout', JSON.stringify({ panel1: { id: 'panel1' } }));
+
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+      const { result } = renderHook(() => usePanelManager(), { wrapper });
+
+      act(() => {});
+
+      expect(result.current.panels).toEqual({});
+      expect(warnSpy).toHaveBeenCalledWith('Invalid panel layout in localStorage');
+
+      warnSpy.mockRestore();
+    });
+
     it('should update panel position', () => {
       const panelsWithPanel1: Record<string, PanelState> = {
         panel1: {
           id: 'panel1',
+          title: 'Panel 1',
           position: { x: 100, y: 100 },
           size: { width: 400, height: 300 },
           zIndex: 1000,

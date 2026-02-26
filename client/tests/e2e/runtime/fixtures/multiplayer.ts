@@ -194,20 +194,6 @@ export async function waitForAllPlayersInGame(
             `[instrumentation] waitForAllPlayersInGame failed: Player ${player.username} - ` +
             `Step 2: WebSocket - status still shows linkdead after ${wsTimeout}ms`;
           console.error(msg, err);
-          // #region agent log
-          fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              location: 'multiplayer.ts:waitForAllPlayersInGame:websocketFail',
-              message: 'WebSocket connection failed for player',
-              data: { username: player.username, error: String(err?.message ?? err) },
-              timestamp: Date.now(),
-              sessionId: 'debug-session',
-              hypothesisId: 'WebSocket',
-            }),
-          }).catch(() => {});
-          // #endregion
           throw new Error(msg);
         })
     )
@@ -253,39 +239,11 @@ export async function waitForAllPlayersInGame(
             `[instrumentation] waitForAllPlayersInGame failed: Player ${player.username} - ` +
             `Step 3: room subscription - no tick message or room state after ${tickTimeout}ms`;
           console.error(msg, err);
-          // #region agent log
-          fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              location: 'multiplayer.ts:waitForAllPlayersInGame:roomSubscriptionFail',
-              message: 'Room subscription failed for player (no tick message or room state)',
-              data: { username: player.username, error: String(err?.message ?? err) },
-              timestamp: Date.now(),
-              sessionId: 'debug-session',
-              hypothesisId: 'RoomSubscription',
-            }),
-          }).catch(() => {});
-          // #endregion
           throw new Error(msg);
         })
     )
   );
 
-  // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      location: 'multiplayer.ts:waitForAllPlayersInGame:exit',
-      message: 'waitForAllPlayersInGame all resolved - all players ready (UI, WebSocket, room subscription)',
-      data: { contextCount: contexts.length },
-      timestamp: Date.now(),
-      sessionId: 'debug-session',
-      hypothesisId: 'A',
-    }),
-  }).catch(() => {});
-  // #endregion
   // Brief stability wait after all room subscriptions established (allow room broadcasts to settle)
   await new Promise(resolve => setTimeout(resolve, 3000));
 }
@@ -303,21 +261,6 @@ export async function waitForAllPlayersInGame(
  * @param timeoutMs - Max wait in milliseconds (default: 60000)
  */
 export async function ensurePlayerInGame(playerContext: PlayerContext, timeoutMs: number = 60000): Promise<void> {
-  // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      location: 'multiplayer.ts:ensurePlayerInGame:entry',
-      message: 'ensurePlayerInGame called',
-      data: { username: playerContext.player.username },
-      timestamp: Date.now(),
-      sessionId: 'debug-session',
-      hypothesisId: 'A',
-    }),
-  }).catch(() => {});
-  // #endregion
-
   // Step 1: Wait for game UI to appear (not on login screen)
   // Broadened detection: command input, Game Info, game terminal, Player header, Mythos Time, or room content
   await playerContext.page
@@ -342,21 +285,7 @@ export async function ensurePlayerInGame(playerContext: PlayerContext, timeoutMs
       },
       { timeout: timeoutMs }
     )
-    .catch(err => {
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          location: 'multiplayer.ts:ensurePlayerInGame:fail',
-          message: 'ensurePlayerInGame failed - game UI not found',
-          data: { username: playerContext.player.username, error: String(err?.message ?? err) },
-          timestamp: Date.now(),
-          sessionId: 'debug-session',
-          hypothesisId: 'A',
-        }),
-      }).catch(() => {});
-      // #endregion
+    .catch(_err => {
       throw new Error(
         `Player ${playerContext.player.username} did not reach game UI within ${timeoutMs}ms (still on login?)`
       );
@@ -377,21 +306,7 @@ export async function ensurePlayerInGame(playerContext: PlayerContext, timeoutMs
       },
       { timeout: Math.min(timeoutMs, 30000) } // Max 30s for WebSocket connection
     )
-    .catch(err => {
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          location: 'multiplayer.ts:ensurePlayerInGame:websocketFail',
-          message: 'ensurePlayerInGame failed - WebSocket not connected',
-          data: { username: playerContext.player.username, error: String(err?.message ?? err) },
-          timestamp: Date.now(),
-          sessionId: 'debug-session',
-          hypothesisId: 'WebSocket',
-        }),
-      }).catch(() => {});
-      // #endregion
+    .catch(_err => {
       throw new Error(
         `Player ${playerContext.player.username} WebSocket did not connect within ${Math.min(
           timeoutMs,
@@ -432,21 +347,7 @@ export async function ensurePlayerInGame(playerContext: PlayerContext, timeoutMs
       },
       { timeout: tickTimeoutMs }
     )
-    .catch(err => {
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          location: 'multiplayer.ts:ensurePlayerInGame:roomSubscriptionFail',
-          message: 'ensurePlayerInGame failed - room subscription not established (no tick message or room state)',
-          data: { username: playerContext.player.username, error: String(err?.message ?? err) },
-          timestamp: Date.now(),
-          sessionId: 'debug-session',
-          hypothesisId: 'RoomSubscription',
-        }),
-      }).catch(() => {});
-      // #endregion
+    .catch(_err => {
       throw new Error(
         `Player ${playerContext.player.username} room subscription not established within ${tickTimeoutMs}ms (no tick message or room state received)`
       );
@@ -454,21 +355,6 @@ export async function ensurePlayerInGame(playerContext: PlayerContext, timeoutMs
 
   // Brief stability wait after room subscription established
   await new Promise(resolve => setTimeout(resolve, 1000));
-
-  // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      location: 'multiplayer.ts:ensurePlayerInGame:exit',
-      message: 'ensurePlayerInGame succeeded - game UI, WebSocket, and room subscription all ready',
-      data: { username: playerContext.player.username },
-      timestamp: Date.now(),
-      sessionId: 'debug-session',
-      hypothesisId: 'A',
-    }),
-  }).catch(() => {});
-  // #endregion
 }
 
 /**
@@ -483,23 +369,6 @@ export async function waitForCrossPlayerMessage(
   expectedText: string | RegExp,
   timeout: number = 35000
 ): Promise<void> {
-  // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      location: 'multiplayer.ts:waitForCrossPlayerMessage:entry',
-      message: 'waitForCrossPlayerMessage started',
-      data: {
-        username: playerContext.player.username,
-        expectedText: typeof expectedText === 'string' ? expectedText : expectedText.source,
-      },
-      timestamp: Date.now(),
-      sessionId: 'debug-session',
-      hypothesisId: 'D',
-    }),
-  }).catch(() => {});
-  // #endregion
   // Use locator for both string and RegExp: Playwright's filter({ hasText }) accepts RegExp.
   // Prefer locator over waitForFunction for auto-wait, retries, and clearer timeout errors.
   // If this times out, the receiving player may have left the game or be in a different room
@@ -524,20 +393,6 @@ export async function waitForCrossPlayerMessage(
       { cause: err }
     );
   }
-  // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      location: 'multiplayer.ts:waitForCrossPlayerMessage:exit',
-      message: 'waitForCrossPlayerMessage succeeded',
-      data: { username: playerContext.player.username },
-      timestamp: Date.now(),
-      sessionId: 'debug-session',
-      hypothesisId: 'D',
-    }),
-  }).catch(() => {});
-  // #endregion
 }
 
 /**
@@ -571,25 +426,6 @@ export async function ensurePlayersInSameRoom(
   expectedOccupants: number = contexts.length,
   timeoutMs: number = 45000
 ): Promise<void> {
-  // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      location: 'multiplayer.ts:ensurePlayersInSameRoom:entry',
-      message: 'ensurePlayersInSameRoom started',
-      data: {
-        contextCount: contexts.length,
-        expectedOccupants,
-        usernames: contexts.map(c => c.player.username),
-      },
-      timestamp: Date.now(),
-      sessionId: 'debug-session',
-      hypothesisId: 'RoomCoLocation',
-    }),
-  }).catch(() => {});
-  // #endregion
-
   // Step 0: Wait for all players' header connection status to show "Connected" (same as waitForAllPlayersInGame).
   // Do not require absence of "(linkdead)" in the whole body: the Occupants panel can show "Name (linkdead)"
   // even when the header already shows "Connected", which would otherwise block this step forever.
@@ -641,7 +477,7 @@ export async function ensurePlayersInSameRoom(
           expectedOccupants,
           { timeout: timeoutMs }
         )
-        .catch(async err => {
+        .catch(async _err => {
           // Instrumentation: log what each player actually sees when timeout occurs
           const snapshot = await page
             .evaluate(() => {
@@ -679,25 +515,6 @@ export async function ensurePlayersInSameRoom(
           const msg =
             `[instrumentation] ensurePlayersInSameRoom failed: Player ${player.username} - ` +
             `Step 1: occupants - did not see ${expectedOccupants} within ${timeoutMs}ms (saw: ${shortSnap})`;
-          // #region agent log
-          fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              location: 'multiplayer.ts:ensurePlayersInSameRoom:fail',
-              message: 'Player did not see expected occupants in room',
-              data: {
-                username: player.username,
-                expectedOccupants,
-                error: String(err?.message ?? err),
-                snapshot,
-              },
-              timestamp: Date.now(),
-              sessionId: 'debug-session',
-              hypothesisId: 'RoomCoLocation',
-            }),
-          }).catch(() => {});
-          // #endregion
           throw new Error(msg);
         })
     )
@@ -731,19 +548,4 @@ export async function ensurePlayersInSameRoom(
 
   // Brief stability wait after all players see each other and are connected
   await new Promise(resolve => setTimeout(resolve, 1000));
-
-  // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      location: 'multiplayer.ts:ensurePlayersInSameRoom:exit',
-      message: 'ensurePlayersInSameRoom succeeded - all players co-located',
-      data: { contextCount: contexts.length, expectedOccupants },
-      timestamp: Date.now(),
-      sessionId: 'debug-session',
-      hypothesisId: 'RoomCoLocation',
-    }),
-  }).catch(() => {});
-  // #endregion
 }

@@ -7,7 +7,7 @@ This module handles ASCII map rendering and coordinate management endpoints.
 # pylint: disable=too-many-lines  # Reason: Map API requires extensive endpoint handlers for coordinate management, map rendering, and room visualization
 
 import uuid
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, NoReturn
 
 from fastapi import APIRouter, Depends, Query, Request
 from pydantic import BaseModel, Field
@@ -33,6 +33,8 @@ from ..services.coordinate_generator import CoordinateGenerator
 from ..services.coordinate_validator import CoordinateValidator
 from ..services.exploration_service import ExplorationService
 from ..structured_logging.enhanced_logging_config import get_logger
+from .map_helpers import MapZoneContext, load_rooms_with_coordinates
+from .map_minimap import generate_minimap_html
 
 if TYPE_CHECKING:
     from ..async_persistence import AsyncPersistenceLayer
@@ -133,11 +135,9 @@ async def _apply_exploration_filter_if_needed(  # pylint: disable=too-many-argum
     return rooms
 
 
-async def _ensure_coordinates_generated(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Coordinate generation requires many parameters for plane/zone/subzone context
+async def _ensure_coordinates_generated(
     session: AsyncSession,
-    plane: str,
-    zone: str,
-    sub_zone: str | None,
+    zone_ctx: MapZoneContext,
     rooms: list[dict[str, Any]],
     player: Any,
     player_id: uuid.UUID | None,
@@ -152,9 +152,7 @@ async def _ensure_coordinates_generated(  # pylint: disable=too-many-arguments,t
 
     Args:
         session: Database session
-        plane: Plane name
-        zone: Zone name
-        sub_zone: Optional sub-zone name
+        zone_ctx: Plane, zone, and sub_zone for the map area
         rooms: List of room dictionaries
         player: Player object
         player_id: Player UUID
@@ -168,14 +166,85 @@ async def _ensure_coordinates_generated(  # pylint: disable=too-many-arguments,t
     if _needs_coordinate_generation(rooms):
         logger.debug("Generating missing coordinates", room_count=len(rooms))
         generator = CoordinateGenerator(session)
-        await generator.generate_coordinates_for_zone(plane, zone, sub_zone)
-        rooms = await _load_rooms_with_coordinates(session, plane, zone, sub_zone)
+        await generator.generate_coordinates_for_zone(zone_ctx.plane, zone_ctx.zone, zone_ctx.sub_zone)
+        rooms = await load_rooms_with_coordinates(session, zone_ctx.plane, zone_ctx.zone, zone_ctx.sub_zone)
 
     rooms = await _apply_exploration_filter_if_needed(
         rooms, current_user, player, player_id, exploration_service, session, room_service
     )
 
     return rooms
+
+
+async def _prepare_ascii_map_context(
+    request: Request,
+    zone_context: MapZoneContext,
+    current_user: User | None,
+    session: AsyncSession,
+    persistence: "AsyncPersistenceLayer",
+    exploration_service: ExplorationService,
+    room_service: RoomService,
+) -> tuple[list[dict[str, Any]], str | None]:
+    """
+    Prepare rooms and current_room_id for ASCII map rendering.
+    """
+    current_room_id = await _get_current_room_id(request, current_user, persistence)
+
+    rooms = await load_rooms_with_coordinates(session, zone_context.plane, zone_context.zone, zone_context.sub_zone)
+
+    player, player_id, _ = await _get_player_and_exploration_service(current_user, persistence, exploration_service)
+
+    if player and exploration_service and player_id:
+        rooms = await _filter_explored_rooms(rooms, player_id, exploration_service, session, room_service)
+
+    rooms = await _ensure_coordinates_generated(
+        session,
+        zone_context,
+        rooms,
+        player,
+        player_id,
+        exploration_service,
+        current_user,
+        room_service,
+    )
+
+    return rooms, current_room_id
+
+
+def _handle_ascii_map_error(e: Exception, plane: str, zone: str, sub_zone: str | None) -> NoReturn:
+    """
+    Log and wrap ASCII map errors in LoggedHTTPException. Always raises.
+    """
+    logger.error(
+        "Error generating ASCII map",
+        error=str(e),
+        plane=plane,
+        zone=zone,
+        sub_zone=sub_zone,
+        exc_info=True,
+    )
+    raise LoggedHTTPException(
+        status_code=500,
+        detail="Failed to generate ASCII map",
+    ) from e
+
+
+async def _get_minimap_player_and_room_id(
+    request: Request,
+    current_user: User | None,
+    persistence: "AsyncPersistenceLayer",
+) -> tuple[Any, str | None]:
+    """
+    Resolve player and current_room_id for minimap. Raises LoggedHTTPException if not authenticated or player not found.
+    Returns (player, current_room_id).
+    """
+    if not current_user:
+        raise LoggedHTTPException(status_code=401, detail="Authentication required")
+    player = await persistence.get_player_by_user_id(str(current_user.id))
+    if not player:
+        raise LoggedHTTPException(status_code=404, detail="Player not found")
+    current_room_id = request.query_params.get("current_room_id") or player.current_room_id
+    return player, current_room_id
 
 
 @map_router.get("/ascii", response_model=AsciiMapResponse)
@@ -209,18 +278,15 @@ async def get_ascii_map(  # pylint: disable=too-many-arguments,too-many-position
             viewport_x=viewport_x,
             viewport_y=viewport_y,
         )
-
-        current_room_id = await _get_current_room_id(request, current_user, persistence)
-
-        rooms = await _load_rooms_with_coordinates(session, plane, zone, sub_zone)
-
-        player, player_id, _ = await _get_player_and_exploration_service(current_user, persistence, exploration_service)
-
-        if player and exploration_service and player_id:
-            rooms = await _filter_explored_rooms(rooms, player_id, exploration_service, session, room_service)
-
-        rooms = await _ensure_coordinates_generated(
-            session, plane, zone, sub_zone, rooms, player, player_id, exploration_service, current_user, room_service
+        zone_context = MapZoneContext(plane, zone, sub_zone)
+        rooms, current_room_id = await _prepare_ascii_map_context(
+            request=request,
+            zone_context=zone_context,
+            current_user=current_user,
+            session=session,
+            persistence=persistence,
+            exploration_service=exploration_service,
+            room_service=room_service,
         )
 
         renderer = AsciiMapRenderer()
@@ -238,27 +304,11 @@ async def get_ascii_map(  # pylint: disable=too-many-arguments,too-many-position
             plane=plane,
             zone=zone,
             sub_zone=sub_zone,
-            viewport={
-                "x": viewport_x,
-                "y": viewport_y,
-                "width": viewport_width,
-                "height": viewport_height,
-            },
+            viewport={"x": viewport_x, "y": viewport_y, "width": viewport_width, "height": viewport_height},
         )
 
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Map generation errors unpredictable, must handle gracefully
-        logger.error(
-            "Error generating ASCII map",
-            error=str(e),
-            plane=plane,
-            zone=zone,
-            sub_zone=sub_zone,
-            exc_info=True,
-        )
-        raise LoggedHTTPException(
-            status_code=500,
-            detail="Failed to generate ASCII map",
-        ) from e
+        _handle_ascii_map_error(e, plane, zone, sub_zone)
 
 
 @map_router.get("/ascii/minimap", response_model=AsciiMinimapResponse)
@@ -280,45 +330,23 @@ async def get_ascii_minimap(  # pylint: disable=too-many-arguments,too-many-posi
     Returns a small ASCII map showing area around the player's current room.
     """
     try:
-        if not current_user:
+        player, current_room_id = await _get_minimap_player_and_room_id(request, current_user, persistence)
+        # Type narrowing and runtime guard; _get_minimap_player_and_room_id raises if unauthenticated
+        if current_user is None:
             raise LoggedHTTPException(status_code=401, detail="Authentication required")
 
-        # Get player object (needed for exploration filtering)
-        user_id = str(current_user.id)
-        player = await persistence.get_player_by_user_id(user_id)
-        if not player:
-            raise LoggedHTTPException(status_code=404, detail="Player not found")
-
-        # Get current room ID - prefer client-provided value, fallback to database
-        current_room_id = request.query_params.get("current_room_id") or player.current_room_id
-
-        # Load rooms with coordinates
-        rooms = await _load_rooms_with_coordinates(session, plane, zone, sub_zone)
-
-        # Filter to explored rooms if not admin
-        if not (current_user.is_admin or current_user.is_superuser):
-            player_id = uuid.UUID(str(player.player_id))
-            rooms = await room_service.filter_rooms_by_exploration(rooms, player_id, exploration_service, session)
-
-            logger.debug(
-                "Filtered rooms by exploration for minimap",
-                filtered_count=len(rooms),
-            )
-        else:
-            # Player has explored no rooms - return empty list
-            rooms = []
-            logger.debug("Player has explored no rooms for minimap, returning empty list")
-
-        # Render minimap (always centers on player)
-        # Size parameter directly controls dimensions (e.g., size=5 means 5x5 grid)
-        renderer = AsciiMapRenderer()
-        html_map = renderer.render_map(
-            rooms=rooms,
+        player_id = uuid.UUID(str(player.player_id)) if player else None
+        is_admin = current_user.is_admin or current_user.is_superuser
+        zone_context = MapZoneContext(plane=plane, zone=zone, sub_zone=sub_zone)
+        html_map = await generate_minimap_html(
+            session=session,
+            zone_context=zone_context,
+            size=size,
             current_room_id=current_room_id,
-            viewport_width=size,
-            viewport_height=size,
-            viewport_x=0,  # Will be auto-centered
-            viewport_y=0,  # Will be auto-centered
+            is_admin=is_admin,
+            player_id=player_id,
+            exploration_service=exploration_service,
+            room_service=room_service,
         )
 
         return AsciiMinimapResponse(
@@ -344,127 +372,6 @@ async def get_ascii_minimap(  # pylint: disable=too-many-arguments,too-many-posi
             status_code=500,
             detail="Failed to generate ASCII minimap",
         ) from e
-
-
-def _build_zone_pattern(plane: str, zone: str, sub_zone: str | None) -> str:
-    """
-    Build zone pattern for room query.
-
-    Args:
-        plane: Plane name
-        zone: Zone name
-        sub_zone: Optional sub-zone name
-
-    Returns:
-        Zone pattern string for SQL LIKE query
-    """
-    zone_pattern = f"{plane}_{zone}"
-    if sub_zone:
-        zone_pattern = f"{zone_pattern}_{sub_zone}"
-    return zone_pattern
-
-
-def _build_room_dict(row: Any) -> dict[str, Any]:
-    """
-    Build room dictionary from database row.
-
-    Args:
-        row: Database row result
-
-    Returns:
-        Room dictionary with all room properties
-    """
-    attrs = row[3] if row[3] else {}
-    return {
-        "id": row[1],  # Use stable_id as id
-        "uuid": str(row[0]),
-        "stable_id": row[1],
-        "name": row[2],
-        "attributes": attrs,
-        "map_x": float(row[4]) if row[4] is not None else None,
-        "map_y": float(row[5]) if row[5] is not None else None,
-        "map_origin_zone": bool(row[6]) if row[6] is not None else False,
-        "map_symbol": row[7],
-        "map_style": row[8],
-        "environment": attrs.get("environment", "outdoors"),
-        "exits": {},
-    }
-
-
-async def _load_room_exits(session: AsyncSession, rooms: list[dict[str, Any]]) -> None:
-    """
-    Load exits for rooms and attach them to room dictionaries.
-
-    Args:
-        session: Database session
-        rooms: List of room dictionaries to populate with exits
-    """
-    if not rooms:
-        return
-
-    stable_ids = [r["stable_id"] for r in rooms]
-    exits_query = text("""
-        SELECT r1.stable_id as from_stable_id, r2.stable_id as to_stable_id, rl.direction
-        FROM room_links rl
-        JOIN rooms r1 ON rl.from_room_id = r1.id
-        JOIN rooms r2 ON rl.to_room_id = r2.id
-        WHERE r1.stable_id = ANY(:stable_ids)
-    """)
-    exits_result = await session.execute(exits_query, {"stable_ids": stable_ids})
-
-    exits_by_room: dict[str, dict[str, str]] = {}
-    for row in exits_result:
-        from_stable = row[0]
-        to_stable = row[1]
-        direction = row[2]
-        if from_stable not in exits_by_room:
-            exits_by_room[from_stable] = {}
-        exits_by_room[from_stable][direction] = to_stable
-
-    for room in rooms:
-        room["exits"] = exits_by_room.get(room["stable_id"], {})
-
-
-async def _load_rooms_with_coordinates(
-    session: AsyncSession, plane: str, zone: str, sub_zone: str | None
-) -> list[dict[str, Any]]:
-    """
-    Load rooms with their coordinates and exits.
-
-    Args:
-        session: Database session
-        plane: Plane name
-        zone: Zone name
-        sub_zone: Optional sub-zone name
-
-    Returns:
-        List of room dictionaries with coordinates and exits
-    """
-    zone_pattern = _build_zone_pattern(plane, zone, sub_zone)
-
-    query = text("""
-        SELECT
-            r.id,
-            r.stable_id,
-            r.name,
-            r.attributes,
-            r.map_x,
-            r.map_y,
-            r.map_origin_zone,
-            r.map_symbol,
-            r.map_style
-        FROM rooms r
-        JOIN subzones sz ON r.subzone_id = sz.id
-        JOIN zones z ON sz.zone_id = z.id
-        WHERE r.stable_id LIKE :pattern || '%'
-    """)
-
-    result = await session.execute(query, {"pattern": zone_pattern})
-    rooms = [_build_room_dict(row) for row in result]
-
-    await _load_room_exits(session, rooms)
-
-    return rooms
 
 
 @map_router.post("/coordinates/recalculate", response_model=CoordinateRecalculationResponse)

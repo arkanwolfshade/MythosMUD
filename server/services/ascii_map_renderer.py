@@ -82,34 +82,76 @@ class AsciiMapRenderer:
             },
         }
 
+    def _exit_is_bidirectional(
+        self,
+        target_room: dict[str, Any],
+        direction: str,
+        from_room_id: Any,
+    ) -> bool:
+        """True if target room has a reverse exit back to from_room_id."""
+        target_exits = target_room.get("exits", {})
+        reverse_dir = self._get_reverse_direction(direction)
+        return reverse_dir in target_exits and target_exits[reverse_dir] == from_room_id
+
+    def _resolve_exit_target(
+        self,
+        rooms: list[dict[str, Any]],
+        target_id: Any,
+        direction: str,
+        from_room_id: Any,
+    ) -> tuple[tuple[int, int], bool] | None:
+        """
+        Resolve one exit to (target_x, target_y) and is_bidirectional. Returns None if invalid.
+        """
+        target_id_str = str(target_id) if target_id else ""
+        target_room = next(
+            (r for r in rooms if str(r.get("id") or r.get("stable_id", "")) == target_id_str),
+            None,
+        )
+        if not target_room:
+            return None
+        target_x = target_room.get("map_x")
+        target_y = target_room.get("map_y")
+        if target_x is None or target_y is None:
+            return None
+        tx, ty = int(target_x), int(target_y)
+        is_bidirectional = self._exit_is_bidirectional(target_room, direction, from_room_id)
+        return ((tx, ty), is_bidirectional)
+
+    def _get_exit_entries_for_room(
+        self,
+        room: dict[str, Any],
+        rooms: list[dict[str, Any]],
+    ) -> list[tuple[str, tuple[int, int], bool]]:
+        """
+        Return list of (direction, (target_x, target_y), is_bidirectional) for exits
+        from this room that have valid target coordinates.
+        """
+        room_id = room.get("id") or room.get("stable_id", "")
+        exits = room.get("exits", {})
+        entries: list[tuple[str, tuple[int, int], bool]] = []
+        for direction, target_id in exits.items():
+            resolved = self._resolve_exit_target(rooms, target_id, direction, room_id)
+            if resolved:
+                entries.append((direction, resolved[0], resolved[1]))
+        return entries
+
     def _build_exit_lookup(self, rooms: list[dict[str, Any]]) -> dict[tuple[int, int], dict[str, dict[str, Any]]]:
         """Build exit lookup map from room data."""
         exit_from: dict[tuple[int, int], dict[str, dict[str, Any]]] = {}
         for room in rooms:
-            room_id = room.get("id") or room.get("stable_id", "")
             map_x = room.get("map_x")
             map_y = room.get("map_y")
             if map_x is None or map_y is None:
                 continue
-            x = int(map_x)
-            y = int(map_y)
-            exits = room.get("exits", {})
-            for direction, target_id in exits.items():
-                target_id_str = str(target_id) if target_id else ""
-                target_room = next(
-                    (r for r in rooms if str(r.get("id") or r.get("stable_id", "")) == target_id_str), None
-                )
-                if target_room:
-                    target_x = target_room.get("map_x")
-                    target_y = target_room.get("map_y")
-                    if target_x is not None and target_y is not None:
-                        tx, ty = int(target_x), int(target_y)
-                        target_exits = target_room.get("exits", {})
-                        reverse_dir = self._get_reverse_direction(direction)
-                        is_bidirectional = reverse_dir in target_exits and target_exits[reverse_dir] == room_id
-                        if (x, y) not in exit_from:
-                            exit_from[(x, y)] = {}
-                        exit_from[(x, y)][direction] = {"target": (tx, ty), "is_bidirectional": is_bidirectional}
+            x, y = int(map_x), int(map_y)
+            for direction, target_coords, is_bidirectional in self._get_exit_entries_for_room(room, rooms):
+                if (x, y) not in exit_from:
+                    exit_from[(x, y)] = {}
+                exit_from[(x, y)][direction] = {
+                    "target": target_coords,
+                    "is_bidirectional": is_bidirectional,
+                }
         return exit_from
 
     def _auto_center_viewport(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Viewport centering requires many parameters for context and viewport calculations
@@ -121,7 +163,7 @@ class AsciiMapRenderer:
         viewport_x: int,
         viewport_y: int,
     ) -> tuple[int, int]:
-        """Auto-center viewport on current room if provided."""
+        """Center viewport on the character's current room so the player is in the middle of the minimap."""
         current_id_str = str(current_room_id) if current_room_id else None
         if current_id_str and current_id_str in room_positions:
             player_x, player_y = room_positions[current_id_str]
@@ -145,13 +187,13 @@ class AsciiMapRenderer:
                 symbol = cell.get("symbol", " ")
                 is_player = cell.get("is_player", False)
                 room_name = cell.get("room_name", "")
-                style = self.style_colors[map_style]["player"] if is_player else self.style_colors[map_style]["room"]
+                # Use class so client SafeHtml (ALLOWED_ATTR: ['class']) preserves styling
+                room_class = "ascii-map-player" if is_player else f"ascii-map-room ascii-map-room-{map_style}"
                 title_attr = f' title="{room_name}"' if room_name else ""
-                line.append(f'<span style="{style}"{title_attr}>{symbol}</span>')
+                line.append(f'<span class="{room_class}"{title_attr}>{symbol}</span>')
                 exit_char = self._get_horizontal_exit_char(x, y, exit_from, grid, viewport_x, viewport_width)
                 if exit_char:
-                    exit_style = self.style_colors[map_style]["exit"]
-                    line.append(f'<span style="{exit_style}">{exit_char}</span>')
+                    line.append(f'<span class="ascii-map-exit ascii-map-exit-{map_style}">{exit_char}</span>')
                 else:
                     line.append(" ")
             else:
@@ -179,8 +221,7 @@ class AsciiMapRenderer:
             if isinstance(cell, dict) and isinstance(next_cell, dict):
                 exit_char = self._get_vertical_exit_char(x, y, exit_from, grid, viewport_y, viewport_height)
                 if exit_char:
-                    exit_style = self.style_colors[map_style]["exit"]
-                    exit_line.append(f'<span style="{exit_style}">{exit_char}</span>')
+                    exit_line.append(f'<span class="ascii-map-exit ascii-map-exit-{map_style}">{exit_char}</span>')
                     exit_line.append(" ")
                 else:
                     exit_line.append("  ")
@@ -222,7 +263,7 @@ class AsciiMapRenderer:
         exit_from = self._build_exit_lookup(rooms)
 
         html_lines = []
-        html_lines.append('<div class="ascii-map" style="font-family: monospace; white-space: pre; line-height: 1.2;">')
+        html_lines.append('<div class="ascii-map">')
 
         for y in range(viewport_y, viewport_y + viewport_height):
             html_lines.append(self._render_room_row(y, grid, exit_from, map_style, viewport_x, viewport_width))
@@ -234,6 +275,23 @@ class AsciiMapRenderer:
 
         html_lines.append("</div>")
         return "\n".join(html_lines)
+
+    def _horizontal_exit_char_between(
+        self,
+        east_exit: dict[str, Any] | None,
+        west_exit_back: dict[str, Any] | None,
+        next_x: int,
+        y: int,
+        x: int,
+    ) -> str | None:
+        """Return the horizontal exit character (—, >, or <) given east/west exit state, or None."""
+        if east_exit and east_exit.get("target") == (next_x, y):
+            if west_exit_back and west_exit_back.get("target") == (x, y):
+                return "—"  # em dash, bidirectional
+            return ">"
+        if west_exit_back and west_exit_back.get("target") == (x, y):
+            return "<"
+        return None
 
     def _get_horizontal_exit_char(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Exit character calculation requires many parameters for context and character selection
         self,
@@ -257,30 +315,31 @@ class AsciiMapRenderer:
         Returns:
             Exit character to display, or None
         """
-        room_exits = exit_from.get((x, y), {})
-
-        # Check for east exit (room to the right)
         next_x = x + 1
-        if next_x < viewport_x + viewport_width:
-            next_cell = grid.get((next_x, y))
-            if isinstance(next_cell, dict):  # There's a room to the east
-                # Check if current room has east exit
-                east_exit = room_exits.get("east")
-                # Check if next room has west exit back
-                next_exits = exit_from.get((next_x, y), {})
-                west_exit_back = next_exits.get("west")
+        if next_x >= viewport_x + viewport_width:
+            return None
+        next_cell = grid.get((next_x, y))
+        if not isinstance(next_cell, dict):
+            return None
+        room_exits = exit_from.get((x, y), {})
+        next_exits = exit_from.get((next_x, y), {})
+        return self._horizontal_exit_char_between(room_exits.get("east"), next_exits.get("west"), next_x, y, x)
 
-                if east_exit and east_exit["target"] == (next_x, y):
-                    # Current room has east exit
-                    if west_exit_back and west_exit_back["target"] == (x, y):
-                        # Bidirectional
-                        return "—"  # em dash
-                    # One-way east
-                    return ">"
-                if west_exit_back and west_exit_back["target"] == (x, y):
-                    # Next room has west exit (one-way west)
-                    return "<"
-
+    def _vertical_exit_char_between(
+        self,
+        south_exit: dict[str, Any] | None,
+        north_exit_back: dict[str, Any] | None,
+        next_y: int,
+        x: int,
+        y: int,
+    ) -> str | None:
+        """Return the vertical exit character (|, v, or ^) given south/north exit state, or None."""
+        if south_exit and south_exit.get("target") == (x, next_y):
+            if north_exit_back and north_exit_back.get("target") == (x, y):
+                return "|"  # bidirectional
+            return "v"
+        if north_exit_back and north_exit_back.get("target") == (x, y):
+            return "^"
         return None
 
     def _get_vertical_exit_char(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Exit character calculation requires many parameters for context and character selection
@@ -305,30 +364,15 @@ class AsciiMapRenderer:
         Returns:
             Exit character to display, or None
         """
-        room_exits = exit_from.get((x, y), {})
         next_y = y + 1
-
-        if next_y < viewport_y + viewport_height:
-            next_cell = grid.get((x, next_y), " ")
-            if isinstance(next_cell, dict):  # There's a room to the south
-                # Check if current room has south exit
-                south_exit = room_exits.get("south")
-                # Check if next room has north exit back
-                next_exits = exit_from.get((x, next_y), {})
-                north_exit_back = next_exits.get("north")
-
-                if south_exit and south_exit["target"] == (x, next_y):
-                    # Current room has south exit
-                    if north_exit_back and north_exit_back["target"] == (x, y):
-                        # Bidirectional
-                        return "|"
-                    # One-way south
-                    return "v"
-                if north_exit_back and north_exit_back["target"] == (x, y):
-                    # Next room has north exit (one-way north)
-                    return "^"
-
-        return None
+        if next_y >= viewport_y + viewport_height:
+            return None
+        next_cell = grid.get((x, next_y), " ")
+        if not isinstance(next_cell, dict):
+            return None
+        room_exits = exit_from.get((x, y), {})
+        next_exits = exit_from.get((x, next_y), {})
+        return self._vertical_exit_char_between(room_exits.get("south"), next_exits.get("north"), next_y, x, y)
 
     def _determine_map_style(self, rooms: list[dict[str, Any]]) -> str:
         """
@@ -398,6 +442,12 @@ class AsciiMapRenderer:
             # Compare with current_room_id (convert to string if needed)
             current_id_str = str(current_room_id) if current_room_id else ""
             is_player = room_id == current_id_str
+            # When multiple rooms share the same (x,y), later one overwrites; preserve player
+            # highlight so the current room is always shown (log evidence: in_room_positions
+            # true but any_is_player false when duplicate coords overwrote the cell).
+            existing = grid.get((x, y))
+            if isinstance(existing, dict) and existing.get("is_player"):
+                is_player = True
 
             grid[(x, y)] = {
                 "symbol": symbol,
@@ -482,7 +532,7 @@ class AsciiMapRenderer:
             HTML string with empty map
         """
         html_lines = []
-        html_lines.append('<div class="ascii-map" style="font-family: monospace; white-space: pre; line-height: 1.2;">')
+        html_lines.append('<div class="ascii-map">')
         for _ in range(height):
             html_lines.append(" " * width)
         html_lines.append("</div>")

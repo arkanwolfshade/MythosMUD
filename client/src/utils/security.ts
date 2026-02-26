@@ -465,7 +465,7 @@ export const inputSanitizer = {
 
     const config = {
       ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'br', 'p', 'span', 'div', 'ul', 'ol', 'li', 'code', 'pre'],
-      ALLOWED_ATTR: ['class'],
+      ALLOWED_ATTR: ['class'], // no style: XSS via javascript: in url(); map styling via .ascii-map in CSS
       ALLOW_DATA_ATTR: false,
       ALLOW_UNKNOWN_PROTOCOLS: false,
       SAFE_FOR_TEMPLATES: true,

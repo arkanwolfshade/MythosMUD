@@ -112,6 +112,10 @@ export interface PanelState {
   zIndex: number;
   minSize?: PanelSize;
   maxSize?: PanelSize;
+  /** When true, panel uses opaque background so it stays readable over other panels (e.g. minimap popout). */
+  opaque?: boolean;
+  /** Minimum content height in px so the panel does not collapse (e.g. inline map visibility). */
+  minHeight?: number;
 }
 
 export interface PanelLayout {

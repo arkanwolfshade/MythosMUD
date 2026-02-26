@@ -1,7 +1,8 @@
 // Tabbed interface overlay component
 // Extracted from GameClientV2Container to reduce complexity
 
-import React from 'react';
+import React, { useRef } from 'react';
+import { Z_INDEX_OVERLAY_TOP } from '../../../constants/layout';
 import type { Tab } from '../TabbedInterface';
 
 interface TabbedInterfaceOverlayProps {
@@ -17,15 +18,28 @@ export const TabbedInterfaceOverlay: React.FC<TabbedInterfaceOverlayProps> = ({
   setActiveTab,
   closeTab,
 }) => {
+  const rootRef = useRef<HTMLDivElement>(null);
+
   if (tabs.length === 0) {
     return null;
   }
 
   return (
-    <div className="fixed inset-0 z-9999 bg-mythos-terminal-background">
-      <div className="flex flex-col h-full">
+    <div
+      ref={rootRef}
+      className="fixed inset-0 flex flex-col"
+      style={{
+        backgroundColor: '#0a0a0a',
+        opacity: 1,
+        zIndex: Z_INDEX_OVERLAY_TOP,
+      }}
+    >
+      <div className="flex flex-col h-full flex-1 min-h-0">
         {/* Tab Bar */}
-        <div className="flex items-center border-b border-mythos-terminal-border bg-mythos-terminal-background overflow-x-auto">
+        <div
+          className="flex items-center border-b border-mythos-terminal-border overflow-x-auto shrink-0"
+          style={{ backgroundColor: '#0a0a0a' }}
+        >
           {tabs.map(tab => (
             <div
               key={tab.id}
@@ -56,8 +70,10 @@ export const TabbedInterfaceOverlay: React.FC<TabbedInterfaceOverlayProps> = ({
             </div>
           ))}
         </div>
-        {/* Tab Content */}
-        <div className="flex-1 overflow-hidden">{tabs.find(tab => tab.id === activeTabId)?.content}</div>
+        {/* Tab Content: opaque background so map popout does not show game UI through */}
+        <div className="flex-1 overflow-hidden min-h-0" style={{ backgroundColor: '#0a0a0a' }}>
+          {tabs.find(tab => tab.id === activeTabId)?.content}
+        </div>
       </div>
     </div>
   );
