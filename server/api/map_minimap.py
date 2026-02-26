@@ -15,7 +15,7 @@ from ..game.room_service import RoomService
 from ..services.ascii_map_renderer import AsciiMapRenderer
 from ..services.exploration_service import ExplorationService
 from ..structured_logging.enhanced_logging_config import get_logger
-from .map_helpers import load_rooms_with_coordinates, load_single_room_with_coordinates
+from .map_helpers import MapZoneContext, load_rooms_with_coordinates, load_single_room_with_coordinates
 
 logger = get_logger(__name__)
 
@@ -95,9 +95,7 @@ def _apply_minimap_fallback_coordinates(
 
 async def generate_minimap_html(
     session: AsyncSession,
-    plane: str,
-    zone: str,
-    sub_zone: str | None,
+    zone_context: MapZoneContext,
     size: int,
     current_room_id: str | None,
     is_admin: bool,
@@ -111,9 +109,7 @@ async def generate_minimap_html(
 
     Args:
         session: Database session
-        plane: Plane name
-        zone: Zone name
-        sub_zone: Optional sub-zone name
+        zone_context: Plane, zone, and sub_zone for the map
         size: Minimap grid size (e.g. 5 for 5x5)
         current_room_id: Player's current room ID (for centering and fallback)
         is_admin: Whether the user is admin/superuser (sees all rooms)
@@ -124,7 +120,7 @@ async def generate_minimap_html(
     Returns:
         Rendered minimap HTML string
     """
-    rooms = await load_rooms_with_coordinates(session, plane, zone, sub_zone)
+    rooms = await load_rooms_with_coordinates(session, zone_context.plane, zone_context.zone, zone_context.sub_zone)
     rooms_before_filter = list(rooms)
 
     if not is_admin and player_id is not None:

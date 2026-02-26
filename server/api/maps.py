@@ -7,7 +7,7 @@ This module handles ASCII map rendering and coordinate management endpoints.
 # pylint: disable=too-many-lines  # Reason: Map API requires extensive endpoint handlers for coordinate management, map rendering, and room visualization
 
 import uuid
-from typing import TYPE_CHECKING, Any, NamedTuple, NoReturn
+from typing import TYPE_CHECKING, Any, NoReturn
 
 from fastapi import APIRouter, Depends, Query, Request
 from pydantic import BaseModel, Field
@@ -33,7 +33,7 @@ from ..services.coordinate_generator import CoordinateGenerator
 from ..services.coordinate_validator import CoordinateValidator
 from ..services.exploration_service import ExplorationService
 from ..structured_logging.enhanced_logging_config import get_logger
-from .map_helpers import load_rooms_with_coordinates
+from .map_helpers import MapZoneContext, load_rooms_with_coordinates
 from .map_minimap import generate_minimap_html
 
 if TYPE_CHECKING:
@@ -45,14 +45,6 @@ logger = get_logger(__name__)
 map_router = APIRouter(prefix="/maps", tags=["maps"])
 
 logger.info("Maps API router initialized", prefix="/maps")
-
-
-class _MapZoneContext(NamedTuple):
-    """Plane/zone/subzone for map operations. Groups three params to satisfy parameter-count limit."""
-
-    plane: str
-    zone: str
-    sub_zone: str | None
 
 
 async def _get_current_room_id(
@@ -145,7 +137,7 @@ async def _apply_exploration_filter_if_needed(  # pylint: disable=too-many-argum
 
 async def _ensure_coordinates_generated(
     session: AsyncSession,
-    zone_ctx: _MapZoneContext,
+    zone_ctx: MapZoneContext,
     rooms: list[dict[str, Any]],
     player: Any,
     player_id: uuid.UUID | None,
@@ -209,7 +201,7 @@ async def _prepare_ascii_map_context(
 
     rooms = await _ensure_coordinates_generated(
         session,
-        _MapZoneContext(plane, zone, sub_zone),
+        MapZoneContext(plane, zone, sub_zone),
         rooms,
         player,
         player_id,
@@ -346,11 +338,10 @@ async def get_ascii_minimap(  # pylint: disable=too-many-arguments,too-many-posi
 
         player_id = uuid.UUID(str(player.player_id)) if player else None
         is_admin = current_user.is_admin or current_user.is_superuser
+        zone_context = MapZoneContext(plane=plane, zone=zone, sub_zone=sub_zone)
         html_map = await generate_minimap_html(
             session=session,
-            plane=plane,
-            zone=zone,
-            sub_zone=sub_zone,
+            zone_context=zone_context,
             size=size,
             current_room_id=current_room_id,
             is_admin=is_admin,

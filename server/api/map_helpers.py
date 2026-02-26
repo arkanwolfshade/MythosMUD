@@ -4,7 +4,7 @@ Map API helpers: room loading and zone pattern utilities.
 Extracted from maps.py to keep endpoint module under nloc limit.
 """
 
-from typing import Any
+from typing import Any, NamedTuple
 
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -12,6 +12,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
+
+
+class MapZoneContext(NamedTuple):
+    """Plane, zone, and sub_zone grouped for map/minimap APIs to reduce parameter count."""
+
+    plane: str
+    zone: str
+    sub_zone: str | None
 
 
 def build_zone_pattern(plane: str, zone: str, sub_zone: str | None) -> str:

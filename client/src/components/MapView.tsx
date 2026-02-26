@@ -10,6 +10,7 @@
  */
 
 import React, { useEffect } from 'react';
+import { Z_INDEX_OVERLAY_TOP } from '../constants/layout';
 import { getVersionedApiBaseUrl } from '../utils/config';
 import { AsciiMapViewer } from './map/AsciiMapViewer';
 
@@ -93,7 +94,7 @@ export const MapView: React.FC<MapViewProps> = ({
 
   const opaqueStyle = hideHeader
     ? { backgroundColor: '#0a0a0a', opacity: 1 }
-    : { backgroundColor: '#0a0a0a', opacity: 1, zIndex: 2147483647 };
+    : { backgroundColor: '#0a0a0a', opacity: 1, zIndex: Z_INDEX_OVERLAY_TOP };
   return (
     <div
       className={`${hideHeader ? 'h-full w-full' : 'fixed inset-0'} bg-mythos-terminal-background flex flex-col`}

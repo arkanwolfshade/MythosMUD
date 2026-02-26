@@ -61,8 +61,8 @@ body {
   opacity: 1 !important;
 }
 
-/* Opaque layer via pseudo-element so minimap popout never shows panels through */
-[data-minimap-popout]::before {
+/* Opaque layer via pseudo-element so opaque panels (e.g. minimap popout) never show others through */
+[data-panel-opaque]::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -71,7 +71,7 @@ body {
   pointer-events: none;
   border-radius: inherit;
 }
-[data-minimap-popout] > * {
+[data-panel-opaque] > * {
   position: relative;
   z-index: 1;
 }

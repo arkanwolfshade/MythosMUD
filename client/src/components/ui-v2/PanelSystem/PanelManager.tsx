@@ -56,6 +56,25 @@ const storedLayoutFitsViewport = (
   );
 };
 
+// Copy optional panel metadata (opaque, minHeight) from default into stored so saved layouts get new behavior.
+function mergePanelMetadataFromDefault(
+  stored: Record<string, PanelState>,
+  defaultPanels: Record<string, PanelState>
+): Record<string, PanelState> {
+  const result = { ...stored };
+  for (const id of Object.keys(result)) {
+    const def = defaultPanels[id];
+    if (!def) continue;
+    const patch: Partial<PanelState> = {};
+    if (def.opaque !== undefined) patch.opaque = def.opaque;
+    if (def.minHeight !== undefined) patch.minHeight = def.minHeight;
+    if (Object.keys(patch).length > 0) {
+      result[id] = { ...result[id], ...patch };
+    }
+  }
+  return result;
+}
+
 type PanelReducerHandler = (state: PanelManagerState, payload: unknown) => PanelManagerState;
 
 const panelActionHandlers: Record<PanelAction['type'], PanelReducerHandler> = {
@@ -93,7 +112,10 @@ export const PanelManagerProvider: React.FC<PanelManagerProviderProps> = ({ chil
     const stored = loadPanelLayout();
     const vw = typeof window !== 'undefined' ? window.innerWidth : 1920;
     const vh = typeof window !== 'undefined' ? window.innerHeight : 1080;
-    const panelsToUse = stored && storedLayoutFitsViewport(stored, vw, vh) ? stored : defaultPanels;
+    const panelsToUse =
+      stored && storedLayoutFitsViewport(stored, vw, vh)
+        ? mergePanelMetadataFromDefault(stored, defaultPanels)
+        : defaultPanels;
     dispatch({ type: 'INIT_PANELS', payload: panelsToUse });
   }, [defaultPanels]);
 

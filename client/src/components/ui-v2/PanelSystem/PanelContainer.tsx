@@ -19,6 +19,10 @@ interface PanelContainerProps {
   maxSize?: PanelSize;
   variant?: PanelVariant;
   className?: string;
+  /** Opaque background so panel stays readable over others (e.g. minimap popout). */
+  opaque?: boolean;
+  /** Minimum content height in px to avoid collapsed content. */
+  minHeight?: number;
   onPositionChange: (id: string, position: PanelPosition) => void;
   onSizeChange: (id: string, size: PanelSize) => void;
   onMinimize: (id: string) => void;
@@ -43,6 +47,8 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
     maxSize,
     variant = 'default',
     className = '',
+    opaque = false,
+    minHeight,
     onPositionChange,
     onSizeChange,
     onMinimize,
@@ -134,10 +140,10 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
       }
     }, [id, onClose]);
 
-    // Get variant classes; minimap panel uses opaque background so it stays readable over other panels
+    // Get variant classes; opaque panels use full opacity so they stay readable over other panels
     const variantClasses = useMemo(() => {
       const base = 'bg-mythos-terminal-surface border-gray-700';
-      if (id === 'minimap') {
+      if (opaque) {
         return `${base} bg-opacity-100`;
       }
       switch (variant) {
@@ -148,12 +154,12 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
         default:
           return base;
       }
-    }, [variant, id]);
+    }, [variant, opaque]);
 
     // Calculate current display size (maximized or normal)
-    // Minimap panel: ensure minimum height so inline map is visible (avoids collapsed ~2px content area)
+    // When minHeight is set, ensure at least that height so content (e.g. inline map) is visible
     const effectiveSize =
-      id === 'minimap' && size.height < 100 ? { ...size, height: Math.max(size.height, 100) } : size;
+      minHeight != null && size.height < minHeight ? { ...size, height: Math.max(size.height, minHeight) } : size;
     const displaySize = isMaximized && maximizedSize ? maximizedSize : effectiveSize;
     const displayPosition = isMaximized && maximizedPosition ? maximizedPosition : position;
 
@@ -171,11 +177,11 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
           onDragStop={handleDragStop}
           onDragStart={handleDragStart}
           dragHandleClassName="panel-drag-handle"
-          style={id === 'minimap' ? { zIndex, backgroundColor: '#0a0a0a', opacity: 1 } : { zIndex }}
+          style={opaque ? { zIndex, backgroundColor: '#0a0a0a', opacity: 1 } : { zIndex }}
           className={`${variantClasses} border rounded ${className}`}
-          {...(id === 'minimap' ? { 'data-minimap-popout': 'true' } : {})}
+          {...(opaque ? { 'data-panel-opaque': 'true' } : {})}
         >
-          {id === 'minimap' && (
+          {opaque && (
             <div
               style={{
                 position: 'absolute',
@@ -190,7 +196,7 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
           )}
           <div
             className="panel-drag-handle flex items-center justify-between h-full px-3 bg-mythos-terminal-background cursor-move"
-            style={id === 'minimap' ? { position: 'relative', zIndex: 1 } : undefined}
+            style={opaque ? { position: 'relative', zIndex: 1 } : undefined}
           >
             <span className="text-sm font-bold text-mythos-terminal-primary">{title}</span>
             <div className="flex items-center gap-2">
@@ -234,13 +240,13 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
         onDragStart={handleDragStart}
         onResizeStop={handleResizeStop}
         dragHandleClassName="panel-drag-handle"
-        style={id === 'minimap' ? { zIndex, backgroundColor: '#0a0a0a', opacity: 1 } : { zIndex }}
+        style={opaque ? { zIndex, backgroundColor: '#0a0a0a', opacity: 1 } : { zIndex }}
         className={`${variantClasses} border rounded ${className}`}
-        {...(id === 'minimap' ? { 'data-minimap-popout': 'true' } : {})}
+        {...(opaque ? { 'data-panel-opaque': 'true' } : {})}
         bounds="window"
       >
-        {/* Opaque underlay for minimap popout so other panels never show through */}
-        {id === 'minimap' && (
+        {/* Opaque underlay so other panels never show through */}
+        {opaque && (
           <div
             style={{
               position: 'absolute',
@@ -255,9 +261,7 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
         )}
         <div
           className="h-full flex flex-col bg-mythos-terminal-background"
-          style={
-            id === 'minimap' ? { position: 'relative', zIndex: 1, backgroundColor: '#0a0a0a', opacity: 1 } : undefined
-          }
+          style={opaque ? { position: 'relative', zIndex: 1, backgroundColor: '#0a0a0a', opacity: 1 } : undefined}
         >
           {/* Panel Header: only this area triggers drag; scrolling content no longer moves the panel */}
           <div
@@ -284,9 +288,10 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
             </div>
           </div>
 
-          {/* Panel Content: min-h-0 lets flex item shrink; minimap needs min height and opaque bg so popout is readable */}
+          {/* Panel Content: min-h-0 lets flex item shrink; minHeight prop avoids collapsed content */}
           <div
-            className={`flex-1 min-h-0 overflow-auto ${id === 'minimap' ? 'min-h-[120px] bg-mythos-terminal-background' : ''}`}
+            className="flex-1 min-h-0 overflow-auto bg-mythos-terminal-background"
+            style={minHeight != null ? { minHeight: `${minHeight}px` } : undefined}
           >
             {children}
           </div>

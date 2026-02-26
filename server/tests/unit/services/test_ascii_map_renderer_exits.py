@@ -81,6 +81,15 @@ class TestVerticalExitCharBetween:
         bidirectional = renderer._vertical_exit_char_between({"target": (1, 2)}, {"target": (1, 1)}, next_y=2, x=1, y=1)
         assert bidirectional == "|"
 
+    def test_one_way_north_and_one_way_south_assign_caret_and_v_by_target(self, renderer: AsciiMapRenderer) -> None:
+        """One-way north renders ^ and one-way south renders v; symbols match direction to target room."""
+        # Current row y=1, next row y=2. South exit points to (x, next_y) = (1, 2) -> 'v'
+        south_only = renderer._vertical_exit_char_between({"target": (1, 2)}, None, next_y=2, x=1, y=1)
+        assert south_only == "v", "One-way south (target below) must render 'v'"
+        # North exit back points from below to (x, y) = (1, 1) -> '^'
+        north_only = renderer._vertical_exit_char_between(None, {"target": (1, 1)}, next_y=2, x=1, y=1)
+        assert north_only == "^", "One-way north (target above) must render caret '^'"
+
 
 class TestResolveExitTarget:
     """Tests for _resolve_exit_target."""

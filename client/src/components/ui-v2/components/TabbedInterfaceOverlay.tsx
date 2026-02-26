@@ -2,6 +2,7 @@
 // Extracted from GameClientV2Container to reduce complexity
 
 import React, { useRef } from 'react';
+import { Z_INDEX_OVERLAY_TOP } from '../../../constants/layout';
 import type { Tab } from '../TabbedInterface';
 
 interface TabbedInterfaceOverlayProps {
@@ -30,7 +31,7 @@ export const TabbedInterfaceOverlay: React.FC<TabbedInterfaceOverlayProps> = ({
       style={{
         backgroundColor: '#0a0a0a',
         opacity: 1,
-        zIndex: 2147483647,
+        zIndex: Z_INDEX_OVERLAY_TOP,
       }}
     >
       <div className="flex flex-col h-full flex-1 min-h-0">

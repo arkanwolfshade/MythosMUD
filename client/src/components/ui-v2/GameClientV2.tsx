@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 
+import { Z_INDEX_OVERLAY_TOP } from '../../constants/layout';
 import type { HealthStatus } from '../../types/health';
 import { determineDpTier } from '../../types/health';
 import type { LucidityStatus } from '../../types/lucidity';
@@ -404,11 +405,13 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
             title={minimapPanel.title}
             position={minimapPanel.position}
             size={minimapPanel.size}
-            zIndex={2147483647}
+            zIndex={Z_INDEX_OVERLAY_TOP}
             isMinimized={minimapPanel.isMinimized}
             isMaximized={minimapPanel.isMaximized}
             isVisible={minimapPanel.isVisible}
             minSize={minimapPanel.minSize}
+            opaque={minimapPanel.opaque}
+            minHeight={minimapPanel.minHeight}
             variant="default"
             className="panel-minimap-opaque"
             onPositionChange={panelManager.updatePosition}

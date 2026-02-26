@@ -107,6 +107,8 @@ export const createDefaultPanelLayout = (viewportWidth: number, viewportHeight: 
       isVisible: true,
       zIndex: 1006,
       minSize: { width: 150, height: 100 },
+      opaque: true,
+      minHeight: 100,
     },
     commandHistory: {
       id: 'commandHistory',

@@ -143,7 +143,7 @@ export function handleScaleToViewport(
     const maxWidth = viewportWidth - constrainedPosition.x - padding;
     const maxHeight = viewportHeight - constrainedPosition.y - padding;
 
-    const constrainedHeight = constrainPanelHeight(newPanel, currentPanel, panelId, maxHeight);
+    const constrainedHeight = constrainPanelHeight(newPanel, currentPanel, maxHeight);
     const constrainedSize = {
       width: Math.max(Math.min(newPanel.size.width, maxWidth), Math.min(currentPanel.minSize?.width || 200, maxWidth)),
       height: constrainedHeight,
@@ -160,15 +160,11 @@ export function handleScaleToViewport(
   return { ...state, panels: updatedPanels };
 }
 
-function constrainPanelHeight(
-  newPanel: PanelState,
-  currentPanel: PanelState,
-  panelId: string,
-  maxHeight: number
-): number {
+function constrainPanelHeight(newPanel: PanelState, currentPanel: PanelState, maxHeight: number): number {
   let h = Math.max(Math.min(newPanel.size.height, maxHeight), Math.min(currentPanel.minSize?.height || 150, maxHeight));
-  if (panelId === 'minimap' && h < 100 && maxHeight >= 100) {
-    h = 100;
+  const minH = newPanel.minHeight;
+  if (minH != null && h < minH && maxHeight >= minH) {
+    h = minH;
   }
   return h;
 }
