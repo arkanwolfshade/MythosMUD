@@ -178,9 +178,7 @@ async def _ensure_coordinates_generated(
 
 async def _prepare_ascii_map_context(
     request: Request,
-    plane: str,
-    zone: str,
-    sub_zone: str | None,
+    zone_context: MapZoneContext,
     current_user: User | None,
     session: AsyncSession,
     persistence: "AsyncPersistenceLayer",
@@ -192,7 +190,7 @@ async def _prepare_ascii_map_context(
     """
     current_room_id = await _get_current_room_id(request, current_user, persistence)
 
-    rooms = await load_rooms_with_coordinates(session, plane, zone, sub_zone)
+    rooms = await load_rooms_with_coordinates(session, zone_context.plane, zone_context.zone, zone_context.sub_zone)
 
     player, player_id, _ = await _get_player_and_exploration_service(current_user, persistence, exploration_service)
 
@@ -201,7 +199,7 @@ async def _prepare_ascii_map_context(
 
     rooms = await _ensure_coordinates_generated(
         session,
-        MapZoneContext(plane, zone, sub_zone),
+        zone_context,
         rooms,
         player,
         player_id,
@@ -280,11 +278,10 @@ async def get_ascii_map(  # pylint: disable=too-many-arguments,too-many-position
             viewport_x=viewport_x,
             viewport_y=viewport_y,
         )
+        zone_context = MapZoneContext(plane, zone, sub_zone)
         rooms, current_room_id = await _prepare_ascii_map_context(
             request=request,
-            plane=plane,
-            zone=zone,
-            sub_zone=sub_zone,
+            zone_context=zone_context,
             current_user=current_user,
             session=session,
             persistence=persistence,
@@ -334,7 +331,9 @@ async def get_ascii_minimap(  # pylint: disable=too-many-arguments,too-many-posi
     """
     try:
         player, current_room_id = await _get_minimap_player_and_room_id(request, current_user, persistence)
-        assert current_user is not None  # raised by _get_minimap_player_and_room_id if unauthenticated
+        # Type narrowing and runtime guard; _get_minimap_player_and_room_id raises if unauthenticated
+        if current_user is None:
+            raise LoggedHTTPException(status_code=401, detail="Authentication required")
 
         player_id = uuid.UUID(str(player.player_id)) if player else None
         is_admin = current_user.is_admin or current_user.is_superuser
