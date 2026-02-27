@@ -110,6 +110,16 @@ async def execute_voluntary_flee(
             combat_id=combat.combat_id,
             fleeing_id=fleeing_participant_id,
         )
+        try:
+            await combat_service.execute_flee_failed_free_hits(combat.combat_id, fleeing_participant_id)
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Free hit execution must not break flee failure handling
+            logger.warning(
+                "Error executing flee failed free hits",
+                combat_id=combat.combat_id,
+                fleeing_id=fleeing_participant_id,
+                error=str(e),
+                error_type=type(e).__name__,
+            )
         return False
 
     to_room_id = str(secrets.choice(list(exits.values())))
