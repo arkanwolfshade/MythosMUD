@@ -145,6 +145,7 @@ class CommandProcessor:
             CommandType.PUNCH,
             CommandType.KICK,
             CommandType.STRIKE,
+            CommandType.FLEE,
         ]
 
     def extract_command_data(self, validated_command: Any) -> dict[str, Any]:

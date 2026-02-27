@@ -84,6 +84,7 @@ def test_spell_effect_type_enum_values():
     assert SpellEffectType.CORRUPTION_ADJUST.value == "corruption_adjust"
     assert SpellEffectType.TELEPORT.value == "teleport"
     assert SpellEffectType.CREATE_OBJECT.value == "create_object"
+    assert SpellEffectType.FLEE.value == "flee"
 
 
 def test_spell_effect_type_enum_all_types():
@@ -97,6 +98,7 @@ def test_spell_effect_type_enum_all_types():
         "corruption_adjust",
         "teleport",
         "create_object",
+        "flee",
     }
     actual_types = {t.value for t in SpellEffectType}
     assert actual_types == expected_types

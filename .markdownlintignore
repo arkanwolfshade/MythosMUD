@@ -10,6 +10,7 @@
 # Project-specific exclusions
 **/investigations/**
 **/.agent-os/**
+**/.cursor/plans/**
 **/docs/archive/**
 
 # Test and report directories

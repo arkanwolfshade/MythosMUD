@@ -49,6 +49,7 @@ class SpellEffectType(StrEnum):
     CORRUPTION_ADJUST = "corruption_adjust"
     TELEPORT = "teleport"
     CREATE_OBJECT = "create_object"
+    FLEE = "flee"
 
 
 class SpellMaterial(BaseModel):

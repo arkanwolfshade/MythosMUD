@@ -58,6 +58,7 @@ class ApplicationContainer:
         self.player_service: Any = None
         self.room_service: Any = None
         self.movement_service: Any = None
+        self.player_position_service: Any = None
         self.follow_service: Any = None
         self.party_service: Any = None
         self.exploration_service: Any = None

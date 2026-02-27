@@ -133,6 +133,33 @@ async def test_process_effect_create_object(spell_effects, mock_spell, mock_targ
 
 
 @pytest.mark.asyncio
+async def test_process_effect_flee_services_not_configured(spell_effects, mock_spell, mock_target_match):
+    """Test process_effect() FLEE returns failure when combat/movement services not configured."""
+    mock_spell.effect_type = SpellEffectType.FLEE
+    # spell_effects fixture has no combat_service/movement_service
+    result = await spell_effects.process_effect(mock_spell, mock_target_match, uuid.uuid4(), mastery=50)
+    assert result.get("success") is False
+    assert "not available" in result.get("message", "").lower() or "not configured" in result.get("message", "").lower()
+
+
+@pytest.mark.asyncio
+async def test_process_effect_flee_not_in_combat(mock_player_service, mock_spell, mock_target_match):
+    """Test _process_flee() when target is not in combat."""
+    mock_combat = AsyncMock()
+    mock_combat.get_combat_by_participant = AsyncMock(return_value=None)
+    spell_effects = SpellEffects(
+        mock_player_service,
+        combat_service=mock_combat,
+        movement_service=MagicMock(),
+        get_room_by_id=MagicMock(return_value=MagicMock(exits={"north": "room_2"})),
+    )
+    mock_spell.effect_type = SpellEffectType.FLEE
+    result = await spell_effects.process_effect(mock_spell, mock_target_match, uuid.uuid4(), mastery=50)
+    assert result.get("success") is False
+    assert "not in combat" in result.get("message", "").lower()
+
+
+@pytest.mark.asyncio
 async def test_process_heal_invalid_target(spell_effects):
     """Test _process_heal() with invalid target type."""
 

@@ -172,7 +172,7 @@ async def test_negative_status_effect_blocked_during_grace_period(mock_connectio
     mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
     mock_player_service.persistence = mock_persistence
 
-    processor = SpellEffects(mock_player_service)
+    processor = SpellEffects(mock_player_service, connection_manager=mock_connection_manager)
 
     # Create a spell with negative effect
     mock_spell = MagicMock()
@@ -191,21 +191,13 @@ async def test_negative_status_effect_blocked_during_grace_period(mock_connectio
         room_id="test_room_123",
     )
 
-    # Mock config and app state
-    with patch("server.game.magic.spell_effects.get_config") as mock_get_config:
-        mock_config = MagicMock()
-        mock_app = MagicMock()
-        mock_app.state.connection_manager = mock_connection_manager
-        mock_config._app_instance = mock_app  # pylint: disable=protected-access  # Reason: Testing internal config structure
-        mock_get_config.return_value = mock_config
+    # Try to apply negative status effect (processor uses injected connection_manager for grace period check)
+    result = await processor._process_status_effect(mock_spell, target, 1.0)  # pylint: disable=protected-access  # Reason: Testing internal status effect processing logic for grace period blocking
 
-        # Try to apply negative status effect
-        result = await processor._process_status_effect(mock_spell, target, 1.0)  # pylint: disable=protected-access  # Reason: Testing internal status effect processing logic for grace period blocking
-
-        # Effect should be blocked
-        assert result["success"] is False
-        assert result["effect_applied"] is False
-        assert "protected" in result["message"].lower() or "immune" in result["message"].lower()
+    # Effect should be blocked
+    assert result["success"] is False
+    assert result["effect_applied"] is False
+    assert "protected" in result["message"].lower() or "immune" in result["message"].lower()
 
 
 @pytest.mark.asyncio
@@ -223,7 +215,7 @@ async def test_positive_status_effect_allowed_during_grace_period(mock_connectio
     mock_persistence.save_player = AsyncMock()
     mock_player_service.persistence = mock_persistence
 
-    processor = SpellEffects(mock_player_service)
+    processor = SpellEffects(mock_player_service, connection_manager=mock_connection_manager)
 
     # Create a spell with positive effect (buff)
     mock_spell = MagicMock()
@@ -242,17 +234,9 @@ async def test_positive_status_effect_allowed_during_grace_period(mock_connectio
         room_id="test_room_123",
     )
 
-    # Mock config and app state
-    with patch("server.game.magic.spell_effects.get_config") as mock_get_config:
-        mock_config = MagicMock()
-        mock_app = MagicMock()
-        mock_app.state.connection_manager = mock_connection_manager
-        mock_config._app_instance = mock_app  # pylint: disable=protected-access  # Reason: Testing internal config structure
-        mock_get_config.return_value = mock_config
+    # Try to apply positive status effect (processor uses injected connection_manager for grace period check)
+    result = await processor._process_status_effect(mock_spell, target, 1.0)  # pylint: disable=protected-access  # Reason: Testing internal status effect processing logic
 
-        # Try to apply positive status effect
-        result = await processor._process_status_effect(mock_spell, target, 1.0)  # pylint: disable=protected-access  # Reason: Testing internal status effect processing logic
-
-        # Effect should be allowed (positive effects pass through)
-        assert result["success"] is True
-        assert result["effect_applied"] is True
+    # Effect should be allowed (positive effects pass through)
+    assert result["success"] is True
+    assert result["effect_applied"] is True

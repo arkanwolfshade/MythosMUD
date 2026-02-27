@@ -102,6 +102,7 @@ class CommandParser:
             CommandType.PUNCH.value: self.factory.create_punch_command,
             CommandType.KICK.value: self.factory.create_kick_command,
             CommandType.STRIKE.value: self.factory.create_strike_command,
+            CommandType.FLEE.value: self.factory.create_flee_command,
             # Magic commands
             CommandType.CAST.value: self.factory.create_cast_command,
             CommandType.SPELL.value: self.factory.create_spell_command,

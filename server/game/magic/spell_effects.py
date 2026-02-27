@@ -10,7 +10,8 @@ damage, status effects, stat modifications, and other magical effects.
 import uuid
 from typing import Any, assert_never
 
-from server.config import get_config
+from server.game.magic.spell_effect_flee import run_flee_effect
+from server.game.magic.spell_effects_stats import apply_stat_modifications
 from server.game.player_service import PlayerService
 from server.models.game import StatusEffect, StatusEffectType
 from server.models.spell import Spell, SpellEffectType
@@ -34,6 +35,10 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
         self,
         player_service: PlayerService,
         player_spell_repository: PlayerSpellRepository | None = None,
+        combat_service: Any = None,
+        movement_service: Any = None,
+        get_room_by_id: Any = None,
+        connection_manager: Any = None,
     ) -> None:
         """
         Initialize the spell effects engine.
@@ -41,9 +46,17 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
         Args:
             player_service: Player service for stat modifications
             player_spell_repository: Optional repository for mastery lookups
+            combat_service: Optional combat service for flee effect
+            movement_service: Optional movement service for flee effect
+            get_room_by_id: Optional callable (room_id -> room) for flee effect
+            connection_manager: Optional connection manager for login grace period checks
         """
         self.player_service = player_service
         self.player_spell_repository = player_spell_repository or PlayerSpellRepository()
+        self._combat_service = combat_service
+        self._movement_service = movement_service
+        self._get_room_by_id = get_room_by_id
+        self._connection_manager = connection_manager
         logger.info("SpellEffects initialized")
 
     async def process_effect(
@@ -72,11 +85,17 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
             caster_id=caster_id,
             mastery=mastery,
         )
-
-        # Calculate mastery modifier (1.0 to 2.0 based on mastery 0-100)
         mastery_modifier = 1.0 + (mastery / 100.0)
+        return await self._dispatch_effect(spell, target, caster_id, mastery_modifier)
 
-        # Route to appropriate effect handler
+    async def _dispatch_effect(
+        self,
+        spell: Spell,
+        target: TargetMatch,
+        caster_id: uuid.UUID,
+        mastery_modifier: float,
+    ) -> dict[str, Any]:
+        """Route to the appropriate effect handler based on spell.effect_type."""
         match spell.effect_type:
             case SpellEffectType.HEAL:
                 return await self._process_heal(spell, target, caster_id, mastery_modifier)
@@ -94,6 +113,13 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
                 return await self._process_teleport(spell, target, mastery_modifier)
             case SpellEffectType.CREATE_OBJECT:
                 return await self._process_create_object(spell, target, mastery_modifier)
+            case SpellEffectType.FLEE:
+                return await run_flee_effect(
+                    self._combat_service,
+                    self._movement_service,
+                    self._get_room_by_id,
+                    target,
+                )
             case _:
                 # Exhaustive enum check: all SpellEffectType values must be handled above
                 assert_never(spell.effect_type)
@@ -169,7 +195,57 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
             "effect_applied": True,
         }
 
-    async def _process_status_effect(  # pylint: disable=too-many-locals  # Reason: Status effect processing requires many intermediate variables for complex effect logic
+    def _grace_period_blocks_negative_status_effect(self, target_id: uuid.UUID, effect_type: StatusEffectType) -> bool:
+        """True if target is in login grace period and effect is negative (should block)."""
+        negative_effect_types = {
+            StatusEffectType.STUNNED,
+            StatusEffectType.POISONED,
+            StatusEffectType.HALLUCINATING,
+            StatusEffectType.PARANOID,
+            StatusEffectType.TREMBLING,
+            StatusEffectType.CORRUPTED,
+            StatusEffectType.DELIRIOUS,
+        }
+        if effect_type not in negative_effect_types:
+            return False
+        if not self._connection_manager:
+            return False
+        try:
+            return is_player_in_login_grace_period(target_id, self._connection_manager)
+        except (AttributeError, ImportError, TypeError, ValueError):
+            return False
+
+    async def _apply_status_effect_to_player(
+        self,
+        target_id: uuid.UUID,
+        effect_type: StatusEffectType,
+        duration: int,
+        intensity: int,
+        spell: Spell,
+        target: TargetMatch,
+    ) -> dict[str, Any]:
+        """Load player, append status effect, save; return result dict or error if player not found."""
+        player = await self.player_service.persistence.get_player_by_id(target_id)
+        if not player:
+            return {"success": False, "message": "Target player not found", "effect_applied": False}
+        status_effects = player.get_status_effects()
+        new_effect = StatusEffect(
+            effect_type=effect_type,
+            duration=duration,
+            intensity=intensity,
+            source=f"spell:{spell.spell_id}",
+        )
+        status_effects.append(new_effect.model_dump())
+        player.set_status_effects(status_effects)
+        await self.player_service.persistence.save_player(player)
+        return {
+            "success": True,
+            "message": f"Applied {effect_type.value} to {target.target_name}",
+            "effect_applied": True,
+            "status_effect": effect_type.value,
+        }
+
+    async def _process_status_effect(
         self, spell: Spell, target: TargetMatch, mastery_modifier: float
     ) -> dict[str, Any]:
         """Process status effect."""
@@ -189,74 +265,24 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
                 "effect_applied": False,
             }
 
-        if target.target_type == TargetType.PLAYER:  # pylint: disable=too-many-nested-blocks  # Reason: Spell effects require complex nested logic for target validation, grace period checks, and effect application
+        if target.target_type == TargetType.PLAYER:
             try:
                 target_id = uuid.UUID(target.target_id)
-
-                # Check if target is in login grace period - block negative effects
-                try:
-                    config = get_config()
-                    app = getattr(config, "_app_instance", None)
-                    if app:
-                        connection_manager = getattr(app.state, "connection_manager", None)
-                        if connection_manager:
-                            if is_player_in_login_grace_period(target_id, connection_manager):
-                                # Check if this is a negative effect
-                                # Negative effects from StatusEffectType enum: STUNNED, POISONED, HALLUCINATING, PARANOID, TREMBLING, CORRUPTED, DELIRIOUS
-                                # Positive effects: BUFF
-                                negative_effect_types = {
-                                    StatusEffectType.STUNNED,
-                                    StatusEffectType.POISONED,
-                                    StatusEffectType.HALLUCINATING,
-                                    StatusEffectType.PARANOID,
-                                    StatusEffectType.TREMBLING,
-                                    StatusEffectType.CORRUPTED,
-                                    StatusEffectType.DELIRIOUS,
-                                }
-                                if effect_type in negative_effect_types:
-                                    logger.info(
-                                        "Negative status effect blocked - target in login grace period",
-                                        target_id=target.target_id,
-                                        effect_type=effect_type.value,
-                                    )
-                                    return {
-                                        "success": False,
-                                        "message": f"Target is protected and immune to {effect_type.value}",
-                                        "effect_applied": False,
-                                    }
-                                # Allow positive effects to proceed
-                except (AttributeError, ImportError, TypeError, ValueError) as e:
-                    # If we can't check grace period, proceed with effect (fail open)
-                    logger.debug(
-                        "Could not check login grace period for status effect",
+                if self._grace_period_blocks_negative_status_effect(target_id, effect_type):
+                    logger.info(
+                        "Negative status effect blocked - target in login grace period",
                         target_id=target.target_id,
-                        error=str(e),
+                        effect_type=effect_type.value,
                     )
-
-                player = await self.player_service.persistence.get_player_by_id(target_id)
-                if not player:
-                    return {"success": False, "message": "Target player not found", "effect_applied": False}
-
-                # Get current status effects
-                status_effects = player.get_status_effects()
-                # Add new status effect
-                new_effect = StatusEffect(
-                    effect_type=effect_type,
-                    duration=duration,
-                    intensity=intensity,
-                    source=f"spell:{spell.spell_id}",
+                    return {
+                        "success": False,
+                        "message": f"Target is protected and immune to {effect_type.value}",
+                        "effect_applied": False,
+                    }
+                return await self._apply_status_effect_to_player(
+                    target_id, effect_type, duration, intensity, spell, target
                 )
-                status_effects.append(new_effect.model_dump())
-                player.set_status_effects(status_effects)
-                await self.player_service.persistence.save_player(player)
-
-                return {
-                    "success": True,
-                    "message": f"Applied {effect_type.value} to {target.target_name}",
-                    "effect_applied": True,
-                    "status_effect": effect_type.value,
-                }
-            except OSError as e:
+            except (OSError, ValueError) as e:
                 logger.error("Error applying status effect", target_id=target.target_id, error=str(e))
                 return {
                     "success": False,
@@ -270,17 +296,15 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
             "effect_applied": True,
         }
 
-    async def _process_stat_modify(self, spell: Spell, target: TargetMatch, mastery_modifier: float) -> dict[str, Any]:  # pylint: disable=too-many-locals  # Reason: Stat modification requires many intermediate variables for complex stat calculation logic
+    async def _process_stat_modify(self, spell: Spell, target: TargetMatch, mastery_modifier: float) -> dict[str, Any]:
         """Process stat modification effect."""
         if target.target_type != TargetType.PLAYER:
             return {"success": False, "message": "Stat modification can only target players", "effect_applied": False}
 
-        # Get stat modifications from effect_data
         stat_modifications = spell.effect_data.get("stat_modifications", {})
         if not stat_modifications:
             return {"success": False, "message": "No stat modifications specified", "effect_applied": False}
 
-        # Get duration (0 = permanent, >0 = temporary in ticks)
         duration = int(spell.effect_data.get("duration", 0))
 
         try:
@@ -290,48 +314,18 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
                 return {"success": False, "message": "Target player not found", "effect_applied": False}
 
             stats = player.get_stats()
-            modified_stats = []
-            stat_changes = {}
+            stats, stat_changes, modified_stats = apply_stat_modifications(
+                stats, stat_modifications, mastery_modifier, spell.spell_id
+            )
 
-            # Valid stat names
-            valid_stats = [
-                "strength",
-                "dexterity",
-                "constitution",
-                "size",
-                "intelligence",
-                "power",
-                "education",
-                "charisma",
-                "luck",
-            ]
-
-            # Apply stat modifications
-            for stat_name, change_amount in stat_modifications.items():
-                if stat_name not in valid_stats:
-                    logger.warning("Invalid stat name in spell effect", stat_name=stat_name, spell_id=spell.spell_id)
-                    continue
-
-                # Apply mastery modifier to change amount
-                adjusted_change = int(change_amount * mastery_modifier)
-                current_value = stats.get(stat_name, 50)
-                new_value = max(1, min(100, current_value + adjusted_change))
-
-                stats[stat_name] = new_value
-                stat_changes[stat_name] = adjusted_change
-                modified_stats.append(f"{stat_name} ({adjusted_change:+d})")
-
-            # If temporary, add a status effect to track the modification
             if duration > 0:
                 status_effects = player.get_status_effects()
-                # Create a status effect to track temporary stat modifications
                 temp_effect = StatusEffect(
-                    effect_type=StatusEffectType.BUFF,  # Using BUFF as a generic positive effect
+                    effect_type=StatusEffectType.BUFF,
                     duration=duration,
                     intensity=1,
                     source=f"spell:{spell.spell_id}",
                 )
-                # Store stat changes in metadata (would need to extend StatusEffect model for this)
                 status_effects.append(temp_effect.model_dump())
                 player.set_status_effects(status_effects)
 
