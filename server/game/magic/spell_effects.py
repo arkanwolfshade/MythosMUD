@@ -10,7 +10,6 @@ damage, status effects, stat modifications, and other magical effects.
 import uuid
 from typing import Any, assert_never
 
-from server.config import get_config
 from server.game.magic.spell_effect_flee import run_flee_effect
 from server.game.magic.spell_effects_stats import apply_stat_modifications
 from server.game.player_service import PlayerService
@@ -39,6 +38,7 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
         combat_service: Any = None,
         movement_service: Any = None,
         get_room_by_id: Any = None,
+        connection_manager: Any = None,
     ) -> None:
         """
         Initialize the spell effects engine.
@@ -49,12 +49,14 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
             combat_service: Optional combat service for flee effect
             movement_service: Optional movement service for flee effect
             get_room_by_id: Optional callable (room_id -> room) for flee effect
+            connection_manager: Optional connection manager for login grace period checks
         """
         self.player_service = player_service
         self.player_spell_repository = player_spell_repository or PlayerSpellRepository()
         self._combat_service = combat_service
         self._movement_service = movement_service
         self._get_room_by_id = get_room_by_id
+        self._connection_manager = connection_manager
         logger.info("SpellEffects initialized")
 
     async def process_effect(
@@ -193,8 +195,7 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
             "effect_applied": True,
         }
 
-    @staticmethod
-    def _grace_period_blocks_negative_status_effect(target_id: uuid.UUID, effect_type: StatusEffectType) -> bool:
+    def _grace_period_blocks_negative_status_effect(self, target_id: uuid.UUID, effect_type: StatusEffectType) -> bool:
         """True if target is in login grace period and effect is negative (should block)."""
         negative_effect_types = {
             StatusEffectType.STUNNED,
@@ -207,15 +208,10 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
         }
         if effect_type not in negative_effect_types:
             return False
+        if not self._connection_manager:
+            return False
         try:
-            config = get_config()
-            app = getattr(config, "_app_instance", None)
-            if not app:
-                return False
-            connection_manager = getattr(app.state, "connection_manager", None)
-            if not connection_manager:
-                return False
-            return is_player_in_login_grace_period(target_id, connection_manager)
+            return is_player_in_login_grace_period(target_id, self._connection_manager)
         except (AttributeError, ImportError, TypeError, ValueError):
             return False
 

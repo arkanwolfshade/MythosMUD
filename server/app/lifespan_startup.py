@@ -601,7 +601,7 @@ async def initialize_magic_services(app: FastAPI, container: ApplicationContaine
     app.state.spell_targeting_service = spell_targeting_service
     logger.info("SpellTargetingService initialized")
 
-    # Initialize SpellEffects (needs PlayerService; optional combat/movement for flee effect)
+    # Initialize SpellEffects (needs PlayerService; optional combat/movement for flee, connection_manager for grace period)
     # player_service is already checked above, but mypy doesn't know that
     if container.player_service is None:
         raise RuntimeError("player_service must be initialized before magic services")
@@ -611,6 +611,7 @@ async def initialize_magic_services(app: FastAPI, container: ApplicationContaine
         combat_service=getattr(container, "combat_service", None),
         movement_service=getattr(container, "movement_service", None),
         get_room_by_id=get_room,
+        connection_manager=getattr(container, "connection_manager", None),
     )
     app.state.spell_effects = spell_effects
     logger.info("SpellEffects initialized")

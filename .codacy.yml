@@ -6,6 +6,7 @@
 # Exclude paths from analysis
 # data/ is the mythosmud_data git submodule (Main (Integration)/data) - excluded from Codacy
 # .cursor/ contains Cursor IDE plans and rules - not production code, exclude from Codacy
+# .pyenv/ excludes pyenv-win Python installation (e.g. .../pyenv-win/versions/3.12.10/) from analysis
 exclude_paths:
   - "**/node_modules/**"
   - "**/dist/**"
@@ -14,6 +15,7 @@ exclude_paths:
   - ".data/**"
   - "data/**"
   - ".cursor/**"
+  - "**/.pyenv/**"
 
 # Bandit: exclude test paths so B101 (assert) and B106 (hardcoded pwd) are not reported in tests.
 # Codacy uses engines.<tool>.exclude_paths; ignore_patterns are not applied to tool analysis.

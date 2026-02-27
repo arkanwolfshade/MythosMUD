@@ -41,6 +41,14 @@ if TYPE_CHECKING:
 logger = get_logger(__name__)
 
 
+class FleePreconditionError(Exception):
+    """Raised when flee preconditions fail; carries the error dict to return to the client."""
+
+    def __init__(self, error_result: dict[str, str]) -> None:
+        super().__init__(str(error_result))
+        self.error_result = error_result
+
+
 def _format_combat_status(player: Any, combat_instance: Any | None) -> str:
     """
     Produce a human-readable combat status string.
@@ -432,6 +440,35 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
             return None, None, {"result": "Movement is not available."}
         return combat, resolved_room_id, None
 
+    async def _resolve_flee_preconditions(
+        self,
+        request_app: Any,
+        current_user: dict[str, Any],
+        player_name: str,
+    ) -> tuple[Any, uuid.UUID, Any, str]:
+        """
+        Resolve player, player_id, combat, and room_id for flee.
+
+        Returns (player, player_id, combat, room_id).
+        Raises FleePreconditionError with error_result dict on any precondition failure.
+        """
+        player, _room, player_error = await self._get_player_and_room(request_app, current_user)
+        if player_error:
+            raise FleePreconditionError(player_error)
+        standing_error = await self._ensure_flee_standing(player, player_name)
+        if standing_error:
+            raise FleePreconditionError(standing_error)
+        player_id, uuid_error = self._get_flee_player_uuid(player)
+        if uuid_error:
+            raise FleePreconditionError(uuid_error)
+        if player_id is None:
+            raise FleePreconditionError({"result": "You are not recognized by the cosmic forces."})
+        combat, room_id, combat_error = await self._validate_flee_combat_and_room(player_id, player)
+        if combat_error:
+            raise FleePreconditionError(combat_error)
+        assert room_id is not None  # _validate_flee_combat_and_room returns (_, str, None) when no error
+        return (player, player_id, combat, room_id)
+
     async def handle_flee_command(
         self,
         _command_data: dict[str, Any],
@@ -451,20 +488,10 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
         rest_check_result = await self._check_and_interrupt_rest(request_app, player_name, current_user)
         if rest_check_result:
             return rest_check_result
-        player, _room, player_error = await self._get_player_and_room(request_app, current_user)
-        if player_error:
-            return player_error
-        standing_error = await self._ensure_flee_standing(player, player_name)
-        if standing_error:
-            return standing_error
-        player_id, uuid_error = self._get_flee_player_uuid(player)
-        if uuid_error:
-            return uuid_error
-        if player_id is None:
-            return {"result": "You are not recognized by the cosmic forces."}
-        combat, _room_id, combat_error = await self._validate_flee_combat_and_room(player_id, player)
-        if combat_error:
-            return combat_error
+        try:
+            _, player_id, combat, _ = await self._resolve_flee_preconditions(request_app, current_user, player_name)
+        except FleePreconditionError as e:
+            return e.error_result
         success = await execute_voluntary_flee(
             self._combat_service,
             self._get_room_data,
