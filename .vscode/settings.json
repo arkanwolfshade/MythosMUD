@@ -56,7 +56,12 @@
   "git.enableCommitSigning": true,
   "git.pruneOnFetch": false,
   "git.pullBeforeCheckout": true,
-  "markdownlint.ignore": ["**/investigations/**/*.md", "**/.agent-os/**/*.md", "**/docs/archive/**/*.md"],
+  "markdownlint.ignore": [
+    "**/investigations/**/*.md",
+    "**/.agent-os/**/*.md",
+    "**/.cursor/plans/**/*.md",
+    "**/docs/archive/**/*.md"
+  ],
   "markdownlint.run": "onSave",
   "editor.formatOnSave": true,
   "[python]": {

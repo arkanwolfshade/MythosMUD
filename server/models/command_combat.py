@@ -70,3 +70,9 @@ class StrikeCommand(BaseCommand):
         if v is None:
             return None
         return validate_combat_target(v)
+
+
+class FleeCommand(BaseCommand):
+    """Command for fleeing combat (no target)."""
+
+    command_type: Literal[CommandType.FLEE] = CommandType.FLEE

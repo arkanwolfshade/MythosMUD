@@ -62,6 +62,8 @@ cmd_args = [
     "--ignore",
     "**/investigations/**",
     "--ignore",
+    "**/.cursor/plans/**",
+    "--ignore",
     "**/docs/archive/**",
     "--ignore",
     "**/test-results/**",

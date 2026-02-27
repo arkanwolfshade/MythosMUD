@@ -2,11 +2,12 @@
 Combat command factory methods.
 
 This module contains factory methods for combat-related commands:
-attack, punch, kick, strike.
+attack, punch, kick, strike, flee.
 """
 
 from ..models.command import (
     AttackCommand,
+    FleeCommand,
     KickCommand,
     PunchCommand,
     StrikeCommand,
@@ -46,3 +47,8 @@ class CombatCommandFactory:
         # Allow strike commands without targets - let the combat handler validate
         target = " ".join(args) if args else None
         return StrikeCommand(target=target)
+
+    @staticmethod
+    def create_flee_command(_args: list[str]) -> FleeCommand:
+        """Create FleeCommand (no arguments)."""
+        return FleeCommand()

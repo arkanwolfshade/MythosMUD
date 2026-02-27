@@ -28,6 +28,7 @@ logger = get_logger(__name__)
 GAME_ATTRS = (
     "instance_manager",
     "movement_service",
+    "player_position_service",
     "follow_service",
     "party_service",
     "exploration_service",
@@ -55,6 +56,7 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
 
     instance_manager: Any = None
     movement_service: Any = None
+    player_position_service: Any = None
     follow_service: Any = None
     party_service: Any = None
     exploration_service: Any = None
@@ -75,8 +77,62 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
     quest_instance_repository: Any = None
     quest_service: Any = None
 
+    @staticmethod
+    def _require_core_services(container: ApplicationContainer) -> None:
+        """Raise if core services are missing (required before GameBundle init)."""
+        if (
+            container.config is None
+            or container.persistence is None
+            or container.async_persistence is None
+            or container.database_manager is None
+        ):
+            raise RuntimeError("Core services must be initialized before GameBundle")
+
+    def _resolve_hourly_holidays(self, mythos_dt: datetime) -> list[str]:
+        """Resolve active holiday names for tick scheduler; return empty list on error or no service."""
+        if not self.holiday_service:
+            return []
+        try:
+            active = self.holiday_service.refresh_active(mythos_dt)
+            return [entry.name for entry in active]
+        except (ValueError, TypeError, AttributeError, RuntimeError) as exc:
+            logger.warning("Failed to resolve holiday window for tick scheduler", error=str(exc))
+            return []
+
+    def _wire_user_manager_after_init(
+        self,
+        follow_service: Any,
+        nats_message_handler: Any,
+        user_manager: Any,
+    ) -> None:
+        """Wire user_manager into follow_service and nats_message_handler when present."""
+        if follow_service is not None:
+            follow_service._user_manager = user_manager  # pylint: disable=protected-access  # Reason: FollowService requires UserManager set after bundle init order
+        if nats_message_handler is not None:
+            nats_message_handler.user_manager = user_manager
+            nats_message_handler.party_service = self.party_service
+
+    def _wire_item_registry_to_player_service(self) -> None:
+        """Set item prototype registry on player service when both are available."""
+        if self.item_prototype_registry and self.player_service:
+            self.player_service.set_item_prototype_registry(self.item_prototype_registry)
+
+    def _initialize_caching_services(self, persistence: Any) -> None:
+        """Create room and profession cache services; set to None on RuntimeError."""
+        try:
+            from server.caching.cache_service import ProfessionCacheService, RoomCacheService
+
+            self.room_cache_service = RoomCacheService(persistence)
+            self.profession_cache_service = ProfessionCacheService(persistence)
+            logger.info("Caching services initialized")
+        except RuntimeError as e:
+            logger.warning("Caching services initialization failed - will use persistence directly", error=str(e))
+            self.room_cache_service = None
+            self.profession_cache_service = None
+
     async def initialize(self, container: ApplicationContainer) -> None:  # pylint: disable=too-many-locals,too-many-statements
         """Initialize game services. Requires Core and Realtime."""
+        self._require_core_services(container)
         config = container.config
         persistence = container.persistence
         async_persistence = container.async_persistence
@@ -84,9 +140,6 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
         event_bus = container.event_bus
         task_registry = container.task_registry
         nats_message_handler = container.nats_message_handler
-
-        if config is None or persistence is None or async_persistence is None or database_manager is None:
-            raise RuntimeError("Core services must be initialized before GameBundle")
 
         normalized_environment = normalize_environment(config.logging.environment)
 
@@ -115,7 +168,7 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
 
         connection_manager = getattr(container, "connection_manager", None)
         alias_storage = getattr(container, "alias_storage", None)
-        player_position_service = PlayerPositionService(
+        self.player_position_service = PlayerPositionService(
             async_persistence,
             connection_manager,
             alias_storage,
@@ -126,7 +179,7 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
             user_manager=None,  # Set below after user_manager is created
             connection_manager=connection_manager,
             async_persistence=async_persistence,
-            player_position_service=player_position_service,
+            player_position_service=self.player_position_service,
         )
         from server.game.party_service import PartyService
 
@@ -163,23 +216,11 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
 
         from server.time.tick_scheduler import MythosTickScheduler
 
-        holiday_service = self.holiday_service
-
-        def _resolve_hourly_holidays(mythos_dt: datetime) -> list[str]:
-            if not holiday_service:
-                return []
-            try:
-                active = holiday_service.refresh_active(mythos_dt)
-                return [entry.name for entry in active]
-            except (ValueError, TypeError, AttributeError, RuntimeError) as exc:
-                logger.warning("Failed to resolve holiday window for tick scheduler", error=str(exc))
-                return []
-
         self.mythos_tick_scheduler = MythosTickScheduler(
             chronicle=get_mythos_chronicle(),
             event_bus=event_bus,
             task_registry=task_registry,
-            holiday_resolver=_resolve_hourly_holidays,
+            holiday_resolver=self._resolve_hourly_holidays,
         )
         logger.info("Mythos tick scheduler prepared")
 
@@ -197,11 +238,7 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
 
         user_management_dir = get_environment_data_dir(normalized_environment) / "user_management"
         self.user_manager = UserManager(data_dir=user_management_dir)
-        if self.follow_service is not None:
-            self.follow_service._user_manager = self.user_manager  # pylint: disable=protected-access  # Reason: FollowService requires UserManager set after bundle init order
-        if nats_message_handler is not None:
-            nats_message_handler.user_manager = self.user_manager
-            nats_message_handler.party_service = self.party_service
+        self._wire_user_manager_after_init(self.follow_service, nats_message_handler, self.user_manager)
 
         from server.services.container_service import ContainerService
 
@@ -248,21 +285,46 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
 
         # Item services
         await self._initialize_item_services(container)
-        if self.item_prototype_registry and self.player_service:
-            self.player_service.set_item_prototype_registry(self.item_prototype_registry)
+        self._wire_item_registry_to_player_service()
 
         # Caching
         logger.debug("Initializing caching services...")
-        try:
-            from server.caching.cache_service import ProfessionCacheService, RoomCacheService
+        self._initialize_caching_services(persistence)
 
-            self.room_cache_service = RoomCacheService(persistence)
-            self.profession_cache_service = ProfessionCacheService(persistence)
-            logger.info("Caching services initialized")
-        except RuntimeError as e:
-            logger.warning("Caching services initialization failed - will use persistence directly", error=str(e))
-            self.room_cache_service = None
-            self.profession_cache_service = None
+    def _handle_item_prototypes_db_error(self, exc: Exception) -> None:
+        """On SQLAlchemyError: log, optionally warn about schema/DDL, and clear item registry/factory."""
+        logger.error(
+            "Failed to load item prototypes from PostgreSQL database",
+            error=str(exc),
+            error_type=type(exc).__name__,
+        )
+        if "does not exist" in str(exc).lower() or "UndefinedTableError" in type(exc).__name__:
+            logger.warning(
+                "Ensure POSTGRES_SEARCH_PATH is set (e.g. mythos_dev in .env.local) and that "
+                "the schema DDL has been applied (e.g. psql -d mythos_dev -f db/mythos_dev_ddl.sql)",
+            )
+        self.item_prototype_registry = None
+        self.item_factory = None
+
+    def _build_prototype_payload(self, db_prototype: Any) -> dict[str, Any]:
+        """Build a single item prototype payload from a DB row for validation."""
+        return {
+            "prototype_id": db_prototype.prototype_id,
+            "name": db_prototype.name,
+            "short_description": db_prototype.short_description,
+            "long_description": db_prototype.long_description,
+            "item_type": db_prototype.item_type,
+            "weight": float(db_prototype.weight) if db_prototype.weight is not None else 0.0,
+            "base_value": int(db_prototype.base_value) if db_prototype.base_value is not None else 0,
+            "durability": int(db_prototype.durability) if db_prototype.durability is not None else None,
+            "flags": decode_json_column(db_prototype.flags, list),
+            "wear_slots": decode_json_column(db_prototype.wear_slots, list),
+            "stacking_rules": decode_json_column(db_prototype.stacking_rules, dict),
+            "usage_restrictions": decode_json_column(db_prototype.usage_restrictions, dict),
+            "effect_components": decode_json_column(db_prototype.effect_components, list),
+            "metadata": decode_json_column(db_prototype.metadata_payload, dict),
+            "tags": decode_json_column(db_prototype.tags, list),
+        }
 
     async def _initialize_item_services(self, container: ApplicationContainer) -> None:  # pylint: disable=too-many-locals
         """Load item prototypes from PostgreSQL and create item factory."""
@@ -286,30 +348,12 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
 
         try:
             session_maker = database_manager.get_session_maker()
-
             async with session_maker() as session:
                 result = await session.execute(select(ItemPrototype))
                 item_prototypes = result.scalars().all()
 
                 for db_prototype in item_prototypes:
-                    payload = {
-                        "prototype_id": db_prototype.prototype_id,
-                        "name": db_prototype.name,
-                        "short_description": db_prototype.short_description,
-                        "long_description": db_prototype.long_description,
-                        "item_type": db_prototype.item_type,
-                        "weight": float(db_prototype.weight) if db_prototype.weight is not None else 0.0,
-                        "base_value": int(db_prototype.base_value) if db_prototype.base_value is not None else 0,
-                        "durability": int(db_prototype.durability) if db_prototype.durability is not None else None,
-                        "flags": decode_json_column(db_prototype.flags, list),
-                        "wear_slots": decode_json_column(db_prototype.wear_slots, list),
-                        "stacking_rules": decode_json_column(db_prototype.stacking_rules, dict),
-                        "usage_restrictions": decode_json_column(db_prototype.usage_restrictions, dict),
-                        "effect_components": decode_json_column(db_prototype.effect_components, list),
-                        "metadata": decode_json_column(db_prototype.metadata_payload, dict),
-                        "tags": decode_json_column(db_prototype.tags, list),
-                    }
-
+                    payload = self._build_prototype_payload(db_prototype)
                     try:
                         prototype = ItemPrototypeModel.model_validate(payload)
                         prototypes[prototype.prototype_id] = prototype
@@ -324,23 +368,10 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
             registry = PrototypeRegistry(prototypes, invalid_entries)
             self.item_prototype_registry = registry
             self.item_factory = ItemFactory(registry)
-
             logger.info(
                 "Item services initialized from PostgreSQL",
                 prototype_count=len(prototypes),
                 invalid_count=len(invalid_entries),
             )
         except SQLAlchemyError as exc:
-            logger.error(
-                "Failed to load item prototypes from PostgreSQL database",
-                error=str(exc),
-                error_type=type(exc).__name__,
-            )
-            # UndefinedTableError usually means: missing POSTGRES_SEARCH_PATH, or DDL not applied
-            if "does not exist" in str(exc).lower() or "UndefinedTableError" in type(exc).__name__:
-                logger.warning(
-                    "Ensure POSTGRES_SEARCH_PATH is set (e.g. mythos_dev in .env.local) and that "
-                    "the schema DDL has been applied (e.g. psql -d mythos_dev -f db/mythos_dev_ddl.sql)",
-                )
-            self.item_prototype_registry = None
-            self.item_factory = None
+            self._handle_item_prototypes_db_error(exc)

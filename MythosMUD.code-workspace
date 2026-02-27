@@ -195,7 +195,12 @@
       "MD040": false,
       "MD060": false,
     },
-    "markdownlint.ignore": ["**/investigations/**/*.md", "**/.agent-os/**/*.md", "**/docs/archive/**/*.md"],
+    "markdownlint.ignore": [
+      "**/investigations/**/*.md",
+      "**/.agent-os/**/*.md",
+      "**/.cursor/plans/**/*.md",
+      "**/docs/archive/**/*.md",
+    ],
     "markdownlint.run": "onSave",
     "codeQL.githubDatabase.update": "never",
   },

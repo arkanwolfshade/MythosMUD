@@ -239,6 +239,10 @@ class CommandFactory:
         """Create StrikeCommand from arguments."""
         return self._combat.create_strike_command(args)
 
+    def create_flee_command(self, args: list[str]) -> BaseCommand:
+        """Create FleeCommand from arguments (no args needed)."""
+        return self._combat.create_flee_command(args)
+
     # Utility commands
     def create_alias_command(self, args: list[str]) -> BaseCommand:
         """Create AliasCommand from arguments."""

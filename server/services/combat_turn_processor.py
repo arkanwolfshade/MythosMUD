@@ -282,6 +282,12 @@ class CombatTurnProcessor:
                     )
             else:
                 logger.warning("Spell action queued but magic service not available", spell_name=action.spell_name)
+        elif action.action_type == "flee_skip":
+            logger.info(
+                "Skipping queued action due to previous flee attempt",
+                combat_id=combat.combat_id,
+                participant_id=participant.participant_id,
+            )
         else:
             logger.warning("Unknown action type", action_type=action.action_type)
 

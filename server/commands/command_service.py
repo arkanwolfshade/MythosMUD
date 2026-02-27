@@ -34,6 +34,7 @@ from .alias_commands import (
 from .channel_commands import handle_channel_command
 from .combat import (
     handle_attack_command,
+    handle_flee_command,
     handle_kick_command,
     handle_punch_command,
     handle_strike_command,
@@ -194,6 +195,7 @@ class CommandService:
             "punch": handle_punch_command,
             "kick": handle_kick_command,
             "strike": handle_strike_command,
+            "flee": handle_flee_command,
             # lucidity recovery rites
             "pray": handle_pray_command,
             "meditate": handle_meditate_command,
@@ -334,6 +336,14 @@ class CommandService:
         )
         return command_data
 
+    def _fallback_parsed_fields(self, parsed_command: Any, command_data: dict[str, Any]) -> dict[str, Any]:
+        """Extract non-private, non-callable attributes from parsed_command, excluding keys already in command_data."""
+        return {
+            key: getattr(parsed_command, key)
+            for key in dir(parsed_command)
+            if not key.startswith("_") and not callable(getattr(parsed_command, key)) and key not in command_data
+        }
+
     def _extract_parsed_fields(
         self, parsed_command: Any, cmd: str, player_name: str, command_data: dict[str, Any]
     ) -> dict[str, Any]:
@@ -364,11 +374,7 @@ class CommandService:
                 error=str(e),
                 error_type=type(e).__name__,
             )
-            return {
-                key: getattr(parsed_command, key)
-                for key in dir(parsed_command)
-                if not key.startswith("_") and not callable(getattr(parsed_command, key)) and key not in command_data
-            }
+            return self._fallback_parsed_fields(parsed_command, command_data)
         except (ValueError, TypeError, KeyError, RuntimeError) as e:
             logger.error(
                 "ERROR: Exception during model_dump",

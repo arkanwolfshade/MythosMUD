@@ -38,28 +38,35 @@ from ..time.time_service import get_mythos_chronicle
 logger = get_logger("server.lifespan.startup")
 
 
+async def _get_item_prototype_entries(registry: Any) -> Any:
+    """Return raw entries from the item prototype registry, or None on error."""
+    if registry is None:
+        return None
+    all_method = getattr(registry, "all", None)
+    if not callable(all_method):
+        logger.debug("Item prototype registry missing 'all' method; defaulting prototype count to zero")
+        return None
+    entries = all_method()
+    if asyncio.iscoroutine(entries):
+        try:
+            entries = await entries
+        except Exception:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Startup code must handle all exceptions gracefully to prevent application failure during initialization. Item registry errors are non-critical and should not block startup.
+            return None
+    return entries
+
+
 async def _get_item_prototype_count(registry: Any) -> int:
     """Get count of item prototypes from registry."""
-    prototype_count = 0
-    if registry is not None:
-        all_method = getattr(registry, "all", None)
-        if callable(all_method):
-            entries = all_method()
-            if asyncio.iscoroutine(entries):
-                try:
-                    entries = await entries
-                except Exception:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Startup code must handle all exceptions gracefully to prevent application failure during initialization. Item registry errors are non-critical and should not block startup.
-                    entries = None
-            if isinstance(entries, Iterable):
-                prototype_count = sum(1 for _ in entries)
-            elif entries is not None:
-                try:
-                    prototype_count = len(entries)
-                except TypeError:
-                    logger.debug("Item registry returned non-iterable entries; defaulting prototype count to zero")
-        else:
-            logger.debug("Item prototype registry missing 'all' method; defaulting prototype count to zero")
-    return prototype_count
+    entries = await _get_item_prototype_entries(registry)
+    if isinstance(entries, Iterable):
+        return sum(1 for _ in entries)
+    if entries is None:
+        return 0
+    try:
+        return len(entries)
+    except TypeError:
+        logger.debug("Item registry returned non-iterable entries; defaulting prototype count to zero")
+        return 0
 
 
 def _legacy_service_bindings(container: ApplicationContainer) -> list[tuple[str, Any, str]]:
@@ -594,11 +601,17 @@ async def initialize_magic_services(app: FastAPI, container: ApplicationContaine
     app.state.spell_targeting_service = spell_targeting_service
     logger.info("SpellTargetingService initialized")
 
-    # Initialize SpellEffects (needs PlayerService)
+    # Initialize SpellEffects (needs PlayerService; optional combat/movement for flee effect)
     # player_service is already checked above, but mypy doesn't know that
     if container.player_service is None:
         raise RuntimeError("player_service must be initialized before magic services")
-    spell_effects = SpellEffects(player_service=container.player_service)
+    get_room = container.async_persistence.get_room_by_id if container.async_persistence else None
+    spell_effects = SpellEffects(
+        player_service=container.player_service,
+        combat_service=getattr(container, "combat_service", None),
+        movement_service=getattr(container, "movement_service", None),
+        get_room_by_id=get_room,
+    )
     app.state.spell_effects = spell_effects
     logger.info("SpellEffects initialized")
 
