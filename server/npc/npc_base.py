@@ -96,6 +96,11 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
             if "max_hp" in self._stats and "max_dp" not in self._stats:
                 self._stats["max_dp"] = self._stats["max_hp"]
             return
+        if "health" in self._stats:
+            self._stats["determination_points"] = self._stats["health"]
+            if "max_dp" not in self._stats and "max_hp" not in self._stats:
+                self._stats["max_dp"] = self._stats["health"]
+            return
         self._stats["determination_points"] = 20  # Default DP
 
     def _parse_behavior_config(self, config_json: str) -> dict[str, Any]:
