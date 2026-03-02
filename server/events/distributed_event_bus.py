@@ -8,6 +8,7 @@ enabling horizontal scaling across multiple server instances.
 from __future__ import annotations
 
 import asyncio
+import uuid
 from typing import Any, TypeVar
 
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -40,6 +41,7 @@ class DistributedEventBus(EventBus):
         super().__init__()
         self._nats_service = nats_service
         self._nats_bridge: NATSEventBusBridge | None = None
+        self._instance_id = str(uuid.uuid4())
 
     def set_nats_service(self, nats_service: Any) -> None:
         """Set NATS service and start the bridge (call after NATS connects)."""
@@ -47,7 +49,9 @@ class DistributedEventBus(EventBus):
             return
         self._nats_service = nats_service
         if nats_service:
-            self._nats_bridge = NATSEventBusBridge(event_bus=self, nats_service=nats_service)
+            self._nats_bridge = NATSEventBusBridge(
+                event_bus=self, nats_service=nats_service, instance_id=self._instance_id
+            )
             # Start bridge - fire and forget; it subscribes to NATS
             try:
                 loop = asyncio.get_running_loop()

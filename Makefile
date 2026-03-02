@@ -214,22 +214,25 @@ test-client-e2e:
 
 # Integration tests (server pytest -m integration) run here: they muck with runtime data
 # and belong in the same flow as Playwright (running server context). They are NOT run by make test-server.
-test-playwright: setup-test-env
+test-playwright: setup-test-env setup-postgresql-test-db
 	@echo "Running client E2E runtime tests (Playwright CLI)..."
 	cd $(PROJECT_ROOT)/client && npm run test:e2e:runtime
 	@echo "Running server integration tests (runtime DB, single worker)..."
+	$(POWERSHELL) scripts/apply_coc_spells_migration.ps1 -TargetDbs mythos_e2e
 	$(UV) pytest server/tests/ -m integration -n 1 $(PYTEST_OPTS)
 
 test-client-coverage:
 	@echo "Running client unit tests with coverage..."
 	cd $(PROJECT_ROOT)/client && npm run test:coverage
 
-test-server: setup-test-env
+test-server: setup-test-env setup-postgresql-test-db
 	@echo "Running server tests (no coverage)..."
+	$(POWERSHELL) scripts/apply_coc_spells_migration.ps1 -TargetDbs mythos_unit
 	$(UV) pytest server/tests/ -m "not integration" $(PYTEST_OPTS)
 
-test-server-coverage: setup-test-env
+test-server-coverage: setup-test-env setup-postgresql-test-db
 	@echo "Running server tests with coverage..."
+	$(POWERSHELL) scripts/apply_coc_spells_migration.ps1 -TargetDbs mythos_unit
 	$(UV) pytest server/tests/ -m "not integration" $(PYTEST_OPTS) $(PYTEST_COV_OPTS)
 
 test: test-client test-server

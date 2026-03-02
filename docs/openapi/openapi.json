@@ -10450,7 +10450,14 @@
           "corrupted",
           "delirious",
           "buff",
-          "login_warded"
+          "login_warded",
+          "dominated",
+          "cloud_memory",
+          "fear",
+          "evil_eye",
+          "blinded",
+          "warded",
+          "extinguish_fire"
         ],
         "title": "StatusEffectType",
         "description": "Status effects that can be applied to characters."

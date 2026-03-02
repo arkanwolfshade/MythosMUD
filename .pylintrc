@@ -9,7 +9,7 @@ ignore-paths=.*[\\/]\.pyenv[\\/].*
 [FORMAT]
 # Line-length checks disabled project-wide; max-line-length unused for enforcement
 max-line-length=120
-# Maximum module lines (project standard is 500 per user rules) - KEEP enforced
+# Maximum module lines (project standard is 550 per user rules) - KEEP enforced
 max-module-lines=550
 
 [MESSAGES CONTROL]

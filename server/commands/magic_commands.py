@@ -29,6 +29,14 @@ if TYPE_CHECKING:
 logger = get_logger(__name__)
 
 
+class SpellCommandError(Exception):
+    """Internal error type for control flow in /spell command handling."""
+
+    def __init__(self, message: str) -> None:
+        super().__init__(message)
+        self.message = message
+
+
 class MagicCommandHandler:
     """
     Handler for magic-related commands.
@@ -84,42 +92,77 @@ class MagicCommandHandler:
         """
         logger.debug("Handling cast command", player_name=player_name, command_data=command_data)
 
-        # Get player
+        preparation = await self._prepare_cast(command_data, player_name)
+        if preparation["error"]:
+            return {"result": preparation["error"]}
+
+        player = preparation["player"]
+        spell_name = preparation["spell_name"]
+        target_name = preparation["target_name"]
+
+        await self._interrupt_rest_for_cast(player, player_name, spell_name)
+
+        result = await self.magic_service.cast_spell(player.player_id, spell_name, target_name)
+
+        return await self._build_cast_response(player, result, spell_name, target_name)
+
+    async def _prepare_cast(self, command_data: dict[str, Any], player_name: str) -> dict[str, Any]:
+        """Resolve player and spell parameters for a cast; returns error message if preconditions fail."""
         player = await self.magic_service.player_service.persistence.get_player_by_name(player_name)
         if not player:
-            return {"result": "You are not recognized by the cosmic forces."}
+            return {
+                "error": "You are not recognized by the cosmic forces.",
+                "player": None,
+                "spell_name": None,
+                "target_name": None,
+            }
 
-        # Incapacitated (0 to -9 DP): cannot cast; must reach -10 to die and respawn
         current_dp = (player.get_stats() or {}).get("current_dp", 1)
         if current_dp <= 0:
-            return {"result": "You are incapacitated and cannot cast spells."}
+            return {
+                "error": "You are incapacitated and cannot cast spells.",
+                "player": None,
+                "spell_name": None,
+                "target_name": None,
+            }
 
-        # Extract spell name and optional target
         spell_name = command_data.get("spell_name") or command_data.get("spell")
         target_name = command_data.get("target")
 
         if not spell_name:
-            return {"result": "Usage: /cast <spell_name> [target]"}
+            return {
+                "error": "Usage: /cast <spell_name> [target]",
+                "player": None,
+                "spell_name": None,
+                "target_name": None,
+            }
 
-        await self._interrupt_rest_for_cast(player, player_name, spell_name)
+        return {"error": None, "player": player, "spell_name": spell_name, "target_name": target_name}
 
-        # Cast spell
-        result = await self.magic_service.cast_spell(player.player_id, spell_name, target_name)
-
+    async def _build_cast_response(
+        self,
+        player: Any,
+        result: dict[str, Any],
+        spell_name: str,
+        target_name: str | None,
+    ) -> dict[str, str]:
+        """Build the response payload for a cast result and send announcements."""
         if not result.get("success"):
             return {"result": result.get("message", "Spell casting failed.")}
 
-        # Send chat announcements
         await self._announce_spell_cast(player, result, spell_name, target_name)
 
-        # Build response message
-        message = result.get("message", f"{spell_name} cast successfully.")
-        if result.get("effect_result"):
-            effect_msg = result["effect_result"].get("message", "")
-            if effect_msg:
-                message += f" {effect_msg}"
-
+        message = self._build_cast_success_message(result, spell_name)
         return {"result": message}
+
+    def _build_cast_success_message(self, result: dict[str, Any], spell_name: str) -> str:
+        """Build the final success message for a cast spell."""
+        message = result.get("message", f"{spell_name} cast successfully.")
+        effect_result = result.get("effect_result") or {}
+        effect_msg = effect_result.get("message", "")
+        if effect_msg:
+            message += f" {effect_msg}"
+        return str(message)
 
     async def _interrupt_rest_for_cast(self, player: Any, player_name: str, spell_name: str) -> None:
         """If player is resting, cancel rest countdown so they can cast. Swallows errors so cast can proceed."""
@@ -200,39 +243,39 @@ class MagicCommandHandler:
     ) -> dict[str, str]:
         """
         Handle /spell command - show spell details.
-
-        Args:
-            command_data: Command data dictionary
-            current_user: Current user information
-            request: FastAPI request object
-            alias_storage: Alias storage instance
-            player_name: Player name
-
-        Returns:
-            dict: Command result
         """
         logger.debug("Handling spell command", player_name=player_name, command_data=command_data)
 
-        # Get player
+        try:
+            context = await self._resolve_spell_context(command_data, player_name)
+        except SpellCommandError as exc:
+            return {"result": exc.message}
+
+        detail_lines = self._build_spell_detail_lines(context["spell"], context["mastery"])
+        return {"result": "\n".join(detail_lines)}
+
+    async def _resolve_spell_context(self, command_data: dict[str, Any], player_name: str) -> dict[str, Any]:
+        """Resolve player, spell, and mastery for /spell; raise SpellCommandError on failure."""
         player = await self.magic_service.player_service.persistence.get_player_by_name(player_name)
         if not player:
-            return {"result": "You are not recognized by the cosmic forces."}
+            raise SpellCommandError("You are not recognized by the cosmic forces.")
 
-        # Extract spell name
         spell_name = command_data.get("spell_name") or command_data.get("spell")
         if not spell_name:
-            return {"result": "Usage: /spell <spell_name>"}
+            raise SpellCommandError("Usage: /spell <spell_name>")
 
-        # Get spell
         spell = self.spell_registry.get_spell_by_name(spell_name)
         if not spell:
-            return {"result": f"Spell '{spell_name}' not found."}
+            raise SpellCommandError(f"Spell '{spell_name}' not found.")
 
-        # Check if player knows it
         player_spell = await self.player_spell_repository.get_player_spell(player.player_id, spell.spell_id)
         mastery = player_spell.mastery if player_spell else None
 
-        # Build spell info
+        return {"spell": spell, "mastery": mastery}
+
+    @staticmethod
+    def _build_spell_detail_lines(spell: Any, mastery: int | None) -> list[str]:
+        """Build the detailed description lines for a spell."""
         lines = [
             f"Spell: {spell.name}",
             f"Description: {spell.description}",
@@ -258,15 +301,14 @@ class MagicCommandHandler:
         else:
             lines.append("Status: Not learned")
 
-        # Add material requirements
-        if spell.materials:
+        if getattr(spell, "materials", None):
             lines.append("")
             lines.append("Required Materials:")
             for material in spell.materials:
                 consumed_text = " (consumed)" if material.consumed else " (reusable)"
                 lines.append(f"  - {material.item_id}{consumed_text}")
 
-        return {"result": "\n".join(lines)}
+        return lines
 
     async def _announce_spell_cast(
         self, player: Any, _result: dict[str, Any], spell_name: str, target_name: str | None
@@ -326,35 +368,41 @@ class MagicCommandHandler:
     ) -> dict[str, str]:
         """
         Handle /learn command - learn a spell from various sources.
-
-        Args:
-            command_data: Command data dictionary
-            _current_user: Current user information
-            _request: FastAPI request object
-            _alias_storage: Alias storage instance
-            player_name: Player name
-
-        Returns:
-            dict: Command result
         """
         logger.debug("Handling learn command", player_name=player_name, command_data=command_data)
 
-        if not self.spell_learning_service:
-            return {"result": "Spell learning system not initialized."}
+        try:
+            context = await self._resolve_learn_context(command_data, player_name)
+        except SpellCommandError as exc:
+            return {"result": exc.message}
 
-        # Get player
+        svc = self.spell_learning_service
+        if not svc:
+            return {"result": "Spell learning system not initialized."}
+        result = await svc.learn_spell(
+            context["player"].player_id,
+            context["spell_name"],
+            source="command",
+        )
+        return await self._build_learn_response(result, context["spell_name"], context["player"])
+
+    async def _resolve_learn_context(self, command_data: dict[str, Any], player_name: str) -> dict[str, Any]:
+        """Resolve player and spell name for /learn; raise SpellCommandError on failure."""
+        if not self.spell_learning_service:
+            raise SpellCommandError("Spell learning system not initialized.")
+
         player = await self.magic_service.player_service.persistence.get_player_by_name(player_name)
         if not player:
-            return {"result": "You are not recognized by the cosmic forces."}
+            raise SpellCommandError("You are not recognized by the cosmic forces.")
 
-        # Extract spell name
         spell_name = command_data.get("spell_name") or command_data.get("spell")
         if not spell_name:
-            return {"result": "Usage: /learn <spell_name>"}
+            raise SpellCommandError("Usage: /learn <spell_name>")
 
-        # Learn the spell (from unknown source - could be extended for specific sources)
-        result = await self.spell_learning_service.learn_spell(player.player_id, spell_name, source="command")
+        return {"player": player, "spell_name": spell_name}
 
+    async def _build_learn_response(self, result: dict[str, Any], spell_name: str, player: Any) -> dict[str, Any]:
+        """Build the response payload for a learn result; includes player_update for Character Info panel."""
         if not result.get("success"):
             return {"result": result.get("message", "Failed to learn spell.")}
 
@@ -362,7 +410,12 @@ class MagicCommandHandler:
         if result.get("corruption_applied", 0) > 0:
             message += f" The forbidden knowledge has tainted your mind (+{result['corruption_applied']} corruption)."
 
-        return {"result": message}
+        out: dict[str, Any] = {"result": message}
+        player_after = await self.magic_service.player_service.persistence.get_player_by_id(player.player_id)
+        if player_after:
+            stats = player_after.get_stats() or {}
+            out["player_update"] = {"stats": {"corruption": stats.get("corruption", 0)}}
+        return out
 
     async def handle_stop_command(
         self,

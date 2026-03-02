@@ -1,35 +1,87 @@
-"""
-Core combat service for managing combat state and logic.
+"""Core combat service for managing combat state and logic."""
 
-This service handles all combat-related operations including state management,
-turn order calculation, and combat resolution.
-"""
-
-# pylint: disable=too-many-instance-attributes,too-many-arguments,too-many-positional-arguments,too-many-locals,too-many-lines  # Reason: Combat service requires many state tracking attributes and complex combat logic. Combat service requires extensive combat logic for comprehensive combat system management.
-
-from typing import TYPE_CHECKING, Any, cast
+from dataclasses import dataclass
+from typing import TYPE_CHECKING, Any
 from uuid import UUID
 
-from server.commands.rest_command import _cancel_rest_countdown, is_player_resting
 from server.config import get_config
-from server.events.combat_events import CombatStartedEvent
+from server.events.combat_events import CombatStartedEvent, NPCDiedEvent, NPCTookDamageEvent
 from server.events.event_bus import EventBus
 from server.models.combat import (
     CombatInstance,
     CombatParticipant,
     CombatParticipantType,
     CombatResult,
-    CombatStatus,
 )
-from server.realtime.login_grace_period import is_player_in_login_grace_period
 from server.services.combat_attack_handler import CombatAttackHandler
 from server.services.combat_cleanup_handler import CombatCleanupHandler
 from server.services.combat_death_handler import CombatDeathHandler
 from server.services.combat_event_handler import CombatEventHandler
 from server.services.combat_event_publisher import CombatEventPublisher
-from server.services.combat_flee_handler import check_involuntary_flee
+from server.services.combat_flee_handler import check_involuntary_flee as check_involuntary_flee_fn
 from server.services.combat_initialization import CombatInitializer
 from server.services.combat_persistence_handler import CombatPersistenceHandler
+from server.services.combat_service_attack import (
+    apply_damage_and_check_involuntary_flee as apply_damage_and_check_involuntary_flee_impl,
+)
+from server.services.combat_service_attack import (
+    finalize_attack_result as finalize_attack_result_impl,
+)
+from server.services.combat_service_attack import (
+    handle_combat_completion as handle_combat_completion_impl,
+)
+from server.services.combat_service_attack import (
+    process_attack as process_attack_impl,
+)
+from server.services.combat_service_attack import (
+    queue_combat_action as queue_combat_action_impl,
+)
+from server.services.combat_service_attack import (
+    validate_melee_location as validate_melee_location_impl,
+)
+from server.services.combat_service_attack import (
+    validate_melee_or_end_combat as validate_melee_or_end_combat_impl,
+)
+from server.services.combat_service_end import end_combat as end_combat_impl
+from server.services.combat_service_events import (
+    publish_npc_damage_event as publish_npc_damage_event_impl,
+)
+from server.services.combat_service_events import (
+    publish_npc_died_event as publish_npc_died_event_impl,
+)
+from server.services.combat_service_npc import (
+    get_combat_by_participant as get_combat_by_participant_impl,
+)
+from server.services.combat_service_npc import (
+    get_combat_id_for_npc,
+)
+from server.services.combat_service_npc import (
+    get_npc_participant_current_room as get_npc_participant_current_room_impl,
+)
+from server.services.combat_service_npc import (
+    get_participant_current_room as get_participant_current_room_impl,
+)
+from server.services.combat_service_npc import (
+    is_npc_in_combat_sync as is_npc_in_combat_sync_impl,
+)
+from server.services.combat_service_npc import (
+    sync_npc_participant_dp_after_spell_damage as sync_npc_dp_impl,
+)
+from server.services.combat_service_start import (
+    check_attacker_grace_period as check_attacker_grace_period_impl,
+)
+from server.services.combat_service_start import (
+    check_target_rest_and_grace_period as check_target_rest_and_grace_period_impl,
+)
+from server.services.combat_service_start import (
+    publish_combat_started_event as publish_combat_started_event_impl,
+)
+from server.services.combat_service_start import (
+    register_combat as register_combat_impl,
+)
+from server.services.combat_service_start import (
+    validate_combat_can_start as validate_combat_can_start_impl,
+)
 from server.services.combat_service_state import (  # noqa: PLC0415  # Reason: Lazy import would break circular dependency resolution, this import must be at module level for service state management
     COMBAT_SERVICE,
     get_combat_service,
@@ -37,7 +89,6 @@ from server.services.combat_service_state import (  # noqa: PLC0415  # Reason: L
 )
 from server.services.combat_turn_processor import CombatTurnProcessor
 from server.services.combat_types import CombatParticipantData
-from server.services.nats_exceptions import NATSError
 from server.services.nats_service import NATSService
 from server.services.nats_subject_manager import NATSSubjectManager
 from server.services.player_combat_service import PlayerCombatService
@@ -50,12 +101,17 @@ if TYPE_CHECKING:
 logger = get_logger(__name__)
 
 
+@dataclass
+class PlayerLifecycleServices:
+    """Player death and respawn services for CombatService injection."""
+
+    player_death_service: Any
+    player_respawn_service: Any
+
+
 class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: Combat service requires many state tracking and service attributes
     """
     Service for managing combat instances and state.
-
-    This service maintains in-memory combat state and provides methods
-    for initiating combat, processing actions, and managing turn order.
     """
 
     def __init__(
@@ -64,8 +120,7 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
         nats_service: NATSService | None = None,
         npc_combat_integration_service: "NPCCombatIntegration | NPCCombatIntegrationService | None" = None,
         subject_manager: NATSSubjectManager | None = None,
-        player_death_service: Any | None = None,
-        player_respawn_service: Any | None = None,
+        player_lifecycle_services: "PlayerLifecycleServices | None" = None,
         event_bus: EventBus | None = None,
         magic_service: Any | None = None,
     ) -> None:
@@ -77,8 +132,9 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
         self._player_combat_service = player_combat_service
         self._nats_service = nats_service
         self._npc_combat_integration_service = npc_combat_integration_service
-        self._player_death_service = player_death_service
-        self._player_respawn_service = player_respawn_service
+        life = player_lifecycle_services
+        self._player_death_service = life.player_death_service if life else None
+        self._player_respawn_service = life.player_respawn_service if life else None
         self.magic_service = magic_service  # For casting state checks
         # CRITICAL: Use shared EventBus instance, not a new one
         self._event_bus = event_bus or EventBus()
@@ -116,116 +172,23 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
 
     @property
     def auto_progression_enabled(self) -> bool:
-        """Get auto-progression enabled status."""
+        """Return whether auto-progression is enabled."""
         return self._auto_progression_enabled
 
     @auto_progression_enabled.setter
     def auto_progression_enabled(self, value: bool) -> None:
-        """Set auto-progression enabled status."""
+        """Enable or disable combat auto-progression."""
         self._auto_progression_enabled = value
 
     @property
     def turn_interval_seconds(self) -> int:
-        """Get turn interval in seconds."""
+        """Return the turn interval in seconds."""
         return self._turn_interval_seconds
 
     @turn_interval_seconds.setter
     def turn_interval_seconds(self, value: int) -> None:
-        """Set turn interval in seconds."""
+        """Set the turn interval in seconds."""
         self._turn_interval_seconds = value
-
-    def _get_connection_manager_for_combat_check(self) -> Any | None:
-        """Resolve connection_manager from config app instance for rest/grace checks. Returns None if unavailable."""
-        config = get_config()
-        app = getattr(config, "_app_instance", None)
-        if not app:
-            return None
-        return getattr(app.state, "connection_manager", None)
-
-    async def _apply_target_rest_and_grace_checks(
-        self,
-        connection_manager: Any,
-        target: CombatParticipantData,
-        attacker: CombatParticipantData,
-    ) -> None:
-        """Check target login grace period (raises) and resting (cancel + log). Caller must have connection_manager."""
-        target_id = target.participant_id
-        if is_player_in_login_grace_period(target_id, connection_manager):
-            logger.info(
-                "Combat prevented - target in login grace period",
-                target_id=target_id,
-                target_name=target.name,
-                attacker_name=attacker.name,
-            )
-            raise ValueError("Target is protected by login grace period and cannot be attacked")
-        if is_player_resting(target_id, connection_manager):
-            await _cancel_rest_countdown(target_id, connection_manager)
-            logger.info(
-                "Rest interrupted by combat start (player attacked)",
-                target_id=target_id,
-                target_name=target.name,
-            )
-
-    async def _check_target_rest_and_grace_period(
-        self, target: CombatParticipantData, attacker: CombatParticipantData
-    ) -> None:
-        """Check if target is resting or in grace period and handle accordingly."""
-        if target.participant_type != CombatParticipantType.PLAYER:
-            return
-        try:
-            connection_manager = self._get_connection_manager_for_combat_check()
-            if not connection_manager:
-                return
-            await self._apply_target_rest_and_grace_checks(connection_manager, target, attacker)
-        except (AttributeError, ImportError, TypeError) as e:
-            logger.debug("Could not check rest state for combat start", target_id=target.participant_id, error=str(e))
-        except ValueError as e:
-            if "login grace period" in str(e):
-                raise
-            logger.debug("Could not check rest state for combat start", target_id=target.participant_id, error=str(e))
-
-    async def _check_attacker_grace_period(
-        self, attacker: CombatParticipantData, target: CombatParticipantData
-    ) -> None:
-        """Check if attacker is in login grace period."""
-        if attacker.participant_type != CombatParticipantType.PLAYER:
-            return
-
-        try:
-            config = get_config()
-            app = getattr(config, "_app_instance", None)
-            if not app:
-                return
-
-            connection_manager = getattr(app.state, "connection_manager", None)
-            if not connection_manager:
-                return
-
-            attacker_id = attacker.participant_id
-
-            if is_player_in_login_grace_period(attacker_id, connection_manager):
-                logger.info(
-                    "Combat prevented - attacker in login grace period",
-                    attacker_id=attacker_id,
-                    attacker_name=attacker.name,
-                    target_name=target.name,
-                )
-                raise ValueError("You are protected by login grace period and cannot initiate combat")
-        except (AttributeError, ImportError, TypeError) as e:
-            logger.debug(
-                "Could not check login grace period for attacker", attacker_id=attacker.participant_id, error=str(e)
-            )
-        except ValueError as e:
-            if "login grace period" in str(e):
-                raise
-            logger.debug(
-                "Could not check login grace period for attacker", attacker_id=attacker.participant_id, error=str(e)
-            )
-
-    def _validate_combat_can_start(self, attacker: CombatParticipantData, target: CombatParticipantData) -> None:
-        """Validate that combat can start (participants not already in combat)."""
-        if attacker.participant_id in self._player_combats or target.participant_id in self._npc_combats:
-            raise ValueError("One or both participants are already in combat")
 
     async def start_combat(
         self,
@@ -234,26 +197,12 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
         target: CombatParticipantData,
         current_tick: int,
     ) -> CombatInstance:
-        """
-        Start a new combat instance between two participants.
-
-        Args:
-            room_id: The room where combat is taking place
-            attacker: Data for the attacking participant
-            target: Data for the target participant
-            current_tick: Current game tick
-
-        Returns:
-            The created CombatInstance
-
-        Raises:
-            ValueError: If combat cannot be started (invalid participants, etc.)
-        """
+        """Start a new combat instance between two participants."""
         logger.info("Starting combat", attacker=attacker.name, target=target.name, room_id=room_id)
 
-        await self._check_target_rest_and_grace_period(target, attacker)
-        await self._check_attacker_grace_period(attacker, target)
-        self._validate_combat_can_start(attacker, target)
+        await check_target_rest_and_grace_period_impl(self, target, attacker)
+        await check_attacker_grace_period_impl(self, attacker, target)
+        await validate_combat_can_start_impl(self, attacker, target)
 
         combat = CombatInitializer.create_combat_instance(
             room_id=room_id,
@@ -264,215 +213,99 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
             turn_interval_seconds=self._turn_interval_seconds,
         )
 
-        await self._register_combat(combat, attacker, room_id)
+        await register_combat_impl(self, combat, attacker, room_id)
 
         logger.info("Combat started", combat_id=combat.combat_id, turn_order=combat.turn_order)
 
-        await self._publish_combat_started_event(combat, room_id)
+        await publish_combat_started_event_impl(self, combat, room_id)
 
         return combat
 
-    async def _register_combat(
+    async def publish_npc_damage_event(
         self,
-        combat: CombatInstance,
-        attacker: CombatParticipantData,
         room_id: str,
-    ) -> None:
-        """Register combat instance and track player combat state."""
-        # Store combat instance
-        self._active_combats[combat.combat_id] = combat
-        self._player_combats[attacker.participant_id] = combat.combat_id
-
-        # Get target participant ID from combat
-        target_id = next(
-            (p.participant_id for p in combat.participants.values() if p.participant_id != attacker.participant_id),
-            None,
+        npc_id: UUID | str,
+        npc_name: str,
+        damage: int,
+        current_dp: int,
+        max_dp: int,
+        combat_id: UUID | None = None,
+    ) -> bool:
+        """Publish an npc_took_damage event for non-combat damage."""
+        return await publish_npc_damage_event_impl(
+            self, room_id, npc_id, npc_name, damage, current_dp, max_dp, combat_id
         )
-        if target_id:
-            self._npc_combats[target_id] = combat.combat_id
 
-        # Track player combat state if player combat service is available
-        if self._player_combat_service:
-            await self._player_combat_service.track_player_combat_state(
-                player_id=attacker.participant_id,
-                player_name=attacker.name,
-                combat_id=combat.combat_id,
-                room_id=room_id,
-            )
+    async def publish_npc_died_event(
+        self,
+        room_id: str,
+        npc_id: UUID | str,
+        npc_name: str,
+        xp_reward: int = 0,
+        killer_id: str | None = None,
+    ) -> bool:
+        """Publish an npc_died event when non-combat damage kills an NPC."""
+        return await publish_npc_died_event_impl(self, room_id, npc_id, npc_name, xp_reward, killer_id)
 
-    async def _publish_combat_started_event(self, combat: CombatInstance, room_id: str) -> None:
-        """Publish combat started event."""
-        try:
-            logger.debug("Creating CombatStartedEvent", combat_id=combat.combat_id)
-            started_event = CombatStartedEvent(
-                combat_id=combat.combat_id,
-                room_id=room_id,
-                participants={
-                    str(p.participant_id): {"name": p.name, "dp": p.current_dp, "max_dp": p.max_dp}
-                    for p in combat.participants.values()
-                },
-                turn_order=[str(pid) for pid in combat.turn_order],
-            )
-            logger.debug("Calling publish_combat_started", combat_id=combat.combat_id)
-            await self._combat_event_publisher.publish_combat_started(started_event)
-            logger.debug("publish_combat_started completed", combat_id=combat.combat_id)
-        except (NATSError, ValueError, RuntimeError, AttributeError, ConnectionError) as e:
-            logger.error("Error publishing combat started event", error=str(e), exc_info=True)
+    def sync_npc_participant_dp_after_spell_damage(self, npc_id: str, new_dp: int) -> None:
+        """Sync NPC CombatParticipant.current_dp after spell damage."""
+        sync_npc_dp_impl(self, npc_id, new_dp)
+
+    def _get_combat_id_for_npc(self, npc_id: UUID | str) -> UUID | None:
+        """Return combat_id if this NPC is in combat, else None."""
+        return get_combat_id_for_npc(self, npc_id)
+
+    async def end_combat_if_npc_died(self, npc_id: UUID | str) -> bool:
+        """End combat if the given NPC is in combat (e.g. steal-life kill)."""
+        combat_id = get_combat_id_for_npc(self, npc_id)
+        if not combat_id:
+            return False
+        await self.end_combat(combat_id, "Combat ended - NPC slain")
+        return True
 
     async def process_game_tick(self, current_tick: int) -> None:
-        """
-        Process game tick for combat auto-progression.
-
-        Args:
-            current_tick: Current game tick number
-        """
+        """Process a game tick for combat auto-progression."""
         await self._turn_processor.process_game_tick(current_tick, self._active_combats, self._auto_progression_enabled)
 
+    def get_combat(self, combat_id: UUID) -> CombatInstance | None:
+        """Return the active combat for combat_id, or None if not found."""
+        return self._active_combats.get(combat_id)
+
+    def get_npc_combat_integration_service(self) -> Any:
+        """Return the NPC combat integration service."""
+        return self._npc_combat_integration_service
+
+    def get_combat_id_for_participant(self, participant_id: UUID) -> UUID | None:
+        """Return combat_id if a participant is in combat, else None."""
+        return self._player_combats.get(participant_id) or self._npc_combats.get(participant_id)
+
+    def get_combat_id_for_npc_uuid(self, npc_uuid: UUID) -> UUID | None:
+        """Return combat_id if an NPC UUID is in combat, else None."""
+        return self._npc_combats.get(npc_uuid)
+
     async def get_combat_by_participant(self, participant_id: UUID) -> CombatInstance | None:
-        """
-        Get combat instance for a specific participant.
-
-        Args:
-            participant_id: ID of the participant
-
-        Returns:
-            CombatInstance if found, None otherwise
-        """
-        combat_id = self._player_combats.get(participant_id) or self._npc_combats.get(participant_id)
-        if combat_id:
-            return self._active_combats.get(combat_id)
-        return None
-
-    def _npc_in_combat_by_uuid_lookup(self, npc_id: str) -> bool:
-        """True if npc_id parses as UUID and that UUID is in _npc_combats. Catches parse errors."""
-        try:
-            npc_uuid = UUID(npc_id) if isinstance(npc_id, str) else npc_id
-            return npc_uuid in self._npc_combats
-        except (ValueError, TypeError, AttributeError):
-            return False
-
-    def _npc_in_combat_by_string_id_mapping(self, npc_id: str) -> bool:
-        """True if integration service mapping has a UUID for npc_id that is in _npc_combats."""
-        # pylint: disable=protected-access  # Reason: NPCCombatUUIDMapping does not expose public "find UUID by string id"; CombatService must resolve string npc_id to UUID for _npc_combats lookup without adding new public API
-        svc = self._npc_combat_integration_service
-        if not svc or not hasattr(svc, "_uuid_mapping"):
-            return False
-        mapping = svc._uuid_mapping
-        if not hasattr(mapping, "_uuid_to_string_id_mapping"):
-            return False
-        for uuid_key, string_id in mapping._uuid_to_string_id_mapping.items():
-            if string_id == npc_id and uuid_key in self._npc_combats:
-                return True
-        # pylint: enable=protected-access
-        return False
+        """Return the combat instance for a specific participant, if any."""
+        return get_combat_by_participant_impl(self, participant_id)
 
     def is_npc_in_combat_sync(self, npc_id: str) -> bool:
-        """
-        Check if an NPC (by string id or UUID string) is currently in combat.
-
-        Used by movement and idle logic to block normal NPC movement while in combat.
-
-        Args:
-            npc_id: NPC identifier (string id e.g. "cultist_001" or UUID string)
-
-        Returns:
-            True if the NPC is in an active combat, False otherwise
-        """
-        if self._npc_in_combat_by_uuid_lookup(npc_id):
-            return True
-        return self._npc_in_combat_by_string_id_mapping(npc_id)
+        """Return True if an NPC (string or UUID) is currently in combat."""
+        return is_npc_in_combat_sync_impl(self, npc_id)
 
     def _get_npc_participant_current_room(
-        self,
-        data_provider: Any,
-        svc: Any,
-        participant: CombatParticipant,
+        self, data_provider: Any, svc: Any, participant: CombatParticipant
     ) -> str | None:
-        """Resolve current room for an NPC participant via uuid_mapping and data_provider. Returns None if unavailable."""
-        uuid_mapping = getattr(svc, "_uuid_mapping", None) if svc else None
-        if not uuid_mapping or not hasattr(uuid_mapping, "get_original_string_id"):
-            return None
-        npc_id = uuid_mapping.get_original_string_id(participant.participant_id)
-        if not npc_id:
-            return None
-        npc_instance = data_provider.get_npc_instance(npc_id)
-        if not npc_instance:
-            return None
-        return getattr(npc_instance, "current_room", None)
+        """Return current room for an NPC participant, or None if unavailable."""
+        return get_npc_participant_current_room_impl(self, data_provider, svc, participant)
 
-    async def _get_participant_current_room(self, participant: CombatParticipant) -> str | None:
-        """
-        Get current room ID for a combat participant (player or NPC).
+    async def get_participant_current_room(self, participant: CombatParticipant) -> str | None:
+        """Return current room ID for a combat participant, or None."""
+        return await get_participant_current_room_impl(self, participant)
 
-        Uses NPC combat integration data provider when available. Returns None if
-        room cannot be determined (e.g. no integration service).
-        """
-        svc = self._npc_combat_integration_service
-        data_provider = getattr(svc, "_data_provider", None) if svc else None
-        if not data_provider:
-            return None
-        if participant.participant_type == CombatParticipantType.PLAYER:
-            result = await data_provider.get_player_room_id(str(participant.participant_id))
-            return cast(str | None, result)
-        return self._get_npc_participant_current_room(data_provider, svc, participant)
-
-    @staticmethod
-    def _effective_room_for_melee(
-        room: str | None,
-        participant_id: UUID,
-        combat_room_id: str,
-        participants: dict[Any, Any],
-    ) -> str | None:
-        """Use combat_room_id when room is None and participant is in this combat; else return room (or None)."""
-        if room is not None:
-            return room
-        if participant_id in participants:
-            return combat_room_id
-        return None
-
-    @staticmethod
-    def _melee_location_fail_reason(
-        attacker: CombatParticipant,
-        target: CombatParticipant,
-        attacker_room: str | None,
-        target_room: str | None,
-        combat_room_id: str,
-    ) -> str:
-        """Build reason string when melee location validation fails."""
-        return (
-            f"Combat ended: participant rooms do not match combat room. "
-            f"Attacker {attacker.name!r} is in room {attacker_room!r}, "
-            f"target {target.name!r} is in room {target_room!r}, "
-            f"combat room is {combat_room_id!r}."
-        )
-
-    async def _validate_melee_location(
+    async def validate_melee_location(
         self, combat: CombatInstance, attacker: CombatParticipant, target: CombatParticipant
     ) -> tuple[bool, str | None]:
-        """
-        Validate that both participants are still in combat.room_id (melee requires same room).
-
-        Returns (True, None) if valid, (False, reason) if invalid.
-        When we cannot determine rooms (no integration), we allow the attack (fail open).
-        When room lookup returns None for a participant in this combat, treat as combat room.
-        When lookup returns a different room, do not assume same room; fail with a clear reason.
-        """
-        combat_room_id = combat.room_id
-        attacker_room = await self._get_participant_current_room(attacker)
-        target_room = await self._get_participant_current_room(target)
-        attacker_effective = self._effective_room_for_melee(
-            attacker_room, attacker.participant_id, combat_room_id, combat.participants
-        )
-        target_effective = self._effective_room_for_melee(
-            target_room, target.participant_id, combat_room_id, combat.participants
-        )
-        if attacker_effective is None and target_effective is None:
-            return True, None
-        if attacker_effective != combat_room_id or target_effective != combat_room_id:
-            return False, self._melee_location_fail_reason(
-                attacker, target, attacker_effective, target_effective, combat_room_id
-            )
-        return True, None
+        """Validate both participants are still in combat.room_id for melee."""
+        return await validate_melee_location_impl(self, combat, attacker, target)
 
     async def _handle_player_dp_update(self, target: CombatParticipant, old_dp: int, combat: CombatInstance) -> None:
         """Handle player DP update, persistence, and event publishing."""
@@ -493,56 +326,23 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
             str(combat.combat_id),
         )
 
-    async def _check_involuntary_flee(self, target: CombatParticipant, damage: int, combat: CombatInstance) -> bool:
-        """
-        Check if player should involuntarily flee due to lucidity effects.
-
-        Args:
-            target: The player participant who took damage
-            damage: Amount of damage taken
-            combat: Combat instance (unused, reserved for future use)
-
-        Returns:
-            True if player should flee, False otherwise
-        """
+    async def check_involuntary_flee(self, target: CombatParticipant, damage: int, combat: CombatInstance) -> bool:
+        """Return True if player should involuntarily flee due to lucidity effects."""
         _ = combat  # Intentionally unused - reserved for future combat context needs
-        return await check_involuntary_flee(target, damage)
+        return await check_involuntary_flee_fn(target, damage)
 
-    async def _validate_and_get_combat_participants(
+    async def validate_and_get_combat_participants(
         self, attacker_id: UUID, target_id: UUID, is_initial_attack: bool
     ) -> tuple[CombatInstance, CombatParticipant, CombatParticipant]:
-        """
-        Validate attack and retrieve combat participants.
-
-        Args:
-            attacker_id: ID of the attacker
-            target_id: ID of the target
-            is_initial_attack: Whether this is the initial attack
-
-        Returns:
-            Tuple of (combat, attacker, target)
-
-        Raises:
-            ValueError: If attack is invalid
-        """
+        """Validate attack and retrieve combat and participants."""
         return await self._attack_handler.validate_and_get_combat_participants(
             attacker_id, target_id, is_initial_attack
         )
 
-    async def _apply_attack_damage(
+    async def apply_attack_damage(
         self, combat: CombatInstance, target: CombatParticipant, damage: int
     ) -> tuple[int, bool, bool]:
-        """
-        Apply damage to target and update combat state.
-
-        Args:
-            combat: Combat instance
-            target: Target participant
-            damage: Damage amount
-
-        Returns:
-            Tuple of (old_dp, target_died, target_mortally_wounded)
-        """
+        """Apply damage to target and update combat state."""
         old_dp, target_died, target_mortally_wounded = await self._attack_handler.apply_attack_damage(
             combat, target, damage
         )
@@ -550,7 +350,7 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
             await self._handle_player_dp_update(target, old_dp, combat)
         return old_dp, target_died, target_mortally_wounded
 
-    async def _handle_target_state_changes(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: State change handling requires many parameters for context and state updates
+    async def handle_target_state_changes(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: State change handling requires many parameters for context and state updates
         self,
         target: CombatParticipant,
         current_participant: CombatParticipant,
@@ -558,21 +358,12 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
         target_died: bool,
         combat: CombatInstance,
     ) -> None:
-        """
-        Handle mortally wounded and death state changes for target.
-
-        Args:
-            target: Target participant
-            current_participant: Attacking participant
-            target_mortally_wounded: Whether target became mortally wounded
-            target_died: Whether target died
-            combat: Combat instance
-        """
+        """Handle mortally wounded and death state changes for target."""
         await self._death_handler.handle_target_state_changes(
             target, current_participant, target_mortally_wounded, target_died, combat
         )
 
-    async def _handle_attack_events_and_xp(
+    async def handle_attack_events_and_xp(
         self,
         current_participant: CombatParticipant,
         target: CombatParticipant,
@@ -581,84 +372,20 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
         target_died: bool,
         target_id: UUID,
     ) -> int | None:
-        """
-        Publish attack events and calculate XP reward.
-
-        Args:
-            current_participant: Attacking participant
-            target: Target participant
-            damage: Damage amount
-            combat: Combat instance
-            target_died: Whether target died
-            target_id: Target participant ID
-
-        Returns:
-            XP reward amount if target died, None otherwise
-        """
+        """Publish attack events and calculate XP reward if target died."""
         return await self._event_handler.handle_attack_events_and_xp(
             current_participant, target, damage, combat, target_died, target_id
         )
 
-    async def _award_xp_to_player(
+    async def award_xp_to_player(
         self, current_participant: CombatParticipant, target: CombatParticipant, target_id: UUID, xp_amount: int | None
     ) -> None:
-        """
-        Award XP to player for defeating an NPC.
-
-        Args:
-            current_participant: Attacking participant (player)
-            target: Defeated target participant
-            target_id: Defeated NPC ID
-            xp_amount: XP amount to award
-        """
+        """Award XP to player for defeating an NPC."""
         await self._event_handler.award_xp_to_player(current_participant, target, target_id, xp_amount)
 
-    async def _handle_combat_completion(self, combat: CombatInstance, combat_ended: bool) -> None:
-        """
-        Handle combat completion or continuation.
-
-        Args:
-            combat: Combat instance
-            combat_ended: Whether combat has ended
-        """
-        if combat_ended:
-            logger.info(
-                "Combat ending - starting end combat process",
-                combat_id=combat.combat_id,
-                room_id=combat.room_id,
-            )
-            try:
-                await self.end_combat(combat.combat_id, "Combat ended - one participant defeated")
-                logger.info(
-                    "Combat end process completed successfully",
-                    combat_id=combat.combat_id,
-                )
-            except (
-                NATSError,
-                ValueError,
-                RuntimeError,
-                AttributeError,
-                ConnectionError,
-                TypeError,
-                KeyError,
-            ) as end_combat_error:
-                # CRITICAL: Prevent combat end errors from disconnecting players
-                logger.error(
-                    "Error ending combat - preventing disconnect",
-                    combat_id=combat.combat_id,
-                    room_id=combat.room_id,
-                    error=str(end_combat_error),
-                    exc_info=True,
-                )
-        else:
-            # Set up next turn tick for auto-progression
-            # Lazy import to avoid circular dependency with game_tick_processing
-            from server.app.game_tick_processing import (
-                get_current_tick,  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Lazy import inside function to avoid circular import chain during module initialization, wrong import position is intentional
-            )
-
-            combat.next_turn_tick = get_current_tick() + combat.turn_interval_ticks
-            logger.debug("Combat attack processed, auto-progression enabled", combat_id=combat.combat_id)
+    async def handle_combat_completion(self, combat: CombatInstance, combat_ended: bool) -> None:
+        """Handle combat completion or continuation."""
+        await handle_combat_completion_impl(self, combat, combat_ended)
 
     async def queue_combat_action(
         self,
@@ -670,60 +397,12 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
         spell_id: str | None = None,
         spell_name: str | None = None,
     ) -> bool:
-        """
-        Queue a combat action for a participant to execute in the next round.
-
-        Args:
-            combat_id: ID of the combat instance
-            participant_id: ID of the participant queuing the action
-            action_type: Type of action ("attack", "spell", etc.)
-            target_id: Optional target ID for the action
-            damage: Optional damage value for attack actions
-            spell_id: Optional spell ID for spell actions
-            spell_name: Optional spell name for spell actions
-
-        Returns:
-            True if action was queued successfully, False otherwise
-        """
-        combat = self._active_combats.get(combat_id)
-        if not combat:
-            logger.warning("Combat not found for action queuing", combat_id=combat_id, participant_id=participant_id)
-            return False
-
-        if participant_id not in combat.participants:
-            logger.warning(
-                "Participant not in combat", combat_id=combat_id, participant_id=participant_id, action_type=action_type
-            )
-            return False
-
-        # Create combat action
-        from server.models.combat import (
-            CombatAction,  # noqa: PLC0415  # Reason: Local import to avoid circular dependency
+        """Queue a combat action for a participant to execute in the next round."""
+        return await queue_combat_action_impl(
+            self, combat_id, participant_id, action_type, target_id, damage, spell_id, spell_name
         )
 
-        action = CombatAction(
-            combat_id=combat_id,
-            attacker_id=participant_id,
-            target_id=target_id or UUID("00000000-0000-0000-0000-000000000000"),
-            action_type=action_type,
-            damage=damage or 10,
-            spell_id=spell_id,
-            spell_name=spell_name,
-        )
-
-        # Queue the action
-        combat.queue_action(participant_id, action)
-        logger.info(
-            "Combat action queued",
-            combat_id=combat_id,
-            participant_id=participant_id,
-            action_type=action_type,
-            round=action.round,
-        )
-
-        return True
-
-    async def _validate_melee_or_end_combat(
+    async def validate_melee_or_end_combat(
         self,
         combat: CombatInstance,
         current_participant: CombatParticipant,
@@ -731,60 +410,22 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
         attacker_id: UUID,
         target_id: UUID,
     ) -> CombatResult | None:
-        """Validate melee location; if invalid, end combat and return early result. Otherwise return None."""
-        valid, reason = await self._validate_melee_location(combat, current_participant, target)
-        if not valid and reason:
-            logger.warning(
-                "Melee room validation failed, ending combat",
-                combat_id=combat.combat_id,
-                attacker_id=attacker_id,
-                target_id=target_id,
-                reason=reason,
-            )
-            await self.end_combat(combat.combat_id, reason)
-            return CombatResult(
-                success=False,
-                damage=0,
-                target_died=False,
-                combat_ended=True,
-                message=reason,
-                combat_id=combat.combat_id,
-            )
-        return None
+        """Validate melee location; if invalid, end combat and return early result."""
+        return await validate_melee_or_end_combat_impl(
+            self, combat, current_participant, target, attacker_id, target_id
+        )
 
-    async def _apply_damage_and_check_involuntary_flee(
+    async def apply_damage_and_check_involuntary_flee(
         self,
         combat: CombatInstance,
         current_participant: CombatParticipant,
         target: CombatParticipant,
         damage: int,
     ) -> tuple[bool, bool, CombatResult | None]:
-        """Apply attack damage and check for involuntary flee. Returns (target_died, mortally_wounded, early_result)."""
-        _, target_died, target_mortally_wounded = await self._apply_attack_damage(combat, target, damage)
-        if target.participant_type != CombatParticipantType.PLAYER:
-            return (target_died, target_mortally_wounded, None)
-        should_flee = await self._check_involuntary_flee(target, damage, combat)
-        if not should_flee:
-            return (target_died, target_mortally_wounded, None)
-        logger.info(
-            "Involuntary flee triggered",
-            player_id=target.participant_id,
-            player_name=target.name,
-            damage=damage,
-            max_dp=target.max_dp,
-        )
-        await self.end_combat(combat.combat_id, f"{target.name} flees in terror from the attack")
-        early = CombatResult(
-            success=True,
-            damage=damage,
-            target_died=False,
-            combat_ended=True,
-            message=f"{target.name} flees in panic from {current_participant.name}'s attack!",
-            combat_id=combat.combat_id,
-        )
-        return (target_died, target_mortally_wounded, early)
+        """Apply attack damage and check for involuntary flee."""
+        return await apply_damage_and_check_involuntary_flee_impl(self, combat, current_participant, target, damage)
 
-    async def _finalize_attack_result(
+    async def finalize_attack_result(
         self,
         combat: CombatInstance,
         current_participant: CombatParticipant,
@@ -794,29 +435,10 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
         target_mortally_wounded: bool,
         target_id: UUID,
     ) -> CombatResult:
-        """Build result, handle state changes, events, XP, and combat completion. Returns final CombatResult."""
-        combat_ended = combat.is_combat_over()
-        health_info = f" ({target.current_dp}/{target.max_dp} DP)"
-        attack_message = f"{current_participant.name} attacks {target.name} for {damage} damage{health_info}"
-        result = CombatResult(
-            success=True,
-            damage=damage,
-            target_died=target_died,
-            combat_ended=combat_ended,
-            message=attack_message,
-            combat_id=combat.combat_id,
+        """Build result, handle state changes, events, XP, and combat completion."""
+        return await finalize_attack_result_impl(
+            self, combat, current_participant, target, damage, target_died, target_mortally_wounded, target_id
         )
-        await self._handle_target_state_changes(
-            target, current_participant, target_mortally_wounded, target_died, combat
-        )
-        xp_awarded = await self._handle_attack_events_and_xp(
-            current_participant, target, damage, combat, target_died, target_id
-        )
-        result.xp_awarded = xp_awarded if xp_awarded is not None else 0
-        if target_died:
-            await self._award_xp_to_player(current_participant, target, target_id, result.xp_awarded)
-        await self._handle_combat_completion(combat, combat_ended)
-        return result
 
     async def process_attack(
         self,
@@ -826,101 +448,72 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
         is_initial_attack: bool = False,
         damage_type: str = "physical",
     ) -> CombatResult:
-        """
-        Process an attack action in combat.
+        """Process an attack action in combat."""
+        return await process_attack_impl(self, attacker_id, target_id, damage, is_initial_attack, damage_type)
 
-        Args:
-            attacker_id: ID of the attacker
-            target_id: ID of the target
-            damage: Amount of damage to deal
-            is_initial_attack: Whether this is the initial attack
-            damage_type: Type of damage (e.g. physical, slashing, piercing) for effects and future resistance.
+    async def register_combat_state(
+        self,
+        combat: CombatInstance,
+        attacker_id: UUID,
+        attacker_name: str,
+        room_id: str,
+    ) -> None:
+        """Register combat in tracking dicts and notify player combat service."""
+        self._active_combats[combat.combat_id] = combat
+        self._player_combats[attacker_id] = combat.combat_id
+        target_id = next(
+            (p.participant_id for p in combat.participants.values() if p.participant_id != attacker_id),
+            None,
+        )
+        if target_id:
+            self._npc_combats[target_id] = combat.combat_id
+        if self._player_combat_service:
+            await self._player_combat_service.track_player_combat_state(
+                player_id=attacker_id,
+                player_name=attacker_name,
+                combat_id=combat.combat_id,
+                room_id=room_id,
+            )
 
-        Returns:
-            CombatResult containing the outcome
+    async def publish_combat_started_event(self, event: CombatStartedEvent) -> None:
+        """Publish a combat started event to NATS."""
+        await self._combat_event_publisher.publish_combat_started(event)
 
-        Raises:
-            ValueError: If attack is invalid (not in combat, wrong turn, etc.)
-        """
-        combat, current_participant, target = await self._validate_and_get_combat_participants(
-            attacker_id, target_id, is_initial_attack
-        )
-        early = await self._validate_melee_or_end_combat(combat, current_participant, target, attacker_id, target_id)
-        if early is not None:
-            return early
-        logger.info(
-            "Processing attack",
-            attacker_name=current_participant.name,
-            target_name=target.name,
-            damage=damage,
-            damage_type=damage_type,
-        )
-        target_died, target_mortally_wounded, early = await self._apply_damage_and_check_involuntary_flee(
-            combat, current_participant, target, damage
-        )
-        if early is not None:
-            return early
-        return await self._finalize_attack_result(
-            combat, current_participant, target, damage, target_died, target_mortally_wounded, target_id
-        )
+    async def publish_npc_took_damage_event_to_nats(self, event: NPCTookDamageEvent) -> bool:
+        """Publish NPC took damage event to NATS."""
+        return await self._combat_event_publisher.publish_npc_took_damage(event)
 
-    def _cleanup_combat_tracking(self, combat: CombatInstance) -> None:
+    async def publish_npc_died_event_to_nats(self, event: NPCDiedEvent) -> bool:
+        """Publish NPC died event to NATS."""
+        return await self._combat_event_publisher.publish_npc_died(event)
+
+    def cleanup_combat_tracking(self, combat: CombatInstance) -> None:
         """Remove combat from tracking dictionaries."""
         self._cleanup_handler.cleanup_combat_tracking(combat)
 
-    def _check_connection_state(self, room_id: str) -> None:
+    def check_connection_state(self, room_id: str) -> None:
         """Check connection state before publishing combat ended event."""
         self._cleanup_handler.check_connection_state(room_id)
 
-    async def end_combat(self, combat_id: UUID, reason: str = "Combat ended") -> None:
-        """
-        End a combat instance.
-
-        Args:
-            combat_id: ID of the combat to end
-            reason: Reason for ending combat
-        """
-        combat = self._active_combats.get(combat_id)
-        if not combat:
-            logger.warning("Attempted to end non-existent combat", combat_id=combat_id)
-            return
-
-        logger.info("Ending combat", combat_id=combat_id, reason=reason)
-
-        combat.status = CombatStatus.ENDED
-        self._cleanup_combat_tracking(combat)
-
+    async def notify_player_combat_ended(self, combat_id: UUID) -> None:
+        """Notify player combat service that combat ended."""
         if self._player_combat_service:
             await self._player_combat_service.handle_combat_end(combat_id)
 
-        logger.debug(
-            "Preparing combat ended event",
-            combat_id=combat_id,
-            room_id=combat.room_id,
-            participant_count=len(combat.participants),
-        )
-
-        self._check_connection_state(combat.room_id)
+    async def publish_combat_ended_event(self, combat: CombatInstance, reason: str) -> None:
+        """Publish combat ended event."""
         await self._event_handler.publish_combat_ended_event(combat, reason)
 
-        logger.info("Combat ended successfully", combat_id=combat_id)
+    async def end_combat(self, combat_id: UUID, reason: str = "Combat ended") -> None:
+        """End a combat instance."""
+        await end_combat_impl(self, combat_id, reason)
 
     async def cleanup_stale_combats(self) -> int:
-        """
-        Clean up combats that have been inactive for too long.
-
-        Returns:
-            Number of combats cleaned up
-        """
+        """Clean up combats that have been inactive for too long."""
         return await self._cleanup_handler.cleanup_stale_combats(self._combat_timeout_minutes)
 
     async def get_combat_stats(self) -> dict[str, int]:
-        """
-        Get statistics about active combats.
-
-        Returns:
-            Dictionary with combat statistics
-        """
+        """Return basic statistics about active combats."""
         return {
             "active_combats": len(self._active_combats),
             "player_combats": len(self._player_combats),

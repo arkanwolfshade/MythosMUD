@@ -9,7 +9,7 @@ isProject: false
 
 ## Source and constraints
 
-- **Source**: Call of Cthulhu 7th Edition and *The Grand Grimoire of Cthulhu Mythos Magic* (Chaosium). Your copies live under `C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium`; that path is not listable/readable from this environment (likely Proton Drive), so spell names and themes below are taken from publicly referenced CoC 7e and Grand Grimoire spell lists.
+- **Source**: Call of Cthulhu 7th Edition and _The Grand Grimoire of Cthulhu Mythos Magic_ (Chaosium). Your copies live under `C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium`; that path is not listable/readable from this environment (likely Proton Drive), so spell names and themes below are taken from publicly referenced CoC 7e and Grand Grimoire spell lists.
 - **Model**: Every spell must conform to the existing [Spell](e:\projects\GitHub\MythosMUD\server\models\spell.py) Pydantic model and the `mythos_unit.spells` schema in [db/mythos_unit_ddl.sql](e:\projects\GitHub\MythosMUD\db\mythos_unit_ddl.sql) (spell_id, name, description, school, mp_cost, lucidity_cost, corruption_on_learn/cast, casting_time_seconds, target_type, range_type, effect_type, effect_data, materials).
 - **Priority**: Balanced mix—some **mythos** (lucidity/corruption costs, school `mythos`), some **clerical** or **elemental** (MP-only, schools `clerical` / `elemental` / `other`).
 
@@ -19,9 +19,8 @@ isProject: false
 
 Spells are grouped by intended school and cost type. Each row is a candidate for one DB row; exact numeric costs and effect_data should be tuned in implementation.
 
-
 | Spell name (display) | spell_id (suggested) | School             | Effect type                    | Target        | Cost theme                      | Notes                                           |
-| -------------------- | -------------------- | ------------------ | ------------------------------ | ------------- | ------------------------------- | ----------------------------------------------- |
+| -------------------- | -------------------- | ------------------ | ------------------------------ | ------------- | ------------------------------- | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Shrivelling          | shrivelling          | mythos             | damage                         | entity        | MP + lucidity + corruption      | Classic attack; single target                   |
 | Fist of Yog-Sothoth  | fist_of_yog_sothoth  | mythos             | damage                         | entity/area   | MP + lucidity + corruption      | Area or single                                  |
 | Breath of the Deep   | breath_of_the_deep   | mythos             | damage                         | entity/area   | MP + lucidity                   | Drowning/water theme                            |
@@ -42,10 +41,7 @@ Spells are grouped by intended school and cost type. Each row is a candidate for
 | Warding              | warding              | clerical/elemental | status_effect                  | self/area     | MP only                         | Protective ward                                 |
 | Light                | light                | elemental          | create_object or status_effect | location/self | MP only                         | Create light                                    |
 | Extinguish           | extinguish           | elemental          | status_effect                  | location      | MP only                         | Put out flames                                  |
-| Resist Cold          | resist_cold          | elemental          | stat_modify / status_effect    | self          | MP only                         | Temp resistance                                 |
-
-
-**Effect type mapping**: Use existing [SpellEffectType](e:\projects\GitHub\MythosMUD\server\models\spell.py) values only: `heal`, `damage`, `status_effect`, `stat_modify`, `lucidity_adjust`, `corruption_adjust`, `teleport`, `create_object`. Spells that in CoC do “SAN loss” map to `lucidity_adjust` (or `damage` with flavor); “corruption” can use `corruption_adjust` or be encoded in spell costs only.
+| Resist Cold          | resist_cold          | elemental          | stat_modify / status_effect    | self          | MP only                         | Temp resistance                                 | **Effect type mapping**: Use existing [SpellEffectType](e:\projects\GitHub\MythosMUD\server\models\spell.py) values only: `heal`, `damage`, `status_effect`, `stat_modify`, `lucidity_adjust`, `corruption_adjust`, `teleport`, `create_object`. Spells that in CoC do “SAN loss” map to `lucidity_adjust` (or `damage` with flavor); “corruption” can use `corruption_adjust` or be encoded in spell costs only. |
 
 **Range/target**: Use existing [SpellTargetType](e:\projects\GitHub\MythosMUD\server\models\spell.py) and [SpellRangeType](e:\projects\GitHub\MythosMUD\server\models\spell.py) (e.g. touch, same_room, entity, self, area). Multi-target CoC spells map to `entity` (single) or `area`/`all` where the engine supports it.
 

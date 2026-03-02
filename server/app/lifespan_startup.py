@@ -3,7 +3,6 @@
 This module handles all startup logic for the MythosMUD server,
 including container initialization, service setup, and dependency wiring.
 """
-# pylint: disable=too-many-lines  # Reason: Startup logic requires comprehensive initialization - splitting would reduce cohesion
 
 import asyncio
 import logging as stdlib_logging
@@ -30,7 +29,6 @@ from ..services.passive_lucidity_flux_service import PassiveLucidityFluxService
 from ..services.player_combat_service import PlayerCombatService
 from ..services.player_death_service import PlayerDeathService
 from ..services.player_respawn_service import PlayerRespawnService
-from ..services.target_resolution_service import TargetResolutionService
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..time.time_event_consumer import MythosTimeEventConsumer
 from ..time.time_service import get_mythos_chronicle
@@ -134,64 +132,6 @@ async def initialize_container_and_legacy_services(app: FastAPI, container: Appl
         logger.info("Item services ready", prototype_count=prototype_count)
 
 
-def _subscribe_room_occupants_refresh(container: ApplicationContainer) -> None:
-    """Subscribe to RoomOccupantsRefreshRequested so Occupants panel updates after NPC death (EventBus path)."""
-    if not container.event_bus or not container.connection_manager:
-        return
-
-    from server.events.event_types import RoomOccupantsRefreshRequested
-    from server.realtime.websocket_room_updates import broadcast_room_update
-
-    def _on_room_occupants_refresh(event: RoomOccupantsRefreshRequested) -> None:
-        try:
-            loop = asyncio.get_running_loop()
-        except RuntimeError:
-            return
-        conn_mgr = container.connection_manager
-        if not conn_mgr:
-            return
-        loop.create_task(broadcast_room_update(event.room_id, event.room_id, connection_manager=conn_mgr))
-
-    container.event_bus.subscribe(
-        RoomOccupantsRefreshRequested, _on_room_occupants_refresh, service_id="room_occupants_refresh"
-    )
-    logger.debug("Subscribed to RoomOccupantsRefreshRequested for Occupants panel updates")
-
-
-def _subscribe_quest_events(container: ApplicationContainer) -> None:
-    """Subscribe to room events for quest triggers and progress (start on enter, complete_activity on exit)."""
-    from server.game.quest.quest_events import subscribe_quest_events
-
-    subscribe_quest_events(container)
-
-    # Push updated quest log to player when a quest completes so Journal panel refreshes
-    event_bus = getattr(container, "event_bus", None)
-    if not event_bus:
-        return
-
-    from server.events.event_types import QuestCompleted
-    from server.realtime.envelope import build_event
-
-    async def _on_quest_completed_push_log(event: QuestCompleted) -> None:
-        quest_service = getattr(container, "quest_service", None)
-        conn_mgr = getattr(container, "connection_manager", None)
-        if not quest_service or not conn_mgr:
-            return
-        try:
-            player_id = uuid_lib.UUID(event.player_id)
-            log = await quest_service.get_quest_log(player_id, include_completed=True)
-            ev = build_event("quest_log_updated", {"quest_log": log}, player_id=event.player_id)
-            await conn_mgr.send_personal_message(player_id, ev)
-        except (ValueError, TypeError, AttributeError) as e:
-            logger.warning(
-                "Failed to push quest log after completion",
-                player_id=event.player_id,
-                error=str(e),
-            )
-
-    event_bus.subscribe(QuestCompleted, _on_quest_completed_push_log, service_id="quest_push_log")
-
-
 async def setup_connection_manager(app: FastAPI, container: ApplicationContainer) -> None:
     """Set up connection manager with dependencies."""
     if container.connection_manager is None:
@@ -204,23 +144,23 @@ async def setup_connection_manager(app: FastAPI, container: ApplicationContainer
     container.connection_manager.message_queue.pending_messages.clear()
     logger.info("Cleared stale pending messages from previous server sessions")
 
-    _subscribe_room_occupants_refresh(container)
-    _subscribe_quest_events(container)
+    from .lifespan_event_subscriptions import subscribe_quest_events, subscribe_room_occupants_refresh
+
+    subscribe_room_occupants_refresh(container)
+    subscribe_quest_events(container)
 
 
-async def initialize_npc_services(app: FastAPI, container: ApplicationContainer) -> None:
-    """
-    Initialize NPC services and load definitions.
-
-    DEPRECATED: This function is no longer called. NPC services are now initialized
-    in ApplicationContainer.initialize() via _initialize_npc_services().
-    This function is kept for backward compatibility but should not be used.
-    """
+def _validate_npc_services_prerequisites(container: ApplicationContainer) -> None:
+    """Raise if prerequisites for NPC services are missing."""
     if container.event_bus is None:
         raise RuntimeError("EventBus must be initialized")
-    app.state.npc_spawning_service = NPCSpawningService(container.event_bus, None)
     if container.persistence is None:
         raise RuntimeError("Persistence must be initialized")
+
+
+def _create_npc_services_on_app(app: FastAPI, container: ApplicationContainer) -> None:
+    """Create NPC spawning, lifecycle, population services and instance service. Attach to app.state."""
+    app.state.npc_spawning_service = NPCSpawningService(container.event_bus, None)
     app.state.npc_lifecycle_manager = NPCLifecycleManager(
         event_bus=container.event_bus,
         population_controller=None,
@@ -235,7 +175,6 @@ async def initialize_npc_services(app: FastAPI, container: ApplicationContainer)
     )
     app.state.npc_spawning_service.population_controller = app.state.npc_population_controller
     app.state.npc_lifecycle_manager.population_controller = app.state.npc_population_controller
-
     initialize_npc_instance_service(
         lifecycle_manager=app.state.npc_lifecycle_manager,
         spawning_service=app.state.npc_spawning_service,
@@ -243,13 +182,15 @@ async def initialize_npc_services(app: FastAPI, container: ApplicationContainer)
         event_bus=container.event_bus,
     )
 
+
+async def _load_npc_definitions_and_rules(app: FastAPI) -> None:
+    """Load NPC definitions and spawn rules from first NPC session. Single iteration then break."""
     npc_service = NPCService()
     async for npc_session in get_npc_session():
         try:
             definitions = await npc_service.get_npc_definitions(npc_session)
             app.state.npc_population_controller.load_npc_definitions(definitions)
             logger.info("NPC definitions loaded", count=len(definitions))
-
             spawn_rules = await npc_service.get_spawn_rules(npc_session)
             app.state.npc_population_controller.load_spawn_rules(spawn_rules)
             logger.info("NPC spawn rules loaded", count=len(spawn_rules))
@@ -257,26 +198,41 @@ async def initialize_npc_services(app: FastAPI, container: ApplicationContainer)
             logger.error("Error loading NPC definitions and spawn rules", error=str(e))
         break
 
+
+async def _start_npc_thread_manager_and_pending(app: FastAPI) -> None:
+    """Start NPC thread manager and process any pending thread starts. Logs and swallows errors."""
+    if not hasattr(app.state.npc_lifecycle_manager, "thread_manager"):
+        return
+    try:
+        await app.state.npc_lifecycle_manager.thread_manager.start()
+        logger.info("NPC thread manager started")
+        if not hasattr(app.state.npc_lifecycle_manager, "_pending_thread_starts"):
+            return
+        pending_starts = getattr(app.state.npc_lifecycle_manager, "_pending_thread_starts", [])  # pylint: disable=protected-access  # Reason: Accessing internal state for startup initialization, existence checked first and handled gracefully
+        for npc_id, definition in pending_starts:
+            try:
+                await app.state.npc_lifecycle_manager.thread_manager.start_npc_thread(npc_id, definition)
+                logger.debug("Started queued NPC thread", npc_id=npc_id)
+            except (ValueError, TypeError, AttributeError, KeyError, RuntimeError) as e:
+                logger.warning("Failed to start queued NPC thread", npc_id=npc_id, error=str(e))
+        pending_starts.clear()
+    except (ValueError, TypeError, AttributeError, KeyError, RuntimeError) as e:
+        logger.error("Failed to start NPC thread manager", error=str(e))
+
+
+async def initialize_npc_services(app: FastAPI, container: ApplicationContainer) -> None:
+    """
+    Initialize NPC services and load definitions.
+
+    DEPRECATED: This function is no longer called. NPC services are now initialized
+    in ApplicationContainer.initialize() via _initialize_npc_services().
+    This function is kept for backward compatibility but should not be used.
+    """
+    _validate_npc_services_prerequisites(container)
+    _create_npc_services_on_app(app, container)
+    await _load_npc_definitions_and_rules(app)
     logger.info("NPC services initialized and added to app.state")
-
-    if hasattr(app.state.npc_lifecycle_manager, "thread_manager"):
-        try:
-            await app.state.npc_lifecycle_manager.thread_manager.start()
-            logger.info("NPC thread manager started")
-
-            if hasattr(app.state.npc_lifecycle_manager, "_pending_thread_starts"):
-                # Accessing protected member via getattr() for internal state initialization
-                # This is safe as we check existence first and handle gracefully
-                pending_starts = getattr(app.state.npc_lifecycle_manager, "_pending_thread_starts", [])  # pylint: disable=protected-access  # Reason: Accessing internal state for startup initialization, existence checked first and handled gracefully
-                for npc_id, definition in pending_starts:
-                    try:
-                        await app.state.npc_lifecycle_manager.thread_manager.start_npc_thread(npc_id, definition)
-                        logger.debug("Started queued NPC thread", npc_id=npc_id)
-                    except (ValueError, TypeError, AttributeError, KeyError, RuntimeError) as e:
-                        logger.warning("Failed to start queued NPC thread", npc_id=npc_id, error=str(e))
-                pending_starts.clear()
-        except (ValueError, TypeError, AttributeError, KeyError, RuntimeError) as e:
-            logger.error("Failed to start NPC thread manager", error=str(e))
+    await _start_npc_thread_manager_and_pending(app)
 
 
 async def initialize_combat_services(app: FastAPI, container: ApplicationContainer) -> None:
@@ -389,48 +345,56 @@ async def initialize_mythos_time_consumer(app: FastAPI, container: ApplicationCo
         logger.warning("Mythos time consumer not initialized due to missing dependencies")
 
 
+async def _ensure_room_cache_before_npc_startup() -> None:
+    """Ensure room cache is loaded before NPC startup; raise in production if empty."""
+    container = ApplicationContainer.get_instance()
+    if not container or not getattr(container, "async_persistence", None) or not container.async_persistence:
+        return
+    logger.debug("Ensuring room cache is loaded before NPC startup")
+    await container.async_persistence.warmup_room_cache()
+    cache_size = len(container.async_persistence._room_cache)  # pylint: disable=protected-access  # Reason: Need to verify cache was loaded for NPC startup
+    if cache_size:
+        logger.debug("Room cache loaded successfully", cache_size=cache_size)
+        return
+    env = getattr(container.config.logging, "environment", "local") if container.config else "local"
+    if env == "production":
+        logger.error(
+            "Room cache is empty after warmup - rooms table has no data. "
+            "Populate world data: run scripts/load_world_seed.py (with DATABASE_URL) or "
+            "psql -d your_db -f data/db/mythos_dev_dml.sql (or mythos_unit_dml.sql / mythos_e2e_dml.sql). See db/README.md.",
+            cache_size=cache_size,
+            cache_loaded=container.async_persistence._room_cache_loaded,  # pylint: disable=protected-access  # Reason: Need to check cache load status
+        )
+        raise RuntimeError(
+            "Room cache is empty in production. The rooms table must be populated with world seed data. "
+            "Run: scripts/load_world_seed.py (set DATABASE_URL) or psql -d your_db -f data/db/mythos_<env>_dml.sql. "
+            "See db/README.md."
+        )
+    logger.warning(
+        "Room cache is empty after warmup - NPC spawning may fail. "
+        "To populate: run scripts/load_world_seed.py or psql -d your_db -f data/db/mythos_<env>_dml.sql",
+        cache_size=cache_size,
+        cache_loaded=container.async_persistence._room_cache_loaded,  # pylint: disable=protected-access  # Reason: Need to check cache load status
+    )
+
+
+def _log_npc_startup_errors(startup_results: dict[str, Any]) -> None:
+    """Log any errors from NPC startup spawning results."""
+    errors = startup_results.get("errors") or []
+    if not errors:
+        return
+    logger.warning("NPC startup spawning had errors", error_count=len(errors))
+    for error in errors:
+        logger.warning("Startup spawning error", error=str(error))
+
+
 async def initialize_npc_startup_spawning(_app: FastAPI) -> None:
     """Initialize and run NPC startup spawning."""
     logger.info("Starting NPC startup spawning process")
     try:
-        # Ensure room cache is loaded before NPC startup (required after lazy loading refactor)
-        # NPC startup needs rooms to be available in cache for spawn room validation
-        container = ApplicationContainer.get_instance()
-        if container and hasattr(container, "async_persistence") and container.async_persistence:
-            logger.debug("Ensuring room cache is loaded before NPC startup")
-            # warmup_room_cache is idempotent - safe to call multiple times
-            await container.async_persistence.warmup_room_cache()
-            # Verify cache was loaded successfully - if empty, NPC spawning will fail
-            cache_size = len(container.async_persistence._room_cache)  # pylint: disable=protected-access  # Reason: Need to verify cache was loaded for NPC startup
-            if not cache_size:
-                env = getattr(container.config.logging, "environment", "local") if container.config else "local"
-                if env == "production":
-                    # In production, empty room cache is a hard failure: rooms table was not populated
-                    logger.error(
-                        "Room cache is empty after warmup - rooms table has no data. "
-                        "Populate world data: run scripts/load_world_seed.py (with DATABASE_URL) or "
-                        "psql -d your_db -f data/db/mythos_dev_dml.sql (or mythos_unit_dml.sql / mythos_e2e_dml.sql). See db/README.md.",
-                        cache_size=cache_size,
-                        cache_loaded=container.async_persistence._room_cache_loaded,  # pylint: disable=protected-access  # Reason: Need to check cache load status
-                    )
-                    raise RuntimeError(
-                        "Room cache is empty in production. The rooms table must be populated with world seed data. "
-                        "Run: scripts/load_world_seed.py (set DATABASE_URL) or psql -d your_db -f data/db/mythos_<env>_dml.sql. "
-                        "See db/README.md."
-                    )
-                # In local/test, log warning only so dev without world data can still start
-                logger.warning(
-                    "Room cache is empty after warmup - NPC spawning may fail. "
-                    "To populate: run scripts/load_world_seed.py or psql -d your_db -f data/db/mythos_<env>_dml.sql",
-                    cache_size=cache_size,
-                    cache_loaded=container.async_persistence._room_cache_loaded,  # pylint: disable=protected-access  # Reason: Need to check cache load status
-                )
-            else:
-                logger.debug("Room cache loaded successfully", cache_size=cache_size)
-
+        await _ensure_room_cache_before_npc_startup()
         startup_service = get_npc_startup_service()
         startup_results = await startup_service.spawn_npcs_on_startup()
-
         logger.info(
             "NPC startup spawning completed",
             total_spawned=startup_results["total_spawned"],
@@ -439,15 +403,10 @@ async def initialize_npc_startup_spawning(_app: FastAPI) -> None:
             failed_spawns=startup_results["failed_spawns"],
             errors=len(startup_results["errors"]),
         )
-
-        if startup_results["errors"]:
-            logger.warning("NPC startup spawning had errors", error_count=len(startup_results["errors"]))
-            for error in startup_results["errors"]:
-                logger.warning("Startup spawning error", error=str(error))
+        _log_npc_startup_errors(startup_results)
     except (ValueError, TypeError, AttributeError, KeyError, RuntimeError) as e:
         logger.error("Critical error during NPC startup spawning", error=str(e))
         logger.warning("Continuing server startup despite NPC spawning errors")
-
     logger.info("NPC startup spawning completed - NPCs should now be present in the world")
 
 
@@ -470,14 +429,17 @@ async def initialize_nats_and_combat_services(app: FastAPI, container: Applicati
         # Lazy import to avoid circular dependency with combat_service
         from ..services.combat_service import (  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Lazy import required to avoid circular dependency with combat_service module
             CombatService,
+            PlayerLifecycleServices,
             set_combat_service,
         )
 
         app.state.combat_service = CombatService(
             app.state.player_combat_service,
             container.nats_service,
-            player_death_service=app.state.player_death_service,
-            player_respawn_service=app.state.player_respawn_service,
+            player_lifecycle_services=PlayerLifecycleServices(
+                app.state.player_death_service,
+                app.state.player_respawn_service,
+            ),
             event_bus=container.event_bus,
         )
 
@@ -549,106 +511,4 @@ async def initialize_chat_service(app: FastAPI, container: ApplicationContainer)
     logger.info("Chat service initialized")
 
 
-async def initialize_magic_services(app: FastAPI, container: ApplicationContainer) -> None:  # pylint: disable=too-many-locals  # Reason: Service initialization requires many intermediate variables for dependency setup
-    """
-    Initialize magic system services and wire them to app.state.
-
-    DEPRECATED: This function is no longer called. Magic services are now initialized
-    in ApplicationContainer.initialize() via _initialize_magic_services().
-    This function is kept for backward compatibility but should not be used.
-    """
-    # Import here to avoid circular imports: spell_targeting -> combat_service -> lifespan -> lifespan_startup
-    # pylint: disable=import-outside-toplevel  # Reason: Circular import avoidance - spell_targeting imports CombatService which imports from lifespan
-    from ..game.magic.magic_service import MagicService
-    from ..game.magic.mp_regeneration_service import MPRegenerationService
-    from ..game.magic.spell_effects import SpellEffects
-    from ..game.magic.spell_learning_service import SpellLearningService
-    from ..game.magic.spell_registry import SpellRegistry
-    from ..game.magic.spell_targeting import SpellTargetingService
-    from ..persistence.repositories.player_spell_repository import PlayerSpellRepository
-    from ..persistence.repositories.spell_repository import SpellRepository as SpellRepositoryClass
-
-    logger.info("Initializing magic system services...")
-
-    # Initialize repositories
-    spell_repository = SpellRepositoryClass()
-    player_spell_repository = PlayerSpellRepository()
-    logger.info("Spell repositories initialized")
-
-    # Initialize SpellRegistry and load spells
-    spell_registry = SpellRegistry(spell_repository)
-    await spell_registry.load_spells()
-    spell_count = len(spell_registry._spells)  # pylint: disable=protected-access  # Reason: Accessing internal spell dictionary for initialization logging, SpellRegistry manages this as internal state
-    app.state.spell_registry = spell_registry
-    logger.info("SpellRegistry initialized and loaded", spell_count=spell_count)
-
-    # Initialize SpellTargetingService (needs TargetResolutionService, CombatService, PlayerCombatService)
-    if container.async_persistence is None:
-        raise RuntimeError("async_persistence must be initialized before magic services")
-    if container.player_service is None:
-        raise RuntimeError("player_service must be initialized before magic services")
-    # TargetResolutionService accepts both sync and async persistence layers
-    # The protocol is too strict for mypy, but the service handles both at runtime
-    target_resolution_service = TargetResolutionService(
-        persistence=container.async_persistence,
-        player_service=container.player_service,
-    )
-    spell_targeting_service = SpellTargetingService(
-        target_resolution_service=target_resolution_service,
-        combat_service=getattr(app.state, "combat_service", None),
-        player_combat_service=getattr(app.state, "player_combat_service", None),
-    )
-    app.state.spell_targeting_service = spell_targeting_service
-    logger.info("SpellTargetingService initialized")
-
-    # Initialize SpellEffects (needs PlayerService; optional combat/movement for flee, connection_manager for grace period)
-    # player_service is already checked above, but mypy doesn't know that
-    if container.player_service is None:
-        raise RuntimeError("player_service must be initialized before magic services")
-    get_room = container.async_persistence.get_room_by_id if container.async_persistence else None
-    spell_effects = SpellEffects(
-        player_service=container.player_service,
-        combat_service=getattr(container, "combat_service", None),
-        movement_service=getattr(container, "movement_service", None),
-        get_room_by_id=get_room,
-        connection_manager=getattr(container, "connection_manager", None),
-    )
-    app.state.spell_effects = spell_effects
-    logger.info("SpellEffects initialized")
-
-    # Initialize SpellLearningService (needs SpellRegistry, PlayerService, PlayerSpellRepository)
-    spell_learning_service = SpellLearningService(
-        spell_registry=spell_registry,
-        player_service=container.player_service,
-        player_spell_repository=player_spell_repository,
-    )
-    app.state.spell_learning_service = spell_learning_service
-    logger.info("SpellLearningService initialized")
-
-    # Initialize MPRegenerationService (needs PlayerService)
-    mp_regeneration_service = MPRegenerationService(player_service=container.player_service)
-    app.state.mp_regeneration_service = mp_regeneration_service
-    logger.info("MPRegenerationService initialized")
-
-    # Initialize MagicService (needs all of the above)
-    # Get combat_service if available (for combat integration)
-    combat_service = getattr(app.state, "combat_service", None)
-    magic_service = MagicService(
-        spell_registry=spell_registry,
-        player_service=container.player_service,
-        spell_targeting_service=spell_targeting_service,
-        spell_effects=spell_effects,
-        player_spell_repository=player_spell_repository,
-        spell_learning_service=spell_learning_service,
-        combat_service=combat_service,
-    )
-    app.state.magic_service = magic_service
-
-    # Set magic_service reference in combat_service if available
-    if combat_service:
-        combat_service.magic_service = magic_service
-        logger.info("MagicService linked to CombatService")
-
-    logger.info("MagicService initialized")
-
-    logger.info("All magic system services initialized and added to app.state")
+# Re-export for backward compatibility (deprecated path; tests use this)

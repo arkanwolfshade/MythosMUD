@@ -72,7 +72,7 @@ class NPCTookDamageEvent(BaseEvent):
 
     combat_id: UUID
     room_id: str
-    npc_id: UUID
+    npc_id: UUID | str  # UUID for combat participant; str for non-combat (e.g. steal-life by name)
     npc_name: str
     damage: int
     current_dp: int

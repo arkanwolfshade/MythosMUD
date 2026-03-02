@@ -442,7 +442,6 @@ class NPCEventHandler:
         Args:
             event: NPCLeftRoom event containing NPC and room information
         """
-        # Defensive check: if no connection_manager, skip handling
         if not self.connection_manager:
             self._logger.debug(
                 "Connection manager not available, skipping NPC left event", npc_id=event.npc_id, room_id=event.room_id
@@ -451,62 +450,54 @@ class NPCEventHandler:
 
         try:
             self._logger.info("NPC left room", npc_id=event.npc_id, room_id=event.room_id)
-
-            # Get the room from async persistence
-            async_persistence = self.connection_manager.async_persistence
-            if not async_persistence:
-                self._logger.warning("Async persistence layer not available for NPC room exit")
+            if not await self._validate_npc_left_room(event):
                 return
-
-            room = async_persistence.get_room_by_id(event.room_id)  # Sync method, uses cache
-            if not room:
-                self._logger.warning("Room not found for NPC exit", room_id=event.room_id)
-                return
-
-            # Get NPC name for movement messages
-            npc_name = self._get_npc_name(event.npc_id)
-            if not npc_name:
-                npc_name = "An NPC"
-
-            # Check if this is a movement (has to_room_id) or a departure (no to_room_id)
-            if event.to_room_id:
-                # This is a movement - create directional message
-                direction = await self._determine_direction_from_rooms(event.room_id, event.to_room_id)
-                movement_message = self.message_builder.create_npc_movement_message(npc_name, direction, "left")
-                # Send movement message to all players in the room as system message
-                await self._send_room_message(event.room_id, movement_message, message_type="system")
-            else:
-                # This is a departure (not movement) - use departure message from behavior_config
-                departure_message = self._get_npc_departure_message(event.npc_id)
-                if departure_message:
-                    # Send the departure message to all players in the room
-                    await self._send_room_message(event.room_id, departure_message)
-
-            # Schedule room update broadcast (async operation)
-            try:
-                # Use get_running_loop() instead of deprecated get_event_loop()
-                # get_running_loop() raises RuntimeError if no loop is running
-                _ = asyncio.get_running_loop()  # Verify loop exists
-                # Schedule the async operation to run later
-                if self.task_registry:
-                    self.task_registry.register_task(
-                        self.send_occupants_update(event.room_id),
-                        f"event_handler/room_occupants_{event.room_id}",
-                        "event_handler",
-                    )
-                else:
-                    # Task 4.4: Replace with tracked task creation to prevent memory leaks
-                    tracked_manager = get_global_tracked_manager()
-                    tracked_manager.create_tracked_task(
-                        self.send_occupants_update(event.room_id),
-                        task_name=f"event_handler/room_occupants_{event.room_id}",
-                        task_type="event_handler",
-                    )
-            except RuntimeError:
-                # No running event loop - log and skip async operation
-                self._logger.debug("No event loop available for room occupants update broadcast")
-
+            await self._send_npc_left_message(event)
+            self._schedule_room_occupants_update(event.room_id)
             self._logger.debug("Processed NPC left event", npc_id=event.npc_id, room_id=event.room_id)
-
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC left event handling errors unpredictable, must handle gracefully
             self._logger.error("Error handling NPC left room event", error=str(e), exc_info=True)
+
+    async def _validate_npc_left_room(self, event: NPCLeftRoom) -> bool:
+        """Validate room and persistence for NPC left event."""
+        async_persistence = self.connection_manager.async_persistence
+        if not async_persistence:
+            self._logger.warning("Async persistence layer not available for NPC room exit")
+            return False
+        room = async_persistence.get_room_by_id(event.room_id)
+        if not room:
+            self._logger.warning("Room not found for NPC exit", room_id=event.room_id)
+            return False
+        return True
+
+    async def _send_npc_left_message(self, event: NPCLeftRoom) -> None:
+        """Send movement or departure message for NPC left event."""
+        npc_name = self._get_npc_name(event.npc_id) or "An NPC"
+        if event.to_room_id:
+            direction = await self._determine_direction_from_rooms(event.room_id, event.to_room_id)
+            movement_message = self.message_builder.create_npc_movement_message(npc_name, direction, "left")
+            await self._send_room_message(event.room_id, movement_message, message_type="system")
+        else:
+            departure_message = self._get_npc_departure_message(event.npc_id)
+            if departure_message:
+                await self._send_room_message(event.room_id, departure_message)
+
+    def _schedule_room_occupants_update(self, room_id: str) -> None:
+        """Schedule room occupants update broadcast."""
+        try:
+            _ = asyncio.get_running_loop()
+            if self.task_registry:
+                self.task_registry.register_task(
+                    self.send_occupants_update(room_id),
+                    f"event_handler/room_occupants_{room_id}",
+                    "event_handler",
+                )
+            else:
+                tracked_manager = get_global_tracked_manager()
+                tracked_manager.create_tracked_task(
+                    self.send_occupants_update(room_id),
+                    task_name=f"event_handler/room_occupants_{room_id}",
+                    task_type="event_handler",
+                )
+        except RuntimeError:
+            self._logger.debug("No event loop available for room occupants update broadcast")

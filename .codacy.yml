@@ -21,6 +21,9 @@ exclude_paths:
 # Codacy uses engines.<tool>.exclude_paths; ignore_patterns are not applied to tool analysis.
 # See PR #408 discussion r2838345213.
 engines:
+  lizard:
+    config:
+      length: 55
   bandit:
     exclude_paths:
       - "**/tests/**/*.py"
@@ -218,6 +221,7 @@ ignore_patterns:
 # Also configured in .codacy/codacy.yaml under engines.lizard.config.CCN (for CLI, if supported)
 # Set file-nloc threshold to 550 (default is 500)
 # Configured in .codacy/codacy.yaml under engines.lizard.config.file-nloc
+# Set method/function length threshold to 55 (was 50; engines.lizard.config.length)
 
 # # Engine-specific exclusions (alternative format that may work for CLI)
 # engines:

@@ -208,7 +208,7 @@ async def test_handle_spells_command_no_spells(handler, mock_player):
 
 
 @pytest.mark.asyncio
-async def test_handle_spells_command_with_spells(handler, mock_player, mock_spell_registry):
+async def test_handle_spells_command_with_spells(handler, mock_player):
     """Test spells command when player has spells."""
     handler.magic_service.player_service.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     player_spell = MagicMock()
@@ -301,6 +301,7 @@ async def test_handle_learn_command_success(handler, mock_player, mock_spell_lea
     """Test learn command success."""
     handler.spell_learning_service = mock_spell_learning_service
     handler.magic_service.player_service.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
+    handler.magic_service.player_service.persistence.get_player_by_id = AsyncMock(return_value=mock_player)
     handler.spell_learning_service.learn_spell = AsyncMock(
         return_value={"success": True, "message": "Learned Test Spell!", "corruption_applied": 0}
     )
@@ -313,6 +314,7 @@ async def test_handle_learn_command_with_corruption(handler, mock_player, mock_s
     """Test learn command with corruption applied."""
     handler.spell_learning_service = mock_spell_learning_service
     handler.magic_service.player_service.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
+    handler.magic_service.player_service.persistence.get_player_by_id = AsyncMock(return_value=mock_player)
     handler.spell_learning_service.learn_spell = AsyncMock(
         return_value={"success": True, "message": "Learned Test Spell!", "corruption_applied": 5}
     )
@@ -418,6 +420,7 @@ async def test_handle_learn_command_wrapper_success(
     mock_request.app.state.spell_registry = mock_spell_registry
     mock_request.app.state.spell_learning_service = mock_spell_learning_service
     mock_magic_service.player_service.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
+    mock_magic_service.player_service.persistence.get_player_by_id = AsyncMock(return_value=mock_player)
     mock_spell_learning_service.learn_spell = AsyncMock(
         return_value={"success": True, "message": "Learned Test Spell!", "corruption_applied": 0}
     )
