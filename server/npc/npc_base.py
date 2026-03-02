@@ -84,22 +84,27 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
                 "charisma": 30,
             }
 
+    def _apply_dp_from_source(self, source_key: str, max_dp_from: str | None = None) -> bool:
+        """Set determination_points from source_key; optionally set max_dp. Returns True if applied."""
+        if source_key not in self._stats:
+            return False
+        self._stats["determination_points"] = self._stats[source_key]
+        if "max_dp" not in self._stats and max_dp_from:
+            if max_dp_from == "max_hp" and "max_hp" in self._stats:
+                self._stats["max_dp"] = self._stats["max_hp"]
+            elif max_dp_from == "health" and "max_hp" not in self._stats:
+                self._stats["max_dp"] = self._stats[source_key]
+        return True
+
     def _normalize_determination_points(self) -> None:
         """Ensure _stats has determination_points; support hp/dp backward compat."""
         if "determination_points" in self._stats:
             return
-        if "dp" in self._stats:
-            self._stats["determination_points"] = self._stats["dp"]
-            return
-        if "hp" in self._stats:
-            self._stats["determination_points"] = self._stats["hp"]
-            if "max_hp" in self._stats and "max_dp" not in self._stats:
-                self._stats["max_dp"] = self._stats["max_hp"]
-            return
-        if "health" in self._stats:
-            self._stats["determination_points"] = self._stats["health"]
-            if "max_dp" not in self._stats and "max_hp" not in self._stats:
-                self._stats["max_dp"] = self._stats["health"]
+        if (
+            self._apply_dp_from_source("dp")
+            or self._apply_dp_from_source("hp", "max_hp")
+            or self._apply_dp_from_source("health", "health")
+        ):
             return
         self._stats["determination_points"] = 20  # Default DP
 
@@ -171,21 +176,26 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
         """Allow backward-compatible assignment (npc.is_alive = False)."""
         self._alive = value
 
+    def _safe_stat_int(self, key: str, default: int = 50) -> int:
+        """Return stats[key] as int, or default if missing/None."""
+        val = self._stats.get(key)
+        return default if val is None else int(val)
+
+    def _compute_max_dp(self) -> int:
+        """Compute max_dp from stats when max_dp/max_hp not explicitly set."""
+        max_dp_raw = self._stats.get("max_dp")
+        max_hp_raw = self._stats.get("max_hp")
+        if max_dp_raw is not None or max_hp_raw is not None:
+            raw = max_dp_raw if max_dp_raw is not None else max_hp_raw
+            return int(raw) if raw is not None else 100
+        if "constitution" in self._stats and "size" in self._stats:
+            return (self._safe_stat_int("constitution") + self._safe_stat_int("size")) // 5
+        return 100
+
     def get_combat_stats(self) -> dict[str, int]:
         """Return current_dp, max_dp, dexterity for CombatParticipantData."""
         current_dp = self._stats.get("determination_points", self._stats.get("dp", self._stats.get("hp", 100)))
-        max_dp_raw = self._stats.get("max_dp")
-        max_hp_raw = self._stats.get("max_hp")
-        if max_dp_raw is None and max_hp_raw is None:
-            if "constitution" in self._stats and "size" in self._stats:
-                con = int(self._stats["constitution"]) if self._stats["constitution"] is not None else 50
-                siz = int(self._stats["size"]) if self._stats["size"] is not None else 50
-                max_dp = (con + siz) // 5 if (con and siz) else 100
-            else:
-                max_dp = 100
-        else:
-            raw = max_dp_raw if max_dp_raw is not None else max_hp_raw
-            max_dp = int(raw) if raw is not None else 100
+        max_dp = self._compute_max_dp()
         dexterity = self._stats.get("dexterity", 10)
         return {
             "current_dp": int(current_dp),
