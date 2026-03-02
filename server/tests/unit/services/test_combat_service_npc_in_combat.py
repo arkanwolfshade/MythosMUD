@@ -56,7 +56,7 @@ def test_is_npc_in_combat_sync_returns_true_when_string_id_mapped_to_combat(comb
     combat_service._npc_combats[npc_uuid] = combat_id
     mock_integration = MagicMock()
     mock_mapping = MagicMock()
-    mock_mapping._uuid_to_string_id_mapping = {npc_uuid: "cultist_001"}
+    mock_mapping.get_uuid_for_string_id = MagicMock(return_value=npc_uuid)
     mock_integration._uuid_mapping = mock_mapping
     combat_service._npc_combat_integration_service = mock_integration
     assert combat_service.is_npc_in_combat_sync("cultist_001") is True

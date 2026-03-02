@@ -31,16 +31,18 @@ class NATSEventBusBridge:
     injected into the local EventBus for dispatch to subscribers.
     """
 
-    def __init__(self, event_bus: Any, nats_service: NATSService) -> None:
+    def __init__(self, event_bus: Any, nats_service: NATSService, instance_id: str = "") -> None:
         """
         Initialize the NATS EventBus bridge.
 
         Args:
             event_bus: Local EventBus instance (must have inject method)
             nats_service: NATS service for publish/subscribe
+            instance_id: Unique ID for this instance; used to skip injecting our own echoed messages
         """
         self._event_bus = event_bus
         self._nats_service = nats_service
+        self._instance_id = instance_id
         self._subscription: Any = None
         self._running = False
 
@@ -58,6 +60,8 @@ class NATSEventBusBridge:
         """
         try:
             data = serialize_event(event)
+            if self._instance_id:
+                data["_origin_instance_id"] = self._instance_id
             subject = self._subject_for_event(event)
             await self._nats_service.publish(subject, data)
             logger.debug(
@@ -73,9 +77,18 @@ class NATSEventBusBridge:
                 exc_info=True,
             )
 
-    async def _handle_nats_message(self, message_data: dict[str, Any]) -> None:
+    async def handle_nats_message(self, message_data: dict[str, Any]) -> None:
+        """Process a NATS message - deserialize and inject into local EventBus. Public for testing."""
+        await self._handle_nats_message_impl(message_data)
+
+    async def _handle_nats_message_impl(self, message_data: dict[str, Any]) -> None:
         """Handle message received from NATS - deserialize and inject into local EventBus."""
         try:
+            # Skip injecting our own echoed messages (NATS delivers to publisher by default)
+            origin = message_data.get("_origin_instance_id")
+            if origin and self._instance_id and origin == self._instance_id:
+                logger.debug("Skipping NATS echo - event originated from this instance")
+                return
             event = deserialize_event(message_data)
             self._event_bus.inject(event)
             logger.debug(
@@ -102,7 +115,7 @@ class NATSEventBusBridge:
         try:
             await self._nats_service.subscribe(
                 DOMAIN_EVENTS_SUBJECT_PATTERN,
-                self._handle_nats_message,
+                self._handle_nats_message_impl,
             )
             self._running = True
             logger.info(

@@ -682,11 +682,12 @@ class MagicService:  # pylint: disable=too-many-instance-attributes  # Reason: M
             )
 
             await self._send_spell_completion_message(player_id, spell.spell_id, effect_result)
-            # Heal-other: send DP update to the healed player (target), not the caster
+            # Heal-other: send DP update to the healed player (target); steal-life heals caster so they get the update
             healed_player_id = None
             if (
                 effect_result.get("effect_applied")
                 and effect_result.get("heal_amount")
+                and spell.spell_id != "steal_life"
                 and target
                 and getattr(target, "target_type", None) == TargetType.PLAYER
                 and str(target.target_id) != str(player_id)

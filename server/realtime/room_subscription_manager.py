@@ -281,12 +281,17 @@ class RoomSubscriptionManager:
             return False
 
     def _get_online_player_occupants(self, canonical_id: str, online_players: dict[str, Any]) -> list[dict[str, Any]]:
-        """Get online player occupants from room_occupants."""
+        """Get online player occupants from room_occupants and room_subscriptions.
+
+        Uses union of both so players who are subscribed but not yet in room_occupants
+        (e.g. after normal movement or when room_occupants is stale) are still included.
+        Fixes Occupants panel showing empty when last mob slain (room_occupants was empty).
+        """
         occupants: list[dict[str, Any]] = []
-        if canonical_id in self.room_occupants:
-            for player_id in self.room_occupants[canonical_id]:
-                if player_id in online_players:
-                    occupants.append(online_players[player_id])
+        occupant_ids = self.room_occupants.get(canonical_id, set()) | self.room_subscriptions.get(canonical_id, set())
+        for player_id in occupant_ids:
+            if player_id in online_players:
+                occupants.append(online_players[player_id])
         return occupants
 
     def _get_npc_name_from_lifecycle_manager(self, lifecycle_manager: Any, npc_id: str) -> str:

@@ -134,8 +134,8 @@ class CombatBundle:
 
         logger.info("All combat services initialized")
 
-    async def initialize_nats_combat(self, container: ApplicationContainer) -> None:
-        """Initialize NATS-dependent combat service and start NATS message handler."""
+    def _validate_nats_combat_prerequisites(self, container: ApplicationContainer) -> None:
+        """Raise if prerequisites for NATS combat are missing."""
         if container.config is None:
             raise RuntimeError("Config must be initialized before NATS combat service")
         if (
@@ -147,40 +147,55 @@ class CombatBundle:
         if container.event_bus is None:
             raise RuntimeError("EventBus must be initialized before combat service")
 
+    async def _create_combat_service_with_nats(self, container: ApplicationContainer) -> None:
+        """Create CombatService with NATS and register it. Assumes NATS is connected."""
+        from server.services.combat_service import CombatService, PlayerLifecycleServices, set_combat_service
+
+        self.combat_service = CombatService(
+            self.player_combat_service,
+            container.nats_service,
+            player_lifecycle_services=PlayerLifecycleServices(
+                self.player_death_service,
+                self.player_respawn_service,
+            ),
+            event_bus=container.event_bus,
+        )
+        set_combat_service(self.combat_service)
+        if container.player_service is None:
+            raise RuntimeError("PlayerService must be initialized")
+        container.player_service.combat_service = self.combat_service
+        container.player_service.player_combat_service = self.player_combat_service
+
+    async def _start_nats_message_handler(self, container: ApplicationContainer) -> None:
+        """Start NATS message handler if available. Logs and swallows errors."""
+        try:
+            if container.nats_message_handler:
+                await container.nats_message_handler.start()
+                logger.info("NATS message handler started successfully from container")
+            else:
+                logger.warning("NATS message handler not available (NATS disabled or failed)")
+        except (ValueError, TypeError, AttributeError, KeyError, RuntimeError) as e:
+            logger.error("Error starting NATS message handler", error=str(e))
+
+    def _handle_nats_unavailable(self, is_testing: bool) -> None:
+        """Handle case when NATS is not connected. Raises in prod, sets combat_service to None in tests."""
+        if is_testing:
+            logger.warning("NATS service not available in test environment - using mock NATS service")
+            self.combat_service = None
+        else:
+            logger.error("NATS service not available - NATS is required for chat functionality")
+            raise RuntimeError("NATS connection failed - NATS is mandatory for chat system")
+
+    async def initialize_nats_combat(self, container: ApplicationContainer) -> None:
+        """Initialize NATS-dependent combat service and start NATS message handler."""
+        self._validate_nats_combat_prerequisites(container)
         logger.debug("Initializing NATS and combat service...")
         is_testing = container.config.logging.environment in ("unit_test", "e2e_test")
 
         if container.nats_service is not None and container.nats_service.is_connected():
             logger.info("NATS service available from container")
-            from server.services.combat_service import CombatService, set_combat_service
-
-            self.combat_service = CombatService(
-                self.player_combat_service,
-                container.nats_service,
-                player_death_service=self.player_death_service,
-                player_respawn_service=self.player_respawn_service,
-                event_bus=container.event_bus,
-            )
-            set_combat_service(self.combat_service)
-
-            if container.player_service is None:
-                raise RuntimeError("PlayerService must be initialized")
-            container.player_service.combat_service = self.combat_service
-            container.player_service.player_combat_service = self.player_combat_service
+            await self._create_combat_service_with_nats(container)
             logger.info("Combat service initialized")
-
-            try:
-                if container.nats_message_handler:
-                    await container.nats_message_handler.start()
-                    logger.info("NATS message handler started successfully from container")
-                else:
-                    logger.warning("NATS message handler not available (NATS disabled or failed)")
-            except (ValueError, TypeError, AttributeError, KeyError, RuntimeError) as e:
-                logger.error("Error starting NATS message handler", error=str(e))
+            await self._start_nats_message_handler(container)
         else:
-            if is_testing:
-                logger.warning("NATS service not available in test environment - using mock NATS service")
-                self.combat_service = None
-            else:
-                logger.error("NATS service not available - NATS is required for chat functionality")
-                raise RuntimeError("NATS connection failed - NATS is mandatory for chat system")
+            self._handle_nats_unavailable(is_testing)

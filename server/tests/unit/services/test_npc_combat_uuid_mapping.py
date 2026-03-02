@@ -15,8 +15,8 @@ class TestNPCCombatUUIDMapping:
     def test_init(self):
         """Test NPCCombatUUIDMapping initialization."""
         mapping = NPCCombatUUIDMapping()
-        assert mapping._uuid_to_string_id_mapping == {}
-        assert mapping._uuid_to_xp_mapping == {}
+        assert mapping.get_original_string_id(uuid4()) is None
+        assert mapping.get_xp_value(uuid4()) is None
 
     def test_is_valid_uuid_valid(self):
         """Test is_valid_uuid returns True for valid UUID."""
@@ -58,7 +58,7 @@ class TestNPCCombatUUIDMapping:
         uuid_id = uuid4()
         string_id = "npc_guard_001"
         mapping.store_string_id_mapping(uuid_id, string_id)
-        assert mapping._uuid_to_string_id_mapping[uuid_id] == string_id
+        assert mapping.get_original_string_id(uuid_id) == string_id
 
     def test_store_string_id_mapping_overwrites(self):
         """Test store_string_id_mapping overwrites existing mapping."""
@@ -66,7 +66,7 @@ class TestNPCCombatUUIDMapping:
         uuid_id = uuid4()
         mapping.store_string_id_mapping(uuid_id, "original_id")
         mapping.store_string_id_mapping(uuid_id, "new_id")
-        assert mapping._uuid_to_string_id_mapping[uuid_id] == "new_id"
+        assert mapping.get_original_string_id(uuid_id) == "new_id"
 
     def test_store_xp_mapping(self):
         """Test store_xp_mapping stores XP value."""
@@ -74,7 +74,7 @@ class TestNPCCombatUUIDMapping:
         uuid_id = uuid4()
         xp_value = 100
         mapping.store_xp_mapping(uuid_id, xp_value)
-        assert mapping._uuid_to_xp_mapping[uuid_id] == xp_value
+        assert mapping.get_xp_value(uuid_id) == xp_value
 
     def test_store_xp_mapping_overwrites(self):
         """Test store_xp_mapping overwrites existing XP value."""
@@ -82,7 +82,7 @@ class TestNPCCombatUUIDMapping:
         uuid_id = uuid4()
         mapping.store_xp_mapping(uuid_id, 50)
         mapping.store_xp_mapping(uuid_id, 100)
-        assert mapping._uuid_to_xp_mapping[uuid_id] == 100
+        assert mapping.get_xp_value(uuid_id) == 100
 
     def test_get_original_string_id_found(self):
         """Test get_original_string_id returns stored string ID."""
@@ -98,6 +98,21 @@ class TestNPCCombatUUIDMapping:
         mapping = NPCCombatUUIDMapping()
         uuid_id = uuid4()
         result = mapping.get_original_string_id(uuid_id)
+        assert result is None
+
+    def test_get_uuid_for_string_id_found(self):
+        """Test get_uuid_for_string_id returns UUID when string ID was stored."""
+        mapping = NPCCombatUUIDMapping()
+        uuid_id = uuid4()
+        string_id = "npc_guard_001"
+        mapping.store_string_id_mapping(uuid_id, string_id)
+        result = mapping.get_uuid_for_string_id(string_id)
+        assert result == uuid_id
+
+    def test_get_uuid_for_string_id_not_found(self):
+        """Test get_uuid_for_string_id returns None when string ID not in mapping."""
+        mapping = NPCCombatUUIDMapping()
+        result = mapping.get_uuid_for_string_id("unknown_npc")
         assert result is None
 
     def test_get_xp_value_found(self):

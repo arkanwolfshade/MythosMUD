@@ -195,6 +195,89 @@ async def test_process_heal_heal_other_rejects_self_target(spell_effects):
 
 
 @pytest.mark.asyncio
+async def test_process_heal_steal_life_damages_target_and_heals_caster(spell_effects):
+    """Test _process_heal() with steal-life effect_data damages target and heals caster (capped by target DP)."""
+    spell_effects.player_service.damage_player = AsyncMock()
+    spell_effects.player_service.heal_player = AsyncMock()
+    caster_id = uuid.uuid4()
+    target_id = uuid.uuid4()
+    mock_target_player = MagicMock()
+    mock_target_player.get_stats.return_value = {"current_dp": 100}
+    spell_effects.player_service.persistence.get_player_by_id = AsyncMock(return_value=mock_target_player)
+    spell = MagicMock()
+    spell.spell_id = "steal_life"
+    spell.effect_data = {"heal_amount": 20, "damage_amount": 20, "damage_type": "necrotic"}
+    target = TargetMatch(
+        target_id=str(target_id),
+        target_type=TargetType.PLAYER,
+        target_name="Victim",
+        room_id="room_001",
+    )
+    result = await spell_effects._process_heal(spell, target, caster_id, 1.0)
+    assert result["success"] is True
+    assert result.get("heal_amount") == 20
+    assert result.get("damage_amount") == 20
+    assert "Stole" in result.get("message", "") and "life from" in result.get("message", "")
+    spell_effects.player_service.damage_player.assert_awaited_once_with(target_id, 20, "necrotic")
+    spell_effects.player_service.heal_player.assert_awaited_once_with(caster_id, 20)
+
+
+@pytest.mark.asyncio
+async def test_process_heal_steal_life_capped_by_target_dp(spell_effects):
+    """Steal-life caps drain at target's current DP: spell 10, target 8 -> drain 8, target to 0, caster +8."""
+    spell_effects.player_service.damage_player = AsyncMock()
+    spell_effects.player_service.heal_player = AsyncMock()
+    caster_id = uuid.uuid4()
+    target_id = uuid.uuid4()
+    mock_target_player = MagicMock()
+    mock_target_player.get_stats.return_value = {"current_dp": 8}
+    spell_effects.player_service.persistence.get_player_by_id = AsyncMock(return_value=mock_target_player)
+    spell = MagicMock()
+    spell.spell_id = "steal_life"
+    spell.effect_data = {"heal_amount": 10, "damage_amount": 10, "damage_type": "necrotic"}
+    target = TargetMatch(
+        target_id=str(target_id),
+        target_type=TargetType.PLAYER,
+        target_name="Victim",
+        room_id="room_001",
+    )
+    result = await spell_effects._process_heal(spell, target, caster_id, 1.0)
+    assert result["success"] is True
+    assert result.get("heal_amount") == 8
+    assert result.get("damage_amount") == 8
+    spell_effects.player_service.damage_player.assert_awaited_once_with(target_id, 8, "necrotic")
+    spell_effects.player_service.heal_player.assert_awaited_once_with(caster_id, 8)
+
+
+@pytest.mark.asyncio
+async def test_process_heal_steal_life_target_zero_dp(spell_effects):
+    """Steal-life when target has 0 DP: no damage, no heal, message says no life to steal."""
+    spell_effects.player_service.damage_player = AsyncMock()
+    spell_effects.player_service.heal_player = AsyncMock()
+    caster_id = uuid.uuid4()
+    target_id = uuid.uuid4()
+    mock_target_player = MagicMock()
+    mock_target_player.get_stats.return_value = {"current_dp": 0}
+    spell_effects.player_service.persistence.get_player_by_id = AsyncMock(return_value=mock_target_player)
+    spell = MagicMock()
+    spell.spell_id = "steal_life"
+    spell.effect_data = {"heal_amount": 10, "damage_amount": 10, "damage_type": "necrotic"}
+    target = TargetMatch(
+        target_id=str(target_id),
+        target_type=TargetType.PLAYER,
+        target_name="Victim",
+        room_id="room_001",
+    )
+    result = await spell_effects._process_heal(spell, target, caster_id, 1.0)
+    assert result["success"] is True
+    assert result.get("heal_amount") == 0
+    assert result.get("effect_applied") is False
+    assert "no life to steal" in result.get("message", "").lower()
+    spell_effects.player_service.damage_player.assert_not_awaited()
+    spell_effects.player_service.heal_player.assert_not_awaited()
+
+
+@pytest.mark.asyncio
 async def test_process_damage_invalid_target(spell_effects):
     """Test _process_damage() with invalid target type."""
 
@@ -203,7 +286,7 @@ async def test_process_damage_invalid_target(spell_effects):
     invalid_target = TargetMatch(
         target_id="invalid", target_type=TargetType.ROOM, target_name="Room", room_id="room_001"
     )
-    result = await spell_effects._process_damage(spell, invalid_target, 1.5)
+    result = await spell_effects._process_damage(spell, invalid_target, uuid.uuid4(), 1.5)
     assert result["success"] is False
     assert "can only target entities" in result.get("message", "").lower()
 

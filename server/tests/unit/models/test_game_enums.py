@@ -58,6 +58,14 @@ def test_status_effect_type_enum_values():
     assert StatusEffectType.CORRUPTED.value == "corrupted"
     assert StatusEffectType.DELIRIOUS.value == "delirious"
     assert StatusEffectType.BUFF.value == "buff"
+    assert StatusEffectType.LOGIN_WARDED.value == "login_warded"
+    assert StatusEffectType.DOMINATED.value == "dominated"
+    assert StatusEffectType.CLOUD_MEMORY.value == "cloud_memory"
+    assert StatusEffectType.FEAR.value == "fear"
+    assert StatusEffectType.EVIL_EYE.value == "evil_eye"
+    assert StatusEffectType.BLINDED.value == "blinded"
+    assert StatusEffectType.WARDED.value == "warded"
+    assert StatusEffectType.EXTINGUISH_FIRE.value == "extinguish_fire"
 
 
 def test_status_effect_type_enum_all_types():
@@ -72,6 +80,13 @@ def test_status_effect_type_enum_all_types():
         "delirious",
         "buff",
         "login_warded",  # ADR-009 effects system
+        "dominated",
+        "cloud_memory",
+        "fear",
+        "evil_eye",
+        "blinded",
+        "warded",
+        "extinguish_fire",
     }
     actual_types = {t.value for t in StatusEffectType}
     assert actual_types == expected_types

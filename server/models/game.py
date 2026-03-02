@@ -66,6 +66,14 @@ class StatusEffectType(StrEnum):
     BUFF = "buff"
     # Effects system (ADR-009): game-entry warded (login grace period)
     LOGIN_WARDED = "login_warded"
+    # CoC spell-driven status effects
+    DOMINATED = "dominated"
+    CLOUD_MEMORY = "cloud_memory"
+    FEAR = "fear"
+    EVIL_EYE = "evil_eye"
+    BLINDED = "blinded"
+    WARDED = "warded"
+    EXTINGUISH_FIRE = "extinguish_fire"
 
 
 class PositionState(StrEnum):

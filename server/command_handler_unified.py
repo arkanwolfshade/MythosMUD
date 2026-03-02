@@ -282,6 +282,25 @@ def _ensure_alias_storage(alias_storage: AliasStorage | None) -> AliasStorage | 
         return None
 
 
+async def _get_grace_check_context(player_name: str, request: Request) -> tuple[uuid.UUID, Any] | None:
+    """Resolve player_id and connection_manager for grace period check. Returns None if unavailable."""
+    connection_manager = getattr(request.app.state, "connection_manager", None)
+    player_service = getattr(request.app.state, "player_service", None)
+    if not connection_manager or not player_service:
+        return None
+
+    player = await player_service.get_player_by_name(player_name)
+    if not player:
+        return None
+
+    player_id_raw = getattr(player, "id", None) or getattr(player, "player_id", None)
+    if player_id_raw is None:
+        return None
+
+    player_id = uuid.UUID(player_id_raw) if isinstance(player_id_raw, str) else player_id_raw
+    return (player_id, connection_manager)
+
+
 async def _check_grace_period_block(player_name: str, request: Request) -> dict[str, Any] | None:
     """
     Check if player is in grace period and block commands.
@@ -293,27 +312,16 @@ async def _check_grace_period_block(player_name: str, request: Request) -> dict[
         Block result if player is in grace period, None otherwise
     """
     try:
-        connection_manager = getattr(request.app.state, "connection_manager", None)
-        if not connection_manager:
+        context = await _get_grace_check_context(player_name, request)
+        if context is None:
             return None
 
-        # Get player ID
-        player_service = getattr(request.app.state, "player_service", None)
-        if not player_service:
+        player_id, connection_manager = context
+        if not is_player_in_grace_period(player_id, connection_manager):
             return None
 
-        player = await player_service.get_player_by_name(player_name)
-        if not player:
-            return None
-
-        player_id = uuid.UUID(player.player_id) if isinstance(player.player_id, str) else player.player_id
-
-        # Check if player is in grace period
-        if is_player_in_grace_period(player_id, connection_manager):
-            logger.info("Command blocked - player is in grace period (disconnected)", player=player_name)
-            return {
-                "result": "You are disconnected and cannot perform actions. You will be removed from the game shortly."
-            }
+        logger.info("Command blocked - player is in grace period (disconnected)", player=player_name)
+        return {"result": "You are disconnected and cannot perform actions. You will be removed from the game shortly."}
 
     except (AttributeError, ValueError, TypeError, ImportError) as e:
         logger.debug("Error checking grace period", player=player_name, error=str(e))
@@ -322,30 +330,38 @@ async def _check_grace_period_block(player_name: str, request: Request) -> dict[
     return None
 
 
+ALLOWED_DURING_CASTING = ("stop", "interrupt", "status")
+
+
+async def _get_casting_block_result(request: Request, player_name: str, magic_service: Any) -> dict[str, Any] | None:
+    """Return block result if player is currently casting, else None. Caller must pass magic_service with casting_state_manager."""
+    player_service = getattr(request.app.state, "player_service", None)
+    if not player_service:
+        return None
+    player = await player_service.get_player_by_name(player_name)
+    if not player:
+        return None
+    player_id = getattr(player, "id", None) or getattr(player, "player_id", None)
+    if not player_id or not magic_service.casting_state_manager.is_casting(player_id):
+        return None
+    casting_state = magic_service.casting_state_manager.get_casting_state(player_id)
+    if not casting_state:
+        return None
+    return {"result": f"You are casting {casting_state.spell_name}. Use 'stop' to interrupt."}
+
+
 async def _check_casting_state(cmd: str, player_name: str, request: Request) -> dict[str, Any] | None:
     """Check if player is casting and should be blocked. Returns result if blocked."""
-    # Allow: stop, interrupt, status
-    allowed_during_casting = ["stop", "interrupt", "status"]
-    if cmd in allowed_during_casting:
+    if cmd in ALLOWED_DURING_CASTING:
         return None
-
     try:
-        # Get magic service from app state
         magic_service = getattr(request.app.state, "magic_service", None)
-        if magic_service and magic_service.casting_state_manager:
-            # Get player ID
-            player_service = getattr(request.app.state, "player_service", None)
-            if player_service:
-                player = await player_service.get_player_by_name(player_name)
-                if player and magic_service.casting_state_manager.is_casting(player.player_id):
-                    casting_state = magic_service.casting_state_manager.get_casting_state(player.player_id)
-                    if casting_state:
-                        return {"result": f"You are casting {casting_state.spell_name}. Use 'stop' to interrupt."}
+        if not (magic_service and magic_service.casting_state_manager):
+            return None
+        return await _get_casting_block_result(request, player_name, magic_service)
     except (AttributeError, OSError, TypeError, RuntimeError) as e:
-        # If we can't check casting state, allow command to proceed
         logger.debug("Could not check casting state", player=player_name, error=str(e))
-
-    return None
+        return None
 
 
 async def _process_alias_expansion(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Command processing requires many parameters for context and routing

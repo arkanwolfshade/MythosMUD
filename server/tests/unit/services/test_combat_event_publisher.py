@@ -269,7 +269,7 @@ async def test_publish_npc_took_damage_success(combat_event_publisher, mock_nats
     event = NPCTookDamageEvent(
         combat_id=combat_id,
         room_id="room_001",
-        npc_id=npc_id,  # type: ignore[arg-type]
+        npc_id=npc_id,
         npc_name="NPC",
         damage=10,
         current_dp=90,

@@ -58,11 +58,11 @@ async def test_validate_melee_or_end_combat_returns_none_on_valid() -> None:
     attacker = _make_participant("Attacker")
     target = _make_participant("Target")
 
-    # Patch _validate_melee_location to return valid
-    service._validate_melee_location = AsyncMock(return_value=(True, None))  # type: ignore[assignment]
+    # Patch validate_melee_location to return valid
+    service.validate_melee_location = AsyncMock(return_value=(True, None))  # type: ignore[assignment]
     service.end_combat = AsyncMock()  # type: ignore[assignment]
 
-    result = await service._validate_melee_or_end_combat(  # type: ignore[attr-defined]
+    result = await service.validate_melee_or_end_combat(
         combat, attacker, target, attacker.participant_id, target.participant_id
     )
 
@@ -79,10 +79,10 @@ async def test_validate_melee_or_end_combat_ends_combat_on_invalid() -> None:
     target = _make_participant("Target")
     reason = "rooms do not match"
 
-    service._validate_melee_location = AsyncMock(return_value=(False, reason))  # type: ignore[assignment]
+    service.validate_melee_location = AsyncMock(return_value=(False, reason))  # type: ignore[assignment]
     service.end_combat = AsyncMock()  # type: ignore[assignment]
 
-    result = await service._validate_melee_or_end_combat(  # type: ignore[attr-defined]
+    result = await service.validate_melee_or_end_combat(
         combat, attacker, target, attacker.participant_id, target.participant_id
     )
 
@@ -102,17 +102,17 @@ async def test_apply_damage_and_check_involuntary_flee_no_flee_for_npc() -> None
     attacker = _make_participant("Attacker")
     target = _make_participant("NPC", participant_type=CombatParticipantType.NPC)
 
-    service._apply_attack_damage = AsyncMock(return_value=(5, False, False))  # type: ignore[assignment]
-    service._check_involuntary_flee = AsyncMock()  # type: ignore[assignment]
+    service.apply_attack_damage = AsyncMock(return_value=(5, False, False))  # type: ignore[assignment]
+    service.check_involuntary_flee = AsyncMock()  # type: ignore[assignment]
 
-    target_died, mortally_wounded, early = await service._apply_damage_and_check_involuntary_flee(  # type: ignore[attr-defined]
+    target_died, mortally_wounded, early = await service.apply_damage_and_check_involuntary_flee(
         combat, attacker, target, damage=7
     )
 
     assert target_died is False
     assert mortally_wounded is False
     assert early is None
-    service._check_involuntary_flee.assert_not_awaited()  # type: ignore[attr-defined]
+    service.check_involuntary_flee.assert_not_awaited()  # type: ignore[attr-defined]
 
 
 @pytest.mark.asyncio
@@ -123,11 +123,11 @@ async def test_apply_damage_and_check_involuntary_flee_returns_early_result_on_f
     attacker = _make_participant("Attacker")
     target = _make_participant("Victim", participant_type=CombatParticipantType.PLAYER)
 
-    service._apply_attack_damage = AsyncMock(return_value=(5, False, False))  # type: ignore[assignment]
-    service._check_involuntary_flee = AsyncMock(return_value=True)  # type: ignore[assignment]
+    service.apply_attack_damage = AsyncMock(return_value=(5, False, False))  # type: ignore[assignment]
+    service.check_involuntary_flee = AsyncMock(return_value=True)  # type: ignore[assignment]
     service.end_combat = AsyncMock()  # type: ignore[assignment]
 
-    target_died, mortally_wounded, early = await service._apply_damage_and_check_involuntary_flee(  # type: ignore[attr-defined]
+    target_died, mortally_wounded, early = await service.apply_damage_and_check_involuntary_flee(
         combat, attacker, target, damage=7
     )
 
@@ -142,7 +142,7 @@ async def test_apply_damage_and_check_involuntary_flee_returns_early_result_on_f
 
 @pytest.mark.asyncio
 async def test_finalize_attack_result_awards_xp_and_completes_combat() -> None:
-    """_finalize_attack_result wires target state, events, XP, and completion correctly."""
+    """finalize_attack_result wires target state, events, XP, and completion correctly."""
     service = _make_service()
     combat = _make_combat_instance()
     attacker = _make_participant("Attacker")
@@ -153,12 +153,12 @@ async def test_finalize_attack_result_awards_xp_and_completes_combat() -> None:
     target_id = uuid.uuid4()
 
     combat.is_combat_over = MagicMock(return_value=True)  # type: ignore[assignment]
-    service._handle_target_state_changes = AsyncMock()  # type: ignore[assignment]
-    service._handle_attack_events_and_xp = AsyncMock(return_value=42)  # type: ignore[assignment]
-    service._award_xp_to_player = AsyncMock()  # type: ignore[assignment]
-    service._handle_combat_completion = AsyncMock()  # type: ignore[assignment]
+    service.handle_target_state_changes = AsyncMock()  # type: ignore[assignment]
+    service.handle_attack_events_and_xp = AsyncMock(return_value=42)  # type: ignore[assignment]
+    service.award_xp_to_player = AsyncMock()  # type: ignore[assignment]
+    service.handle_combat_completion = AsyncMock()  # type: ignore[assignment]
 
-    result = await service._finalize_attack_result(  # type: ignore[attr-defined]
+    result = await service.finalize_attack_result(
         combat,
         attacker,
         target,
@@ -174,10 +174,10 @@ async def test_finalize_attack_result_awards_xp_and_completes_combat() -> None:
     assert result.target_died is True
     assert result.combat_ended is True
     assert result.xp_awarded == 42
-    service._handle_target_state_changes.assert_awaited_once()  # type: ignore[attr-defined]
-    service._handle_attack_events_and_xp.assert_awaited_once()  # type: ignore[attr-defined]
-    service._award_xp_to_player.assert_awaited_once_with(attacker, target, target_id, 42)  # type: ignore[attr-defined]
-    service._handle_combat_completion.assert_awaited_once_with(combat, True)  # type: ignore[attr-defined]
+    service.handle_target_state_changes.assert_awaited_once()  # type: ignore[attr-defined]
+    service.handle_attack_events_and_xp.assert_awaited_once()  # type: ignore[attr-defined]
+    service.award_xp_to_player.assert_awaited_once_with(attacker, target, target_id, 42)  # type: ignore[attr-defined]
+    service.handle_combat_completion.assert_awaited_once_with(combat, True)  # type: ignore[attr-defined]
 
 
 @pytest.mark.asyncio
@@ -200,10 +200,10 @@ async def test_process_attack_returns_melee_validation_early_result() -> None:
         combat_id=combat.combat_id,
     )
 
-    service._validate_and_get_combat_participants = AsyncMock(  # type: ignore[assignment]
+    service.validate_and_get_combat_participants = AsyncMock(  # type: ignore[assignment]
         return_value=(combat, attacker, target),
     )
-    service._validate_melee_or_end_combat = AsyncMock(return_value=early_result)  # type: ignore[assignment]
+    service.validate_melee_or_end_combat = AsyncMock(return_value=early_result)  # type: ignore[assignment]
 
     result = await service.process_attack(attacker_id, target_id, damage=5)
 
@@ -230,19 +230,19 @@ async def test_process_attack_happy_path_calls_helpers_and_returns_final_result(
         combat_id=combat.combat_id,
     )
 
-    service._validate_and_get_combat_participants = AsyncMock(  # type: ignore[assignment]
+    service.validate_and_get_combat_participants = AsyncMock(  # type: ignore[assignment]
         return_value=(combat, attacker, target),
     )
-    service._validate_melee_or_end_combat = AsyncMock(return_value=None)  # type: ignore[assignment]
-    service._apply_damage_and_check_involuntary_flee = AsyncMock(  # type: ignore[assignment]
+    service.validate_melee_or_end_combat = AsyncMock(return_value=None)  # type: ignore[assignment]
+    service.apply_damage_and_check_involuntary_flee = AsyncMock(  # type: ignore[assignment]
         return_value=(False, False, None),
     )
-    service._finalize_attack_result = AsyncMock(return_value=final_result)  # type: ignore[assignment]
+    service.finalize_attack_result = AsyncMock(return_value=final_result)  # type: ignore[assignment]
 
     result = await service.process_attack(attacker_id, target_id, damage=5)
 
     assert result is final_result
-    service._validate_and_get_combat_participants.assert_awaited_once()  # type: ignore[attr-defined]
-    service._validate_melee_or_end_combat.assert_awaited_once()  # type: ignore[attr-defined]
-    service._apply_damage_and_check_involuntary_flee.assert_awaited_once()  # type: ignore[attr-defined]
-    service._finalize_attack_result.assert_awaited_once()  # type: ignore[attr-defined]
+    service.validate_and_get_combat_participants.assert_awaited_once()  # type: ignore[attr-defined]
+    service.validate_melee_or_end_combat.assert_awaited_once()  # type: ignore[attr-defined]
+    service.apply_damage_and_check_involuntary_flee.assert_awaited_once()  # type: ignore[attr-defined]
+    service.finalize_attack_result.assert_awaited_once()  # type: ignore[attr-defined]

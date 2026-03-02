@@ -11,12 +11,17 @@ import uuid
 from typing import Any, assert_never
 
 from server.game.magic.spell_effect_flee import run_flee_effect
+from server.game.magic.spell_effects_heal import _get_npc_instance_for_steal_life, run_heal_effect
 from server.game.magic.spell_effects_stats import apply_stat_modifications
+from server.game.magic.spell_effects_status import run_status_effect
+from server.game.magic.spell_effects_support import (
+    process_create_object_effect,
+    process_stat_modify_effect,
+)
 from server.game.player_service import PlayerService
 from server.models.game import StatusEffect, StatusEffectType
 from server.models.spell import Spell, SpellEffectType
 from server.persistence.repositories.player_spell_repository import PlayerSpellRepository
-from server.realtime.login_grace_period import is_player_in_login_grace_period
 from server.schemas.shared import TargetMatch, TargetType
 from server.structured_logging.enhanced_logging_config import get_logger
 
@@ -59,6 +64,26 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
         self._connection_manager = connection_manager
         logger.info("SpellEffects initialized")
 
+    @property
+    def connection_manager(self) -> Any:
+        """Connection manager for login grace period checks."""
+        return self._connection_manager
+
+    @property
+    def combat_service(self) -> Any:
+        """Combat service for flee effect."""
+        return self._combat_service
+
+    @property
+    def movement_service(self) -> Any:
+        """Movement service for flee effect."""
+        return self._movement_service
+
+    @property
+    def get_room_by_id(self) -> Any:
+        """Callable to resolve room by ID for flee effect."""
+        return self._get_room_by_id
+
     async def process_effect(
         self,
         spell: Spell,
@@ -100,7 +125,7 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
             case SpellEffectType.HEAL:
                 return await self._process_heal(spell, target, caster_id, mastery_modifier)
             case SpellEffectType.DAMAGE:
-                return await self._process_damage(spell, target, mastery_modifier)
+                return await self._process_damage(spell, target, caster_id, mastery_modifier)
             case SpellEffectType.STATUS_EFFECT:
                 return await self._process_status_effect(spell, target, mastery_modifier)
             case SpellEffectType.STAT_MODIFY:
@@ -127,43 +152,14 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
     async def _process_heal(
         self, spell: Spell, target: TargetMatch, caster_id: uuid.UUID, mastery_modifier: float
     ) -> dict[str, Any]:
-        """Process heal effect."""
-        if target.target_type not in (TargetType.PLAYER, TargetType.NPC):
-            return {"success": False, "message": "Heal can only target entities", "effect_applied": False}
+        """Process heal effect (normal heals and steal-life). Delegated to spell_effects_heal."""
+        return await run_heal_effect(
+            self, spell, target, caster_id, mastery_modifier, combat_service=self._combat_service
+        )
 
-        # Heal Other cannot target self
-        if spell.spell_id == "heal_other" and str(target.target_id) == str(caster_id):
-            return {
-                "success": False,
-                "message": f"{spell.name} can only target others, not yourself.",
-                "effect_applied": False,
-            }
-        heal_amount = int(spell.effect_data.get("heal_amount", 0) * mastery_modifier)
-        if heal_amount <= 0:
-            return {"success": False, "message": "Invalid heal amount", "effect_applied": False}
-
-        if target.target_type == TargetType.PLAYER:
-            try:
-                target_id = uuid.UUID(target.target_id)
-                await self.player_service.heal_player(target_id, heal_amount)
-                return {
-                    "success": True,
-                    "message": f"Healed {target.target_name} for {heal_amount} health",
-                    "effect_applied": True,
-                    "heal_amount": heal_amount,
-                }
-            except OSError as e:
-                logger.error("Error healing player", target_id=target.target_id, error=str(e))
-                return {"success": False, "message": f"Failed to heal: {str(e)}", "effect_applied": False}
-
-        # NPC healing not yet implemented
-        return {
-            "success": True,
-            "message": f"Healed {target.target_name} for {heal_amount} health",
-            "effect_applied": True,
-        }
-
-    async def _process_damage(self, spell: Spell, target: TargetMatch, mastery_modifier: float) -> dict[str, Any]:
+    async def _process_damage(
+        self, spell: Spell, target: TargetMatch, caster_id: uuid.UUID, mastery_modifier: float
+    ) -> dict[str, Any]:
         """Process damage effect."""
         if target.target_type not in (TargetType.PLAYER, TargetType.NPC):
             return {"success": False, "message": "Damage can only target entities", "effect_applied": False}
@@ -174,139 +170,116 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
             return {"success": False, "message": "Invalid damage amount", "effect_applied": False}
 
         if target.target_type == TargetType.PLAYER:
-            try:
-                target_id = uuid.UUID(target.target_id)
-                await self.player_service.damage_player(target_id, damage_amount, damage_type)
-                return {
-                    "success": True,
-                    "message": f"Dealt {damage_amount} {damage_type} damage to {target.target_name}",
-                    "effect_applied": True,
-                    "damage_amount": damage_amount,
-                    "damage_type": damage_type,
-                }
-            except OSError as e:
-                logger.error("Error damaging player", target_id=target.target_id, error=str(e))
-                return {"success": False, "message": f"Failed to damage: {str(e)}", "effect_applied": False}
+            return await self._process_damage_to_player(target, damage_amount, damage_type)
+        return await self._process_damage_to_npc(target, damage_amount, damage_type, caster_id)
 
-        # NPC damage not yet implemented
+    async def _process_damage_to_player(
+        self, target: TargetMatch, damage_amount: int, damage_type: str
+    ) -> dict[str, Any]:
+        """Apply damage to a player target."""
+        try:
+            target_id = uuid.UUID(target.target_id)
+            await self.player_service.damage_player(target_id, damage_amount, damage_type)
+            return {
+                "success": True,
+                "message": f"Dealt {damage_amount} {damage_type} damage to {target.target_name}",
+                "effect_applied": True,
+                "damage_amount": damage_amount,
+                "damage_type": damage_type,
+            }
+        except OSError as e:
+            logger.error("Error damaging player", target_id=target.target_id, error=str(e))
+            return {"success": False, "message": f"Failed to damage: {str(e)}", "effect_applied": False}
+
+    async def _process_damage_to_npc(
+        self, target: TargetMatch, damage_amount: int, damage_type: str, caster_id: uuid.UUID
+    ) -> dict[str, Any]:
+        """Apply damage to an NPC target; publish events and sync combat participant."""
+        npc_instance = _get_npc_instance_for_steal_life(str(target.target_id), self._combat_service)
+        if not npc_instance or not getattr(npc_instance, "is_alive", True):
+            return {"success": False, "message": "Target is not available.", "effect_applied": False}
+        ok = npc_instance.take_damage(damage_amount, damage_type, source_id=str(caster_id))
+        if not ok:
+            return {"success": False, "message": "Failed to damage target.", "effect_applied": False}
+        await self._publish_npc_damage_and_death_events(npc_instance, target, damage_amount, caster_id)
         return {
             "success": True,
             "message": f"Dealt {damage_amount} {damage_type} damage to {target.target_name}",
             "effect_applied": True,
+            "damage_amount": damage_amount,
+            "damage_type": damage_type,
         }
 
-    def _grace_period_blocks_negative_status_effect(self, target_id: uuid.UUID, effect_type: StatusEffectType) -> bool:
-        """True if target is in login grace period and effect is negative (should block)."""
-        negative_effect_types = {
-            StatusEffectType.STUNNED,
-            StatusEffectType.POISONED,
-            StatusEffectType.HALLUCINATING,
-            StatusEffectType.PARANOID,
-            StatusEffectType.TREMBLING,
-            StatusEffectType.CORRUPTED,
-            StatusEffectType.DELIRIOUS,
-        }
-        if effect_type not in negative_effect_types:
-            return False
-        if not self._connection_manager:
-            return False
+    async def _publish_npc_damage_and_death_events(
+        self, npc_instance: Any, target: TargetMatch, damage_amount: int, caster_id: uuid.UUID
+    ) -> None:
+        """Publish NPC damage event and death event if applicable; sync combat participant."""
+        room_id = getattr(npc_instance, "current_room", None)
+        if not self._combat_service or not room_id:
+            return
+        stats_after: dict[str, Any] = getattr(npc_instance, "get_combat_stats", lambda: {})()
+        new_dp = int(stats_after.get("current_dp", 0))
+        max_dp = int(stats_after.get("max_dp", 0))
         try:
-            return is_player_in_login_grace_period(target_id, self._connection_manager)
-        except (AttributeError, ImportError, TypeError, ValueError):
-            return False
-
-    async def _apply_status_effect_to_player(
-        self,
-        target_id: uuid.UUID,
-        effect_type: StatusEffectType,
-        duration: int,
-        intensity: int,
-        spell: Spell,
-        target: TargetMatch,
-    ) -> dict[str, Any]:
-        """Load player, append status effect, save; return result dict or error if player not found."""
-        player = await self.player_service.persistence.get_player_by_id(target_id)
-        if not player:
-            return {"success": False, "message": "Target player not found", "effect_applied": False}
-        status_effects = player.get_status_effects()
-        new_effect = StatusEffect(
-            effect_type=effect_type,
-            duration=duration,
-            intensity=intensity,
-            source=f"spell:{spell.spell_id}",
+            npc_id_ev: uuid.UUID | str = uuid.UUID(str(target.target_id))
+        except (ValueError, TypeError):
+            npc_id_ev = getattr(npc_instance, "npc_id", str(target.target_id))
+        self._combat_service.sync_npc_participant_dp_after_spell_damage(str(target.target_id), new_dp)
+        await self._combat_service.publish_npc_damage_event(
+            room_id=room_id,
+            npc_id=npc_id_ev,
+            npc_name=target.target_name,
+            damage=damage_amount,
+            current_dp=new_dp,
+            max_dp=max_dp,
         )
-        status_effects.append(new_effect.model_dump())
-        player.set_status_effects(status_effects)
-        await self.player_service.persistence.save_player(player)
-        return {
-            "success": True,
-            "message": f"Applied {effect_type.value} to {target.target_name}",
-            "effect_applied": True,
-            "status_effect": effect_type.value,
-        }
+        is_dead = not getattr(npc_instance, "is_alive", True) or new_dp <= 0
+        if is_dead:
+            npc_id_str = getattr(npc_instance, "npc_id", str(target.target_id))
+            await self._combat_service.publish_npc_died_event(
+                room_id=room_id,
+                npc_id=npc_id_str,
+                npc_name=target.target_name,
+                xp_reward=0,
+                killer_id=str(caster_id),
+            )
+            await self._combat_service.end_combat_if_npc_died(npc_id_str)
 
     async def _process_status_effect(
         self, spell: Spell, target: TargetMatch, mastery_modifier: float
     ) -> dict[str, Any]:
-        """Process status effect."""
-        if target.target_type not in (TargetType.PLAYER, TargetType.NPC):
-            return {"success": False, "message": "Status effects can only target entities", "effect_applied": False}
+        """Process status effect. Delegated to spell_effects_status."""
+        return await run_status_effect(self, spell, target, mastery_modifier)
 
-        effect_type_str = spell.effect_data.get("status_effect_type", "")
-        duration = int(spell.effect_data.get("duration", 0) * mastery_modifier)
-        intensity = min(10, max(1, int(spell.effect_data.get("intensity", 1) * mastery_modifier)))
+    def _build_stat_modifications(self, spell: Spell) -> tuple[dict[str, Any] | None, dict[str, Any] | None]:
+        """
+        Build normalized stat_modifications dict from spell.effect_data.
 
-        try:
-            effect_type = StatusEffectType(effect_type_str)
-        except ValueError:
-            return {
-                "success": False,
-                "message": f"Invalid status effect type: {effect_type_str}",
-                "effect_applied": False,
-            }
-
-        if target.target_type == TargetType.PLAYER:
-            try:
-                target_id = uuid.UUID(target.target_id)
-                if self._grace_period_blocks_negative_status_effect(target_id, effect_type):
-                    logger.info(
-                        "Negative status effect blocked - target in login grace period",
-                        target_id=target.target_id,
-                        effect_type=effect_type.value,
-                    )
-                    return {
-                        "success": False,
-                        "message": f"Target is protected and immune to {effect_type.value}",
-                        "effect_applied": False,
-                    }
-                return await self._apply_status_effect_to_player(
-                    target_id, effect_type, duration, intensity, spell, target
-                )
-            except (OSError, ValueError) as e:
-                logger.error("Error applying status effect", target_id=target.target_id, error=str(e))
-                return {
-                    "success": False,
-                    "message": f"Failed to apply status effect: {str(e)}",
-                    "effect_applied": False,
-                }
-
-        return {
-            "success": True,
-            "message": f"Applied {effect_type.value} to {target.target_name}",
-            "effect_applied": True,
-        }
-
-    async def _process_stat_modify(self, spell: Spell, target: TargetMatch, mastery_modifier: float) -> dict[str, Any]:
-        """Process stat modification effect."""
-        if target.target_type != TargetType.PLAYER:
-            return {"success": False, "message": "Stat modification can only target players", "effect_applied": False}
-
+        Supports both full dict form and CoC shorthand {"stat": "...", "delta": N}.
+        """
         stat_modifications = spell.effect_data.get("stat_modifications", {})
         if not stat_modifications:
-            return {"success": False, "message": "No stat modifications specified", "effect_applied": False}
+            stat_name = spell.effect_data.get("stat")
+            delta = spell.effect_data.get("delta")
+            if stat_name and isinstance(delta, (int, float)):
+                stat_modifications = {str(stat_name): delta}
+        if not stat_modifications:
+            return None, {
+                "success": False,
+                "message": "No stat modifications specified",
+                "effect_applied": False,
+            }
+        return stat_modifications, None
 
-        duration = int(spell.effect_data.get("duration", 0))
-
+    async def _apply_stat_modify_to_player(
+        self,
+        spell: Spell,
+        target: TargetMatch,
+        mastery_modifier: float,
+        stat_modifications: dict[str, Any],
+        duration: int,
+    ) -> dict[str, Any]:
+        """Apply stat modifications and optional temporary BUFF status to a player."""
         try:
             target_id = uuid.UUID(target.target_id)
             player = await self.player_service.persistence.get_player_by_id(target_id)
@@ -315,7 +288,10 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
 
             stats = player.get_stats()
             stats, stat_changes, modified_stats = apply_stat_modifications(
-                stats, stat_modifications, mastery_modifier, spell.spell_id
+                stats,
+                stat_modifications,
+                mastery_modifier,
+                spell.spell_id,
             )
 
             if duration > 0:
@@ -343,7 +319,15 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
             }
         except OSError as e:
             logger.error("Error modifying stats", target_id=target.target_id, error=str(e))
-            return {"success": False, "message": f"Failed to modify stats: {str(e)}", "effect_applied": False}
+            return {
+                "success": False,
+                "message": f"Failed to modify stats: {str(e)}",
+                "effect_applied": False,
+            }
+
+    async def _process_stat_modify(self, spell: Spell, target: TargetMatch, mastery_modifier: float) -> dict[str, Any]:
+        """Process stat modification effect (delegated to support module)."""
+        return await process_stat_modify_effect(self, spell, target, mastery_modifier)
 
     async def _process_lucidity_adjust(
         self, spell: Spell, target: TargetMatch, mastery_modifier: float
@@ -352,7 +336,9 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
         if target.target_type != TargetType.PLAYER:
             return {"success": False, "message": "Lucidity adjustment can only target players", "effect_applied": False}
 
-        adjust_amount = int(spell.effect_data.get("adjust_amount", 0) * mastery_modifier)
+        # Support both legacy key (adjust_amount) and CoC key (lucidity_delta)
+        raw_adjust = spell.effect_data.get("adjust_amount", spell.effect_data.get("lucidity_delta", 0))
+        adjust_amount = int(raw_adjust * mastery_modifier)
         if not adjust_amount:
             return {"success": False, "message": "Invalid lucidity adjustment amount", "effect_applied": False}
 
@@ -461,71 +447,10 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
             return {"success": False, "message": f"Failed to teleport: {str(e)}", "effect_applied": False}
 
     async def _process_create_object(
-        self, spell: Spell, target: TargetMatch, mastery_modifier: float
+        self,
+        spell: Spell,
+        target: TargetMatch,
+        mastery_modifier: float,
     ) -> dict[str, Any]:
-        """Process object creation effect."""
-        # Get item prototype ID and quantity from effect_data
-        prototype_id = spell.effect_data.get("prototype_id")
-        if not prototype_id:
-            return {
-                "success": False,
-                "message": "No prototype ID specified for object creation",
-                "effect_applied": False,
-            }
-
-        quantity = int(spell.effect_data.get("quantity", 1) * mastery_modifier)
-        quantity = max(1, quantity)  # Ensure at least 1 item
-
-        # Determine where to create the item
-        # If target is a player, add to their inventory; if room, add to room drops
-        if target.target_type == TargetType.PLAYER:
-            try:
-                target_id = uuid.UUID(target.target_id)
-                player = await self.player_service.persistence.get_player_by_id(target_id)
-                if not player:
-                    return {"success": False, "message": "Target player not found", "effect_applied": False}
-
-                # Add item to player inventory
-                # Note: This is a simplified version - full implementation would use ItemFactory
-                # and proper item instance creation. For now, we'll add a basic item entry.
-                inventory = player.get_inventory()
-                new_item = {
-                    "item_id": prototype_id,
-                    "prototype_id": prototype_id,
-                    "quantity": quantity,
-                    "item_name": prototype_id,  # Would be resolved from prototype registry
-                }
-                inventory.append(new_item)
-                player.set_inventory(inventory)
-                await self.player_service.persistence.save_player(player)
-
-                return {
-                    "success": True,
-                    "message": f"Created {quantity} {prototype_id} in {target.target_name}'s inventory",
-                    "effect_applied": True,
-                    "prototype_id": prototype_id,
-                    "quantity": quantity,
-                }
-            except OSError as e:
-                logger.error("Error creating object in inventory", target_id=target.target_id, error=str(e))
-                return {"success": False, "message": f"Failed to create object: {str(e)}", "effect_applied": False}
-
-        elif target.target_type == TargetType.ROOM:
-            # For room targets, we would need room_manager and ItemFactory
-            # This is a placeholder - full implementation requires those services
-            logger.warning(
-                "Room item creation requires ItemFactory and room_manager",
-                spell_id=spell.spell_id,
-                room_id=target.room_id,
-            )
-            return {
-                "success": False,
-                "message": "Room item creation requires additional services (ItemFactory, room_manager)",
-                "effect_applied": False,
-            }
-
-        return {
-            "success": False,
-            "message": f"Object creation cannot target {target.target_type.value}",
-            "effect_applied": False,
-        }
+        """Process object creation effect (delegated to support module)."""
+        return await process_create_object_effect(self, spell, target, mastery_modifier)

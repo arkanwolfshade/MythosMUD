@@ -1556,7 +1556,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/server__schemas__players__player__MessageResponse"
+                  "$ref": "#/components/schemas/MessageResponse"
                 }
               }
             }
@@ -2041,7 +2041,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MessageResponse"
+                  "$ref": "#/components/schemas/server__api__monitoring_models__MessageResponse"
                 }
               }
             }
@@ -2129,7 +2129,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MessageResponse"
+                  "$ref": "#/components/schemas/server__api__monitoring_models__MessageResponse"
                 }
               }
             }
@@ -7193,15 +7193,20 @@
         "properties": {
           "message": {
             "type": "string",
-            "title": "Message"
+            "title": "Message",
+            "description": "Success or status message"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
           "message"
         ],
         "title": "MessageResponse",
-        "description": "Generic response model for operations that return a simple message."
+        "description": "Generic response model for operations that return a simple message.",
+        "example": {
+          "message": "Operation completed successfully"
+        }
       },
       "MetricsData": {
         "properties": {
@@ -10450,7 +10455,14 @@
           "corrupted",
           "delirious",
           "buff",
-          "login_warded"
+          "login_warded",
+          "dominated",
+          "cloud_memory",
+          "fear",
+          "evil_eye",
+          "blinded",
+          "warded",
+          "extinguish_fire"
         ],
         "title": "StatusEffectType",
         "description": "Status effects that can be applied to characters."
@@ -11088,6 +11100,20 @@
         "title": "WeaponStats",
         "description": "Weapon statistics for items that can be used as weapons.\n\nThis model represents the combat properties of a weapon item, including\ndamage range, modifiers, damage types, and magical properties."
       },
+      "server__api__monitoring_models__MessageResponse": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "title": "MessageResponse",
+        "description": "Generic response model for operations that return a simple message."
+      },
       "server__schemas__metrics__metrics__MetricsResponse": {
         "properties": {
           "metrics": {
@@ -11113,25 +11139,6 @@
               "status": "connected"
             }
           }
-        }
-      },
-      "server__schemas__players__player__MessageResponse": {
-        "properties": {
-          "message": {
-            "type": "string",
-            "title": "Message",
-            "description": "Success or status message"
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "required": [
-          "message"
-        ],
-        "title": "MessageResponse",
-        "description": "Generic response model for operations that return a simple message.",
-        "example": {
-          "message": "Operation completed successfully"
         }
       }
     },

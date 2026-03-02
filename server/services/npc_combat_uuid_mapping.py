@@ -95,6 +95,21 @@ class NPCCombatUUIDMapping:
             xp_value=xp_value,
         )
 
+    def get_uuid_for_string_id(self, string_id: str) -> UUID | None:
+        """
+        Get the UUID that was stored for a given string ID (reverse of get_original_string_id).
+
+        Args:
+            string_id: Original string ID (e.g. NPC id) to look up
+
+        Returns:
+            The UUID if found, None otherwise
+        """
+        for uuid_key, stored_id in self._uuid_to_string_id_mapping.items():
+            if stored_id == string_id:
+                return uuid_key
+        return None
+
     def get_original_string_id(self, uuid_id: UUID) -> str | None:
         """
         Get the original string ID from a UUID.
