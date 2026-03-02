@@ -9,11 +9,11 @@ from unittest.mock import MagicMock, patch
 import pytest
 from fastapi import FastAPI
 
+from server.app.lifespan_magic import initialize_magic_services
 from server.app.lifespan_startup import (
     initialize_chat_service,
     initialize_combat_services,
     initialize_container_and_legacy_services,
-    initialize_magic_services,
     initialize_mythos_time_consumer,
     initialize_nats_and_combat_services,
     initialize_npc_services,
