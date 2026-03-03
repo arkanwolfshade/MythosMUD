@@ -109,40 +109,14 @@ class HealthRepository:
             exc_info=True,
         )
 
-    def _build_update_health_query(self) -> Any:
-        """Return SQLAlchemy text query for atomic current_dp update."""
-        return text(
-            """
-            UPDATE players
-            SET stats = jsonb_set(
-                stats,
-                '{current_dp}',
-                (
-                    GREATEST(
-                        0,
-                        LEAST(
-                            GREATEST(
-                                COALESCE(
-                                    (stats->>'max_dp')::int,
-                                    ((COALESCE((stats->>'constitution')::int, 50) + COALESCE((stats->>'size')::int, 50)) / 5)
-                                ),
-                                20
-                            ),
-                            (stats->>'current_dp')::int + :delta
-                        )
-                    )
-                )::text::jsonb
-            )
-            WHERE player_id = :player_id
-            """
-        )
-
     async def _update_player_health_inner(self, player_id: uuid.UUID | str, delta: int, reason: str) -> None:
-        """Execute atomic health update query and log debug information."""
+        """Execute atomic health update via update_player_health procedure."""
         session_maker = get_session_maker()
         async with session_maker() as session:
-            update_query = self._build_update_health_query()
-            await session.execute(update_query, {"player_id": str(player_id), "delta": delta})
+            await session.execute(
+                text("SELECT update_player_health(:player_id, :delta)"),
+                {"player_id": str(player_id), "delta": delta},
+            )
             await session.commit()
 
         self._logger.debug(

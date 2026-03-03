@@ -2,7 +2,7 @@
 Experience repository for async persistence operations.
 
 This module provides async database operations for player XP and stat management
-using SQLAlchemy ORM with PostgreSQL.
+using PostgreSQL stored procedures.
 """
 
 import uuid
@@ -28,20 +28,20 @@ class ExperienceRepository:
     operations to prevent race conditions.
     """
 
-    # Field name to PostgreSQL array literal mapping for atomic updates
-    FIELD_NAME_TO_ARRAY: dict[str, str] = {
-        "current_dp": "ARRAY['current_dp']::text[]",
-        "lucidity": "ARRAY['lucidity']::text[]",
-        "occult_knowledge": "ARRAY['occult_knowledge']::text[]",
-        "fear": "ARRAY['fear']::text[]",
-        "corruption": "ARRAY['corruption']::text[]",
-        "cult_affiliation": "ARRAY['cult_affiliation']::text[]",
-        "strength": "ARRAY['strength']::text[]",
-        "dexterity": "ARRAY['dexterity']::text[]",
-        "constitution": "ARRAY['constitution']::text[]",
-        "intelligence": "ARRAY['intelligence']::text[]",
-        "wisdom": "ARRAY['wisdom']::text[]",
-        "charisma": "ARRAY['charisma']::text[]",
+    # Field name to JSONB path for update_player_stat_field
+    FIELD_NAME_TO_PATH: dict[str, list[str]] = {
+        "current_dp": ["current_dp"],
+        "lucidity": ["lucidity"],
+        "occult_knowledge": ["occult_knowledge"],
+        "fear": ["fear"],
+        "corruption": ["corruption"],
+        "cult_affiliation": ["cult_affiliation"],
+        "strength": ["strength"],
+        "dexterity": ["dexterity"],
+        "constitution": ["constitution"],
+        "intelligence": ["intelligence"],
+        "wisdom": ["wisdom"],
+        "charisma": ["charisma"],
     }
 
     def __init__(self, event_bus: Any = None) -> None:
@@ -131,17 +131,12 @@ class ExperienceRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                update_query = text(
-                    """
-                    UPDATE players
-                    SET experience_points = experience_points + :delta
-                    WHERE player_id = :player_id
-                    """
+                result = await session.execute(
+                    text("SELECT update_player_xp(:player_id, :delta)"),
+                    {"player_id": str(player_id), "delta": delta},
                 )
-
-                result = await session.execute(update_query, {"player_id": str(player_id), "delta": delta})
-
-                if not result.rowcount:  # type: ignore[attr-defined]  # mypy: CursorResult has rowcount; stubs use Result[Any]
+                rows_updated = result.scalar()
+                if not rows_updated:
                     raise ValueError(f"Player {player_id} not found")
 
                 await session.commit()
@@ -152,7 +147,6 @@ class ExperienceRepository:
                     delta=delta,
                     reason=reason,
                 )
-                return
         except (SQLAlchemyError, OSError, ValueError) as e:
             log_and_raise(
                 DatabaseError,
@@ -171,7 +165,7 @@ class ExperienceRepository:
 
         Args:
             player_id: Player UUID or string
-            field_name: Stat field name (must be in FIELD_NAME_TO_ARRAY)
+            field_name: Stat field name (must be in FIELD_NAME_TO_PATH)
             delta: Amount to change field by
             reason: Reason for update
 
@@ -179,50 +173,24 @@ class ExperienceRepository:
             ValueError: If field_name invalid or delta type wrong
             DatabaseError: If database operation fails
         """
-        # Validate delta type
-        if not isinstance(delta, int | float):
+        if not isinstance(delta, (int, float)):
             raise TypeError(f"delta must be int or float, got {type(delta).__name__}")
 
-        # Validate field name (whitelist approach for security)
-        if field_name not in self.FIELD_NAME_TO_ARRAY:
-            allowed_fields = set(self.FIELD_NAME_TO_ARRAY.keys())
+        if field_name not in self.FIELD_NAME_TO_PATH:
+            allowed_fields = set(self.FIELD_NAME_TO_PATH.keys())
             raise ValueError(f"Invalid stat field name: {field_name}. Must be one of {allowed_fields}")
 
         try:
-            # Get the PostgreSQL array literal from the mapping dictionary
-            # Field name is validated against whitelist (line 189), array literal is from hardcoded dict
-            array_literal = self.FIELD_NAME_TO_ARRAY[field_name]
+            path = self.FIELD_NAME_TO_PATH[field_name]
 
             session_maker = get_session_maker()
             async with session_maker() as session:
-                # Use raw SQL for JSONB path updates (SQLAlchemy ORM doesn't support this easily)
-                # Array literal is from hardcoded dictionary (FIELD_NAME_TO_ARRAY), field_name is
-                # whitelist-validated before this point. PostgreSQL array literals must be embedded
-                # in SQL, not parameterized. Since values are from validated, hardcoded source, this is safe.
-                # nosemgrep: python.lang.security.audit.sql-injection.sql-injection
-                # Array literal is from validated whitelist and hardcoded dictionary, not user input
-                # nosec B608: Array literal from validated whitelist and hardcoded dictionary, not user input
-                query_str = f"""  # nosec B608
-                    UPDATE players
-                    SET stats = jsonb_set(
-                        COALESCE(stats, '{{}}'::jsonb),
-                        {array_literal},
-                        to_jsonb((COALESCE(stats->>:field_name, '0'))::numeric + :delta),
-                        true
-                    )
-                    WHERE player_id = :player_id
-                    """
-                # Using text() with parameterized queries. Field name is validated against whitelist (line 189),
-                # array_literal is from hardcoded FIELD_NAME_TO_ARRAY dictionary. All user-provided values
-                # (field_name, delta, player_id) are bound via parameterized queries, preventing SQL injection.
-                # nosemgrep: python.sqlalchemy.security.audit.avoid-sqlalchemy-text.avoid-sqlalchemy-text
-                update_query = text(query_str)
-
                 result = await session.execute(
-                    update_query, {"field_name": field_name, "delta": delta, "player_id": str(player_id)}
+                    text("SELECT update_player_stat_field(:player_id, :path, :delta)"),
+                    {"player_id": str(player_id), "path": path, "delta": delta},
                 )
-
-                if not result.rowcount:  # type: ignore[attr-defined]  # mypy: CursorResult has rowcount; stubs use Result[Any]
+                rows_updated = result.scalar()
+                if not rows_updated:
                     raise ValueError(f"Player {player_id} not found")
 
                 await session.commit()
@@ -234,7 +202,6 @@ class ExperienceRepository:
                     delta=delta,
                     reason=reason,
                 )
-                return
         except (SQLAlchemyError, OSError, TypeError, ValueError) as e:
             log_and_raise(
                 DatabaseError,

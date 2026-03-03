@@ -47,14 +47,31 @@ def _make_session_context(mock_session):
     return session_maker
 
 
+def _row_for_quest_instance(instance_id, player_id, quest_id, state="active", progress=None):
+    """Build a procedure result row (mappings().first() return value) for QuestInstance."""
+    row = MagicMock()
+    row.id = instance_id
+    row.player_id = str(player_id)
+    row.quest_id = quest_id
+    row.state = state
+    row.progress = progress if progress is not None else {}
+    row.accepted_at = None
+    row.completed_at = None
+    return row
+
+
 @pytest.mark.asyncio
 async def test_create_success(quest_instance_repository):
-    """Test create adds instance, commits, refreshes and returns it."""
+    """Test create calls procedure, commits, and returns mapped instance."""
     player_id = str(uuid.uuid4())
+    instance_id = uuid.uuid4()
     mock_session = AsyncMock()
-    mock_session.add = MagicMock()
+    mock_result = MagicMock()
+    mock_result.mappings.return_value.first.return_value = _row_for_quest_instance(
+        instance_id, player_id, "leave_the_tutorial", "active", {}
+    )
+    mock_session.execute = AsyncMock(return_value=mock_result)
     mock_session.commit = AsyncMock()
-    mock_session.refresh = AsyncMock()
 
     with patch("server.persistence.repositories.quest_instance_repository.get_session_maker") as mock_get_session:
         mock_get_session.return_value = _make_session_context(mock_session)
@@ -66,9 +83,8 @@ async def test_create_success(quest_instance_repository):
             progress={},
         )
 
-        mock_session.add.assert_called_once()
+        mock_session.execute.assert_awaited_once()
         mock_session.commit.assert_awaited_once()
-        mock_session.refresh.assert_awaited_once()
         assert result.player_id == player_id
         assert result.quest_id == "leave_the_tutorial"
         assert result.state == "active"
@@ -79,8 +95,8 @@ async def test_create_success(quest_instance_repository):
 async def test_create_database_error(quest_instance_repository):
     """Test create raises DatabaseError on DB failure."""
     mock_session = AsyncMock()
-    mock_session.add = MagicMock()
-    mock_session.commit = AsyncMock(side_effect=SQLAlchemyError("Constraint failed"))
+    mock_session.execute = AsyncMock(side_effect=SQLAlchemyError("Constraint failed"))
+    mock_session.commit = AsyncMock()
 
     with patch("server.persistence.repositories.quest_instance_repository.get_session_maker") as mock_get_session:
         mock_get_session.return_value = _make_session_context(mock_session)
@@ -94,11 +110,17 @@ async def test_create_database_error(quest_instance_repository):
 
 @pytest.mark.asyncio
 async def test_get_by_player_and_quest_success(quest_instance_repository, mock_quest_instance):
-    """Test get_by_player_and_quest returns instance when found."""
+    """Test get_by_player_and_quest returns mapped instance when found."""
     mock_session = AsyncMock()
     mock_result = MagicMock()
-    mock_result.unique.return_value.scalars.return_value.first.return_value = mock_quest_instance
-    mock_session.execute.return_value = mock_result
+    mock_result.mappings.return_value.first.return_value = _row_for_quest_instance(
+        mock_quest_instance.id,
+        mock_quest_instance.player_id,
+        mock_quest_instance.quest_id,
+        mock_quest_instance.state,
+        mock_quest_instance.progress,
+    )
+    mock_session.execute = AsyncMock(return_value=mock_result)
 
     with patch("server.persistence.repositories.quest_instance_repository.get_session_maker") as mock_get_session:
         mock_get_session.return_value = _make_session_context(mock_session)
@@ -108,7 +130,10 @@ async def test_get_by_player_and_quest_success(quest_instance_repository, mock_q
             quest_id=mock_quest_instance.quest_id,
         )
 
-        assert result is mock_quest_instance
+        assert result is not None
+        assert result.player_id == mock_quest_instance.player_id
+        assert result.quest_id == mock_quest_instance.quest_id
+        assert result.state == mock_quest_instance.state
 
 
 @pytest.mark.asyncio
@@ -116,8 +141,8 @@ async def test_get_by_player_and_quest_not_found(quest_instance_repository):
     """Test get_by_player_and_quest returns None when not found."""
     mock_session = AsyncMock()
     mock_result = MagicMock()
-    mock_result.unique.return_value.scalars.return_value.first.return_value = None
-    mock_session.execute.return_value = mock_result
+    mock_result.mappings.return_value.first.return_value = None
+    mock_session.execute = AsyncMock(return_value=mock_result)
 
     with patch("server.persistence.repositories.quest_instance_repository.get_session_maker") as mock_get_session:
         mock_get_session.return_value = _make_session_context(mock_session)
@@ -136,8 +161,8 @@ async def test_get_by_player_and_quest_accepts_uuid(quest_instance_repository):
     pid = uuid.uuid4()
     mock_session = AsyncMock()
     mock_result = MagicMock()
-    mock_result.unique.return_value.scalars.return_value.first.return_value = None
-    mock_session.execute.return_value = mock_result
+    mock_result.mappings.return_value.first.return_value = None
+    mock_session.execute = AsyncMock(return_value=mock_result)
 
     with patch("server.persistence.repositories.quest_instance_repository.get_session_maker") as mock_get_session:
         mock_get_session.return_value = _make_session_context(mock_session)
@@ -148,7 +173,6 @@ async def test_get_by_player_and_quest_accepts_uuid(quest_instance_repository):
         )
 
         assert result is None
-        # Session execute should have been called with player_id as string in the query
         mock_session.execute.assert_awaited_once()
 
 
@@ -175,9 +199,11 @@ async def test_update_state_and_progress_success(quest_instance_repository):
 
 @pytest.mark.asyncio
 async def test_update_state_and_progress_no_op(quest_instance_repository):
-    """Test update_state_and_progress does nothing when no fields passed."""
+    """Test update_state_and_progress still calls procedure and commit when only instance_id passed."""
     instance_id = uuid.uuid4()
     mock_session = AsyncMock()
+    mock_session.execute = AsyncMock(return_value=MagicMock())
+    mock_session.commit = AsyncMock()
 
     with patch("server.persistence.repositories.quest_instance_repository.get_session_maker") as mock_get_session:
         mock_get_session.return_value = _make_session_context(mock_session)
@@ -186,17 +212,25 @@ async def test_update_state_and_progress_no_op(quest_instance_repository):
             instance_id=instance_id,
         )
 
-        mock_session.execute.assert_not_awaited()
-        mock_session.commit.assert_not_awaited()
+        mock_session.execute.assert_awaited_once()
+        mock_session.commit.assert_awaited_once()
 
 
 @pytest.mark.asyncio
 async def test_list_active_by_player_success(quest_instance_repository, mock_quest_instance):
-    """Test list_active_by_player returns list of active instances."""
+    """Test list_active_by_player returns list of mapped active instances."""
     mock_session = AsyncMock()
     mock_result = MagicMock()
-    mock_result.unique.return_value.scalars.return_value.all.return_value = [mock_quest_instance]
-    mock_session.execute.return_value = mock_result
+    mock_result.mappings.return_value.all.return_value = [
+        _row_for_quest_instance(
+            mock_quest_instance.id,
+            mock_quest_instance.player_id,
+            mock_quest_instance.quest_id,
+            "active",
+            {},
+        )
+    ]
+    mock_session.execute = AsyncMock(return_value=mock_result)
 
     with patch("server.persistence.repositories.quest_instance_repository.get_session_maker") as mock_get_session:
         mock_get_session.return_value = _make_session_context(mock_session)
@@ -206,7 +240,8 @@ async def test_list_active_by_player_success(quest_instance_repository, mock_que
         )
 
         assert len(result) == 1
-        assert result[0] is mock_quest_instance
+        assert result[0].quest_id == mock_quest_instance.quest_id
+        assert result[0].state == "active"
 
 
 @pytest.mark.asyncio
@@ -214,8 +249,8 @@ async def test_list_active_by_player_empty(quest_instance_repository):
     """Test list_active_by_player returns empty list when none."""
     mock_session = AsyncMock()
     mock_result = MagicMock()
-    mock_result.unique.return_value.scalars.return_value.all.return_value = []
-    mock_session.execute.return_value = mock_result
+    mock_result.mappings.return_value.all.return_value = []
+    mock_session.execute = AsyncMock(return_value=mock_result)
 
     with patch("server.persistence.repositories.quest_instance_repository.get_session_maker") as mock_get_session:
         mock_get_session.return_value = _make_session_context(mock_session)
@@ -229,12 +264,19 @@ async def test_list_active_by_player_empty(quest_instance_repository):
 
 @pytest.mark.asyncio
 async def test_list_completed_by_player_success(quest_instance_repository, mock_quest_instance):
-    """Test list_completed_by_player returns list of completed instances."""
-    mock_quest_instance.state = "completed"
+    """Test list_completed_by_player returns list of mapped completed instances."""
     mock_session = AsyncMock()
     mock_result = MagicMock()
-    mock_result.unique.return_value.scalars.return_value.all.return_value = [mock_quest_instance]
-    mock_session.execute.return_value = mock_result
+    mock_result.mappings.return_value.all.return_value = [
+        _row_for_quest_instance(
+            mock_quest_instance.id,
+            mock_quest_instance.player_id,
+            mock_quest_instance.quest_id,
+            "completed",
+            {},
+        )
+    ]
+    mock_session.execute = AsyncMock(return_value=mock_result)
 
     with patch("server.persistence.repositories.quest_instance_repository.get_session_maker") as mock_get_session:
         mock_get_session.return_value = _make_session_context(mock_session)
@@ -244,7 +286,8 @@ async def test_list_completed_by_player_success(quest_instance_repository, mock_
         )
 
         assert len(result) == 1
-        assert result[0] is mock_quest_instance
+        assert result[0].quest_id == mock_quest_instance.quest_id
+        assert result[0].state == "completed"
 
 
 @pytest.mark.asyncio

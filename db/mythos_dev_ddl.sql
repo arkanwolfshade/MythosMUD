@@ -259,10 +259,6 @@ DROP TABLE IF EXISTS mythos_dev.container_contents;
 DROP TABLE IF EXISTS mythos_dev.calendar_npc_schedules;
 DROP TABLE IF EXISTS mythos_dev.calendar_holidays;
 DROP TABLE IF EXISTS mythos_dev.aliases;
-DROP FUNCTION IF EXISTS mythos_dev.remove_item_from_container(p_container_id uuid, p_item_instance_id character varying);
-DROP FUNCTION IF EXISTS mythos_dev.get_container_contents_json(p_container_id uuid);
-DROP FUNCTION IF EXISTS mythos_dev.clear_container_contents(p_container_id uuid);
-DROP FUNCTION IF EXISTS mythos_dev.add_item_to_container(p_container_id uuid, p_item_instance_id character varying, p_position integer);
 DROP TYPE IF EXISTS mythos_dev.season_enum;
 DROP EXTENSION IF EXISTS pgcrypto;
 --
@@ -289,108 +285,6 @@ CREATE TYPE mythos_dev.season_enum AS ENUM (
     'summer',
     'autumn'
 );
-
-
---
--- Name: add_item_to_container(uuid, character varying, integer); Type: FUNCTION; Schema: mythos_dev; Owner: -
---
-
-CREATE FUNCTION mythos_dev.add_item_to_container(p_container_id uuid, p_item_instance_id character varying, p_position integer DEFAULT NULL::integer) RETURNS void
-    LANGUAGE plpgsql
-    AS $$
-            DECLARE
-                v_max_position INTEGER;
-            BEGIN
-                IF p_position IS NULL THEN
-                    SELECT COALESCE(MAX(position), -1) + 1
-                    INTO v_max_position
-                    FROM container_contents
-                    WHERE container_id = p_container_id;
-                ELSE
-                    v_max_position := p_position;
-                END IF;
-
-                INSERT INTO container_contents (container_id, item_instance_id, position)
-                VALUES (p_container_id, p_item_instance_id, v_max_position)
-                ON CONFLICT (container_id, item_instance_id)
-                DO UPDATE SET position = v_max_position, updated_at = NOW();
-            END;
-            $$;
-
-
---
--- Name: clear_container_contents(uuid); Type: FUNCTION; Schema: mythos_dev; Owner: -
---
-
-CREATE FUNCTION mythos_dev.clear_container_contents(p_container_id uuid) RETURNS integer
-    LANGUAGE plpgsql
-    AS $$
-            DECLARE
-                v_deleted INTEGER;
-            BEGIN
-                DELETE FROM container_contents
-                WHERE container_id = p_container_id;
-
-                GET DIAGNOSTICS v_deleted = ROW_COUNT;
-                RETURN v_deleted;
-            END;
-            $$;
-
-
---
--- Name: get_container_contents_json(uuid); Type: FUNCTION; Schema: mythos_dev; Owner: -
---
-
-CREATE FUNCTION mythos_dev.get_container_contents_json(p_container_id uuid) RETURNS jsonb
-    LANGUAGE plpgsql
-    AS $$
-            DECLARE
-                v_result JSONB;
-            BEGIN
-                SELECT COALESCE(
-                    jsonb_agg(
-                        jsonb_build_object(
-                            'item_instance_id', cc.item_instance_id,
-                            'item_id', ii.prototype_id,
-                            'item_name', COALESCE(ii.custom_name, ip.name),
-                            'quantity', ii.quantity,
-                            'condition', ii.condition,
-                            'metadata', ii.metadata,
-                            'position', cc.position
-                        )
-                        ORDER BY cc.position
-                    ),
-                    '[]'::jsonb
-                )
-                INTO v_result
-                FROM container_contents cc
-                JOIN item_instances ii ON cc.item_instance_id = ii.item_instance_id
-                JOIN item_prototypes ip ON ii.prototype_id = ip.prototype_id
-                WHERE cc.container_id = p_container_id;
-
-                RETURN v_result;
-            END;
-            $$;
-
-
---
--- Name: remove_item_from_container(uuid, character varying); Type: FUNCTION; Schema: mythos_dev; Owner: -
---
-
-CREATE FUNCTION mythos_dev.remove_item_from_container(p_container_id uuid, p_item_instance_id character varying) RETURNS boolean
-    LANGUAGE plpgsql
-    AS $$
-            DECLARE
-                v_deleted INTEGER;
-            BEGIN
-                DELETE FROM container_contents
-                WHERE container_id = p_container_id
-                  AND item_instance_id = p_item_instance_id;
-
-                GET DIAGNOSTICS v_deleted = ROW_COUNT;
-                RETURN v_deleted > 0;
-            END;
-            $$;
 
 
 SET default_tablespace = '';
@@ -1017,7 +911,7 @@ CREATE TABLE mythos_dev.player_channel_preferences (
 --
 
 CREATE TABLE mythos_dev.player_effects (
-    id uuid NOT NULL,
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
     player_id uuid NOT NULL,
     effect_type character varying(64) NOT NULL,
     category character varying(64) NOT NULL,

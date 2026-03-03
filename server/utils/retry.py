@@ -11,17 +11,13 @@ import asyncio
 import time
 from collections.abc import Callable
 from functools import wraps
-from typing import Any, TypeVar
+from typing import Any, TypeVar, cast
 
 from anyio import sleep
 
 from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
-
-# Type variables for generic function signatures
-T = TypeVar("T")
-
 
 # Transient database errors that should be retried
 TRANSIENT_ERRORS = (
@@ -31,6 +27,26 @@ TRANSIENT_ERRORS = (
     "InterfaceError",
     "OperationalError",
 )
+
+# Message substrings that indicate transient psycopg2 errors
+PSYCOPG2_TRANSIENT_INDICATORS = ("connection", "timeout", "network", "temporary", "retry")
+
+
+def _is_asyncpg_transient(error_type: str, error_module: str) -> bool:
+    """Return True if error is an asyncpg transient error."""
+    return "asyncpg" in error_module and (
+        "PoolAcquireTimeoutError" in error_type or "PostgresConnectionError" in error_type
+    )
+
+
+def _is_psycopg2_transient(error: Exception, error_type: str, error_module: str) -> bool:
+    """Return True if error is a psycopg2 transient error (OperationalError/InterfaceError with transient message)."""
+    if "psycopg2" not in error_module:
+        return False
+    if "OperationalError" not in error_type and "InterfaceError" not in error_type:
+        return False
+    error_msg = str(error).lower()
+    return any(ind in error_msg for ind in PSYCOPG2_TRANSIENT_INDICATORS)
 
 
 def is_transient_error(error: Exception) -> bool:
@@ -46,23 +62,12 @@ def is_transient_error(error: Exception) -> bool:
     error_type = type(error).__name__
     error_module = type(error).__module__
 
-    # Check error type name
     if error_type in TRANSIENT_ERRORS:
         return True
-
-    # Check for asyncpg transient errors
-    if "asyncpg" in error_module:
-        if "PoolAcquireTimeoutError" in error_type or "PostgresConnectionError" in error_type:
-            return True
-
-    # Check for psycopg2 transient errors
-    if "psycopg2" in error_module:
-        if "OperationalError" in error_type or "InterfaceError" in error_type:
-            # Check error message for transient indicators
-            error_msg = str(error).lower()
-            if any(indicator in error_msg for indicator in ["connection", "timeout", "network", "temporary", "retry"]):
-                return True
-
+    if _is_asyncpg_transient(error_type, error_module):
+        return True
+    if _is_psycopg2_transient(error, error_type, error_module):
+        return True
     return False
 
 
@@ -110,14 +115,19 @@ def _log_retry_attempt(func_name: str, attempt: int, max_attempts: int, delay: f
     )
 
 
-def _create_async_wrapper[F: Callable[..., Any]](  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Retry wrapper creation requires many parameters for complete retry configuration
-    func: F,
+# Type variables for generic function signatures
+T = TypeVar("T")
+F = TypeVar("F", bound=Callable[..., Any])
+
+
+def _create_async_wrapper(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Retry wrapper creation requires many parameters for complete retry configuration
+    func: Callable[..., Any],
     max_attempts: int,
     initial_delay: float,
     max_delay: float,
     exponential_base: float,
     retry_on: tuple[type[Exception], ...] | None,
-) -> F:
+) -> Callable[..., Any]:
     """Create async wrapper function with retry logic."""
 
     @wraps(func)
@@ -143,17 +153,17 @@ def _create_async_wrapper[F: Callable[..., Any]](  # pylint: disable=too-many-ar
             raise last_error
         raise RuntimeError("Retry logic failed unexpectedly")
 
-    return async_wrapper  # type: ignore[return-value]  # Reason: Generic function wrapper preserves input function type F, but mypy cannot verify type preservation through wrapper function
+    return async_wrapper
 
 
-def _create_sync_wrapper[F: Callable[..., Any]](  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Retry wrapper creation requires many parameters for complete retry configuration
-    func: F,
+def _create_sync_wrapper(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Retry wrapper creation requires many parameters for complete retry configuration
+    func: Callable[..., Any],
     max_attempts: int,
     initial_delay: float,
     max_delay: float,
     exponential_base: float,
     retry_on: tuple[type[Exception], ...] | None,
-) -> F:
+) -> Callable[..., Any]:
     """Create sync wrapper function with retry logic."""
 
     @wraps(func)
@@ -180,10 +190,10 @@ def _create_sync_wrapper[F: Callable[..., Any]](  # pylint: disable=too-many-arg
             raise last_error
         raise RuntimeError("Retry logic failed unexpectedly")
 
-    return sync_wrapper  # type: ignore[return-value]  # Reason: Generic function wrapper preserves input function type F, but mypy cannot verify type preservation through wrapper function
+    return sync_wrapper
 
 
-def retry_with_backoff[F: Callable[..., Any]](
+def retry_with_backoff(
     max_attempts: int = 3,
     initial_delay: float = 1.0,
     max_delay: float = 10.0,
@@ -222,7 +232,13 @@ def retry_with_backoff[F: Callable[..., Any]](
 
     def decorator(func: F) -> F:
         if asyncio.iscoroutinefunction(func):
-            return _create_async_wrapper(func, max_attempts, initial_delay, max_delay, exponential_base, retry_on)
-        return _create_sync_wrapper(func, max_attempts, initial_delay, max_delay, exponential_base, retry_on)
+            return cast(
+                F,
+                _create_async_wrapper(func, max_attempts, initial_delay, max_delay, exponential_base, retry_on),
+            )
+        return cast(
+            F,
+            _create_sync_wrapper(func, max_attempts, initial_delay, max_delay, exponential_base, retry_on),
+        )
 
     return decorator

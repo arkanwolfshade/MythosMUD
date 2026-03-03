@@ -2,21 +2,43 @@
 PlayerSkill repository for async persistence.
 
 Supports SkillService: delete_for_player, insert_many, get_by_player_id (with skill join).
+Uses PostgreSQL stored procedures.
 """
 
+from typing import Any
 from uuid import UUID
 
-from sqlalchemy import delete, select, update
+from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import selectinload
 
 from server.database import get_session_maker
 from server.exceptions import DatabaseError
 from server.models.player_skill import PlayerSkill
+from server.models.skill import Skill
 from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)
+
+
+def _row_to_player_skill_with_skill(row: Any) -> PlayerSkill:
+    """Map procedure result row to PlayerSkill with skill attached."""
+    skill = Skill(
+        id=row.skill_id,
+        key=row.skill_key or "",
+        name=row.skill_name or "",
+        description=row.skill_description,
+        base_value=row.skill_base_value or 0,
+        allow_at_creation=bool(row.skill_allow_at_creation) if row.skill_allow_at_creation is not None else True,
+        category=row.skill_category,
+    )
+    ps = PlayerSkill(
+        player_id=str(row.player_id) if row.player_id else "",
+        skill_id=row.skill_id,
+        value=row.value or 0,
+    )
+    ps.skill = skill
+    return ps
 
 
 class PlayerSkillRepository:
@@ -34,8 +56,10 @@ class PlayerSkillRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                stmt = delete(PlayerSkill).where(PlayerSkill.player_id == str(player_id))
-                await session.execute(stmt)
+                await session.execute(
+                    text("SELECT delete_player_skills_for_player(:player_id)"),
+                    {"player_id": str(player_id)},
+                )
                 await session.commit()
                 self._logger.debug("Deleted player_skills for player", player_id=str(player_id))
         except (SQLAlchemyError, OSError) as e:
@@ -58,14 +82,20 @@ class PlayerSkillRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                pid = str(player_id)
-                for skill_id, value in skill_values:
-                    ps = PlayerSkill(player_id=pid, skill_id=skill_id, value=value)
-                    session.add(ps)
+                skill_ids = [sv[0] for sv in skill_values]
+                values = [sv[1] for sv in skill_values]
+                await session.execute(
+                    text("SELECT insert_player_skills_many(:player_id, :skill_ids, :values)"),
+                    {
+                        "player_id": str(player_id),
+                        "skill_ids": skill_ids,
+                        "values": values,
+                    },
+                )
                 await session.commit()
                 self._logger.debug(
                     "Inserted player_skills",
-                    player_id=pid,
+                    player_id=str(player_id),
                     count=len(skill_values),
                 )
         except (SQLAlchemyError, OSError) as e:
@@ -86,19 +116,18 @@ class PlayerSkillRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                stmt = (
-                    select(PlayerSkill)
-                    .where(PlayerSkill.player_id == str(player_id))
-                    .options(selectinload(PlayerSkill.skill))
+                result = await session.execute(
+                    text("SELECT * FROM get_player_skills_with_skill(:player_id)"),
+                    {"player_id": str(player_id)},
                 )
-                result = await session.execute(stmt)
-                rows = list(result.scalars().all())
+                rows = result.mappings().all()
+                player_skills = [_row_to_player_skill_with_skill(row) for row in rows]
                 self._logger.debug(
                     "Loaded player_skills for player",
                     player_id=str(player_id),
-                    count=len(rows),
+                    count=len(player_skills),
                 )
-                return rows
+                return player_skills
         except (SQLAlchemyError, OSError) as e:
             log_and_raise(
                 DatabaseError,
@@ -110,25 +139,23 @@ class PlayerSkillRepository:
 
     async def update_value(self, player_id: UUID | str, skill_id: int, value: int) -> None:
         """Update a single player_skill row (e.g. after improvement roll). Clamps value 0-99."""
-        clamped = max(0, min(99, value))
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                stmt = (
-                    update(PlayerSkill)
-                    .where(
-                        PlayerSkill.player_id == str(player_id),
-                        PlayerSkill.skill_id == skill_id,
-                    )
-                    .values(value=clamped)
+                await session.execute(
+                    text("SELECT update_player_skill_value(:player_id, :skill_id, :value)"),
+                    {
+                        "player_id": str(player_id),
+                        "skill_id": skill_id,
+                        "value": value,
+                    },
                 )
-                await session.execute(stmt)
                 await session.commit()
                 self._logger.debug(
                     "Updated player_skill value",
                     player_id=str(player_id),
                     skill_id=skill_id,
-                    value=clamped,
+                    value=value,
                 )
         except (SQLAlchemyError, OSError) as e:
             log_and_raise(

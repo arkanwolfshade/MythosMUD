@@ -1,22 +1,20 @@
 """
 Async item instance persistence operations.
 
-Provides async implementations using SQLAlchemy AsyncSession, replacing
-the sync psycopg2-based item_instance_persistence for use by ItemRepository.
+Provides async implementations using PostgreSQL stored procedures,
+replacing raw SQL/ORM for use by ItemRepository.
 """
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
-from typing import Any, cast
+import json
+from typing import Any
 
-from sqlalchemy import Table, select
-from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..exceptions import DatabaseError, ValidationError
-from ..models.item import ItemInstance
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import log_and_raise
 
@@ -80,55 +78,36 @@ async def create_item_instance_async(  # pylint: disable=too-many-arguments,too-
             user_friendly="Invalid item instance data",
         )
 
-    table = cast(Table, ItemInstance.__table__)
-    now = datetime.now(UTC)
-    # Column in DB is "metadata"; model attribute is metadata_payload
     meta_val = metadata_payload or {}
     origin_meta_val = origin_metadata or {}
-
-    stmt = (
-        insert(table)
-        .values(
-            item_instance_id=item_instance_id,
-            prototype_id=prototype_id,
-            owner_type=owner_type,
-            owner_id=owner_id,
-            location_context=location_context,
-            quantity=quantity,
-            condition=condition,
-            flags_override=flags_override or [],
-            binding_state=binding_state,
-            attunement_state=attunement_state or {},
-            custom_name=custom_name,
-            metadata=meta_val,
-            origin_source=origin_source,
-            origin_metadata=origin_meta_val,
-            created_at=now,
-            updated_at=now,
-        )
-        .on_conflict_do_update(
-            index_elements=["item_instance_id"],
-            set_={
-                table.c.prototype_id: prototype_id,
-                table.c.owner_type: owner_type,
-                table.c.owner_id: owner_id,
-                table.c.location_context: location_context,
-                table.c.quantity: quantity,
-                table.c.condition: condition,
-                table.c.flags_override: flags_override or [],
-                table.c.binding_state: binding_state,
-                table.c.attunement_state: attunement_state or {},
-                table.c.custom_name: custom_name,
-                table.c["metadata"]: meta_val,
-                table.c.origin_source: origin_source,
-                table.c.origin_metadata: origin_meta_val,
-                table.c.updated_at: now,
-            },
-        )
-    )
+    flags_val = flags_override or []
+    attunement_val = attunement_state or {}
 
     try:
-        await session.execute(stmt)
+        await session.execute(
+            text(
+                "SELECT upsert_item_instance("
+                ":item_instance_id, :prototype_id, :owner_type, :owner_id, :location_context,"
+                " :quantity, :condition, :flags_override, :binding_state, :attunement_state,"
+                " :custom_name, :metadata, :origin_source, :origin_metadata)"
+            ),
+            {
+                "item_instance_id": item_instance_id,
+                "prototype_id": prototype_id,
+                "owner_type": owner_type,
+                "owner_id": owner_id,
+                "location_context": location_context,
+                "quantity": quantity,
+                "condition": condition,
+                "flags_override": json.dumps(flags_val),
+                "binding_state": binding_state,
+                "attunement_state": json.dumps(attunement_val),
+                "custom_name": custom_name,
+                "metadata": json.dumps(meta_val),
+                "origin_source": origin_source,
+                "origin_metadata": json.dumps(origin_meta_val),
+            },
+        )
         await session.commit()
         logger.debug(
             "Item instance created or updated",
@@ -152,7 +131,7 @@ async def create_item_instance_async(  # pylint: disable=too-many-arguments,too-
 
 async def item_instance_exists_async(session: AsyncSession, item_instance_id: str) -> bool:
     """
-    Check if an item instance exists in the database.
+    Check if an item instance exists in the database via item_instance_exists procedure.
 
     Args:
         session: Async database session
@@ -161,9 +140,11 @@ async def item_instance_exists_async(session: AsyncSession, item_instance_id: st
     Returns:
         True if the item instance exists, False otherwise
     """
-    stmt = select(1).select_from(ItemInstance).where(ItemInstance.item_instance_id == item_instance_id).limit(1)
-    result = await session.execute(stmt)
-    return result.scalar_one_or_none() is not None
+    result = await session.execute(
+        text("SELECT item_instance_exists(:item_instance_id)"),
+        {"item_instance_id": item_instance_id},
+    )
+    return bool(result.scalar())
 
 
 async def ensure_item_instance_async(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Item instance persistence requires many parameters for context and validation

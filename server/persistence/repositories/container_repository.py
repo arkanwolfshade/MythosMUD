@@ -6,6 +6,7 @@ delegating to container_persistence_async and container_query_helpers_async
 (no thread-pool wrappers).
 """
 
+import dataclasses
 import uuid
 from dataclasses import dataclass
 from datetime import datetime
@@ -77,16 +78,7 @@ class ContainerRepository:
             result = await create_container_async(
                 session=session,
                 source_type=source_type,
-                owner_id=params.owner_id,
-                room_id=params.room_id,
-                entity_id=params.entity_id,
-                lock_state=params.lock_state,
-                capacity_slots=params.capacity_slots,
-                weight_limit=params.weight_limit,
-                decay_at=params.decay_at,
-                allowed_roles=params.allowed_roles,
-                items_json=params.items_json,
-                metadata_json=params.metadata_json,
+                **dataclasses.asdict(params),
             )
             return _container_data_to_dict(result)
 

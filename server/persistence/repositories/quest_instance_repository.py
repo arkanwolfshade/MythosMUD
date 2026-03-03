@@ -1,17 +1,18 @@
 """
 QuestInstance repository for quest subsystem.
 
-CRUD for quest_instances: create, get by player+quest, update state/progress,
-list active and completed by player.
+CRUD for quest_instances via PostgreSQL stored procedures: create, get by player+quest,
+update state/progress, list active and completed by player.
 """
 
 from __future__ import annotations
 
+import json
 from datetime import datetime
 from typing import Any
 from uuid import UUID
 
-from sqlalchemy import select, update
+from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
 from server.database import get_session_maker
@@ -26,6 +27,19 @@ logger = get_logger(__name__)
 def _str_player_id(player_id: UUID | str) -> str:
     """Normalize player_id to string for DB (players.player_id is UUID as_uuid=False)."""
     return str(player_id) if isinstance(player_id, UUID) else player_id
+
+
+def _row_to_quest_instance(row: Any) -> QuestInstance:
+    """Map procedure result row to QuestInstance model."""
+    return QuestInstance(
+        id=row.id,
+        player_id=str(row.player_id) if row.player_id else "",
+        quest_id=row.quest_id or "",
+        state=row.state or "active",
+        progress=dict(row.progress) if row.progress else {},
+        accepted_at=row.accepted_at,
+        completed_at=row.completed_at,
+    )
 
 
 class QuestInstanceRepository:
@@ -47,15 +61,26 @@ class QuestInstanceRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                instance = QuestInstance(
-                    player_id=pid,
-                    quest_id=quest_id,
-                    state=state,
-                    progress=progress,
+                result = await session.execute(
+                    text("SELECT * FROM create_quest_instance(:player_id, :quest_id, :state, :progress)"),
+                    {
+                        "player_id": pid,
+                        "quest_id": quest_id,
+                        "state": state,
+                        "progress": json.dumps(progress),
+                    },
                 )
-                session.add(instance)
+                row = result.mappings().first()
+                if not row:
+                    log_and_raise(
+                        DatabaseError,
+                        "create_quest_instance returned no row",
+                        operation="create",
+                        details={"player_id": pid, "quest_id": quest_id},
+                        user_friendly="Failed to start quest",
+                    )
                 await session.commit()
-                await session.refresh(instance)
+                instance = _row_to_quest_instance(row)
                 self._logger.debug(
                     "Created quest instance",
                     player_id=pid,
@@ -82,12 +107,14 @@ class QuestInstanceRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                stmt = select(QuestInstance).where(
-                    QuestInstance.player_id == pid,
-                    QuestInstance.quest_id == quest_id,
+                result = await session.execute(
+                    text("SELECT * FROM get_quest_instance_by_player_and_quest(:player_id, :quest_id)"),
+                    {"player_id": pid, "quest_id": quest_id},
                 )
-                result = await session.execute(stmt)
-                return result.unique().scalars().first()
+                row = result.mappings().first()
+                if not row:
+                    return None
+                return _row_to_quest_instance(row)
         except (SQLAlchemyError, OSError) as e:
             log_and_raise(
                 DatabaseError,
@@ -109,22 +136,28 @@ class QuestInstanceRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                values: dict[str, Any] = {}
-                if state is not None:
-                    values["state"] = state
-                if progress is not None:
-                    values["progress"] = progress
-                if completed_at is not None:
-                    values["completed_at"] = completed_at
-                if not values:
-                    return
-                stmt = update(QuestInstance).where(QuestInstance.id == iid).values(**values)
-                await session.execute(stmt)
+                await session.execute(
+                    text(
+                        "SELECT update_quest_instance_state_and_progress("
+                        ":instance_id, :state, :progress, :completed_at)"
+                    ),
+                    {
+                        "instance_id": str(iid),
+                        "state": state,
+                        "progress": json.dumps(progress) if progress is not None else None,
+                        "completed_at": completed_at,
+                    },
+                )
                 await session.commit()
+                updated_keys = [
+                    k
+                    for k, v in [("state", state), ("progress", progress), ("completed_at", completed_at)]
+                    if v is not None
+                ]
                 self._logger.debug(
                     "Updated quest instance",
                     instance_id=str(iid),
-                    updated_keys=list(values.keys()),
+                    updated_keys=updated_keys,
                 )
         except (SQLAlchemyError, OSError) as e:
             log_and_raise(
@@ -141,16 +174,11 @@ class QuestInstanceRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                stmt = (
-                    select(QuestInstance)
-                    .where(
-                        QuestInstance.player_id == pid,
-                        QuestInstance.state == "active",
-                    )
-                    .order_by(QuestInstance.accepted_at)
+                result = await session.execute(
+                    text("SELECT * FROM list_active_quest_instances_by_player(:player_id)"),
+                    {"player_id": pid},
                 )
-                result = await session.execute(stmt)
-                return list(result.unique().scalars().all())
+                return [_row_to_quest_instance(row) for row in result.mappings().all()]
         except (SQLAlchemyError, OSError) as e:
             log_and_raise(
                 DatabaseError,
@@ -166,16 +194,11 @@ class QuestInstanceRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                stmt = (
-                    select(QuestInstance)
-                    .where(
-                        QuestInstance.player_id == pid,
-                        QuestInstance.state == "completed",
-                    )
-                    .order_by(QuestInstance.completed_at.desc().nullslast())
+                result = await session.execute(
+                    text("SELECT * FROM list_completed_quest_instances_by_player(:player_id)"),
+                    {"player_id": pid},
                 )
-                result = await session.execute(stmt)
-                return list(result.unique().scalars().all())
+                return [_row_to_quest_instance(row) for row in result.mappings().all()]
         except (SQLAlchemyError, OSError) as e:
             log_and_raise(
                 DatabaseError,

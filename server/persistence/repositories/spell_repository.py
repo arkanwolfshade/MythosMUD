@@ -2,21 +2,40 @@
 Spell repository for async persistence operations.
 
 This module provides async database operations for spell queries
-using SQLAlchemy ORM with PostgreSQL.
+using PostgreSQL stored procedures.
 """
 
 from typing import Any
 
-from sqlalchemy import select
+from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
 from server.database import get_session_maker
 from server.exceptions import DatabaseError
-from server.models.spell_db import SpellDB
 from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)
+
+
+def _row_to_spell_dict(row: Any) -> dict[str, Any]:
+    """Map procedure result row to spell dict."""
+    return {
+        "spell_id": row.spell_id,
+        "name": row.name,
+        "description": row.description,
+        "school": row.school,
+        "mp_cost": row.mp_cost,
+        "lucidity_cost": row.lucidity_cost,
+        "corruption_on_learn": row.corruption_on_learn,
+        "corruption_on_cast": row.corruption_on_cast,
+        "casting_time_seconds": row.casting_time_seconds,
+        "target_type": row.target_type,
+        "range_type": row.range_type,
+        "effect_type": row.effect_type,
+        "effect_data": dict(row.effect_data) if row.effect_data else {},
+        "materials": list(row.materials) if row.materials else [],
+    }
 
 
 class SpellRepository:
@@ -43,29 +62,9 @@ class SpellRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                stmt = select(SpellDB)
-                result = await session.execute(stmt)
-                spell_objs = list(result.scalars().all())
-                # Convert SQLAlchemy objects to dicts
-                spells = []
-                for spell_obj in spell_objs:
-                    spell_dict = {
-                        "spell_id": spell_obj.spell_id,
-                        "name": spell_obj.name,
-                        "description": spell_obj.description,
-                        "school": spell_obj.school,
-                        "mp_cost": spell_obj.mp_cost,
-                        "lucidity_cost": spell_obj.lucidity_cost,
-                        "corruption_on_learn": spell_obj.corruption_on_learn,
-                        "corruption_on_cast": spell_obj.corruption_on_cast,
-                        "casting_time_seconds": spell_obj.casting_time_seconds,
-                        "target_type": spell_obj.target_type,
-                        "range_type": spell_obj.range_type,
-                        "effect_type": spell_obj.effect_type,
-                        "effect_data": spell_obj.effect_data or {},
-                        "materials": spell_obj.materials or [],
-                    }
-                    spells.append(spell_dict)
+                result = await session.execute(text("SELECT * FROM get_all_spells()"))
+                rows = result.mappings().all()
+                spells = [_row_to_spell_dict(row) for row in rows]
                 self._logger.debug("Loaded spells", spell_count=len(spells))
                 return spells
         except (SQLAlchemyError, OSError) as e:
@@ -93,27 +92,14 @@ class SpellRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                stmt = select(SpellDB).where(SpellDB.spell_id == spell_id)
-                result = await session.execute(stmt)
-                spell_obj = result.scalar_one_or_none()
-                if spell_obj:
-                    return {
-                        "spell_id": spell_obj.spell_id,
-                        "name": spell_obj.name,
-                        "description": spell_obj.description,
-                        "school": spell_obj.school,
-                        "mp_cost": spell_obj.mp_cost,
-                        "lucidity_cost": spell_obj.lucidity_cost,
-                        "corruption_on_learn": spell_obj.corruption_on_learn,
-                        "corruption_on_cast": spell_obj.corruption_on_cast,
-                        "casting_time_seconds": spell_obj.casting_time_seconds,
-                        "target_type": spell_obj.target_type,
-                        "range_type": spell_obj.range_type,
-                        "effect_type": spell_obj.effect_type,
-                        "effect_data": spell_obj.effect_data or {},
-                        "materials": spell_obj.materials or [],
-                    }
-                return None
+                result = await session.execute(
+                    text("SELECT * FROM get_spell_by_id(:spell_id)"),
+                    {"spell_id": spell_id},
+                )
+                row = result.mappings().first()
+                if not row:
+                    return None
+                return _row_to_spell_dict(row)
         except (SQLAlchemyError, OSError) as e:
             log_and_raise(
                 DatabaseError,

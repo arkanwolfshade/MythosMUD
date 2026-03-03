@@ -16,6 +16,9 @@ single-file consolidated reference usable outside Cursor, see the repo root [CLA
   `codacy.mdc`; propose and apply fixes for any new issues.
 - **Server authority:** Treat server state as authoritative over client state; on conflicts, prefer server payloads
   and fix client handling to align (see `server-authority.mdc`).
+- **PostgreSQL access via procedures/functions:** For all new persistence work, call stored procedures and functions
+  defined under `db/procedures/` instead of adding inline CRUD or ad-hoc SQL in Python; follow ADR-015 and
+  `db/procedures/README.md` for patterns.
 
 ## Learned preferences (from chat history)
 

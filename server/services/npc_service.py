@@ -3,6 +3,7 @@ NPC management service for MythosMUD.
 
 This module provides comprehensive NPC management including CRUD operations
 for NPC definitions, spawn rules, relationships, and instance management.
+Uses PostgreSQL stored procedures for all database access.
 """
 
 # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals,too-many-lines  # Reason: NPC service requires many parameters and intermediate variables for complex NPC management logic. NPC service requires extensive NPC management operations for comprehensive NPC system management.
@@ -11,15 +12,29 @@ import json
 from datetime import UTC, datetime
 from typing import Any
 
-from sqlalchemy import delete, func, select, update
+from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..exceptions import DatabaseError
 from ..models.npc import NPCDefinition, NPCDefinitionType, NPCSpawnRule
 from ..structured_logging.enhanced_logging_config import get_logger
+from .npc_service_models import (
+    CreateNPCDefinitionInput,
+    NPCDefinitionCreateParams,
+    NPCDefinitionUpdateParams,
+    _row_to_npc_definition,
+    _row_to_npc_spawn_rule,
+)
 
 logger = get_logger("services.npc_service")
+
+__all__ = [
+    "NPCService",
+    "CreateNPCDefinitionInput",
+    "NPCDefinitionCreateParams",
+    "NPCDefinitionUpdateParams",
+]
 
 
 class NPCService:
@@ -47,15 +62,11 @@ class NPCService:
             List of NPC definitions
         """
         try:
-            result = await session.execute(
-                select(NPCDefinition)
-                # .options(selectinload(NPCDefinition.spawn_rules))  # Disabled - spawn_rules relationship removed
-                .order_by(NPCDefinition.name, NPCDefinition.sub_zone_id)
-            )
-            definitions = result.scalars().all()
-
+            result = await session.execute(text("SELECT * FROM get_npc_definitions()"))
+            rows = result.mappings().all()
+            definitions = [_row_to_npc_definition(row) for row in rows]
             logger.info("Retrieved NPC definitions")
-            return list(definitions)
+            return definitions
 
         except SQLAlchemyError as e:
             logger.error("Database error retrieving NPC definitions", error=str(e), error_type=type(e).__name__)
@@ -82,54 +93,30 @@ class NPCService:
         """
         try:
             result = await session.execute(
-                select(NPCDefinition)
-                # .options(selectinload(NPCDefinition.spawn_rules))  # Disabled - spawn_rules relationship removed
-                .where(NPCDefinition.id == definition_id)
+                text("SELECT * FROM get_npc_definition(:definition_id)"),
+                {"definition_id": definition_id},
             )
-            definition = result.scalar_one_or_none()
-
-            if definition:
-                logger.info("Retrieved NPC definition", definition_id=definition_id, name=definition.name)
-            else:
+            rows = result.mappings().all()
+            if not rows:
                 logger.warning("NPC definition not found", definition_id=definition_id)
-
+                return None
+            definition = _row_to_npc_definition(rows[0])
+            logger.info("Retrieved NPC definition", definition_id=definition_id, name=definition.name)
             return definition
 
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC definition retrieval errors unpredictable, must re-raise
             logger.error("Error retrieving NPC definition", error=str(e), definition_id=definition_id)
             raise
 
-    async def create_npc_definition(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: NPC definition creation requires many parameters for complete NPC setup
-        self,
-        session: AsyncSession,
-        name: str,
-        description: str | None,
-        npc_type: str,
-        sub_zone_id: str,
-        room_id: str | None = None,
-        required_npc: bool = False,
-        max_population: int = 1,
-        spawn_probability: float = 1.0,
-        base_stats: dict[str, Any] | None = None,
-        behavior_config: dict[str, Any] | None = None,
-        ai_integration_stub: dict[str, Any] | None = None,
-    ) -> NPCDefinition:
+    async def create_npc_definition(self, session: AsyncSession, data: CreateNPCDefinitionInput) -> NPCDefinition:
         """
         Create a new NPC definition.
 
         Args:
             session: Database session
-            name: NPC name
-            description: NPC description
-            npc_type: NPC type (shopkeeper, quest_giver, passive_mob, aggressive_mob)
-            sub_zone_id: Sub-zone ID where NPC can spawn
-            room_id: Specific room ID (optional)
-            required_npc: Whether NPC is required to spawn
-            max_population: Maximum population for this NPC type
-            spawn_probability: Spawn probability (0.0 to 1.0)
-            base_stats: Base statistics dictionary
-            behavior_config: Behavior configuration dictionary
-            ai_integration_stub: AI integration configuration dictionary
+            data: Must include name, npc_type, sub_zone_id. May include description,
+                room_id, required_npc, max_population, spawn_probability,
+                base_stats, behavior_config, ai_integration_stub.
 
         Returns:
             Created NPC definition
@@ -137,51 +124,94 @@ class NPCService:
         Raises:
             ValueError: If validation fails
         """
+        name = data["name"]
+        npc_type = data["npc_type"]
+        sub_zone_id = data["sub_zone_id"]
+        description = data.get("description")
+        room_id = data.get("room_id")
+        required_npc = data.get("required_npc", False)
+        max_population = data.get("max_population", 1)
+        spawn_probability = data.get("spawn_probability", 1.0)
+        base_stats = data.get("base_stats") or {}
+        behavior_config = data.get("behavior_config") or {}
+        ai_integration_stub = data.get("ai_integration_stub") or {}
+
         try:
-            # Validate NPC type
-            if npc_type not in [t.value for t in NPCDefinitionType]:
-                raise ValueError(f"Invalid NPC type: {npc_type}")
-
-            # Validate spawn probability
-            if not 0.0 <= spawn_probability <= 1.0:
-                raise ValueError(f"Spawn probability must be between 0.0 and 1.0, got: {spawn_probability}")
-
-            # Validate max population
-            if max_population < 1:
-                raise ValueError(f"Max population must be at least 1, got: {max_population}")
-
-            # Create NPC definition
-            definition = NPCDefinition(
-                name=name,
-                description=description,
-                npc_type=npc_type,
-                sub_zone_id=sub_zone_id,
-                room_id=room_id,
-                required_npc=required_npc,
-                max_population=max_population,
-                spawn_probability=spawn_probability,
-                base_stats=json.dumps(base_stats or {}),
-                behavior_config=json.dumps(behavior_config or {}),
-                ai_integration_stub=json.dumps(ai_integration_stub or {}),
-            )
-
-            session.add(definition)
-            await session.flush()  # Get the ID
-            await session.refresh(definition)
-
-            logger.info(
-                "Created NPC definition",
-                definition_id=definition.id,
-                name=name,
-                npc_type=npc_type,
-                sub_zone_id=sub_zone_id,
-            )
-
+            self._validate_create_npc_definition_params(npc_type, spawn_probability, max_population)
+            params: NPCDefinitionCreateParams = {
+                "name": name,
+                "description": description,
+                "npc_type": npc_type,
+                "sub_zone_id": sub_zone_id,
+                "room_id": room_id,
+                "required_npc": required_npc,
+                "max_population": max_population,
+                "spawn_probability": spawn_probability,
+                "base_stats": base_stats,
+                "behavior_config": behavior_config,
+                "ai_integration_stub": ai_integration_stub,
+            }
+            definition = await self._execute_create_npc_definition(session=session, params=params)
+            self._log_npc_definition_created(definition, name, npc_type, sub_zone_id)
             return definition
 
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC definition creation errors unpredictable, must re-raise
             logger.error("Error creating NPC definition", error=str(e), name=name, npc_type=npc_type)
             raise
+
+    async def _execute_create_npc_definition(
+        self,
+        session: AsyncSession,
+        *,
+        params: NPCDefinitionCreateParams,
+    ) -> NPCDefinition:
+        """Execute create_npc_definition stored procedure and return the created definition."""
+        result = await session.execute(
+            text(
+                "SELECT * FROM create_npc_definition("
+                ":name, :description, :npc_type, :sub_zone_id, :room_id,"
+                " :required_npc, :max_population, :spawn_probability,"
+                " :base_stats, :behavior_config, :ai_integration_stub)"
+            ),
+            {
+                "name": params["name"],
+                "description": params["description"],
+                "npc_type": params["npc_type"],
+                "sub_zone_id": params["sub_zone_id"],
+                "room_id": params["room_id"],
+                "required_npc": params["required_npc"],
+                "max_population": params["max_population"],
+                "spawn_probability": params["spawn_probability"],
+                "base_stats": json.dumps(params["base_stats"]),
+                "behavior_config": json.dumps(params["behavior_config"]),
+                "ai_integration_stub": json.dumps(params["ai_integration_stub"]),
+            },
+        )
+        rows = result.mappings().all()
+        if not rows:
+            raise DatabaseError("create_npc_definition returned no row")
+        return _row_to_npc_definition(rows[0])
+
+    @staticmethod
+    def _validate_create_npc_definition_params(npc_type: str, spawn_probability: float, max_population: int) -> None:
+        """Validate create_npc_definition parameters. Raises ValueError if invalid."""
+        if npc_type not in [t.value for t in NPCDefinitionType]:
+            raise ValueError(f"Invalid NPC type: {npc_type}")
+        if not 0.0 <= spawn_probability <= 1.0:
+            raise ValueError(f"Spawn probability must be between 0.0 and 1.0, got: {spawn_probability}")
+        if max_population < 1:
+            raise ValueError(f"Max population must be at least 1, got: {max_population}")
+
+    @staticmethod
+    def _log_npc_definition_created(definition: NPCDefinition, name: str, npc_type: str, sub_zone_id: str) -> None:
+        """Log successful NPC definition creation."""
+        logger.info(
+            "Created NPC definition",
+            definition_id=definition.id,
+            name=name,
+            npc_type=npc_type,
+            sub_zone_id=sub_zone_id,
+        )
 
     def _validate_npc_update_params(
         self, npc_type: str | None, spawn_probability: float | None, max_population: int | None
@@ -206,60 +236,65 @@ class NPCService:
         if value is not None:
             update_data[field_name] = json.dumps(value)
 
-    def _build_npc_update_data(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: NPC update data building requires many parameters for complete update context
-        self,
-        name: str | None,
-        description: str | None,
-        npc_type: str | None,
-        sub_zone_id: str | None,
-        room_id: str | None,
-        required_npc: bool | None,
-        max_population: int | None,
-        spawn_probability: float | None,
-        base_stats: dict[str, Any] | None,
-        behavior_config: dict[str, Any] | None,
-        ai_integration_stub: dict[str, Any] | None,
-    ) -> dict[str, Any]:
+    def _build_npc_update_data(self, params: NPCDefinitionUpdateParams) -> dict[str, Any]:
         """Build update data dictionary from provided parameters."""
         update_data: dict[str, Any] = {}
-        self._add_simple_field(update_data, "name", name)
-        self._add_simple_field(update_data, "description", description)
-        self._add_simple_field(update_data, "npc_type", npc_type)
-        self._add_simple_field(update_data, "sub_zone_id", sub_zone_id)
-        self._add_simple_field(update_data, "room_id", room_id)
-        self._add_simple_field(update_data, "required_npc", required_npc)
-        self._add_simple_field(update_data, "max_population", max_population)
-        self._add_simple_field(update_data, "spawn_probability", spawn_probability)
-        self._add_json_field(update_data, "base_stats", base_stats)
-        self._add_json_field(update_data, "behavior_config", behavior_config)
-        self._add_json_field(update_data, "ai_integration_stub", ai_integration_stub)
+        self._add_simple_field(update_data, "name", params.get("name"))
+        self._add_simple_field(update_data, "description", params.get("description"))
+        self._add_simple_field(update_data, "npc_type", params.get("npc_type"))
+        self._add_simple_field(update_data, "sub_zone_id", params.get("sub_zone_id"))
+        self._add_simple_field(update_data, "room_id", params.get("room_id"))
+        self._add_simple_field(update_data, "required_npc", params.get("required_npc"))
+        self._add_simple_field(update_data, "max_population", params.get("max_population"))
+        self._add_simple_field(update_data, "spawn_probability", params.get("spawn_probability"))
+        self._add_json_field(update_data, "base_stats", params.get("base_stats"))
+        self._add_json_field(update_data, "behavior_config", params.get("behavior_config"))
+        self._add_json_field(update_data, "ai_integration_stub", params.get("ai_integration_stub"))
         update_data["updated_at"] = datetime.now(UTC).replace(tzinfo=None)
         return update_data
 
     async def _execute_npc_update(
-        self, session: AsyncSession, definition_id: int, update_data: dict[str, Any], definition: NPCDefinition
-    ) -> NPCDefinition:
-        """Execute the database update and refresh the definition."""
-        await session.execute(update(NPCDefinition).where(NPCDefinition.id == definition_id).values(**update_data))
-        await session.refresh(definition)
-        logger.info("Updated NPC definition", definition_id=definition_id, updated_fields=list(update_data.keys()))
-        return definition
-
-    async def update_npc_definition(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: NPC definition update requires many parameters and intermediate variables for complex update logic
         self,
         session: AsyncSession,
         definition_id: int,
-        name: str | None = None,
-        description: str | None = None,
-        npc_type: str | None = None,
-        sub_zone_id: str | None = None,
-        room_id: str | None = None,
-        required_npc: bool | None = None,
-        max_population: int | None = None,
-        spawn_probability: float | None = None,
-        base_stats: dict[str, Any] | None = None,
-        behavior_config: dict[str, Any] | None = None,
-        ai_integration_stub: dict[str, Any] | None = None,
+        update_data: dict[str, Any],
+        _definition: NPCDefinition,
+    ) -> NPCDefinition:
+        """Execute the database update via procedure and return updated definition."""
+        result = await session.execute(
+            text(
+                "SELECT * FROM update_npc_definition("
+                ":id, :name, :description, :npc_type, :sub_zone_id, :room_id,"
+                " :required_npc, :max_population, :spawn_probability,"
+                " :base_stats, :behavior_config, :ai_integration_stub)"
+            ),
+            {
+                "id": definition_id,
+                "name": update_data.get("name"),
+                "description": update_data.get("description"),
+                "npc_type": update_data.get("npc_type"),
+                "sub_zone_id": update_data.get("sub_zone_id"),
+                "room_id": update_data.get("room_id"),
+                "required_npc": update_data.get("required_npc"),
+                "max_population": update_data.get("max_population"),
+                "spawn_probability": update_data.get("spawn_probability"),
+                "base_stats": update_data.get("base_stats"),
+                "behavior_config": update_data.get("behavior_config"),
+                "ai_integration_stub": update_data.get("ai_integration_stub"),
+            },
+        )
+        rows = result.mappings().all()
+        if not rows:
+            raise DatabaseError("update_npc_definition returned no row")
+        updated = _row_to_npc_definition(rows[0])
+        logger.info("Updated NPC definition", definition_id=definition_id, updated_fields=list(update_data.keys()))
+        return updated
+
+    async def update_npc_definition(  # pylint: disable=too-many-locals  # Reason: NPC definition update requires intermediate variables for complex update logic
+        self,
+        session: AsyncSession,
+        definition_id: int,
+        params: NPCDefinitionUpdateParams,
     ) -> NPCDefinition | None:
         """
         Update an existing NPC definition.
@@ -290,21 +325,13 @@ class NPCService:
             if not definition:
                 return None
 
+            npc_type = params.get("npc_type")
+            spawn_probability = params.get("spawn_probability")
+            max_population = params.get("max_population")
+
             self._validate_npc_update_params(npc_type, spawn_probability, max_population)
 
-            update_data = self._build_npc_update_data(
-                name,
-                description,
-                npc_type,
-                sub_zone_id,
-                room_id,
-                required_npc,
-                max_population,
-                spawn_probability,
-                base_stats,
-                behavior_config,
-                ai_integration_stub,
-            )
+            update_data = self._build_npc_update_data(params)
 
             return await self._execute_npc_update(session, definition_id, update_data, definition)
 
@@ -324,17 +351,18 @@ class NPCService:
             True if deleted, False if not found
         """
         try:
-            # Check if definition exists
             definition = await self.get_npc_definition(session, definition_id)
             if not definition:
                 return False
 
-            # Delete the definition (cascade will handle related records)
-            await session.execute(delete(NPCDefinition).where(NPCDefinition.id == definition_id))
-
-            logger.info("Deleted NPC definition", definition_id=definition_id, name=definition.name)
-
-            return True
+            result = await session.execute(
+                text("SELECT delete_npc_definition(:id)"),
+                {"id": definition_id},
+            )
+            deleted = result.scalar()
+            if deleted:
+                logger.info("Deleted NPC definition", definition_id=definition_id, name=definition.name)
+            return bool(deleted)
 
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC definition deletion errors unpredictable, must re-raise
             logger.error("Error deleting NPC definition", error=str(e), definition_id=definition_id)
@@ -353,13 +381,11 @@ class NPCService:
             List of NPC spawn rules
         """
         try:
-            result = await session.execute(
-                select(NPCSpawnRule).order_by(NPCSpawnRule.sub_zone_id, NPCSpawnRule.min_population)
-            )
-            rules = result.scalars().all()
-
+            result = await session.execute(text("SELECT * FROM get_spawn_rules()"))
+            rows = result.mappings().all()
+            rules = [_row_to_npc_spawn_rule(row) for row in rows]
             logger.info("Retrieved NPC spawn rules", count=len(rules))
-            return list(rules)
+            return rules
 
         except SQLAlchemyError as e:
             logger.error("Database error retrieving NPC spawn rules", error=str(e), error_type=type(e).__name__)
@@ -380,14 +406,16 @@ class NPCService:
             NPC spawn rule or None if not found
         """
         try:
-            result = await session.execute(select(NPCSpawnRule).where(NPCSpawnRule.id == rule_id))
-            rule = result.scalar_one_or_none()
-
-            if rule:
-                logger.info("Retrieved NPC spawn rule", rule_id=rule_id, npc_definition_id=rule.npc_definition_id)
-            else:
+            result = await session.execute(
+                text("SELECT * FROM get_spawn_rule(:rule_id)"),
+                {"rule_id": rule_id},
+            )
+            rows = result.mappings().all()
+            if not rows:
                 logger.warning("NPC spawn rule not found", rule_id=rule_id)
-
+                return None
+            rule = _row_to_npc_spawn_rule(rows[0])
+            logger.info("Retrieved NPC spawn rule", rule_id=rule_id, npc_definition_id=rule.npc_definition_id)
             return rule
 
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC spawn rule retrieval errors unpredictable, must re-raise
@@ -421,42 +449,71 @@ class NPCService:
             ValueError: If validation fails
         """
         try:
-            # Validate NPC definition exists
-            definition = await self.get_npc_definition(session, npc_definition_id)
-            if not definition:
-                raise ValueError(f"NPC definition not found: {npc_definition_id}")
-
-            # Validate population counts
-            if min_population < 0:
-                raise ValueError(f"Min population must be non-negative, got: {min_population}")
-            if max_population < min_population:
-                raise ValueError(f"Max population must be >= min population, got: {max_population} < {min_population}")
-
-            # Create spawn rule
-            rule = NPCSpawnRule(
-                npc_definition_id=npc_definition_id,
-                sub_zone_id=sub_zone_id,
-                min_population=min_population,
-                max_population=max_population,
-                spawn_conditions=json.dumps(spawn_conditions or {}),
+            await self._validate_spawn_rule_inputs(session, npc_definition_id, min_population, max_population)
+            return await self._execute_create_spawn_rule(
+                session,
+                npc_definition_id,
+                sub_zone_id,
+                min_population,
+                max_population,
+                spawn_conditions or {},
             )
-
-            session.add(rule)
-            await session.flush()  # Get the ID
-            await session.refresh(rule)
-
-            logger.info(
-                "Created NPC spawn rule",
-                rule_id=rule.id,
-                npc_definition_id=npc_definition_id,
-                sub_zone_id=sub_zone_id,
-            )
-
-            return rule
 
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC spawn rule creation errors unpredictable, must re-raise
             logger.error("Error creating NPC spawn rule", error=str(e), npc_definition_id=npc_definition_id)
             raise
+
+    async def _validate_spawn_rule_inputs(
+        self,
+        session: AsyncSession,
+        npc_definition_id: int,
+        min_population: int,
+        max_population: int,
+    ) -> None:
+        """Validate NPC definition existence and population counts for spawn rule creation."""
+        definition = await self.get_npc_definition(session, npc_definition_id)
+        if not definition:
+            raise ValueError(f"NPC definition not found: {npc_definition_id}")
+        if min_population < 0:
+            raise ValueError(f"Min population must be non-negative, got: {min_population}")
+        if max_population < min_population:
+            raise ValueError(f"Max population must be >= min population, got: {max_population} < {min_population}")
+
+    async def _execute_create_spawn_rule(
+        self,
+        session: AsyncSession,
+        npc_definition_id: int,
+        sub_zone_id: str,
+        min_population: int,
+        max_population: int,
+        spawn_conditions: dict[str, Any],
+    ) -> NPCSpawnRule:
+        """Execute create_spawn_rule stored procedure and return the created spawn rule."""
+        result = await session.execute(
+            text(
+                "SELECT * FROM create_spawn_rule("
+                ":npc_definition_id, :sub_zone_id, :min_population, :max_population, :spawn_conditions)"
+            ),
+            {
+                "npc_definition_id": npc_definition_id,
+                "sub_zone_id": sub_zone_id,
+                "min_population": min_population,
+                "max_population": max_population,
+                "spawn_conditions": json.dumps(spawn_conditions),
+            },
+        )
+        rows = result.mappings().all()
+        if not rows:
+            raise DatabaseError("create_spawn_rule returned no row")
+        rule = _row_to_npc_spawn_rule(rows[0])
+
+        logger.info(
+            "Created NPC spawn rule",
+            rule_id=rule.id,
+            npc_definition_id=npc_definition_id,
+            sub_zone_id=sub_zone_id,
+        )
+        return rule
 
     async def delete_spawn_rule(self, session: AsyncSession, rule_id: int) -> bool:
         """
@@ -470,17 +527,18 @@ class NPCService:
             True if deleted, False if not found
         """
         try:
-            # Check if rule exists
             rule = await self.get_spawn_rule(session, rule_id)
             if not rule:
                 return False
 
-            # Delete the rule
-            await session.execute(delete(NPCSpawnRule).where(NPCSpawnRule.id == rule_id))
-
-            logger.info("Deleted NPC spawn rule", rule_id=rule_id, npc_definition_id=rule.npc_definition_id)
-
-            return True
+            result = await session.execute(
+                text("SELECT delete_spawn_rule(:id)"),
+                {"id": rule_id},
+            )
+            deleted = result.scalar()
+            if deleted:
+                logger.info("Deleted NPC spawn rule", rule_id=rule_id, npc_definition_id=rule.npc_definition_id)
+            return bool(deleted)
 
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC spawn rule deletion errors unpredictable, must re-raise
             logger.error("Error deleting NPC spawn rule", error=str(e), rule_id=rule_id)
@@ -501,15 +559,13 @@ class NPCService:
         """
         try:
             result = await session.execute(
-                select(NPCDefinition)
-                # .options(selectinload(NPCDefinition.spawn_rules))  # Disabled - spawn_rules relationship removed
-                .where(NPCDefinition.npc_type == npc_type)
-                .order_by(NPCDefinition.name, NPCDefinition.sub_zone_id)
+                text("SELECT * FROM get_npc_definitions_by_type(:npc_type)"),
+                {"npc_type": npc_type},
             )
-            definitions = result.scalars().all()
-
+            rows = result.mappings().all()
+            definitions = [_row_to_npc_definition(row) for row in rows]
             logger.info("Retrieved NPC definitions by type", npc_type=npc_type, count=len(definitions))
-            return list(definitions)
+            return definitions
 
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC definition type retrieval errors unpredictable, must re-raise
             logger.error("Error retrieving NPC definitions by type", error=str(e), npc_type=npc_type)
@@ -528,15 +584,13 @@ class NPCService:
         """
         try:
             result = await session.execute(
-                select(NPCDefinition)
-                # .options(selectinload(NPCDefinition.spawn_rules))  # Disabled - spawn_rules relationship removed
-                .where(NPCDefinition.sub_zone_id == sub_zone_id)
-                .order_by(NPCDefinition.name)
+                text("SELECT * FROM get_npc_definitions_by_sub_zone(:sub_zone_id)"),
+                {"sub_zone_id": sub_zone_id},
             )
-            definitions = result.scalars().all()
-
+            rows = result.mappings().all()
+            definitions = [_row_to_npc_definition(row) for row in rows]
             logger.info("Retrieved NPC definitions by sub-zone", sub_zone_id=sub_zone_id, count=len(definitions))
-            return list(definitions)
+            return definitions
 
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC definition sub-zone retrieval errors unpredictable, must re-raise
             logger.error("Error retrieving NPC definitions by sub-zone", error=str(e), sub_zone_id=sub_zone_id)
@@ -553,27 +607,22 @@ class NPCService:
             Dictionary with system statistics
         """
         try:
-            # Count NPC definitions by type
-            definitions_result = await session.execute(
-                select(NPCDefinition.npc_type, func.count(NPCDefinition.id)).group_by(NPCDefinition.npc_type)  # pylint: disable=not-callable  # Reason: SQLAlchemy func is callable at runtime, pylint cannot detect this statically
-            )
-            definitions_by_type: dict[str, int] = dict(definitions_result.all())  # type: ignore[arg-type]  # Reason: SQLAlchemy result.all() returns Row tuples, dict() constructor handles the conversion correctly at runtime
-
-            # Count total definitions
-            total_definitions_result = await session.execute(select(func.count(NPCDefinition.id)))  # pylint: disable=not-callable  # Reason: SQLAlchemy func is callable at runtime, pylint cannot detect this statically
-            total_definitions = total_definitions_result.scalar()
-
-            # Count spawn rules
-            spawn_rules_result = await session.execute(select(func.count(NPCSpawnRule.id)))  # pylint: disable=not-callable  # Reason: SQLAlchemy func is callable at runtime, pylint cannot detect this statically
-            total_spawn_rules = spawn_rules_result.scalar()
-
+            result = await session.execute(text("SELECT * FROM get_npc_system_statistics()"))
+            rows = result.mappings().all()
+            if not rows:
+                raise DatabaseError("get_npc_system_statistics returned no row")
+            row = rows[0]
+            by_type = row.npc_definitions_by_type
+            if isinstance(by_type, str):
+                by_type = json.loads(by_type) if by_type else {}
+            elif by_type is None:
+                by_type = {}
             stats = {
-                "total_npc_definitions": total_definitions,
-                "npc_definitions_by_type": definitions_by_type,
-                "total_spawn_rules": total_spawn_rules,
+                "total_npc_definitions": row.total_npc_definitions,
+                "npc_definitions_by_type": dict(by_type) if by_type else {},
+                "total_spawn_rules": row.total_spawn_rules,
                 "generated_at": datetime.now(UTC).isoformat(),
             }
-
             logger.info("Generated NPC system statistics", **stats)
             return stats
 

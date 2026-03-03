@@ -2,14 +2,13 @@
 Player spell repository for async persistence operations.
 
 This module provides async database operations for player spell learning
-and mastery tracking using SQLAlchemy ORM with PostgreSQL.
+and mastery tracking using PostgreSQL stored procedures.
 """
 
 import uuid
-from datetime import UTC, datetime
-from typing import cast
+from typing import Any
 
-from sqlalchemy import select
+from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
 from server.database import get_session_maker
@@ -19,6 +18,19 @@ from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)
+
+
+def _row_to_player_spell(row: Any) -> PlayerSpell:
+    """Map procedure result row to PlayerSpell model."""
+    return PlayerSpell(
+        id=row.id,
+        player_id=str(row.player_id) if row.player_id else "",
+        spell_id=row.spell_id or "",
+        mastery=row.mastery or 0,
+        learned_at=row.learned_at,
+        last_cast_at=row.last_cast_at,
+        times_cast=row.times_cast or 0,
+    )
 
 
 class PlayerSpellRepository:
@@ -48,10 +60,17 @@ class PlayerSpellRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                stmt = select(PlayerSpell).where(PlayerSpell.player_id == str(player_id))
-                result = await session.execute(stmt)
-                player_spells = list(result.scalars().all())
-                self._logger.debug("Loaded player spells", player_id=str(player_id), count=len(player_spells))
+                result = await session.execute(
+                    text("SELECT * FROM get_player_spells(:player_id)"),
+                    {"player_id": str(player_id)},
+                )
+                rows = result.mappings().all()
+                player_spells = [_row_to_player_spell(row) for row in rows]
+                self._logger.debug(
+                    "Loaded player spells",
+                    player_id=str(player_id),
+                    count=len(player_spells),
+                )
                 return player_spells
         except (SQLAlchemyError, OSError) as e:
             log_and_raise(
@@ -80,11 +99,14 @@ class PlayerSpellRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                stmt = select(PlayerSpell).where(
-                    PlayerSpell.player_id == str(player_id), PlayerSpell.spell_id == spell_id
+                result = await session.execute(
+                    text("SELECT * FROM get_player_spell(:player_id, :spell_id)"),
+                    {"player_id": str(player_id), "spell_id": spell_id},
                 )
-                result = await session.execute(stmt)
-                return result.scalar_one_or_none()
+                row = result.mappings().first()
+                if not row:
+                    return None
+                return _row_to_player_spell(row)
         except (SQLAlchemyError, OSError) as e:
             log_and_raise(
                 DatabaseError,
@@ -106,7 +128,7 @@ class PlayerSpellRepository:
             initial_mastery: Initial mastery level (default 0)
 
         Returns:
-            PlayerSpell: The created player spell
+            PlayerSpell: The created or existing player spell
 
         Raises:
             DatabaseError: If database operation fails
@@ -114,31 +136,28 @@ class PlayerSpellRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                # Check if already learned
-                # Use sub-query or direct check in this session to be safe
-                stmt = select(PlayerSpell).where(
-                    PlayerSpell.player_id == str(player_id), PlayerSpell.spell_id == spell_id
+                result = await session.execute(
+                    text("SELECT * FROM learn_spell(:player_id, :spell_id, :initial_mastery)"),
+                    {
+                        "player_id": str(player_id),
+                        "spell_id": spell_id,
+                        "initial_mastery": initial_mastery,
+                    },
                 )
-                result = await session.execute(stmt)
-                existing = result.scalar_one_or_none()
-
-                if existing:
-                    self._logger.warning("Player already knows spell", player_id=str(player_id), spell_id=spell_id)
-                    return existing
-
-                # Create new player spell
-                player_spell = PlayerSpell(
-                    player_id=str(player_id),
-                    spell_id=spell_id,
-                    mastery=initial_mastery,
-                    learned_at=datetime.now(UTC).replace(tzinfo=None),
-                    times_cast=0,
-                )
-                session.add(player_spell)
+                row = result.mappings().first()
+                if not row:
+                    log_and_raise(
+                        DatabaseError,
+                        "learn_spell returned no row",
+                        operation="learn_spell",
+                        player_id=str(player_id),
+                        spell_id=spell_id,
+                        details={"player_id": str(player_id), "spell_id": spell_id},
+                        user_friendly="Failed to learn spell",
+                    )
                 await session.commit()
-                await session.refresh(player_spell)
                 self._logger.info("Player learned spell", player_id=str(player_id), spell_id=spell_id)
-                return player_spell
+                return _row_to_player_spell(row)
         except (SQLAlchemyError, OSError) as e:
             log_and_raise(
                 DatabaseError,
@@ -149,8 +168,6 @@ class PlayerSpellRepository:
                 details={"player_id": str(player_id), "spell_id": spell_id, "error": str(e)},
                 user_friendly="Failed to learn spell",
             )
-        # Should never reach here due to log_and_raise
-        raise DatabaseError("Failed to learn spell")
 
     async def update_mastery(self, player_id: uuid.UUID, spell_id: str, new_mastery: int) -> PlayerSpell | None:
         """
@@ -170,27 +187,25 @@ class PlayerSpellRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                # Load PlayerSpell within the same session context to avoid session management errors
-                stmt = select(PlayerSpell).where(
-                    PlayerSpell.player_id == str(player_id), PlayerSpell.spell_id == spell_id
+                result = await session.execute(
+                    text("SELECT * FROM update_player_spell_mastery(:player_id, :spell_id, :new_mastery)"),
+                    {
+                        "player_id": str(player_id),
+                        "spell_id": spell_id,
+                        "new_mastery": new_mastery,
+                    },
                 )
-                result = await session.execute(stmt)
-                player_spell = result.scalar_one_or_none()
-                if not player_spell:
+                row = result.mappings().first()
+                if not row:
                     return None
-
-                # SQLAlchemy allows assigning Python values to Column attributes
-                # Clamp mastery to 0-100 range
-                clamped_mastery = min(100, max(0, new_mastery))
-                # Use setattr or type: ignore for mypy assignment issues with Column
-                player_spell.mastery = clamped_mastery
                 await session.commit()
-                await session.refresh(player_spell)
                 self._logger.debug(
-                    "Updated spell mastery", player_id=str(player_id), spell_id=spell_id, mastery=new_mastery
+                    "Updated spell mastery",
+                    player_id=str(player_id),
+                    spell_id=spell_id,
+                    mastery=new_mastery,
                 )
-                result_spell: PlayerSpell | None = cast(PlayerSpell | None, player_spell)
-                return result_spell
+                return _row_to_player_spell(row)
         except (SQLAlchemyError, OSError) as e:
             log_and_raise(
                 DatabaseError,
@@ -220,23 +235,16 @@ class PlayerSpellRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                # Load PlayerSpell within the same session context to avoid session management errors
-                stmt = select(PlayerSpell).where(
-                    PlayerSpell.player_id == str(player_id), PlayerSpell.spell_id == spell_id
+                result = await session.execute(
+                    text("SELECT * FROM record_spell_cast(:player_id, :spell_id)"),
+                    {"player_id": str(player_id), "spell_id": spell_id},
                 )
-                result = await session.execute(stmt)
-                player_spell = result.scalar_one_or_none()
-                if not player_spell:
+                row = result.mappings().first()
+                if not row:
                     return None
-
-                # SQLAlchemy allows assigning Python values to Column attributes
-                player_spell.times_cast += 1
-                player_spell.last_cast_at = datetime.now(UTC).replace(tzinfo=None)
                 await session.commit()
-                await session.refresh(player_spell)
                 self._logger.debug("Recorded spell cast", player_id=str(player_id), spell_id=spell_id)
-                result_spell: PlayerSpell | None = cast(PlayerSpell | None, player_spell)
-                return result_spell
+                return _row_to_player_spell(row)
         except (SQLAlchemyError, OSError) as e:
             log_and_raise(
                 DatabaseError,

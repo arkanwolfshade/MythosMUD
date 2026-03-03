@@ -2,20 +2,33 @@
 QuestDefinition repository for quest subsystem.
 
 Provides get_by_id, get_by_name (resolve common name to quest), and list for offer checks.
+Uses PostgreSQL stored procedures.
 """
 
 from __future__ import annotations
 
-from sqlalchemy import select
+from typing import Any
+
+from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
 from server.database import get_session_maker
 from server.exceptions import DatabaseError
-from server.models.quest import QuestDefinition, QuestOffer
+from server.models.quest import QuestDefinition
 from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)
+
+
+def _row_to_quest_definition(row: Any) -> QuestDefinition:
+    """Map procedure result row to QuestDefinition model."""
+    return QuestDefinition(
+        id=row.id or "",
+        definition=dict(row.definition) if row.definition else {},
+        created_at=row.created_at,
+        updated_at=row.updated_at,
+    )
 
 
 class QuestDefinitionRepository:
@@ -29,9 +42,14 @@ class QuestDefinitionRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                stmt = select(QuestDefinition).where(QuestDefinition.id == quest_id)
-                result = await session.execute(stmt)
-                return result.scalar_one_or_none()
+                result = await session.execute(
+                    text("SELECT * FROM get_quest_definition_by_id(:quest_id)"),
+                    {"quest_id": quest_id},
+                )
+                row = result.mappings().first()
+                if not row:
+                    return None
+                return _row_to_quest_definition(row)
         except (SQLAlchemyError, OSError) as e:
             log_and_raise(
                 DatabaseError,
@@ -46,10 +64,14 @@ class QuestDefinitionRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                # JSONB: definition->>'name' in PostgreSQL
-                stmt = select(QuestDefinition).where(QuestDefinition.definition["name"].astext == name)
-                result = await session.execute(stmt)
-                return result.scalar_one_or_none()
+                result = await session.execute(
+                    text("SELECT * FROM get_quest_definition_by_name(:name)"),
+                    {"name": name},
+                )
+                row = result.mappings().first()
+                if not row:
+                    return None
+                return _row_to_quest_definition(row)
         except (SQLAlchemyError, OSError) as e:
             log_and_raise(
                 DatabaseError,
@@ -64,12 +86,11 @@ class QuestDefinitionRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                stmt = select(QuestOffer.quest_id).where(
-                    QuestOffer.offer_entity_type == entity_type,
-                    QuestOffer.offer_entity_id == entity_id,
+                result = await session.execute(
+                    text("SELECT * FROM list_quest_ids_offered_by(:entity_type, :entity_id)"),
+                    {"entity_type": entity_type, "entity_id": entity_id},
                 )
-                result = await session.execute(stmt)
-                return [row[0] for row in result.all()]
+                return [row.quest_id for row in result.mappings().all()]
         except (SQLAlchemyError, OSError) as e:
             log_and_raise(
                 DatabaseError,

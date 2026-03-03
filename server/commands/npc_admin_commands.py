@@ -13,12 +13,13 @@ lurk in the shadows of our world.
 # pylint: disable=too-many-return-statements,too-many-lines  # Reason: Command handlers require multiple return statements for early validation returns (input validation, permission checks, error handling). NPC admin commands require extensive handlers for comprehensive NPC management operations.
 
 import inspect
+from collections.abc import Callable
 from typing import TYPE_CHECKING, Any, cast
 
 from ..alias_storage import AliasStorage
 from ..models.npc import NPCDefinitionType
 from ..services.npc_instance_service import get_npc_instance_service
-from ..services.npc_service import npc_service
+from ..services.npc_service import NPCDefinitionUpdateParams, npc_service
 from ..structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
@@ -237,15 +238,17 @@ async def handle_npc_create_command(
         async with app.state.db_session_maker() as session:
             # Create NPC definition
             definition = await npc_service.create_npc_definition(
-                session=session,
-                name=name,
-                description=None,  # Description can be set later via npc modify
-                npc_type=npc_type,
-                sub_zone_id=sub_zone_id,
-                room_id=room_id,
-                base_stats={},
-                behavior_config={},
-                ai_integration_stub={},
+                session,
+                {
+                    "name": name,
+                    "description": None,
+                    "npc_type": npc_type,
+                    "sub_zone_id": sub_zone_id,
+                    "room_id": room_id,
+                    "base_stats": {},
+                    "behavior_config": {},
+                    "ai_integration_stub": {},
+                },
             )
 
             logger.info("NPC created successfully", npc_name=name, admin_name=player_name, npc_id=definition.id)
@@ -258,6 +261,85 @@ async def handle_npc_create_command(
         return {"result": f"Error creating NPC: {str(e)}"}
 
 
+def _parse_npc_edit_args(args: list[Any]) -> tuple[int, str, Any] | dict[str, str]:
+    """
+    Parse and validate NPC edit command args.
+
+    Returns:
+        (npc_id, field, value) on success, or an error result dict on validation failure.
+    """
+    if len(args) < 4:
+        return {"result": "Usage: npc edit <id> <field> <value>"}
+    try:
+        npc_id = int(args[1])
+    except ValueError:
+        return {"result": f"Invalid NPC ID: {args[1]}"}
+    field = args[2]
+    value = args[3]
+    valid_fields = ["name", "npc_type", "sub_zone_id", "room_id"]
+    if field not in valid_fields:
+        return {"result": f"Invalid field: {field}. Valid fields: {', '.join(valid_fields)}"}
+    if field == "npc_type":
+        try:
+            value = NPCDefinitionType(value)
+        except ValueError:
+            valid_types = [t.value for t in NPCDefinitionType]
+            return {"result": f"Invalid NPC type: {value}. Valid types: {', '.join(valid_types)}"}
+    return (npc_id, field, value)
+
+
+_NPC_EDIT_FIELD_BUILDERS: dict[str, Callable[[Any], NPCDefinitionUpdateParams]] = {
+    "name": lambda value: {"name": value},
+    "description": lambda value: {"description": value},
+    "npc_type": lambda value: {"npc_type": value},
+    "sub_zone_id": lambda value: {"sub_zone_id": value},
+    "room_id": lambda value: {"room_id": value},
+    "required_npc": lambda value: {"required_npc": value},
+    "max_population": lambda value: {"max_population": value},
+    "spawn_probability": lambda value: {"spawn_probability": value},
+    "base_stats": lambda value: {"base_stats": value},
+    "behavior_config": lambda value: {"behavior_config": value},
+    "ai_integration_stub": lambda value: {"ai_integration_stub": value},
+}
+
+
+def _build_npc_edit_params(field: str, value: Any) -> tuple[NPCDefinitionUpdateParams | None, dict[str, str] | None]:
+    """Map a single NPC field/value into NPCDefinitionUpdateParams, or return an error dict."""
+    builder = _NPC_EDIT_FIELD_BUILDERS.get(field)
+    if builder is None:
+        return None, {"result": f"Unsupported NPC field: {field}"}
+    return builder(value), None
+
+
+async def _execute_npc_edit(request: Any, npc_id: int, field: str, value: Any, player_name: str) -> dict[str, str]:
+    """Run NPC definition update in DB session. Returns result or error dict."""
+    try:
+        app = request.app if request else None
+        if not app or not hasattr(app.state, "db_session_maker"):
+            return {"result": "Database not available."}
+
+        async with app.state.db_session_maker() as session:
+            params, error = _build_npc_edit_params(field, value)
+            if error:
+                return error
+            assert params is not None  # For type checker; error is None when params is not None
+
+            definition = await npc_service.update_npc_definition(
+                session=session,
+                definition_id=npc_id,
+                params=params,
+            )
+            if not definition:
+                return {"result": f"NPC definition {npc_id} not found"}
+
+            logger.info("NPC definition updated", npc_id=npc_id, admin_name=player_name, field=field, value=value)
+            return {"result": f"NPC definition {npc_id} updated successfully"}
+
+    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught  # Reason: NPC edit errors unpredictable, must return user-friendly error
+        logger.error("Error editing NPC", npc_id=npc_id, admin_name=player_name, error=str(e))
+        return {"result": f"Error editing NPC: {str(e)}"}
+
+
 async def handle_npc_edit_command(
     command_data: dict[str, Any],
     _current_user: dict[str, Any],
@@ -268,54 +350,11 @@ async def handle_npc_edit_command(
     """Handle NPC editing command."""
     logger.debug("Processing NPC edit command", player_name=player_name)
 
-    args = command_data.get("args", [])
-    if len(args) < 4:
-        return {"result": "Usage: npc edit <id> <field> <value>"}
-
-    try:
-        npc_id = int(args[1])
-    except ValueError:
-        return {"result": f"Invalid NPC ID: {args[1]}"}
-
-    field = args[2]
-    value = args[3]
-
-    # Validate field
-    valid_fields = ["name", "npc_type", "sub_zone_id", "room_id"]
-    if field not in valid_fields:
-        return {"result": f"Invalid field: {field}. Valid fields: {', '.join(valid_fields)}"}
-
-    # Validate npc_type if field is npc_type
-    if field == "npc_type":
-        try:
-            value = NPCDefinitionType(value)
-        except ValueError:
-            valid_types = [t.value for t in NPCDefinitionType]
-            return {"result": f"Invalid NPC type: {value}. Valid types: {', '.join(valid_types)}"}
-
-    try:
-        # Get database session
-        app = request.app if request else None
-        if not app or not hasattr(app.state, "db_session_maker"):
-            return {"result": "Database not available."}
-
-        async with app.state.db_session_maker() as session:
-            # Update NPC definition
-            definition = await npc_service.update_npc_definition(
-                session=session, definition_id=npc_id, **{field: value}
-            )
-
-            if not definition:
-                return {"result": f"NPC definition {npc_id} not found"}
-
-            logger.info("NPC definition updated", npc_id=npc_id, admin_name=player_name, field=field, value=value)
-            return {"result": f"NPC definition {npc_id} updated successfully"}
-
-    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught  # Reason: NPC creation errors unpredictable, must return user-friendly error
-        # Catching broad Exception to handle database errors, validation errors, and service errors
-        # and return user-friendly error messages
-        logger.error("Error editing NPC", npc_id=npc_id, admin_name=player_name, error=str(e))
-        return {"result": f"Error editing NPC: {str(e)}"}
+    parsed = _parse_npc_edit_args(command_data.get("args", []))
+    if isinstance(parsed, dict):
+        return parsed
+    npc_id, field, value = parsed
+    return await _execute_npc_edit(request, npc_id, field, value, player_name)
 
 
 async def handle_npc_delete_command(
@@ -865,29 +904,11 @@ async def handle_npc_test_occupants_command(
     logger.info("Processing NPC test occupants command", admin_name=player_name)
 
     try:
-        app = request.app if request else None
-        if not app:
-            return {"result": "Server application not available."}
-
-        player_service = app.state.player_service if app else None
-        if not player_service:
-            return {"result": "Player service not available."}
-
-        _maybe_coro = player_service.resolve_player_name(player_name)
-        player_obj = await _maybe_coro if inspect.isawaitable(_maybe_coro) else _maybe_coro
-        if not player_obj:
-            return {"result": "Player not found."}
-
-        room_id, error_result = await _get_room_id_for_test_occupants(command_data, player_obj)
+        context, error_result = await _resolve_test_occupants_context(command_data, request, player_name)
         if error_result:
             return error_result
-
-        event_handler, error_result = _get_event_handler_for_test_occupants(app)
-        if error_result or event_handler is None:
-            return error_result or {"result": "Event handler not available."}
-
-        if room_id is None:
-            return {"result": "Room ID is required for testing occupants."}
+        assert context is not None  # For type checker; context is non-None when error_result is None
+        event_handler, room_id = context
 
         logger.info("Manually triggering occupant query for testing", admin_name=player_name, room_id=room_id)
 
@@ -909,7 +930,66 @@ async def handle_npc_test_occupants_command(
         return {"result": result_text}
 
     except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught  # Reason: NPC occupant testing errors unpredictable (service, player resolution, event handler), must return user-friendly error messages
-        # Catching broad Exception to handle service errors, player resolution errors, and event handler errors
-        # and return user-friendly error messages
         logger.error("Error testing NPC occupants", admin_name=player_name, error=str(e), exc_info=True)
         return {"result": f"Error testing NPC occupants: {str(e)}"}
+
+
+async def _resolve_test_occupants_context(
+    command_data: dict[str, Any], request: Any, player_name: str
+) -> tuple[tuple[Any, str] | None, dict[str, str] | None]:
+    """
+    Resolve application, player, room_id, and event handler for NPC test occupants command.
+
+    Returns (event_handler, room_id), None on success, or (None, error_result) on failure.
+    """
+    app, player_obj, error_result = await _resolve_app_and_player_for_test_occupants(request, player_name)
+    if error_result:
+        return None, error_result
+
+    event_handler, room_id, error_result = await _resolve_room_and_handler_for_test_occupants(
+        command_data, app, player_obj
+    )
+    if error_result:
+        return None, error_result
+
+    assert event_handler is not None
+    assert room_id is not None
+    return (event_handler, room_id), None
+
+
+async def _resolve_app_and_player_for_test_occupants(
+    request: Any, player_name: str
+) -> tuple[Any | None, Any | None, dict[str, str] | None]:
+    """Resolve application and player object for NPC test occupants command."""
+    app = request.app if request else None
+    if not app:
+        return None, None, {"result": "Server application not available."}
+
+    player_service = getattr(app.state, "player_service", None)
+    if not player_service:
+        return None, None, {"result": "Player service not available."}
+
+    maybe_coro = player_service.resolve_player_name(player_name)
+    player_obj = await maybe_coro if inspect.isawaitable(maybe_coro) else maybe_coro
+    if not player_obj:
+        return None, None, {"result": "Player not found."}
+
+    return app, player_obj, None
+
+
+async def _resolve_room_and_handler_for_test_occupants(
+    command_data: dict[str, Any], app: Any, player_obj: Any
+) -> tuple[Any | None, str | None, dict[str, str] | None]:
+    """Resolve room_id and event handler for NPC test occupants command."""
+    room_id, error_result = await _get_room_id_for_test_occupants(command_data, player_obj)
+    if error_result:
+        return None, None, error_result
+
+    event_handler, error_result = _get_event_handler_for_test_occupants(app)
+    if error_result or event_handler is None:
+        return None, None, error_result or {"result": "Event handler not available."}
+
+    if room_id is None:
+        return None, None, {"result": "Room ID is required for testing occupants."}
+
+    return event_handler, room_id, None

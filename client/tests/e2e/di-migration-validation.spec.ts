@@ -460,23 +460,22 @@ async function loginPlayer(page: Page, username: string, password: string): Prom
     // Wait a moment for button to be fully interactive
     await safeWait(page, 1000);
 
-    // Set up a promise to wait for the API call that handleMotdContinue makes
-    // This confirms the button click worked and the function is executing
+    // API response listener: confirms handleMotdContinue ran after click (optional if no selectedCharacterId)
     console.error('[DEBUG] Setting up API response listener...');
-    const apiResponsePromise = page
-      .waitForResponse(
-        response => response.url().includes('/start-login-grace-period') && response.request().method() === 'POST',
-        { timeout: 15000 }
-      )
-      .then(response => {
-        console.error('[DEBUG] API response received:', response.status(), response.url());
-        return response;
-      })
-      .catch(() => {
-        // API call might not happen if selectedCharacterId is not set, that's OK
-        console.error('[DEBUG] API response not received (may be expected if no selectedCharacterId)');
-        return null;
-      });
+    const apiResponsePromise = (): Promise<unknown> =>
+      page
+        .waitForResponse(
+          response => response.url().includes('/start-login-grace-period') && response.request().method() === 'POST',
+          { timeout: 15000 }
+        )
+        .then(response => {
+          console.error('[DEBUG] API response received:', response.status(), response.url());
+          return response;
+        })
+        .catch(() => {
+          console.error('[DEBUG] API response not received (may be expected if no selectedCharacterId)');
+          return null;
+        });
 
     // Click using page.click with data-testid selector (more reliable than text-based)
     // This matches how MCP tests use browser_click with exact ref
@@ -556,19 +555,16 @@ async function loginPlayer(page: Page, username: string, password: string): Prom
     console.error('[DEBUG] Button still exists after click:', buttonAfterClick, 'MOTD disappeared:', motdDisappeared);
 
     // Wait for API response (confirms click worked) OR for MOTD to disappear
-    await Promise.race([
-      apiResponsePromise,
+    const waitForMotdGone = (): ReturnType<typeof page.waitForFunction> =>
       page.waitForFunction(
         () => {
-          // Check if MOTD button is gone - this means React state changed
           const motdButton = document.querySelector('[data-testid="motd-enter-realm"]');
           return motdButton === null || motdButton === undefined;
         },
         { timeout: 10000 }
-      ),
-    ]).catch(() => {
-      // If both fail, check if we're still on MOTD
-      // This will be caught by the outer try-catch
+      );
+    await Promise.race([apiResponsePromise(), waitForMotdGone()]).catch(() => {
+      // If both fail, check if we're still on MOTD; outer try-catch will handle
     });
 
     // Now wait for game interface to load - game takes ~10 seconds after MOTD clears
@@ -677,14 +673,9 @@ async function loginPlayer(page: Page, username: string, password: string): Prom
   }
 }
 
-// Helper function to execute a command via WebSocket with message verification
-async function executeCommand(
-  page: Page,
-  command: string,
-  expectedResponse?: string | RegExp
-): Promise<{ sent: boolean; responseReceived: boolean; responseText?: string }> {
-  // Find command input field
-  // Reduced timeout from 30s to 10s - if command input isn't visible, there's a real issue
+async function sendCommandToPage(page: Page, command: string): Promise<boolean> {
+  // Reduced timeout from 30s to 10s - if command input isn't visible, there's a real issue.
+  // This helper isolates the command send path from response handling.
   try {
     const commandInput = page.getByTestId('command-input');
     await expect(commandInput).toBeVisible({ timeout: 10000 });
@@ -693,61 +684,85 @@ async function executeCommand(
     await commandInput.press('Enter');
   } catch (error) {
     if (page.isClosed()) {
-      return { sent: false, responseReceived: false };
+      return false;
     }
     throw error;
   }
+  return true;
+}
 
-  // Wait for command to process and response to appear
-  // Game log messages use data-testid="game-log-message" and data-message-text attributes
-  // eslint-disable-next-line no-useless-assignment -- explicit default documents "no response" baseline
-  let responseReceived = false;
-  let responseText = '';
+async function waitForSpecificResponse(
+  page: Page,
+  expectedResponse: string | RegExp
+): Promise<{ responseReceived: boolean; responseText?: string }> {
+  try {
+    const messageLocator = page.locator('[data-message-text]');
+    const filteredLocator =
+      typeof expectedResponse === 'string'
+        ? messageLocator.filter({ hasText: expectedResponse })
+        : messageLocator.filter({ hasText: expectedResponse });
 
-  if (expectedResponse) {
-    // Wait for specific response in game log messages
-    try {
-      const messageLocator = page.locator('[data-message-text]');
-      if (typeof expectedResponse === 'string') {
-        await expect(messageLocator.filter({ hasText: expectedResponse }).first()).toBeVisible({ timeout: 10000 });
-      } else {
-        await expect(messageLocator.filter({ hasText: expectedResponse }).first()).toBeVisible({ timeout: 10000 });
-      }
-      responseReceived = true;
-      const firstMessage = messageLocator.first();
-      responseText = (await firstMessage.getAttribute('data-message-text')) || '';
-    } catch {
-      // Response not found, but command was sent
-      responseReceived = false;
-    }
-  } else {
-    // Wait for any response in game log
-    // Game log messages use data-testid="game-log-message" and data-message-text attributes
-    try {
-      await page.waitForFunction(
-        () => {
-          // Check for game log messages with data-message-text attribute
-          const messages = document.querySelectorAll('[data-message-text]');
-          return (
-            messages.length > 0 &&
-            Array.from(messages).some(msg => {
-              const text = msg.getAttribute('data-message-text') || '';
-              return text.trim().length > 0;
-            })
-          );
-        },
-        { timeout: 10000 }
-      );
-      responseReceived = true;
-      // Get text from game log messages
-      const messages = page.locator('[data-message-text]');
-      const firstMessage = messages.first();
-      responseText = (await firstMessage.getAttribute('data-message-text')) || '';
-    } catch {
-      // No response detected, but command was sent
-      responseReceived = false;
-    }
+    await expect(filteredLocator.first()).toBeVisible({ timeout: 10000 });
+
+    const firstMessage = messageLocator.first();
+    const text = (await firstMessage.getAttribute('data-message-text')) || '';
+    return { responseReceived: true, responseText: text || undefined };
+  } catch {
+    // Response not found, but command was sent
+    return { responseReceived: false };
   }
+}
+
+async function waitForAnyResponse(page: Page): Promise<{ responseReceived: boolean; responseText?: string }> {
+  try {
+    await page.waitForFunction(
+      () => {
+        // Check for game log messages with data-message-text attribute
+        const messages = document.querySelectorAll('[data-message-text]');
+        return (
+          messages.length > 0 &&
+          Array.from(messages).some(msg => {
+            const text = msg.getAttribute('data-message-text') || '';
+            return text.trim().length > 0;
+          })
+        );
+      },
+      { timeout: 10000 }
+    );
+
+    const messages = page.locator('[data-message-text]');
+    const firstMessage = messages.first();
+    const text = (await firstMessage.getAttribute('data-message-text')) || '';
+    return { responseReceived: true, responseText: text || undefined };
+  } catch {
+    // No response detected, but command was sent
+    return { responseReceived: false };
+  }
+}
+
+async function waitForResponse(
+  page: Page,
+  expectedResponse?: string | RegExp
+): Promise<{ responseReceived: boolean; responseText?: string }> {
+  if (expectedResponse) {
+    return waitForSpecificResponse(page, expectedResponse);
+  }
+  return waitForAnyResponse(page);
+}
+
+// Helper function to execute a command via WebSocket with message verification
+async function executeCommand(
+  page: Page,
+  command: string,
+  expectedResponse?: string | RegExp
+): Promise<{ sent: boolean; responseReceived: boolean; responseText?: string }> {
+  const sent = await sendCommandToPage(page, command);
+  if (!sent) {
+    return { sent: false, responseReceived: false };
+  }
+
+  // Game log messages use data-testid="game-log-message" and data-message-text attributes
+  const { responseReceived, responseText } = await waitForResponse(page, expectedResponse);
 
   // Additional wait for WebSocket message processing (only if page is still open)
   try {
@@ -947,7 +962,11 @@ test.describe('Suite 1: Core Service Functionality Tests', () => {
       console.error('[DEBUG] Status output not found in game log messages, checking page text...');
       // Fallback: check page text
       try {
-        const pageText = (await page.textContent('body', { timeout: 2000 }).catch(() => '')) ?? '';
+        const pageText =
+          (await page
+            .locator('body')
+            .textContent({ timeout: 2000 })
+            .catch(() => '')) ?? '';
         hasStatusOutput =
           pageText.includes('Name:') ||
           pageText.includes('Location:') ||
