@@ -1,4 +1,4 @@
-# pylint: disable=pointless-string-statement,missing-module-docstring  # Reason: Module docstring must come after from __future__ imports per Python spec, but Pylint incorrectly flags it
+# pylint: disable=pointless-string-statement,missing-module-docstring,too-many-lines  # Reason: Module docstring must come after from __future__ imports per Python spec, but Pylint incorrectly flags it. too-many-lines: magic command handlers (cast/spells/spell) kept in one module for cohesion.
 
 from __future__ import annotations
 

@@ -14,22 +14,23 @@ Each ADR follows this structure:
 
 ## Index
 
-| ADR                                                              | Title                                             | Status   | Date       |
-| ---------------------------------------------------------------- | ------------------------------------------------- | -------- | ---------- |
-| [ADR-001](ADR-001-layered-architecture-event-driven.md)          | Layered Architecture with Event-Driven Components | Accepted | 2026-02-02 |
-| [ADR-002](ADR-002-application-container-dependency-injection.md) | ApplicationContainer for Dependency Injection     | Accepted | 2026-02-02 |
-| [ADR-003](ADR-003-dual-event-systems-eventbus-nats.md)           | Dual Event Systems (EventBus + NATS)              | Accepted | 2026-02-02 |
-| [ADR-004](ADR-004-websocket-only-realtime.md)                    | WebSocket-Only Real-Time Architecture             | Accepted | 2026-02-02 |
-| [ADR-005](ADR-005-repository-pattern-data-access.md)             | Repository Pattern for Data Access                | Accepted | 2026-02-02 |
-| [ADR-006](ADR-006-postgresql-primary-datastore.md)               | PostgreSQL as Primary Datastore                   | Accepted | 2026-02-02 |
-| [ADR-007](ADR-007-fastapi-async-await.md)                        | FastAPI with Async/Await                          | Accepted | 2026-02-02 |
-| [ADR-008](ADR-008-react-typescript-client.md)                    | React 18+ with TypeScript for Client              | Accepted | 2026-02-02 |
-| [ADR-009](ADR-009-instanced-rooms.md)                            | Instanced Rooms for Tutorial and Future Content   | Accepted | 2026-02-17 |
-| [ADR-010](ADR-010-quest-subsystem.md)                            | Quest Subsystem Architecture                      | Accepted | 2026-02-19 |
-| [ADR-011](ADR-011-xstate-frontend-fsm.md)                        | XState for Frontend Connection State Machine      | Accepted | 2025-10-11 |
-| [ADR-012](ADR-012-python-statemachine-backend.md)                | python-statemachine for Backend Connection FSM    | Accepted | 2025-10-11 |
-| [ADR-013](ADR-013-pydantic-configuration.md)                     | Pydantic BaseSettings for Configuration           | Accepted | 2025-10-11 |
-| [ADR-014](ADR-014-nats-error-boundaries.md)                      | Circuit Breaker + DLQ for NATS Error Boundaries   | Accepted | 2025-10-11 |
+| ADR                                                              | Title                                               | Status   | Date       |
+| ---------------------------------------------------------------- | --------------------------------------------------- | -------- | ---------- |
+| [ADR-001](ADR-001-layered-architecture-event-driven.md)          | Layered Architecture with Event-Driven Components   | Accepted | 2026-02-02 |
+| [ADR-002](ADR-002-application-container-dependency-injection.md) | ApplicationContainer for Dependency Injection       | Accepted | 2026-02-02 |
+| [ADR-003](ADR-003-dual-event-systems-eventbus-nats.md)           | Dual Event Systems (EventBus + NATS)                | Accepted | 2026-02-02 |
+| [ADR-004](ADR-004-websocket-only-realtime.md)                    | WebSocket-Only Real-Time Architecture               | Accepted | 2026-02-02 |
+| [ADR-005](ADR-005-repository-pattern-data-access.md)             | Repository Pattern for Data Access                  | Accepted | 2026-02-02 |
+| [ADR-006](ADR-006-postgresql-primary-datastore.md)               | PostgreSQL as Primary Datastore                     | Accepted | 2026-02-02 |
+| [ADR-007](ADR-007-fastapi-async-await.md)                        | FastAPI with Async/Await                            | Accepted | 2026-02-02 |
+| [ADR-008](ADR-008-react-typescript-client.md)                    | React 18+ with TypeScript for Client                | Accepted | 2026-02-02 |
+| [ADR-009](ADR-009-instanced-rooms.md)                            | Instanced Rooms for Tutorial and Future Content     | Accepted | 2026-02-17 |
+| [ADR-010](ADR-010-quest-subsystem.md)                            | Quest Subsystem Architecture                        | Accepted | 2026-02-19 |
+| [ADR-011](ADR-011-xstate-frontend-fsm.md)                        | XState for Frontend Connection State Machine        | Accepted | 2025-10-11 |
+| [ADR-012](ADR-012-python-statemachine-backend.md)                | python-statemachine for Backend Connection FSM      | Accepted | 2025-10-11 |
+| [ADR-013](ADR-013-pydantic-configuration.md)                     | Pydantic BaseSettings for Configuration             | Accepted | 2025-10-11 |
+| [ADR-014](ADR-014-nats-error-boundaries.md)                      | Circuit Breaker + DLQ for NATS Error Boundaries     | Accepted | 2025-10-11 |
+| [ADR-015](ADR-015-postgresql-procedures-migration.md)            | PostgreSQL Procedures and Functions for Data Access | Accepted | 2026-02-26 |
 
 ## Related Documentation
 

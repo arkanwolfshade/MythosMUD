@@ -48,7 +48,7 @@ def _restore_root_handlers(handlers):
 
 
 def test_aggregator_handlers_on_root_when_async(temp_log_base, default_log_config):  # pylint: disable=unused-argument  # Reason: temp_log_base used by default_log_config fixture
-    """H1: With async enabled, root logger has QueueHandlers for aggregator path."""
+    """H1: With async enabled, root logger has a QueueHandler for the aggregator path (single queue, listener dispatches to warnings + errors)."""
     root = logging.getLogger()
     before = _root_handlers_snapshot()
     try:
@@ -60,7 +60,9 @@ def test_aggregator_handlers_on_root_when_async(temp_log_base, default_log_confi
             enable_async=True,
         )
         queue_handlers = [h for h in root.handlers if type(h).__name__ == "QueueHandler"]
-        assert len(queue_handlers) >= 2, "Root should have at least two QueueHandlers (warnings + errors)"
+        assert len(queue_handlers) >= 1, (
+            "Root should have at least one QueueHandler for the aggregator (listener has warnings + errors handlers)"
+        )
     finally:
         stop_queue_listener()
         _restore_root_handlers(before)

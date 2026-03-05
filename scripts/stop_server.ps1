@@ -1,4 +1,4 @@
-﻿#Requires -Version 5.1
+#Requires -Version 5.1
 # Suppress PSAvoidUsingWriteHost: This script uses Write-Host for user-facing status messages
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'User-facing script requires Write-Host for status messages')]
 
@@ -238,6 +238,10 @@ function Stop-PowerShellServerProcess {
         foreach ($process in $powerShellProcesses) {
             try {
                 $commandLine = (Get-CimInstance -ClassName Win32_Process -Filter "ProcessId = $($process.Id)").CommandLine
+                # Do not kill the E2E launcher (start_e2e_test.ps1); it calls this script and must survive to start the server.
+                if ($commandLine -and $commandLine -like "*start_e2e_test.ps1*") {
+                    continue
+                }
                 if ($commandLine -and ($commandLine -like "*uvicorn*" -or $commandLine -like "*gunicorn*" -or $commandLine -like "*start_server.ps1*" -or $commandLine -like "*server.main:app*" -or $commandLine -like "*mythosmud*" -or $commandLine -like "*uv run*")) {
                     Write-Host "Found PowerShell server process: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Red
                     Write-Host "  Command line: $commandLine" -ForegroundColor Gray
@@ -267,6 +271,10 @@ function Close-OrphanedTerminalWindows {
         foreach ($process in $processes) {
             try {
                 $commandLine = (Get-CimInstance -ClassName Win32_Process -Filter "ProcessId = $($process.Id)").CommandLine
+                # Do not kill the E2E launcher (start_e2e_test.ps1) or the terminal running e2e.bat (cmd /c e2e.bat).
+                if ($commandLine -and ($commandLine -like "*start_e2e_test.ps1*" -or $commandLine -like "*e2e.bat*")) {
+                    continue
+                }
                 if ($commandLine -and ($commandLine -like "*mythosmud*" -or $commandLine -like "*uvicorn*" -or $commandLine -like "*gunicorn*" -or $commandLine -like "*start_server.ps1*" -or $commandLine -like "*server.main*")) {
                     Write-Host "Found orphaned terminal: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Red
                     Write-Host "  Command line: $commandLine" -ForegroundColor Gray
@@ -398,10 +406,10 @@ try {
     }
 
     if ($portFree) {
-        Write-Host "`nðŸŽ‰ MythosMUD Server shutdown complete!" -ForegroundColor Green
+        Write-Host "`nMythosMUD Server shutdown complete!" -ForegroundColor Green
     }
     else {
-        Write-Host "`nâš ï¸  Server shutdown may be incomplete. Port 54731 is still in use." -ForegroundColor Yellow
+        Write-Host "`nWARNING: Server shutdown may be incomplete. Port 54731 is still in use." -ForegroundColor Yellow
         if ($Verbose) {
             Write-Host "Remaining connections on port 54731:" -ForegroundColor Yellow
             Get-NetTCPConnection -LocalPort 54731 -ErrorAction SilentlyContinue | ForEach-Object {

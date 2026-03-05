@@ -16,7 +16,7 @@ PYTEST_OPTS := --maxfail=10 --tb=short
 PYTEST_COV_OPTS := --cov=server --cov-report=html --cov-report=term-missing --cov-report=xml
 
 # PHONY targets
-.PHONY: help clean install build run run-production
+.PHONY: help clean install build run run-production apply-procedures
 .PHONY: lint lint-sqlalchemy format mypy
 .PHONY: bandit pylint ruff sqlfluff sqlint
 .PHONY: hadolint shellcheck psscriptanalyzer
@@ -81,7 +81,8 @@ help:
 	@echo "Build & Deploy:"
 	@echo "  clean             - Remove build, dist, and cache files"
 	@echo "  install           - Install dependencies (worktree-aware)"
-	@echo "  build             - Build the client (Node)"
+	@echo "  build             - Apply procedures, then build the client (Node)"
+	@echo "  apply-procedures  - Apply db/procedures/*.sql to target databases"
 	@echo "  run               - Start the development server (Uvicorn)"
 	@echo "  run-production    - Start the server for production (Gunicorn + Uvicorn workers)"
 	@echo ""
@@ -215,10 +216,11 @@ test-client-e2e:
 # Integration tests (server pytest -m integration) run here: they muck with runtime data
 # and belong in the same flow as Playwright (running server context). They are NOT run by make test-server.
 test-playwright: setup-test-env setup-postgresql-test-db
+	$(POWERSHELL) scripts/apply_procedures.ps1 -TargetDbs mythos_e2e
+	$(POWERSHELL) scripts/apply_coc_spells_migration.ps1 -TargetDbs mythos_e2e
 	@echo "Running client E2E runtime tests (Playwright CLI)..."
 	cd $(PROJECT_ROOT)/client && npm run test:e2e:runtime
 	@echo "Running server integration tests (runtime DB, single worker)..."
-	$(POWERSHELL) scripts/apply_coc_spells_migration.ps1 -TargetDbs mythos_e2e
 	$(UV) pytest server/tests/ -m integration -n 1 $(PYTEST_OPTS)
 
 test-client-coverage:
@@ -227,11 +229,13 @@ test-client-coverage:
 
 test-server: setup-test-env setup-postgresql-test-db
 	@echo "Running server tests (no coverage)..."
+	$(POWERSHELL) scripts/apply_procedures.ps1 -TargetDbs mythos_unit
 	$(POWERSHELL) scripts/apply_coc_spells_migration.ps1 -TargetDbs mythos_unit
 	$(UV) pytest server/tests/ -m "not integration" $(PYTEST_OPTS)
 
 test-server-coverage: setup-test-env setup-postgresql-test-db
 	@echo "Running server tests with coverage..."
+	$(POWERSHELL) scripts/apply_procedures.ps1 -TargetDbs mythos_unit
 	$(POWERSHELL) scripts/apply_coc_spells_migration.ps1 -TargetDbs mythos_unit
 	$(UV) pytest server/tests/ -m "not integration" $(PYTEST_OPTS) $(PYTEST_COV_OPTS)
 
@@ -261,8 +265,12 @@ clean:
 install:
 	$(PYTHON) scripts/install.py
 
-build:
+build: apply-procedures
 	$(PYTHON) scripts/build.py
+
+apply-procedures:
+	@echo "Applying PostgreSQL procedures to mythos_dev..."
+	$(POWERSHELL) scripts/apply_procedures.ps1 -TargetDbs mythos_dev
 
 run:
 	$(PYTHON) scripts/run.py

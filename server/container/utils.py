@@ -25,7 +25,7 @@ def decode_json_column(value: Any, expected_type: type) -> Any:
     result: Any
     if value is None or not value:
         result = expected_type()
-    elif isinstance(value, (list, dict)):
+    elif isinstance(value, list | dict):
         result = value
     else:
         try:

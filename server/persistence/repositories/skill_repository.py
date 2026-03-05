@@ -1,10 +1,12 @@
 """
 Skill repository for async persistence operations.
 
-Provides async database operations for the skills catalog.
+Provides async database operations for the skills catalog using PostgreSQL stored procedures.
 """
 
-from sqlalchemy import select
+from typing import Any
+
+from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
 from server.database import get_session_maker
@@ -14,6 +16,19 @@ from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)
+
+
+def _row_to_skill(row: Any) -> Skill:
+    """Map procedure result row to Skill model."""
+    return Skill(
+        id=row.id,
+        key=row.key or "",
+        name=row.name or "",
+        description=row.description,
+        base_value=row.base_value or 0,
+        allow_at_creation=bool(row.allow_at_creation) if row.allow_at_creation is not None else True,
+        category=row.category,
+    )
 
 
 class SkillRepository:
@@ -32,7 +47,7 @@ class SkillRepository:
         Get all skills in the catalog.
 
         Returns:
-            list[Skill]: All skills (order not guaranteed; client can sort by name/key).
+            list[Skill]: All skills (ordered by key).
 
         Raises:
             DatabaseError: If database operation fails.
@@ -40,9 +55,23 @@ class SkillRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                stmt = select(Skill).order_by(Skill.key)
-                result = await session.execute(stmt)
-                skills = list(result.scalars().all())
+                result = await session.execute(
+                    text(
+                        """
+                        SELECT
+                            id,
+                            key,
+                            name,
+                            description,
+                            base_value,
+                            allow_at_creation,
+                            category
+                        FROM get_all_skills()
+                        """
+                    )
+                )
+                rows = result.mappings().all()
+                skills = [_row_to_skill(row) for row in rows]
                 self._logger.debug("Loaded skills catalog", skill_count=len(skills))
                 return skills
         except (SQLAlchemyError, OSError) as e:
@@ -67,9 +96,26 @@ class SkillRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                stmt = select(Skill).where(Skill.id == skill_id)
-                result = await session.execute(stmt)
-                return result.scalar_one_or_none()
+                result = await session.execute(
+                    text(
+                        """
+                        SELECT
+                            id,
+                            key,
+                            name,
+                            description,
+                            base_value,
+                            allow_at_creation,
+                            category
+                        FROM get_skill_by_id(:skill_id)
+                        """
+                    ),
+                    {"skill_id": skill_id},
+                )
+                row = result.mappings().first()
+                if not row:
+                    return None
+                return _row_to_skill(row)
         except (SQLAlchemyError, OSError) as e:
             log_and_raise(
                 DatabaseError,
@@ -92,9 +138,26 @@ class SkillRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                stmt = select(Skill).where(Skill.key == key)
-                result = await session.execute(stmt)
-                return result.scalar_one_or_none()
+                result = await session.execute(
+                    text(
+                        """
+                        SELECT
+                            id,
+                            key,
+                            name,
+                            description,
+                            base_value,
+                            allow_at_creation,
+                            category
+                        FROM get_skill_by_key(:key)
+                        """
+                    ),
+                    {"key": key},
+                )
+                row = result.mappings().first()
+                if not row:
+                    return None
+                return _row_to_skill(row)
         except (SQLAlchemyError, OSError) as e:
             log_and_raise(
                 DatabaseError,

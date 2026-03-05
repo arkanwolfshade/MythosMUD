@@ -53,7 +53,7 @@ test.describe('Basic Connection/Disconnection Flow', () => {
         msg.includes('entered the game') ||
         msg.includes('left the game')
     );
-    expect(unwantedMessages.length).toBe(0);
+    expect(unwantedMessages).toHaveLength(0);
 
     // Cleanup
     await cleanupMultiPlayerContexts(ithaquaContexts);

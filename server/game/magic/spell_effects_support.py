@@ -28,7 +28,7 @@ def _build_stat_modifications(spell: Spell) -> tuple[dict[str, Any] | None, dict
     if not stat_modifications:
         stat_name = spell.effect_data.get("stat")
         delta = spell.effect_data.get("delta")
-        if stat_name and isinstance(delta, (int, float)):
+        if stat_name and isinstance(delta, int | float):
             stat_modifications = {str(stat_name): delta}
     if not stat_modifications:
         return None, {

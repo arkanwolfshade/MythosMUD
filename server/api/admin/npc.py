@@ -40,7 +40,7 @@ from ...schemas.admin import (
 )
 from ...services.admin_auth_service import AdminAction, get_admin_auth_service
 from ...services.npc_instance_service import get_npc_instance_service
-from ...services.npc_service import npc_service
+from ...services.npc_service import NPCDefinitionUpdateParams, npc_service
 from ...structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -352,15 +352,17 @@ async def create_npc_definition(
             behavior_config_dict: dict[str, Any] = npc_data.behavior_config.model_dump()
             ai_integration_stub_dict: dict[str, Any] = npc_data.ai_integration_stub.model_dump()
             definition = await npc_service.create_npc_definition(
-                session=npc_session,
-                name=npc_data.name,
-                description=None,  # Not in create model yet
-                npc_type=npc_data.npc_type.value,
-                sub_zone_id=npc_data.sub_zone_id,
-                room_id=npc_data.room_id,
-                base_stats=base_stats_dict,
-                behavior_config=behavior_config_dict,
-                ai_integration_stub=ai_integration_stub_dict,
+                npc_session,
+                {
+                    "name": npc_data.name,
+                    "description": None,
+                    "npc_type": npc_data.npc_type.value,
+                    "sub_zone_id": npc_data.sub_zone_id,
+                    "room_id": npc_data.room_id,
+                    "base_stats": base_stats_dict,
+                    "behavior_config": behavior_config_dict,
+                    "ai_integration_stub": ai_integration_stub_dict,
+                },
             )
             break
 
@@ -426,6 +428,38 @@ async def update_npc_definition(
     session: AsyncSession = Depends(get_async_session),
 ) -> NPCDefinitionResponse:
     """Update an existing NPC definition."""
+    return await _update_npc_definition_internal(definition_id, npc_data, request, current_user, session)
+
+
+def _build_update_params_from_model(npc_data: NPCDefinitionUpdate) -> NPCDefinitionUpdateParams:
+    """Convert NPCDefinitionUpdate model into NPCDefinitionUpdateParams for service layer."""
+    base_stats_dict: dict[str, Any] | None = npc_data.base_stats.model_dump() if npc_data.base_stats else None
+    behavior_config_dict: dict[str, Any] | None = (
+        npc_data.behavior_config.model_dump() if npc_data.behavior_config else None
+    )
+    ai_integration_stub_dict: dict[str, Any] | None = (
+        npc_data.ai_integration_stub.model_dump() if npc_data.ai_integration_stub else None
+    )
+    return {
+        "name": npc_data.name,
+        "description": None,  # Not in update model yet
+        "npc_type": npc_data.npc_type.value if npc_data.npc_type else None,
+        "sub_zone_id": npc_data.sub_zone_id,
+        "room_id": npc_data.room_id,
+        "base_stats": base_stats_dict,
+        "behavior_config": behavior_config_dict,
+        "ai_integration_stub": ai_integration_stub_dict,
+    }
+
+
+async def _update_npc_definition_internal(
+    definition_id: int,
+    npc_data: NPCDefinitionUpdate,
+    request: Request,
+    current_user: User | None,
+    session: AsyncSession,
+) -> NPCDefinitionResponse:
+    """Internal handler for NPC definition update with full error handling."""
     try:
         validate_admin_permission(current_user, AdminAction.UPDATE_NPC_DEFINITION, request)
 
@@ -434,27 +468,11 @@ async def update_npc_definition(
             "NPC definition update requested", user=auth_service.get_username(current_user), definition_id=definition_id
         )
 
-        # Update NPC definition in database
-        # Convert Pydantic models to dicts for service layer (handle None values)
-        # These are always Pydantic models when not None, so call model_dump() directly
-        base_stats_dict: dict[str, Any] | None = npc_data.base_stats.model_dump() if npc_data.base_stats else None
-        behavior_config_dict: dict[str, Any] | None = (
-            npc_data.behavior_config.model_dump() if npc_data.behavior_config else None
-        )
-        ai_integration_stub_dict: dict[str, Any] | None = (
-            npc_data.ai_integration_stub.model_dump() if npc_data.ai_integration_stub else None
-        )
+        update_params = _build_update_params_from_model(npc_data)
         definition = await npc_service.update_npc_definition(
             session=session,
             definition_id=definition_id,
-            name=npc_data.name,
-            description=None,  # Not in update model yet
-            npc_type=npc_data.npc_type.value if npc_data.npc_type else None,
-            sub_zone_id=npc_data.sub_zone_id,
-            room_id=npc_data.room_id,
-            base_stats=base_stats_dict,
-            behavior_config=behavior_config_dict,
-            ai_integration_stub=ai_integration_stub_dict,
+            params=update_params,
         )
 
         if not definition:
@@ -466,9 +484,7 @@ async def update_npc_definition(
                 definition_id=definition_id,
             )
 
-        # Commit the transaction
         await session.commit()
-
         return NPCDefinitionResponse.from_orm(definition)
 
     except HTTPException:

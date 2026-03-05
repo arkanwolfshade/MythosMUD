@@ -27,7 +27,12 @@ def upgrade() -> None:
     """Create player_effects table and indexes (ADR-009 effects system)."""
     op.create_table(
         "player_effects",
-        sa.Column("id", postgresql.UUID(as_uuid=False), primary_key=True),
+        sa.Column(
+            "id",
+            postgresql.UUID(as_uuid=False),
+            primary_key=True,
+            server_default=sa.text("gen_random_uuid()"),
+        ),
         sa.Column(
             "player_id",
             postgresql.UUID(as_uuid=False),

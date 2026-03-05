@@ -71,7 +71,7 @@ class MemoryMonitor:
         try:
             process = psutil.Process()
             memory_percent = process.memory_percent()
-            if not isinstance(memory_percent, (int, float)):
+            if not isinstance(memory_percent, int | float):
                 raise TypeError("memory_percent must be int or float")
             return float(memory_percent) / 100.0
         except (OSError, ValueError, TypeError, RuntimeError) as e:

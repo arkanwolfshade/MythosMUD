@@ -14,6 +14,10 @@ from .lucidity_service import CatatoniaObserverProtocol
 
 logger = get_logger(__name__)
 
+# Debounce window: do not trigger sanitarium failover again for the same player within this many seconds.
+# Prevents repeated -99 -> -100 crossings (e.g. passive flux before respawn completes) from spamming logs/callback.
+SANITARIUM_FAILOVER_DEBOUNCE_SECONDS = 300
+
 
 class CatatoniaRegistry(CatatoniaObserverProtocol):
     """Track players who have entered catatonia and coordinate failover hooks."""
@@ -25,6 +29,7 @@ class CatatoniaRegistry(CatatoniaObserverProtocol):
     ) -> None:
         self._lock = RLock()
         self._catatonic: dict[str, datetime] = {}
+        self._last_failover_trigger: dict[str, datetime] = {}
         self._failover_callback = failover_callback
 
     # Observer protocol implementations -------------------------------------------------
@@ -56,10 +61,35 @@ class CatatoniaRegistry(CatatoniaObserverProtocol):
             resolved_at=resolved_at.isoformat(),
         )
 
+    def should_trigger_sanitarium_failover(self, player_id: uuid.UUID | str) -> bool:
+        """
+        Return True if we should trigger sanitarium failover for this player (not debounced).
+        Used by LucidityService to avoid logging and calling the observer when we will skip.
+        """
+        player_id_str = str(player_id) if isinstance(player_id, uuid.UUID) else player_id
+        with self._lock:
+            last = self._last_failover_trigger.get(player_id_str)
+            if last is None:
+                return True
+            elapsed = (datetime.now(UTC) - last).total_seconds()
+            return elapsed >= SANITARIUM_FAILOVER_DEBOUNCE_SECONDS
+
     def on_sanitarium_failover(self, *, player_id: uuid.UUID | str, current_lcd: int) -> None:
         # Convert UUID to string for dictionary key (uses strings as keys)
         player_id_str = str(player_id) if isinstance(player_id, uuid.UUID) else player_id
         with self._lock:
+            last = self._last_failover_trigger.get(player_id_str)
+            if last is not None:
+                elapsed = (datetime.now(UTC) - last).total_seconds()
+                if elapsed < SANITARIUM_FAILOVER_DEBOUNCE_SECONDS:
+                    logger.debug(
+                        "Sanitarium failover debounced (already triggered recently)",
+                        player_id=player_id,
+                        elapsed_seconds=round(elapsed, 1),
+                        debounce_seconds=SANITARIUM_FAILOVER_DEBOUNCE_SECONDS,
+                    )
+                    return
+            self._last_failover_trigger[player_id_str] = datetime.now(UTC)
             self._catatonic[player_id_str] = datetime.now(UTC)
 
         logger.warning(

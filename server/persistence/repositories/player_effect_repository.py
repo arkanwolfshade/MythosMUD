@@ -1,13 +1,14 @@
 """
 Player effect repository for the effects system (ADR-009).
 
-Async persistence for player_effects table: add, delete, get active, has_effect,
-remaining_ticks, and expire effects by current tick.
+Async persistence for player_effects table via PostgreSQL stored procedures:
+add, delete, get active, has_effect, remaining_ticks, and expire effects by current tick.
 """
 
+from typing import Any, TypedDict
 from uuid import UUID
 
-from sqlalchemy import delete, select
+from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
 from server.database import get_session_maker
@@ -19,32 +20,96 @@ from server.utils.error_logging import log_and_raise
 logger = get_logger(__name__)
 
 
+def _str_opt(val: Any) -> str:
+    """Return str(val) or empty string if val is None."""
+    return str(val) if val is not None else ""
+
+
+def _int_opt(val: Any, default: int = 0) -> int:
+    """Return int value or default if val is None."""
+    return int(val) if val is not None else default
+
+
+def _opt_str(val: Any, default: str = "") -> str:
+    """Return str value or default if val is None."""
+    return str(val) if val is not None else default
+
+
+def _row_to_player_effect(row: Any) -> PlayerEffect:
+    """Map procedure result row to PlayerEffect model."""
+    return PlayerEffect(
+        id=_str_opt(row.id),
+        player_id=_str_opt(row.player_id),
+        effect_type=_opt_str(row.effect_type, ""),
+        category=_opt_str(row.category, ""),
+        duration=_int_opt(row.duration, 0),
+        applied_at_tick=_int_opt(row.applied_at_tick, 0),
+        intensity=_int_opt(row.intensity, 1),
+        source=row.source,
+        visibility_level=_opt_str(row.visibility_level, "visible"),
+        created_at=row.created_at,
+    )
+
+
+class AddEffectInput(TypedDict, total=False):
+    """Input for add_effect. effect_type, category, duration, applied_at_tick required; rest optional."""
+
+    effect_type: str
+    category: str
+    duration: int
+    applied_at_tick: int
+    intensity: int
+    source: str | None
+    visibility_level: str
+
+
+def _add_effect_params(player_id: UUID | str, data: AddEffectInput) -> dict[str, Any]:
+    """Build params dict for add_player_effect procedure."""
+    return {
+        "player_id": str(player_id),
+        "effect_type": data["effect_type"],
+        "category": data["category"],
+        "duration": data["duration"],
+        "applied_at_tick": data["applied_at_tick"],
+        "intensity": data.get("intensity", 1),
+        "source": data.get("source"),
+        "visibility_level": data.get("visibility_level", "visible"),
+    }
+
+
 class PlayerEffectRepository:
     """Repository for player_effects table (tick-based persistent effects)."""
 
-    async def add_effect(
-        self,
-        player_id: UUID | str,
-        effect_type: str,
-        category: str,
-        duration: int,
-        applied_at_tick: int,
-        intensity: int = 1,
-        source: str | None = None,
-        visibility_level: str = "visible",
-    ) -> str:
+    async def _execute_add_effect(self, params: dict[str, Any]) -> str:
+        """Run add_player_effect procedure and return effect id. Raises on DB error."""
+        session_maker = get_session_maker()
+        async with session_maker() as session:
+            result = await session.execute(
+                text(
+                    "SELECT add_player_effect("
+                    ":player_id, :effect_type, :category, :duration, :applied_at_tick,"
+                    " :intensity, :source, :visibility_level)"
+                ),
+                params,
+            )
+            effect_id = result.scalar()
+            await session.commit()
+            logger.debug(
+                "Added player effect",
+                player_id=params.get("player_id"),
+                effect_type=params.get("effect_type"),
+                effect_id=str(effect_id),
+            )
+            return str(effect_id)
+
+    async def add_effect(self, player_id: UUID | str, data: AddEffectInput) -> str:
         """
         Add a player effect. Returns the effect id (UUID string).
 
         Args:
             player_id: Player UUID
-            effect_type: Effect type (e.g. login_warded)
-            category: Category (e.g. entry_ward)
-            duration: Duration in ticks
-            applied_at_tick: Tick when effect was applied
-            intensity: Intensity (default 1)
-            source: Optional source string
-            visibility_level: visible, hidden, or detailed
+            data: Must include effect_type, category, duration, applied_at_tick.
+                May include intensity (default 1), source, visibility_level (default "visible").
 
         Returns:
             Effect id (UUID string)
@@ -52,30 +117,10 @@ class PlayerEffectRepository:
         Raises:
             DatabaseError: If insert fails
         """
+        effect_type = data["effect_type"]
         try:
-            session_maker = get_session_maker()
-            async with session_maker() as session:
-                effect = PlayerEffect(
-                    player_id=str(player_id),
-                    effect_type=effect_type,
-                    category=category,
-                    duration=duration,
-                    applied_at_tick=applied_at_tick,
-                    intensity=intensity,
-                    source=source,
-                    visibility_level=visibility_level,
-                )
-                session.add(effect)
-                await session.commit()
-                await session.refresh(effect)
-                effect_id = effect.id
-                logger.debug(
-                    "Added player effect",
-                    player_id=str(player_id),
-                    effect_type=effect_type,
-                    effect_id=effect_id,
-                )
-                return effect_id
+            params = _add_effect_params(player_id, data)
+            return await self._execute_add_effect(params)
         except (SQLAlchemyError, OSError) as e:
             log_and_raise(
                 DatabaseError,
@@ -92,7 +137,10 @@ class PlayerEffectRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                await session.execute(delete(PlayerEffect).where(PlayerEffect.id == str(effect_id)))
+                await session.execute(
+                    text("SELECT delete_player_effect(:effect_id)"),
+                    {"effect_id": str(effect_id)},
+                )
                 await session.commit()
                 logger.debug("Deleted player effect", effect_id=str(effect_id))
         except (SQLAlchemyError, OSError) as e:
@@ -115,14 +163,26 @@ class PlayerEffectRepository:
             session_maker = get_session_maker()
             async with session_maker() as session:
                 result = await session.execute(
-                    select(PlayerEffect)
-                    .where(PlayerEffect.player_id == str(player_id))
-                    .order_by(PlayerEffect.applied_at_tick)
+                    text(
+                        """
+                        SELECT
+                            id,
+                            player_id,
+                            effect_type,
+                            category,
+                            duration,
+                            applied_at_tick,
+                            intensity,
+                            source,
+                            visibility_level,
+                            created_at
+                        FROM get_active_effects_for_player(:player_id, :current_tick)
+                        """
+                    ),
+                    {"player_id": str(player_id), "current_tick": current_tick},
                 )
-                rows = list(result.scalars().all())
-                # Filter by remaining > 0
-                active = [r for r in rows if self._remaining_ticks(r.duration, r.applied_at_tick, current_tick) > 0]
-                return active
+                rows = result.mappings().all()
+                return [_row_to_player_effect(row) for row in rows]
         except (SQLAlchemyError, OSError) as e:
             log_and_raise(
                 DatabaseError,
@@ -141,14 +201,19 @@ class PlayerEffectRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                result = await session.execute(select(PlayerEffect))
-                rows = result.scalars().all()
-                expiring = [
-                    (r.player_id, r.effect_type)
-                    for r in rows
-                    if self._remaining_ticks(r.duration, r.applied_at_tick, current_tick) <= 0
-                ]
-                return expiring
+                result = await session.execute(
+                    text(
+                        """
+                        SELECT
+                            player_id,
+                            effect_type
+                        FROM get_effects_expiring_this_tick(:current_tick)
+                        """
+                    ),
+                    {"current_tick": current_tick},
+                )
+                rows = result.mappings().all()
+                return [(str(row.player_id), str(row.effect_type)) for row in rows]
         except (SQLAlchemyError, OSError) as e:
             log_and_raise(
                 DatabaseError,
@@ -170,9 +235,10 @@ class PlayerEffectRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                # Delete rows where applied_at_tick + duration <= current_tick
-                stmt = delete(PlayerEffect).where(PlayerEffect.applied_at_tick + PlayerEffect.duration <= current_tick)
-                await session.execute(stmt)
+                await session.execute(
+                    text("SELECT expire_effects_for_tick(:current_tick)"),
+                    {"current_tick": current_tick},
+                )
                 await session.commit()
                 logger.debug(
                     "Expired player effects for tick",

@@ -1,16 +1,16 @@
 """
 SkillUseLog repository: record and query successful skill uses (plan 4.5).
+
+Uses PostgreSQL stored procedures.
 """
 
-import datetime
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
 from server.database import get_session_maker
 from server.exceptions import DatabaseError
-from server.models.skill_use_log import SkillUseLog
 from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.error_logging import log_and_raise
 
@@ -31,17 +31,16 @@ class SkillUseLogRepository:
     ) -> None:
         """Insert one skill_use_log row."""
         try:
-            from datetime import UTC
-
             session_maker = get_session_maker()
             async with session_maker() as session:
-                row = SkillUseLog(
-                    player_id=str(player_id),
-                    skill_id=skill_id,
-                    character_level_at_use=character_level_at_use,
-                    used_at=datetime.datetime.now(UTC).replace(tzinfo=None),
+                await session.execute(
+                    text("SELECT record_skill_use(:player_id, :skill_id, :character_level_at_use)"),
+                    {
+                        "player_id": str(player_id),
+                        "skill_id": skill_id,
+                        "character_level_at_use": character_level_at_use,
+                    },
                 )
-                session.add(row)
                 await session.commit()
                 self._logger.debug(
                     "Recorded skill use",
@@ -71,16 +70,18 @@ class SkillUseLogRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                stmt = (
-                    select(SkillUseLog.skill_id)
-                    .where(
-                        SkillUseLog.player_id == str(player_id),
-                        SkillUseLog.character_level_at_use == character_level,
-                    )
-                    .distinct()
+                result = await session.execute(
+                    text(
+                        """
+                        SELECT
+                            skill_id
+                        FROM get_skill_ids_used_at_level(:player_id, :character_level)
+                        """
+                    ),
+                    {"player_id": str(player_id), "character_level": character_level},
                 )
-                result = await session.execute(stmt)
-                ids = list(result.scalars().all())
+                rows = result.mappings().all()
+                ids = [int(row.skill_id) for row in rows]
                 self._logger.debug(
                     "Skills used at level",
                     player_id=str(player_id),

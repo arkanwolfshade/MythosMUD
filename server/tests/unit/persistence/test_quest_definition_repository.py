@@ -13,6 +13,9 @@ from server.exceptions import DatabaseError
 from server.models.quest import QuestDefinition
 from server.persistence.repositories.quest_definition_repository import QuestDefinitionRepository
 
+# pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
+# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
+
 
 @pytest.fixture
 def quest_definition_repository():
@@ -44,22 +47,35 @@ def _make_session_context(mock_session):
     return session_maker
 
 
+def _row_for_quest_definition(quest_id: str, definition: dict):
+    """Build a procedure result row (mappings().first() return value) for QuestDefinition."""
+    row = MagicMock()
+    row.id = quest_id
+    row.definition = definition
+    row.created_at = None
+    row.updated_at = None
+    return row
+
+
 @pytest.mark.asyncio
 async def test_get_by_id_success(request, mock_quest_definition):
-    """Test get_by_id returns definition when found."""
+    """Test get_by_id returns definition when found (procedure returns row, repo maps to model)."""
     repo = request.getfixturevalue("quest_definition_repository")
     mock_session = AsyncMock()
     mock_result = MagicMock()
-    mock_result.scalar_one_or_none.return_value = mock_quest_definition
-    mock_session.execute.return_value = mock_result
+    mock_result.mappings.return_value.first.return_value = _row_for_quest_definition(
+        "leave_the_tutorial", mock_quest_definition.definition
+    )
+    mock_session.execute = AsyncMock(return_value=mock_result)
 
     with patch("server.persistence.repositories.quest_definition_repository.get_session_maker") as mock_get_session:
         mock_get_session.return_value = _make_session_context(mock_session)
 
         result = await repo.get_by_id("leave_the_tutorial")
 
-        assert result is mock_quest_definition
+        assert result is not None
         assert result.id == "leave_the_tutorial"
+        assert result.definition == mock_quest_definition.definition
 
 
 @pytest.mark.asyncio
@@ -68,8 +84,8 @@ async def test_get_by_id_not_found(request):
     repo = request.getfixturevalue("quest_definition_repository")
     mock_session = AsyncMock()
     mock_result = MagicMock()
-    mock_result.scalar_one_or_none.return_value = None
-    mock_session.execute.return_value = mock_result
+    mock_result.mappings.return_value.first.return_value = None
+    mock_session.execute = AsyncMock(return_value=mock_result)
 
     with patch("server.persistence.repositories.quest_definition_repository.get_session_maker") as mock_get_session:
         mock_get_session.return_value = _make_session_context(mock_session)
@@ -99,15 +115,17 @@ async def test_get_by_name_success(request, mock_quest_definition):
     repo = request.getfixturevalue("quest_definition_repository")
     mock_session = AsyncMock()
     mock_result = MagicMock()
-    mock_result.scalar_one_or_none.return_value = mock_quest_definition
-    mock_session.execute.return_value = mock_result
+    mock_result.mappings.return_value.first.return_value = _row_for_quest_definition(
+        "leave_the_tutorial", mock_quest_definition.definition
+    )
+    mock_session.execute = AsyncMock(return_value=mock_result)
 
     with patch("server.persistence.repositories.quest_definition_repository.get_session_maker") as mock_get_session:
         mock_get_session.return_value = _make_session_context(mock_session)
 
         result = await repo.get_by_name("leave_the_tutorial")
 
-        assert result is mock_quest_definition
+        assert result is not None
         assert result.definition["name"] == "leave_the_tutorial"
 
 
@@ -117,8 +135,8 @@ async def test_get_by_name_not_found(request):
     repo = request.getfixturevalue("quest_definition_repository")
     mock_session = AsyncMock()
     mock_result = MagicMock()
-    mock_result.scalar_one_or_none.return_value = None
-    mock_session.execute.return_value = mock_result
+    mock_result.mappings.return_value.first.return_value = None
+    mock_session.execute = AsyncMock(return_value=mock_result)
 
     with patch("server.persistence.repositories.quest_definition_repository.get_session_maker") as mock_get_session:
         mock_get_session.return_value = _make_session_context(mock_session)
@@ -144,12 +162,12 @@ async def test_get_by_name_database_error(request):
 
 @pytest.mark.asyncio
 async def test_list_quest_ids_offered_by_success(request):
-    """Test list_quest_ids_offered_by returns quest IDs for entity."""
+    """Test list_quest_ids_offered_by returns quest IDs for entity (procedure returns rows with quest_id)."""
     repo = request.getfixturevalue("quest_definition_repository")
     mock_session = AsyncMock()
     mock_result = MagicMock()
-    mock_result.all.return_value = [("leave_the_tutorial",)]
-    mock_session.execute.return_value = mock_result
+    mock_result.mappings.return_value.all.return_value = [MagicMock(quest_id="leave_the_tutorial")]
+    mock_session.execute = AsyncMock(return_value=mock_result)
 
     with patch("server.persistence.repositories.quest_definition_repository.get_session_maker") as mock_get_session:
         mock_get_session.return_value = _make_session_context(mock_session)
@@ -165,8 +183,8 @@ async def test_list_quest_ids_offered_by_empty(request):
     repo = request.getfixturevalue("quest_definition_repository")
     mock_session = AsyncMock()
     mock_result = MagicMock()
-    mock_result.all.return_value = []
-    mock_session.execute.return_value = mock_result
+    mock_result.mappings.return_value.all.return_value = []
+    mock_session.execute = AsyncMock(return_value=mock_result)
 
     with patch("server.persistence.repositories.quest_definition_repository.get_session_maker") as mock_get_session:
         mock_get_session.return_value = _make_session_context(mock_session)

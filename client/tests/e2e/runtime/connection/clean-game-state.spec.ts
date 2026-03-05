@@ -32,7 +32,7 @@ test.describe('Clean Game State on Connection', () => {
     );
 
     // AW should see NO previous game state information
-    expect(staleMessages.length).toBe(0);
+    expect(staleMessages).toHaveLength(0);
 
     // Cleanup
     await cleanupMultiPlayerContexts(awContexts);
@@ -58,7 +58,7 @@ test.describe('Clean Game State on Connection', () => {
     );
 
     // Ithaqua should see NO previous game state information
-    expect(staleMessages.length).toBe(0);
+    expect(staleMessages).toHaveLength(0);
 
     // Cleanup
     await cleanupMultiPlayerContexts(ithaquaContexts);

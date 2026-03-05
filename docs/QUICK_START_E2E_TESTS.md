@@ -119,6 +119,8 @@ The E2E tests use these test accounts. **Global setup runs `scripts/seed_e2e_use
 | Ithaqua        | Cthulhu1 | Regular   | test-player-ithaqua-001 |
 | TestAdmin      | Cthulhu1 | Superuser | test-player-admin-001   |
 
+If you see "Admin set command denied" for Ithaqua, that character is not an admin; use ArkanWolfshade for admin commands.
+
 All players start in: `earth_arkhamcity_sanitarium_room_foyer_001`
 
 To seed E2E auth users manually (e.g. after resetting the E2E database): from project root run `uv run python scripts/seed_e2e_users.py`. Use the same `DATABASE_URL` as the server (e.g. set in `.env.e2e_test` or default `mythos_e2e`).

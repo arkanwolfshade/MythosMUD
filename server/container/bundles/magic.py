@@ -95,13 +95,15 @@ def _create_learning_mp_regen_and_magic(
     logger.info("MPRegenerationService initialized")
 
     bundle.magic_service = MagicService(
-        spell_registry=bundle.spell_registry,
-        player_service=container.player_service,
-        spell_targeting_service=bundle.spell_targeting_service,
-        spell_effects=bundle.spell_effects,
-        player_spell_repository=player_spell_repository,
-        spell_learning_service=bundle.spell_learning_service,
-        combat_service=container.combat_service,
+        bundle.spell_registry,
+        container.player_service,
+        bundle.spell_targeting_service,
+        bundle.spell_effects,
+        {
+            "player_spell_repository": player_spell_repository,
+            "spell_learning_service": bundle.spell_learning_service,
+            "combat_service": container.combat_service,
+        },
     )
 
     if container.combat_service:

@@ -1,0 +1,28 @@
+rules:
+  - id: no-select-star-in-python-sql
+    message: Do not use SELECT * in SQL issued from Python; list columns explicitly.
+    languages: [python]
+    severity: ERROR
+    pattern: SELECT *
+    paths:
+      include:
+        - server/**/*.py
+      exclude:
+        - server/tests/**
+        - server/alembic/**
+
+  - id: no-direct-table-crud-in-python-sql
+    message: Use PostgreSQL functions/procedures for CRUD; do not issue direct table SELECT/INSERT/UPDATE/DELETE from Python.
+    languages: [python]
+    severity: ERROR
+    patterns:
+      - pattern: SELECT $COLUMNS FROM $TARGET
+      - metavariable-regex:
+          metavariable: $TARGET
+          regex: '^[a-z_][a-z0-9_]*$'
+    paths:
+      include:
+        - server/**/*.py
+      exclude:
+        - server/tests/**
+        - server/alembic/**

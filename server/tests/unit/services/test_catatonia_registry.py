@@ -33,6 +33,38 @@ class TestCatatoniaRegistry:
         registry = CatatoniaRegistry(failover_callback=callback)
         assert registry._failover_callback is callback
 
+    def test_should_trigger_sanitarium_failover_never_triggered(self):
+        """should_trigger_sanitarium_failover returns True when player never triggered."""
+        registry = CatatoniaRegistry()
+        player_id = uuid.uuid4()
+        assert registry.should_trigger_sanitarium_failover(player_id) is True
+
+    def test_should_trigger_sanitarium_failover_within_debounce_window(self):
+        """should_trigger_sanitarium_failover returns False within debounce window."""
+        with patch(
+            "server.services.catatonia_registry.SANITARIUM_FAILOVER_DEBOUNCE_SECONDS",
+            300,
+        ):
+            registry = CatatoniaRegistry()
+            player_id = uuid.uuid4()
+            registry.on_sanitarium_failover(player_id=player_id, current_lcd=-100)
+            assert registry.should_trigger_sanitarium_failover(player_id) is False
+
+    def test_on_sanitarium_failover_debounced_does_not_invoke_callback_twice(self):
+        """Second on_sanitarium_failover within debounce window does not invoke callback."""
+        with patch(
+            "server.services.catatonia_registry.SANITARIUM_FAILOVER_DEBOUNCE_SECONDS",
+            300,
+        ):
+            callback = MagicMock(return_value=None)
+            registry = CatatoniaRegistry(failover_callback=callback)
+            player_id = "test-player-debounce"
+
+            registry.on_sanitarium_failover(player_id=player_id, current_lcd=-100)
+            registry.on_sanitarium_failover(player_id=player_id, current_lcd=-100)
+
+            callback.assert_called_once_with(player_id, -100)
+
     def test_on_catatonia_entered_with_uuid(self):
         """Test on_catatonia_entered with UUID player_id."""
         registry = CatatoniaRegistry()

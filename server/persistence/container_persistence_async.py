@@ -9,12 +9,10 @@ psycopg2-based container_persistence for use by ContainerRepository.
 from __future__ import annotations
 
 import json
-from datetime import UTC, datetime
-from typing import Any
+from typing import Any, cast
 from uuid import UUID
 
 from sqlalchemy import text
-from sqlalchemy.engine import Result
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -32,89 +30,25 @@ def _parse_jsonb(value: Any, default: Any) -> Any:
     return parse_jsonb_column(value, default)
 
 
-async def fetch_container_items_async(session: AsyncSession, container_id: UUID) -> list[dict[str, Any]]:
-    """
-    Fetch container items from container_contents JOIN item_instances JOIN item_prototypes.
-
-    Args:
-        session: Async database session
-        container_id: Container UUID
-
-    Returns:
-        List of item dicts matching the items_json format
-    """
-    container_id_str = str(container_id) if isinstance(container_id, UUID) else container_id
-    result = await session.execute(
-        text("""
-            SELECT
-                cc.item_instance_id,
-                ii.prototype_id as item_id,
-                COALESCE(ii.custom_name, ip.name) as item_name,
-                ii.quantity,
-                ii.condition,
-                ii.metadata,
-                cc.position
-            FROM container_contents cc
-            JOIN item_instances ii ON cc.item_instance_id = ii.item_instance_id
-            JOIN item_prototypes ip ON ii.prototype_id = ip.prototype_id
-            WHERE cc.container_id = :cid
-            ORDER BY cc.position
-        """),
-        {"cid": container_id_str},
-    )
-    rows = result.fetchall()
-    # Row is a Row object with keys from column names
-    items = []
-    for row in rows:
-        item_instance_id = row.item_instance_id if hasattr(row, "item_instance_id") else row[0]
-        item_id = row.item_id if hasattr(row, "item_id") else row[1]
-        item_name = row.item_name if hasattr(row, "item_name") else row[2]
-        quantity = row.quantity if hasattr(row, "quantity") else row[3]
-        condition = row.condition if hasattr(row, "condition") else row[4]
-        metadata_val = row.metadata if hasattr(row, "metadata") else row[5]
-        position = row.position if hasattr(row, "position") else row[6]
-        if not item_instance_id:
-            continue
-        if isinstance(metadata_val, str):
-            try:
-                metadata_val = json.loads(metadata_val) if metadata_val else {}
-            except (json.JSONDecodeError, ValueError):
-                metadata_val = {}
-        elif metadata_val is None or not isinstance(metadata_val, dict):
-            metadata_val = {}
-        items.append(
-            {
-                "item_instance_id": str(item_instance_id) if item_instance_id else None,
-                "item_id": str(item_id) if item_id else None,
-                "item_name": str(item_name) if item_name else "Unknown Item",
-                "quantity": int(quantity) if quantity is not None else 1,
-                "condition": str(condition) if condition else "pristine",
-                "position": int(position) if position is not None else 0,
-                "metadata": metadata_val,
-                "slot_type": "backpack",
-            }
-        )
-    return items
+def _prepare_container_create_params(**params: Any) -> dict[str, Any]:
+    """Prepare params dict for create_container procedure call."""
+    return {
+        "source_type": params.get("source_type"),
+        "owner_id": str(params.get("owner_id")) if params.get("owner_id") else None,
+        "room_id": params.get("room_id"),
+        "entity_id": str(params.get("entity_id")) if params.get("entity_id") else None,
+        "lock_state": params.get("lock_state"),
+        "capacity_slots": params.get("capacity_slots"),
+        "weight_limit": params.get("weight_limit"),
+        "decay_at": params.get("decay_at"),
+        "allowed_roles": json.dumps(params.get("allowed_roles") or []),
+        "metadata_json": json.dumps(params.get("metadata_json") or {}),
+        "container_item_instance_id": params.get("container_item_instance_id"),
+    }
 
 
-async def create_container_async(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Container creation requires many parameters for complex container logic
-    session: AsyncSession,
-    source_type: str,
-    owner_id: UUID | None,
-    room_id: str | None,
-    entity_id: UUID | None,
-    lock_state: str,
-    capacity_slots: int,
-    weight_limit: int | None,
-    decay_at: datetime | None,
-    allowed_roles: list[str] | None,
-    items_json: list[dict[str, Any]] | None,
-    metadata_json: dict[str, Any] | None,
-    container_item_instance_id: str | None = None,
-) -> ContainerData:
-    """
-    Create a new container (async). Returns ContainerData with generated container_instance_id.
-    """
+def _validate_container_create_params(source_type: str, capacity_slots: int, lock_state: str) -> None:
+    """Validate create_container params. Raises ValidationError on invalid input."""
     if source_type not in ("environment", "equipment", "corpse"):
         log_and_raise(
             ValidationError,
@@ -143,111 +77,226 @@ async def create_container_async(  # pylint: disable=too-many-arguments,too-many
             user_friendly="Invalid lock state",
         )
 
-    owner_id_str = str(owner_id) if owner_id else None
-    entity_id_str = str(entity_id) if entity_id else None
-    allowed_roles_json = json.dumps(allowed_roles or [])
-    metadata_json_str = json.dumps(metadata_json or {})
-    now = datetime.now(UTC)
 
-    try:
-        result = await session.execute(
-            text("""
-                INSERT INTO containers (
-                    source_type, owner_id, room_id, entity_id, lock_state,
-                    capacity_slots, weight_limit, decay_at, allowed_roles,
-                    metadata_json, container_item_instance_id, created_at, updated_at
-                ) VALUES (
-                    :source_type, :owner_id, :room_id, :entity_id, :lock_state,
-                    :capacity_slots, :weight_limit, :decay_at, CAST(:allowed_roles AS jsonb),
-                    CAST(:metadata_json AS jsonb), :container_item_instance_id, :now, :now
-                )
-                RETURNING container_instance_id, created_at, updated_at
-            """),
-            {
-                "source_type": source_type,
-                "owner_id": owner_id_str,
-                "room_id": room_id,
-                "entity_id": entity_id_str,
-                "lock_state": lock_state,
-                "capacity_slots": capacity_slots,
-                "weight_limit": weight_limit,
-                "decay_at": decay_at,
-                "allowed_roles": allowed_roles_json,
-                "metadata_json": metadata_json_str,
-                "container_item_instance_id": container_item_instance_id,
-                "now": now,
-            },
-        )
-        row = result.fetchone()
-        if not row:
-            log_and_raise(
-                DatabaseError,
-                "Failed to create container - no ID returned",
-                operation="create_container_async",
-                source_type=source_type,
-                user_friendly="Failed to create container",
+async def _populate_container_items_async(
+    session: AsyncSession, container_id: Any, items_json: list[dict[str, Any]]
+) -> None:
+    """Populate container with items via ensure_item_instance and add_item_to_container."""
+    from .item_instance_persistence_async import ensure_item_instance_async
+
+    await session.execute(text("SELECT clear_container_contents(:cid)"), {"cid": str(container_id)})
+    for position, item in enumerate(items_json):
+        item_instance_id = item.get("item_instance_id") or item.get("item_id")
+        prototype_id = item.get("item_id") or item.get("prototype_id")
+        if not item_instance_id or not prototype_id:
+            continue
+        try:
+            await ensure_item_instance_async(
+                session=session,
+                item_instance_id=str(item_instance_id),
+                prototype_id=str(prototype_id),
+                owner_type="container",
+                owner_id=str(container_id),
+                quantity=item.get("quantity", 1),
+                metadata_payload=item.get("metadata", {}),
             )
-        container_id = row[0]
-        created_at = row[1]
-        updated_at = row[2]
-
-        if items_json:
-            from .item_instance_persistence_async import ensure_item_instance_async
-
-            await session.execute(text("SELECT clear_container_contents(:cid)"), {"cid": str(container_id)})
-            for position, item in enumerate(items_json):
-                item_instance_id = item.get("item_instance_id") or item.get("item_id")
-                prototype_id = item.get("item_id") or item.get("prototype_id")
-                if item_instance_id and prototype_id:
-                    try:
-                        await ensure_item_instance_async(
-                            session=session,
-                            item_instance_id=str(item_instance_id),
-                            prototype_id=str(prototype_id),
-                            owner_type="container",
-                            owner_id=str(container_id),
-                            quantity=item.get("quantity", 1),
-                            metadata_payload=item.get("metadata", {}),
-                        )
-                    except (DatabaseError, ValidationError) as e:
-                        logger.warning(
-                            "Failed to ensure item instance exists, skipping item",
-                            item_instance_id=item_instance_id,
-                            prototype_id=prototype_id,
-                            error=str(e),
-                        )
-                        continue
-                    await session.execute(
-                        text("SELECT add_item_to_container(:cid, :iid, :pos)"),
-                        {"cid": str(container_id), "iid": str(item_instance_id), "pos": position},
-                    )
-        await session.commit()
-        logger.info(
-            "Container created",
-            container_id=str(container_id),
-            source_type=source_type,
-            room_id=room_id,
-            entity_id=entity_id_str,
+        except (DatabaseError, ValidationError) as e:
+            logger.warning(
+                "Failed to ensure item instance exists, skipping item",
+                item_instance_id=item_instance_id,
+                prototype_id=prototype_id,
+                error=str(e),
+            )
+            continue
+        await session.execute(
+            text("SELECT add_item_to_container(:cid, :iid, :pos)"),
+            {"cid": str(container_id), "iid": str(item_instance_id), "pos": position},
         )
-        out = await get_container_async(session, container_id)
-        if out:
-            return out
-        return ContainerData(
-            container_instance_id=container_id,
+
+
+def _build_container_result(container_id: Any, created_at: Any, updated_at: Any, **fields: Any) -> ContainerData:
+    """Build ContainerData from create_container row and params."""
+    return ContainerData(
+        container_instance_id=container_id,
+        created_at=created_at,
+        updated_at=updated_at,
+        **fields,
+    )
+
+
+def _row_to_mapping(row: Any) -> dict[str, Any]:
+    """Extract row as dict by _mapping or positional fallback."""
+    if hasattr(row, "_mapping"):
+        return dict(row._mapping)  # pylint: disable=protected-access  # Reason: SQLAlchemy Row._mapping is standard
+    cols = ("item_instance_id", "item_id", "item_name", "quantity", "condition", "metadata", "position")
+    return {cols[i]: row[i] for i in range(min(len(cols), len(row)))}
+
+
+def _parse_item_metadata(raw: Any) -> dict[str, Any]:
+    """Parse metadata to dict. Handles None, str, dict."""
+    if raw is None:
+        return {}
+    if isinstance(raw, dict):
+        return raw
+    if isinstance(raw, str):
+        if not raw:
+            return {}
+        try:
+            return cast(dict[str, Any], json.loads(raw))
+        except (json.JSONDecodeError, ValueError):
+            return {}
+    return {}
+
+
+def _build_item_dict(mapping: dict[str, Any]) -> dict[str, Any] | None:
+    """Build item dict from mapping. Returns None if item_instance_id missing."""
+    item_instance_id = mapping.get("item_instance_id")
+    if not item_instance_id:
+        return None
+    metadata_val = _parse_item_metadata(mapping.get("metadata"))
+    quantity = mapping.get("quantity")
+    position = mapping.get("position")
+    condition = mapping.get("condition")
+    item_id = mapping.get("item_id")
+    item_name = mapping.get("item_name")
+    return {
+        "item_instance_id": str(item_instance_id),
+        "item_id": str(item_id) if item_id else None,
+        "item_name": str(item_name) if item_name else "Unknown Item",
+        "quantity": int(quantity) if quantity is not None else 1,
+        "condition": str(condition) if condition else "pristine",
+        "position": int(position) if position is not None else 0,
+        "metadata": metadata_val,
+        "slot_type": "backpack",
+    }
+
+
+async def fetch_container_items_async(session: AsyncSession, container_id: UUID) -> list[dict[str, Any]]:
+    """
+    Fetch container items via fetch_container_items procedure.
+
+    Args:
+        session: Async database session
+        container_id: Container UUID
+
+    Returns:
+        List of item dicts matching the items_json format
+    """
+    container_id_str = str(container_id) if isinstance(container_id, UUID) else container_id
+    result = await session.execute(
+        text(
+            """
+            SELECT
+                item_instance_id,
+                item_id,
+                item_name,
+                quantity,
+                condition,
+                metadata,
+                "position"
+            FROM fetch_container_items(:cid)
+            """
+        ),
+        {"cid": container_id_str},
+    )
+    rows = result.fetchall()
+    items: list[dict[str, Any]] = []
+    for row in rows:
+        mapping = _row_to_mapping(row)
+        item_dict = _build_item_dict(mapping)
+        if item_dict is not None:
+            items.append(item_dict)
+    return items
+
+
+async def _call_create_container_procedure(
+    session: AsyncSession, proc_params: dict[str, Any], source_type: str
+) -> tuple[Any, Any, Any]:
+    """Execute create_container procedure. Returns (container_id, created_at, updated_at). Raises if no row."""
+    result = await session.execute(
+        text("""
+            SELECT container_instance_id, created_at, updated_at
+            FROM create_container(
+                :source_type, :owner_id, :room_id, :entity_id, :lock_state,
+                :capacity_slots, :weight_limit, :decay_at,
+                CAST(:allowed_roles AS jsonb), CAST(:metadata_json AS jsonb),
+                :container_item_instance_id
+            )
+        """),
+        proc_params,
+    )
+    row = result.fetchone()
+    if not row:
+        log_and_raise(
+            DatabaseError,
+            "Failed to create container - no ID returned",
+            operation="create_container_async",
             source_type=source_type,
-            owner_id=owner_id,
-            room_id=room_id,
-            entity_id=entity_id,
-            lock_state=lock_state,
-            capacity_slots=capacity_slots,
-            weight_limit=weight_limit,
-            decay_at=decay_at,
-            allowed_roles=allowed_roles or [],
-            items_json=items_json or [],
-            metadata_json=metadata_json or {},
-            created_at=created_at,
-            updated_at=updated_at,
+            user_friendly="Failed to create container",
         )
+    return row[0], row[1], row[2]
+
+
+async def _finalize_container_creation(
+    session: AsyncSession,
+    container_id: Any,
+    params: dict[str, Any],
+    source_type: str,
+    created_at: Any,
+    updated_at: Any,
+) -> ContainerData:
+    """Populate items, commit, log, and return container (from get_container or fallback)."""
+    items_json = params.get("items_json")
+    if items_json:
+        await _populate_container_items_async(session, container_id, items_json)
+    await session.commit()
+    logger.info(
+        "Container created",
+        container_id=str(container_id),
+        source_type=source_type,
+        room_id=params.get("room_id"),
+        entity_id=params.get("entity_id"),
+    )
+    out = await get_container_async(session, container_id)
+    if out:
+        return out
+    return _build_container_result(
+        container_id,
+        created_at,
+        updated_at,
+        source_type=source_type,
+        owner_id=params.get("owner_id"),
+        room_id=params.get("room_id"),
+        entity_id=params.get("entity_id"),
+        lock_state=params.get("lock_state", "unlocked"),
+        capacity_slots=params.get("capacity_slots", 20),
+        weight_limit=params.get("weight_limit"),
+        decay_at=params.get("decay_at"),
+        allowed_roles=params.get("allowed_roles") or [],
+        items_json=params.get("items_json") or [],
+        metadata_json=params.get("metadata_json") or {},
+    )
+
+
+async def create_container_async(
+    session: AsyncSession,
+    source_type: str,
+    **params: Any,
+) -> ContainerData:
+    """
+    Create a new container (async). Returns ContainerData with generated container_instance_id.
+
+    Params may include: owner_id, room_id, entity_id, lock_state, capacity_slots,
+    weight_limit, decay_at, allowed_roles, items_json, metadata_json,
+    container_item_instance_id.
+    """
+    _validate_container_create_params(
+        source_type, params.get("capacity_slots", 20), params.get("lock_state", "unlocked")
+    )
+    proc_params = _prepare_container_create_params(source_type=source_type, **params)
+    try:
+        container_id, created_at, updated_at = await _call_create_container_procedure(session, proc_params, source_type)
+        return await _finalize_container_creation(session, container_id, params, source_type, created_at, updated_at)
     except SQLAlchemyError as e:
         await session.rollback()
         log_and_raise(
@@ -261,19 +310,30 @@ async def create_container_async(  # pylint: disable=too-many-arguments,too-many
 
 
 async def get_container_async(session: AsyncSession, container_id: UUID) -> ContainerData | None:
-    """Get a container by ID (async)."""
+    """Get a container by ID (async) via get_container procedure."""
     container_id_str = str(container_id) if isinstance(container_id, UUID) else container_id
     try:
         result = await session.execute(
-            text("""
+            text(
+                """
                 SELECT
-                    container_instance_id, source_type, owner_id, room_id, entity_id,
-                    lock_state, capacity_slots, weight_limit, decay_at,
-                    allowed_roles, metadata_json, created_at, updated_at,
+                    container_instance_id,
+                    source_type,
+                    owner_id,
+                    room_id,
+                    entity_id,
+                    lock_state,
+                    capacity_slots,
+                    weight_limit,
+                    decay_at,
+                    allowed_roles,
+                    metadata_json,
+                    created_at,
+                    updated_at,
                     container_item_instance_id
-                FROM containers
-                WHERE container_instance_id = :cid
-            """),
+                FROM get_container(:cid)
+                """
+            ),
             {"cid": container_id_str},
         )
         row = result.fetchone()
@@ -321,53 +381,18 @@ async def update_container_async(  # pylint: disable=too-many-locals  # Reason: 
     validate_lock_state(lock_state)
 
     container_id_str = str(container_id) if isinstance(container_id, UUID) else container_id
-    now = datetime.now(UTC)
-    updates = []
-    params: dict[str, Any] = {"cid": container_id_str, "now": now}
 
     if items_json is not None:
-        from .item_instance_persistence_async import ensure_item_instance_async
-
-        await session.execute(text("SELECT clear_container_contents(:cid)"), {"cid": container_id_str})
-        for position, item in enumerate(items_json):
-            item_instance_id = item.get("item_instance_id") or item.get("item_id")
-            prototype_id = item.get("item_id") or item.get("prototype_id")
-            if item_instance_id and prototype_id:
-                try:
-                    await ensure_item_instance_async(
-                        session=session,
-                        item_instance_id=str(item_instance_id),
-                        prototype_id=str(prototype_id),
-                        owner_type="container",
-                        owner_id=container_id_str,
-                        quantity=item.get("quantity", 1),
-                        metadata_payload=item.get("metadata", {}),
-                    )
-                except (DatabaseError, ValidationError) as e:
-                    logger.warning(
-                        "Failed to ensure item instance exists, skipping item",
-                        item_instance_id=item_instance_id,
-                        prototype_id=prototype_id,
-                        error=str(e),
-                    )
-                    continue
-                await session.execute(
-                    text("SELECT add_item_to_container(:cid, :iid, :pos)"),
-                    {"cid": container_id_str, "iid": str(item_instance_id), "pos": position},
-                )
-    if lock_state is not None:
-        updates.append("lock_state = :lock_state")
-        params["lock_state"] = lock_state
-    if metadata_json is not None:
-        updates.append("metadata_json = CAST(:metadata_json AS jsonb)")
-        params["metadata_json"] = json.dumps(metadata_json)
-    updates.append("updated_at = :now")
-    # Run UPDATE when we changed lock_state/metadata and/or items (to bump updated_at)
-    if len(updates) > 1 or items_json is not None:
-        set_clause = ", ".join(updates)
+        await _populate_container_items_async(session, container_id_str, items_json)
+    # Run update_container procedure when we changed lock_state/metadata and/or items
+    if lock_state is not None or metadata_json is not None or items_json is not None:
         await session.execute(
-            text(f"UPDATE containers SET {set_clause} WHERE container_instance_id = :cid"),
-            params,
+            text("SELECT update_container(:cid, :lock_state, :metadata_json)"),
+            {
+                "cid": container_id_str,
+                "lock_state": lock_state,
+                "metadata_json": json.dumps(metadata_json) if metadata_json is not None else None,
+            },
         )
     await session.commit()
     logger.info("Container updated", container_id=str(container_id))
@@ -375,17 +400,16 @@ async def update_container_async(  # pylint: disable=too-many-locals  # Reason: 
 
 
 async def delete_container_async(session: AsyncSession, container_id: UUID) -> bool:
-    """Delete a container (async). Returns True if deleted, False if not found."""
+    """Delete a container (async) via delete_container procedure. Returns True if deleted."""
     container_id_str = str(container_id) if isinstance(container_id, UUID) else container_id
     try:
-        result: Result[Any] = await session.execute(
-            text("DELETE FROM containers WHERE container_instance_id = :cid"),
+        result = await session.execute(
+            text("SELECT delete_container(:cid)"),
             {"cid": container_id_str},
         )
+        deleted = result.scalar()
         await session.commit()
-        # rowcount not in Result stubs; CursorResult has it at runtime
-        rowcount: int = getattr(result, "rowcount", 0)
-        return rowcount > 0
+        return bool(deleted)
     except SQLAlchemyError as e:
         await session.rollback()
         log_and_raise(

@@ -96,7 +96,7 @@ class PlayerRespawnService:
             stats = player.get_stats() or {}
             current_dp = stats.get("current_dp", 0)
             # Explicit numeric check: never move at 0 to -9 (incapacitated but not dead)
-            if isinstance(current_dp, (int, float)):
+            if isinstance(current_dp, int | float):
                 current_dp_int = int(current_dp)
             else:
                 current_dp_int = 0

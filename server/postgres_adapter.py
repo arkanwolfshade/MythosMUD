@@ -3,6 +3,12 @@ PostgreSQL adapter for persistence layer.
 
 Provides a PostgreSQL connection interface for the persistence layer,
 using psycopg2 for synchronous database operations.
+
+.. deprecated::
+    Production data access has migrated to PostgreSQL stored procedures and
+    async SQLAlchemy sessions (ADR-015). This module is retained for tests and
+    any legacy sync call paths; new code should use get_async_session() and
+    procedure calls instead.
 """
 
 import threading

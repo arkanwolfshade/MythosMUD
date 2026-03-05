@@ -384,7 +384,8 @@ class QuestService:
         err = self._turn_in_validation_error(player_id, definition, instance, at_entity_id)
         if err:
             return err
-        assert instance is not None  # Validation guarantees active instance when err is None
+        if instance is None:
+            raise RuntimeError("instance must be set when turn-in validation returns no error")
         await self._complete_instance(player_id, instance, definition)
         return {"success": True, "message": f"Quest completed: {definition.title}"}
 

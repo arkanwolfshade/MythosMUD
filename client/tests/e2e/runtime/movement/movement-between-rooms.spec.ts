@@ -89,7 +89,7 @@ test.describe('Movement Between Rooms', () => {
     );
 
     // AW should see NO self-movement messages
-    expect(selfMovementMessages.length).toBe(0);
+    expect(selfMovementMessages).toHaveLength(0);
   });
 
   test('AW should see Ithaqua enter when Ithaqua moves to same room', async () => {
@@ -126,6 +126,6 @@ test.describe('Movement Between Rooms', () => {
     );
 
     // Ithaqua should see NO self-movement messages
-    expect(selfMovementMessages.length).toBe(0);
+    expect(selfMovementMessages).toHaveLength(0);
   });
 });

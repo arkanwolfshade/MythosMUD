@@ -2,24 +2,27 @@
 Player repository for async persistence operations.
 
 This module provides async database operations for player CRUD, queries,
-and inventory management using SQLAlchemy ORM with PostgreSQL.
+and inventory management using PostgreSQL stored procedures.
 """
 
-# pylint: disable=too-few-public-methods,too-many-lines  # Reason: Repository class with focused responsibility, minimal public interface. Player repository requires extensive database operations for comprehensive player persistence.
+# pylint: disable=too-few-public-methods  # Reason: Repository class with focused responsibility, minimal public interface.
 
-import json
 import uuid
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, Any
 
-from sqlalchemy import func, select, update
+from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import selectinload
 
 from server.database import get_session_maker
 from server.exceptions import DatabaseError
-from server.models.player import Player, PlayerInventory
-from server.schemas.shared import InventorySchemaValidationError, validate_inventory_payload
+from server.models.player import Player
+from server.persistence.repositories.player_repository_mappers import row_to_player
+from server.persistence.repositories.player_repository_room import (
+    validate_and_fix_player_room,
+    validate_and_fix_player_room_with_persistence,
+)
+from server.persistence.repositories.player_repository_save import PlayerSavePreparer
 from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.error_logging import log_and_raise
 from server.utils.retry import retry_with_backoff
@@ -28,16 +31,6 @@ if TYPE_CHECKING:
     from server.events import EventBus
     from server.models.room import Room
 
-logger = get_logger(__name__)
-
-
-class InventoryPayload:
-    """Type hint for inventory payload structure."""
-
-    inventory: list[dict[str, Any]]
-    equipped: dict[str, Any]
-    version: int
-
 
 class PlayerRepository:
     """
@@ -45,7 +38,7 @@ class PlayerRepository:
 
     Handles all player-related database operations including CRUD,
     batch operations, inventory management, and room validation.
-    Uses async SQLAlchemy ORM for non-blocking database access.
+    Uses PostgreSQL stored procedures for database access.
     """
 
     def __init__(self, room_cache: dict[str, "Room"] | None = None, event_bus: "EventBus | None" = None) -> None:
@@ -61,6 +54,7 @@ class PlayerRepository:
         self._room_cache = room_cache  # Preserve reference - do not create new dict
         self._event_bus = event_bus
         self._logger = get_logger(__name__)
+        self._save_preparer = PlayerSavePreparer(self._logger)
 
     def validate_and_fix_player_room(self, player: Player) -> bool:
         """
@@ -72,73 +66,14 @@ class PlayerRepository:
         Returns:
             bool: True if room was fixed, False if valid
 
-        Note: This is synchronous as it only accesses the in-memory cache.
-        When the room cache is empty we cannot validate; do not overwrite the player's
-        room (avoids breaking combat melee when cache has not yet loaded).
-        Instanced rooms (starting with 'instance_') are managed by InstanceManager
-        and should not be validated against the static room cache.
-        Tutorial bedroom stable_id is also valid for players with tutorial_instance_id.
+        Note: Synchronous; uses in-memory cache. Skips when cache empty, instanced rooms,
+        or tutorial bedroom. See player_repository_room module for implementation.
         """
-        if not self._room_cache:
-            return False
-        # Skip validation for instanced rooms - they're managed by InstanceManager
-        if player.current_room_id and player.current_room_id.startswith("instance_"):
-            return False
-        # Skip validation for tutorial bedroom if player has tutorial_instance_id
-        # The tutorial bedroom is a template room that gets instanced
-        if player.current_room_id == "earth_arkhamcity_sanitarium_room_tutorial_bedroom_001" and getattr(
-            player, "tutorial_instance_id", None
-        ):
-            return False
-        if player.current_room_id not in self._room_cache:
-            # Use Main Foyer as fallback (default starting room)
-            fallback_room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
-            # Prevent infinite loop: if fallback room is also not in cache, don't change
-            if fallback_room_id not in self._room_cache:
-                self._logger.debug(
-                    "Player in invalid room and fallback room not in cache, skipping fix",
-                    player_id=player.player_id,
-                    player_name=player.name,
-                    invalid_room_id=player.current_room_id,
-                    fallback_room_id=fallback_room_id,
-                )
-                return False
-            # Don't move if already at fallback room (prevents loop)
-            if player.current_room_id == fallback_room_id:
-                return False
-            self._logger.info(
-                "Player in invalid room, moving to Main Foyer",
-                player_id=player.player_id,
-                player_name=player.name,
-                invalid_room_id=player.current_room_id,
-                fallback_room_id=fallback_room_id,
-            )
-            player.current_room_id = fallback_room_id
-            return True
-        return False
+        return validate_and_fix_player_room(self._room_cache, player, self._logger)
 
     async def _validate_and_fix_player_room_with_persistence(self, player: Player, session: Any) -> bool:
-        """
-        Validate and fix player room, persisting the fix if needed.
-
-        Args:
-            player: Player to validate
-            session: SQLAlchemy session for persisting fixes
-
-        Returns:
-            bool: True if room was fixed and persisted, False if valid or not fixed
-        """
-        room_fixed = self.validate_and_fix_player_room(player)
-        if room_fixed:
-            # Persist the room fix immediately to prevent repeated warnings
-            await session.commit()
-            self._logger.debug(
-                "Fixed and persisted invalid room for player",
-                player_id=player.player_id,
-                player_name=player.name,
-                new_room_id=player.current_room_id,
-            )
-        return room_fixed
+        """Validate and fix player room, persisting the fix if needed."""
+        return await validate_and_fix_player_room_with_persistence(self._room_cache, player, session, self._logger)
 
     @retry_with_backoff(max_attempts=3, initial_delay=1.0, max_delay=10.0)
     async def get_player_by_name(self, name: str) -> Player | None:
@@ -160,19 +95,23 @@ class PlayerRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                # Use case-insensitive comparison and exclude deleted characters
-                stmt = (
-                    select(Player)
-                    .options(selectinload(Player.inventory_record))
-                    .where(func.lower(Player.name) == func.lower(name))
-                    .where(Player.is_deleted.is_(False))  # Use is_() for SQLAlchemy boolean comparison
+                result = await session.execute(
+                    text(
+                        "SELECT "
+                        "player_id, user_id, name, inventory, status_effects, current_room_id, "
+                        "respawn_room_id, experience_points, level, is_admin, profession_id, "
+                        "created_at, last_active, stats, is_deleted, deleted_at, "
+                        "tutorial_instance_id, inventory_json, equipped_json "
+                        "FROM get_player_by_name(:name)"
+                    ),
+                    {"name": name},
                 )
-                result = await session.execute(stmt)
-                player = result.scalar_one_or_none()
-                if player:
-                    await self._validate_and_fix_player_room_with_persistence(player, session)
-                    result_player: Player | None = cast(Player | None, player)
-                    return result_player
+                rows = result.fetchall()
+                if not rows:
+                    return None
+                player = row_to_player(rows[0])
+                await self._validate_and_fix_player_room_with_persistence(player, session)
+                return player
         except (DatabaseError, SQLAlchemyError) as e:
             log_and_raise(
                 DatabaseError,
@@ -182,7 +121,6 @@ class PlayerRepository:
                 details={"player_name": name, "error": str(e)},
                 user_friendly="Failed to retrieve player information",
             )
-        return None
 
     @retry_with_backoff(max_attempts=3, initial_delay=1.0, max_delay=10.0)
     async def get_player_by_id(self, player_id: uuid.UUID) -> Player | None:
@@ -201,18 +139,23 @@ class PlayerRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                # SQLAlchemy's UUID type (even with as_uuid=False) handles UUID object comparisons automatically.
-                # The database column is UUID type, and SQLAlchemy converts UUID objects appropriately for comparison.
-                # The as_uuid=False parameter only affects the Python return type (string vs UUID), not comparison behavior.
-                stmt = (
-                    select(Player).options(selectinload(Player.inventory_record)).where(Player.player_id == player_id)
+                result = await session.execute(
+                    text(
+                        "SELECT "
+                        "player_id, user_id, name, inventory, status_effects, current_room_id, "
+                        "respawn_room_id, experience_points, level, is_admin, profession_id, "
+                        "created_at, last_active, stats, is_deleted, deleted_at, "
+                        "tutorial_instance_id, inventory_json, equipped_json "
+                        "FROM get_player_by_id(:id)"
+                    ),
+                    {"id": str(player_id)},
                 )
-                result = await session.execute(stmt)
-                player = result.scalar_one_or_none()
-                if player:
-                    await self._validate_and_fix_player_room_with_persistence(player, session)
-                    result_player: Player | None = cast(Player | None, player)
-                    return result_player
+                rows = result.fetchall()
+                if not rows:
+                    return None
+                player = row_to_player(rows[0])
+                await self._validate_and_fix_player_room_with_persistence(player, session)
+                return player
         except (DatabaseError, SQLAlchemyError) as e:
             log_and_raise(
                 DatabaseError,
@@ -222,7 +165,6 @@ class PlayerRepository:
                 details={"player_id": player_id, "error": str(e)},
                 user_friendly="Failed to retrieve player information",
             )
-        return None
 
     async def get_players_by_user_id(self, user_id: str) -> list[Player]:
         """
@@ -245,10 +187,19 @@ class PlayerRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                stmt = select(Player).options(selectinload(Player.inventory_record)).where(Player.user_id == user_id)
-                result = await session.execute(stmt)
-                players = list(result.scalars().all())
-                # Validate and fix room for each player, persist fixes
+                result = await session.execute(
+                    text(
+                        "SELECT "
+                        "player_id, user_id, name, inventory, status_effects, current_room_id, "
+                        "respawn_room_id, experience_points, level, is_admin, profession_id, "
+                        "created_at, last_active, stats, is_deleted, deleted_at, "
+                        "tutorial_instance_id, inventory_json, equipped_json "
+                        "FROM get_players_by_user_id(:user_id)"
+                    ),
+                    {"user_id": str(user_id)},
+                )
+                rows = result.fetchall()
+                players = [row_to_player(r) for r in rows]
                 for player in players:
                     await self._validate_and_fix_player_room_with_persistence(player, session)
                 return players
@@ -282,15 +233,19 @@ class PlayerRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                stmt = (
-                    select(Player)
-                    .options(selectinload(Player.inventory_record))
-                    .where(Player.user_id == user_id)
-                    .where(Player.is_deleted.is_(False))  # Use is_() for SQLAlchemy boolean comparison
+                result = await session.execute(
+                    text(
+                        "SELECT "
+                        "player_id, user_id, name, inventory, status_effects, current_room_id, "
+                        "respawn_room_id, experience_points, level, is_admin, profession_id, "
+                        "created_at, last_active, stats, is_deleted, deleted_at, "
+                        "tutorial_instance_id, inventory_json, equipped_json "
+                        "FROM get_active_players_by_user_id(:user_id)"
+                    ),
+                    {"user_id": str(user_id)},
                 )
-                result = await session.execute(stmt)
-                players = list(result.scalars().all())
-                # Validate and fix room for each player, persist fixes
+                rows = result.fetchall()
+                players = [row_to_player(r) for r in rows]
                 for player in players:
                     await self._validate_and_fix_player_room_with_persistence(player, session)
                 return players
@@ -304,7 +259,6 @@ class PlayerRepository:
                 user_friendly="Failed to retrieve player information",
             )
 
-    # Backward compatibility alias
     async def get_player_by_user_id(self, user_id: str) -> Player | None:
         """
         Get the first active player by user ID (backward compatibility).
@@ -336,37 +290,12 @@ class PlayerRepository:
             DatabaseError: If database operation fails
         """
         try:
-            # Ensure is_admin is an integer (PostgreSQL requires integer, not boolean)
-            if isinstance(getattr(player, "is_admin", None), bool):
-                player.is_admin = 1 if player.is_admin else 0
-
-            inventory_json, equipped_json = self._prepare_inventory_payload(player)
-            record = getattr(player, "inventory_record", None)
-            if record is None:
-                record = PlayerInventory(
-                    player_id=str(player.player_id),
-                    inventory_json=inventory_json,
-                    equipped_json=equipped_json,
-                )
-                player.inventory_record = record
-            else:
-                record.inventory_json = inventory_json
-                record.equipped_json = equipped_json
-
-            # Normalize timestamps to naive UTC for TIMESTAMP WITHOUT TIME ZONE columns (asyncpg rejects
-            # offset-aware datetimes with "can't subtract offset-naive and offset-aware datetimes").
-            if getattr(player, "last_active", None) is not None and player.last_active.tzinfo is not None:
-                player.last_active = player.last_active.astimezone(UTC).replace(tzinfo=None)
-            if getattr(player, "created_at", None) is not None and player.created_at.tzinfo is not None:
-                player.created_at = player.created_at.astimezone(UTC).replace(tzinfo=None)
-
+            params = self._save_preparer.prepare(player)
             session_maker = get_session_maker()
             async with session_maker() as session:
-                # Use merge() for upsert behavior - inserts if new, updates if exists
-                await session.merge(player)
+                await self._save_preparer.execute(session, params)
                 await session.commit()
                 self._logger.debug("Player saved successfully", player_id=player.player_id)
-                return
         except (DatabaseError, SQLAlchemyError) as e:
             log_and_raise(
                 DatabaseError,
@@ -391,10 +320,18 @@ class PlayerRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                stmt = select(Player)
-                result = await session.execute(stmt)
-                players = list(result.scalars().all())
-                # Validate and fix room for each player, persist fixes
+                result = await session.execute(
+                    text(
+                        "SELECT "
+                        "player_id, user_id, name, inventory, status_effects, current_room_id, "
+                        "respawn_room_id, experience_points, level, is_admin, profession_id, "
+                        "created_at, last_active, stats, is_deleted, deleted_at, "
+                        "tutorial_instance_id, inventory_json, equipped_json "
+                        "FROM list_players()"
+                    )
+                )
+                rows = result.fetchall()
+                players = [row_to_player(r) for r in rows]
                 for player in players:
                     await self._validate_and_fix_player_room_with_persistence(player, session)
                 return players
@@ -423,10 +360,19 @@ class PlayerRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                stmt = select(Player).where(Player.current_room_id == room_id)
-                result = await session.execute(stmt)
-                players = list(result.scalars().all())
-                # Validate and fix room for each player, persist fixes
+                result = await session.execute(
+                    text(
+                        "SELECT "
+                        "player_id, user_id, name, inventory, status_effects, current_room_id, "
+                        "respawn_room_id, experience_points, level, is_admin, profession_id, "
+                        "created_at, last_active, stats, is_deleted, deleted_at, "
+                        "tutorial_instance_id, inventory_json, equipped_json "
+                        "FROM get_players_in_room(:room_id)"
+                    ),
+                    {"room_id": room_id},
+                )
+                rows = result.fetchall()
+                players = [row_to_player(r) for r in rows]
                 for player in players:
                     await self._validate_and_fix_player_room_with_persistence(player, session)
                 return players
@@ -451,22 +397,13 @@ class PlayerRepository:
             DatabaseError: If database operation fails
         """
         try:
-            # Ensure is_admin is an integer and timestamps are naive UTC for all players
-            for player in players:
-                if isinstance(getattr(player, "is_admin", None), bool):
-                    player.is_admin = 1 if player.is_admin else 0
-                if getattr(player, "last_active", None) is not None and player.last_active.tzinfo is not None:
-                    player.last_active = player.last_active.astimezone(UTC).replace(tzinfo=None)
-                if getattr(player, "created_at", None) is not None and player.created_at.tzinfo is not None:
-                    player.created_at = player.created_at.astimezone(UTC).replace(tzinfo=None)
-
             session_maker = get_session_maker()
             async with session_maker() as session:
                 for player in players:
-                    await session.merge(player)
+                    params = self._save_preparer.prepare(player)
+                    await self._save_preparer.execute(session, params)
                 await session.commit()
                 self._logger.debug("Batch saved players", player_count=len(players))
-                return
         except (DatabaseError, SQLAlchemyError) as e:
             log_and_raise(
                 DatabaseError,
@@ -495,22 +432,17 @@ class PlayerRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                # Check if player exists
-                stmt = select(Player).where(Player.player_id == player_id)
-                result = await session.execute(stmt)
-                player = result.scalar_one_or_none()
-
-                if not player:
-                    self._logger.debug("Soft delete attempted for non-existent player", player_id=player_id)
-                    return False
-
-                # Soft delete the player
-                player.is_deleted = True
-                player.deleted_at = datetime.now(UTC).replace(tzinfo=None)
+                result = await session.execute(
+                    text("SELECT soft_delete_player(:id)"),
+                    {"id": str(player_id)},
+                )
+                deleted = result.scalar()
                 await session.commit()
-                self._logger.info("Player soft-deleted successfully", player_id=player_id)
-
-                return True
+                if deleted:
+                    self._logger.info("Player soft-deleted successfully", player_id=player_id)
+                else:
+                    self._logger.debug("Soft delete attempted for non-existent player", player_id=player_id)
+                return bool(deleted)
         except (DatabaseError, SQLAlchemyError) as e:
             log_and_raise(
                 DatabaseError,
@@ -537,28 +469,17 @@ class PlayerRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                # Check if player exists
-                stmt = select(Player).where(Player.player_id == player_id)
-                result = await session.execute(stmt)
-                player = result.scalar_one_or_none()
-
-                if not player:
-                    self._logger.debug("Delete attempted for non-existent player", player_id=player_id)
-                    return False
-
-                # Delete the player
-                await session.delete(player)
+                result = await session.execute(
+                    text("SELECT delete_player(:id)"),
+                    {"id": str(player_id)},
+                )
+                deleted = result.scalar()
                 await session.commit()
-                self._logger.info("Player deleted successfully", player_id=player_id)
-
-                # Note: Player deletion events are not currently published
-                # If needed in the future, create a PlayerDeletedEvent and publish it here
-                # if self._event_bus:
-                #     from server.events.event_types import PlayerDeletedEvent
-                #     event = PlayerDeletedEvent(player_id=player_id)
-                #     self._event_bus.publish(event)
-
-                return True
+                if deleted:
+                    self._logger.info("Player deleted successfully", player_id=player_id)
+                else:
+                    self._logger.debug("Delete attempted for non-existent player", player_id=player_id)
+                return bool(deleted)
         except (DatabaseError, SQLAlchemyError) as e:
             log_and_raise(
                 DatabaseError,
@@ -583,25 +504,19 @@ class PlayerRepository:
         try:
             if last_active is None:
                 last_active = datetime.now(UTC)
-
-            # Ensure timezone-aware timestamp in UTC, then convert to naive for database
             if last_active.tzinfo is None:
                 last_active = last_active.replace(tzinfo=UTC)
             else:
-                # Convert to UTC if it has a different timezone
                 last_active = last_active.astimezone(UTC)
-
-            # Convert to naive UTC datetime for TIMESTAMP WITHOUT TIME ZONE column
-            # This matches the pattern used in the Player model's default value
-            last_active_naive = last_active.replace(tzinfo=None)
 
             session_maker = get_session_maker()
             async with session_maker() as session:
-                stmt = update(Player).where(Player.player_id == player_id).values(last_active=last_active_naive)
-                await session.execute(stmt)
+                await session.execute(
+                    text("SELECT update_player_last_active(:id, :ts)"),
+                    {"id": str(player_id), "ts": last_active},
+                )
                 await session.commit()
-                self._logger.debug("Updated player last_active", player_id=player_id, last_active=last_active_naive)
-                return
+                self._logger.debug("Updated player last_active", player_id=player_id, last_active=last_active)
         except (DatabaseError, SQLAlchemyError) as e:
             log_and_raise(
                 DatabaseError,
@@ -626,16 +541,25 @@ class PlayerRepository:
             DatabaseError: If database operation fails
         """
         try:
+            if not player_ids:
+                return []
             session_maker = get_session_maker()
             async with session_maker() as session:
-                stmt = select(Player).where(Player.player_id.in_(player_ids))
-                result = await session.execute(stmt)
-                players = list(result.scalars().all())
-
-                # Validate and fix room for each player, persist fixes
+                result = await session.execute(
+                    text(
+                        "SELECT "
+                        "player_id, user_id, name, inventory, status_effects, current_room_id, "
+                        "respawn_room_id, experience_points, level, is_admin, profession_id, "
+                        "created_at, last_active, stats, is_deleted, deleted_at, "
+                        "tutorial_instance_id, inventory_json, equipped_json "
+                        "FROM get_players_batch(:ids)"
+                    ),
+                    {"ids": [str(pid) for pid in player_ids]},
+                )
+                rows = result.fetchall()
+                players = [row_to_player(r) for r in rows]
                 for player in players:
                     await self._validate_and_fix_player_room_with_persistence(player, session)
-
                 self._logger.debug(
                     "Batch loaded players",
                     requested_count=len(player_ids),
@@ -651,67 +575,3 @@ class PlayerRepository:
                 details={"player_count": len(player_ids), "error": str(e)},
                 user_friendly="Failed to retrieve players",
             )
-
-    def _prepare_inventory_payload(self, player: Player) -> tuple[str, str]:
-        """
-        Validate and serialize inventory payload for storage.
-
-        Args:
-            player: Player with inventory to prepare
-
-        Returns:
-            tuple[str, str]: JSON strings for (inventory, equipped)
-
-        Raises:
-            InventorySchemaValidationError: If validation fails
-        """
-        inventory_raw: Any = player.get_inventory()
-        if isinstance(inventory_raw, str):
-            try:
-                inventory_raw = json.loads(inventory_raw)
-            except (TypeError, json.JSONDecodeError) as exc:
-                raise InventorySchemaValidationError(f"Invalid inventory JSON: {exc}") from exc
-
-        if not isinstance(inventory_raw, list):
-            raise InventorySchemaValidationError("Inventory payload must be an array of stacks")
-
-        equipped_raw: Any = player.get_equipped_items() or {}
-        if isinstance(equipped_raw, str):
-            try:
-                equipped_raw = json.loads(equipped_raw)
-            except (TypeError, json.JSONDecodeError) as exc:
-                raise InventorySchemaValidationError(f"Invalid equipped JSON: {exc}") from exc
-
-        if not isinstance(equipped_raw, dict):
-            raise InventorySchemaValidationError("Equipped payload must be an object")
-
-        payload_dict: dict[str, Any] = {
-            "inventory": cast(list[dict[str, Any]], inventory_raw),
-            "equipped": cast(dict[str, Any], equipped_raw),
-            "version": 1,
-        }
-        validate_inventory_payload(payload_dict)
-
-        inventory_json = json.dumps(payload_dict["inventory"])
-        equipped_json = json.dumps(payload_dict["equipped"])
-
-        # Log what's being saved to help debug inventory persistence issues
-        logger.debug(
-            "Preparing inventory payload for save",
-            player_id=str(player.player_id),
-            player_name=player.name,
-            inventory_length=len(payload_dict["inventory"]),
-            inventory_items=[
-                {
-                    "item_name": item.get("item_name"),
-                    "item_id": item.get("item_id"),
-                    "slot_type": item.get("slot_type"),
-                    "quantity": item.get("quantity"),
-                }
-                for item in payload_dict["inventory"][:5]
-            ],  # Log first 5 items
-        )
-
-        player.inventory = cast(Any, inventory_json)  # keep ORM column in sync
-        player.set_equipped_items(payload_dict["equipped"])
-        return inventory_json, equipped_json

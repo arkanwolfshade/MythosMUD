@@ -7,10 +7,10 @@ description: Enforce MythosMUD database placement: production under /data/player
 
 ## Allowed Paths Only
 
-| Environment | Player data | NPC data |
-|-------------|-------------|----------|
-| Production | `/data/players/` | `/data/npcs/` |
-| Tests | `server/tests/data/players/` | `server/tests/data/npcs/` |
+| Environment | Player data                  | NPC data                  |
+| ----------- | ---------------------------- | ------------------------- |
+| Production  | `/data/players/`             | `/data/npcs/`             |
+| Tests       | `server/tests/data/players/` | `server/tests/data/npcs/` |
 
 **Never** create database files outside these paths.
 
@@ -30,6 +30,13 @@ description: Enforce MythosMUD database placement: production under /data/player
 2. Use only the paths in the table above.
 3. Use PostgreSQL for persistence; do not introduce SQLite or new `*.db` files unless explicitly approved.
 4. If you see database files in wrong locations, delete them and inform the user.
+
+## PostgreSQL Access (Procedures and Functions)
+
+- All new PostgreSQL CRUD operations (insert, update, delete, complex select) must go through stored procedures
+  and functions defined under `db/procedures/`. Do not add new inline DML/DQL against tables in Python code.
+- Follow ADR-015 and `db/procedures/README.md`: Python manages transactions and mapping to domain objects;
+  PostgreSQL procedures and functions own query shape, validation, and consistency rules.
 
 ## Reference
 

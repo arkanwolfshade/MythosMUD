@@ -479,30 +479,19 @@ async def set_map_origin(  # pylint: disable=too-many-locals  # Reason: Map orig
             sub_zone=origin_data.sub_zone,
         )
 
-        # Clear existing origin for this zone/subzone
+        # Clear existing origin for this zone/subzone using procedure
         zone_pattern = f"{origin_data.plane}_{origin_data.zone}"
         if origin_data.sub_zone:
             zone_pattern = f"{zone_pattern}_{origin_data.sub_zone}"
 
-        clear_query = text("""
-            UPDATE rooms
-            SET map_origin_zone = FALSE
-            WHERE stable_id LIKE :pattern || '%'
-            AND map_origin_zone = TRUE
-        """)
-        await session.execute(clear_query, {"pattern": zone_pattern})
+        await session.execute(text("SELECT clear_room_map_origins(:pattern)"), {"pattern": zone_pattern})
 
-        # Set new origin
-        set_query = text("""
-            UPDATE rooms
-            SET map_origin_zone = TRUE
-            WHERE stable_id = :room_id
-        """)
-        update_result = await session.execute(set_query, {"room_id": room_id})
+        # Set new origin using procedure
+        result = await session.execute(text("SELECT set_room_map_origin(:room_id)"), {"room_id": room_id})
+        is_updated = bool(result.scalar())
         await session.commit()
 
-        # SQLAlchemy Result objects have rowcount attribute at runtime, but mypy stubs don't reflect this
-        if not update_result.rowcount:  # type: ignore[attr-defined]  # Reason: SQLAlchemy Result objects have rowcount attribute at runtime, but mypy stubs don't reflect this
+        if not is_updated:
             raise LoggedHTTPException(
                 status_code=404,
                 detail="Room not found",

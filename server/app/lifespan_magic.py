@@ -111,13 +111,15 @@ def _initialize_magic_service(
     if not isinstance(spell_targeting_service, SpellTargetingService) or not isinstance(spell_effects, SpellEffects):
         raise RuntimeError("spell_targeting_service and spell_effects must be initialized before MagicService")
     magic_service = MagicService(
-        spell_registry=spell_registry,
-        player_service=container.player_service,
-        spell_targeting_service=spell_targeting_service,
-        spell_effects=spell_effects,
-        player_spell_repository=player_spell_repository,
-        spell_learning_service=getattr(app.state, "spell_learning_service", None),
-        combat_service=combat_service,
+        spell_registry,
+        container.player_service,
+        spell_targeting_service,
+        spell_effects,
+        {
+            "player_spell_repository": player_spell_repository,
+            "spell_learning_service": getattr(app.state, "spell_learning_service", None),
+            "combat_service": combat_service,
+        },
     )
     app.state.magic_service = magic_service
     return magic_service

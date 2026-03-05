@@ -115,7 +115,7 @@ client-held state as the source of truth when it conflicts with server responses
 
 ---
 
-## 📊 DATABASE PLACEMENT RULES
+## 📊 DATABASE PLACEMENT AND ACCESS RULES
 
 ### CRITICAL DATABASE PLACEMENT RULES
 
@@ -152,6 +152,18 @@ other location
 
 - Prefer interacting with the database files using the postgresql CLI over python when debugging
 - Do not create \*.db files without explicit permission
+
+### Database access rules
+
+- **All PostgreSQL CRUD goes through procedures/functions**: Application code must call
+  stored procedures or functions defined under `db/procedures/` for all inserts,
+  updates, deletes, and complex queries. Do not add new inline DML/DQL against tables
+  in Python (ORM `update/delete/merge`, raw `text()` with `INSERT/UPDATE/DELETE`, etc.).
+- **No `SELECT *` from Python**: All SQL emitted from Python **must specify columns explicitly**.
+  This applies even when selecting from functions/procedures. Use
+  `session.execute(text("SELECT col1, col2 FROM procedure_name(:param1, :param2)"), params)`
+  (or equivalent) and map the result rows to domain objects in Python. Transactions
+  (commit/rollback) remain in Python; query shape and data validation live in Postgres.
 
 ---
 

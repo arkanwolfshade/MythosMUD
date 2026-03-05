@@ -95,11 +95,11 @@ def calculate_complexity(node: ast.AST) -> int:
     complexity = 1  # Base complexity
 
     for child in ast.walk(node):
-        if isinstance(child, (ast.If, ast.While, ast.For, ast.AsyncFor)):
+        if isinstance(child, ast.If | ast.While | ast.For | ast.AsyncFor):
             complexity += 1
         elif isinstance(child, ast.Try):
             complexity += len(child.handlers)
-        elif isinstance(child, (ast.And, ast.Or)):
+        elif isinstance(child, ast.And | ast.Or):
             complexity += 1
 
     return complexity
@@ -222,7 +222,7 @@ def process_ast_functions(tree: ast.AST) -> tuple[list[dict[str, Any]], int]:
     max_complexity = 0
 
     for node in ast.walk(tree):
-        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+        if isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef):
             func_data = analyze_function(node)
             if func_data:
                 critical_functions.append(func_data)

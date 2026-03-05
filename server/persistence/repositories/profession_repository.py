@@ -2,10 +2,12 @@
 Profession repository for async persistence operations.
 
 This module provides async database operations for profession queries
-using SQLAlchemy ORM with PostgreSQL.
+using PostgreSQL stored procedures.
 """
 
-from sqlalchemy import select
+from typing import Any
+
+from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
 from server.database import get_session_maker
@@ -15,6 +17,38 @@ from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)
+
+
+def _str_or_default(value: Any, default: str = "") -> str:
+    """Return value as str or a default if falsy."""
+    return str(value) if value else default
+
+
+def _text_or_default(value: Any, default: str) -> str:
+    """Return text value or default if falsy."""
+    return value if value else default
+
+
+def _bool_or_default(value: Any, default: bool = True) -> bool:
+    """Return bool(value) when not None, otherwise default."""
+    if value is None:
+        return default
+    return bool(value)
+
+
+def _row_to_profession(row: Any) -> Profession:
+    """Map procedure result row to Profession model."""
+    return Profession(
+        id=row.id,
+        name=_text_or_default(row.name, ""),
+        description=_text_or_default(row.description, ""),
+        flavor_text=_text_or_default(row.flavor_text, ""),
+        stat_requirements=_text_or_default(row.stat_requirements, "{}"),
+        mechanical_effects=_text_or_default(row.mechanical_effects, "{}"),
+        is_available=_bool_or_default(row.is_available, True),
+        stat_modifiers=_text_or_default(row.stat_modifiers, "[]"),
+        skill_modifiers=_text_or_default(row.skill_modifiers, "[]"),
+    )
 
 
 class ProfessionRepository:
@@ -41,9 +75,25 @@ class ProfessionRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                stmt = select(Profession)
-                result = await session.execute(stmt)
-                professions = list(result.scalars().all())
+                result = await session.execute(
+                    text(
+                        """
+                        SELECT
+                            id,
+                            name,
+                            description,
+                            flavor_text,
+                            stat_requirements,
+                            mechanical_effects,
+                            is_available,
+                            stat_modifiers,
+                            skill_modifiers
+                        FROM get_all_professions()
+                        """
+                    )
+                )
+                rows = result.mappings().all()
+                professions = [_row_to_profession(row) for row in rows]
                 self._logger.debug("Loaded professions", profession_count=len(professions))
                 return professions
         except (SQLAlchemyError, OSError) as e:
@@ -71,9 +121,28 @@ class ProfessionRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                stmt = select(Profession).where(Profession.id == profession_id)
-                result = await session.execute(stmt)
-                return result.scalar_one_or_none()
+                result = await session.execute(
+                    text(
+                        """
+                        SELECT
+                            id,
+                            name,
+                            description,
+                            flavor_text,
+                            stat_requirements,
+                            mechanical_effects,
+                            is_available,
+                            stat_modifiers,
+                            skill_modifiers
+                        FROM get_profession_by_id(:profession_id)
+                        """
+                    ),
+                    {"profession_id": profession_id},
+                )
+                row = result.mappings().first()
+                if not row:
+                    return None
+                return _row_to_profession(row)
         except (SQLAlchemyError, OSError) as e:
             log_and_raise(
                 DatabaseError,
