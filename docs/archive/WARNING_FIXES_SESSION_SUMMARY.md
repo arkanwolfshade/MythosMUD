@@ -2,8 +2,8 @@
 
 ## MythosMUD Test Suite Warning Elimination Progress
 
-*Session Date: 2025-10-28*
-*Department of Occult Studies, Miskatonic University*
+_Session Date: 2025-10-28_
+_Department of Occult Studies, Miskatonic University_
 
 ---
 
@@ -72,7 +72,6 @@ grep -r "datetime\.utcnow()" server/
 #### Error Handling (1 file)
 
 1. ✅ `server/error_handlers/standardized_responses.py` - 2 fixes
-
    - Line 66: STATUS_CODE_MAPPINGS dictionary
    - Line 262: Default fallback status code
 
@@ -100,15 +99,15 @@ grep -r "HTTP_422_UNPROCESSABLE_ENTITY" server/
 
 ## 📊 Warning Reduction Analysis
 
-| Phase     | Category             | Before    | After    | Reduction  |
-| --------- | -------------------- | --------- | -------- | ---------- |
+| Phase     | Category             | Before    | After    | Reduction   |
+| --------- | -------------------- | --------- | -------- | ----------- |
 | **1**     | datetime.utcnow()    | ~4,000    | **0**    | **100%** ✅ |
 | **2**     | HTTP_422 Deprecation | ~1        | **0**    | **100%** ✅ |
 | **3**     | RuntimeWarning       | ~150      | ~150     | 0% ⏳       |
-| **4**     | ResourceWarning      | ~70       | ~70*     | TBD 🔄      |
+| **4**     | ResourceWarning      | ~70       | ~70\*    | TBD 🔄      |
 | **TOTAL** | **All Warnings**     | **4,221** | **~220** | **~95%** 🎉 |
 
-*Note: ResourceWarnings may already be handled by existing test infrastructure
+\*Note: ResourceWarnings may already be handled by existing test infrastructure
 
 ---
 
@@ -169,9 +168,9 @@ grep -r "HTTP_422_UNPROCESSABLE_ENTITY" server/
 
 **datetime.utcnow():** ~4,000 warnings (95%)
 
-  - 29 code locations
-  - Triggered by ~4,677 tests
-  - Each test exercising datetime code generated warnings
+- 29 code locations
+- Triggered by ~4,677 tests
+- Each test exercising datetime code generated warnings
 
 **HTTP_422:** ~1-2 warnings
 
@@ -194,7 +193,7 @@ grep -r "HTTP_422_UNPROCESSABLE_ENTITY" server/
 
 ### datetime.utcnow() Migration Strategy
 
-**Step 1: Discovery**
+#### Step 1: Discovery (datetime.utcnow())
 
 ```bash
 grep -r "datetime\.utcnow()" server/
@@ -202,7 +201,7 @@ grep -r "datetime\.utcnow()" server/
 
 ```
 
-**Step 2: Import Updates**
+#### Step 2: Import Updates
 
 ```python
 # Added UTC import to all affected files
@@ -210,7 +209,7 @@ grep -r "datetime\.utcnow()" server/
 from datetime import UTC, datetime
 ```
 
-**Step 3: Systematic Replacement**
+#### Step 3: Systematic Replacement
 
 ```python
 # Replaced all instances with timezone-aware version
@@ -218,7 +217,7 @@ from datetime import UTC, datetime
 datetime.now(UTC)
 ```
 
-**Step 4: Verification**
+#### Step 4: Verification
 
 ```bash
 # Ran affected tests - all passed
@@ -230,7 +229,7 @@ uv run pytest tests/unit/logging/ tests/unit/services/ -v
 
 ### HTTP_422 Migration Strategy
 
-**Step 1: Discovery**
+#### Step 1: Discovery (HTTP_422)
 
 ```bash
 grep -r "HTTP_422_UNPROCESSABLE_ENTITY" server/
@@ -238,7 +237,7 @@ grep -r "HTTP_422_UNPROCESSABLE_ENTITY" server/
 
 ```
 
-**Step 2: Direct Replacement**
+#### Step 2: Direct Replacement
 
 ```python
 # Simple find/replace in standardized_responses.py
@@ -246,7 +245,7 @@ grep -r "HTTP_422_UNPROCESSABLE_ENTITY" server/
 HTTP_422_UNPROCESSABLE_ENTITY → HTTP_422_UNPROCESSABLE_CONTENT
 ```
 
-**Step 3: Verification**
+#### Step 3: Verification
 
 ```bash
 grep -r "HTTP_422_UNPROCESSABLE_ENTITY" server/
@@ -261,27 +260,23 @@ grep -r "HTTP_422_UNPROCESSABLE_ENTITY" server/
 ### Key Insights
 
 1. **Systematic Approach Works**
-
    - grep for discovery
    - Categorize by impact
    - Fix highest impact first
    - Verify after each change
 
 2. **Documentation is Critical**
-
    - Track all changes
    - Document reasoning
    - Provide before/after examples
    - Create verification steps
 
 3. **Test Infrastructure Matters**
-
    - Existing event loop management was already robust
    - ResourceWarnings likely already handled
    - Focus on actual code issues, not test harness
 
 4. **Warning Suppression Hides Problems**
-
    - `--disable-warnings` flag prevented visibility
    - Warnings counted but not shown
    - Need periodic audits even with suppression
@@ -305,13 +300,11 @@ grep -r "HTTP_422_UNPROCESSABLE_ENTITY" server/
    ```
 
 3. **Version Compatibility**
-
    - Check Python version deprecations
    - Fix before they become breaking changes
    - Test on latest Python versions
 
 4. **Warning Monitoring**
-
    - Periodic audits with warnings enabled
    - Set CI/CD thresholds
    - Track trends over time
@@ -338,13 +331,11 @@ grep -r "HTTP_422_UNPROCESSABLE_ENTITY" server/
    ```
 
 2. **RuntimeWarning Audit**
-
    - Identify all unawaited coroutine locations
    - Fix async mock patterns
    - Update test fixtures
 
 3. **ResourceWarning Verification**
-
    - Confirm existing infrastructure handles cleanup
    - Add any missing cleanup patterns
    - Document event loop best practices
@@ -352,19 +343,16 @@ grep -r "HTTP_422_UNPROCESSABLE_ENTITY" server/
 ### Long Term (Ongoing)
 
 1. **Pre-commit Hook**
-
    - Add check for datetime.utcnow()
    - Add check for deprecated constants
    - Enforce timezone-aware datetime usage
 
 2. **CI/CD Integration**
-
    - Add warning count threshold
    - Fail builds if warnings exceed limit
    - Track warning trends over time
 
 3. **Team Training**
-
    - Share UTC datetime patterns
    - Document async best practices
    - Create coding standards updates
@@ -375,8 +363,8 @@ grep -r "HTTP_422_UNPROCESSABLE_ENTITY" server/
 
 ### Achieved Goals
 
-| Metric                  | Target        | Achieved   | Status        |
-| ----------------------- | ------------- | ---------- | ------------- |
+| Metric                  | Target        | Achieved   | Status         |
+| ----------------------- | ------------- | ---------- | -------------- |
 | datetime.utcnow() Fixes | 0 remaining   | **0**      | ✅             |
 | HTTP_422 Fixes          | 0 remaining   | **0**      | ✅             |
 | Warning Reduction       | <50 total     | **~220**   | 🟡 In Progress |
@@ -386,13 +374,13 @@ grep -r "HTTP_422_UNPROCESSABLE_ENTITY" server/
 
 ### Remaining Work
 
-| Metric          | Current | Target | Priority   |
-| --------------- | ------- | ------ | ---------- |
+| Metric          | Current | Target | Priority    |
+| --------------- | ------- | ------ | ----------- |
 | RuntimeWarning  | ~150    | <30    | 🟠 MEDIUM   |
-| ResourceWarning | ~70     | 0      | 🟡 LOW*     |
+| ResourceWarning | ~70     | 0      | 🟡 LOW\*    |
 | Total Warnings  | ~220    | <50    | 🟢 ON TRACK |
 
-*May already be handled by test infrastructure
+\*May already be handled by test infrastructure
 
 ---
 
@@ -456,19 +444,16 @@ uv run pytest path/to/test_file.py -v
 ### Immediate Actions
 
 1. **Review Changes**
-
    - All datetime.utcnow() → datetime.now(UTC)
    - All HTTP_422 constant updates
    - Verify no regressions in your areas
 
 2. **Update Local Branches**
-
    - Pull latest changes
    - Run full test suite locally
    - Verify your tests still pass
 
 3. **Adopt New Patterns**
-
    - Use `datetime.now(UTC)` for all new code
    - Use `HTTP_422_UNPROCESSABLE_CONTENT`
    - Follow patterns in documentation
@@ -476,19 +461,16 @@ uv run pytest path/to/test_file.py -v
 ### Long-term Adoption
 
 1. **Code Reviews**
-
    - Check for deprecated datetime usage
    - Verify timezone awareness
    - Ensure proper async patterns
 
 2. **New Features**
-
    - Always use timezone-aware datetimes
    - Follow established async patterns
    - Add tests with proper cleanup
 
 3. **Continuous Improvement**
-
    - Monitor warning trends
    - Fix new warnings promptly
    - Keep dependencies updated
@@ -556,9 +538,9 @@ The approach taken serves as a **template for addressing technical debt** system
 
 ---
 
-*"Through systematic analysis and methodical correction, we have banished the vast majority of temporal anomalies from our test suite. The remaining specters shall fall in due course."*
+> "Through systematic analysis and methodical correction, we have banished the vast majority of temporal anomalies from our test suite. The remaining specters shall fall in due course."
 
-**— Department of Occult Studies, Miskatonic University**
+— Department of Occult Studies, Miskatonic University
 
 **Session Date:** 2025-10-28
 **Status:** Phases 1-2 Complete, Phases 3-5 In Progress

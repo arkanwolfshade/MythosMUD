@@ -40,9 +40,9 @@ Implementation notes throughout call out tracking requirements, cooldown expecta
 Characters between −99 and 0 LCD are considered **catatonic** rather than dead.
 
 - Allies may use `ground <target>` (working name) to stabilize the victim:
-  - 30-second channel that can be interrupted by damage or hallucination events.
-  - Success restores the target to LCD 1 (entering Deranged tier) and removes catatonia.
-  - Cooldown: rescuer-specific 10 in-game minutes; target receives a 30-minute grace period before catatonia can recur.
+- 30-second channel that can be interrupted by damage or hallucination events.
+- Success restores the target to LCD 1 (entering Deranged tier) and removes catatonia.
+- Cooldown: rescuer-specific 10 in-game minutes; target receives a 30-minute grace period before catatonia can recur.
 - Failure (channel break or hostile interference) applies an additional −5 LCD to the target.
 - LCD reaching −100 immediately triggers the Sanitarium fail state (Section 5.4).
 
@@ -95,7 +95,7 @@ Passive LCD change is evaluated once per in-game minute. Modifiers stack additiv
 | Event                                          | LCD Loss | Additional Effects                                                           |
 | ---------------------------------------------- | -------- | ---------------------------------------------------------------------------- |
 | Reading minor Mythos text / unsettling journal | −5 LCD   | Unlocks minor lore flag                                                      |
-| Studying major grimoire                        | −10 LCD  | Adds *Forbidden Insight* tag; future Mythos spells cost −2 LCD less to learn |
+| Studying major grimoire                        | −10 LCD  | Adds _Forbidden Insight_ tag; future Mythos spells cost −2 LCD less to learn |
 | Learning a Mythos ritual (per spell)           | −8 LCD   | Ritual casts do **not** incur extra LCD; cost paid up front                  |
 | Witnessing forbidden rite completion           | −12 LCD  | Forced Willpower save to avoid immediate hallucination                       |
 
@@ -198,9 +198,9 @@ When LCD reaches −100:
 
 **Playtest milestones:**
 
-  - Closed-group lucidity dungeon run to observe hallucination cadence
-  - Stress test of group solace/therapy loops to prevent trivial farming
-  - PvP edge cases (e.g., intentionally griefing others into catatonia)
+- Closed-group lucidity dungeon run to observe hallucination cadence
+- Stress test of group solace/therapy loops to prevent trivial farming
+- PvP edge cases (e.g., intentionally griefing others into catatonia)
 - **Telemetry goals:** Track average LCD per tier, frequency of liabilities, time-to-rescue in catatonia, and sanitarium visits per player-week.
 - **Future extensions:** Consider LCD-based skill trees (e.g., “Occult Fortitude”), personalized nightmares, or cross-tier cooperative abilities once baseline is stable.
 

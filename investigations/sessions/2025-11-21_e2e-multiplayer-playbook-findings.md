@@ -19,53 +19,53 @@ findings and remediation steps.
 #### 1. Timing Artifact Confirmed ⚠️
 
 **Issue**: Connection messages ("Ithaqua has entered the game") not
-  received by first player (AW)
+received by first player (AW)
 
 **Expected**: This is a known timing artifact documented in the scenario
 
 **Root Cause**: Race condition in room subscription timing - first player
 
-  not properly subscribed when second player connects
+not properly subscribed when second player connects
 
 **Impact**: Low - connection message broadcasting works correctly, but
 
-  timing prevents delivery
+timing prevents delivery
 
 **Remediation**: Requires investigation into room subscription timing and
 
-  message delivery sequence
+message delivery sequence
 
 #### 2. Session Loss on Tab Closure 🔴 **FIXED**
 
 **Issue**: When Ithaqua's browser tab was closed, AW's tab was redirected
-  to the login page
+to the login page
 
 **Expected**: AW's session should remain active when another player
 
-  disconnects
+disconnects
 
 **Root Cause**: `handleDisconnect` in `GameTerminalWithPanels.tsx` was
 
-  immediately triggering logout on any disconnect, even temporary ones that
-  might reconnect
+immediately triggering logout on any disconnect, even temporary ones that
+might reconnect
 
 **Impact**: High - breaks multiplayer experience, causes unexpected
 
-  disconnections
+disconnections
 
 **Remediation**: **FIXED**
 
-  - Modified `handleDisconnect` to not immediately trigger logout (lines
+- Modified `handleDisconnect` to not immediately trigger logout (lines
 
-    2079-2087)
+  2079-2087)
 
-  - Added connection state monitoring that only triggers logout after all
+- Added connection state monitoring that only triggers logout after all
 
-    reconnection attempts fail (5 attempts) (lines 2108-2114)
+  reconnection attempts fail (5 attempts) (lines 2108-2114)
 
-  - This allows temporary disconnections to reconnect without triggering
+- This allows temporary disconnections to reconnect without triggering
 
-    logout
+  logout
 
   **File**: `client/src/components/GameTerminalWithPanels.tsx`
 
@@ -121,21 +121,21 @@ findings and remediation steps.
 
 **Result**: ✅ **VERIFIED** - Both AW and Ithaqua's Game Logs show only
 
-  current session messages (game ticks, lucidity changes)
+current session messages (game ticks, lucidity changes)
 
 **Status**: Clean game state is working correctly
 
 **Details**:
 
-  - AW's Game Log: Only game ticks and lucidity changes, NO
+- AW's Game Log: Only game ticks and lucidity changes, NO
 
-    connection/disconnection messages
+  connection/disconnection messages
 
-  - Ithaqua's Game Log: Only game ticks and lucidity changes, NO
+- Ithaqua's Game Log: Only game ticks and lucidity changes, NO
 
-    connection/disconnection messages
+  connection/disconnection messages
 
-  - Both players start with fresh sessions and don't see stale messages
+- Both players start with fresh sessions and don't see stale messages
 
 #### 2. Tab Management Working ✅
 
@@ -145,8 +145,8 @@ findings and remediation steps.
 
 **Result**: ✅ **WORKING** - Playwright MCP tab functions
 
-  (`mcp_playwright_browser_tabs`) working correctly after browser automation
-  was disabled
+(`mcp_playwright_browser_tabs`) working correctly after browser automation
+was disabled
 
 **Status**: Tab management fully functional
 
@@ -171,7 +171,7 @@ findings and remediation steps.
 
 ### Status: ⚠️ PARTIALLY COMPLETED (Connection Issues Persist)
 
-### Findings
+### Scenario 03: Findings
 
 #### 1. Connection Instability During Multi-Player Testing ⚠️ **PARTIALLY FIXED**
 
@@ -179,47 +179,47 @@ findings and remediation steps.
 
 **Symptoms**:
 
-  - AW's connection shows "SSE connection timeout" with "Reconnect: 3" attempts after movement
+- AW's connection shows "SSE connection timeout" with "Reconnect: 3" attempts after movement
 
-  - Connection attempts to reconnect automatically (improved behavior)
+- Connection attempts to reconnect automatically (improved behavior)
 
-  - Ithaqua's connection also shows "connecting_sse" state during movement
+- Ithaqua's connection also shows "connecting_sse" state during movement
 
-  - Connection state oscillates between "Connecting...", "Reconnecting", and "Connected"
+- Connection state oscillates between "Connecting...", "Reconnecting", and "Connected"
 
 **Root Cause**: Multiple race conditions and connection state verification issues (partially fixed):
 
-  1. ✅ **FIXED**: Race Condition - `connect()` function no longer directly calls `startSSE()` and `startWebSocket()`
+1. ✅ **FIXED**: Race Condition - `connect()` function no longer directly calls `startSSE()` and `startWebSocket()`
 
-  2. ✅ **FIXED**: SSE Connection Check - Now verifies `readyState` before skipping
+2. ✅ **FIXED**: SSE Connection Check - Now verifies `readyState` before skipping
 
-  3. ✅ **FIXED**: WebSocket Connection Check - Now verifies `readyState` before skipping
+3. ✅ **FIXED**: WebSocket Connection Check - Now verifies `readyState` before skipping
 
-  4. ✅ **FIXED**: Conflicting Reconnection Logic - WebSocket hook reconnection removed
+4. ✅ **FIXED**: Conflicting Reconnection Logic - WebSocket hook reconnection removed
 
-  5. ✅ **FIXED**: False Positive Error Reporting - Error callbacks only notify if actually connected
+5. ✅ **FIXED**: False Positive Error Reporting - Error callbacks only notify if actually connected
 
-  6. ⚠️ **REMAINING**: SSE connection timeout issues - connections drop during movement but reconnect
+6. ⚠️ **REMAINING**: SSE connection timeout issues - connections drop during movement but reconnect
 
 **Impact**: Medium - connections are more stable but still experience timeouts during movement
 
 **Remediation**: **PARTIALLY FIXED**
 
-  **File**: `client/src/hooks/useGameConnectionRefactored.ts`
+**File**: `client/src/hooks/useGameConnectionRefactored.ts`
 
     ✅ Removed direct calls to `startSSE()` and `startWebSocket()` from `connect()` function
     - ✅ Let state machine and `useEffect` hooks handle connection sequencing
     - ✅ Added refs to track connection state for use in callbacks
     - ✅ Modified error callbacks to only notify state machine if connections were actually established
 
-  - **File**: `client/src/hooks/useSSEConnection.ts`
-    - ✅ Enhanced connection check to verify `readyState` (CONNECTING or OPEN) before skipping
-    - ✅ Clean up closed EventSource before reconnecting
-  - **File**: `client/src/hooks/useWebSocketConnection.ts`
-    - ✅ Enhanced connection check to verify `readyState` (CONNECTING or OPEN) before skipping
-    - ✅ Clean up closed WebSocket before reconnecting
-    - ✅ Removed conflicting reconnection logic
-  - **Status**: Core fixes applied and tested - movement works but connections still timeout
+- **File**: `client/src/hooks/useSSEConnection.ts`
+  - ✅ Enhanced connection check to verify `readyState` (CONNECTING or OPEN) before skipping
+  - ✅ Clean up closed EventSource before reconnecting
+- **File**: `client/src/hooks/useWebSocketConnection.ts`
+  - ✅ Enhanced connection check to verify `readyState` (CONNECTING or OPEN) before skipping
+  - ✅ Clean up closed WebSocket before reconnecting
+  - ✅ Removed conflicting reconnection logic
+- **Status**: Core fixes applied and tested - movement works but connections still timeout
 
 #### 2. Movement Functionality ✅ **WORKING**
 
@@ -227,18 +227,18 @@ findings and remediation steps.
 
 **Test Results**:
 
-  ✅ AW successfully moved from Main Foyer to Eastern Hallway - Section 1
+✅ AW successfully moved from Main Foyer to Eastern Hallway - Section 1
 
-  ✅ AW's room info correctly updated to show new room
+✅ AW's room info correctly updated to show new room
 
-  ✅ Movement command executed successfully despite connection timeout
+✅ Movement command executed successfully despite connection timeout
 
-  - ⚠️ Connection timeout occurred after movement (SSE connection timeout)
-  - ⚠️ Connection automatically attempting to reconnect (improved behavior)
-  - ⚠️ Ithaqua's connection state shows "connecting_sse" during AW's movement
-  - ⚠️ Need to verify if Ithaqua saw AW leave message (evaluation suggests yes, but message not visible in recent logs)
+- ⚠️ Connection timeout occurred after movement (SSE connection timeout)
+- ⚠️ Connection automatically attempting to reconnect (improved behavior)
+- ⚠️ Ithaqua's connection state shows "connecting_sse" during AW's movement
+- ⚠️ Need to verify if Ithaqua saw AW leave message (evaluation suggests yes, but message not visible in recent logs)
 
-### Test Results
+### Scenario 03: Test Results
 
 ✅ Both players successfully logged in and entered game
 
@@ -252,7 +252,7 @@ findings and remediation steps.
 - ⚠️ Ithaqua's connection state shows "connecting_sse" during movement
 - ⚠️ Need to verify Ithaqua saw AW leave message (evaluation suggests yes)
 
-### Remediation Priority
+### Scenario 03: Remediation Priority
 
 1. **MEDIUM**: ⚠️ **PARTIALLY FIXED** - Connection stability improved but SSE timeout issues remain
 2. **HIGH**: 🔴 **INVESTIGATING** - SSE connection timeout during movement commands
@@ -308,32 +308,27 @@ findings and remediation steps.
 **Implemented Fixes**:
 
 1. **Heartbeat Tracking** (`client/src/hooks/useSSEConnection.ts`):
-
    - Added `lastHeartbeatTime` state to track when last heartbeat was received
    - Added `isHealthy` computed property (healthy if heartbeat received within last 60 seconds)
    - Server sends heartbeats every 30 seconds, so 60 seconds allows 2 missed heartbeats before marking unhealthy
    - Heartbeat events are detected in `onmessage` handler and tracked
 
 2. **Connection Health Check** (`client/src/hooks/useSSEConnection.ts`):
-
    - Modified `onerror` handler to check `isHealthy` before triggering disconnect
    - If connection is healthy (recent heartbeat), treats error as temporary hiccup and doesn't disconnect
    - Only disconnects if connection is actually unhealthy (no heartbeat for 60+ seconds)
 
 3. **State Machine Timeout Cancellation** (`client/src/hooks/useConnectionStateMachine.ts`):
-
    - XState v5 automatically cancels `after` timeouts when state transitions
    - When `SSE_CONNECTED` is received, state transitions from `connecting_sse` to `sse_connected`, cancelling timeout
    - Added comment in code to clarify this behavior
 
 4. **Connection Health Monitoring** (`client/src/hooks/useGameConnectionRefactored.ts`):
-
    - Added heartbeat monitoring interval (checks every 10 seconds)
    - If SSE connection is unhealthy (no heartbeat for 60+ seconds), notifies state machine
    - Prevents false positives from temporary network hiccups
 
 5. **Server-Side Investigation**:
-
    - Server sends heartbeats every 30 seconds (line 95-118 in `server/realtime/sse_handler.py`)
    - SSE stream can be cancelled via `asyncio.CancelledError`, but no direct movement-related cancellation found
    - Server has proper cancellation handling and error recovery
@@ -344,33 +339,28 @@ findings and remediation steps.
 **Test Results (Scenario-03 Re-run)**:
 
 1. **Connection Stability**: ✅ **PASSED**
-
    - Both players maintained stable connections throughout movement
    - Connection status remained "Connected" during all operations
    - No SSE timeout errors observed
    - No connection state oscillations
 
 2. **Heartbeat Tracking**: ✅ **PASSED**
-
    - Heartbeat events received and logged: `[DEBUG] [SSEConnection] Heartbeat received`
    - Heartbeat tracking functioning correctly
    - Connection health monitoring active
 
 3. **Movement Functionality**: ✅ **PASSED**
-
    - AW successfully moved east from Main Foyer to Eastern Hallway
    - AW successfully moved west back to Main Foyer
    - Room updates correctly reflected movement
    - Ithaqua correctly saw AW leave message: "ArkanWolfshade leaves the room." at 09:31:28
 
 4. **Connection Health Check**: ✅ **PASSED**
-
    - No false positive disconnections
    - Temporary network hiccups handled gracefully
    - Connection remained stable during movement operations
 
 5. **State Machine Timeout Cancellation**: ✅ **PASSED**
-
    - No timeout errors during connection establishment
    - State transitions working correctly
    - Connection reached `fully_connected` state successfully
@@ -381,7 +371,7 @@ findings and remediation steps.
 
 ### Status: ✅ **COMPLETED** (Critical Bug Fixed and Verified)
 
-### Findings
+### Scenario 04: Findings
 
 #### 1. Muting System Not Blocking Emotes ✅ **FIXED AND VERIFIED**
 
@@ -391,7 +381,7 @@ findings and remediation steps.
 
 **Root Cause**: **IDENTIFIED AND FIXED** - Emotes were being broadcast directly through `connection_manager.broadcast_to_room()` instead of going through the NATS message handler's `_broadcast_to_room_with_filtering()` which includes mute filtering
 
-  **Code Flow Analysis**:
+**Code Flow Analysis**:
 
     1. `handle_emote_command` returned a direct broadcast result: `{"result": self_message, "broadcast": other_message, "broadcast_type": "emote"}`
 
@@ -405,28 +395,28 @@ findings and remediation steps.
 
 **Remediation**: **FIXED**
 
-  **Fix Applied**: Modified `handle_emote_command` to use `chat_service.send_emote_message()` instead of returning a direct broadcast result
+**Fix Applied**: Modified `handle_emote_command` to use `chat_service.send_emote_message()` instead of returning a direct broadcast result
 
     - Emotes now go through the NATS path with mute filtering, just like `say` and `local` commands
     - This ensures emotes use `_broadcast_to_room_with_filtering()` which includes mute filtering logic
 
-  - **Unit Test Created**: `server/tests/unit/realtime/test_emote_mute_bug_reproduction.py`
-    - Test reproduces the exact bug scenario: AW mutes Ithaqua, Ithaqua sends emote, AW should NOT receive it
-    - Uses real UserManager instance (not mocked) to catch actual implementation bugs
-    - Includes positive test cases (unmuted, after unmute) to verify correct behavior
-  - **Detailed Logging Added**: Comprehensive INFO-level logging throughout mute check process
-    - `_broadcast_to_room_with_filtering`: Logs mute check start, result, and filtering decision
-    - `_is_player_muted_by_receiver_with_user_manager`: Logs personal and global mute checks
-    - `is_player_muted` (UserManager): Logs mute data loading, lookup, and result
-    - All logs prefixed with `=== MUTE FILTERING:` or `=== USER MANAGER:` for easy filtering
+- **Unit Test Created**: `server/tests/unit/realtime/test_emote_mute_bug_reproduction.py`
+  - Test reproduces the exact bug scenario: AW mutes Ithaqua, Ithaqua sends emote, AW should NOT receive it
+  - Uses real UserManager instance (not mocked) to catch actual implementation bugs
+  - Includes positive test cases (unmuted, after unmute) to verify correct behavior
+- **Detailed Logging Added**: Comprehensive INFO-level logging throughout mute check process
+  - `_broadcast_to_room_with_filtering`: Logs mute check start, result, and filtering decision
+  - `_is_player_muted_by_receiver_with_user_manager`: Logs personal and global mute checks
+  - `is_player_muted` (UserManager): Logs mute data loading, lookup, and result
+  - All logs prefixed with `=== MUTE FILTERING:` or `=== USER MANAGER:` for easy filtering
 - **Files Modified**:
-    - `server/commands/utility_commands.py` - Modified `handle_emote_command` to use `chat_service.send_emote_message()` instead of direct broadcast
-    - `server/realtime/nats_message_handler.py` - Added detailed logging to mute filtering methods (for future debugging)
-    - `server/services/user_manager.py` - Added detailed logging to `is_player_muted` method (for future debugging)
-    - `server/tests/unit/realtime/test_emote_mute_bug_reproduction.py` - New test file
-  - **Status**: Fix applied, requires testing
+  - `server/commands/utility_commands.py` - Modified `handle_emote_command` to use `chat_service.send_emote_message()` instead of direct broadcast
+  - `server/realtime/nats_message_handler.py` - Added detailed logging to mute filtering methods (for future debugging)
+  - `server/services/user_manager.py` - Added detailed logging to `is_player_muted` method (for future debugging)
+  - `server/tests/unit/realtime/test_emote_mute_bug_reproduction.py` - New test file
+- **Status**: Fix applied, requires testing
 
-### Test Results
+### Scenario 04: Test Results
 
 **Initial Test (Before Fix)**:
 ✅ AW successfully muted Ithaqua - received confirmation: "You have muted Ithaqua permanently."
@@ -472,7 +462,7 @@ findings and remediation steps.
 
 ### Status: ✅ **COMPLETED** (Root Cause Identified and Fix Applied)
 
-### Findings
+### Scenario 05: Findings
 
 #### 1. Chat Messages Being Filtered Due to Persistent Mute State ✅ **RESOLVED**
 
@@ -483,14 +473,14 @@ findings and remediation steps.
 **Root Cause**: **IDENTIFIED** - AW muted Ithaqua during scenario-04, and the mute state persisted into scenario-05. The mute filtering logic is working correctly - it's filtering messages as expected when a mute is active. The issue is that scenario-05 starts with a mute state from the previous scenario.
 
 - **Evidence from Logs**:
-  - `receiver_id='d839d857-1601-45dc-ac16-0960e034a52e' sender_id='22e6240f-11a1-4ea8-a5ab-e9b8e1a60670' is_personally_muted=True`
-  - `Message FILTERED OUT due to mute`
-  - `filtered_recipients=0 excluded_count=1`
+- `receiver_id='d839d857-1601-45dc-ac16-0960e034a52e' sender_id='22e6240f-11a1-4ea8-a5ab-e9b8e1a60670' is_personally_muted=True`
+- `Message FILTERED OUT due to mute`
+- `filtered_recipients=0 excluded_count=1`
 - **Impact**: Medium - messages are being processed and broadcast correctly, but are being filtered out by mute state from previous scenario. This is expected behavior, but scenarios need clean state.
 - **Remediation**: ✅ **RESOLVED**
-  - AW must unmute Ithaqua before starting scenario-05: `unmute Ithaqua`
-  - This ensures clean state for chat message testing
-  - **Status**: Fix verified - unmute command available, ready to test
+- AW must unmute Ithaqua before starting scenario-05: `unmute Ithaqua`
+- This ensures clean state for chat message testing
+- **Status**: Fix verified - unmute command available, ready to test
 
 #### 2. Chat Messages Not Broadcasting Between Players ⚠️ **FALSE POSITIVE - RESOLVED**
 
@@ -498,21 +488,21 @@ findings and remediation steps.
 
 **Symptoms**:
 
-  - AW successfully sent "say Hello Ithaqua" - saw own confirmation: "You say: Hello Ithaqua" ✅
+- AW successfully sent "say Hello Ithaqua" - saw own confirmation: "You say: Hello Ithaqua" ✅
 
-  - Ithaqua did NOT see "ArkanWolfshade says: Hello Ithaqua" (wait_for timeout) ❌
+- Ithaqua did NOT see "ArkanWolfshade says: Hello Ithaqua" (wait_for timeout) ❌
 
-  - Ithaqua successfully sent "say Greetings ArkanWolfshade" - saw own confirmation: "You say: Greetings ArkanWolfshade" ✅
+- Ithaqua successfully sent "say Greetings ArkanWolfshade" - saw own confirmation: "You say: Greetings ArkanWolfshade" ✅
 
-  - AW did NOT see "Ithaqua says: Greetings ArkanWolfshade" (wait_for timeout) ❌
+- AW did NOT see "Ithaqua says: Greetings ArkanWolfshade" (wait_for timeout) ❌
 
-  - Evaluation shows `sayMessageCount: 0` for AW, indicating no "says:" messages received
+- Evaluation shows `sayMessageCount: 0` for AW, indicating no "says:" messages received
 
-  - Connection state shows AW's connection went to "Disconnected" and "Reconnecting" during scenario
+- Connection state shows AW's connection went to "Disconnected" and "Reconnecting" during scenario
 
 **Root Cause**: **INVESTIGATING** - Chat messages appear to be sent successfully (players see own confirmations), but broadcasting to other players in the same room is not working
 
-  **Potential Issues**:
+**Potential Issues**:
 
     1. NATS message broadcasting may not be working correctly
 
@@ -525,20 +515,22 @@ findings and remediation steps.
 **Impact**: High - core multiplayer chat functionality broken, players cannot communicate
 
 **Remediation**: Requires investigation into chat message broadcasting and room subscription logic
+
 - **Files**: Server-side chat broadcasting logic (to be identified)
 - **Status**: Bug identified, requires investigation and fix
 
-### Test Results (Partial)
+### Scenario 05: Test Results (Partial)
 
 ✅ AW successfully sent chat message - received confirmation: "You say: Hello Ithaqua"
 
 ❌ **BUG**: Ithaqua did NOT see AW's message "ArkanWolfshade says: Hello Ithaqua"
 
 ✅ Ithaqua successfully sent chat message - received confirmation: "You say: Greetings ArkanWolfshade"
+
 - ❌ **BUG**: AW did NOT see Ithaqua's message "Ithaqua says: Greetings ArkanWolfshade"
 - ⚠️ Connection state: AW's connection showed "Disconnected" and "Reconnecting" during scenario
 
-### Remediation Priority
+### Scenario 05: Remediation Priority
 
 1. ✅ **COMPLETED**: Added explicit unmute step at start of scenario-05 to clear persistent mute state
 

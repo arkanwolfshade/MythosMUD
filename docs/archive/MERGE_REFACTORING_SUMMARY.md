@@ -1,6 +1,6 @@
 # Test Suite Refactoring - Post-Merge Application
 
-> *"Order has been restored to the archives, Professor. The wayward manuscripts have been catalogued and shelved appropriately."* - Notes from the Reorganization of the Restricted Section, October 2025
+> _"Order has been restored to the archives, Professor. The wayward manuscripts have been catalogued and shelved appropriately."_ - Notes from the Reorganization of the Restricted Section, October 2025
 
 ## Executive Summary
 
@@ -70,8 +70,8 @@ This ensures consistency with the refactored test suite and prevents import path
 
 **Fix**: Updated assertion to reflect new default:
 
-  - Old: `earth_arkhamcity_northside_intersection_derby_high`
-  - New: `earth_arkhamcity_sanitarium_room_foyer_001`
+- Old: `earth_arkhamcity_northside_intersection_derby_high`
+- New: `earth_arkhamcity_sanitarium_room_foyer_001`
 
 #### 2. Lifespan Module Changes
 
@@ -228,7 +228,6 @@ Absolute imports are more maintainable than relative imports
 
 ---
 
-*"Through methodical organization and careful validation, we have once again proven that even the most chaotic merge conflicts can be tamed through academic rigor and systematic cataloguing."*
+> "Through methodical organization and careful validation, we have once again proven that even the most chaotic merge conflicts can be tamed through academic rigor and systematic cataloguing."
 
-— Refactoring Complete —
-*October 15, 2025*
+Refactoring complete — October 15, 2025

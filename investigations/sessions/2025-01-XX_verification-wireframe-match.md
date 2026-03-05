@@ -56,10 +56,10 @@ According to `client/wireframe.png`, the layout should have:
 
 **Left Column:**
 
-  - Chat History: x:20, y:68, width:613, height:496 ✅
-  - Location: x:20, y:564, width:613, height:124 ✅
-  - Room Description: x:20, y:688, width:613, height:186 ✅
-  - Occupants: x:20, y:874, width:613, height:186 ✅
+- Chat History: x:20, y:68, width:613, height:496 ✅
+- Location: x:20, y:564, width:613, height:124 ✅
+- Room Description: x:20, y:688, width:613, height:186 ✅
+- Occupants: x:20, y:874, width:613, height:186 ✅
 
 **Center Column:**
 
@@ -128,7 +128,7 @@ According to `client/wireframe.png`, the layout should have:
 **Center Column (x: 653):**
 
 - Game Info panel fills entire column height
-- Position: x:653 (calculated as: padding * 2 + columnWidth)
+- Position: x:653 (calculated as: padding \* 2 + columnWidth)
 - Width: 613px (matches other columns)
 
 **Right Column (x: 1287):**
@@ -156,7 +156,7 @@ According to `client/wireframe.png`, the layout should have:
 
 - Width: 1600/1920 = 0.833 (83.3%)
 - Height: 900/1080 = 0.833 (83.3%)
-- Column width scaled: 613 * 0.833 ≈ 510px (actual: 507px) ✅
+- Column width scaled: 613 \* 0.833 ≈ 510px (actual: 507px) ✅
 
 ---
 
@@ -223,17 +223,14 @@ The scaling system correctly:
 ## Screenshots
 
 1. **Default Layout (1920x1080):**
-
    - `investigations/sessions/2025-01-XX_verification-wireframe-default-layout.png`
    - Shows perfect three-column layout matching wireframe
 
 2. **Scaled Layout (1600x900):**
-
    - `investigations/sessions/2025-01-XX_verification-wireframe-scaled-1600x900.png`
    - Shows panels scaled proportionally, maintaining structure
 
 3. **Initial State with localStorage:**
-
    - `investigations/sessions/2025-01-XX_verification-wireframe-match-1920x1080.png`
    - Shows overlapping panels due to old localStorage data
 

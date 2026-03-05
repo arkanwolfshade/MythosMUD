@@ -52,11 +52,11 @@ CLOSED (Normal) → OPEN (Failing) → HALF_OPEN (Testing) → CLOSED (Normal)
 
 **Enhancements**:
 
-  - Add metrics collection (success/failure counts, state transitions)
-  - Add configuration validation
-  - Add thread safety improvements
-  - Add async support for async operations
-  - Add context manager support
+- Add metrics collection (success/failure counts, state transitions)
+- Add configuration validation
+- Add thread safety improvements
+- Add async support for async operations
+- Add context manager support
 
 #### 1.2 Create CircuitBreaker Manager
 
@@ -64,10 +64,10 @@ CLOSED (Normal) → OPEN (Failing) → HALF_OPEN (Testing) → CLOSED (Normal)
 
 **Features**:
 
-  - Global configuration management
-  - Circuit breaker registry
-  - Health check endpoints
-  - Metrics aggregation
+- Global configuration management
+- Circuit breaker registry
+- Health check endpoints
+- Metrics aggregation
 
 #### 1.3 Add Configuration Support
 
@@ -75,10 +75,10 @@ CLOSED (Normal) → OPEN (Failing) → HALF_OPEN (Testing) → CLOSED (Normal)
 
 **Configuration Options**:
 
-  - Default failure thresholds
-  - Default timeout values
-  - Monitoring settings
-  - Logging verbosity
+- Default failure thresholds
+- Default timeout values
+- Monitoring settings
+- Logging verbosity
 
 ### Phase 2: Database Layer Integration
 
@@ -91,10 +91,10 @@ CLOSED (Normal) → OPEN (Failing) → HALF_OPEN (Testing) → CLOSED (Normal)
 
 **Operations to Protect**:
 
-  - Player data save/load operations
-  - Room data operations
-  - Inventory operations
-  - Batch operations
+- Player data save/load operations
+- Room data operations
+- Inventory operations
+- Batch operations
 
 #### 2.2 Database Connection Protection
 
@@ -102,10 +102,10 @@ CLOSED (Normal) → OPEN (Failing) → HALF_OPEN (Testing) → CLOSED (Normal)
 
 **Operations to Protect**:
 
-  - Connection establishment
-  - Query execution
-  - Transaction management
-  - Connection pooling
+- Connection establishment
+- Query execution
+- Transaction management
+- Connection pooling
 
 #### 2.3 Configuration
 
@@ -133,10 +133,10 @@ circuit_breakers:
 
 **Operations to Protect**:
 
-  - Message publishing
-  - Message subscription
-  - Connection management
-  - Channel operations
+- Message publishing
+- Message subscription
+- Connection management
+- Channel operations
 
 #### 3.2 WebSocket Protection
 
@@ -144,9 +144,9 @@ circuit_breakers:
 
 **Operations to Protect**:
 
-  - Connection establishment
-  - Message broadcasting
-  - Client management
+- Connection establishment
+- Message broadcasting
+- Client management
 
 #### 3.3 Configuration
 
@@ -178,9 +178,9 @@ circuit_breakers:
 
 **Operations to Protect**:
 
-  - Room file loading
-  - Zone configuration loading
-  - Room validation
+- Room file loading
+- Zone configuration loading
+- Room validation
 
 #### 4.2 Player Data File Operations
 
@@ -188,9 +188,9 @@ circuit_breakers:
 
 **Operations to Protect**:
 
-  - Alias file operations
-  - Configuration file operations
-  - Backup operations
+- Alias file operations
+- Configuration file operations
+- Backup operations
 
 #### 4.3 Configuration
 
@@ -217,10 +217,10 @@ circuit_breakers:
 
 **Operations to Protect**:
 
-  - Password hashing
-  - Token validation
-  - User lookup
-  - Session management
+- Password hashing
+- Token validation
+- User lookup
+- Session management
 
 #### 5.2 Rate Limiting Integration
 
@@ -228,9 +228,9 @@ circuit_breakers:
 
 **Operations to Protect**:
 
-  - Rate limit checking
-  - IP blocking
-  - User throttling
+- Rate limit checking
+- IP blocking
+- User throttling
 
 ### Phase 6: Monitoring and Observability
 
@@ -243,10 +243,10 @@ circuit_breakers:
 
 **Metrics to Collect**:
 
-  - Success/failure rates
+- Success/failure rates
 - State transition counts
-  - Response times
-  - Error types
+- Response times
+- Error types
 
 #### 6.2 Health Check Endpoints
 
@@ -254,9 +254,9 @@ circuit_breakers:
 
 **Endpoints**:
 
-  - `/health/circuit-breakers` - Overall health
-  - `/health/circuit-breakers/{name}` - Specific breaker
-  - `/metrics/circuit-breakers` - Detailed metrics
+- `/health/circuit-breakers` - Overall health
+- `/health/circuit-breakers/{name}` - Specific breaker
+- `/metrics/circuit-breakers` - Detailed metrics
 
 #### 6.3 Logging Integration
 
@@ -264,10 +264,10 @@ circuit_breakers:
 
 **Events to Log**:
 
-  - State transitions
-  - Failure thresholds reached
-  - Timeout events
-  - Recovery events
+- State transitions
+- Failure thresholds reached
+- Timeout events
+- Recovery events
 
 ## Implementation Details
 
@@ -549,6 +549,7 @@ If issues are discovered:
 **Phase 2**: Day 2 (2-3 hours) - Database integration
 
 **Phase 3**: Day 3 (2-3 hours) - Real-time communication
+
 - **Phase 4**: Day 4 (1-2 hours) - File system operations
 - **Phase 5**: Day 5 (1-2 hours) - Authentication
 - **Phase 6**: Day 6 (2-3 hours) - Monitoring and observability
@@ -571,6 +572,7 @@ No external dependencies beyond existing infrastructure
 **Machine learning** for failure prediction
 
 **Distributed circuit breakers** for microservices
+
 - **Circuit breaker patterns** (bulkhead, retry, etc.)
 
 ### Integration Opportunities
@@ -580,13 +582,16 @@ No external dependencies beyond existing infrastructure
 **Grafana dashboards** for visualization
 
 **PagerDuty integration** for alerting
+
 - **Slack notifications** for status updates
 
 ---
 
-*"As the ancient texts state: 'The proof of the pudding is in the eating, and the proof of the system is in the testing.'"*
+> "As the ancient texts state: 'The proof of the pudding is in the eating, and the proof of the system is in the testing.'"
 
-**Document Version**: 1.0
-**Created**: 2025-01-27
-**Last Updated**: 2025-01-27
-**Status**: Planning Phase
+### Document metadata
+
+- Document Version: 1.0
+- Created: 2025-01-27
+- Last Updated: 2025-01-27
+- Status: Planning Phase

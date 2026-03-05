@@ -1,4 +1,4 @@
-F# Security Sanitization Enhancement Planning
+# Security Sanitization Enhancement Planning
 
 ## Overview
 
@@ -57,11 +57,11 @@ Basic injection pattern detection via regex in `security_validator.py`
 
 **Key Features**:
 
-  - Mojibake detection and correction
-  - Combining character normalization
-  - Invisible Unicode character removal
-  - Curly quote conversion
-  - Line break normalization
+- Mojibake detection and correction
+- Combining character normalization
+- Invisible Unicode character removal
+- Curly quote conversion
+- Line break normalization
 
 #### 2. strip-ansi
 
@@ -71,9 +71,9 @@ Basic injection pattern detection via regex in `security_validator.py`
 
 **Key Features**:
 
-  - ANSI color code removal
-  - Cursor movement code removal
-  - Terminal escape sequence cleanup
+- ANSI color code removal
+- Cursor movement code removal
+- Terminal escape sequence cleanup
 
 ## Implementation Plan
 
@@ -87,14 +87,12 @@ Basic injection pattern detection via regex in `security_validator.py`
    ```
 
 2. **Update virtual environment**
-
    - Run `uv sync` to install new dependencies
    - Verify installation with test imports
 
 ### Phase 2: Security Validator Enhancement
 
 1. **Enhance `server/validators/security_validator.py`**
-
    - Add import statements for new libraries
    - Create `sanitize_unicode_input()` function using ftfy
    - Create `strip_ansi_codes()` function using strip-ansi
@@ -118,7 +116,6 @@ Basic injection pattern detection via regex in `security_validator.py`
 ### Phase 3: Command Validator Integration
 
 1. **Update `server/validators/command_validator.py`**
-
    - Import new sanitization functions
    - Modify `clean_command_input()` to use comprehensive sanitization
    - Maintain backward compatibility with existing function signatures
@@ -126,7 +123,6 @@ Basic injection pattern detection via regex in `security_validator.py`
    - **Review validation logic**: Ensure `is_suspicious_input()` focuses on true injection attempts, not legitimate user expression
 
 2. **Integration Points**
-
    - Apply sanitization before command normalization
    - Log sanitization changes for debugging
    - Preserve original input for comparison
@@ -134,7 +130,6 @@ Basic injection pattern detection via regex in `security_validator.py`
 ### Phase 4: Package Export Updates
 
 1. **Update `server/validators/__init__.py`**
-
    - Export new sanitization functions
    - Update `__all__` list
    - Maintain existing API compatibility
@@ -142,7 +137,6 @@ Basic injection pattern detection via regex in `security_validator.py`
 ### Phase 5: Testing Implementation
 
 1. **Create comprehensive test suite**
-
    - Test Unicode normalization scenarios
    - Test ANSI code removal scenarios
    - Test combined sanitization
@@ -152,7 +146,6 @@ Basic injection pattern detection via regex in `security_validator.py`
    - **Test sanitization vs validation**: Verify we're cleaning, not rejecting
 
 2. **Test Scenarios**
-
    - Mojibake text (double-encoded Unicode)
    - Combining characters (e.g., e + combining acute accent)
    - Invisible Unicode characters (zero-width spaces)
@@ -166,13 +159,11 @@ Basic injection pattern detection via regex in `security_validator.py`
 ### Phase 6: Documentation and Validation
 
 1. **Update documentation**
-
    - Add security enhancement notes to relevant docs
    - Document new function APIs
    - Update security guidelines
 
 2. **Performance validation**
-
    - Measure sanitization overhead
    - Test with various input sizes
    - Ensure acceptable performance for real-time use

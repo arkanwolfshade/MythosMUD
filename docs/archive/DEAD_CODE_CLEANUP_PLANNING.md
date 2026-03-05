@@ -59,6 +59,7 @@ None identified in this cleanup
 **Action**: Delete file entirely
 
 **Verification**: Run test suite to ensure no impact
+
 - **Files to modify**: None (deletion only)
 - **Status**: ✅ Completed - File deleted, all tests pass
 
@@ -69,6 +70,7 @@ None identified in this cleanup
 **Action**: Delete file entirely
 
 **Verification**: Run test suite to ensure no impact
+
 - **Files to modify**: None (deletion only)
 
 #### 1.4 Remove `server/player_manager.py`
@@ -78,6 +80,7 @@ None identified in this cleanup
 **Action**: Delete file entirely
 
 **Verification**: Run test suite to ensure no impact
+
 - **Files to modify**: None (deletion only)
 
 ### Phase 2: Medium Priority - Extract and Remove Legacy Code
@@ -91,17 +94,17 @@ None identified in this cleanup
 
 **Action**:
 
-  1. Create `server/utils/motd_loader.py` for the `load_motd()` function
+1. Create `server/utils/motd_loader.py` for the `load_motd()` function
 
-  2. Update imports in files that use `load_motd()`
+2. Update imports in files that use `load_motd()`
 
-  3. Remove `server/real_time.py`
+3. Remove `server/real_time.py`
 
 **Files to modify**:
 
-  - Create: `server/utils/motd_loader.py`
-  - Update: `server/api/__init__.py` (if imports real_time)
-  - Update: `server/tests/test_real_time.py` (rename to test_motd_loader.py)
+- Create: `server/utils/motd_loader.py`
+- Update: `server/api/__init__.py` (if imports real_time)
+- Update: `server/tests/test_real_time.py` (rename to test_motd_loader.py)
 - **Verification**: Ensure MOTD loading still works correctly
 - **Status**: ✅ Completed - MOTD function extracted to utils module, tests updated, legacy file removed
 
@@ -130,8 +133,8 @@ None identified in this cleanup
 **Verification**: Run test suite to ensure no impact
 
 - **Files to modify**:
-  - `server/auth/argon2_utils.py`
-  - `server/tests/test_argon2_utils.py` (remove benchmark tests)
+- `server/auth/argon2_utils.py`
+- `server/tests/test_argon2_utils.py` (remove benchmark tests)
 - **Status**: ✅ Completed - Function and benchmark tests removed, all tests pass, no linting errors
 
 ## Success Criteria
@@ -223,9 +226,11 @@ No external dependencies
 
 ---
 
-*"As the ancient texts state: 'The proof of the pudding is in the eating, and the proof of the system is in the testing.'"*
+> "As the ancient texts state: 'The proof of the pudding is in the eating, and the proof of the system is in the testing.'"
 
-**Document Version**: 1.0
-**Created**: 2025-01-16
-**Last Updated**: 2025-01-16
-**Status**: Planning Phase
+### Document metadata
+
+- Document Version: 1.0
+- Created: 2025-01-16
+- Last Updated: 2025-01-16
+- Status: Planning Phase

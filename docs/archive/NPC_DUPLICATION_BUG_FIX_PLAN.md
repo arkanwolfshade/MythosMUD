@@ -41,19 +41,16 @@ Dr. Francis Morgan NPC spawns twice in sanitarium foyer entrance
 ### Root Cause Details
 
 1. **Dual Event Subscription:**
-
    - `NPCPopulationController` subscribes to `PlayerEnteredRoom`
    - `NPCSpawningService` also subscribes to `PlayerEnteredRoom`
    - Both systems trigger spawn logic independently
 
 2. **Population Tracking Race Condition:**
-
    - Population stats updated AFTER spawning, not before validation
    - First spawn: `current_count = 0` → spawns
    - Second spawn: `current_count = 0` (not yet updated) → spawns again
 
 3. **Architectural Design Flaw:**
-
    - Spawning service designed to work WITH population controller
    - Both systems independently responding to same events
    - No coordination between the two spawning mechanisms
@@ -103,14 +100,14 @@ Dr. Francis Morgan NPC spawns twice in sanitarium foyer entrance
 
 **Implementation:**
 
-  ```python
-  # Update stats first
+```python
+# Update stats first
 
-  stats.add_npc(definition.npc_type, room_id, definition.is_required(), definition.id)
-  # Then spawn
+stats.add_npc(definition.npc_type, room_id, definition.is_required(), definition.id)
+# Then spawn
 
-  npc_instance = self.spawning_service._spawn_npc_from_request(spawn_request)
-  ```
+npc_instance = self.spawning_service._spawn_npc_from_request(spawn_request)
+```
 
 #### 2.2 Add Spawn Validation Lock
 
@@ -154,10 +151,10 @@ Dr. Francis Morgan NPC spawns twice in sanitarium foyer entrance
 
 **Test Cases:**
 
-  - Single NPC spawn with max_population=1
-  - Multiple spawn attempts for same NPC
-  - Population tracking accuracy
-  - Event handling isolation
+- Single NPC spawn with max_population=1
+- Multiple spawn attempts for same NPC
+- Population tracking accuracy
+- Event handling isolation
 
 #### 4.2 Integration Tests
 
@@ -165,9 +162,9 @@ Dr. Francis Morgan NPC spawns twice in sanitarium foyer entrance
 
 **Test Cases:**
 
-  - Player enters room → NPC spawns once
-  - Multiple players enter → proper population management
-  - Server restart → clean spawn state
+- Player enters room → NPC spawns once
+- Multiple players enter → proper population management
+- Server restart → clean spawn state
 
 #### 4.3 Manual Testing
 
@@ -175,11 +172,11 @@ Dr. Francis Morgan NPC spawns twice in sanitarium foyer entrance
 
 **Test Steps:**
 
-  1. Start server
-  2. Login to game
-  3. Navigate to sanitarium foyer entrance
-  4. Verify only one "Dr." appears in occupants
-  5. Restart server and repeat
+1. Start server
+2. Login to game
+3. Navigate to sanitarium foyer entrance
+4. Verify only one "Dr." appears in occupants
+5. Restart server and repeat
 
 ---
 
@@ -256,13 +253,11 @@ Dr. Francis Morgan NPC spawns twice in sanitarium foyer entrance
 ### If Immediate Fix Fails
 
 1. **Revert Event Subscription Changes**
-
    - Restore spawning service event subscription
    - Document why fix didn't work
    - Investigate alternative approaches
 
 2. **Emergency Workaround**
-
    - Temporarily set `max_population = 0` for Dr. Francis Morgan
    - Prevents duplication until proper fix implemented
    - Notify users of temporary NPC unavailability
@@ -270,7 +265,6 @@ Dr. Francis Morgan NPC spawns twice in sanitarium foyer entrance
 ### If Population Tracking Changes Cause Issues
 
 1. **Revert Population Updates**
-
    - Restore original population tracking logic
    - Investigate thread safety issues
    - Implement alternative locking strategy
@@ -341,6 +335,8 @@ The key insight is that this bug reveals a fundamental architectural issue where
 
 ---
 
-*"As noted in the Pnakotic Manuscripts, the restoration of cosmic order requires methodical application of ancient principles. The duplication of entities across dimensional boundaries must be addressed with both immediate intervention and long-term architectural improvements to prevent future manifestations of this eldritch anomaly."*
+> "As noted in the Pnakotic Manuscripts, the restoration of cosmic order requires methodical application of ancient principles. The duplication of entities across dimensional boundaries must be addressed with both immediate intervention and long-term architectural improvements to prevent future manifestations of this eldritch anomaly."
 
-**Document Status:** ✅ **READY FOR IMPLEMENTATION**
+### Document status
+
+✅ Ready for implementation
