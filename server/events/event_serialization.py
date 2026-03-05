@@ -66,7 +66,7 @@ def _convert_value_for_json(value: Any) -> Any:
         return value.isoformat()
     if isinstance(value, dict):
         return {k: _convert_value_for_json(v) for k, v in value.items()}
-    if isinstance(value, (list, tuple)):
+    if isinstance(value, list | tuple):
         return [_convert_value_for_json(v) for v in value]
     return value
 

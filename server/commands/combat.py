@@ -330,7 +330,8 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
         player, room_id, err = await self._validate_attack_player_and_room(request_app, current_user, target_name)
         if err:
             return None, None, None, None, err
-        assert target_name is not None  # Guaranteed by _validate_attack_player_and_room
+        if target_name is None:
+            raise RuntimeError("target_name must be set when _validate_attack_player_and_room returns no error")
         target_match, npc_instance, action_err = await self._validate_attack_target_and_action(
             player, target_name, player_name, command
         )
@@ -466,7 +467,8 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
         combat, room_id, combat_error = await self._validate_flee_combat_and_room(player_id, player)
         if combat_error:
             raise FleePreconditionError(combat_error)
-        assert room_id is not None  # _validate_flee_combat_and_room returns (_, str, None) when no error
+        if room_id is None:
+            raise RuntimeError("room_id must be set when _validate_flee_combat_and_room returns no error")
         return (player, player_id, combat, room_id)
 
     async def handle_flee_command(

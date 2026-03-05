@@ -360,7 +360,8 @@ class _MagicServiceCore(MagicServiceCompletionMixin, MagicServiceHealingMixin): 
         spell, target, err = await self._get_spell_and_validate_target(player_id, spell_id, target_name)
         if err is not None:
             return err
-        assert spell is not None and target is not None  # Guaranteed when err is None
+        if spell is None or target is None:
+            raise RuntimeError("spell and target must be set when err is None")
 
         player_spell = await self.player_spell_repository.get_player_spell(player_id, spell.spell_id)
         mastery = int(player_spell.mastery) if player_spell else 0

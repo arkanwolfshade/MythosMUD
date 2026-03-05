@@ -279,7 +279,7 @@ class PlayerCombatService:
             if self._npc_combat_integration_service
             else None
         )
-        if rewards is not None and isinstance(xp_amount, (int, float)) and xp_amount > 0:
+        if rewards is not None and isinstance(xp_amount, int | float) and xp_amount > 0:
             try:
                 await rewards.award_xp_to_killer(str(player_id), str(npc_id), int(xp_amount))
             except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError, Exception) as e:  # pylint: disable=broad-exception-caught  # noqa: B904

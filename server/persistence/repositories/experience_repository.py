@@ -173,7 +173,7 @@ class ExperienceRepository:
             ValueError: If field_name invalid or delta type wrong
             DatabaseError: If database operation fails
         """
-        if not isinstance(delta, (int, float)):
+        if not isinstance(delta, int | float):
             raise TypeError(f"delta must be int or float, got {type(delta).__name__}")
 
         if field_name not in self.FIELD_NAME_TO_PATH:

@@ -153,8 +153,8 @@ async def test_get_npc_system_statistics_return_shape(
     assert GET_NPC_SYSTEM_STATISTICS_COLUMNS.issubset(keys), (
         f"get_npc_system_statistics() must return columns {GET_NPC_SYSTEM_STATISTICS_COLUMNS}; got {keys}"
     )
-    assert isinstance(first.get("total_npc_definitions"), (int, type(None)))
-    assert isinstance(first.get("total_spawn_rules"), (int, type(None)))
+    assert isinstance(first.get("total_npc_definitions"), int | None)
+    assert isinstance(first.get("total_spawn_rules"), int | None)
 
 
 @pytest.mark.asyncio

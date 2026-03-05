@@ -322,7 +322,8 @@ async def _execute_npc_edit(request: Any, npc_id: int, field: str, value: Any, p
             params, error = _build_npc_edit_params(field, value)
             if error:
                 return error
-            assert params is not None  # For type checker; error is None when params is not None
+            if params is None:
+                raise RuntimeError("params must be set when error is None")
 
             definition = await npc_service.update_npc_definition(
                 session=session,
@@ -907,7 +908,8 @@ async def handle_npc_test_occupants_command(
         context, error_result = await _resolve_test_occupants_context(command_data, request, player_name)
         if error_result:
             return error_result
-        assert context is not None  # For type checker; context is non-None when error_result is None
+        if context is None:
+            raise RuntimeError("context must be set when error_result is None")
         event_handler, room_id = context
 
         logger.info("Manually triggering occupant query for testing", admin_name=player_name, room_id=room_id)
@@ -952,8 +954,8 @@ async def _resolve_test_occupants_context(
     if error_result:
         return None, error_result
 
-    assert event_handler is not None
-    assert room_id is not None
+    if event_handler is None or room_id is None:
+        raise RuntimeError("event_handler and room_id must be set when error_result is None")
     return (event_handler, room_id), None
 
 

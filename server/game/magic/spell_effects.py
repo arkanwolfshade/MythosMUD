@@ -261,7 +261,7 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
         if not stat_modifications:
             stat_name = spell.effect_data.get("stat")
             delta = spell.effect_data.get("delta")
-            if stat_name and isinstance(delta, (int, float)):
+            if stat_name and isinstance(delta, int | float):
                 stat_modifications = {str(stat_name): delta}
         if not stat_modifications:
             return None, {

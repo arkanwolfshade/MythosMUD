@@ -147,7 +147,8 @@ class MagicServiceCompletionMixin:
         self, player_id: uuid.UUID, spell: Any, casting_state: Any, combat: Any
     ) -> bool:
         """Apply costs and queue spell for next combat round. Returns True if queued, False to run immediately."""
-        assert self.combat_service is not None  # Caller only invokes when combat_service and combat exist
+        if self.combat_service is None:
+            raise RuntimeError("combat_service must be set when invoking _try_queue_spell_for_combat")
         await self.spell_costs_service.apply_costs(player_id, spell)
         target_id = self._parse_casting_target_id(casting_state)
         queued = await self.combat_service.queue_combat_action(
