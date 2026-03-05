@@ -14,6 +14,7 @@ import os
 import sys
 import uuid
 from datetime import UTC, datetime
+from typing import Any
 
 from anyio import run
 
@@ -36,6 +37,11 @@ async def _seed_e2e_users() -> None:
         database_url = "postgresql://postgres:Cthulhu1@localhost:5432/mythos_e2e"
     url = database_url.replace("postgresql+asyncpg://", "postgresql://")
 
+    search_path = os.environ.get("POSTGRES_SEARCH_PATH", "").strip()
+    connect_kwargs: dict[str, Any] = {}
+    if search_path:
+        connect_kwargs["server_settings"] = {"search_path": search_path}
+
     import asyncpg
 
     from server.auth.argon2_utils import hash_password
@@ -43,7 +49,7 @@ async def _seed_e2e_users() -> None:
     hashed = hash_password(E2E_PASSWORD)
     now = datetime.now(UTC).replace(tzinfo=None)
 
-    conn = await asyncpg.connect(url)
+    conn = await asyncpg.connect(url, **connect_kwargs)
     try:
         for username, is_superuser, is_admin in E2E_USERS:
             existing = await conn.fetchrow("SELECT id FROM users WHERE LOWER(username) = LOWER($1)", username)

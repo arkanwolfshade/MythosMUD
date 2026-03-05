@@ -9,22 +9,41 @@ import uuid
 from collections.abc import Callable, Iterable, Sequence
 from dataclasses import dataclass
 from datetime import UTC, datetime
+from threading import Lock
 from typing import Any, Protocol
 
-from sqlalchemy import Select, delete, select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
 
-from ..models.lucidity import LucidityAdjustmentLog, LucidityCooldown, LucidityExposureState, PlayerLucidity
+from ..models.lucidity import LucidityCooldown, LucidityExposureState, PlayerLucidity
 from ..structured_logging.enhanced_logging_config import get_logger
 from .lucidity_event_dispatcher import (
     send_catatonia_event,
     send_lucidity_change_event,
     send_rescue_update_event,
 )
+from .lucidity_repository import LucidityRepository
 
 logger = get_logger(__name__)
+
+# Delirium respawn debounce: do not log/send delirium event again for the same player within this many seconds.
+DELIRIUM_DEBOUNCE_SECONDS = 120
+_last_delirium_trigger: dict[str, datetime] = {}
+_delirium_debounce_lock = Lock()
+
+
+@dataclass(frozen=True)
+class _LucidityChangeEventContext:
+    """Context for sending a lucidity change event (reduces parameter count)."""
+
+    record: Any
+    delta: int
+    previous_tier: str
+    new_tier: str
+    new_lcd: int
+    reason_code: str
+    metadata_map: dict[str, Any]
+    location_id: str | None
 
 
 def _utc_now() -> datetime:
@@ -101,184 +120,6 @@ def encode_liabilities(entries: Iterable[dict[str, Any]]) -> str:
         if code:
             sanitized.append({"code": code, "stacks": max(1, stacks_int)})
     return json.dumps(sanitized)
-
-
-class LucidityRepository:
-    """Data-access helpers for lucidity persistence."""
-
-    def __init__(self, session: AsyncSession) -> None:
-        self._session = session
-
-    async def get_player_lucidity(self, player_id: uuid.UUID) -> PlayerLucidity | None:
-        """Get player lucidity record.
-
-        Args:
-            player_id: The UUID of the player
-
-        Returns:
-            PlayerLucidity | None: The player's lucidity record or None if not found
-        """
-        stmt: Select[tuple[PlayerLucidity]] = (
-            select(PlayerLucidity)
-            .options(selectinload(PlayerLucidity.player))
-            .where(PlayerLucidity.player_id == player_id)
-        )
-        result = await self._session.execute(stmt)
-        return result.scalar_one_or_none()
-
-    async def get_or_create_player_lucidity(self, player_id: uuid.UUID) -> PlayerLucidity:
-        """Get existing player lucidity record or create a new one.
-
-        Args:
-            player_id: The UUID of the player
-
-        Returns:
-            PlayerLucidity: The player's lucidity record (existing or newly created)
-        """
-        record = await self.get_player_lucidity(player_id)
-        if record is not None:
-            return record
-
-        record = PlayerLucidity(player_id=player_id)
-        self._session.add(record)
-        await self._session.flush()
-        return record
-
-    async def add_adjustment_log(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Adjustment log requires many parameters for complete logging context
-        self,
-        player_id: uuid.UUID,
-        delta: int,
-        reason_code: str,
-        metadata: str,
-        location_id: str | None,
-    ) -> LucidityAdjustmentLog:
-        """Add a lucidity adjustment log entry.
-
-        Args:
-            player_id: The UUID of the player
-            delta: The change in lucidity value
-            reason_code: Code describing the reason for the adjustment
-            metadata: Additional metadata as JSON string
-            location_id: Optional location ID where the adjustment occurred
-
-        Returns:
-            LucidityAdjustmentLog: The created log entry
-        """
-        log_entry = LucidityAdjustmentLog(
-            player_id=player_id,
-            delta=delta,
-            reason_code=reason_code,
-            metadata_payload=metadata,
-            location_id=location_id,
-            created_at=_utc_now(),
-        )
-        self._session.add(log_entry)
-        await self._session.flush()
-        return log_entry
-
-    async def get_exposure_state(self, player_id: uuid.UUID, entity_archetype: str) -> LucidityExposureState | None:
-        """Get exposure state for a player and entity archetype.
-
-        Args:
-            player_id: The UUID of the player
-            entity_archetype: The entity archetype identifier
-
-        Returns:
-            LucidityExposureState | None: The exposure state or None if not found
-        """
-        stmt: Select[tuple[LucidityExposureState]] = select(LucidityExposureState).where(
-            LucidityExposureState.player_id == player_id,
-            LucidityExposureState.entity_archetype == entity_archetype,
-        )
-        result = await self._session.execute(stmt)
-        return result.scalar_one_or_none()
-
-    async def increment_exposure_state(self, player_id: uuid.UUID, entity_archetype: str) -> LucidityExposureState:
-        """Increment exposure state for a player and entity archetype.
-
-        Args:
-            player_id: The UUID of the player
-            entity_archetype: The entity archetype identifier
-
-        Returns:
-            LucidityExposureState: The updated or newly created exposure state
-        """
-        exposure = await self.get_exposure_state(player_id, entity_archetype)
-        if exposure is None:
-            exposure = LucidityExposureState(
-                player_id=player_id,
-                entity_archetype=entity_archetype,
-                encounter_count=1,
-                last_encounter_at=_utc_now(),
-            )
-            self._session.add(exposure)
-        else:
-            exposure.encounter_count += 1
-            exposure.last_encounter_at = _utc_now()
-        await self._session.flush()
-        return exposure
-
-    async def get_cooldown(self, player_id: uuid.UUID, action_code: str) -> LucidityCooldown | None:
-        """Get cooldown state for a player and action.
-
-        Args:
-            player_id: The UUID of the player
-            action_code: The action code identifier
-
-        Returns:
-            LucidityCooldown | None: The cooldown state or None if not found
-        """
-        stmt: Select[tuple[LucidityCooldown]] = select(LucidityCooldown).where(
-            LucidityCooldown.player_id == player_id,
-            LucidityCooldown.action_code == action_code,
-        )
-        result = await self._session.execute(stmt)
-        return result.scalar_one_or_none()
-
-    async def set_cooldown(self, player_id: uuid.UUID, action_code: str, expires_at: datetime) -> LucidityCooldown:
-        """Set or update cooldown for a player and action.
-
-        Args:
-            player_id: The UUID of the player
-            action_code: The action code identifier
-            expires_at: The datetime when the cooldown expires
-
-        Returns:
-            LucidityCooldown: The updated or newly created cooldown state
-        """
-        cooldown = await self.get_cooldown(player_id, action_code)
-        if cooldown is None:
-            cooldown = LucidityCooldown(
-                player_id=player_id,
-                action_code=action_code,
-                cooldown_expires_at=expires_at,
-            )
-            self._session.add(cooldown)
-        else:
-            cooldown.cooldown_expires_at = expires_at
-        await self._session.flush()
-        return cooldown
-
-    async def delete_cooldowns_by_action_code_pattern(self, player_id: uuid.UUID, action_code_pattern: str) -> int:
-        """
-        Delete all cooldowns for a player matching an action code pattern.
-
-        Args:
-            player_id: Player ID
-            action_code_pattern: Action code pattern (e.g., 'hallucination_timer' or 'hallucination_%')
-
-        Returns:
-            Number of cooldowns deleted
-        """
-        stmt = delete(LucidityCooldown).where(
-            LucidityCooldown.player_id == player_id,
-            LucidityCooldown.action_code.like(action_code_pattern),
-        )
-        result = await self._session.execute(stmt)
-        await self._session.flush()
-        # SQLAlchemy Result objects have rowcount attribute at runtime, but mypy stubs don't reflect this
-        deleted_count: int = getattr(result, "rowcount", 0)
-        return deleted_count
 
 
 class CatatoniaObserverProtocol(Protocol):
@@ -359,30 +200,53 @@ class LucidityService:
                     message="Consciousness steadies; the grounding ritual completes.",
                 )
 
+    async def _handle_delirium_trigger(self, player_id: uuid.UUID, new_lcd: int, previous_lcd: int) -> None:
+        """Handle delirium respawn threshold (LCD crosses -10); debounced."""
+        if new_lcd > -10 or previous_lcd <= -10:
+            return
+        player_id_str = str(player_id)
+        with _delirium_debounce_lock:
+            last = _last_delirium_trigger.get(player_id_str)
+            now = datetime.now(UTC)
+            if last is not None:
+                elapsed = (now - last).total_seconds()
+                if elapsed < DELIRIUM_DEBOUNCE_SECONDS:
+                    return
+            _last_delirium_trigger[player_id_str] = now
+        logger.warning(
+            "Delirium respawn threshold reached", player_id=player_id, previous_lcd=previous_lcd, lcd=new_lcd
+        )
+        await send_rescue_update_event(
+            player_id=player_id_str,
+            status="delirium",
+            current_lcd=new_lcd,
+            message="Your mind fractures completely. The sanitarium calls you back from the edge of madness...",
+        )
+
+    async def _handle_sanitarium_trigger(self, player_id: uuid.UUID, new_lcd: int, previous_lcd: int) -> None:
+        """Handle sanitarium failover (LCD crosses -100); uses observer debounce if available."""
+        if new_lcd > -100 or previous_lcd <= -100 or not self._catatonia_observer:
+            return
+        observer = self._catatonia_observer
+        if hasattr(observer, "should_trigger_sanitarium_failover") and not observer.should_trigger_sanitarium_failover(
+            player_id
+        ):
+            return
+        logger.error("Sanitarium failover triggered", player_id=player_id, previous_lcd=previous_lcd, lcd=new_lcd)
+        observer.on_sanitarium_failover(player_id=player_id, current_lcd=new_lcd)
+        await send_rescue_update_event(
+            player_id=str(player_id),
+            status="sanitarium",
+            current_lcd=new_lcd,
+            message="Orderlies whisk you to Arkham Sanitarium for observation.",
+        )
+
     async def _handle_delirium_and_sanitarium_triggers(
         self, player_id: uuid.UUID, new_lcd: int, previous_lcd: int
     ) -> None:
         """Handle delirium respawn and sanitarium failover triggers."""
-        if new_lcd <= -10 and previous_lcd > -10:
-            logger.warning(
-                "Delirium respawn threshold reached", player_id=player_id, previous_lcd=previous_lcd, lcd=new_lcd
-            )
-            await send_rescue_update_event(
-                player_id=str(player_id),
-                status="delirium",
-                current_lcd=new_lcd,
-                message="Your mind fractures completely. The sanitarium calls you back from the edge of madness...",
-            )
-
-        if new_lcd <= -100 and previous_lcd > -100 and self._catatonia_observer:
-            logger.error("Sanitarium failover triggered", player_id=player_id, previous_lcd=previous_lcd, lcd=new_lcd)
-            self._catatonia_observer.on_sanitarium_failover(player_id=player_id, current_lcd=new_lcd)
-            await send_rescue_update_event(
-                player_id=str(player_id),
-                status="sanitarium",
-                current_lcd=new_lcd,
-                message="Orderlies whisk you to Arkham Sanitarium for observation.",
-            )
+        await self._handle_delirium_trigger(player_id, new_lcd, previous_lcd)
+        await self._handle_sanitarium_trigger(player_id, new_lcd, previous_lcd)
 
     async def _add_liabilities_for_adjustment(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Liability addition requires many parameters for context and liability tracking
         self,
@@ -410,86 +274,81 @@ class LucidityService:
                     liabilities_added.append(liability_added)
         return liabilities_added
 
-    async def _calculate_max_lcd(self, record: Any, player_id: uuid.UUID) -> int:
-        """Calculate max_lcd from player's education stat."""
-        max_lcd = 100  # Default fallback
+    def _get_player_from_record_inspect(self, record: Any) -> Any:
+        """Get player from record's relationship via SQLAlchemy inspect if already loaded. Returns None otherwise."""
         try:
-            # Try to safely check if player relationship is already loaded
-            # Use inspect to check relationship state without triggering lazy load
             from sqlalchemy import inspect as sqlalchemy_inspect
 
-            player_obj = None
+            insp = sqlalchemy_inspect(record)
+            if not hasattr(insp, "attrs") or "player" not in insp.attrs:
+                return None
+            attr_state = insp.attrs.player
+            if hasattr(attr_state, "loaded_value") and attr_state.loaded_value is not None:
+                return attr_state.loaded_value
+            if hasattr(attr_state, "value") and attr_state.value is not None:
+                return attr_state.value
+            return None
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: inspect can fail in many ways; fallback to explicit load
+            logger.debug("Inspect operation failed, falling through to explicit load", exc_info=e)
+            return None
+
+    @staticmethod
+    def _max_lcd_from_stats(stats: dict[str, Any]) -> int:
+        """Return max_lcd from stats dict (max_lucidity, education, or 100)."""
+        return int(stats.get("max_lucidity") or stats.get("education") or 100)
+
+    async def _calculate_max_lcd(self, record: Any, player_id: uuid.UUID) -> int:
+        """Calculate max_lcd from player's education stat."""
+        default = 100
+        player_obj = self._get_player_from_record_inspect(record)
+        if player_obj is not None and hasattr(player_obj, "get_stats"):
             try:
-                insp = sqlalchemy_inspect(record)
-                if hasattr(insp, "attrs") and "player" in insp.attrs:
-                    attr_state = insp.attrs.player
-                    # Check if relationship is loaded using the state's loaded_value or value attribute
-                    # loaded_value is set when relationship is eagerly loaded
-                    if hasattr(attr_state, "loaded_value") and attr_state.loaded_value is not None:
-                        player_obj = attr_state.loaded_value
-                    elif hasattr(attr_state, "value") and attr_state.value is not None:
-                        player_obj = attr_state.value
-            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: inspect operations can fail in various ways (AttributeError, TypeError, etc.), and we need graceful fallback to explicit load
-                # nosec B110 - Intentional silent handling: inspect operations can fail in various ways,
-                # and we need graceful fallback to explicit load if inspect fails (e.g., on new records)
-                logger.debug("Inspect operation failed, falling through to explicit load", exc_info=e)
+                return self._max_lcd_from_stats(player_obj.get_stats())
+            except AttributeError:
+                pass  # Not a real Player (e.g. LoaderCallableStatus); fall through to explicit load
+        try:
+            from ..models.player import Player
 
-            # Verify player_obj is actually a Player instance (not a LoaderCallableStatus)
-            if player_obj is not None and hasattr(player_obj, "get_stats"):
-                try:
-                    stats = player_obj.get_stats()
-                    max_lcd = stats.get("max_lucidity") or stats.get("education") or 100
-                except AttributeError:
-                    # player_obj is not actually a Player (e.g., LoaderCallableStatus) - fall through to explicit load
-                    player_obj = None  # Force explicit load path
-
-            if player_obj is None:
-                # Player relationship not loaded or inspect failed - use explicit async load
-                from ..models.player import Player
-
-                player = await self._session.get(Player, player_id)
-                if player:
-                    stats = player.get_stats()
-                    max_lcd = stats.get("max_lucidity") or stats.get("education") or 100
+            player = await self._session.get(Player, player_id)
+            if player is not None:
+                return self._max_lcd_from_stats(player.get_stats())
         except (AttributeError, SQLAlchemyError, TypeError) as e:
             logger.warning(
                 "Failed to calculate max_lcd from player stats, using default", player_id=player_id, error=str(e)
             )
-        return max_lcd
+        return default
 
-    async def _send_lucidity_change_event_if_needed(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Event sending requires many parameters for complete event context
+    @staticmethod
+    def _lucidity_event_source(metadata_map: dict[str, Any], location_id: str | None) -> str | None:
+        """Build source string for lucidity change event from metadata and location."""
+        raw = (
+            metadata_map.get("source")
+            or metadata_map.get("encounter_category")
+            or metadata_map.get("environment")
+            or location_id
+            or ""
+        )
+        return str(raw).strip() or None
+
+    async def _send_lucidity_change_event_if_needed(
         self,
         player_id: uuid.UUID,
-        record: Any,
-        delta: int,
-        previous_tier: str,
-        new_tier: str,
-        new_lcd: int,
-        reason_code: str,
-        metadata_map: dict[str, Any],
-        location_id: str | None,
+        ctx: _LucidityChangeEventContext,
     ) -> None:
         """Send lucidity change event if delta or tier changed."""
-        if delta or previous_tier != new_tier:
-            max_lcd = await self._calculate_max_lcd(record, player_id)
-            current_lcd_to_send = min(new_lcd, max_lcd)
+        if ctx.delta or ctx.previous_tier != ctx.new_tier:
+            max_lcd = await self._calculate_max_lcd(ctx.record, player_id)
+            current_lcd_to_send = min(ctx.new_lcd, max_lcd)
             await send_lucidity_change_event(
                 player_id=player_id,
                 current_lcd=current_lcd_to_send,
-                delta=delta,
-                tier=new_tier,
+                delta=ctx.delta,
+                tier=ctx.new_tier,
                 max_lcd=max_lcd,
-                liabilities=decode_liabilities(record.liabilities),
-                reason=reason_code,
-                source=str(
-                    metadata_map.get("source")
-                    or metadata_map.get("encounter_category")
-                    or metadata_map.get("environment")
-                    or location_id
-                    or ""
-                ).strip()
-                or None,
-                metadata=metadata_map if metadata_map else None,
+                liabilities=decode_liabilities(ctx.record.liabilities),
+                reason=ctx.reason_code,
+                source=self._lucidity_event_source(ctx.metadata_map, ctx.location_id),
+                metadata=ctx.metadata_map if ctx.metadata_map else None,
             )
 
     async def apply_lucidity_adjustment(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Lucidity adjustment requires many parameters for context and adjustment tracking
@@ -528,7 +387,17 @@ class LucidityService:
         await self._session.flush()
 
         await self._send_lucidity_change_event_if_needed(
-            player_id, record, delta, previous_tier, new_tier, new_lcd, reason_code, metadata_map, location_id
+            player_id,
+            _LucidityChangeEventContext(
+                record=record,
+                delta=delta,
+                previous_tier=previous_tier,
+                new_tier=new_tier,
+                new_lcd=new_lcd,
+                reason_code=reason_code,
+                metadata_map=metadata_map,
+                location_id=location_id,
+            ),
         )
 
         logger.info(

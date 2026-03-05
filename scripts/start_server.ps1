@@ -398,6 +398,26 @@ try {
     # Step 5: Start NATS server
     Start-NatsServerForMythosMUD
 
+    # Step 5.5: Wait for NATS to accept connections (avoids app connect timeout when NATS was just started)
+    $natsPort = 4222
+    $natsWaitMaxAttempts = 15
+    $natsWaitAttempt = 0
+    while ($natsWaitAttempt -lt $natsWaitMaxAttempts) {
+        $natsConnection = Get-NetTCPConnection -LocalPort $natsPort -State Listen -ErrorAction SilentlyContinue
+        if ($natsConnection) {
+            Write-Host "NATS port $natsPort is listening" -ForegroundColor Green
+            break
+        }
+        $natsWaitAttempt++
+        if ($natsWaitAttempt -lt $natsWaitMaxAttempts) {
+            Write-Host "Waiting for NATS on port $natsPort... ($natsWaitAttempt of $natsWaitMaxAttempts)" -ForegroundColor Gray
+            Start-Sleep -Seconds 1
+        }
+    }
+    if ($natsWaitAttempt -ge $natsWaitMaxAttempts) {
+        Write-Host "NATS did not bind to port $natsPort within $natsWaitMaxAttempts seconds; server will continue without NATS" -ForegroundColor Yellow
+    }
+
     # Step 6: Check if port is free
     if (Test-PortInUse -Port $Port) {
         Write-Host "Port $Port is still in use. Please check for other processes." -ForegroundColor Red
