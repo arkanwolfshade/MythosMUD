@@ -4,7 +4,7 @@ Unit tests for lifespan startup functions.
 Tests the application startup initialization functions.
 """
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from fastapi import FastAPI
@@ -111,7 +111,12 @@ async def test_initialize_npc_services(mock_app, mock_container):  # pylint: dis
     """Test initialize_npc_services() initializes NPC services."""
     # Parameter names must match fixture names for pytest automatic injection.
     # Patch zone config loader so NPCPopulationController does not hit the database.
-    with patch("server.npc.population_control.load_zone_configurations", return_value={}):
+    # Also patch NPCService DB calls so unit tests do not require stored procedures.
+    with (
+        patch("server.npc.population_control.load_zone_configurations", return_value={}),
+        patch("server.app.lifespan_startup.NPCService.get_npc_definitions", new=AsyncMock(return_value=[])),
+        patch("server.app.lifespan_startup.NPCService.get_spawn_rules", new=AsyncMock(return_value=[])),
+    ):
         await initialize_npc_services(mock_app, mock_container)
     assert hasattr(mock_app.state, "npc_spawning_service")
     assert hasattr(mock_app.state, "npc_lifecycle_manager")
@@ -165,5 +170,7 @@ async def test_initialize_chat_service(mock_app, mock_container):  # pylint: dis
 async def test_initialize_magic_services(mock_app, mock_container):  # pylint: disable=redefined-outer-name
     """Test initialize_magic_services() initializes magic services."""
     # Parameter names must match fixture names for pytest automatic injection
-    await initialize_magic_services(mock_app, mock_container)
+    # Patch SpellRegistry.load_spells so unit tests do not require stored procedures.
+    with patch("server.app.lifespan_magic.SpellRegistry.load_spells", new=AsyncMock(return_value=None)):
+        await initialize_magic_services(mock_app, mock_container)
     assert hasattr(mock_app.state, "magic_service") or hasattr(mock_app.state, "spell_registry")
