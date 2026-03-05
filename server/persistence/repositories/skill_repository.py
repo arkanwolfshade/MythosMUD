@@ -55,7 +55,21 @@ class SkillRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                result = await session.execute(text("SELECT * FROM get_all_skills()"))
+                result = await session.execute(
+                    text(
+                        """
+                        SELECT
+                            id,
+                            key,
+                            name,
+                            description,
+                            base_value,
+                            allow_at_creation,
+                            category
+                        FROM get_all_skills()
+                        """
+                    )
+                )
                 rows = result.mappings().all()
                 skills = [_row_to_skill(row) for row in rows]
                 self._logger.debug("Loaded skills catalog", skill_count=len(skills))
@@ -83,7 +97,19 @@ class SkillRepository:
             session_maker = get_session_maker()
             async with session_maker() as session:
                 result = await session.execute(
-                    text("SELECT * FROM get_skill_by_id(:skill_id)"),
+                    text(
+                        """
+                        SELECT
+                            id,
+                            key,
+                            name,
+                            description,
+                            base_value,
+                            allow_at_creation,
+                            category
+                        FROM get_skill_by_id(:skill_id)
+                        """
+                    ),
                     {"skill_id": skill_id},
                 )
                 row = result.mappings().first()
@@ -113,7 +139,19 @@ class SkillRepository:
             session_maker = get_session_maker()
             async with session_maker() as session:
                 result = await session.execute(
-                    text("SELECT * FROM get_skill_by_key(:key)"),
+                    text(
+                        """
+                        SELECT
+                            id,
+                            key,
+                            name,
+                            description,
+                            base_value,
+                            allow_at_creation,
+                            category
+                        FROM get_skill_by_key(:key)
+                        """
+                    ),
                     {"key": key},
                 )
                 row = result.mappings().first()

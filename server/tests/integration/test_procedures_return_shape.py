@@ -61,7 +61,24 @@ async def test_get_rooms_with_exits_return_shape(
 ) -> None:
     """Call get_rooms_with_exits() and verify result columns match procedure definition."""
     async with session_factory() as session:
-        result = await session.execute(text("SELECT * FROM get_rooms_with_exits()"))
+        result = await session.execute(
+            text(
+                """
+                SELECT
+                    room_uuid,
+                    stable_id,
+                    name,
+                    description,
+                    attributes,
+                    subzone_stable_id,
+                    zone_stable_id,
+                    plane,
+                    zone,
+                    exits
+                FROM get_rooms_with_exits()
+                """
+            )
+        )
         rows = result.mappings().all()
     # May be empty if no rooms; we only assert shape
     if rows:
@@ -80,7 +97,31 @@ async def test_get_player_by_id_return_shape_and_not_found(
     """Call get_player_by_id() with non-existent UUID; verify return shape when empty."""
     async with session_factory() as session:
         result = await session.execute(
-            text("SELECT * FROM get_player_by_id(:id)"),
+            text(
+                """
+                SELECT
+                    player_id,
+                    user_id,
+                    name,
+                    inventory,
+                    status_effects,
+                    current_room_id,
+                    respawn_room_id,
+                    experience_points,
+                    level,
+                    is_admin,
+                    profession_id,
+                    created_at,
+                    last_active,
+                    stats,
+                    is_deleted,
+                    deleted_at,
+                    tutorial_instance_id,
+                    inventory_json,
+                    equipped_json
+                FROM get_player_by_id(:id)
+                """
+            ),
             {"id": uuid.uuid4()},
         )
         rows = result.mappings().all()
@@ -94,7 +135,17 @@ async def test_get_npc_system_statistics_return_shape(
 ) -> None:
     """Call get_npc_system_statistics() and verify result columns."""
     async with session_factory() as session:
-        result = await session.execute(text("SELECT * FROM get_npc_system_statistics()"))
+        result = await session.execute(
+            text(
+                """
+                SELECT
+                    total_npc_definitions,
+                    npc_definitions_by_type,
+                    total_spawn_rules
+                FROM get_npc_system_statistics()
+                """
+            )
+        )
         rows = result.mappings().all()
     assert len(rows) >= 1, "get_npc_system_statistics() must return at least one row"
     first = rows[0]

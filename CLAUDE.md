@@ -159,7 +159,9 @@ other location
   stored procedures or functions defined under `db/procedures/` for all inserts,
   updates, deletes, and complex queries. Do not add new inline DML/DQL against tables
   in Python (ORM `update/delete/merge`, raw `text()` with `INSERT/UPDATE/DELETE`, etc.).
-- **Call pattern**: Use `session.execute(text("SELECT * FROM procedure_name(:param1, :param2)"), params)`
+- **No `SELECT *` from Python**: All SQL emitted from Python **must specify columns explicitly**.
+  This applies even when selecting from functions/procedures. Use
+  `session.execute(text("SELECT col1, col2 FROM procedure_name(:param1, :param2)"), params)`
   (or equivalent) and map the result rows to domain objects in Python. Transactions
   (commit/rollback) remain in Python; query shape and data validation live in Postgres.
 

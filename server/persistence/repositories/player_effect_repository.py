@@ -163,7 +163,22 @@ class PlayerEffectRepository:
             session_maker = get_session_maker()
             async with session_maker() as session:
                 result = await session.execute(
-                    text("SELECT * FROM get_active_effects_for_player(:player_id, :current_tick)"),
+                    text(
+                        """
+                        SELECT
+                            id,
+                            player_id,
+                            effect_type,
+                            category,
+                            duration,
+                            applied_at_tick,
+                            intensity,
+                            source,
+                            visibility_level,
+                            created_at
+                        FROM get_active_effects_for_player(:player_id, :current_tick)
+                        """
+                    ),
                     {"player_id": str(player_id), "current_tick": current_tick},
                 )
                 rows = result.mappings().all()
@@ -187,7 +202,14 @@ class PlayerEffectRepository:
             session_maker = get_session_maker()
             async with session_maker() as session:
                 result = await session.execute(
-                    text("SELECT * FROM get_effects_expiring_this_tick(:current_tick)"),
+                    text(
+                        """
+                        SELECT
+                            player_id,
+                            effect_type
+                        FROM get_effects_expiring_this_tick(:current_tick)
+                        """
+                    ),
                     {"current_tick": current_tick},
                 )
                 rows = result.mappings().all()

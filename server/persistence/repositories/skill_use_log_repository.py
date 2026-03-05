@@ -71,7 +71,13 @@ class SkillUseLogRepository:
             session_maker = get_session_maker()
             async with session_maker() as session:
                 result = await session.execute(
-                    text("SELECT * FROM get_skill_ids_used_at_level(:player_id, :character_level)"),
+                    text(
+                        """
+                        SELECT
+                            skill_id
+                        FROM get_skill_ids_used_at_level(:player_id, :character_level)
+                        """
+                    ),
                     {"player_id": str(player_id), "character_level": character_level},
                 )
                 rows = result.mappings().all()

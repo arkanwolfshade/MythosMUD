@@ -20,7 +20,7 @@ Migrate all Python–PostgreSQL data access to **stored procedures and functions
 
 - **Procedure storage**: One `.sql` file per domain under `db/procedures/` (e.g. `players.sql`, `rooms.sql`, `quests.sql`). Each file uses `CREATE OR REPLACE FUNCTION` (and PROCEDURE where needed) with schema applied via `psql -v schema_name=<schema>`.
 - **Apply script**: `scripts/apply_procedures.ps1` applies all procedure files to target databases (mythos_dev, mythos_unit, mythos_e2e). `make build` runs `apply-procedures` before the client build; test targets run it for mythos_unit and mythos_e2e before pytest.
-- **Python usage**: Repositories and services call procedures via `session.execute(text("SELECT * FROM get_entity_by_id(:id)"), params)`. Results are consumed with `result.mappings().all()` or `.scalar()` and mapped to domain objects in Python. Transactions (commit/rollback) remain in Python.
+- **Python usage**: Repositories and services call procedures via `session.execute(text("SELECT col1, col2 FROM get_entity_by_id(:id)"), params)` (or similar explicit projections). Results are consumed with `result.mappings().all()` or `.scalar()` and mapped to domain objects in Python. Transactions (commit/rollback) remain in Python. `SELECT *` is not allowed in Python; column lists must be explicit for defensive coding.
 - **Schema resolution**: Connections use `search_path` set from the database name (mythos_dev, mythos_unit, mythos_e2e) so procedure names are unqualified in SQL; `database.py` normalizes `search_path` for these databases.
 - **Naming**: `verb_entity` (e.g. `get_player_by_id`, `upsert_player`, `get_rooms_with_exits`). Functions return rows (SETOF or single row); procedures used where multi-statement mutations with OUT parameters are needed.
 

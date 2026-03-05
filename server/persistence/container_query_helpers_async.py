@@ -52,7 +52,26 @@ async def get_containers_by_room_id_async(session: AsyncSession, room_id: str) -
     """Get all containers in a room (async) via get_containers_by_room_id procedure."""
     try:
         result = await session.execute(
-            text("SELECT * FROM get_containers_by_room_id(:room_id)"),
+            text(
+                """
+                SELECT
+                    container_instance_id,
+                    source_type,
+                    owner_id,
+                    room_id,
+                    entity_id,
+                    lock_state,
+                    capacity_slots,
+                    weight_limit,
+                    decay_at,
+                    allowed_roles,
+                    metadata_json,
+                    created_at,
+                    updated_at,
+                    container_item_instance_id
+                FROM get_containers_by_room_id(:room_id)
+                """
+            ),
             {"room_id": room_id},
         )
         rows = result.fetchall()
@@ -78,7 +97,26 @@ async def get_containers_by_entity_id_async(session: AsyncSession, entity_id: UU
     entity_id_str = str(entity_id) if isinstance(entity_id, UUID) else entity_id
     try:
         result = await session.execute(
-            text("SELECT * FROM get_containers_by_entity_id(:entity_id)"),
+            text(
+                """
+                SELECT
+                    container_instance_id,
+                    source_type,
+                    owner_id,
+                    room_id,
+                    entity_id,
+                    lock_state,
+                    capacity_slots,
+                    weight_limit,
+                    decay_at,
+                    allowed_roles,
+                    metadata_json,
+                    created_at,
+                    updated_at,
+                    container_item_instance_id
+                FROM get_containers_by_entity_id(:entity_id)
+                """
+            ),
             {"entity_id": entity_id_str},
         )
         rows = result.fetchall()
@@ -112,7 +150,26 @@ async def get_decayed_containers_async(
             current_time = current_time.astimezone(UTC)
     try:
         result = await session.execute(
-            text("SELECT * FROM get_decayed_containers(:current_time)"),
+            text(
+                """
+                SELECT
+                    container_instance_id,
+                    source_type,
+                    owner_id,
+                    room_id,
+                    entity_id,
+                    lock_state,
+                    capacity_slots,
+                    weight_limit,
+                    decay_at,
+                    allowed_roles,
+                    metadata_json,
+                    created_at,
+                    updated_at,
+                    container_item_instance_id
+                FROM get_decayed_containers(:current_time)
+                """
+            ),
             {"current_time": current_time},
         )
         rows = result.fetchall()

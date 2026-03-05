@@ -43,7 +43,16 @@ class QuestDefinitionRepository:
             session_maker = get_session_maker()
             async with session_maker() as session:
                 result = await session.execute(
-                    text("SELECT * FROM get_quest_definition_by_id(:quest_id)"),
+                    text(
+                        """
+                        SELECT
+                            id,
+                            definition,
+                            created_at,
+                            updated_at
+                        FROM get_quest_definition_by_id(:quest_id)
+                        """
+                    ),
                     {"quest_id": quest_id},
                 )
                 row = result.mappings().first()
@@ -65,7 +74,16 @@ class QuestDefinitionRepository:
             session_maker = get_session_maker()
             async with session_maker() as session:
                 result = await session.execute(
-                    text("SELECT * FROM get_quest_definition_by_name(:name)"),
+                    text(
+                        """
+                        SELECT
+                            id,
+                            definition,
+                            created_at,
+                            updated_at
+                        FROM get_quest_definition_by_name(:name)
+                        """
+                    ),
                     {"name": name},
                 )
                 row = result.mappings().first()
@@ -87,7 +105,13 @@ class QuestDefinitionRepository:
             session_maker = get_session_maker()
             async with session_maker() as session:
                 result = await session.execute(
-                    text("SELECT * FROM list_quest_ids_offered_by(:entity_type, :entity_id)"),
+                    text(
+                        """
+                        SELECT
+                            quest_id
+                        FROM list_quest_ids_offered_by(:entity_type, :entity_id)
+                        """
+                    ),
                     {"entity_type": entity_type, "entity_id": entity_id},
                 )
                 return [row.quest_id for row in result.mappings().all()]

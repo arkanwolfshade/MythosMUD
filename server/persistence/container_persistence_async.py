@@ -184,7 +184,19 @@ async def fetch_container_items_async(session: AsyncSession, container_id: UUID)
     """
     container_id_str = str(container_id) if isinstance(container_id, UUID) else container_id
     result = await session.execute(
-        text("SELECT * FROM fetch_container_items(:cid)"),
+        text(
+            """
+            SELECT
+                item_instance_id,
+                item_id,
+                item_name,
+                quantity,
+                condition,
+                metadata,
+                "position"
+            FROM fetch_container_items(:cid)
+            """
+        ),
         {"cid": container_id_str},
     )
     rows = result.fetchall()
@@ -302,7 +314,26 @@ async def get_container_async(session: AsyncSession, container_id: UUID) -> Cont
     container_id_str = str(container_id) if isinstance(container_id, UUID) else container_id
     try:
         result = await session.execute(
-            text("SELECT * FROM get_container(:cid)"),
+            text(
+                """
+                SELECT
+                    container_instance_id,
+                    source_type,
+                    owner_id,
+                    room_id,
+                    entity_id,
+                    lock_state,
+                    capacity_slots,
+                    weight_limit,
+                    decay_at,
+                    allowed_roles,
+                    metadata_json,
+                    created_at,
+                    updated_at,
+                    container_item_instance_id
+                FROM get_container(:cid)
+                """
+            ),
             {"cid": container_id_str},
         )
         row = result.fetchone()

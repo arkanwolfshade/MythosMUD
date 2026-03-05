@@ -96,7 +96,14 @@ class PlayerRepository:
             session_maker = get_session_maker()
             async with session_maker() as session:
                 result = await session.execute(
-                    text("SELECT * FROM get_player_by_name(:name)"),
+                    text(
+                        "SELECT "
+                        "player_id, user_id, name, inventory, status_effects, current_room_id, "
+                        "respawn_room_id, experience_points, level, is_admin, profession_id, "
+                        "created_at, last_active, stats, is_deleted, deleted_at, "
+                        "tutorial_instance_id, inventory_json, equipped_json "
+                        "FROM get_player_by_name(:name)"
+                    ),
                     {"name": name},
                 )
                 rows = result.fetchall()
@@ -133,7 +140,14 @@ class PlayerRepository:
             session_maker = get_session_maker()
             async with session_maker() as session:
                 result = await session.execute(
-                    text("SELECT * FROM get_player_by_id(:id)"),
+                    text(
+                        "SELECT "
+                        "player_id, user_id, name, inventory, status_effects, current_room_id, "
+                        "respawn_room_id, experience_points, level, is_admin, profession_id, "
+                        "created_at, last_active, stats, is_deleted, deleted_at, "
+                        "tutorial_instance_id, inventory_json, equipped_json "
+                        "FROM get_player_by_id(:id)"
+                    ),
                     {"id": str(player_id)},
                 )
                 rows = result.fetchall()
@@ -174,7 +188,14 @@ class PlayerRepository:
             session_maker = get_session_maker()
             async with session_maker() as session:
                 result = await session.execute(
-                    text("SELECT * FROM get_players_by_user_id(:user_id)"),
+                    text(
+                        "SELECT "
+                        "player_id, user_id, name, inventory, status_effects, current_room_id, "
+                        "respawn_room_id, experience_points, level, is_admin, profession_id, "
+                        "created_at, last_active, stats, is_deleted, deleted_at, "
+                        "tutorial_instance_id, inventory_json, equipped_json "
+                        "FROM get_players_by_user_id(:user_id)"
+                    ),
                     {"user_id": str(user_id)},
                 )
                 rows = result.fetchall()
@@ -213,7 +234,14 @@ class PlayerRepository:
             session_maker = get_session_maker()
             async with session_maker() as session:
                 result = await session.execute(
-                    text("SELECT * FROM get_active_players_by_user_id(:user_id)"),
+                    text(
+                        "SELECT "
+                        "player_id, user_id, name, inventory, status_effects, current_room_id, "
+                        "respawn_room_id, experience_points, level, is_admin, profession_id, "
+                        "created_at, last_active, stats, is_deleted, deleted_at, "
+                        "tutorial_instance_id, inventory_json, equipped_json "
+                        "FROM get_active_players_by_user_id(:user_id)"
+                    ),
                     {"user_id": str(user_id)},
                 )
                 rows = result.fetchall()
@@ -292,7 +320,16 @@ class PlayerRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                result = await session.execute(text("SELECT * FROM list_players()"))
+                result = await session.execute(
+                    text(
+                        "SELECT "
+                        "player_id, user_id, name, inventory, status_effects, current_room_id, "
+                        "respawn_room_id, experience_points, level, is_admin, profession_id, "
+                        "created_at, last_active, stats, is_deleted, deleted_at, "
+                        "tutorial_instance_id, inventory_json, equipped_json "
+                        "FROM list_players()"
+                    )
+                )
                 rows = result.fetchall()
                 players = [row_to_player(r) for r in rows]
                 for player in players:
@@ -324,7 +361,14 @@ class PlayerRepository:
             session_maker = get_session_maker()
             async with session_maker() as session:
                 result = await session.execute(
-                    text("SELECT * FROM get_players_in_room(:room_id)"),
+                    text(
+                        "SELECT "
+                        "player_id, user_id, name, inventory, status_effects, current_room_id, "
+                        "respawn_room_id, experience_points, level, is_admin, profession_id, "
+                        "created_at, last_active, stats, is_deleted, deleted_at, "
+                        "tutorial_instance_id, inventory_json, equipped_json "
+                        "FROM get_players_in_room(:room_id)"
+                    ),
                     {"room_id": room_id},
                 )
                 rows = result.fetchall()
@@ -502,7 +546,14 @@ class PlayerRepository:
             session_maker = get_session_maker()
             async with session_maker() as session:
                 result = await session.execute(
-                    text("SELECT * FROM get_players_batch(:ids)"),
+                    text(
+                        "SELECT "
+                        "player_id, user_id, name, inventory, status_effects, current_room_id, "
+                        "respawn_room_id, experience_points, level, is_admin, profession_id, "
+                        "created_at, last_active, stats, is_deleted, deleted_at, "
+                        "tutorial_instance_id, inventory_json, equipped_json "
+                        "FROM get_players_batch(:ids)"
+                    ),
                     {"ids": [str(pid) for pid in player_ids]},
                 )
                 rows = result.fetchall()

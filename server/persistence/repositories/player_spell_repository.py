@@ -61,7 +61,19 @@ class PlayerSpellRepository:
             session_maker = get_session_maker()
             async with session_maker() as session:
                 result = await session.execute(
-                    text("SELECT * FROM get_player_spells(:player_id)"),
+                    text(
+                        """
+                        SELECT
+                            id,
+                            player_id,
+                            spell_id,
+                            mastery,
+                            learned_at,
+                            last_cast_at,
+                            times_cast
+                        FROM get_player_spells(:player_id)
+                        """
+                    ),
                     {"player_id": str(player_id)},
                 )
                 rows = result.mappings().all()
@@ -100,7 +112,19 @@ class PlayerSpellRepository:
             session_maker = get_session_maker()
             async with session_maker() as session:
                 result = await session.execute(
-                    text("SELECT * FROM get_player_spell(:player_id, :spell_id)"),
+                    text(
+                        """
+                        SELECT
+                            id,
+                            player_id,
+                            spell_id,
+                            mastery,
+                            learned_at,
+                            last_cast_at,
+                            times_cast
+                        FROM get_player_spell(:player_id, :spell_id)
+                        """
+                    ),
                     {"player_id": str(player_id), "spell_id": spell_id},
                 )
                 row = result.mappings().first()
@@ -137,7 +161,19 @@ class PlayerSpellRepository:
             session_maker = get_session_maker()
             async with session_maker() as session:
                 result = await session.execute(
-                    text("SELECT * FROM learn_spell(:player_id, :spell_id, :initial_mastery)"),
+                    text(
+                        """
+                        SELECT
+                            id,
+                            player_id,
+                            spell_id,
+                            mastery,
+                            learned_at,
+                            last_cast_at,
+                            times_cast
+                        FROM learn_spell(:player_id, :spell_id, :initial_mastery)
+                        """
+                    ),
                     {
                         "player_id": str(player_id),
                         "spell_id": spell_id,
@@ -188,7 +224,19 @@ class PlayerSpellRepository:
             session_maker = get_session_maker()
             async with session_maker() as session:
                 result = await session.execute(
-                    text("SELECT * FROM update_player_spell_mastery(:player_id, :spell_id, :new_mastery)"),
+                    text(
+                        """
+                        SELECT
+                            id,
+                            player_id,
+                            spell_id,
+                            mastery,
+                            learned_at,
+                            last_cast_at,
+                            times_cast
+                        FROM update_player_spell_mastery(:player_id, :spell_id, :new_mastery)
+                        """
+                    ),
                     {
                         "player_id": str(player_id),
                         "spell_id": spell_id,
@@ -236,7 +284,19 @@ class PlayerSpellRepository:
             session_maker = get_session_maker()
             async with session_maker() as session:
                 result = await session.execute(
-                    text("SELECT * FROM record_spell_cast(:player_id, :spell_id)"),
+                    text(
+                        """
+                        SELECT
+                            id,
+                            player_id,
+                            spell_id,
+                            mastery,
+                            learned_at,
+                            last_cast_at,
+                            times_cast
+                        FROM record_spell_cast(:player_id, :spell_id)
+                        """
+                    ),
                     {"player_id": str(player_id), "spell_id": spell_id},
                 )
                 row = result.mappings().first()

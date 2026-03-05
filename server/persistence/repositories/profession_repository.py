@@ -19,18 +19,35 @@ from server.utils.error_logging import log_and_raise
 logger = get_logger(__name__)
 
 
+def _str_or_default(value: Any, default: str = "") -> str:
+    """Return value as str or a default if falsy."""
+    return str(value) if value else default
+
+
+def _text_or_default(value: Any, default: str) -> str:
+    """Return text value or default if falsy."""
+    return value if value else default
+
+
+def _bool_or_default(value: Any, default: bool = True) -> bool:
+    """Return bool(value) when not None, otherwise default."""
+    if value is None:
+        return default
+    return bool(value)
+
+
 def _row_to_profession(row: Any) -> Profession:
     """Map procedure result row to Profession model."""
     return Profession(
         id=row.id,
-        name=row.name or "",
-        description=row.description or "",
-        flavor_text=row.flavor_text or "",
-        stat_requirements=row.stat_requirements or "{}",
-        mechanical_effects=row.mechanical_effects or "{}",
-        is_available=bool(row.is_available) if row.is_available is not None else True,
-        stat_modifiers=row.stat_modifiers or "[]",
-        skill_modifiers=row.skill_modifiers or "[]",
+        name=_text_or_default(row.name, ""),
+        description=_text_or_default(row.description, ""),
+        flavor_text=_text_or_default(row.flavor_text, ""),
+        stat_requirements=_text_or_default(row.stat_requirements, "{}"),
+        mechanical_effects=_text_or_default(row.mechanical_effects, "{}"),
+        is_available=_bool_or_default(row.is_available, True),
+        stat_modifiers=_text_or_default(row.stat_modifiers, "[]"),
+        skill_modifiers=_text_or_default(row.skill_modifiers, "[]"),
     )
 
 
@@ -58,7 +75,23 @@ class ProfessionRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                result = await session.execute(text("SELECT * FROM get_all_professions()"))
+                result = await session.execute(
+                    text(
+                        """
+                        SELECT
+                            id,
+                            name,
+                            description,
+                            flavor_text,
+                            stat_requirements,
+                            mechanical_effects,
+                            is_available,
+                            stat_modifiers,
+                            skill_modifiers
+                        FROM get_all_professions()
+                        """
+                    )
+                )
                 rows = result.mappings().all()
                 professions = [_row_to_profession(row) for row in rows]
                 self._logger.debug("Loaded professions", profession_count=len(professions))
@@ -89,7 +122,21 @@ class ProfessionRepository:
             session_maker = get_session_maker()
             async with session_maker() as session:
                 result = await session.execute(
-                    text("SELECT * FROM get_profession_by_id(:profession_id)"),
+                    text(
+                        """
+                        SELECT
+                            id,
+                            name,
+                            description,
+                            flavor_text,
+                            stat_requirements,
+                            mechanical_effects,
+                            is_available,
+                            stat_modifiers,
+                            skill_modifiers
+                        FROM get_profession_by_id(:profession_id)
+                        """
+                    ),
                     {"profession_id": profession_id},
                 )
                 row = result.mappings().first()

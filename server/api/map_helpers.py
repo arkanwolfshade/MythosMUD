@@ -79,7 +79,15 @@ async def load_room_exits(session: AsyncSession, rooms: list[dict[str, Any]]) ->
         return
 
     stable_ids = [r["stable_id"] for r in rooms]
-    exits_query = text("SELECT * FROM get_room_exits(:stable_ids)")
+    exits_query = text(
+        """
+        SELECT
+            from_stable_id,
+            to_stable_id,
+            direction
+        FROM get_room_exits(:stable_ids)
+        """
+    )
     exits_result = await session.execute(exits_query, {"stable_ids": stable_ids})
 
     exits_by_room: dict[str, dict[str, str]] = {}
@@ -112,7 +120,21 @@ async def load_rooms_with_coordinates(
     """
     zone_pattern = build_zone_pattern(plane, zone, sub_zone)
 
-    query = text("SELECT * FROM get_rooms_by_zone_pattern(:pattern)")
+    query = text(
+        """
+        SELECT
+            id,
+            stable_id,
+            name,
+            attributes,
+            map_x,
+            map_y,
+            map_origin_zone,
+            map_symbol,
+            map_style
+        FROM get_rooms_by_zone_pattern(:pattern)
+        """
+    )
     result = await session.execute(query, {"pattern": zone_pattern})
     rooms = [build_room_dict(row) for row in result]
 
@@ -128,7 +150,21 @@ async def load_single_room_with_coordinates(session: AsyncSession, stable_id: st
     Used to ensure the player's current room is always in the minimap list
     when exploration filter would otherwise omit it (e.g. just entered zone).
     """
-    query = text("SELECT * FROM get_room_by_stable_id(:stable_id)")
+    query = text(
+        """
+        SELECT
+            id,
+            stable_id,
+            name,
+            attributes,
+            map_x,
+            map_y,
+            map_origin_zone,
+            map_symbol,
+            map_style
+        FROM get_room_by_stable_id(:stable_id)
+        """
+    )
     result = await session.execute(query, {"stable_id": stable_id})
     row = result.fetchone()
     if not row:

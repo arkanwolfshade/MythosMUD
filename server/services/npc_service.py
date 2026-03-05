@@ -62,7 +62,28 @@ class NPCService:
             List of NPC definitions
         """
         try:
-            result = await session.execute(text("SELECT * FROM get_npc_definitions()"))
+            result = await session.execute(
+                text(
+                    """
+                    SELECT
+                        id,
+                        name,
+                        description,
+                        npc_type,
+                        sub_zone_id,
+                        room_id,
+                        required_npc,
+                        max_population,
+                        spawn_probability,
+                        base_stats,
+                        behavior_config,
+                        ai_integration_stub,
+                        created_at,
+                        updated_at
+                    FROM get_npc_definitions()
+                    """
+                )
+            )
             rows = result.mappings().all()
             definitions = [_row_to_npc_definition(row) for row in rows]
             logger.info("Retrieved NPC definitions")
@@ -93,7 +114,26 @@ class NPCService:
         """
         try:
             result = await session.execute(
-                text("SELECT * FROM get_npc_definition(:definition_id)"),
+                text(
+                    """
+                    SELECT
+                        id,
+                        name,
+                        description,
+                        npc_type,
+                        sub_zone_id,
+                        room_id,
+                        required_npc,
+                        max_population,
+                        spawn_probability,
+                        base_stats,
+                        behavior_config,
+                        ai_integration_stub,
+                        created_at,
+                        updated_at
+                    FROM get_npc_definition(:definition_id)
+                    """
+                ),
                 {"definition_id": definition_id},
             )
             rows = result.mappings().all()
@@ -168,10 +208,28 @@ class NPCService:
         """Execute create_npc_definition stored procedure and return the created definition."""
         result = await session.execute(
             text(
-                "SELECT * FROM create_npc_definition("
-                ":name, :description, :npc_type, :sub_zone_id, :room_id,"
-                " :required_npc, :max_population, :spawn_probability,"
-                " :base_stats, :behavior_config, :ai_integration_stub)"
+                """
+                SELECT
+                    id,
+                    name,
+                    description,
+                    npc_type,
+                    sub_zone_id,
+                    room_id,
+                    required_npc,
+                    max_population,
+                    spawn_probability,
+                    base_stats,
+                    behavior_config,
+                    ai_integration_stub,
+                    created_at,
+                    updated_at
+                FROM create_npc_definition(
+                    :name, :description, :npc_type, :sub_zone_id, :room_id,
+                    :required_npc, :max_population, :spawn_probability,
+                    :base_stats, :behavior_config, :ai_integration_stub
+                )
+                """
             ),
             {
                 "name": params["name"],
@@ -263,10 +321,28 @@ class NPCService:
         """Execute the database update via procedure and return updated definition."""
         result = await session.execute(
             text(
-                "SELECT * FROM update_npc_definition("
-                ":id, :name, :description, :npc_type, :sub_zone_id, :room_id,"
-                " :required_npc, :max_population, :spawn_probability,"
-                " :base_stats, :behavior_config, :ai_integration_stub)"
+                """
+                SELECT
+                    id,
+                    name,
+                    description,
+                    npc_type,
+                    sub_zone_id,
+                    room_id,
+                    required_npc,
+                    max_population,
+                    spawn_probability,
+                    base_stats,
+                    behavior_config,
+                    ai_integration_stub,
+                    created_at,
+                    updated_at
+                FROM update_npc_definition(
+                    :id, :name, :description, :npc_type, :sub_zone_id, :room_id,
+                    :required_npc, :max_population, :spawn_probability,
+                    :base_stats, :behavior_config, :ai_integration_stub
+                )
+                """
             ),
             {
                 "id": definition_id,
@@ -381,7 +457,20 @@ class NPCService:
             List of NPC spawn rules
         """
         try:
-            result = await session.execute(text("SELECT * FROM get_spawn_rules()"))
+            result = await session.execute(
+                text(
+                    """
+                    SELECT
+                        id,
+                        npc_definition_id,
+                        sub_zone_id,
+                        min_population,
+                        max_population,
+                        spawn_conditions
+                    FROM get_spawn_rules()
+                    """
+                )
+            )
             rows = result.mappings().all()
             rules = [_row_to_npc_spawn_rule(row) for row in rows]
             logger.info("Retrieved NPC spawn rules", count=len(rules))
@@ -407,7 +496,18 @@ class NPCService:
         """
         try:
             result = await session.execute(
-                text("SELECT * FROM get_spawn_rule(:rule_id)"),
+                text(
+                    """
+                    SELECT
+                        id,
+                        npc_definition_id,
+                        sub_zone_id,
+                        min_population,
+                        max_population,
+                        spawn_conditions
+                    FROM get_spawn_rule(:rule_id)
+                    """
+                ),
                 {"rule_id": rule_id},
             )
             rows = result.mappings().all()
@@ -491,8 +591,18 @@ class NPCService:
         """Execute create_spawn_rule stored procedure and return the created spawn rule."""
         result = await session.execute(
             text(
-                "SELECT * FROM create_spawn_rule("
-                ":npc_definition_id, :sub_zone_id, :min_population, :max_population, :spawn_conditions)"
+                """
+                SELECT
+                    id,
+                    npc_definition_id,
+                    sub_zone_id,
+                    min_population,
+                    max_population,
+                    spawn_conditions
+                FROM create_spawn_rule(
+                    :npc_definition_id, :sub_zone_id, :min_population, :max_population, :spawn_conditions
+                )
+                """
             ),
             {
                 "npc_definition_id": npc_definition_id,
@@ -559,7 +669,26 @@ class NPCService:
         """
         try:
             result = await session.execute(
-                text("SELECT * FROM get_npc_definitions_by_type(:npc_type)"),
+                text(
+                    """
+                    SELECT
+                        id,
+                        name,
+                        description,
+                        npc_type,
+                        sub_zone_id,
+                        room_id,
+                        required_npc,
+                        max_population,
+                        spawn_probability,
+                        base_stats,
+                        behavior_config,
+                        ai_integration_stub,
+                        created_at,
+                        updated_at
+                    FROM get_npc_definitions_by_type(:npc_type)
+                    """
+                ),
                 {"npc_type": npc_type},
             )
             rows = result.mappings().all()
@@ -584,7 +713,26 @@ class NPCService:
         """
         try:
             result = await session.execute(
-                text("SELECT * FROM get_npc_definitions_by_sub_zone(:sub_zone_id)"),
+                text(
+                    """
+                    SELECT
+                        id,
+                        name,
+                        description,
+                        npc_type,
+                        sub_zone_id,
+                        room_id,
+                        required_npc,
+                        max_population,
+                        spawn_probability,
+                        base_stats,
+                        behavior_config,
+                        ai_integration_stub,
+                        created_at,
+                        updated_at
+                    FROM get_npc_definitions_by_sub_zone(:sub_zone_id)
+                    """
+                ),
                 {"sub_zone_id": sub_zone_id},
             )
             rows = result.mappings().all()
@@ -607,7 +755,17 @@ class NPCService:
             Dictionary with system statistics
         """
         try:
-            result = await session.execute(text("SELECT * FROM get_npc_system_statistics()"))
+            result = await session.execute(
+                text(
+                    """
+                    SELECT
+                        total_npc_definitions,
+                        npc_definitions_by_type,
+                        total_spawn_rules
+                    FROM get_npc_system_statistics()
+                    """
+                )
+            )
             rows = result.mappings().all()
             if not rows:
                 raise DatabaseError("get_npc_system_statistics returned no row")

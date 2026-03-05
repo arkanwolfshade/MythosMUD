@@ -62,7 +62,29 @@ class SpellRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                result = await session.execute(text("SELECT * FROM get_all_spells()"))
+                result = await session.execute(
+                    text(
+                        """
+                        SELECT
+                            spell_id,
+                            name,
+                            description,
+                            school,
+                            mp_cost,
+                            lucidity_cost,
+                            corruption_on_learn,
+                            corruption_on_cast,
+                            casting_time_seconds,
+                            target_type,
+                            range_type,
+                            effect_type,
+                            effect_data,
+                            materials,
+                            created_at
+                        FROM get_all_spells()
+                        """
+                    )
+                )
                 rows = result.mappings().all()
                 spells = [_row_to_spell_dict(row) for row in rows]
                 self._logger.debug("Loaded spells", spell_count=len(spells))
@@ -93,7 +115,27 @@ class SpellRepository:
             session_maker = get_session_maker()
             async with session_maker() as session:
                 result = await session.execute(
-                    text("SELECT * FROM get_spell_by_id(:spell_id)"),
+                    text(
+                        """
+                        SELECT
+                            spell_id,
+                            name,
+                            description,
+                            school,
+                            mp_cost,
+                            lucidity_cost,
+                            corruption_on_learn,
+                            corruption_on_cast,
+                            casting_time_seconds,
+                            target_type,
+                            range_type,
+                            effect_type,
+                            effect_data,
+                            materials,
+                            created_at
+                        FROM get_spell_by_id(:spell_id)
+                        """
+                    ),
                     {"spell_id": spell_id},
                 )
                 row = result.mappings().first()

@@ -83,7 +83,24 @@ class RoomCacheLoader:
 
     async def _query_rooms_with_exits_async(self, session: Any) -> list[dict[str, Any]]:
         try:
-            result = await session.execute(text("SELECT * FROM get_rooms_with_exits()"))
+            result = await session.execute(
+                text(
+                    """
+                    SELECT
+                        room_uuid,
+                        stable_id,
+                        name,
+                        description,
+                        attributes,
+                        subzone_stable_id,
+                        zone_stable_id,
+                        plane,
+                        zone,
+                        exits
+                    FROM get_rooms_with_exits()
+                    """
+                )
+            )
             rows = result.fetchall()
             return [dict(row._mapping) for row in rows]  # pylint: disable=protected-access  # SQLAlchemy Row._mapping
         except Exception as e:

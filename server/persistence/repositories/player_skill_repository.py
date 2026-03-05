@@ -117,7 +117,21 @@ class PlayerSkillRepository:
             session_maker = get_session_maker()
             async with session_maker() as session:
                 result = await session.execute(
-                    text("SELECT * FROM get_player_skills_with_skill(:player_id)"),
+                    text(
+                        """
+                        SELECT
+                            player_id,
+                            skill_id,
+                            value,
+                            skill_key,
+                            skill_name,
+                            skill_description,
+                            skill_base_value,
+                            skill_allow_at_creation,
+                            skill_category
+                        FROM get_player_skills_with_skill(:player_id)
+                        """
+                    ),
                     {"player_id": str(player_id)},
                 )
                 rows = result.mappings().all()

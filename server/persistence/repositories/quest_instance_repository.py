@@ -62,7 +62,19 @@ class QuestInstanceRepository:
             session_maker = get_session_maker()
             async with session_maker() as session:
                 result = await session.execute(
-                    text("SELECT * FROM create_quest_instance(:player_id, :quest_id, :state, :progress)"),
+                    text(
+                        """
+                        SELECT
+                            id,
+                            player_id,
+                            quest_id,
+                            state,
+                            progress,
+                            accepted_at,
+                            completed_at
+                        FROM create_quest_instance(:player_id, :quest_id, :state, :progress)
+                        """
+                    ),
                     {
                         "player_id": pid,
                         "quest_id": quest_id,
@@ -108,7 +120,19 @@ class QuestInstanceRepository:
             session_maker = get_session_maker()
             async with session_maker() as session:
                 result = await session.execute(
-                    text("SELECT * FROM get_quest_instance_by_player_and_quest(:player_id, :quest_id)"),
+                    text(
+                        """
+                        SELECT
+                            id,
+                            player_id,
+                            quest_id,
+                            state,
+                            progress,
+                            accepted_at,
+                            completed_at
+                        FROM get_quest_instance_by_player_and_quest(:player_id, :quest_id)
+                        """
+                    ),
                     {"player_id": pid, "quest_id": quest_id},
                 )
                 row = result.mappings().first()
@@ -175,7 +199,19 @@ class QuestInstanceRepository:
             session_maker = get_session_maker()
             async with session_maker() as session:
                 result = await session.execute(
-                    text("SELECT * FROM list_active_quest_instances_by_player(:player_id)"),
+                    text(
+                        """
+                        SELECT
+                            id,
+                            player_id,
+                            quest_id,
+                            state,
+                            progress,
+                            accepted_at,
+                            completed_at
+                        FROM list_active_quest_instances_by_player(:player_id)
+                        """
+                    ),
                     {"player_id": pid},
                 )
                 return [_row_to_quest_instance(row) for row in result.mappings().all()]
@@ -195,7 +231,19 @@ class QuestInstanceRepository:
             session_maker = get_session_maker()
             async with session_maker() as session:
                 result = await session.execute(
-                    text("SELECT * FROM list_completed_quest_instances_by_player(:player_id)"),
+                    text(
+                        """
+                        SELECT
+                            id,
+                            player_id,
+                            quest_id,
+                            state,
+                            progress,
+                            accepted_at,
+                            completed_at
+                        FROM list_completed_quest_instances_by_player(:player_id)
+                        """
+                    ),
                     {"player_id": pid},
                 )
                 return [_row_to_quest_instance(row) for row in result.mappings().all()]
