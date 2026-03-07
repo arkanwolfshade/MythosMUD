@@ -203,6 +203,20 @@ class NPCCombatDataProvider:
             }
 
         npc_id = getattr(npc_instance, "id", getattr(npc_instance, "npc_id", "unknown"))
+        npc_type = getattr(npc_instance, "npc_type", None)
+        aggression_level: int | None = None
+        if hasattr(npc_instance, "get_behavior_config"):
+            try:
+                behavior_config = npc_instance.get_behavior_config()
+                if isinstance(behavior_config, dict):
+                    raw = behavior_config.get("aggression_level")
+                    if raw is not None:
+                        try:
+                            aggression_level = max(0, min(10, int(raw)))
+                        except (TypeError, ValueError):
+                            pass
+            except (ValueError, AttributeError, TypeError):
+                pass
         logger.info(
             "NPC combat stats from model",
             npc_id=npc_id,
@@ -218,4 +232,6 @@ class NPCCombatDataProvider:
             max_dp=combat_stats["max_dp"],
             dexterity=combat_stats["dexterity"],
             participant_type=CombatParticipantType.NPC,
+            npc_type=npc_type,
+            aggression_level=aggression_level,
         )

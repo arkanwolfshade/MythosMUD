@@ -5,6 +5,7 @@ This module handles broadcasting disconnect events and managing
 player removal from rooms and tracking systems.
 """
 
+import time
 import uuid
 from typing import Any
 
@@ -14,6 +15,9 @@ from ..structured_logging.enhanced_logging_config import get_logger
 from .player_presence_utils import extract_player_name
 
 logger = get_logger(__name__)
+
+# Sessions age off 5 minutes after disconnect; reconnects purge old sessions immediately
+SESSION_AGE_OFF_SECONDS = 300
 
 
 async def handle_player_disconnect_broadcast(
@@ -130,3 +134,52 @@ def _cleanup_player_references(player_id: uuid.UUID, manager: Any) -> None:
     manager.last_active_update_times.pop(player_id, None)
     manager.rate_limiter.remove_player_data(str(player_id))
     manager.message_queue.remove_player_messages(str(player_id))
+
+    # H2 fix: Mark session for aging (5 min TTL). Reconnects purge old sessions immediately.
+    player_sessions = getattr(manager, "player_sessions", None)
+    session_disconnect_times = getattr(manager, "session_disconnect_times", None)
+    if player_sessions is not None and session_disconnect_times is not None and player_id in player_sessions:
+        session_id = player_sessions[player_id]
+        session_disconnect_times[session_id] = time.time()
+        # Keep player_sessions and session_connections; reconnect purges, else age off in cleanup
+
+    # H1 fix: Allow processed_disconnects to shrink so it does not grow unbounded
+    processed = getattr(manager, "processed_disconnects", None)
+    if processed is not None and player_id in processed:
+        processed.discard(player_id)
+
+
+def age_off_disconnected_sessions(manager: Any) -> int:
+    """
+    Remove sessions that have been disconnected for more than SESSION_AGE_OFF_SECONDS.
+
+    Reconnects purge old sessions immediately via _cleanup_old_session_tracking;
+    this handles sessions that were never reconnected.
+
+    Returns:
+        Number of sessions aged off.
+    """
+    session_disconnect_times = getattr(manager, "session_disconnect_times", None)
+    player_sessions = getattr(manager, "player_sessions", None)
+    session_connections = getattr(manager, "session_connections", None)
+    if not all((session_disconnect_times, player_sessions, session_connections)):
+        return 0
+    assert session_disconnect_times is not None
+    assert player_sessions is not None
+    assert session_connections is not None
+
+    now = time.time()
+    expired: list[str] = []
+    for session_id, disconnect_time in list(session_disconnect_times.items()):
+        if now - disconnect_time >= SESSION_AGE_OFF_SECONDS:
+            expired.append(session_id)
+
+    for session_id in expired:
+        session_disconnect_times.pop(session_id, None)
+        session_connections.pop(session_id, None)
+        for pid, sid in list(player_sessions.items()):
+            if sid == session_id:
+                del player_sessions[pid]
+                break
+
+    return len(expired)

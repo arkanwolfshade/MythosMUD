@@ -1,8 +1,8 @@
 // Combat-related event handlers
 // As documented in "Combat Event Processing" - Dr. Armitage, 1928
 
-import type { EventHandler } from './types';
 import { sanitizeChatMessageForState } from '../utils/messageUtils';
+import type { EventHandler } from './types';
 
 const GAME_LOG_CHANNEL = 'game-log';
 
@@ -135,5 +135,21 @@ export const handleCombatDeath: EventHandler = (event, _context, appendMessage) 
         })
       );
     }
+  }
+};
+
+/** Display one short room line when an NPC switches aggro target (ADR-016). */
+export const handleCombatTargetSwitch: EventHandler = (event, _context, appendMessage) => {
+  const message = event.data.message as string | undefined;
+  if (message) {
+    appendMessage(
+      sanitizeChatMessageForState({
+        text: message,
+        timestamp: event.timestamp,
+        messageType: 'combat',
+        channel: GAME_LOG_CHANNEL,
+        isHtml: false,
+      })
+    );
   }
 };

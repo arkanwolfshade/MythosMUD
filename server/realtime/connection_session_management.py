@@ -107,11 +107,9 @@ async def _disconnect_all_connections_for_session(connection_ids: list[str], pla
 
 def _cleanup_old_session_tracking(player_id: uuid.UUID, manager: Any) -> None:
     """
-    Clean up old session tracking.
+    Clean up old session tracking on reconnect.
 
-    Args:
-        player_id: The player's ID
-        manager: ConnectionManager instance
+    When a player reconnects, purge their old session immediately (no 5-min wait).
     """
     if player_id not in manager.player_sessions:
         return
@@ -122,6 +120,9 @@ def _cleanup_old_session_tracking(player_id: uuid.UUID, manager: Any) -> None:
             del manager.session_connections[old_session_id]
         except KeyError:
             pass
+    session_disconnect_times = getattr(manager, "session_disconnect_times", None)
+    if session_disconnect_times is not None and old_session_id in session_disconnect_times:
+        del session_disconnect_times[old_session_id]
 
 
 def _cleanup_player_data_for_session(player_id: uuid.UUID, manager: Any) -> None:

@@ -103,6 +103,7 @@ class CommandParser:
             CommandType.KICK.value: self.factory.create_kick_command,
             CommandType.STRIKE.value: self.factory.create_strike_command,
             CommandType.FLEE.value: self.factory.create_flee_command,
+            CommandType.TAUNT.value: self.factory.create_taunt_command,
             # Magic commands
             CommandType.CAST.value: self.factory.create_cast_command,
             CommandType.SPELL.value: self.factory.create_spell_command,

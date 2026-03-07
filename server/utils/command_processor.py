@@ -145,6 +145,7 @@ class CommandProcessor:
             CommandType.PUNCH,
             CommandType.KICK,
             CommandType.STRIKE,
+            CommandType.TAUNT,
             CommandType.FLEE,
         ]
 

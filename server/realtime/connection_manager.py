@@ -240,6 +240,8 @@ class ConnectionManager:
         # Session management
         self.player_sessions: dict[uuid.UUID, str] = {}  # player_id -> current_session_id
         self.session_connections: dict[str, list[str]] = {}  # session_id -> list of connection_ids
+        # Disconnected sessions age off after 5 min; reconnects purge old sessions immediately
+        self.session_disconnect_times: dict[str, float] = {}  # session_id -> disconnect timestamp
 
         # Track safely closed websocket objects to avoid duplicate closes
         # Use deque with maxlen to prevent unbounded growth (maxlen=1000)

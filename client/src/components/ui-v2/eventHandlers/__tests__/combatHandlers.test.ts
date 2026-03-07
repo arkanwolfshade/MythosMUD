@@ -2,12 +2,13 @@
  * Tests for combatHandlers.
  */
 
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ChatMessage } from '../../types';
 import {
+  handleCombatDeath,
   handleCombatEnded,
   handleCombatStarted,
-  handleCombatDeath,
+  handleCombatTargetSwitch,
   handleNpcAttacked,
   handleNpcDied,
   handlePlayerAttacked,
@@ -30,6 +31,7 @@ describe('combatHandlers', () => {
     lucidityStatusRef: { current: null },
     lastDaypartRef: { current: null },
     lastHourRef: { current: null },
+    lastQuarterHourRef: { current: null },
     lastHolidayIdsRef: { current: [] },
     lastRoomUpdateTime: { current: 0 },
     setDpStatus: vi.fn(),
@@ -227,6 +229,7 @@ describe('combatHandlers', () => {
         lucidityStatusRef: { current: null },
         lastDaypartRef: { current: null },
         lastHourRef: { current: null },
+        lastQuarterHourRef: { current: null },
         lastHolidayIdsRef: { current: [] },
         lastRoomUpdateTime: { current: 0 },
         setDpStatus: vi.fn(),
@@ -289,6 +292,7 @@ describe('combatHandlers', () => {
         lucidityStatusRef: { current: null },
         lastDaypartRef: { current: null },
         lastHourRef: { current: null },
+        lastQuarterHourRef: { current: null },
         lastHolidayIdsRef: { current: [] },
         lastRoomUpdateTime: { current: 0 },
         setDpStatus: vi.fn(),
@@ -466,6 +470,45 @@ describe('combatHandlers', () => {
 
       handleCombatDeath(event, mockContext, mockAppendMessage);
 
+      expect(mockAppendMessage).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('handleCombatTargetSwitch', () => {
+    it('should append room message when NPC switches aggro target', () => {
+      const event = {
+        event_type: 'combat_target_switch',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          message: 'The horror turns its gaze to Soandso.',
+          npc_name: 'The horror',
+          new_target_name: 'Soandso',
+        },
+      };
+
+      handleCombatTargetSwitch(event, mockContext, mockAppendMessage);
+
+      expect(mockAppendMessage).toHaveBeenCalledTimes(1);
+      expect(mockAppendMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          text: 'The horror turns its gaze to Soandso.',
+          messageType: 'combat',
+        })
+      );
+    });
+
+    it('should not append when message is missing', () => {
+      handleCombatTargetSwitch(
+        {
+          event_type: 'combat_target_switch',
+          timestamp: new Date().toISOString(),
+          sequence_number: 1,
+          data: { npc_name: 'Mob', new_target_name: 'Player' },
+        },
+        mockContext,
+        mockAppendMessage
+      );
       expect(mockAppendMessage).not.toHaveBeenCalled();
     });
   });

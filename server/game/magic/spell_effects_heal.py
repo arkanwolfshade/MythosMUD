@@ -17,6 +17,28 @@ from server.structured_logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 
 
+def _add_healing_threat_if_in_combat(
+    combat_service: Any | None,
+    caster_id: uuid.UUID,
+    heal_amount: int,
+) -> None:
+    """ADR-016: Add healing threat to all NPCs in the caster's combat, if caster is in combat."""
+    if not combat_service or heal_amount <= 0:
+        return
+    combat_id = combat_service.get_combat_id_for_participant(caster_id)
+    if not combat_id:
+        return
+    combat = combat_service.get_combat(combat_id)
+    if not combat:
+        return
+    from server.models.combat import CombatParticipantType
+    from server.services.aggro_threat import add_heal_threat
+
+    for participant_id, participant in combat.participants.items():
+        if participant.participant_type == CombatParticipantType.NPC:
+            add_heal_threat(combat, participant_id, caster_id, heal_amount, npc_participant=participant)
+
+
 def _is_heal_other_self_target(spell: Spell, target: TargetMatch, caster_id: uuid.UUID) -> bool:
     """True if spell is heal_other and target is the caster (invalid)."""
     return spell.spell_id == "heal_other" and str(target.target_id) == str(caster_id)
@@ -229,6 +251,7 @@ async def _run_steal_life(
         logger.error("Error healing caster for steal-life", caster_id=caster_id, error=str(e))
         return {"success": False, "message": f"Failed to restore life: {str(e)}", "effect_applied": False}
 
+    _add_healing_threat_if_in_combat(combat_service, caster_id, actual_drain)
     return {
         "success": True,
         "message": f"Stole {actual_drain} life from {target.target_name}.",
@@ -276,6 +299,7 @@ async def run_heal_effect(
     if target.target_type == TargetType.PLAYER:
         try:
             await engine.player_service.heal_player(uuid.UUID(target.target_id), heal_amount)
+            _add_healing_threat_if_in_combat(combat_svc, caster_id, heal_amount)
             return {
                 "success": True,
                 "message": f"Healed {target.target_name} for {heal_amount} health",
@@ -285,8 +309,10 @@ async def run_heal_effect(
         except OSError as e:
             logger.error("Error healing player", target_id=target.target_id, error=str(e))
             return {"success": False, "message": f"Failed to heal: {str(e)}", "effect_applied": False}
+    _add_healing_threat_if_in_combat(combat_svc, caster_id, heal_amount)
     return {
         "success": True,
         "message": f"Healed {target.target_name} for {heal_amount} health",
         "effect_applied": True,
+        "heal_amount": heal_amount,
     }

@@ -43,6 +43,11 @@ CRITICAL_FILES = {
     "server/services/combat_persistence_handler.py": 90,
     "server/services/combat_monitoring_service.py": 90,
     "server/services/combat_messaging_integration.py": 90,
+    "server/services/combat_messaging/__init__.py": 90,
+    "server/services/combat_messaging/base.py": 90,
+    "server/services/combat_messaging/combat_broadcasts.py": 90,
+    "server/services/combat_messaging/player_broadcasts.py": 90,
+    "server/services/combat_messaging/integration.py": 90,
     "server/services/combat_cleanup_handler.py": 90,
     "server/services/combat_attack_handler.py": 90,
     # Realtime services - critical for WebSocket and real-time game state
@@ -128,6 +133,57 @@ def categorize_files(file_data: dict[str, dict[str, Any]]) -> tuple[list, list, 
     return critical_below, normal_below, meeting_threshold
 
 
+def _write_critical_below_section(f: Any, critical_below: list) -> None:
+    """Write critical files below threshold section."""
+    if not critical_below:
+        return
+    f.write("## Critical Files Below Threshold\n\n")
+    f.write("| File | Current Coverage | Required | Gap | Lines | Branches |\n")
+    f.write("|------|-----------------|----------|-----|--------|----------|\n")
+    for file_path, coverage, threshold, gap, data in critical_below:
+        f.write(
+            f"| `{file_path}` | {coverage:.2f}% | {threshold}% | {gap:.2f}% | "
+            f"{data['lines_covered']}/{data['lines_valid']} | "
+            f"{data['branches_covered']}/{data['branches_valid']} |\n"
+        )
+    f.write("\n")
+
+
+def _write_normal_below_section(f: Any, normal_below: list) -> None:
+    """Write normal files below threshold section."""
+    if not normal_below:
+        return
+    f.write(f"## Normal Files Below {NORMAL_THRESHOLD}% Threshold\n\n")
+    f.write("*Showing top 50 files with largest coverage gaps*\n\n")
+    f.write("| File | Current Coverage | Required | Gap | Lines | Branches |\n")
+    f.write("|------|-----------------|----------|-----|--------|----------|\n")
+    for file_path, coverage, threshold, gap, data in normal_below[:50]:
+        f.write(
+            f"| `{file_path}` | {coverage:.2f}% | {threshold}% | {gap:.2f}% | "
+            f"{data['lines_covered']}/{data['lines_valid']} | "
+            f"{data['branches_covered']}/{data['branches_valid']} |\n"
+        )
+    if len(normal_below) > 50:
+        f.write(f"\n*... and {len(normal_below) - 50} more files*\n")
+    f.write("\n")
+
+
+def _write_priority_recommendations(f: Any, critical_below: list, normal_below: list) -> None:
+    """Write priority recommendations section."""
+    f.write("## Priority Recommendations\n\n")
+    if critical_below:
+        f.write("### Immediate Priority (Critical Files)\n\n")
+        for i, (file_path, coverage, _, gap, _) in enumerate(critical_below[:5], 1):
+            f.write(f"{i}. **{file_path}** - {coverage:.2f}% (needs {gap:.2f}% more)\n")
+        f.write("\n")
+    if normal_below:
+        f.write("### Secondary Priority (Normal Files)\n\n")
+        f.write("Focus on files with largest gaps and highest usage:\n\n")
+        for i, (file_path, coverage, _, gap, _) in enumerate(normal_below[:10], 1):
+            f.write(f"{i}. **{file_path}** - {coverage:.2f}% (needs {gap:.2f}% more)\n")
+        f.write("\n")
+
+
 def generate_status_doc(
     critical_below: list,
     normal_below: list,
@@ -142,47 +198,9 @@ def generate_status_doc(
         f.write(f"- **Critical files below threshold**: {len(critical_below)}\n")
         f.write(f"- **Normal files below 70%**: {len(normal_below)}\n")
         f.write(f"- **Files meeting thresholds**: {len(meeting_threshold)}\n\n")
-
-        if critical_below:
-            f.write("## Critical Files Below Threshold\n\n")
-            f.write("| File | Current Coverage | Required | Gap | Lines | Branches |\n")
-            f.write("|------|-----------------|----------|-----|--------|----------|\n")
-            for file_path, coverage, threshold, gap, data in critical_below:
-                f.write(
-                    f"| `{file_path}` | {coverage:.2f}% | {threshold}% | {gap:.2f}% | "
-                    f"{data['lines_covered']}/{data['lines_valid']} | "
-                    f"{data['branches_covered']}/{data['branches_valid']} |\n"
-                )
-            f.write("\n")
-
-        if normal_below:
-            f.write(f"## Normal Files Below {NORMAL_THRESHOLD}% Threshold\n\n")
-            f.write("*Showing top 50 files with largest coverage gaps*\n\n")
-            f.write("| File | Current Coverage | Required | Gap | Lines | Branches |\n")
-            f.write("|------|-----------------|----------|-----|--------|----------|\n")
-            for file_path, coverage, threshold, gap, data in normal_below[:50]:
-                f.write(
-                    f"| `{file_path}` | {coverage:.2f}% | {threshold}% | {gap:.2f}% | "
-                    f"{data['lines_covered']}/{data['lines_valid']} | "
-                    f"{data['branches_covered']}/{data['branches_valid']} |\n"
-                )
-            if len(normal_below) > 50:
-                f.write(f"\n*... and {len(normal_below) - 50} more files*\n")
-            f.write("\n")
-
-        f.write("## Priority Recommendations\n\n")
-        if critical_below:
-            f.write("### Immediate Priority (Critical Files)\n\n")
-            for i, (file_path, coverage, _, gap, _) in enumerate(critical_below[:5], 1):
-                f.write(f"{i}. **{file_path}** - {coverage:.2f}% (needs {gap:.2f}% more)\n")
-            f.write("\n")
-
-        if normal_below:
-            f.write("### Secondary Priority (Normal Files)\n\n")
-            f.write("Focus on files with largest gaps and highest usage:\n\n")
-            for i, (file_path, coverage, _, gap, _) in enumerate(normal_below[:10], 1):
-                f.write(f"{i}. **{file_path}** - {coverage:.2f}% (needs {gap:.2f}% more)\n")
-            f.write("\n")
+        _write_critical_below_section(f, critical_below)
+        _write_normal_below_section(f, normal_below)
+        _write_priority_recommendations(f, critical_below, normal_below)
 
 
 def main():

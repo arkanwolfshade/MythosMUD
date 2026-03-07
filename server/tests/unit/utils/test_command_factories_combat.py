@@ -61,3 +61,23 @@ def test_create_strike_command_no_args():
     command = CombatCommandFactory.create_strike_command([])
     assert command.target is None
     assert command.command_type.value == "strike"
+
+
+def test_create_flee_command():
+    """Test create_flee_command() creates FleeCommand (no arguments)."""
+    command = CombatCommandFactory.create_flee_command([])
+    assert command.command_type.value == "flee"
+
+
+def test_create_taunt_command():
+    """Test create_taunt_command() creates TauntCommand with target."""
+    command = CombatCommandFactory.create_taunt_command(["npc_name"])
+    assert command.target == "npc_name"
+    assert command.command_type.value == "taunt"
+
+
+def test_create_taunt_command_no_args():
+    """Test create_taunt_command() allows None target (validation happens later)."""
+    command = CombatCommandFactory.create_taunt_command([])
+    assert command.target is None
+    assert command.command_type.value == "taunt"

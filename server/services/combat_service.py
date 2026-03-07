@@ -287,6 +287,25 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
         """Return the combat instance for a specific participant, if any."""
         return get_combat_by_participant_impl(self, participant_id)
 
+    async def broadcast_aggro_target_switches(
+        self,
+        room_id: str,
+        combat_id: UUID,
+        switches: list[tuple[UUID, str, str]],
+    ) -> None:
+        """
+        Broadcast one room message per aggro target switch (ADR-016).
+        switches: list of (npc_id, npc_name, new_target_name).
+        """
+        if not switches:
+            return
+        svc = self._npc_combat_integration_service
+        mi = getattr(svc, "_messaging_integration", None) if svc else None
+        if not mi:
+            return
+        for _npc_id, npc_name, new_target_name in switches:
+            await mi.broadcast_combat_target_switch(room_id, str(combat_id), npc_name, new_target_name)
+
     def is_npc_in_combat_sync(self, npc_id: str) -> bool:
         """Return True if an NPC (string or UUID) is currently in combat."""
         return is_npc_in_combat_sync_impl(self, npc_id)

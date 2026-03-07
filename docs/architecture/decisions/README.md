@@ -31,6 +31,7 @@ Each ADR follows this structure:
 | [ADR-013](ADR-013-pydantic-configuration.md)                     | Pydantic BaseSettings for Configuration             | Accepted | 2025-10-11 |
 | [ADR-014](ADR-014-nats-error-boundaries.md)                      | Circuit Breaker + DLQ for NATS Error Boundaries     | Accepted | 2025-10-11 |
 | [ADR-015](ADR-015-postgresql-procedures-migration.md)            | PostgreSQL Procedures and Functions for Data Access | Accepted | 2026-02-26 |
+| [ADR-016](ADR-016-aggro-threat-management.md)                    | Aggro and Threat Management System                  | Accepted | 2026-02-26 |
 
 ## Related Documentation
 
@@ -39,3 +40,4 @@ Each ADR follows this structure:
 - [ApplicationContainer Analysis](../../APPLICATION_CONTAINER_ANALYSIS.md)
 - [Event Ownership Matrix](../../EVENT_OWNERSHIP_MATRIX.md)
 - [Real-Time Architecture](../../REAL_TIME_ARCHITECTURE.md)
+- [Aggro and Threat System Design](../aggro-threat-system.md)

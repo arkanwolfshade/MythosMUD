@@ -21,3 +21,6 @@ class CombatParticipantData:
     max_dp: int  # Maximum determination points (DP)
     dexterity: int
     participant_type: CombatParticipantType = CombatParticipantType.PLAYER
+    # ADR-016 + behavior_config: per-NPC aggro; only set for NPCs
+    npc_type: str | None = None
+    aggression_level: int | None = None  # 0-10; None = full threat

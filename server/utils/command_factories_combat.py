@@ -11,6 +11,7 @@ from ..models.command import (
     KickCommand,
     PunchCommand,
     StrikeCommand,
+    TauntCommand,
 )
 from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -52,3 +53,9 @@ class CombatCommandFactory:
     def create_flee_command(_args: list[str]) -> FleeCommand:
         """Create FleeCommand (no arguments)."""
         return FleeCommand()
+
+    @staticmethod
+    def create_taunt_command(args: list[str]) -> TauntCommand:
+        """Create TauntCommand from arguments (target NPC name)."""
+        target = " ".join(args) if args else None
+        return TauntCommand(target=target)

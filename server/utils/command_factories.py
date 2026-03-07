@@ -243,6 +243,10 @@ class CommandFactory:
         """Create FleeCommand from arguments (no args needed)."""
         return self._combat.create_flee_command(args)
 
+    def create_taunt_command(self, args: list[str]) -> BaseCommand:
+        """Create TauntCommand from arguments (target NPC name)."""
+        return self._combat.create_taunt_command(args)
+
     # Utility commands
     def create_alias_command(self, args: list[str]) -> BaseCommand:
         """Create AliasCommand from arguments."""

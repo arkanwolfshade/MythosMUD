@@ -81,6 +81,7 @@ class CommandType(StrEnum):
     PUNCH = "punch"
     KICK = "kick"
     STRIKE = "strike"
+    TAUNT = "taunt"
     FLEE = "flee"
     SUMMON = "summon"
     # NPC admin commands

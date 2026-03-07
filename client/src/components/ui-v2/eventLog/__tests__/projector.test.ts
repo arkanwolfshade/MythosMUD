@@ -178,6 +178,20 @@ describe('projector', () => {
       expect(next.player?.in_combat).toBe(false);
     });
 
+    it('combat_target_switch appends room message to messages', () => {
+      const prev = getInitialGameState();
+      const event: GameEvent = {
+        event_type: 'combat_target_switch',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { message: 'The horror turns its gaze to Soandso.' },
+      };
+      const next = projectEvent(prev, event);
+      expect(next.messages).toHaveLength(1);
+      expect(next.messages[0].text).toBe('The horror turns its gaze to Soandso.');
+      expect(next.messages[0].messageType).toBe('combat');
+    });
+
     it('game_state with room replaces previous room (server-authoritative, no merge)', () => {
       const prev = getInitialGameState();
       const withRoom: GameState = {

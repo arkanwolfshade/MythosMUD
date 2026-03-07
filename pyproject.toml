@@ -355,6 +355,7 @@ module = [
     "server.services.holiday_service",
     "server.services.user_manager",
     "server.services.combat_messaging_integration",
+    "server.services.combat_messaging",
     "server.services.combat_death_handler",
     "server.services.combat_cleanup_handler",
     "server.services.combat_persistence_handler",

@@ -210,6 +210,23 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
             "damage_type": damage_type,
         }
 
+    def _add_spell_damage_threat_to_combat(self, target: TargetMatch, caster_id: uuid.UUID, damage_amount: int) -> None:
+        """ADR-016: Add spell damage threat to NPC's hate list for the caster. No-op if not in combat."""
+        combat_id = self._combat_service.get_combat_id_for_npc(str(target.target_id))
+        if not combat_id:
+            return
+        combat = self._combat_service.get_combat(combat_id)
+        if not combat:
+            return
+        from server.services.aggro_threat import add_damage_threat
+        from server.services.combat_service_npc import resolve_npc_participant_id_in_combat
+
+        npc_participant_id = resolve_npc_participant_id_in_combat(self._combat_service, combat, str(target.target_id))
+        if npc_participant_id is None:
+            return
+        npc_part = combat.participants.get(npc_participant_id)
+        add_damage_threat(combat, npc_participant_id, caster_id, damage_amount, npc_participant=npc_part)
+
     async def _publish_npc_damage_and_death_events(
         self, npc_instance: Any, target: TargetMatch, damage_amount: int, caster_id: uuid.UUID
     ) -> None:
@@ -225,6 +242,7 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
         except (ValueError, TypeError):
             npc_id_ev = getattr(npc_instance, "npc_id", str(target.target_id))
         self._combat_service.sync_npc_participant_dp_after_spell_damage(str(target.target_id), new_dp)
+        self._add_spell_damage_threat_to_combat(target, caster_id, damage_amount)
         await self._combat_service.publish_npc_damage_event(
             room_id=room_id,
             npc_id=npc_id_ev,

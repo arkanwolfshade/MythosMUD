@@ -129,7 +129,7 @@ async def test_flee_roll_fails_returns_failure_and_uses_action(handler, flee_han
     )
     flee_handler_deps["combat_service"].get_combat_by_participant = AsyncMock(return_value=combat)
     flee_handler_deps["async_persistence"].get_player_by_name = AsyncMock(return_value=standing_player)
-    with patch("server.commands.combat.execute_voluntary_flee", new_callable=AsyncMock, return_value=False):
+    with patch("server.commands.combat_flee.execute_voluntary_flee", new_callable=AsyncMock, return_value=False):
         request = _request_with_persistence(flee_handler_deps["async_persistence"], standing_player)
         result = await handler.handle_flee_command(
             {},
@@ -152,7 +152,7 @@ async def test_flee_roll_succeeds_returns_success(handler, flee_handler_deps, st
     )
     flee_handler_deps["combat_service"].get_combat_by_participant = AsyncMock(return_value=combat)
     flee_handler_deps["async_persistence"].get_player_by_name = AsyncMock(return_value=standing_player)
-    with patch("server.commands.combat.execute_voluntary_flee", new_callable=AsyncMock, return_value=True):
+    with patch("server.commands.combat_flee.execute_voluntary_flee", new_callable=AsyncMock, return_value=True):
         request = _request_with_persistence(flee_handler_deps["async_persistence"], standing_player)
         result = await handler.handle_flee_command(
             {},

@@ -72,6 +72,21 @@ class StrikeCommand(BaseCommand):
         return validate_combat_target(v)
 
 
+class TauntCommand(BaseCommand):
+    """Command for taunting an NPC to draw aggro (ADR-016). Room-local only."""
+
+    command_type: Literal[CommandType.TAUNT] = CommandType.TAUNT
+    target: str | None = Field(None, min_length=1, max_length=50, description="NPC to taunt")
+
+    @field_validator("target")
+    @classmethod
+    def validate_target(cls: type["TauntCommand"], v: str | None) -> str | None:
+        """Validate combat target name format using centralized validation."""
+        if v is None:
+            return None
+        return validate_combat_target(v)
+
+
 class FleeCommand(BaseCommand):
     """Command for fleeing combat (no target)."""
 

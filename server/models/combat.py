@@ -57,6 +57,9 @@ class CombatParticipant:  # pylint: disable=too-many-instance-attributes  # Reas
     dexterity: int
     is_active: bool = True
     last_action_tick: int | None = None
+    # ADR-016 + behavior_config: per-NPC aggro; only set for NPCs
+    npc_type: str | None = None
+    aggression_level: int | None = None  # 0-10; None = full threat
 
     def is_alive(self) -> bool:
         """
@@ -149,6 +152,9 @@ class CombatInstance:  # pylint: disable=too-many-instance-attributes  # Reason:
     # Action queuing for round-based combat
     queued_actions: dict[UUID, list["CombatAction"]] = field(default_factory=dict)  # Actions queued per participant
     round_actions: dict[UUID, "CombatAction"] = field(default_factory=dict)  # Actions for current round
+    # Aggro/threat (ADR-016): per-NPC hate list and current target; keyed by NPC participant_id
+    npc_hate_lists: dict[UUID, dict[UUID, float]] = field(default_factory=dict)  # npc_id -> {entity_id -> threat}
+    npc_current_target: dict[UUID, UUID] = field(default_factory=dict)  # npc_id -> current target participant_id
 
     def get_current_turn_participant(self) -> CombatParticipant | None:
         """Get the participant whose turn it is."""

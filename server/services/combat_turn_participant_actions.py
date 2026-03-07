@@ -12,6 +12,7 @@ from server.config import get_config
 from server.game.weapons import resolve_weapon_attack_from_equipped
 from server.models.combat import CombatInstance, CombatParticipant, CombatParticipantType
 from server.npc.combat_integration import NPCCombatIntegration
+from server.services.aggro_threat import get_npc_current_target, update_aggro
 from server.services.nats_exceptions import NATSError
 from server.structured_logging.enhanced_logging_config import get_logger
 
@@ -119,6 +120,59 @@ async def resolve_player_attack_damage(
     return damage, damage_type
 
 
+def _should_continue_npc_turn(combat: CombatInstance, npc: CombatParticipant, current_tick: int) -> bool:
+    """Return False if we should return early (missing participant_id or cannot act)."""
+    if not hasattr(npc, "participant_id"):
+        logger.error("NPC object missing participant_id attribute", npc=npc)
+        return False
+    logger.debug("NPC participant_id", participant_id=npc.participant_id, id_type=type(npc.participant_id).__name__)
+    if not npc.can_act_in_combat():
+        logger.info(
+            "NPC cannot act (dead or inactive)",
+            npc_name=npc.name,
+            current_dp=npc.current_dp,
+            combat_id=combat.combat_id,
+        )
+        npc.last_action_tick = current_tick
+        return False
+    return True
+
+
+async def _resolve_npc_target(
+    combat: CombatInstance, npc: CombatParticipant, combat_service: Any
+) -> CombatParticipant | None:
+    """Resolve target via aggro (ADR-016), then fallback to _select_npc_target."""
+    new_target_id, did_switch = update_aggro(combat, npc, combat.room_id, combat.participants)
+    if did_switch and new_target_id:
+        new_target = combat.participants.get(new_target_id)
+        new_target_name = new_target.name if new_target else "someone"
+        await combat_service.broadcast_aggro_target_switches(
+            combat.room_id, combat.combat_id, [(npc.participant_id, npc.name, new_target_name)]
+        )
+    target_id = get_npc_current_target(combat, npc.participant_id)
+    if target_id is not None:
+        target = combat.participants.get(target_id)
+        if target is not None and not target.is_dead():
+            return target
+    return _select_npc_target(combat, npc.participant_id)
+
+
+async def _execute_npc_attack(
+    combat_service: Any, npc: CombatParticipant, target: CombatParticipant, current_tick: int
+) -> None:
+    """Perform NPC attack and update last_action_tick."""
+    config = get_config()
+    damage = config.game.basic_unarmed_damage
+    combat_result = await combat_service.process_attack(
+        attacker_id=npc.participant_id, target_id=target.participant_id, damage=damage
+    )
+    if combat_result.success:
+        logger.info("NPC automatically attacked", npc_name=npc.name, target_name=target.name, damage=damage)
+    else:
+        logger.warning("NPC automatic attack failed", npc_name=npc.name, message=combat_result.message)
+    npc.last_action_tick = current_tick
+
+
 async def process_npc_turn(
     combat_service: Any, combat: CombatInstance, npc: CombatParticipant, current_tick: int
 ) -> None:
@@ -133,47 +187,86 @@ async def process_npc_turn(
     """
     try:
         logger.debug("_process_npc_turn called", npc_type=type(npc).__name__, npc=npc)
-        if hasattr(npc, "participant_id"):
-            logger.debug(
-                "NPC participant_id", participant_id=npc.participant_id, id_type=type(npc.participant_id).__name__
-            )
-        else:
-            logger.error("NPC object missing participant_id attribute", npc=npc)
+        if not _should_continue_npc_turn(combat, npc, current_tick):
             return
-
-        if not npc.can_act_in_combat():
-            logger.info(
-                "NPC cannot act (dead or inactive)",
-                npc_name=npc.name,
-                current_dp=npc.current_dp,
-                combat_id=combat.combat_id,
-            )
-            npc.last_action_tick = current_tick
-            return
-
-        # Select target: prefer participants that are not dead (includes mortally wounded players at 0 DP)
-        target = _select_npc_target(combat, npc.participant_id)
+        target = await _resolve_npc_target(combat, npc, combat_service)
         if not target:
             logger.warning("No target found for NPC", npc_name=npc.name, combat_id=combat.combat_id)
             return
-
         logger.debug("NPC performing automatic attack", npc_name=npc.name, target_name=target.name)
-
-        config = get_config()
-        damage = config.game.basic_unarmed_damage
-        combat_result = await combat_service.process_attack(
-            attacker_id=npc.participant_id, target_id=target.participant_id, damage=damage
-        )
-        if combat_result.success:
-            logger.info("NPC automatically attacked", npc_name=npc.name, target_name=target.name, damage=damage)
-        else:
-            logger.warning("NPC automatic attack failed", npc_name=npc.name, message=combat_result.message)
-
-        npc.last_action_tick = current_tick
-
+        await _execute_npc_attack(combat_service, npc, target, current_tick)
     except (AttributeError, ValueError, TypeError, RuntimeError, NATSError, ConnectionError, KeyError) as e:
         logger.error("Error processing NPC turn", npc_name=npc.name, error=str(e), exc_info=True)
-        logger.error("Error processing NPC turn", npc_name=npc.name, error=str(e), exc_info=True)
+
+
+def _should_continue_player_turn(combat: CombatInstance, player: CombatParticipant, current_tick: int) -> bool:
+    """Return False if we should return early (missing participant_id or cannot act)."""
+    if not hasattr(player, "participant_id"):
+        logger.error("Player object missing participant_id attribute", player=player)
+        return False
+    logger.debug(
+        "Player participant_id",
+        participant_id=player.participant_id,
+        participant_id_type=type(player.participant_id),
+    )
+    if not player.can_act_in_combat():
+        logger.info(
+            "Player cannot act (unconscious or inactive)",
+            player_name=player.name,
+            current_dp=player.current_dp,
+            combat_id=combat.combat_id,
+        )
+        player.last_action_tick = current_tick
+        return False
+    return True
+
+
+def _select_player_target(combat: CombatInstance, player: CombatParticipant) -> CombatParticipant | None:
+    """Select first non-self participant as target."""
+    for participant in combat.participants.values():
+        if participant.participant_id != player.participant_id:
+            return participant
+    return None
+
+
+def _should_skip_for_casting(combat_service: Any, player: CombatParticipant, current_tick: int) -> bool:
+    """Return True if player is casting (and we should skip autoattack); sets last_action_tick when skipping."""
+    try:
+        magic_service = getattr(combat_service, "magic_service", None)
+        if magic_service and magic_service.casting_state_manager.is_casting(player.participant_id):
+            casting_state = magic_service.casting_state_manager.get_casting_state(player.participant_id)
+            logger.debug(
+                "Player is casting, skipping autoattack",
+                player_name=player.name,
+                spell_name=casting_state.spell_name if casting_state else "unknown",
+            )
+            player.last_action_tick = current_tick
+            return True
+    except (AttributeError, TypeError, KeyError) as e:
+        logger.debug("Could not check casting state for autoattack", player_name=player.name, error=str(e))
+    return False
+
+
+async def _execute_player_attack(
+    combat_service: Any,
+    player: CombatParticipant,
+    target: CombatParticipant,
+    current_tick: int,
+) -> None:
+    """Resolve damage, process attack, log, and update last_action_tick."""
+    config = get_config()
+    damage, damage_type = await resolve_player_attack_damage(combat_service, player, target, config)
+    combat_result = await combat_service.process_attack(
+        attacker_id=player.participant_id,
+        target_id=target.participant_id,
+        damage=damage,
+        damage_type=damage_type,
+    )
+    if combat_result.success:
+        logger.info("Player automatically attacked", player_name=player.name, target_name=target.name, damage=damage)
+    else:
+        logger.warning("Player automatic attack failed", player_name=player.name, message=combat_result.message)
+    player.last_action_tick = current_tick
 
 
 async def process_player_turn(
@@ -190,50 +283,14 @@ async def process_player_turn(
     """
     try:
         logger.debug("_process_player_turn called", player_type=type(player), player=player)
-        if hasattr(player, "participant_id"):
-            logger.debug(
-                "Player participant_id",
-                participant_id=player.participant_id,
-                participant_id_type=type(player.participant_id),
-            )
-        else:
-            logger.error("Player object missing participant_id attribute", player=player)
+        if not _should_continue_player_turn(combat, player, current_tick):
             return
-
-        if not player.can_act_in_combat():
-            logger.info(
-                "Player cannot act (unconscious or inactive)",
-                player_name=player.name,
-                current_dp=player.current_dp,
-                combat_id=combat.combat_id,
-            )
-            player.last_action_tick = current_tick
-            return
-
-        target = None
-        for participant in combat.participants.values():
-            if participant.participant_id != player.participant_id:
-                target = participant
-                break
-
+        target = _select_player_target(combat, player)
         if not target:
             logger.warning("No target found for player", player_name=player.name, combat_id=combat.combat_id)
             return
-
-        try:
-            magic_service = getattr(combat_service, "magic_service", None)
-            if magic_service and magic_service.casting_state_manager.is_casting(player.participant_id):
-                casting_state = magic_service.casting_state_manager.get_casting_state(player.participant_id)
-                logger.debug(
-                    "Player is casting, skipping autoattack",
-                    player_name=player.name,
-                    spell_name=casting_state.spell_name if casting_state else "unknown",
-                )
-                player.last_action_tick = current_tick
-                return
-        except (AttributeError, TypeError, KeyError) as e:
-            logger.debug("Could not check casting state for autoattack", player_name=player.name, error=str(e))
-
+        if _should_skip_for_casting(combat_service, player, current_tick):
+            return
         logger.info(
             "Executing default attack (no queued action)",
             combat_id=combat.combat_id,
@@ -242,26 +299,7 @@ async def process_player_turn(
             participant_ids=[str(pid) for pid in combat.participants.keys()],
         )
         logger.debug("Player performing automatic attack", player_name=player.name, target_name=target.name)
-
-        config = get_config()
-        damage, damage_type = await resolve_player_attack_damage(combat_service, player, target, config)
-
-        combat_result = await combat_service.process_attack(
-            attacker_id=player.participant_id,
-            target_id=target.participant_id,
-            damage=damage,
-            damage_type=damage_type,
-        )
-
-        if combat_result.success:
-            logger.info(
-                "Player automatically attacked", player_name=player.name, target_name=target.name, damage=damage
-            )
-        else:
-            logger.warning("Player automatic attack failed", player_name=player.name, message=combat_result.message)
-
-        player.last_action_tick = current_tick
-
+        await _execute_player_attack(combat_service, player, target, current_tick)
     except (AttributeError, ValueError, TypeError, RuntimeError, NATSError, ConnectionError, KeyError) as e:
         player_type = type(player)
         player_name = getattr(player, "name", f"Unknown Player (type: {player_type})")

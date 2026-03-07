@@ -27,13 +27,14 @@ Event types and their `data` shapes as received over the WebSocket. Used by the 
 
 ## Combat events
 
-| event_type                  | Description      | data shape            |
-| --------------------------- | ---------------- | --------------------- |
-| `npc_attacked`              | NPC attacked     | combat target, damage |
-| `player_attacked`           | Player attacked  | combat target, damage |
-| `combat_started`            | Combat started   | participants          |
-| `combat_ended`              | Combat ended     | outcome               |
-| `npc_died` / `combat_death` | NPC/combat death | target, room          |
+| event_type                  | Description      | data shape                         |
+| --------------------------- | ---------------- | ---------------------------------- |
+| `npc_attacked`              | NPC attacked     | combat target, damage              |
+| `player_attacked`           | Player attacked  | combat target, damage              |
+| `combat_started`            | Combat started   | participants                       |
+| `combat_ended`              | Combat ended     | outcome                            |
+| `npc_died` / `combat_death` | NPC/combat death | target, room                       |
+| `combat_target_switch`      | NPC aggro switch | message, npc_name, new_target_name |
 
 ## Message events
 
