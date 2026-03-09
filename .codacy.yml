@@ -11,6 +11,8 @@ exclude_paths:
   - "**/node_modules/**"
   - "**/dist/**"
   - "**/build/**"
+  # Makefile is build DSL, not Python/Go source; avoid false parse errors from Pylint/Revive.
+  - "Makefile"
   - "**/mythosmud_data/**"
   - ".data/**"
   - "data/**"
@@ -167,6 +169,10 @@ ignore_patterns:
   - pattern_id: "Pylint_invalid-name"
     file_paths:
       - "scripts/run_test_ci.py"
+  # Pylint: Makefile is not Python; suppress parser false positive on GNU Make syntax.
+  - pattern_id: "Pylint_syntax-error"
+    file_paths:
+      - "Makefile"
   # Pylint: Performance suggestion (already fixed in code - using 'in' operator)
   # Pattern for "Consider merging these comparisons with 'in'"
   # Note: This is already fixed in the code, but adding suppression in case Codacy hasn't re-analyzed

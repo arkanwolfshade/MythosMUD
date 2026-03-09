@@ -8,8 +8,10 @@ the spaces between worlds.
 
 # pylint: disable=too-many-locals,too-many-statements  # Reason: Respawn service requires many intermediate variables for complex respawn logic. Respawn service legitimately requires many statements for comprehensive respawn operations.
 
+import random
 import uuid
-from datetime import UTC, datetime
+from collections.abc import Sequence
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from sqlalchemy.exc import SQLAlchemyError
@@ -31,8 +33,8 @@ def _utc_now() -> datetime:
 
 logger = get_logger(__name__)
 
-# Default respawn location (Arkham Sanitarium foyer)
-DEFAULT_RESPAWN_ROOM = "earth_arkhamcity_sanitarium_room_foyer_001"
+# Default respawn location (arena center; tutorial exit and death/lucidity respawn)
+DEFAULT_RESPAWN_ROOM = "limbo_arena_arena_arena_5_5"
 
 # Limbo room for death state isolation
 # NOTE: Room ID is generated as {plane}_{zone}_{sub_zone}_{stable_id}
@@ -68,6 +70,240 @@ class PlayerRespawnService:
             player_combat_service_available=bool(player_combat_service),
         )
 
+    @staticmethod
+    def _normalize_current_dp(stats: dict[str, Any]) -> int:
+        """Return current_dp as an int, defaulting to 0 for non-numeric values."""
+        current_dp = stats.get("current_dp", 0)
+        if isinstance(current_dp, int | float):
+            return int(current_dp)
+        return 0
+
+    def _can_move_to_limbo(self, player: Player, death_location: str) -> tuple[bool, int]:
+        """Return (allowed, current_dp_int) for limbo movement gate checks."""
+        if death_location == "catatonia_failover":
+            return True, 0
+
+        stats = player.get_stats() or {}
+        current_dp_int = self._normalize_current_dp(stats)
+        player_is_dead = player.is_dead()
+
+        # Require actual DP <= -10; do not rely on is_dead() alone (defense against bad/stale stats)
+        allowed = not (current_dp_int > -10 or not player_is_dead)
+        return allowed, current_dp_int
+
+    def _publish_delirium_respawn_event(
+        self,
+        player_id: uuid.UUID,
+        player_name: str,
+        respawn_room: str,
+        old_lucidity: int,
+        new_lucidity: int,
+        old_room: str,
+    ) -> None:
+        """Publish delirium respawn event when event bus is available."""
+        if not self._event_bus:
+            return
+        event = PlayerDeliriumRespawnedEvent(
+            player_id=player_id,
+            player_name=player_name,
+            respawn_room_id=respawn_room,
+            old_lucidity=old_lucidity,
+            new_lucidity=new_lucidity,
+            delirium_location=old_room if old_room != LIMBO_ROOM_ID else None,
+        )
+        self._event_bus.publish(event)
+
+    async def _apply_sanitarium_liability_update(
+        self,
+        player_id: uuid.UUID,
+        lucidity_record: Any,
+        lucidity_service: Any,
+        decode_liabilities: Any,
+        encode_liabilities: Any,
+        liability_catalog: Sequence[str],
+        random_module: Any,
+    ) -> None:
+        """Increase existing liability stacks or add one liability if none exist."""
+        liabilities = decode_liabilities(lucidity_record.liabilities)
+        if liabilities:
+            for liability in liabilities:
+                liability["stacks"] = min(liability["stacks"] + 1, 5)  # Cap at 5 stacks
+            lucidity_record.liabilities = encode_liabilities(liabilities)
+            return
+
+        liability_code = random_module.choice(liability_catalog)  # nosec B311 - Game mechanics, not security-critical
+        await lucidity_service.add_liability(player_id, liability_code)
+
+    async def _clear_respawn_combat_state(self, player_id: uuid.UUID, respawn_context: str) -> None:
+        """Clear combat state for a respawning player, logging and swallowing DB errors."""
+        if not self._player_combat_service:
+            return
+        try:
+            await self._player_combat_service.clear_player_combat_state(player_id)
+            logger.info(
+                "Cleared combat state for respawned player", player_id=player_id, respawn_context=respawn_context
+            )
+        except (DatabaseError, SQLAlchemyError) as e:
+            logger.error(
+                "Error clearing combat state for respawned player",
+                player_id=player_id,
+                respawn_context=respawn_context,
+                error=str(e),
+                exc_info=True,
+            )
+
+    def _publish_standard_respawn_event(
+        self,
+        player_id: uuid.UUID,
+        player_name: str,
+        respawn_room: str,
+        stats: dict[str, Any],
+        old_room: str,
+    ) -> None:
+        """Publish standard respawn event when event bus is available."""
+        if not self._event_bus:
+            return
+        event = PlayerRespawnedEvent(
+            player_id=player_id,
+            player_name=player_name,
+            respawn_room_id=respawn_room,
+            old_dp=stats.get("current_dp", 0),
+            new_dp=stats.get("max_dp", 100),
+            death_room_id=old_room if old_room != LIMBO_ROOM_ID else None,
+        )
+        self._event_bus.publish(event)
+
+    @staticmethod
+    def _apply_standard_respawn_state(player: Player, respawn_room: str) -> tuple[int, int, str]:
+        """Restore full health and move player to respawn_room; return (old_dp, max_dp, old_room)."""
+        old_dp = player.restore_to_full_health()
+        stats = player.get_stats()
+        max_dp = stats.get("max_dp", 100)
+        old_room = player.current_room_id
+        player.current_room_id = respawn_room
+        return old_dp, max_dp, old_room
+
+    @staticmethod
+    def _log_standard_respawn(
+        player: Player, player_id: uuid.UUID, respawn_room: str, old_dp: int, max_dp: int, old_room: str
+    ) -> None:
+        """Log standard respawn details."""
+        logger.info(
+            "Player respawned",
+            player_id=player_id,
+            player_name=player.name,
+            respawn_room=respawn_room,
+            old_dp=old_dp,
+            new_dp=max_dp,
+            max_dp=max_dp,
+            from_limbo=old_room == LIMBO_ROOM_ID,
+        )
+
+    @staticmethod
+    def _apply_sanitarium_player_state(player: Player, respawn_room: str) -> tuple[dict[str, Any], str]:
+        """Set posture to standing and move player to respawn room; return (stats, old_room)."""
+        stats = player.get_stats()
+        stats["position"] = PositionState.STANDING
+        player.set_stats(stats)
+        old_room = player.current_room_id
+        player.current_room_id = respawn_room
+        return stats, old_room
+
+    @staticmethod
+    def _log_sanitarium_respawn(
+        player: Player, player_id: uuid.UUID, respawn_room: str, old_lucidity: int, new_lucidity: int, old_room: str
+    ) -> None:
+        """Log sanitarium respawn details."""
+        logger.info(
+            "Player respawned from sanitarium",
+            player_id=player_id,
+            player_name=player.name,
+            respawn_room=respawn_room,
+            old_lucidity=old_lucidity,
+            new_lucidity=new_lucidity,
+            from_room=old_room,
+        )
+
+    @staticmethod
+    def _log_delirium_respawn(
+        player: Player, player_id: uuid.UUID, respawn_room: str, old_lucidity: int, new_lucidity: int, old_room: str
+    ) -> None:
+        """Log delirium respawn details."""
+        logger.info(
+            "Player respawned from delirium",
+            player_id=player_id,
+            player_name=player.name,
+            respawn_room=respawn_room,
+            old_lucidity=old_lucidity,
+            new_lucidity=new_lucidity,
+            from_room=old_room,
+        )
+
+    async def _prepare_delirium_respawn(
+        self, player_id: uuid.UUID, player: Player, session: AsyncSession
+    ) -> tuple[str, str, int, int] | None:
+        """Apply delirium-specific lucidity/location updates and return respawn context."""
+        from ..models.lucidity import PlayerLucidity
+
+        lucidity_record = await session.get(PlayerLucidity, player_id)
+        if not lucidity_record:
+            logger.warning("Lucidity record not found for delirium respawn", player_id=player_id)
+            return None
+
+        old_lucidity = lucidity_record.current_lcd
+        new_lucidity = 10  # Restore to 10 lucidity after delirium respawn
+        lucidity_record.current_lcd = new_lucidity
+        lucidity_record.current_tier = "lucid"  # Reset tier to lucid
+        lucidity_record.last_updated_at = _utc_now()
+
+        respawn_room = DEFAULT_RESPAWN_ROOM
+        player.restore_to_full_health()
+        old_room = player.current_room_id
+        player.current_room_id = respawn_room
+        return respawn_room, old_room, old_lucidity, new_lucidity
+
+    async def _prepare_sanitarium_respawn(
+        self, player_id: uuid.UUID, player: Player, session: AsyncSession
+    ) -> tuple[str, dict[str, Any], str, int, int] | None:
+        """Apply sanitarium-specific lucidity/liability/state updates and return respawn context."""
+        from ..models.lucidity import PlayerLucidity
+        from ..services.lucidity_service import (
+            LIABILITY_CATALOG,
+            LucidityService,
+            decode_liabilities,
+            encode_liabilities,
+            resolve_tier,
+        )
+
+        lucidity_record = await session.get(PlayerLucidity, player_id)
+        if not lucidity_record:
+            logger.warning("Lucidity record not found for sanitarium respawn", player_id=player_id)
+            return None
+
+        old_lucidity = lucidity_record.current_lcd
+        new_lucidity = 1  # Reset to 1 (Deranged tier) per spec
+        lucidity_record.current_lcd = new_lucidity
+        lucidity_record.current_tier = resolve_tier(new_lucidity)
+        lucidity_record.last_updated_at = _utc_now()
+
+        lucidity_service = LucidityService(session)
+        await self._apply_sanitarium_liability_update(
+            player_id=player_id,
+            lucidity_record=lucidity_record,
+            lucidity_service=lucidity_service,
+            decode_liabilities=decode_liabilities,
+            encode_liabilities=encode_liabilities,
+            liability_catalog=LIABILITY_CATALOG,
+            random_module=random,
+        )
+
+        respawn_room = DEFAULT_RESPAWN_ROOM
+        stats, old_room = self._apply_sanitarium_player_state(player, respawn_room)
+        debrief_expires_at = _utc_now() + timedelta(days=365)  # Far future expiration
+        await lucidity_service.set_cooldown(player_id, LucidityActionCode.DEBRIEF_PENDING, debrief_expires_at)
+
+        return respawn_room, stats, old_room, old_lucidity, new_lucidity
+
     async def move_player_to_limbo(self, player_id: uuid.UUID, death_location: str, session: AsyncSession) -> bool:
         """
         Move a dead player to the limbo room.
@@ -92,17 +328,8 @@ class PlayerRespawnService:
 
             # Player must be at -10 or lower DP before moving to limbo (death transition).
             # Catatonia failover is the only exception (lucidity-based, not DP).
-            is_catatonia_failover = death_location == "catatonia_failover"
-            stats = player.get_stats() or {}
-            current_dp = stats.get("current_dp", 0)
-            # Explicit numeric check: never move at 0 to -9 (incapacitated but not dead)
-            if isinstance(current_dp, int | float):
-                current_dp_int = int(current_dp)
-            else:
-                current_dp_int = 0
-            player_is_dead = player.is_dead()
-            # Require actual DP <= -10; do not rely on is_dead() alone (defense against bad/stale stats)
-            if not is_catatonia_failover and (current_dp_int > -10 or not player_is_dead):
+            can_move, current_dp_int = self._can_move_to_limbo(player, death_location)
+            if not can_move:
                 logger.warning(
                     "Refusing to move player to limbo: DP must be -10 or lower",
                     player_id=player_id,
@@ -160,8 +387,20 @@ class PlayerRespawnService:
             # Return custom respawn room if set, otherwise default
             respawn_room = player.respawn_room_id
             if respawn_room:
-                logger.debug("Using custom respawn room", player_id=player_id, respawn_room=respawn_room)
-                return str(respawn_room)
+                respawn_room_str = str(respawn_room)
+                if respawn_room_str != DEFAULT_RESPAWN_ROOM:
+                    logger.warning(
+                        "Overriding non-arena respawn room to arena default",
+                        player_id=player_id,
+                        configured_respawn_room=respawn_room_str,
+                        forced_respawn_room=DEFAULT_RESPAWN_ROOM,
+                    )
+                    return DEFAULT_RESPAWN_ROOM
+
+                logger.debug(
+                    "Using arena respawn room from player record", player_id=player_id, respawn_room=respawn_room
+                )
+                return respawn_room_str
             logger.debug("Using default respawn room", player_id=player_id, respawn_room=DEFAULT_RESPAWN_ROOM)
             return DEFAULT_RESPAWN_ROOM
 
@@ -198,55 +437,23 @@ class PlayerRespawnService:
             # Get respawn room using async API
             respawn_room = await self.get_respawn_room(player_id, session)
 
-            # Delegate health restoration to Player domain model
-            old_dp = player.restore_to_full_health()
-            stats = player.get_stats()
-            max_dp = stats.get("max_dp", 100)
+            old_dp, max_dp, old_room = self._apply_standard_respawn_state(player, respawn_room)
 
-            # Update location
-            old_room = player.current_room_id
-            player.current_room_id = respawn_room
-
-            # BUGFIX #244: Clear player combat state when they respawn
-            # As documented in "Resurrection and Combat Continuity" - Dr. Armitage, 1930
-            # Combat state must be cleared upon resurrection to prevent dimensional entanglement
-            if self._player_combat_service:
-                try:
-                    await self._player_combat_service.clear_player_combat_state(player_id)
-                    logger.info("Cleared combat state for respawned player", player_id=player_id)
-                except (DatabaseError, SQLAlchemyError) as e:
-                    logger.error(
-                        "Error clearing combat state for respawned player",
-                        player_id=player_id,
-                        error=str(e),
-                        exc_info=True,
-                    )
+            # BUGFIX #244: clear combat state on resurrection to prevent stale combat continuity.
+            await self._clear_respawn_combat_state(player_id=player_id, respawn_context="standard")
 
             # Commit changes using async API
             await session.commit()
 
-            logger.info(
-                "Player respawned",
-                player_id=player_id,
-                player_name=player.name,
-                respawn_room=respawn_room,
-                old_dp=old_dp,
-                new_dp=max_dp,
-                max_dp=max_dp,
-                from_limbo=old_room == LIMBO_ROOM_ID,
-            )
+            self._log_standard_respawn(player, player_id, respawn_room, old_dp, max_dp, old_room)
 
-            # Publish respawn event if event bus is available
-            if self._event_bus:
-                event = PlayerRespawnedEvent(
-                    player_id=player_id,
-                    player_name=str(player.name),
-                    respawn_room_id=respawn_room,
-                    old_dp=old_dp,
-                    new_dp=max_dp,  # Use max_dp instead of hardcoded 100
-                    death_room_id=old_room if old_room != LIMBO_ROOM_ID else None,
-                )
-                self._event_bus.publish(event)
+            self._publish_standard_respawn_event(
+                player_id=player_id,
+                player_name=str(player.name),
+                respawn_room=respawn_room,
+                stats={"current_dp": old_dp, "max_dp": max_dp},
+                old_room=old_room,
+            )
 
             return True
 
@@ -282,68 +489,26 @@ class PlayerRespawnService:
                 logger.warning("Player not found for delirium respawn", player_id=player_id)
                 return False
 
-            # Get current lucidity from PlayerLucidity table
-            from ..models.lucidity import PlayerLucidity
-
-            lucidity_record = await session.get(PlayerLucidity, player_id)
-            if not lucidity_record:
-                logger.warning("Lucidity record not found for delirium respawn", player_id=player_id)
+            prepared = await self._prepare_delirium_respawn(player_id, player, session)
+            if not prepared:
                 return False
+            respawn_room, old_room, old_lucidity, new_lucidity = prepared
 
-            old_lucidity = lucidity_record.current_lcd
-            new_lucidity = 10  # Restore to 10 lucidity after delirium respawn
-
-            # Update lucidity
-            lucidity_record.current_lcd = new_lucidity
-            lucidity_record.current_tier = "lucid"  # Reset tier to lucid
-            lucidity_record.last_updated_at = _utc_now()
-
-            # Get respawn room (always Sanitarium for delirium respawn)
-            respawn_room = DEFAULT_RESPAWN_ROOM
-
-            # Delegate health restoration to Player domain model (DP and posture)
-            player.restore_to_full_health()
-
-            old_room = player.current_room_id
-            player.current_room_id = respawn_room
-
-            # Clear player combat state when they respawn from delirium
-            if self._player_combat_service:
-                try:
-                    await self._player_combat_service.clear_player_combat_state(player_id)
-                    logger.info("Cleared combat state for delirium respawned player", player_id=player_id)
-                except (DatabaseError, SQLAlchemyError) as e:
-                    logger.error(
-                        "Error clearing combat state for delirium respawned player",
-                        player_id=player_id,
-                        error=str(e),
-                        exc_info=True,
-                    )
+            await self._clear_respawn_combat_state(player_id=player_id, respawn_context="delirium")
 
             # Commit changes using async API
             await session.commit()
 
-            logger.info(
-                "Player respawned from delirium",
+            self._log_delirium_respawn(player, player_id, respawn_room, old_lucidity, new_lucidity, old_room)
+
+            self._publish_delirium_respawn_event(
                 player_id=player_id,
-                player_name=player.name,
+                player_name=str(player.name),
                 respawn_room=respawn_room,
                 old_lucidity=old_lucidity,
                 new_lucidity=new_lucidity,
-                from_room=old_room,
+                old_room=old_room,
             )
-
-            # Publish delirium respawn event if event bus is available
-            if self._event_bus:
-                event = PlayerDeliriumRespawnedEvent(
-                    player_id=player_id,
-                    player_name=str(player.name),
-                    respawn_room_id=respawn_room,
-                    old_lucidity=old_lucidity,
-                    new_lucidity=new_lucidity,
-                    delirium_location=old_room if old_room != LIMBO_ROOM_ID else None,
-                )
-                self._event_bus.publish(event)
 
             return True
 
@@ -382,100 +547,25 @@ class PlayerRespawnService:
                 logger.warning("Player not found for sanitarium respawn", player_id=player_id)
                 return False
 
-            # Get current lucidity from PlayerLucidity table
-            import random
-
-            from ..models.lucidity import PlayerLucidity
-            from ..services.lucidity_service import (
-                LIABILITY_CATALOG,
-                LucidityService,
-                decode_liabilities,
-                encode_liabilities,
-                resolve_tier,
-            )
-
-            lucidity_record = await session.get(PlayerLucidity, player_id)
-            if not lucidity_record:
-                logger.warning("Lucidity record not found for sanitarium respawn", player_id=player_id)
+            prepared = await self._prepare_sanitarium_respawn(player_id, player, session)
+            if not prepared:
                 return False
+            respawn_room, stats, old_room, old_lucidity, new_lucidity = prepared
 
-            old_lucidity = lucidity_record.current_lcd
-            new_lucidity = 1  # Reset to 1 (Deranged tier) per spec
-
-            # Update lucidity
-            lucidity_record.current_lcd = new_lucidity
-            lucidity_record.current_tier = resolve_tier(new_lucidity)
-            lucidity_record.last_updated_at = _utc_now()
-
-            # Increase liability stages (or add one if none exist)
-            lucidity_service = LucidityService(session)
-            liabilities = decode_liabilities(lucidity_record.liabilities)
-            if liabilities:
-                # Increase each existing liability by one stage
-                for liability in liabilities:
-                    liability["stacks"] = min(liability["stacks"] + 1, 5)  # Cap at 5 stacks
-                lucidity_record.liabilities = encode_liabilities(liabilities)
-            else:
-                # No liabilities - roll once on the table
-                liability_code = random.choice(LIABILITY_CATALOG)  # nosec B311 - Game mechanics, not security-critical
-                await lucidity_service.add_liability(player_id, liability_code)
-
-            # Get respawn room (always Sanitarium for sanitarium failover)
-            respawn_room = DEFAULT_RESPAWN_ROOM
-
-            # Get current stats and ensure posture is standing
-            stats = player.get_stats()
-            stats["position"] = PositionState.STANDING
-
-            # Update player stats and location
-            player.set_stats(stats)
-            old_room = player.current_room_id
-            player.current_room_id = respawn_room
-
-            # Clear player combat state
-            if self._player_combat_service:
-                try:
-                    await self._player_combat_service.clear_player_combat_state(player_id)
-                    logger.info("Cleared combat state for sanitarium respawned player", player_id=player_id)
-                except (DatabaseError, SQLAlchemyError) as e:
-                    logger.error(
-                        "Error clearing combat state for sanitarium respawned player",
-                        player_id=player_id,
-                        error=str(e),
-                        exc_info=True,
-                    )
-
-            # Set debrief pending flag (mandatory debrief becomes available)
-            # Use a cooldown entry that expires far in the future (effectively permanent until cleared)
-            from datetime import timedelta
-
-            debrief_expires_at = _utc_now() + timedelta(days=365)  # Far future expiration
-            await lucidity_service.set_cooldown(player_id, LucidityActionCode.DEBRIEF_PENDING, debrief_expires_at)
+            await self._clear_respawn_combat_state(player_id=player_id, respawn_context="sanitarium")
 
             # Commit changes using async API (includes debrief flag)
             await session.commit()
 
-            logger.info(
-                "Player respawned from sanitarium",
-                player_id=player_id,
-                player_name=player.name,
-                respawn_room=respawn_room,
-                old_lucidity=old_lucidity,
-                new_lucidity=new_lucidity,
-                from_room=old_room,
-            )
+            self._log_sanitarium_respawn(player, player_id, respawn_room, old_lucidity, new_lucidity, old_room)
 
-            # Publish respawn event if event bus is available
-            if self._event_bus:
-                event = PlayerRespawnedEvent(
-                    player_id=player_id,
-                    player_name=str(player.name),
-                    respawn_room_id=respawn_room,
-                    old_dp=stats.get("current_dp", 0),
-                    new_dp=stats.get("max_dp", 100),
-                    death_room_id=old_room if old_room != LIMBO_ROOM_ID else None,
-                )
-                self._event_bus.publish(event)
+            self._publish_standard_respawn_event(
+                player_id=player_id,
+                player_name=str(player.name),
+                respawn_room=respawn_room,
+                stats=stats,
+                old_room=old_room,
+            )
 
             return True
 

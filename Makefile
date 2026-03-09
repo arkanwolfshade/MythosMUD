@@ -1,7 +1,7 @@
 # MythosMUD Makefile
 
 # Project root detection (handles worktree contexts)
-PROJECT_ROOT := $(shell python -c "import os; print(os.path.dirname(os.getcwd()) if 'MythosMUD-' in os.getcwd() else os.getcwd())")
+PROJECT_ROOT := $(if $(findstring MythosMUD-,$(CURDIR)),$(abspath $(CURDIR)/..),$(CURDIR))
 
 # Common command patterns
 PYTHON := cd $(PROJECT_ROOT) && python
@@ -218,6 +218,7 @@ test-client-e2e:
 test-playwright: setup-test-env setup-postgresql-test-db
 	$(POWERSHELL) scripts/apply_procedures.ps1 -TargetDbs mythos_e2e
 	$(POWERSHELL) scripts/apply_coc_spells_migration.ps1 -TargetDbs mythos_e2e
+	$(POWERSHELL) scripts/apply_arena_migration.ps1 -TargetDbs mythos_e2e
 	@echo "Running client E2E runtime tests (Playwright CLI)..."
 	cd $(PROJECT_ROOT)/client && npm run test:e2e:runtime
 	@echo "Running server integration tests (runtime DB, single worker)..."
@@ -231,12 +232,14 @@ test-server: setup-test-env setup-postgresql-test-db
 	@echo "Running server tests (no coverage)..."
 	$(POWERSHELL) scripts/apply_procedures.ps1 -TargetDbs mythos_unit
 	$(POWERSHELL) scripts/apply_coc_spells_migration.ps1 -TargetDbs mythos_unit
+	$(POWERSHELL) scripts/apply_arena_migration.ps1 -TargetDbs mythos_unit
 	$(UV) pytest server/tests/ -m "not integration" $(PYTEST_OPTS)
 
 test-server-coverage: setup-test-env setup-postgresql-test-db
 	@echo "Running server tests with coverage..."
 	$(POWERSHELL) scripts/apply_procedures.ps1 -TargetDbs mythos_unit
 	$(POWERSHELL) scripts/apply_coc_spells_migration.ps1 -TargetDbs mythos_unit
+	$(POWERSHELL) scripts/apply_arena_migration.ps1 -TargetDbs mythos_unit
 	$(UV) pytest server/tests/ -m "not integration" $(PYTEST_OPTS) $(PYTEST_COV_OPTS)
 
 test: test-client test-server

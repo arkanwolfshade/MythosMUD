@@ -8,7 +8,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from server.services.npc_startup_service import NPCStartupService, get_npc_startup_service
+from server.services.npc_startup_service import ARENA_ROOM_IDS, NPCStartupService, get_npc_startup_service
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
 # pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
@@ -18,6 +18,14 @@ from server.services.npc_startup_service import NPCStartupService, get_npc_start
 def npc_startup_service():
     """Create an NPCStartupService instance."""
     return NPCStartupService()
+
+
+def test_arena_room_ids():
+    """Test ARENA_ROOM_IDS defines 121 arena rooms (11x11) and includes center."""
+    assert len(ARENA_ROOM_IDS) == 121
+    assert "limbo_arena_arena_arena_5_5" in ARENA_ROOM_IDS
+    assert "limbo_arena_arena_arena_0_0" in ARENA_ROOM_IDS
+    assert "limbo_arena_arena_arena_10_10" in ARENA_ROOM_IDS
 
 
 def test_npc_startup_service_init(npc_startup_service):
@@ -48,7 +56,7 @@ async def test_spawn_npcs_on_startup_with_required_npcs(npc_startup_service):
     """Test spawn_npcs_on_startup() spawns required NPCs."""
     mock_npc_def = MagicMock()
     mock_npc_def.required_npc = True
-    mock_npc_def.id = "npc_def_001"
+    mock_npc_def.id = 1
     mock_npc_def.name = "RequiredNPC"
     mock_npc_def.room_id = "room_001"
     with patch("server.services.npc_startup_service.get_npc_instance_service") as mock_get_service:
@@ -68,9 +76,11 @@ async def test_spawn_npcs_on_startup_with_required_npcs(npc_startup_service):
                 mock_npc_service.get_npc_definitions = AsyncMock(return_value=[mock_npc_def])
                 with patch.object(npc_startup_service, "_determine_spawn_room", return_value="room_001"):
                     result = await npc_startup_service.spawn_npcs_on_startup()
-                    assert result["total_attempted"] == 1
-                    assert result["total_spawned"] == 1
                     assert result["required_spawned"] == 1
+                    # Arena pass spawns one extra instance per definition that was spawned
+                    assert result["arena_spawned"] == 1
+                    assert result["total_attempted"] == 2  # 1 required + 1 arena
+                    assert result["total_spawned"] == 2
 
 
 @pytest.mark.asyncio
@@ -441,12 +451,12 @@ async def test_spawn_npcs_on_startup_with_optional_npcs(npc_startup_service):
     """Test spawn_npcs_on_startup() spawns optional NPCs."""
     mock_required_npc = MagicMock()
     mock_required_npc.required_npc = True
-    mock_required_npc.id = "npc_def_001"
+    mock_required_npc.id = 1
     mock_required_npc.name = "RequiredNPC"
     mock_required_npc.room_id = "room_001"
     mock_optional_npc = MagicMock()
     mock_optional_npc.required_npc = False
-    mock_optional_npc.id = "npc_def_002"
+    mock_optional_npc.id = 2
     mock_optional_npc.name = "OptionalNPC"
     mock_optional_npc.spawn_probability = 1.0
     with patch("server.services.npc_startup_service.get_npc_instance_service") as mock_get_service:
@@ -467,7 +477,8 @@ async def test_spawn_npcs_on_startup_with_optional_npcs(npc_startup_service):
                 with patch.object(npc_startup_service, "_determine_spawn_room", return_value="room_001"):
                     with patch("random.random", return_value=0.5):
                         result = await npc_startup_service.spawn_npcs_on_startup()
-                        assert result["total_attempted"] == 2
-                        assert result["total_spawned"] == 2
                         assert result["required_spawned"] == 1
                         assert result["optional_spawned"] == 1
+                        assert result["arena_spawned"] == 2  # one per definition spawned
+                        assert result["total_attempted"] == 4  # 1 required + 1 optional + 2 arena
+                        assert result["total_spawned"] == 4

@@ -176,6 +176,9 @@ jobs:
           # Seed data: authoritative DML for mythos_unit
           su postgres -c "psql -d mythos_unit -c \"SET search_path TO mythos_unit;\" -f $WORKSPACE_PATH/data/db/mythos_unit_dml.sql" || \
           (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -d mythos_unit -c "SET search_path TO mythos_unit;" -f data/db/mythos_unit_dml.sql)
+          # Apply arena zone migration (arena removed from DML; applied via migration)
+          su postgres -c "psql -d mythos_unit -v ON_ERROR_STOP=1 -f $WORKSPACE_PATH/data/db/migrations/20260227_add_arena_zone_unit.sql" || \
+          (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -d mythos_unit -v ON_ERROR_STOP=1 -f data/db/migrations/20260227_add_arena_zone_unit.sql)
       - name: Set up test environment file
         run: |
           # Create .env.unit_test at project root from example for CI

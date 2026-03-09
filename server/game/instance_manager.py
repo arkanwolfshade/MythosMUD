@@ -23,8 +23,8 @@ if TYPE_CHECKING:
 
 logger = get_logger(__name__)
 
-# Default fixed exit room when not specified in template
-DEFAULT_EXIT_ROOM_ID = "earth_arkhamcity_sanitarium_room_foyer_001"
+# Default fixed exit room when not specified in template (arena center)
+DEFAULT_EXIT_ROOM_ID = "limbo_arena_arena_arena_5_5"
 
 
 @dataclass
@@ -83,47 +83,17 @@ class InstanceManager:
         instance_id = f"instance_{instance_uuid}"
 
         with self._lock:
-            templates = [
-                r
-                for r in self._room_cache.values()
-                if getattr(r, "attributes", {}).get("instance_template_id") == template_id
-            ]
+            templates = self._get_template_rooms(template_id)
             if not templates:
                 self._logger.error("No template rooms found", template_id=template_id)
                 raise ValueError(f"No template rooms found for template_id={template_id!r}")
 
             template_stable_ids = {self._stable_id_from_room(r) for r in templates}
-
-            rooms: dict[str, Room] = {}
-            owner_str = str(owner_player_id)
-
-            for template_room in templates:
-                stable_id = self._stable_id_from_room(template_room)
-                instance_room_id = f"{instance_id}_{stable_id}"
-                remapped_exits = self._remap_exits(
-                    template_room.exits,
-                    instance_id,
-                    template_stable_ids,
-                    template_room.attributes.get("instance_exit_room_id", DEFAULT_EXIT_ROOM_ID),
-                )
-                room_data = {
-                    "id": instance_room_id,
-                    "name": template_room.name,
-                    "description": template_room.description,
-                    "plane": template_room.plane,
-                    "zone": template_room.zone,
-                    "sub_zone": template_room.sub_zone,
-                    "resolved_environment": getattr(template_room, "environment", "outdoors"),
-                    "exits": remapped_exits,
-                    "attributes": dict(getattr(template_room, "attributes", {}) or {}),
-                }
-                room = Room(room_data, self._event_bus)
-                rooms[instance_room_id] = room
-
+            rooms = self._build_instance_rooms(templates, instance_id, template_stable_ids)
             instance = Instance(
                 instance_id=instance_id,
                 template_id=template_id,
-                owner_player_id=owner_str,
+                owner_player_id=str(owner_player_id),
                 rooms=rooms,
             )
             self._instances[instance_id] = instance
@@ -134,6 +104,44 @@ class InstanceManager:
                 room_count=len(rooms),
             )
             return instance
+
+    def _get_template_rooms(self, template_id: str) -> list[Room]:
+        """Return template rooms matching instance_template_id."""
+        return [
+            room
+            for room in self._room_cache.values()
+            if getattr(room, "attributes", {}).get("instance_template_id") == template_id
+        ]
+
+    def _build_instance_rooms(
+        self, templates: list[Room], instance_id: str, template_stable_ids: set[str]
+    ) -> dict[str, Room]:
+        """Clone template rooms into instance-scoped rooms with remapped exits."""
+        rooms: dict[str, Room] = {}
+        for template_room in templates:
+            stable_id = self._stable_id_from_room(template_room)
+            instance_room_id = f"{instance_id}_{stable_id}"
+            remapped_exits = self._remap_exits(
+                template_room.exits,
+                instance_id,
+                template_stable_ids,
+                template_room.attributes.get("instance_exit_room_id", DEFAULT_EXIT_ROOM_ID),
+            )
+            room_data = {
+                "id": instance_room_id,
+                "name": template_room.name,
+                "description": template_room.description,
+                "plane": template_room.plane,
+                "zone": template_room.zone,
+                "sub_zone": template_room.sub_zone,
+                "resolved_environment": getattr(template_room, "environment", "outdoors"),
+                "exits": remapped_exits,
+                "attributes": dict(getattr(template_room, "attributes", {}) or {}),
+            }
+            room = Room(room_data, self._event_bus)
+            rooms[instance_room_id] = room
+
+        return rooms
 
     def _stable_id_from_room(self, room: Room) -> str:
         """Extract stable_id from room - use room.id if it looks like a full path."""
