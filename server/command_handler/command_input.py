@@ -40,6 +40,7 @@ _SYSTEM_COMMANDS = {
     "mutes",
     "unmute",
     "admin",
+    "spawn",
     "summon",
     "pose",
     "tell",

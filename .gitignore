@@ -226,6 +226,8 @@ tsconfig.tsbuildinfo
 .cursorignore
 .cursorindexingignore
 .cursorrules
+# Hook state (ephemeral; edited-files.json for test-agent trigger)
+.cursor/hooks/state/
 
 # Spyder project settings
 .spyderproject

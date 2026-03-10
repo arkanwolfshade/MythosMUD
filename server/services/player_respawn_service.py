@@ -387,20 +387,14 @@ class PlayerRespawnService:
             # Return custom respawn room if set, otherwise default
             respawn_room = player.respawn_room_id
             if respawn_room:
-                respawn_room_str = str(respawn_room)
-                if respawn_room_str != DEFAULT_RESPAWN_ROOM:
-                    logger.warning(
-                        "Overriding non-arena respawn room to arena default",
+                respawn_room_str = str(respawn_room).strip()
+                if respawn_room_str:
+                    logger.debug(
+                        "Using custom respawn room from player record",
                         player_id=player_id,
-                        configured_respawn_room=respawn_room_str,
-                        forced_respawn_room=DEFAULT_RESPAWN_ROOM,
+                        respawn_room=respawn_room_str,
                     )
-                    return DEFAULT_RESPAWN_ROOM
-
-                logger.debug(
-                    "Using arena respawn room from player record", player_id=player_id, respawn_room=respawn_room
-                )
-                return respawn_room_str
+                    return respawn_room_str
             logger.debug("Using default respawn room", player_id=player_id, respawn_room=DEFAULT_RESPAWN_ROOM)
             return DEFAULT_RESPAWN_ROOM
 

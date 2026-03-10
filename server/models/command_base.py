@@ -84,7 +84,8 @@ class CommandType(StrEnum):
     TAUNT = "taunt"
     FLEE = "flee"
     SUMMON = "summon"
-    # NPC admin commands
+    # NPC admin commands (spawn is alias for npc spawn)
+    SPAWN = "spawn"
     NPC = "npc"
     # Magic commands
     CAST = "cast"

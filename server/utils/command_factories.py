@@ -268,6 +268,10 @@ class CommandFactory:
         """Create NPCCommand from arguments."""
         return self._utility.create_npc_command(args)
 
+    def create_spawn_command(self, args: list[str]) -> BaseCommand:
+        """Create NPCCommand for npc spawn subcommand (alias: /spawn -> npc spawn)."""
+        return self._utility.create_npc_command(["spawn"] + args)
+
     def create_summon_command(self, args: list[str]) -> BaseCommand:
         """Create SummonCommand from arguments."""
         return self._utility.create_summon_command(args)

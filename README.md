@@ -427,9 +427,10 @@ See [scripts/README.md](scripts/README.md) for detailed documentation.
   - Includes ruff, prettier, eslint, and semgrep security analysis
 - **Cursor Hooks:**
   - Configured in `.cursor/hooks.json` (Settings → Hooks in Cursor IDE)
-  - **afterFileEdit:** Formats agent-edited files (ruff for `server/` Python, prettier for `client/` TS/JSON/MD) so agent output matches pre-commit; script: `.cursor/hooks/format-after-edit.ps1`
+  - **afterFileEdit:** Records non-test source files for test-agent trigger (`.cursor/hooks/record_edited_file.py`)
+  - **stop:** Auto-continues agent with test-creation prompt when non-test files were edited (`.cursor/hooks/trigger_test_agent.py`)
   - Project hooks run from the project root; scripts live in `.cursor/hooks/`
-  - Formatting after agent edit is handled by Cursor hooks; for manual edits use "Format Document" or run pre-commit before commit
+  - For manual edits use "Format Document" or run pre-commit before commit
 - **CI/CD:**
   - Automated with GitHub Actions for both backend and frontend
   - Includes CI, CodeQL security analysis, and Semgrep static analysis
@@ -471,7 +472,7 @@ See [scripts/README.md](scripts/README.md) for detailed documentation.
 - [DEVELOPMENT_AI.md](docs/DEVELOPMENT_AI.md) — AI agent development guide and workflow
 - [AI Development Workflow](docs/AI_DEVELOPMENT_WORKFLOW.md) — Detailed AI agent task management
 - [Cursor Setup Guide](docs/CURSOR_SETUP_GUIDE.md) — Optimize Cursor IDE for subagents and CLI usage
-- [Cursor Hooks](docs/CURSOR_HOOKS.md) — Cursor Hooks configuration (afterFileEdit formatter, Settings → Hooks)
+- [Cursor Hooks](docs/CURSOR_HOOKS.md) — Cursor Hooks (test-trigger agent, Settings → Hooks)
 
 ### Testing Documentation
 
