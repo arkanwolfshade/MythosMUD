@@ -160,7 +160,16 @@ def _validate_npc_services_prerequisites(container: ApplicationContainer) -> Non
 
 def _create_npc_services_on_app(app: FastAPI, container: ApplicationContainer) -> None:
     """Create NPC spawning, lifecycle, population services and instance service. Attach to app.state."""
-    app.state.npc_spawning_service = NPCSpawningService(container.event_bus, None)
+    from ..npc.combat_integration import NPCCombatIntegration
+
+    combat_integration = (
+        NPCCombatIntegration(event_bus=container.event_bus, async_persistence=container.async_persistence)
+        if container.async_persistence
+        else None
+    )
+    app.state.npc_spawning_service = NPCSpawningService(
+        container.event_bus, None, combat_integration=combat_integration
+    )
     app.state.npc_lifecycle_manager = NPCLifecycleManager(
         event_bus=container.event_bus,
         population_controller=None,

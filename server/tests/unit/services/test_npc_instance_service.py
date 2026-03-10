@@ -41,7 +41,7 @@ def mock_spawning_service():
 def mock_population_controller():
     """Create a mock NPCPopulationController."""
     controller = MagicMock(spec=NPCPopulationController)
-    controller.spawn_npc = MagicMock(return_value="npc_123")
+    controller.spawn_npc = MagicMock(return_value=("npc_123", None))
     return controller
 
 
@@ -143,7 +143,7 @@ async def test_spawn_npc_instance_success(npc_instance_service, sample_npc_defin
         assert result["definition_name"] == "Test NPC"
         assert result["room_id"] == "earth_arkhamcity_downtown_001"
         npc_instance_service.population_controller.spawn_npc.assert_called_once_with(
-            sample_npc_definition, "earth_arkhamcity_downtown_001"
+            sample_npc_definition, "earth_arkhamcity_downtown_001", "test_spawn"
         )
 
 
@@ -178,7 +178,10 @@ async def test_spawn_npc_instance_spawn_fails(npc_instance_service, sample_npc_d
         mock_get_session.return_value.__anext__ = AsyncMock(return_value=mock_session)
 
         mock_npc_service.get_npc_definition = AsyncMock(return_value=sample_npc_definition)
-        npc_instance_service.population_controller.spawn_npc.return_value = None
+        npc_instance_service.population_controller.spawn_npc.return_value = (
+            None,
+            "population limit exceeded",
+        )
 
         with pytest.raises(RuntimeError, match="Failed to spawn NPC"):
             await npc_instance_service.spawn_npc_instance(definition_id=1, room_id="room_001")

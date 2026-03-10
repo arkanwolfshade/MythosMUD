@@ -100,10 +100,12 @@ class NPCInstanceService:
 
             # Spawn the NPC using the population controller to ensure proper population limits
             # The population controller will handle all spawning through the lifecycle manager
-            npc_id = self.population_controller.spawn_npc(definition, room_id)
+            npc_id, failure_reason = self.population_controller.spawn_npc(definition, room_id, reason)
 
             if not npc_id:
-                raise RuntimeError(f"Failed to spawn NPC from definition {definition_id}")
+                raise RuntimeError(
+                    f"Failed to spawn NPC from definition {definition_id}: {failure_reason or 'unknown'}"
+                )
 
             logger.info(
                 "Spawned NPC instance",

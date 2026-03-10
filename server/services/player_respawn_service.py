@@ -12,7 +12,7 @@ import random
 import uuid
 from collections.abc import Sequence
 from datetime import UTC, datetime, timedelta
-from typing import Any
+from typing import Any, cast
 
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -384,18 +384,22 @@ class PlayerRespawnService:
                 logger.warning("Player not found for respawn room lookup, using default", player_id=player_id)
                 return DEFAULT_RESPAWN_ROOM
 
-            # Return custom respawn room if set, otherwise default
-            respawn_room = player.respawn_room_id
-            if respawn_room:
-                respawn_room_str = str(respawn_room).strip()
-                if respawn_room_str:
-                    logger.debug(
-                        "Using custom respawn room from player record",
-                        player_id=player_id,
-                        respawn_room=respawn_room_str,
-                    )
-                    return respawn_room_str
-            logger.debug("Using default respawn room", player_id=player_id, respawn_room=DEFAULT_RESPAWN_ROOM)
+            # Prefer a configured custom respawn room when available, falling back to the
+            # default Arkham Sanitarium foyer when none is configured.
+            respawn_room_id = cast(str | None, getattr(player, "respawn_room_id", None))
+            if respawn_room_id:
+                logger.debug(
+                    "Using custom respawn room for player",
+                    player_id=player_id,
+                    custom_respawn_room=respawn_room_id,
+                )
+                return respawn_room_id
+
+            logger.debug(
+                "Using default respawn room for player",
+                player_id=player_id,
+                effective_respawn_room=DEFAULT_RESPAWN_ROOM,
+            )
             return DEFAULT_RESPAWN_ROOM
 
         except (DatabaseError, SQLAlchemyError) as e:

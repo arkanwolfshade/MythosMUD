@@ -75,6 +75,87 @@ class AggressiveMobNPC(NPCBase):
         """Get aggressive mob-specific behavior rules."""
         return self._behavior_engine.get_rules()
 
+    def _enrich_behavior_context(self, context: dict[str, Any]) -> None:
+        """
+        Populate player_in_range, enemy_nearby, and target_id for attack rules.
+        Uses persistence from lifecycle manager to get players in current room.
+        """
+        room_id = self.current_room
+        if not room_id:
+            context["player_in_range"] = False
+            context["enemy_nearby"] = False
+            return
+
+        try:
+            from ..services.npc_instance_service import get_npc_instance_service
+
+            npc_instance_service = get_npc_instance_service()
+            if not npc_instance_service or not hasattr(npc_instance_service, "lifecycle_manager"):
+                context["player_in_range"] = False
+                context["enemy_nearby"] = False
+                return
+
+            lifecycle_manager = npc_instance_service.lifecycle_manager
+            persistence = getattr(lifecycle_manager, "persistence", None)
+            if not persistence:
+                context["player_in_range"] = False
+                context["enemy_nearby"] = False
+                return
+
+            room = persistence.get_room_by_id(room_id)
+            players = room.get_players() if room else []
+
+            if players:
+                context["player_in_range"] = True
+                context["enemy_nearby"] = True
+                context["target_id"] = players[0]
+            else:
+                context["player_in_range"] = False
+                context["enemy_nearby"] = False
+
+            # #region agent log
+            try:
+                from pathlib import Path
+
+                _json = __import__("json")
+                _log_path = Path(__file__).resolve().parent.parent / "debug-66a205.log"
+                with open(_log_path, "a", encoding="utf-8") as f:
+                    f.write(
+                        _json.dumps(
+                            {
+                                "sessionId": "66a205",
+                                "location": "aggressive_mob_npc:_enrich_behavior_context",
+                                "message": "context_enriched",
+                                "data": {
+                                    "npc_id": self.npc_id,
+                                    "room_id": room_id,
+                                    "players_count": len(players),
+                                    "context_flags": {
+                                        "player_in_range": context.get("player_in_range"),
+                                        "enemy_nearby": context.get("enemy_nearby"),
+                                        "target_id": context.get("target_id"),
+                                    },
+                                },
+                                "timestamp": __import__("time").time() * 1000,
+                                "hypothesisId": "A1",
+                            }
+                        )
+                        + "\n"
+                    )
+            except Exception:  # noqa: S110
+                pass
+            # #endregion
+
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904
+            logger.warning(
+                "Failed to enrich aggressive mob context",
+                npc_id=self.npc_id,
+                room_id=room_id,
+                error=str(e),
+            )
+            context["player_in_range"] = False
+            context["enemy_nearby"] = False
+
     def hunt_target(self, target_id: str) -> bool:
         """Hunt a specific target."""
         try:
@@ -92,6 +173,35 @@ class AggressiveMobNPC(NPCBase):
         try:
             attack_damage = self._behavior_config.get("attack_damage", 1)
             logger.info("NPC attacked target", npc_id=self.npc_id, target_id=target_id, damage=attack_damage)
+
+            # #region agent log
+            try:
+                from pathlib import Path
+
+                _json = __import__("json")
+                _log_path = Path(__file__).resolve().parent.parent / "debug-66a205.log"
+                with open(_log_path, "a", encoding="utf-8") as f:
+                    f.write(
+                        _json.dumps(
+                            {
+                                "sessionId": "66a205",
+                                "location": "aggressive_mob_npc:attack_target",
+                                "message": "attack_invoked",
+                                "data": {
+                                    "npc_id": self.npc_id,
+                                    "target_id": target_id,
+                                    "room_id": self.current_room,
+                                    "has_combat_integration": bool(getattr(self, "combat_integration", None)),
+                                },
+                                "timestamp": __import__("time").time() * 1000,
+                                "hypothesisId": "C1",
+                            }
+                        )
+                        + "\n"
+                    )
+            except Exception:  # noqa: S110
+                pass
+            # #endregion
 
             # Use combat integration for attack handling when we have a running event loop
             if hasattr(self, "combat_integration") and self.combat_integration:

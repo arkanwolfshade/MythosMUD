@@ -297,6 +297,17 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
                 record.change_state(NPCLifecycleState.ACTIVE, "entered room")
                 record.add_event(NPCLifecycleEvent.SPAWNED, {"room_id": event.room_id})
 
+        # Trigger a room occupants refresh so clients see newly spawned NPCs without re-entering.
+        try:
+            self.event_bus.publish(RoomOccupantsRefreshRequested(room_id=event.room_id))
+        except Exception:  # noqa: S110
+            # Best-effort refresh; if this fails, core lifecycle logic above still runs.
+            logger.warning(
+                "Failed to publish RoomOccupantsRefreshRequested after NPCEnteredRoom",
+                npc_id=event.npc_id,
+                room_id=event.room_id,
+            )
+
     def _handle_npc_left_room(self, event: NPCLeftRoom) -> None:
         """Handle NPC leaving a room."""
         if event.npc_id in self.lifecycle_records:
@@ -452,7 +463,9 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
             self._pending_thread_starts.append((npc_id, definition))
             logger.debug("Queued NPC thread start request (thread manager not started)", npc_id=npc_id)
 
-    def spawn_npc(self, definition: NPCDefinition, room_id: str, reason: str = "manual") -> str | None:
+    def spawn_npc(
+        self, definition: NPCDefinition, room_id: str, reason: str = "manual"
+    ) -> tuple[str | None, str | None]:
         """
         Spawn an NPC instance.
 
@@ -462,12 +475,21 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
             reason: Reason for spawning
 
         Returns:
-            NPC ID if successful, None if failed
+            Tuple of (npc_id, failure_reason). On success: (npc_id, None).
+            On failure: (None, "detailed reason").
         """
+        npc_id: str | None = None
+        failure_reason: str = ""
         try:
-            if not self._can_spawn_npc(definition, room_id):
-                logger.warning("Cannot spawn NPC", npc_name=definition.name, room_id=room_id)
-                return None
+            can_spawn, failure_reason = self._can_spawn_npc(definition, room_id, reason)
+            if not can_spawn:
+                logger.warning(
+                    "Cannot spawn NPC",
+                    npc_name=definition.name,
+                    room_id=room_id,
+                    failure_reason=failure_reason,
+                )
+                return (None, failure_reason)
 
             npc_id = self._generate_npc_id(definition, room_id)
 
@@ -477,9 +499,16 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
 
             npc_instance = self.spawning_service._create_npc_instance(definition, room_id, npc_id)  # pylint: disable=protected-access  # Reason: Internal NPC instance creation required
             if not npc_instance:
-                record.change_state(NPCLifecycleState.ERROR, "Failed to create NPC instance")
-                record.add_event(NPCLifecycleEvent.ERROR_OCCURRED, {"error": "Failed to create NPC instance"})
-                return None
+                failure_reason = "spawning service failed to create NPC instance"
+                record.change_state(NPCLifecycleState.ERROR, failure_reason)
+                record.add_event(NPCLifecycleEvent.ERROR_OCCURRED, {"error": failure_reason})
+                logger.error(
+                    "Failed to spawn NPC",
+                    npc_name=definition.name,
+                    room_id=room_id,
+                    failure_reason=failure_reason,
+                )
+                return (None, failure_reason)
 
             self.active_npcs[npc_id] = npc_instance
             npc_instance.npc_id = npc_id
@@ -490,8 +519,15 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
 
             room = self._get_room_for_spawn(room_id, npc_id, definition)
             if not room:
+                failure_reason = f"room not found: {room_id}"
                 self._cleanup_failed_spawn(npc_id, room_id)
-                return None
+                logger.error(
+                    "Failed to spawn NPC",
+                    npc_name=definition.name,
+                    room_id=room_id,
+                    failure_reason=failure_reason,
+                )
+                return (None, failure_reason)
 
             room.npc_entered(npc_id)
 
@@ -500,15 +536,21 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
 
             logger.info("Successfully spawned NPC", npc_id=npc_id, npc_name=definition.name, room_id=room_id)
 
-            return npc_id
+            return (npc_id, None)
 
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC spawn errors unpredictable, must handle gracefully
-            logger.error("Failed to spawn NPC", npc_name=definition.name, error=str(e))
-            if npc_id in self.lifecycle_records:
+            failure_reason = str(e)
+            logger.error(
+                "Failed to spawn NPC",
+                npc_name=definition.name,
+                room_id=room_id,
+                failure_reason=failure_reason,
+            )
+            if npc_id and npc_id in self.lifecycle_records:
                 record = self.lifecycle_records[npc_id]
-                record.change_state(NPCLifecycleState.ERROR, str(e))
-                record.add_event(NPCLifecycleEvent.ERROR_OCCURRED, {"error": str(e)})
-            return None
+                record.change_state(NPCLifecycleState.ERROR, failure_reason)
+                record.add_event(NPCLifecycleEvent.ERROR_OCCURRED, {"error": failure_reason})
+            return (None, failure_reason)
 
     def despawn_npc(self, npc_id: str, reason: str = "manual") -> bool:
         """
@@ -737,12 +779,13 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
             reason = respawn_data["reason"]
 
             # Check if we can spawn this NPC
-            if not self._can_spawn_npc(definition, room_id):
+            can_spawn, _ = self._can_spawn_npc(definition, room_id, f"respawn:{reason}")
+            if not can_spawn:
                 logger.debug("Cannot respawn NPC - spawn conditions not met", npc_id=npc_id)
                 return False
 
             # Spawn the NPC
-            new_npc_id = self.spawn_npc(definition, room_id, f"respawn: {reason}")
+            new_npc_id, _ = self.spawn_npc(definition, room_id, f"respawn: {reason}")
             if new_npc_id:
                 # Update the lifecycle record with new ID if different
                 if new_npc_id != npc_id:
@@ -760,19 +803,24 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
             logger.error("Failed to respawn NPC", npc_id=npc_id, error=str(e))
             return False
 
-    def _can_spawn_npc(self, definition: NPCDefinition, room_id: str) -> bool:
+    def _can_spawn_npc(self, definition: NPCDefinition, room_id: str, reason: str = "manual") -> tuple[bool, str]:
         """
         Check if an NPC can be spawned.
 
         Args:
             definition: NPC definition
             room_id: Room where NPC should be spawned
+            reason: Spawn reason; "admin_spawn" bypasses population limits
 
         Returns:
-            True if NPC can be spawned
+            Tuple of (can_spawn, failure_reason). failure_reason is empty when can_spawn is True.
         """
         if self.population_controller is None:
-            return True  # Allow spawn if no population controller
+            return (True, "")
+
+        # Admin spawns bypass population limits (explicit user intent)
+        if reason == "admin_spawn":
+            return (True, "")
 
         # Check population limits
         zone_key = self.population_controller._get_zone_key_from_room_id(room_id)  # pylint: disable=protected-access  # Reason: Internal zone key retrieval required
@@ -781,18 +829,15 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
             # Check by individual NPC definition ID, not by type
             current_count = stats.npcs_by_definition.get(int(definition.id), 0)
             if not definition.can_spawn(current_count):
-                logger.debug(
-                    "NPC spawn blocked by population limit",
-                    npc_id=definition.id,
-                    npc_name=definition.name,
-                    current_count=current_count,
-                    max_population=definition.max_population,
+                failure_reason = (
+                    f"population limit exceeded: current={current_count} max={definition.max_population} "
+                    f"for zone={zone_key}"
                 )
-                return False
+                return (False, failure_reason)
 
         # Additional checks can be added here (e.g., room capacity, special conditions)
 
-        return True
+        return (True, "")
 
     def _generate_npc_id(self, definition: NPCDefinition, room_id: str) -> str:
         """
@@ -1023,7 +1068,7 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
                 logger.warning("No spawn room found for optional NPC", npc_name=definition.name)
                 return None
 
-            npc_id = self.spawn_npc(definition, spawn_room_id, "periodic_spawn_check")
+            npc_id, _ = self.spawn_npc(definition, spawn_room_id, "periodic_spawn_check")
             if npc_id:
                 logger.info(
                     "Periodic spawn check successful",

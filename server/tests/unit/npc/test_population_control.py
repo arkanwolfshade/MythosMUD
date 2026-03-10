@@ -378,14 +378,14 @@ def test_should_spawn_npc(population_controller):
 
 
 def test_spawn_npc_no_lifecycle_manager(population_controller):
-    """Test _spawn_npc() returns None when no lifecycle manager."""
+    """Test _spawn_npc() returns (None, reason) when no lifecycle manager."""
     population_controller.lifecycle_manager = None
     definition = MagicMock(spec=NPCDefinition)
     definition.id = 1
     definition.npc_type = "aggressive_mob"
     definition.is_required = MagicMock(return_value=False)
     result = population_controller._spawn_npc(definition, "room-123")
-    assert result is None
+    assert result == (None, "no lifecycle manager available")
 
 
 def test_spawn_npc_success(population_controller, mock_lifecycle_manager):
@@ -395,23 +395,24 @@ def test_spawn_npc_success(population_controller, mock_lifecycle_manager):
     definition.npc_type = "aggressive_mob"
     definition.name = "Test NPC"
     definition.is_required = MagicMock(return_value=False)
-    mock_lifecycle_manager.spawn_npc = MagicMock(return_value="npc-123")
+    mock_lifecycle_manager.spawn_npc = MagicMock(return_value=("npc-123", None))
     result = population_controller._spawn_npc(definition, "earth_arkhamcity_downtown_001")
-    assert result == "npc-123"
+    assert result == ("npc-123", None)
     # Should update population stats
     assert "arkhamcity/downtown" in population_controller.population_stats
 
 
 def test_spawn_npc_spawn_fails(population_controller, mock_lifecycle_manager):
-    """Test _spawn_npc() returns None when spawn fails."""
+    """Test _spawn_npc() returns (None, reason) when spawn fails."""
     definition = MagicMock(spec=NPCDefinition)
     definition.id = 1
     definition.npc_type = "aggressive_mob"
     definition.name = "Test NPC"
     definition.is_required = MagicMock(return_value=False)
-    mock_lifecycle_manager.spawn_npc = MagicMock(return_value=None)
+    mock_lifecycle_manager.spawn_npc = MagicMock(return_value=(None, "population limit exceeded: current=2 max=2"))
     result = population_controller._spawn_npc(definition, "earth_arkhamcity_downtown_001")
-    assert result is None
+    assert result[0] is None
+    assert "population limit" in (result[1] or "")
 
 
 def test_spawn_npc_handles_exception(population_controller, mock_lifecycle_manager):
@@ -423,7 +424,7 @@ def test_spawn_npc_handles_exception(population_controller, mock_lifecycle_manag
     definition.is_required = MagicMock(return_value=False)
     mock_lifecycle_manager.spawn_npc = MagicMock(side_effect=ValueError("Spawn error"))
     result = population_controller._spawn_npc(definition, "earth_arkhamcity_downtown_001")
-    assert result is None
+    assert result == (None, "Spawn error")
 
 
 def test_spawn_npc_public_api(population_controller, mock_lifecycle_manager):
@@ -433,10 +434,10 @@ def test_spawn_npc_public_api(population_controller, mock_lifecycle_manager):
     definition.npc_type = "aggressive_mob"
     definition.name = "Test NPC"
     definition.is_required = MagicMock(return_value=False)
-    with patch.object(population_controller, "_spawn_npc", return_value="npc-123") as mock_spawn:
+    with patch.object(population_controller, "_spawn_npc", return_value=("npc-123", None)) as mock_spawn:
         result = population_controller.spawn_npc(definition, "room-123")
-        assert result == "npc-123"
-        mock_spawn.assert_called_once_with(definition, "room-123")
+        assert result == ("npc-123", None)
+        mock_spawn.assert_called_once_with(definition, "room-123", "population_control")
 
 
 def test_despawn_npc_success(population_controller, mock_lifecycle_manager):

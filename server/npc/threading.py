@@ -507,6 +507,33 @@ class NPCThreadManager:
                 logger.debug(
                     "Executed NPC behavior", npc_id=npc_id, npc_type=getattr(npc_instance, "npc_type", "unknown")
                 )
+                # #region agent log
+                try:
+                    from pathlib import Path
+
+                    _json = __import__("json")
+                    _log_path = Path(__file__).resolve().parent.parent.parent / "debug-66a205.log"
+                    with open(_log_path, "a", encoding="utf-8") as f:
+                        f.write(
+                            _json.dumps(
+                                {
+                                    "sessionId": "66a205",
+                                    "location": "npc_threading:_execute_npc_behavior",
+                                    "message": "behavior_executed",
+                                    "data": {
+                                        "npc_id": npc_id,
+                                        "npc_type": getattr(npc_instance, "npc_type", "unknown"),
+                                        "context_keys": list(context.keys()),
+                                    },
+                                    "timestamp": __import__("time").time() * 1000,
+                                    "hypothesisId": "B1",
+                                }
+                            )
+                            + "\n"
+                        )
+                except Exception:  # noqa: S110
+                    pass
+                # #endregion
             except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Behavior execution errors unpredictable, must handle gracefully
                 logger.error("Error executing NPC behavior", npc_id=npc_id, error=str(e), exc_info=True)
 

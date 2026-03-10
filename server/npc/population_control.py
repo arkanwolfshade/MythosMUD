@@ -324,7 +324,7 @@ class NPCPopulationController:  # pylint: disable=too-many-instance-attributes  
             # Check if this NPC should spawn
             if self._should_spawn_npc(definition, zone_config, room_id):
                 logger.info("NPC should spawn, attempting spawn", npc_id=definition.id, npc_name=definition.name)
-                self._spawn_npc(definition, room_id)
+                self._spawn_npc(definition, room_id, "population_control")
             else:
                 logger.info("NPC should not spawn", npc_id=definition.id, npc_name=definition.name)
 
@@ -344,24 +344,29 @@ class NPCPopulationController:  # pylint: disable=too-many-instance-attributes  
         stats = self.get_population_stats(zone_key)
         return should_spawn_npc(definition, zone_config, room_id, stats, self.spawn_rules, self.current_game_state)
 
-    def _spawn_npc(self, definition: NPCDefinition, room_id: str) -> str | None:
+    def _spawn_npc(
+        self, definition: NPCDefinition, room_id: str, reason: str = "population_control"
+    ) -> tuple[str | None, str | None]:
         """
         Spawn an NPC instance using the lifecycle manager.
 
         Args:
             definition: NPC definition
             room_id: Room where to spawn the NPC
+            reason: Spawn reason; "admin_spawn" bypasses population limits in lifecycle manager
 
         Returns:
-            Generated NPC instance ID, or None if spawn failed
+            Tuple of (npc_id, failure_reason). On success: (npc_id, None).
+            On failure: (None, "detailed reason").
         """
         if not self.lifecycle_manager:
+            failure_reason = "no lifecycle manager available"
             logger.error("No lifecycle manager available - cannot spawn NPC")
-            return None
+            return (None, failure_reason)
 
         try:
             # Use the lifecycle manager to spawn the NPC (this ensures consistent ID generation)
-            npc_id = self.lifecycle_manager.spawn_npc(definition, room_id, "population_control")
+            npc_id, failure_reason = self.lifecycle_manager.spawn_npc(definition, room_id, reason)
 
             if npc_id:
                 # Update population statistics
@@ -411,21 +416,32 @@ class NPCPopulationController:  # pylint: disable=too-many-instance-attributes  
                     zone_key=zone_key,
                 )
                 result: str = cast(str, npc_id)
-                return result
+                return (result, None)
 
             # NPC spawn failed or returned None
-            # Use getattr to avoid potential lazy loading issues
             definition_name = getattr(definition, "name", "Unknown NPC")
-            logger.error("Failed to spawn NPC", npc_name=definition_name, room_id=room_id)
-            return None
+            logger.error(
+                "Failed to spawn NPC",
+                npc_name=definition_name,
+                room_id=room_id,
+                failure_reason=failure_reason or "unknown",
+            )
+            return (None, failure_reason or "unknown")
 
         except (ValueError, KeyError, AttributeError, TypeError, IndexError, RuntimeError) as e:
-            # Use getattr to avoid potential lazy loading issues
             definition_name = getattr(definition, "name", "Unknown NPC")
-            logger.error("Error spawning NPC", npc_name=definition_name, error=str(e))
-            return None
+            failure_reason = str(e)
+            logger.error(
+                "Error spawning NPC",
+                npc_name=definition_name,
+                error=failure_reason,
+                failure_reason=failure_reason,
+            )
+            return (None, failure_reason)
 
-    def spawn_npc(self, definition: NPCDefinition, room_id: str) -> str | None:
+    def spawn_npc(
+        self, definition: NPCDefinition, room_id: str, reason: str = "population_control"
+    ) -> tuple[str | None, str | None]:
         """
         Spawn an NPC instance using the population controller.
 
@@ -435,11 +451,13 @@ class NPCPopulationController:  # pylint: disable=too-many-instance-attributes  
         Args:
             definition: NPC definition
             room_id: Room where to spawn the NPC
+            reason: Spawn reason; "admin_spawn" bypasses population limits in lifecycle manager
 
         Returns:
-            Generated NPC instance ID, or None if spawn failed
+            Tuple of (npc_id, failure_reason). On success: (npc_id, None).
+            On failure: (None, "detailed reason").
         """
-        return self._spawn_npc(definition, room_id)
+        return self._spawn_npc(definition, room_id, reason)
 
     def _update_population_stats_for_despawn(
         self, room_id: str, npc_type: str, is_required: bool, definition_id: int | None

@@ -133,16 +133,23 @@ class NPCSpawningService:
     - Population validation should happen at NPCPopulationController level before calling this
     """
 
-    def __init__(self, event_bus: EventBus, population_controller: "NPCPopulationController | None") -> None:
+    def __init__(
+        self,
+        event_bus: EventBus,
+        population_controller: "NPCPopulationController | None",
+        combat_integration: Any | None = None,
+    ) -> None:
         """
         Initialize the NPC spawning service.
 
         Args:
             event_bus: Event bus for publishing and subscribing to events
             population_controller: Population controller for managing NPC populations (can be set later)
+            combat_integration: Optional combat integration for aggressive mob NPCs (handles NPC attacks)
         """
         self.event_bus = event_bus
         self.population_controller = population_controller
+        self.combat_integration = combat_integration
 
         # Spawn queue and tracking
         self.spawn_queue: list[NPCSpawnRequest] = []
@@ -522,6 +529,8 @@ class NPCSpawningService:
                     event_bus=self.event_bus,
                     event_reaction_system=None,  # Will be set up later
                 )
+                if self.combat_integration:
+                    npc_instance.combat_integration = self.combat_integration
             elif simple_definition.npc_type == "quest_giver":
                 # For now, treat quest_giver as a passive_mob until we implement specific quest behavior
                 npc_instance = PassiveMobNPC(
