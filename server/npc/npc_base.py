@@ -564,7 +564,7 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
         """Schedule idle movement; default False. Override in subclasses (e.g. PassiveMobNPC)."""
         return False
 
-    def _enrich_behavior_context(self, context: dict[str, Any]) -> None:
+    def _enrich_behavior_context(self, _context: dict[str, Any]) -> None:
         """
         Hook for subclasses to add context before behavior rules run.
         Override in AggressiveMobNPC to set player_in_range, enemy_nearby, target_id.

@@ -75,6 +75,61 @@ class AggressiveMobNPC(NPCBase):
         """Get aggressive mob-specific behavior rules."""
         return self._behavior_engine.get_rules()
 
+    def _compute_player_context(self, room_id: str) -> tuple[bool, bool, str | None]:
+        """
+        Get player_in_range, enemy_nearby, and target_id from persistence.
+        Returns (player_in_range, enemy_nearby, target_id or None).
+        """
+        from ..services.npc_instance_service import get_npc_instance_service
+
+        npc_instance_service = get_npc_instance_service()
+        if not npc_instance_service or not hasattr(npc_instance_service, "lifecycle_manager"):
+            return (False, False, None)
+
+        lifecycle_manager = npc_instance_service.lifecycle_manager
+        persistence = getattr(lifecycle_manager, "persistence", None)
+        if not persistence:
+            return (False, False, None)
+
+        room = persistence.get_room_by_id(room_id)
+        players = room.get_players() if room else []
+        if players:
+            return (True, True, players[0])
+        return (False, False, None)
+
+    def _log_context_enriched(self, context: dict[str, Any], room_id: str, players_count: int) -> None:
+        """Debug log for context enrichment (best-effort, must not fail)."""
+        try:
+            from pathlib import Path
+
+            _json = __import__("json")
+            _log_path = Path(__file__).resolve().parent.parent / "debug-66a205.log"
+            with open(_log_path, "a", encoding="utf-8") as f:
+                f.write(
+                    _json.dumps(
+                        {
+                            "sessionId": "66a205",
+                            "location": "aggressive_mob_npc:_enrich_behavior_context",
+                            "message": "context_enriched",
+                            "data": {
+                                "npc_id": self.npc_id,
+                                "room_id": room_id,
+                                "players_count": players_count,
+                                "context_flags": {
+                                    "player_in_range": context.get("player_in_range"),
+                                    "enemy_nearby": context.get("enemy_nearby"),
+                                    "target_id": context.get("target_id"),
+                                },
+                            },
+                            "timestamp": __import__("time").time() * 1000,
+                            "hypothesisId": "A1",
+                        }
+                    )
+                    + "\n"
+                )
+        except Exception:  # noqa: S110  # pylint: disable=broad-exception-caught  # Debug log best-effort; must not fail
+            pass
+
     def _enrich_behavior_context(self, context: dict[str, Any]) -> None:
         """
         Populate player_in_range, enemy_nearby, and target_id for attack rules.
@@ -87,65 +142,13 @@ class AggressiveMobNPC(NPCBase):
             return
 
         try:
-            from ..services.npc_instance_service import get_npc_instance_service
-
-            npc_instance_service = get_npc_instance_service()
-            if not npc_instance_service or not hasattr(npc_instance_service, "lifecycle_manager"):
-                context["player_in_range"] = False
-                context["enemy_nearby"] = False
-                return
-
-            lifecycle_manager = npc_instance_service.lifecycle_manager
-            persistence = getattr(lifecycle_manager, "persistence", None)
-            if not persistence:
-                context["player_in_range"] = False
-                context["enemy_nearby"] = False
-                return
-
-            room = persistence.get_room_by_id(room_id)
-            players = room.get_players() if room else []
-
-            if players:
-                context["player_in_range"] = True
-                context["enemy_nearby"] = True
-                context["target_id"] = players[0]
-            else:
-                context["player_in_range"] = False
-                context["enemy_nearby"] = False
-
-            # #region agent log
-            try:
-                from pathlib import Path
-
-                _json = __import__("json")
-                _log_path = Path(__file__).resolve().parent.parent / "debug-66a205.log"
-                with open(_log_path, "a", encoding="utf-8") as f:
-                    f.write(
-                        _json.dumps(
-                            {
-                                "sessionId": "66a205",
-                                "location": "aggressive_mob_npc:_enrich_behavior_context",
-                                "message": "context_enriched",
-                                "data": {
-                                    "npc_id": self.npc_id,
-                                    "room_id": room_id,
-                                    "players_count": len(players),
-                                    "context_flags": {
-                                        "player_in_range": context.get("player_in_range"),
-                                        "enemy_nearby": context.get("enemy_nearby"),
-                                        "target_id": context.get("target_id"),
-                                    },
-                                },
-                                "timestamp": __import__("time").time() * 1000,
-                                "hypothesisId": "A1",
-                            }
-                        )
-                        + "\n"
-                    )
-            except Exception:  # noqa: S110
-                pass
-            # #endregion
-
+            player_in_range, enemy_nearby, target_id = self._compute_player_context(room_id)
+            context["player_in_range"] = player_in_range
+            context["enemy_nearby"] = enemy_nearby
+            if target_id is not None:
+                context["target_id"] = target_id
+            players_count = 1 if target_id is not None else 0
+            self._log_context_enriched(context, room_id, players_count)
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904
             logger.warning(
                 "Failed to enrich aggressive mob context",
@@ -199,7 +202,7 @@ class AggressiveMobNPC(NPCBase):
                         )
                         + "\n"
                     )
-            except Exception:  # noqa: S110
+            except Exception:  # noqa: S110  # pylint: disable=broad-exception-caught  # Debug log best-effort; must not fail
                 pass
             # #endregion
 

@@ -157,3 +157,59 @@ def test_aggro_passive_mob_no_damage_threat_taunt_switches() -> None:
     assert target_id == taunter.participant_id
     assert did_switch is True
     assert combat.npc_current_target[npc.participant_id] == taunter.participant_id
+
+
+def test_aggro_nightgaunt_like_damage_and_heal_threat() -> None:
+    """Nightgaunt-style aggressive mob: scaled damage/heal threat and UpdateAggro target selection."""
+    combat = _make_combat()
+    nightgaunt = _make_participant(
+        "Nightgaunt",
+        CombatParticipantType.NPC,
+        npc_type="aggressive_mob",
+        aggression_level=9,
+    )
+    primary = _make_participant("Primary", CombatParticipantType.PLAYER)
+    secondary = _make_participant("Secondary", CombatParticipantType.PLAYER)
+    combat.participants[nightgaunt.participant_id] = nightgaunt
+    combat.participants[primary.participant_id] = primary
+    combat.participants[secondary.participant_id] = secondary
+
+    # Primary attacks first: with aggression_level 9 (scale 0.5 + 0.05*9 = 0.95) threat ~= 95 from 100 damage
+    aggro_threat.add_damage_threat(
+        combat,
+        nightgaunt.participant_id,
+        primary.participant_id,
+        100.0,
+        npc_participant=nightgaunt,
+    )
+    target_id, did_switch = aggro_threat.update_aggro(
+        combat,
+        nightgaunt,
+        "room_1",
+        combat.participants,
+        stability_margin=0.10,
+    )
+    assert target_id == primary.participant_id
+    assert did_switch is True
+    assert combat.npc_current_target[nightgaunt.participant_id] == primary.participant_id
+
+    # Secondary heals for enough to overtake primary when scaled by the same aggression_level factor.
+    # Base heal threat factor defaults to 0.5; effective factor ~= 0.5 * 0.95 = 0.475.
+    # To exceed primary's ~95 threat, we need heal_amount * 0.475 > 95 -> heal_amount > 200.
+    aggro_threat.add_heal_threat(
+        combat,
+        nightgaunt.participant_id,
+        secondary.participant_id,
+        220.0,
+        npc_participant=nightgaunt,
+    )
+    target_id, did_switch = aggro_threat.update_aggro(
+        combat,
+        nightgaunt,
+        "room_1",
+        combat.participants,
+        stability_margin=0.10,
+    )
+    assert target_id == secondary.participant_id
+    assert did_switch is True
+    assert combat.npc_current_target[nightgaunt.participant_id] == secondary.participant_id

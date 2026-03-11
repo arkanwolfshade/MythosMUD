@@ -11,11 +11,9 @@ that lurk in the shadows of our world. The lifecycle manager ensures that NPCs
 have proper birth, existence, and eventual return to the void.
 """
 
-# pylint: disable=too-many-lines  # Reason: NPC lifecycle manager requires extensive lifecycle management logic for comprehensive NPC state tracking and lifecycle operations
-
+import random
 import time
 from collections.abc import Sequence
-from enum import StrEnum
 from typing import TYPE_CHECKING, Any
 
 from server.events.event_bus import EventBus
@@ -27,138 +25,25 @@ from server.npc.spawning_service import NPCSpawningService
 from server.schemas.calendar import ScheduleEntry
 
 from ..structured_logging.enhanced_logging_config import get_logger
+from .lifecycle_death import handle_npc_died_impl
+from .lifecycle_despawn import despawn_npc_impl
+from .lifecycle_periodic import cleanup_old_records_impl, run_periodic_maintenance_impl
+from .lifecycle_respawn import process_respawn_queue_impl
+from .lifecycle_types import NPCLifecycleEvent, NPCLifecycleRecord, NPCLifecycleState
 
 if TYPE_CHECKING:
     from ..async_persistence import AsyncPersistenceLayer
     from .threading import NPCThreadManager
 
-# Removed: from ..persistence import get_persistence - now using async_persistence parameter
-
 logger = get_logger(__name__)
 
-
-class NPCLifecycleState(StrEnum):
-    """Enumeration of NPC lifecycle states."""
-
-    SPAWNING = "spawning"
-    ACTIVE = "active"
-    INACTIVE = "inactive"
-    DESPAWNING = "despawning"
-    DESPAWNED = "despawned"
-    RESPAWNING = "respawning"
-    ERROR = "error"
-
-
-class NPCLifecycleEvent(StrEnum):
-    """Enumeration of NPC lifecycle events."""
-
-    SPAWNED = "spawned"
-    ACTIVATED = "activated"
-    DEACTIVATED = "deactivated"
-    DESPAWNED = "despawned"
-    RESPAWNED = "respawned"
-    ERROR_OCCURRED = "error_occurred"
-
-
-class NPCLifecycleRecord:  # pylint: disable=too-many-instance-attributes  # Reason: Lifecycle record requires many fields to capture complete NPC lifecycle state
-    """Record of an NPC's lifecycle events and state changes."""
-
-    def __init__(self, npc_id: str, definition: NPCDefinition) -> None:
-        """
-        Initialize lifecycle record.
-
-        Args:
-            npc_id: Unique identifier for the NPC
-            definition: NPC definition
-        """
-        self.npc_id = npc_id
-        self.definition = definition
-        self.current_state = NPCLifecycleState.SPAWNING
-        self.created_at = time.time()
-        self.last_updated = time.time()
-        self.events: list[dict[str, Any]] = []
-        self.spawn_count = 0
-        self.despawn_count = 0
-        self.total_active_time = 0.0
-        self.last_active_time = 0.0
-        self.error_count = 0
-        self.last_error: dict[str, Any] | None = None
-
-    def add_event(self, event_type: NPCLifecycleEvent, details: dict[str, Any] | None = None) -> None:
-        """
-        Add a lifecycle event to the record.
-
-        Args:
-            event_type: Type of lifecycle event
-            details: Additional event details
-        """
-        event = {
-            "event_type": event_type,
-            "timestamp": time.time(),
-            "state": self.current_state,
-            "details": details or {},
-        }
-        self.events.append(event)
-        self.last_updated = time.time()
-
-        # Update counters
-        if event_type == NPCLifecycleEvent.SPAWNED:
-            self.spawn_count += 1
-        elif event_type == NPCLifecycleEvent.DESPAWNED:
-            self.despawn_count += 1
-        elif event_type == NPCLifecycleEvent.ERROR_OCCURRED:
-            self.error_count += 1
-            self.last_error = details
-
-    def change_state(self, new_state: NPCLifecycleState, reason: str = "") -> None:
-        """
-        Change the NPC's lifecycle state.
-
-        Args:
-            new_state: New lifecycle state
-            reason: Reason for state change
-        """
-        old_state = self.current_state
-        self.current_state = new_state
-        self.last_updated = time.time()
-
-        # Track active time
-        if old_state == NPCLifecycleState.ACTIVE:
-            self.total_active_time += time.time() - self.last_active_time
-        elif new_state == NPCLifecycleState.ACTIVE:
-            self.last_active_time = time.time()
-
-        # Add state change event
-        self.add_event(
-            NPCLifecycleEvent.ACTIVATED if new_state == NPCLifecycleState.ACTIVE else NPCLifecycleEvent.DEACTIVATED,
-            {"old_state": old_state, "new_state": new_state, "reason": reason},
-        )
-
-    def get_statistics(self) -> dict[str, Any]:
-        """
-        Get lifecycle statistics for this NPC.
-
-        Returns:
-            Dictionary containing lifecycle statistics
-        """
-        current_time = time.time()
-        age = current_time - self.created_at
-
-        return {
-            "npc_id": self.npc_id,
-            "definition_name": self.definition.name,
-            "npc_type": self.definition.npc_type,
-            "current_state": self.current_state,
-            "age_seconds": age,
-            "spawn_count": self.spawn_count,
-            "despawn_count": self.despawn_count,
-            "total_active_time": self.total_active_time,
-            "error_count": self.error_count,
-            "last_error": self.last_error,
-            "events_count": len(self.events),
-            "created_at": self.created_at,
-            "last_updated": self.last_updated,
-        }
+# Re-export for backward compatibility
+__all__ = [
+    "NPCLifecycleManager",
+    "NPCLifecycleRecord",
+    "NPCLifecycleState",
+    "NPCLifecycleEvent",
+]
 
 
 class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Reason: Lifecycle manager requires many state tracking and configuration attributes
@@ -300,8 +185,7 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
         # Trigger a room occupants refresh so clients see newly spawned NPCs without re-entering.
         try:
             self.event_bus.publish(RoomOccupantsRefreshRequested(room_id=event.room_id))
-        except Exception:  # noqa: S110
-            # Best-effort refresh; if this fails, core lifecycle logic above still runs.
+        except Exception:  # noqa: S110  # pylint: disable=broad-exception-caught  # Best-effort refresh; core lifecycle already ran
             logger.warning(
                 "Failed to publish RoomOccupantsRefreshRequested after NPCEnteredRoom",
                 npc_id=event.npc_id,
@@ -315,78 +199,8 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
             record.add_event(NPCLifecycleEvent.DEACTIVATED, {"room_id": event.room_id})
 
     def _handle_npc_died(self, event: NPCDied) -> None:
-        """
-        Handle NPC death by queuing for respawn.
-
-        AI Agent: CRITICAL FIX - This event handler ensures NPCs are queued for respawn
-                  when they die, respecting the configured respawn delay for ALL NPCs
-                  (both required and optional).
-
-        Args:
-            event: NPCDied event containing death information
-        """
-        try:
-            # Get NPC definition from lifecycle records
-            if event.npc_id not in self.lifecycle_records:
-                logger.warning("NPC died but no lifecycle record found", npc_id=event.npc_id)
-                return
-
-            record = self.lifecycle_records[event.npc_id]
-            definition = record.definition
-
-            # AI Agent: CRITICAL FIX - Do NOT despawn immediately!
-            #           Despawning removes the NPC from lifecycle_records, which prevents
-            #           XP calculation from finding the NPC's xp_value in base_stats.
-            #           Instead, mark as inactive and queue for respawn. The respawn process
-            #           will handle cleanup when it spawns a new instance.
-
-            # Mark NPC as inactive but keep lifecycle record
-            if event.npc_id in self.active_npcs:
-                npc_instance = self.active_npcs[event.npc_id]
-                room_id = getattr(npc_instance, "room_id", event.room_id)
-                # Update population controller while NPC is still in active_npcs (same fix as despawn_npc).
-                if self.population_controller:
-                    self.population_controller.despawn_npc(event.npc_id)
-                # Remove from active NPCs (so it won't be processed)
-                del self.active_npcs[event.npc_id]
-
-                # Remove from room if we have persistence
-                if self.persistence:
-                    room = self.persistence.get_room_by_id(room_id)  # Sync method, uses cache
-                    if room:
-                        room.npc_left(event.npc_id)
-                        logger.debug("NPC removed from room after death", npc_id=event.npc_id, room_id=room_id)
-
-                # Request room occupants broadcast so clients update Occupants panel (EventBus path;
-                # NATS path does this in handle_npc_died_event).
-                if self.event_bus:
-                    self.event_bus.publish(RoomOccupantsRefreshRequested(room_id=room_id))
-
-            # Update lifecycle record state (but DON'T remove it yet)
-            record.change_state(NPCLifecycleState.DESPAWNED, f"death: {event.cause}")
-            record.add_event(NPCLifecycleEvent.DESPAWNED, {"reason": f"death: {event.cause}"})
-
-            # Queue for respawn (respects configured delay for both required and optional NPCs)
-            # AI Agent: ALL NPCs (required or optional) must respect respawn delay
-            respawn_queued = self.respawn_npc(
-                npc_id=event.npc_id,
-                delay=None,  # Use default delay from config
-                reason=f"respawn_after_death: {event.cause}",
-            )
-
-            if respawn_queued:
-                logger.info(
-                    "NPC queued for respawn after death",
-                    npc_id=event.npc_id,
-                    npc_name=definition.name,
-                    cause=event.cause,
-                    respawn_delay=self.default_respawn_delay,
-                )
-            else:
-                logger.error("Failed to queue NPC for respawn", npc_id=event.npc_id, npc_name=definition.name)
-
-        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC death event handling errors unpredictable, must handle gracefully
-            logger.error("Error handling NPC death event", npc_id=event.npc_id, error=str(e))
+        """Handle NPC death by queuing for respawn (delegates to lifecycle_death)."""
+        handle_npc_died_impl(self, event)
 
     def apply_schedule_state(self, schedules: Sequence[ScheduleEntry]) -> None:
         """Record the schedule categories currently active for NPC routines."""
@@ -553,72 +367,8 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
             return (None, failure_reason)
 
     def despawn_npc(self, npc_id: str, reason: str = "manual") -> bool:
-        """
-        Despawn an NPC instance.
-
-        Args:
-            npc_id: ID of the NPC to despawn
-            reason: Reason for despawning
-
-        Returns:
-            True if NPC was despawned successfully
-        """
-        if npc_id not in self.lifecycle_records:
-            logger.warning("Attempted to despawn non-existent NPC", npc_id=npc_id)
-            return False
-
-        try:
-            record = self.lifecycle_records[npc_id]
-            record.change_state(NPCLifecycleState.DESPAWNING, reason)
-
-            # Get NPC instance
-            npc_instance = self.active_npcs.get(npc_id)
-            if npc_instance:
-                room_id = getattr(npc_instance, "room_id", "unknown")
-
-                # Update population controller while NPC is still in active_npcs (so it can read
-                # instance for room_id and metadata). Previously we called this after removing
-                # from active_npcs, causing "Attempted to despawn non-existent NPC" and skipped
-                # population stats updates.
-                if self.population_controller is not None:
-                    self.population_controller.despawn_npc(npc_id)
-
-                # Remove NPC from room (which publishes NPCLeftRoom event)
-                # AI: Proper domain-driven design - mutate state via domain entity, not by publishing event directly
-                if self.persistence:
-                    room = self.persistence.get_room_by_id(room_id)  # Sync method, uses cache
-                    if room:
-                        room.npc_left(npc_id)
-                        logger.debug("NPC removed from room during despawn", npc_id=npc_id, room_id=room_id)
-                    else:
-                        logger.warning("Room not found during NPC despawn", room_id=room_id, npc_id=npc_id)
-                        # If no room found, publish event directly as fallback
-                        event = NPCLeftRoom(npc_id=npc_id, room_id=room_id)
-                        self.event_bus.publish(event)
-                else:
-                    # No persistence available - publish event directly
-                    logger.debug("No persistence available for room mutation, publishing event directly")
-                    event = NPCLeftRoom(npc_id=npc_id, room_id=room_id)
-                    self.event_bus.publish(event)
-
-                # Remove from active NPCs
-                del self.active_npcs[npc_id]
-
-            # Update lifecycle record
-            record.change_state(NPCLifecycleState.DESPAWNED, reason)
-            record.add_event(NPCLifecycleEvent.DESPAWNED, {"reason": reason})
-
-            logger.info("Successfully despawned NPC", npc_id=npc_id, reason=reason)
-
-            return True
-
-        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC despawn errors unpredictable, must handle gracefully
-            logger.error("Failed to despawn NPC", npc_id=npc_id, error=str(e))
-            if npc_id in self.lifecycle_records:
-                record = self.lifecycle_records[npc_id]
-                record.change_state(NPCLifecycleState.ERROR, str(e))
-                record.add_event(NPCLifecycleEvent.ERROR_OCCURRED, {"error": str(e)})
-            return False
+        """Despawn an NPC instance (delegates to lifecycle_despawn)."""
+        return despawn_npc_impl(self, npc_id, reason)
 
     def respawn_npc(self, npc_id: str, delay: float | None = None, reason: str = "automatic") -> bool:
         """
@@ -681,127 +431,18 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
                 record.add_event(NPCLifecycleEvent.ERROR_OCCURRED, {"error": str(e)})
             return False
 
-    def _process_respawn_queue_entry(
-        self, npc_id: str, respawn_data: dict[str, Any], current_time: float
-    ) -> tuple[bool, bool]:
-        """
-        Process a single respawn queue entry.
-
-        Returns:
-            Tuple of (should_remove, was_respawned)
-        """
-        if current_time < respawn_data["scheduled_time"]:
-            logger.debug(
-                "NPC not yet ready for respawn",
-                npc_id=npc_id,
-                scheduled_time=respawn_data["scheduled_time"],
-                current_time=current_time,
-                time_remaining=respawn_data["scheduled_time"] - current_time,
-            )
-            return False, False
-
-        logger.debug("Attempting respawn for NPC", npc_id=npc_id, respawn_data=respawn_data)
-        success = self._attempt_respawn(npc_id, respawn_data)
-
-        if success:
-            logger.info("NPC successfully respawned from queue", npc_id=npc_id)
-            return True, True
-
-        logger.warning("NPC respawn attempt failed", npc_id=npc_id, attempts=respawn_data.get("attempts", 0))
-        respawn_data["attempts"] = respawn_data.get("attempts", 0) + 1
-
-        if respawn_data["attempts"] >= self.max_respawn_attempts:
-            logger.warning("Max respawn attempts reached for NPC", npc_id=npc_id)
-            return True, False
-
-        return False, False
-
-    def _cleanup_respawn_queue(self, npcs_to_remove: list[str]) -> None:
-        """Remove processed NPCs from respawn queue."""
-        for npc_id in npcs_to_remove:
-            logger.debug("Removing NPC from respawn queue", npc_id=npc_id)
-            del self.respawn_queue[npc_id]
-
     def process_respawn_queue(self) -> int:
+        """Process the respawn queue and spawn NPCs that are ready (delegates to lifecycle_respawn)."""
+        return process_respawn_queue_impl(self)
+
+    def can_spawn_npc(self, definition: NPCDefinition, room_id: str, reason: str = "manual") -> tuple[bool, str]:
         """
-        Process the respawn queue and spawn NPCs that are ready.
+        Check if an NPC can be spawned (population limits, admin bypass).
 
         Returns:
-            Number of NPCs respawned
+            Tuple of (can_spawn, failure_reason). failure_reason is empty when can_spawn is True.
         """
-        current_time = time.time()
-        respawned_count = 0
-        npcs_to_remove = []
-
-        logger.debug(
-            "Processing respawn queue",
-            queue_size=len(self.respawn_queue),
-            current_time=current_time,
-            queue_entries=[
-                {
-                    "npc_id": npc_id,
-                    "scheduled_time": respawn_data["scheduled_time"],
-                    "ready": current_time >= respawn_data["scheduled_time"],
-                    "attempts": respawn_data.get("attempts", 0),
-                }
-                for npc_id, respawn_data in self.respawn_queue.items()
-            ],
-        )
-
-        for npc_id, respawn_data in self.respawn_queue.items():
-            should_remove, was_respawned = self._process_respawn_queue_entry(npc_id, respawn_data, current_time)
-            if should_remove:
-                npcs_to_remove.append(npc_id)
-            if was_respawned:
-                respawned_count += 1
-
-        self._cleanup_respawn_queue(npcs_to_remove)
-
-        logger.debug(
-            "Respawn queue processing completed", respawned_count=respawned_count, removed_count=len(npcs_to_remove)
-        )
-        return respawned_count
-
-    def _attempt_respawn(self, npc_id: str, respawn_data: dict[str, Any]) -> bool:
-        """
-        Attempt to respawn an NPC.
-
-        Args:
-            npc_id: ID of the NPC to respawn
-            respawn_data: Respawn data
-
-        Returns:
-            True if respawn was successful
-        """
-        try:
-            definition = respawn_data["definition"]
-            room_id = respawn_data["room_id"]
-            reason = respawn_data["reason"]
-
-            # Check if we can spawn this NPC
-            can_spawn, _ = self._can_spawn_npc(definition, room_id, f"respawn:{reason}")
-            if not can_spawn:
-                logger.debug("Cannot respawn NPC - spawn conditions not met", npc_id=npc_id)
-                return False
-
-            # Spawn the NPC
-            new_npc_id, _ = self.spawn_npc(definition, room_id, f"respawn: {reason}")
-            if new_npc_id:
-                # Update the lifecycle record with new ID if different
-                if new_npc_id != npc_id:
-                    if npc_id in self.lifecycle_records:
-                        old_record = self.lifecycle_records[npc_id]
-                        self.lifecycle_records[new_npc_id] = old_record
-                        del self.lifecycle_records[npc_id]
-
-                logger.info("Successfully respawned NPC", old_npc_id=npc_id, new_npc_id=new_npc_id)
-                return True
-
-            return False
-
-        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC respawn errors unpredictable, must return False
-            logger.error("Failed to respawn NPC", npc_id=npc_id, error=str(e))
-            return False
+        return self._can_spawn_npc(definition, room_id, reason)
 
     def _can_spawn_npc(self, definition: NPCDefinition, room_id: str, reason: str = "manual") -> tuple[bool, str]:
         """
@@ -851,8 +492,6 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
             Unique NPC ID
         """
         timestamp = int(time.time())
-        import random
-
         random_suffix = random.randint(1000, 9999)  # nosec B311: Game mechanics NPC ID generation, not cryptographic
         return f"{definition.name.lower().replace(' ', '_')}_{room_id}_{timestamp}_{random_suffix}"
 
@@ -911,243 +550,12 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
         }
 
     def cleanup_old_records(self, max_age_seconds: int = 86400) -> int:
-        """
-        Clean up old lifecycle records.
-
-        Args:
-            max_age_seconds: Maximum age in seconds before cleanup
-
-        Returns:
-            Number of records cleaned up
-        """
-        current_time = time.time()
-        records_to_remove = []
-
-        for npc_id, record in self.lifecycle_records.items():
-            age = current_time - record.created_at
-            if age > max_age_seconds and record.current_state in [NPCLifecycleState.DESPAWNED, NPCLifecycleState.ERROR]:
-                records_to_remove.append(npc_id)
-
-        for npc_id in records_to_remove:
-            del self.lifecycle_records[npc_id]
-
-        if records_to_remove:
-            logger.info("Cleaned up old lifecycle records", count=len(records_to_remove))
-
-        return len(records_to_remove)
+        """Clean up old lifecycle records (delegates to lifecycle_periodic)."""
+        return cleanup_old_records_impl(self, max_age_seconds)
 
     def periodic_maintenance(self) -> dict[str, Any]:
-        """
-        Perform periodic maintenance tasks.
-
-        This method is called every 60 ticks (1 minute) from the game tick loop
-        to handle NPC respawning, periodic spawn checks for optional NPCs,
-        and cleanup of old lifecycle records.
-
-        Returns:
-            Dictionary containing maintenance results
-        """
-        current_time = time.time()
-        results = {}
-
-        # Process respawn queue
-        # AI Agent: Existing respawn queue processing for NPCs that died
-        respawned_count = self.process_respawn_queue()
-        results["respawned_npcs"] = respawned_count
-
-        # Check for optional NPCs that should re-roll spawn probability
-        # AI Agent: New functionality - periodic spawn checks for optional NPCs
-        try:
-            spawn_check_results = self._check_optional_npc_spawns()
-            results["spawned_npcs"] = spawn_check_results["spawned_count"]
-            results["spawn_checks_performed"] = spawn_check_results["checks_performed"]
-        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Periodic spawn check errors unpredictable, must handle gracefully
-            logger.error("Error during periodic spawn checks", error=str(e))
-            results["spawned_npcs"] = 0
-            results["spawn_checks_performed"] = 0
-
-        # Cleanup old records if enough time has passed
-        if current_time - self.last_cleanup > self.cleanup_interval:
-            cleaned_count = self.cleanup_old_records()
-            results["cleaned_records"] = cleaned_count
-            self.last_cleanup = current_time
-
-        return results
-
-    def _should_skip_optional_npc(self, definition_id: int, definition: Any, current_time: float) -> tuple[bool, float]:
-        """
-        Check if an optional NPC should be skipped for periodic spawn check.
-
-        Args:
-            definition_id: NPC definition ID
-            definition: NPC definition
-            current_time: Current timestamp
-
-        Returns:
-            Tuple of (should_skip, last_check_time)
-        """
-        if definition.is_required():
-            return True, 0
-
-        npc_in_respawn_queue = any(data["definition"].id == definition_id for data in self.respawn_queue.values())
-        if npc_in_respawn_queue:
-            logger.debug(
-                "Skipping periodic spawn check - NPC in respawn queue",
-                npc_name=definition.name,
-                definition_id=definition_id,
-            )
-            return True, 0
-
-        from ..config.npc_config import NPCMaintenanceConfig
-
-        last_check = self.last_spawn_check.get(definition_id, 0)
-        if current_time - last_check < NPCMaintenanceConfig.MIN_SPAWN_CHECK_INTERVAL:
-            return True, last_check
-
-        return False, last_check
-
-    def _check_spawn_conditions_for_optional_npc(
-        self, definition_id: int, definition: Any, zone_key: str
-    ) -> tuple[bool, int]:
-        """
-        Check if an optional NPC can spawn based on population limits.
-
-        Args:
-            definition_id: NPC definition ID
-            definition: NPC definition
-            zone_key: Zone key
-
-        Returns:
-            Tuple of (can_spawn, current_count)
-        """
-        if self.population_controller is None:
-            return False, 0
-
-        zone_config = self.population_controller.get_zone_configuration(zone_key)
-        if not zone_config:
-            return False, 0
-
-        stats = self.population_controller.get_population_stats(zone_key)
-        current_count = stats.npcs_by_definition.get(definition_id, 0) if stats else 0
-
-        if not definition.can_spawn(current_count):
-            logger.debug(
-                "Optional NPC spawn check: population limit reached",
-                npc_name=definition.name,
-                current_count=current_count,
-                max_population=definition.max_population,
-            )
-            return False, current_count
-
-        return True, current_count
-
-    def _attempt_optional_npc_spawn(self, definition: Any, zone_key: str) -> str | None:
-        """
-        Attempt to spawn an optional NPC.
-
-        Args:
-            definition: NPC definition
-            zone_key: Zone key
-
-        Returns:
-            NPC ID if spawned successfully, None otherwise
-        """
-        import random
-
-        if self.population_controller is None:
-            return None
-
-        zone_config = self.population_controller.get_zone_configuration(zone_key)
-        if zone_config is None:
-            return None
-
-        effective_probability = zone_config.get_effective_spawn_probability(float(definition.spawn_probability))
-        if random.random() <= effective_probability:  # nosec B311: Game mechanics spawn probability, not cryptographic
-            spawn_room_id = self._get_spawn_room_for_definition(definition)
-            if not spawn_room_id:
-                logger.warning("No spawn room found for optional NPC", npc_name=definition.name)
-                return None
-
-            npc_id, _ = self.spawn_npc(definition, spawn_room_id, "periodic_spawn_check")
-            if npc_id:
-                logger.info(
-                    "Periodic spawn check successful",
-                    npc_name=definition.name,
-                    npc_id=npc_id,
-                    room_id=spawn_room_id,
-                )
-            return npc_id
-        return None
-
-    def _check_optional_npc_spawns(self) -> dict[str, int]:
-        """
-        Check if optional NPCs should spawn based on periodic probability rolls.
-
-        This method is called periodically to give optional NPCs that failed their
-        initial spawn probability check another chance to appear in the game world.
-
-        AI Agent: Implements Phase 2 - periodic spawn checks for optional NPCs.
-                  This prevents the issue where optional NPCs that fail their initial
-                  spawn roll never appear until server restart.
-
-        Returns:
-            Dictionary with spawn check statistics
-        """
-        if not self.population_controller:
-            return {"spawned_count": 0, "checks_performed": 0}
-
-        current_time = time.time()
-        spawned_count = 0
-        checks_performed = 0
-
-        for definition_id, definition in self.population_controller.npc_definitions.items():
-            should_skip, _last_check = self._should_skip_optional_npc(definition_id, definition, current_time)  # pylint: disable=unused-variable  # Reason: last_check is returned but not used in this loop
-            if should_skip:
-                continue
-
-            self.last_spawn_check[definition_id] = current_time
-            checks_performed += 1
-
-            zone_key = self._get_zone_key_for_definition(definition)
-            if not zone_key:
-                continue
-
-            can_spawn, _current_count = self._check_spawn_conditions_for_optional_npc(
-                definition_id, definition, zone_key
-            )
-            if not can_spawn:
-                continue
-
-            npc_id = self._attempt_optional_npc_spawn(definition, zone_key)
-            if npc_id:
-                spawned_count += 1
-
-        return {"spawned_count": spawned_count, "checks_performed": checks_performed}
-
-    def _get_zone_key_for_definition(self, definition: NPCDefinition) -> str | None:
-        """
-        Get the zone key for an NPC definition based on its sub_zone_id.
-
-        Args:
-            definition: NPC definition
-
-        Returns:
-            Zone key in format "zone/sub_zone" or None if cannot be determined
-        """
-        if not definition.sub_zone_id:
-            return None
-
-        # AI Agent: Extract zone from sub_zone relationship
-        #           sub_zone_id links to SubZone which has zone_id
-        # For now, use the first spawn rule to get the zone information
-        if self.population_controller and int(definition.id) in self.population_controller.spawn_rules:
-            # The spawn rule has sub_zone_id which we can use to build the zone key
-            # We need to query the actual sub-zone to get its zone_id
-            # For now, we'll extract from the definition's room_id if available
-            if definition.room_id:
-                return self.population_controller._get_zone_key_from_room_id(str(definition.room_id))  # pylint: disable=protected-access  # Reason: Internal zone key retrieval required
-
-        return None
+        """Perform periodic maintenance (delegates to lifecycle_periodic)."""
+        return run_periodic_maintenance_impl(self)
 
     async def _start_npc_thread_async(self, npc_id: str, definition: NPCDefinition) -> None:
         """
@@ -1167,27 +575,3 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
             logger.debug("Started NPC thread for behavior execution", npc_id=npc_id)
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC thread startup errors unpredictable, must handle gracefully
             logger.warning("Failed to start NPC thread", npc_id=npc_id, error=str(e))
-
-    def _get_spawn_room_for_definition(self, definition: NPCDefinition) -> str | None:
-        """
-        Get the spawn room for an NPC definition.
-
-        Args:
-            definition: NPC definition
-
-        Returns:
-            Room ID where NPC should spawn, or None if cannot be determined
-        """
-        # Use the NPC's configured room_id if available
-        if definition.room_id:
-            return str(definition.room_id)
-
-        # Otherwise, we'd need to query the sub-zone for available rooms
-        # For now, return None if no room_id is configured
-        # AI Agent: Future enhancement - query persistence layer for rooms in sub-zone
-        logger.warning(
-            "No room_id configured for NPC definition",
-            npc_name=definition.name,
-            definition_id=definition.id,
-        )
-        return None

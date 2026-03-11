@@ -531,7 +531,7 @@ class NPCThreadManager:
                             )
                             + "\n"
                         )
-                except Exception:  # noqa: S110
+                except Exception:  # noqa: S110  # pylint: disable=broad-exception-caught  # Debug log best-effort; must not fail
                     pass
                 # #endregion
             except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Behavior execution errors unpredictable, must handle gracefully

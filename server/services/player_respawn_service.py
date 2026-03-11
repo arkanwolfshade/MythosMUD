@@ -6,7 +6,7 @@ As documented in the Pnakotic Manuscripts, resurrection requires careful navigat
 the spaces between worlds.
 """
 
-# pylint: disable=too-many-locals,too-many-statements  # Reason: Respawn service requires many intermediate variables for complex respawn logic. Respawn service legitimately requires many statements for comprehensive respawn operations.
+# pylint: disable=too-many-locals,too-many-statements,too-many-lines  # Reason: Respawn service requires many intermediate variables and statements for complex respawn logic; single cohesive module preferred over split.
 
 import random
 import uuid
