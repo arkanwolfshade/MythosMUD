@@ -7,8 +7,8 @@
  * - ArkanWolfshade / Cthulhu1 / character name ArkanWolfshade
  * - Ithaqua / Cthulhu1 / character name Ithaqua
  *
- * The test environment must provide these account/character mappings. All other
- * players (e.g. TestAdmin) are only for character creation or deletion tests.
+ * Playwright global-setup runs scripts/seed_e2e_users.py to create these users and
+ * default characters on a fresh mythos_e2e DB. TestAdmin is seeded without a default character.
  */
 
 export interface TestPlayer {

@@ -86,6 +86,7 @@ dev = [
     "vulture>=2.11",  # Dead code finder (unused functions, classes, variables)
     # sqlint>=0.2.1 - REMOVED: Conflicts with click>=8.1.8 (sqlint requires click==7.0)
     # Use sqlfluff instead, which provides comprehensive SQL linting
+    "asyncpg-stubs>=0.31.0,<0.32",
 ]
 
 [tool.setuptools.packages.find]

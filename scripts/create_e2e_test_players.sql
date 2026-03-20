@@ -1,4 +1,5 @@
--- Create test players for e2e testing
+-- Legacy manual seed for ArkanWolfshade + Ithaqua (users + players).
+-- Prefer: uv run python scripts/seed_e2e_users.py (used by Playwright global-setup; includes TestAdmin).
 -- Password for both: Cthulhu1
 -- Hash: $argon2id$v=19$m=65536,t=3,p=1$QboiqUn+9UiguuaKTN12HA$/mjnMcE390t4zRYqeK7xl/TTTK8VOCPytuSge+KSvug
 -- nosemgrep

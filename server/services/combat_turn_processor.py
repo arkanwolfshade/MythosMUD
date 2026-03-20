@@ -91,7 +91,8 @@ class CombatTurnProcessor:
             return True
         try:
             npc_id_str = self._resolve_npc_participant_to_string_id(participant)
-            if not npc_id_str:
+            # Only string ids are valid for active_npcs lookup; otherwise skip the check.
+            if not npc_id_str or not isinstance(npc_id_str, str):
                 return True
             return self._npc_id_in_active_npcs(npc_id_str)
         except Exception:  # pylint: disable=broad-exception-caught  # Best-effort; do not break tick

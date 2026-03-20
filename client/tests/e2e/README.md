@@ -12,6 +12,18 @@ End-to-end tests for the MythosMUD client run under this directory using
   [runtime/](runtime/) specs. Requires server and client to be running (or
   started by the config in non-CI).
 
+## E2E accounts (mythos_e2e)
+
+`runtime/global-setup.ts` runs `scripts/seed_e2e_users.py` before runtime specs.
+On a fresh DB it creates:
+
+- **ArkanWolfshade** / `Cthulhu1` — admin user and admin character (multiplayer / admin commands).
+- **Ithaqua** / `Cthulhu1` — regular user and character.
+- **TestAdmin** / `Cthulhu1` — superuser only (no default character; used by character-creation tests).
+
+Uses `DATABASE_URL` and `POSTGRES_SEARCH_PATH` from `.env.e2e_test` when present; otherwise defaults to
+`mythos_e2e`. Safe to re-run; existing users and character names are skipped.
+
 ## Auth state
 
 **Auth state is reused only in the di-migration validation suite**, via
