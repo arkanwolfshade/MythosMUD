@@ -27,23 +27,16 @@ export default defineConfig(({ mode }) => ({
   },
 
   // Client code uses import.meta.env (Vite); no define for process.env.NODE_ENV needed.
-  esbuild: {
-    // Target modern browsers for optimal bundle size
+  // Vite 8 transforms TS/JSX with Oxc; top-level `esbuild` is deprecated and triggers a
+  // warning when merged with plugin-provided `oxc` options.
+  oxc: {
     target: 'es2020',
-    // Remove debugger statements in production
-    // Note: Console removal is disabled - prefer console.error/warn for production logging
-    // TODO: Implement proper AST-based console removal to selectively remove console methods
-    ...(mode === 'production' && {
-      drop: ['debugger'],
-      // Use legalComments to remove comments in production
-      legalComments: 'none',
-    }),
   },
   build: {
     // Source maps: false for production (smaller bundles), true for dev
     sourcemap: mode === 'development',
-    // Minify using esbuild (faster than terser)
-    minify: 'esbuild',
+    // Vite 8 default; Oxc minifier drops debugger in production by default
+    minify: 'oxc',
     // Target modern browsers
     target: 'es2020',
     // Chunk size warning threshold (600KB)
