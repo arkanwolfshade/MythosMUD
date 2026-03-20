@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { useContainerStore } from '../../../stores/containerStore';
 import type { HealthStatus } from '../../../types/health';
-import { determineDpTier } from '../../../types/health';
+import { deriveHealthStatusFromPlayer } from '../../../types/health';
 import type { HallucinationMessage, LucidityStatus, RescueState } from '../../../types/lucidity';
 import type { MythosTimeState } from '../../../types/mythosTime';
 import type { SendMessageFn } from '../../../utils/clientErrorReporter';
@@ -30,25 +30,6 @@ export interface GameClientV2ContainerProps {
   onLogout?: () => void;
   isLoggingOut?: boolean;
   onDisconnect?: (disconnectFn: () => void) => void;
-}
-
-function deriveHealthFromPlayer(
-  player: GameState['player'],
-  previousLastChange: HealthStatus['lastChange']
-): HealthStatus | null {
-  if (!player?.stats) return null;
-  const stats = player.stats;
-  const currentDp = stats.current_dp;
-  const maxDp = stats.max_dp ?? 100;
-  if (currentDp === undefined) return null;
-  return {
-    current: currentDp,
-    max: maxDp,
-    tier: determineDpTier(currentDp, maxDp),
-    posture: stats.position,
-    inCombat: player.in_combat ?? false,
-    lastChange: previousLastChange,
-  } as HealthStatus;
 }
 
 function runEmptyOccupantsReportIfNeeded(
@@ -211,7 +192,7 @@ export function useGameClientV2Container(props: GameClientV2ContainerProps) {
   }, [isConnected, gameState.player, gameState.room, sendMessage]);
 
   const derivedHealthStatus = useMemo(
-    () => deriveHealthFromPlayer(gameState.player, healthStatus?.lastChange),
+    () => deriveHealthStatusFromPlayer(gameState.player, healthStatus?.lastChange),
     [gameState.player, healthStatus?.lastChange]
   );
   useEffect(() => {

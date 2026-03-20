@@ -50,3 +50,32 @@ export const determineDpTier = (current: number, max: number): HealthTier => {
 
   return 'critical';
 };
+
+/**
+ * Pure UI projection: Character Panel health bar from authoritative player stats.
+ * Single place for health meter inputs (see client docs: client-message-handling.md).
+ */
+export function deriveHealthStatusFromPlayer(
+  player:
+    | {
+        stats?: { current_dp?: number; max_dp?: number; position?: string };
+        in_combat?: boolean;
+      }
+    | null
+    | undefined,
+  previousLastChange: HealthChange | undefined
+): HealthStatus | null {
+  if (!player?.stats) return null;
+  const stats = player.stats;
+  const currentDp = stats.current_dp;
+  const maxDp = stats.max_dp ?? 100;
+  if (currentDp === undefined) return null;
+  return {
+    current: currentDp,
+    max: maxDp,
+    tier: determineDpTier(currentDp, maxDp),
+    posture: stats.position,
+    inCombat: player.in_combat ?? false,
+    lastChange: previousLastChange,
+  };
+}

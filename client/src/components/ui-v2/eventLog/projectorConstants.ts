@@ -53,6 +53,7 @@ export const PROJECTED_EVENT_TYPES = new Set([
   'intentional_disconnect',
   'game_tick',
   'follow_request',
+  'follow_request_cleared',
   'follow_state',
   'party_invite',
   'party_invite_cleared',

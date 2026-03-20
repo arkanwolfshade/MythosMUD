@@ -5,37 +5,14 @@ import { logger } from '../../../utils/logger';
 import { determineMessageType } from '../../../utils/messageTypeUtils';
 import { buildMythosTimeState, formatMythosTime12Hour } from '../../../utils/mythosTime';
 import type { GameEvent } from '../eventHandlers/types';
+import {
+  formatNpcAttackedLine,
+  formatPlayerAttackedLine,
+  mergePlayerDpFromPlayerAttackedPayload,
+} from './messageMapper';
 import type { ProjectorHandler } from './projectorHandlersState';
 import { GAME_LOG_CHANNEL, appendMessage, appendMovementMessage, buildChatMessage } from './projectorMessageUtils';
 import { deriveRoomFromRoomState } from './projectorRoom';
-
-function formatNpcAttackedLine(d: Record<string, unknown>): string {
-  const actionType = d.action_type as string | undefined;
-  const npcName = (d.npc_name || d.target_name) as string | undefined;
-  const damage = d.damage as number | undefined;
-  const targetCurrentDp = d.target_current_dp as number | undefined;
-  const targetMaxDp = d.target_max_dp as number | undefined;
-  const verb = actionType === 'auto_attack' ? 'attack' : actionType || 'attack';
-  let text = `You ${verb} ${npcName} for ${damage} damage.`;
-  if (targetCurrentDp !== undefined && targetMaxDp !== undefined) {
-    text += ` (${targetCurrentDp}/${targetMaxDp} DP)`;
-  }
-  return text;
-}
-
-function formatPlayerAttackedLine(d: Record<string, unknown>): string {
-  const actionType = d.action_type as string | undefined;
-  const attackerName = d.attacker_name as string | undefined;
-  const damage = d.damage as number | undefined;
-  const targetCurrentDp = d.target_current_dp as number | undefined;
-  const targetMaxDp = d.target_max_dp as number | undefined;
-  const verb = actionType === 'auto_attack' ? 'attacks' : actionType || 'attacks';
-  let text = `${attackerName} ${verb} you for ${damage} damage.`;
-  if (targetCurrentDp !== undefined && targetMaxDp !== undefined) {
-    text += ` (${targetCurrentDp}/${targetMaxDp} DP)`;
-  }
-  return text;
-}
 
 export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
   command_response(prevState, event) {
@@ -172,6 +149,11 @@ export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
     const attackerName = d.attacker_name as string | undefined;
     const damage = d.damage as number | undefined;
     if (!attackerName || damage === undefined) return prevState;
+    const mergedPlayer = mergePlayerDpFromPlayerAttackedPayload(prevState.player, d);
+    let nextState = prevState;
+    if (mergedPlayer) {
+      nextState = { ...nextState, player: mergedPlayer };
+    }
     const text = formatPlayerAttackedLine(d);
     const msg = buildChatMessage(text, event.timestamp, {
       messageType: 'system',
@@ -181,7 +163,7 @@ export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
       event_type: 'player_attacked',
       text_preview: text.slice(0, 80),
     });
-    return { ...prevState, messages: appendMessage(prevState.messages, msg) };
+    return { ...nextState, messages: appendMessage(nextState.messages, msg) };
   },
 
   npc_died(prevState, event) {

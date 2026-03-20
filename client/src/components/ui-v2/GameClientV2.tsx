@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useMemo } from 'react';
 
 import { Z_INDEX_OVERLAY_TOP } from '../../constants/layout';
 import type { HealthStatus } from '../../types/health';
-import { determineDpTier } from '../../types/health';
-import type { LucidityStatus } from '../../types/lucidity';
+import { deriveHealthStatusFromPlayer } from '../../types/health';
+import { deriveLucidityStatusFromPlayer, type LucidityStatus } from '../../types/lucidity';
 import { AsciiMinimap } from '../map/AsciiMinimap';
 import { HeaderBar } from './HeaderBar';
 import { PanelContainer } from './PanelSystem/PanelContainer';
@@ -98,38 +98,16 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
 }) => {
   const panelManager = usePanelManager();
 
-  // Derive health and lucidity status (similar to GameTerminal)
-  const derivedHealthStatus = useMemo<HealthStatus | null>(() => {
-    if (healthStatus) {
-      return healthStatus;
-    }
-    if (player?.stats?.current_dp !== undefined) {
-      const maxDp = player.stats.max_dp ?? 100;
-      return {
-        current: player.stats.current_dp,
-        max: maxDp,
-        tier: determineDpTier(player.stats.current_dp, maxDp),
-        posture: player.stats.position,
-        inCombat: player.in_combat ?? false,
-      };
-    }
-    return null;
-  }, [healthStatus, player]);
+  // Prefer container-derived status; fall back to projector-authoritative player stats only.
+  const derivedHealthStatus = useMemo<HealthStatus | null>(
+    () => healthStatus ?? deriveHealthStatusFromPlayer(player, undefined),
+    [healthStatus, player]
+  );
 
-  const derivedLucidityStatus = useMemo<LucidityStatus | null>(() => {
-    if (lucidityStatus) {
-      return lucidityStatus;
-    }
-    if (player?.stats?.lucidity !== undefined) {
-      return {
-        current: player.stats.lucidity,
-        max: player.stats.max_lucidity ?? 100,
-        tier: 'lucid',
-        liabilities: [],
-      };
-    }
-    return null;
-  }, [lucidityStatus, player]);
+  const derivedLucidityStatus = useMemo<LucidityStatus | null>(
+    () => lucidityStatus ?? deriveLucidityStatusFromPlayer(player, undefined),
+    [lucidityStatus, player]
+  );
 
   // Handle window resize - scale panels proportionally based on viewport
   // Maintains three-column layout structure from wireframe
