@@ -11,130 +11,47 @@ that lurk in the shadows of our world. The spawning service ensures that NPCs
 appear at the right time, in the right place, and under the right conditions.
 """
 
-# pylint: disable=too-many-lines,wrong-import-position  # Reason: Spawning service requires extensive spawning logic for comprehensive NPC spawning operations and rule evaluation. Imports after TYPE_CHECKING block are intentional to avoid circular dependencies.
+# pylint: disable=wrong-import-position  # Reason: Imports after TYPE_CHECKING block avoid circular dependencies
 
-# pylint: disable=too-few-public-methods  # Reason: Data classes and service classes with focused responsibility, minimal public interface
+from __future__ import annotations
 
 import random
-import time
-from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, cast, override
+from typing import TYPE_CHECKING, TypedDict, cast
 
 from structlog.stdlib import BoundLogger
 
 from server.events.event_bus import EventBus
 
 if TYPE_CHECKING:
+    from server.npc.behaviors import NPCBase
     from server.npc.population_control import NPCPopulationController
+    from server.services.npc_combat_integration_service import NPCCombatIntegrationService
 
 from server.events.event_types import NPCEnteredRoom, NPCLeftRoom, PlayerEnteredRoom, PlayerLeftRoom
 from server.models.npc import NPCDefinition, NPCSpawnRule
-from server.npc.behaviors import AggressiveMobNPC, NPCBase, PassiveMobNPC, ShopkeeperNPC
 from server.npc.combat_integration import NPCCombatIntegration
-from server.npc.population_control import ZoneConfiguration  # NPCPopulationController removed - unused import
-from server.services.npc_combat_integration_service import NPCCombatIntegrationService
+from server.npc.population_control import ZoneConfiguration
+from server.npc.population_stats import PopulationStats
+from server.npc.spawning_instance_factory import create_npc_instance, generate_npc_id
+from server.npc.spawning_models import NPCSpawnRequest, NPCSpawnResult, SimpleNPCDefinition
+from server.npc.spawning_request_execution import spawn_npc_from_request
 
 from ..structured_logging.enhanced_logging_config import get_logger
 
 logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
 
 
-@dataclass
-class SimpleNPCDefinition:  # pylint: disable=too-many-instance-attributes  # Reason: NPC definition requires many fields to capture complete NPC definition
-    """Simple data class to hold NPC definition data without SQLAlchemy relationships."""
+class NPCSpawnStatistics(TypedDict):
+    """Schema for get_spawn_statistics() return value."""
 
-    id: int
-    name: str
-    npc_type: str
-    room_id: str | None
-    description: str | None
-    base_stats: str
-    behavior_config: str
-    ai_integration_stub: str
-
-
-class NPCSpawnRequest:
-    """Represents a request to spawn an NPC."""
-
-    definition: NPCDefinition
-    room_id: str
-    spawn_rule: NPCSpawnRule | None
-    priority: int
-    reason: str
-    created_at: float
-
-    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Spawn request initialization requires many parameters for complete spawn context
-        self,
-        definition: NPCDefinition,
-        room_id: str,
-        spawn_rule: NPCSpawnRule | None = None,
-        priority: int = 0,
-        reason: str = "automatic",
-    ) -> None:
-        """
-        Initialize spawn request.
-
-        Args:
-            definition: NPC definition to spawn
-            room_id: Room where NPC should be spawned
-            spawn_rule: Spawn rule that triggered this request
-            priority: Spawn priority (higher = more important)
-            reason: Reason for spawning (automatic, manual, required, etc.)
-        """
-        self.definition = definition
-        self.room_id = room_id
-        self.spawn_rule = spawn_rule
-        self.priority = priority
-        self.reason = reason
-        self.created_at = time.time()
-
-    @override
-    def __repr__(self) -> str:
-        """String representation of spawn request."""
-        return f"<NPCSpawnRequest(definition={self.definition.name}, room={self.room_id}, priority={self.priority}, reason={self.reason})>"
-
-
-class NPCSpawnResult:
-    """Represents the result of an NPC spawn attempt."""
-
-    success: bool
-    npc_id: str | None
-    npc_instance: NPCBase | None
-    error_message: str | None
-    spawn_request: NPCSpawnRequest | None
-    spawned_at: float | None
-
-    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Spawn result initialization requires many parameters for complete spawn result context
-        self,
-        success: bool,
-        npc_id: str | None = None,
-        npc_instance: NPCBase | None = None,
-        error_message: str | None = None,
-        spawn_request: NPCSpawnRequest | None = None,
-    ) -> None:
-        """
-        Initialize spawn result.
-
-        Args:
-            success: Whether the spawn was successful
-            npc_id: ID of the spawned NPC (if successful)
-            npc_instance: NPC instance object (if successful)
-            error_message: Error message (if failed)
-            spawn_request: Original spawn request
-        """
-        self.success = success
-        self.npc_id = npc_id
-        self.npc_instance = npc_instance
-        self.error_message = error_message
-        self.spawn_request = spawn_request
-        self.spawned_at = time.time() if success else None
-
-    @override
-    def __repr__(self) -> str:
-        """String representation of spawn result."""
-        if self.success:
-            return f"<NPCSpawnResult(success=True, npc_id={self.npc_id})>"
-        return f"<NPCSpawnResult(success=False, error={self.error_message})>"
+    total_requests: int
+    successful_spawns: int
+    failed_spawns: int
+    success_rate: float
+    active_npcs: int
+    queued_requests: int
+    reason_counts: dict[str, int]
+    type_counts: dict[str, int]
 
 
 class NPCSpawningService:
@@ -155,7 +72,7 @@ class NPCSpawningService:
     """
 
     event_bus: EventBus
-    population_controller: "NPCPopulationController | None"
+    population_controller: NPCPopulationController | None
     combat_integration: NPCCombatIntegration | NPCCombatIntegrationService | None
     max_spawn_queue_size: int
     spawn_retry_attempts: int
@@ -164,7 +81,7 @@ class NPCSpawningService:
     def __init__(
         self,
         event_bus: EventBus,
-        population_controller: "NPCPopulationController | None",
+        population_controller: NPCPopulationController | None,
         combat_integration: NPCCombatIntegration | NPCCombatIntegrationService | None = None,
     ) -> None:
         """
@@ -181,27 +98,19 @@ class NPCSpawningService:
         self.population_controller = population_controller
         self.combat_integration = combat_integration
 
-        # Spawn queue and tracking
         self.spawn_queue: list[NPCSpawnRequest] = []
         self.spawn_history: list[NPCSpawnResult] = []
 
-        # Spawn configuration
         self.max_spawn_queue_size = 100
         self.spawn_retry_attempts = 3
-        self.spawn_retry_delay = 5.0  # seconds
+        self.spawn_retry_delay = 5.0
 
-        # Subscribe to relevant events
         self._subscribe_to_events()
 
         logger.info("NPC Spawning Service initialized")
 
     def _subscribe_to_events(self) -> None:
         """Subscribe to relevant game events."""
-        # NOTE: Removed PlayerEnteredRoom subscription to prevent duplicate spawning
-        # The population controller is the sole authority for spawn decisions
-        # self.event_bus.subscribe(PlayerEnteredRoom, self._handle_player_entered_room)
-        # self.event_bus.subscribe(PlayerLeftRoom, self._handle_player_left_room)
-        # Use service_id for tracking and cleanup (Task 2: Event Subscriber Cleanup)
         self.event_bus.subscribe(NPCEnteredRoom, self._handle_npc_entered_room, service_id="npc_spawning_service")
         self.event_bus.subscribe(NPCLeftRoom, self._handle_npc_left_room, service_id="npc_spawning_service")
 
@@ -209,21 +118,15 @@ class NPCSpawningService:
         """Handle player entering a room - trigger spawn checks."""
         self._check_spawn_requirements_for_room(event.room_id)
 
-    def _handle_player_left_room(self, event: PlayerLeftRoom) -> None:
+    def _handle_player_left_room(self, _event: PlayerLeftRoom) -> None:
         """Handle player leaving a room - may trigger despawn checks."""
-        # For now, we don't automatically despawn NPCs when players leave
-        # This could be implemented based on specific requirements
 
     def _handle_npc_entered_room(self, event: NPCEnteredRoom) -> None:
         """Handle NPC entering a room."""
-        # Note: NPC instances are now managed by lifecycle manager
-        # This method is kept for compatibility but no longer tracks instances
         logger.debug("NPC entered room event received", npc_id=event.npc_id, room_id=event.room_id)
 
     def _handle_npc_left_room(self, event: NPCLeftRoom) -> None:
         """Handle NPC leaving a room."""
-        # Note: NPC instances are now managed by lifecycle manager
-        # This method is kept for compatibility but no longer tracks instances
         logger.debug("NPC left room event received", npc_id=event.npc_id, room_id=event.room_id)
 
     def _check_spawn_requirements_for_room(self, room_id: str) -> None:
@@ -236,19 +139,17 @@ class NPCSpawningService:
         if self.population_controller is None:
             return
 
-        zone_key = self.population_controller._get_zone_key_from_room_id(room_id)  # pylint: disable=protected-access  # Reason: Internal zone key retrieval required
+        zone_key = self.population_controller.get_zone_key_from_room_id(room_id)
         zone_config = self.population_controller.get_zone_configuration(zone_key)
 
         if not zone_config:
             logger.warning("No zone configuration found", zone_key=zone_key, room_id=room_id)
             return
 
-        # Check each NPC definition for spawn requirements
         for _npc_def_id, definition in self.population_controller.npc_definitions.items():
             if str(definition.sub_zone_id) not in zone_key:
                 continue
 
-            # Check if this NPC should spawn
             spawn_requests = self._evaluate_spawn_requirements(definition, zone_config, room_id)
             for request in spawn_requests:
                 self._queue_spawn_request(request)
@@ -256,12 +157,12 @@ class NPCSpawningService:
     def _evaluate_spawn_rules(
         self,
         definition: NPCDefinition,
-        zone_config: "ZoneConfiguration",
+        zone_config: ZoneConfiguration,
         room_id: str,
         current_npc_count: int,
     ) -> list[NPCSpawnRequest]:
         """Evaluate spawn rules for a definition and return requests that pass conditions and probability."""
-        assert self.population_controller is not None  # Caller guarantees non-None
+        assert self.population_controller is not None
         requests: list[NPCSpawnRequest] = []
         def_id = int(definition.id)
         if def_id not in self.population_controller.spawn_rules:
@@ -279,7 +180,7 @@ class NPCSpawningService:
                 continue
             priority = self._calculate_spawn_priority(definition, rule, zone_config)
             effective_probability = zone_config.get_effective_spawn_probability(float(definition.spawn_probability))
-            if random.random() <= effective_probability:  # nosec B311: Game mechanics spawn probability, not cryptographic
+            if random.random() <= effective_probability:  # nosec B311: spawn probability, not cryptographic
                 requests.append(
                     NPCSpawnRequest(
                         definition=definition,
@@ -295,7 +196,7 @@ class NPCSpawningService:
         self,
         definition: NPCDefinition,
         room_id: str,
-        stats: Any,
+        stats: PopulationStats | None,
         spawn_requests: list[NPCSpawnRequest],
     ) -> None:
         """If definition is required and not yet represented, append a required spawn request."""
@@ -314,7 +215,7 @@ class NPCSpawningService:
         )
 
     def _evaluate_spawn_requirements(
-        self, definition: NPCDefinition, zone_config: "ZoneConfiguration", room_id: str
+        self, definition: NPCDefinition, zone_config: ZoneConfiguration, room_id: str
     ) -> list[NPCSpawnRequest]:
         """
         Evaluate spawn requirements for an NPC definition.
@@ -330,7 +231,7 @@ class NPCSpawningService:
         if self.population_controller is None:
             return []
 
-        zone_key = self.population_controller._get_zone_key_from_room_id(room_id)  # pylint: disable=protected-access  # Reason: Internal zone key retrieval required
+        zone_key = self.population_controller.get_zone_key_from_room_id(room_id)
         stats = self.population_controller.get_population_stats(zone_key)
         if stats:
             current_count = stats.npcs_by_definition.get(int(definition.id), 0)
@@ -354,7 +255,7 @@ class NPCSpawningService:
         self,
         definition: NPCDefinition,
         _rule: NPCSpawnRule,
-        zone_config: "ZoneConfiguration",  # pylint: disable=unused-argument  # Reason: Parameter reserved for future rule-based priority calculation
+        zone_config: ZoneConfiguration,  # pylint: disable=unused-argument  # Reason: reserved for future priority rules
     ) -> int:
         """
         Calculate spawn priority for an NPC.
@@ -369,9 +270,6 @@ class NPCSpawningService:
         """
         priority = 0
 
-        # Base priority by NPC type
-        # AI Agent note: Use npc_type.value to get string value from enum
-        # str(enum) returns "NPCDefinitionType.SHOPKEEPER", but we need "shopkeeper"
         type_priorities = {
             "shopkeeper": 80,
             "quest_giver": 70,
@@ -380,18 +278,16 @@ class NPCSpawningService:
         }
         priority += type_priorities.get(str(definition.npc_type), 50)
 
-        # Required NPCs get higher priority
         if definition.is_required():
             priority += 50
 
-        # Zone spawn modifier affects priority
         priority = int(priority * zone_config.npc_spawn_modifier)
 
-        # Player count affects priority (more players = higher priority for some NPCs)
         if self.population_controller is not None and self.population_controller.current_game_state:
-            player_count = self.population_controller.current_game_state["player_count"]
-            if player_count > 0:
-                priority += min(player_count * 5, 25)
+            # current_game_state is dict[str, Any]; .get is Any until narrowed.
+            pc_raw = cast(object, self.population_controller.current_game_state.get("player_count", 0))
+            if isinstance(pc_raw, int) and pc_raw > 0:
+                priority += min(pc_raw * 5, 25)
 
         return priority
 
@@ -406,7 +302,6 @@ class NPCSpawningService:
             logger.warning("Spawn queue is full, dropping oldest request")
             _ = self.spawn_queue.pop(0)
 
-        # Insert request in priority order
         inserted = False
         for i, existing_request in enumerate(self.spawn_queue):
             if request.priority > existing_request.priority:
@@ -417,7 +312,6 @@ class NPCSpawningService:
         if not inserted:
             self.spawn_queue.append(request)
 
-        # Avoid logging the entire request object to prevent recursion issues
         definition_name = getattr(request.definition, "name", "Unknown NPC")
         logger.debug("Queued spawn request", npc_name=definition_name, room_id=request.room_id)
 
@@ -428,7 +322,7 @@ class NPCSpawningService:
         Returns:
             List of spawn results
         """
-        results = []
+        results: list[NPCSpawnResult] = []
         requests_to_process = self.spawn_queue.copy()
         self.spawn_queue.clear()
 
@@ -437,171 +331,32 @@ class NPCSpawningService:
             results.append(result)
             self.spawn_history.append(result)
 
-            # Keep only recent history
             if len(self.spawn_history) > 1000:
                 self.spawn_history = self.spawn_history[-500:]
 
         return results
 
     def _spawn_npc_from_request(self, request: NPCSpawnRequest) -> NPCSpawnResult:
-        """
-        Spawn an NPC from a spawn request.
+        """Spawn an NPC from a spawn request."""
+        return spawn_npc_from_request(
+            request,
+            create_npc_instance=self._create_npc_instance,
+            generate_npc_id=self._generate_npc_id,
+        )
 
-        Args:
-            request: Spawn request to process
+    def _create_npc_instance(
+        self, definition: NPCDefinition, room_id: str, npc_id: str | None = None
+    ) -> NPCBase | None:
+        """Create an NPC instance from a definition."""
+        return create_npc_instance(
+            definition,
+            room_id,
+            self.event_bus,
+            self.combat_integration,
+            npc_id=npc_id,
+        )
 
-        Returns:
-            Spawn result
-        """
-        try:
-            # Create NPC instance
-            npc_instance = self._create_npc_instance(request.definition, request.room_id)
-            if not npc_instance:
-                return NPCSpawnResult(
-                    success=False,
-                    error_message="Failed to create NPC instance",
-                    spawn_request=request,
-                )
-
-            # Generate unique NPC ID
-            npc_id = self._generate_npc_id(request.definition, request.room_id)
-
-            # Don't call back into population controller to avoid circular dependency
-            # The population controller will update its own statistics when needed
-
-            # Mutate room state via Room API which will publish the event
-            # Get room from persistence (sync method, uses cache)
-            # Note: This assumes persistence is available via container or passed parameter
-            from ..container import ApplicationContainer
-
-            container = ApplicationContainer.get_instance()
-            if container and container.async_persistence:
-                room = container.async_persistence.get_room_by_id(request.room_id)  # Sync method, uses cache
-            else:
-                room = None
-            if not room:
-                definition_name = getattr(request.definition, "name", "Unknown NPC")
-                logger.warning("Room not found for NPC spawn", npc_name=definition_name, room_id=request.room_id)
-                return NPCSpawnResult(
-                    success=False,
-                    error_message="Room not found",
-                    spawn_request=request,
-                )
-            room.npc_entered(npc_id)
-
-            # Use getattr to safely access definition.name to avoid recursion issues
-            definition_name = getattr(request.definition, "name", "Unknown NPC")
-            logger.info("Successfully spawned NPC", npc_id=npc_id, npc_name=definition_name, room_id=request.room_id)
-
-            return NPCSpawnResult(
-                success=True,
-                npc_id=npc_id,
-                npc_instance=npc_instance,
-                spawn_request=request,
-            )
-
-        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC spawn request errors unpredictable, must handle gracefully
-            logger.error("Failed to spawn NPC from request", request=request, error=str(e))
-            return NPCSpawnResult(
-                success=False,
-                error_message=str(e),
-                spawn_request=request,
-            )
-
-    def _create_npc_instance(self, definition: NPCDefinition, room_id: str, npc_id: str | None = None) -> Any | None:
-        """
-        Create an NPC instance from a definition.
-
-        Args:
-            definition: NPC definition
-            room_id: Room where NPC will be spawned
-            npc_id: Optional pre-generated NPC ID (if None, will generate one)
-
-        Returns:
-            NPC instance or None if creation failed
-        """
-        try:
-            # Extract all attributes first to avoid any potential lazy loading issues
-            definition_id = getattr(definition, "id", 0)
-            definition_name = getattr(definition, "name", "Unknown NPC")
-            definition_type = getattr(definition, "npc_type", "unknown")
-            definition_room_id = getattr(definition, "room_id", None)
-            definition_description = getattr(definition, "description", None)
-            definition_base_stats = getattr(definition, "base_stats", "{}")
-            definition_behavior_config = getattr(definition, "behavior_config", "{}")
-            definition_ai_integration_stub = getattr(definition, "ai_integration_stub", "{}")
-
-            # Convert NPCDefinition to SimpleNPCDefinition to avoid SQLAlchemy relationship issues
-            simple_definition = SimpleNPCDefinition(
-                id=definition_id,
-                name=definition_name,
-                npc_type=definition_type,
-                room_id=definition_room_id,
-                description=definition_description,
-                base_stats=definition_base_stats,
-                behavior_config=definition_behavior_config,
-                ai_integration_stub=definition_ai_integration_stub,
-            )
-
-            # Generate a unique NPC ID if not provided
-            if npc_id is None:
-                npc_id = self._generate_npc_id(simple_definition, room_id)
-
-            # Create appropriate NPC type based on definition
-            # Type annotation for base class to allow different subclass assignments
-            npc_instance: NPCBase
-            if simple_definition.npc_type == "shopkeeper":
-                npc_instance = ShopkeeperNPC(
-                    definition=simple_definition,
-                    npc_id=npc_id,
-                    event_bus=self.event_bus,
-                    event_reaction_system=None,  # Will be set up later
-                )
-            elif simple_definition.npc_type == "passive_mob":
-                npc_instance = PassiveMobNPC(
-                    definition=simple_definition,
-                    npc_id=npc_id,
-                    event_bus=self.event_bus,
-                    event_reaction_system=None,  # Will be set up later
-                )
-            elif simple_definition.npc_type == "aggressive_mob":
-                npc_instance = AggressiveMobNPC(
-                    definition=cast(NPCDefinition, cast(object, simple_definition)),
-                    npc_id=npc_id,
-                    event_bus=self.event_bus,
-                    event_reaction_system=None,  # Will be set up later
-                )
-                if self.combat_integration:
-                    npc_instance.combat_integration = self.combat_integration
-            elif simple_definition.npc_type == "quest_giver":
-                # For now, treat quest_giver as a passive_mob until we implement specific quest behavior
-                npc_instance = PassiveMobNPC(
-                    definition=simple_definition,
-                    npc_id=npc_id,
-                    event_bus=self.event_bus,
-                    event_reaction_system=None,  # Will be set up later
-                )
-            else:
-                logger.warning("Unknown NPC type", npc_type=simple_definition.npc_type)
-                return None
-
-            # Set the current room for the NPC instance
-            npc_instance.current_room = room_id
-            # Track spawn room for idle movement (the room where NPC was initially spawned)
-            npc_instance.spawn_room_id = room_id
-
-            return npc_instance
-
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC creation errors unpredictable, must handle gracefully
-            logger.error(
-                "Failed to create NPC instance",
-                npc_type=getattr(definition, "npc_type", "unknown"),
-                room_id=room_id,
-                error=str(e),
-            )
-            return None
-
-    def create_npc_instance(self, definition: NPCDefinition, room_id: str, npc_id: str | None = None) -> Any | None:
+    def create_npc_instance(self, definition: NPCDefinition, room_id: str, npc_id: str | None = None) -> NPCBase | None:
         """
         Public wrapper for NPC instance creation used by lifecycle manager.
 
@@ -611,23 +366,10 @@ class NPCSpawningService:
         return self._create_npc_instance(definition, room_id, npc_id)
 
     def _generate_npc_id(self, definition: NPCDefinition | SimpleNPCDefinition, room_id: str) -> str:
-        """
-        Generate a unique NPC ID.
+        """Generate a unique NPC ID."""
+        return generate_npc_id(definition, room_id)
 
-        Args:
-            definition: NPC definition (either NPCDefinition or SimpleNPCDefinition)
-            room_id: Room where NPC is spawned
-
-        Returns:
-            Unique NPC ID
-        """
-        timestamp = int(time.time())
-        random_suffix = random.randint(1000, 9999)  # nosec B311: Game mechanics NPC ID generation, not cryptographic
-        # Use getattr to avoid potential lazy loading issues
-        definition_name = getattr(definition, "name", "unknown_npc")
-        return f"{definition_name.lower().replace(' ', '_')}_{room_id}_{timestamp}_{random_suffix}"
-
-    def despawn_npc(self, npc_id: str, _reason: str = "manual") -> bool:  # pylint: disable=unused-argument  # Reason: Parameter reserved for future reason-based despawn logic
+    def despawn_npc(self, npc_id: str, _reason: str = "manual") -> bool:  # pylint: disable=unused-argument  # Reason: future reason-based despawn
         """
         Despawn an NPC instance.
 
@@ -638,8 +380,6 @@ class NPCSpawningService:
         Returns:
             True if NPC was despawned successfully
         """
-        # Note: NPC instances are now managed by lifecycle manager
-        # This method should delegate to the lifecycle manager
         logger.warning(
             "Despawn request for NPC", npc_id=npc_id, message="NPC instances now managed by lifecycle manager"
         )
@@ -664,7 +404,7 @@ class NPCSpawningService:
                 type_counts[npc_type_str] = type_counts.get(npc_type_str, 0) + 1
         return type_counts
 
-    def get_spawn_statistics(self) -> dict[str, Any]:
+    def get_spawn_statistics(self) -> NPCSpawnStatistics:
         """
         Get spawning statistics.
 
@@ -680,7 +420,7 @@ class NPCSpawningService:
             "successful_spawns": successful_spawns,
             "failed_spawns": failed_spawns,
             "success_rate": success_rate,
-            "active_npcs": 0,  # NPC instances now managed by lifecycle manager
+            "active_npcs": 0,
             "queued_requests": len(self.spawn_queue),
             "reason_counts": self._count_spawn_reasons(self.spawn_history),
             "type_counts": self._count_spawn_types(self.spawn_history),
@@ -696,8 +436,6 @@ class NPCSpawningService:
         Returns:
             Number of NPCs cleaned up
         """
-        # Note: NPC instances are now managed by lifecycle manager
-        # This method should delegate to the lifecycle manager
         logger.info(
             "Cleanup request received",
             max_age_seconds=max_age_seconds,
@@ -718,17 +456,17 @@ class NPCSpawningService:
         if self.population_controller is None:
             return "unknown/unknown"
 
-        return self.population_controller._get_zone_key_from_room_id(room_id)  # pylint: disable=protected-access  # Reason: Internal zone key retrieval required
+        return self.population_controller.get_zone_key_from_room_id(room_id)
 
-    def get_population_stats(self, zone_key: str) -> Any | None:
+    def get_population_stats(self, zone_key: str) -> PopulationStats | None:
         """
-        Get population statistics for a given zone by delegating to the population controller.
+        Return zone-level NPC population aggregates for a zone key.
 
         Args:
-            zone_key: Zone key in format "zone/sub_zone"
+            zone_key: Zone key in the form "zone/sub_zone".
 
         Returns:
-            Population statistics or None if not found
+            PopulationStats for the zone, or None if there is no controller or no stats yet.
         """
         if self.population_controller is None:
             return None
