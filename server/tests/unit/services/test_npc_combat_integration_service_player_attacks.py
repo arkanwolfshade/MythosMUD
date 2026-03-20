@@ -2,11 +2,29 @@
 Unit tests for NPC combat integration service - player-initiated combat paths.
 """
 
+# pyright: reportPrivateUsage=false
+# These tests patch NPCCombatIntegrationService underscore-prefixed collaborators; that is intentional.
+
+import types
 import uuid
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+
+from .test_npc_combat_integration_service import (
+    integration_service,
+    mock_async_persistence,
+    mock_combat_service,
+    mock_connection_manager,
+)
+
+_PYGTEST_SERVICE_FIXTURES: tuple[object, ...] = (
+    integration_service,
+    mock_async_persistence,
+    mock_combat_service,
+    mock_connection_manager,
+)
 
 if TYPE_CHECKING:
     from server.services.npc_combat_integration_service import NPCCombatIntegrationService
@@ -31,15 +49,17 @@ async def test_handle_player_attack_on_npc_with_existing_combat(
     npc_instance.is_alive = True
     mock_combat = MagicMock()
     mock_combat.combat_id = "combat_001"
-    combat_service: Any = integration_service._combat_service
-    combat_service.get_combat_by_participant = AsyncMock(return_value=mock_combat)
-    combat_service.queue_combat_action = AsyncMock(return_value=True)
+    mock_get_combat = AsyncMock(return_value=mock_combat)
+    mock_queue_action = AsyncMock(return_value=True)
+    integration_service._combat_service.get_combat_by_participant = mock_get_combat
+    integration_service._combat_service.queue_combat_action = mock_queue_action
     mock_data_provider = MagicMock()
     mock_data_provider.get_player_room_id = AsyncMock(return_value=room_id)
     mock_data_provider.get_npc_instance = MagicMock(return_value=npc_instance)
     integration_service._data_provider = mock_data_provider
-    svc: Any = integration_service
-    result = await svc.handle_player_attack_on_npc(player_id, npc_id, room_id, action_type, damage, npc_instance)
+    result = await integration_service.handle_player_attack_on_npc(
+        player_id, npc_id, room_id, action_type, damage, npc_instance
+    )
     assert isinstance(result, bool)
 
 
@@ -61,11 +81,8 @@ async def test_handle_player_attack_on_npc_login_grace_period_blocked(
         patch("server.services.npc_combat_integration_service.is_player_in_login_grace_period") as mock_grace_period,
     ):
         mock_config = MagicMock()
-        mock_app: Any = MagicMock()
-        mock_state: Any = MagicMock()
-        mock_connection_manager: Any = MagicMock()
-        mock_state.connection_manager = mock_connection_manager
-        mock_app.state = mock_state
+        mock_cm = MagicMock()
+        mock_app = types.SimpleNamespace(state=types.SimpleNamespace(connection_manager=mock_cm))
         mock_config._app_instance = mock_app
         mock_get_config.return_value = mock_config
         mock_grace_period.return_value = True
@@ -106,7 +123,11 @@ async def test_handle_player_attack_on_npc_grace_period_check_fails(
         integration_service._combat_memory = MagicMock()
         integration_service._combat_memory.record_attack = MagicMock(return_value=True)
         integration_service._uuid_mapping = MagicMock()
-        integration_service._uuid_mapping.convert_to_uuid = MagicMock(side_effect=lambda x: uuid.uuid4())
+
+        def _convert_to_uuid_random(_entity_id: str) -> uuid.UUID:
+            return uuid.uuid4()
+
+        integration_service._uuid_mapping.convert_to_uuid = MagicMock(side_effect=_convert_to_uuid_random)
         integration_service._uuid_mapping.is_valid_uuid = MagicMock(return_value=False)
         integration_service._uuid_mapping.store_string_id_mapping = MagicMock()
         integration_service._combat_service = MagicMock()
@@ -199,9 +220,11 @@ async def test_setup_combat_uuids_and_mappings_valid_uuid(
     integration_service._uuid_mapping = MagicMock()
     attacker_uuid_val = uuid.uuid4()
     target_uuid_val = uuid.uuid4()
-    integration_service._uuid_mapping.convert_to_uuid = MagicMock(
-        side_effect=lambda x: attacker_uuid_val if x == player_id else target_uuid_val
-    )
+
+    def _convert_to_uuid_by_string_id(entity_id: str) -> uuid.UUID:
+        return attacker_uuid_val if entity_id == player_id else target_uuid_val
+
+    integration_service._uuid_mapping.convert_to_uuid = MagicMock(side_effect=_convert_to_uuid_by_string_id)
     integration_service._uuid_mapping.is_valid_uuid = MagicMock(return_value=True)
 
     attacker_uuid, target_uuid = await integration_service._setup_combat_uuids_and_mappings(
@@ -224,10 +247,12 @@ async def test_store_npc_xp_mapping_no_definition(
 
     integration_service._data_provider = MagicMock()
     integration_service._data_provider.get_npc_definition = AsyncMock(return_value=None)
+    mock_store_xp_mapping = MagicMock()
     integration_service._uuid_mapping = MagicMock()
+    integration_service._uuid_mapping.store_xp_mapping = mock_store_xp_mapping
 
     await integration_service._store_npc_xp_mapping(npc_id, target_uuid, room_id, player_id, first_engagement)
-    integration_service._uuid_mapping.store_xp_mapping.assert_not_called()
+    mock_store_xp_mapping.assert_not_called()
 
 
 @pytest.mark.asyncio
@@ -246,10 +271,12 @@ async def test_store_npc_xp_mapping_non_dict_base_stats(
 
     integration_service._data_provider = MagicMock()
     integration_service._data_provider.get_npc_definition = AsyncMock(return_value=mock_npc_definition)
+    mock_store_xp_mapping = MagicMock()
     integration_service._uuid_mapping = MagicMock()
+    integration_service._uuid_mapping.store_xp_mapping = mock_store_xp_mapping
 
     await integration_service._store_npc_xp_mapping(npc_id, target_uuid, room_id, player_id, first_engagement)
-    integration_service._uuid_mapping.store_xp_mapping.assert_not_called()
+    mock_store_xp_mapping.assert_not_called()
 
 
 @pytest.mark.asyncio
@@ -268,13 +295,16 @@ async def test_store_npc_xp_mapping_first_engagement(
 
     integration_service._data_provider = MagicMock()
     integration_service._data_provider.get_npc_definition = AsyncMock(return_value=mock_npc_definition)
+    mock_apply_lucidity = AsyncMock()
     integration_service._lucidity = MagicMock()
-    integration_service._lucidity.apply_encounter_lucidity_effect = AsyncMock()
+    integration_service._lucidity.apply_encounter_lucidity_effect = mock_apply_lucidity
+    mock_store_xp_mapping = MagicMock()
     integration_service._uuid_mapping = MagicMock()
+    integration_service._uuid_mapping.store_xp_mapping = mock_store_xp_mapping
 
     await integration_service._store_npc_xp_mapping(npc_id, target_uuid, room_id, player_id, first_engagement)
-    integration_service._lucidity.apply_encounter_lucidity_effect.assert_called_once()
-    integration_service._uuid_mapping.store_xp_mapping.assert_called_once_with(target_uuid, 100)
+    mock_apply_lucidity.assert_called_once()
+    mock_store_xp_mapping.assert_called_once_with(target_uuid, 100)
 
 
 @pytest.mark.asyncio
@@ -293,10 +323,12 @@ async def test_store_npc_xp_mapping_no_xp_value(
 
     integration_service._data_provider = MagicMock()
     integration_service._data_provider.get_npc_definition = AsyncMock(return_value=mock_npc_definition)
+    mock_store_xp_mapping = MagicMock()
     integration_service._uuid_mapping = MagicMock()
+    integration_service._uuid_mapping.store_xp_mapping = mock_store_xp_mapping
 
     await integration_service._store_npc_xp_mapping(npc_id, target_uuid, room_id, player_id, first_engagement)
-    integration_service._uuid_mapping.store_xp_mapping.assert_called_once_with(target_uuid, 0)
+    mock_store_xp_mapping.assert_called_once_with(target_uuid, 0)
 
 
 @pytest.mark.asyncio
@@ -316,17 +348,21 @@ async def test_process_combat_attack_queue_failure(
     mock_combat_result = MagicMock()
     mock_combat_result.success = True
 
+    mock_process_attack = AsyncMock(return_value=mock_combat_result)
     integration_service._combat_service = MagicMock()
     integration_service._combat_service.get_combat_by_participant = AsyncMock(return_value=mock_combat)
     integration_service._combat_service.queue_combat_action = AsyncMock(return_value=False)  # Queue fails
-    integration_service._combat_service.process_attack = AsyncMock(return_value=mock_combat_result)
+    integration_service._combat_service.process_attack = mock_process_attack
 
     with patch("server.app.lifespan.get_current_tick", return_value=1):
-        result = await integration_service._process_combat_attack(
-            player_id, room_id, attacker_uuid, target_uuid, damage, npc_instance
+        result = cast(
+            MagicMock,
+            await integration_service._process_combat_attack(
+                player_id, room_id, attacker_uuid, target_uuid, damage, npc_instance
+            ),
         )
         assert result == mock_combat_result
-        integration_service._combat_service.process_attack.assert_called_once()
+        mock_process_attack.assert_called_once()
 
 
 @pytest.mark.asyncio
@@ -350,15 +386,19 @@ async def test_process_combat_attack_start_new_combat(
     integration_service._data_provider.get_player_name = AsyncMock(return_value="TestPlayer")
     integration_service._data_provider.get_player_combat_data = AsyncMock(return_value={})
     integration_service._data_provider.get_npc_combat_data = MagicMock(return_value={})
-    integration_service._combat_service.start_combat = AsyncMock()
+    mock_start_combat = AsyncMock()
+    integration_service._combat_service.start_combat = mock_start_combat
     integration_service._combat_service.process_attack = AsyncMock(return_value=mock_combat_result)
 
     with patch("server.app.lifespan.get_current_tick", return_value=1):
-        result = await integration_service._process_combat_attack(
-            player_id, room_id, attacker_uuid, target_uuid, damage, npc_instance
+        result = cast(
+            MagicMock,
+            await integration_service._process_combat_attack(
+                player_id, room_id, attacker_uuid, target_uuid, damage, npc_instance
+            ),
         )
         assert result == mock_combat_result
-        integration_service._combat_service.start_combat.assert_called_once()
+        mock_start_combat.assert_called_once()
 
 
 @pytest.mark.asyncio
