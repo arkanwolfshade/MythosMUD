@@ -50,7 +50,7 @@ def _resolve_user_id(current_user: Any, player: Any) -> str | None:
 def _format_skills_output(skills: list[dict[str, Any]]) -> str:
     """Format skills list as text output lines."""
     lines = ["Your skills:", "---"]
-    for s in sorted(skills, key=lambda x: (x.get("skill_name") or x.get("skill_key") or "")):
+    for s in sorted(skills, key=lambda x: x.get("skill_name") or x.get("skill_key") or ""):
         name = s.get("skill_name") or s.get("skill_key") or "Unknown"
         value = s.get("value", 0)
         lines.append(f"  {name}: {value}%")

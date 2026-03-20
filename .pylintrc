@@ -35,6 +35,8 @@ per-file-ignores=
     # R0801 (duplicate-code): Pylint detects 194 instances of similar code patterns across multiple files (error handling, logging setup, import patterns, etc.)
     # These patterns are legitimate architectural similarities that would require extensive refactoring to eliminate
     server/validators/__init__.py:cyclic-import,R0801,
+    # test_npc_combat_integration_service: Cycle is in production code (combat_service -> combat_turn_processor -> npc_instance_service)
+    server/tests/unit/services/test_npc_combat_integration_service.py:cyclic-import,
     # docs/**/* files: Allow various patterns common in documentation/examples
     # ruff: F821 (undefined name) → pylint: undefined-variable (E0602)
     # ruff: F841 (unused variable) → pylint: unused-variable (W0612)

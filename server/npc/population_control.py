@@ -14,7 +14,9 @@ configurations reflect the inherent mystical properties of different locations.
 # pylint: disable=too-many-lines  # Reason: Population control requires extensive population management logic for comprehensive NPC population tracking and control
 
 import time
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, cast
+
+from structlog.stdlib import BoundLogger
 
 from server.events.event_bus import EventBus
 from server.events.event_types import (
@@ -37,7 +39,10 @@ from .spawn_validator import should_spawn_npc
 from .zone_config_loader import load_zone_configurations
 from .zone_configuration import ZoneConfiguration
 
-logger = get_logger(__name__)
+if TYPE_CHECKING:
+    from ..async_persistence import AsyncPersistenceLayer
+
+logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
 
 
 class NPCPopulationController:  # pylint: disable=too-many-instance-attributes  # Reason: Population controller requires many state tracking and configuration attributes
@@ -61,12 +66,17 @@ class NPCPopulationController:  # pylint: disable=too-many-instance-attributes  
     - NPCLifecycleManager.active_npcs is the single source of truth for active NPC instances
     """
 
+    event_bus: EventBus
+    spawning_service: Any
+    lifecycle_manager: Any
+    async_persistence: "AsyncPersistenceLayer"
+
     def __init__(
         self,
         event_bus: EventBus,
-        spawning_service: Any | None = None,
-        lifecycle_manager: Any | None = None,
-        async_persistence: Any | None = None,
+        spawning_service: Any = None,
+        lifecycle_manager: Any = None,
+        async_persistence: "AsyncPersistenceLayer | None" = None,
     ) -> None:
         """
         Initialize the NPC population controller.
@@ -80,10 +90,9 @@ class NPCPopulationController:  # pylint: disable=too-many-instance-attributes  
         self.event_bus = event_bus
         self.spawning_service = spawning_service
         self.lifecycle_manager = lifecycle_manager
-        self.async_persistence = async_persistence
-
-        if self.async_persistence is None:
+        if async_persistence is None:
             raise ValueError("async_persistence is required for NPCPopulationController")
+        self.async_persistence = async_persistence
 
         # Population tracking
         self.population_stats: dict[str, PopulationStats] = {}
@@ -276,6 +285,15 @@ class NPCPopulationController:  # pylint: disable=too-many-instance-attributes  
         """
         return get_zone_key_from_room_id(room_id)
 
+    def get_zone_key_from_room_id(self, room_id: str) -> str:
+        """
+        Public wrapper to extract a zone key from a room ID.
+
+        This delegates to the internal helper but provides a non-protected API
+        for other components such as the lifecycle manager.
+        """
+        return self._get_zone_key_from_room_id(room_id)
+
     def _check_spawn_requirements_for_room(self, room_id: str) -> None:
         """
         Check if NPCs need to be spawned for a specific room.
@@ -324,7 +342,7 @@ class NPCPopulationController:  # pylint: disable=too-many-instance-attributes  
             # Check if this NPC should spawn
             if self._should_spawn_npc(definition, zone_config, room_id):
                 logger.info("NPC should spawn, attempting spawn", npc_id=definition.id, npc_name=definition.name)
-                self._spawn_npc(definition, room_id, "population_control")
+                _ = self._spawn_npc(definition, room_id, "population_control")
             else:
                 logger.info("NPC should not spawn", npc_id=definition.id, npc_name=definition.name)
 
@@ -542,6 +560,16 @@ class NPCPopulationController:  # pylint: disable=too-many-instance-attributes  
         self.population_stats.clear()
         logger.info("Population stats cleared")
 
+    def _should_remove_inactive_npc(self, npc_instance: Any, current_time: float, max_age_seconds: int) -> bool:
+        """Return True if the NPC is inactive long enough and not required (eligible for cleanup)."""
+        spawned_at_value = getattr(npc_instance, "spawned_at", None)
+        if not spawned_at_value or not isinstance(spawned_at_value, (int, float)):
+            return False
+        age = current_time - spawned_at_value
+        is_required_value = getattr(npc_instance, "is_required", None)
+        is_required = bool(is_required_value) if is_required_value is not None else False
+        return age > max_age_seconds and not is_required
+
     def cleanup_inactive_npcs(self, max_age_seconds: int = 3600) -> int:
         """
         Clean up NPCs that have been inactive for too long.
@@ -552,33 +580,22 @@ class NPCPopulationController:  # pylint: disable=too-many-instance-attributes  
         Returns:
             Number of NPCs cleaned up
         """
-        # Query active NPCs from lifecycle manager (single source of truth)
         active_npcs = self._get_active_npcs_from_lifecycle_manager()
         if not active_npcs:
             return 0
 
         current_time = time.time()
-        npcs_to_remove = []
-
-        for npc_id, npc_instance in active_npcs.items():
-            # Get spawn time from NPC instance
-            spawned_at_value = getattr(npc_instance, "spawned_at", None)
-            # Ensure spawned_at is a number (handle Mock objects)
-            if not spawned_at_value or not isinstance(spawned_at_value, int | float):
-                continue
-
-            age = current_time - spawned_at_value
-            is_required_value = getattr(npc_instance, "is_required", None)
-            is_required = bool(is_required_value) if is_required_value is not None else False
-            if age > max_age_seconds and not is_required:
-                npcs_to_remove.append(npc_id)
+        npcs_to_remove = [
+            nid
+            for nid, ninst in active_npcs.items()
+            if self._should_remove_inactive_npc(ninst, current_time, max_age_seconds)
+        ]
 
         for npc_id in npcs_to_remove:
-            self.despawn_npc(npc_id)
+            _ = self.despawn_npc(npc_id)
 
         if npcs_to_remove:
             logger.info("Cleaned up inactive NPCs", count=len(npcs_to_remove))
-
         return len(npcs_to_remove)
 
 

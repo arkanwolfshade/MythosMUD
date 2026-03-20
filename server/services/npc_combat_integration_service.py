@@ -15,8 +15,10 @@ All persistence calls wrapped in asyncio.to_thread() to prevent event loop block
 # pylint: disable=too-many-instance-attributes,too-many-arguments,too-many-positional-arguments,too-many-locals,too-many-lines,wrong-import-position  # Reason: NPC combat integration requires many state attributes, parameters, and intermediate variables for complex combat logic. NPC combat integration requires extensive integration logic for comprehensive NPC-combat system integration. Imports after TYPE_CHECKING block are intentional to avoid circular dependencies.
 
 import uuid
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 from uuid import UUID, uuid4
+
+from structlog.stdlib import BoundLogger
 
 if TYPE_CHECKING:
     from ..async_persistence import AsyncPersistenceLayer
@@ -41,7 +43,7 @@ from .npc_combat_rewards import NPCCombatRewards
 from .npc_combat_uuid_mapping import NPCCombatUUIDMapping
 from .player_combat_service import PlayerCombatService
 
-logger = get_logger(__name__)
+logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
 
 
 class NPCCombatIntegrationService:  # pylint: disable=too-many-instance-attributes  # Reason: Combat integration service requires many state tracking and service attributes
@@ -87,7 +89,6 @@ class NPCCombatIntegrationService:  # pylint: disable=too-many-instance-attribut
         logger.debug(
             "NPCCombatIntegrationService constructor",
             persistence_type=type(self._persistence).__name__,
-            persistence_is_none=self._persistence is None,
         )
         # Initialize GameMechanicsService for proper XP awards and stat updates
         self._game_mechanics = GameMechanicsService(async_persistence)
@@ -242,6 +243,114 @@ class NPCCombatIntegrationService:  # pylint: disable=too-many-instance-attribut
                 error=str(e),
                 player_id=player_id,
                 npc_id=npc_id,
+            )
+            return False
+
+    async def handle_npc_attack(
+        self,
+        npc_id: str,
+        target_id: str,
+        room_id: str,
+        attack_damage: int,
+        attack_type: str = "physical",
+        npc_stats: dict[str, int] | None = None,
+        npc_instance: object | None = None,
+    ) -> bool:
+        """
+        Aggressive-mob entrypoint; matches NPCCombatIntegration.handle_npc_attack for interchangeability.
+
+        The full combat path resolves stats via the data provider; attack_type and npc_stats are ignored here.
+        """
+        _ = attack_type, npc_stats
+        return await self.handle_npc_attack_on_player(
+            npc_id, target_id, room_id, attack_damage, npc_instance=npc_instance
+        )
+
+    async def handle_npc_attack_on_player(
+        self,
+        npc_id: str,
+        target_id: str,
+        room_id: str,
+        attack_damage: int = 10,
+        npc_instance: Any | None = None,
+    ) -> bool:
+        """
+        Handle an NPC attacking a player (aggro) using the same combat codepath as player-initiated combat.
+
+        Starts a combat instance with the NPC as attacker and the player as target, then processes
+        the initial attack. Subsequent rounds are handled by the combat turn processor.
+        """
+        try:
+            target_uuid = UUID(target_id) if isinstance(target_id, str) else target_id
+            # Block if target (player) is in login grace period
+            try:
+                config = get_config()
+                app = getattr(config, "_app_instance", None)
+                if app:
+                    conn_mgr = getattr(app.state, "connection_manager", None)
+                    if conn_mgr and is_player_in_login_grace_period(target_uuid, conn_mgr):
+                        logger.info(
+                            "NPC attack on player blocked - player in login grace period",
+                            npc_id=npc_id,
+                            target_id=target_id,
+                        )
+                        return False
+            except (AttributeError, ImportError, TypeError, ValueError) as e:
+                logger.debug("Could not check login grace period for NPC attack", target_id=target_id, error=str(e))
+
+            npc_instance = npc_instance or self._data_provider.get_npc_instance(npc_id)
+            if not npc_instance or not getattr(npc_instance, "is_alive", True):
+                return False
+
+            if not await self._validate_combat_location(target_id, npc_id, room_id, npc_instance):
+                return False
+
+            if not self._combat_service:
+                logger.warning("NPC attack on player skipped - no combat service")
+                return False
+
+            npc_uuid, player_uuid = self._setup_combat_uuids_npc_attacker(npc_id, target_id)
+
+            existing_combat = await self._combat_service.get_combat_by_participant(player_uuid)
+            if existing_combat:
+                if npc_uuid in existing_combat.participants:
+                    return True  # Already in combat with this NPC; turn processor handles rounds
+                return False  # Player in combat with someone else; do not start second combat
+
+            from ..app.lifespan import get_current_tick
+
+            current_tick = get_current_tick()
+            player_name = await self._data_provider.get_player_name(target_id)
+            attacker_data = self._data_provider.get_npc_combat_data(npc_instance, npc_uuid)
+            target_data = await self._data_provider.get_player_combat_data(target_id, player_uuid, player_name)
+
+            _ = await self._combat_service.start_combat(
+                room_id=room_id,
+                attacker=attacker_data,
+                target=target_data,
+                current_tick=current_tick,
+            )
+            _ = await self._combat_service.process_attack(
+                attacker_id=npc_uuid,
+                target_id=player_uuid,
+                damage=attack_damage,
+                is_initial_attack=True,
+                damage_type="physical",
+            )
+            logger.info(
+                "NPC-initiated combat started",
+                npc_id=npc_id,
+                target_id=target_id,
+                room_id=room_id,
+                damage=attack_damage,
+            )
+            return True
+        except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError) as e:
+            logger.error(
+                "Error handling NPC attack on player",
+                error=str(e),
+                npc_id=npc_id,
+                target_id=target_id,
             )
             return False
 
@@ -415,6 +524,19 @@ class NPCCombatIntegrationService:  # pylint: disable=too-many-instance-attribut
 
         return attacker_uuid, target_uuid
 
+    def _setup_combat_uuids_npc_attacker(self, npc_id: str, player_id: str) -> tuple[UUID, UUID]:
+        """
+        Set up UUIDs for NPC-as-attacker combat (aggro). Returns (npc_uuid, player_uuid).
+        """
+        try:
+            attacker_uuid = self._uuid_mapping.convert_to_uuid(npc_id)
+            target_uuid = self._uuid_mapping.convert_to_uuid(player_id)
+            if not self._uuid_mapping.is_valid_uuid(npc_id):
+                self._uuid_mapping.store_string_id_mapping(attacker_uuid, npc_id)
+            return attacker_uuid, target_uuid
+        except ValueError:
+            return uuid4(), uuid4()
+
     async def _store_npc_xp_mapping(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: XP mapping storage requires many parameters for context and mapping operations
         self, npc_id: str, target_uuid: UUID, room_id: str, player_id: str, first_engagement: bool
     ) -> None:
@@ -566,7 +688,7 @@ class NPCCombatIntegrationService:  # pylint: disable=too-many-instance-attribut
         target_data = self._data_provider.get_npc_combat_data(npc_instance, target_uuid)
 
         # Start combat with auto-progression
-        await self._combat_service.start_combat(
+        _ = await self._combat_service.start_combat(
             room_id=room_id,
             attacker=attacker_data,
             target=target_data,
@@ -577,6 +699,36 @@ class NPCCombatIntegrationService:  # pylint: disable=too-many-instance-attribut
         return await self._combat_service.process_attack(
             attacker_id=attacker_uuid, target_id=target_uuid, damage=damage, is_initial_attack=True
         )
+
+    async def _broadcast_room_after_npc_death(self, npc_id: str, room_id: str, killer_id: str) -> None:
+        """Broadcast room occupants update to killer's room after NPC death. Swallows errors (non-fatal)."""
+        try:
+            from ..realtime.websocket_room_updates import broadcast_room_update
+
+            conn_mgr = getattr(self._messaging_integration, "connection_manager", None)
+            broadcast_room_id = room_id
+            if conn_mgr:
+                try:
+                    killer_uuid = uuid.UUID(str(killer_id)) if isinstance(killer_id, str) else killer_id
+                    player = await conn_mgr.get_player(killer_uuid)
+                    killer_room = getattr(player, "current_room_id", None) if player else None
+                    if killer_room:
+                        broadcast_room_id = killer_room
+                except (ValueError, TypeError, AttributeError):
+                    pass
+            await broadcast_room_update(
+                str(killer_id),
+                broadcast_room_id,
+                connection_manager=conn_mgr,
+            )
+            logger.debug("Broadcast room occupants after NPC death", npc_id=npc_id, room_id=broadcast_room_id)
+        except Exception as broadcast_err:  # pylint: disable=broad-exception-caught  # Reason: Broadcast failure must not affect NPC death handling
+            logger.warning(
+                "Failed to broadcast room occupants after NPC death (non-fatal)",
+                npc_id=npc_id,
+                room_id=room_id,
+                error=str(broadcast_err),
+            )
 
     async def handle_npc_death(
         self,
@@ -602,33 +754,7 @@ class NPCCombatIntegrationService:  # pylint: disable=too-many-instance-attribut
         """
         result = await self._handlers.handle_npc_death(npc_id, room_id, killer_id, combat_id)
         if result and killer_id and room_id:
-            try:
-                from ..realtime.websocket_room_updates import broadcast_room_update
-
-                conn_mgr = getattr(self._messaging_integration, "connection_manager", None)
-                broadcast_room_id = room_id
-                if conn_mgr:
-                    try:
-                        killer_uuid = uuid.UUID(str(killer_id)) if isinstance(killer_id, str) else killer_id
-                        player = await conn_mgr.get_player(killer_uuid)
-                        killer_room = getattr(player, "current_room_id", None) if player else None
-                        if killer_room:
-                            broadcast_room_id = killer_room
-                    except (ValueError, TypeError, AttributeError):
-                        pass
-                await broadcast_room_update(
-                    str(killer_id),
-                    broadcast_room_id,
-                    connection_manager=conn_mgr,
-                )
-                logger.debug("Broadcast room occupants after NPC death", npc_id=npc_id, room_id=broadcast_room_id)
-            except Exception as broadcast_err:  # pylint: disable=broad-exception-caught  # Reason: Broadcast failure must not affect NPC death handling
-                logger.warning(
-                    "Failed to broadcast room occupants after NPC death (non-fatal)",
-                    npc_id=npc_id,
-                    room_id=room_id,
-                    error=str(broadcast_err),
-                )
+            await self._broadcast_room_after_npc_death(npc_id, room_id, killer_id)
         return result
 
     def get_npc_combat_memory(self, npc_id: str) -> str | None:

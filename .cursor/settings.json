@@ -10,7 +10,7 @@
       "enabled": true
     },
     "deploy-on-aws": {
-      "enabled": true
+      "enabled": false
     }
   }
 }

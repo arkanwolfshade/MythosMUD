@@ -5,18 +5,19 @@ Extracted from combat_turn_processor to keep module size under limit.
 Handles process_npc_turn, process_player_turn, and damage resolution helpers.
 """
 
-from typing import Any
+from typing import Any, cast
 from uuid import UUID
+
+from structlog.stdlib import BoundLogger
 
 from server.config import get_config
 from server.game.weapons import resolve_weapon_attack_from_equipped
 from server.models.combat import CombatInstance, CombatParticipant, CombatParticipantType
-from server.npc.combat_integration import NPCCombatIntegration
 from server.services.aggro_threat import get_npc_current_target, update_aggro
 from server.services.nats_exceptions import NATSError
 from server.structured_logging.enhanced_logging_config import get_logger
 
-logger = get_logger(__name__)
+logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
 
 
 def _select_npc_target(combat: CombatInstance, npc_participant_id: UUID) -> CombatParticipant | None:
@@ -109,14 +110,24 @@ async def resolve_player_attack_damage(
     if not isinstance(attacker_stats, dict):
         attacker_stats = {}
 
+    # Target stats are currently unused for damage math but may be used in future balancing.
     target_stats = await _get_target_stats_for_damage(target, async_persistence)
-    integration = NPCCombatIntegration(async_persistence=async_persistence)
-    damage = integration.calculate_damage(
-        attacker_stats=attacker_stats,
-        target_stats=target_stats,
-        weapon_damage=weapon_info.base_damage,
-        damage_type=damage_type,
-    )
+    _ = target_stats
+
+    # Inline the same damage formula used by NPC combat integration to avoid import cycles.
+    base_damage = int(weapon_info.base_damage)
+    if damage_type == "physical":
+        strength_mod_raw = attacker_stats.get("strength", 50)
+        if isinstance(strength_mod_raw, (int, float)):
+            strength_mod = int(strength_mod_raw)
+        elif isinstance(strength_mod_raw, str) and strength_mod_raw.isdigit():
+            strength_mod = int(strength_mod_raw)
+        else:
+            strength_mod = 50
+        strength_bonus = max(0, (strength_mod - 50) // 2)
+        base_damage += strength_bonus
+
+    damage = max(1, base_damage)
     return damage, damage_type
 
 

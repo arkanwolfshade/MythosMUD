@@ -21,7 +21,7 @@ PYTEST_COV_OPTS := --cov=server --cov-report=html --cov-report=term-missing --co
 .PHONY: bandit pylint ruff sqlfluff sqlint
 .PHONY: hadolint shellcheck psscriptanalyzer
 .PHONY: stylelint markdownlint jackson-linter
-.PHONY: trivy lizard
+.PHONY: grype lizard
 .PHONY: codacy-tools
 .PHONY: setup-test-env setup-test-env-force check-postgresql setup-postgresql-test-db verify-schema
 .PHONY: test test-coverage test-client test-client-e2e test-playwright test-client-coverage test-server test-server-coverage test-ci
@@ -53,7 +53,7 @@ help:
 	@echo "  stylelint      - CSS linter"
 	@echo "  markdownlint   - Markdown linter (use ARGS='--fix' to auto-fix)"
 	@echo "  jackson-linter - JSON linter"
-	@echo "  trivy          - Dependency security scanner"
+	@echo "  grype          - Dependency/filesystem vulnerability scanner (local SCA)"
 	@echo "  lizard         - Code complexity analyzer"
 	@echo "  codacy-tools   - Run all Codacy tools"
 	@echo ""
@@ -159,14 +159,14 @@ markdownlint:
 jackson-linter:
 	$(PYTHON) scripts/jackson_linter.py
 
-trivy:
-	$(PYTHON) scripts/trivy.py
+grype:
+	$(PYTHON) scripts/grype.py
 
 lizard:
 	$(PYTHON) scripts/lizard.py
 
 # Run all Codacy tools (except those already in lint/format)
-codacy-tools: bandit pylint sqlfluff hadolint shellcheck psscriptanalyzer stylelint markdownlint jackson-linter trivy lizard
+codacy-tools: bandit pylint sqlfluff hadolint shellcheck psscriptanalyzer stylelint markdownlint jackson-linter grype lizard
 
 # ============================================================================
 # DATABASE SETUP

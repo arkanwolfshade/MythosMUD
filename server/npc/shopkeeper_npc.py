@@ -4,7 +4,9 @@ Shopkeeper NPC type for MythosMUD.
 This module provides the ShopkeeperNPC class with buy/sell functionality.
 """
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast, override
+
+from structlog.stdlib import BoundLogger
 
 from ..structured_logging.enhanced_logging_config import get_logger
 from .npc_base import NPCBase
@@ -13,7 +15,7 @@ if TYPE_CHECKING:
     from ..events import EventBus
     from .event_reaction_system import NPCEventReactionSystem
 
-logger = get_logger(__name__)
+logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
 
 
 class ShopkeeperNPC(NPCBase):
@@ -50,13 +52,14 @@ class ShopkeeperNPC(NPCBase):
         ]
 
         for rule in shopkeeper_rules:
-            self._behavior_engine.add_rule(rule)
+            _ = self._behavior_engine.add_rule(rule)
 
         # Register shopkeeper action handlers
-        self._behavior_engine.register_action_handler("greet_customer", self._handle_greet_customer)
-        self._behavior_engine.register_action_handler("restock_inventory", self._handle_restock_inventory)
+        _ = self._behavior_engine.register_action_handler("greet_customer", self._handle_greet_customer)
+        _ = self._behavior_engine.register_action_handler("restock_inventory", self._handle_restock_inventory)
 
-    def get_behavior_rules(self) -> list[dict[str, Any]]:
+    @override
+    def get_behavior_rules(self) -> list[dict[str, object]]:
         """Get shopkeeper-specific behavior rules."""
         return self._behavior_engine.get_rules()
 
@@ -95,7 +98,7 @@ class ShopkeeperNPC(NPCBase):
                 return False
 
             # Add to NPC inventory
-            self.add_item_to_inventory(item)
+            _ = self.add_item_to_inventory(item)
             logger.info("Bought item from player", npc_id=self.npc_id, player_id=player_id, item_id=item_id)
             return True
         except (KeyError, TypeError, AttributeError) as e:
@@ -131,12 +134,13 @@ class ShopkeeperNPC(NPCBase):
     def calculate_price(self, base_price: int, markup: float | None = None) -> int:
         """Calculate final price with markup."""
         if markup is None:
-            markup = self._behavior_config.get("markup", 1.0)
+            raw = self._behavior_config.get("markup", 1.0)
+            markup = float(raw) if isinstance(raw, (int, float)) else 1.0
         return int(base_price * markup)
 
     def _handle_greet_customer(self, _context: dict[str, Any]) -> bool:
         """Handle greeting customer action."""
-        self.speak("Welcome to my shop! How may I help you today?")
+        _ = self.speak("Welcome to my shop! How may I help you today?")
         return True
 
     def _handle_restock_inventory(self, _context: dict[str, Any]) -> bool:

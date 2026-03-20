@@ -1,8 +1,14 @@
 """Core combat service for managing combat state and logic."""
 
+# pyright: reportImportCycles=false
+# Runtime cycle is broken via lazy imports; checker still sees in-function imports as edges.
+# pylint: disable=too-many-lines  # Reason: Combat service is the central coordinator for combat state and handlers; splitting would obscure control flow.
+
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, cast
 from uuid import UUID
+
+from structlog.stdlib import BoundLogger
 
 from server.config import get_config
 from server.events.combat_events import CombatStartedEvent, NPCDiedEvent, NPCTookDamageEvent
@@ -21,34 +27,6 @@ from server.services.combat_event_publisher import CombatEventPublisher
 from server.services.combat_flee_handler import check_involuntary_flee as check_involuntary_flee_fn
 from server.services.combat_initialization import CombatInitializer
 from server.services.combat_persistence_handler import CombatPersistenceHandler
-from server.services.combat_service_attack import (
-    apply_damage_and_check_involuntary_flee as apply_damage_and_check_involuntary_flee_impl,
-)
-from server.services.combat_service_attack import (
-    finalize_attack_result as finalize_attack_result_impl,
-)
-from server.services.combat_service_attack import (
-    handle_combat_completion as handle_combat_completion_impl,
-)
-from server.services.combat_service_attack import (
-    process_attack as process_attack_impl,
-)
-from server.services.combat_service_attack import (
-    queue_combat_action as queue_combat_action_impl,
-)
-from server.services.combat_service_attack import (
-    validate_melee_location as validate_melee_location_impl,
-)
-from server.services.combat_service_attack import (
-    validate_melee_or_end_combat as validate_melee_or_end_combat_impl,
-)
-from server.services.combat_service_end import end_combat as end_combat_impl
-from server.services.combat_service_events import (
-    publish_npc_damage_event as publish_npc_damage_event_impl,
-)
-from server.services.combat_service_events import (
-    publish_npc_died_event as publish_npc_died_event_impl,
-)
 from server.services.combat_service_npc import (
     get_combat_by_participant as get_combat_by_participant_impl,
 )
@@ -67,21 +45,6 @@ from server.services.combat_service_npc import (
 from server.services.combat_service_npc import (
     sync_npc_participant_dp_after_spell_damage as sync_npc_dp_impl,
 )
-from server.services.combat_service_start import (
-    check_attacker_grace_period as check_attacker_grace_period_impl,
-)
-from server.services.combat_service_start import (
-    check_target_rest_and_grace_period as check_target_rest_and_grace_period_impl,
-)
-from server.services.combat_service_start import (
-    publish_combat_started_event as publish_combat_started_event_impl,
-)
-from server.services.combat_service_start import (
-    register_combat as register_combat_impl,
-)
-from server.services.combat_service_start import (
-    validate_combat_can_start as validate_combat_can_start_impl,
-)
 from server.services.combat_service_state import (  # noqa: PLC0415  # Reason: Lazy import would break circular dependency resolution, this import must be at module level for service state management
     COMBAT_SERVICE,
     get_combat_service,
@@ -95,18 +58,21 @@ from server.services.player_combat_service import PlayerCombatService
 from server.structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
-    from server.npc.combat_integration import NPCCombatIntegration
+    from server.game.magic.magic_service import MagicService
+    from server.services.npc_combat_data_provider import NPCCombatDataProvider
     from server.services.npc_combat_integration_service import NPCCombatIntegrationService
+    from server.services.player_death_service import PlayerDeathService
+    from server.services.player_respawn_service import PlayerRespawnService
 
-logger = get_logger(__name__)
+logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
 
 
 @dataclass
 class PlayerLifecycleServices:
     """Player death and respawn services for CombatService injection."""
 
-    player_death_service: Any
-    player_respawn_service: Any
+    player_death_service: "PlayerDeathService"
+    player_respawn_service: "PlayerRespawnService"
 
 
 class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: Combat service requires many state tracking and service attributes
@@ -114,15 +80,33 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
     Service for managing combat instances and state.
     """
 
+    _combat_timeout_minutes: int
+    _player_combat_service: PlayerCombatService | None
+    _nats_service: NATSService | None
+    _npc_combat_integration_service: "NPCCombatIntegrationService | None"
+    _player_death_service: "PlayerDeathService | None"
+    _player_respawn_service: "PlayerRespawnService | None"
+    magic_service: "MagicService | None"
+    _event_bus: EventBus
+    _combat_event_publisher: CombatEventPublisher
+    _auto_progression_enabled: bool
+    _turn_interval_seconds: int
+    _turn_processor: CombatTurnProcessor
+    _attack_handler: CombatAttackHandler
+    _death_handler: CombatDeathHandler
+    _event_handler: CombatEventHandler
+    _persistence_handler: CombatPersistenceHandler
+    _cleanup_handler: CombatCleanupHandler
+
     def __init__(
         self,
         player_combat_service: PlayerCombatService | None = None,
         nats_service: NATSService | None = None,
-        npc_combat_integration_service: "NPCCombatIntegration | NPCCombatIntegrationService | None" = None,
+        npc_combat_integration_service: "NPCCombatIntegrationService | None" = None,
         subject_manager: NATSSubjectManager | None = None,
         player_lifecycle_services: "PlayerLifecycleServices | None" = None,
         event_bus: EventBus | None = None,
-        magic_service: Any | None = None,
+        magic_service: "MagicService | None" = None,
     ) -> None:
         """Initialize the combat service."""
         self._active_combats: dict[UUID, CombatInstance] = {}
@@ -160,7 +144,7 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
         self._auto_progression_enabled = True
         # Get combat round interval from config (defaults to 10 seconds = 100 ticks)
         config = get_config()
-        self._turn_interval_seconds = config.game.combat_tick_interval
+        self._turn_interval_seconds = int(config.game.combat_tick_interval)
 
         # Initialize helper handlers
         self._turn_processor = CombatTurnProcessor(self)
@@ -198,6 +182,22 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
         current_tick: int,
     ) -> CombatInstance:
         """Start a new combat instance between two participants."""
+        from server.services.combat_service_start import (
+            check_attacker_grace_period as check_attacker_grace_period_impl,
+        )
+        from server.services.combat_service_start import (
+            check_target_rest_and_grace_period as check_target_rest_and_grace_period_impl,
+        )
+        from server.services.combat_service_start import (
+            publish_combat_started_event as publish_combat_started_event_impl,
+        )
+        from server.services.combat_service_start import (
+            register_combat as register_combat_impl,
+        )
+        from server.services.combat_service_start import (
+            validate_combat_can_start as validate_combat_can_start_impl,
+        )
+
         logger.info("Starting combat", attacker=attacker.name, target=target.name, room_id=room_id)
 
         await check_target_rest_and_grace_period_impl(self, target, attacker)
@@ -232,6 +232,10 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
         combat_id: UUID | None = None,
     ) -> bool:
         """Publish an npc_took_damage event for non-combat damage."""
+        from server.services.combat_service_events import (
+            publish_npc_damage_event as publish_npc_damage_event_impl,
+        )
+
         return await publish_npc_damage_event_impl(
             self, room_id, npc_id, npc_name, damage, current_dp, max_dp, combat_id
         )
@@ -245,6 +249,10 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
         killer_id: str | None = None,
     ) -> bool:
         """Publish an npc_died event when non-combat damage kills an NPC."""
+        from server.services.combat_service_events import (
+            publish_npc_died_event as publish_npc_died_event_impl,
+        )
+
         return await publish_npc_died_event_impl(self, room_id, npc_id, npc_name, xp_reward, killer_id)
 
     def sync_npc_participant_dp_after_spell_damage(self, npc_id: str, new_dp: int) -> None:
@@ -271,7 +279,7 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
         """Return the active combat for combat_id, or None if not found."""
         return self._active_combats.get(combat_id)
 
-    def get_npc_combat_integration_service(self) -> Any:
+    def get_npc_combat_integration_service(self) -> "NPCCombatIntegrationService | None":
         """Return the NPC combat integration service."""
         return self._npc_combat_integration_service
 
@@ -311,7 +319,10 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
         return is_npc_in_combat_sync_impl(self, npc_id)
 
     def _get_npc_participant_current_room(
-        self, data_provider: Any, svc: Any, participant: CombatParticipant
+        self,
+        data_provider: "NPCCombatDataProvider",
+        svc: "NPCCombatIntegrationService",
+        participant: CombatParticipant,
     ) -> str | None:
         """Return current room for an NPC participant, or None if unavailable."""
         return get_npc_participant_current_room_impl(self, data_provider, svc, participant)
@@ -324,6 +335,8 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
         self, combat: CombatInstance, attacker: CombatParticipant, target: CombatParticipant
     ) -> tuple[bool, str | None]:
         """Validate both participants are still in combat.room_id for melee."""
+        from server.services.combat_service_attack import validate_melee_location as validate_melee_location_impl
+
         return await validate_melee_location_impl(self, combat, attacker, target)
 
     async def _handle_player_dp_update(self, target: CombatParticipant, old_dp: int, combat: CombatInstance) -> None:
@@ -404,6 +417,8 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
 
     async def handle_combat_completion(self, combat: CombatInstance, combat_ended: bool) -> None:
         """Handle combat completion or continuation."""
+        from server.services.combat_service_attack import handle_combat_completion as handle_combat_completion_impl
+
         await handle_combat_completion_impl(self, combat, combat_ended)
 
     async def queue_combat_action(
@@ -417,6 +432,8 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
         spell_name: str | None = None,
     ) -> bool:
         """Queue a combat action for a participant to execute in the next round."""
+        from server.services.combat_service_attack import queue_combat_action as queue_combat_action_impl
+
         return await queue_combat_action_impl(
             self, combat_id, participant_id, action_type, target_id, damage, spell_id, spell_name
         )
@@ -430,6 +447,10 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
         target_id: UUID,
     ) -> CombatResult | None:
         """Validate melee location; if invalid, end combat and return early result."""
+        from server.services.combat_service_attack import (
+            validate_melee_or_end_combat as validate_melee_or_end_combat_impl,
+        )
+
         return await validate_melee_or_end_combat_impl(
             self, combat, current_participant, target, attacker_id, target_id
         )
@@ -442,6 +463,10 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
         damage: int,
     ) -> tuple[bool, bool, CombatResult | None]:
         """Apply attack damage and check for involuntary flee."""
+        from server.services.combat_service_attack import (
+            apply_damage_and_check_involuntary_flee as apply_damage_and_check_involuntary_flee_impl,
+        )
+
         return await apply_damage_and_check_involuntary_flee_impl(self, combat, current_participant, target, damage)
 
     async def finalize_attack_result(
@@ -455,6 +480,10 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
         target_id: UUID,
     ) -> CombatResult:
         """Build result, handle state changes, events, XP, and combat completion."""
+        from server.services.combat_service_attack import (
+            finalize_attack_result as finalize_attack_result_impl,
+        )
+
         return await finalize_attack_result_impl(
             self, combat, current_participant, target, damage, target_died, target_mortally_wounded, target_id
         )
@@ -468,6 +497,8 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
         damage_type: str = "physical",
     ) -> CombatResult:
         """Process an attack action in combat."""
+        from server.services.combat_service_attack import process_attack as process_attack_impl
+
         return await process_attack_impl(self, attacker_id, target_id, damage, is_initial_attack, damage_type)
 
     async def register_combat_state(
@@ -496,7 +527,7 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
 
     async def publish_combat_started_event(self, event: CombatStartedEvent) -> None:
         """Publish a combat started event to NATS."""
-        await self._combat_event_publisher.publish_combat_started(event)
+        _ = await self._combat_event_publisher.publish_combat_started(event)
 
     async def publish_npc_took_damage_event_to_nats(self, event: NPCTookDamageEvent) -> bool:
         """Publish NPC took damage event to NATS."""
@@ -525,6 +556,8 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
 
     async def end_combat(self, combat_id: UUID, reason: str = "Combat ended") -> None:
         """End a combat instance."""
+        from server.services.combat_service_end import end_combat as end_combat_impl
+
         await end_combat_impl(self, combat_id, reason)
 
     async def cleanup_stale_combats(self) -> int:

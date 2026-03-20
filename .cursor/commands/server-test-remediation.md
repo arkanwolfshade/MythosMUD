@@ -3,6 +3,7 @@
 **SUBAGENT INTEGRATION:**
 
 This command leverages the **Test Suite Analyzer** subagent for comprehensive test analysis:
+
 - **Subagent**: `.cursor/agents/test-analyzer.md`
 - **Purpose**: Test coverage analysis, test quality assessment, gap identification
 - **When Used**: Automatically invoked for test suite analysis and coverage reporting
@@ -20,9 +21,8 @@ This command leverages the **Test Suite Analyzer** subagent for comprehensive te
 
 **Test Runner**: pytest with uv for Python dependency management
 
-**Test Database**: SQLite test database in `server/tests/data/players/`
-
 **Test Environment**: Isolated test environment with test-specific configuration
+
 - **Command**: `make test-server` (runs server-side Python tests only)
 - **Coverage Target**: Minimum 80% code coverage
 - **Test Execution**: Serial execution (not parallel) for database tests
@@ -32,7 +32,7 @@ This command leverages the **Test Suite Analyzer** subagent for comprehensive te
 **Step 0: Pre-execution verification**
 
 - [ ] Current branch: `git branch --show-current`
-- [ ] Working directory: `pwd` (must be project root, "E:\projects\GitHub\MythosMUD")
+- [ ] Working directory: `pwd` (must be project root, "F:\MythosMUD")
 - [ ] No running servers: `netstat -an | findstr :54731`
 - [ ] Test environment ready: Check `MYTHOSMUD_ENV=test`
 
@@ -83,6 +83,7 @@ Test failures typically fall into these categories:
 **Data Integrity**: Corrupted or inconsistent test data
 
 **Migration Issues**: Schema mismatch or migration failures
+
 - **Transaction Issues**: Rollback failures or transaction conflicts
 
 #### B. Authentication/Security Failures
@@ -92,6 +93,7 @@ Test failures typically fall into these categories:
 **Password Hashing**: Argon2 hashing failures or mismatches
 
 **Session Management**: Session creation, validation, or cleanup
+
 - **Authorization**: Permission checks or access control failures
 
 #### C. WebSocket/Connection Failures
@@ -101,6 +103,7 @@ Test failures typically fall into these categories:
 **Message Handling**: Message parsing, routing, or delivery failures
 
 **Event Broadcasting**: Event system failures or message propagation
+
 - **Connection Stability**: Connection drops or timeout issues
 
 #### D. Game Logic Failures
@@ -110,6 +113,7 @@ Test failures typically fall into these categories:
 **Chat System**: Message broadcasting, channel management, or whisper functionality
 
 **Command Processing**: Command parsing, validation, or execution
+
 - **Player State**: Player data persistence, stats, or state management
 
 #### E. Integration Test Failures
@@ -119,6 +123,7 @@ Test failures typically fall into these categories:
 **Real-time Features**: SSE (Server-Sent Events) or WebSocket integration
 
 **Multiplayer Scenarios**: Concurrent user interactions or race conditions
+
 - **External Dependencies**: Third-party service integration failures
 
 ## MANDATORY VERIFICATION CHECKPOINTS
@@ -174,19 +179,24 @@ DOCUMENT: Record findings before proceeding
 2. **Verify Database Schema**:
 
    ```bash
-   # Check database integrity
+   # Check PostgreSQL test database connectivity and schema
+   #
+   # Assumes the unit-test database URL is in $MYTHOS_UNIT_DATABASE_URL
+   # (e.g. postgresql+asyncpg://postgres:password@localhost:5432/mythos_unit)
 
-   sqlite3 server/tests/data/players/unit_test_players.db "PRAGMA integrity_check;"
-   sqlite3 server/tests/data/players/unit_test_players.db ".schema"
+   psql "$MYTHOS_UNIT_DATABASE_URL" -c "SELECT 1;"
+   psql "$MYTHOS_UNIT_DATABASE_URL" -c "\dt"
    ```
 
 3. **Check Test Data**:
 
    ```bash
-   # Verify test data consistency
+   # Verify test data consistency in PostgreSQL
+   #
+   # Adjust the table name if your player table differs from `players`
 
-   sqlite3 server/tests/data/players/unit_test_players.db "SELECT COUNT(*) FROM players;"
-   sqlite3 server/tests/data/players/unit_test_players.db "SELECT * FROM players LIMIT 5;"
+   psql "$MYTHOS_UNIT_DATABASE_URL" -c "SELECT COUNT(*) FROM players;"
+   psql "$MYTHOS_UNIT_DATABASE_URL" -c "SELECT * FROM players LIMIT 5;"
    ```
 
 #### For Authentication Failures
@@ -235,13 +245,17 @@ DOCUMENT: Record findings before proceeding
 1. **Check Movement System**:
 
    ```bash
-   # Test room loading and movement
+   # Smoke-test that the world/rooms are loadable in the test database.
+   #
+   # Assumes the unit-test database URL is configured so WorldLoader
+   # can reach PostgreSQL-backed room data (see project DB config).
 
    python -c "
    from server.world.loader import WorldLoader
-   loader = WorldLoader('server/tests/data/rooms/')
+
+   loader = WorldLoader()
    rooms = loader.load_rooms()
-   print(f'Loaded {len(rooms)} test rooms')
+   print(f'Loaded {len(rooms)} test rooms from PostgreSQL')
    "
    ```
 
@@ -357,7 +371,8 @@ def test_command_validation():
 
 export MYTHOSMUD_ENV=test
 export MYTHOSMUD_TEST_MODE=true
-export DATABASE_URL=sqlite+aiosqlite:///server/tests/data/players/unit_test_players.db
+# Unit-test database (PostgreSQL). Adjust credentials/host as needed.
+export DATABASE_URL=postgresql+asyncpg://postgres:password@localhost:5432/mythos_unit
 export MYTHOSMUD_CONFIG_PATH=server/tests/test_server_config.yaml
 export ALIASES_DIR=server/tests/data/players/aliases
 ```
@@ -368,7 +383,8 @@ export ALIASES_DIR=server/tests/data/players/aliases
 # server/tests/test_server_config.yaml
 
 database:
-  url: "sqlite+aiosqlite:///server/tests/data/players/unit_test_players.db"
+  # Unit-test PostgreSQL database; mirrors $DATABASE_URL in the shell snippet above.
+  url: "postgresql+asyncpg://postgres:password@localhost:5432/mythos_unit"
   echo: false
 
 logging:
@@ -396,7 +412,7 @@ logging:
 ```python
 # Ensure proper database URL configuration
 
-DATABASE_URL = "sqlite+aiosqlite:///server/tests/data/players/unit_test_players.db"
+DATABASE_URL = "postgresql+asyncpg://postgres:password@localhost:5432/mythos_unit"
 
 # Use proper async database session handling
 
@@ -465,8 +481,8 @@ uv run pytest server/tests/ --cov=server --cov-report=html
 ```bash
 # Check test database state
 
-sqlite3 server/tests/data/players/unit_test_players.db ".tables"
-sqlite3 server/tests/data/players/unit_test_players.db "SELECT * FROM players;"
+psql "$MYTHOS_UNIT_DATABASE_URL" -c "\dt"
+psql "$MYTHOS_UNIT_DATABASE_URL" -c "SELECT * FROM players;"
 
 # Check test logs
 
@@ -650,6 +666,7 @@ run_terminal_cmd: make test
 **Authentication Issues**: Verify JWT configuration and password hashing
 
 **WebSocket Issues**: Check connection management and message handling
+
 - **Game Logic Issues**: Verify room data and command processing
 - **Environment Issues**: Ensure proper test environment configuration
 
@@ -706,6 +723,6 @@ run_terminal_cmd: make test
 
 ---
 
-*"In the depths of the test chambers, we learn that proper testing requires systematic investigation, comprehensive coverage, and thorough validation. The path to reliable code lies not in quick fixes, but in methodical test remediation and validation."*
+_"In the depths of the test chambers, we learn that proper testing requires systematic investigation, comprehensive coverage, and thorough validation. The path to reliable code lies not in quick fixes, but in methodical test remediation and validation."_
 
 **Remember**: This prompt focuses on investigating and fixing test failures systematically. Always run tests after making changes and ensure no regressions are introduced.

@@ -11,17 +11,21 @@ that lurk in the shadows of our world. The lifecycle manager ensures that NPCs
 have proper birth, existence, and eventual return to the void.
 """
 
+from __future__ import annotations
+
 import random
 import time
-from collections.abc import Sequence
-from typing import TYPE_CHECKING, Any
+from collections.abc import Mapping, Sequence
+from typing import TYPE_CHECKING, Protocol, cast
 
+from structlog.stdlib import BoundLogger
+
+# pylint: disable=too-many-lines  # Reason: Lifecycle manager is a central coordination module; splitting further would scatter tightly related lifecycle logic and harm readability of the end-to-end flow.
 from server.events.event_bus import EventBus
 from server.events.event_types import NPCDied, NPCEnteredRoom, NPCLeftRoom, RoomOccupantsRefreshRequested
 from server.models.npc import NPCDefinition
-from server.npc.behaviors import NPCBase
+from server.npc.npc_base import NPCBase
 from server.npc.population_control import NPCPopulationController
-from server.npc.spawning_service import NPCSpawningService
 from server.schemas.calendar import ScheduleEntry
 
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -35,7 +39,28 @@ if TYPE_CHECKING:
     from ..async_persistence import AsyncPersistenceLayer
     from .threading import NPCThreadManager
 
-logger = get_logger(__name__)
+
+class _SpawnTrackedNPC(Protocol):
+    """Protocol for NPCs that track spawn metadata and room tracking."""
+
+    spawned_at: float
+    current_room: str | None
+    current_room_id: str | None
+
+
+class _SpawningServiceProtocol(Protocol):
+    """Protocol for spawning services used by NPCLifecycleManager."""
+
+    def create_npc_instance(
+        self,
+        definition: NPCDefinition,
+        room_id: str,
+        npc_id: str | None = None,
+    ) -> object | None:
+        """Create an NPC instance or return None on failure."""
+
+
+logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
 
 # Re-export for backward compatibility
 __all__ = [
@@ -70,9 +95,9 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
         self,
         event_bus: EventBus,
         population_controller: NPCPopulationController | None,
-        spawning_service: NPCSpawningService,
-        persistence: "AsyncPersistenceLayer | None" = None,
-        thread_manager: "NPCThreadManager | None" = None,
+        spawning_service: _SpawningServiceProtocol,
+        persistence: AsyncPersistenceLayer | None = None,
+        thread_manager: NPCThreadManager | None = None,
     ) -> None:
         """
         Initialize the NPC lifecycle manager.
@@ -84,23 +109,22 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
             persistence: Persistence layer for room access (optional, for proper room state mutation)
             thread_manager: Optional NPC thread manager for behavior execution
         """
-        self.event_bus = event_bus
-        self.population_controller = population_controller
-        self.spawning_service = spawning_service
-        self.persistence = persistence
+        self.event_bus: EventBus = event_bus
+        self.population_controller: NPCPopulationController | None = population_controller
+        self.spawning_service: _SpawningServiceProtocol = spawning_service
+        self.persistence: AsyncPersistenceLayer | None = persistence
 
         # Initialize thread manager for NPC behavior execution
         if thread_manager is None:
             from ..npc.threading import NPCThreadManager
 
-            self.thread_manager = NPCThreadManager()
-        else:
-            self.thread_manager = thread_manager
+            thread_manager = NPCThreadManager()
+        self.thread_manager: NPCThreadManager = thread_manager
 
         # Lifecycle tracking
         self.lifecycle_records: dict[str, NPCLifecycleRecord] = {}
         self.active_npcs: dict[str, NPCBase] = {}
-        self.respawn_queue: dict[str, dict[str, Any]] = {}  # npc_id -> respawn_data
+        self.respawn_queue: dict[str, Mapping[str, object]] = {}  # npc_id -> respawn_data
         self.death_suppression: dict[str, float] = {}  # npc_id -> death_timestamp
         self.active_schedule_ids: list[str] = []
 
@@ -110,11 +134,11 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
         #           centrally without modifying lifecycle manager code
         from ..config.npc_config import NPCMaintenanceConfig
 
-        self.default_respawn_delay = NPCMaintenanceConfig.DEFAULT_RESPAWN_DELAY
-        self.death_suppression_duration = NPCMaintenanceConfig.DEATH_SUPPRESSION_DURATION
-        self.max_respawn_attempts = NPCMaintenanceConfig.MAX_RESPAWN_ATTEMPTS
-        self.cleanup_interval = NPCMaintenanceConfig.CLEANUP_INTERVAL
-        self.last_cleanup = time.time()
+        self.default_respawn_delay: float = NPCMaintenanceConfig.DEFAULT_RESPAWN_DELAY
+        self.death_suppression_duration: float = NPCMaintenanceConfig.DEATH_SUPPRESSION_DURATION
+        self.max_respawn_attempts: int = NPCMaintenanceConfig.MAX_RESPAWN_ATTEMPTS
+        self.cleanup_interval: float = NPCMaintenanceConfig.CLEANUP_INTERVAL
+        self.last_cleanup: float = time.time()
 
         # Pending thread starts (for async processing)
         self._pending_thread_starts: list[tuple[str, NPCDefinition]] = []
@@ -211,22 +235,20 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
             active_schedule_ids=self.active_schedule_ids,
         )
 
-    def _set_npc_room_tracking(self, npc_instance: Any, _npc_id: str, room_id: str) -> None:
+    def _set_npc_room_tracking(self, npc_instance: _SpawnTrackedNPC, _npc_id: str, room_id: str) -> None:
         """Set room tracking attributes on NPC instance."""
         npc_instance.current_room = room_id
-        if hasattr(npc_instance, "current_room_id"):
-            npc_instance.current_room_id = room_id
-        else:
-            npc_instance.current_room_id = room_id
+        npc_instance.current_room_id = room_id
 
-    def _validate_npc_room_tracking(self, npc_instance: Any, npc_id: str, room_id: str) -> None:
+    def _validate_npc_room_tracking(self, npc_instance: _SpawnTrackedNPC, npc_id: str, room_id: str) -> None:
         """Validate that room tracking was set correctly."""
-        if not npc_instance.current_room or npc_instance.current_room != room_id:
+        current_room = npc_instance.current_room
+        if not current_room or current_room != room_id:
             logger.error(
                 "Failed to set NPC room tracking correctly",
                 npc_id=npc_id,
                 room_id=room_id,
-                current_room=getattr(npc_instance, "current_room", None),
+                current_room=current_room,
                 current_room_id=getattr(npc_instance, "current_room_id", None),
             )
         else:
@@ -234,11 +256,11 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
                 "NPC room tracking set successfully",
                 npc_id=npc_id,
                 room_id=room_id,
-                current_room=npc_instance.current_room,
+                current_room=current_room,
                 current_room_id=getattr(npc_instance, "current_room_id", None),
             )
 
-    def _get_room_for_spawn(self, room_id: str, npc_id: str, definition: NPCDefinition) -> Any | None:
+    def _get_room_for_spawn(self, room_id: str, npc_id: str, definition: NPCDefinition) -> object | None:
         """Get room from persistence and handle errors."""
         if self.persistence:
             room = self.persistence.get_room_by_id(room_id)
@@ -269,8 +291,8 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
             try:
                 import asyncio
 
-                asyncio.get_running_loop()
-                asyncio.create_task(self._start_npc_thread_async(npc_id, definition))
+                _ = asyncio.get_running_loop()
+                _ = asyncio.create_task(self._start_npc_thread_async(npc_id, definition))
             except RuntimeError:
                 self._pending_thread_starts.append((npc_id, definition))
         else:
@@ -283,15 +305,13 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
         """
         Spawn an NPC instance.
 
-        Args:
-            definition: NPC definition to spawn
-            room_id: Room where NPC should be spawned
-            reason: Reason for spawning
-
-        Returns:
-            Tuple of (npc_id, failure_reason). On success: (npc_id, None).
-            On failure: (None, "detailed reason").
+        Thin wrapper around _spawn_npc_impl to keep public method size small
+        while centralizing the detailed spawn logic in a helper.
         """
+        return self._spawn_npc_impl(definition, room_id, reason)
+
+    def _spawn_npc_impl(self, definition: NPCDefinition, room_id: str, reason: str) -> tuple[str | None, str | None]:
+        """Internal implementation for spawning an NPC with full error handling."""
         npc_id: str | None = None
         failure_reason: str = ""
         try:
@@ -306,30 +326,15 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
                 return (None, failure_reason)
 
             npc_id = self._generate_npc_id(definition, room_id)
-
             record = NPCLifecycleRecord(npc_id, definition)
             record.add_event(NPCLifecycleEvent.SPAWNED, {"room_id": room_id, "reason": reason})
             self.lifecycle_records[npc_id] = record
 
-            npc_instance = self.spawning_service._create_npc_instance(definition, room_id, npc_id)  # pylint: disable=protected-access  # Reason: Internal NPC instance creation required
+            npc_instance = self.spawning_service.create_npc_instance(definition, room_id, npc_id)
             if not npc_instance:
-                failure_reason = "spawning service failed to create NPC instance"
-                record.change_state(NPCLifecycleState.ERROR, failure_reason)
-                record.add_event(NPCLifecycleEvent.ERROR_OCCURRED, {"error": failure_reason})
-                logger.error(
-                    "Failed to spawn NPC",
-                    npc_name=definition.name,
-                    room_id=room_id,
-                    failure_reason=failure_reason,
-                )
-                return (None, failure_reason)
+                return self._handle_spawn_service_failure(definition, room_id, record)
 
-            self.active_npcs[npc_id] = npc_instance
-            npc_instance.npc_id = npc_id
-            npc_instance.spawned_at = time.time()
-
-            self._set_npc_room_tracking(npc_instance, npc_id, room_id)
-            self._validate_npc_room_tracking(npc_instance, npc_id, room_id)
+            self._finalize_spawn_record(npc_id, cast(NPCBase, npc_instance), room_id)
 
             room = self._get_room_for_spawn(room_id, npc_id, definition)
             if not room:
@@ -343,28 +348,68 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
                 )
                 return (None, failure_reason)
 
-            room.npc_entered(npc_id)
-
-            if self.thread_manager:
-                self._queue_npc_thread_start(npc_id, definition)
-
+            self._notify_room_and_threads(room, npc_id, definition)
             logger.info("Successfully spawned NPC", npc_id=npc_id, npc_name=definition.name, room_id=room_id)
-
             return (npc_id, None)
 
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC spawn errors unpredictable, must handle gracefully
             failure_reason = str(e)
-            logger.error(
-                "Failed to spawn NPC",
-                npc_name=definition.name,
-                room_id=room_id,
-                failure_reason=failure_reason,
-            )
-            if npc_id and npc_id in self.lifecycle_records:
-                record = self.lifecycle_records[npc_id]
-                record.change_state(NPCLifecycleState.ERROR, failure_reason)
-                record.add_event(NPCLifecycleEvent.ERROR_OCCURRED, {"error": failure_reason})
+            self._handle_spawn_exception(definition, room_id, npc_id, failure_reason)
             return (None, failure_reason)
+
+    def _handle_spawn_service_failure(
+        self,
+        definition: NPCDefinition,
+        room_id: str,
+        record: NPCLifecycleRecord,
+    ) -> tuple[str | None, str | None]:
+        """Handle failure when the spawning service cannot create an NPC instance."""
+        failure_reason = "spawning service failed to create NPC instance"
+        record.change_state(NPCLifecycleState.ERROR, failure_reason)
+        record.add_event(NPCLifecycleEvent.ERROR_OCCURRED, {"error": failure_reason})
+        logger.error(
+            "Failed to spawn NPC",
+            npc_name=definition.name,
+            room_id=room_id,
+            failure_reason=failure_reason,
+        )
+        return (None, failure_reason)
+
+    def _finalize_spawn_record(self, npc_id: str, npc_instance: NPCBase, room_id: str) -> None:
+        """Update in-memory state and tracking after successful NPC creation."""
+        self.active_npcs[npc_id] = npc_instance
+        npc_instance.npc_id = npc_id
+        tracked_npc = cast(_SpawnTrackedNPC, cast(object, npc_instance))
+        tracked_npc.spawned_at = time.time()
+        self._set_npc_room_tracking(tracked_npc, npc_id, room_id)
+        self._validate_npc_room_tracking(tracked_npc, npc_id, room_id)
+
+    def _notify_room_and_threads(self, room: object, npc_id: str, definition: NPCDefinition) -> None:
+        """Notify room of NPC entry and queue thread start if needed."""
+        npc_entered = getattr(room, "npc_entered", None)
+        if callable(npc_entered):
+            _ = npc_entered(npc_id)
+        if self.thread_manager:
+            self._queue_npc_thread_start(npc_id, definition)
+
+    def _handle_spawn_exception(
+        self,
+        definition: NPCDefinition,
+        room_id: str,
+        npc_id: str | None,
+        failure_reason: str,
+    ) -> None:
+        """Handle logging and lifecycle updates for a failed spawn."""
+        logger.error(
+            "Failed to spawn NPC",
+            npc_name=definition.name,
+            room_id=room_id,
+            failure_reason=failure_reason,
+        )
+        if npc_id and npc_id in self.lifecycle_records:
+            record = self.lifecycle_records[npc_id]
+            record.change_state(NPCLifecycleState.ERROR, failure_reason)
+            record.add_event(NPCLifecycleEvent.ERROR_OCCURRED, {"error": failure_reason})
 
     def despawn_npc(self, npc_id: str, reason: str = "manual") -> bool:
         """Despawn an NPC instance (delegates to lifecycle_despawn)."""
@@ -464,7 +509,7 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
             return (True, "")
 
         # Check population limits
-        zone_key = self.population_controller._get_zone_key_from_room_id(room_id)  # pylint: disable=protected-access  # Reason: Internal zone key retrieval required
+        zone_key = self.population_controller.get_zone_key_from_room_id(room_id)
         stats = self.population_controller.get_population_stats(zone_key)
         if stats:
             # Check by individual NPC definition ID, not by type
@@ -507,7 +552,7 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
         """
         return self.lifecycle_records.get(npc_id)
 
-    def get_lifecycle_statistics(self) -> dict[str, Any]:
+    def get_lifecycle_statistics(self) -> dict[str, object]:
         """
         Get overall lifecycle statistics.
 
@@ -518,22 +563,9 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
         active_npcs = len(self.active_npcs)
         respawn_queue_size = len(self.respawn_queue)
 
-        # Count by state
-        state_counts: dict[str, int] = {}
-        for record in self.lifecycle_records.values():
-            state = record.current_state
-            state_counts[state] = state_counts.get(state, 0) + 1
-
-        # Count by NPC type
-        type_counts: dict[str, int] = {}
-        for record in self.lifecycle_records.values():
-            npc_type_str = str(record.definition.npc_type)
-            type_counts[npc_type_str] = type_counts.get(npc_type_str, 0) + 1
-
-        # Calculate average statistics
-        total_spawns = sum(record.spawn_count for record in self.lifecycle_records.values())
-        total_despawns = sum(record.despawn_count for record in self.lifecycle_records.values())
-        total_errors = sum(record.error_count for record in self.lifecycle_records.values())
+        state_counts = self._compute_state_counts()
+        type_counts = self._compute_type_counts()
+        total_spawns, total_despawns, total_errors = self._compute_aggregate_counts()
 
         return {
             "total_npcs": total_npcs,
@@ -549,11 +581,34 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
             "error_rate": total_errors / total_npcs if total_npcs > 0 else 0,
         }
 
+    def _compute_state_counts(self) -> dict[str, int]:
+        """Return counts of lifecycle records by current_state."""
+        counts: dict[str, int] = {}
+        for record in self.lifecycle_records.values():
+            state = record.current_state
+            counts[state] = counts.get(state, 0) + 1
+        return counts
+
+    def _compute_type_counts(self) -> dict[str, int]:
+        """Return counts of lifecycle records by NPC type string."""
+        counts: dict[str, int] = {}
+        for record in self.lifecycle_records.values():
+            npc_type_str = str(record.definition.npc_type)
+            counts[npc_type_str] = counts.get(npc_type_str, 0) + 1
+        return counts
+
+    def _compute_aggregate_counts(self) -> tuple[int, int, int]:
+        """Return (total_spawns, total_despawns, total_errors) across all lifecycle records."""
+        total_spawns = sum(record.spawn_count for record in self.lifecycle_records.values())
+        total_despawns = sum(record.despawn_count for record in self.lifecycle_records.values())
+        total_errors = sum(record.error_count for record in self.lifecycle_records.values())
+        return total_spawns, total_despawns, total_errors
+
     def cleanup_old_records(self, max_age_seconds: int = 86400) -> int:
         """Clean up old lifecycle records (delegates to lifecycle_periodic)."""
         return cleanup_old_records_impl(self, max_age_seconds)
 
-    def periodic_maintenance(self) -> dict[str, Any]:
+    def periodic_maintenance(self) -> dict[str, object]:
         """Perform periodic maintenance (delegates to lifecycle_periodic)."""
         return run_periodic_maintenance_impl(self)
 
@@ -566,12 +621,18 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
             definition: NPC definition
         """
         try:
-            # Ensure thread manager is started
-            if not self.thread_manager.is_running:
-                await self.thread_manager.start()
+            # Ensure thread manager is started (thread_manager is always configured in __init__)
+            thread_manager = self.thread_manager
+            is_running = thread_manager.is_running
+            if not is_running:
+                import asyncio
 
-            # Start NPC thread
-            await self.thread_manager.start_npc_thread(npc_id, definition)
+                _ = cast(object, asyncio.create_task(thread_manager.start()))
+
+            # Start NPC thread (fire-and-forget task on the current event loop)
+            import asyncio
+
+            _ = cast(object, asyncio.create_task(thread_manager.start_npc_thread(npc_id, definition)))
             logger.debug("Started NPC thread for behavior execution", npc_id=npc_id)
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC thread startup errors unpredictable, must handle gracefully
-            logger.warning("Failed to start NPC thread", npc_id=npc_id, error=str(e))
+            logger.warning("Failed to start NPC thread", npc_id=npc_id, error_message=str(e))

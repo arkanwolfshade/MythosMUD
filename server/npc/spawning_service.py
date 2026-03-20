@@ -18,20 +18,25 @@ appear at the right time, in the right place, and under the right conditions.
 import random
 import time
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast, override
+
+from structlog.stdlib import BoundLogger
 
 from server.events.event_bus import EventBus
 
 if TYPE_CHECKING:
     from server.npc.population_control import NPCPopulationController
+
 from server.events.event_types import NPCEnteredRoom, NPCLeftRoom, PlayerEnteredRoom, PlayerLeftRoom
 from server.models.npc import NPCDefinition, NPCSpawnRule
 from server.npc.behaviors import AggressiveMobNPC, NPCBase, PassiveMobNPC, ShopkeeperNPC
+from server.npc.combat_integration import NPCCombatIntegration
 from server.npc.population_control import ZoneConfiguration  # NPCPopulationController removed - unused import
+from server.services.npc_combat_integration_service import NPCCombatIntegrationService
 
 from ..structured_logging.enhanced_logging_config import get_logger
 
-logger = get_logger(__name__)
+logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
 
 
 @dataclass
@@ -50,6 +55,13 @@ class SimpleNPCDefinition:  # pylint: disable=too-many-instance-attributes  # Re
 
 class NPCSpawnRequest:
     """Represents a request to spawn an NPC."""
+
+    definition: NPCDefinition
+    room_id: str
+    spawn_rule: NPCSpawnRule | None
+    priority: int
+    reason: str
+    created_at: float
 
     def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Spawn request initialization requires many parameters for complete spawn context
         self,
@@ -76,6 +88,7 @@ class NPCSpawnRequest:
         self.reason = reason
         self.created_at = time.time()
 
+    @override
     def __repr__(self) -> str:
         """String representation of spawn request."""
         return f"<NPCSpawnRequest(definition={self.definition.name}, room={self.room_id}, priority={self.priority}, reason={self.reason})>"
@@ -84,11 +97,18 @@ class NPCSpawnRequest:
 class NPCSpawnResult:
     """Represents the result of an NPC spawn attempt."""
 
+    success: bool
+    npc_id: str | None
+    npc_instance: NPCBase | None
+    error_message: str | None
+    spawn_request: NPCSpawnRequest | None
+    spawned_at: float | None
+
     def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Spawn result initialization requires many parameters for complete spawn result context
         self,
         success: bool,
         npc_id: str | None = None,
-        npc_instance: Any | None = None,
+        npc_instance: NPCBase | None = None,
         error_message: str | None = None,
         spawn_request: NPCSpawnRequest | None = None,
     ) -> None:
@@ -109,6 +129,7 @@ class NPCSpawnResult:
         self.spawn_request = spawn_request
         self.spawned_at = time.time() if success else None
 
+    @override
     def __repr__(self) -> str:
         """String representation of spawn result."""
         if self.success:
@@ -133,11 +154,18 @@ class NPCSpawningService:
     - Population validation should happen at NPCPopulationController level before calling this
     """
 
+    event_bus: EventBus
+    population_controller: "NPCPopulationController | None"
+    combat_integration: NPCCombatIntegration | NPCCombatIntegrationService | None
+    max_spawn_queue_size: int
+    spawn_retry_attempts: int
+    spawn_retry_delay: float
+
     def __init__(
         self,
         event_bus: EventBus,
         population_controller: "NPCPopulationController | None",
-        combat_integration: Any | None = None,
+        combat_integration: NPCCombatIntegration | NPCCombatIntegrationService | None = None,
     ) -> None:
         """
         Initialize the NPC spawning service.
@@ -145,7 +173,9 @@ class NPCSpawningService:
         Args:
             event_bus: Event bus for publishing and subscribing to events
             population_controller: Population controller for managing NPC populations (can be set later)
-            combat_integration: Optional combat integration for aggressive mob NPCs (handles NPC attacks)
+            combat_integration: Optional combat integration for aggressive mob NPCs. Use
+                NPCCombatIntegration when combat_service is not yet wired (e.g. container NPC bundle
+                before NATS combat); use NPCCombatIntegrationService when the full combat stack is available.
         """
         self.event_bus = event_bus
         self.population_controller = population_controller
@@ -223,6 +253,66 @@ class NPCSpawningService:
             for request in spawn_requests:
                 self._queue_spawn_request(request)
 
+    def _evaluate_spawn_rules(
+        self,
+        definition: NPCDefinition,
+        zone_config: "ZoneConfiguration",
+        room_id: str,
+        current_npc_count: int,
+    ) -> list[NPCSpawnRequest]:
+        """Evaluate spawn rules for a definition and return requests that pass conditions and probability."""
+        assert self.population_controller is not None  # Caller guarantees non-None
+        requests: list[NPCSpawnRequest] = []
+        def_id = int(definition.id)
+        if def_id not in self.population_controller.spawn_rules:
+            return requests
+        for rule in self.population_controller.spawn_rules[def_id]:
+            if not rule.can_spawn_with_population(current_npc_count):
+                logger.debug(
+                    "Spawn rule population limit reached",
+                    npc_name=definition.name,
+                    current_npc_count=current_npc_count,
+                    max_population=rule.max_population,
+                )
+                continue
+            if not rule.check_spawn_conditions(self.population_controller.current_game_state):
+                continue
+            priority = self._calculate_spawn_priority(definition, rule, zone_config)
+            effective_probability = zone_config.get_effective_spawn_probability(float(definition.spawn_probability))
+            if random.random() <= effective_probability:  # nosec B311: Game mechanics spawn probability, not cryptographic
+                requests.append(
+                    NPCSpawnRequest(
+                        definition=definition,
+                        room_id=room_id,
+                        spawn_rule=rule,
+                        priority=priority,
+                        reason="automatic",
+                    )
+                )
+        return requests
+
+    def _maybe_add_required_npc_request(
+        self,
+        definition: NPCDefinition,
+        room_id: str,
+        stats: Any,
+        spawn_requests: list[NPCSpawnRequest],
+    ) -> None:
+        """If definition is required and not yet represented, append a required spawn request."""
+        if not definition.is_required() or spawn_requests:
+            return
+        if not stats or stats.npcs_by_definition.get(int(definition.id), 0):
+            return
+        spawn_requests.append(
+            NPCSpawnRequest(
+                definition=definition,
+                room_id=room_id,
+                spawn_rule=None,
+                priority=100,
+                reason="required",
+            )
+        )
+
     def _evaluate_spawn_requirements(
         self, definition: NPCDefinition, zone_config: "ZoneConfiguration", room_id: str
     ) -> list[NPCSpawnRequest]:
@@ -240,13 +330,9 @@ class NPCSpawningService:
         if self.population_controller is None:
             return []
 
-        spawn_requests: list[NPCSpawnRequest] = []
-
-        # Check population limits
         zone_key = self.population_controller._get_zone_key_from_room_id(room_id)  # pylint: disable=protected-access  # Reason: Internal zone key retrieval required
         stats = self.population_controller.get_population_stats(zone_key)
         if stats:
-            # Check by individual NPC definition ID, not by type
             current_count = stats.npcs_by_definition.get(int(definition.id), 0)
             if not definition.can_spawn(current_count):
                 definition_name = getattr(definition, "name", "Unknown NPC")
@@ -257,55 +343,11 @@ class NPCSpawningService:
                     current_count=current_count,
                     max_population=definition.max_population,
                 )
-                return spawn_requests
+                return []
 
-        # Get current NPC count for this specific definition
         current_npc_count = stats.npcs_by_definition.get(int(definition.id), 0) if stats else 0
-
-        # Check spawn rules
-        if int(definition.id) in self.population_controller.spawn_rules:
-            for rule in self.population_controller.spawn_rules[int(definition.id)]:
-                # Check if current NPC population allows spawning more instances
-                if not rule.can_spawn_with_population(current_npc_count):
-                    logger.debug(
-                        "Spawn rule population limit reached",
-                        npc_name=definition.name,
-                        current_npc_count=current_npc_count,
-                        max_population=rule.max_population,
-                    )
-                    continue
-
-                if not rule.check_spawn_conditions(self.population_controller.current_game_state):
-                    continue
-
-                # Determine spawn priority
-                priority = self._calculate_spawn_priority(definition, rule, zone_config)
-
-                # Check spawn probability with zone modifier
-                effective_probability = zone_config.get_effective_spawn_probability(float(definition.spawn_probability))
-                if random.random() <= effective_probability:  # nosec B311: Game mechanics spawn probability, not cryptographic
-                    request = NPCSpawnRequest(
-                        definition=definition,
-                        room_id=room_id,
-                        spawn_rule=rule,
-                        priority=priority,
-                        reason="automatic",
-                    )
-                    spawn_requests.append(request)
-
-        # Required NPCs always spawn if conditions are met
-        if definition.is_required() and not spawn_requests:
-            # Check if we already have a required NPC of this specific definition
-            if stats and not stats.npcs_by_definition.get(int(definition.id), 0):
-                request = NPCSpawnRequest(
-                    definition=definition,
-                    room_id=room_id,
-                    spawn_rule=None,  # Required NPCs don't need spawn rules
-                    priority=100,  # High priority for required NPCs
-                    reason="required",
-                )
-                spawn_requests.append(request)
-
+        spawn_requests = self._evaluate_spawn_rules(definition, zone_config, room_id, current_npc_count)
+        self._maybe_add_required_npc_request(definition, room_id, stats, spawn_requests)
         return spawn_requests
 
     def _calculate_spawn_priority(
@@ -362,7 +404,7 @@ class NPCSpawningService:
         """
         if len(self.spawn_queue) >= self.max_spawn_queue_size:
             logger.warning("Spawn queue is full, dropping oldest request")
-            self.spawn_queue.pop(0)
+            _ = self.spawn_queue.pop(0)
 
         # Insert request in priority order
         inserted = False
@@ -524,7 +566,7 @@ class NPCSpawningService:
                 )
             elif simple_definition.npc_type == "aggressive_mob":
                 npc_instance = AggressiveMobNPC(
-                    definition=simple_definition,
+                    definition=cast(NPCDefinition, cast(object, simple_definition)),
                     npc_id=npc_id,
                     event_bus=self.event_bus,
                     event_reaction_system=None,  # Will be set up later
@@ -550,11 +592,23 @@ class NPCSpawningService:
 
             return npc_instance
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC spawn errors unpredictable, must handle gracefully
-            # Use extracted name to avoid potential lazy loading issues
-            definition_name = getattr(definition, "name", "Unknown NPC")
-            logger.error("Failed to create NPC instance", npc_name=definition_name, error=str(e))
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC creation errors unpredictable, must handle gracefully
+            logger.error(
+                "Failed to create NPC instance",
+                npc_type=getattr(definition, "npc_type", "unknown"),
+                room_id=room_id,
+                error=str(e),
+            )
             return None
+
+    def create_npc_instance(self, definition: NPCDefinition, room_id: str, npc_id: str | None = None) -> Any | None:
+        """
+        Public wrapper for NPC instance creation used by lifecycle manager.
+
+        This delegates to the internal _create_npc_instance helper while providing
+        a non-protected API for other components.
+        """
+        return self._create_npc_instance(definition, room_id, npc_id)
 
     def _generate_npc_id(self, definition: NPCDefinition | SimpleNPCDefinition, room_id: str) -> str:
         """
@@ -591,6 +645,25 @@ class NPCSpawningService:
         )
         return False
 
+    def _count_spawn_reasons(self, history: list[NPCSpawnResult]) -> dict[str, int]:
+        """Count spawn results by request reason."""
+        reason_counts: dict[str, int] = {}
+        for result in history:
+            if result.spawn_request:
+                reason = result.spawn_request.reason
+                reason_counts[reason] = reason_counts.get(reason, 0) + 1
+        return reason_counts
+
+    def _count_spawn_types(self, history: list[NPCSpawnResult]) -> dict[str, int]:
+        """Count successful spawn results by NPC type (enum value or string for mocks)."""
+        type_counts: dict[str, int] = {}
+        for result in history:
+            if result.success and result.spawn_request:
+                npc_type = result.spawn_request.definition.npc_type
+                npc_type_str = str(getattr(npc_type, "value", npc_type))
+                type_counts[npc_type_str] = type_counts.get(npc_type_str, 0) + 1
+        return type_counts
+
     def get_spawn_statistics(self) -> dict[str, Any]:
         """
         Get spawning statistics.
@@ -601,34 +674,16 @@ class NPCSpawningService:
         total_requests = len(self.spawn_history)
         successful_spawns = sum(1 for result in self.spawn_history if result.success)
         failed_spawns = total_requests - successful_spawns
-
-        # Count by reason
-        reason_counts: dict[str, int] = {}
-        for result in self.spawn_history:
-            if result.spawn_request:
-                reason = result.spawn_request.reason
-                reason_counts[reason] = reason_counts.get(reason, 0) + 1
-
-        # Count by NPC type
-        # AI Agent note: Use npc_type.value to get string value from enum
-        # str(enum) returns "NPCDefinitionType.SHOPKEEPER", but we need "shopkeeper"
-        # Handle both enum and string types (string for mocks in tests)
-        type_counts: dict[str, int] = {}
-        for result in self.spawn_history:
-            if result.success and result.spawn_request:
-                npc_type = result.spawn_request.definition.npc_type
-                npc_type_str = str(npc_type.value if hasattr(npc_type, "value") else npc_type)
-                type_counts[npc_type_str] = type_counts.get(npc_type_str, 0) + 1
-
+        success_rate = successful_spawns / total_requests if total_requests > 0 else 0.0
         return {
             "total_requests": total_requests,
             "successful_spawns": successful_spawns,
             "failed_spawns": failed_spawns,
-            "success_rate": successful_spawns / total_requests if total_requests > 0 else 0.0,
+            "success_rate": success_rate,
             "active_npcs": 0,  # NPC instances now managed by lifecycle manager
             "queued_requests": len(self.spawn_queue),
-            "reason_counts": reason_counts,
-            "type_counts": type_counts,
+            "reason_counts": self._count_spawn_reasons(self.spawn_history),
+            "type_counts": self._count_spawn_types(self.spawn_history),
         }
 
     def cleanup_inactive_npcs(self, max_age_seconds: int = 3600) -> int:

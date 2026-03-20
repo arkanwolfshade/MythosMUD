@@ -19,6 +19,9 @@ single-file consolidated reference usable outside Cursor, see the repo root [CLA
 - **PostgreSQL access via procedures/functions:** For all new persistence work, call stored procedures and functions
   defined under `db/procedures/` instead of adding inline CRUD or ad-hoc SQL in Python; follow ADR-015 and
   `db/procedures/README.md` for patterns.
+- **jCodeMunch MCP (when enabled in Cursor):** Prefer its tools for code exploration—`list_repos`, `index_folder` on
+  the repo root if needed, then `search_symbols`, `get_symbol`, `get_file_outline`, `get_repo_outline`, or `search_text`
+  instead of reading whole files when looking up implementations. See [jCodeMunch QUICKSTART](https://github.com/jgravelle/jcodemunch-mcp/blob/main/QUICKSTART.md).
 
 ## Learned preferences (from chat history)
 

@@ -82,7 +82,7 @@ Always verify user permissions before allowing access to resources
 
 **Argon2 Password Hashing**: Industry-leading password protection with
 
-  configurable parameters
+configurable parameters
 
 **JWT Token Authentication**: Secure, stateless authentication with proper expiration
 
@@ -90,7 +90,7 @@ Always verify user permissions before allowing access to resources
 
 **Role-Based Access Control**: Admin and user role separation with proper
 
-  authorization checks
+authorization checks
 
 #### Data Protection
 
@@ -114,7 +114,7 @@ Always verify user permissions before allowing access to resources
 
 **Security Headers**: Comprehensive HTTP security headers including CSP,
 
-  HSTS, X-Frame-Options
+HSTS, X-Frame-Options
 
 **CORS Configuration**: Properly configured cross-origin resource sharing
 
@@ -243,7 +243,7 @@ The following are explicitly out of scope:
 
 We maintain a list of security researchers who have helped improve MythosMUD's security:
 
-- *Your name could be here! Report responsibly and help us keep the Mythos safe.*
+- _Your name could be here! Report responsibly and help us keep the Mythos safe._
 
 ## Additional Resources
 
@@ -344,7 +344,7 @@ All 11 active Dependabot security alerts have been addressed:
 
    **Note**: This is a transitive dependency of python-jose. The vulnerability is a side-channel timing attack that
 
-     maintainers have marked out of scope. No patch is currently available from upstream.
+   maintainers have marked out of scope. No patch is currently available from upstream.
 
    **Mitigation**: Using latest available version. Consider alternative crypto libraries for high-security use cases.
 
@@ -352,7 +352,7 @@ All 11 active Dependabot security alerts have been addressed:
 
 ✅ All 6,200 server tests passed
 
-✅ Security scans (Trivy) show no vulnerabilities
+✅ Security scans (Bandit, Grype locally; Trivy via Codacy) show no vulnerabilities
 
 ✅ Code quality checks (lint, mypy, format) all passed
 

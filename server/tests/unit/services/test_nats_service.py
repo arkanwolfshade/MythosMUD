@@ -29,7 +29,7 @@ def nats_config():
     return NATSConfig(
         url="nats://localhost:4222",
         max_reconnect_attempts=5,
-        reconnect_time_wait=2.0,
+        reconnect_time_wait=2,
         ping_interval=20,
         max_outstanding_pings=2,
     )
@@ -732,7 +732,7 @@ async def test_service_restart_no_duplicate_subscriptions(nats_service):
     mock_client.close = AsyncMock()
 
     # Create a function that returns a new mock subscription each time
-    def create_mock_subscription(*args, **kwargs):
+    def create_mock_subscription(*_args, **_kwargs):
         return MagicMock()
 
     mock_client.subscribe = AsyncMock(side_effect=create_mock_subscription)
