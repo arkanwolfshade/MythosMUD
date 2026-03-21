@@ -57,8 +57,7 @@ class _PopulationLifecycleManager(Protocol):
         self, definition: NPCDefinition, room_id: str, reason: str = "manual"
     ) -> tuple[str | None, str | None]:
         """Spawn an NPC instance; returns (npc_id, None) or (None, failure_reason)."""
-
-        ...
+        ...  # pylint: disable=unnecessary-ellipsis  # PEP 544 Protocol stub; `pass` triggers Pyright reportReturnType.
 
     lifecycle_records: Mapping[str, object]
 

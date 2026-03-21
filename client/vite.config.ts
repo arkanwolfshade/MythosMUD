@@ -39,10 +39,10 @@ export default defineConfig(({ mode }) => ({
     minify: 'oxc',
     // Target modern browsers
     target: 'es2020',
-    // Chunk size warning threshold (600KB)
-    // Increased from 500KB to accommodate large single-package chunks like lucide-react (icon library)
-    // which cannot be split further. All chunks are already properly separated by functionality.
-    chunkSizeWarningLimit: 600,
+    // Chunk size warning threshold (KB, pre-gzip). vendor-icons is lucide-react alone (~610KB+ minified)
+    // because EldritchIcon uses `import * as LucideIcons` (full library for dynamic iconMap lookup).
+    // Raised from 600 when lucide minor updates pushed vendor-icons just over the old limit.
+    chunkSizeWarningLimit: 700,
     rollupOptions: {
       output: {
         // Manual chunk splitting for optimal bundle sizes
