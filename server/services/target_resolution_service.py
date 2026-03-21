@@ -119,7 +119,14 @@ class TargetResolutionService:  # pylint: disable=too-few-public-methods  # Reas
                 success=False, error_message="Player not found", search_term="", room_id=""
             )
 
-        room_id = str(player.current_room_id)
+        raw_room_id = getattr(player, "current_room_id", None)
+        if raw_room_id is None:
+            logger.warning("Player not in a room", player_id=player_id_uuid)
+            return None, TargetResolutionResult(
+                success=False, error_message="You are not in a room", search_term="", room_id=""
+            )
+
+        room_id = str(raw_room_id).strip()
         if not room_id:
             logger.warning("Player not in a room", player_id=player_id_uuid)
             return None, TargetResolutionResult(
