@@ -47,7 +47,7 @@ jobs:
         with:
           persist-credentials: false
           submodules: recursive
-          token: ${{ secrets.PRIVATE_SUBMODULE_PAT }}
+          token: ${{ secrets.MYTHOSMUD_PAT }}
 
       - name: "Run analysis"
         uses: ossf/scorecard-action@4eaacf0543bb3f2c246792bd56e8cdeffafb205a # v2.4.3

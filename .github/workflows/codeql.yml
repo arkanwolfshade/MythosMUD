@@ -34,7 +34,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           submodules: recursive
-          token: ${{ secrets.PRIVATE_SUBMODULE_PAT }}
+          token: ${{ secrets.MYTHOSMUD_PAT }}
       - name: Initialize CodeQL
         uses: github/codeql-action/init@ba454b8ab46733eb6145342877cd148270bb77ab # codeql-bundle-v2.23.5
         with:

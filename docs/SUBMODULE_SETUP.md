@@ -102,13 +102,13 @@ Since the `mythosmud_data` repository is private, the GitHub Actions workflows n
 
 1. **Personal Access Token (PAT)**: Required for accessing private repositories
 
-2. **Token Configuration**: Use `${{ secrets.MYTHOSMUD_PAT }}` in checkout actions
+2. **Token Configuration**: Use `${{ secrets.MYTHOSMUD_PAT }}` in checkout actions (must match the secret name in
+   **Settings → Secrets and variables → Actions**)
 
 3. **Submodule checkout**: Configure `submodules: recursive` in checkout action
 
-4. **Use a PAT with checkout**: The simplest pattern is to create a fine-grained PAT (`PRIVATE_SUBMODULE_PAT`) that has
-
-   read access to `arkanwolfshade/mythosmud_data` and pass it to `actions/checkout` via the `token` input. This lets
+4. **Use a PAT with checkout**: Create a fine-grained PAT with read access to `arkanwolfshade/mythosmud_data`, add it as the
+   `MYTHOSMUD_PAT` repository secret, and pass it to `actions/checkout` via the `token` input. This lets
    checkout clone both the main repo and the private submodule in one step without hand-written rewrites.
 
 ### PAT Requirements
@@ -131,7 +131,6 @@ Since the `mythosmud_data` repository is private, the GitHub Actions workflows n
 2. Click "Generate new token" → "Fine-grained personal access tokens"
 
 3. Configure:
-
    - Token name: `MythosMUD-CI-Submodule-Access`
 
    - Expiration: [Choose appropriate duration]
@@ -143,7 +142,7 @@ Since the `mythosmud_data` repository is private, the GitHub Actions workflows n
    - Permissions: Repository permissions → Contents → Read-only
 
 4. Generate and copy the token
-5. Add to repository secrets as `MYTHOSMUD_PAT`
+5. Add to repository secrets as `MYTHOSMUD_PAT` (same name workflows use in `actions/checkout` `token:`)
 
 ### Example Workflow Configuration
 
@@ -157,7 +156,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           submodules: recursive
-          token: ${{ secrets.PRIVATE_SUBMODULE_PAT }}
+          token: ${{ secrets.MYTHOSMUD_PAT }}
 ```
 
 ## Troubleshooting
@@ -179,9 +178,13 @@ git submodule update --init --recursive
 
 **For GitHub Actions:**
 
-- Verify the workflow has the correct PAT configured
-- Ensure the `MYTHOSMUD_PAT` secret is set in repository settings
-- Check that the PAT has access to the private submodule repository
+- Verify the workflow uses `secrets.MYTHOSMUD_PAT` and that secret exists under **Settings → Secrets and variables →
+  Actions** for `arkanwolfshade/MythosMUD`
+- If the secret is missing or was never added, CI passes an empty `token` and git reports _could not read Username for
+  <https://github.com>_ (exit 128)
+- Check that the PAT is not expired and still lists **Contents: Read** on `arkanwolfshade/mythosmud_data`
+- **SAML SSO**: If the org uses GitHub Enterprise SSO, open [Fine-grained tokens](https://github.com/settings/tokens),
+  find the token, and click **Configure SSO** → **Authorize** for the org
 
 ### "not our ref" error in GitHub Actions
 
