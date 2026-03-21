@@ -180,7 +180,7 @@ class AggressiveMobNPC(NPCBase):
         raw_attack_damage = self._behavior_config.get("attack_damage", 1)
         if isinstance(raw_attack_damage, bool):
             return 1 if raw_attack_damage else 0
-        if isinstance(raw_attack_damage, (int, float)):
+        if isinstance(raw_attack_damage, int | float):
             return int(raw_attack_damage)
         if isinstance(raw_attack_damage, str):
             return int(raw_attack_damage) if raw_attack_damage.isdigit() else 1

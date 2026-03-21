@@ -19,16 +19,17 @@ asyncpg table counts use POSTGRES_SEARCH_PATH if set, else the database name as 
 
 import os
 import shutil
-import subprocess
+import subprocess  # nosec B404: psql must be invoked for DDL/DML; argv is built from resolved psql + URL parts
 import sys
 from pathlib import Path
+from typing import cast
 from urllib.parse import unquote, urlparse
 
 import asyncpg
 from anyio import run
 from dotenv import load_dotenv
 
-load_dotenv()
+_ = load_dotenv()
 
 
 def _validate_environment_and_files() -> tuple[str, Path, Path]:
@@ -78,31 +79,31 @@ async def _print_current_table_counts(conn: asyncpg.Connection) -> None:
     """Print current table counts, handling missing tables gracefully."""
     print("\nCurrent table counts:")
     try:
-        zone_count = await conn.fetchval("SELECT COUNT(*) FROM zones")
+        zone_count = cast(int | None, await conn.fetchval("SELECT COUNT(*) FROM zones"))
         print(f"  Zones: {zone_count}")
     except asyncpg.UndefinedTableError:
         print("  Zones: Table does not exist yet")
 
     try:
-        room_count = await conn.fetchval("SELECT COUNT(*) FROM rooms")
+        room_count = cast(int | None, await conn.fetchval("SELECT COUNT(*) FROM rooms"))
         print(f"  Rooms: {room_count}")
     except asyncpg.UndefinedTableError:
         print("  Rooms: Table does not exist yet")
 
     try:
-        holiday_count = await conn.fetchval("SELECT COUNT(*) FROM calendar_holidays")
+        holiday_count = cast(int | None, await conn.fetchval("SELECT COUNT(*) FROM calendar_holidays"))
         print(f"  Holidays: {holiday_count}")
     except asyncpg.UndefinedTableError:
         print("  Holidays: Table does not exist yet")
 
     try:
-        schedule_count = await conn.fetchval("SELECT COUNT(*) FROM calendar_npc_schedules")
+        schedule_count = cast(int | None, await conn.fetchval("SELECT COUNT(*) FROM calendar_npc_schedules"))
         print(f"  Schedules: {schedule_count}")
     except asyncpg.UndefinedTableError:
         print("  Schedules: Table does not exist yet")
 
     try:
-        zone_config_count = await conn.fetchval("SELECT COUNT(*) FROM zone_configurations")
+        zone_config_count = cast(int | None, await conn.fetchval("SELECT COUNT(*) FROM zone_configurations"))
         print(f"  Zone Configurations: {zone_config_count}")
     except asyncpg.UndefinedTableError:
         print("  Zone Configurations: Table does not exist yet")
@@ -142,11 +143,11 @@ def _resolve_psql_executable() -> str:
     raise FileNotFoundError(msg)
 
 
-def _asyncpg_connect_kwargs(database_url: str) -> dict[str, dict[str, str]]:
+def _asyncpg_server_settings(database_url: str) -> dict[str, str]:
     """Match app/e2e search_path: tables live in schema mythos_*; default public would miss zone_configurations."""
     db_name = database_url.split("/")[-1].split("?")[0].strip()
     search_path = os.getenv("POSTGRES_SEARCH_PATH", db_name)
-    return {"server_settings": {"search_path": search_path}}
+    return {"search_path": search_path}
 
 
 _PSQL_KICK_OTHER_BACKENDS = (
@@ -155,13 +156,23 @@ _PSQL_KICK_OTHER_BACKENDS = (
 )
 
 
-def _psql_heartbeat_wait(proc: subprocess.Popen, phase: str) -> None:
+def _psql_heartbeat_wait(proc: subprocess.Popen[str], phase: str) -> None:
     while True:
         try:
-            proc.wait(timeout=60)
+            _ = proc.wait(timeout=60)
             return
         except subprocess.TimeoutExpired:
             print(f"  ... psql still running ({phase}) ...", flush=True)
+
+
+def _psql_exit_code_extra(exit_code: int) -> str:
+    """Human hint when psql exits with code 3 (common for interrupt / server error)."""
+    if exit_code != 3:
+        return ""
+    return (
+        " This often means psql was interrupted (Ctrl+C) or the server reported an error; "
+        + "re-run after fixing SQL or use a fresh DB."
+    )
 
 
 def _run_psql_file(
@@ -176,7 +187,6 @@ def _run_psql_file(
     """Run a .sql file with psql (-q). Optionally kick competitors before -f (same session, no gap)."""
     host, port, user, password, dbname = _parse_pg_url_for_psql(database_url)
     psql_exe = _resolve_psql_executable()
-    path_abs = sql_file.resolve()
     env = os.environ.copy()
     if password:
         env["PGPASSWORD"] = password
@@ -196,18 +206,14 @@ def _run_psql_file(
     ]
     if kick_other_backends:
         cmd.extend(["-c", _PSQL_KICK_OTHER_BACKENDS])
-    cmd.extend(["-f", str(path_abs)])
+    cmd.extend(["-f", str(sql_file.resolve())])
     print(preamble, flush=True)
-    proc = subprocess.Popen(cmd, env=env, stdout=None, stderr=None, text=True)
+    proc: subprocess.Popen[str] = subprocess.Popen(
+        cmd, env=env, stdout=None, stderr=None, text=True
+    )  # nosemgrep: python.lang.security.audit.dangerous-subprocess-use-tainted-env-args.dangerous-subprocess-use-tainted-env-args  # nosec B603: argv list + no shell; psql path from _resolve_psql_executable
     _psql_heartbeat_wait(proc, heartbeat_phase)
     if proc.returncode != 0:
-        extra = (
-            " This often means psql was interrupted (Ctrl+C) or the server reported an error; "
-            "re-run after fixing SQL or use a fresh DB."
-            if proc.returncode == 3
-            else ""
-        )
-        msg = f"psql failed on {failure_label} {sql_file} (exit {proc.returncode}).{extra}"
+        msg = f"psql failed on {failure_label} {sql_file} (exit {proc.returncode}).{_psql_exit_code_extra(proc.returncode)}"
         raise RuntimeError(msg)
 
 
@@ -250,19 +256,19 @@ def _apply_schema(database_url: str, schema_file: Path) -> None:
 async def _print_final_table_counts(conn: asyncpg.Connection) -> None:
     """Print final table counts after loading."""
     print("\nFinal table counts:")
-    zone_count = await conn.fetchval("SELECT COUNT(*) FROM zones")
+    zone_count = cast(int | None, await conn.fetchval("SELECT COUNT(*) FROM zones"))
     print(f"  Zones: {zone_count}")
 
-    room_count = await conn.fetchval("SELECT COUNT(*) FROM rooms")
+    room_count = cast(int | None, await conn.fetchval("SELECT COUNT(*) FROM rooms"))
     print(f"  Rooms: {room_count}")
 
-    holiday_count = await conn.fetchval("SELECT COUNT(*) FROM calendar_holidays")
+    holiday_count = cast(int | None, await conn.fetchval("SELECT COUNT(*) FROM calendar_holidays"))
     print(f"  Holidays: {holiday_count}")
 
-    schedule_count = await conn.fetchval("SELECT COUNT(*) FROM calendar_npc_schedules")
+    schedule_count = cast(int | None, await conn.fetchval("SELECT COUNT(*) FROM calendar_npc_schedules"))
     print(f"  Schedules: {schedule_count}")
 
-    zone_config_count = await conn.fetchval("SELECT COUNT(*) FROM zone_configurations")
+    zone_config_count = cast(int | None, await conn.fetchval("SELECT COUNT(*) FROM zone_configurations"))
     print(f"  Zone Configurations: {zone_config_count}")
 
 
@@ -278,8 +284,8 @@ async def main():
     url = database_url.replace("postgresql+asyncpg://", "postgresql://")
     print(f"Database URL: {url[:50]}...")
 
-    connect_kw = _asyncpg_connect_kwargs(database_url)
-    conn = await asyncpg.connect(url, **connect_kw)
+    server_settings = _asyncpg_server_settings(database_url)
+    conn = await asyncpg.connect(url, server_settings=server_settings)
     try:
         await _print_current_table_counts(conn)
     finally:
@@ -292,7 +298,7 @@ async def main():
     _load_dml_with_psql(database_url, dml_file)
     print("  [OK] DML loaded successfully")
 
-    conn = await asyncpg.connect(url, **connect_kw)
+    conn = await asyncpg.connect(url, server_settings=server_settings)
     try:
         await _print_final_table_counts(conn)
 

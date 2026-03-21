@@ -8,7 +8,13 @@ player can be interrupted by combat, movement, or spellcasting.
 
 As documented in "The Art of Restful Departure" - Dr. Armitage, 1931,
 proper rest requires tranquility and freedom from disturbance.
+
+Handlers resolve persistence, connection_manager, and combat from FastAPI
+app.state without a single shared typed protocol; file-scoped pyright
+relaxation limits Any/unknown noise on that boundary.
 """
+
+# pyright: reportAny=false, reportExplicitAny=false, reportUnknownVariableType=false, reportUnknownMemberType=false, reportUnknownArgumentType=false
 
 # pylint: disable=too-many-return-statements  # Reason: Rest command handler requires multiple return statements for early validation returns (combat checks, rest location validation, error handling)
 
@@ -130,9 +136,11 @@ async def _start_rest_countdown(
     connection_manager.resting_players[player_id] = task
 
 
-async def _cancel_rest_countdown(player_id: uuid.UUID, connection_manager: Any) -> None:
+async def cancel_rest_countdown(player_id: uuid.UUID, connection_manager: Any) -> None:
     """
     Cancel the rest countdown for a player.
+
+    Called from combat, movement, and spell paths when rest must be interrupted.
 
     Args:
         player_id: The player's ID
@@ -204,6 +212,92 @@ async def _get_services_from_app(app: Any) -> tuple[Any, Any]:
     return persistence, connection_manager
 
 
+async def _resolve_rest_command_setup(
+    request: Any,
+    player_name: str,
+) -> dict[str, Any] | tuple[Any, Any, Any, Any, uuid.UUID]:
+    """
+    Load app, services, and player for /rest.
+
+    Returns:
+        Error response dict, or (app, persistence, connection_manager, player, player_id).
+    """
+    app = request.app if request else None
+    if not app:
+        return {"result": "System error: application not available."}
+
+    persistence, connection_manager = await _get_services_from_app(app)
+    if not persistence:
+        return {"result": "System error: persistence layer not available."}
+    if not connection_manager:
+        return {"result": "System error: connection manager not available."}
+
+    player = await persistence.get_player_by_name(player_name)
+    if not player:
+        return {"result": "You are not recognized by the cosmic forces."}
+
+    raw_id = player.player_id
+    player_id = uuid.UUID(raw_id) if isinstance(raw_id, str) else raw_id
+    return app, persistence, connection_manager, player, player_id
+
+
+async def _begin_seated_rest_countdown(
+    player_id: uuid.UUID,
+    player_name: str,
+    persistence: Any,
+    connection_manager: Any,
+    alias_storage: AliasStorage | None,
+) -> dict[str, Any]:
+    """Set sitting position if needed, then start rest countdown and build client payload."""
+    position_service = PlayerPositionService(persistence, connection_manager, alias_storage)
+    position_result = await position_service.change_position(player_name, "sitting")
+
+    if not position_result.get("success") and position_result.get("position") != "sitting":
+        return {"result": position_result.get("message", "Failed to assume resting position.")}
+
+    await _start_rest_countdown(player_id, player_name, connection_manager, persistence)
+    player_update = {
+        "position": position_result.get("position", "sitting"),
+        "previous_position": position_result.get("previous_position"),
+    }
+    return {
+        "result": (
+            f"You settle into a seated position and begin to rest. You will disconnect in "
+            f"{int(REST_COUNTDOWN_DURATION)} seconds. Any movement, combat, or spellcasting will interrupt your rest."
+        ),
+        "player_update": player_update,
+    }
+
+
+async def _execute_rest_flow(
+    app: Any,
+    persistence: Any,
+    connection_manager: Any,
+    player: Any,
+    player_id: uuid.UUID,
+    player_name: str,
+    alias_storage: AliasStorage | None,
+) -> dict[str, Any]:
+    """Run rest rules after setup: resting check, combat, rest location vs countdown."""
+    if is_player_resting(player_id, connection_manager):
+        return {"result": "You are already resting. The countdown will complete shortly."}
+
+    if await _check_player_in_combat(player_id, app):
+        return {"result": "You cannot rest during combat. End combat first."}
+
+    room_id = getattr(player, "current_room_id", None)
+    if await _check_rest_location(room_id, persistence):
+        logger.info(
+            "Player resting in rest location, instant disconnect",
+            player_id=player_id,
+            player_name=player_name,
+        )
+        await _disconnect_player_intentionally(player_id, connection_manager, persistence)
+        return {"result": "You rest peacefully and disconnect from the game."}
+
+    return await _begin_seated_rest_countdown(player_id, player_name, persistence, connection_manager, alias_storage)
+
+
 async def handle_rest_command(
     command_data: dict[str, Any],
     _current_user: dict[str, Any],  # Unused: player_name parameter is used instead
@@ -236,73 +330,10 @@ async def handle_rest_command(
     """
     logger.debug("Handling rest command", player_name=player_name, command_data=command_data)
 
-    # Get services from app state
-    app = request.app if request else None
-    if not app:
-        return {"result": "System error: application not available."}
-
-    persistence, connection_manager = await _get_services_from_app(app)
-
-    if not persistence:
-        return {"result": "System error: persistence layer not available."}
-
-    if not connection_manager:
-        return {"result": "System error: connection manager not available."}
-
-    # Get player using player_name parameter (preferred over extracting from current_user)
-    player = await persistence.get_player_by_name(player_name)
-    if not player:
-        return {"result": "You are not recognized by the cosmic forces."}
-
-    player_id = uuid.UUID(player.player_id) if isinstance(player.player_id, str) else player.player_id
-
-    # Check if player is already resting
-    if is_player_resting(player_id, connection_manager):
-        return {"result": "You are already resting. The countdown will complete shortly."}
-
-    # Check if player is in combat - block command entirely
-    in_combat = await _check_player_in_combat(player_id, app)
-    if in_combat:
-        return {"result": "You cannot rest during combat. End combat first."}
-
-    # Get room information
-    room_id = getattr(player, "current_room_id", None)
-
-    # Check if in rest location (inn/hotel/motel)
-    is_rest_location = await _check_rest_location(room_id, persistence)
-
-    if is_rest_location:
-        # Instant disconnect in rest location (when not in combat)
-        logger.info("Player resting in rest location, instant disconnect", player_id=player_id, player_name=player_name)
-        await _disconnect_player_intentionally(player_id, connection_manager, persistence)
-        return {"result": "You rest peacefully and disconnect from the game."}
-
-    # Not in rest location - start countdown
-    # First, set player to sitting position
-    position_service = PlayerPositionService(persistence, connection_manager, alias_storage)
-    position_result = await position_service.change_position(player_name, "sitting")
-
-    # If position change failed, check if player is already in the desired position
-    # For /rest command, being already sitting should still allow rest to proceed
-    if not position_result.get("success"):
-        # Check if the player is already in the desired sitting position
-        if position_result.get("position") == "sitting":
-            # Player is already sitting, which is fine for /rest - proceed with rest countdown
-            pass  # Continue to rest countdown below
-        else:
-            # Actual position change failure (not just already in position)
-            return {"result": position_result.get("message", "Failed to assume resting position.")}
-
-    # Start rest countdown
-    await _start_rest_countdown(player_id, player_name, connection_manager, persistence)
-
-    # Include player_update in response to update Character Info panel
-    player_update = {
-        "position": position_result.get("position", "sitting"),
-        "previous_position": position_result.get("previous_position"),
-    }
-
-    return {
-        "result": f"You settle into a seated position and begin to rest. You will disconnect in {int(REST_COUNTDOWN_DURATION)} seconds. Any movement, combat, or spellcasting will interrupt your rest.",
-        "player_update": player_update,
-    }
+    setup = await _resolve_rest_command_setup(request, player_name)
+    if isinstance(setup, tuple):
+        app, persistence, connection_manager, player, player_id = setup
+        return await _execute_rest_flow(
+            app, persistence, connection_manager, player, player_id, player_name, alias_storage
+        )
+    return setup

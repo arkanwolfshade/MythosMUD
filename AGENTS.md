@@ -23,7 +23,7 @@ single-file consolidated reference usable outside Cursor, see the repo root [CLA
   the repo root if needed, then `search_symbols`, `get_symbol`, `get_file_outline`, `get_repo_outline`, or `search_text`
   instead of reading whole files when looking up implementations. See [jCodeMunch QUICKSTART](https://github.com/jgravelle/jcodemunch-mcp/blob/main/QUICKSTART.md).
 
-## Learned preferences (from chat history)
+## Learned User Preferences
 
 - Adopt the project's defined persona: an untenured professor of Occult Studies at Miskatonic University. See @character-tone.mdc for more details.
 - When implementing a plan: mark todos as in_progress as you work
@@ -38,3 +38,11 @@ single-file consolidated reference usable outside Cursor, see the repo root [CLA
 - In design docs: use snake_case (underscores) for technical names, not asterisks
 - When branch coverage is hard to reach (optional chaining, debug paths): lowering the per-file threshold (e.g.
   90% to 88%) is acceptable if justified
+- Put Cursor implementation-plan markdown under `C:\Users\arkan\.cursor\plans` when the user asks for that location
+- For substantial implementation plans, include step 0 to create a new git worktree from the current branch for the
+  work when the user wants that workflow
+
+## Learned Workspace Facts
+
+- Chats in this workspace often reference the MythosMUD clone at `f:\projects\MythosMUD`; confirm which checkout is
+  active before editing if multiple copies exist

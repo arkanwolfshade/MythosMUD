@@ -90,7 +90,7 @@ def parse_ai_config(ai_json: str, npc_id: str) -> dict[str, object]:
 
 def to_int_or_default(val: object, default: int) -> int:
     """Coerce value to int; return default if not numeric."""
-    if isinstance(val, (int, float)):
+    if isinstance(val, int | float):
         return int(val)
     if isinstance(val, str) and val.isdigit():
         return int(val)

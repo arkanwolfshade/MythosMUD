@@ -16,7 +16,7 @@ The following Codacy CLI commands will **overwrite** this file and remove manual
 
 ## ✅ Current Configuration
 
-**Dependency / filesystem CVE scanning (two tools on purpose)**
+### Dependency / filesystem CVE scanning (two tools on purpose)
 
 - **Grype**: primary scanner for local development and `Makefile` targets (`make grype`, `scripts/grype.py`).
   Codacy does not document Grype as a CLI tool the way it does Trivy.

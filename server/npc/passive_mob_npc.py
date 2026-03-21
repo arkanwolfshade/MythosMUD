@@ -4,8 +4,10 @@ Passive mob NPC type for MythosMUD.
 This module provides the PassiveMobNPC class with wandering and response behaviors.
 """
 
+from __future__ import annotations
+
 import time
-from typing import TYPE_CHECKING, Any, cast, override
+from typing import TYPE_CHECKING, cast, override
 
 from structlog.stdlib import BoundLogger
 
@@ -15,6 +17,7 @@ from .npc_base import NPCBase
 if TYPE_CHECKING:
     from ..events import EventBus
     from .event_reaction_system import NPCEventReactionSystem
+    from .threading import NPCActionMessage
 
 logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
 
@@ -26,10 +29,10 @@ class PassiveMobNPC(NPCBase):
 
     def __init__(
         self,
-        definition: Any,
+        definition: object,
         npc_id: str,
-        event_bus: "EventBus | None" = None,
-        event_reaction_system: "NPCEventReactionSystem | None" = None,
+        event_bus: EventBus | None = None,
+        event_reaction_system: NPCEventReactionSystem | None = None,
     ) -> None:
         """Initialize passive mob NPC."""
         super().__init__(definition, npc_id, event_bus, event_reaction_system)
@@ -121,7 +124,7 @@ class PassiveMobNPC(NPCBase):
             return False
 
         interval_raw = self._behavior_config.get("idle_movement_interval", 10)
-        movement_interval: float = float(interval_raw) if isinstance(interval_raw, (int, float)) else 10.0
+        movement_interval: float = float(interval_raw) if isinstance(interval_raw, int | float) else 10.0
 
         # If this is the first time checking, allow scheduling
         if self._last_idle_movement_time is None:
@@ -140,7 +143,7 @@ class PassiveMobNPC(NPCBase):
 
         return True
 
-    def _create_wander_action(self, current_time: float) -> Any:
+    def _create_wander_action(self, current_time: float) -> NPCActionMessage:
         """
         Create a WANDER action message.
 
@@ -158,7 +161,7 @@ class PassiveMobNPC(NPCBase):
             timestamp=current_time,
         )
 
-    def _queue_wander_action(self, wander_action: Any, current_time: float) -> bool:
+    def _queue_wander_action(self, wander_action: NPCActionMessage, current_time: float) -> bool:
         """
         Queue a WANDER action via the thread manager.
 
@@ -184,7 +187,8 @@ class PassiveMobNPC(NPCBase):
             if not thread_manager:
                 return False
 
-            _ = thread_manager.message_queue.add_message(self.npc_id, wander_action.to_dict())
+            payload = wander_action.to_dict()
+            _ = thread_manager.message_queue.add_message(self.npc_id, payload)
             self._last_idle_movement_time = current_time
             logger.debug("Scheduled WANDER action for NPC", npc_id=self.npc_id)
             return True
@@ -228,7 +232,7 @@ class PassiveMobNPC(NPCBase):
         """Respond to player interaction."""
         try:
             chance_raw = self._behavior_config.get("response_chance", 0.5)
-            response_chance: float = float(chance_raw) if isinstance(chance_raw, (int, float)) else 0.5
+            response_chance: float = float(chance_raw) if isinstance(chance_raw, int | float) else 0.5
             if response_chance > 0.5:  # Simple probability check
                 _ = self.speak(f"Hello there, {player_id}!")
                 logger.debug("NPC responded to player", npc_id=self.npc_id, player_id=player_id)
@@ -238,16 +242,17 @@ class PassiveMobNPC(NPCBase):
             logger.error("Error responding to player", npc_id=self.npc_id, error=str(e), error_type=type(e).__name__)
             return False
 
-    def _handle_wander(self, _context: dict[str, Any]) -> bool:
+    def _handle_wander(self, _context: dict[str, object]) -> bool:
         """Handle wandering action."""
         return self.wander()
 
-    def _handle_respond_to_greeting(self, context: dict[str, Any]) -> bool:
+    def _handle_respond_to_greeting(self, context: dict[str, object]) -> bool:
         """Handle responding to greeting action."""
-        player_id = context.get("player_id", "stranger")
+        player_id_raw = context.get("player_id", "stranger")
+        player_id = str(player_id_raw) if player_id_raw is not None else "stranger"
         return self.respond_to_player(player_id, "greet")
 
-    def _handle_flee(self, _context: dict[str, Any]) -> bool:
+    def _handle_flee(self, _context: dict[str, object]) -> bool:
         """Handle fleeing action."""
         _ = self.speak("I must get away from here!")
         logger.debug("NPC is fleeing", npc_id=self.npc_id)

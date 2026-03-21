@@ -2,7 +2,13 @@
 Go command for MythosMUD.
 
 This module handles the go command for player movement.
+
+Command entrypoints receive Starlette/FastAPI request objects and persistence/room
+shapes that have no single structural type in this package; strict Any/unknown
+suppression keeps basedpyright usable without a cross-cutting request protocol.
 """
+
+# pyright: reportAny=false, reportExplicitAny=false, reportUnknownVariableType=false, reportUnknownMemberType=false, reportUnknownArgumentType=false
 
 # pylint: disable=too-many-arguments,too-many-locals  # Reason: Movement commands require many parameters and intermediate variables for complex movement logic
 
@@ -10,7 +16,7 @@ import uuid
 from typing import Any, cast
 
 from ..alias_storage import AliasStorage
-from ..commands.rest_command import _cancel_rest_countdown, is_player_resting
+from ..commands.rest_command import cancel_rest_countdown, is_player_resting
 from ..exceptions import DatabaseError, ValidationError
 from ..game.movement_service import MovementService
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -19,17 +25,35 @@ from ..utils.command_parser import get_username_from_user
 logger = get_logger(__name__)
 
 
+def _resolve_async_persistence_from_go_app(app: Any) -> Any | None:
+    """Prefer container.async_persistence; fall back to app.state.persistence (legacy)."""
+    if not app:
+        return None
+    state = app.state
+    if hasattr(state, "container") and state.container:
+        return state.container.async_persistence
+    return getattr(state, "persistence", None)
+
+
+def _canonical_room_id_for_go(room_id: Any, room: Any, player_name: str) -> Any:
+    """Return the room id to use for movement; log if player record disagrees with room object."""
+    if room.id == room_id:
+        return room_id
+    logger.warning(
+        "Room ID mismatch detected",
+        player=player_name,
+        player_room_id=room_id,
+        room_object_id=room.id,
+    )
+    return room.id
+
+
 async def _setup_go_command(
     request: Any, current_user: dict[str, Any], player_name: str
 ) -> tuple[Any, Any, Any, Any, str] | None:
     """Setup and validate go command prerequisites."""
     app = request.app if request else None
-    # Prefer container, fallback to app.state for backward compatibility
-    persistence = None
-    if app and hasattr(app.state, "container") and app.state.container:
-        persistence = app.state.container.async_persistence
-    elif app:
-        persistence = getattr(app.state, "persistence", None)
+    persistence = _resolve_async_persistence_from_go_app(app)
 
     if not persistence:
         logger.warning("Go command failed - no persistence layer", player=player_name)
@@ -46,15 +70,7 @@ async def _setup_go_command(
         logger.warning("Go command failed - current room not found", player=player_name, room_id=room_id)
         return None
 
-    if room.id != room_id:
-        logger.warning(
-            "Room ID mismatch detected",
-            player=player_name,
-            player_room_id=room_id,
-            room_object_id=room.id,
-        )
-        room_id = room.id
-
+    room_id = _canonical_room_id_for_go(room_id, room, player_name)
     return (app, persistence, player, room, room_id)
 
 
@@ -119,7 +135,29 @@ def _validate_exit(direction: str, room: Any, persistence: Any, player_name: str
     return cast(str | None, target_room_id)
 
 
-async def _execute_movement(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Movement execution requires many parameters and intermediate variables for complex movement logic
+def _movement_combat_and_event_bus_from_go_app(app: Any) -> tuple[Any | None, Any | None]:
+    """Resolve player_combat_service and event_bus from DI container or legacy app.state."""
+    if not app:
+        return (None, None)
+    state = app.state
+    if hasattr(state, "container") and state.container:
+        container = state.container
+        return (container.player_combat_service, container.event_bus)
+    return (
+        getattr(state, "player_combat_service", None),
+        getattr(state, "event_bus", None),
+    )
+
+
+def _movement_service_for_go_command(app: Any, persistence: Any) -> Any:
+    """Use container.movement_service when wired; else build MovementService (tests / partial apps)."""
+    if app and hasattr(app.state, "container") and app.state.container:
+        return app.state.container.movement_service
+    player_combat_service, event_bus = _movement_combat_and_event_bus_from_go_app(app)
+    return MovementService(event_bus, player_combat_service=player_combat_service, async_persistence=persistence)
+
+
+async def _execute_movement(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Movement execution requires many parameters for complex movement logic
     player: Any,
     room_id: str,
     target_room_id: str,
@@ -130,25 +168,7 @@ async def _execute_movement(  # pylint: disable=too-many-arguments,too-many-posi
 ) -> dict[str, Any]:
     """Execute player movement using movement service."""
     try:
-        # Prefer container, fallback to app.state for backward compatibility
-        player_combat_service = None
-        event_bus = None
-        if app and hasattr(app.state, "container") and app.state.container:
-            player_combat_service = app.state.container.player_combat_service
-            event_bus = app.state.container.event_bus
-        elif app:
-            player_combat_service = getattr(app.state, "player_combat_service", None)
-            event_bus = getattr(app.state, "event_bus", None)
-
-        # Get MovementService from container
-        movement_service = None
-        if app and hasattr(app.state, "container") and app.state.container:
-            movement_service = app.state.container.movement_service
-        else:
-            # Fallback for tests or other environments where container might not be fully initialized
-            movement_service = MovementService(
-                event_bus, player_combat_service=player_combat_service, async_persistence=persistence
-            )
+        movement_service = _movement_service_for_go_command(app, persistence)
         success = await movement_service.move_player(player.player_id, room_id, target_room_id)
 
         if success:
@@ -174,7 +194,54 @@ async def _execute_movement(  # pylint: disable=too-many-arguments,too-many-posi
         return {"result": f"Error during movement: {str(e)}"}
 
 
-async def handle_go_command(  # pylint: disable=too-many-arguments,too-many-locals  # Reason: Go command requires many parameters and intermediate variables for complex movement logic
+def _resolved_direction_for_go_command(command_data: dict[str, Any], player_name: str) -> str | None:
+    """Return normalized direction string, or None if missing (after logging)."""
+    raw_direction = command_data.get("direction")
+    if not raw_direction:
+        logger.warning("Go command failed - no direction specified", player=player_name, command_data=command_data)
+        return None
+    if not isinstance(raw_direction, str):
+        logger.warning(
+            "Go command failed - direction must be a string",
+            player=player_name,
+            command_data=command_data,
+        )
+        return None
+    normalized = raw_direction.lower()
+    logger.debug("Player attempting to move", player=player_name, direction=normalized)
+    return normalized
+
+
+def _connection_manager_from_go_app(app: Any) -> Any | None:
+    """Resolve ConnectionManager from DI container or legacy app.state."""
+    if not app:
+        return None
+    state = app.state
+    if hasattr(state, "container") and state.container:
+        return state.container.connection_manager
+    return getattr(state, "connection_manager", None)
+
+
+async def _rest_interrupt_payload_if_moving(
+    app: Any,
+    player: Any,
+    player_name: str,
+    direction: str,
+) -> dict[str, str] | None:
+    """If the player is resting, cancel rest and return an early client payload; else None."""
+    connection_manager = _connection_manager_from_go_app(app)
+    if not connection_manager:
+        return None
+    raw_id = player.player_id
+    player_id = uuid.UUID(raw_id) if isinstance(raw_id, str) else raw_id
+    if not is_player_resting(player_id, connection_manager):
+        return None
+    await cancel_rest_countdown(player_id, connection_manager)
+    logger.info("Rest interrupted by movement", player_id=player_id, player_name=player_name, direction=direction)
+    return {"result": "Your rest is interrupted as you begin to move."}
+
+
+async def handle_go_command(  # pylint: disable=too-many-arguments  # Reason: Standard command handler signature
     command_data: dict[str, Any],
     current_user: dict[str, Any],
     request: Any,
@@ -197,13 +264,9 @@ async def handle_go_command(  # pylint: disable=too-many-arguments,too-many-loca
     _ = alias_storage  # Intentionally unused - part of standard command handler interface
     logger.debug("Processing go command", player=player_name, args=command_data)
 
-    direction = command_data.get("direction")
-    if not direction:
-        logger.warning("Go command failed - no direction specified", player=player_name, command_data=command_data)
+    direction = _resolved_direction_for_go_command(command_data, player_name)
+    if direction is None:
         return {"result": "Go where? Usage: go <direction>"}
-
-    direction = direction.lower()
-    logger.debug("Player attempting to move", player=player_name, direction=direction)
 
     setup_result = await _setup_go_command(request, current_user, player_name)
     if not setup_result:
@@ -215,22 +278,9 @@ async def handle_go_command(  # pylint: disable=too-many-arguments,too-many-loca
     if not valid_posture:
         return {"result": posture_message}
 
-    # Check if player is resting and interrupt rest
-    # Prefer container, fallback to app.state for backward compatibility
-    connection_manager = None
-    if app and hasattr(app.state, "container") and app.state.container:
-        connection_manager = app.state.container.connection_manager
-    elif app:
-        connection_manager = getattr(app.state, "connection_manager", None)
-    if connection_manager:
-        player_id = uuid.UUID(player.player_id) if isinstance(player.player_id, str) else player.player_id
-
-        if is_player_resting(player_id, connection_manager):
-            await _cancel_rest_countdown(player_id, connection_manager)
-            logger.info(
-                "Rest interrupted by movement", player_id=player_id, player_name=player_name, direction=direction
-            )
-            return {"result": "Your rest is interrupted as you begin to move."}
+    rest_payload = await _rest_interrupt_payload_if_moving(app, player, player_name, direction)
+    if rest_payload is not None:
+        return rest_payload
 
     target_room_id = _validate_exit(direction, room, persistence, player_name, room_id)
     if not target_room_id:

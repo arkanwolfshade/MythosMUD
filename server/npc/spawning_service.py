@@ -162,7 +162,8 @@ class NPCSpawningService:
         current_npc_count: int,
     ) -> list[NPCSpawnRequest]:
         """Evaluate spawn rules for a definition and return requests that pass conditions and probability."""
-        assert self.population_controller is not None
+        if self.population_controller is None:
+            return []
         requests: list[NPCSpawnRequest] = []
         def_id = int(definition.id)
         if def_id not in self.population_controller.spawn_rules:
@@ -284,8 +285,8 @@ class NPCSpawningService:
         priority = int(priority * zone_config.npc_spawn_modifier)
 
         if self.population_controller is not None and self.population_controller.current_game_state:
-            # current_game_state is dict[str, Any]; .get is Any until narrowed.
-            pc_raw = cast(object, self.population_controller.current_game_state.get("player_count", 0))
+            # current_game_state is dict[str, object]; .get is object until narrowed.
+            pc_raw = self.population_controller.current_game_state.get("player_count", 0)
             if isinstance(pc_raw, int) and pc_raw > 0:
                 priority += min(pc_raw * 5, 25)
 

@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from server.commands.rest_command import _cancel_rest_countdown, is_player_resting
+from server.commands.rest_command import cancel_rest_countdown, is_player_resting
 from server.config import get_config
 from server.events.combat_events import CombatStartedEvent
 from server.models.combat import CombatInstance
@@ -46,7 +46,7 @@ async def apply_target_rest_and_grace_checks(
         )
         raise ValueError("Target is protected by login grace period and cannot be attacked")
     if is_player_resting(target_id, connection_manager):
-        await _cancel_rest_countdown(target_id, connection_manager)
+        await cancel_rest_countdown(target_id, connection_manager)
         logger.info(
             "Rest interrupted by combat start (player attacked)",
             target_id=target_id,

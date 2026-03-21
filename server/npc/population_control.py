@@ -14,7 +14,9 @@ configurations reflect the inherent mystical properties of different locations.
 # pylint: disable=too-many-lines  # Reason: Population control requires extensive population management logic for comprehensive NPC population tracking and control
 
 import time
-from typing import TYPE_CHECKING, Any, cast
+from collections.abc import Mapping
+from types import MappingProxyType
+from typing import TYPE_CHECKING, Protocol, cast
 
 from structlog.stdlib import BoundLogger
 
@@ -28,6 +30,7 @@ from server.events.event_types import (
 from server.models.npc import NPCDefinition, NPCSpawnRule
 
 from ..structured_logging.enhanced_logging_config import get_logger
+from .npc_base import NPCBase
 from .npc_utils import (
     extract_definition_id_from_npc,
     extract_npc_metadata,
@@ -43,6 +46,24 @@ if TYPE_CHECKING:
     from ..async_persistence import AsyncPersistenceLayer
 
 logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+
+
+class _PopulationLifecycleManager(Protocol):
+    """Lifecycle manager surface used by NPCPopulationController (avoids import cycle with lifecycle_manager)."""
+
+    active_npcs: Mapping[str, NPCBase]
+
+    def spawn_npc(
+        self, definition: NPCDefinition, room_id: str, reason: str = "manual"
+    ) -> tuple[str | None, str | None]:
+        """Spawn an NPC instance; returns (npc_id, None) or (None, failure_reason)."""
+
+        ...
+
+    lifecycle_records: Mapping[str, object]
+
+
+_EMPTY_ACTIVE_NPCS: Mapping[str, NPCBase] = MappingProxyType({})
 
 
 class NPCPopulationController:  # pylint: disable=too-many-instance-attributes  # Reason: Population controller requires many state tracking and configuration attributes
@@ -67,15 +88,15 @@ class NPCPopulationController:  # pylint: disable=too-many-instance-attributes  
     """
 
     event_bus: EventBus
-    spawning_service: Any
-    lifecycle_manager: Any
+    spawning_service: object | None
+    lifecycle_manager: _PopulationLifecycleManager | None
     async_persistence: "AsyncPersistenceLayer"
 
     def __init__(
         self,
         event_bus: EventBus,
-        spawning_service: Any = None,
-        lifecycle_manager: Any = None,
+        spawning_service: object | None = None,
+        lifecycle_manager: _PopulationLifecycleManager | None = None,
         async_persistence: "AsyncPersistenceLayer | None" = None,
     ) -> None:
         """
@@ -109,7 +130,7 @@ class NPCPopulationController:  # pylint: disable=too-many-instance-attributes  
         self.spawn_rules: dict[int, list[NPCSpawnRule]] = {}
 
         # Game state tracking
-        self.current_game_state: dict[str, Any] = {
+        self.current_game_state: dict[str, object] = {
             "time_of_day": "day",
             "weather": "clear",
             "player_count": 0,
@@ -171,17 +192,16 @@ class NPCPopulationController:  # pylint: disable=too-many-instance-attributes  
         # This method is kept for potential future room-specific tracking needs
         logger.debug("NPC left room", npc_id=event.npc_id, room_id=event.room_id)
 
-    def _get_active_npcs_from_lifecycle_manager(self) -> dict[str, Any]:
+    def _get_active_npcs_from_lifecycle_manager(self) -> Mapping[str, NPCBase]:
         """
         Get active NPCs from the lifecycle manager (single source of truth).
 
         Returns:
             Dictionary mapping npc_id to NPC instance data, or empty dict if lifecycle_manager unavailable
         """
-        if not self.lifecycle_manager or not hasattr(self.lifecycle_manager, "active_npcs"):
-            return {}
-        result: dict[str, Any] = cast(dict[str, Any], self.lifecycle_manager.active_npcs)
-        return result
+        if self.lifecycle_manager is None:
+            return _EMPTY_ACTIVE_NPCS
+        return self.lifecycle_manager.active_npcs
 
     def _update_player_count(self) -> None:
         """Update the current player count in game state."""
@@ -222,7 +242,7 @@ class NPCPopulationController:  # pylint: disable=too-many-instance-attributes  
                 sub_zone_id=rule.sub_zone_id,
             )
 
-    def update_game_state(self, new_state: dict[str, Any]) -> None:
+    def update_game_state(self, new_state: dict[str, object]) -> None:
         """
         Update the current game state.
 
@@ -362,6 +382,52 @@ class NPCPopulationController:  # pylint: disable=too-many-instance-attributes  
         stats = self.get_population_stats(zone_key)
         return should_spawn_npc(definition, zone_config, room_id, stats, self.spawn_rules, self.current_game_state)
 
+    def _register_spawned_npc_in_population_stats(self, npc_id: str, definition: NPCDefinition, room_id: str) -> None:
+        """
+        After lifecycle_manager.spawn_npc succeeds, update zone aggregates and log.
+
+        NPCLifecycleManager.active_npcs remains the source of truth for instances;
+        population_stats holds zone-level aggregates only.
+        """
+        zone_key = get_zone_key_from_room_id(room_id)
+        if zone_key not in self.population_stats:
+            zone_parts = zone_key.split("/")
+            self.population_stats[zone_key] = PopulationStats(zone_parts[0], zone_parts[1])
+
+        stats = self.population_stats[zone_key]
+
+        logger.debug(
+            "Population stats before adding NPC",
+            npc_id=npc_id,
+            npc_name=definition.name,
+            definition_id=definition.id,
+            zone_key=zone_key,
+            current_count_by_definition=stats.npcs_by_definition.get(int(definition.id), 0),
+            max_population=definition.max_population,
+        )
+
+        stats.add_npc(str(definition.npc_type), room_id, definition.is_required(), int(definition.id))
+
+        logger.debug(
+            "Population stats after adding NPC",
+            npc_id=npc_id,
+            npc_name=definition.name,
+            definition_id=definition.id,
+            zone_key=zone_key,
+            new_count_by_definition=stats.npcs_by_definition.get(int(definition.id), 0),
+            max_population=definition.max_population,
+        )
+
+        definition_name = getattr(definition, "name", "Unknown NPC")
+        logger.info(
+            "Spawned NPC",
+            npc_id=npc_id,
+            npc_name=definition_name,
+            npc_type=definition.npc_type,
+            room_id=room_id,
+            zone_key=zone_key,
+        )
+
     def _spawn_npc(
         self, definition: NPCDefinition, room_id: str, reason: str = "population_control"
     ) -> tuple[str | None, str | None]:
@@ -383,68 +449,20 @@ class NPCPopulationController:  # pylint: disable=too-many-instance-attributes  
             return (None, failure_reason)
 
         try:
-            # Use the lifecycle manager to spawn the NPC (this ensures consistent ID generation)
-            npc_id, failure_reason = self.lifecycle_manager.spawn_npc(definition, room_id, reason)
+            spawned_id, spawn_failure = self.lifecycle_manager.spawn_npc(definition, room_id, reason)
 
-            if npc_id:
-                # Update population statistics
-                zone_key = get_zone_key_from_room_id(room_id)
-                if zone_key not in self.population_stats:
-                    zone_parts = zone_key.split("/")
-                    self.population_stats[zone_key] = PopulationStats(zone_parts[0], zone_parts[1])
+            if spawned_id:
+                self._register_spawned_npc_in_population_stats(spawned_id, definition, room_id)
+                return (spawned_id, None)
 
-                stats = self.population_stats[zone_key]
-
-                # Log population stats before adding NPC
-                logger.debug(
-                    "Population stats before adding NPC",
-                    npc_id=npc_id,
-                    npc_name=definition.name,
-                    definition_id=definition.id,
-                    zone_key=zone_key,
-                    current_count_by_definition=stats.npcs_by_definition.get(int(definition.id), 0),
-                    max_population=definition.max_population,
-                )
-
-                stats.add_npc(str(definition.npc_type), room_id, definition.is_required(), int(definition.id))
-
-                # Log population stats after adding NPC
-                logger.debug(
-                    "Population stats after adding NPC",
-                    npc_id=npc_id,
-                    npc_name=definition.name,
-                    definition_id=definition.id,
-                    zone_key=zone_key,
-                    new_count_by_definition=stats.npcs_by_definition.get(int(definition.id), 0),
-                    max_population=definition.max_population,
-                )
-
-                # REMOVED: No longer storing duplicate NPC data here
-                # NPCLifecycleManager.active_npcs is the single source of truth for NPC instances
-                # Population statistics are maintained in population_stats for zone-level aggregates
-
-                # Use getattr to avoid potential lazy loading issues
-                definition_name = getattr(definition, "name", "Unknown NPC")
-                logger.info(
-                    "Spawned NPC",
-                    npc_id=npc_id,
-                    npc_name=definition_name,
-                    npc_type=definition.npc_type,
-                    room_id=room_id,
-                    zone_key=zone_key,
-                )
-                result: str = cast(str, npc_id)
-                return (result, None)
-
-            # NPC spawn failed or returned None
             definition_name = getattr(definition, "name", "Unknown NPC")
             logger.error(
                 "Failed to spawn NPC",
                 npc_name=definition_name,
                 room_id=room_id,
-                failure_reason=failure_reason or "unknown",
+                failure_reason=spawn_failure or "unknown",
             )
-            return (None, failure_reason or "unknown")
+            return (None, spawn_failure or "unknown")
 
         except (ValueError, KeyError, AttributeError, TypeError, IndexError, RuntimeError) as e:
             definition_name = getattr(definition, "name", "Unknown NPC")
@@ -528,7 +546,7 @@ class NPCPopulationController:  # pylint: disable=too-many-instance-attributes  
         logger.info("Despawned NPC", npc_id=npc_id, npc_name=npc_name)
         return True
 
-    def get_zone_population_summary(self) -> dict[str, Any]:
+    def get_zone_population_summary(self) -> dict[str, object]:
         """
         Get a summary of NPC populations across all zones.
 
@@ -538,14 +556,15 @@ class NPCPopulationController:  # pylint: disable=too-many-instance-attributes  
         # Query active NPCs from lifecycle manager (single source of truth)
         active_npcs = self._get_active_npcs_from_lifecycle_manager()
 
-        summary: dict[str, Any] = {
+        zones_payload: dict[str, object] = {}
+        summary: dict[str, object] = {
             "total_zones": len(self.population_stats),
             "total_active_npcs": len(active_npcs),
-            "zones": {},
+            "zones": zones_payload,
         }
 
         for zone_key, stats in self.population_stats.items():
-            summary["zones"][zone_key] = stats.to_dict()
+            zones_payload[zone_key] = cast(object, stats.to_dict())
 
         return summary
 
@@ -560,14 +579,19 @@ class NPCPopulationController:  # pylint: disable=too-many-instance-attributes  
         self.population_stats.clear()
         logger.info("Population stats cleared")
 
-    def _should_remove_inactive_npc(self, npc_instance: Any, current_time: float, max_age_seconds: int) -> bool:
+    def _should_remove_inactive_npc(self, npc_instance: NPCBase, current_time: float, max_age_seconds: int) -> bool:
         """Return True if the NPC is inactive long enough and not required (eligible for cleanup)."""
         spawned_at_value = getattr(npc_instance, "spawned_at", None)
-        if not spawned_at_value or not isinstance(spawned_at_value, (int, float)):
+        if not spawned_at_value or not isinstance(spawned_at_value, int | float):
             return False
         age = current_time - spawned_at_value
-        is_required_value = getattr(npc_instance, "is_required", None)
-        is_required = bool(is_required_value) if is_required_value is not None else False
+        is_required_value: object = getattr(npc_instance, "is_required", None)
+        if is_required_value is None:
+            is_required = False
+        elif isinstance(is_required_value, bool):
+            is_required = is_required_value
+        else:
+            is_required = bool(is_required_value)
         return age > max_age_seconds and not is_required
 
     def cleanup_inactive_npcs(self, max_age_seconds: int = 3600) -> int:

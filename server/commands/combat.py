@@ -7,11 +7,11 @@ continue to work. Implementation is split across combat_helpers, combat_handler,
 combat_loader, combat_attack, combat_flee, and combat_taunt to keep file nloc under 500.
 """
 
-from server.commands.combat_handler import CombatCommandHandler
+from server.commands.combat_handler import CombatCommandHandler, CombatCommandHandlerExtras
 from server.commands.combat_helpers import (
     FleePreconditionError,
-    _format_combat_status,
-    _get_combat_target,
+    format_combat_status,
+    get_combat_target,
 )
 from server.commands.combat_loader import (
     get_combat_command_handler,
@@ -25,6 +25,7 @@ from server.commands.combat_loader import (
 
 __all__ = [
     "CombatCommandHandler",
+    "CombatCommandHandlerExtras",
     "FleePreconditionError",
     "get_combat_command_handler",
     "handle_attack_command",
@@ -33,6 +34,6 @@ __all__ = [
     "handle_punch_command",
     "handle_strike_command",
     "handle_taunt_command",
-    "_format_combat_status",
-    "_get_combat_target",
+    "format_combat_status",
+    "get_combat_target",
 ]

@@ -15,7 +15,7 @@ class FleePreconditionError(Exception):
         self.error_result = error_result
 
 
-def _format_combat_status(player: Any, combat_instance: Any | None) -> str:
+def format_combat_status(player: Any, combat_instance: Any | None) -> str:
     """
     Produce a human-readable combat status string.
 
@@ -28,7 +28,7 @@ def _format_combat_status(player: Any, combat_instance: Any | None) -> str:
     return "You are not in combat."
 
 
-def _get_combat_target(_player: Any, target_name: str | None) -> Any | None:  # pylint: disable=unused-argument  # Reason: Parameter reserved for future player-based target resolution
+def get_combat_target(_player: Any, target_name: str | None) -> Any | None:  # pylint: disable=unused-argument  # Reason: Parameter reserved for future player-based target resolution
     """
     Resolve a combat target by name.
 

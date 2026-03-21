@@ -74,7 +74,7 @@ flowchart LR
 - **Only standing posture**: Movement allowed only when player stats `position` is `"standing"`. Sitting
   or lying must be cleared (e.g. stand command or follow auto-stand) before going.
 - **Rest interrupt on go**: If the player is resting, the go command cancels rest (via
-  `_cancel_rest_countdown`) and then continues with movement.
+  `cancel_rest_countdown`) and then continues with movement.
 - **Exit validation**: Room must have an exit in the given direction whose target room exists in
   persistence (instance-aware via InstanceManager when present).
 - **Tutorial exit**: When moving to the instance’s configured exit room, the service clears

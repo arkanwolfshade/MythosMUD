@@ -11,6 +11,7 @@ from structlog.stdlib import BoundLogger
 from ..models.npc import NPCDefinition
 from ..structured_logging.enhanced_logging_config import get_logger
 from .behavior_engine import BehaviorEngine
+from .npc_combat_schedule import schedule_end_combat_if_npc_died_best_effort
 from .npc_config_parsing import (
     get_combat_stats_dict,
     normalize_determination_points,
@@ -199,7 +200,7 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
             "determination_points", self._stats.get("dp", self._stats.get("determination_points", 0))
         )
         # Safely coerce current_dp to an int; fall back to 0 if not numeric
-        if isinstance(current_dp_val, (int, float)):
+        if isinstance(current_dp_val, int | float):
             current_dp = int(current_dp_val)
         elif isinstance(current_dp_val, str) and current_dp_val.isdigit():
             current_dp = int(current_dp_val)
@@ -259,21 +260,7 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
 
     def _schedule_end_combat_if_npc_died(self) -> None:
         """Schedule end_combat_if_npc_died so the slain NPC no longer gets combat turns (best-effort)."""
-        try:
-            import asyncio
-
-            from ..services.combat_service_state import get_combat_service
-
-            combat_service = get_combat_service()
-            if not combat_service or not hasattr(combat_service, "end_combat_if_npc_died"):
-                return
-            try:
-                loop = asyncio.get_running_loop()
-                _ = loop.create_task(combat_service.end_combat_if_npc_died(self.npc_id))
-            except RuntimeError:
-                pass
-        except Exception:  # pylint: disable=broad-exception-caught  # Best-effort; must not fail death handling
-            pass
+        schedule_end_combat_if_npc_died_best_effort(self.npc_id)
 
     def take_damage(self, damage: int, damage_type: str = "physical", source_id: str | None = None) -> bool:
         """Take damage and update determination points (DP)."""
@@ -353,8 +340,13 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
             combat_service = get_combat_service()
             if combat_service:
                 return combat_service.is_npc_in_combat_sync(self.npc_id)
-        except (ImportError, AttributeError, RuntimeError):
-            pass
+        except (ImportError, AttributeError, RuntimeError) as exc:
+            logger.debug(
+                "Combat presence check unavailable",
+                npc_id=self.npc_id,
+                error=str(exc),
+                error_type=type(exc).__name__,
+            )
         return False
 
     def _move_with_integration(self, room_id: str) -> bool:
@@ -574,7 +566,7 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
         active_raw = data.get("is_active", True)
         npc.is_active = active_raw if isinstance(active_raw, bool) else True
         time_raw = data.get("last_action_time", time.time())
-        npc._last_action_time = float(time_raw) if isinstance(time_raw, (int, float)) else time.time()
+        npc._last_action_time = float(time_raw) if isinstance(time_raw, int | float) else time.time()
         return npc
 
     # Base action handlers

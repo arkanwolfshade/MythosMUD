@@ -5,39 +5,59 @@ This service provides unified target resolution for both players and NPCs,
 supporting partial name matching, disambiguation, and room-based filtering.
 """
 
-# pylint: disable=too-few-public-methods  # Reason: Target resolution service classes with focused responsibility, minimal public interface
+# pylint: disable=too-few-public-methods,unnecessary-ellipsis  # Reason: Protocol stubs use ellipsis per PEP 544; focused service interfaces
 
 import asyncio
+import inspect
 import re
 import uuid
-from typing import Any, Protocol
+from collections.abc import Awaitable, Callable, Mapping, Sequence
+from typing import Protocol, cast
 
+from structlog.stdlib import BoundLogger
+
+from ..models.player import Player
+from ..models.room import Room
 from ..npc.behaviors import NPCBase
+from ..schemas.players.player import PlayerRead
 from ..schemas.shared import TargetMatch, TargetResolutionResult, TargetType
 from ..schemas.shared.target_metadata import TargetMetadata
 from ..structured_logging.enhanced_logging_config import get_logger
 
-logger = get_logger(__name__)
+logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
 
 
 class PersistenceProtocol(Protocol):
-    """Protocol for persistence layer dependency injection."""
+    """
+    Persistence surface for target resolution.
 
-    def get_player(self, player_id: uuid.UUID) -> Any:
+    Matches ``AsyncPersistenceLayer`` (async player/room queries; ``get_room_by_id`` is sync).
+    Runtime code still accepts legacy sync ``get_player`` / ``get_room`` via duck typing.
+    """
+
+    async def get_player_by_id(self, player_id: uuid.UUID) -> Player | None:
         """Get a player by ID."""
 
-    def get_room(self, room_id: str) -> Any:
+        ...
+
+    def get_room_by_id(self, room_id: str) -> Room | None:
         """Get a room by ID."""
 
-    def get_players_in_room(self, room_id: str) -> list[Any]:
+        ...
+
+    async def get_players_in_room(self, room_id: str) -> Sequence[Player]:
         """Get all players in a room."""
 
+        ...
 
-class PlayerServiceProtocol(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol class with focused responsibility, minimal public interface
+
+class PlayerServiceProtocol(Protocol):
     """Protocol for player service dependency injection."""
 
-    async def resolve_player_name(self, name: str) -> Any:
-        """Resolve a player by name."""
+    async def resolve_player_name(self, player_name: str) -> PlayerRead | None:
+        """Resolve a player by name (parameter name matches ``PlayerService``)."""
+
+        ...
 
 
 class TargetResolutionService:  # pylint: disable=too-few-public-methods  # Reason: Resolution service class with focused responsibility, minimal public interface
@@ -47,6 +67,9 @@ class TargetResolutionService:  # pylint: disable=too-few-public-methods  # Reas
     This service handles target resolution for both players and NPCs,
     providing partial name matching, disambiguation, and room-based filtering.
     """
+
+    persistence: PersistenceProtocol
+    player_service: PlayerServiceProtocol
 
     def __init__(self, persistence: PersistenceProtocol, player_service: PlayerServiceProtocol) -> None:
         """
@@ -59,24 +82,27 @@ class TargetResolutionService:  # pylint: disable=too-few-public-methods  # Reas
         self.persistence = persistence
         self.player_service = player_service
 
-    async def _get_player_from_persistence(self, player_id_uuid: uuid.UUID) -> Any | None:
+    async def _get_player_from_persistence(self, player_id_uuid: uuid.UUID) -> Player | None:
         """Get player from persistence layer, handling both async and sync methods."""
-        import inspect
-
-        if hasattr(self.persistence, "get_player_by_id"):
-            method = self.persistence.get_player_by_id
-            if inspect.iscoroutinefunction(method):
+        raw: object = self.persistence
+        if hasattr(raw, "get_player_by_id"):
+            lookup: object = cast(object, getattr(raw, "get_player_by_id"))  # noqa: B009
+            if inspect.iscoroutinefunction(lookup):
                 logger.debug("Using async get_player_by_id", player_id=player_id_uuid)
-                return await method(player_id_uuid)
+                afn = cast(Callable[[uuid.UUID], Awaitable[object]], lookup)
+                return cast(Player | None, await afn(player_id_uuid))
             logger.debug("Using sync get_player_by_id", player_id=player_id_uuid)
-            return method(player_id_uuid)
-        if hasattr(self.persistence, "get_player"):
-            method = self.persistence.get_player
-            if inspect.iscoroutinefunction(method):
+            sfn = cast(Callable[[uuid.UUID], object], lookup)
+            return cast(Player | None, sfn(player_id_uuid))
+        if hasattr(raw, "get_player"):
+            lookup = cast(object, getattr(raw, "get_player"))  # noqa: B009
+            if inspect.iscoroutinefunction(lookup):
                 logger.debug("Using async get_player", player_id=player_id_uuid)
-                return await method(player_id_uuid)
+                afn = cast(Callable[[uuid.UUID], Awaitable[object]], lookup)
+                return cast(Player | None, await afn(player_id_uuid))
             logger.debug("Using sync get_player", player_id=player_id_uuid)
-            return method(player_id_uuid)
+            sfn = cast(Callable[[uuid.UUID], object], lookup)
+            return cast(Player | None, sfn(player_id_uuid))
         logger.error(
             "Persistence layer has neither get_player nor get_player_by_id",
             persistence_type=type(self.persistence).__name__,
@@ -84,7 +110,7 @@ class TargetResolutionService:  # pylint: disable=too-few-public-methods  # Reas
         return None
 
     def _validate_player_and_room(
-        self, player: Any | None, player_id_uuid: uuid.UUID
+        self, player: Player | None, player_id_uuid: uuid.UUID
     ) -> tuple[str | None, TargetResolutionResult | None]:
         """Validate player exists and is in a room. Returns (room_id, error_result)."""
         if not player:
@@ -93,9 +119,7 @@ class TargetResolutionService:  # pylint: disable=too-few-public-methods  # Reas
                 success=False, error_message="Player not found", search_term="", room_id=""
             )
 
-        room_id = player.current_room_id
-        if room_id is not None:
-            room_id = str(room_id)
+        room_id = str(player.current_room_id)
         if not room_id:
             logger.warning("Player not in a room", player_id=player_id_uuid)
             return None, TargetResolutionResult(
@@ -157,6 +181,35 @@ class TargetResolutionService:  # pylint: disable=too-few-public-methods  # Reas
             room_id=room_id,
         )
 
+    async def _gather_room_target_matches(
+        self,
+        room_id: str,
+        clean_target: str,
+        disambiguation_suffix: str | None,
+        player_id_uuid: uuid.UUID,
+        target_name: str,
+    ) -> list[TargetMatch]:
+        """Run player and NPC searches and log aggregate resolution stats."""
+        logger.debug("About to search players in room", room_id=room_id, target_name=clean_target)
+        player_matches = await self._search_players_in_room(room_id, clean_target, disambiguation_suffix)
+        logger.debug("Player search completed", room_id=room_id, matches_count=len(player_matches))
+
+        logger.debug("About to search NPCs in room", room_id=room_id, target_name=clean_target)
+        npc_matches = await self._search_npcs_in_room(room_id, clean_target, disambiguation_suffix)
+        logger.debug("NPC search completed", room_id=room_id, matches_count=len(npc_matches))
+
+        matches = player_matches + npc_matches
+        logger.debug(
+            "Target resolution completed",
+            player_id=player_id_uuid,
+            target_name=target_name,
+            room_id=room_id,
+            player_matches=len(player_matches),
+            npc_matches=len(npc_matches),
+            total_matches=len(matches),
+        )
+        return matches
+
     async def resolve_target(self, player_id: uuid.UUID | str, target_name: str) -> TargetResolutionResult:
         """
         Resolve a target name to specific entities.
@@ -196,26 +249,39 @@ class TargetResolutionService:  # pylint: disable=too-few-public-methods  # Reas
                 success=False, error_message="No target specified", search_term=target_name, room_id=room_id
             )
 
-        logger.debug("About to search players in room", room_id=room_id, target_name=clean_target)
-        player_matches = await self._search_players_in_room(room_id, clean_target, disambiguation_suffix)
-        logger.debug("Player search completed", room_id=room_id, matches_count=len(player_matches))
-
-        logger.debug("About to search NPCs in room", room_id=room_id, target_name=clean_target)
-        npc_matches = await self._search_npcs_in_room(room_id, clean_target, disambiguation_suffix)
-        logger.debug("NPC search completed", room_id=room_id, matches_count=len(npc_matches))
-
-        matches = player_matches + npc_matches
-        logger.debug(
-            "Target resolution completed",
-            player_id=player_id_uuid,
-            target_name=target_name,
-            room_id=room_id,
-            player_matches=len(player_matches),
-            npc_matches=len(npc_matches),
-            total_matches=len(matches),
+        matches = await self._gather_room_target_matches(
+            room_id, clean_target, disambiguation_suffix, player_id_uuid, target_name
         )
-
         return self._build_target_result(matches, target_name, room_id, disambiguation_suffix)
+
+    async def _fetch_players_in_room(self, room_id: str) -> list[Player]:
+        """Load players in room via persistence (async or sync ``get_players_in_room``)."""
+        raw: object = self.persistence
+        method: object = cast(object, getattr(raw, "get_players_in_room"))  # noqa: B009
+        logger.debug(
+            "_search_players_in_room: Checking method type",
+            room_id=room_id,
+            method="get_players_in_room",
+            persistence_type=type(raw).__name__,
+        )
+        is_async = inspect.iscoroutinefunction(method)
+        logger.debug(
+            "_search_players_in_room: Method check result",
+            room_id=room_id,
+            is_async=is_async,
+            method_type=type(method).__name__,
+        )
+        if is_async:
+            logger.debug("_search_players_in_room: Using async method", room_id=room_id)
+            afn = cast(Callable[[str], Awaitable[object]], method)
+            players_raw = await afn(room_id)
+            logger.debug("_search_players_in_room: Async method completed", room_id=room_id)
+        else:
+            logger.debug("_search_players_in_room: Using sync method in thread pool", room_id=room_id)
+            sfn = cast(Callable[[str], object], method)
+            players_raw = await asyncio.to_thread(sfn, room_id)
+            logger.debug("_search_players_in_room: Thread pool method completed", room_id=room_id)
+        return list(cast(Sequence[Player], players_raw))
 
     async def _search_players_in_room(
         self, room_id: str, target_name: str, disambiguation_suffix: str | None = None
@@ -224,44 +290,13 @@ class TargetResolutionService:  # pylint: disable=too-few-public-methods  # Reas
         try:
             logger.debug("_search_players_in_room: Starting", room_id=room_id, target_name=target_name)
             logger.debug("_search_players_in_room: Getting players in room", room_id=room_id)
-            # Check if persistence layer has async method (AsyncPersistenceLayer)
-            import inspect
-
-            method = self.persistence.get_players_in_room
-            logger.debug(
-                "_search_players_in_room: Checking method type",
-                room_id=room_id,
-                method="get_players_in_room",
-                persistence_type=type(self.persistence).__name__,
-            )
-            is_async = inspect.iscoroutinefunction(method)
-            logger.debug(
-                "_search_players_in_room: Method check result",
-                room_id=room_id,
-                is_async=is_async,
-                method_type=type(method).__name__,
-            )
-            if is_async:
-                # Use async method directly (no thread pool needed, no lock blocking)
-                logger.debug("_search_players_in_room: Using async method", room_id=room_id)
-                # Protocol defines method as sync, but runtime check confirms it's async
-                players_in_room = await method(room_id)  # type: ignore[misc]  # Reason: Protocol defines method as sync, but runtime check confirms it's async, type checker cannot infer runtime behavior
-                logger.debug("_search_players_in_room: Async method completed", room_id=room_id)
-            else:
-                # Use sync method in thread pool to avoid blocking event loop
-                # Note: This may still block if the lock is held by another thread
-                logger.debug("_search_players_in_room: Using sync method in thread pool", room_id=room_id)
-                players_in_room = await asyncio.to_thread(method, room_id)
-                logger.debug("_search_players_in_room: Thread pool method completed", room_id=room_id)
+            players_in_room = await self._fetch_players_in_room(room_id)
             logger.debug("_search_players_in_room: Got players", room_id=room_id, player_count=len(players_in_room))
-            matches = []
+            matches: list[TargetMatch] = []
 
             for player in players_in_room:
                 if target_name in player.name.lower():
-                    # Check if this is an exact match with disambiguation suffix
                     if disambiguation_suffix:
-                        # For now, we'll use a simple numbering system
-                        # In a real implementation, you might want more sophisticated logic
                         continue
 
                     matches.append(
@@ -274,21 +309,8 @@ class TargetResolutionService:  # pylint: disable=too-few-public-methods  # Reas
                         )
                     )
 
-            # Add disambiguation suffixes if multiple players have the same name
             if len(matches) > 1:
-                name_counts: dict[str, int] = {}
-                for match in matches:
-                    name_counts[match.target_name] = name_counts.get(match.target_name, 0) + 1
-
-                # Add suffixes for duplicate names
-                name_suffixes = {}
-                for match in matches:
-                    if name_counts[match.target_name] > 1:
-                        if match.target_name not in name_suffixes:
-                            name_suffixes[match.target_name] = 1
-                        else:
-                            name_suffixes[match.target_name] += 1
-                        match.disambiguation_suffix = f"-{name_suffixes[match.target_name]}"
+                matches = self._add_disambiguation_suffixes(matches)
 
             logger.debug("_search_players_in_room: Returning matches", room_id=room_id, matches_count=len(matches))
             return matches
@@ -299,52 +321,52 @@ class TargetResolutionService:  # pylint: disable=too-few-public-methods  # Reas
 
     def _validate_room_exists(self, room_id: str) -> bool:
         """Validate that a room exists using persistence layer."""
-        import inspect
-
-        # Check if persistence layer has async method (AsyncPersistenceLayer)
-        if hasattr(self.persistence, "get_room_by_id"):
-            method = self.persistence.get_room_by_id
-            if inspect.iscoroutinefunction(method):
+        raw: object = self.persistence
+        if hasattr(raw, "get_room_by_id"):
+            room_fn: object = cast(object, getattr(raw, "get_room_by_id"))  # noqa: B009
+            if inspect.iscoroutinefunction(room_fn):
                 logger.debug("Using async get_room_by_id", room_id=room_id)
-                # Note: This is called from async context, but we can't await here
-                # The caller will handle the async call
                 return True
             logger.debug("Using sync get_room_by_id", room_id=room_id)
-            room = method(room_id)
+            sfn = cast(Callable[[str], object], room_fn)
+            room = sfn(room_id)
             return room is not None
-        if hasattr(self.persistence, "get_room"):
-            method = self.persistence.get_room
-            if inspect.iscoroutinefunction(method):
+        if hasattr(raw, "get_room"):
+            room_fn = cast(object, getattr(raw, "get_room"))  # noqa: B009
+            if inspect.iscoroutinefunction(room_fn):
                 logger.debug("Using async get_room", room_id=room_id)
                 return True
             logger.debug("Using sync get_room", room_id=room_id)
-            room = method(room_id)
+            sfn = cast(Callable[[str], object], room_fn)
+            room = sfn(room_id)
             return room is not None
-        # If persistence layer doesn't have get_room, skip validation
         logger.debug(
             "Persistence layer has no get_room method, skipping room validation",
             persistence_type=type(self.persistence).__name__,
             room_id=room_id,
         )
-        return True  # Assume room exists if we can't validate
+        return True
 
     async def _validate_room_exists_async(self, room_id: str) -> bool:
         """Validate that a room exists using async persistence layer."""
-        import inspect
-
-        if hasattr(self.persistence, "get_room_by_id"):
-            method = self.persistence.get_room_by_id
-            if inspect.iscoroutinefunction(method):
-                room = await method(room_id)
+        raw: object = self.persistence
+        if hasattr(raw, "get_room_by_id"):
+            room_fn: object = cast(object, getattr(raw, "get_room_by_id"))  # noqa: B009
+            if inspect.iscoroutinefunction(room_fn):
+                afn = cast(Callable[[str], Awaitable[object]], room_fn)
+                room = await afn(room_id)
                 return room is not None
-            room = method(room_id)
+            sfn = cast(Callable[[str], object], room_fn)
+            room = sfn(room_id)
             return room is not None
-        if hasattr(self.persistence, "get_room"):
-            method = self.persistence.get_room
-            if inspect.iscoroutinefunction(method):
-                room = await method(room_id)
+        if hasattr(raw, "get_room"):
+            room_fn = cast(object, getattr(raw, "get_room"))  # noqa: B009
+            if inspect.iscoroutinefunction(room_fn):
+                afn = cast(Callable[[str], Awaitable[object]], room_fn)
+                room = await afn(room_id)
                 return room is not None
-            room = method(room_id)
+            sfn = cast(Callable[[str], object], room_fn)
+            room = sfn(room_id)
             return room is not None
         return True
 
@@ -354,7 +376,7 @@ class TargetResolutionService:  # pylint: disable=too-few-public-methods  # Reas
 
     def _match_npcs_by_name(self, npc_ids: list[str], target_name: str, room_id: str) -> list[TargetMatch]:
         """Match NPCs by name and create TargetMatch objects."""
-        matches = []
+        matches: list[TargetMatch] = []
         normalized_target = self._normalize_name_for_matching(target_name)
 
         for npc_id in npc_ids:
@@ -391,8 +413,7 @@ class TargetResolutionService:  # pylint: disable=too-few-public-methods  # Reas
         for match in matches:
             name_counts[match.target_name] = name_counts.get(match.target_name, 0) + 1
 
-        # Add suffixes for duplicate names
-        name_suffixes = {}
+        name_suffixes: dict[str, int] = {}
         for match in matches:
             if name_counts[match.target_name] > 1:
                 if match.target_name not in name_suffixes:
@@ -403,30 +424,58 @@ class TargetResolutionService:  # pylint: disable=too-few-public-methods  # Reas
 
         return matches
 
+    @staticmethod
+    def _npc_ids_in_room_from_active_map(active_npcs: Mapping[str, NPCBase], room_id: str) -> list[str]:
+        """Collect NPC ids whose current room matches ``room_id``."""
+        npc_ids: list[str] = []
+        for npc_id, npc in active_npcs.items():
+            current_room = getattr(npc, "current_room", None)
+            current_room_id = getattr(npc, "current_room_id", None)
+            npc_room_id = current_room or current_room_id
+            if npc_room_id == room_id:
+                npc_ids.append(npc_id)
+        return npc_ids
+
     def _get_npcs_from_lifecycle_manager(self, room_id: str) -> list[str]:
         """Get NPC IDs from lifecycle manager for a room."""
         try:
             from ..services.npc_instance_service import get_npc_instance_service
 
             npc_instance_service = get_npc_instance_service()
-            if npc_instance_service and hasattr(npc_instance_service, "lifecycle_manager"):
-                lifecycle_manager = npc_instance_service.lifecycle_manager
-                if lifecycle_manager and hasattr(lifecycle_manager, "active_npcs"):
-                    active_npcs_dict = lifecycle_manager.active_npcs
-                    npc_ids = []
-                    for npc_id, npc in active_npcs_dict.items():
-                        current_room = getattr(npc, "current_room", None)
-                        current_room_id = getattr(npc, "current_room_id", None)
-                        npc_room_id = current_room or current_room_id
-                        if npc_room_id == room_id:
-                            npc_ids.append(npc_id)
-                    return npc_ids
+            if not npc_instance_service or not hasattr(npc_instance_service, "lifecycle_manager"):
+                return []
+            lifecycle_manager = npc_instance_service.lifecycle_manager
+            if not lifecycle_manager or not hasattr(lifecycle_manager, "active_npcs"):
+                return []
+            active_npcs_dict = cast(Mapping[str, NPCBase], lifecycle_manager.active_npcs)
+            return self._npc_ids_in_room_from_active_map(active_npcs_dict, room_id)
         except Exception as npc_query_error:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC query errors unpredictable, must fallback to room.get_npcs()
             logger.warning(
                 "Error querying NPCs from lifecycle manager, falling back to room.get_npcs()",
                 room_id=room_id,
                 error=str(npc_query_error),
             )
+        return []
+
+    async def _load_npc_ids_with_room_fallback(self, room_id: str) -> list[str]:
+        """NPC ids from lifecycle manager, else from room.get_npcs() via persistence."""
+        npc_ids = self._get_npcs_from_lifecycle_manager(room_id)
+        if npc_ids:
+            return npc_ids
+
+        raw: object = self.persistence
+        if not hasattr(raw, "get_room_by_id"):
+            return []
+        room_fn: object = cast(object, getattr(raw, "get_room_by_id"))  # noqa: B009
+        if inspect.iscoroutinefunction(room_fn):
+            afn = cast(Callable[[str], Awaitable[object]], room_fn)
+            room = await afn(room_id)
+        else:
+            sfn = cast(Callable[[str], object], room_fn)
+            room = sfn(room_id)
+        if room is not None and hasattr(room, "get_npcs"):
+            get_npcs = cast(Callable[[], list[str]], cast(object, getattr(room, "get_npcs")))  # noqa: B009
+            return list(get_npcs())
         return []
 
     async def _search_npcs_in_room(
@@ -437,30 +486,12 @@ class TargetResolutionService:  # pylint: disable=too-few-public-methods  # Reas
     ) -> list[TargetMatch]:
         """Search for NPCs in the specified room."""
         try:
-            # Validate room exists
             room_exists = await self._validate_room_exists_async(room_id)
             if not room_exists:
                 logger.debug("Room not found", room_id=room_id)
                 return []
 
-            matches = []
-            # CRITICAL FIX: Query NPCs from lifecycle manager instead of Room instance
-            # Room instances are recreated from persistence and lose in-memory NPC tracking
-            # NPCs are actually tracked in the lifecycle manager with their current_room_id
-            npc_ids = self._get_npcs_from_lifecycle_manager(room_id)
-
-            # Fallback to room.get_npcs() if lifecycle manager query fails
-            if not npc_ids:
-                import inspect
-
-                if hasattr(self.persistence, "get_room_by_id"):
-                    method = self.persistence.get_room_by_id
-                    if inspect.iscoroutinefunction(method):
-                        room = await method(room_id)
-                    else:
-                        room = method(room_id)
-                    if room and hasattr(room, "get_npcs"):
-                        npc_ids = room.get_npcs()
+            npc_ids = await self._load_npc_ids_with_room_fallback(room_id)
 
             logger.debug(
                 "Searching NPCs in room",
@@ -472,7 +503,6 @@ class TargetResolutionService:  # pylint: disable=too-few-public-methods  # Reas
 
             matches = self._match_npcs_by_name(npc_ids, target_name, room_id)
 
-            # Add disambiguation suffixes if multiple NPCs have the same name
             if len(matches) > 1:
                 matches = self._add_disambiguation_suffixes(matches)
 

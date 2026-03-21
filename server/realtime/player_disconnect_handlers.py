@@ -7,14 +7,21 @@ player removal from rooms and tracking systems.
 
 import time
 import uuid
-from typing import Any
+from typing import TYPE_CHECKING, cast
 
 from anyio import sleep
+from structlog.stdlib import BoundLogger
 
+from ..async_persistence import AsyncPersistenceLayer
+from ..models import Player
+from ..models.room import Room
 from ..structured_logging.enhanced_logging_config import get_logger
 from .player_presence_utils import extract_player_name
 
-logger = get_logger(__name__)
+if TYPE_CHECKING:
+    from .connection_manager import ConnectionManager
+
+logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
 
 # Sessions age off 5 minutes after disconnect; reconnects purge old sessions immediately
 SESSION_AGE_OFF_SECONDS = 300
@@ -24,7 +31,7 @@ async def handle_player_disconnect_broadcast(
     player_id: uuid.UUID,
     player_name: str | None,
     room_id: str | None,
-    manager: Any,  # ConnectionManager - avoiding circular import
+    manager: "ConnectionManager",
 ) -> None:
     """
     Handle broadcasting disconnect events when a player disconnects.
@@ -35,8 +42,9 @@ async def handle_player_disconnect_broadcast(
         room_id: The room ID (if any)
         manager: ConnectionManager instance
     """
-    if room_id and manager.async_persistence:
-        room = manager.async_persistence.get_room_by_id(room_id)  # Sync method, uses cache
+    persistence = cast(AsyncPersistenceLayer | None, manager.async_persistence)
+    if room_id and persistence:
+        room: Room | None = persistence.get_room_by_id(room_id)  # Sync method, uses cache
         if room:
             player_id_str = str(player_id)
             if room.has_player(player_id_str):
@@ -61,10 +69,10 @@ async def handle_player_disconnect_broadcast(
             player_id=player_id,
             room_id=room_id,
         )
-        await manager.broadcast_to_room(room_id, left_event, exclude_player=player_id)
+        _ = await manager.broadcast_to_room(room_id, left_event, exclude_player=player_id)
 
 
-def _collect_disconnect_keys(player_id: uuid.UUID, player: Any) -> tuple[set[uuid.UUID], set[str]]:
+def _collect_disconnect_keys(player_id: uuid.UUID, player: Player | None) -> tuple[set[uuid.UUID], set[str]]:
     """
     Collect all keys (UUID and string) that need to be removed for player disconnection.
 
@@ -86,7 +94,7 @@ def _collect_disconnect_keys(player_id: uuid.UUID, player: Any) -> tuple[set[uui
         if isinstance(canonical_id, uuid.UUID):
             keys_to_remove.add(canonical_id)
         else:
-            keys_to_remove_str.add(str(canonical_id))
+            keys_to_remove_str.add(str(cast(object, canonical_id)))
 
     player_name = extract_player_name(player, player_id)
     if player_name:
@@ -98,7 +106,7 @@ def _collect_disconnect_keys(player_id: uuid.UUID, player: Any) -> tuple[set[uui
 def _remove_player_from_online_tracking(
     keys_to_remove: set[uuid.UUID],
     keys_to_remove_str: set[str],
-    manager: Any,
+    manager: "ConnectionManager",
 ) -> None:
     """
     Remove player from online tracking and room presence.
@@ -112,14 +120,14 @@ def _remove_player_from_online_tracking(
     for key in list(keys_to_remove):
         if key in manager.online_players:
             del manager.online_players[key]
-        manager.room_manager.remove_player_from_all_rooms(str(key))
+        _ = manager.room_manager.remove_player_from_all_rooms(str(key))
 
     # Remove string keys
     for str_key in keys_to_remove_str:
-        manager.room_manager.remove_player_from_all_rooms(str_key)
+        _ = manager.room_manager.remove_player_from_all_rooms(str_key)
 
 
-def _cleanup_player_references(player_id: uuid.UUID, manager: Any) -> None:
+def _cleanup_player_references(player_id: uuid.UUID, manager: "ConnectionManager") -> None:
     """
     Clean up all remaining player references.
 
@@ -131,25 +139,32 @@ def _cleanup_player_references(player_id: uuid.UUID, manager: Any) -> None:
         del manager.online_players[player_id]
     if player_id in manager.last_seen:
         del manager.last_seen[player_id]
-    manager.last_active_update_times.pop(player_id, None)
+    _ = manager.last_active_update_times.pop(player_id, None)
     manager.rate_limiter.remove_player_data(str(player_id))
     manager.message_queue.remove_player_messages(str(player_id))
 
     # H2 fix: Mark session for aging (5 min TTL). Reconnects purge old sessions immediately.
-    player_sessions = getattr(manager, "player_sessions", None)
-    session_disconnect_times = getattr(manager, "session_disconnect_times", None)
-    if player_sessions is not None and session_disconnect_times is not None and player_id in player_sessions:
-        session_id = player_sessions[player_id]
+    player_sessions = manager.player_sessions
+    session_disconnect_times = manager.session_disconnect_times
+    if player_id in player_sessions:
+        session_id: str = player_sessions[player_id]
         session_disconnect_times[session_id] = time.time()
         # Keep player_sessions and session_connections; reconnect purges, else age off in cleanup
 
     # H1 fix: Allow processed_disconnects to shrink so it does not grow unbounded
-    processed = getattr(manager, "processed_disconnects", None)
-    if processed is not None and player_id in processed:
-        processed.discard(player_id)
+    if player_id in manager.processed_disconnects:
+        manager.processed_disconnects.discard(player_id)
 
 
-def age_off_disconnected_sessions(manager: Any) -> int:
+# Referenced here so pyright sees use in-module; player_presence_tracker imports these names.
+_DISCONNECT_HELPERS_FOR_EXPORT = (
+    _collect_disconnect_keys,
+    _remove_player_from_online_tracking,
+    _cleanup_player_references,
+)
+
+
+def age_off_disconnected_sessions(manager: object) -> int:
     """
     Remove sessions that have been disconnected for more than SESSION_AGE_OFF_SECONDS.
 
@@ -164,22 +179,28 @@ def age_off_disconnected_sessions(manager: Any) -> int:
     session_connections = getattr(manager, "session_connections", None)
     if not all((session_disconnect_times, player_sessions, session_connections)):
         return 0
+    # Pyright does not narrow through all(); asserts document invariants and unlock .items().
     assert session_disconnect_times is not None
     assert player_sessions is not None
     assert session_connections is not None
 
+    # getattr(..., None) is Any; cast to ConnectionManager shapes for typed iteration.
+    disconnect_times = cast(dict[str, float], session_disconnect_times)
+    sessions_by_player = cast(dict[uuid.UUID, str], player_sessions)
+    connections_by_session = cast(dict[str, list[str]], session_connections)
+
     now = time.time()
     expired: list[str] = []
-    for session_id, disconnect_time in list(session_disconnect_times.items()):
+    for session_id, disconnect_time in list(disconnect_times.items()):
         if now - disconnect_time >= SESSION_AGE_OFF_SECONDS:
             expired.append(session_id)
 
     for session_id in expired:
-        session_disconnect_times.pop(session_id, None)
-        session_connections.pop(session_id, None)
-        for pid, sid in list(player_sessions.items()):
+        _ = disconnect_times.pop(session_id, None)
+        _ = connections_by_session.pop(session_id, None)
+        for pid, sid in list(sessions_by_player.items()):
             if sid == session_id:
-                del player_sessions[pid]
+                del sessions_by_player[pid]
                 break
 
     return len(expired)

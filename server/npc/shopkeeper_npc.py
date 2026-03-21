@@ -4,7 +4,7 @@ Shopkeeper NPC type for MythosMUD.
 This module provides the ShopkeeperNPC class with buy/sell functionality.
 """
 
-from typing import TYPE_CHECKING, Any, cast, override
+from typing import TYPE_CHECKING, cast, override
 
 from structlog.stdlib import BoundLogger
 
@@ -18,19 +18,28 @@ if TYPE_CHECKING:
 logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
 
 
+def _shop_quantity(value: object, default: int = 0) -> int:
+    """Coerce inventory quantity from JSON-shaped dict values to int (excludes bool)."""
+    if isinstance(value, bool):
+        return default
+    if isinstance(value, int):
+        return value
+    return default
+
+
 class ShopkeeperNPC(NPCBase):
     """Shopkeeper NPC type with buy/sell functionality."""
 
     def __init__(
         self,
-        definition: Any,
+        definition: object,
         npc_id: str,
         event_bus: "EventBus | None" = None,
         event_reaction_system: "NPCEventReactionSystem | None" = None,
     ) -> None:
         """Initialize shopkeeper NPC."""
         super().__init__(definition, npc_id, event_bus, event_reaction_system)
-        self._shop_inventory: list[dict[str, Any]] = []
+        self._shop_inventory: list[dict[str, object]] = []
         self._buyable_items: dict[str, int] = {}  # item_id -> base_price
         self._setup_shopkeeper_behavior_rules()
 
@@ -63,11 +72,11 @@ class ShopkeeperNPC(NPCBase):
         """Get shopkeeper-specific behavior rules."""
         return self._behavior_engine.get_rules()
 
-    def get_shop_inventory(self) -> list[dict[str, Any]]:
+    def get_shop_inventory(self) -> list[dict[str, object]]:
         """Get shop inventory."""
         return self._shop_inventory.copy()
 
-    def add_shop_item(self, item: dict[str, Any]) -> bool:
+    def add_shop_item(self, item: dict[str, object]) -> bool:
         """Add item to shop inventory."""
         try:
             self._shop_inventory.append(item)
@@ -89,7 +98,7 @@ class ShopkeeperNPC(NPCBase):
             logger.error("Error adding buyable item", npc_id=self.npc_id, error=str(e), error_type=type(e).__name__)
             return False
 
-    def buy_from_player(self, player_id: str, item: dict[str, Any]) -> bool:
+    def buy_from_player(self, player_id: str, item: dict[str, object]) -> bool:
         """Buy item from player."""
         try:
             item_id = item.get("id")
@@ -110,10 +119,12 @@ class ShopkeeperNPC(NPCBase):
         try:
             # Find item in shop inventory
             for item in self._shop_inventory:
-                if item.get("id") == item_id and item.get("quantity", 0) >= quantity:
-                    # Reduce quantity
-                    item["quantity"] = item.get("quantity", 0) - quantity
-                    if item["quantity"] <= 0:
+                qty = _shop_quantity(item.get("quantity"), 0)
+                if item.get("id") == item_id and qty >= quantity:
+                    # Reduce quantity (use int local; dict values are object-typed)
+                    remaining = qty - quantity
+                    item["quantity"] = remaining
+                    if remaining <= 0:
                         self._shop_inventory.remove(item)
 
                     logger.info(
@@ -135,15 +146,15 @@ class ShopkeeperNPC(NPCBase):
         """Calculate final price with markup."""
         if markup is None:
             raw = self._behavior_config.get("markup", 1.0)
-            markup = float(raw) if isinstance(raw, (int, float)) else 1.0
+            markup = float(raw) if isinstance(raw, int | float) else 1.0
         return int(base_price * markup)
 
-    def _handle_greet_customer(self, _context: dict[str, Any]) -> bool:
+    def _handle_greet_customer(self, _context: dict[str, object]) -> bool:
         """Handle greeting customer action."""
         _ = self.speak("Welcome to my shop! How may I help you today?")
         return True
 
-    def _handle_restock_inventory(self, _context: dict[str, Any]) -> bool:
+    def _handle_restock_inventory(self, _context: dict[str, object]) -> bool:
         """Handle restocking inventory action."""
         # Placeholder for restocking logic
         logger.debug("Restocking shop inventory", npc_id=self.npc_id)
