@@ -71,6 +71,11 @@ jobs:
             github_pat_*) token_user="x-access-token" ;;
             *) token_user="${git_user}" ;;
           esac
+          api_code=$(curl -sS -o /dev/null -w "%{http_code}" \
+            -H "Authorization: Bearer ${pat_trim}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY_OWNER}/mythosmud_data") || api_code="curl_fail"
+          echo "::notice::PAT API check mythosmud_data -> HTTP ${api_code} (200=OK; 401=bad token; 403=SSO or scope; 404=no access)"
           restore_plain_data_url() {
             git config --local submodule.data.url "${data_url}" 2>/dev/null || true
           }

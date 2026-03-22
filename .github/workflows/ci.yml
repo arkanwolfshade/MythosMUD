@@ -90,7 +90,12 @@ jobs:
             github_pat_*) token_user="x-access-token" ;;
             *) token_user="${git_user}" ;;
           esac
-          printf '%s\n' "{\"sessionId\":\"3051dc\",\"runId\":\"${GITHUB_RUN_ID}\",\"hypothesisId\":\"H2_H3\",\"location\":\"ci.yml:submodule\",\"message\":\"pat_shape\",\"data\":{\"pat_type\":\"${pt}\",\"len\":${#pat_trim},\"git_user\":\"${git_user}\",\"token_user\":\"${token_user}\",\"plain_data_url\":\"${data_url}\"}}" >>"${DBG}"
+          api_code=$(curl -sS -o /dev/null -w "%{http_code}" \
+            -H "Authorization: Bearer ${pat_trim}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY_OWNER}/mythosmud_data") || api_code="curl_fail"
+          echo "::notice::PAT API check mythosmud_data -> HTTP ${api_code} (200=OK; 401=bad token; 403=SSO or scope; 404=no access)"
+          printf '%s\n' "{\"sessionId\":\"3051dc\",\"runId\":\"${GITHUB_RUN_ID}\",\"hypothesisId\":\"H2_H3\",\"location\":\"ci.yml:submodule\",\"message\":\"pat_shape\",\"data\":{\"pat_type\":\"${pt}\",\"api_code\":\"${api_code}\",\"len\":${#pat_trim},\"git_user\":\"${git_user}\",\"token_user\":\"${token_user}\",\"plain_data_url\":\"${data_url}\"}}" >>"${DBG}"
           # #endregion
           echo "::notice::Submodule auth token_user=${token_user} pat_type=${pt} len=${#pat_trim}; URL-embedded userinfo (fine-grained uses x-access-token per GitHub HTTPS docs)."
           restore_plain_data_url() {
