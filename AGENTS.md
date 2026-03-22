@@ -41,8 +41,16 @@ single-file consolidated reference usable outside Cursor, see the repo root [CLA
 - Put Cursor implementation-plan markdown under `C:\Users\arkan\.cursor\plans` when the user asks for that location
 - For substantial implementation plans, include step 0 to create a new git worktree from the current branch for the
   work when the user wants that workflow
+- For basedpyright `reportAny` in Python tests without file-level `reportAny` suppression, prefer typed locals (for
+  example `svc: AsyncMock = AsyncMock()` or `persistence: MagicMock = MagicMock()`) assigned onto handler-shaped mocks
+  instead of only `handler.svc = AsyncMock()`
+- When Game Info shows HP or combat text but Character Panel meters lag, inspect `projectEvent` and ui-v2 projector
+  handlers so `GameState.player` is updated from the event payload, not only the message log
 
 ## Learned Workspace Facts
 
-- Chats in this workspace often reference the MythosMUD clone at `f:\projects\MythosMUD`; confirm which checkout is
-  active before editing if multiple copies exist
+- MythosMUD may exist in more than one directory (for example `f:\projects\MythosMUD` and `F:\MythosMUD`); align the
+  Cursor workspace root with where you run tests and apply edits, or tooling and the editor can diverge
+- Client ui-v2 real-time UI is driven from WebSocket events through the event projector under
+  `client/src/components/ui-v2/eventLog` into `GameState`; desyncs between log lines and meters often mean missing
+  merges in the projector, not only panel components
