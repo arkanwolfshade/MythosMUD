@@ -48,11 +48,15 @@ jobs:
             echo "::error::SUBMODULE_PAT is empty after trimming; re-save the repository secret."
             exit 1
           fi
+          case "${pat_trim}" in
+            github_pat_*) token_user="x-access-token" ;;
+            *) token_user="${git_user}" ;;
+          esac
           restore_plain_data_url() {
             git config --local submodule.data.url "${data_url}" 2>/dev/null || true
           }
           trap restore_plain_data_url EXIT
-          export AUTH_USER="${git_user}"
+          export AUTH_USER="${token_user}"
           export AUTH_PAT="${pat_trim}"
           export AUTH_REST="${data_url#https://}"
           auth_url=$(python3 <<'PY'

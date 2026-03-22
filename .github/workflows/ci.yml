@@ -86,14 +86,18 @@ jobs:
           DBG="${GITHUB_WORKSPACE}/debug-3051dc.log"
           pt="unknown"
           case "${pat_trim}" in github_pat_*) pt="fine_grained" ;; ghp_*) pt="classic" ;; esac
-          printf '%s\n' "{\"sessionId\":\"3051dc\",\"runId\":\"${GITHUB_RUN_ID}\",\"hypothesisId\":\"H2_H3\",\"location\":\"ci.yml:submodule\",\"message\":\"pat_shape\",\"data\":{\"pat_type\":\"${pt}\",\"len\":${#pat_trim},\"git_user\":\"${git_user}\",\"plain_data_url\":\"${data_url}\"}}" >>"${DBG}"
+          case "${pat_trim}" in
+            github_pat_*) token_user="x-access-token" ;;
+            *) token_user="${git_user}" ;;
+          esac
+          printf '%s\n' "{\"sessionId\":\"3051dc\",\"runId\":\"${GITHUB_RUN_ID}\",\"hypothesisId\":\"H2_H3\",\"location\":\"ci.yml:submodule\",\"message\":\"pat_shape\",\"data\":{\"pat_type\":\"${pt}\",\"len\":${#pat_trim},\"git_user\":\"${git_user}\",\"token_user\":\"${token_user}\",\"plain_data_url\":\"${data_url}\"}}" >>"${DBG}"
           # #endregion
-          echo "::notice::Submodule auth user=${git_user} pat_type=${pt} len=${#pat_trim}; URL-embedded userinfo (H8 global extraheader still no auth on clone per run 23410333934)."
+          echo "::notice::Submodule auth token_user=${token_user} pat_type=${pt} len=${#pat_trim}; URL-embedded userinfo (fine-grained uses x-access-token per GitHub HTTPS docs)."
           restore_plain_data_url() {
             git config --local submodule.data.url "${data_url}" 2>/dev/null || true
           }
           trap restore_plain_data_url EXIT
-          export AUTH_USER="${git_user}"
+          export AUTH_USER="${token_user}"
           export AUTH_PAT="${pat_trim}"
           export AUTH_REST="${data_url#https://}"
           auth_url=$(python3 <<'PY'

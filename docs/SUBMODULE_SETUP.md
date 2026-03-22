@@ -111,8 +111,10 @@ Since the `mythosmud_data` repository is private, the GitHub Actions workflows n
    `git submodule update --init -- data` (only the `data` submodule; avoids stray gitlinks such as `tmp`), then
    restores the plain URL in `.git/config` (`trap` on exit). On hosted runners, submodule `git clone` did not use
    superproject `--local` config, `GIT_CONFIG_*`, or even **`http.https://github.com/.extraheader`** (_could not read
-   Username_ in logs, e.g. run `23410333934`). Override username via **`MYTHOSMUD_GIT_USERNAME`** if the PAT owner is not
-   `github.repository_owner`.
+   Username_ in logs, e.g. run `23410333934`). With URL embedding, GitHub then rejected **`arkanwolfshade:github_pat_…`**
+   (_Invalid username or token_, run `23410388787`); for **fine-grained** PATs the HTTPS username must be
+   **`x-access-token`**, not the repository owner. Classic **`ghp_`** tokens use **`MYTHOSMUD_GIT_USERNAME`** or
+   **`github.repository_owner`** as the username.
 
 4. **PAT scope**: Fine-grained PAT needs **Contents: Read** on `arkanwolfshade/mythosmud_data` only; it does **not** need
    access to `MythosMUD` for CI.
@@ -178,11 +180,15 @@ jobs:
           data_url="$(git config -f .gitmodules --get submodule.data.url)"
           git_user="${MYTHOSMUD_GIT_USERNAME:-${GITHUB_REPOSITORY_OWNER}}"
           pat_trim=$(printf '%s' "$SUBMODULE_PAT" | tr -d '\r\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+          case "${pat_trim}" in
+            github_pat_*) token_user="x-access-token" ;;
+            *) token_user="${git_user}" ;;
+          esac
           restore_plain_data_url() {
             git config --local submodule.data.url "${data_url}" 2>/dev/null || true
           }
           trap restore_plain_data_url EXIT
-          export AUTH_USER="${git_user}" AUTH_PAT="${pat_trim}" AUTH_REST="${data_url#https://}"
+          export AUTH_USER="${token_user}" AUTH_PAT="${pat_trim}" AUTH_REST="${data_url#https://}"
           auth_url=$(python3 <<'PY'
           import os, urllib.parse
           u, p, r = os.environ["AUTH_USER"], os.environ["AUTH_PAT"], os.environ["AUTH_REST"]
