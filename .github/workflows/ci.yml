@@ -75,15 +75,50 @@ jobs:
             exit 1
           fi
           data_url="$(git config -f .gitmodules --get submodule.data.url)"
-          # Fine-grained PATs: GitHub expects token owner username as HTTP user, not x-access-token (rejects with
-          # Invalid username or token). Classic ghp_ PATs also work with this form. Override via MYTHOSMUD_GIT_USERNAME
-          # when the PAT owner is not github.repository_owner (e.g. user PAT on org-owned submodule).
           git_user="${MYTHOSMUD_GIT_USERNAME:-${GITHUB_REPOSITORY_OWNER}}"
-          auth_url="https://${git_user}:${SUBMODULE_PAT}@${data_url#https://}"
-          echo "::notice::Submodule HTTPS username: ${git_user} (set MYTHOSMUD_GIT_USERNAME if PAT owner differs from repository owner)."
+          # Trim newlines/whitespace from pasted secrets (H2).
+          pat_trim=$(printf '%s' "$SUBMODULE_PAT" | tr -d '\r\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+          if [ -z "${pat_trim}" ]; then
+            echo "::error::SUBMODULE_PAT is empty after trimming; re-save the repository secret."
+            exit 1
+          fi
+          # #region agent log
+          DBG="${GITHUB_WORKSPACE}/debug-3051dc.log"
+          pt="unknown"
+          case "${pat_trim}" in github_pat_*) pt="fine_grained" ;; ghp_*) pt="classic" ;; esac
+          printf '%s\n' "{\"sessionId\":\"3051dc\",\"runId\":\"${GITHUB_RUN_ID}\",\"hypothesisId\":\"H2_H3\",\"location\":\"ci.yml:submodule\",\"message\":\"pat_shape\",\"data\":{\"pat_type\":\"${pt}\",\"len\":${#pat_trim},\"git_user\":\"${git_user}\",\"plain_data_url\":\"${data_url}\"}}" >>"${DBG}"
+          # #endregion
+          echo "::notice::Submodule auth user=${git_user} pat_type=${pt} len=${#pat_trim}. Using Authorization basic header (H1 URL-embed vs H4 extraheader)."
           git submodule sync --recursive
-          git config --local submodule.data.url "${auth_url}"
-          GIT_TERMINAL_PROMPT=0 git submodule update --init --recursive
+          git config --local submodule.data.url "${data_url}"
+          git config --local --unset-all http.https://github.com/.extraheader 2>/dev/null || true
+          basic_b64=$(printf '%s:%s' "${git_user}" "${pat_trim}" | base64 -w0)
+          # #region agent log
+          printf '%s\n' "{\"sessionId\":\"3051dc\",\"hypothesisId\":\"H1\",\"message\":\"basic_b64\",\"data\":{\"b64_len\":${#basic_b64}}}" >>"${DBG}"
+          # #endregion
+          git config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ${basic_b64}"
+          if GIT_TERMINAL_PROMPT=0 git -c credential.helper= submodule update --init --recursive; then
+            # #region agent log
+            printf '%s\n' "{\"sessionId\":\"3051dc\",\"hypothesisId\":\"H4\",\"message\":\"submodule_update\",\"data\":{\"exit_code\":0}}" >>"${DBG}"
+            # #endregion
+            :
+          else
+            rc=$?
+            # #region agent log
+            printf '%s\n' "{\"sessionId\":\"3051dc\",\"hypothesisId\":\"H3\",\"message\":\"submodule_update\",\"data\":{\"exit_code\":${rc}}}" >>"${DBG}"
+            # #endregion
+            echo "::error::git submodule update failed (exit ${rc}). If PAT is valid, check fine-grained repo access to mythosmud_data, expiry, and SAML SSO token authorization."
+            exit "${rc}"
+          fi
+          git config --local --unset-all http.https://github.com/.extraheader 2>/dev/null || true
+
+      - name: Upload submodule debug log
+        if: always()
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: debug-submodule-3051dc
+          path: debug-3051dc.log
+          if-no-files-found: ignore
 
       - name: Set up Python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0

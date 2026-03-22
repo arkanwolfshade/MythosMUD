@@ -107,10 +107,10 @@ Since the `mythosmud_data` repository is private, the GitHub Actions workflows n
 
 3. **Split checkout (workflows)**: `actions/checkout` uses `submodules: false` and `github.token` for the parent repo.
    A follow-up step runs `git submodule sync`, sets `submodule.data.url` to an authenticated HTTPS URL, then
-   `git submodule update --init`. The URL uses **`https://<github_username>:<PAT>@github.com/...`**. For fine-grained
-   PATs, GitHub requires the **GitHub username of the account that owns the token** (not `x-access-token`); otherwise
-   Git returns _Invalid username or token_. Workflows default the username to `github.repository_owner`; if your PAT
-   belongs to a different user, add repository secret **`MYTHOSMUD_GIT_USERNAME`** with that login.
+   `git submodule update --init`. CI sets the plain submodule URL from `.gitmodules`, then configures
+   `http.https://github.com/.extraheader` to `Authorization: basic base64(<username>:<PAT>)` (same pattern as
+   `actions/checkout`), because embedding `user:pat@` in the URL still produced _Invalid username or token_ on the
+   runner. Override username via **`MYTHOSMUD_GIT_USERNAME`** if the PAT owner is not `github.repository_owner`.
 
 4. **PAT scope**: Fine-grained PAT needs **Contents: Read** on `arkanwolfshade/mythosmud_data` only; it does **not** need
    access to `MythosMUD` for CI.
@@ -175,10 +175,13 @@ jobs:
           set -euo pipefail
           data_url="$(git config -f .gitmodules --get submodule.data.url)"
           git_user="${MYTHOSMUD_GIT_USERNAME:-${GITHUB_REPOSITORY_OWNER}}"
-          auth_url="https://${git_user}:${SUBMODULE_PAT}@${data_url#https://}"
+          pat_trim=$(printf '%s' "$SUBMODULE_PAT" | tr -d '\r\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
           git submodule sync --recursive
-          git config --local submodule.data.url "${auth_url}"
-          GIT_TERMINAL_PROMPT=0 git submodule update --init --recursive
+          git config --local submodule.data.url "${data_url}"
+          basic_b64=$(printf '%s:%s' "${git_user}" "${pat_trim}" | base64 -w0)
+          git config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ${basic_b64}"
+          GIT_TERMINAL_PROMPT=0 git -c credential.helper= submodule update --init --recursive
+          git config --local --unset-all http.https://github.com/.extraheader 2>/dev/null || true
 ```
 
 ## Troubleshooting

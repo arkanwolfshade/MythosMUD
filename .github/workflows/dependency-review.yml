@@ -43,10 +43,18 @@ jobs:
           fi
           data_url="$(git config -f .gitmodules --get submodule.data.url)"
           git_user="${MYTHOSMUD_GIT_USERNAME:-${GITHUB_REPOSITORY_OWNER}}"
-          auth_url="https://${git_user}:${SUBMODULE_PAT}@${data_url#https://}"
+          pat_trim=$(printf '%s' "$SUBMODULE_PAT" | tr -d '\r\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+          if [ -z "${pat_trim}" ]; then
+            echo "::error::SUBMODULE_PAT is empty after trimming; re-save the repository secret."
+            exit 1
+          fi
           git submodule sync --recursive
-          git config --local submodule.data.url "${auth_url}"
-          GIT_TERMINAL_PROMPT=0 git submodule update --init --recursive
+          git config --local submodule.data.url "${data_url}"
+          git config --local --unset-all http.https://github.com/.extraheader 2>/dev/null || true
+          basic_b64=$(printf '%s:%s' "${git_user}" "${pat_trim}" | base64 -w0)
+          git config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ${basic_b64}"
+          GIT_TERMINAL_PROMPT=0 git -c credential.helper= submodule update --init --recursive
+          git config --local --unset-all http.https://github.com/.extraheader 2>/dev/null || true
 
       - name: "Dependency Review"
         uses: actions/dependency-review-action@05fe4576374b728f0c523d6a13d64c25081e0803 # v4.8.3
