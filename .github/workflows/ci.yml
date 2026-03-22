@@ -88,8 +88,8 @@ jobs:
           case "${pat_trim}" in github_pat_*) pt="fine_grained" ;; ghp_*) pt="classic" ;; esac
           printf '%s\n' "{\"sessionId\":\"3051dc\",\"runId\":\"${GITHUB_RUN_ID}\",\"hypothesisId\":\"H2_H3\",\"location\":\"ci.yml:submodule\",\"message\":\"pat_shape\",\"data\":{\"pat_type\":\"${pt}\",\"len\":${#pat_trim},\"git_user\":\"${git_user}\",\"plain_data_url\":\"${data_url}\"}}" >>"${DBG}"
           # #endregion
-          echo "::notice::Submodule auth user=${git_user} pat_type=${pt} len=${#pat_trim}; GIT_CONFIG_* extraheader (child clone ignores superproject --local config)."
-          git submodule sync --recursive
+          echo "::notice::Submodule auth user=${git_user} pat_type=${pt} len=${#pat_trim}; GIT_CONFIG_* extraheader; only init path data (avoid stray gitlinks e.g. tmp)."
+          git submodule sync --recursive -- data
           git config --local submodule.data.url "${data_url}"
           basic_b64=$(printf '%s:%s' "${git_user}" "${pat_trim}" | base64 -w0)
           # #region agent log
@@ -97,10 +97,13 @@ jobs:
           # #endregion
           # Child `git clone` for submodules does not use the superproject's --local extraheader (tmp Dependency Review
           # log: terminal prompts disabled). GIT_CONFIG_* is inherited by subprocesses (Git 2.31+).
+          # #region agent log
+          printf '%s\n' "{\"sessionId\":\"3051dc\",\"hypothesisId\":\"H7\",\"message\":\"submodule_update_scope\",\"data\":{\"path\":\"data\"}}" >>"${DBG}"
+          # #endregion
           export GIT_CONFIG_COUNT=1
           export GIT_CONFIG_KEY_0='http.https://github.com/.extraheader'
           export GIT_CONFIG_VALUE_0="AUTHORIZATION: basic ${basic_b64}"
-          if GIT_TERMINAL_PROMPT=0 git -c credential.helper= submodule update --init --recursive; then
+          if GIT_TERMINAL_PROMPT=0 git -c credential.helper= submodule update --init --recursive -- data; then
             # #region agent log
             printf '%s\n' "{\"sessionId\":\"3051dc\",\"hypothesisId\":\"H6\",\"message\":\"submodule_update\",\"data\":{\"exit_code\":0}}" >>"${DBG}"
             # #endregion

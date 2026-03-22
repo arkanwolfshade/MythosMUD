@@ -177,13 +177,13 @@ jobs:
           data_url="$(git config -f .gitmodules --get submodule.data.url)"
           git_user="${MYTHOSMUD_GIT_USERNAME:-${GITHUB_REPOSITORY_OWNER}}"
           pat_trim=$(printf '%s' "$SUBMODULE_PAT" | tr -d '\r\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-          git submodule sync --recursive
+          git submodule sync --recursive -- data
           git config --local submodule.data.url "${data_url}"
           basic_b64=$(printf '%s:%s' "${git_user}" "${pat_trim}" | base64 -w0)
           export GIT_CONFIG_COUNT=1
           export GIT_CONFIG_KEY_0='http.https://github.com/.extraheader'
           export GIT_CONFIG_VALUE_0="AUTHORIZATION: basic ${basic_b64}"
-          GIT_TERMINAL_PROMPT=0 git -c credential.helper= submodule update --init --recursive
+          GIT_TERMINAL_PROMPT=0 git -c credential.helper= submodule update --init --recursive -- data
           unset GIT_CONFIG_COUNT GIT_CONFIG_KEY_0 GIT_CONFIG_VALUE_0
 ```
 
@@ -211,6 +211,9 @@ git submodule update --init --recursive
 - **_Invalid username or token_ on submodule clone**: Use `OWNER:PAT` in the URL, not `x-access-token:PAT`, for
   fine-grained PATs. Set **`MYTHOSMUD_GIT_USERNAME`** to the GitHub login that created the PAT if it is not the same
   as the parent repo owner (e.g. user token accessing an org-owned data repo).
+- **No url found for submodule path `tmp`**: A path is recorded as a **gitlink** (mode 160000) but has no
+  `submodule.<name>.url` in `.gitmodules`. CI only runs `git submodule update ... -- data`. Remove the stray entry with
+  `git rm --cached tmp` and add **`tmp/`** to `.gitignore` so scratch/log exports are not committed as submodules.
 - Check that the PAT is not expired and still lists **Contents: Read** on `arkanwolfshade/mythosmud_data`
 - **SAML SSO**: If the org uses GitHub Enterprise SSO, open [Fine-grained tokens](https://github.com/settings/tokens),
   find the token, and click **Configure SSO** → **Authorize** for the org

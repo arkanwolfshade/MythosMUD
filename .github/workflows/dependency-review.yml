@@ -48,13 +48,13 @@ jobs:
             echo "::error::SUBMODULE_PAT is empty after trimming; re-save the repository secret."
             exit 1
           fi
-          git submodule sync --recursive
+          git submodule sync --recursive -- data
           git config --local submodule.data.url "${data_url}"
           basic_b64=$(printf '%s:%s' "${git_user}" "${pat_trim}" | base64 -w0)
           export GIT_CONFIG_COUNT=1
           export GIT_CONFIG_KEY_0='http.https://github.com/.extraheader'
           export GIT_CONFIG_VALUE_0="AUTHORIZATION: basic ${basic_b64}"
-          GIT_TERMINAL_PROMPT=0 git -c credential.helper= submodule update --init --recursive
+          GIT_TERMINAL_PROMPT=0 git -c credential.helper= submodule update --init --recursive -- data
           unset GIT_CONFIG_COUNT GIT_CONFIG_KEY_0 GIT_CONFIG_VALUE_0
 
       - name: "Dependency Review"
