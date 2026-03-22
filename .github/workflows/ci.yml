@@ -51,9 +51,9 @@ jobs:
           egress-policy: audit
       # Standard bootstrap: harden + checkout
 
-      # Use github.token for the parent repo fetch. A fine-grained PAT scoped only to mythosmud_data cannot fetch
-      # MythosMUD; passing it as actions/checkout token breaks the initial git fetch (see debug: fetch fails before
-      # submodules). Submodule auth is applied in the next step (local submodule.data.url).
+      # Parent repo: actions/checkout with github.token. GITHUB_TOKEN is limited to *this* repo (cannot clone sibling
+      # private mythosmud_data). See https://docs.github.com/en/actions/security-guides/automatic-token-authentication
+      # A PAT scoped only to mythosmud_data must not be the checkout token for MythosMUD (parent fetch would fail).
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -61,6 +61,10 @@ jobs:
           submodules: false
           token: ${{ github.token }}
 
+      # Submodule: PAT from secrets (https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions).
+      # HTTPS + PAT patterns: https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#using-a-personal-access-token-on-the-command-line
+      # and x-access-token URL shape: https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/authenticating-as-a-github-app-installation
+      # Narrative: docs/SUBMODULE_SETUP.md (section "Official GitHub documentation")
       - name: Fetch private data submodule
         env:
           # Verbose logs: set repository secret or variable ACTIONS_STEP_DEBUG=true (and optionally

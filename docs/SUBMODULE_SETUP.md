@@ -98,6 +98,39 @@ git commit -m "Pin data submodule to specific version"
 
 Since the `mythosmud_data` repository is private, the GitHub Actions workflows need special configuration to access it:
 
+### Official GitHub documentation (authoritative)
+
+These pages are the canonical references for how we wire workflows (summarized from Context7 against GitHub Docs /
+Actions docs):
+
+1. **`GITHUB_TOKEN` scope** — The automatic token is tied to the **repository that contains the workflow**, not to
+   sibling private repos. That is why `mythosmud_data` cannot be cloned with `github.token` alone.
+   [Automatic token authentication](https://docs.github.com/en/actions/security-guides/automatic-token-authentication)
+
+2. **Secrets** — Store the PAT as an Actions secret and pass it via `secrets.*`; never hardcode tokens in YAML.
+   [Using secrets in GitHub Actions](https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions)
+
+3. **`actions/checkout` and `token`** — Checkout accepts a `token` input for authenticated git operations; we use
+   `github.token` for the **parent** repo and a separate secret only for the submodule step.
+   [Workflow syntax for GitHub Actions](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions)
+   (see examples for checking out a **different** private repository with a PAT).
+
+4. **Submodules** — `actions/checkout` supports `submodules`; we set `submodules: false` and initialize `data` in a
+   follow-up step (same idea as migration docs).
+   [Migrating from Travis CI to GitHub Actions](https://docs.github.com/en/actions/migrating-to-github-actions/manually-migrating-to-github-actions/migrating-from-travis-ci-to-github-actions)
+
+5. **HTTPS Git with a PAT** — Over HTTPS, Git expects a username and **password = PAT** (not your account password).
+   [Managing personal access tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#using-a-personal-access-token-on-the-command-line)
+
+6. **`x-access-token` in the clone URL** — GitHub documents HTTPS clones as
+   `https://x-access-token:TOKEN@github.com/owner/repo.git` for installation tokens; the same URL shape is the standard
+   automation pattern for embedding a token (we use it for **fine-grained** `github_pat_*` tokens).
+   [Authenticating as a GitHub App installation](https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/authenticating-as-a-github-app-installation)
+
+7. **Embedding tokens in URLs** — Putting a token in a remote URL can leave it visible in local Git configuration; only
+   do this in trusted automation with **least-privilege** tokens (our step restores the plain submodule URL afterward).
+   [Troubleshooting authentication to a repository](https://docs.github.com/en/codespaces/troubleshooting-github-codespaces/troubleshooting-authentication-to-a-repository)
+
 ### Required Configuration
 
 1. **Personal Access Token (PAT)**: Required for accessing private repositories

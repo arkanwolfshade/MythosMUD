@@ -41,6 +41,8 @@ jobs:
         with:
           egress-policy: audit
       # Standard bootstrap: harden + checkout
+      # github.token for parent repo; GITHUB_TOKEN cannot read other private repos.
+      # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
 
       - name: "Checkout code"
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -49,6 +51,7 @@ jobs:
           submodules: false
           token: ${{ github.token }}
 
+      # Private submodule: PAT secret + HTTPS Git (docs/SUBMODULE_SETUP.md, Official GitHub documentation).
       - name: Fetch private data submodule
         env:
           SUBMODULE_PAT: ${{ secrets.MYTHOSMUD_PAT || secrets.PRIVATE_SUBMODULE_PAT }}
