@@ -107,11 +107,11 @@ Since the `mythosmud_data` repository is private, the GitHub Actions workflows n
 
 3. **Split checkout (workflows)**: `actions/checkout` uses `submodules: false` and `github.token` for the parent repo.
    A follow-up step runs `git submodule sync`, sets `submodule.data.url` to an authenticated HTTPS URL, then
-   `git submodule update --init`. CI sets the plain submodule URL, then passes `Authorization: basic` via
-   **`GIT_CONFIG_COUNT` / `GIT_CONFIG_KEY_*` / `GIT_CONFIG_VALUE_*`** so **child** `git clone` processes inherit the
-   header (superproject `--local http.extraheader` is not applied to submodule clone; see runner logs:
-   _could not read Username_). Override username via **`MYTHOSMUD_GIT_USERNAME`** if the PAT owner is not
-   `github.repository_owner`.
+   `git submodule update --init -- data` (only the `data` submodule; avoids stray gitlinks such as `tmp`). CI sets the
+   plain submodule URL, then sets **`git config --global http.https://github.com/.extraheader`** to
+   `Authorization: basic …` for the clone and removes it on exit (`trap`). Submodule `git clone` did not pick up
+   superproject `--local` config or `GIT_CONFIG_*` env on hosted runners (_could not read Username_ in logs). Override
+   username via **`MYTHOSMUD_GIT_USERNAME`** if the PAT owner is not `github.repository_owner`.
 
 4. **PAT scope**: Fine-grained PAT needs **Contents: Read** on `arkanwolfshade/mythosmud_data` only; it does **not** need
    access to `MythosMUD` for CI.
@@ -180,11 +180,14 @@ jobs:
           git submodule sync --recursive -- data
           git config --local submodule.data.url "${data_url}"
           basic_b64=$(printf '%s:%s' "${git_user}" "${pat_trim}" | base64 -w0)
-          export GIT_CONFIG_COUNT=1
-          export GIT_CONFIG_KEY_0='http.https://github.com/.extraheader'
-          export GIT_CONFIG_VALUE_0="AUTHORIZATION: basic ${basic_b64}"
+          cleanup_github_auth_header() {
+            git config --global --unset-all http.https://github.com/.extraheader 2>/dev/null || true
+          }
+          trap cleanup_github_auth_header EXIT
+          git config --global http.https://github.com/.extraheader "AUTHORIZATION: basic ${basic_b64}"
           GIT_TERMINAL_PROMPT=0 git -c credential.helper= submodule update --init --recursive -- data
-          unset GIT_CONFIG_COUNT GIT_CONFIG_KEY_0 GIT_CONFIG_VALUE_0
+          trap - EXIT
+          cleanup_github_auth_header
 ```
 
 ## Troubleshooting
