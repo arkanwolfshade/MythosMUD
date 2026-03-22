@@ -38,16 +38,6 @@ jobs:
           submodules: false
           token: ${{ github.token }}
 
-      - name: Require submodule PAT secret
-        env:
-          SUBMODULE_PAT: ${{ secrets.MYTHOSMUD_PAT || secrets.PRIVATE_SUBMODULE_PAT }}
-        run: |
-          set -euo pipefail
-          t=$(printf '%s' "${SUBMODULE_PAT}" | tr -d '\r\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-          if [ -z "${t}" ]; then
-            echo "::error::MYTHOSMUD_PAT or PRIVATE_SUBMODULE_PAT is required (Contents: Read on mythosmud_data)."
-            exit 1
-          fi
       - name: Resolve data submodule (repository + commit)
         id: data_submodule
         run: |
@@ -69,19 +59,36 @@ jobs:
           fi
           echo "repository=${suffix}" >> "${GITHUB_OUTPUT}"
           echo "sha=${sha}" >> "${GITHUB_OUTPUT}"
-          echo "::notice::Will checkout ${suffix}@${sha}"
-      - name: Checkout private data repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          repository: ${{ steps.data_submodule.outputs.repository }}
-          ref: ${{ steps.data_submodule.outputs.sha }}
-          path: _mythosmud_data_src
-          token: ${{ secrets.MYTHOSMUD_PAT || secrets.PRIVATE_SUBMODULE_PAT }}
-      - name: Place data directory for the job
+          echo "::notice::Will fetch ${suffix}@${sha}"
+      - name: Clone private data into data/
+        env:
+          SUBMODULE_PAT: ${{ secrets.MYTHOSMUD_PAT || secrets.PRIVATE_SUBMODULE_PAT }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
         run: |
           set -euo pipefail
+          pat_trim=$(printf '%s' "${SUBMODULE_PAT}" | tr -d '\r\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+          if [ -z "${pat_trim}" ]; then
+            echo "::error::MYTHOSMUD_PAT or PRIVATE_SUBMODULE_PAT is required (Contents: Read on mythosmud_data)."
+            exit 1
+          fi
+          case "${pat_trim}" in
+            github_pat_*) git_user="x-access-token" ;;
+            *) git_user="${GITHUB_REPOSITORY_OWNER}" ;;
+          esac
+          repo="${{ steps.data_submodule.outputs.repository }}"
+          sha="${{ steps.data_submodule.outputs.sha }}"
+          export GIT_USER_Q="${git_user}" PAT_Q="${pat_trim}"
+          auth_host=$(python3 -c "import os, urllib.parse as u; x=os.environ['GIT_USER_Q']; y=os.environ['PAT_Q']; print(u.quote(x, safe='') + ':' + u.quote(y, safe=''))")
+          unset GIT_USER_Q PAT_Q
           rm -rf data
-          mv _mythosmud_data_src data
+          mkdir data
+          cd data
+          git init -q
+          git remote add origin "https://${auth_host}@github.com/${repo}.git"
+          GIT_TERMINAL_PROMPT=0 git fetch --depth 1 origin "${sha}"
+          git checkout -q FETCH_HEAD
+          git remote set-url origin "https://github.com/${repo}.git"
+          cd ..
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@ba454b8ab46733eb6145342877cd148270bb77ab # codeql-bundle-v2.23.5

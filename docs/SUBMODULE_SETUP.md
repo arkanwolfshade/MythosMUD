@@ -139,12 +139,12 @@ Actions docs):
    Actions**. Workflows use this **only** for cloning `mythosmud_data`, not for the parent repo checkout.
 
 3. **Split checkout (workflows)**: First `actions/checkout` uses `submodules: false` and **`github.token`** for the
-   parent repo only. A bash step reads **`.gitmodules`** and **`git ls-tree HEAD data`** to get **`OWNER/REPO`** and the
-   **pinned submodule commit SHA**. A **second** `actions/checkout` checks out that repository at `path: data` with
-   **`token: ${{ secrets.MYTHOSMUD_PAT || secrets.PRIVATE_SUBMODULE_PAT }}`**. Use a **staging path** (e.g.
-   `_mythosmud_data_src`) and **`mv` into `data/`** afterward: a checkout with **`path: data`** nested under the
-   superproject hit **`could not read Username`** on `git fetch` (actions/checkout auth via `includeIf.gitdir` did not
-   apply; see run `23410652717`). Do not commit a stray **`tmp`** gitlink; keep **`tmp/`** gitignored for local scratch.
+   parent repo only. A bash step reads **`.gitmodules`** and **`git ls-tree HEAD data`** for **`OWNER/REPO`** and the
+   **pinned SHA**. A second step runs **`git init` / `git fetch --depth 1`** into **`data/`** using an HTTPS remote with
+   **URL-encoded** `user:token` (`github_pat_*` → username **`x-access-token`**; classic **`ghp_`** →
+   **`github.repository_owner`**). **`actions/checkout`** with `repository` + `token` still failed **`git fetch`**
+   with **`could not read Username`** (runs `23410652717`, `23410699685`: `includeIf.gitdir` credential include did not
+   bind). Do not commit a stray **`tmp`** gitlink; keep **`tmp/`** gitignored for local scratch.
 
 4. **PAT scope**: Fine-grained PAT needs **Contents: Read** on `arkanwolfshade/mythosmud_data` only; it does **not** need
    access to `MythosMUD` for CI.
@@ -189,41 +189,35 @@ Actions docs):
 
 ### Example Workflow Configuration
 
-```yaml
-permissions:
-  contents: read
+See `.github/workflows/ci.yml` (**Resolve data submodule** + **Clone private data into data/**). Minimal sketch:
 
-jobs:
-  build:
-    steps:
+```yaml
       - uses: actions/checkout@v5
         with:
           submodules: false
           token: ${{ github.token }}
-      - name: Require submodule PAT secret
-        env:
-          SUBMODULE_PAT: ${{ secrets.MYTHOSMUD_PAT }}
+      - id: data_submodule
         run: |
           set -euo pipefail
-          t=$(printf '%s' "${SUBMODULE_PAT}" | tr -d '\r\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-          [ -n "${t}" ] || { echo "::error::MYTHOSMUD_PAT missing"; exit 1; }
-      - name: Resolve data submodule (repository + commit)
-        id: data_submodule
-        run: |
-          set -euo pipefail
-          data_url="$(git config -f .gitmodules --get submodule.data.url)"
-          suffix="${data_url#https://github.com/}"
-          suffix="${suffix%.git}"
-          line=$(git ls-tree HEAD data)
-          sha=$(echo "${line}" | awk '{print $3}')
-          echo "repository=${suffix}" >> "${GITHUB_OUTPUT}"
+          u="$(git config -f .gitmodules --get submodule.data.url)"
+          u="${u#https://github.com/}"; u="${u%.git}"
+          sha=$(git ls-tree HEAD data | awk '{print $3}')
+          echo "repository=${u}" >> "${GITHUB_OUTPUT}"
           echo "sha=${sha}" >> "${GITHUB_OUTPUT}"
-      - uses: actions/checkout@v5
-        with:
-          repository: ${{ steps.data_submodule.outputs.repository }}
-          ref: ${{ steps.data_submodule.outputs.sha }}
-          path: data
-          token: ${{ secrets.MYTHOSMUD_PAT }}
+      - env:
+          SUBMODULE_PAT: ${{ secrets.MYTHOSMUD_PAT }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+        run: |
+          set -euo pipefail
+          pat=$(printf '%s' "$SUBMODULE_PAT" | tr -d '\r\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+          case "$pat" in github_pat_*) U=x-access-token ;; *) U=$GITHUB_REPOSITORY_OWNER ;; esac
+          export GIT_USER_Q="$U" PAT_Q="$pat"
+          auth=$(python3 -c "import os, urllib.parse as u; print(u.quote(os.environ['GIT_USER_Q'],safe='')+':'+u.quote(os.environ['PAT_Q'],safe=''))")
+          unset GIT_USER_Q PAT_Q
+          rm -rf data && mkdir data && cd data
+          git init -q && git remote add origin "https://${auth}@github.com/${{ steps.data_submodule.outputs.repository }}.git"
+          GIT_TERMINAL_PROMPT=0 git fetch --depth 1 origin "${{ steps.data_submodule.outputs.sha }}"
+          git checkout -q FETCH_HEAD
 ```
 
 ## Troubleshooting
