@@ -30,12 +30,28 @@ jobs:
           egress-policy: audit
       # Standard bootstrap: harden + checkout
 
+      # Same split as ci.yml: parent repo with github.token; submodule PAT may be fine-grained to mythosmud_data only.
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          submodules: recursive
-          # Same as ci.yml: PAT for private submodule when available; github.token for fork PRs.
-          token: ${{ secrets.MYTHOSMUD_PAT || github.token }}
+          submodules: false
+          token: ${{ github.token }}
+
+      - name: Fetch private data submodule
+        env:
+          SUBMODULE_PAT: ${{ secrets.MYTHOSMUD_PAT || secrets.PRIVATE_SUBMODULE_PAT }}
+        run: |
+          set -euo pipefail
+          if [ -z "${SUBMODULE_PAT}" ]; then
+            echo "::error::MYTHOSMUD_PAT or PRIVATE_SUBMODULE_PAT is required (read access to mythosmud_data only is OK)."
+            exit 1
+          fi
+          data_url="$(git config -f .gitmodules --get submodule.data.url)"
+          auth_url="https://x-access-token:${SUBMODULE_PAT}@${data_url#https://}"
+          git config --local url."${auth_url}".insteadOf "${data_url}"
+          git submodule sync --recursive
+          git submodule update --init --recursive
+
       - name: Initialize CodeQL
         uses: github/codeql-action/init@ba454b8ab46733eb6145342877cd148270bb77ab # codeql-bundle-v2.23.5
         with:

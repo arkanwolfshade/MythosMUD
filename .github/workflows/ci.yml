@@ -51,14 +51,30 @@ jobs:
           egress-policy: audit
       # Standard bootstrap: harden + checkout
 
+      # Use github.token for the parent repo fetch. A fine-grained PAT scoped only to mythosmud_data cannot fetch
+      # MythosMUD; passing it as actions/checkout token breaks the initial git fetch (see debug: fetch fails before
+      # submodules). Submodule auth is applied in the next step via url.insteadOf.
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
-          submodules: recursive
-          # MYTHOSMUD_PAT: access to private submodule (data). Unset on fork PRs (secrets not exposed);
-          # fall back to github.token so clone/fetch of this public repo + PR merge ref succeeds.
-          token: ${{ secrets.PRIVATE_SUBMODULE_PAT || github.token }}
+          submodules: false
+          token: ${{ github.token }}
+
+      - name: Fetch private data submodule
+        env:
+          SUBMODULE_PAT: ${{ secrets.MYTHOSMUD_PAT || secrets.PRIVATE_SUBMODULE_PAT }}
+        run: |
+          set -euo pipefail
+          if [ -z "${SUBMODULE_PAT}" ]; then
+            echo "::error::MYTHOSMUD_PAT or PRIVATE_SUBMODULE_PAT is required (read access to mythosmud_data only is OK)."
+            exit 1
+          fi
+          data_url="$(git config -f .gitmodules --get submodule.data.url)"
+          auth_url="https://x-access-token:${SUBMODULE_PAT}@${data_url#https://}"
+          git config --local url."${auth_url}".insteadOf "${data_url}"
+          git submodule sync --recursive
+          git submodule update --init --recursive
 
       - name: Set up Python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0

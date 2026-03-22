@@ -102,14 +102,16 @@ Since the `mythosmud_data` repository is private, the GitHub Actions workflows n
 
 1. **Personal Access Token (PAT)**: Required for accessing private repositories
 
-2. **Token Configuration**: Use `${{ secrets.MYTHOSMUD_PAT }}` in checkout actions (must match the secret name in
-   **Settings → Secrets and variables → Actions**)
+2. **Secret names**: `MYTHOSMUD_PAT` or optional alias `PRIVATE_SUBMODULE_PAT` under **Settings → Secrets and variables →
+   Actions**. Workflows use this **only** for cloning `mythosmud_data`, not for the parent repo checkout.
 
-3. **Submodule checkout**: Configure `submodules: recursive` in checkout action
+3. **Split checkout (workflows)**: `actions/checkout` runs with `submodules: false` and `token: github.token` so the
+   runner can fetch `MythosMUD` and PR refs. A follow-up step sets `url.insteadOf` and runs `git submodule update` using
+   the PAT. That way a **fine-grained PAT scoped only to `mythosmud_data`** works; using that same PAT as the checkout
+   `token` fails on `git fetch` of the parent repo (Git reports _could not read Username for https://github.com_).
 
-4. **Use a PAT with checkout**: Create a fine-grained PAT with read access to `arkanwolfshade/mythosmud_data`, add it as the
-   `MYTHOSMUD_PAT` repository secret, and pass it to `actions/checkout` via the `token` input. This lets
-   checkout clone both the main repo and the private submodule in one step without hand-written rewrites.
+4. **PAT scope**: Fine-grained PAT needs **Contents: Read** on `arkanwolfshade/mythosmud_data` only; it does **not** need
+   access to `MythosMUD` for CI.
 
 ### PAT Requirements
 
@@ -155,8 +157,18 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-          submodules: recursive
-          token: ${{ secrets.MYTHOSMUD_PAT }}
+          submodules: false
+          token: ${{ github.token }}
+      - name: Fetch private data submodule
+        env:
+          SUBMODULE_PAT: ${{ secrets.MYTHOSMUD_PAT }}
+        run: |
+          set -euo pipefail
+          data_url="$(git config -f .gitmodules --get submodule.data.url)"
+          auth_url="https://x-access-token:${SUBMODULE_PAT}@${data_url#https://}"
+          git config --local url."${auth_url}".insteadOf "${data_url}"
+          git submodule sync --recursive
+          git submodule update --init --recursive
 ```
 
 ## Troubleshooting
@@ -178,10 +190,9 @@ git submodule update --init --recursive
 
 **For GitHub Actions:**
 
-- Verify the workflow uses `secrets.MYTHOSMUD_PAT` and that secret exists under **Settings → Secrets and variables →
-  Actions** for `arkanwolfshade/MythosMUD`
-- If the secret is missing or was never added, CI passes an empty `token` and git reports _could not read Username for
-  <https://github.com>_ (exit 128)
+- Verify `MYTHOSMUD_PAT` (or `PRIVATE_SUBMODULE_PAT`) exists. If fetch of **MythosMUD** fails with _could not read
+  Username_, a submodule-only PAT was likely passed as `actions/checkout` `token`; use split checkout (parent:
+  `github.token`, submodule: PAT via `url.insteadOf`) as in `ci.yml`.
 - Check that the PAT is not expired and still lists **Contents: Read** on `arkanwolfshade/mythosmud_data`
 - **SAML SSO**: If the org uses GitHub Enterprise SSO, open [Fine-grained tokens](https://github.com/settings/tokens),
   find the token, and click **Configure SSO** → **Authorize** for the org

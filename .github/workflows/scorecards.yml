@@ -46,8 +46,23 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
-          submodules: recursive
-          token: ${{ secrets.MYTHOSMUD_PAT }}
+          submodules: false
+          token: ${{ github.token }}
+
+      - name: Fetch private data submodule
+        env:
+          SUBMODULE_PAT: ${{ secrets.MYTHOSMUD_PAT || secrets.PRIVATE_SUBMODULE_PAT }}
+        run: |
+          set -euo pipefail
+          if [ -z "${SUBMODULE_PAT}" ]; then
+            echo "::error::MYTHOSMUD_PAT or PRIVATE_SUBMODULE_PAT is required (read access to mythosmud_data only is OK)."
+            exit 1
+          fi
+          data_url="$(git config -f .gitmodules --get submodule.data.url)"
+          auth_url="https://x-access-token:${SUBMODULE_PAT}@${data_url#https://}"
+          git config --local url."${auth_url}".insteadOf "${data_url}"
+          git submodule sync --recursive
+          git submodule update --init --recursive
 
       - name: "Run analysis"
         uses: ossf/scorecard-action@4eaacf0543bb3f2c246792bd56e8cdeffafb205a # v2.4.3
