@@ -141,10 +141,10 @@ Actions docs):
 3. **Split checkout (workflows)**: First `actions/checkout` uses `submodules: false` and **`github.token`** for the
    parent repo only. A bash step reads **`.gitmodules`** and **`git ls-tree HEAD data`** for **`OWNER/REPO`** and the
    **pinned SHA**. A second step runs **`git init` / `git fetch --depth 1`** into **`data/`** using an HTTPS remote with
-   **URL-encoded** `user:token` (`github_pat_*` → username **`x-access-token`**; classic **`ghp_`** →
-   **`github.repository_owner`**). **`actions/checkout`** with `repository` + `token` still failed **`git fetch`**
-   with **`could not read Username`** (runs `23410652717`, `23410699685`: `includeIf.gitdir` credential include did not
-   bind). Do not commit a stray **`tmp`** gitlink; keep **`tmp/`** gitignored for local scratch.
+   **URL-encoded** `user:token` (`github_pat_*` → **`x-access-token`**; classic **`ghp_`** →
+   **`github.repository_owner`**). A second **`actions/checkout`** with `repository` + `token` was unreliable for
+   **`git fetch`** on hosted runners, so workflows use explicit **`git fetch`** instead. Do not commit a stray **`tmp`**
+   gitlink; keep **`tmp/`** gitignored for local scratch.
 
 4. **PAT scope**: Fine-grained PAT needs **Contents: Read** on `arkanwolfshade/mythosmud_data` only; it does **not** need
    access to `MythosMUD` for CI.
@@ -241,9 +241,9 @@ git submodule update --init --recursive
 
 - Verify `MYTHOSMUD_PAT` (or `PRIVATE_SUBMODULE_PAT`) exists. If fetch of **MythosMUD** fails with _could not read
   Username_, a submodule-only PAT was likely passed as `actions/checkout` `token`; use split checkout as in `ci.yml`.
-- **_Invalid username or token_ on submodule clone**: Use `OWNER:PAT` in the URL, not `x-access-token:PAT`, for
-  fine-grained PATs. Set **`MYTHOSMUD_GIT_USERNAME`** to the GitHub login that created the PAT if it is not the same
-  as the parent repo owner (e.g. user token accessing an org-owned data repo).
+- **_Invalid username or token_ on submodule clone**: Regenerate the PAT, confirm **Contents: Read** on
+  `mythosmud_data`, and **authorize SSO** if your org requires it. CI uses **`x-access-token`** as the HTTPS username for
+  fine-grained tokens (`github_pat_*`) and **`github.repository_owner`** for classic (`ghp_*`).
 - **No url found for submodule path `tmp`**: A path is recorded as a **gitlink** (mode 160000) but has no
   `submodule.<name>.url` in `.gitmodules`. CI only runs `git submodule update ... -- data`. Remove the stray entry with
   `git rm --cached tmp` and add **`tmp/`** to `.gitignore` so scratch/log exports are not committed as submodules.

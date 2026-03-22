@@ -61,8 +61,8 @@ jobs:
           submodules: false
           token: ${{ github.token }}
 
-      # Private data: shallow git fetch with URL userinfo (actions/checkout token path hit could not read Username on
-      # fetch in runs 23410652717 / 23410699685).
+      # Private data: shallow git fetch with URL-encoded user:token (second actions/checkout+PAT failed fetch auth on
+      # hosted runners).
       - name: Resolve data submodule (repository + commit)
         id: data_submodule
         run: |

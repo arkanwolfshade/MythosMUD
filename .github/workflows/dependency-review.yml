@@ -32,8 +32,7 @@ jobs:
           submodules: false
           token: ${{ github.token }}
 
-      # PAT clone without actions/checkout for the child repo: checkout@v6 includeIf.gitdir auth did not apply on
-      # fetch (runs 23410652717, 23410699685 -> could not read Username). Shallow fetch with URL userinfo (encoded).
+      # Private data: shallow git fetch with URL-encoded user:token (same pattern as ci.yml).
       - name: Resolve data submodule (repository + commit)
         id: data_submodule
         run: |
