@@ -56,7 +56,9 @@ jobs:
         with:
           fetch-depth: 0
           submodules: recursive
-          token: ${{ secrets.MYTHOSMUD_PAT }}
+          # MYTHOSMUD_PAT: access to private submodule (data). Unset on fork PRs (secrets not exposed);
+          # fall back to github.token so clone/fetch of this public repo + PR merge ref succeeds.
+          token: ${{ secrets.PRIVATE_SUBMODULE_PAT || github.token }}
 
       - name: Set up Python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
