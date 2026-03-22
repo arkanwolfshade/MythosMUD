@@ -88,8 +88,13 @@ jobs:
         with:
           repository: ${{ steps.data_submodule.outputs.repository }}
           ref: ${{ steps.data_submodule.outputs.sha }}
-          path: data
+          path: _mythosmud_data_src
           token: ${{ secrets.MYTHOSMUD_PAT || secrets.PRIVATE_SUBMODULE_PAT }}
+      - name: Place data directory for the job
+        run: |
+          set -euo pipefail
+          rm -rf data
+          mv _mythosmud_data_src data
 
       - name: "Run analysis"
         uses: ossf/scorecard-action@4eaacf0543bb3f2c246792bd56e8cdeffafb205a # v2.4.3

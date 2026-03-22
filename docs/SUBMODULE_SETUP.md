@@ -141,10 +141,10 @@ Actions docs):
 3. **Split checkout (workflows)**: First `actions/checkout` uses `submodules: false` and **`github.token`** for the
    parent repo only. A bash step reads **`.gitmodules`** and **`git ls-tree HEAD data`** to get **`OWNER/REPO`** and the
    **pinned submodule commit SHA**. A **second** `actions/checkout` checks out that repository at `path: data` with
-   **`token: ${{ secrets.MYTHOSMUD_PAT || secrets.PRIVATE_SUBMODULE_PAT }}`**. This matches GitHub’s documented pattern
-   for using a PAT to clone a **different** private repository (same mechanism as `repository:` + `token:` on checkout),
-   and avoids fragile raw `git submodule` HTTPS credential behavior on hosted runners. Do not commit a stray **`tmp`**
-   gitlink; keep **`tmp/`** gitignored for local scratch only.
+   **`token: ${{ secrets.MYTHOSMUD_PAT || secrets.PRIVATE_SUBMODULE_PAT }}`**. Use a **staging path** (e.g.
+   `_mythosmud_data_src`) and **`mv` into `data/`** afterward: a checkout with **`path: data`** nested under the
+   superproject hit **`could not read Username`** on `git fetch` (actions/checkout auth via `includeIf.gitdir` did not
+   apply; see run `23410652717`). Do not commit a stray **`tmp`** gitlink; keep **`tmp/`** gitignored for local scratch.
 
 4. **PAT scope**: Fine-grained PAT needs **Contents: Read** on `arkanwolfshade/mythosmud_data` only; it does **not** need
    access to `MythosMUD` for CI.

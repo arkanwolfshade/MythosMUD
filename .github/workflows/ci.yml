@@ -100,8 +100,13 @@ jobs:
         with:
           repository: ${{ steps.data_submodule.outputs.repository }}
           ref: ${{ steps.data_submodule.outputs.sha }}
-          path: data
+          path: _mythosmud_data_src
           token: ${{ secrets.MYTHOSMUD_PAT || secrets.PRIVATE_SUBMODULE_PAT }}
+      - name: Place data directory for the job
+        run: |
+          set -euo pipefail
+          rm -rf data
+          mv _mythosmud_data_src data
 
       - name: Set up Python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
