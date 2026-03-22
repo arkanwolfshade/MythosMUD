@@ -69,11 +69,12 @@ jobs:
           fi
           git submodule sync --recursive
           git config --local submodule.data.url "${data_url}"
-          git config --local --unset-all http.https://github.com/.extraheader 2>/dev/null || true
           basic_b64=$(printf '%s:%s' "${git_user}" "${pat_trim}" | base64 -w0)
-          git config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ${basic_b64}"
+          export GIT_CONFIG_COUNT=1
+          export GIT_CONFIG_KEY_0='http.https://github.com/.extraheader'
+          export GIT_CONFIG_VALUE_0="AUTHORIZATION: basic ${basic_b64}"
           GIT_TERMINAL_PROMPT=0 git -c credential.helper= submodule update --init --recursive
-          git config --local --unset-all http.https://github.com/.extraheader 2>/dev/null || true
+          unset GIT_CONFIG_COUNT GIT_CONFIG_KEY_0 GIT_CONFIG_VALUE_0
 
       - name: "Run analysis"
         uses: ossf/scorecard-action@4eaacf0543bb3f2c246792bd56e8cdeffafb205a # v2.4.3

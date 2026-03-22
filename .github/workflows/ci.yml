@@ -88,18 +88,21 @@ jobs:
           case "${pat_trim}" in github_pat_*) pt="fine_grained" ;; ghp_*) pt="classic" ;; esac
           printf '%s\n' "{\"sessionId\":\"3051dc\",\"runId\":\"${GITHUB_RUN_ID}\",\"hypothesisId\":\"H2_H3\",\"location\":\"ci.yml:submodule\",\"message\":\"pat_shape\",\"data\":{\"pat_type\":\"${pt}\",\"len\":${#pat_trim},\"git_user\":\"${git_user}\",\"plain_data_url\":\"${data_url}\"}}" >>"${DBG}"
           # #endregion
-          echo "::notice::Submodule auth user=${git_user} pat_type=${pt} len=${#pat_trim}. Using Authorization basic header (H1 URL-embed vs H4 extraheader)."
+          echo "::notice::Submodule auth user=${git_user} pat_type=${pt} len=${#pat_trim}; GIT_CONFIG_* extraheader (child clone ignores superproject --local config)."
           git submodule sync --recursive
           git config --local submodule.data.url "${data_url}"
-          git config --local --unset-all http.https://github.com/.extraheader 2>/dev/null || true
           basic_b64=$(printf '%s:%s' "${git_user}" "${pat_trim}" | base64 -w0)
           # #region agent log
-          printf '%s\n' "{\"sessionId\":\"3051dc\",\"hypothesisId\":\"H1\",\"message\":\"basic_b64\",\"data\":{\"b64_len\":${#basic_b64}}}" >>"${DBG}"
+          printf '%s\n' "{\"sessionId\":\"3051dc\",\"hypothesisId\":\"H6\",\"message\":\"auth_mechanism\",\"data\":{\"via\":\"GIT_CONFIG_COUNT\",\"b64_len\":${#basic_b64}}}" >>"${DBG}"
           # #endregion
-          git config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ${basic_b64}"
+          # Child `git clone` for submodules does not use the superproject's --local extraheader (tmp Dependency Review
+          # log: terminal prompts disabled). GIT_CONFIG_* is inherited by subprocesses (Git 2.31+).
+          export GIT_CONFIG_COUNT=1
+          export GIT_CONFIG_KEY_0='http.https://github.com/.extraheader'
+          export GIT_CONFIG_VALUE_0="AUTHORIZATION: basic ${basic_b64}"
           if GIT_TERMINAL_PROMPT=0 git -c credential.helper= submodule update --init --recursive; then
             # #region agent log
-            printf '%s\n' "{\"sessionId\":\"3051dc\",\"hypothesisId\":\"H4\",\"message\":\"submodule_update\",\"data\":{\"exit_code\":0}}" >>"${DBG}"
+            printf '%s\n' "{\"sessionId\":\"3051dc\",\"hypothesisId\":\"H6\",\"message\":\"submodule_update\",\"data\":{\"exit_code\":0}}" >>"${DBG}"
             # #endregion
             :
           else
@@ -110,7 +113,7 @@ jobs:
             echo "::error::git submodule update failed (exit ${rc}). If PAT is valid, check fine-grained repo access to mythosmud_data, expiry, and SAML SSO token authorization."
             exit "${rc}"
           fi
-          git config --local --unset-all http.https://github.com/.extraheader 2>/dev/null || true
+          unset GIT_CONFIG_COUNT GIT_CONFIG_KEY_0 GIT_CONFIG_VALUE_0
 
       - name: Upload submodule debug log
         if: always()
