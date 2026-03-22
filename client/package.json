@@ -80,6 +80,7 @@
     "node": ">=22.0.0"
   },
   "overrides": {
+    "flatted": "^3.4.2",
     "glob": "^10.4.5",
     "inflight": "npm:@jsdevtools/inflight@^1.0.6",
     "sourcemap-codec": "npm:@jridgewell/sourcemap-codec@^1.4.15"
