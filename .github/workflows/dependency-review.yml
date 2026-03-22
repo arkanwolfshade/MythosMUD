@@ -48,17 +48,37 @@ jobs:
             echo "::error::SUBMODULE_PAT is empty after trimming; re-save the repository secret."
             exit 1
           fi
-          git submodule sync --recursive -- data
-          git config --local submodule.data.url "${data_url}"
-          basic_b64=$(printf '%s:%s' "${git_user}" "${pat_trim}" | base64 -w0)
-          cleanup_github_auth_header() {
-            git config --global --unset-all http.https://github.com/.extraheader 2>/dev/null || true
+          restore_plain_data_url() {
+            git config --local submodule.data.url "${data_url}" 2>/dev/null || true
           }
-          trap cleanup_github_auth_header EXIT
-          git config --global http.https://github.com/.extraheader "AUTHORIZATION: basic ${basic_b64}"
+          trap restore_plain_data_url EXIT
+          export AUTH_USER="${git_user}"
+          export AUTH_PAT="${pat_trim}"
+          export AUTH_REST="${data_url#https://}"
+          auth_url=$(python3 <<'PY'
+          import os
+          import urllib.parse
+
+          u = os.environ["AUTH_USER"]
+          p = os.environ["AUTH_PAT"]
+          rest = os.environ["AUTH_REST"]
+          print(
+              "https://"
+              + urllib.parse.quote(u, safe="")
+              + ":"
+              + urllib.parse.quote(p, safe="")
+              + "@"
+              + rest
+          )
+          PY
+          )
+          unset AUTH_USER AUTH_PAT AUTH_REST
+          echo "::notice::Submodule fetch: temporary URL-embedded credentials (runner ignored http.extraheader for clone)."
+          git submodule sync --recursive -- data
+          git config --local submodule.data.url "${auth_url}"
           GIT_TERMINAL_PROMPT=0 git -c credential.helper= submodule update --init --recursive -- data
           trap - EXIT
-          cleanup_github_auth_header
+          restore_plain_data_url
 
       - name: "Dependency Review"
         uses: actions/dependency-review-action@05fe4576374b728f0c523d6a13d64c25081e0803 # v4.8.3

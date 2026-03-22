@@ -88,21 +88,40 @@ jobs:
           case "${pat_trim}" in github_pat_*) pt="fine_grained" ;; ghp_*) pt="classic" ;; esac
           printf '%s\n' "{\"sessionId\":\"3051dc\",\"runId\":\"${GITHUB_RUN_ID}\",\"hypothesisId\":\"H2_H3\",\"location\":\"ci.yml:submodule\",\"message\":\"pat_shape\",\"data\":{\"pat_type\":\"${pt}\",\"len\":${#pat_trim},\"git_user\":\"${git_user}\",\"plain_data_url\":\"${data_url}\"}}" >>"${DBG}"
           # #endregion
-          echo "::notice::Submodule auth user=${git_user} pat_type=${pt} len=${#pat_trim}; global extraheader (logs_61554646191: GIT_CONFIG_* did not reach submodule git clone)."
-          git submodule sync --recursive -- data
-          git config --local submodule.data.url "${data_url}"
-          basic_b64=$(printf '%s:%s' "${git_user}" "${pat_trim}" | base64 -w0)
-          # #region agent log
-          printf '%s\n' "{\"sessionId\":\"3051dc\",\"hypothesisId\":\"H8\",\"message\":\"auth_mechanism\",\"data\":{\"via\":\"global_extraheader\",\"b64_len\":${#basic_b64},\"scope\":\"data\"}}" >>"${DBG}"
-          # #endregion
-          cleanup_github_auth_header() {
-            git config --global --unset-all http.https://github.com/.extraheader 2>/dev/null || true
+          echo "::notice::Submodule auth user=${git_user} pat_type=${pt} len=${#pat_trim}; URL-embedded userinfo (H8 global extraheader still no auth on clone per run 23410333934)."
+          restore_plain_data_url() {
+            git config --local submodule.data.url "${data_url}" 2>/dev/null || true
           }
-          trap cleanup_github_auth_header EXIT
-          git config --global http.https://github.com/.extraheader "AUTHORIZATION: basic ${basic_b64}"
+          trap restore_plain_data_url EXIT
+          export AUTH_USER="${git_user}"
+          export AUTH_PAT="${pat_trim}"
+          export AUTH_REST="${data_url#https://}"
+          auth_url=$(python3 <<'PY'
+          import os
+          import urllib.parse
+
+          u = os.environ["AUTH_USER"]
+          p = os.environ["AUTH_PAT"]
+          rest = os.environ["AUTH_REST"]
+          print(
+              "https://"
+              + urllib.parse.quote(u, safe="")
+              + ":"
+              + urllib.parse.quote(p, safe="")
+              + "@"
+              + rest
+          )
+          PY
+          )
+          unset AUTH_USER AUTH_PAT AUTH_REST
+          # #region agent log
+          printf '%s\n' "{\"sessionId\":\"3051dc\",\"hypothesisId\":\"H9\",\"message\":\"auth_mechanism\",\"data\":{\"via\":\"url_embed_userinfo\",\"scope\":\"data\"}}" >>"${DBG}"
+          # #endregion
+          git submodule sync --recursive -- data
+          git config --local submodule.data.url "${auth_url}"
           if GIT_TERMINAL_PROMPT=0 git -c credential.helper= submodule update --init --recursive -- data; then
             # #region agent log
-            printf '%s\n' "{\"sessionId\":\"3051dc\",\"hypothesisId\":\"H8\",\"message\":\"submodule_update\",\"data\":{\"exit_code\":0}}" >>"${DBG}"
+            printf '%s\n' "{\"sessionId\":\"3051dc\",\"hypothesisId\":\"H9\",\"message\":\"submodule_update\",\"data\":{\"exit_code\":0}}" >>"${DBG}"
             # #endregion
             :
           else
@@ -114,7 +133,7 @@ jobs:
             exit "${rc}"
           fi
           trap - EXIT
-          cleanup_github_auth_header
+          restore_plain_data_url
 
       - name: Upload submodule debug log
         if: always()

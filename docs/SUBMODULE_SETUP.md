@@ -106,12 +106,13 @@ Since the `mythosmud_data` repository is private, the GitHub Actions workflows n
    Actions**. Workflows use this **only** for cloning `mythosmud_data`, not for the parent repo checkout.
 
 3. **Split checkout (workflows)**: `actions/checkout` uses `submodules: false` and `github.token` for the parent repo.
-   A follow-up step runs `git submodule sync`, sets `submodule.data.url` to an authenticated HTTPS URL, then
-   `git submodule update --init -- data` (only the `data` submodule; avoids stray gitlinks such as `tmp`). CI sets the
-   plain submodule URL, then sets **`git config --global http.https://github.com/.extraheader`** to
-   `Authorization: basic …` for the clone and removes it on exit (`trap`). Submodule `git clone` did not pick up
-   superproject `--local` config or `GIT_CONFIG_*` env on hosted runners (_could not read Username_ in logs). Override
-   username via **`MYTHOSMUD_GIT_USERNAME`** if the PAT owner is not `github.repository_owner`.
+   A follow-up step runs `git submodule sync`, temporarily sets **`submodule.data.url`** to an HTTPS URL with
+   **URL-encoded `user:token`** in the userinfo (built via `urllib.parse.quote` in Python), runs
+   `git submodule update --init -- data` (only the `data` submodule; avoids stray gitlinks such as `tmp`), then
+   restores the plain URL in `.git/config` (`trap` on exit). On hosted runners, submodule `git clone` did not use
+   superproject `--local` config, `GIT_CONFIG_*`, or even **`http.https://github.com/.extraheader`** (_could not read
+   Username_ in logs, e.g. run `23410333934`). Override username via **`MYTHOSMUD_GIT_USERNAME`** if the PAT owner is not
+   `github.repository_owner`.
 
 4. **PAT scope**: Fine-grained PAT needs **Contents: Read** on `arkanwolfshade/mythosmud_data` only; it does **not** need
    access to `MythosMUD` for CI.
@@ -177,17 +178,23 @@ jobs:
           data_url="$(git config -f .gitmodules --get submodule.data.url)"
           git_user="${MYTHOSMUD_GIT_USERNAME:-${GITHUB_REPOSITORY_OWNER}}"
           pat_trim=$(printf '%s' "$SUBMODULE_PAT" | tr -d '\r\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-          git submodule sync --recursive -- data
-          git config --local submodule.data.url "${data_url}"
-          basic_b64=$(printf '%s:%s' "${git_user}" "${pat_trim}" | base64 -w0)
-          cleanup_github_auth_header() {
-            git config --global --unset-all http.https://github.com/.extraheader 2>/dev/null || true
+          restore_plain_data_url() {
+            git config --local submodule.data.url "${data_url}" 2>/dev/null || true
           }
-          trap cleanup_github_auth_header EXIT
-          git config --global http.https://github.com/.extraheader "AUTHORIZATION: basic ${basic_b64}"
+          trap restore_plain_data_url EXIT
+          export AUTH_USER="${git_user}" AUTH_PAT="${pat_trim}" AUTH_REST="${data_url#https://}"
+          auth_url=$(python3 <<'PY'
+          import os, urllib.parse
+          u, p, r = os.environ["AUTH_USER"], os.environ["AUTH_PAT"], os.environ["AUTH_REST"]
+          print("https://" + urllib.parse.quote(u, safe="") + ":" + urllib.parse.quote(p, safe="") + "@" + r)
+          PY
+          )
+          unset AUTH_USER AUTH_PAT AUTH_REST
+          git submodule sync --recursive -- data
+          git config --local submodule.data.url "${auth_url}"
           GIT_TERMINAL_PROMPT=0 git -c credential.helper= submodule update --init --recursive -- data
           trap - EXIT
-          cleanup_github_auth_header
+          restore_plain_data_url
 ```
 
 ## Troubleshooting
