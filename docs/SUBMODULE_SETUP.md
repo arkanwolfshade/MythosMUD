@@ -106,9 +106,10 @@ Since the `mythosmud_data` repository is private, the GitHub Actions workflows n
    Actions**. Workflows use this **only** for cloning `mythosmud_data`, not for the parent repo checkout.
 
 3. **Split checkout (workflows)**: `actions/checkout` runs with `submodules: false` and `token: github.token` so the
-   runner can fetch `MythosMUD` and PR refs. A follow-up step sets `url.insteadOf` and runs `git submodule update` using
-   the PAT. That way a **fine-grained PAT scoped only to `mythosmud_data`** works; using that same PAT as the checkout
-   `token` fails on `git fetch` of the parent repo (Git reports _could not read Username for https://github.com_).
+   runner can fetch `MythosMUD` and PR refs. A follow-up step runs `git submodule sync`, then sets
+   `submodule.data.url` in `.git/config` to an `https://x-access-token:...@github.com/...` URL, then
+   `git submodule update --init`. (`url.insteadOf` before `sync`, or `sync` without resetting the URL, left clone
+   unauthenticated on the runner.) A **fine-grained PAT scoped only to `mythosmud_data`** is sufficient for the PAT.
 
 4. **PAT scope**: Fine-grained PAT needs **Contents: Read** on `arkanwolfshade/mythosmud_data` only; it does **not** need
    access to `MythosMUD` for CI.
@@ -166,8 +167,8 @@ jobs:
           set -euo pipefail
           data_url="$(git config -f .gitmodules --get submodule.data.url)"
           auth_url="https://x-access-token:${SUBMODULE_PAT}@${data_url#https://}"
-          git config --local url."${auth_url}".insteadOf "${data_url}"
           git submodule sync --recursive
+          git config --local submodule.data.url "${auth_url}"
           git submodule update --init --recursive
 ```
 

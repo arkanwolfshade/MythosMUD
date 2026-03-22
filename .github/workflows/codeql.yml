@@ -48,8 +48,8 @@ jobs:
           fi
           data_url="$(git config -f .gitmodules --get submodule.data.url)"
           auth_url="https://x-access-token:${SUBMODULE_PAT}@${data_url#https://}"
-          git config --local url."${auth_url}".insteadOf "${data_url}"
           git submodule sync --recursive
+          git config --local submodule.data.url "${auth_url}"
           git submodule update --init --recursive
 
       - name: Initialize CodeQL
