@@ -51,65 +51,45 @@ jobs:
           submodules: false
           token: ${{ github.token }}
 
-      # Private submodule: PAT secret + HTTPS Git (docs/SUBMODULE_SETUP.md, Official GitHub documentation).
-      - name: Fetch private data submodule
+      - name: Require submodule PAT secret
         env:
           SUBMODULE_PAT: ${{ secrets.MYTHOSMUD_PAT || secrets.PRIVATE_SUBMODULE_PAT }}
-          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
-          MYTHOSMUD_GIT_USERNAME: ${{ secrets.MYTHOSMUD_GIT_USERNAME }}
         run: |
           set -euo pipefail
-          if [ -z "${SUBMODULE_PAT}" ]; then
-            echo "::error::MYTHOSMUD_PAT or PRIVATE_SUBMODULE_PAT is required (read access to mythosmud_data only is OK)."
+          t=$(printf '%s' "${SUBMODULE_PAT}" | tr -d '\r\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+          if [ -z "${t}" ]; then
+            echo "::error::MYTHOSMUD_PAT or PRIVATE_SUBMODULE_PAT is required (Contents: Read on mythosmud_data)."
             exit 1
           fi
+      - name: Resolve data submodule (repository + commit)
+        id: data_submodule
+        run: |
+          set -euo pipefail
           data_url="$(git config -f .gitmodules --get submodule.data.url)"
-          git_user="${MYTHOSMUD_GIT_USERNAME:-${GITHUB_REPOSITORY_OWNER}}"
-          pat_trim=$(printf '%s' "$SUBMODULE_PAT" | tr -d '\r\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-          if [ -z "${pat_trim}" ]; then
-            echo "::error::SUBMODULE_PAT is empty after trimming; re-save the repository secret."
+          suffix="${data_url#https://github.com/}"
+          suffix="${suffix%.git}"
+          if [ -z "${suffix}" ] || [ "${suffix}" = "${data_url}" ]; then
+            echo "::error::submodule.data.url must be https://github.com/OWNER/REPO.git"
             exit 1
           fi
-          case "${pat_trim}" in
-            github_pat_*) token_user="x-access-token" ;;
-            *) token_user="${git_user}" ;;
-          esac
-          api_code=$(curl -sS -o /dev/null -w "%{http_code}" \
-            -H "Authorization: Bearer ${pat_trim}" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${GITHUB_REPOSITORY_OWNER}/mythosmud_data") || api_code="curl_fail"
-          echo "::notice::PAT API check mythosmud_data -> HTTP ${api_code} (200=OK; 401=bad token; 403=SSO or scope; 404=no access)"
-          restore_plain_data_url() {
-            git config --local submodule.data.url "${data_url}" 2>/dev/null || true
-          }
-          trap restore_plain_data_url EXIT
-          export AUTH_USER="${token_user}"
-          export AUTH_PAT="${pat_trim}"
-          export AUTH_REST="${data_url#https://}"
-          auth_url=$(python3 <<'PY'
-          import os
-          import urllib.parse
-
-          u = os.environ["AUTH_USER"]
-          p = os.environ["AUTH_PAT"]
-          rest = os.environ["AUTH_REST"]
-          print(
-              "https://"
-              + urllib.parse.quote(u, safe="")
-              + ":"
-              + urllib.parse.quote(p, safe="")
-              + "@"
-              + rest
-          )
-          PY
-          )
-          unset AUTH_USER AUTH_PAT AUTH_REST
-          echo "::notice::Submodule fetch: temporary URL-embedded credentials (runner ignored http.extraheader for clone)."
-          git submodule sync --recursive -- data
-          git config --local submodule.data.url "${auth_url}"
-          GIT_TERMINAL_PROMPT=0 git -c credential.helper= submodule update --init --recursive -- data
-          trap - EXIT
-          restore_plain_data_url
+          line=$(git ls-tree HEAD data)
+          mode=$(echo "${line}" | awk '{print $1}')
+          kind=$(echo "${line}" | awk '{print $2}')
+          sha=$(echo "${line}" | awk '{print $3}')
+          if [ "${mode}" != "160000" ] || [ "${kind}" != "commit" ] || [ -z "${sha}" ]; then
+            echo "::error::Path data is not a git submodule at HEAD (expected gitlink 160000 commit)."
+            exit 1
+          fi
+          echo "repository=${suffix}" >> "${GITHUB_OUTPUT}"
+          echo "sha=${sha}" >> "${GITHUB_OUTPUT}"
+          echo "::notice::Will checkout ${suffix}@${sha}"
+      - name: Checkout private data repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          repository: ${{ steps.data_submodule.outputs.repository }}
+          ref: ${{ steps.data_submodule.outputs.sha }}
+          path: data
+          token: ${{ secrets.MYTHOSMUD_PAT || secrets.PRIVATE_SUBMODULE_PAT }}
 
       - name: "Run analysis"
         uses: ossf/scorecard-action@4eaacf0543bb3f2c246792bd56e8cdeffafb205a # v2.4.3

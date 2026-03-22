@@ -61,100 +61,47 @@ jobs:
           submodules: false
           token: ${{ github.token }}
 
-      # Submodule: PAT from secrets (https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions).
-      # HTTPS + PAT patterns: https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#using-a-personal-access-token-on-the-command-line
-      # and x-access-token URL shape: https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/authenticating-as-a-github-app-installation
-      # Narrative: docs/SUBMODULE_SETUP.md (section "Official GitHub documentation")
-      - name: Fetch private data submodule
+      # Private data: second actions/checkout with PAT (same pattern as checking out another private repo).
+      # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
+      - name: Require submodule PAT secret
         env:
-          # Verbose logs: set repository secret or variable ACTIONS_STEP_DEBUG=true (and optionally
-          # ACTIONS_RUNNER_DEBUG=true) per https://docs.github.com/en/actions/monitoring-and-troubleshooting-workflows/enabling-debug-logging
           SUBMODULE_PAT: ${{ secrets.MYTHOSMUD_PAT || secrets.PRIVATE_SUBMODULE_PAT }}
-          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
-          MYTHOSMUD_GIT_USERNAME: ${{ secrets.MYTHOSMUD_GIT_USERNAME }}
         run: |
           set -euo pipefail
-          if [ -z "${SUBMODULE_PAT}" ]; then
-            echo "::error::MYTHOSMUD_PAT or PRIVATE_SUBMODULE_PAT is required (read access to mythosmud_data only is OK)."
+          t=$(printf '%s' "${SUBMODULE_PAT}" | tr -d '\r\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+          if [ -z "${t}" ]; then
+            echo "::error::MYTHOSMUD_PAT or PRIVATE_SUBMODULE_PAT is required (Contents: Read on mythosmud_data)."
             exit 1
           fi
+      - name: Resolve data submodule (repository + commit)
+        id: data_submodule
+        run: |
+          set -euo pipefail
           data_url="$(git config -f .gitmodules --get submodule.data.url)"
-          git_user="${MYTHOSMUD_GIT_USERNAME:-${GITHUB_REPOSITORY_OWNER}}"
-          # Trim newlines/whitespace from pasted secrets (H2).
-          pat_trim=$(printf '%s' "$SUBMODULE_PAT" | tr -d '\r\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-          if [ -z "${pat_trim}" ]; then
-            echo "::error::SUBMODULE_PAT is empty after trimming; re-save the repository secret."
+          suffix="${data_url#https://github.com/}"
+          suffix="${suffix%.git}"
+          if [ -z "${suffix}" ] || [ "${suffix}" = "${data_url}" ]; then
+            echo "::error::submodule.data.url must be https://github.com/OWNER/REPO.git"
             exit 1
           fi
-          # #region agent log
-          DBG="${GITHUB_WORKSPACE}/debug-3051dc.log"
-          pt="unknown"
-          case "${pat_trim}" in github_pat_*) pt="fine_grained" ;; ghp_*) pt="classic" ;; esac
-          case "${pat_trim}" in
-            github_pat_*) token_user="x-access-token" ;;
-            *) token_user="${git_user}" ;;
-          esac
-          api_code=$(curl -sS -o /dev/null -w "%{http_code}" \
-            -H "Authorization: Bearer ${pat_trim}" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${GITHUB_REPOSITORY_OWNER}/mythosmud_data") || api_code="curl_fail"
-          echo "::notice::PAT API check mythosmud_data -> HTTP ${api_code} (200=OK; 401=bad token; 403=SSO or scope; 404=no access)"
-          printf '%s\n' "{\"sessionId\":\"3051dc\",\"runId\":\"${GITHUB_RUN_ID}\",\"hypothesisId\":\"H2_H3\",\"location\":\"ci.yml:submodule\",\"message\":\"pat_shape\",\"data\":{\"pat_type\":\"${pt}\",\"api_code\":\"${api_code}\",\"len\":${#pat_trim},\"git_user\":\"${git_user}\",\"token_user\":\"${token_user}\",\"plain_data_url\":\"${data_url}\"}}" >>"${DBG}"
-          # #endregion
-          echo "::notice::Submodule auth token_user=${token_user} pat_type=${pt} len=${#pat_trim}; URL-embedded userinfo (fine-grained uses x-access-token per GitHub HTTPS docs)."
-          restore_plain_data_url() {
-            git config --local submodule.data.url "${data_url}" 2>/dev/null || true
-          }
-          trap restore_plain_data_url EXIT
-          export AUTH_USER="${token_user}"
-          export AUTH_PAT="${pat_trim}"
-          export AUTH_REST="${data_url#https://}"
-          auth_url=$(python3 <<'PY'
-          import os
-          import urllib.parse
-
-          u = os.environ["AUTH_USER"]
-          p = os.environ["AUTH_PAT"]
-          rest = os.environ["AUTH_REST"]
-          print(
-              "https://"
-              + urllib.parse.quote(u, safe="")
-              + ":"
-              + urllib.parse.quote(p, safe="")
-              + "@"
-              + rest
-          )
-          PY
-          )
-          unset AUTH_USER AUTH_PAT AUTH_REST
-          # #region agent log
-          printf '%s\n' "{\"sessionId\":\"3051dc\",\"hypothesisId\":\"H9\",\"message\":\"auth_mechanism\",\"data\":{\"via\":\"url_embed_userinfo\",\"scope\":\"data\"}}" >>"${DBG}"
-          # #endregion
-          git submodule sync --recursive -- data
-          git config --local submodule.data.url "${auth_url}"
-          if GIT_TERMINAL_PROMPT=0 git -c credential.helper= submodule update --init --recursive -- data; then
-            # #region agent log
-            printf '%s\n' "{\"sessionId\":\"3051dc\",\"hypothesisId\":\"H9\",\"message\":\"submodule_update\",\"data\":{\"exit_code\":0}}" >>"${DBG}"
-            # #endregion
-            :
-          else
-            rc=$?
-            # #region agent log
-            printf '%s\n' "{\"sessionId\":\"3051dc\",\"hypothesisId\":\"H3\",\"message\":\"submodule_update\",\"data\":{\"exit_code\":${rc}}}" >>"${DBG}"
-            # #endregion
-            echo "::error::git submodule update failed (exit ${rc}). If PAT is valid, check fine-grained repo access to mythosmud_data, expiry, and SAML SSO token authorization."
-            exit "${rc}"
+          line=$(git ls-tree HEAD data)
+          mode=$(echo "${line}" | awk '{print $1}')
+          kind=$(echo "${line}" | awk '{print $2}')
+          sha=$(echo "${line}" | awk '{print $3}')
+          if [ "${mode}" != "160000" ] || [ "${kind}" != "commit" ] || [ -z "${sha}" ]; then
+            echo "::error::Path data is not a git submodule at HEAD (expected gitlink 160000 commit)."
+            exit 1
           fi
-          trap - EXIT
-          restore_plain_data_url
-
-      - name: Upload submodule debug log
-        if: always()
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+          echo "repository=${suffix}" >> "${GITHUB_OUTPUT}"
+          echo "sha=${sha}" >> "${GITHUB_OUTPUT}"
+          echo "::notice::Will checkout ${suffix}@${sha}"
+      - name: Checkout private data repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          name: debug-submodule-3051dc
-          path: debug-3051dc.log
-          if-no-files-found: ignore
+          repository: ${{ steps.data_submodule.outputs.repository }}
+          ref: ${{ steps.data_submodule.outputs.sha }}
+          path: data
+          token: ${{ secrets.MYTHOSMUD_PAT || secrets.PRIVATE_SUBMODULE_PAT }}
 
       - name: Set up Python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0

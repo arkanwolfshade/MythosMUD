@@ -138,16 +138,13 @@ Actions docs):
 2. **Secret names**: `MYTHOSMUD_PAT` or optional alias `PRIVATE_SUBMODULE_PAT` under **Settings → Secrets and variables →
    Actions**. Workflows use this **only** for cloning `mythosmud_data`, not for the parent repo checkout.
 
-3. **Split checkout (workflows)**: `actions/checkout` uses `submodules: false` and `github.token` for the parent repo.
-   A follow-up step runs `git submodule sync`, temporarily sets **`submodule.data.url`** to an HTTPS URL with
-   **URL-encoded `user:token`** in the userinfo (built via `urllib.parse.quote` in Python), runs
-   `git submodule update --init -- data` (only the `data` submodule; avoids stray gitlinks such as `tmp`), then
-   restores the plain URL in `.git/config` (`trap` on exit). On hosted runners, submodule `git clone` did not use
-   superproject `--local` config, `GIT_CONFIG_*`, or even **`http.https://github.com/.extraheader`** (_could not read
-   Username_ in logs, e.g. run `23410333934`). With URL embedding, GitHub then rejected **`arkanwolfshade:github_pat_…`**
-   (_Invalid username or token_, run `23410388787`); for **fine-grained** PATs the HTTPS username must be
-   **`x-access-token`**, not the repository owner. Classic **`ghp_`** tokens use **`MYTHOSMUD_GIT_USERNAME`** or
-   **`github.repository_owner`** as the username.
+3. **Split checkout (workflows)**: First `actions/checkout` uses `submodules: false` and **`github.token`** for the
+   parent repo only. A bash step reads **`.gitmodules`** and **`git ls-tree HEAD data`** to get **`OWNER/REPO`** and the
+   **pinned submodule commit SHA**. A **second** `actions/checkout` checks out that repository at `path: data` with
+   **`token: ${{ secrets.MYTHOSMUD_PAT || secrets.PRIVATE_SUBMODULE_PAT }}`**. This matches GitHub’s documented pattern
+   for using a PAT to clone a **different** private repository (same mechanism as `repository:` + `token:` on checkout),
+   and avoids fragile raw `git submodule` HTTPS credential behavior on hosted runners. Do not commit a stray **`tmp`**
+   gitlink; keep **`tmp/`** gitignored for local scratch only.
 
 4. **PAT scope**: Fine-grained PAT needs **Contents: Read** on `arkanwolfshade/mythosmud_data` only; it does **not** need
    access to `MythosMUD` for CI.
@@ -203,37 +200,30 @@ jobs:
         with:
           submodules: false
           token: ${{ github.token }}
-      - name: Fetch private data submodule
+      - name: Require submodule PAT secret
         env:
           SUBMODULE_PAT: ${{ secrets.MYTHOSMUD_PAT }}
-          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
-          MYTHOSMUD_GIT_USERNAME: ${{ secrets.MYTHOSMUD_GIT_USERNAME }}
+        run: |
+          set -euo pipefail
+          t=$(printf '%s' "${SUBMODULE_PAT}" | tr -d '\r\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+          [ -n "${t}" ] || { echo "::error::MYTHOSMUD_PAT missing"; exit 1; }
+      - name: Resolve data submodule (repository + commit)
+        id: data_submodule
         run: |
           set -euo pipefail
           data_url="$(git config -f .gitmodules --get submodule.data.url)"
-          git_user="${MYTHOSMUD_GIT_USERNAME:-${GITHUB_REPOSITORY_OWNER}}"
-          pat_trim=$(printf '%s' "$SUBMODULE_PAT" | tr -d '\r\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-          case "${pat_trim}" in
-            github_pat_*) token_user="x-access-token" ;;
-            *) token_user="${git_user}" ;;
-          esac
-          restore_plain_data_url() {
-            git config --local submodule.data.url "${data_url}" 2>/dev/null || true
-          }
-          trap restore_plain_data_url EXIT
-          export AUTH_USER="${token_user}" AUTH_PAT="${pat_trim}" AUTH_REST="${data_url#https://}"
-          auth_url=$(python3 <<'PY'
-          import os, urllib.parse
-          u, p, r = os.environ["AUTH_USER"], os.environ["AUTH_PAT"], os.environ["AUTH_REST"]
-          print("https://" + urllib.parse.quote(u, safe="") + ":" + urllib.parse.quote(p, safe="") + "@" + r)
-          PY
-          )
-          unset AUTH_USER AUTH_PAT AUTH_REST
-          git submodule sync --recursive -- data
-          git config --local submodule.data.url "${auth_url}"
-          GIT_TERMINAL_PROMPT=0 git -c credential.helper= submodule update --init --recursive -- data
-          trap - EXIT
-          restore_plain_data_url
+          suffix="${data_url#https://github.com/}"
+          suffix="${suffix%.git}"
+          line=$(git ls-tree HEAD data)
+          sha=$(echo "${line}" | awk '{print $3}')
+          echo "repository=${suffix}" >> "${GITHUB_OUTPUT}"
+          echo "sha=${sha}" >> "${GITHUB_OUTPUT}"
+      - uses: actions/checkout@v5
+        with:
+          repository: ${{ steps.data_submodule.outputs.repository }}
+          ref: ${{ steps.data_submodule.outputs.sha }}
+          path: data
+          token: ${{ secrets.MYTHOSMUD_PAT }}
 ```
 
 ## Troubleshooting
