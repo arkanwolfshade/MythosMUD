@@ -96,12 +96,8 @@ export const MinimapPanelSection: React.FC<MinimapPanelSectionProps> = ({
         data-panel="minimap-content"
       >
         <div className="text-mythos-terminal-text/80 text-xs shrink-0 px-1 pb-1">Click map to open full view</div>
-        <button
-          type="button"
-          className="appearance-none w-full text-left flex-1 min-h-[80px] flex flex-col overflow-auto cursor-pointer border border-mythos-terminal-border/50 rounded p-1.5 text-mythos-terminal-text bg-mythos-terminal-background"
-          onClick={onMapClick}
-          title="Click to open full map"
-        >
+        {/* Do not wrap AsciiMinimap in <button>: inline minimap already renders a <button> (valid HTML). */}
+        <div className="w-full text-left flex-1 min-h-[80px] flex flex-col overflow-auto border border-mythos-terminal-border/50 rounded p-1.5 text-mythos-terminal-text bg-mythos-terminal-background">
           {room?.id ? (
             <>
               <div className="text-xs text-mythos-terminal-text/70 shrink-0 truncate" title={room.id}>
@@ -121,11 +117,16 @@ export const MinimapPanelSection: React.FC<MinimapPanelSectionProps> = ({
               </div>
             </>
           ) : (
-            <div className="w-full h-full min-h-[60px] flex items-center justify-center text-mythos-terminal-text/70 text-sm">
+            <button
+              type="button"
+              className="appearance-none w-full h-full min-h-[60px] flex items-center justify-center text-mythos-terminal-text/70 text-sm cursor-pointer bg-transparent rounded"
+              onClick={onMapClick}
+              title="Click to open full map"
+            >
               No location — click to open map
-            </div>
+            </button>
           )}
-        </button>
+        </div>
       </div>
     </PanelContainer>
   </>
