@@ -40,6 +40,8 @@ jobs:
       - name: Fetch private data submodule
         env:
           SUBMODULE_PAT: ${{ secrets.MYTHOSMUD_PAT || secrets.PRIVATE_SUBMODULE_PAT }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+          MYTHOSMUD_GIT_USERNAME: ${{ secrets.MYTHOSMUD_GIT_USERNAME }}
         run: |
           set -euo pipefail
           if [ -z "${SUBMODULE_PAT}" ]; then
@@ -47,10 +49,11 @@ jobs:
             exit 1
           fi
           data_url="$(git config -f .gitmodules --get submodule.data.url)"
-          auth_url="https://x-access-token:${SUBMODULE_PAT}@${data_url#https://}"
+          git_user="${MYTHOSMUD_GIT_USERNAME:-${GITHUB_REPOSITORY_OWNER}}"
+          auth_url="https://${git_user}:${SUBMODULE_PAT}@${data_url#https://}"
           git submodule sync --recursive
           git config --local submodule.data.url "${auth_url}"
-          git submodule update --init --recursive
+          GIT_TERMINAL_PROMPT=0 git submodule update --init --recursive
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@ba454b8ab46733eb6145342877cd148270bb77ab # codeql-bundle-v2.23.5

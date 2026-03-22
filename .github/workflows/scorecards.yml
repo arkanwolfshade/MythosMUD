@@ -52,6 +52,8 @@ jobs:
       - name: Fetch private data submodule
         env:
           SUBMODULE_PAT: ${{ secrets.MYTHOSMUD_PAT || secrets.PRIVATE_SUBMODULE_PAT }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+          MYTHOSMUD_GIT_USERNAME: ${{ secrets.MYTHOSMUD_GIT_USERNAME }}
         run: |
           set -euo pipefail
           if [ -z "${SUBMODULE_PAT}" ]; then
@@ -59,10 +61,11 @@ jobs:
             exit 1
           fi
           data_url="$(git config -f .gitmodules --get submodule.data.url)"
-          auth_url="https://x-access-token:${SUBMODULE_PAT}@${data_url#https://}"
+          git_user="${MYTHOSMUD_GIT_USERNAME:-${GITHUB_REPOSITORY_OWNER}}"
+          auth_url="https://${git_user}:${SUBMODULE_PAT}@${data_url#https://}"
           git submodule sync --recursive
           git config --local submodule.data.url "${auth_url}"
-          git submodule update --init --recursive
+          GIT_TERMINAL_PROMPT=0 git submodule update --init --recursive
 
       - name: "Run analysis"
         uses: ossf/scorecard-action@4eaacf0543bb3f2c246792bd56e8cdeffafb205a # v2.4.3

@@ -53,7 +53,7 @@ jobs:
 
       # Use github.token for the parent repo fetch. A fine-grained PAT scoped only to mythosmud_data cannot fetch
       # MythosMUD; passing it as actions/checkout token breaks the initial git fetch (see debug: fetch fails before
-      # submodules). Submodule auth is applied in the next step via url.insteadOf.
+      # submodules). Submodule auth is applied in the next step (local submodule.data.url).
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -63,7 +63,11 @@ jobs:
 
       - name: Fetch private data submodule
         env:
+          # Verbose logs: set repository secret or variable ACTIONS_STEP_DEBUG=true (and optionally
+          # ACTIONS_RUNNER_DEBUG=true) per https://docs.github.com/en/actions/monitoring-and-troubleshooting-workflows/enabling-debug-logging
           SUBMODULE_PAT: ${{ secrets.MYTHOSMUD_PAT || secrets.PRIVATE_SUBMODULE_PAT }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+          MYTHOSMUD_GIT_USERNAME: ${{ secrets.MYTHOSMUD_GIT_USERNAME }}
         run: |
           set -euo pipefail
           if [ -z "${SUBMODULE_PAT}" ]; then
@@ -71,12 +75,15 @@ jobs:
             exit 1
           fi
           data_url="$(git config -f .gitmodules --get submodule.data.url)"
-          auth_url="https://x-access-token:${SUBMODULE_PAT}@${data_url#https://}"
-          # sync copies submodule URLs from .gitmodules into .git/config (unauthenticated). Set submodule.data.url
-          # after sync so clone uses the PAT; url.insteadOf alone is unreliable for submodule clone on the runner.
+          # Fine-grained PATs: GitHub expects token owner username as HTTP user, not x-access-token (rejects with
+          # Invalid username or token). Classic ghp_ PATs also work with this form. Override via MYTHOSMUD_GIT_USERNAME
+          # when the PAT owner is not github.repository_owner (e.g. user PAT on org-owned submodule).
+          git_user="${MYTHOSMUD_GIT_USERNAME:-${GITHUB_REPOSITORY_OWNER}}"
+          auth_url="https://${git_user}:${SUBMODULE_PAT}@${data_url#https://}"
+          echo "::notice::Submodule HTTPS username: ${git_user} (set MYTHOSMUD_GIT_USERNAME if PAT owner differs from repository owner)."
           git submodule sync --recursive
           git config --local submodule.data.url "${auth_url}"
-          git submodule update --init --recursive
+          GIT_TERMINAL_PROMPT=0 git submodule update --init --recursive
 
       - name: Set up Python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0

@@ -105,14 +105,19 @@ Since the `mythosmud_data` repository is private, the GitHub Actions workflows n
 2. **Secret names**: `MYTHOSMUD_PAT` or optional alias `PRIVATE_SUBMODULE_PAT` under **Settings → Secrets and variables →
    Actions**. Workflows use this **only** for cloning `mythosmud_data`, not for the parent repo checkout.
 
-3. **Split checkout (workflows)**: `actions/checkout` runs with `submodules: false` and `token: github.token` so the
-   runner can fetch `MythosMUD` and PR refs. A follow-up step runs `git submodule sync`, then sets
-   `submodule.data.url` in `.git/config` to an `https://x-access-token:...@github.com/...` URL, then
-   `git submodule update --init`. (`url.insteadOf` before `sync`, or `sync` without resetting the URL, left clone
-   unauthenticated on the runner.) A **fine-grained PAT scoped only to `mythosmud_data`** is sufficient for the PAT.
+3. **Split checkout (workflows)**: `actions/checkout` uses `submodules: false` and `github.token` for the parent repo.
+   A follow-up step runs `git submodule sync`, sets `submodule.data.url` to an authenticated HTTPS URL, then
+   `git submodule update --init`. The URL uses **`https://<github_username>:<PAT>@github.com/...`**. For fine-grained
+   PATs, GitHub requires the **GitHub username of the account that owns the token** (not `x-access-token`); otherwise
+   Git returns _Invalid username or token_. Workflows default the username to `github.repository_owner`; if your PAT
+   belongs to a different user, add repository secret **`MYTHOSMUD_GIT_USERNAME`** with that login.
 
 4. **PAT scope**: Fine-grained PAT needs **Contents: Read** on `arkanwolfshade/mythosmud_data` only; it does **not** need
    access to `MythosMUD` for CI.
+
+5. **Debug logging**: To enable Actions step/runner debug output, set repository **secret or variable**
+   `ACTIONS_STEP_DEBUG` to `true` (and optionally `ACTIONS_RUNNER_DEBUG`). See GitHub:
+   [Enabling debug logging](https://docs.github.com/en/actions/monitoring-and-troubleshooting-workflows/enabling-debug-logging).
 
 ### PAT Requirements
 
@@ -145,7 +150,8 @@ Since the `mythosmud_data` repository is private, the GitHub Actions workflows n
    - Permissions: Repository permissions → Contents → Read-only
 
 4. Generate and copy the token
-5. Add to repository secrets as `MYTHOSMUD_PAT` (same name workflows use in `actions/checkout` `token:`)
+5. Add to repository secrets as `MYTHOSMUD_PAT` (used only for the `mythosmud_data` submodule step, not parent
+   checkout).
 
 ### Example Workflow Configuration
 
@@ -163,13 +169,16 @@ jobs:
       - name: Fetch private data submodule
         env:
           SUBMODULE_PAT: ${{ secrets.MYTHOSMUD_PAT }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+          MYTHOSMUD_GIT_USERNAME: ${{ secrets.MYTHOSMUD_GIT_USERNAME }}
         run: |
           set -euo pipefail
           data_url="$(git config -f .gitmodules --get submodule.data.url)"
-          auth_url="https://x-access-token:${SUBMODULE_PAT}@${data_url#https://}"
+          git_user="${MYTHOSMUD_GIT_USERNAME:-${GITHUB_REPOSITORY_OWNER}}"
+          auth_url="https://${git_user}:${SUBMODULE_PAT}@${data_url#https://}"
           git submodule sync --recursive
           git config --local submodule.data.url "${auth_url}"
-          git submodule update --init --recursive
+          GIT_TERMINAL_PROMPT=0 git submodule update --init --recursive
 ```
 
 ## Troubleshooting
@@ -192,8 +201,10 @@ git submodule update --init --recursive
 **For GitHub Actions:**
 
 - Verify `MYTHOSMUD_PAT` (or `PRIVATE_SUBMODULE_PAT`) exists. If fetch of **MythosMUD** fails with _could not read
-  Username_, a submodule-only PAT was likely passed as `actions/checkout` `token`; use split checkout (parent:
-  `github.token`, submodule: PAT via `url.insteadOf`) as in `ci.yml`.
+  Username_, a submodule-only PAT was likely passed as `actions/checkout` `token`; use split checkout as in `ci.yml`.
+- **_Invalid username or token_ on submodule clone**: Use `OWNER:PAT` in the URL, not `x-access-token:PAT`, for
+  fine-grained PATs. Set **`MYTHOSMUD_GIT_USERNAME`** to the GitHub login that created the PAT if it is not the same
+  as the parent repo owner (e.g. user token accessing an org-owned data repo).
 - Check that the PAT is not expired and still lists **Contents: Read** on `arkanwolfshade/mythosmud_data`
 - **SAML SSO**: If the org uses GitHub Enterprise SSO, open [Fine-grained tokens](https://github.com/settings/tokens),
   find the token, and click **Configure SSO** → **Authorize** for the org
