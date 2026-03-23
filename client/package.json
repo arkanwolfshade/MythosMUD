@@ -58,7 +58,7 @@
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.1.0",
     "happy-dom": "^20.8.4",
-    "jsdom": "^28.1.0",
+    "jsdom": "^29.0.1",
     "markdownlint-cli": "^0.48.0",
     "patch-package": "^8.0.1",
     "postcss": "^8.5.6",
