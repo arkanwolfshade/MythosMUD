@@ -398,16 +398,10 @@ describe('CommandPanel', () => {
       const user = userEvent.setup();
       render(<CommandPanel {...defaultProps} />);
 
-      // Find the history item (not the quick command button)
-      const historyItems = screen.getAllByText('inventory');
-      const historyItem = historyItems.find(
-        item =>
-          item.closest('div')?.classList.contains('text-xs') &&
-          item.closest('div')?.classList.contains('cursor-pointer')
-      );
+      const historyItem = screen.getByRole('button', { name: 'inventory' });
 
       expect(historyItem).toBeInTheDocument();
-      await user.click(historyItem!);
+      await user.click(historyItem);
 
       const input = screen.getByTestId('command-input');
       expect(input).toHaveValue('inventory');
@@ -607,13 +601,8 @@ describe('CommandPanel', () => {
       await user.click(screen.getByText('Recent Commands'));
 
       // Click on history item should refocus input
-      const historyItems = screen.getAllByText('look');
-      const historyItem = historyItems.find(
-        item =>
-          item.closest('div')?.classList.contains('text-xs') &&
-          item.closest('div')?.classList.contains('cursor-pointer')
-      );
-      await user.click(historyItem!);
+      const historyItem = screen.getByRole('button', { name: 'look' });
+      await user.click(historyItem);
 
       expect(input).toHaveFocus();
       expect(input).toHaveValue('look');

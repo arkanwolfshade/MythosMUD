@@ -17,9 +17,10 @@
  * @returns Debounced function
  */
 
-// TypeScript best practice: any here is constrained to generic T; callers get full type safety via Parameters<T>.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function debounce<T extends (...args: any[]) => any>(func: T, delay: number): (...args: Parameters<T>) => void {
+export function debounce<T extends (...args: never[]) => unknown>(
+  func: T,
+  delay: number
+): (...args: Parameters<T>) => void {
   let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
   return function debounced(...args: Parameters<T>) {
@@ -41,9 +42,10 @@ export function debounce<T extends (...args: any[]) => any>(func: T, delay: numb
  * @returns Throttled function
  */
 
-// TypeScript best practice: any here is constrained to generic T; callers get full type safety via Parameters<T>.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function throttle<T extends (...args: any[]) => any>(func: T, delay: number): (...args: Parameters<T>) => void {
+export function throttle<T extends (...args: never[]) => unknown>(
+  func: T,
+  delay: number
+): (...args: Parameters<T>) => void {
   let lastCall = 0;
   let timeoutId: ReturnType<typeof setTimeout> | null = null;
 

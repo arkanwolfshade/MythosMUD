@@ -776,21 +776,23 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
 
       {/* Export Dialog */}
       {showExportDialog && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-          onClick={() => !isExporting && setShowExportDialog(false)}
-        >
-          <div
-            className="bg-mythos-terminal-surface border border-mythos-terminal-primary rounded-lg p-6 max-w-md w-full"
-            onClick={e => {
-              e.stopPropagation();
-            }}
-          >
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <button
+            type="button"
+            className="absolute inset-0 cursor-default bg-black bg-opacity-50 border-0 p-0 disabled:cursor-not-allowed"
+            onClick={() => !isExporting && setShowExportDialog(false)}
+            disabled={isExporting}
+            aria-label="Close export dialog"
+          />
+          <div className="relative z-10 bg-mythos-terminal-surface border border-mythos-terminal-primary rounded-lg p-6 max-w-md w-full mx-4">
             <h3 className="text-mythos-terminal-primary font-bold text-lg mb-4">Export Chat Messages</h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm text-mythos-terminal-text-secondary mb-2">Export Format</label>
+                <label htmlFor="chat-export-format" className="block text-sm text-mythos-terminal-text-secondary mb-2">
+                  Export Format
+                </label>
                 <select
+                  id="chat-export-format"
                   value={exportFormat}
                   onChange={e => {
                     setExportFormat(e.target.value);

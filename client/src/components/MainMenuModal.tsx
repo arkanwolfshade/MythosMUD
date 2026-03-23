@@ -111,19 +111,21 @@ export const MainMenuModal: React.FC<MainMenuModalProps> = ({
 
   const modalContent = (
     <div
-      className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-100"
-      onClick={onClose}
+      className="fixed inset-0 z-100 flex items-center justify-center"
       style={{ pointerEvents: 'auto' }}
       data-testid="main-menu-backdrop"
     >
+      <button
+        type="button"
+        className="absolute inset-0 cursor-default bg-black bg-opacity-75 border-0 p-0"
+        onClick={onClose}
+        aria-label="Dismiss menu (backdrop)"
+      />
       <div
-        className="bg-mythos-terminal-background border-2 border-mythos-terminal-border rounded-lg p-6 w-full max-w-md shadow-xl"
+        className="relative z-10 bg-mythos-terminal-background border-2 border-mythos-terminal-border rounded-lg p-6 w-full max-w-md shadow-xl"
         role="dialog"
         aria-modal="true"
         aria-labelledby="main-menu-title"
-        onClick={e => {
-          e.stopPropagation();
-        }}
         style={{ pointerEvents: 'auto' }}
       >
         <div className="flex items-center justify-between mb-6">

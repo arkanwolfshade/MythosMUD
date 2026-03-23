@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 interface ModalContainerProps {
   isOpen: boolean;
@@ -46,19 +46,24 @@ export const ModalContainer: React.FC<ModalContainerProps> = ({
   overlayZIndex = 50,
   position = 'center',
 }) => {
-  if (!isOpen) return null;
-
-  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) {
-      onClose();
+  useEffect(() => {
+    if (!isOpen) {
+      return;
     }
-  };
+    const onDocumentKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    document.addEventListener('keydown', onDocumentKeyDown);
+    return () => {
+      document.removeEventListener('keydown', onDocumentKeyDown);
+    };
+  }, [isOpen, onClose]);
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === 'Escape') {
-      onClose();
-    }
-  };
+  if (!isOpen) {
+    return null;
+  }
 
   const modalContentClasses =
     `bg-mythos-terminal-background border border-mythos-terminal-border rounded-lg w-full ` +
@@ -68,11 +73,7 @@ export const ModalContainer: React.FC<ModalContainerProps> = ({
   const isNoBackdrop = position === 'center-no-backdrop';
 
   const content = (
-    <div
-      className={modalContentClasses}
-      onClick={e => e.stopPropagation()}
-      style={isNoBackdrop ? { pointerEvents: 'auto' } : undefined}
-    >
+    <div className={modalContentClasses} style={isNoBackdrop ? { pointerEvents: 'auto' } : undefined}>
       {(title || showCloseButton) && (
         <div className="flex items-center justify-between p-4 border-b border-mythos-terminal-border">
           {title && (
@@ -98,15 +99,10 @@ export const ModalContainer: React.FC<ModalContainerProps> = ({
 
   if (isFloating) {
     return (
-      <div
-        className={`fixed bottom-4 right-4 flex flex-col items-end ${className}`}
-        style={{ zIndex: overlayZIndex }}
-        onKeyDown={handleKeyDown}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={titleId}
-      >
-        {content}
+      <div className={`fixed bottom-4 right-4 flex flex-col items-end ${className}`} style={{ zIndex: overlayZIndex }}>
+        <div role="dialog" aria-modal="true" aria-labelledby={titleId} tabIndex={-1}>
+          {content}
+        </div>
       </div>
     );
   }
@@ -116,27 +112,31 @@ export const ModalContainer: React.FC<ModalContainerProps> = ({
       <div
         className={`fixed inset-0 flex items-center justify-center pointer-events-none ${className}`}
         style={{ zIndex: overlayZIndex }}
-        onKeyDown={handleKeyDown}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={titleId}
       >
-        {content}
+        <div className="pointer-events-auto" role="dialog" aria-modal="true" aria-labelledby={titleId} tabIndex={-1}>
+          {content}
+        </div>
       </div>
     );
   }
 
   return (
-    <div
-      className={`fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 ${className}`}
-      style={{ zIndex: overlayZIndex }}
-      onClick={handleBackdropClick}
-      onKeyDown={handleKeyDown}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby={titleId}
-    >
-      {content}
+    <div className={`fixed inset-0 flex items-center justify-center ${className}`} style={{ zIndex: overlayZIndex }}>
+      <button
+        type="button"
+        className="absolute inset-0 cursor-default bg-black bg-opacity-50 border-0 p-0"
+        onClick={onClose}
+        aria-label="Close modal"
+      />
+      <div
+        className="relative z-10 flex w-full max-w-full justify-center px-4"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        tabIndex={-1}
+      >
+        {content}
+      </div>
     </div>
   );
 };

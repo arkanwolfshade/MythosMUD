@@ -264,6 +264,7 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
           style={opaque ? { position: 'relative', zIndex: 1, backgroundColor: '#0a0a0a', opacity: 1 } : undefined}
         >
           {/* Panel Header: only this area triggers drag; scrolling content no longer moves the panel */}
+          {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions -- drag handle uses mousedown; panel controls are separate buttons */}
           <div
             className="panel-drag-handle flex items-center justify-between p-2 border-b border-gray-700 bg-mythos-terminal-surface cursor-move"
             onMouseDown={() => onFocus(id)}

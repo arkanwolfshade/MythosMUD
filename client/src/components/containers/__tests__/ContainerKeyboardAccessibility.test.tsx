@@ -209,7 +209,7 @@ describe('Container Keyboard Accessibility', () => {
       const onClose = vi.fn();
       render(<ContainerSplitPane containerId="container-1" onClose={onClose} />);
 
-      const container = screen.getByRole('region', { name: /container/i });
+      const container = screen.getByRole('dialog', { name: /container/i });
       container.focus();
 
       await user.keyboard('{Escape}');
@@ -230,8 +230,8 @@ describe('Container Keyboard Accessibility', () => {
       await user.tab();
       await user.tab();
 
-      // Focus should remain within container - check if active element is within the container region
-      const containerRegion = screen.getByRole('region', { name: /container/i });
+      // Focus should remain within container - check if active element is within the container dialog
+      const containerRegion = screen.getByRole('dialog', { name: /container/i });
       const focusableElements = containerRegion.querySelectorAll(
         'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
       );
@@ -526,7 +526,7 @@ describe('Container Keyboard Accessibility', () => {
       containerButtons[0].focus();
 
       // Close container with Escape key
-      const containerRegion = screen.getByRole('region', { name: /container/i });
+      const containerRegion = screen.getByRole('dialog', { name: /container/i });
       fireEvent.keyDown(containerRegion, { key: 'Escape', code: 'Escape' });
 
       // Focus should be managed (actual restoration will be handled by parent component)

@@ -43,6 +43,28 @@ const relativeSizeToAbsolute = (
   return { width: Math.round(width), height: Math.round(height) };
 };
 
+const PANEL_DRAG_BLOCK_SELECTORS = ['button', '[role="button"]', '.terminal-button', 'input', 'select'] as const;
+
+/** True when the event target is a control that must not start a panel drag. */
+function isPanelDragBlockedTarget(target: HTMLElement): boolean {
+  for (const selector of PANEL_DRAG_BLOCK_SELECTORS) {
+    if (target.closest(selector)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function isMouseEventOnHeader(e: React.MouseEvent, headerEl: HTMLDivElement | null): boolean {
+  if (!headerEl) {
+    return false;
+  }
+  return e.target === headerEl || headerEl.contains(e.target as Node);
+}
+
+// Drag header and resize handles use mousedown only; window controls use buttons (keyboard-accessible).
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+
 export const DraggablePanel: React.FC<DraggablePanelProps> = ({
   children,
   title,
@@ -322,38 +344,30 @@ export const DraggablePanel: React.FC<DraggablePanelProps> = ({
   };
 
   const handleHeaderMouseDown = (e: React.MouseEvent) => {
-    // Only allow dragging from the header, not buttons or other interactive elements
     const target = e.target as HTMLElement;
-    if (
-      target.closest('button') ||
-      target.closest('[role="button"]') ||
-      target.closest('.terminal-button') ||
-      target.closest('input') ||
-      target.closest('select')
-    ) {
-      // Don't start dragging if clicking on interactive elements
+    if (isPanelDragBlockedTarget(target)) {
       return;
     }
 
-    if (e.target === headerRef.current || headerRef.current?.contains(e.target as Node)) {
-      e.preventDefault();
-      e.stopPropagation();
-
-      const rect = panelRef.current?.getBoundingClientRect();
-      if (rect) {
-        // Store the starting position and mouse position
-        dragStartPositionRef.current = { x: e.clientX, y: e.clientY };
-        hasDraggedRef.current = false;
-
-        // Calculate drag offset correctly: mouse position relative to panel's current screen position
-        setDragOffset({
-          x: e.clientX - rect.left,
-          y: e.clientY - rect.top,
-        });
-
-        setIsDragging(true);
-      }
+    if (!isMouseEventOnHeader(e, headerRef.current)) {
+      return;
     }
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    const rect = panelRef.current?.getBoundingClientRect();
+    if (!rect) {
+      return;
+    }
+
+    dragStartPositionRef.current = { x: e.clientX, y: e.clientY };
+    hasDraggedRef.current = false;
+    setDragOffset({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+    setIsDragging(true);
   };
 
   const handleMouseMove = useCallback(

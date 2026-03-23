@@ -244,18 +244,18 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({ isOpen, onClose, r
   const baseMonoInputClasses = baseInputClasses + ' font-mono text-sm';
 
   return (
-    <div
-      className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
-      onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="room-edit-title"
-    >
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <button
+        type="button"
+        className="absolute inset-0 cursor-default bg-black bg-opacity-75 border-0 p-0"
+        onClick={onClose}
+        aria-label="Dismiss dialog (backdrop)"
+      />
       <div
-        className="bg-mythos-terminal-background border-2 border-mythos-terminal-border rounded-lg w-full max-w-4xl max-h-modal overflow-hidden shadow-xl flex flex-col"
-        onClick={e => {
-          e.stopPropagation();
-        }}
+        className="relative z-10 bg-mythos-terminal-background border-2 border-mythos-terminal-border rounded-lg w-full max-w-4xl max-h-modal overflow-hidden shadow-xl flex flex-col"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="room-edit-title"
       >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-mythos-terminal-border bg-mythos-terminal-surface">

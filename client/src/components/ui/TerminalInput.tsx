@@ -66,6 +66,7 @@ export const TerminalInput = React.forwardRef<HTMLInputElement, TerminalInputPro
         onKeyDown={onKeyDown}
         onFocus={onFocus}
         onBlur={onBlur}
+        // eslint-disable-next-line jsx-a11y/no-autofocus -- callers opt in for focused terminal/command inputs
         autoFocus={autoFocus}
         required={required}
         name={name}

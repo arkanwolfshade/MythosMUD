@@ -2,6 +2,20 @@
 
 React + TypeScript + Vite frontend for MythosMUD.
 
+## Source layout (canonical)
+
+The client is organized by **layer** under `src/`, not by vertical `features/` slices. The
+authoritative layout is:
+
+- **`components/`** — UI and feature-specific UI (e.g. `map/`, `panels/`, `ui-v2/`).
+- **`pages/`** — Route-level screens.
+- **`hooks/`**, **`contexts/`** — Shared behavior and React context.
+- **`stores/`** — Zustand stores (prefer several focused stores over one monolith).
+
+New vertical slices may use `src/features/<domain>/` when a change touches many files in one
+domain; otherwise follow the existing folders above. See `.cursor/rules/react.mdc` for the
+bulletproof-react ideal and how MythosMUD maps to it.
+
 ## Development
 
 ```bash

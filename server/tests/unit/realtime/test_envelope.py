@@ -4,13 +4,17 @@ Unit tests for envelope utilities.
 Tests the build_event function, UUIDEncoder, and related utilities.
 """
 
+# pyright: reportAny=false, reportPrivateUsage=false, reportUnusedCallResult=false
+
 import json
 import threading
 import uuid
 from datetime import UTC, datetime
+from typing import cast
 
 import pytest
 
+from server.realtime.connection_manager import ConnectionManager
 from server.realtime.envelope import UUIDEncoder, build_event, utc_now_z
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
@@ -100,7 +104,8 @@ def test_build_event_with_sequence_number():
 
 def test_build_event_with_connection_manager():
     """Test build_event() uses connection_manager for sequence."""
-    mock_connection_manager = type("MockCM", (), {"_get_next_sequence": lambda self: 100})()
+    mock_raw = type("MockCM", (), {"sequence_counter": 99})()
+    mock_connection_manager = cast(ConnectionManager, cast(object, mock_raw))
     event = build_event("test.event", connection_manager=mock_connection_manager)
     assert event["sequence_number"] == 100
 
@@ -113,12 +118,13 @@ def test_build_event_uses_global_sequence_when_no_manager():
     envelope_module._global_sequence_counter = 0
     event1 = build_event("test.event1")
     event2 = build_event("test.event2")
-    assert event2["sequence_number"] > event1["sequence_number"]
+    assert cast(int, event2["sequence_number"]) > cast(int, event1["sequence_number"])
 
 
 def test_build_event_sequence_priority():
     """Test build_event() prioritizes explicit sequence_number over connection_manager."""
-    mock_connection_manager = type("MockCM", (), {"_get_next_sequence": lambda self: 100})()
+    mock_raw = type("MockCM", (), {"sequence_counter": 99})()
+    mock_connection_manager = cast(ConnectionManager, cast(object, mock_raw))
     event = build_event("test.event", sequence_number=42, connection_manager=mock_connection_manager)
     assert event["sequence_number"] == 42
 
@@ -138,7 +144,7 @@ def test_build_event_no_data_parameter():
 def test_build_event_timestamp_format():
     """Test build_event() includes properly formatted timestamp."""
     event = build_event("test.event")
-    timestamp = event["timestamp"]
+    timestamp = cast(str, event["timestamp"])
     assert timestamp.endswith("Z")
     # Should be parseable
     parsed = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))

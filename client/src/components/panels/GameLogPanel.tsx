@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ansiToHtmlWithBreaks } from '../../utils/ansiToHtml';
+import { SafeHtml } from '../common/SafeHtml';
 import { EldritchIcon, MythosIcons } from '../ui/EldritchIcon';
 import { TerminalButton } from '../ui/TerminalButton';
-import { SafeHtml } from '../common/SafeHtml';
 
 interface ChatMessage {
   text: string;
@@ -285,16 +285,17 @@ export const GameLogPanel: React.FC<GameLogPanelProps> = ({ messages, onClearMes
           </div>
           <div className="space-y-1 max-h-24 overflow-y-auto">
             {searchHistory.map((query, index) => (
-              <div
+              <button
                 key={index}
-                className="text-xs text-mythos-terminal-text-secondary cursor-pointer hover:text-mythos-terminal-text p-1 rounded"
+                type="button"
+                className="text-xs text-mythos-terminal-text-secondary cursor-pointer hover:text-mythos-terminal-text p-1 rounded w-full text-left"
                 onClick={() => {
                   setSearchQuery(query);
                   setShowSearchHistory(false);
                 }}
               >
                 {query}
-              </div>
+              </button>
             ))}
           </div>
         </div>

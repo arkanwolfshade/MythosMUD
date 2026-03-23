@@ -152,7 +152,7 @@
   background: #3a3a3a;
 }
 
-.stat-item label {
+.stat-item .stat-name {
   font-weight: bold;
   color: #87ceeb;
   font-size: 0.9rem;

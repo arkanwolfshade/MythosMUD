@@ -67,41 +67,28 @@ const originalClearInterval = global.clearInterval;
 // Create mocks that track IDs but delegate to the actual setInterval implementation
 // In browser-like environments (happy-dom), window.setInterval might be different from global.setInterval
 // So we'll try to use the appropriate one based on what's available
-const mockedSetInterval = vi.fn((handler: TimerHandler, timeout?: number, ...args: unknown[]) => {
-  const id = intervalIdCounter++;
-  intervalIds.add(id);
-  // Try to use window.setInterval if available and different from our mock
-  // Otherwise fall back to global.setInterval
-  // This handles both browser-like environments
-  let actualSetInterval: typeof setInterval;
-  if (typeof window !== 'undefined' && window.setInterval !== mockedSetInterval) {
-    // window.setInterval exists and isn't our mock - use it
-    // But wait, we just set window.setInterval = mockedSetInterval, so this won't work
-    // We need to get the original window.setInterval before we replaced it
-    // Actually, in happy-dom, window.setInterval might be the native implementation
-    // Let's check if we can get it from the window prototype or something
-    // For now, let's use global.setInterval and handle the recursion case
-    actualSetInterval = global.setInterval;
-  } else {
-    actualSetInterval = global.setInterval;
+const mockedSetInterval: ReturnType<typeof vi.fn> = vi.fn(
+  (handler: TimerHandler, timeout?: number, ...args: unknown[]) => {
+    const id = intervalIdCounter++;
+    intervalIds.add(id);
+    const actualSetInterval = global.setInterval;
+    if (actualSetInterval === (mockedSetInterval as unknown as typeof setInterval)) {
+      return originalSetInterval(handler, timeout, ...(args as Parameters<typeof setInterval>));
+    }
+    if (actualSetInterval !== originalSetInterval) {
+      // It's been replaced (likely by Vitest's fake timers) - use it
+      return actualSetInterval(handler, timeout, ...(args as Parameters<typeof setInterval>));
+    } else {
+      // It's still the original - use it
+      return originalSetInterval(handler, timeout, ...(args as Parameters<typeof setInterval>));
+    }
   }
-
-  // Avoid recursion
-  if (actualSetInterval === mockedSetInterval) {
-    return originalSetInterval(handler, timeout, ...(args as Parameters<typeof setInterval>));
-  } else if (actualSetInterval !== originalSetInterval) {
-    // It's been replaced (likely by Vitest's fake timers) - use it
-    return actualSetInterval(handler, timeout, ...(args as Parameters<typeof setInterval>));
-  } else {
-    // It's still the original - use it
-    return originalSetInterval(handler, timeout, ...(args as Parameters<typeof setInterval>));
-  }
-}) as unknown as typeof setInterval;
+);
 
 // Only replace window.setInterval, not global.setInterval
 // This allows Vitest's fake timers to work correctly
 if (typeof window !== 'undefined') {
-  window.setInterval = mockedSetInterval;
+  window.setInterval = mockedSetInterval as unknown as typeof window.setInterval;
 }
 
 // Use a closure to track if we're in a recursive call
@@ -1165,8 +1152,7 @@ describe('useWebSocketConnection', () => {
       expect(mockResourceManager.registerInterval).toHaveBeenCalled();
 
       // Verify the interval callback exists and is a function
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const mockCalls = (mockedSetInterval as any).mock?.calls || [];
+      const mockCalls = mockedSetInterval.mock.calls;
       const intervalCall = [...mockCalls]
         .reverse()
         .find((call: unknown[]) => typeof call[0] === 'function' && call[1] === 30000);
@@ -1221,8 +1207,7 @@ describe('useWebSocketConnection', () => {
       expect(mockResourceManager.registerInterval).toHaveBeenCalled();
 
       // Verify the interval callback exists and is a function
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const mockCalls = (mockedSetInterval as any).mock?.calls || [];
+      const mockCalls = mockedSetInterval.mock.calls;
       const intervalCall = [...mockCalls]
         .reverse()
         .find((call: unknown[]) => typeof call[0] === 'function' && call[1] === 30000);
@@ -1277,8 +1262,7 @@ describe('useWebSocketConnection', () => {
       expect(mockResourceManager.registerInterval).toHaveBeenCalled();
 
       // Verify the interval callback exists and is a function
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const mockCalls = (mockedSetInterval as any).mock?.calls || [];
+      const mockCalls = mockedSetInterval.mock.calls;
       const intervalCall = [...mockCalls]
         .reverse()
         .find((call: unknown[]) => typeof call[0] === 'function' && call[1] === 30000);

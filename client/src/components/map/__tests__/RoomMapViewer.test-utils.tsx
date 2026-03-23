@@ -65,7 +65,7 @@ export const createMockNodes = (count = 1, overrides = {}) => {
     id: `node${i + 1}`,
     type: 'room',
     position: { x: 0, y: 0 },
-    data: { id: `room${i + 1}`, name: `Room ${i + 1}`, ...overrides },
+    data: { id: `room${i + 1}`, name: `Room ${i + 1}`, description: `Room ${i + 1} description`, ...overrides },
   }));
 };
 

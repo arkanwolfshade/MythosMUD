@@ -85,8 +85,11 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({ onSubmit, onCancel, 
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Feedback Type */}
         <div>
-          <label className="block text-sm font-medium text-mythos-terminal-text-secondary mb-2">Feedback Type</label>
+          <label htmlFor="feedback-type" className="block text-sm font-medium text-mythos-terminal-text-secondary mb-2">
+            Feedback Type
+          </label>
           <select
+            id="feedback-type"
             value={feedback.type}
             onChange={e => {
               handleChange('type', e.target.value);
@@ -102,10 +105,14 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({ onSubmit, onCancel, 
 
         {/* Component */}
         <div>
-          <label className="block text-sm font-medium text-mythos-terminal-text-secondary mb-2">
+          <label
+            htmlFor="feedback-component"
+            className="block text-sm font-medium text-mythos-terminal-text-secondary mb-2"
+          >
             Related Component
           </label>
           <select
+            id="feedback-component"
             value={feedback.component}
             onChange={e => {
               handleChange('component', e.target.value);
@@ -121,8 +128,14 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({ onSubmit, onCancel, 
 
         {/* Priority */}
         <div>
-          <label className="block text-sm font-medium text-mythos-terminal-text-secondary mb-2">Priority</label>
+          <label
+            htmlFor="feedback-priority"
+            className="block text-sm font-medium text-mythos-terminal-text-secondary mb-2"
+          >
+            Priority
+          </label>
           <select
+            id="feedback-priority"
             value={feedback.priority}
             onChange={e => {
               handleChange('priority', e.target.value);
@@ -138,8 +151,14 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({ onSubmit, onCancel, 
 
         {/* Title */}
         <div>
-          <label className="block text-sm font-medium text-mythos-terminal-text-secondary mb-2">Title *</label>
+          <label
+            htmlFor="feedback-title"
+            className="block text-sm font-medium text-mythos-terminal-text-secondary mb-2"
+          >
+            Title *
+          </label>
           <TerminalInput
+            id="feedback-title"
             value={feedback.title}
             onChange={e => {
               handleChange('title', e.target.value);
@@ -151,8 +170,14 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({ onSubmit, onCancel, 
 
         {/* Description */}
         <div>
-          <label className="block text-sm font-medium text-mythos-terminal-text-secondary mb-2">Description *</label>
+          <label
+            htmlFor="feedback-description"
+            className="block text-sm font-medium text-mythos-terminal-text-secondary mb-2"
+          >
+            Description *
+          </label>
           <textarea
+            id="feedback-description"
             value={feedback.description}
             onChange={e => {
               handleChange('description', e.target.value);
@@ -166,7 +191,7 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({ onSubmit, onCancel, 
 
         {/* Quick Feedback Templates */}
         <div>
-          <label className="block text-sm font-medium text-mythos-terminal-text-secondary mb-2">Quick Templates</label>
+          <p className="block text-sm font-medium text-mythos-terminal-text-secondary mb-2">Quick Templates</p>
           <div className="grid grid-cols-2 gap-2">
             <TerminalButton
               type="button"
