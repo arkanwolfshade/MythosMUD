@@ -57,8 +57,9 @@
   box-sizing: border-box;
 }
 
-.character-name-input:focus {
-  outline: none;
+.character-name-input:focus-visible {
+  outline: 2px solid #87ceeb;
+  outline-offset: 2px;
   border-color: #87ceeb;
   box-shadow: 0 0 8px rgba(135, 206, 235, 0.3);
 }

@@ -1,4 +1,4 @@
-import { HallucinationMessage, LucidityStatus, LucidityTier, RescueState } from '../types/lucidity';
+import type { HallucinationMessage, LucidityStatus, LucidityTier, RescueState } from '../types/lucidity';
 
 const DEFAULT_MAX_LCD = 100;
 
@@ -25,6 +25,49 @@ const parseNumber = (value: unknown, fallback: number): number => {
   return fallback;
 };
 
+const resolveMaxLucidity = (
+  data: Record<string, unknown>,
+  previous: LucidityStatus | null,
+  playerMaxLucidity?: number
+): number => {
+  const fallbackMax = previous?.max ?? playerMaxLucidity ?? DEFAULT_MAX_LCD;
+  return parseNumber(data.max_lcd ?? data.maxLcd, fallbackMax);
+};
+
+const resolveCurrentRawValue = (data: Record<string, unknown>, previousCurrent: number, delta: number): unknown => {
+  if (data.current_lcd != null) {
+    return data.current_lcd;
+  }
+  if (data.currentLcd != null) {
+    return data.currentLcd;
+  }
+  return previousCurrent + delta;
+};
+
+const resolveCurrentLucidity = (
+  data: Record<string, unknown>,
+  previous: LucidityStatus | null,
+  delta: number,
+  max: number
+): number => {
+  const previousCurrent = previous?.current ?? 0;
+  const rawCurrent = resolveCurrentRawValue(data, previousCurrent, delta);
+  const parsedCurrent = parseNumber(rawCurrent, previousCurrent);
+  if (max > 0 && parsedCurrent > max) {
+    return max;
+  }
+  return parsedCurrent;
+};
+
+const resolveLiabilities = (data: Record<string, unknown>, previous: LucidityStatus | null): string[] => {
+  const liabilitiesSource = Array.isArray(data.liabilities) ? data.liabilities : (previous?.liabilities ?? []);
+  return liabilitiesSource.map(entry => String(entry)).filter(Boolean);
+};
+
+const resolveOptionalText = (value: unknown): string | undefined => {
+  return typeof value === 'string' ? value : undefined;
+};
+
 export const buildLucidityStatus = (
   previous: LucidityStatus | null,
   data: Record<string, unknown>,
@@ -32,22 +75,12 @@ export const buildLucidityStatus = (
   playerMaxLucidity?: number
 ): { status: LucidityStatus; delta: number } => {
   const delta = parseNumber(data.delta, 0);
-  // Prefer max_lcd from event, then previous max, then player stats, then default
-  const max = parseNumber(data.max_lcd ?? data.maxLcd, previous?.max ?? playerMaxLucidity ?? DEFAULT_MAX_LCD);
-  // Calculate current, then cap it to max if it exceeds (defensive check)
-  let current = parseNumber(
-    data.current_lcd ?? data.currentLcd ?? (previous?.current ?? 0) + delta,
-    previous?.current ?? 0
-  );
-  // Cap current to max if it exceeds (can happen if PlayerLucidity record has old value)
-  if (max > 0 && current > max) {
-    current = max;
-  }
+  const max = resolveMaxLucidity(data, previous, playerMaxLucidity);
+  const current = resolveCurrentLucidity(data, previous, delta, max);
   const tier = sanitizeTier(data.tier, previous?.tier ?? 'lucid');
-  const liabilitiesSource = Array.isArray(data.liabilities) ? data.liabilities : (previous?.liabilities ?? []);
-  const liabilities = liabilitiesSource.map(entry => String(entry)).filter(Boolean);
-  const reason = typeof data.reason === 'string' ? data.reason : undefined;
-  const source = typeof data.source === 'string' ? data.source : undefined;
+  const liabilities = resolveLiabilities(data, previous);
+  const reason = resolveOptionalText(data.reason);
+  const source = resolveOptionalText(data.source);
 
   const status: LucidityStatus = {
     current,

@@ -424,7 +424,7 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
 
         # Get destination room ID from effect_data
         dest_raw = cast(object, spell.effect_data.get("destination_room_id"))
-        if dest_raw is None or dest_raw == "":
+        if dest_raw is None or not dest_raw:
             return {"success": False, "message": "No destination room specified", "effect_applied": False}
         destination_room_id = str(dest_raw).strip()
         if not destination_room_id:

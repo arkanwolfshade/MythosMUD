@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { logger } from '../utils/logger.js';
 import { useProfessions } from '../hooks/useProfessions.js';
-import { Profession, ProfessionCard } from './ProfessionCard.jsx';
+import { logger } from '../utils/logger.js';
+import type { Profession } from './ProfessionCard.jsx';
+import { ProfessionCard } from './ProfessionCard.jsx';
 
 interface ProfessionSelectionScreenProps {
   characterName?: string; // MULTI-CHARACTER: Made optional - character name is now entered later

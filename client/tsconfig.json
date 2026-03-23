@@ -30,8 +30,10 @@
   },
   "include": ["src"],
   "exclude": [
-    "src/**/*.test.{ts,tsx}",
-    "src/**/*.spec.{ts,tsx}",
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx",
+    "src/**/*.spec.ts",
+    "src/**/*.spec.tsx",
     "src/test/**/*",
     "tests/**/*",
     "playwright.config.ts"

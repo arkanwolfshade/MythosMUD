@@ -3,7 +3,6 @@
 import type { ReactNode } from 'react';
 import React, { createContext, useCallback, useState } from 'react';
 
-// Panel types
 export interface PanelPosition {
   x: number;
   y: number;
@@ -29,7 +28,6 @@ export interface PanelLayout {
   [panelId: string]: PanelState;
 }
 
-// Panel management context type
 export interface PanelContextType {
   panels: PanelLayout;
   addPanel: (id: string, title: string, initialPosition?: PanelPosition, initialSize?: PanelSize) => void;
@@ -45,7 +43,6 @@ export interface PanelContextType {
   getNextZIndex: () => number;
 }
 
-// Default panel configurations
 const defaultPanels: PanelLayout = {
   chat: {
     id: 'chat',
@@ -99,10 +96,8 @@ const defaultPanels: PanelLayout = {
   },
 };
 
-// Create context
 export const PanelContext = createContext<PanelContextType | null>(null);
 
-// Context provider
 interface PanelProviderProps {
   children: ReactNode;
   initialPanels?: PanelLayout;
@@ -110,7 +105,6 @@ interface PanelProviderProps {
 
 export const PanelProvider: React.FC<PanelProviderProps> = ({ children, initialPanels = defaultPanels }) => {
   const [panels, setPanels] = useState<PanelLayout>(() => {
-    // Load from localStorage if available
     const saved = localStorage.getItem('mythosmud-panel-layout');
     if (saved) {
       try {
@@ -123,7 +117,6 @@ export const PanelProvider: React.FC<PanelProviderProps> = ({ children, initialP
     return initialPanels;
   });
 
-  // Save to localStorage whenever panels change
   React.useEffect(() => {
     localStorage.setItem('mythosmud-panel-layout', JSON.stringify(panels));
   }, [panels]);
@@ -181,7 +174,7 @@ export const PanelProvider: React.FC<PanelProviderProps> = ({ children, initialP
       [id]: {
         ...prev[id],
         isMinimized: !prev[id].isMinimized,
-        isMaximized: false, // Can't be maximized and minimized at the same time
+        isMaximized: false,
       },
     }));
   }, []);
@@ -192,7 +185,7 @@ export const PanelProvider: React.FC<PanelProviderProps> = ({ children, initialP
       [id]: {
         ...prev[id],
         isMaximized: !prev[id].isMaximized,
-        isMinimized: false, // Can't be maximized and minimized at the same time
+        isMinimized: false,
       },
     }));
   }, []);
@@ -234,9 +227,7 @@ export const PanelProvider: React.FC<PanelProviderProps> = ({ children, initialP
     setPanels(defaultPanels);
   }, []);
 
-  const getNextZIndex = useCallback(() => {
-    return Math.max(...Object.values(panels).map(p => p.zIndex), 0) + 1;
-  }, [panels]);
+  const getNextZIndex = useCallback(() => Math.max(...Object.values(panels).map(p => p.zIndex), 0) + 1, [panels]);
 
   const value: PanelContextType = {
     panels,

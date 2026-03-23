@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Layout } from 'react-grid-layout';
+import type { Layout } from 'react-grid-layout';
 
 // Layout configuration for different screen sizes
 export const layoutConfig = {

@@ -1,5 +1,6 @@
 import { useContext } from 'react';
-import { ColorScheme, FontSize, Theme, ThemeContext, ThemeContextType } from '../ThemeContext';
+import type { ColorScheme, FontSize, Theme, ThemeContextType } from '../ThemeContext';
+import { ThemeContext } from '../ThemeContext';
 
 // Hook to use theme context
 export const useTheme = (): ThemeContextType => {

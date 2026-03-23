@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 // Disabled: Context files intentionally export both context and provider
-import React, { createContext, ReactNode, useEffect, useState } from 'react';
+import type { ReactNode } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 
 // Theme types
 export type Theme = 'light' | 'dark' | 'terminal';

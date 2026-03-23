@@ -1,4 +1,5 @@
-import React, { createContext, ReactNode, useContext } from 'react';
+import type { ReactNode } from 'react';
+import React, { createContext, useContext } from 'react';
 
 // Context for sharing state between compound components
 interface RoomInfoContextType {
@@ -93,36 +94,28 @@ export const RoomDescription: React.FC = () => {
 export const RoomLocation: React.FC = () => {
   const { room } = useRoomInfo();
 
-  if (!room || (!room.plane && !room.zone && !room.sub_zone)) return null;
+  if (!room) return null;
+
+  const locationEntries: Array<[label: string, value: string | undefined]> = [
+    ['Plane', room.plane],
+    ['Zone', room.zone],
+    ['Sub-zone', room.sub_zone],
+    ['Environment', room.environment],
+  ];
+  const visibleEntries = locationEntries.filter(([, value]) => Boolean(value));
+
+  if (visibleEntries.length === 0) return null;
 
   return (
     <div className="bg-mythos-terminal-surface border border-gray-700 rounded p-3">
       <h4 className="text-sm font-bold text-mythos-terminal-primary mb-2">Location</h4>
       <div className="space-y-1 text-xs">
-        {room.plane && (
-          <div className="flex justify-between">
-            <span className="text-mythos-terminal-text-secondary">Plane:</span>
-            <span className="text-mythos-terminal-text">{room.plane}</span>
+        {visibleEntries.map(([label, value]) => (
+          <div key={label} className="flex justify-between">
+            <span className="text-mythos-terminal-text-secondary">{label}:</span>
+            <span className="text-mythos-terminal-text">{value}</span>
           </div>
-        )}
-        {room.zone && (
-          <div className="flex justify-between">
-            <span className="text-mythos-terminal-text-secondary">Zone:</span>
-            <span className="text-mythos-terminal-text">{room.zone}</span>
-          </div>
-        )}
-        {room.sub_zone && (
-          <div className="flex justify-between">
-            <span className="text-mythos-terminal-text-secondary">Sub-zone:</span>
-            <span className="text-mythos-terminal-text">{room.sub_zone}</span>
-          </div>
-        )}
-        {room.environment && (
-          <div className="flex justify-between">
-            <span className="text-mythos-terminal-text-secondary">Environment:</span>
-            <span className="text-mythos-terminal-text">{room.environment}</span>
-          </div>
-        )}
+        ))}
       </div>
     </div>
   );

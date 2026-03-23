@@ -177,7 +177,11 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
           onDragStop={handleDragStop}
           onDragStart={handleDragStart}
           dragHandleClassName="panel-drag-handle"
-          style={opaque ? { zIndex, backgroundColor: '#0a0a0a', opacity: 1 } : { zIndex }}
+          style={
+            opaque
+              ? { zIndex, backgroundColor: 'var(--color-mythos-terminal-background, #0a0a0a)', opacity: 1 }
+              : { zIndex }
+          }
           className={`${variantClasses} border rounded ${className}`}
           {...(opaque ? { 'data-panel-opaque': 'true' } : {})}
         >
@@ -186,7 +190,7 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
               style={{
                 position: 'absolute',
                 inset: 0,
-                backgroundColor: '#0a0a0a',
+                backgroundColor: 'var(--color-mythos-terminal-background, #0a0a0a)',
                 zIndex: 0,
                 pointerEvents: 'none',
                 borderRadius: 'inherit',
@@ -200,7 +204,7 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
           >
             <span className="text-sm font-bold text-mythos-terminal-primary">{title}</span>
             <div className="flex items-center gap-2">
-              <TerminalButton variant="secondary" size="sm" onClick={handleMaximize} className="p-1 h-6 w-6">
+              <TerminalButton variant="secondary" size="sm" onClick={handleMaximize} className="p-1 h-9 w-9">
                 <EldritchIcon
                   name={isMaximized ? MythosIcons.restore : MythosIcons.maximize}
                   size={12}
@@ -208,7 +212,7 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
                 />
               </TerminalButton>
               {onClose && (
-                <TerminalButton variant="secondary" size="sm" onClick={handleClose} className="p-1 h-6 w-6">
+                <TerminalButton variant="secondary" size="sm" onClick={handleClose} className="p-1 h-9 w-9">
                   <EldritchIcon name={MythosIcons.close} size={12} variant="error" />
                 </TerminalButton>
               )}
@@ -240,7 +244,11 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
         onDragStart={handleDragStart}
         onResizeStop={handleResizeStop}
         dragHandleClassName="panel-drag-handle"
-        style={opaque ? { zIndex, backgroundColor: '#0a0a0a', opacity: 1 } : { zIndex }}
+        style={
+          opaque
+            ? { zIndex, backgroundColor: 'var(--color-mythos-terminal-background, #0a0a0a)', opacity: 1 }
+            : { zIndex }
+        }
         className={`${variantClasses} border rounded ${className}`}
         {...(opaque ? { 'data-panel-opaque': 'true' } : {})}
         bounds="window"
@@ -251,7 +259,7 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
             style={{
               position: 'absolute',
               inset: 0,
-              backgroundColor: '#0a0a0a',
+              backgroundColor: 'var(--color-mythos-terminal-background, #0a0a0a)',
               zIndex: 0,
               pointerEvents: 'none',
               borderRadius: 'inherit',
@@ -261,7 +269,16 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
         )}
         <div
           className="h-full flex flex-col bg-mythos-terminal-background"
-          style={opaque ? { position: 'relative', zIndex: 1, backgroundColor: '#0a0a0a', opacity: 1 } : undefined}
+          style={
+            opaque
+              ? {
+                  position: 'relative',
+                  zIndex: 1,
+                  backgroundColor: 'var(--color-mythos-terminal-background, #0a0a0a)',
+                  opacity: 1,
+                }
+              : undefined
+          }
         >
           {/* Panel Header: only this area triggers drag; scrolling content no longer moves the panel */}
           {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions -- drag handle uses mousedown; panel controls are separate buttons */}
@@ -271,10 +288,10 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
           >
             <span className="text-sm font-bold text-mythos-terminal-primary">{title}</span>
             <div className="flex items-center gap-2">
-              <TerminalButton variant="secondary" size="sm" onClick={handleMinimize} className="p-1 h-6 w-6">
+              <TerminalButton variant="secondary" size="sm" onClick={handleMinimize} className="p-1 h-9 w-9">
                 <EldritchIcon name={MythosIcons.minimize} size={12} variant="primary" />
               </TerminalButton>
-              <TerminalButton variant="secondary" size="sm" onClick={handleMaximize} className="p-1 h-6 w-6">
+              <TerminalButton variant="secondary" size="sm" onClick={handleMaximize} className="p-1 h-9 w-9">
                 <EldritchIcon
                   name={isMaximized ? MythosIcons.restore : MythosIcons.maximize}
                   size={12}
@@ -282,7 +299,7 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
                 />
               </TerminalButton>
               {onClose && (
-                <TerminalButton variant="secondary" size="sm" onClick={handleClose} className="p-1 h-6 w-6">
+                <TerminalButton variant="secondary" size="sm" onClick={handleClose} className="p-1 h-9 w-9">
                   <EldritchIcon name={MythosIcons.close} size={12} variant="error" />
                 </TerminalButton>
               )}

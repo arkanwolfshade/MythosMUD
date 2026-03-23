@@ -29,7 +29,7 @@ export const TabbedInterfaceOverlay: React.FC<TabbedInterfaceOverlayProps> = ({
       ref={rootRef}
       className="fixed inset-0 flex flex-col"
       style={{
-        backgroundColor: '#0a0a0a',
+        backgroundColor: 'var(--color-mythos-terminal-background, #0a0a0a)',
         opacity: 1,
         zIndex: Z_INDEX_OVERLAY_TOP,
       }}
@@ -38,7 +38,7 @@ export const TabbedInterfaceOverlay: React.FC<TabbedInterfaceOverlayProps> = ({
         {/* Tab Bar */}
         <div
           className="flex items-center border-b border-mythos-terminal-border overflow-x-auto shrink-0"
-          style={{ backgroundColor: '#0a0a0a' }}
+          style={{ backgroundColor: 'var(--color-mythos-terminal-background, #0a0a0a)' }}
         >
           {tabs.map(tab => (
             <div key={tab.id} className="flex items-stretch border-r border-mythos-terminal-border min-w-0">
@@ -63,7 +63,7 @@ export const TabbedInterfaceOverlay: React.FC<TabbedInterfaceOverlayProps> = ({
                   onClick={() => {
                     closeTab(tab.id);
                   }}
-                  className="shrink-0 px-2 hover:bg-black/20 transition-colors self-stretch flex items-center"
+                  className="shrink-0 min-h-9 min-w-9 px-2 hover:bg-black/20 transition-colors self-stretch flex items-center justify-center"
                   aria-label={`Close ${tab.label}`}
                 >
                   ×
@@ -73,7 +73,10 @@ export const TabbedInterfaceOverlay: React.FC<TabbedInterfaceOverlayProps> = ({
           ))}
         </div>
         {/* Tab Content: opaque background so map popout does not show game UI through */}
-        <div className="flex-1 overflow-hidden min-h-0" style={{ backgroundColor: '#0a0a0a' }}>
+        <div
+          className="flex-1 overflow-hidden min-h-0"
+          style={{ backgroundColor: 'var(--color-mythos-terminal-background, #0a0a0a)' }}
+        >
           {tabs.find(tab => tab.id === activeTabId)?.content}
         </div>
       </div>

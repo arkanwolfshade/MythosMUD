@@ -8,7 +8,8 @@
 
 import { useMachine } from '@xstate/react';
 import { useCallback, useEffect } from 'react';
-import { ConnectionContext, connectionMachine } from './useConnectionStateMachine';
+import type { ConnectionContext } from './useConnectionStateMachine';
+import { connectionMachine } from './useConnectionStateMachine';
 
 /**
  * Connection state hook return type.

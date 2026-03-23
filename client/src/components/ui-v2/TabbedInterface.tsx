@@ -94,7 +94,7 @@ export const TabbedInterface: React.FC<TabbedInterfaceProps> = ({
                   onClick={() => {
                     closeTab(tab.id);
                   }}
-                  className="shrink-0 px-2 hover:bg-black/20 transition-colors self-stretch flex items-center"
+                  className="shrink-0 min-h-9 min-w-9 px-2 hover:bg-black/20 transition-colors self-stretch flex items-center justify-center"
                   aria-label={`Close ${tab.label}`}
                 >
                   <X size={14} />
