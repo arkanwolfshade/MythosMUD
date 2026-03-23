@@ -190,6 +190,10 @@ def _run_psql_file(
     env = os.environ.copy()
     if password:
         env["PGPASSWORD"] = password
+    # List argv + shell=False: the OS passes each element as one argument; no shell parses
+    # these strings. Do not use shlex.quote on list elements (that is for shell *strings* and
+    # would add literal quote characters to argv when values contain spaces).
+    sql_path = str(sql_file.resolve())
     cmd: list[str] = [
         psql_exe,
         "-q",
@@ -206,7 +210,7 @@ def _run_psql_file(
     ]
     if kick_other_backends:
         cmd.extend(["-c", _PSQL_KICK_OTHER_BACKENDS])
-    cmd.extend(["-f", str(sql_file.resolve())])
+    cmd.extend(["-f", sql_path])
     print(preamble, flush=True)
     proc: subprocess.Popen[str] = subprocess.Popen(
         cmd, env=env, stdout=None, stderr=None, text=True
