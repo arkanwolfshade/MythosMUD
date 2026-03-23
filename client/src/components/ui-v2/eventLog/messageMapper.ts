@@ -3,6 +3,25 @@
 
 import type { Player } from '../types';
 
+/**
+ * Spell / steal-life / other non-melee NPC damage: server sends npc_took_damage with current_dp after hit.
+ * Aligns Game Info line with melee (npc_attacked) which uses target_current_dp / target_max_dp.
+ */
+export function formatNpcTookDamageLine(d: Record<string, unknown>): string {
+  const npcName = d.npc_name as string | undefined;
+  const damage = d.damage as number | undefined;
+  const currentDp = d.current_dp as number | undefined;
+  const maxDp = d.max_dp as number | undefined;
+  if (!npcName || damage === undefined) {
+    return '';
+  }
+  let text = `Dealt ${damage} damage to ${npcName}.`;
+  if (currentDp !== undefined && maxDp !== undefined) {
+    text += ` (${currentDp}/${maxDp} DP)`;
+  }
+  return text;
+}
+
 export function formatNpcAttackedLine(d: Record<string, unknown>): string {
   const actionType = d.action_type as string | undefined;
   const npcName = (d.npc_name || d.target_name) as string | undefined;

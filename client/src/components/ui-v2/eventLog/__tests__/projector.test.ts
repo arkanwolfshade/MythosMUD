@@ -203,6 +203,25 @@ describe('projector', () => {
       expect(next.messages[0].text).toContain('55/100');
     });
 
+    it('npc_took_damage appends spell damage line with NPC current_dp', () => {
+      const prev = getInitialGameState();
+      const event: GameEvent = {
+        event_type: 'npc_took_damage',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          npc_name: 'Nightgaunt',
+          damage: 25,
+          current_dp: 55,
+          max_dp: 80,
+        },
+      };
+      const next = projectEvent(prev, event);
+      expect(next.messages).toHaveLength(1);
+      expect(next.messages[0].text).toContain('Dealt 25 damage to Nightgaunt');
+      expect(next.messages[0].text).toContain('55/80');
+    });
+
     it('follow_request_cleared clears pendingFollowRequest when projected', () => {
       const prev = getInitialGameState();
       const withFollow: GameState = {

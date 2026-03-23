@@ -7,6 +7,7 @@ import { describe, expect, it } from 'vitest';
 import type { Player } from '../../types';
 import {
   formatNpcAttackedLine,
+  formatNpcTookDamageLine,
   formatPlayerAttackedLine,
   mergePlayerDpFromPlayerAttackedPayload,
 } from '../messageMapper';
@@ -36,6 +37,24 @@ describe('messageMapper', () => {
         target_max_dp: 50,
       });
       expect(line).toContain('12/50');
+    });
+  });
+
+  describe('formatNpcTookDamageLine', () => {
+    it('includes current_dp/max_dp for spell damage lines', () => {
+      const line = formatNpcTookDamageLine({
+        npc_name: 'Nightgaunt',
+        damage: 25,
+        current_dp: 55,
+        max_dp: 80,
+      });
+      expect(line).toContain('Dealt 25 damage to Nightgaunt');
+      expect(line).toContain('55/80');
+    });
+
+    it('returns empty string when name or damage missing', () => {
+      expect(formatNpcTookDamageLine({ npc_name: 'X' })).toBe('');
+      expect(formatNpcTookDamageLine({ damage: 5 })).toBe('');
     });
   });
 

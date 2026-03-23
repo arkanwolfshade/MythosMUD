@@ -18,8 +18,9 @@ from __future__ import annotations
 
 import json
 import uuid
+from collections.abc import Mapping
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, cast, override
 
 if TYPE_CHECKING:
     from server.realtime.connection_manager import ConnectionManager
@@ -28,10 +29,11 @@ if TYPE_CHECKING:
 class UUIDEncoder(json.JSONEncoder):
     """Custom JSON encoder that handles UUID objects."""
 
-    def default(self, obj: Any) -> Any:  # pylint: disable=arguments-renamed  # Reason: JSONEncoder interface requires 'obj' parameter name, parent class uses 'o'
-        if isinstance(obj, uuid.UUID):
-            return str(obj)
-        return super().default(obj)
+    @override
+    def default(self, o: object) -> object:
+        if isinstance(o, uuid.UUID):
+            return str(o)
+        return cast(object, super().default(o))
 
 
 # Global sequence counter for events (when connection_manager not available)
@@ -59,13 +61,13 @@ def utc_now_z() -> str:
 
 def build_event(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Event building requires many parameters for complete event context
     event_type: str,
-    data: dict[str, Any] | None = None,
+    data: Mapping[str, object] | None = None,
     *,
     room_id: str | None = None,
     player_id: uuid.UUID | str | None = None,
     sequence_number: int | None = None,
     connection_manager: ConnectionManager | None = None,
-) -> dict[str, Any]:
+) -> dict[str, object]:
     """
     Create a normalized event envelope.
 
@@ -85,14 +87,16 @@ def build_event(  # pylint: disable=too-many-arguments,too-many-positional-argum
     if sequence_number is not None:
         seq = sequence_number
     elif connection_manager is not None:
-        seq = connection_manager._get_next_sequence()  # pylint: disable=protected-access  # Reason: Internal sequence number generation required
+        from .connection_manager_methods import get_next_sequence_impl
+
+        seq = get_next_sequence_impl(connection_manager)
     else:
         seq = _get_next_global_sequence()  # Fallback for backward compatibility
-    event: dict[str, Any] = {
+    event: dict[str, object] = {
         "event_type": event_type,
         "timestamp": utc_now_z(),
         "sequence_number": seq,
-        "data": data or {},
+        "data": {} if data is None else data,
     }
     if room_id is not None:
         event["room_id"] = room_id

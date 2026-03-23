@@ -7,6 +7,7 @@ import { buildMythosTimeState, formatMythosTime12Hour } from '../../../utils/myt
 import type { GameEvent } from '../eventHandlers/types';
 import {
   formatNpcAttackedLine,
+  formatNpcTookDamageLine,
   formatPlayerAttackedLine,
   mergePlayerDpFromPlayerAttackedPayload,
 } from './messageMapper';
@@ -138,6 +139,25 @@ export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
     });
     logger.info('projector', 'Combat message appended (npc_attacked)', {
       event_type: 'npc_attacked',
+      text_preview: text.slice(0, 80),
+    });
+    return { ...prevState, messages: appendMessage(prevState.messages, msg) };
+  },
+
+  npc_took_damage(prevState, event) {
+    const d = (event.data?.event_data ?? event.data) as Record<string, unknown> | undefined;
+    if (!d) return prevState;
+    const npcName = d.npc_name as string | undefined;
+    const damage = d.damage as number | undefined;
+    if (!npcName || damage === undefined) return prevState;
+    const text = formatNpcTookDamageLine(d);
+    if (!text) return prevState;
+    const msg = buildChatMessage(text, event.timestamp, {
+      messageType: 'system',
+      channel: GAME_LOG_CHANNEL,
+    });
+    logger.info('projector', 'Combat message appended (npc_took_damage)', {
+      event_type: 'npc_took_damage',
       text_preview: text.slice(0, 80),
     });
     return { ...prevState, messages: appendMessage(prevState.messages, msg) };

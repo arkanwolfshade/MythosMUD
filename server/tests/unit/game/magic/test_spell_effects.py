@@ -5,7 +5,7 @@ Tests the SpellEffects class.
 """
 
 import uuid
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -379,3 +379,47 @@ async def test_process_create_object_invalid_target(spell_effects):
     assert (
         result.get("success") is False or result.get("success") is True
     )  # May succeed or fail depending on implementation
+
+
+@pytest.mark.asyncio
+async def test_publish_npc_spell_damage_syncs_participant_when_npc_room_missing(mock_player_service):
+    """
+    Regress: Fire bolt (and other NPC damage spells) update the live NPC via take_damage first.
+    Combat UI and melee use CombatParticipant.current_dp; sync must run even when
+    npc_instance.current_room is unset (use combat.room_id for NATS publish).
+    """
+    combat_uuid = uuid.uuid4()
+    combat = MagicMock()
+    combat.room_id = "limbo_arena_arena_arena_5_5"
+    combat.participants = {}
+
+    svc = MagicMock()
+    svc.sync_npc_participant_dp_after_spell_damage = MagicMock()
+    svc.publish_npc_damage_event = AsyncMock()
+    svc.publish_npc_died_event = AsyncMock()
+    svc.end_combat_if_npc_died = AsyncMock()
+    svc.get_combat = MagicMock(return_value=combat)
+
+    npc_inst = MagicMock()
+    npc_inst.current_room = None
+    npc_inst.get_combat_stats = MagicMock(return_value={"current_dp": 75, "max_dp": 100})
+    npc_inst.is_alive = True
+
+    tid = str(uuid.uuid4())
+    target = TargetMatch(
+        target_id=tid,
+        target_type=TargetType.NPC,
+        target_name="Nightgaunt",
+        room_id=combat.room_id,
+    )
+    caster_id = uuid.uuid4()
+    spell_fx = SpellEffects(mock_player_service, combat_service=svc)
+
+    with patch("server.game.magic.spell_effects.get_combat_id_for_npc", return_value=combat_uuid):
+        await spell_fx._publish_npc_damage_and_death_events(npc_inst, target, 25, caster_id)
+
+    svc.sync_npc_participant_dp_after_spell_damage.assert_called_once_with(tid, 75)
+    svc.publish_npc_damage_event.assert_awaited_once()
+    call_kw = svc.publish_npc_damage_event.await_args.kwargs
+    assert call_kw["room_id"] == combat.room_id
+    assert call_kw["current_dp"] == 75

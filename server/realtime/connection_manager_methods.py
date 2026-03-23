@@ -236,7 +236,7 @@ async def broadcast_global_impl(
 
 
 async def broadcast_room_event_impl(
-    manager: Any, event_type: str, room_id: str, data: dict[str, Any]
+    manager: Any, event_type: str, room_id: str, data: dict[str, object]
 ) -> dict[str, Any]:
     """Broadcast a room-specific event to all players in the room."""
     try:
@@ -259,7 +259,7 @@ async def broadcast_room_event_impl(
         }
 
 
-async def broadcast_global_event_impl(manager: Any, event_type: str, data: dict[str, Any]) -> dict[str, Any]:
+async def broadcast_global_event_impl(manager: Any, event_type: str, data: dict[str, object]) -> dict[str, Any]:
     """Broadcast a global event to all connected players."""
     try:
         from ..exceptions import DatabaseError

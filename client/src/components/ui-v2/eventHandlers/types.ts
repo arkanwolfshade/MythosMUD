@@ -27,6 +27,7 @@ import type { ChatMessage, Player, QuestLogEntry, Room } from '../types';
  * | command_response | player_update, room_state | nested room | result / game_log | |
  * | chat_message, room_message, system | no | no | yes | |
  * | npc_attacked | no (NPC target) | no | combat line | |
+ * | npc_took_damage | no | no | spell/steal-life NPC DP line | |
  * | player_attacked | target DP merged into player | no | combat line | |
  * | combat_started, combat_ended, combat_target_switch | flags / no | no | lines | |
  * | npc_died, combat_death | no | no | line | |

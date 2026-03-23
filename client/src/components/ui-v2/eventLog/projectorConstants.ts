@@ -42,6 +42,8 @@ export const PROJECTED_EVENT_TYPES = new Set([
   'room_message',
   'system',
   'npc_attacked',
+  /** Spell / steal-life NPC damage: same DP fields as combat publisher payload */
+  'npc_took_damage',
   'player_attacked',
   'combat_started',
   'combat_ended',
