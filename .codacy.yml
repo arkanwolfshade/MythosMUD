@@ -32,6 +32,16 @@ engines:
       - "**/test_*.py"
       - "**/*_test.py"
       - "**/conftest.py"
+  # Codacy Cloud tool-level excludes (see root exclude_paths for Makefile too).
+  # Note: Codacy CLI v2 may still run Pylint/Revive on an opened Makefile; see .vscode/settings.json.
+  pylintpython3:
+    exclude_paths:
+      - "Makefile"
+      - "**/Makefile"
+  revive:
+    exclude_paths:
+      - "Makefile"
+      - "**/Makefile"
 
 # Ignore assert and hardcoded secrets in test files (Bandit/Prospector B101/B106)
 # Assert and test passwords are standard in pytest; bandit.yml skips them but Codacy

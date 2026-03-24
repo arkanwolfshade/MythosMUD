@@ -1,4 +1,7 @@
 {
+  "problems.exclude": {
+    "**/Makefile": true
+  },
   "workbench.statusBar.items": {
     "worktree": {
       "alignment": "left",

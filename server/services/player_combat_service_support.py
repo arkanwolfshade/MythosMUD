@@ -29,7 +29,7 @@ class EventBusPublish(Protocol):
 class NPCCombatRewardsLike(Protocol):
     """NPC combat rewards helper."""
 
-    async def award_xp_to_killer(self, killer_id: str, npc_id: str, xp: int) -> None:
+    async def award_xp_to_killer(self, killer_id: str, npc_id: str, _xp: int) -> None:
         """Award XP to the killer for an NPC defeat."""
         raise NotImplementedError
 

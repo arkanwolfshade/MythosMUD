@@ -20,7 +20,7 @@ from server.models.combat import (
 )
 from server.services.combat_attack_handler import CombatAttackHandler
 from server.services.combat_cleanup_handler import CombatCleanupHandler
-from server.services.combat_death_handler import CombatDeathHandler
+from server.services.combat_death_handler import CombatDeathHandler, CombatServiceDeps
 from server.services.combat_event_handler import CombatEventHandler
 from server.services.combat_event_publisher import CombatEventPublisher
 from server.services.combat_flee_handler import check_involuntary_flee as check_involuntary_flee_fn
@@ -59,7 +59,6 @@ from server.structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
     from server.game.magic.magic_service import MagicService
-    from server.services.combat_death_handler import CombatServiceDeps
     from server.services.npc_combat_data_provider import NPCCombatDataProvider
     from server.services.npc_combat_integration_service import NPCCombatIntegrationService
     from server.services.player_death_service import PlayerDeathService
@@ -142,7 +141,7 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
         # Initialize helper handlers
         self._turn_processor = CombatTurnProcessor(self)
         self._attack_handler = CombatAttackHandler(self)
-        self._death_handler = CombatDeathHandler(cast("CombatServiceDeps", self))
+        self._death_handler = CombatDeathHandler(cast(CombatServiceDeps, self))
         self._event_handler = CombatEventHandler(self)
         self._persistence_handler = CombatPersistenceHandler(self)
         self._cleanup_handler = CombatCleanupHandler(self)

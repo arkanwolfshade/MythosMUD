@@ -18,7 +18,7 @@ PYTEST_COV_OPTS := --cov=server --cov-report=html --cov-report=term-missing --co
 # PHONY targets
 .PHONY: help clean install build run run-production apply-procedures
 .PHONY: lint lint-sqlalchemy format mypy
-.PHONY: bandit pylint ruff sqlfluff sqlint
+.PHONY: bandit pylint ruff sqlfluff sqlint vulture
 .PHONY: hadolint shellcheck psscriptanalyzer
 .PHONY: stylelint markdownlint jackson-linter
 .PHONY: grype lizard
@@ -39,6 +39,7 @@ help:
 	@echo "  lint-sqlalchemy - Run SQLAlchemy async pattern linter"
 	@echo "  format          - Run ruff format (Python) and Prettier (Node)"
 	@echo "  mypy            - Run mypy static type checking"
+	@echo "  vulture         - Dead code check (server + vulture_allowlist; same as CI)"
 	@echo ""
 	@echo "Codacy Tools (Python):"
 	@echo "  bandit          - Python security linter"
@@ -165,8 +166,13 @@ grype:
 lizard:
 	$(PYTHON) scripts/lizard.py
 
+# CRITICAL: CI runs the same command (.github/workflows/ci.yml "Dead code check (vulture)")
+# Config: pyproject.toml [tool.vulture], allowlist: vulture_allowlist.py
+vulture:
+	$(UV) vulture
+
 # Run all Codacy tools (except those already in lint/format)
-codacy-tools: bandit pylint sqlfluff hadolint shellcheck psscriptanalyzer stylelint markdownlint jackson-linter grype lizard
+codacy-tools: bandit pylint sqlfluff hadolint shellcheck psscriptanalyzer stylelint markdownlint jackson-linter grype lizard vulture
 
 # ============================================================================
 # DATABASE SETUP
