@@ -1,4 +1,6 @@
+import '@testing-library/jest-dom/vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
+import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ChatMessage } from '../../../stores/gameStore';
 import { GameLogPanel } from '../GameLogPanel';
@@ -107,7 +109,7 @@ describe('GameLogPanel', () => {
     it('shows empty state when no messages', () => {
       render(<GameLogPanel {...defaultProps} messages={[]} />);
 
-      expect(screen.getByText('No messages to display')).toBeInTheDocument();
+      expect(screen.getByText('The chronicle is silent')).toBeInTheDocument();
     });
   });
 
@@ -183,7 +185,7 @@ describe('GameLogPanel', () => {
       expect(messageItems.length).toBeGreaterThanOrEqual(2);
       // Each message has a timestamp span (format varies by locale)
       messageItems.forEach(el => {
-        const timeSpan = el.querySelector('.text-xs.text-mythos-terminal-text-secondary');
+        const timeSpan = el.querySelector('.game-log-timestamp');
         expect(timeSpan).toBeTruthy();
         expect(timeSpan?.textContent).toMatch(/\d{1,2}:\d{2}:\d{2}/);
       });

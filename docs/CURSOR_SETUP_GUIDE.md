@@ -1,6 +1,6 @@
 # Cursor IDE Setup Guide for Optimal Subagent Usage
 
-*"In the restricted archives, we learn that proper configuration is essential for efficient research. This guide ensures Cursor IDE is optimally configured to leverage our specialized subagents."*
+_"In the restricted archives, we learn that proper configuration is essential for efficient research. This guide ensures Cursor IDE is optimally configured to leverage our specialized subagents."_
 
 ## Overview
 
@@ -11,6 +11,66 @@ This guide helps you configure Cursor IDE and chat to automatically and effectiv
 **Good News**: Cursor automatically discovers subagents in `.cursor/agents/` - no additional configuration needed!
 
 The subagents are already available to Cursor's agent. However, you can optimize their usage with the following settings and practices.
+
+## Cross-Machine Portability (DRY Source of Truth)
+
+Use this section as the canonical checklist for making your Cursor + MythosMUD setup portable across machines.
+Do not duplicate this guidance in other docs; reference this section instead.
+
+### 1. Keep project behavior in repo-tracked files
+
+Treat these files as the primary portable source of truth:
+
+- `.cursor/rules/` for project rules
+- `.cursor/skills/` for project skills
+- `.cursor/agents/` and `.cursor/commands/` for agent workflows
+- `AGENTS.md`, `CLAUDE.md`, `.github/copilot-instructions.md` for shared instructions
+- Project scripts and configs (`scripts/`, `Makefile`, tool config files)
+
+### 2. Separate user preferences from project policy
+
+Keep machine/user ergonomics outside the repo:
+
+- Cursor user settings and keybindings
+- PowerShell profile, aliases, and local helper scripts
+- Personal snippets and editor UX preferences
+
+Recommendation: store these in a private dotfiles repository and sync them to each machine.
+
+### 3. Recreate local state, do not copy it
+
+Avoid copying transient state across machines:
+
+- Terminal state/history files
+- Caches, indexes, virtual environments, and `node_modules`
+- Local auth sessions and tokens
+
+Recreate these using project bootstrap steps instead.
+
+### 4. Keep secrets portable but never versioned
+
+- Use `.env.*.example` files as templates
+- Create local `.env.*` files per machine
+- Store real secrets in a password manager or OS credential store
+- Never commit secret values
+
+See `docs/CONFIGURATION_FILES_REFERENCE.md` for configuration tuple details.
+
+### 5. Standard machine bootstrap flow
+
+For each new machine:
+
+1. Clone repo and open in Cursor
+2. Restore user-level Cursor/PowerShell preferences from dotfiles
+3. Create local `.env.*` files from example templates
+4. Install dependencies and run validation (`make test`, lint/type-check flows)
+5. Verify MCP servers are enabled/authenticated as needed
+
+### 6. Documentation DRY conventions
+
+- Put machine portability guidance in this file only
+- In other docs, reference this section instead of repeating setup instructions
+- When rules/skills change, update the repo-tracked sources first
 
 ## Cursor IDE Settings
 
@@ -32,7 +92,6 @@ To optimize automatic subagent usage:
 1. **Open Cursor Settings**
 2. **Search for "Agent" or "AI"**
 3. **Configure these settings**:
-
    - **Agent Mode**: Set to "Auto" or "Always On"
    - **Context Window**: Larger context windows allow subagents to work more effectively
    - **Model Selection**: Use models that support subagents (GPT-4, Claude Sonnet 4.5, etc.)

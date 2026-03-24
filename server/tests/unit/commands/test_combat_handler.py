@@ -7,7 +7,7 @@ from __future__ import annotations
 import uuid
 from dataclasses import dataclass
 from enum import Enum
-from typing import Protocol, cast
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -25,12 +25,6 @@ class _CmdType(Enum):
     """Stub enum for extract_combat_command_data .value branch."""
 
     STRIKE = "strike"
-
-
-class _PlayerWithIdForTests(Protocol):  # pylint: disable=too-few-public-methods  # Reason: test Protocol stub
-    """Minimal player shape for resolve_combat_target (matches handler Protocol intent)."""
-
-    player_id: str | uuid.UUID
 
 
 @dataclass
@@ -217,7 +211,7 @@ async def test_resolve_combat_target_failure_message(mock_persistence: MagicMock
     )
     player = MagicMock()
     player.player_id = uuid.uuid4()
-    match, err = await h.resolve_combat_target(cast(_PlayerWithIdForTests, player), "x")
+    match, err = await h.resolve_combat_target(player, "x")
     assert match is None and err is not None
     assert err["result"] == "nothing here"
 
@@ -245,7 +239,7 @@ async def test_resolve_combat_target_rejects_non_npc(mock_persistence: MagicMock
     )
     player = MagicMock()
     player.player_id = uuid.uuid4()
-    match, err = await h.resolve_combat_target(cast(_PlayerWithIdForTests, player), "bob")
+    match, err = await h.resolve_combat_target(player, "bob")
     assert match is None and err is not None
     assert "only attack npcs" in err["result"].lower()
 
@@ -281,7 +275,7 @@ async def test_resolve_combat_target_rejects_dead_npc(mock_persistence: MagicMoc
         player = MagicMock()
         player.player_id = uuid.uuid4()
         player.player_name = "hero"
-        match, err = await h.resolve_combat_target(cast(_PlayerWithIdForTests, player), "z")
+        match, err = await h.resolve_combat_target(player, "z")
     assert match is None and err is not None
     assert "dead" in err["result"].lower()
 

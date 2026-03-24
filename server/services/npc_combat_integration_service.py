@@ -12,30 +12,31 @@ ASYNC MIGRATION (Phase 2):
 All persistence calls wrapped in asyncio.to_thread() to prevent event loop blocking.
 """
 
-# pylint: disable=too-many-instance-attributes,too-many-arguments,too-many-positional-arguments,too-many-locals,too-many-lines,wrong-import-position  # Reason: NPC combat integration requires many state attributes, parameters, and intermediate variables for complex combat logic. NPC combat integration requires extensive integration logic for comprehensive NPC-combat system integration. Imports after TYPE_CHECKING block are intentional to avoid circular dependencies.
+# pylint: disable=too-many-instance-attributes,too-many-arguments,too-many-positional-arguments,too-many-locals,wrong-import-position  # Reason: Combat integration coordinates many services; imports after TYPE_CHECKING are intentional
 
-import uuid
-from typing import TYPE_CHECKING, Any, cast
-from uuid import UUID, uuid4
+from __future__ import annotations
 
-from structlog.stdlib import BoundLogger
-
-if TYPE_CHECKING:
-    from ..async_persistence import AsyncPersistenceLayer
-    from ..realtime.connection_manager import ConnectionManager
-    from .combat_service import CombatService
+from typing import TYPE_CHECKING, cast, final
+from uuid import UUID
 
 from sqlalchemy.exc import SQLAlchemyError
+from structlog.stdlib import BoundLogger
 
 from ..config import get_config
 from ..events.event_bus import EventBus
 from ..game.mechanics import GameMechanicsService
-from ..realtime.login_grace_period import is_player_in_login_grace_period
+from ..models.combat import CombatResult
 from ..structured_logging.enhanced_logging_config import get_logger
 from .combat_event_publisher import CombatEventPublisher
 from .combat_messaging_integration import CombatMessagingIntegration
 from .npc_combat_data_provider import NPCCombatDataProvider
+from .npc_combat_grace import (
+    is_npc_attack_on_player_blocked_by_login_grace_period,
+    is_player_attack_blocked_by_login_grace_period,
+)
 from .npc_combat_handlers import NPCCombatHandlers
+from .npc_combat_integration_combat_mixin import NPCCombatIntegrationCombatMixin
+from .npc_combat_integration_validation_mixin import NPCCombatIntegrationValidationMixin
 from .npc_combat_lifecycle import NPCCombatLifecycle
 from .npc_combat_lucidity import NPCCombatLucidity
 from .npc_combat_memory import NPCCombatMemory
@@ -43,10 +44,16 @@ from .npc_combat_rewards import NPCCombatRewards
 from .npc_combat_uuid_mapping import NPCCombatUUIDMapping
 from .player_combat_service import PlayerCombatService
 
+if TYPE_CHECKING:
+    from ..async_persistence import AsyncPersistenceLayer
+    from ..realtime.connection_manager import ConnectionManager
+    from .combat_service import CombatService
+
 logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
 
 
-class NPCCombatIntegrationService:  # pylint: disable=too-many-instance-attributes  # Reason: Combat integration service requires many state tracking and service attributes
+@final
+class NPCCombatIntegrationService(NPCCombatIntegrationValidationMixin, NPCCombatIntegrationCombatMixin):
     """
     Service for integrating NPCs with the combat system.
 
@@ -56,13 +63,28 @@ class NPCCombatIntegrationService:  # pylint: disable=too-many-instance-attribut
     - Event publishing and messaging
     """
 
+    event_bus: EventBus
+    _persistence: AsyncPersistenceLayer
+    _game_mechanics: GameMechanicsService
+    _player_combat_service: PlayerCombatService
+    _combat_memory: NPCCombatMemory
+    _uuid_mapping: NPCCombatUUIDMapping
+    _data_provider: NPCCombatDataProvider
+    _rewards: NPCCombatRewards
+    _lucidity: NPCCombatLucidity
+    _lifecycle: NPCCombatLifecycle
+    _combat_service: CombatService
+    _messaging_integration: CombatMessagingIntegration
+    _event_publisher: CombatEventPublisher
+    _handlers: NPCCombatHandlers
+
     def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Combat integration initialization requires many service dependencies
         self,
         event_bus: EventBus | None = None,
-        combat_service: "CombatService | None" = None,
+        combat_service: CombatService | None = None,
         player_combat_service: PlayerCombatService | None = None,
-        connection_manager: "ConnectionManager | None" = None,
-        async_persistence: "AsyncPersistenceLayer | None" = None,
+        connection_manager: ConnectionManager | None = None,
+        async_persistence: AsyncPersistenceLayer | None = None,
     ) -> None:
         """
         Initialize the NPC combat integration service.
@@ -84,35 +106,42 @@ class NPCCombatIntegrationService:  # pylint: disable=too-many-instance-attribut
         """
         if async_persistence is None:
             raise ValueError("async_persistence is required for NPCCombatIntegrationService")
+        self._init_persistence_and_event_bus(event_bus, async_persistence)
+        self._init_player_combat_service(player_combat_service)
+        self._init_npc_submodules(async_persistence)
+        self._init_combat_service(combat_service)
+        self._init_messaging_handlers_and_publisher(connection_manager)
+        logger.info("NPC Combat Integration Service initialized with auto-progression enabled")
+
+    def _init_persistence_and_event_bus(
+        self,
+        event_bus: EventBus | None,
+        async_persistence: AsyncPersistenceLayer,
+    ) -> None:
         self.event_bus = event_bus or EventBus()
         self._persistence = async_persistence
         logger.debug(
             "NPCCombatIntegrationService constructor",
             persistence_type=type(self._persistence).__name__,
         )
-        # Initialize GameMechanicsService for proper XP awards and stat updates
         self._game_mechanics = GameMechanicsService(async_persistence)
 
-        # Use shared PlayerCombatService instance if provided, otherwise create new one (for tests)
-        # CRITICAL: Production code must pass shared instance to prevent state desynchronization!
+    def _init_player_combat_service(self, player_combat_service: PlayerCombatService | None) -> None:
         if player_combat_service is not None:
             self._player_combat_service = player_combat_service
-            # CRITICAL FIX: Update the shared PlayerCombatService's NPC combat integration service reference
-            # so it can access the UUID-to-XP mapping for XP calculations
-            self._player_combat_service._npc_combat_integration_service = self
+            self._player_combat_service.set_npc_combat_integration_service(self)
             logger.info(
                 "Using shared PlayerCombatService instance and updated NPC combat integration reference",
                 instance_id=id(player_combat_service),
             )
         else:
-            # Only create new instance for testing - pass self for UUID mapping access
             self._player_combat_service = PlayerCombatService(self._persistence, self.event_bus, self)
             logger.warning(
                 "Created NEW PlayerCombatService instance - this should only happen in tests!",
                 instance_id=id(self._player_combat_service),
             )
 
-        # Initialize helper modules
+    def _init_npc_submodules(self, async_persistence: AsyncPersistenceLayer) -> None:
         self._combat_memory = NPCCombatMemory()
         self._uuid_mapping = NPCCombatUUIDMapping()
         self._data_provider = NPCCombatDataProvider(async_persistence)
@@ -120,36 +149,25 @@ class NPCCombatIntegrationService:  # pylint: disable=too-many-instance-attribut
         self._lucidity = NPCCombatLucidity()
         self._lifecycle = NPCCombatLifecycle(async_persistence)
 
+    def _init_combat_service(self, combat_service: CombatService | None) -> None:
         if combat_service is not None:
             self._combat_service = combat_service
-            # CRITICAL FIX: Update the CombatService to use our PlayerCombatService with UUID mapping
-            self._combat_service._player_combat_service = self._player_combat_service
-            self._combat_service._npc_combat_integration_service = self
+            self._combat_service.set_player_combat_service(self._player_combat_service)
+            self._combat_service.set_npc_combat_integration_service(self)
         else:
-            # Only create a new CombatService if one was not provided
-            # (this is primarily for testing)
-            # Lazy import to avoid circular dependency with combat_service
             from .combat_service import (
-                CombatService,  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Lazy import inside function to avoid circular import chain during module initialization, wrong import position is intentional
+                CombatService,  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Lazy import breaks circular import at module load
             )
 
             self._combat_service = CombatService(self._player_combat_service, npc_combat_integration_service=self)
 
-        # Enable auto-progression features
         self._combat_service.auto_progression_enabled = True
-        # CRITICAL FIX: Use config value instead of hardcoded 6 seconds
-        # Get combat_tick_interval from config (default 10 seconds)
-        # Note: get_config is imported at module level (line 26)
-        combat_config = get_config()  # pylint: disable=used-before-assignment  # Reason: get_config is imported at module level, not redefined
+        combat_config = get_config()
         self._combat_service.turn_interval_seconds = combat_config.game.combat_tick_interval
 
-        # CRITICAL FIX: Pass connection_manager to CombatMessagingIntegration
-        # If not provided, it will try to lazy-load from container (for backward compatibility)
+    def _init_messaging_handlers_and_publisher(self, connection_manager: ConnectionManager | None) -> None:
         self._messaging_integration = CombatMessagingIntegration(connection_manager=connection_manager)
-        # CombatEventPublisher expects NATSService, not EventBus. Pass None to use global NATSService.
         self._event_publisher = CombatEventPublisher(nats_service=None)
-
-        # Initialize combat handlers
         self._handlers = NPCCombatHandlers(
             self._data_provider,
             self._rewards,
@@ -158,16 +176,120 @@ class NPCCombatIntegrationService:  # pylint: disable=too-many-instance-attribut
             self._messaging_integration,
         )
 
-        logger.info("NPC Combat Integration Service initialized with auto-progression enabled")
+    def get_messaging_integration(self) -> CombatMessagingIntegration:
+        """Return combat messaging integration for room broadcasts (e.g. aggro switches)."""
+        return self._messaging_integration
 
-    async def handle_player_attack_on_npc(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Attack handling requires many parameters and intermediate variables for complex combat logic
+    def get_combat_service(self) -> CombatService:
+        """Return combat service dependency for integration collaborators."""
+        return self._combat_service
+
+    def get_data_provider(self) -> NPCCombatDataProvider:
+        """Return NPC data provider dependency for integration collaborators."""
+        return self._data_provider
+
+    def get_uuid_mapping(self) -> NPCCombatUUIDMapping:
+        """Return UUID mapping dependency for integration collaborators."""
+        return self._uuid_mapping
+
+    def get_rewards_service(self) -> NPCCombatRewards:
+        """Return rewards dependency for integration collaborators."""
+        return self._rewards
+
+    def get_lucidity_service(self) -> NPCCombatLucidity:
+        """Return lucidity dependency for integration collaborators."""
+        return self._lucidity
+
+    async def _complete_player_attack_on_npc_after_grace(
+        self,
+        player_id: str,
+        npc_id: str,
+        room_id: str,
+        action_type: str,
+        damage: int,
+        npc_instance: object | None,
+    ) -> bool:
+        """Player attack path after login grace check passes."""
+        npc_instance = await self._validate_and_get_npc_instance(player_id, npc_id, npc_instance)
+        if not npc_instance:
+            return False
+
+        if not await self._validate_combat_location(player_id, npc_id, room_id, npc_instance):
+            await self._end_combat_if_participant_in_combat(player_id, npc_id)
+            return False
+
+        first_engagement = self._combat_memory.record_attack(npc_id, player_id)
+        attacker_uuid, target_uuid = await self._setup_combat_uuids_and_mappings(
+            player_id, npc_id, room_id, first_engagement
+        )
+
+        combat_result: CombatResult = await self._process_combat_attack(
+            player_id, room_id, attacker_uuid, target_uuid, damage, npc_instance
+        )
+
+        return await self._handlers.handle_combat_result(
+            combat_result,
+            player_id,
+            npc_id,
+            room_id,
+            action_type,
+            damage,
+            npc_instance,
+            self.handle_npc_death,
+        )
+
+    async def _run_npc_attack_on_player_after_grace(
+        self,
+        npc_id: str,
+        target_id: str,
+        room_id: str,
+        attack_damage: int,
+        npc_instance: object | None,
+    ) -> bool:
+        """NPC attack path after login grace check passes."""
+        npc_instance = npc_instance or self._data_provider.get_npc_instance(npc_id)
+        if not npc_instance or not getattr(npc_instance, "is_alive", True):
+            return False
+
+        if not await self._validate_combat_location(target_id, npc_id, room_id, npc_instance):
+            return False
+
+        if not self._combat_service:
+            logger.warning("NPC attack on player skipped - no combat service")
+            return False
+
+        npc_uuid, player_uuid = self._setup_combat_uuids_npc_attacker(npc_id, target_id)
+
+        existing_combat = await self._combat_service.get_combat_by_participant(player_uuid)
+        if existing_combat:
+            if npc_uuid in existing_combat.participants:
+                return True
+            return False
+
+        await self._apply_npc_attack_damage_for_npc_initiated_combat(
+            room_id=room_id,
+            target_id=target_id,
+            npc_instance=npc_instance,
+            npc_uuid=npc_uuid,
+            player_uuid=player_uuid,
+            attack_damage=attack_damage,
+        )
+        self._broadcast_npc_attack_on_player_started(
+            npc_id=npc_id,
+            target_id=target_id,
+            room_id=room_id,
+            attack_damage=attack_damage,
+        )
+        return True
+
+    async def handle_player_attack_on_npc(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Attack handling matches external API
         self,
         player_id: str,
         npc_id: str,
         room_id: str,
         action_type: str = "punch",
         damage: int = 10,
-        npc_instance: Any | None = None,
+        npc_instance: object | None = None,
     ) -> bool:
         """
         Handle a player attacking an NPC using auto-progression combat system.
@@ -185,56 +307,16 @@ class NPCCombatIntegrationService:  # pylint: disable=too-many-instance-attribut
             bool: True if attack was handled successfully
         """
         try:
-            # Check if player is in login grace period - prevent attacks
-            try:
-                config = get_config()
-                app = getattr(config, "_app_instance", None)
-                if app:
-                    connection_manager = getattr(app.state, "connection_manager", None)
-                    if connection_manager:
-                        player_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
-                        if is_player_in_login_grace_period(player_uuid, connection_manager):
-                            logger.info(
-                                "Player attack on NPC blocked - player in login grace period",
-                                player_id=player_id,
-                                npc_id=npc_id,
-                            )
-                            return False  # Attack blocked
-            except (AttributeError, ImportError, TypeError, ValueError) as e:
-                # If we can't check grace period, proceed with attack (fail open)
-                logger.debug("Could not check login grace period for player attack", player_id=player_id, error=str(e))
-
-            # Validate and get NPC instance
-            npc_instance = await self._validate_and_get_npc_instance(player_id, npc_id, npc_instance)
-            if not npc_instance:
+            if is_player_attack_blocked_by_login_grace_period(player_id):
+                logger.info(
+                    "Player attack on NPC blocked - player in login grace period",
+                    player_id=player_id,
+                    npc_id=npc_id,
+                )
                 return False
 
-            # Validate combat location; if invalid, end any existing combat and fail the attack
-            if not await self._validate_combat_location(player_id, npc_id, room_id, npc_instance):
-                await self._end_combat_if_participant_in_combat(player_id, npc_id)
-                return False
-
-            # Store combat memory and set up UUIDs
-            first_engagement = self._combat_memory.record_attack(npc_id, player_id)
-            attacker_uuid, target_uuid = await self._setup_combat_uuids_and_mappings(
-                player_id, npc_id, room_id, first_engagement
-            )
-
-            # Process combat attack
-            combat_result = await self._process_combat_attack(
-                player_id, room_id, attacker_uuid, target_uuid, damage, npc_instance
-            )
-
-            # Handle combat result
-            return await self._handlers.handle_combat_result(
-                combat_result,
-                player_id,
-                npc_id,
-                room_id,
-                action_type,
-                damage,
-                npc_instance,
-                self.handle_npc_death,
+            return await self._complete_player_attack_on_npc_after_grace(
+                player_id, npc_id, room_id, action_type, damage, npc_instance
             )
 
         except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError) as e:
@@ -272,7 +354,7 @@ class NPCCombatIntegrationService:  # pylint: disable=too-many-instance-attribut
         target_id: str,
         room_id: str,
         attack_damage: int = 10,
-        npc_instance: Any | None = None,
+        npc_instance: object | None = None,
     ) -> bool:
         """
         Handle an NPC attacking a player (aggro) using the same combat codepath as player-initiated combat.
@@ -281,70 +363,19 @@ class NPCCombatIntegrationService:  # pylint: disable=too-many-instance-attribut
         the initial attack. Subsequent rounds are handled by the combat turn processor.
         """
         try:
-            target_uuid = UUID(target_id) if isinstance(target_id, str) else target_id
-            # Block if target (player) is in login grace period
-            try:
-                config = get_config()
-                app = getattr(config, "_app_instance", None)
-                if app:
-                    conn_mgr = getattr(app.state, "connection_manager", None)
-                    if conn_mgr and is_player_in_login_grace_period(target_uuid, conn_mgr):
-                        logger.info(
-                            "NPC attack on player blocked - player in login grace period",
-                            npc_id=npc_id,
-                            target_id=target_id,
-                        )
-                        return False
-            except (AttributeError, ImportError, TypeError, ValueError) as e:
-                logger.debug("Could not check login grace period for NPC attack", target_id=target_id, error=str(e))
+            target_uuid = UUID(target_id)
 
-            npc_instance = npc_instance or self._data_provider.get_npc_instance(npc_id)
-            if not npc_instance or not getattr(npc_instance, "is_alive", True):
+            if is_npc_attack_on_player_blocked_by_login_grace_period(target_uuid):
+                logger.info(
+                    "NPC attack on player blocked - player in login grace period",
+                    npc_id=npc_id,
+                    target_id=target_id,
+                )
                 return False
 
-            if not await self._validate_combat_location(target_id, npc_id, room_id, npc_instance):
-                return False
-
-            if not self._combat_service:
-                logger.warning("NPC attack on player skipped - no combat service")
-                return False
-
-            npc_uuid, player_uuid = self._setup_combat_uuids_npc_attacker(npc_id, target_id)
-
-            existing_combat = await self._combat_service.get_combat_by_participant(player_uuid)
-            if existing_combat:
-                if npc_uuid in existing_combat.participants:
-                    return True  # Already in combat with this NPC; turn processor handles rounds
-                return False  # Player in combat with someone else; do not start second combat
-
-            from ..app.lifespan import get_current_tick
-
-            current_tick = get_current_tick()
-            player_name = await self._data_provider.get_player_name(target_id)
-            attacker_data = self._data_provider.get_npc_combat_data(npc_instance, npc_uuid)
-            target_data = await self._data_provider.get_player_combat_data(target_id, player_uuid, player_name)
-
-            _ = await self._combat_service.start_combat(
-                room_id=room_id,
-                attacker=attacker_data,
-                target=target_data,
-                current_tick=current_tick,
+            return await self._run_npc_attack_on_player_after_grace(
+                npc_id, target_id, room_id, attack_damage, npc_instance
             )
-            _ = await self._combat_service.process_attack(
-                attacker_id=npc_uuid,
-                target_id=player_uuid,
-                damage=attack_damage,
-                is_initial_attack=True,
-                damage_type="physical",
-            )
-            logger.info(
-                "NPC-initiated combat started",
-                npc_id=npc_id,
-                target_id=target_id,
-                room_id=room_id,
-                damage=attack_damage,
-            )
-            return True
         except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError) as e:
             logger.error(
                 "Error handling NPC attack on player",
@@ -353,382 +384,6 @@ class NPCCombatIntegrationService:  # pylint: disable=too-many-instance-attribut
                 target_id=target_id,
             )
             return False
-
-    async def _validate_and_get_npc_instance(self, player_id: str, npc_id: str, npc_instance: Any | None) -> Any | None:
-        """
-        Validate and get NPC instance, handling lookup if needed.
-
-        Args:
-            player_id: ID of the attacking player
-            npc_id: ID of the target NPC
-            npc_instance: Optional pre-validated NPC instance
-
-        Returns:
-            NPC instance if valid, None otherwise
-        """
-        # BUGFIX: Use provided NPC instance if available to avoid redundant lookup
-        # This prevents race conditions where NPC state changes between lookups
-        # As documented in investigation: 2025-11-30_session-001_npc-combat-start-failure.md
-        npc_instance_provided = npc_instance is not None
-        if npc_instance is None:
-            logger.debug(
-                "Performing NPC instance lookup",
-                player_id=player_id,
-                npc_id=npc_id,
-            )
-            npc_instance = self._data_provider.get_npc_instance(npc_id)
-        else:
-            logger.debug(
-                "Using provided NPC instance - avoiding redundant lookup",
-                player_id=player_id,
-                npc_id=npc_id,
-                npc_name=getattr(npc_instance, "name", "unknown"),
-            )
-
-        # Enhanced validation and logging for debugging
-        if not npc_instance:
-            logger.warning(
-                "Player attacked non-existent NPC - NPC not found in lifecycle manager",
-                player_id=player_id,
-                npc_id=npc_id,
-                npc_instance_provided=npc_instance_provided,
-            )
-            return None
-
-        if not npc_instance.is_alive:
-            logger.warning(
-                "Player attacked dead NPC - NPC exists but is_alive is False",
-                player_id=player_id,
-                npc_id=npc_id,
-                npc_name=getattr(npc_instance, "name", "unknown"),
-                is_alive=npc_instance.is_alive,
-                npc_instance_provided=npc_instance_provided,
-            )
-            return None
-
-        return npc_instance
-
-    async def _validate_combat_location(self, player_id: str, npc_id: str, room_id: str, npc_instance: Any) -> bool:
-        """
-        Validate that player and NPC are in the same room.
-
-        Args:
-            player_id: ID of the attacking player
-            npc_id: ID of the target NPC
-            room_id: ID of the room where combat occurs
-            npc_instance: NPC instance
-
-        Returns:
-            True if location is valid, False otherwise
-        """
-        player_room_id = await self._data_provider.get_player_room_id(player_id)
-        npc_room_id = getattr(npc_instance, "current_room", None)
-
-        logger.debug(
-            "Room validation check",
-            player_id=player_id,
-            npc_id=npc_id,
-            player_room_id=player_room_id,
-            npc_room_id=npc_room_id,
-            combat_room_id=room_id,
-        )
-
-        if player_room_id != npc_room_id:
-            logger.warning(
-                "Cross-room attack attempt blocked",
-                player_id=player_id,
-                npc_id=npc_id,
-                player_room_id=player_room_id,
-                npc_room_id=npc_room_id,
-            )
-            return False
-
-        # Ensure combat room_id matches both participants (single source of truth)
-        if player_room_id != room_id or npc_room_id != room_id:
-            logger.warning(
-                "Combat room mismatch - room_id does not match participant rooms",
-                player_id=player_id,
-                npc_id=npc_id,
-                player_room_id=player_room_id,
-                npc_room_id=npc_room_id,
-                combat_room_id=room_id,
-            )
-            return False
-
-        return True
-
-    async def _end_combat_if_participant_in_combat(self, player_id: str, npc_id: str) -> None:
-        """
-        End any active combat that includes this player or NPC when room validation fails.
-
-        Called when attacker and target are not in the same room so combat state is
-        cleaned up and the player is not left stuck in a broken combat.
-
-        Args:
-            player_id: ID of the attacking player (str, may be UUID string)
-            npc_id: ID of the target NPC (for logging)
-        """
-        try:
-            player_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
-        except (ValueError, TypeError):
-            logger.debug(
-                "Could not parse player_id for combat end check",
-                player_id=player_id,
-                npc_id=npc_id,
-            )
-            return
-        existing_combat = await self._combat_service.get_combat_by_participant(player_uuid)
-        if existing_combat:
-            reason = "Invalid combat location - participants not in same room"
-            logger.info(
-                "Ending combat due to room mismatch",
-                combat_id=existing_combat.combat_id,
-                player_id=player_id,
-                npc_id=npc_id,
-                reason=reason,
-            )
-            await self._combat_service.end_combat(existing_combat.combat_id, reason)
-
-    async def _setup_combat_uuids_and_mappings(
-        self, player_id: str, npc_id: str, room_id: str, first_engagement: bool
-    ) -> tuple[UUID, UUID]:
-        """
-        Convert string IDs to UUIDs and set up XP mappings.
-
-        Args:
-            player_id: ID of the attacking player
-            npc_id: ID of the target NPC
-            room_id: ID of the room where combat occurs
-            first_engagement: Whether this is the first engagement with this NPC
-
-        Returns:
-            Tuple of (attacker_uuid, target_uuid)
-        """
-        try:
-            attacker_uuid = self._uuid_mapping.convert_to_uuid(player_id)
-            target_uuid = self._uuid_mapping.convert_to_uuid(npc_id)
-
-            # Always store the UUID-to-string ID mapping when we have a string ID
-            if not self._uuid_mapping.is_valid_uuid(npc_id):
-                self._uuid_mapping.store_string_id_mapping(target_uuid, npc_id)
-
-            # Store XP value for this UUID in all cases (string ID or instance UUID).
-            # Target resolution passes instance UUID; get_npc_definition looks up by instance id in lifecycle_records.
-            await self._store_npc_xp_mapping(npc_id, target_uuid, room_id, player_id, first_engagement)
-
-        except ValueError:
-            attacker_uuid = uuid4()
-            target_uuid = uuid4()
-            # Don't store mapping for invalid UUIDs
-            logger.debug("Skipping UUID mapping storage - invalid NPC ID", npc_id=npc_id)
-
-        return attacker_uuid, target_uuid
-
-    def _setup_combat_uuids_npc_attacker(self, npc_id: str, player_id: str) -> tuple[UUID, UUID]:
-        """
-        Set up UUIDs for NPC-as-attacker combat (aggro). Returns (npc_uuid, player_uuid).
-        """
-        try:
-            attacker_uuid = self._uuid_mapping.convert_to_uuid(npc_id)
-            target_uuid = self._uuid_mapping.convert_to_uuid(player_id)
-            if not self._uuid_mapping.is_valid_uuid(npc_id):
-                self._uuid_mapping.store_string_id_mapping(attacker_uuid, npc_id)
-            return attacker_uuid, target_uuid
-        except ValueError:
-            return uuid4(), uuid4()
-
-    async def _store_npc_xp_mapping(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: XP mapping storage requires many parameters for context and mapping operations
-        self, npc_id: str, target_uuid: UUID, room_id: str, player_id: str, first_engagement: bool
-    ) -> None:
-        """
-        Store NPC XP mapping and apply encounter lucidity effect if first engagement.
-
-        Args:
-            npc_id: ID of the target NPC
-            target_uuid: UUID of the target NPC
-            room_id: ID of the room where combat occurs
-            player_id: ID of the attacking player
-            first_engagement: Whether this is the first engagement with this NPC
-        """
-        npc_definition = await self._data_provider.get_npc_definition(npc_id)
-        logger.debug(
-            "Retrieved NPC definition",
-            npc_id=npc_id,
-            has_definition=bool(npc_definition),
-        )
-
-        if npc_definition and first_engagement:
-            await self._lucidity.apply_encounter_lucidity_effect(player_id, npc_id, npc_definition, room_id)
-
-        if npc_definition:
-            base_stats = npc_definition.get_base_stats()
-            logger.debug(
-                "Retrieved base stats",
-                npc_id=npc_id,
-                base_stats=base_stats,
-            )
-            if isinstance(base_stats, dict):
-                xp_value = base_stats.get("xp_value", 0)  # Default to 0 if not found
-                self._uuid_mapping.store_xp_mapping(target_uuid, xp_value)
-            else:
-                logger.debug(
-                    "Base stats is not a dict",
-                    npc_id=npc_id,
-                    base_stats_type=type(base_stats),
-                )
-        else:
-            logger.debug(
-                "NPC definition not found",
-                npc_id=npc_id,
-            )
-
-    async def _process_combat_attack(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Combat attack processing requires many parameters for context and attack logic
-        self,
-        player_id: str,
-        room_id: str,
-        attacker_uuid: UUID,
-        target_uuid: UUID,
-        damage: int,
-        npc_instance: Any,
-    ) -> Any:
-        """
-        Process combat attack, starting new combat or continuing existing one.
-
-        Args:
-            player_id: ID of the attacking player
-            room_id: ID of the room where combat occurs
-            attacker_uuid: UUID of the attacker
-            target_uuid: UUID of the target
-            damage: Damage amount
-            npc_instance: NPC instance
-
-        Returns:
-            Combat result
-        """
-        # Lazy import to avoid circular dependency with lifespan
-        from ..app.lifespan import (
-            get_current_tick,  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Lazy import inside function to avoid circular import chain during module initialization, wrong import position is intentional
-        )
-
-        current_tick = get_current_tick()
-
-        # Check if combat already exists, if not start new combat
-        existing_combat = await self._combat_service.get_combat_by_participant(attacker_uuid)
-        if existing_combat:
-            # Queue action for next round instead of executing immediately
-            queued = await self._combat_service.queue_combat_action(
-                combat_id=existing_combat.combat_id,
-                participant_id=attacker_uuid,
-                action_type="attack",
-                target_id=target_uuid,
-                damage=damage,
-            )
-            if queued:
-                logger.info(
-                    "Combat action queued",
-                    combat_id=existing_combat.combat_id,
-                    participant_id=attacker_uuid,
-                    target_id=target_uuid,
-                    round=existing_combat.combat_round + 1,
-                )
-                # Return a success result indicating action was queued
-                from server.models.combat import (
-                    CombatResult,  # noqa: PLC0415  # Reason: Local import to avoid circular dependency
-                )
-
-                return CombatResult(
-                    success=True,
-                    damage=0,  # Damage will be applied when action executes
-                    target_died=False,
-                    combat_ended=False,
-                    message="Action queued for next round",
-                    combat_id=existing_combat.combat_id,
-                )
-
-            # Fallback to immediate execution if queuing failed
-            logger.warning("Failed to queue action, executing immediately", participant_id=attacker_uuid)
-            return await self._combat_service.process_attack(
-                attacker_id=attacker_uuid, target_id=target_uuid, damage=damage
-            )
-        # Start new combat
-        return await self._start_new_combat(
-            player_id, room_id, attacker_uuid, target_uuid, damage, npc_instance, current_tick
-        )
-
-    async def _start_new_combat(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Combat initialization requires many parameters for complete combat setup
-        self,
-        player_id: str,
-        room_id: str,
-        attacker_uuid: UUID,
-        target_uuid: UUID,
-        damage: int,
-        npc_instance: Any,
-        current_tick: int,
-    ) -> Any:
-        """
-        Start a new combat and process initial attack.
-
-        Args:
-            player_id: ID of the attacking player
-            room_id: ID of the room where combat occurs
-            attacker_uuid: UUID of the attacker
-            target_uuid: UUID of the target
-            damage: Damage amount
-            npc_instance: NPC instance
-            current_tick: Current game tick
-
-        Returns:
-            Combat result
-        """
-        # Get player data
-        player_name = await self._data_provider.get_player_name(player_id)
-        attacker_data = await self._data_provider.get_player_combat_data(player_id, attacker_uuid, player_name)
-
-        # Get NPC data
-        target_data = self._data_provider.get_npc_combat_data(npc_instance, target_uuid)
-
-        # Start combat with auto-progression
-        _ = await self._combat_service.start_combat(
-            room_id=room_id,
-            attacker=attacker_data,
-            target=target_data,
-            current_tick=current_tick,
-        )
-
-        # Now process the attack (initial attack, so skip turn order check)
-        return await self._combat_service.process_attack(
-            attacker_id=attacker_uuid, target_id=target_uuid, damage=damage, is_initial_attack=True
-        )
-
-    async def _broadcast_room_after_npc_death(self, npc_id: str, room_id: str, killer_id: str) -> None:
-        """Broadcast room occupants update to killer's room after NPC death. Swallows errors (non-fatal)."""
-        try:
-            from ..realtime.websocket_room_updates import broadcast_room_update
-
-            conn_mgr = getattr(self._messaging_integration, "connection_manager", None)
-            broadcast_room_id = room_id
-            if conn_mgr:
-                try:
-                    killer_uuid = uuid.UUID(str(killer_id)) if isinstance(killer_id, str) else killer_id
-                    player = await conn_mgr.get_player(killer_uuid)
-                    killer_room = getattr(player, "current_room_id", None) if player else None
-                    if killer_room:
-                        broadcast_room_id = killer_room
-                except (ValueError, TypeError, AttributeError):
-                    pass
-            await broadcast_room_update(
-                str(killer_id),
-                broadcast_room_id,
-                connection_manager=conn_mgr,
-            )
-            logger.debug("Broadcast room occupants after NPC death", npc_id=npc_id, room_id=broadcast_room_id)
-        except Exception as broadcast_err:  # pylint: disable=broad-exception-caught  # Reason: Broadcast failure must not affect NPC death handling
-            logger.warning(
-                "Failed to broadcast room occupants after NPC death (non-fatal)",
-                npc_id=npc_id,
-                room_id=room_id,
-                error=str(broadcast_err),
-            )
 
     async def handle_npc_death(
         self,
@@ -758,37 +413,13 @@ class NPCCombatIntegrationService:  # pylint: disable=too-many-instance-attribut
         return result
 
     def get_npc_combat_memory(self, npc_id: str) -> str | None:
-        """
-        Get the last attacker for an NPC.
-
-        Args:
-            npc_id: ID of the NPC
-
-        Returns:
-            str: ID of the last attacker, or None if no memory
-        """
+        """Get the last attacker for an NPC."""
         return self._combat_memory.get_attacker(npc_id)
 
     def clear_npc_combat_memory(self, npc_id: str) -> bool:
-        """
-        Clear combat memory for an NPC.
-
-        Args:
-            npc_id: ID of the NPC
-
-        Returns:
-            bool: True if memory was cleared
-        """
+        """Clear combat memory for an NPC."""
         return self._combat_memory.clear_memory(npc_id)
 
     def get_original_string_id(self, uuid_id: UUID) -> str | None:
-        """
-        Get the original string ID from a UUID.
-
-        Args:
-            uuid_id: The UUID to look up
-
-        Returns:
-            The original string ID if found, None otherwise
-        """
+        """Get the original string ID from a UUID."""
         return self._uuid_mapping.get_original_string_id(uuid_id)

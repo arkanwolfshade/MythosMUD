@@ -4,7 +4,6 @@
 # Runtime cycle is broken via lazy imports; checker still sees in-function imports as edges.
 # pylint: disable=too-many-lines  # Reason: Combat service is the central coordinator for combat state and handlers; splitting would obscure control flow.
 
-from dataclasses import dataclass
 from typing import TYPE_CHECKING, cast
 from uuid import UUID
 
@@ -50,6 +49,7 @@ from server.services.combat_service_state import (  # noqa: PLC0415  # Reason: L
     get_combat_service,
     set_combat_service,
 )
+from server.services.combat_service_types import PlayerLifecycleServices
 from server.services.combat_turn_processor import CombatTurnProcessor
 from server.services.combat_types import CombatParticipantData
 from server.services.nats_service import NATSService
@@ -59,20 +59,13 @@ from server.structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
     from server.game.magic.magic_service import MagicService
+    from server.services.combat_death_handler import CombatServiceDeps
     from server.services.npc_combat_data_provider import NPCCombatDataProvider
     from server.services.npc_combat_integration_service import NPCCombatIntegrationService
     from server.services.player_death_service import PlayerDeathService
     from server.services.player_respawn_service import PlayerRespawnService
 
 logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
-
-
-@dataclass
-class PlayerLifecycleServices:
-    """Player death and respawn services for CombatService injection."""
-
-    player_death_service: "PlayerDeathService"
-    player_respawn_service: "PlayerRespawnService"
 
 
 class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: Combat service requires many state tracking and service attributes
@@ -149,7 +142,7 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
         # Initialize helper handlers
         self._turn_processor = CombatTurnProcessor(self)
         self._attack_handler = CombatAttackHandler(self)
-        self._death_handler = CombatDeathHandler(self)
+        self._death_handler = CombatDeathHandler(cast("CombatServiceDeps", self))
         self._event_handler = CombatEventHandler(self)
         self._persistence_handler = CombatPersistenceHandler(self)
         self._cleanup_handler = CombatCleanupHandler(self)
@@ -283,6 +276,14 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
         """Return the NPC combat integration service."""
         return self._npc_combat_integration_service
 
+    def set_npc_combat_integration_service(self, service: "NPCCombatIntegrationService | None") -> None:
+        """Attach or replace the NPC combat integration service."""
+        self._npc_combat_integration_service = service
+
+    def set_player_combat_service(self, service: PlayerCombatService | None) -> None:
+        """Attach or replace the player combat service (shared instance wiring)."""
+        self._player_combat_service = service
+
     def get_combat_id_for_participant(self, participant_id: UUID) -> UUID | None:
         """Return combat_id if a participant is in combat, else None."""
         return self._player_combats.get(participant_id) or self._npc_combats.get(participant_id)
@@ -305,14 +306,11 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
         Broadcast one room message per aggro target switch (ADR-016).
         switches: list of (npc_id, npc_name, new_target_name).
         """
-        if not switches:
-            return
-        svc = self._npc_combat_integration_service
-        mi = getattr(svc, "_messaging_integration", None) if svc else None
-        if not mi:
-            return
-        for _npc_id, npc_name, new_target_name in switches:
-            await mi.broadcast_combat_target_switch(room_id, str(combat_id), npc_name, new_target_name)
+        from server.services.combat_service_events import (
+            broadcast_aggro_target_switches as broadcast_aggro_target_switches_impl,
+        )
+
+        await broadcast_aggro_target_switches_impl(self, room_id, combat_id, switches)
 
     def is_npc_in_combat_sync(self, npc_id: str) -> bool:
         """Return True if an NPC (string or UUID) is currently in combat."""
@@ -573,4 +571,4 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
         }
 
 
-__all__ = ["CombatService", "get_combat_service", "set_combat_service", "COMBAT_SERVICE"]
+__all__ = ["COMBAT_SERVICE", "CombatService", "PlayerLifecycleServices", "get_combat_service", "set_combat_service"]

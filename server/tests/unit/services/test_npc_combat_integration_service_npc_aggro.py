@@ -6,7 +6,6 @@ Unit tests for NPC combat integration service - NPC-initiated aggro combat paths
 # These tests patch NPCCombatIntegrationService underscore-prefixed collaborators; that is intentional.
 
 import uuid
-from types import SimpleNamespace
 from typing import TYPE_CHECKING
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -101,19 +100,10 @@ async def test_handle_npc_attack_on_player_grace_period_blocked(integration_serv
     target_id = str(uuid.uuid4())
     room_id = "room_001"
 
-    with (
-        patch("server.services.npc_combat_integration_service.get_config") as mock_get_config,
-        patch(
-            "server.services.npc_combat_integration_service.is_player_in_login_grace_period",
-        ) as mock_grace_period,
+    with patch(
+        "server.services.npc_combat_integration_service.is_npc_attack_on_player_blocked_by_login_grace_period",
+        return_value=True,
     ):
-        mock_config = MagicMock()
-        mock_cm = MagicMock()
-        mock_app = SimpleNamespace(state=SimpleNamespace(connection_manager=mock_cm))
-        mock_config._app_instance = mock_app
-        mock_get_config.return_value = mock_config
-        mock_grace_period.return_value = True
-
         result = await integration_service.handle_npc_attack_on_player(
             npc_id=npc_id,
             target_id=target_id,
@@ -121,8 +111,7 @@ async def test_handle_npc_attack_on_player_grace_period_blocked(integration_serv
             attack_damage=10,
             npc_instance=None,
         )
-
-    assert result is False
+        assert result is False
 
 
 @pytest.mark.asyncio

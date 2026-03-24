@@ -5,11 +5,13 @@ Unit tests for server.commands.combat_taunt.
 from __future__ import annotations
 
 import uuid
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
 from server.commands import combat_taunt
+from server.commands.combat_taunt import TauntCommandHandler
 from server.models.combat import CombatInstance, CombatParticipant, CombatParticipantType
 from server.schemas.shared import TargetType
 from server.schemas.shared.target_resolution import TargetMatch
@@ -20,7 +22,7 @@ from server.schemas.shared.target_resolution import TargetMatch
 
 
 @pytest.fixture
-def mock_handler() -> MagicMock:
+def mock_handler() -> TauntCommandHandler:
     """Return a handler-shaped MagicMock for taunt command tests."""
     h = MagicMock()
     h.validate_target_name = MagicMock(return_value=None)
@@ -32,9 +34,8 @@ def mock_handler() -> MagicMock:
     h.combat_service = combat_svc
     h.check_and_interrupt_rest = AsyncMock(return_value=None)
     npc_svc: MagicMock = MagicMock()
-    npc_svc._messaging_integration = None
     h.npc_combat_service = npc_svc
-    return h
+    return cast(TauntCommandHandler, h)
 
 
 def test_resolve_taunt_room_and_player_uses_room_id_attr() -> None:
@@ -67,26 +68,33 @@ def test_resolve_taunt_room_and_player_falls_back_to_id() -> None:
     assert out == ("fallback_r", pid)
 
 
-def test_validate_taunt_target_not_npc(mock_handler: MagicMock) -> None:
+def test_validate_taunt_target_not_npc(mock_handler: TauntCommandHandler) -> None:
     """Non-NPC target returns error."""
-    tm = MagicMock()
-    tm.target_type = TargetType.PLAYER
+    tm = TargetMatch(
+        target_id="p1",
+        target_name="Hero",
+        target_type=TargetType.PLAYER,
+        room_id="r1",
+    )
     err = combat_taunt._validate_taunt_target(mock_handler, tm)
     assert err is not None
     assert "only taunt npcs" in err["result"].lower()
 
 
-def test_validate_taunt_target_dead(mock_handler: MagicMock) -> None:
+def test_validate_taunt_target_dead(mock_handler: TauntCommandHandler) -> None:
     """Missing or dead NPC returns error."""
-    tm = MagicMock()
-    tm.target_type = TargetType.NPC
-    tm.target_id = "n1"
+    tm = TargetMatch(
+        target_id="n1",
+        target_name="Beast",
+        target_type=TargetType.NPC,
+        room_id="r1",
+    )
     mock_handler.get_npc_instance = MagicMock(return_value=None)
     err = combat_taunt._validate_taunt_target(mock_handler, tm)
     assert err is not None
 
 
-def test_validate_taunt_target_name_from_target_key(mock_handler: MagicMock) -> None:
+def test_validate_taunt_target_name_from_target_key(mock_handler: TauntCommandHandler) -> None:
     """command_data['target'] is accepted."""
     mock_handler.validate_target_name = MagicMock(return_value=None)
     out = combat_taunt._validate_taunt_target_name(mock_handler, {"target": "beast"})
@@ -94,10 +102,10 @@ def test_validate_taunt_target_name_from_target_key(mock_handler: MagicMock) -> 
 
 
 @pytest.mark.asyncio
-async def test_run_handle_taunt_no_combat_service(mock_handler: MagicMock) -> None:
+async def test_run_handle_taunt_no_combat_service(mock_handler: TauntCommandHandler) -> None:
     """Without combat_service, taunt is unavailable."""
     mock_handler.validate_target_name = MagicMock(return_value=None)
-    mock_handler.combat_service = None
+    cast(MagicMock, mock_handler).combat_service = None
     pl = MagicMock()
     pl.player_id = uuid.uuid4()
     room = MagicMock()
@@ -122,7 +130,7 @@ async def test_run_handle_taunt_no_combat_service(mock_handler: MagicMock) -> No
 
 
 @pytest.mark.asyncio
-async def test_run_handle_taunt_not_in_combat(mock_handler: MagicMock) -> None:
+async def test_run_handle_taunt_not_in_combat(mock_handler: TauntCommandHandler) -> None:
     """Player not in combat cannot taunt."""
     mock_handler.validate_target_name = MagicMock(return_value=None)
     pl = MagicMock()
@@ -142,7 +150,7 @@ async def test_run_handle_taunt_not_in_combat(mock_handler: MagicMock) -> None:
     mock_handler.get_npc_instance = MagicMock(return_value=npc)
     combat_svc: MagicMock = MagicMock()
     combat_svc.get_combat_by_participant = AsyncMock(return_value=None)
-    mock_handler.combat_service = combat_svc
+    cast(MagicMock, mock_handler).combat_service = combat_svc
     req = MagicMock()
     req.app = None
     out = await combat_taunt.run_handle_taunt_command(
@@ -152,7 +160,7 @@ async def test_run_handle_taunt_not_in_combat(mock_handler: MagicMock) -> None:
 
 
 @pytest.mark.asyncio
-async def test_run_handle_taunt_success(mock_handler: MagicMock) -> None:
+async def test_run_handle_taunt_success(mock_handler: TauntCommandHandler) -> None:
     """Successful taunt returns flavor message."""
     mock_handler.validate_target_name = MagicMock(return_value=None)
     pid = uuid.uuid4()
@@ -191,7 +199,7 @@ async def test_run_handle_taunt_success(mock_handler: MagicMock) -> None:
 
     combat_svc: MagicMock = MagicMock()
     combat_svc.get_combat_by_participant = AsyncMock(side_effect=_gcbp)
-    mock_handler.combat_service = combat_svc
+    cast(MagicMock, mock_handler).combat_service = combat_svc
 
     with (
         patch("server.commands.combat_taunt.find_participant_uuid_by_string_id", return_value=npc_uuid),

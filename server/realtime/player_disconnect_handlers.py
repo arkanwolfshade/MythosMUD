@@ -164,6 +164,54 @@ _DISCONNECT_HELPERS_FOR_EXPORT = (
 )
 
 
+def _get_session_maps_for_age_off(
+    manager: object,
+) -> tuple[dict[str, float], dict[uuid.UUID, str], dict[str, list[str]]] | None:
+    """
+    Return typed session maps for age-off, or None if the manager is not ready.
+
+    Uses a single None membership check (not assert) so invariants hold under python -O.
+    """
+    session_disconnect_times = getattr(manager, "session_disconnect_times", None)
+    player_sessions = getattr(manager, "player_sessions", None)
+    session_connections = getattr(manager, "session_connections", None)
+    if not all((session_disconnect_times, player_sessions, session_connections)):
+        return None
+    if None in (session_disconnect_times, player_sessions, session_connections):
+        raise RuntimeError("session maps are None after truthiness check in age_off_disconnected_sessions")
+
+    return (
+        cast(dict[str, float], session_disconnect_times),
+        cast(dict[uuid.UUID, str], player_sessions),
+        cast(dict[str, list[str]], session_connections),
+    )
+
+
+def _session_ids_past_age_off(disconnect_times: dict[str, float], now: float) -> list[str]:
+    """Session ids whose disconnect timestamp is older than SESSION_AGE_OFF_SECONDS."""
+    expired: list[str] = []
+    for session_id, disconnect_time in list(disconnect_times.items()):
+        if now - disconnect_time >= SESSION_AGE_OFF_SECONDS:
+            expired.append(session_id)
+    return expired
+
+
+def _purge_expired_sessions_from_maps(
+    disconnect_times: dict[str, float],
+    sessions_by_player: dict[uuid.UUID, str],
+    connections_by_session: dict[str, list[str]],
+    expired: list[str],
+) -> None:
+    """Remove expired session ids from disconnect_times, connections, and player_sessions."""
+    for session_id in expired:
+        _ = disconnect_times.pop(session_id, None)
+        _ = connections_by_session.pop(session_id, None)
+        for pid, sid in list(sessions_by_player.items()):
+            if sid == session_id:
+                del sessions_by_player[pid]
+                break
+
+
 def age_off_disconnected_sessions(manager: object) -> int:
     """
     Remove sessions that have been disconnected for more than SESSION_AGE_OFF_SECONDS.
@@ -174,33 +222,12 @@ def age_off_disconnected_sessions(manager: object) -> int:
     Returns:
         Number of sessions aged off.
     """
-    session_disconnect_times = getattr(manager, "session_disconnect_times", None)
-    player_sessions = getattr(manager, "player_sessions", None)
-    session_connections = getattr(manager, "session_connections", None)
-    if not all((session_disconnect_times, player_sessions, session_connections)):
+    maps = _get_session_maps_for_age_off(manager)
+    if maps is None:
         return 0
-    # Pyright does not narrow through all(); asserts document invariants and unlock .items().
-    assert session_disconnect_times is not None
-    assert player_sessions is not None
-    assert session_connections is not None
-
-    # getattr(..., None) is Any; cast to ConnectionManager shapes for typed iteration.
-    disconnect_times = cast(dict[str, float], session_disconnect_times)
-    sessions_by_player = cast(dict[uuid.UUID, str], player_sessions)
-    connections_by_session = cast(dict[str, list[str]], session_connections)
+    disconnect_times, sessions_by_player, connections_by_session = maps
 
     now = time.time()
-    expired: list[str] = []
-    for session_id, disconnect_time in list(disconnect_times.items()):
-        if now - disconnect_time >= SESSION_AGE_OFF_SECONDS:
-            expired.append(session_id)
-
-    for session_id in expired:
-        _ = disconnect_times.pop(session_id, None)
-        _ = connections_by_session.pop(session_id, None)
-        for pid, sid in list(sessions_by_player.items()):
-            if sid == session_id:
-                del sessions_by_player[pid]
-                break
-
+    expired = _session_ids_past_age_off(disconnect_times, now)
+    _purge_expired_sessions_from_maps(disconnect_times, sessions_by_player, connections_by_session, expired)
     return len(expired)

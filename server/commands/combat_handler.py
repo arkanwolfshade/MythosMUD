@@ -54,12 +54,6 @@ class CombatCommandHandlerExtras:
     player_position_service: object | None = None
 
 
-class _PlayerWithId(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
-    """Minimal player shape for target resolution."""
-
-    player_id: str | uuid.UUID
-
-
 class _NpcWithLife(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
     """NPC instance shape for alive check before accepting an attack target."""
 
@@ -170,7 +164,7 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
         return self._room_forbids_combat(room_id)
 
     async def resolve_combat_target(
-        self, player: _PlayerWithId, target_name: str
+        self, player: object, target_name: str
     ) -> tuple[TargetMatch | None, dict[str, str] | None]:
         """Resolve combat target using target resolution service. Public API."""
         return await self._resolve_combat_target(player, target_name)
@@ -297,10 +291,13 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
         return target_match, None
 
     async def _resolve_combat_target(
-        self, player: _PlayerWithId, target_name: str
+        self, player: object, target_name: str
     ) -> tuple[TargetMatch | None, dict[str, str] | None]:
         """Resolve combat target using target resolution service."""
-        target_result = await self.target_resolution_service.resolve_target(player.player_id, target_name)
+        pid_raw = getattr(player, "player_id", None)
+        if pid_raw is None:
+            return None, {"result": "Invalid player state."}
+        target_result = await self.target_resolution_service.resolve_target(pid_raw, target_name)
         return self._validate_combat_target_match(target_result, player)
 
     def _room_forbids_combat(self, room_id: object) -> bool:

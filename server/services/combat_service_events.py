@@ -6,14 +6,16 @@ Extracted from combat_service.py to keep module line count under limit.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 from uuid import UUID
+
+from structlog.stdlib import BoundLogger
 
 from server.events.combat_events import NPCDiedEvent, NPCTookDamageEvent
 from server.services.nats_exceptions import NATSError
 from server.structured_logging.enhanced_logging_config import get_logger
 
-logger = get_logger(__name__)
+logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
 
 
 async def publish_npc_damage_event(
@@ -43,10 +45,11 @@ async def publish_npc_damage_event(
             max_dp=max_dp,
         )
         return await service.publish_npc_took_damage_event_to_nats(event)
-    except (NATSError, ValueError, RuntimeError, AttributeError, ConnectionError) as e:
+    except (NATSError, ValueError, RuntimeError, AttributeError, ConnectionError) as caught:
+        err_text: str = f"{caught!s}"
         logger.error(
             "Error publishing NPC damage event",
-            error=str(e),
+            error=err_text,
             room_id=room_id,
             npc_name=npc_name,
             exc_info=True,
@@ -77,15 +80,37 @@ async def publish_npc_died_event(
             killer_id=killer_id,
         )
         return await service.publish_npc_died_event_to_nats(death_event)
-    except (NATSError, ValueError, RuntimeError, AttributeError, ConnectionError) as e:
+    except (NATSError, ValueError, RuntimeError, AttributeError, ConnectionError) as caught:
+        err_text: str = f"{caught!s}"
         logger.error(
             "Error publishing NPC died event",
-            error=str(e),
+            error=err_text,
             room_id=room_id,
             npc_name=npc_name,
             exc_info=True,
         )
         return False
+
+
+async def broadcast_aggro_target_switches(
+    service: CombatService,
+    room_id: str,
+    combat_id: UUID,
+    switches: list[tuple[UUID, str, str]],
+) -> None:
+    """
+    Broadcast one room message per aggro target switch (ADR-016).
+
+    switches: list of (npc_id, npc_name, new_target_name).
+    """
+    if not switches:
+        return
+    npc_svc = service.get_npc_combat_integration_service()
+    if not npc_svc:
+        return
+    mi = npc_svc.get_messaging_integration()
+    for _npc_id, npc_name, new_target_name in switches:
+        _ = await mi.broadcast_combat_target_switch(room_id, str(combat_id), npc_name, new_target_name)
 
 
 if TYPE_CHECKING:

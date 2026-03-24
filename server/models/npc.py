@@ -270,12 +270,12 @@ class NPCSpawnRule(Base):
     @staticmethod
     def _game_value_below_bound(bound: object, game_value: object) -> bool:
         """True if numeric game_value is strictly below bound."""
-        return isinstance(game_value, (int, float)) and isinstance(bound, (int, float)) and game_value < bound
+        return isinstance(game_value, int | float) and isinstance(bound, int | float) and game_value < bound
 
     @staticmethod
     def _game_value_above_bound(bound: object, game_value: object) -> bool:
         """True if numeric game_value is strictly above bound."""
-        return isinstance(game_value, (int, float)) and isinstance(bound, (int, float)) and game_value > bound
+        return isinstance(game_value, int | float) and isinstance(bound, int | float) and game_value > bound
 
     def _check_dict_condition(self, value: _JSONDict, game_value: object) -> bool:
         """Check dict (range) condition."""

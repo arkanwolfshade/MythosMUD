@@ -5,7 +5,6 @@ Unit tests for NPC combat integration service - player-initiated combat paths.
 # pyright: reportPrivateUsage=false
 # These tests patch NPCCombatIntegrationService underscore-prefixed collaborators; that is intentional.
 
-import types
 import uuid
 from typing import TYPE_CHECKING, cast
 from unittest.mock import AsyncMock, MagicMock, patch
@@ -76,17 +75,10 @@ async def test_handle_player_attack_on_npc_login_grace_period_blocked(
     npc_instance = MagicMock()
     npc_instance.is_alive = True
 
-    with (
-        patch("server.services.npc_combat_integration_service.get_config") as mock_get_config,
-        patch("server.services.npc_combat_integration_service.is_player_in_login_grace_period") as mock_grace_period,
+    with patch(
+        "server.services.npc_combat_integration_service.is_player_attack_blocked_by_login_grace_period",
+        return_value=True,
     ):
-        mock_config = MagicMock()
-        mock_cm = MagicMock()
-        mock_app = types.SimpleNamespace(state=types.SimpleNamespace(connection_manager=mock_cm))
-        mock_config._app_instance = mock_app
-        mock_get_config.return_value = mock_config
-        mock_grace_period.return_value = True
-
         result = await integration_service.handle_player_attack_on_npc(
             player_id, npc_id, room_id, action_type, damage, npc_instance
         )
@@ -238,7 +230,7 @@ async def test_setup_combat_uuids_and_mappings_valid_uuid(
 async def test_store_npc_xp_mapping_no_definition(
     integration_service: "NPCCombatIntegrationService",
 ):
-    """Test _store_npc_xp_mapping when NPC definition is not found."""
+    """Test store_npc_xp_mapping_for_mixin when NPC definition is not found."""
     npc_id = "npc_001"
     target_uuid = uuid.uuid4()
     room_id = "room_001"
@@ -251,7 +243,7 @@ async def test_store_npc_xp_mapping_no_definition(
     integration_service._uuid_mapping = MagicMock()
     integration_service._uuid_mapping.store_xp_mapping = mock_store_xp_mapping
 
-    await integration_service._store_npc_xp_mapping(npc_id, target_uuid, room_id, player_id, first_engagement)
+    await integration_service.store_npc_xp_mapping_for_mixin(npc_id, target_uuid, room_id, player_id, first_engagement)
     mock_store_xp_mapping.assert_not_called()
 
 
@@ -259,7 +251,7 @@ async def test_store_npc_xp_mapping_no_definition(
 async def test_store_npc_xp_mapping_non_dict_base_stats(
     integration_service: "NPCCombatIntegrationService",
 ):
-    """Test _store_npc_xp_mapping when base_stats is not a dict."""
+    """Test store_npc_xp_mapping_for_mixin when base_stats is not a dict."""
     npc_id = "npc_001"
     target_uuid = uuid.uuid4()
     room_id = "room_001"
@@ -275,7 +267,7 @@ async def test_store_npc_xp_mapping_non_dict_base_stats(
     integration_service._uuid_mapping = MagicMock()
     integration_service._uuid_mapping.store_xp_mapping = mock_store_xp_mapping
 
-    await integration_service._store_npc_xp_mapping(npc_id, target_uuid, room_id, player_id, first_engagement)
+    await integration_service.store_npc_xp_mapping_for_mixin(npc_id, target_uuid, room_id, player_id, first_engagement)
     mock_store_xp_mapping.assert_not_called()
 
 
@@ -283,7 +275,7 @@ async def test_store_npc_xp_mapping_non_dict_base_stats(
 async def test_store_npc_xp_mapping_first_engagement(
     integration_service: "NPCCombatIntegrationService",
 ):
-    """Test _store_npc_xp_mapping applies lucidity effect on first engagement."""
+    """Test store_npc_xp_mapping_for_mixin applies lucidity effect on first engagement."""
     npc_id = "npc_001"
     target_uuid = uuid.uuid4()
     room_id = "room_001"
@@ -302,7 +294,7 @@ async def test_store_npc_xp_mapping_first_engagement(
     integration_service._uuid_mapping = MagicMock()
     integration_service._uuid_mapping.store_xp_mapping = mock_store_xp_mapping
 
-    await integration_service._store_npc_xp_mapping(npc_id, target_uuid, room_id, player_id, first_engagement)
+    await integration_service.store_npc_xp_mapping_for_mixin(npc_id, target_uuid, room_id, player_id, first_engagement)
     mock_apply_lucidity.assert_called_once()
     mock_store_xp_mapping.assert_called_once_with(target_uuid, 100)
 
@@ -311,7 +303,7 @@ async def test_store_npc_xp_mapping_first_engagement(
 async def test_store_npc_xp_mapping_no_xp_value(
     integration_service: "NPCCombatIntegrationService",
 ):
-    """Test _store_npc_xp_mapping defaults to 0 when xp_value not in base_stats."""
+    """Test store_npc_xp_mapping_for_mixin defaults to 0 when xp_value not in base_stats."""
     npc_id = "npc_001"
     target_uuid = uuid.uuid4()
     room_id = "room_001"
@@ -327,7 +319,7 @@ async def test_store_npc_xp_mapping_no_xp_value(
     integration_service._uuid_mapping = MagicMock()
     integration_service._uuid_mapping.store_xp_mapping = mock_store_xp_mapping
 
-    await integration_service._store_npc_xp_mapping(npc_id, target_uuid, room_id, player_id, first_engagement)
+    await integration_service.store_npc_xp_mapping_for_mixin(npc_id, target_uuid, room_id, player_id, first_engagement)
     mock_store_xp_mapping.assert_called_once_with(target_uuid, 0)
 
 

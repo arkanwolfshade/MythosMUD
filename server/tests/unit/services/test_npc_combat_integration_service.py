@@ -98,7 +98,7 @@ def test_integration_service_init_with_shared_player_combat_service(
     mock_async_persistence: MagicMock,
 ) -> None:
     """Test init sets NPC combat integration reference on shared PlayerCombatService."""
-    mock_player_combat_service = MagicMock()
+    mock_player_combat_service: MagicMock = MagicMock()
     with patch("server.services.npc_combat_integration_service.get_config") as mock_config:
         mock_config.return_value = _StubConfigRoot()
         service = NPCCombatIntegrationService(
@@ -109,9 +109,8 @@ def test_integration_service_init_with_shared_player_combat_service(
             async_persistence=mock_async_persistence,
         )
     assert service._player_combat_service == mock_player_combat_service
-    assert (
-        cast(NPCCombatIntegrationService | None, mock_player_combat_service._npc_combat_integration_service) is service
-    )
+    set_npc_integration: MagicMock = cast(MagicMock, mock_player_combat_service.set_npc_combat_integration_service)
+    set_npc_integration.assert_called_once_with(service)
 
 
 def test_integration_service_init_creates_combat_service_when_none(
@@ -458,23 +457,13 @@ async def test_handle_player_attack_on_npc_blocked_during_login_grace(
     integration_service: NPCCombatIntegrationService,
 ) -> None:
     """Login grace period check runs before NPC validation and blocks the attack."""
-    mock_app = MagicMock()
-    mock_state = MagicMock()
-    mock_state.connection_manager = MagicMock()
-    mock_app.state = mock_state
     player_id = str(uuid.uuid4())
     npc = MagicMock()
     npc.is_alive = True
-    with (
-        patch("server.services.npc_combat_integration_service.get_config") as mock_get_config,
-        patch(
-            "server.services.npc_combat_integration_service.is_player_in_login_grace_period",
-            return_value=True,
-        ),
+    with patch(
+        "server.services.npc_combat_integration_service.is_player_attack_blocked_by_login_grace_period",
+        return_value=True,
     ):
-        cfg = MagicMock()
-        cfg._app_instance = mock_app
-        mock_get_config.return_value = cfg
         ok = await integration_service.handle_player_attack_on_npc(
             player_id,
             "npc_1",
@@ -490,8 +479,6 @@ async def test_process_combat_attack_queues_when_already_in_combat(
     integration_service: NPCCombatIntegrationService,
 ) -> None:
     """Existing combat: successful queue returns CombatResult without immediate damage."""
-    from server.models.combat import CombatResult
-
     att = uuid.uuid4()
     tgt = uuid.uuid4()
     existing = MagicMock()
@@ -500,16 +487,13 @@ async def test_process_combat_attack_queues_when_already_in_combat(
     integration_service._combat_service.get_combat_by_participant = AsyncMock(return_value=existing)
     integration_service._combat_service.queue_combat_action = AsyncMock(return_value=True)
     with patch("server.app.lifespan.get_current_tick", return_value=99):
-        result = cast(
-            CombatResult,
-            await integration_service._process_combat_attack(
-                player_id=str(uuid.uuid4()),
-                room_id="r1",
-                attacker_uuid=att,
-                target_uuid=tgt,
-                damage=8,
-                npc_instance=MagicMock(),
-            ),
+        result = await integration_service._process_combat_attack(
+            player_id=str(uuid.uuid4()),
+            room_id="r1",
+            attacker_uuid=att,
+            target_uuid=tgt,
+            damage=8,
+            npc_instance=MagicMock(),
         )
     assert result.success is True
     assert result.damage == 0
@@ -531,7 +515,7 @@ async def test_process_combat_attack_queue_fail_falls_back_to_process_attack(
     integration_service._combat_service.queue_combat_action = AsyncMock(return_value=False)
     integration_service._combat_service.process_attack = AsyncMock(return_value=MagicMock(success=True))
     with patch("server.app.lifespan.get_current_tick", return_value=1):
-        await integration_service._process_combat_attack(
+        _ = await integration_service._process_combat_attack(
             "pid",
             "r1",
             att,
@@ -558,7 +542,7 @@ async def test_process_combat_attack_starts_new_combat_when_none(
     integration_service._data_provider.get_npc_combat_data = MagicMock(return_value={})
     npc = MagicMock()
     with patch("server.app.lifespan.get_current_tick", return_value=5):
-        await integration_service._process_combat_attack("pid", "r1", att, tgt, 4, npc)
+        _ = await integration_service._process_combat_attack("pid", "r1", att, tgt, 4, npc)
     integration_service._combat_service.start_combat.assert_awaited_once()
     process_mock = integration_service._combat_service.process_attack
     process_mock.assert_awaited()
