@@ -11,6 +11,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from server.events import EventBus
+from server.events.event_types import NPCAttacked
 from server.npc.combat_integration import NPCCombatIntegration
 
 # pylint: disable=protected-access  # Reason: Testing internal helpers
@@ -139,3 +140,36 @@ def test_compute_dp_update_fields(integration: NPCCombatIntegration) -> None:
     assert new == 7
     assert old == 10
     assert mx == 20
+
+
+def test_get_npc_name_from_lifecycle_reads_active_instance(integration: NPCCombatIntegration) -> None:
+    """Display name resolves from lifecycle_manager.active_npcs when present."""
+    lm = MagicMock()
+    inst = MagicMock()
+    inst.name = "Byakhee"
+    lm.active_npcs = {"byakhee_1": inst}
+    with patch.object(integration, "_get_npc_lifecycle_manager", return_value=lm):
+        assert integration._get_npc_name_from_lifecycle("byakhee_1") == "Byakhee"
+
+
+def test_get_npc_name_from_lifecycle_returns_none_when_missing(integration: NPCCombatIntegration) -> None:
+    """When lifecycle manager is unavailable, display name lookup returns None."""
+    with patch.object(integration, "_get_npc_lifecycle_manager", return_value=None):
+        assert integration._get_npc_name_from_lifecycle("ghost") is None
+
+
+def test_publish_attack_event_emits_npc_attacked(integration: NPCCombatIntegration) -> None:
+    """_publish_attack_event forwards to event bus when configured."""
+    publish_mock: MagicMock = MagicMock()
+    bus = MagicMock()
+    bus.publish = publish_mock
+    integration.event_bus = bus
+    integration._publish_attack_event("npc_a", "player_b", "room_z", 5, "physical")
+    publish_mock.assert_called_once()
+    call_args = publish_mock.call_args
+    assert call_args is not None
+    evt = cast(NPCAttacked, call_args[0][0])
+    assert evt.npc_id == "npc_a"
+    assert evt.target_id == "player_b"
+    assert evt.room_id == "room_z"
+    assert evt.damage == 5
