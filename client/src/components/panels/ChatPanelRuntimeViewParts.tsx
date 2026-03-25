@@ -31,12 +31,28 @@ function ChatPanelToolbar({ disabled, onClearMessages, onDownloadLogs, onOpenExp
       </div>
       <div className="flex items-center gap-2">
         {onClearMessages && (
-          <TerminalButton variant="secondary" size="sm" onClick={onClearMessages} className="p-2 h-8 w-8">
+          <TerminalButton
+            variant="secondary"
+            size="sm"
+            onClick={onClearMessages}
+            className="p-2 h-8 w-8"
+            data-testid="chat-panel-clear-messages"
+            aria-label="Clear chat messages"
+            type="button"
+          >
             <EldritchIcon name={MythosIcons.clear} size={14} variant="error" />
           </TerminalButton>
         )}
         {onDownloadLogs && (
-          <TerminalButton variant="secondary" size="sm" onClick={onDownloadLogs} className="p-2 h-8 w-8">
+          <TerminalButton
+            variant="secondary"
+            size="sm"
+            onClick={onDownloadLogs}
+            className="p-2 h-8 w-8"
+            data-testid="chat-panel-download-logs"
+            aria-label="Download chat logs"
+            type="button"
+          >
             <EldritchIcon name={MythosIcons.download} size={14} variant="primary" />
           </TerminalButton>
         )}

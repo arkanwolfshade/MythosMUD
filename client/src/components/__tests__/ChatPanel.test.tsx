@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -34,7 +34,8 @@ describe('ChatPanel', () => {
       render(<ChatPanel {...defaultProps} />);
 
       expect(screen.getByTestId('channel-selector')).toBeInTheDocument();
-      expect(screen.getAllByTestId('terminal-button')).toHaveLength(2);
+      expect(screen.getByTestId('chat-panel-clear-messages')).toBeInTheDocument();
+      expect(screen.getByTestId('chat-panel-download-logs')).toBeInTheDocument();
       expect(screen.getByTestId('chat-panel-export')).toBeInTheDocument();
     });
 
@@ -145,6 +146,7 @@ describe('ChatPanel', () => {
           text: 'Message with <strong>HTML</strong> content',
           timestamp: '2024-01-01T10:00:00Z',
           isHtml: true,
+          isCompleteHtml: true,
           messageType: 'chat',
           channel: 'local',
         },
@@ -152,11 +154,12 @@ describe('ChatPanel', () => {
 
       render(<ChatPanel {...defaultProps} messages={htmlMessages} selectedChannel="local" />);
 
-      // The HTML should be rendered - check for the complete message content
+      // Timestamp prefix + body; strong renders as bold text in the DOM
       const messageElement = screen.getByTestId('chat-message');
-      expect(messageElement).toHaveTextContent('Message with HTML content');
-      // Also check that the strong tag is rendered
-      expect(screen.getByText('HTML')).toBeInTheDocument();
+      expect(messageElement.textContent).toMatch(/10:00:00/);
+      expect(messageElement.textContent).toContain('Message with');
+      expect(messageElement.textContent).toContain('HTML');
+      expect(messageElement.querySelector('strong')?.textContent).toBe('HTML');
     });
   });
 
@@ -182,18 +185,10 @@ describe('ChatPanel', () => {
     it('should show activity indicators for all channels', () => {
       render(<ChatPanel {...defaultProps} />);
 
-      // Should show activity indicators for all channels (check for role="button" elements)
-      const channelButtons = screen.getAllByRole('button');
-      const channelNames = channelButtons
-        .map(button => button.textContent)
-        .filter(text => text && ['Say', 'Local', 'Whisper', 'Shout'].includes(text.trim()));
-
-      // Channel names should be found in the activity indicators
-
-      expect(channelNames.length).toBeGreaterThanOrEqual(3); // At least 3 channels should be present
-      expect(channelNames).toContain('Say');
-      expect(channelNames).toContain('Local');
-      expect(channelNames).toContain('Shout');
+      const activity = screen.getByRole('region', { name: 'Channel Activity Indicators' });
+      expect(within(activity).getByRole('button', { name: /Say channel/i })).toBeInTheDocument();
+      expect(within(activity).getByRole('button', { name: /Local channel/i })).toBeInTheDocument();
+      expect(within(activity).getByRole('button', { name: /Whisper channel/i })).toBeInTheDocument();
     });
 
     it('should clear unread counts when switching channels', async () => {
@@ -313,12 +308,9 @@ describe('ChatPanel', () => {
       const mockOnClearMessages = vi.fn();
       render(<ChatPanel {...defaultProps} onClearMessages={mockOnClearMessages} />);
 
-      const clearButton = screen
-        .getAllByTestId('terminal-button')
-        .find(button => button.querySelector('[data-testid="eldritch-icon-clear-icon"]'));
-
+      const clearButton = screen.getByTestId('chat-panel-clear-messages');
       expect(clearButton).toBeInTheDocument();
-      await user.click(clearButton!);
+      await user.click(clearButton);
 
       expect(mockOnClearMessages).toHaveBeenCalled();
     });
@@ -328,12 +320,9 @@ describe('ChatPanel', () => {
       const mockOnDownloadLogs = vi.fn();
       render(<ChatPanel {...defaultProps} onDownloadLogs={mockOnDownloadLogs} />);
 
-      const downloadButton = screen
-        .getAllByTestId('terminal-button')
-        .find(button => button.querySelector('[data-testid="eldritch-icon-download-icon"]'));
-
+      const downloadButton = screen.getByTestId('chat-panel-download-logs');
       expect(downloadButton).toBeInTheDocument();
-      await user.click(downloadButton!);
+      await user.click(downloadButton);
 
       expect(mockOnDownloadLogs).toHaveBeenCalled();
     });

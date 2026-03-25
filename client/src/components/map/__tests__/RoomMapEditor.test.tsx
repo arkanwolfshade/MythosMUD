@@ -22,12 +22,14 @@ vi.mock('../hooks/useRoomMapData', () => ({
   useRoomMapData: (options: unknown) => useRoomMapDataMock(options),
 }));
 
+// Before RoomMapEditor: registers vi.mock('reactflow', ...) so the editor does not pull real @reactflow/core.
+import './roomMapEditorTestSetup';
+
 import '@testing-library/jest-dom';
 import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 import { RoomMapEditor } from '../RoomMapEditor';
 import type { UseRoomMapDataOptions } from '../hooks/useRoomMapData';
-import './roomMapEditorTestSetup';
 
 describe('RoomMapEditor', () => {
   const defaultProps = {
