@@ -21,7 +21,7 @@ type ChatPanelToolbarProps = {
 
 function ChatPanelToolbar({ disabled, onClearMessages, onDownloadLogs, onOpenExport }: ChatPanelToolbarProps) {
   return (
-    <div className="flex items-center justify-between p-3 border-b border-gray-700 bg-mythos-terminal-surface">
+    <div className="flex items-center justify-between p-3 border-b border-mythos-terminal-border bg-mythos-terminal-surface">
       <div className="flex items-center gap-2">
         <EldritchIcon name={MythosIcons.chat} size={20} variant="primary" aria-hidden />
       </div>
@@ -31,7 +31,7 @@ function ChatPanelToolbar({ disabled, onClearMessages, onDownloadLogs, onOpenExp
             variant="secondary"
             size="sm"
             onClick={onClearMessages}
-            className="inline-flex h-8 w-8 min-h-touch min-w-touch items-center justify-center p-2"
+            className="inline-flex min-h-touch min-w-touch items-center justify-center p-2"
             data-testid="chat-panel-clear-messages"
             aria-label="Clear chat messages"
             type="button"
@@ -44,7 +44,7 @@ function ChatPanelToolbar({ disabled, onClearMessages, onDownloadLogs, onOpenExp
             variant="secondary"
             size="sm"
             onClick={onDownloadLogs}
-            className="inline-flex h-8 w-8 min-h-touch min-w-touch items-center justify-center p-2"
+            className="inline-flex min-h-touch min-w-touch items-center justify-center p-2"
             data-testid="chat-panel-download-logs"
             aria-label="Download chat logs"
             type="button"
@@ -86,7 +86,7 @@ function ChatPanelChannelSection({
 }: ChatPanelChannelSectionProps) {
   return (
     <div
-      className="p-3 border-b border-gray-700 bg-mythos-terminal-surface"
+      className="p-3 border-b border-mythos-terminal-border bg-mythos-terminal-surface"
       role="region"
       aria-label="Channel Selection"
     >
@@ -152,7 +152,10 @@ function ChatPanelHistorySearch({
   const chatSearchInputId = 'chat-panel-search-messages';
 
   return (
-    <div className="p-2 border-b border-gray-700 bg-mythos-terminal-background" data-testid="chat-history-toggle">
+    <div
+      className="p-2 border-b border-mythos-terminal-border bg-mythos-terminal-background"
+      data-testid="chat-history-toggle"
+    >
       <div className="flex items-center gap-2 flex-wrap">
         <button className="min-h-touch px-1 text-xs text-mythos-terminal-primary" onClick={toggleHistory} type="button">
           Chat History
@@ -162,7 +165,7 @@ function ChatPanelHistorySearch({
         </label>
         <select
           id={historyScopeId}
-          className="text-xs bg-mythos-terminal-surface border border-gray-700 rounded px-1"
+          className="text-xs bg-mythos-terminal-surface border border-mythos-terminal-border rounded px-1"
           value={isHistoryVisible ? 'all' : 'current'}
           onChange={event => setIsHistoryVisible(event.target.value === 'all')}
         >
@@ -185,7 +188,7 @@ function ChatPanelHistorySearch({
             placeholder="Search messages..."
             value={searchQuery}
             onChange={e => onSearchChange(e.target.value)}
-            className="min-w-0 flex-1 text-xs bg-mythos-terminal-surface border border-gray-700 rounded px-2 py-1 text-mythos-terminal-text focus:outline-hidden focus:border-mythos-terminal-primary"
+            className="min-w-0 flex-1 text-xs bg-mythos-terminal-surface border border-mythos-terminal-border rounded px-2 py-1 text-mythos-terminal-text focus:outline-hidden focus:border-mythos-terminal-primary"
             disabled={disabled}
             autoComplete="off"
           />
@@ -194,7 +197,7 @@ function ChatPanelHistorySearch({
               <button
                 onClick={onSearchPrevious}
                 disabled={searchMatches.size === 0}
-                className="min-h-touch min-w-touch text-xs px-2 py-1 bg-mythos-terminal-surface border border-gray-700 rounded hover:bg-mythos-terminal-background disabled:opacity-50"
+                className="min-h-touch min-w-touch text-xs px-2 py-1 bg-mythos-terminal-surface border border-mythos-terminal-border rounded hover:bg-mythos-terminal-background disabled:opacity-50"
                 title="Previous match"
                 aria-label="Previous search match"
                 type="button"
@@ -204,7 +207,7 @@ function ChatPanelHistorySearch({
               <button
                 onClick={onSearchNext}
                 disabled={searchMatches.size === 0}
-                className="min-h-touch min-w-touch text-xs px-2 py-1 bg-mythos-terminal-surface border border-gray-700 rounded hover:bg-mythos-terminal-background disabled:opacity-50"
+                className="min-h-touch min-w-touch text-xs px-2 py-1 bg-mythos-terminal-surface border border-mythos-terminal-border rounded hover:bg-mythos-terminal-background disabled:opacity-50"
                 title="Next match"
                 aria-label="Next search match"
                 type="button"
@@ -213,7 +216,7 @@ function ChatPanelHistorySearch({
               </button>
               <button
                 onClick={() => onSearchChange('')}
-                className="min-h-touch min-w-touch text-xs px-2 py-1 bg-mythos-terminal-surface border border-gray-700 rounded hover:bg-mythos-terminal-background"
+                className="min-h-touch min-w-touch text-xs px-2 py-1 bg-mythos-terminal-surface border border-mythos-terminal-border rounded hover:bg-mythos-terminal-background"
                 title="Clear search"
                 aria-label="Clear search"
                 type="button"
@@ -238,7 +241,7 @@ function ChatPanelHistorySearch({
               id="chat-search-filter-channel"
               value={searchFilterChannel}
               onChange={e => setSearchFilterChannel(e.target.value)}
-              className="text-xs bg-mythos-terminal-surface border border-gray-700 rounded px-1"
+              className="text-xs bg-mythos-terminal-surface border border-mythos-terminal-border rounded px-1"
               disabled={disabled}
             >
               <option value="all">All Channels</option>
@@ -255,7 +258,7 @@ function ChatPanelHistorySearch({
               id="chat-search-filter-type"
               value={searchFilterType}
               onChange={e => setSearchFilterType(e.target.value)}
-              className="text-xs bg-mythos-terminal-surface border border-gray-700 rounded px-1"
+              className="text-xs bg-mythos-terminal-surface border border-mythos-terminal-border rounded px-1"
               disabled={disabled}
             >
               <option value="all">All Types</option>
@@ -278,7 +281,7 @@ type ChatPanelViewingStripProps = {
 
 function ChatPanelViewingStrip({ viewingLabel, currentChannelMessageCount }: ChatPanelViewingStripProps) {
   return (
-    <div className="p-2 border-b border-gray-700 bg-mythos-terminal-background">
+    <div className="p-2 border-b border-mythos-terminal-border bg-mythos-terminal-background">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 text-xs text-mythos-terminal-text-secondary">
           <EldritchIcon name={MythosIcons.clock} size={12} variant="primary" aria-hidden />
@@ -321,10 +324,9 @@ function ChatPanelRuntimeChatArea({
   return (
     <>
       <div
-        className="flex-1 overflow-auto p-3 bg-mythos-terminal-background border border-gray-700 rounded contain-content"
+        className="min-h-panel-chat flex-1 overflow-auto p-3 bg-mythos-terminal-background border border-mythos-terminal-border rounded contain-content"
         role="log"
         aria-label="Chat Messages"
-        style={{ minHeight: '200px' }}
       >
         <ChatPanelMessagesLog
           visibleMessages={visibleMessages}

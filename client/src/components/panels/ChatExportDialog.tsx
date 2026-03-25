@@ -111,7 +111,7 @@ export function ChatExportDialog({
               id="chat-export-format"
               value={exportFormat}
               onChange={e => setExportFormat(e.target.value)}
-              className="w-full rounded border border-gray-700 bg-mythos-terminal-background px-2 py-1 text-sm text-mythos-terminal-text"
+              className="min-h-touch w-full rounded border border-mythos-terminal-border bg-mythos-terminal-background px-2 py-1 text-sm text-mythos-terminal-text"
               disabled={isExporting}
             >
               <option value="txt">Plain Text (.txt)</option>
@@ -127,7 +127,7 @@ export function ChatExportDialog({
             <button
               onClick={onClose}
               disabled={isExporting}
-              className="rounded border border-gray-700 bg-mythos-terminal-background px-4 py-2 text-sm hover:bg-mythos-terminal-surface disabled:opacity-50"
+              className="min-h-touch rounded border border-mythos-terminal-border bg-mythos-terminal-background px-4 py-2 text-sm hover:bg-mythos-terminal-surface disabled:opacity-50"
               type="button"
             >
               Cancel
@@ -135,7 +135,7 @@ export function ChatExportDialog({
             <button
               onClick={onConfirmExport}
               disabled={isExporting || visibleCount === 0}
-              className="rounded bg-mythos-terminal-primary px-4 py-2 text-sm font-bold text-black hover:bg-mythos-terminal-primary/80 disabled:opacity-50"
+              className="min-h-touch rounded bg-mythos-terminal-primary px-4 py-2 text-sm font-bold text-black hover:bg-mythos-terminal-primary/80 disabled:opacity-50"
               type="button"
             >
               {isExporting ? 'Exporting...' : 'Export'}

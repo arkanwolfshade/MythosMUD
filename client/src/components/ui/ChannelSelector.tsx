@@ -107,7 +107,7 @@ export const ChannelSelector: React.FC<ChannelSelectorProps> = ({
         onClick={toggleDropdown}
         disabled={disabled}
         className={`
-          relative z-20 flex items-center gap-2 px-3 py-2 bg-mythos-terminal-surface border border-gray-700 rounded
+          relative z-20 flex items-center gap-2 px-3 py-2 bg-mythos-terminal-surface border border-mythos-terminal-border rounded
           text-sm font-mono transition-all duration-200 min-w-button
           ${
             disabled
@@ -139,7 +139,7 @@ export const ChannelSelector: React.FC<ChannelSelectorProps> = ({
       {/* Dropdown Menu - positioned AFTER backdrop but with higher z-index */}
       {isOpen && !disabled && (
         <div
-          className="absolute top-full left-0 right-0 mt-1 bg-mythos-terminal-surface border border-gray-700 rounded shadow-lg z-30 max-h-60 overflow-y-auto"
+          className="absolute top-full left-0 right-0 mt-1 bg-mythos-terminal-surface border border-mythos-terminal-border rounded shadow-lg z-30 max-h-60 overflow-y-auto"
           data-testid="channel-dropdown"
         >
           {channels.map(channel => (
@@ -151,7 +151,7 @@ export const ChannelSelector: React.FC<ChannelSelectorProps> = ({
               disabled={channel.disabled}
               className={`
                 w-full flex items-center gap-3 px-3 py-2 text-left text-sm font-mono
-                transition-colors duration-200 border-b border-gray-700 last:border-b-0
+                transition-colors duration-200 border-b border-mythos-terminal-border last:border-b-0
                 ${
                   channel.disabled
                     ? 'opacity-50 cursor-not-allowed text-mythos-terminal-text-secondary'

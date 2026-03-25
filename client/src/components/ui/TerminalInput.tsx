@@ -40,7 +40,7 @@ export const TerminalInput = React.forwardRef<HTMLInputElement, TerminalInputPro
     ref
   ) => {
     const baseClasses =
-      'font-mono text-mythos-terminal-text placeholder-mythos-terminal-text-secondary bg-mythos-terminal-surface border border-gray-700 rounded transition-eldritch duration-eldritch ease-eldritch focus:outline-hidden focus:ring-2 focus:ring-mythos-terminal-primary focus:border-mythos-terminal-primary focus:animate-eldritch-border';
+      'font-mono text-mythos-terminal-text placeholder-mythos-terminal-text-secondary bg-mythos-terminal-surface border border-mythos-terminal-border rounded transition-eldritch duration-eldritch ease-eldritch focus:outline-hidden focus:ring-2 focus:ring-mythos-terminal-primary focus:border-mythos-terminal-primary focus:animate-eldritch-border';
 
     const sizeClasses = {
       sm: 'px-2 py-1 text-sm',

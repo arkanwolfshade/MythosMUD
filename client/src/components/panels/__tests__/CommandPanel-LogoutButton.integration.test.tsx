@@ -125,7 +125,7 @@ vi.mock('../../ui/ChannelSelector', () => ({
         <button
           onClick={() => !disabled && setIsOpen(!isOpen)}
           disabled={disabled}
-          className="relative z-20 flex items-center gap-2 px-3 py-2 bg-mythos-terminal-surface border border-gray-700 rounded text-sm font-mono transition-all duration-200 min-w-min-w-button"
+          className="relative z-20 flex items-center gap-2 px-3 py-2 bg-mythos-terminal-surface border border-mythos-terminal-border rounded text-sm font-mono transition-all duration-200 min-w-min-w-button"
         >
           <div data-testid={`icon-${currentChannelData?.id || 'undefined'}`} data-size="16" data-variant="primary">
             {currentChannelData?.id || 'undefined'}
@@ -140,14 +140,14 @@ vi.mock('../../ui/ChannelSelector', () => ({
         </button>
 
         {isOpen && !disabled && (
-          <div className="absolute top-full left-0 right-0 mt-1 bg-mythos-terminal-surface border border-gray-700 rounded shadow-lg z-30">
+          <div className="absolute top-full left-0 right-0 mt-1 bg-mythos-terminal-surface border border-mythos-terminal-border rounded shadow-lg z-30">
             {channels.map(channel => (
               <button
                 key={channel.id}
                 onClick={() => {
                   handleChannelSelect(channel.id);
                 }}
-                className="w-full flex items-center gap-3 px-3 py-2 text-left text-sm font-mono border-b border-gray-700 last:border-b-0"
+                className="w-full flex items-center gap-3 px-3 py-2 text-left text-sm font-mono border-b border-mythos-terminal-border last:border-b-0"
               >
                 <div data-testid={`icon-${channel.id}`} data-size="16" data-variant="secondary">
                   {channel.id}
@@ -299,7 +299,7 @@ describe('CommandPanel with LogoutButton Integration', () => {
 
       expect(logoutSection).toHaveClass('p-3');
       expect(logoutSection).toHaveClass('border-t');
-      expect(logoutSection).toHaveClass('border-gray-700');
+      expect(logoutSection).toHaveClass('border-mythos-terminal-border');
       expect(logoutSection).toHaveClass('bg-mythos-terminal-background');
     });
   });

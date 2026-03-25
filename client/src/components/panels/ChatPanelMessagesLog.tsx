@@ -66,7 +66,7 @@ const ChatPanelMessageRow = memo(function ChatPanelMessageRow({
         `hover:border-mythos-terminal-primary/30 hover:shadow-lg ${animationClass} ` +
         (isHighlighted
           ? 'border-mythos-terminal-warning border-2 shadow-lg shadow-mythos-terminal-warning/50'
-          : 'border-gray-700')
+          : 'border-mythos-terminal-border')
       }
       style={{ animationDelay }}
       data-testid="chat-message"
