@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 // Disabled: Context files intentionally export both context and provider
-import React, { createContext, ReactNode, useCallback, useState } from 'react';
+import type { ReactNode } from 'react';
+import React, { createContext, useCallback, useState } from 'react';
 
 // Panel types
 export interface PanelPosition {

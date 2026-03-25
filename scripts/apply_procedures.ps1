@@ -1,6 +1,10 @@
 #!/usr/bin/env pwsh
 # Apply PostgreSQL procedures and functions from db/procedures/ to target databases.
 #
+# NOTE: If the PowerShell extension's formatter corrupts this file on save (duplicate lines,
+# mangled Write-Host), use "Save Without Formatting" or disable format-on-save for [powershell].
+# See: https://github.com/PowerShell/vscode-powershell/issues/3736
+#
 # This script:
 # - Reads PostgreSQL connection details from .env.unit_test (tests) or .env.local/.env (dev)
 # - Applies all .sql files in db/procedures/ to each target database
@@ -133,11 +137,27 @@ try {
 
         foreach ($file in $procedureFiles) {
             Write-Host "  - $($file.Name)" -ForegroundColor Gray
-            $result = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d $targetDb `
-                -v "ON_ERROR_STOP=1" `
-                -v "schema_name=$targetDb" `
-                -f $file.FullName 2>&1
-
+            if ($file.Name -eq "containers.sql") {
+                $dropFile = Join-Path $env:TEMP "containers_drop_get_container_$targetDb.sql"
+                @"
+SET client_min_messages = WARNING;
+DROP FUNCTION IF EXISTS $targetDb.get_container(uuid) CASCADE;
+DROP FUNCTION IF EXISTS public.get_container(uuid) CASCADE;
+"@ | Set-Content -Path $dropFile -Encoding UTF8
+                $result = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d $targetDb `
+                    -v "ON_ERROR_STOP=1" `
+                    -v "schema_name=$targetDb" `
+                    -f $dropFile `
+                    -f $file.FullName 2>&1
+                Remove-Item $dropFile -ErrorAction SilentlyContinue
+            }
+            else {
+                $result = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d $targetDb `
+                    -v "ON_ERROR_STOP=1" `
+                    -v "schema_name=$targetDb" `
+                    -f $file.FullName 2>&1
+            }
+            if ($null -eq $result) { $result = @() }
             if ($LASTEXITCODE -ne 0) {
                 Write-Host "[ERROR] Failed to apply $($file.Name) to '$targetDb':" -ForegroundColor Red
                 Write-Host $result -ForegroundColor Red

@@ -1588,7 +1588,7 @@ CREATE TABLE mythos_dev.zones (
     weather_patterns jsonb DEFAULT '[]'::jsonb,
     special_rules jsonb DEFAULT '{}'::jsonb,
     CONSTRAINT chk_zones_environment CHECK (((environment IS NULL) OR (environment = ANY(ARRAY['indoors'::text, 'outdoors'::text, 'underwater'::text, 'void'::text])))),
-    CONSTRAINT chk_zones_zone_type CHECK (((zone_type IS NULL) OR (zone_type = ANY(ARRAY['city'::text, 'countryside'::text, 'mountains'::text, 'swamp'::text, 'tundra'::text, 'desert'::text, 'death'::text]))))
+    CONSTRAINT chk_zones_zone_type CHECK (((zone_type IS NULL) OR (zone_type = ANY(ARRAY['city'::text, 'countryside'::text, 'mountains'::text, 'swamp'::text, 'tundra'::text, 'desert'::text, 'death'::text, 'arena'::text]))))
 );
 
 

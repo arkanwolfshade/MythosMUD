@@ -12,6 +12,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, cast
+from uuid import uuid4
 
 import aiofiles
 
@@ -125,8 +126,8 @@ class DeadLetterQueue:
 
         AI: Async version using aiofiles to prevent blocking the event loop.
         """
-        # Create unique filename
-        filename = f"dlq_{datetime.now(UTC).strftime('%Y%m%d_%H%M%S_%f')}.json"
+        # Create unique filename (timestamp + uuid to avoid collisions under fast retries)
+        filename = f"dlq_{datetime.now(UTC).strftime('%Y%m%d_%H%M%S_%f')}_{uuid4().hex}.json"
         filepath = self.storage_dir / filename
 
         # Write message to file using aiofiles (non-blocking)
@@ -159,8 +160,8 @@ class DeadLetterQueue:
         AI: Synchronous version for compatibility with tests and sync contexts.
         For async contexts, use enqueue_async() instead.
         """
-        # Create unique filename
-        filename = f"dlq_{datetime.now(UTC).strftime('%Y%m%d_%H%M%S_%f')}.json"
+        # Create unique filename (timestamp + uuid to avoid collisions under fast retries)
+        filename = f"dlq_{datetime.now(UTC).strftime('%Y%m%d_%H%M%S_%f')}_{uuid4().hex}.json"
         filepath = self.storage_dir / filename
 
         # Write message to file

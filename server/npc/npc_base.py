@@ -2,20 +2,32 @@
 
 # pylint: disable=too-many-lines,too-many-public-methods  # Reason: NPC base requires extensive base functionality; many public methods for comprehensive NPC operations
 
-import json
 import time
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, cast
+
+from structlog.stdlib import BoundLogger
 
 from ..models.npc import NPCDefinition
 from ..structured_logging.enhanced_logging_config import get_logger
 from .behavior_engine import BehaviorEngine
+from .npc_combat_schedule import schedule_end_combat_if_npc_died_best_effort
+from .npc_config_parsing import (
+    get_combat_stats_dict,
+    normalize_determination_points,
+    parse_ai_config,
+    parse_behavior_config,
+    parse_stats,
+    to_int_or_default,
+)
+from .npc_default_reactions import register_default_reactions_for_npc
+from .npc_protocols import CombatIntegrationProtocol, CommunicationIntegrationProtocol
 
 if TYPE_CHECKING:
     from ..events import EventBus
     from .event_reaction_system import NPCEventReactionSystem
 
-logger = get_logger(__name__)
+logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
 
 
 class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: NPC base requires many fields for complete state
@@ -23,122 +35,71 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
 
     def __init__(
         self,
-        definition: Any,
+        definition: object,
         npc_id: str,
         event_bus: "EventBus | None" = None,
         event_reaction_system: "NPCEventReactionSystem | None" = None,
     ) -> None:
         """Initialize the NPC base class."""
-        self.npc_id = npc_id
-        self.definition = definition
+        self.npc_id: str = npc_id
+        self.definition: object = definition
         self.current_room: str | None = None  # Set by _apply_definition_attributes
         self._apply_definition_attributes(definition)
-        self._alive = True
-        self.is_active = True
+        self._alive: bool = True
+        self.is_active: bool = True
 
-        self._stats = self._parse_stats(self._safe_get(definition, "base_stats", "{}"))
-        self._behavior_config = self._parse_behavior_config(self._safe_get(definition, "behavior_config", "{}"))
-        self._ai_config = self._parse_ai_config(self._safe_get(definition, "ai_integration_stub", "{}"))
+        stats_json_raw = self._safe_get(definition, "base_stats", "{}")
+        stats_json = str(stats_json_raw)
+        self._stats: dict[str, object] = parse_stats(stats_json, self.npc_id)
+        normalize_determination_points(self._stats)
 
-        self._normalize_determination_points()
+        behavior_config_raw = self._safe_get(definition, "behavior_config", "{}")
+        behavior_config_json = str(behavior_config_raw)
+        self._behavior_config: dict[str, object] = parse_behavior_config(
+            behavior_config_json, self.npc_id, self.npc_type
+        )
 
-        self._inventory: list[dict[str, Any]] = []
-        self._behavior_engine = BehaviorEngine()
+        ai_config_raw = self._safe_get(definition, "ai_integration_stub", "{}")
+        ai_config_json = str(ai_config_raw)
+        self._ai_config: dict[str, object] = parse_ai_config(ai_config_json, self.npc_id)
+
+        self._inventory: list[dict[str, object]] = []
+        self._behavior_engine: BehaviorEngine = BehaviorEngine()
         self._setup_base_behavior_rules()
-        self._last_action_time = time.time()
+        self._last_action_time: float = time.time()
         self._last_idle_movement_time: float | None = None
-        self.event_bus = event_bus
-        self.event_reaction_system = event_reaction_system
-        self.movement_integration: Any | None = None
-        self.combat_integration: Any | None = None
-        self.communication_integration: Any | None = None
+        self.event_bus: EventBus | None = event_bus
+        self.event_reaction_system: NPCEventReactionSystem | None = event_reaction_system
+        self.movement_integration: object | None = None
+        self.combat_integration: object | None = None
+        self.communication_integration: object | None = None
 
-        # Register default event reactions if reaction system is available
         if self.event_reaction_system:
-            self._register_default_reactions()
+            register_default_reactions_for_npc(
+                self.npc_id,
+                self.npc_type,
+                self._behavior_config,
+                self.event_reaction_system,
+            )
 
     @staticmethod
-    def _safe_get(obj: Any, attr: str, default: Any) -> Any:
+    def _safe_get(obj: object, attr: str, default: object) -> object:
         """Get attribute from obj with default to avoid lazy-loading issues."""
         return getattr(obj, attr, default)
 
-    def _apply_definition_attributes(self, definition: Any) -> None:
+    def _apply_definition_attributes(self, definition: object) -> None:
         """Set npc_type, name, current_room, spawn_room_id from definition."""
-        self.npc_type = self._safe_get(definition, "npc_type", "unknown")
-        self.name = self._safe_get(definition, "name", "Unknown NPC")
-        self.current_room = self._safe_get(definition, "room_id", None)
-        room_id = self._safe_get(definition, "room_id", None)
-        self.spawn_room_id = room_id if room_id is not None else self.current_room
-
-    def _parse_stats(self, stats_json: str) -> dict[str, Any]:
-        """Parse stats from JSON string."""
-        try:
-            return json.loads(stats_json) if stats_json else {}
-        except json.JSONDecodeError:
-            logger.warning("Invalid stats JSON, using defaults", npc_id=self.npc_id)
-            return {
-                "determination_points": 20,
-                "max_dp": 20,
-                "strength": 50,
-                "intelligence": 40,
-                "charisma": 30,
-            }
-
-    def _apply_dp_from_source(self, source_key: str, max_dp_from: str | None = None) -> bool:
-        """Set determination_points from source_key; optionally set max_dp. Returns True if applied."""
-        if source_key not in self._stats:
-            return False
-        self._stats["determination_points"] = self._stats[source_key]
-        if "max_dp" not in self._stats and max_dp_from:
-            if max_dp_from == "max_hp" and "max_hp" in self._stats:
-                self._stats["max_dp"] = self._stats["max_hp"]
-            elif max_dp_from == "health" and "max_hp" not in self._stats:
-                self._stats["max_dp"] = self._stats[source_key]
-        return True
-
-    def _normalize_determination_points(self) -> None:
-        """Ensure _stats has determination_points; support hp/dp backward compat."""
-        if "determination_points" in self._stats:
-            return
-        if (
-            self._apply_dp_from_source("dp")
-            or self._apply_dp_from_source("hp", "max_hp")
-            or self._apply_dp_from_source("health", "health")
-        ):
-            return
-        self._stats["determination_points"] = 20  # Default DP
-
-    def _parse_behavior_config(self, config_json: str) -> dict[str, Any]:
-        """Parse behavior configuration from JSON string."""
-        try:
-            config = json.loads(config_json) if config_json else {}
-            # Apply defaults for idle movement based on NPC type
-            self._apply_idle_movement_defaults(config)
-            return config
-        except json.JSONDecodeError:
-            logger.warning("Invalid behavior config JSON, using defaults", npc_id=self.npc_id)
-            config = {}
-            self._apply_idle_movement_defaults(config)
-            return config
-
-    def _apply_idle_movement_defaults(self, config: dict[str, Any]) -> None:
-        """Apply default idle movement config based on NPC type."""
-        if "idle_movement_enabled" not in config:
-            config["idle_movement_enabled"] = self.npc_type in ["passive_mob", "aggressive_mob"]
-        if "idle_movement_interval" not in config:
-            config["idle_movement_interval"] = 100
-        if "idle_movement_probability" not in config:
-            config["idle_movement_probability"] = 0.25
-        if "idle_movement_weighted_home" not in config:
-            config["idle_movement_weighted_home"] = True
-
-    def _parse_ai_config(self, ai_json: str) -> dict[str, Any]:
-        """Parse AI integration configuration from JSON string."""
-        try:
-            return json.loads(ai_json) if ai_json else {}
-        except json.JSONDecodeError:
-            logger.warning("Invalid AI config JSON, using defaults", npc_id=self.npc_id)
-            return {"ai_enabled": False, "ai_model": None}
+        self.npc_type: str = str(self._safe_get(definition, "npc_type", "unknown"))
+        self.name: str = str(self._safe_get(definition, "name", "Unknown NPC"))
+        room_id_raw = self._safe_get(definition, "room_id", None)
+        if room_id_raw is None:
+            room_id: str | None = None
+        elif isinstance(room_id_raw, str):
+            room_id = room_id_raw
+        else:
+            room_id = str(room_id_raw)
+        self.current_room = room_id
+        self.spawn_room_id: str | None = room_id
 
     def _setup_base_behavior_rules(self) -> None:
         """Setup base behavior rules common to all NPCs."""
@@ -158,11 +119,11 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
         ]
 
         for rule in base_rules:
-            self._behavior_engine.add_rule(rule)
-        self._behavior_engine.register_action_handler("die", self._handle_die)
-        self._behavior_engine.register_action_handler("idle", self._handle_idle)
+            _ = self._behavior_engine.add_rule(rule)
+        _ = self._behavior_engine.register_action_handler("die", self._handle_die)
+        _ = self._behavior_engine.register_action_handler("idle", self._handle_idle)
 
-    def get_stats(self) -> dict[str, Any]:
+    def get_stats(self) -> dict[str, object]:
         """Get current NPC stats."""
         return self._stats.copy()
 
@@ -178,44 +139,25 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
 
     def _safe_stat_int(self, key: str, default: int = 50) -> int:
         """Return stats[key] as int, or default if missing/None."""
-        val = self._stats.get(key)
-        return default if val is None else int(val)
-
-    def _compute_max_dp(self) -> int:
-        """Compute max_dp from stats when max_dp/max_hp not explicitly set."""
-        max_dp_raw = self._stats.get("max_dp")
-        max_hp_raw = self._stats.get("max_hp")
-        if max_dp_raw is not None or max_hp_raw is not None:
-            raw = max_dp_raw if max_dp_raw is not None else max_hp_raw
-            return int(raw) if raw is not None else 100
-        if "constitution" in self._stats and "size" in self._stats:
-            return (self._safe_stat_int("constitution") + self._safe_stat_int("size")) // 5
-        return 100
+        return to_int_or_default(self._stats.get(key), default)
 
     def get_combat_stats(self) -> dict[str, int]:
         """Return current_dp, max_dp, dexterity for CombatParticipantData."""
-        current_dp = self._stats.get("determination_points", self._stats.get("dp", self._stats.get("hp", 100)))
-        max_dp = self._compute_max_dp()
-        dexterity = self._stats.get("dexterity", 10)
-        return {
-            "current_dp": int(current_dp),
-            "max_dp": max_dp,
-            "dexterity": int(dexterity),
-        }
+        return get_combat_stats_dict(self._stats)
 
-    def get_behavior_config(self) -> dict[str, Any]:
+    def get_behavior_config(self) -> dict[str, object]:
         """Get behavior configuration."""
         return self._behavior_config.copy()
 
-    def get_ai_config(self) -> dict[str, Any]:
+    def get_ai_config(self) -> dict[str, object]:
         """Get AI integration configuration."""
         return self._ai_config.copy()
 
-    def get_inventory(self) -> list[dict[str, Any]]:
+    def get_inventory(self) -> list[dict[str, object]]:
         """Get NPC inventory."""
         return self._inventory.copy()
 
-    def add_item_to_inventory(self, item: dict[str, Any]) -> bool:
+    def add_item_to_inventory(self, item: dict[str, object]) -> bool:
         """Add item to NPC inventory."""
         try:
             self._inventory.append(item)
@@ -245,7 +187,7 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
             )
             return False
 
-    def get_item_from_inventory(self, item_id: str) -> dict[str, Any] | None:
+    def get_item_from_inventory(self, item_id: str) -> dict[str, object] | None:
         """Get specific item from inventory."""
         for item in self._inventory:
             if item.get("id") == item_id:
@@ -254,16 +196,24 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
 
     def _update_determination_points(self, damage: int) -> int:
         """Update determination points after taking damage; return new DP."""
-        current_dp = self._stats.get(
+        current_dp_val = self._stats.get(
             "determination_points", self._stats.get("dp", self._stats.get("determination_points", 0))
         )
+        # Safely coerce current_dp to an int; fall back to 0 if not numeric
+        if isinstance(current_dp_val, int | float):
+            current_dp = int(current_dp_val)
+        elif isinstance(current_dp_val, str) and current_dp_val.isdigit():
+            current_dp = int(current_dp_val)
+        else:
+            current_dp = 0
+
         new_dp = max(0, current_dp - damage)
         self._stats["determination_points"] = new_dp
         if "dp" in self._stats:
             self._stats["dp"] = new_dp
         if "determination_points" in self._stats:
             self._stats["determination_points"] = new_dp
-        return cast(int, new_dp)
+        return new_dp
 
     def _publish_damage_event(self, damage: int, damage_type: str, source_id: str | None) -> None:
         """Publish damage event to event bus."""
@@ -287,21 +237,30 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
         self._alive = False
         logger.info("NPC died", npc_id=self.npc_id, damage=damage)
 
-        # Use combat integration for death handling
+        # Use combat integration for death handling (rewards, etc.)
         if hasattr(self, "combat_integration") and self.combat_integration:
-            self.combat_integration.handle_npc_death(self.npc_id, self.current_room, "damage", source_id)
-        else:
-            if self.event_bus:
-                from ..events.event_types import NPCDied
+            combat_integration = cast(CombatIntegrationProtocol, self.combat_integration)
+            combat_integration.handle_npc_death(self.npc_id, self.current_room, "damage", source_id)
 
-                self.event_bus.publish(
-                    NPCDied(
-                        npc_id=self.npc_id,
-                        room_id=self.current_room or "unknown",
-                        cause="damage",
-                        killer_id=source_id,
-                    )
+        # Always publish NPCDied so lifecycle removes NPC from active_npcs immediately.
+        # Without this, behavior tick and combat can continue for a dead NPC until NATS delivers.
+        if self.event_bus:
+            from ..events.event_types import NPCDied
+
+            self.event_bus.publish(
+                NPCDied(
+                    npc_id=self.npc_id,
+                    room_id=self.current_room or "unknown",
+                    cause="damage",
+                    killer_id=source_id,
                 )
+            )
+
+        self._schedule_end_combat_if_npc_died()
+
+    def _schedule_end_combat_if_npc_died(self) -> None:
+        """Schedule end_combat_if_npc_died so the slain NPC no longer gets combat turns (best-effort)."""
+        schedule_end_combat_if_npc_died_best_effort(self.npc_id)
 
     def take_damage(self, damage: int, damage_type: str = "physical", source_id: str | None = None) -> bool:
         """Take damage and update determination points (DP)."""
@@ -328,17 +287,15 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
             if not self.is_alive:
                 return False
 
-            current_dp = self._stats.get(
+            current_dp_val = self._stats.get(
                 "determination_points", self._stats.get("dp", self._stats.get("determination_points", 0))
             )
-            max_dp = self._stats.get("max_dp", self._stats.get("max_dp", self._stats.get("max_dp", 20)))
+            current_dp = to_int_or_default(current_dp_val, 0)
+            max_dp_val = self._stats.get("max_dp", 20)
+            max_dp = to_int_or_default(max_dp_val, 20)
+
             new_dp = min(max_dp, current_dp + amount)
-            self._stats["determination_points"] = new_dp
-            # Also update "dp" and "determination_points" if they exist for backward compatibility
-            if "dp" in self._stats:
-                self._stats["dp"] = new_dp
-            if "determination_points" in self._stats:
-                self._stats["determination_points"] = new_dp
+            self._sync_dp_stats(new_dp)
 
             logger.debug("NPC healed", npc_id=self.npc_id, amount=amount, new_dp=new_dp)
             return True
@@ -346,10 +303,16 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
             logger.error("Error healing", npc_id=self.npc_id, error=str(e), error_type=type(e).__name__)
             return False
 
-    def _get_integration_dependencies(self) -> tuple[Any | None, Any | None]:
+    def _sync_dp_stats(self, new_dp: int) -> None:
+        """Write new_dp to determination_points and dp for backward compatibility."""
+        self._stats["determination_points"] = new_dp
+        if "dp" in self._stats:
+            self._stats["dp"] = new_dp
+
+    def _get_integration_dependencies(self) -> tuple[object | None, object | None]:
         """Return (event_bus, persistence) for movement integration, or (None, None)."""
-        event_bus = getattr(self, "_event_bus", None)
-        persistence = None
+        event_bus: object | None = cast(object | None, getattr(self, "_event_bus", None))
+        persistence: object | None = None
 
         try:
             from ..container import ApplicationContainer
@@ -359,9 +322,9 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
                 return event_bus, persistence
 
             if not event_bus:
-                event_bus = getattr(container, "event_bus", None)
+                event_bus = cast(object | None, getattr(container, "event_bus", None))
             if not persistence:
-                persistence = getattr(container, "async_persistence", None)
+                persistence = cast(object | None, getattr(container, "async_persistence", None))
 
             return event_bus, persistence
 
@@ -377,12 +340,19 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
             combat_service = get_combat_service()
             if combat_service:
                 return combat_service.is_npc_in_combat_sync(self.npc_id)
-        except (ImportError, AttributeError, RuntimeError):
-            pass
+        except (ImportError, AttributeError, RuntimeError) as exc:
+            logger.debug(
+                "Combat presence check unavailable",
+                npc_id=self.npc_id,
+                error=str(exc),
+                error_type=type(exc).__name__,
+            )
         return False
 
     def _move_with_integration(self, room_id: str) -> bool:
         """Move NPC using movement integration; return True if successful."""
+        from ..async_persistence import AsyncPersistenceLayer
+        from ..events import EventBus
         from .movement_integration import NPCMovementIntegration
 
         event_bus, persistence = self._get_integration_dependencies()
@@ -391,7 +361,9 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
             logger.error("persistence (async_persistence) is required for NPCMovementIntegration", npc_id=self.npc_id)
             return False
 
-        movement_integration = NPCMovementIntegration(event_bus, persistence=persistence)
+        movement_integration = NPCMovementIntegration(
+            cast(EventBus | None, event_bus), persistence=cast(AsyncPersistenceLayer, persistence)
+        )
         success = movement_integration.move_npc_to_room(self.npc_id, self.current_room or "unknown", room_id)
 
         if success:
@@ -433,22 +405,13 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
 
             # Use communication integration if available
             if hasattr(self, "communication_integration") and self.communication_integration:
+                comms = cast(CommunicationIntegrationProtocol, self.communication_integration)
                 if target_id and channel == "whisper":
                     # Send whisper to specific target
-                    result: bool = cast(
-                        bool,
-                        self.communication_integration.send_whisper_to_player(
-                            self.npc_id, target_id, message, self.current_room
-                        ),
-                    )
+                    result: bool = comms.send_whisper_to_player(self.npc_id, target_id, message, self.current_room)
                     return result
                 # Send message to room
-                result2: bool = cast(
-                    bool,
-                    self.communication_integration.send_message_to_room(
-                        self.npc_id, self.current_room, message, channel
-                    ),
-                )
+                result2: bool = comms.send_message_to_room(self.npc_id, self.current_room, message, channel)
                 return result2
             if self.event_bus:
                 from ..events.event_types import NPCSpoke
@@ -475,12 +438,8 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
 
             # Use communication integration if available
             if hasattr(self, "communication_integration") and self.communication_integration:
-                result: bool = cast(
-                    bool,
-                    self.communication_integration.handle_player_message(
-                        self.npc_id, speaker_id, message, self.current_room, channel
-                    ),
-                )
+                comms = cast(CommunicationIntegrationProtocol, self.communication_integration)
+                result: bool = comms.handle_player_message(self.npc_id, speaker_id, message, self.current_room, channel)
                 return result
 
             if self.event_bus:
@@ -504,42 +463,7 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
             logger.error("Error NPC listening", npc_id=self.npc_id, error=str(e), error_type=type(e).__name__)
             return False
 
-    def _register_default_reactions(self) -> None:
-        """Register default event reactions for this NPC."""
-        if not self.event_reaction_system:
-            return
-
-        try:
-            from .event_reaction_system import NPCEventReactionTemplates
-
-            reactions = []
-
-            # Add greeting reaction for friendly NPCs
-            if self.npc_type in ["shopkeeper", "passive_mob"]:
-                greeting = self._behavior_config.get("greeting_message", "Hello there!")
-                reactions.append(NPCEventReactionTemplates.player_entered_room_greeting(self.npc_id, greeting))
-
-            if self.npc_type in ["shopkeeper", "passive_mob"]:
-                farewell = self._behavior_config.get("farewell_message", "Goodbye!")
-                reactions.append(NPCEventReactionTemplates.player_left_room_farewell(self.npc_id, farewell))
-
-            if self.npc_type == "aggressive_mob":
-                reactions.append(NPCEventReactionTemplates.npc_attacked_retaliation(self.npc_id))
-
-            if self.npc_type in ["shopkeeper", "passive_mob"]:
-                response = self._behavior_config.get("response_message", "I heard you!")
-                reactions.append(NPCEventReactionTemplates.player_spoke_response(self.npc_id, response))
-
-            if reactions:
-                self.event_reaction_system.register_npc_reactions(self.npc_id, reactions)
-                logger.debug("Registered default reactions", npc_id=self.npc_id, reaction_count=len(reactions))
-
-        except (ImportError, AttributeError, TypeError) as e:
-            logger.error(
-                "Error registering default reactions", npc_id=self.npc_id, error=str(e), error_type=type(e).__name__
-            )
-
-    def get_npc_context(self) -> dict[str, Any]:
+    def get_npc_context(self) -> dict[str, object]:
         """Return context for event reactions."""
         return {
             "npc_id": self.npc_id,
@@ -557,14 +481,22 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
         return self._behavior_engine
 
     @abstractmethod
-    def get_behavior_rules(self) -> list[dict[str, Any]]:
+    def get_behavior_rules(self) -> list[dict[str, object]]:
         """Get NPC-specific behavior rules. Must be implemented by subclasses."""
 
     def schedule_idle_movement(self) -> bool:
         """Schedule idle movement; default False. Override in subclasses (e.g. PassiveMobNPC)."""
         return False
 
-    async def execute_behavior(self, context: dict[str, Any]) -> bool:
+    def _enrich_behavior_context(self, _context: dict[str, object]) -> None:
+        """
+        Hook for subclasses to add context before behavior rules run.
+        Override in AggressiveMobNPC to set player_in_range, enemy_nearby, target_id.
+        """
+        # Default: no-op. AggressiveMobNPC overrides to populate player detection.
+        return None
+
+    async def execute_behavior(self, context: dict[str, object]) -> bool:
         """Execute NPC behavior based on context."""
         try:
             if not self.is_active or not self.is_alive:
@@ -589,7 +521,9 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
             context["in_combat"] = False  # Will be checked by schedule_idle_movement if needed
             context["flee_threshold"] = self._behavior_config.get("flee_threshold", 20)
             if self.npc_type in ["passive_mob", "aggressive_mob"]:
-                self.schedule_idle_movement()
+                _ = self.schedule_idle_movement()
+            self._enrich_behavior_context(context)
+
             result = self._behavior_engine.execute_applicable_rules(context)
             self._last_action_time = current_time
 
@@ -599,7 +533,7 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
             logger.error("Error executing behavior", npc_id=self.npc_id, error=str(e), error_type=type(e).__name__)
             return False
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> dict[str, object]:
         """Convert NPC to dictionary for serialization."""
         definition_id = getattr(self.definition, "id", 0)
         return {
@@ -614,26 +548,36 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
         }
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any], definition: NPCDefinition) -> "NPCBase":
+    def from_dict(cls, data: dict[str, object], definition: NPCDefinition) -> "NPCBase":
         """Create NPC from dictionary data."""
-        npc = cls(definition, data["npc_id"])
-        npc.current_room = data.get("current_room", getattr(definition, "room_id", None))
-        npc._stats = data.get("stats", {})
-        npc._inventory = data.get("inventory", [])
-        npc._alive = data.get("is_alive", True)
-        npc.is_active = data.get("is_active", True)
-        npc._last_action_time = data.get("last_action_time", time.time())
+        npc_id = str(data["npc_id"])
+        npc = cls(definition, npc_id)
+        room_raw = data.get("current_room", getattr(definition, "room_id", None))
+        if room_raw is None:
+            npc.current_room = None
+        elif isinstance(room_raw, str):
+            npc.current_room = room_raw
+        else:
+            npc.current_room = str(room_raw)
+        npc._stats = cast(dict[str, object], data.get("stats", {}))
+        npc._inventory = cast(list[dict[str, object]], data.get("inventory", []))
+        alive_raw = data.get("is_alive", True)
+        npc._alive = alive_raw if isinstance(alive_raw, bool) else True
+        active_raw = data.get("is_active", True)
+        npc.is_active = active_raw if isinstance(active_raw, bool) else True
+        time_raw = data.get("last_action_time", time.time())
+        npc._last_action_time = float(time_raw) if isinstance(time_raw, int | float) else time.time()
         return npc
 
     # Base action handlers
-    def _handle_die(self, _context: dict[str, Any]) -> bool:
+    def _handle_die(self, _context: dict[str, object]) -> bool:
         """Handle death action."""
         self._alive = False
         self.is_active = False
         logger.info("NPC died", npc_id=self.npc_id)
         return True
 
-    def _handle_idle(self, _context: dict[str, Any]) -> bool:
+    def _handle_idle(self, _context: dict[str, object]) -> bool:
         """Handle idle action."""
         logger.debug("NPC is idle", npc_id=self.npc_id)
         return True
@@ -645,7 +589,7 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
             return f"[AI Response to: {input_text}]"
         return "I don't understand."
 
-    def make_ai_decision(self, _context: dict[str, Any]) -> dict[str, Any]:
+    def make_ai_decision(self, _context: dict[str, object]) -> dict[str, object]:
         """Make AI decision (placeholder for future implementation)."""
         if self._ai_config.get("ai_enabled", False):
             # Placeholder for AI decision making

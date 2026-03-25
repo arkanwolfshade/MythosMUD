@@ -102,39 +102,39 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
         <h3>Your Character's Stats</h3>
         <div className="stats-grid">
           <div className="stat-item">
-            <label>Strength:</label>
+            <span className="stat-name">Strength:</span>
             <span className="stat-value">{currentStats.strength}</span>
           </div>
           <div className="stat-item">
-            <label>Dexterity:</label>
+            <span className="stat-name">Dexterity:</span>
             <span className="stat-value">{currentStats.dexterity}</span>
           </div>
           <div className="stat-item">
-            <label>Constitution:</label>
+            <span className="stat-name">Constitution:</span>
             <span className="stat-value">{currentStats.constitution}</span>
           </div>
           <div className="stat-item">
-            <label>Size:</label>
+            <span className="stat-name">Size:</span>
             <span className="stat-value">{currentStats.size}</span>
           </div>
           <div className="stat-item">
-            <label>Intelligence:</label>
+            <span className="stat-name">Intelligence:</span>
             <span className="stat-value">{currentStats.intelligence}</span>
           </div>
           <div className="stat-item">
-            <label>Power:</label>
+            <span className="stat-name">Power:</span>
             <span className="stat-value">{currentStats.power}</span>
           </div>
           <div className="stat-item">
-            <label>Education:</label>
+            <span className="stat-name">Education:</span>
             <span className="stat-value">{currentStats.education}</span>
           </div>
           <div className="stat-item">
-            <label>Charisma:</label>
+            <span className="stat-name">Charisma:</span>
             <span className="stat-value">{currentStats.charisma}</span>
           </div>
           <div className="stat-item">
-            <label>Luck:</label>
+            <span className="stat-name">Luck:</span>
             <span className="stat-value">{currentStats.luck}</span>
           </div>
         </div>

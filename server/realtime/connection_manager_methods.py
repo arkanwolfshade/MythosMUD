@@ -236,7 +236,7 @@ async def broadcast_global_impl(
 
 
 async def broadcast_room_event_impl(
-    manager: Any, event_type: str, room_id: str, data: dict[str, Any]
+    manager: Any, event_type: str, room_id: str, data: dict[str, object]
 ) -> dict[str, Any]:
     """Broadcast a room-specific event to all players in the room."""
     try:
@@ -259,7 +259,7 @@ async def broadcast_room_event_impl(
         }
 
 
-async def broadcast_global_event_impl(manager: Any, event_type: str, data: dict[str, Any]) -> dict[str, Any]:
+async def broadcast_global_event_impl(manager: Any, event_type: str, data: dict[str, object]) -> dict[str, Any]:
     """Broadcast a global event to all connected players."""
     try:
         from ..exceptions import DatabaseError
@@ -585,11 +585,9 @@ async def cleanup_dead_connections_impl(manager: Any, player_id: UUID | None = N
 async def check_and_cleanup_impl(manager: Any) -> None:
     """Periodically check for cleanup conditions and perform cleanup if needed."""
     from .connection_delegates import delegate_connection_cleaner
+    from .maintenance.connection_cleaner import CleanupContext
 
-    await delegate_connection_cleaner(
-        manager.connection_cleaner,
-        "check_and_cleanup",
-        {},
+    ctx = CleanupContext(
         online_players=manager.online_players,
         last_seen=manager.last_seen,
         player_websockets=manager.player_websockets,
@@ -599,6 +597,7 @@ async def check_and_cleanup_impl(manager: Any) -> None:
         last_active_update_times=manager.last_active_update_times,
         connection_metadata=manager.connection_metadata,
     )
+    await delegate_connection_cleaner(manager.connection_cleaner, "check_and_cleanup", {}, ctx=ctx)
 
 
 async def force_cleanup_impl(manager: Any) -> None:
@@ -643,6 +642,11 @@ def prune_stale_players_impl(manager: Any, max_age_seconds: int = 90) -> None:
 async def cleanup_orphaned_data_impl(manager: Any) -> None:
     """Clean up orphaned data that might accumulate over time."""
     from .connection_delegates import delegate_connection_cleaner
+    from .player_disconnect_handlers import age_off_disconnected_sessions
+
+    aged = age_off_disconnected_sessions(manager)
+    if aged:
+        logger.debug("Aged off disconnected sessions", count=aged)
 
     await delegate_connection_cleaner(
         manager.connection_cleaner,

@@ -50,7 +50,7 @@ flowchart LR
   resting_players (interrupted if removed). On completion, sends intentional_disconnect event, calls
   disconnect_func (force_disconnect_player), then removes from resting_players in finally.
 - **ConnectionManager**: resting_players (player_id -> asyncio.Task), intentional_disconnects (set of
-  player_id). Combat, go_command, and magic_commands call \_cancel_rest_countdown and/or
+  player_id). Combat, go_command, and magic_commands call `cancel_rest_countdown` and/or
   is_player_resting to interrupt or detect rest.
 - **PlayerPositionService**: Used to set player to sitting before countdown (change_position).
 
@@ -61,12 +61,12 @@ flowchart LR
 - **10-second countdown elsewhere**: Gives time to cancel (move, attack, cast); avoids accidental
   logouts; sitting position is visible to others.
 - **Interrupt on movement/combat/spellcasting**: Go command and combat/magic handlers call
-  \_cancel_rest_countdown(player_id, connection_manager) so rest is cancelled and task removed from
+  `cancel_rest_countdown(player_id, connection_manager)` so rest is cancelled and task removed from
   resting_players. Countdown loop also checks \_is_rest_interrupted (player_id not in resting_players).
 - **Intentional disconnect**: \_disconnect_player_intentionally adds player_id to
   intentional_disconnects before force_disconnect_player so reconnection logic does not apply grace
   period.
-- **Public helpers**: is_player_resting(player_id, connection_manager) and \_cancel_rest_countdown
+- **Public helpers**: `is_player_resting(player_id, connection_manager)` and `cancel_rest_countdown`
   are used by go_command, combat, and magic_commands; they are the contract for "rest is active."
 
 ## Constraints
@@ -88,7 +88,7 @@ flowchart LR
    \_disconnect_player_intentionally (add to intentional_disconnects, force_disconnect_player). Else
    change_position(player_name, "sitting"), then create_rest_countdown_task and store in
    resting_players[player_id]; return result with player_update (position).
-2. **Interrupt (go/attack/cast)** – Caller calls \_cancel_rest_countdown(player_id, connection_manager):
+2. **Interrupt (go/attack/cast)** – Caller calls `cancel_rest_countdown(player_id, connection_manager)`:
    task = resting_players[player_id], task.cancel(), await task, del resting_players[player_id].
 3. **Countdown task** – Loop 10..1: if not in resting_players, return; send countdown message; sleep
    1s. Then send intentional_disconnect event, call disconnect_func (force_disconnect_player).
@@ -99,7 +99,7 @@ flowchart LR
 - **Changing countdown duration**: REST_COUNTDOWN_DURATION in rest_command.py and rest_countdown_task.py
   (keep in sync or centralize in one module).
 - **New interrupt trigger**: Where the interrupting action runs (e.g. new command), call
-  \_cancel_rest_countdown(player_id, connection_manager) and optionally is_player_resting to check
+  `cancel_rest_countdown(player_id, connection_manager)` and optionally is_player_resting to check
   first. Export from rest_command so other commands can import.
 - **Tests**: Unit tests for handle_rest_command (combat block, rest location instant, non-rest
   countdown start), rest_countdown_task (interrupt, completion, cleanup). Mock connection_manager
@@ -111,7 +111,7 @@ flowchart LR
 
 - **"You cannot rest during combat"**: combat_service.get_combat_by_participant returned non-None.
   End combat or flee first.
-- **Rest not interrupting on go**: Ensure go_command calls \_cancel_rest_countdown after
+- **Rest not interrupting on go**: Ensure go_command calls `cancel_rest_countdown` after
   is_player_resting; check connection_manager is same instance as rest uses.
 - **Countdown completes but player not disconnected**: Check disconnect_func is
   \_disconnect_player_intentionally and force_disconnect_player is called; check finally block

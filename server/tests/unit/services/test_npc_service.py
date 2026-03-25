@@ -169,6 +169,39 @@ async def test_get_npc_definition_not_found(mock_session, npc_service):
 
 
 @pytest.mark.asyncio
+async def test_get_npc_definition_by_name_found(mock_session, npc_service, sample_npc_definition):
+    """Test get_npc_definition_by_name() returns definition when found."""
+    mock_session.execute = AsyncMock(return_value=_mock_result_mappings_all([_def_row(sample_npc_definition)]))
+
+    result = await npc_service.get_npc_definition_by_name(mock_session, "Test NPC")
+
+    assert result is not None
+    assert result.id == 1
+    assert result.name == "Test NPC"
+
+
+@pytest.mark.asyncio
+async def test_get_npc_definition_by_name_case_insensitive(mock_session, npc_service, sample_npc_definition):
+    """Test get_npc_definition_by_name() matches case-insensitively."""
+    mock_session.execute = AsyncMock(return_value=_mock_result_mappings_all([_def_row(sample_npc_definition)]))
+
+    result = await npc_service.get_npc_definition_by_name(mock_session, "test npc")
+
+    assert result is not None
+    assert result.name == "Test NPC"
+
+
+@pytest.mark.asyncio
+async def test_get_npc_definition_by_name_not_found(mock_session, npc_service, sample_npc_definition):
+    """Test get_npc_definition_by_name() returns None when not found."""
+    mock_session.execute = AsyncMock(return_value=_mock_result_mappings_all([_def_row(sample_npc_definition)]))
+
+    result = await npc_service.get_npc_definition_by_name(mock_session, "Nonexistent")
+
+    assert result is None
+
+
+@pytest.mark.asyncio
 async def test_get_npc_definition_error(mock_session, npc_service):
     """Test get_npc_definition() handles errors."""
     mock_session.execute.side_effect = Exception("Unexpected error")

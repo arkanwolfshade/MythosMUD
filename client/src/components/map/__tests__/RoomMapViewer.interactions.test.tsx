@@ -74,16 +74,16 @@ describe('RoomMapViewer - Interactions', () => {
         id: 'node1',
         type: 'room',
         position: { x: 0, y: 0 },
-        data: { id: 'earth_arkhamcity_campus_room_001', name: 'Test Room 1' },
+        data: {
+          id: 'earth_arkhamcity_campus_room_001',
+          name: 'Test Room 1',
+          description: 'Test room description',
+        },
       },
     ];
 
-    // Mock function requires any type for vi.mock type casting
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (roomsToNodes as any).mockReturnValue(mockNodes);
-    // Mock hook requires any type for vi.mock type casting
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMapLayout as any).mockReturnValue({
+    vi.mocked(roomsToNodes).mockReturnValue(mockNodes);
+    vi.mocked(useMapLayout).mockReturnValue({
       layoutNodes: mockNodes,
       hasUnsavedChanges: false,
       updateNodePosition: vi.fn(),
@@ -110,16 +110,16 @@ describe('RoomMapViewer - Interactions', () => {
         id: 'node1',
         type: 'room',
         position: { x: 0, y: 0 },
-        data: { id: 'earth_arkhamcity_campus_room_001', name: 'Test Room 1' },
+        data: {
+          id: 'earth_arkhamcity_campus_room_001',
+          name: 'Test Room 1',
+          description: 'Test room description',
+        },
       },
     ];
 
-    // Mock function requires any type for vi.mock type casting
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (roomsToNodes as any).mockReturnValue(mockNodes);
-    // Mock hook requires any type for vi.mock type casting
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMapLayout as any).mockReturnValue({
+    vi.mocked(roomsToNodes).mockReturnValue(mockNodes);
+    vi.mocked(useMapLayout).mockReturnValue({
       layoutNodes: mockNodes,
       hasUnsavedChanges: false,
       updateNodePosition: vi.fn(),
@@ -144,16 +144,16 @@ describe('RoomMapViewer - Interactions', () => {
         id: 'node1',
         type: 'room',
         position: { x: 0, y: 0 },
-        data: { id: 'earth_arkhamcity_campus_room_001', name: 'Test Room 1' },
+        data: {
+          id: 'earth_arkhamcity_campus_room_001',
+          name: 'Test Room 1',
+          description: 'Test room description',
+        },
       },
     ];
 
-    // Mock function requires any type for vi.mock type casting
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (roomsToNodes as any).mockReturnValue(mockNodes);
-    // Mock hook requires any type for vi.mock type casting
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMapLayout as any).mockReturnValue({
+    vi.mocked(roomsToNodes).mockReturnValue(mockNodes);
+    vi.mocked(useMapLayout).mockReturnValue({
       layoutNodes: mockNodes,
       hasUnsavedChanges: false,
       updateNodePosition: vi.fn(),
@@ -185,16 +185,16 @@ describe('RoomMapViewer - Interactions', () => {
         id: 'node1',
         type: 'room',
         position: { x: 0, y: 0 },
-        data: { id: 'earth_arkhamcity_campus_room_001', name: 'Test Room 1' },
+        data: {
+          id: 'earth_arkhamcity_campus_room_001',
+          name: 'Test Room 1',
+          description: 'Test room description',
+        },
       },
     ];
 
-    // Mock function requires any type for vi.mock type casting
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (roomsToNodes as any).mockReturnValue(mockNodes);
-    // Mock hook requires any type for vi.mock type casting
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMapLayout as any).mockReturnValue({
+    vi.mocked(roomsToNodes).mockReturnValue(mockNodes);
+    vi.mocked(useMapLayout).mockReturnValue({
       layoutNodes: mockNodes,
       hasUnsavedChanges: false,
       updateNodePosition: vi.fn(),
@@ -219,16 +219,16 @@ describe('RoomMapViewer - Interactions', () => {
         id: 'node1',
         type: 'room',
         position: { x: 0, y: 0 },
-        data: { id: 'nonexistent-room', name: 'Non-existent Room' },
+        data: {
+          id: 'nonexistent-room',
+          name: 'Non-existent Room',
+          description: 'Non-existent room description',
+        },
       },
     ];
 
-    // Mock function requires any type for vi.mock type casting
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (roomsToNodes as any).mockReturnValue(mockNodes);
-    // Mock hook requires any type for vi.mock type casting
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMapLayout as any).mockReturnValue({
+    vi.mocked(roomsToNodes).mockReturnValue(mockNodes);
+    vi.mocked(useMapLayout).mockReturnValue({
       layoutNodes: mockNodes,
       hasUnsavedChanges: false,
       updateNodePosition: vi.fn(),
@@ -253,16 +253,16 @@ describe('RoomMapViewer - Interactions', () => {
         id: 'node1',
         type: 'room',
         position: { x: 0, y: 0 },
-        data: { id: 'earth_arkhamcity_campus_room_001', name: 'Test Room 1' },
+        data: {
+          id: 'earth_arkhamcity_campus_room_001',
+          name: 'Test Room 1',
+          description: 'Test room description',
+        },
       },
     ];
 
-    // Mock function requires any type for vi.mock type casting
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (roomsToNodes as any).mockReturnValue(mockNodes);
-    // Mock hook requires any type for vi.mock type casting
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMapLayout as any).mockReturnValue({
+    vi.mocked(roomsToNodes).mockReturnValue(mockNodes);
+    vi.mocked(useMapLayout).mockReturnValue({
       layoutNodes: mockNodes,
       hasUnsavedChanges: false,
       updateNodePosition: vi.fn(),
@@ -283,15 +283,9 @@ describe('RoomMapViewer - Interactions', () => {
 
   it('should handle selectedRoom null when selectedRoomId is null', () => {
     const mockNodes = createMockNodes(1);
-    // Mock function requires any type for vi.mock type casting
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (roomsToNodes as any).mockReturnValue(mockNodes);
-    // Mock function requires any type for vi.mock type casting
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (createEdgesFromRooms as any).mockReturnValue([]);
-    // Mock hook requires any type for vi.mock type casting
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMapLayout as any).mockReturnValue({
+    vi.mocked(roomsToNodes).mockReturnValue(mockNodes);
+    vi.mocked(createEdgesFromRooms).mockReturnValue([]);
+    vi.mocked(useMapLayout).mockReturnValue({
       layoutNodes: mockNodes,
       hasUnsavedChanges: false,
       updateNodePosition: vi.fn(),
@@ -311,19 +305,17 @@ describe('RoomMapViewer - Interactions', () => {
         id: 'node1',
         type: 'room',
         position: { x: 0, y: 0 },
-        data: { id: 'nonexistent-room-id', name: 'Non-existent Room' },
+        data: {
+          id: 'nonexistent-room-id',
+          name: 'Non-existent Room',
+          description: 'Non-existent room description',
+        },
       },
     ];
 
-    // Mock function requires any type for vi.mock type casting
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (roomsToNodes as any).mockReturnValue(mockNodes);
-    // Mock function requires any type for vi.mock type casting
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (createEdgesFromRooms as any).mockReturnValue([]);
-    // Mock hook requires any type for vi.mock type casting
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMapLayout as any).mockReturnValue({
+    vi.mocked(roomsToNodes).mockReturnValue(mockNodes);
+    vi.mocked(createEdgesFromRooms).mockReturnValue([]);
+    vi.mocked(useMapLayout).mockReturnValue({
       layoutNodes: mockNodes,
       hasUnsavedChanges: false,
       updateNodePosition: vi.fn(),

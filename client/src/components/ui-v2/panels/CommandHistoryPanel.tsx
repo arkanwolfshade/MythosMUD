@@ -40,13 +40,14 @@ export const CommandHistoryPanel: React.FC<CommandHistoryPanelProps> = ({
               .slice(-10)
               .reverse()
               .map((command, index) => (
-                <div
+                <button
                   key={index}
-                  className="text-xs text-mythos-terminal-text-secondary cursor-pointer hover:text-mythos-terminal-text p-1 rounded hover:bg-mythos-terminal-background"
+                  type="button"
+                  className="text-xs text-mythos-terminal-text-secondary cursor-pointer hover:text-mythos-terminal-text p-1 rounded hover:bg-mythos-terminal-background w-full text-left"
                   onClick={() => onSelectCommand?.(command)}
                 >
                   {command}
-                </div>
+                </button>
               ))}
           </div>
         )}

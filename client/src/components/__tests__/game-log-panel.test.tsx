@@ -1,4 +1,6 @@
+import '@testing-library/jest-dom/vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { GameLogPanel } from '../panels/GameLogPanel';
 
@@ -94,7 +96,7 @@ describe('GameLogPanel', () => {
     it('shows empty state when no messages', () => {
       render(<GameLogPanel {...defaultProps} messages={[]} />);
 
-      expect(screen.getByText('No messages to display.')).toBeInTheDocument();
+      expect(screen.getByText('The chronicle is silent')).toBeInTheDocument();
     });
   });
 

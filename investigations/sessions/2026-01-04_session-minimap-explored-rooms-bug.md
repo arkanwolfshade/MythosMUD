@@ -178,21 +178,18 @@ if current_user and not (current_user.is_admin or current_user.is_superuser):
 **Technical Details:**
 
 1. **Data Flow:**
-
    - `player_exploration` table stores `room_id` as UUID (references `rooms.id`)
    - `get_explored_rooms()` returns these UUIDs as strings
    - Room data loaded by `_load_rooms_with_coordinates()` uses `stable_id` (hierarchical string IDs like `"earth_arkhamcity_room1"`)
    - Filtering compares UUIDs with stable_ids, which never match
 
 2. **Why It Fails:**
-
    - UUID format: `"123e4567-e89b-12d3-a456-426614174000"` (36 characters with hyphens)
    - Stable ID format: `"earth_arkhamcity_northside_room1"` (hierarchical string)
    - These are fundamentally different data types and formats
    - Direct set membership check (`in`) will always return `False`
 
 3. **Why Admins Are Unaffected:**
-
    - Admin check happens before filtering: `if not (current_user.is_admin or current_user.is_superuser):`
    - Admins skip the filtering logic entirely, so they see all rooms regardless
 
@@ -206,9 +203,9 @@ if current_user and not (current_user.is_admin or current_user.is_superuser):
 
 **Affected Features:**
 
-  - Mini-map display (`/api/maps/ascii/minimap`)
-  - Full ASCII map display (`/api/maps/ascii`) - same bug exists
-  - Room map viewer (`/api/rooms/list`) - correctly implemented, not affected
+- Mini-map display (`/api/maps/ascii/minimap`)
+- Full ASCII map display (`/api/maps/ascii`) - same bug exists
+- Room map viewer (`/api/rooms/list`) - correctly implemented, not affected
 
 **User Experience Impact:**
 
@@ -253,7 +250,6 @@ if current_user and not (current_user.is_admin or current_user.is_superuser):
    ```
 
 4. **Exploration Service:** `server/services/exploration_service.py:238-269`
-
    - Returns UUIDs, not stable_ids
    - Documentation could be clearer about return type
 

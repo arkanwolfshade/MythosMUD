@@ -134,6 +134,7 @@ export const CommandInputPanel: React.FC<CommandInputPanelProps> = ({
             placeholder={placeholder}
             disabled={disabled || !isConnected}
             className="w-full"
+            // eslint-disable-next-line jsx-a11y/no-autofocus -- primary game command entry must capture keyboard when shown
             autoFocus
             data-testid="command-input"
           />

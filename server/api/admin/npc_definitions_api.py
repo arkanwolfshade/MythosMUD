@@ -20,15 +20,58 @@ from ...npc_database import get_npc_session
 from ...services.admin_auth_service import AdminAction, get_admin_auth_service
 from ...services.npc_service import npc_service
 from ...structured_logging.enhanced_logging_config import get_logger
-from .npc import (
+from .npc_router_core import npc_router, validate_admin_permission
+from .npc_schemas import (
     NPCDefinitionCreate,
     NPCDefinitionResponse,
     NPCDefinitionUpdate,
-    npc_router,
-    validate_admin_permission,
+    build_update_params_from_model,
 )
 
 logger = get_logger(__name__)
+
+
+async def _update_npc_definition_internal(
+    definition_id: int,
+    npc_data: NPCDefinitionUpdate,
+    request: Request,
+    current_user: User | None,
+    session: AsyncSession,
+) -> NPCDefinitionResponse:
+    """Internal handler for NPC definition update with full error handling."""
+    try:
+        validate_admin_permission(current_user, AdminAction.UPDATE_NPC_DEFINITION, request)
+        auth_service = get_admin_auth_service()
+        logger.info(
+            "NPC definition update requested",
+            user=auth_service.get_username(current_user),
+            definition_id=definition_id,
+        )
+        update_params = build_update_params_from_model(npc_data)
+        definition = await npc_service.update_npc_definition(
+            session=session,
+            definition_id=definition_id,
+            params=update_params,
+        )
+        if not definition:
+            raise LoggedHTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="NPC definition not found",
+                user_id=str(current_user.id) if current_user else None,
+                operation="update_npc_definition",
+                definition_id=definition_id,
+            )
+        await session.commit()
+        return NPCDefinitionResponse.from_orm(definition)
+    except HTTPException:
+        raise
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904
+        await session.rollback()
+        logger.error("Error updating NPC definition", error=str(e))
+        raise LoggedHTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error updating NPC definition",
+        ) from e
 
 
 @npc_router.get("/definitions", response_model=list[NPCDefinitionResponse])
@@ -40,13 +83,10 @@ async def get_npc_definitions(
     """Get all NPC definitions."""
     try:
         validate_admin_permission(current_user, AdminAction.LIST_NPC_DEFINITIONS, request)
-
         auth_service = get_admin_auth_service()
         logger.info("NPC definitions requested", user=auth_service.get_username(current_user))
-
         definitions = await npc_service.get_npc_definitions(session)
         return [NPCDefinitionResponse.from_orm(defn) for defn in definitions]
-
     except HTTPException:
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC retrieval errors unpredictable
@@ -66,12 +106,12 @@ async def create_npc_definition(
     """Create a new NPC definition."""
     try:
         validate_admin_permission(current_user, AdminAction.CREATE_NPC_DEFINITION, request)
-
         auth_service = get_admin_auth_service()
         logger.info(
-            "NPC definition creation requested", user=auth_service.get_username(current_user), name=npc_data.name
+            "NPC definition creation requested",
+            user=auth_service.get_username(current_user),
+            name=npc_data.name,
         )
-
         async for npc_session in get_npc_session():
             base_stats_dict: dict[str, Any] = npc_data.base_stats.model_dump()
             behavior_config_dict: dict[str, Any] = npc_data.behavior_config.model_dump()
@@ -90,10 +130,8 @@ async def create_npc_definition(
                 },
             )
             break
-
         await npc_session.commit()  # pylint: disable=undefined-loop-variable
         return NPCDefinitionResponse.from_orm(definition)
-
     except HTTPException:
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC creation errors unpredictable
@@ -114,12 +152,12 @@ async def get_npc_definition(
     """Get a specific NPC definition by ID."""
     try:
         validate_admin_permission(current_user, AdminAction.LIST_NPC_DEFINITIONS, request)
-
         auth_service = get_admin_auth_service()
         logger.info(
-            "NPC definition requested", user=auth_service.get_username(current_user), definition_id=definition_id
+            "NPC definition requested",
+            user=auth_service.get_username(current_user),
+            definition_id=definition_id,
         )
-
         definition = await npc_service.get_npc_definition(session, definition_id)
         if not definition:
             raise LoggedHTTPException(
@@ -128,9 +166,7 @@ async def get_npc_definition(
                 operation="get_npc_definition",
                 definition_id=definition_id,
             )
-
         return NPCDefinitionResponse.from_orm(definition)
-
     except HTTPException:
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC retrieval errors unpredictable
@@ -150,8 +186,6 @@ async def update_npc_definition(
     session: AsyncSession = Depends(get_async_session),
 ) -> NPCDefinitionResponse:
     """Update an existing NPC definition."""
-    from .npc import _update_npc_definition_internal  # Local import to avoid circular at module import time
-
     return await _update_npc_definition_internal(definition_id, npc_data, request, current_user, session)
 
 
@@ -165,14 +199,12 @@ async def delete_npc_definition(
     """Delete an NPC definition."""
     try:
         validate_admin_permission(current_user, AdminAction.DELETE_NPC_DEFINITION, request)
-
         auth_service = get_admin_auth_service()
         logger.info(
             "NPC definition deletion requested",
             user=auth_service.get_username(current_user),
             definition_id=definition_id,
         )
-
         deleted = await npc_service.delete_npc_definition(session, definition_id)
         if not deleted:
             raise LoggedHTTPException(
@@ -182,9 +214,7 @@ async def delete_npc_definition(
                 operation="delete_npc_definition",
                 definition_id=definition_id,
             )
-
         await session.commit()
-
     except HTTPException:
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC deletion errors unpredictable

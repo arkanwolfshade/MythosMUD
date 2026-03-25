@@ -26,11 +26,11 @@ def tutorial_room():
             "plane": "earth",
             "zone": "arkhamcity",
             "sub_zone": "sanitarium",
-            "exits": {"down": "earth_arkhamcity_sanitarium_room_foyer_001"},
+            "exits": {"down": "limbo_arena_arena_arena_5_5"},
             "attributes": {
                 "is_instanced": True,
                 "instance_template_id": "tutorial_sanitarium",
-                "instance_exit_room_id": "earth_arkhamcity_sanitarium_room_foyer_001",
+                "instance_exit_room_id": "limbo_arena_arena_arena_5_5",
             },
         },
         event_bus=None,
@@ -70,7 +70,7 @@ def test_create_instance(instance_manager):
     room = instance.rooms[room_id]
     assert room.name == "Patient Bedroom"
     assert "down" in room.exits
-    assert room.exits["down"] == "earth_arkhamcity_sanitarium_room_foyer_001"
+    assert room.exits["down"] == "limbo_arena_arena_arena_5_5"
 
 
 def test_create_instance_raises_when_no_templates(instance_manager):
@@ -115,12 +115,12 @@ def test_get_exit_room_id(instance_manager):
     )
     exit_room_id = instance_manager.get_exit_room_id(instance.instance_id)
 
-    assert exit_room_id == "earth_arkhamcity_sanitarium_room_foyer_001"
+    assert exit_room_id == "limbo_arena_arena_arena_5_5"
 
 
 def test_get_room_by_id_returns_none_for_non_instance(instance_manager):
     """Test get_room_by_id returns None for non-instance room IDs."""
-    result = instance_manager.get_room_by_id("earth_arkhamcity_sanitarium_room_foyer_001")
+    result = instance_manager.get_room_by_id("limbo_arena_arena_arena_5_5")
     assert result is None
 
 

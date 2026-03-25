@@ -4,7 +4,8 @@
  * Global Setup for E2E Runtime Tests
  *
  * This file runs before all tests to:
- * - Seed E2E auth users (ArkanWolfshade, Ithaqua, TestAdmin) if missing
+ * - Seed E2E users and default characters via scripts/seed_e2e_users.py:
+ *   ArkanWolfshade/Cthulhu1 (admin), Ithaqua/Cthulhu1, TestAdmin/Cthulhu1 (superuser, no default char)
  * - Verify server is running
  * - Verify client is accessible
  */
@@ -65,7 +66,7 @@ function runE2eSeed(): void {
   });
   if (seedResult.status !== 0) {
     console.warn('seed_e2e_users.py failed:', seedResult.stderr || seedResult.stdout);
-    console.warn('E2E tests that log in as TestAdmin may fail with 401 Invalid credentials.');
+    console.warn('E2E logins (ArkanWolfshade, Ithaqua, TestAdmin) may fail with 401 Invalid credentials.');
   }
 }
 

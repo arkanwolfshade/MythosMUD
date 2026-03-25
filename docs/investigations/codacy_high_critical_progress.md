@@ -17,8 +17,8 @@ See `.cursor/plans/mythosmud-codacy-8100-remediation_0edb4b92.plan.md` for scope
   - Migrated `scripts/dependency_analyzer.py` and `scripts/format.py` to
     `safe_run_static()` from `scripts/utils/safe_subprocess.py`.
   - Added documented `nosemgrep`/`nosec B603` suppressions for remaining script subprocess
-    calls (markdownlint, trivy, stylelint, lizard) where executable is from `shutil.which`
-    and arguments are static.
+    calls (markdownlint, grype, stylelint, lizard) where executable is from `shutil.which`
+    and arguments are static. Trivy remains in `.codacy/codacy.yaml` for Codacy only.
 - **Tests**: `make test` from project root — passed (exit 0).
 - **Codacy**: CLI run on modified files; no new High/Critical security findings. Lizard
   nloc/CCN warnings noted for wave-5 (complexity).

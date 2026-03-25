@@ -22,12 +22,68 @@ jobs:
         with:
           egress-policy: audit
       # Standard bootstrap: harden + checkout
+      # github.token: parent repo only; GITHUB_TOKEN cannot access other private repos (automatic token authentication).
+      # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
 
       - name: "Checkout Repository"
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
-          submodules: recursive
-          token: ${{ secrets.PRIVATE_SUBMODULE_PAT }}
+          submodules: false
+          token: ${{ github.token }}
+
+      # Private data: shallow git fetch with URL-encoded user:token (same pattern as ci.yml).
+      - name: Resolve data submodule (repository + commit)
+        id: data_submodule
+        run: |
+          set -euo pipefail
+          data_url="$(git config -f .gitmodules --get submodule.data.url)"
+          suffix="${data_url#https://github.com/}"
+          suffix="${suffix%.git}"
+          if [ -z "${suffix}" ] || [ "${suffix}" = "${data_url}" ]; then
+            echo "::error::submodule.data.url must be https://github.com/OWNER/REPO.git"
+            exit 1
+          fi
+          line=$(git ls-tree HEAD data)
+          mode=$(echo "${line}" | awk '{print $1}')
+          kind=$(echo "${line}" | awk '{print $2}')
+          sha=$(echo "${line}" | awk '{print $3}')
+          if [ "${mode}" != "160000" ] || [ "${kind}" != "commit" ] || [ -z "${sha}" ]; then
+            echo "::error::Path data is not a git submodule at HEAD (expected gitlink 160000 commit)."
+            exit 1
+          fi
+          echo "repository=${suffix}" >> "${GITHUB_OUTPUT}"
+          echo "sha=${sha}" >> "${GITHUB_OUTPUT}"
+          echo "::notice::Will fetch ${suffix}@${sha}"
+      - name: Clone private data into data/
+        env:
+          SUBMODULE_PAT: ${{ secrets.MYTHOSMUD_PAT || secrets.PRIVATE_SUBMODULE_PAT }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+        run: |
+          set -euo pipefail
+          pat_trim=$(printf '%s' "${SUBMODULE_PAT}" | tr -d '\r\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+          if [ -z "${pat_trim}" ]; then
+            echo "::error::MYTHOSMUD_PAT or PRIVATE_SUBMODULE_PAT is required (Contents: Read on mythosmud_data)."
+            exit 1
+          fi
+          case "${pat_trim}" in
+            github_pat_*) git_user="x-access-token" ;;
+            *) git_user="${GITHUB_REPOSITORY_OWNER}" ;;
+          esac
+          repo="${{ steps.data_submodule.outputs.repository }}"
+          sha="${{ steps.data_submodule.outputs.sha }}"
+          export GIT_USER_Q="${git_user}" PAT_Q="${pat_trim}"
+          auth_host=$(python3 -c "import os, urllib.parse as u; x=os.environ['GIT_USER_Q']; y=os.environ['PAT_Q']; print(u.quote(x, safe='') + ':' + u.quote(y, safe=''))")
+          unset GIT_USER_Q PAT_Q
+          rm -rf data
+          mkdir data
+          cd data
+          git init -q
+          git remote add origin "https://${auth_host}@github.com/${repo}.git"
+          GIT_TERMINAL_PROMPT=0 git fetch --depth 1 origin "${sha}"
+          git checkout -q FETCH_HEAD
+          git remote set-url origin "https://github.com/${repo}.git"
+          cd ..
+
       - name: "Dependency Review"
         uses: actions/dependency-review-action@2031cfc080254a8a887f58cffee85186f0e49e48 # v4.9.0

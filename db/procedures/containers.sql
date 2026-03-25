@@ -1,12 +1,34 @@
 -- Requires -v schema_name=<target_schema> (e.g. mythos_unit, mythos_dev).
 -- Apply with: psql -d <db> -v schema_name=<schema> -f containers.sql
 --
+-- Suppress NOTICEs (e.g. "function does not exist, skipping") so apply script does not fail on stderr.
+SET client_min_messages = WARNING;
+--
 -- Container procedures and functions for MythosMUD.
 -- Moved from DDL files: add_item_to_container, clear_container_contents,
 -- get_container_contents_json, remove_item_from_container.
 -- Also: fetch_container_items, get_container, create_container, update_container,
 -- delete_container, get_containers_by_room_id, get_containers_by_entity_id,
 -- get_decayed_containers.
+
+-- Drop all get_container overloads in any user schema so return type can change (same session).
+DO $$
+DECLARE
+  r record;
+BEGIN
+  FOR r IN
+    SELECT n.nspname, p.proname, pg_get_function_identity_arguments(p.oid) AS args
+    FROM pg_proc p
+    JOIN pg_namespace n ON p.pronamespace = n.oid
+    WHERE p.proname = 'get_container'
+      AND n.nspname NOT IN ('pg_catalog', 'information_schema')
+  LOOP
+    EXECUTE format('DROP FUNCTION IF EXISTS %I.%I(%s) CASCADE', r.nspname, r.proname, r.args);
+  END LOOP;
+END $$;
+-- Static drop in case DO block missed (e.g. schema name); exact signature.
+DROP FUNCTION IF EXISTS :schema_name.get_container(uuid); -- noqa: PRS
+DROP FUNCTION IF EXISTS public.get_container(uuid);
 
 -- add_item_to_container: insert or update item in container (moved from DDL)
 CREATE OR REPLACE FUNCTION :schema_name.add_item_to_container( -- noqa: PRS
@@ -106,7 +128,7 @@ RETURNS TABLE (
     item_id character varying,
     item_name text,
     quantity integer,
-    condition text,
+    condition integer,
     metadata jsonb,
     "position" integer
 ) AS $$

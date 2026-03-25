@@ -150,7 +150,7 @@ async def test_handle_npc_list_command():
     mock_app.state = mock_state
     mock_request.app = mock_app
 
-    with patch("server.commands.npc_admin_commands.npc_service") as mock_npc_service:
+    with patch("server.commands.npc_admin.definition.npc_service") as mock_npc_service:
         mock_npc_service.list_npc_definitions.return_value = []
         result = await handle_npc_list_command({}, {}, mock_request, None, "TestPlayer")
 
@@ -240,6 +240,116 @@ async def test_handle_npc_spawn_command_no_args():
 
 
 @pytest.mark.asyncio
+async def test_handle_npc_spawn_command_name_not_found():
+    """Test handle_npc_spawn_command() when NPC name is not found."""
+    mock_request = MagicMock()
+    mock_app = MagicMock()
+    mock_state = MagicMock()
+    mock_session = AsyncMock()
+    mock_session.__aenter__ = AsyncMock(return_value=mock_session)
+    mock_session.__aexit__ = AsyncMock(return_value=None)
+    mock_session_maker = MagicMock(return_value=mock_session)
+    mock_state.db_session_maker = mock_session_maker
+    mock_app.state = mock_state
+    mock_request.app = mock_app
+
+    with patch("server.commands.npc_admin.instance.npc_service") as mock_npc_svc:
+        mock_npc_svc.get_npc_definition_by_name = AsyncMock(return_value=None)
+
+        result = await handle_npc_spawn_command(
+            {"args": ["spawn", "NonexistentNPC"]}, {}, mock_request, None, "TestPlayer"
+        )
+
+    assert "result" in result
+    assert "No NPC definition named" in result["result"]
+    assert "NonexistentNPC" in result["result"]
+
+
+@pytest.mark.asyncio
+async def test_handle_npc_spawn_command_name_success():
+    """Test handle_npc_spawn_command() with name-based spawn."""
+    mock_request = MagicMock()
+    mock_app = MagicMock()
+    mock_state = MagicMock()
+    mock_player = MagicMock()
+    mock_player.is_admin = True
+    mock_player.current_room_id = "room_123"
+    mock_player_service = AsyncMock()
+    mock_player_service.resolve_player_name = AsyncMock(return_value=mock_player)
+    mock_state.player_service = mock_player_service
+    mock_session = AsyncMock()
+    mock_session.__aenter__ = AsyncMock(return_value=mock_session)
+    mock_session.__aexit__ = AsyncMock(return_value=None)
+    mock_session_maker = MagicMock(return_value=mock_session)
+    mock_state.db_session_maker = mock_session_maker
+    mock_app.state = mock_state
+    mock_request.app = mock_app
+
+    mock_definition = MagicMock()
+    mock_definition.id = 42
+    mock_definition.name = "Nightgaunt"
+
+    with patch("server.commands.npc_admin.instance.npc_service") as mock_npc_svc:
+        mock_npc_svc.get_npc_definition_by_name = AsyncMock(return_value=mock_definition)
+        with patch("server.commands.npc_admin.instance.get_npc_instance_service") as mock_get_svc:
+            mock_instance_svc = MagicMock()
+            mock_instance_svc.spawn_npc_instance = AsyncMock()
+            mock_get_svc.return_value = mock_instance_svc
+
+            result = await handle_npc_spawn_command(
+                {"args": ["spawn", "Nightgaunt", "1", "npc"]}, {}, mock_request, None, "TestPlayer"
+            )
+
+    assert "result" in result
+    assert "spawned successfully" in result["result"]
+    mock_instance_svc.spawn_npc_instance.assert_called_once_with(42, "room_123")
+
+
+@pytest.mark.asyncio
+async def test_spawn_command_regression_routing_via_npc_command():
+    """
+    Regression: Ensure /spawn (npc spawn) command is reachable and not removed.
+
+    Catches: spawn removed from subcommand_map, handle_npc_spawn_command removed,
+    or routing broken. The spawn command must route through handle_npc_command.
+    """
+    mock_request = MagicMock()
+    mock_app = MagicMock()
+    mock_state = MagicMock()
+    mock_player = MagicMock()
+    mock_player.is_admin = True
+    mock_player.current_room_id = "room_123"
+    mock_player_service = AsyncMock()
+    mock_player_service.resolve_player_name = AsyncMock(return_value=mock_player)
+    mock_state.player_service = mock_player_service
+    mock_app.state = mock_state
+    mock_request.app = mock_app
+
+    mock_definition = MagicMock()
+    mock_definition.id = 42
+    mock_definition.name = "Nightgaunt"
+
+    # Simulates /spawn Nightgaunt 1 npc -> npc spawn with args (subcommand prepended by handler)
+    command_data = {
+        "args": ["Nightgaunt", "1", "npc"],
+        "subcommand": "spawn",
+    }
+
+    with patch("server.commands.npc_admin.instance.npc_service") as mock_npc_svc:
+        mock_npc_svc.get_npc_definition_by_name = AsyncMock(return_value=mock_definition)
+        with patch("server.commands.npc_admin.instance.get_npc_instance_service") as mock_get_svc:
+            mock_instance_svc = MagicMock()
+            mock_instance_svc.spawn_npc_instance = AsyncMock()
+            mock_get_svc.return_value = mock_instance_svc
+
+            result = await handle_npc_command(command_data, {}, mock_request, None, "TestPlayer")
+
+    assert "result" in result
+    assert "spawned successfully" in result["result"]
+    mock_instance_svc.spawn_npc_instance.assert_called_once_with(42, "room_123")
+
+
+@pytest.mark.asyncio
 async def test_handle_npc_despawn_command_no_args():
     """Test handle_npc_despawn_command() with no arguments."""
     mock_request = MagicMock()
@@ -291,7 +401,7 @@ async def test_handle_npc_stats_command():
     mock_app.state = mock_state
     mock_request.app = mock_app
 
-    with patch("server.commands.npc_admin_commands.get_npc_instance_service") as mock_get_service:
+    with patch("server.commands.npc_admin.instance.get_npc_instance_service") as mock_get_service:
         mock_service = MagicMock()
         mock_service.get_npc_instance = AsyncMock(return_value=None)
         mock_get_service.return_value = mock_service
@@ -309,13 +419,14 @@ async def test_validate_npc_admin_permission_exception():
 
         @property
         def is_admin(self):
+            """Raise AttributeError to simulate permission check failure."""
             raise AttributeError("Test error")
 
     mock_player = ExceptionPlayer()
 
     # Mock the logger to avoid logging configuration issues in parallel test execution
     # This prevents WarningOnlyFilter errors that occur when logging happens during exception handling
-    with patch("server.commands.npc_admin_commands.logger") as mock_logger:
+    with patch("server.commands.npc_admin.router.logger") as mock_logger:
         result = validate_npc_admin_permission(mock_player, "TestPlayer")
         assert result is False
         # Verify error was logged

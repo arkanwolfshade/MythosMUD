@@ -29,6 +29,9 @@ if TYPE_CHECKING:
 
 logger = get_logger(__name__)
 
+# Arena (limbo/arena, subzone arena): 11x11 grid; stable_ids limbo_arena_arena_arena_0_0 .. 10_10
+ARENA_ROOM_IDS: tuple[str, ...] = tuple(f"limbo_arena_arena_arena_{r}_{c}" for r in range(11) for c in range(11))
+
 
 class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: Startup service class with focused responsibility, minimal public interface
     """
@@ -68,6 +71,7 @@ class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: St
             "total_spawned": 0,
             "required_spawned": 0,
             "optional_spawned": 0,
+            "arena_spawned": 0,
             "failed_spawns": 0,
             "errors": [],
             "spawned_npcs": [],
@@ -112,6 +116,20 @@ class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: St
                     startup_results["errors"].extend(optional_results["errors"])
                     startup_results["spawned_npcs"].extend(optional_results["spawned_npcs"])
 
+                    # Second pass: spawn one instance per definition that was spawned into a random arena room
+                    arena_results = await self._spawn_arena_npcs(
+                        definitions=definitions,
+                        required_results=required_results,
+                        optional_results=optional_results,
+                        npc_instance_service=npc_instance_service,
+                    )
+                    startup_results["arena_spawned"] = arena_results["spawned"]
+                    startup_results["total_attempted"] += arena_results["attempted"]
+                    startup_results["total_spawned"] += arena_results["spawned"]
+                    startup_results["failed_spawns"] += arena_results["failed"]
+                    startup_results["errors"].extend(arena_results["errors"])
+                    startup_results["spawned_npcs"].extend(arena_results["spawned_npcs"])
+
                 except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC spawning errors unpredictable, must log and continue
                     error_msg = f"Error during startup spawning: {str(e)}"
                     logger.error(error_msg)
@@ -124,6 +142,7 @@ class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: St
                 total_spawned=startup_results["total_spawned"],
                 required_spawned=startup_results["required_spawned"],
                 optional_spawned=startup_results["optional_spawned"],
+                arena_spawned=startup_results["arena_spawned"],
                 failed_spawns=startup_results["failed_spawns"],
                 errors=len(startup_results["errors"]),
             )
@@ -286,6 +305,88 @@ class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: St
                 results["failed"] += 1
 
         logger.info("Optional NPC spawning completed", spawned=results["spawned"], attempted=results["attempted"])
+        return results
+
+    async def _spawn_arena_npcs(
+        self,
+        definitions: list["NPCDefinition"],
+        required_results: dict[str, Any],
+        optional_results: dict[str, Any],
+        npc_instance_service: "NPCInstanceService",
+    ) -> dict[str, Any]:
+        """
+        Second pass: spawn one instance per definition (that was spawned in required/optional) in a random arena room.
+
+        Room cache is warmed before this pass so arena rooms are available. Population caps may
+        prevent a second instance for some definitions; failures are logged and counted.
+        """
+        results: dict[str, Any] = {"attempted": 0, "spawned": 0, "failed": 0, "errors": [], "spawned_npcs": []}
+
+        spawned_definition_ids = {
+            s["definition_id"]
+            for s in required_results.get("spawned_npcs", []) + optional_results.get("spawned_npcs", [])
+        }
+        if not spawned_definition_ids:
+            logger.info("No definitions were spawned in required/optional pass; skipping arena pass")
+            return results
+
+        try:
+            from ..container import ApplicationContainer
+
+            container = ApplicationContainer.get_instance()
+            async_persistence = getattr(container, "async_persistence", None) if container else None
+            if async_persistence:
+                await async_persistence.warmup_room_cache()
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Warmup errors must not abort arena pass
+            logger.warning("Room cache warmup before arena pass failed", error=str(e))
+            results["errors"].append(f"Room cache warmup before arena pass failed: {e}")
+
+        definitions_by_id = {int(d.id): d for d in definitions}
+        for definition_id in spawned_definition_ids:
+            npc_def = definitions_by_id.get(definition_id)
+            if not npc_def:
+                continue
+            results["attempted"] += 1
+            arena_room = random.choice(ARENA_ROOM_IDS)  # nosec B311 - Game mechanics, not security-critical
+            try:
+                spawn_result = await npc_instance_service.spawn_npc_instance(
+                    definition_id=int(npc_def.id), room_id=arena_room, reason="startup_arena"
+                )
+                if spawn_result["success"]:
+                    results["spawned"] += 1
+                    results["spawned_npcs"].append(
+                        {
+                            "npc_id": spawn_result["npc_id"],
+                            "name": spawn_result["definition_name"],
+                            "room_id": spawn_result["room_id"],
+                            "definition_id": npc_def.id,
+                        }
+                    )
+                    logger.info(
+                        "Spawned NPC in arena",
+                        npc_name=npc_def.name,
+                        arena_room=arena_room,
+                    )
+                else:
+                    results["failed"] += 1
+                    msg = spawn_result.get("message", "Unknown error")
+                    results["errors"].append(f"Arena spawn failed for {npc_def.name}: {msg}")
+                    logger.debug(
+                        "Arena spawn skipped or failed (e.g. population cap)",
+                        npc_name=npc_def.name,
+                        message=msg,
+                    )
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Per-definition errors must not abort arena pass
+                results["failed"] += 1
+                error_msg = f"Error spawning NPC {npc_def.name} in arena: {str(e)}"
+                logger.warning(error_msg)
+                results["errors"].append(error_msg)
+
+        logger.info(
+            "Arena NPC spawning completed",
+            spawned=results["spawned"],
+            attempted=results["attempted"],
+        )
         return results
 
     async def _determine_spawn_room(self, npc_def: "NPCDefinition") -> str | None:

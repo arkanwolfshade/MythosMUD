@@ -12,6 +12,8 @@ import pytest
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
+from server.services.npc_startup_service import ARENA_ROOM_IDS
+
 # Expected column names from db/procedures (used by Python mappers)
 GET_ROOMS_WITH_EXITS_COLUMNS = {
     "room_uuid",
@@ -88,6 +90,38 @@ async def test_get_rooms_with_exits_return_shape(
             f"get_rooms_with_exits() must return columns {GET_ROOMS_WITH_EXITS_COLUMNS}; got {keys}"
         )
     # If empty, at least the call succeeded (procedure exists and returns TABLE)
+
+
+@pytest.mark.asyncio
+async def test_get_rooms_with_exits_includes_arena_zone_rooms(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    """
+    Verify get_rooms_with_exits() (room cache data source) includes arena zone rooms.
+
+    When the DB is seeded with arena DML (mythos_unit_dml, mythos_e2e_dml), the procedure
+    must return all 121 arena rooms so that warmup_room_cache() populates the in-memory
+    cache with the limbo/arena zone. This guards against regressions where arena rooms
+    are missing from the cache.
+    """
+    async with session_factory() as session:
+        result = await session.execute(
+            text(
+                """
+                SELECT stable_id
+                FROM get_rooms_with_exits()
+                """
+            )
+        )
+        rows = result.mappings().all()
+    stable_ids = {row["stable_id"] for row in rows if row.get("stable_id")}
+    missing = [rid for rid in ARENA_ROOM_IDS if rid not in stable_ids]
+    assert not missing, (
+        f"get_rooms_with_exits() must return all arena zone rooms (limbo/arena). "
+        f"Missing {len(missing)} of {len(ARENA_ROOM_IDS)}: {missing[:5]!s}{'...' if len(missing) > 5 else ''}. "
+        "Ensure the test DB is seeded from data/db/mythos_unit_dml.sql (includes arena zone)."
+    )
+    assert "limbo_arena_arena_arena_5_5" in stable_ids, "Arena center room must be in room cache data source"
 
 
 @pytest.mark.asyncio

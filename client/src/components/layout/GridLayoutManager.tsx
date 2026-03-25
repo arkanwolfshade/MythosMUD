@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import 'react-grid-layout/css/styles.css';
-import { Layout, Responsive, WidthProvider } from 'react-grid-layout/legacy';
+import type { Layout } from 'react-grid-layout/legacy';
+import { Responsive, WidthProvider } from 'react-grid-layout/legacy';
 import 'react-resizable/css/styles.css';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);

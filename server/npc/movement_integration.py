@@ -10,7 +10,9 @@ for maintaining the integrity of our eldritch dimensional architecture.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, cast
+
+from structlog.stdlib import BoundLogger
 
 from ..events import EventBus, NPCEnteredRoom, NPCLeftRoom
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -21,8 +23,9 @@ from ..utils.room_utils import extract_subzone_from_room_id
 if TYPE_CHECKING:
     from ..async_persistence import AsyncPersistenceLayer
     from ..game.movement_service import MovementService
+    from ..models.room import Room
 
-logger = get_logger(__name__)
+logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
 
 
 class NPCMovementIntegration:
@@ -32,6 +35,9 @@ class NPCMovementIntegration:
     This class provides enhanced movement capabilities for NPCs that integrate
     with the existing MovementService and event system.
     """
+
+    event_bus: EventBus | None
+    persistence: AsyncPersistenceLayer
 
     def __init__(self, event_bus: EventBus | None = None, persistence: AsyncPersistenceLayer | None = None) -> None:
         """
@@ -92,7 +98,7 @@ class NPCMovementIntegration:
             pass
         return False
 
-    def _get_room_objects(self, npc_id: str, from_room_id: str, to_room_id: str) -> tuple[Any, Any] | None:
+    def _get_room_objects(self, npc_id: str, from_room_id: str, to_room_id: str) -> tuple[Room, Room] | None:
         """
         Get room objects and validate they exist.
 
@@ -118,7 +124,7 @@ class NPCMovementIntegration:
         return from_room, to_room
 
     def _update_room_occupancy(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Room occupancy update requires many parameters for context and state updates
-        self, npc_id: str, from_room: Any, to_room: Any, from_room_id: str, to_room_id: str
+        self, npc_id: str, from_room: Room, to_room: Room, from_room_id: str, to_room_id: str
     ) -> None:
         """
         Update room occupancy by removing NPC from source and adding to destination.
@@ -155,7 +161,6 @@ class NPCMovementIntegration:
                 if lifecycle_manager and npc_id in lifecycle_manager.active_npcs:
                     npc_instance = lifecycle_manager.active_npcs[npc_id]
                     npc_instance.current_room = to_room_id
-                    npc_instance.current_room_id = to_room_id  # type: ignore[attr-defined]  # Reason: NPCInstance has current_room_id attribute at runtime for room tracking, but mypy stubs don't reflect this dynamic attribute
 
                     if not npc_instance.current_room or npc_instance.current_room != to_room_id:
                         logger.error(
@@ -377,6 +382,17 @@ class NPCMovementIntegration:
             logger.error("Error finding path between rooms", from_room=from_room_id, to_room=to_room_id, error=str(e))
             return None
 
+    def _get_destination_subzone(self, destination_room_id: str) -> str | None:
+        """Resolve the subzone ID for a destination room (from room attribute or room_id). Returns None if unknown."""
+        destination_room = self.persistence.get_room_by_id(destination_room_id)
+        if not destination_room:
+            logger.warning("Destination room not found for subzone validation", destination_room_id=destination_room_id)
+            return None
+        subzone_raw = getattr(destination_room, "sub_zone", None)
+        if isinstance(subzone_raw, str) and subzone_raw:
+            return subzone_raw
+        return extract_subzone_from_room_id(destination_room_id) or None
+
     def validate_subzone_boundary(self, npc_sub_zone_id: str, destination_room_id: str) -> bool:
         """
         Validate that a destination room is within the NPC's allowed subzone.
@@ -400,22 +416,7 @@ class NPCMovementIntegration:
                 )
                 return False
 
-            # Get the destination room to check its subzone
-            destination_room = self.persistence.get_room_by_id(destination_room_id)
-            if not destination_room:
-                logger.warning(
-                    "Destination room not found for subzone validation", destination_room_id=destination_room_id
-                )
-                return False
-
-            # Extract subzone from destination room
-            # Try using Room's sub_zone attribute first (more reliable)
-            destination_subzone = destination_room.sub_zone if hasattr(destination_room, "sub_zone") else None
-
-            # Fallback to extracting from room_id if sub_zone attribute not available
-            if not destination_subzone:
-                destination_subzone = extract_subzone_from_room_id(destination_room_id)
-
+            destination_subzone = self._get_destination_subzone(destination_room_id)
             if not destination_subzone:
                 logger.warning(
                     "Could not determine subzone for destination room",
@@ -423,9 +424,7 @@ class NPCMovementIntegration:
                 )
                 return False
 
-            # Compare subzones (both should be stable_id format strings)
             is_valid = destination_subzone == npc_sub_zone_id
-
             if not is_valid:
                 logger.debug(
                     "Subzone boundary validation failed",
@@ -433,7 +432,6 @@ class NPCMovementIntegration:
                     destination_subzone=destination_subzone,
                     destination_room_id=destination_room_id,
                 )
-
             return is_valid
 
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Boundary validation errors unpredictable, must return False

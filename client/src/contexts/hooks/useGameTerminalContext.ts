@@ -1,5 +1,6 @@
 import { useContext } from 'react';
-import { GameTerminalContext, GameTerminalContextType } from '../GameTerminalContext';
+import type { GameTerminalContextType } from '../GameTerminalContext';
+import { GameTerminalContext } from '../GameTerminalContext';
 
 // Hook to use the context
 export const useGameTerminalContext = (): GameTerminalContextType => {

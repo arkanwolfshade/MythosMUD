@@ -26,6 +26,87 @@ from .enhanced_error_logging import log_and_raise_enhanced
 logger = get_logger(__name__)
 
 
+def _build_command_factory_part1(factory: CommandFactory) -> dict[str, object]:
+    """Build core, admin, and utility command mappings."""
+    return {
+        CommandType.LOOK.value: factory.create_look_command,
+        CommandType.GO.value: factory.create_go_command,
+        CommandType.SAY.value: factory.create_say_command,
+        CommandType.LOCAL.value: factory.create_local_command,
+        CommandType.SYSTEM.value: factory.create_system_command,
+        CommandType.EMOTE.value: factory.create_emote_command,
+        CommandType.ME.value: factory.create_me_command,
+        CommandType.POSE.value: factory.create_pose_command,
+        CommandType.ALIAS.value: factory.create_alias_command,
+        CommandType.ALIASES.value: factory.create_aliases_command,
+        CommandType.UNALIAS.value: factory.create_unalias_command,
+        CommandType.HELP.value: factory.create_help_command,
+        CommandType.MUTE.value: factory.create_mute_command,
+        CommandType.UNMUTE.value: factory.create_unmute_command,
+        CommandType.MUTE_GLOBAL.value: factory.create_mute_global_command,
+        CommandType.UNMUTE_GLOBAL.value: factory.create_unmute_global_command,
+        CommandType.ADD_ADMIN.value: factory.create_add_admin_command,
+        CommandType.ADMIN.value: factory.create_admin_command,
+        CommandType.NPC.value: factory.create_npc_command,
+        CommandType.SPAWN.value: factory.create_spawn_command,
+        CommandType.SUMMON.value: factory.create_summon_command,
+        CommandType.MUTES.value: factory.create_mutes_command,
+        CommandType.TELEPORT.value: factory.create_teleport_command,
+        CommandType.GOTO.value: factory.create_goto_command,
+        CommandType.WHO.value: factory.create_who_command,
+        CommandType.STATUS.value: factory.create_status_command,
+        CommandType.TIME.value: factory.create_time_command,
+        CommandType.WHOAMI.value: factory.create_whoami_command,
+        CommandType.INVENTORY.value: factory.create_inventory_command,
+        CommandType.PICKUP.value: factory.create_pickup_command,
+        CommandType.DROP.value: factory.create_drop_command,
+        CommandType.PUT.value: factory.create_put_command,
+        CommandType.GET.value: factory.create_get_command,
+        CommandType.EQUIP.value: factory.create_equip_command,
+        CommandType.UNEQUIP.value: factory.create_unequip_command,
+        CommandType.QUIT.value: factory.create_quit_command,
+        CommandType.LOGOUT.value: factory.create_logout_command,
+    }
+
+
+def _build_command_factory_part2(factory: CommandFactory) -> dict[str, object]:
+    """Build position, social, combat, and magic command mappings."""
+    return {
+        CommandType.SIT.value: factory.create_sit_command,
+        CommandType.STAND.value: factory.create_stand_command,
+        CommandType.LIE.value: factory.create_lie_command,
+        CommandType.REST.value: factory.create_rest_command,
+        CommandType.SKILLS.value: factory.create_skills_command,
+        CommandType.JOURNAL.value: factory.create_journal_command,
+        CommandType.QUESTS.value: factory.create_quests_command,
+        CommandType.QUEST.value: factory.create_quest_command,
+        CommandType.GROUND.value: factory.create_ground_command,
+        CommandType.FOLLOW.value: factory.create_follow_command,
+        CommandType.UNFOLLOW.value: factory.create_unfollow_command,
+        CommandType.FOLLOWING.value: factory.create_following_command,
+        CommandType.PARTY.value: factory.create_party_command,
+        CommandType.CHANNEL.value: factory.create_channel_command,
+        CommandType.WHISPER.value: factory.create_whisper_command,
+        CommandType.REPLY.value: factory.create_reply_command,
+        CommandType.SHUTDOWN.value: factory.create_shutdown_command,
+        CommandType.ATTACK.value: factory.create_attack_command,
+        CommandType.PUNCH.value: factory.create_punch_command,
+        CommandType.KICK.value: factory.create_kick_command,
+        CommandType.STRIKE.value: factory.create_strike_command,
+        CommandType.FLEE.value: factory.create_flee_command,
+        CommandType.TAUNT.value: factory.create_taunt_command,
+        CommandType.CAST.value: factory.create_cast_command,
+        CommandType.SPELL.value: factory.create_spell_command,
+        CommandType.SPELLS.value: factory.create_spells_command,
+        CommandType.LEARN.value: factory.create_learn_command,
+    }
+
+
+def _build_command_factory(factory: CommandFactory) -> dict[str, object]:
+    """Build the command type to factory method mapping."""
+    return _build_command_factory_part1(factory) | _build_command_factory_part2(factory)
+
+
 class CommandParser:
     """
     Secure command parser using Click for parsing and Pydantic for validation.
@@ -37,78 +118,7 @@ class CommandParser:
         self.max_command_length = 1000
         self.valid_commands = {cmd.value for cmd in CommandType}
         self.factory = CommandFactory()
-
-        # Command factory mapping - maps command types to their creation methods
-        # This eliminates the if/elif chain and provides O(1) lookup
-        self._command_factory = {
-            CommandType.LOOK.value: self.factory.create_look_command,
-            CommandType.GO.value: self.factory.create_go_command,
-            CommandType.SAY.value: self.factory.create_say_command,
-            CommandType.LOCAL.value: self.factory.create_local_command,
-            CommandType.SYSTEM.value: self.factory.create_system_command,
-            CommandType.EMOTE.value: self.factory.create_emote_command,
-            CommandType.ME.value: self.factory.create_me_command,
-            CommandType.POSE.value: self.factory.create_pose_command,
-            CommandType.ALIAS.value: self.factory.create_alias_command,
-            CommandType.ALIASES.value: self.factory.create_aliases_command,
-            CommandType.UNALIAS.value: self.factory.create_unalias_command,
-            CommandType.HELP.value: self.factory.create_help_command,
-            CommandType.MUTE.value: self.factory.create_mute_command,
-            CommandType.UNMUTE.value: self.factory.create_unmute_command,
-            CommandType.MUTE_GLOBAL.value: self.factory.create_mute_global_command,
-            CommandType.UNMUTE_GLOBAL.value: self.factory.create_unmute_global_command,
-            CommandType.ADD_ADMIN.value: self.factory.create_add_admin_command,
-            CommandType.ADMIN.value: self.factory.create_admin_command,
-            CommandType.NPC.value: self.factory.create_npc_command,
-            CommandType.SUMMON.value: self.factory.create_summon_command,
-            CommandType.MUTES.value: self.factory.create_mutes_command,
-            CommandType.TELEPORT.value: self.factory.create_teleport_command,
-            CommandType.GOTO.value: self.factory.create_goto_command,
-            # Utility commands
-            CommandType.WHO.value: self.factory.create_who_command,
-            CommandType.STATUS.value: self.factory.create_status_command,
-            CommandType.TIME.value: self.factory.create_time_command,
-            CommandType.WHOAMI.value: self.factory.create_whoami_command,
-            CommandType.INVENTORY.value: self.factory.create_inventory_command,
-            CommandType.PICKUP.value: self.factory.create_pickup_command,
-            CommandType.DROP.value: self.factory.create_drop_command,
-            CommandType.PUT.value: self.factory.create_put_command,
-            CommandType.GET.value: self.factory.create_get_command,
-            CommandType.EQUIP.value: self.factory.create_equip_command,
-            CommandType.UNEQUIP.value: self.factory.create_unequip_command,
-            CommandType.QUIT.value: self.factory.create_quit_command,
-            CommandType.LOGOUT.value: self.factory.create_logout_command,
-            CommandType.SIT.value: self.factory.create_sit_command,
-            CommandType.STAND.value: self.factory.create_stand_command,
-            CommandType.LIE.value: self.factory.create_lie_command,
-            CommandType.REST.value: self.factory.create_rest_command,
-            CommandType.SKILLS.value: self.factory.create_skills_command,
-            CommandType.JOURNAL.value: self.factory.create_journal_command,
-            CommandType.QUESTS.value: self.factory.create_quests_command,
-            CommandType.QUEST.value: self.factory.create_quest_command,
-            CommandType.GROUND.value: self.factory.create_ground_command,
-            CommandType.FOLLOW.value: self.factory.create_follow_command,
-            CommandType.UNFOLLOW.value: self.factory.create_unfollow_command,
-            CommandType.FOLLOWING.value: self.factory.create_following_command,
-            CommandType.PARTY.value: self.factory.create_party_command,
-            # Communication commands
-            CommandType.CHANNEL.value: self.factory.create_channel_command,
-            CommandType.WHISPER.value: self.factory.create_whisper_command,
-            CommandType.REPLY.value: self.factory.create_reply_command,
-            # Admin server management commands
-            CommandType.SHUTDOWN.value: self.factory.create_shutdown_command,
-            # Combat commands
-            CommandType.ATTACK.value: self.factory.create_attack_command,
-            CommandType.PUNCH.value: self.factory.create_punch_command,
-            CommandType.KICK.value: self.factory.create_kick_command,
-            CommandType.STRIKE.value: self.factory.create_strike_command,
-            CommandType.FLEE.value: self.factory.create_flee_command,
-            # Magic commands
-            CommandType.CAST.value: self.factory.create_cast_command,
-            CommandType.SPELL.value: self.factory.create_spell_command,
-            CommandType.SPELLS.value: self.factory.create_spells_command,
-            CommandType.LEARN.value: self.factory.create_learn_command,
-        }
+        self._command_factory = _build_command_factory(self.factory)
 
     def parse_command(self, command_string: str) -> Command:
         """
@@ -219,6 +229,35 @@ class CommandParser:
         logger.debug("Command parsed", command=command, args=args)
         return command, args
 
+    def _resolve_command_alias(self, command: str) -> str:
+        """Resolve single-letter aliases to full command names."""
+        alias_map = {"w": "whisper", "l": "local", "g": "global"}
+        return alias_map.get(command, command)
+
+    def _invoke_create_method(
+        self,
+        command: str,
+        args: list[str],
+        create_method: object,
+        raw_command: str | None,
+        original_command: str | None,
+    ) -> Command:
+        """Invoke the appropriate factory method for the command."""
+        from collections.abc import Callable
+        from typing import cast
+
+        if command == "local":
+            return cast(
+                Command,
+                self.factory.create_local_command(
+                    args,
+                    raw_command=raw_command,
+                    original_command=original_command,
+                ),
+            )
+        fn = cast(Callable[..., Command], create_method)
+        return fn(args)
+
     def _create_command_object(
         self,
         command: str,
@@ -243,35 +282,10 @@ class CommandParser:
             ValidationError: If command validation fails
         """
         try:
-            # Handle command aliases
-            if command == "w":
-                command = "whisper"
-            elif command == "l":
-                command = "local"
-            elif command == "g":
-                command = "global"
-
-            # Use the factory to get the creation method
+            command = self._resolve_command_alias(command)
             create_method = self._command_factory.get(command)
             if create_method:
-                from collections.abc import Callable
-                from typing import cast
-
-                # Pass raw_command and original_command for local so empty-args debug log can include them
-                if command == "local":
-                    result = cast(
-                        Command,
-                        self.factory.create_local_command(
-                            args,
-                            raw_command=raw_command,
-                            original_command=original_command,
-                        ),
-                    )
-                else:
-                    # Dict values are heterogenous callables; cast to Callable for mypy operator
-                    fn = cast(Callable[..., Command], create_method)
-                    result = fn(args)  # fn returns Command after cast
-                return result
+                return self._invoke_create_method(command, args, create_method, raw_command, original_command)
             log_and_raise_enhanced(
                 MythosValidationError,
                 f"Unsupported command: {command}",
@@ -327,6 +341,7 @@ class CommandParser:
             "aliases": "List your command aliases",
             "unalias": "Remove a command alias",
             "help": "Show this help information",
+            "spawn": "Admin: /spawn <definition_id|name> [quantity] [room_id] (alias for npc spawn; room_id defaults to current room)",
             "summon": "Admin command: /summon <prototype_id> [quantity] [item|npc]",
             "sit": "Sit down and adopt a seated posture",
             "stand": "Return to a standing posture",

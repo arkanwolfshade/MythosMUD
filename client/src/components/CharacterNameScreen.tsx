@@ -123,6 +123,7 @@ export const CharacterNameScreen: React.FC<CharacterNameScreenProps> = ({
             maxLength={50}
             minLength={1}
             disabled={isSubmitting}
+            // eslint-disable-next-line jsx-a11y/no-autofocus -- single field form: focus name input on this step
             autoFocus
           />
           {error && <p className="error-message">{error}</p>}

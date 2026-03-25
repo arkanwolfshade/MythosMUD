@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
-import { MemoryLeakDetector, MemorySnapshot } from './memoryLeakDetector';
+import type { MemorySnapshot } from './memoryLeakDetector';
+import { MemoryLeakDetector } from './memoryLeakDetector';
 
 interface MemoryReport {
   timestamp: number;

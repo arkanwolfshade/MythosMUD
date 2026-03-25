@@ -142,7 +142,7 @@ async def test_npc_damage_blocked_during_grace_period(mock_connection_manager): 
     combat_integration._game_mechanics = mock_game_mechanics  # pylint: disable=protected-access  # Reason: Testing internal service mocking for verification
 
     # Mock config and app state
-    with patch("server.npc.combat_integration.get_config") as mock_get_config:
+    with patch("server.npc.combat_integration_base.get_config") as mock_get_config:
         mock_config = MagicMock()
         mock_app = MagicMock()
         mock_app.state.connection_manager = mock_connection_manager

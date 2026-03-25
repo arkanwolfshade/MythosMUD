@@ -3,9 +3,9 @@
  */
 
 import { fireEvent, render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
-import { TabbedInterfaceOverlay } from '../TabbedInterfaceOverlay';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Tab } from '../../TabbedInterface';
+import { TabbedInterfaceOverlay } from '../TabbedInterfaceOverlay';
 
 describe('TabbedInterfaceOverlay', () => {
   const mockSetActiveTab = vi.fn();
@@ -80,13 +80,9 @@ describe('TabbedInterfaceOverlay', () => {
       />
     );
 
-    // Find close button for tab2 (which is closable)
-    const tab2Element = screen.getByText('Tab 2').closest('div');
-    const closeButton = tab2Element?.querySelector('button');
-    if (closeButton) {
-      fireEvent.click(closeButton);
-      expect(mockCloseTab).toHaveBeenCalledWith('tab2');
-    }
+    const closeButton = screen.getByRole('button', { name: 'Close Tab 2' });
+    fireEvent.click(closeButton);
+    expect(mockCloseTab).toHaveBeenCalledWith('tab2');
   });
 
   it('should not show close button for non-closable tabs', () => {
@@ -99,10 +95,8 @@ describe('TabbedInterfaceOverlay', () => {
       />
     );
 
-    const tab3Element = screen.getByText('Tab 3').closest('div');
-    const closeButton = tab3Element?.querySelector('button');
-    // Tab 3 has closable: false, so should not have close button
-    expect(closeButton).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Close Tab 3' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Tab 3' })).toBeInTheDocument();
   });
 
   it('should highlight active tab', () => {
@@ -115,8 +109,8 @@ describe('TabbedInterfaceOverlay', () => {
       />
     );
 
-    const tab1Element = screen.getByText('Tab 1').closest('div');
-    expect(tab1Element?.className).toContain('bg-mythos-terminal-primary');
+    const tab1Button = screen.getByRole('button', { name: 'Tab 1' });
+    expect(tab1Button.className).toContain('bg-mythos-terminal-primary');
   });
 
   it('should not highlight inactive tabs', () => {
@@ -129,9 +123,9 @@ describe('TabbedInterfaceOverlay', () => {
       />
     );
 
-    const tab2Element = screen.getByText('Tab 2').closest('div');
-    expect(tab2Element?.className).not.toContain('bg-mythos-terminal-primary');
-    expect(tab2Element?.className).toContain('bg-mythos-terminal-background');
+    const tab2Button = screen.getByRole('button', { name: 'Tab 2' });
+    expect(tab2Button.className).not.toContain('bg-mythos-terminal-primary');
+    expect(tab2Button.className).toContain('bg-mythos-terminal-background');
   });
 
   it('should handle tab click without stopping propagation on close button', () => {
@@ -144,15 +138,11 @@ describe('TabbedInterfaceOverlay', () => {
       />
     );
 
-    const tab2Element = screen.getByText('Tab 2').closest('div');
-    const closeButton = tab2Element?.querySelector('button');
-    if (closeButton) {
-      // Create a mock event with stopPropagation
-      const mockEvent = {
-        stopPropagation: vi.fn(),
-      } as unknown as React.MouseEvent;
-      fireEvent.click(closeButton, mockEvent);
-      expect(mockCloseTab).toHaveBeenCalledWith('tab2');
-    }
+    const closeButton = screen.getByRole('button', { name: 'Close Tab 2' });
+    const mockEvent = {
+      stopPropagation: vi.fn(),
+    } as unknown as React.MouseEvent;
+    fireEvent.click(closeButton, mockEvent);
+    expect(mockCloseTab).toHaveBeenCalledWith('tab2');
   });
 });

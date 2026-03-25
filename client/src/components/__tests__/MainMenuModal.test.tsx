@@ -71,8 +71,8 @@ describe('MainMenuModal', () => {
     const onClose = vi.fn();
     render(<MainMenuModal {...defaultProps} onClose={onClose} />);
 
-    // Act - click the backdrop (outer overlay), not the dialog content
-    const backdrop = screen.getByTestId('main-menu-backdrop');
+    // Act - full-screen backdrop button behind the dialog
+    const backdrop = screen.getByRole('button', { name: 'Dismiss menu (backdrop)' });
     fireEvent.click(backdrop);
 
     // Assert

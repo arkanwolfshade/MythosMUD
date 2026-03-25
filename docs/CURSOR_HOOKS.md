@@ -10,13 +10,21 @@ Cursor Hooks run at specific stages of the agent loop (e.g. after the agent edit
 
 ## Configured Hooks
 
-| Event | Purpose | Script |
-|-------|---------|--------|
-| **afterFileEdit** | Format agent-edited files so output matches pre-commit (ruff for server Python, prettier for client TS/JSON/MD) | [`.cursor/hooks/format-after-edit.ps1`](../.cursor/hooks/format-after-edit.ps1) |
+| Event             | Purpose                                                                       | Script                                                                          |
+| ----------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| **afterFileEdit** | Record non-test source files for test-agent trigger                           | [`.cursor/hooks/record_edited_file.py`](../.cursor/hooks/record_edited_file.py) |
+| **stop**          | Auto-continue agent with test-creation prompt when non-test files were edited | [`.cursor/hooks/trigger_test_agent.py`](../.cursor/hooks/trigger_test_agent.py) |
 
-## Formatting After Agent Edit
+## Triggered Test Agent
 
-Formatting of files edited by the Cursor agent is handled by the **afterFileEdit** hook only (no VS Code format-on-save for the same behavior). For manual edits, use "Format Document" in the editor or run pre-commit before commit (`uv run pre-commit run --all-files`).
+When you accept AI-generated code via Agent (Cmd+K), the agent automatically continues with a prompt to create or update unit tests for the modified source files. Test files are excluded so edits to tests never trigger this flow.
+
+- **Flow:** `afterFileEdit` records edited non-test files; `stop` returns a followup message to auto-continue the agent with a test-creation prompt.
+- **Excluded paths:** `server/tests/`, `**/__tests__/`, `*.test.ts`, `*.test.tsx`, `*.spec.ts`, `*.spec.tsx`
+- **State:** `.cursor/hooks/state/edited-files.json` (gitignored)
+- **Reference:** [mythosmud-test-writing skill](../.cursor/skills/mythosmud-test-writing/SKILL.md)
+
+For manual edits, use "Format Document" or run pre-commit before commit (`uv run pre-commit run --all-files`).
 
 ## References
 

@@ -9,7 +9,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 from uuid import UUID
 
-from server.models.combat import CombatInstance, CombatParticipant, CombatResult
+from server.models.combat import CombatInstance, CombatParticipant, CombatParticipantType, CombatResult
+from server.services.aggro_threat import add_damage_threat
 from server.services.nats_exceptions import NATSError
 from server.structured_logging.enhanced_logging_config import get_logger
 
@@ -193,8 +194,6 @@ async def apply_damage_and_check_involuntary_flee(
     damage: int,
 ) -> tuple[bool, bool, CombatResult | None]:
     """Apply attack damage and check for involuntary flee. Returns (target_died, mortally_wounded, early_result)."""
-    from server.models.combat import CombatParticipantType  # noqa: PLC0415  # Avoid circular import
-
     _, target_died, target_mortally_wounded = await service.apply_attack_damage(combat, target, damage)
     if target.participant_type != CombatParticipantType.PLAYER:
         return (target_died, target_mortally_wounded, None)
@@ -231,6 +230,15 @@ async def finalize_attack_result(
     target_id: UUID,
 ) -> CombatResult:
     """Build result, handle state changes, events, XP, and combat completion."""
+    # ADR-016: add damage threat to NPC's hate list when this attack hit an NPC (passive_mob/aggression_level in aggro_threat)
+    if target.participant_type == CombatParticipantType.NPC:
+        add_damage_threat(
+            combat,
+            target.participant_id,
+            current_participant.participant_id,
+            damage,
+            npc_participant=target,
+        )
     combat_ended = combat.is_combat_over()
     health_info = f" ({target.current_dp}/{target.max_dp} DP)"
     attack_message = f"{current_participant.name} attacks {target.name} for {damage} damage{health_info}"

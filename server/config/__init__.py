@@ -18,7 +18,7 @@ from os import getenv
 
 from .models import AppConfig
 
-__all__ = ["get_config", "reset_config", "AppConfig"]
+__all__ = ["get_app_instance", "get_config", "reset_config", "AppConfig"]
 
 # Module-level config cache
 _config_instance = None  # pylint: disable=invalid-name  # Reason: Private module-level singleton, intentionally uses _ prefix
@@ -115,6 +115,17 @@ def get_config() -> AppConfig:
     if _is_test_mode():
         return _get_config_test()
     return _get_config_cached()
+
+
+def get_app_instance() -> object | None:
+    """
+    Return the runtime app instance attached during lifespan startup.
+
+    This provides a public accessor for components that need app.state access
+    without reaching into private config attributes directly.
+    """
+    config = get_config()
+    return getattr(config, "_app_instance", None)
 
 
 def reset_config() -> None:

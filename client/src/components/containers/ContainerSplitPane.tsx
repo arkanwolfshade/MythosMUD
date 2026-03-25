@@ -263,7 +263,6 @@ export const ContainerSplitPane: React.FC<ContainerSplitPaneProps> = ({
           `hover:bg-mythos-terminal-hover ${isDragging ? 'opacity-50' : ''}`
         }
         role="listitem"
-        tabIndex={0}
         draggable={canTransfer}
         onDragStart={e => canTransfer && handleDragStart(e, item, isContainerItem ? 'container' : 'player')}
         onDragEnd={handleDragEnd}
@@ -312,11 +311,13 @@ export const ContainerSplitPane: React.FC<ContainerSplitPaneProps> = ({
 
   return (
     <MythosPanel className={`flex flex-col ${className}`}>
+      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- Escape closes panel; Tab trap when modal */}
       <div
         ref={containerRef}
         className="flex-1 grid grid-cols-2 gap-4 p-4"
         onKeyDown={handleKeyDown}
-        role="region"
+        role="dialog"
+        aria-modal={modal}
         aria-label={`Container: ${container.metadata?.item_name || container.source_type}`}
         tabIndex={-1}
       >

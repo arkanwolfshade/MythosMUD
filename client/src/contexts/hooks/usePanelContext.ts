@@ -1,5 +1,6 @@
 import { useContext } from 'react';
-import { PanelContext, PanelContextType, PanelPosition, PanelSize, PanelState } from '../PanelContext';
+import type { PanelContextType, PanelPosition, PanelSize, PanelState } from '../PanelContext';
+import { PanelContext } from '../PanelContext';
 
 // Hook to use panel context
 export const usePanelContext = (): PanelContextType => {

@@ -1,7 +1,7 @@
 # MythosMUD Makefile
 
 # Project root detection (handles worktree contexts)
-PROJECT_ROOT := $(shell python -c "import os; print(os.path.dirname(os.getcwd()) if 'MythosMUD-' in os.getcwd() else os.getcwd())")
+PROJECT_ROOT := $(if $(findstring MythosMUD-,$(CURDIR)),$(abspath $(CURDIR)/..),$(CURDIR))
 
 # Common command patterns
 PYTHON := cd $(PROJECT_ROOT) && python
@@ -18,10 +18,10 @@ PYTEST_COV_OPTS := --cov=server --cov-report=html --cov-report=term-missing --co
 # PHONY targets
 .PHONY: help clean install build run run-production apply-procedures
 .PHONY: lint lint-sqlalchemy format mypy
-.PHONY: bandit pylint ruff sqlfluff sqlint
+.PHONY: bandit pylint ruff sqlfluff sqlint vulture
 .PHONY: hadolint shellcheck psscriptanalyzer
 .PHONY: stylelint markdownlint jackson-linter
-.PHONY: trivy lizard
+.PHONY: grype lizard
 .PHONY: codacy-tools
 .PHONY: setup-test-env setup-test-env-force check-postgresql setup-postgresql-test-db verify-schema
 .PHONY: test test-coverage test-client test-client-e2e test-playwright test-client-coverage test-server test-server-coverage test-ci
@@ -39,6 +39,7 @@ help:
 	@echo "  lint-sqlalchemy - Run SQLAlchemy async pattern linter"
 	@echo "  format          - Run ruff format (Python) and Prettier (Node)"
 	@echo "  mypy            - Run mypy static type checking"
+	@echo "  vulture         - Dead code check (server + vulture_allowlist; same as CI)"
 	@echo ""
 	@echo "Codacy Tools (Python):"
 	@echo "  bandit          - Python security linter"
@@ -53,7 +54,7 @@ help:
 	@echo "  stylelint      - CSS linter"
 	@echo "  markdownlint   - Markdown linter (use ARGS='--fix' to auto-fix)"
 	@echo "  jackson-linter - JSON linter"
-	@echo "  trivy          - Dependency security scanner"
+	@echo "  grype          - Dependency/filesystem vulnerability scanner (local SCA)"
 	@echo "  lizard         - Code complexity analyzer"
 	@echo "  codacy-tools   - Run all Codacy tools"
 	@echo ""
@@ -159,14 +160,19 @@ markdownlint:
 jackson-linter:
 	$(PYTHON) scripts/jackson_linter.py
 
-trivy:
-	$(PYTHON) scripts/trivy.py
+grype:
+	$(PYTHON) scripts/grype.py
 
 lizard:
 	$(PYTHON) scripts/lizard.py
 
+# CRITICAL: CI runs the same command (.github/workflows/ci.yml "Dead code check (vulture)")
+# Config: pyproject.toml [tool.vulture], allowlist: vulture_allowlist.py
+vulture:
+	$(UV) vulture
+
 # Run all Codacy tools (except those already in lint/format)
-codacy-tools: bandit pylint sqlfluff hadolint shellcheck psscriptanalyzer stylelint markdownlint jackson-linter trivy lizard
+codacy-tools: bandit pylint sqlfluff hadolint shellcheck psscriptanalyzer stylelint markdownlint jackson-linter grype lizard vulture
 
 # ============================================================================
 # DATABASE SETUP
@@ -218,6 +224,8 @@ test-client-e2e:
 test-playwright: setup-test-env setup-postgresql-test-db
 	$(POWERSHELL) scripts/apply_procedures.ps1 -TargetDbs mythos_e2e
 	$(POWERSHELL) scripts/apply_coc_spells_migration.ps1 -TargetDbs mythos_e2e
+	$(POWERSHELL) scripts/apply_arena_migration.ps1 -TargetDbs mythos_e2e
+	$(POWERSHELL) scripts/apply_aggression_level_migration.ps1 -TargetDbs mythos_e2e
 	@echo "Running client E2E runtime tests (Playwright CLI)..."
 	cd $(PROJECT_ROOT)/client && npm run test:e2e:runtime
 	@echo "Running server integration tests (runtime DB, single worker)..."
@@ -231,12 +239,16 @@ test-server: setup-test-env setup-postgresql-test-db
 	@echo "Running server tests (no coverage)..."
 	$(POWERSHELL) scripts/apply_procedures.ps1 -TargetDbs mythos_unit
 	$(POWERSHELL) scripts/apply_coc_spells_migration.ps1 -TargetDbs mythos_unit
+	$(POWERSHELL) scripts/apply_arena_migration.ps1 -TargetDbs mythos_unit
+	$(POWERSHELL) scripts/apply_aggression_level_migration.ps1 -TargetDbs mythos_unit
 	$(UV) pytest server/tests/ -m "not integration" $(PYTEST_OPTS)
 
 test-server-coverage: setup-test-env setup-postgresql-test-db
 	@echo "Running server tests with coverage..."
 	$(POWERSHELL) scripts/apply_procedures.ps1 -TargetDbs mythos_unit
 	$(POWERSHELL) scripts/apply_coc_spells_migration.ps1 -TargetDbs mythos_unit
+	$(POWERSHELL) scripts/apply_arena_migration.ps1 -TargetDbs mythos_unit
+	$(POWERSHELL) scripts/apply_aggression_level_migration.ps1 -TargetDbs mythos_unit
 	$(UV) pytest server/tests/ -m "not integration" $(PYTEST_OPTS) $(PYTEST_COV_OPTS)
 
 test: test-client test-server

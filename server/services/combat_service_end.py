@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING
 from uuid import UUID
 
 from server.models.combat import CombatStatus
+from server.services.aggro_threat import clear_aggro_for_combat
 from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -34,6 +35,9 @@ async def end_combat(
         return
 
     logger.info("Ending combat", combat_id=combat_id, reason=reason)
+
+    # Clear aggro state (ADR-016) so hate lists and current targets are not retained
+    clear_aggro_for_combat(combat)
 
     combat.status = CombatStatus.ENDED
     service.cleanup_combat_tracking(combat)

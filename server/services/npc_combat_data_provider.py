@@ -5,20 +5,24 @@ This module provides data retrieval and preparation for NPC combat,
 including NPC instances, definitions, player data, and combat participant data.
 """
 
-from typing import Any
+from typing import Any, cast
 from uuid import UUID
 
 from sqlalchemy.exc import SQLAlchemyError
+from structlog.stdlib import BoundLogger
 
 from ..models.combat import CombatParticipantType
+from ..npc.lifecycle_manager import NPCLifecycleManager
 from ..structured_logging.enhanced_logging_config import get_logger
 from .combat_types import CombatParticipantData
 
-logger = get_logger(__name__)
+logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
 
 
 class NPCCombatDataProvider:
     """Provides data retrieval and preparation for NPC combat."""
+
+    _persistence: Any  # Persistence-like object; may have get_npc_lifecycle_manager (optional)
 
     def __init__(self, async_persistence: Any) -> None:
         """
@@ -82,8 +86,10 @@ class NPCCombatDataProvider:
                 if hasattr(npc_instance_service, "lifecycle_manager"):
                     lifecycle_manager = npc_instance_service.lifecycle_manager
 
-            if lifecycle_manager and npc_id in lifecycle_manager.lifecycle_records:
-                return lifecycle_manager.lifecycle_records[npc_id].definition
+            if lifecycle_manager:
+                lm = cast(NPCLifecycleManager, lifecycle_manager)
+                if npc_id in lm.lifecycle_records:
+                    return lm.lifecycle_records[npc_id].definition
 
             return None
 
@@ -103,7 +109,7 @@ class NPCCombatDataProvider:
         """
         try:
             # Convert player_id to UUID if it's a string
-            player_id_uuid = UUID(player_id) if isinstance(player_id, str) else player_id
+            player_id_uuid = UUID(player_id)
             player = await self._persistence.get_player_by_id(player_id_uuid)
             return str(player.name) if player else "Unknown Player"
         except (OSError, ValueError, TypeError) as e:
@@ -155,8 +161,7 @@ class NPCCombatDataProvider:
         BUGFIX: Was hardcoded to 100, causing DP to reset between combats
         """
         # Fetch actual player stats from persistence to ensure correct DP
-        # Convert player_id to UUID if it's a string
-        player_id_uuid = UUID(player_id) if isinstance(player_id, str) else player_id
+        player_id_uuid = UUID(player_id)
         player = await self._persistence.get_player_by_id(player_id_uuid)
         if not player:
             logger.error("Player not found when starting combat", player_id=player_id)
@@ -203,6 +208,20 @@ class NPCCombatDataProvider:
             }
 
         npc_id = getattr(npc_instance, "id", getattr(npc_instance, "npc_id", "unknown"))
+        npc_type = getattr(npc_instance, "npc_type", None)
+        aggression_level: int | None = None
+        if hasattr(npc_instance, "get_behavior_config"):
+            try:
+                behavior_config = npc_instance.get_behavior_config()
+                if isinstance(behavior_config, dict):
+                    raw = behavior_config.get("aggression_level")
+                    if raw is not None:
+                        try:
+                            aggression_level = max(0, min(10, int(raw)))
+                        except (TypeError, ValueError):
+                            pass
+            except (ValueError, AttributeError, TypeError):
+                pass
         logger.info(
             "NPC combat stats from model",
             npc_id=npc_id,
@@ -218,4 +237,6 @@ class NPCCombatDataProvider:
             max_dp=combat_stats["max_dp"],
             dexterity=combat_stats["dexterity"],
             participant_type=CombatParticipantType.NPC,
+            npc_type=npc_type,
+            aggression_level=aggression_level,
         )

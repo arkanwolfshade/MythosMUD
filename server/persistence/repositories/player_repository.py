@@ -5,7 +5,8 @@ This module provides async database operations for player CRUD, queries,
 and inventory management using PostgreSQL stored procedures.
 """
 
-# pylint: disable=too-few-public-methods  # Reason: Repository class with focused responsibility, minimal public interface.
+# pylint: disable=too-few-public-methods,too-many-lines
+# Reason: Repository class with focused responsibility; single module kept to avoid fragmenting player persistence.
 
 import uuid
 from datetime import UTC, datetime

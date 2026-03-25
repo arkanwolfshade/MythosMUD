@@ -184,6 +184,7 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
             placeholder={placeholder}
             disabled={disabled || !isConnected}
             className="w-full"
+            // eslint-disable-next-line jsx-a11y/no-autofocus -- MUD command line must receive focus when panel is active
             autoFocus
             data-testid="command-input"
           />
@@ -218,16 +219,17 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
               .slice(-10)
               .reverse()
               .map((command, index) => (
-                <div
+                <button
                   key={index}
-                  className="text-xs text-mythos-terminal-text-secondary cursor-pointer hover:text-mythos-terminal-text p-1 rounded hover:bg-mythos-terminal-background"
+                  type="button"
+                  className="text-xs text-mythos-terminal-text-secondary cursor-pointer hover:text-mythos-terminal-text p-1 rounded hover:bg-mythos-terminal-background w-full text-left"
                   onClick={() => {
                     setCommandInput(command);
                     inputRef.current?.focus();
                   }}
                 >
                   {command}
-                </div>
+                </button>
               ))}
           </div>
         )}

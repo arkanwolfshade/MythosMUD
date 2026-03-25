@@ -44,6 +44,7 @@ const eventHandlers: Record<string, EventHandler> = {
   combat_ended: combatHandlers.handleCombatEnded,
   npc_died: combatHandlers.handleNpcDied,
   combat_death: combatHandlers.handleCombatDeath,
+  combat_target_switch: combatHandlers.handleCombatTargetSwitch,
 
   // Message events
   command_response: messageHandlers.handleCommandResponse,

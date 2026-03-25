@@ -6,6 +6,7 @@ population limits, spawn rules, and game state conditions.
 """
 
 import random
+from collections.abc import Mapping
 from typing import Any
 
 from server.models.npc import NPCDefinition, NPCSpawnRule
@@ -22,7 +23,7 @@ def should_spawn_npc(
     _room_id: str,  # pylint: disable=unused-argument  # Reason: Parameter reserved for future room-based validation
     population_stats: Any | None,
     spawn_rules: dict[int, list[NPCSpawnRule]],
-    current_game_state: dict[str, Any],
+    current_game_state: Mapping[str, object],
 ) -> bool:
     """
     Determine if an NPC should spawn based on conditions.

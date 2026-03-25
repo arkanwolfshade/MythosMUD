@@ -247,14 +247,14 @@ async def test_rest_command_starts_countdown_not_in_combat(  # pylint: disable=r
 async def test_rest_interrupts_combat_action(mock_connection_manager_full):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test that combat action interrupts rest countdown."""
     # Lazy import to avoid circular import
-    from server.commands.rest_command import _cancel_rest_countdown  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+    from server.commands.rest_command import cancel_rest_countdown  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
 
     player_id = uuid.uuid4()
     task = asyncio.create_task(asyncio.sleep(10))
     mock_connection_manager_full.resting_players[player_id] = task
 
     # Simulate combat action interrupting rest
-    await _cancel_rest_countdown(player_id, mock_connection_manager_full)
+    await cancel_rest_countdown(player_id, mock_connection_manager_full)
 
     # Verify rest was cancelled
     assert task.cancelled()

@@ -69,76 +69,117 @@ export async function logoutHandler(options: LogoutHandlerOptions): Promise<void
   }
 }
 
+function asRecordUnknown(value: unknown): Record<string, unknown> {
+  return typeof value === 'object' && value !== null ? (value as Record<string, unknown>) : {};
+}
+
+function nestedErrorMessage(errorField: unknown): string | undefined {
+  if (typeof errorField !== 'object' || errorField === null) {
+    return undefined;
+  }
+  if (!('message' in errorField)) {
+    return undefined;
+  }
+  const msg = (errorField as { message: unknown }).message;
+  return typeof msg === 'string' ? msg : undefined;
+}
+
+/**
+ * Best-effort parse of error body from a failed logout HTTP response.
+ */
+async function readLogoutErrorMessage(response: Response): Promise<string> {
+  const fallback = `Server logout failed (${response.status})`;
+  try {
+    const rawData: unknown = await response.json();
+    const errorData = asRecordUnknown(rawData);
+    return nestedErrorMessage(errorData.error) || stringDetail(errorData.detail) || fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function stringDetail(detail: unknown): string | undefined {
+  return typeof detail === 'string' ? detail : undefined;
+}
+
+/**
+ * Log structured fields from a successful logout JSON payload.
+ */
+function logSuccessfulLogoutResponse(rawData: unknown): void {
+  const data = asRecordUnknown(rawData);
+  logger.info('logoutHandler', 'Server logout command successful', {
+    success: data.success,
+    message: data.message,
+    sessionTerminated: data.session_terminated,
+    connectionsClosed: data.connections_closed,
+  });
+}
+
+/**
+ * Log fetch/abort failures from the server logout request.
+ */
+function logServerLogoutCommandError(error: unknown, timeout: number): void {
+  if (error instanceof Error && error.name === 'AbortError') {
+    logger.warn('logoutHandler', 'Server logout command aborted due to timeout', { timeout });
+    return;
+  }
+  logger.error('logoutHandler', 'Server logout command failed', {
+    error: error instanceof Error ? error.message : String(error),
+  });
+}
+
+function createLogoutAbortTimer(timeoutMs: number): { controller: AbortController; clearTimer: () => void } {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => {
+    controller.abort();
+    logger.warn('logoutHandler', 'Server logout command timed out', { timeout: timeoutMs });
+  }, timeoutMs);
+  return {
+    controller,
+    clearTimer: () => {
+      clearTimeout(timeoutId);
+    },
+  };
+}
+
+async function postLogoutCommandRequest(authToken: string, signal: AbortSignal): Promise<Response> {
+  return fetch(`${API_V1_BASE}/command`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${authToken}`,
+    },
+    body: JSON.stringify({ command: 'logout' }),
+    signal,
+  });
+}
+
+async function processLogoutHttpResponse(response: Response): Promise<void> {
+  if (!response.ok) {
+    throw new Error(await readLogoutErrorMessage(response));
+  }
+  const rawData: unknown = await response.json();
+  logSuccessfulLogoutResponse(rawData);
+}
+
+/** Fetch + validate/logout body; timer cleared by caller via finally. */
+async function runLogoutServerPipeline(authToken: string, signal: AbortSignal): Promise<void> {
+  const response = await postLogoutCommandRequest(authToken, signal);
+  await processLogoutHttpResponse(response);
+}
+
 /**
  * Sends logout command to server with timeout handling
  */
 async function sendLogoutCommandToServer(authToken: string, timeout: number): Promise<void> {
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => {
-    controller.abort();
-    logger.warn('logoutHandler', 'Server logout command timed out', { timeout });
-  }, timeout);
-
+  const { controller, clearTimer } = createLogoutAbortTimer(timeout);
   try {
-    const response = await fetch(`${API_V1_BASE}/commands/logout`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${authToken}`,
-      },
-      body: JSON.stringify({
-        command: 'logout',
-        args: [],
-      }),
-      signal: controller.signal,
-    });
-
-    clearTimeout(timeoutId);
-
-    if (!response.ok) {
-      let errorMessage = `Server logout failed (${response.status})`;
-      try {
-        const rawData: unknown = await response.json();
-        const errorData = typeof rawData === 'object' && rawData !== null ? (rawData as Record<string, unknown>) : {};
-        // Type-safe error message extraction
-        const errorObj = errorData.error;
-        const errorMessageFromError =
-          typeof errorObj === 'object' &&
-          errorObj !== null &&
-          'message' in errorObj &&
-          typeof errorObj.message === 'string'
-            ? errorObj.message
-            : undefined;
-        const detailMessage = typeof errorData.detail === 'string' ? errorData.detail : undefined;
-        errorMessage = errorMessageFromError || detailMessage || errorMessage;
-      } catch {
-        // Ignore JSON parsing errors, use default message
-      }
-      throw new Error(errorMessage);
-    }
-
-    const rawData: unknown = await response.json();
-    // Logout response may be empty or contain a simple message
-    const data = typeof rawData === 'object' && rawData !== null ? (rawData as Record<string, unknown>) : {};
-    logger.info('logoutHandler', 'Server logout command successful', {
-      success: data.success,
-      message: data.message,
-      sessionTerminated: data.session_terminated,
-      connectionsClosed: data.connections_closed,
-    });
+    await runLogoutServerPipeline(authToken, controller.signal);
   } catch (error) {
-    clearTimeout(timeoutId);
-
-    if (error instanceof Error && error.name === 'AbortError') {
-      logger.warn('logoutHandler', 'Server logout command aborted due to timeout', { timeout });
-    } else {
-      logger.error('logoutHandler', 'Server logout command failed', {
-        error: error instanceof Error ? error.message : String(error),
-      });
-    }
-
-    // Re-throw to be handled by caller
+    logServerLogoutCommandError(error, timeout);
     throw error;
+  } finally {
+    clearTimer();
   }
 }
 

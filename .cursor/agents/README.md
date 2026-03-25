@@ -1,6 +1,7 @@
 # Cursor Subagents for MythosMUD
 
-*"In the shadowed halls of Miskatonic University, we learn that complex investigations require specialized expertise. Each subagent operates in its own isolated context, allowing deep exploration without contaminating the main conversation."*
+> In the shadowed halls of Miskatonic University, we learn that complex investigations require specialized expertise.
+> Each subagent operates in its own isolated context, allowing deep exploration without contaminating the main conversation.
 
 ## Overview
 
@@ -86,18 +87,23 @@ description: "Clear description of what this subagent does"
 # Subagent Name
 
 ## Purpose
+
 [Clear explanation of when to use this subagent]
 
 ## Capabilities
+
 [List of what this subagent can do]
 
 ## Usage
+
 [How to invoke this subagent]
 
 ## Output Format
+
 [What kind of report/result to expect]
 
 ## Integration
+
 [How this integrates with existing commands/rules]
 ```
 

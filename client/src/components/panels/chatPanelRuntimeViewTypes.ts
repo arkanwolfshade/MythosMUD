@@ -1,0 +1,35 @@
+import type { ChatPanelMessage } from './chatPanelRuntimeUtils';
+
+export type ChatPanelRuntimeViewProps = {
+  disabled: boolean;
+  isConnected: boolean;
+  onClearMessages?: () => void;
+  onDownloadLogs?: () => void;
+  normalizedSelectedChannel: string;
+  unreadCounts: Record<string, number>;
+  onChannelSelect: (channelId: string) => void;
+  isHistoryVisible: boolean;
+  setIsHistoryVisible: (value: boolean) => void;
+  visibleMessages: ChatPanelMessage[];
+  historyEligibleMessagesLength: number;
+  filteredMessagesLength: number;
+  searchQuery: string;
+  searchMatches: Set<number>;
+  currentSearchIndex: number;
+  searchFilterChannel: string;
+  searchFilterType: string;
+  onSearchChange: (query: string) => void;
+  onSearchNext: () => void;
+  onSearchPrevious: () => void;
+  setSearchFilterChannel: (value: string) => void;
+  setSearchFilterType: (value: string) => void;
+  toggleHistory: () => void;
+  viewingLabel: string;
+  currentChannelMessageCount: number;
+  showExportDialog: boolean;
+  exportFormat: string;
+  isExporting: boolean;
+  setExportFormat: (v: string) => void;
+  setShowExportDialog: (v: boolean) => void;
+  onConfirmExport: () => void;
+};

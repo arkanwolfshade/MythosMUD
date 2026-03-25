@@ -1,4 +1,7 @@
 {
+  "problems.exclude": {
+    "**/Makefile": true
+  },
   "workbench.statusBar.items": {
     "worktree": {
       "alignment": "left",
@@ -87,5 +90,8 @@
   "[markdown]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true
+  },
+  "[powershell]": {
+    "editor.formatOnSave": false
   }
 }

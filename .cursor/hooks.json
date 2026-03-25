@@ -1,4 +1,18 @@
 {
   "version": 1,
-  "hooks": {}
+  "hooks": {
+    "afterFileEdit": [
+      {
+        "command": "python .cursor/hooks/record_edited_file.py",
+        "timeout": 5
+      }
+    ],
+    "stop": [
+      {
+        "command": "python .cursor/hooks/trigger_test_agent.py",
+        "timeout": 10,
+        "loop_limit": 1
+      }
+    ]
+  }
 }

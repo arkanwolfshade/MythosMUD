@@ -98,18 +98,60 @@ git commit -m "Pin data submodule to specific version"
 
 Since the `mythosmud_data` repository is private, the GitHub Actions workflows need special configuration to access it:
 
+### Official GitHub documentation (authoritative)
+
+These pages are the canonical references for how we wire workflows (summarized from Context7 against GitHub Docs /
+Actions docs):
+
+1. **`GITHUB_TOKEN` scope** — The automatic token is tied to the **repository that contains the workflow**, not to
+   sibling private repos. That is why `mythosmud_data` cannot be cloned with `github.token` alone.
+   [Automatic token authentication](https://docs.github.com/en/actions/security-guides/automatic-token-authentication)
+
+2. **Secrets** — Store the PAT as an Actions secret and pass it via `secrets.*`; never hardcode tokens in YAML.
+   [Using secrets in GitHub Actions](https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions)
+
+3. **`actions/checkout` and `token`** — Checkout accepts a `token` input for authenticated git operations; we use
+   `github.token` for the **parent** repo and a separate secret only for the submodule step.
+   [Workflow syntax for GitHub Actions](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions)
+   (see examples for checking out a **different** private repository with a PAT).
+
+4. **Submodules** — `actions/checkout` supports `submodules`; we set `submodules: false` and initialize `data` in a
+   follow-up step (same idea as migration docs).
+   [Migrating from Travis CI to GitHub Actions](https://docs.github.com/en/actions/migrating-to-github-actions/manually-migrating-to-github-actions/migrating-from-travis-ci-to-github-actions)
+
+5. **HTTPS Git with a PAT** — Over HTTPS, Git expects a username and **password = PAT** (not your account password).
+   [Managing personal access tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#using-a-personal-access-token-on-the-command-line)
+
+6. **`x-access-token` in the clone URL** — GitHub documents HTTPS clones as
+   `https://x-access-token:TOKEN@github.com/owner/repo.git` for installation tokens; the same URL shape is the standard
+   automation pattern for embedding a token (we use it for **fine-grained** `github_pat_*` tokens).
+   [Authenticating as a GitHub App installation](https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/authenticating-as-a-github-app-installation)
+
+7. **Embedding tokens in URLs** — Putting a token in a remote URL can leave it visible in local Git configuration; only
+   do this in trusted automation with **least-privilege** tokens (our step restores the plain submodule URL afterward).
+   [Troubleshooting authentication to a repository](https://docs.github.com/en/codespaces/troubleshooting-github-codespaces/troubleshooting-authentication-to-a-repository)
+
 ### Required Configuration
 
 1. **Personal Access Token (PAT)**: Required for accessing private repositories
 
-2. **Token Configuration**: Use `${{ secrets.MYTHOSMUD_PAT }}` in checkout actions
+2. **Secret names**: `MYTHOSMUD_PAT` or optional alias `PRIVATE_SUBMODULE_PAT` under **Settings → Secrets and variables →
+   Actions**. Workflows use this **only** for cloning `mythosmud_data`, not for the parent repo checkout.
 
-3. **Submodule checkout**: Configure `submodules: recursive` in checkout action
+3. **Split checkout (workflows)**: First `actions/checkout` uses `submodules: false` and **`github.token`** for the
+   parent repo only. A bash step reads **`.gitmodules`** and **`git ls-tree HEAD data`** for **`OWNER/REPO`** and the
+   **pinned SHA**. A second step runs **`git init` / `git fetch --depth 1`** into **`data/`** using an HTTPS remote with
+   **URL-encoded** `user:token` (`github_pat_*` → **`x-access-token`**; classic **`ghp_`** →
+   **`github.repository_owner`**). A second **`actions/checkout`** with `repository` + `token` was unreliable for
+   **`git fetch`** on hosted runners, so workflows use explicit **`git fetch`** instead. Do not commit a stray **`tmp`**
+   gitlink; keep **`tmp/`** gitignored for local scratch.
 
-4. **Use a PAT with checkout**: The simplest pattern is to create a fine-grained PAT (`PRIVATE_SUBMODULE_PAT`) that has
+4. **PAT scope**: Fine-grained PAT needs **Contents: Read** on `arkanwolfshade/mythosmud_data` only; it does **not** need
+   access to `MythosMUD` for CI.
 
-   read access to `arkanwolfshade/mythosmud_data` and pass it to `actions/checkout` via the `token` input. This lets
-   checkout clone both the main repo and the private submodule in one step without hand-written rewrites.
+5. **Debug logging**: To enable Actions step/runner debug output, set repository **secret or variable**
+   `ACTIONS_STEP_DEBUG` to `true` (and optionally `ACTIONS_RUNNER_DEBUG`). See GitHub:
+   [Enabling debug logging](https://docs.github.com/en/actions/monitoring-and-troubleshooting-workflows/enabling-debug-logging).
 
 ### PAT Requirements
 
@@ -131,7 +173,6 @@ Since the `mythosmud_data` repository is private, the GitHub Actions workflows n
 2. Click "Generate new token" → "Fine-grained personal access tokens"
 
 3. Configure:
-
    - Token name: `MythosMUD-CI-Submodule-Access`
 
    - Expiration: [Choose appropriate duration]
@@ -143,21 +184,40 @@ Since the `mythosmud_data` repository is private, the GitHub Actions workflows n
    - Permissions: Repository permissions → Contents → Read-only
 
 4. Generate and copy the token
-5. Add to repository secrets as `MYTHOSMUD_PAT`
+5. Add to repository secrets as `MYTHOSMUD_PAT` (used only for the `mythosmud_data` submodule step, not parent
+   checkout).
 
 ### Example Workflow Configuration
 
-```yaml
-permissions:
-  contents: read
+See `.github/workflows/ci.yml` (**Resolve data submodule** + **Clone private data into data/**). Minimal sketch:
 
-jobs:
-  build:
-    steps:
+```yaml
       - uses: actions/checkout@v5
         with:
-          submodules: recursive
-          token: ${{ secrets.PRIVATE_SUBMODULE_PAT }}
+          submodules: false
+          token: ${{ github.token }}
+      - id: data_submodule
+        run: |
+          set -euo pipefail
+          u="$(git config -f .gitmodules --get submodule.data.url)"
+          u="${u#https://github.com/}"; u="${u%.git}"
+          sha=$(git ls-tree HEAD data | awk '{print $3}')
+          echo "repository=${u}" >> "${GITHUB_OUTPUT}"
+          echo "sha=${sha}" >> "${GITHUB_OUTPUT}"
+      - env:
+          SUBMODULE_PAT: ${{ secrets.MYTHOSMUD_PAT }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+        run: |
+          set -euo pipefail
+          pat=$(printf '%s' "$SUBMODULE_PAT" | tr -d '\r\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+          case "$pat" in github_pat_*) U=x-access-token ;; *) U=$GITHUB_REPOSITORY_OWNER ;; esac
+          export GIT_USER_Q="$U" PAT_Q="$pat"
+          auth=$(python3 -c "import os, urllib.parse as u; print(u.quote(os.environ['GIT_USER_Q'],safe='')+':'+u.quote(os.environ['PAT_Q'],safe=''))")
+          unset GIT_USER_Q PAT_Q
+          rm -rf data && mkdir data && cd data
+          git init -q && git remote add origin "https://${auth}@github.com/${{ steps.data_submodule.outputs.repository }}.git"
+          GIT_TERMINAL_PROMPT=0 git fetch --depth 1 origin "${{ steps.data_submodule.outputs.sha }}"
+          git checkout -q FETCH_HEAD
 ```
 
 ## Troubleshooting
@@ -179,9 +239,17 @@ git submodule update --init --recursive
 
 **For GitHub Actions:**
 
-- Verify the workflow has the correct PAT configured
-- Ensure the `MYTHOSMUD_PAT` secret is set in repository settings
-- Check that the PAT has access to the private submodule repository
+- Verify `MYTHOSMUD_PAT` (or `PRIVATE_SUBMODULE_PAT`) exists. If fetch of **MythosMUD** fails with _could not read
+  Username_, a submodule-only PAT was likely passed as `actions/checkout` `token`; use split checkout as in `ci.yml`.
+- **_Invalid username or token_ on submodule clone**: Regenerate the PAT, confirm **Contents: Read** on
+  `mythosmud_data`, and **authorize SSO** if your org requires it. CI uses **`x-access-token`** as the HTTPS username for
+  fine-grained tokens (`github_pat_*`) and **`github.repository_owner`** for classic (`ghp_*`).
+- **No url found for submodule path `tmp`**: A path is recorded as a **gitlink** (mode 160000) but has no
+  `submodule.<name>.url` in `.gitmodules`. CI only runs `git submodule update ... -- data`. Remove the stray entry with
+  `git rm --cached tmp` and add **`tmp/`** to `.gitignore` so scratch/log exports are not committed as submodules.
+- Check that the PAT is not expired and still lists **Contents: Read** on `arkanwolfshade/mythosmud_data`
+- **SAML SSO**: If the org uses GitHub Enterprise SSO, open [Fine-grained tokens](https://github.com/settings/tokens),
+  find the token, and click **Configure SSO** → **Authorize** for the org
 
 ### "not our ref" error in GitHub Actions
 

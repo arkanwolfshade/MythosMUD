@@ -16,6 +16,11 @@ desktop.ini
 $RECYCLE.BIN/
 
 # =============================================================================
+# MythosMUD local scratch (CI log exports, etc.; never commit as gitlink/submodule)
+# =============================================================================
+tmp/
+
+# =============================================================================
 # Python
 # =============================================================================
 
@@ -226,6 +231,8 @@ tsconfig.tsbuildinfo
 .cursorignore
 .cursorindexingignore
 .cursorrules
+# Hook state (ephemeral; edited-files.json for test-agent trigger)
+.cursor/hooks/state/
 
 # Spyder project settings
 .spyderproject

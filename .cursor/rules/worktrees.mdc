@@ -1,0 +1,197 @@
+---
+description: Git worktree layout, naming, and usage conventions for MythosMUD
+alwaysApply: true
+---
+
+# MythosMUD Git Worktree Guidelines
+
+> In the archives beneath Miskatonic, we do not experiment on the one true
+> grimoire. We work from careful copies.
+
+These rules define how we use **Git worktrees** with MythosMUD so that multiple
+branches can be developed safely and predictably in parallel, without losing
+track of which working copy belongs to which task.
+
+## Goals
+
+- **Consistent layout** for all MythosMUD worktrees.
+- **Predictable naming** linking branches, worktree folders, and Cursor windows.
+- **Low-risk workflow** that avoids accidental edits in the wrong tree.
+- **Alignment with server rules** (only one server, started the right way).
+
+## Directory Layout
+
+- **Canonical repo** (primary worktree):
+  - `f:/MythosMUD`
+  - This is the root Git repository and should normally track `main` (or the
+    long-lived integration branch you are working from).
+
+- **Worktrees root** (sibling directory):
+  - `f:/MythosMUD-worktrees/`
+  - Every additional worktree for MythosMUD lives under this directory.
+
+- **Worktree folders**:
+  - Pattern: `f:/MythosMUD-worktrees/<kind>-<slug>`
+  - `<kind>`: one of `feature`, `bugfix`, `refactor`, `spike`, `chore`.
+  - `<slug>`: short, kebab-case description of the task, usually derived from
+    the GitHub issue title or branch name.
+  - Examples:
+    - `f:/MythosMUD-worktrees/feature-aggro`
+    - `f:/MythosMUD-worktrees/bugfix-client-message-desync`
+    - `f:/MythosMUD-worktrees/refactor-combat-logging`
+
+## Branch Naming
+
+Branches and worktrees should have matching, predictable names:
+
+- **Branch name pattern**: `<kind>/<slug>`
+  - Examples:
+    - Branch: `feature/aggro`
+    - Branch: `bugfix/npc-aggro-reset`
+    - Branch: `refactor/combat-logging`
+
+- **Branch ↔ worktree mapping**:
+  - `feature/aggro` ↔ `f:/MythosMUD-worktrees/feature-aggro`
+  - `bugfix/npc-aggro-reset` ↔
+    `f:/MythosMUD-worktrees/bugfix-npc-aggro-reset`
+
+This makes it trivial to see which directory belongs to which branch and task.
+
+## Behavioral Conventions
+
+- **One task per worktree**:
+  - Treat each worktree as dedicated to a _single_ GitHub issue or clearly
+    bounded task. Do not share a worktree across unrelated changes.
+
+- **One Cursor window per worktree**:
+  - Open each worktree path in its own Cursor window.
+  - Do not reuse a Cursor window for a different worktree path once it has
+    been created; close and reopen with the new path instead.
+
+- **`.cursor/` isolation**:
+  - Each worktree has its own `.cursor/` directory (plans, terminals, local
+    settings).
+  - Do **not** symlink or share `.cursor/` folders between worktrees.
+  - Project-wide rules live in the repo and are shared via Git; local AI state
+    is per-worktree.
+
+- **Server rules**:
+  - The **ONE SERVER ONLY RULE** still applies:
+    - Never start more than one MythosMUD server at a time, even if you have
+      multiple worktrees checked out.
+    - Only start the server from the _active_ worktree for the task you are
+      testing.
+  - Always use `./scripts/stop_server.ps1` before switching which worktree
+    owns the running server.
+
+## Creating a New Worktree
+
+When starting a new task:
+
+1. Choose a kind and slug:
+   - `kind`: `feature`, `bugfix`, `refactor`, `spike`, or `chore`.
+   - `slug`: short, kebab-case description, usually based on the issue title.
+
+2. Construct branch and path:
+   - Branch: `<kind>/<slug>`
+   - Worktree path: `f:/MythosMUD-worktrees/<kind>-<slug>`
+
+3. From the canonical repo (`f:/MythosMUD`):
+   - For a **new** branch:
+     - `git worktree add f:/MythosMUD-worktrees/<kind>-<slug> -b <kind>/<slug>`
+   - For an **existing** branch:
+     - `git worktree add f:/MythosMUD-worktrees/<kind>-<slug> <kind>/<slug>`
+
+4. Open a new Cursor window rooted at the worktree path:
+   - `f:/MythosMUD-worktrees/<kind>-<slug>`
+
+5. In the new worktree, create a task plan under `.cursor/plans/` for this
+   task, following the standard worktree plan template
+   (`.cursor/templates/worktree-plan-template.md`).
+
+## Worktree Lifecycle
+
+Treat each worktree as a lifecycle-bound artifact tied to a specific piece of
+work.
+
+### Create
+
+- Create a worktree when:
+  - You start work on a new feature, bugfix, refactor, spike, or chore that
+    merits its own branch.
+- Use the naming rules above to create:
+  - A new branch on the canonical repo.
+  - A new worktree under `f:/MythosMUD-worktrees/`.
+- Create a **worktree plan file** under `.cursor/plans/` that:
+  - Captures the problem statement and context.
+  - Lists todos for tests, implementation, docs, and cleanup.
+  - Records the branch name and worktree path.
+
+### Develop
+
+- Perform all edits for the task inside the worktree that owns the branch.
+- Keep the `.cursor/plans/` file up to date:
+  - Update todos as you add tests, implement changes, and run validation.
+  - Note any deviations or decisions that affect the task.
+- Only start the server from this worktree when testing this task.
+- Follow MythosMUD rules about full-stack changes (server, client,
+  persistence) where applicable.
+
+### Review and Merge
+
+- Use the worktree to prepare commits and open a PR from the branch to the
+  appropriate base (`main`, `develop`, or the configured integration branch).
+- During review:
+  - Keep any follow-up investigation or small review fixes in the _same_
+    branch and worktree until the PR is accepted.
+  - If review feedback fundamentally changes scope, consider:
+    - Closing the worktree after merging, and
+    - Opening a new branch/worktree for the new scope.
+
+### Cleanup
+
+After a branch has been merged or abandoned:
+
+- From the canonical repo (`f:/MythosMUD`), remove the worktree:
+  - `git worktree remove f:/MythosMUD-worktrees/<kind>-<slug>`
+- Ensure the directory is gone or manually delete it if Git left an empty
+  folder.
+- If the branch is no longer needed:
+  - Clean up the branch with the appropriate `git branch -d` / `-D` behavior.
+
+**Do not** keep stale worktrees around indefinitely; they become easy to
+confuse and clutter local disk, `.cursor/` state, and terminal history.
+
+### Weekly Cleanup Checklist
+
+At least once per week (or before starting a new major task), reconcile your
+local worktrees:
+
+- From `f:/MythosMUD`:
+  - `git worktree list` to see all registered worktrees.
+- For each entry:
+  - Confirm whether the corresponding branch has been merged or abandoned.
+  - If so, remove the worktree and (optionally) delete the branch.
+- Optionally, keep a short note in `TASKS.local.md` about which worktrees you
+  expect to be active this week.
+
+## Guardrails and Safety
+
+- **Do not edit the same feature from multiple worktrees at once.**
+  - Pick one worktree per logical piece of work to avoid diverging local
+    copies and confusing branch history.
+
+- **Never create a worktree inside `.git/` or another worktree.**
+  - All MythosMUD worktrees belong **only** under:
+    - `f:/MythosMUD`
+    - `f:/MythosMUD-worktrees/`
+
+- **Respect server and test rules in all worktrees**:
+  - Only one MythosMUD server running at any given time.
+  - Always run tests from the project root of the active worktree, using the
+    prescribed `make`/PowerShell scripts.
+
+- **Do not share `.cursor/` state** between worktrees:
+  - No symlinks or manual copying of `.cursor/` directories.
+  - Rules and skills live in Git; each worktree’s AI state is ephemeral and
+    local to that branch’s work.

@@ -6,7 +6,13 @@ from __future__ import annotations
 Magic command handlers for spellcasting.
 
 This module implements the /cast, /spells, and /spell commands.
+
+Entrypoints take Starlette/FastAPI request objects and resolve services from
+app.state/container without a single shared protocol; file-scoped pyright
+relaxation avoids noisy Any/unknown diagnostics across spell payloads.
 """
+
+# pyright: reportAny=false, reportExplicitAny=false, reportUnannotatedClassAttribute=false, reportUnknownVariableType=false, reportUnknownMemberType=false, reportUnknownArgumentType=false
 
 # pylint: disable=too-many-arguments  # Reason: Magic commands require many parameters for spell context and validation
 # pylint: disable=wrong-import-position  # Reason: Imports must come after from __future__ and docstring per Python spec
@@ -16,7 +22,7 @@ import uuid  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Im
 from typing import TYPE_CHECKING, Any  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Import must come after from __future__ and docstring per Python spec
 
 from server.alias_storage import AliasStorage  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Import must come after from __future__ and docstring per Python spec
-from server.commands.rest_command import _cancel_rest_countdown, is_player_resting  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Import must come after from __future__ and docstring per Python spec
+from server.commands.rest_command import cancel_rest_countdown, is_player_resting  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Import must come after from __future__ and docstring per Python spec
 from server.game.magic.spell_registry import SpellRegistry  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Import must come after from __future__ and docstring per Python spec
 from server.persistence.repositories.player_spell_repository import PlayerSpellRepository  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Import must come after from __future__ and docstring per Python spec
 from server.structured_logging.enhanced_logging_config import get_logger  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Import must come after from __future__ and docstring per Python spec
@@ -178,7 +184,7 @@ class MagicCommandHandler:
             player_id = uuid.UUID(player.player_id) if isinstance(player.player_id, str) else player.player_id
             if not is_player_resting(player_id, connection_manager):
                 return
-            await _cancel_rest_countdown(player_id, connection_manager)
+            await cancel_rest_countdown(player_id, connection_manager)
             logger.info(
                 "Rest interrupted by spellcasting",
                 player_id=player_id,

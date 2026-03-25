@@ -240,6 +240,8 @@ class ConnectionManager:
         # Session management
         self.player_sessions: dict[uuid.UUID, str] = {}  # player_id -> current_session_id
         self.session_connections: dict[str, list[str]] = {}  # session_id -> list of connection_ids
+        # Disconnected sessions age off after 5 min; reconnects purge old sessions immediately
+        self.session_disconnect_times: dict[str, float] = {}  # session_id -> disconnect timestamp
 
         # Track safely closed websocket objects to avoid duplicate closes
         # Use deque with maxlen to prevent unbounded growth (maxlen=1000)
@@ -463,11 +465,11 @@ class ConnectionManager:
         """Broadcast a message to all connected players."""
         return await broadcast_global_impl(self, event, exclude_player)
 
-    async def broadcast_room_event(self, event_type: str, room_id: str, data: dict[str, Any]) -> dict[str, Any]:
+    async def broadcast_room_event(self, event_type: str, room_id: str, data: dict[str, object]) -> dict[str, Any]:
         """Broadcast a room-specific event to all players in the room."""
         return await broadcast_room_event_impl(self, event_type, room_id, data)
 
-    async def broadcast_global_event(self, event_type: str, data: dict[str, Any]) -> dict[str, Any]:
+    async def broadcast_global_event(self, event_type: str, data: dict[str, object]) -> dict[str, Any]:
         """Broadcast a global event to all connected players."""
         return await broadcast_global_event_impl(self, event_type, data)
 

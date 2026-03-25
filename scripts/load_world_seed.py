@@ -7,20 +7,29 @@ then loads the environment DML (world, professions, items, NPCs, etc.). Running 
 database that has data you care about will DESTROY that data. Use a separate DB for seeding,
 or run only the DML file: psql -d your_db -f data/db/mythos_<env>_dml.sql
 
+DDL and DML run via psql -f: DDL first kicks other backends then applies drops/creates; DML is
+pg_dump format (COPY ... FROM stdin) and cannot be executed reliably with asyncpg.execute.
+
 The DDL and DML files are chosen from DATABASE_URL: mythos_dev -> db/mythos_dev_ddl.sql +
 data/db/mythos_dev_dml.sql, mythos_unit -> mythos_unit_ddl + mythos_unit_dml, mythos_e2e ->
 mythos_e2e_ddl + mythos_e2e_dml.
+
+asyncpg table counts use POSTGRES_SEARCH_PATH if set, else the database name as schema (see .env.e2e_test).
 """
 
 import os
+import shutil
+import subprocess  # nosec B404: psql must be invoked for DDL/DML; argv is built from resolved psql + URL parts
 import sys
 from pathlib import Path
+from typing import cast
+from urllib.parse import unquote, urlparse
 
 import asyncpg
 from anyio import run
 from dotenv import load_dotenv
 
-load_dotenv()
+_ = load_dotenv()
 
 
 def _validate_environment_and_files() -> tuple[str, Path, Path]:
@@ -70,176 +79,200 @@ async def _print_current_table_counts(conn: asyncpg.Connection) -> None:
     """Print current table counts, handling missing tables gracefully."""
     print("\nCurrent table counts:")
     try:
-        zone_count = await conn.fetchval("SELECT COUNT(*) FROM zones")
+        zone_count = cast(int | None, await conn.fetchval("SELECT COUNT(*) FROM zones"))
         print(f"  Zones: {zone_count}")
     except asyncpg.UndefinedTableError:
         print("  Zones: Table does not exist yet")
 
     try:
-        room_count = await conn.fetchval("SELECT COUNT(*) FROM rooms")
+        room_count = cast(int | None, await conn.fetchval("SELECT COUNT(*) FROM rooms"))
         print(f"  Rooms: {room_count}")
     except asyncpg.UndefinedTableError:
         print("  Rooms: Table does not exist yet")
 
     try:
-        holiday_count = await conn.fetchval("SELECT COUNT(*) FROM calendar_holidays")
+        holiday_count = cast(int | None, await conn.fetchval("SELECT COUNT(*) FROM calendar_holidays"))
         print(f"  Holidays: {holiday_count}")
     except asyncpg.UndefinedTableError:
         print("  Holidays: Table does not exist yet")
 
     try:
-        schedule_count = await conn.fetchval("SELECT COUNT(*) FROM calendar_npc_schedules")
+        schedule_count = cast(int | None, await conn.fetchval("SELECT COUNT(*) FROM calendar_npc_schedules"))
         print(f"  Schedules: {schedule_count}")
     except asyncpg.UndefinedTableError:
         print("  Schedules: Table does not exist yet")
 
     try:
-        zone_config_count = await conn.fetchval("SELECT COUNT(*) FROM zone_configurations")
+        zone_config_count = cast(int | None, await conn.fetchval("SELECT COUNT(*) FROM zone_configurations"))
         print(f"  Zone Configurations: {zone_config_count}")
     except asyncpg.UndefinedTableError:
         print("  Zone Configurations: Table does not exist yet")
 
 
-def _clean_psql_commands(sql_content: str, preserve_whitespace: bool = False) -> str:
-    """Remove psql-specific commands and comments from SQL content.
-
-    Args:
-        sql_content: Raw SQL content with potential psql commands
-        preserve_whitespace: If True, keep original line format; if False, strip lines
-    """
-    lines = sql_content.split("\n")
-    clean_lines = []
-    for line in lines:
-        stripped = line.strip()
-        # Skip psql commands (lines starting with \) and comments
-        if stripped.startswith("\\") or stripped.startswith("--"):
-            continue
-        if stripped:  # Keep non-empty lines
-            if preserve_whitespace:
-                clean_lines.append(line)
-            else:
-                clean_lines.append(stripped)
-    return "\n".join(clean_lines)
+def _database_url_for_cli(database_url: str) -> str:
+    """Normalize SQLAlchemy/async driver URLs to a plain postgresql:// form for tools."""
+    return database_url.replace("postgresql+asyncpg://", "postgresql://", 1)
 
 
-async def _apply_schema(conn: asyncpg.Connection, schema_file: Path) -> None:
-    """Apply database schema from file."""
+def _parse_pg_url_for_psql(database_url: str) -> tuple[str, int, str, str, str]:
+    """Return (host, port, user, password, dbname) from DATABASE_URL. Password may be empty."""
+    parsed = urlparse(_database_url_for_cli(database_url))
+    if not parsed.hostname or not parsed.path:
+        msg = "DATABASE_URL must include host and database path for psql."
+        raise ValueError(msg)
+    dbname = parsed.path.lstrip("/").split("?")[0]
+    user = unquote(parsed.username or "")
+    password = unquote(parsed.password or "") if parsed.password is not None else ""
+    host = parsed.hostname
+    port = int(parsed.port or 5432)
+    return host, port, user, password, dbname
+
+
+def _resolve_psql_executable() -> str:
+    """Locate psql for DDL (pg_dump files are meant for psql, not one asyncpg.execute blob)."""
+    override = os.environ.get("PSQL_EXE") or os.environ.get("PSQL_PATH")
+    if override and Path(override).is_file():
+        return str(Path(override).resolve())
+    which = shutil.which("psql")
+    if which:
+        return which
+    msg = (
+        "psql not found on PATH. Install PostgreSQL client tools or set PSQL_EXE "
+        "to the full path of psql.exe (see apply_procedures.ps1)."
+    )
+    raise FileNotFoundError(msg)
+
+
+def _asyncpg_server_settings(database_url: str) -> dict[str, str]:
+    """Match app/e2e search_path: tables live in schema mythos_*; default public would miss zone_configurations."""
+    db_name = database_url.split("/")[-1].split("?")[0].strip()
+    search_path = os.getenv("POSTGRES_SEARCH_PATH", db_name)
+    return {"search_path": search_path}
+
+
+_PSQL_KICK_OTHER_BACKENDS = (
+    "SELECT pg_terminate_backend(pid) FROM pg_stat_activity "
+    "WHERE datname = current_database()::name AND pid <> pg_backend_pid()"
+)
+
+
+def _psql_heartbeat_wait(proc: subprocess.Popen[str], phase: str) -> None:
+    while True:
+        try:
+            _ = proc.wait(timeout=60)
+            return
+        except subprocess.TimeoutExpired:
+            print(f"  ... psql still running ({phase}) ...", flush=True)
+
+
+def _psql_exit_code_extra(exit_code: int) -> str:
+    """Human hint when psql exits with code 3 (common for interrupt / server error)."""
+    if exit_code != 3:
+        return ""
+    return (
+        " This often means psql was interrupted (Ctrl+C) or the server reported an error; "
+        + "re-run after fixing SQL or use a fresh DB."
+    )
+
+
+def _run_psql_file(
+    database_url: str,
+    sql_file: Path,
+    *,
+    kick_other_backends: bool,
+    preamble: str,
+    heartbeat_phase: str,
+    failure_label: str,
+) -> None:
+    """Run a .sql file with psql (-q). Optionally kick competitors before -f (same session, no gap)."""
+    host, port, user, password, dbname = _parse_pg_url_for_psql(database_url)
+    psql_exe = _resolve_psql_executable()
+    env = os.environ.copy()
+    if password:
+        env["PGPASSWORD"] = password
+    # List argv + shell=False: the OS passes each element as one argument; no shell parses
+    # these strings. Do not use shlex.quote on list elements (that is for shell *strings* and
+    # would add literal quote characters to argv when values contain spaces).
+    sql_path = str(sql_file.resolve())
+    cmd: list[str] = [
+        psql_exe,
+        "-q",
+        "-h",
+        host,
+        "-p",
+        str(port),
+        "-U",
+        user,
+        "-d",
+        dbname,
+        "-v",
+        "ON_ERROR_STOP=1",
+    ]
+    if kick_other_backends:
+        cmd.extend(["-c", _PSQL_KICK_OTHER_BACKENDS])
+    cmd.extend(["-f", sql_path])
+    print(preamble, flush=True)
+    proc: subprocess.Popen[str] = subprocess.Popen(
+        cmd, env=env, stdout=None, stderr=None, text=True
+    )  # nosemgrep: python.lang.security.audit.dangerous-subprocess-use-tainted-env-args.dangerous-subprocess-use-tainted-env-args  # nosec B603: argv list + no shell; psql path from _resolve_psql_executable
+    _psql_heartbeat_wait(proc, heartbeat_phase)
+    if proc.returncode != 0:
+        msg = f"psql failed on {failure_label} {sql_file} (exit {proc.returncode}).{_psql_exit_code_extra(proc.returncode)}"
+        raise RuntimeError(msg)
+
+
+def _apply_schema_with_psql(database_url: str, schema_file: Path) -> None:
+    """Apply DDL using psql -f (reliable for large multi-statement dumps; avoids long silent asyncpg runs)."""
+    _run_psql_file(
+        database_url,
+        schema_file,
+        kick_other_backends=True,
+        preamble=(
+            "  Applying schema via psql (-q): disconnects other clients on this DB first, then DDL; "
+            "heartbeat every 60s. Do not press Ctrl+C unless you mean to stop (partial DDL is unsafe)."
+        ),
+        heartbeat_phase="DDL in progress",
+        failure_label="schema",
+    )
+
+
+def _load_dml_with_psql(database_url: str, dml_file: Path) -> None:
+    """Load pg_dump-style DML (COPY ... FROM stdin) via psql; asyncpg cannot drive COPY stdin."""
+    _run_psql_file(
+        database_url,
+        dml_file,
+        kick_other_backends=True,
+        preamble=(
+            "  Loading DML via psql (-q): disconnects other clients first; pg_dump COPY format; heartbeat every 60s."
+        ),
+        heartbeat_phase="DML in progress",
+        failure_label="DML",
+    )
+
+
+def _apply_schema(database_url: str, schema_file: Path) -> None:
+    """Apply database schema from file via psql (not asyncpg.execute for full dumps)."""
     print(f"\nApplying schema from {schema_file}...")
-    schema_sql = schema_file.read_text(encoding="utf-8")
-    clean_schema_sql = _clean_psql_commands(schema_sql, preserve_whitespace=True)
-
-    try:
-        await conn.execute(clean_schema_sql)
-        print("  [OK] Schema applied successfully")
-    except asyncpg.PostgresError as e:
-        print(f"  [ERROR] Schema application failed - {e}")
-        import traceback
-
-        traceback.print_exc()
-        # Continue anyway - some tables might already exist
-
-
-def _read_seed_file(seed_file: Path) -> str:
-    """Read seed file, handling UTF-8 and UTF-16 encoding."""
-    try:
-        sql = seed_file.read_text(encoding="utf-8")
-    except UnicodeDecodeError:
-        sql = seed_file.read_text(encoding="utf-16")
-        # Strip UTF-16 BOM if present
-        if sql.startswith("\ufeff"):
-            sql = sql[1:]
-    return sql
-
-
-async def _execute_seed_statements(conn: asyncpg.Connection, clean_sql: str) -> None:
-    """Execute seed SQL statements with error handling."""
-    statements = [s.strip() for s in clean_sql.split(";") if s.strip()]
-
-    print(f"  Executing {len(statements)} SQL statements...")
-    inserted_count = 0
-    skipped_count = 0
-    error_count = 0
-
-    try:
-        # Execute each statement individually
-        for i, statement in enumerate(statements, 1):
-            if not statement:
-                continue
-            try:
-                # Normalize SQL statement termination - ensure it ends with exactly one semicolon
-                # SAFETY: statement comes from trusted SQL files in repository (not user input)
-                # This normalization is safe because:
-                # 1. statement is from trusted DML files (data/db/mythos_*_dml.sql)
-                # 2. We're only normalizing statement termination, not building SQL from user input
-                # 3. No user-controlled data is involved in SQL construction
-                normalized_statement = statement.rstrip().rstrip(";")
-                # Use constant format string to avoid CodeQL string concatenation warning
-                # The semicolon is a constant, and normalized_statement is from trusted source
-                # nosemgrep: python.lang.security.audit.formatted-sql-query.formatted-sql-query
-                sql_statement = f"{normalized_statement};"
-                # Loading seed data from trusted DML files in repository (data/db/mythos_*_dml.sql).
-                # No user input is involved - we're only normalizing statement termination (adding semicolon).
-                # The SQL statements are from trusted seed files checked into the repository.
-                # nosec B608: Loading seed data from trusted SQL files in repository (not user input)
-                # nosemgrep: python.lang.security.audit.sqli.asyncpg-sqli.asyncpg-sqli
-                # nosemgrep: python.lang.security.audit.sqli.asyncpg-sqli.asyncpg-sqli
-                # nosemgrep: python.lang.security.audit.formatted-sql-query.formatted-sql-query
-                # nosemgrep: python.sqlalchemy.security.sqlalchemy-execute-raw-query.sqlalchemy-execute-raw-query
-                await conn.execute(sql_statement)
-                inserted_count += 1
-            except asyncpg.PostgresError as e:
-                error_msg = str(e).lower()
-                # Check if it's a duplicate key error (data already exists)
-                if (
-                    "duplicate key" in error_msg
-                    or "already exists" in error_msg
-                    or "violates unique constraint" in error_msg
-                ):
-                    skipped_count += 1
-                else:
-                    error_count += 1
-                    print(f"  [ERROR] Statement {i} failed: {e}")
-                    print(f"  [ERROR] Statement: {statement[:100]}...")
-
-        if error_count == 0:
-            print(f"  [OK] World seed data loaded successfully ({inserted_count} inserted, {skipped_count} skipped)")
-        else:
-            print(
-                f"  [WARNING] Completed with {error_count} errors ({inserted_count} inserted, {skipped_count} skipped)"
-            )
-    except Exception as e:  # pylint: disable=broad-exception-caught
-        # This catches any unexpected errors during the batch execution process
-        print(f"  [ERROR] - {e}")
-        import traceback
-
-        traceback.print_exc()
-        sys.exit(1)
-
-
-async def _load_seed_data(conn: asyncpg.Connection, dml_file: Path) -> None:
-    """Load seed data from environment DML file."""
-    print(f"\nLoading DML from {dml_file}...")
-    sql = _read_seed_file(dml_file)
-    clean_sql = _clean_psql_commands(sql)
-    await _execute_seed_statements(conn, clean_sql)
+    _apply_schema_with_psql(database_url, schema_file)
+    print("  [OK] Schema applied successfully")
 
 
 async def _print_final_table_counts(conn: asyncpg.Connection) -> None:
     """Print final table counts after loading."""
     print("\nFinal table counts:")
-    zone_count = await conn.fetchval("SELECT COUNT(*) FROM zones")
+    zone_count = cast(int | None, await conn.fetchval("SELECT COUNT(*) FROM zones"))
     print(f"  Zones: {zone_count}")
 
-    room_count = await conn.fetchval("SELECT COUNT(*) FROM rooms")
+    room_count = cast(int | None, await conn.fetchval("SELECT COUNT(*) FROM rooms"))
     print(f"  Rooms: {room_count}")
 
-    holiday_count = await conn.fetchval("SELECT COUNT(*) FROM calendar_holidays")
+    holiday_count = cast(int | None, await conn.fetchval("SELECT COUNT(*) FROM calendar_holidays"))
     print(f"  Holidays: {holiday_count}")
 
-    schedule_count = await conn.fetchval("SELECT COUNT(*) FROM calendar_npc_schedules")
+    schedule_count = cast(int | None, await conn.fetchval("SELECT COUNT(*) FROM calendar_npc_schedules"))
     print(f"  Schedules: {schedule_count}")
 
-    zone_config_count = await conn.fetchval("SELECT COUNT(*) FROM zone_configurations")
+    zone_config_count = cast(int | None, await conn.fetchval("SELECT COUNT(*) FROM zone_configurations"))
     print(f"  Zone Configurations: {zone_config_count}")
 
 
@@ -255,12 +288,22 @@ async def main():
     url = database_url.replace("postgresql+asyncpg://", "postgresql://")
     print(f"Database URL: {url[:50]}...")
 
-    conn = await asyncpg.connect(url)
-
+    server_settings = _asyncpg_server_settings(database_url)
+    conn = await asyncpg.connect(url, server_settings=server_settings)
     try:
         await _print_current_table_counts(conn)
-        await _apply_schema(conn, schema_file)
-        await _load_seed_data(conn, dml_file)
+    finally:
+        await conn.close()
+
+    # Close before psql DDL so Ctrl+C during psql does not leave this connection half-closed (CancelError on close).
+    _apply_schema(database_url, schema_file)
+
+    print(f"\nLoading DML from {dml_file}...")
+    _load_dml_with_psql(database_url, dml_file)
+    print("  [OK] DML loaded successfully")
+
+    conn = await asyncpg.connect(url, server_settings=server_settings)
+    try:
         await _print_final_table_counts(conn)
 
         print("\n" + "=" * 60)

@@ -195,6 +195,8 @@ async def test_force_cleanup(connection_cleaner):
 @pytest.mark.asyncio
 async def test_check_and_cleanup(connection_cleaner):
     """Test check_and_cleanup() performs cleanup check."""
+    from server.realtime.maintenance.connection_cleaner import CleanupContext
+
     player_websockets = {uuid.uuid4(): ["ws_001"]}
     online_players: dict[uuid.UUID, dict[str, Any]] = {}
     last_seen: dict[uuid.UUID, float] = {}
@@ -204,15 +206,15 @@ async def test_check_and_cleanup(connection_cleaner):
     cleanup_stats = {"memory_cleanups": 0, "last_cleanup": 0, "cleanups_performed": 0}
     # memory_monitor.max_connection_age needs to be a number (not a MagicMock)
     connection_cleaner.memory_monitor.max_connection_age = 300.0
-    # check_and_cleanup takes (online_players, last_seen, player_websockets, active_websockets, connection_timestamps, cleanup_stats, last_active_update_times)
-    await connection_cleaner.check_and_cleanup(
-        online_players,
-        last_seen,
-        player_websockets,
-        active_websockets,
-        connection_timestamps,
-        cleanup_stats,
-        last_active_update_times,
+    ctx = CleanupContext(
+        online_players=online_players,
+        last_seen=last_seen,
+        player_websockets=player_websockets,
+        active_websockets=active_websockets,
+        connection_timestamps=connection_timestamps,
+        cleanup_stats=cleanup_stats,
+        last_active_update_times=last_active_update_times,
     )
+    await connection_cleaner.check_and_cleanup(ctx)
     # Should not raise
     assert True  # If we get here, it succeeded

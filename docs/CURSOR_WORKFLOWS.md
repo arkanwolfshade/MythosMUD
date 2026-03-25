@@ -1,6 +1,6 @@
 # Cursor Workflows Documentation
 
-*"In the shadowed halls of Miskatonic University, we learn that proper methodology requires understanding how tools work together. This document describes end-to-end workflows combining subagents, CLI, commands, and rules."*
+_"In the shadowed halls of Miskatonic University, we learn that proper methodology requires understanding how tools work together. This document describes end-to-end workflows combining subagents, CLI, commands, and rules."_
 
 ## Overview
 
@@ -384,6 +384,7 @@ Need to perform a task?
 
 - Subagents: `docs/CURSOR_SUBAGENTS.md`
 - CLI: `docs/CURSOR_CLI.md`
+- Cross-machine setup and portability: `docs/CURSOR_SETUP_GUIDE.md` ("Cross-Machine Portability (DRY Source of Truth)")
 - Commands: `.cursor/commands/`
 - Rules: `.cursor/rules/`
 - Subagent usage: `.cursor/rules/subagent-usage.mdc`

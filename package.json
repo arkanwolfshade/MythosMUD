@@ -4,5 +4,8 @@
   },
   "devDependencies": {
     "markdownlint-cli": "^0.48.0"
+  },
+  "overrides": {
+    "flatted": "^3.4.2"
   }
 }

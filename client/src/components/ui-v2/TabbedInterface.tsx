@@ -70,29 +70,31 @@ export const TabbedInterface: React.FC<TabbedInterfaceProps> = ({
       {showTabBar && tabs.length > 0 && (
         <div className="flex items-center border-b border-mythos-terminal-border bg-mythos-terminal-background overflow-x-auto">
           {tabs.map(tab => (
-            <div
-              key={tab.id}
-              className={`
-                flex items-center gap-2 px-4 py-2 border-r border-mythos-terminal-border
-                cursor-pointer transition-colors
-                ${
-                  activeTabId === tab.id
-                    ? 'bg-mythos-terminal-primary text-white'
-                    : 'bg-mythos-terminal-background text-mythos-terminal-text hover:bg-mythos-terminal-border/50'
-                }
-              `}
-              onClick={() => {
-                setActiveTab(tab.id);
-              }}
-            >
-              <span className="text-sm font-medium whitespace-nowrap">{tab.label}</span>
+            <div key={tab.id} className="flex items-stretch border-r border-mythos-terminal-border min-w-0">
+              <button
+                type="button"
+                className={`
+                  flex flex-1 items-center gap-2 px-4 py-2 min-w-0
+                  cursor-pointer transition-colors
+                  ${
+                    activeTabId === tab.id
+                      ? 'bg-mythos-terminal-primary text-white'
+                      : 'bg-mythos-terminal-background text-mythos-terminal-text hover:bg-mythos-terminal-border/50'
+                  }
+                `}
+                onClick={() => {
+                  setActiveTab(tab.id);
+                }}
+              >
+                <span className="text-sm font-medium whitespace-nowrap">{tab.label}</span>
+              </button>
               {tab.closable !== false && (
                 <button
-                  onClick={e => {
-                    e.stopPropagation();
+                  type="button"
+                  onClick={() => {
                     closeTab(tab.id);
                   }}
-                  className="ml-1 hover:bg-black/20 rounded p-0.5 transition-colors"
+                  className="shrink-0 min-h-9 min-w-9 px-2 hover:bg-black/20 transition-colors self-stretch flex items-center justify-center"
                   aria-label={`Close ${tab.label}`}
                 >
                   <X size={14} />

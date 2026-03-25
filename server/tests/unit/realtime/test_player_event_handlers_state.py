@@ -58,7 +58,7 @@ async def test_handle_player_xp_awarded_success(player_state_event_handler, mock
     mock_connection_manager.get_player = AsyncMock(return_value=mock_player)
     mock_connection_manager.send_personal_message = AsyncMock()
     event = PlayerXPAwardEvent(player_id=player_id, xp_amount=100, new_level=5)
-    with patch("server.realtime.envelope.build_event") as mock_build_event:
+    with patch("server.realtime.player_event_handlers_state.build_event") as mock_build_event:
         mock_build_event.return_value = {"type": "player_xp_updated"}
         await player_state_event_handler.handle_player_xp_awarded(event)
         mock_connection_manager.get_player.assert_awaited_once_with(player_id)
@@ -110,7 +110,7 @@ async def test_handle_player_xp_awarded_player_no_current_room_id(player_state_e
     mock_connection_manager.get_player = AsyncMock(return_value=mock_player)
     mock_connection_manager.send_personal_message = AsyncMock()
     event = PlayerXPAwardEvent(player_id=player_id, xp_amount=100, new_level=5)
-    with patch("server.realtime.envelope.build_event") as mock_build_event:
+    with patch("server.realtime.player_event_handlers_state.build_event") as mock_build_event:
         mock_build_event.return_value = {"type": "player_xp_updated"}
         await player_state_event_handler.handle_player_xp_awarded(event)
         mock_connection_manager.send_personal_message.assert_awaited_once()
@@ -127,7 +127,7 @@ async def test_handle_player_dp_updated_success(player_state_event_handler, mock
     mock_connection_manager.get_player = AsyncMock(return_value=mock_player)
     mock_connection_manager.send_personal_message = AsyncMock()
     event = PlayerDPUpdated(player_id=player_id, old_dp=60, new_dp=50, max_dp=100)
-    with patch("server.realtime.envelope.build_event") as mock_build_event:
+    with patch("server.realtime.player_event_handlers_state.build_event") as mock_build_event:
         mock_build_event.return_value = {"type": "player_dp_updated"}
         await player_state_event_handler.handle_player_dp_updated(event)
         mock_connection_manager.get_player.assert_awaited_once_with(player_id)
@@ -150,7 +150,7 @@ async def test_handle_player_dp_updated_player_not_found(player_state_event_hand
     mock_connection_manager.get_player = AsyncMock(return_value=None)
     mock_connection_manager.send_personal_message = AsyncMock()
     event = PlayerDPUpdated(player_id=player_id, old_dp=60, new_dp=50, max_dp=100)
-    with patch("server.realtime.envelope.build_event") as mock_build_event:
+    with patch("server.realtime.player_event_handlers_state.build_event") as mock_build_event:
         mock_build_event.return_value = {"type": "player_dp_updated"}
         await player_state_event_handler.handle_player_dp_updated(event)
         # Should still send message with event data
@@ -168,7 +168,7 @@ async def test_handle_player_dp_updated_player_no_get_stats(player_state_event_h
     mock_connection_manager.get_player = AsyncMock(return_value=mock_player)
     mock_connection_manager.send_personal_message = AsyncMock()
     event = PlayerDPUpdated(player_id=player_id, old_dp=60, new_dp=50, max_dp=100)
-    with patch("server.realtime.envelope.build_event") as mock_build_event:
+    with patch("server.realtime.player_event_handlers_state.build_event") as mock_build_event:
         mock_build_event.return_value = {"type": "player_dp_updated"}
         await player_state_event_handler.handle_player_dp_updated(event)
         mock_connection_manager.send_personal_message.assert_awaited_once()
@@ -198,7 +198,7 @@ async def test_handle_player_died_success(player_state_event_handler, mock_conne
     event.room_id = "room_001"
     event.killer_id = None
     event.killer_name = None
-    with patch("server.realtime.envelope.build_event") as mock_build_event:
+    with patch("server.realtime.player_event_handlers_state.build_event") as mock_build_event:
         mock_build_event.return_value = {"type": "player_died"}
         await player_state_event_handler.handle_player_died(event)
         mock_connection_manager.send_personal_message.assert_awaited_once()
@@ -228,7 +228,7 @@ async def test_handle_player_died_no_death_location(player_state_event_handler, 
     event.room_id = "room_001"
     event.killer_id = None
     event.killer_name = None
-    with patch("server.realtime.envelope.build_event") as mock_build_event:
+    with patch("server.realtime.player_event_handlers_state.build_event") as mock_build_event:
         mock_build_event.return_value = {"type": "player_died"}
         await player_state_event_handler.handle_player_died(event)
         # Should use room_id as fallback
@@ -247,7 +247,7 @@ async def test_handle_player_died_invalid_player_id(player_state_event_handler, 
     event.room_id = "room_001"
     event.killer_id = None
     event.killer_name = None
-    with patch("server.realtime.envelope.build_event") as mock_build_event:
+    with patch("server.realtime.player_event_handlers_state.build_event") as mock_build_event:
         mock_build_event.return_value = {"type": "player_died"}
         await player_state_event_handler.handle_player_died(event)
         mock_logger.error.assert_called()
@@ -274,12 +274,10 @@ async def test_handle_player_dp_decay_success(player_state_event_handler, mock_c
     event.new_dp = 50
     event.decay_amount = 10
     event.room_id = "room_001"
-    with patch("server.realtime.envelope.build_event") as mock_build_event:
+    with patch("server.realtime.player_event_handlers_state.build_event") as mock_build_event:
         mock_build_event.return_value = {"type": "player_dp_decay"}
         await player_state_event_handler.handle_player_dp_decay(event)
-        mock_connection_manager.send_personal_message.assert_awaited_once_with(
-            str(player_id), mock_build_event.return_value
-        )
+        mock_connection_manager.send_personal_message.assert_awaited_once_with(player_id, mock_build_event.return_value)
 
 
 @pytest.mark.asyncio

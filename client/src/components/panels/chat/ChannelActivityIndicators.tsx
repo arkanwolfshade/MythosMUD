@@ -62,7 +62,7 @@ export const ChannelActivityIndicators: React.FC<ChannelActivityIndicatorsProps>
                 {channel.name}
               </span>
               {unreadCount > 0 && (
-                <div className="bg-mythos-terminal-error text-white text-xs rounded-full px-1 min-w-badge h-4 flex items-center justify-center animate-bounce">
+                <div className="bg-mythos-terminal-error text-white text-xs rounded-full px-1 min-w-badge h-4 flex items-center justify-center animate-eldritch-pulse">
                   {unreadCount > 99 ? '99+' : unreadCount}
                 </div>
               )}

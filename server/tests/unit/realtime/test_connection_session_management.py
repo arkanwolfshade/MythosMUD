@@ -239,16 +239,18 @@ def test_cleanup_old_session_tracking_no_player():
 
 
 def test_cleanup_old_session_tracking_success():
-    """Test _cleanup_old_session_tracking() cleans up old session."""
+    """Test _cleanup_old_session_tracking() cleans up old session on reconnect."""
     player_id = uuid.uuid4()
     old_session_id = "old_session"
     mock_manager = MagicMock()
     mock_manager.player_sessions = {player_id: old_session_id}
     mock_manager.session_connections = {old_session_id: ["conn_1", "conn_2"]}
+    mock_manager.session_disconnect_times = {old_session_id: 1234567890.0}
 
     _cleanup_old_session_tracking(player_id, mock_manager)
 
     assert old_session_id not in mock_manager.session_connections
+    assert old_session_id not in mock_manager.session_disconnect_times
 
 
 def test_cleanup_old_session_tracking_session_not_in_connections():

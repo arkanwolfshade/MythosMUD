@@ -1,185 +1,17 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import React from 'react';
 import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ChatPanel } from '../panels/ChatPanel';
-
-// Mock the child components to isolate testing
-vi.mock('../../config/channels', () => {
-  const baseChannels = [
-    { id: 'say', name: 'Say', shortcut: 'say' },
-    { id: 'local', name: 'Local', shortcut: 'local' },
-    { id: 'whisper', name: 'Whisper', shortcut: 'whisper' },
-    { id: 'shout', name: 'Shout', shortcut: 'shout' },
-  ];
-  const allChannel = { id: 'all', name: 'All Messages' };
-
-  return {
-    AVAILABLE_CHANNELS: baseChannels,
-    ALL_MESSAGES_CHANNEL: allChannel,
-    CHAT_CHANNEL_OPTIONS: [allChannel, ...baseChannels],
-    DEFAULT_CHANNEL: 'all',
-    getChannelById: (channelId: string) =>
-      channelId === allChannel.id ? allChannel : baseChannels.find(channel => channel.id === channelId),
-  };
-});
-
-vi.mock('../../utils/ansiToHtml', () => ({
-  ansiToHtmlWithBreaks: (text: string) => text.replace(/\n/g, '<br/>'),
-}));
-
-vi.mock('../../utils/messageTypeUtils', () => ({
-  extractChannelFromMessage: (text: string) => {
-    if (text.includes('[local]')) return 'local';
-    if (text.includes('[whisper]')) return 'whisper';
-    if (text.includes('[shout]')) return 'shout';
-    return 'say';
-  },
-  isChatContent: (text: string) => {
-    return text.includes('[local]') || text.includes('[whisper]') || text.includes('[shout]') || text.includes('says:');
-  },
-}));
-
-vi.mock('../ui/ChannelSelector', () => ({
-  ChannelSelector: ({
-    selectedChannel,
-    onChannelSelect,
-    disabled,
-    channels,
-    className,
-  }: {
-    selectedChannel: string;
-    onChannelSelect?: (channel: string) => void;
-    disabled?: boolean;
-    channels: Array<{ id: string; name: string }>;
-    className?: string;
-  }) => (
-    <select
-      data-testid="channel-selector"
-      value={selectedChannel}
-      onChange={e => onChannelSelect?.(e.target.value)}
-      disabled={disabled}
-      className={className}
-      aria-label="Channel Selector"
-    >
-      {channels.map((channel: { id: string; name: string }) => (
-        <option key={channel.id} value={channel.id}>
-          {channel.name}
-        </option>
-      ))}
-    </select>
-  ),
-}));
-
-vi.mock('../ui/EldritchIcon', () => ({
-  EldritchIcon: ({
-    name,
-    size,
-    className,
-    variant,
-  }: {
-    name: string;
-    size?: string;
-    className?: string;
-    variant?: string;
-  }) => (
-    <span data-testid={`eldritch-icon-${name}`} className={className} style={{ fontSize: size }} data-variant={variant}>
-      {name}
-    </span>
-  ),
-  MythosIcons: {
-    chat: 'chat-icon',
-    clear: 'clear-icon',
-    download: 'download-icon',
-    clock: 'clock-icon',
-    move: 'move-icon',
-    exit: 'exit-icon',
-    connection: 'connection-icon',
-  },
-}));
-
-vi.mock('../ui/TerminalButton', () => ({
-  TerminalButton: ({
-    children,
-    onClick,
-    disabled,
-    variant,
-    size,
-    className,
-    ...props
-  }: {
-    children: React.ReactNode;
-    onClick?: () => void;
-    disabled?: boolean;
-    variant?: string;
-    size?: string;
-    className?: string;
-    [key: string]: unknown;
-  }) => (
-    <button
-      {...props}
-      data-testid="terminal-button"
-      onClick={onClick}
-      disabled={disabled}
-      className={`terminal-button ${variant || ''} ${size || ''} ${className || ''}`}
-    >
-      {children}
-    </button>
-  ),
-}));
-
-// Mock console.log to avoid noise in tests
-const mockConsoleLog = vi.spyOn(console, 'log').mockImplementation(() => {});
+import { createChatPanelDefaultProps, mockMessages } from './chatPanelTestHelpers';
+import { mockConsoleLog } from './chatPanelTestSetup';
 
 describe('ChatPanel', () => {
-  const mockMessages: Array<{
-    text: string;
-    timestamp: string;
-    isHtml: boolean;
-    messageType: string;
-    channel?: string;
-    aliasChain?: Array<{ original: string; expanded: string; alias_name: string }>;
-  }> = [
-    {
-      text: '[local] Player1 says: Hello everyone!',
-      timestamp: '2024-01-01T10:00:00Z',
-      isHtml: false,
-      messageType: 'chat',
-      channel: 'local',
-    },
-    {
-      text: '[whisper] Player2 whispers: Secret message',
-      timestamp: '2024-01-01T10:01:00Z',
-      isHtml: false,
-      messageType: 'chat',
-      channel: 'whisper',
-    },
-    {
-      text: 'System: Welcome to the game!',
-      timestamp: '2024-01-01T10:02:00Z',
-      isHtml: false,
-      messageType: 'system',
-    },
-    {
-      text: 'You move north.',
-      timestamp: '2024-01-01T10:03:00Z',
-      isHtml: false,
-      messageType: 'command',
-    },
-  ];
-
-  const defaultProps = {
-    messages: mockMessages,
-    onSendChatMessage: vi.fn(),
-    onClearMessages: vi.fn(),
-    onDownloadLogs: vi.fn(),
-    disabled: false,
-    isConnected: true,
-    selectedChannel: 'local',
-    onChannelSelect: vi.fn(),
-  };
+  let defaultProps: ReturnType<typeof createChatPanelDefaultProps>;
 
   beforeEach(() => {
+    defaultProps = createChatPanelDefaultProps();
     vi.clearAllMocks();
     mockConsoleLog.mockClear();
   });
@@ -202,7 +34,9 @@ describe('ChatPanel', () => {
       render(<ChatPanel {...defaultProps} />);
 
       expect(screen.getByTestId('channel-selector')).toBeInTheDocument();
-      expect(screen.getAllByTestId('terminal-button')).toHaveLength(2); // Clear and Download buttons
+      expect(screen.getByTestId('chat-panel-clear-messages')).toBeInTheDocument();
+      expect(screen.getByTestId('chat-panel-download-logs')).toBeInTheDocument();
+      expect(screen.getByTestId('chat-panel-export')).toBeInTheDocument();
     });
 
     it('should display messages correctly', async () => {
@@ -312,6 +146,7 @@ describe('ChatPanel', () => {
           text: 'Message with <strong>HTML</strong> content',
           timestamp: '2024-01-01T10:00:00Z',
           isHtml: true,
+          isCompleteHtml: true,
           messageType: 'chat',
           channel: 'local',
         },
@@ -319,11 +154,12 @@ describe('ChatPanel', () => {
 
       render(<ChatPanel {...defaultProps} messages={htmlMessages} selectedChannel="local" />);
 
-      // The HTML should be rendered - check for the complete message content
+      // Timestamp prefix + body; strong renders as bold text in the DOM
       const messageElement = screen.getByTestId('chat-message');
-      expect(messageElement).toHaveTextContent('Message with HTML content');
-      // Also check that the strong tag is rendered
-      expect(screen.getByText('HTML')).toBeInTheDocument();
+      expect(messageElement.textContent).toMatch(/10:00:00/);
+      expect(messageElement.textContent).toContain('Message with');
+      expect(messageElement.textContent).toContain('HTML');
+      expect(messageElement.querySelector('strong')?.textContent).toBe('HTML');
     });
   });
 
@@ -349,18 +185,10 @@ describe('ChatPanel', () => {
     it('should show activity indicators for all channels', () => {
       render(<ChatPanel {...defaultProps} />);
 
-      // Should show activity indicators for all channels (check for role="button" elements)
-      const channelButtons = screen.getAllByRole('button');
-      const channelNames = channelButtons
-        .map(button => button.textContent)
-        .filter(text => text && ['Say', 'Local', 'Whisper', 'Shout'].includes(text.trim()));
-
-      // Channel names should be found in the activity indicators
-
-      expect(channelNames.length).toBeGreaterThanOrEqual(3); // At least 3 channels should be present
-      expect(channelNames).toContain('Say');
-      expect(channelNames).toContain('Local');
-      expect(channelNames).toContain('Shout');
+      const activity = screen.getByRole('region', { name: 'Channel Activity Indicators' });
+      expect(within(activity).getByRole('button', { name: /Say channel/i })).toBeInTheDocument();
+      expect(within(activity).getByRole('button', { name: /Local channel/i })).toBeInTheDocument();
+      expect(within(activity).getByRole('button', { name: /Whisper channel/i })).toBeInTheDocument();
     });
 
     it('should clear unread counts when switching channels', async () => {
@@ -480,12 +308,9 @@ describe('ChatPanel', () => {
       const mockOnClearMessages = vi.fn();
       render(<ChatPanel {...defaultProps} onClearMessages={mockOnClearMessages} />);
 
-      const clearButton = screen
-        .getAllByTestId('terminal-button')
-        .find(button => button.querySelector('[data-testid="eldritch-icon-clear-icon"]'));
-
+      const clearButton = screen.getByTestId('chat-panel-clear-messages');
       expect(clearButton).toBeInTheDocument();
-      await user.click(clearButton!);
+      await user.click(clearButton);
 
       expect(mockOnClearMessages).toHaveBeenCalled();
     });
@@ -495,29 +320,26 @@ describe('ChatPanel', () => {
       const mockOnDownloadLogs = vi.fn();
       render(<ChatPanel {...defaultProps} onDownloadLogs={mockOnDownloadLogs} />);
 
-      const downloadButton = screen
-        .getAllByTestId('terminal-button')
-        .find(button => button.querySelector('[data-testid="eldritch-icon-download-icon"]'));
-
+      const downloadButton = screen.getByTestId('chat-panel-download-logs');
       expect(downloadButton).toBeInTheDocument();
-      await user.click(downloadButton!);
+      await user.click(downloadButton);
 
       expect(mockOnDownloadLogs).toHaveBeenCalled();
     });
 
-    it('should not show action buttons when callbacks are not provided', () => {
+    it('should not show clear/download when callbacks are not provided but still offer export', () => {
       // Destructuring removes callback props from defaultProps, variables intentionally unused
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { onClearMessages, onDownloadLogs, ...propsWithoutActions } = defaultProps;
       render(<ChatPanel {...propsWithoutActions} />);
 
-      // Clear button should not be present
       const clearButton = screen.queryByRole('button', { name: /clear/i });
       expect(clearButton).not.toBeInTheDocument();
 
-      // Download button should not be present
       const downloadButton = screen.queryByRole('button', { name: /download/i });
       expect(downloadButton).not.toBeInTheDocument();
+
+      expect(screen.getByTestId('chat-panel-export')).toBeInTheDocument();
     });
   });
 
@@ -631,87 +453,6 @@ describe('ChatPanel', () => {
       // Messages should have context menu functionality
       const message = screen.getByText('[local] Player1 says: Hello everyone!');
       expect(message).toHaveAttribute('title', 'Right-click for options');
-    });
-  });
-
-  describe('Edge Cases and Error Handling', () => {
-    it('should handle messages with missing properties gracefully', () => {
-      const incompleteMessages = [
-        {
-          text: 'Message without timestamp',
-          timestamp: '2024-01-01T10:00:00Z', // Provide fallback timestamp
-          isHtml: false,
-          messageType: 'chat',
-          channel: 'local',
-        },
-        {
-          text: 'Message without text', // Provide fallback text
-          timestamp: '2024-01-01T10:00:00Z',
-          isHtml: false,
-          messageType: 'chat',
-          channel: 'local',
-        },
-      ];
-
-      expect(() => {
-        render(<ChatPanel {...defaultProps} messages={incompleteMessages} />);
-      }).not.toThrow();
-    });
-
-    it('should handle very long messages', () => {
-      const longMessage = 'a'.repeat(1000);
-      const messagesWithLongText = [
-        {
-          text: longMessage,
-          timestamp: '2024-01-01T10:00:00Z',
-          isHtml: false,
-          messageType: 'chat',
-          channel: 'local',
-        },
-      ];
-
-      render(<ChatPanel {...defaultProps} messages={messagesWithLongText} />);
-
-      expect(screen.getByText(longMessage)).toBeInTheDocument();
-    });
-
-    it('should handle many messages efficiently', () => {
-      const manyMessages = Array.from({ length: 100 }, (_, i) => ({
-        text: `Message ${i + 1}`,
-        timestamp: `2024-01-01T${10 + Math.floor(i / 60)}:${i % 60}:00Z`,
-        isHtml: false,
-        messageType: 'chat',
-        channel: 'local',
-      }));
-
-      expect(() => {
-        render(<ChatPanel {...defaultProps} messages={manyMessages} />);
-      }).not.toThrow();
-    });
-
-    it('should handle messages with special characters', () => {
-      const specialMessages = [
-        {
-          text: 'Message with "quotes" & <html> tags',
-          timestamp: '2024-01-01T10:00:00Z',
-          isHtml: false,
-          messageType: 'chat',
-          channel: 'local',
-        },
-        {
-          text: 'Message with \n newlines and \t tabs',
-          timestamp: '2024-01-01T10:01:00Z',
-          isHtml: true,
-          messageType: 'chat',
-          channel: 'local',
-        },
-      ];
-
-      render(<ChatPanel {...defaultProps} messages={specialMessages} />);
-
-      // HTML tags are stripped by React's dangerouslySetInnerHTML, so check for the visible text parts
-      expect(screen.getByText(/Message with "quotes" &/)).toBeInTheDocument();
-      expect(screen.getByText(/tags/)).toBeInTheDocument();
     });
   });
 });

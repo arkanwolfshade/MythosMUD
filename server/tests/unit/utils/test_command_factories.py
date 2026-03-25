@@ -304,6 +304,15 @@ def test_create_npc_command(factory):
     assert command is not None
 
 
+def test_create_spawn_command(factory):
+    """Test create_spawn_command produces NPCCommand for npc spawn subcommand."""
+    command = factory.create_spawn_command(["1", "room_123"])
+    assert command is not None
+    assert command.command_type.value == "npc"
+    assert command.subcommand == "spawn"
+    assert command.args == ["1", "room_123"]
+
+
 def test_create_summon_command(factory):
     """Test create_summon_command delegates to utility factory."""
     command = factory.create_summon_command(["npc"])

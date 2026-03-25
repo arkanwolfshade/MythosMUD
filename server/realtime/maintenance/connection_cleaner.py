@@ -14,6 +14,7 @@ import os
 import time
 import uuid
 from collections.abc import Callable
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
 from sqlalchemy.exc import SQLAlchemyError
@@ -27,6 +28,20 @@ def _stale_prune_max_age_seconds() -> int:
     """Stale-prune threshold (seconds). Higher in e2e/local to avoid mid-run drops."""
     env = os.environ.get("LOGGING_ENVIRONMENT") or ""
     return 300 if env in ("e2e_test", "local") else 90
+
+
+@dataclass
+class CleanupContext:
+    """Context for periodic cleanup checks. Groups parameters to stay under param-count limit."""
+
+    online_players: dict[uuid.UUID, dict[str, Any]]
+    last_seen: dict[uuid.UUID, float]
+    player_websockets: dict[uuid.UUID, list[str]]
+    active_websockets: dict[str, Any]
+    connection_timestamps: dict[str, float]
+    cleanup_stats: dict[str, Any]
+    last_active_update_times: dict[uuid.UUID, float]
+    connection_metadata: dict[str, Any] | None = None
 
 
 if TYPE_CHECKING:
@@ -179,6 +194,60 @@ class ConnectionCleaner:
         except (DatabaseError, SQLAlchemyError) as e:
             logger.error("Error pruning stale players", error=str(e))
 
+    def _identify_stale_connections(
+        self,
+        connection_timestamps: dict[str, float],
+        now_ts: float,
+    ) -> list[str]:
+        """Return connection IDs that exceed max_connection_age."""
+        stale: list[str] = []
+        for connection_id, timestamp in list(connection_timestamps.items()):
+            if now_ts - timestamp > self.memory_monitor.max_connection_age:
+                stale.append(connection_id)
+        return stale
+
+    def _get_player_id_from_metadata(
+        self,
+        connection_metadata: dict[str, Any] | None,
+        connection_id: str,
+    ) -> Any:
+        """Extract player_id from connection metadata if present."""
+        if not connection_metadata or connection_id not in connection_metadata:
+            return None
+        meta = connection_metadata.get(connection_id)
+        if meta is None or not hasattr(meta, "player_id"):
+            return None
+        return getattr(meta, "player_id", None)
+
+    async def _close_and_remove_stale_websocket(
+        self,
+        connection_id: str,
+        active_websockets: dict[str, "WebSocket"],
+        connection_timestamps: dict[str, float],
+        connection_metadata: dict[str, Any] | None,
+    ) -> None:
+        """Close stale WebSocket and remove from tracking. Handles None websocket defensively."""
+        websocket = active_websockets.get(connection_id)
+        if websocket is None:
+            active_websockets.pop(connection_id, None)
+            connection_timestamps.pop(connection_id, None)
+            return
+        player_id = self._get_player_id_from_metadata(connection_metadata, connection_id)
+        logger.info(
+            "Closing WebSocket due to connection timeout (debug: mid-run drops)",
+            disconnect_reason="connection_timeout",
+            connection_id=connection_id,
+            player_id=str(player_id) if player_id is not None else None,
+        )
+        try:
+            await websocket.close(code=1000, reason="Connection timeout")
+            logger.info("Successfully closed stale WebSocket", connection_id=connection_id)
+        except (DatabaseError, SQLAlchemyError) as e:
+            logger.warning("Error closing stale connection", connection_id=connection_id, error=str(e))
+        finally:
+            active_websockets.pop(connection_id, None)
+            connection_timestamps.pop(connection_id, None)
+
     async def cleanup_orphaned_data(
         self,
         connection_timestamps: dict[str, float],
@@ -213,50 +282,14 @@ class ConnectionCleaner:
             self.message_queue.cleanup_large_structures(self.memory_monitor.max_pending_messages)
 
             # Clean up stale connections
-            stale_connections = []
-            for connection_id, timestamp in list(connection_timestamps.items()):
-                connection_age = now_ts - timestamp
-                if connection_age > self.memory_monitor.max_connection_age:
-                    logger.info(
-                        "DEBUG: Connection is stale",
-                        connection_id=connection_id,
-                        connection_age=connection_age,
-                        max_connection_age=self.memory_monitor.max_connection_age,
-                    )
-                    stale_connections.append(connection_id)
-
+            stale_connections = self._identify_stale_connections(connection_timestamps, now_ts)
             for connection_id in stale_connections:
                 if connection_id not in active_websockets:
-                    del connection_timestamps[connection_id]
-                    cleanup_stats_local["stale_connections"] += 1
-                    continue
-                try:
-                    websocket = active_websockets[connection_id]
-                    # Guard against None websocket (can happen during cleanup)
-                    # Type annotation says dict[str, WebSocket], but runtime can have None
-                    # values during cleanup/race conditions. This is defensive programming.
-                    if websocket is None:
-                        del active_websockets[connection_id]  # type: ignore[unreachable]  # Reason: Type annotation says dict[str, WebSocket], but runtime can have None values during cleanup/race conditions, mypy cannot verify this defensive check
-                        del connection_timestamps[connection_id]
-                        cleanup_stats_local["stale_connections"] += 1
-                        continue
-                    player_id = None
-                    if connection_metadata and connection_id in connection_metadata:
-                        meta = connection_metadata.get(connection_id)
-                        if meta is not None and hasattr(meta, "player_id"):
-                            player_id = getattr(meta, "player_id", None)
-                    logger.info(
-                        "Closing WebSocket due to connection timeout (debug: mid-run drops)",
-                        disconnect_reason="connection_timeout",
-                        connection_id=connection_id,
-                        player_id=str(player_id) if player_id is not None else None,
+                    connection_timestamps.pop(connection_id, None)
+                else:
+                    await self._close_and_remove_stale_websocket(
+                        connection_id, active_websockets, connection_timestamps, connection_metadata
                     )
-                    await websocket.close(code=1000, reason="Connection timeout")
-                    logger.info("Successfully closed stale WebSocket", connection_id=connection_id)
-                except (DatabaseError, SQLAlchemyError) as e:
-                    logger.warning("Error closing stale connection", connection_id=connection_id, error=str(e))
-                del active_websockets[connection_id]
-                del connection_timestamps[connection_id]
                 cleanup_stats_local["stale_connections"] += 1
 
             # Update cleanup stats
@@ -268,6 +301,49 @@ class ConnectionCleaner:
 
         except (DatabaseError, SQLAlchemyError) as e:
             logger.error("Error cleaning up orphaned data", error=str(e), exc_info=True)
+
+    def _is_websocket_dead(self, websocket: "WebSocket") -> bool:
+        """Return True if websocket appears dead (should be cleaned up)."""
+        try:
+            return websocket.client_state.name != "CONNECTED"
+        except (RuntimeError, ConnectionError, AttributeError):
+            return True
+
+    def _get_players_to_check(
+        self,
+        player_id: uuid.UUID | None,
+        player_websockets: dict[uuid.UUID, list[str]],
+    ) -> list[uuid.UUID]:
+        """Return list of player IDs to check (single player or all)."""
+        if player_id:
+            return [player_id]
+        return list(player_websockets.keys())
+
+    async def _cleanup_dead_connections_for_player(
+        self,
+        pid: uuid.UUID,
+        player_websockets: dict[uuid.UUID, list[str]],
+        active_websockets: dict[str, "WebSocket"],
+        cleanup_results: dict[str, Any],
+    ) -> None:
+        """Clean up dead connections for a single player."""
+        if pid not in player_websockets:
+            return
+        for connection_id in player_websockets[pid].copy():
+            if connection_id not in active_websockets:
+                continue
+            websocket = active_websockets[connection_id]
+            if not self._is_websocket_dead(websocket):
+                continue
+            logger.debug(
+                "WebSocket cleanup check failed",
+                player_id=pid,
+                connection_id=connection_id,
+                error="WebSocket not connected",
+                error_type="ConnectionError",
+            )
+            await self.cleanup_dead_websocket(pid, connection_id)
+            cleanup_results["connections_cleaned"] += 1
 
     async def cleanup_dead_connections(
         self,
@@ -288,39 +364,15 @@ class ConnectionCleaner:
         """
         cleanup_results: dict[str, Any] = {"players_checked": 0, "connections_cleaned": 0, "errors": []}
 
-        try:  # pylint: disable=too-many-nested-blocks  # Reason: Connection cleanup requires complex nested logic for player iteration, connection validation, and error handling
-            if player_id:
-                # Clean up specific player
-                players_to_check = [player_id]
-            else:
-                # Clean up all players
-                players_to_check = list(player_websockets.keys())
-
+        try:
+            players_to_check = self._get_players_to_check(player_id, player_websockets)
             cleanup_results["players_checked"] = len(players_to_check)
 
             for pid in players_to_check:
                 try:
-                    # Check WebSocket connections
-                    if pid in player_websockets:
-                        connection_ids = player_websockets[pid].copy()
-                        for connection_id in connection_ids:
-                            if connection_id in active_websockets:
-                                websocket = active_websockets[connection_id]
-                                try:
-                                    # Check WebSocket health by checking its state
-                                    if websocket.client_state.name != "CONNECTED":
-                                        raise ConnectionError("WebSocket not connected")
-                                except (RuntimeError, ConnectionError, AttributeError) as e:
-                                    logger.debug(
-                                        "WebSocket cleanup check failed",
-                                        player_id=pid,
-                                        connection_id=connection_id,
-                                        error=str(e),
-                                        error_type=type(e).__name__,
-                                    )
-                                    # Connection is dead, clean it up
-                                    await self.cleanup_dead_websocket(pid, connection_id)
-                                    cleanup_results["connections_cleaned"] += 1
+                    await self._cleanup_dead_connections_for_player(
+                        pid, player_websockets, active_websockets, cleanup_results
+                    )
                 except (DatabaseError, SQLAlchemyError) as e:
                     cleanup_results["errors"].append(f"Error cleaning player {pid}: {e}")
 
@@ -332,6 +384,53 @@ class ConnectionCleaner:
             cleanup_results["errors"].append(str(e))
             return cleanup_results
 
+    def _get_online_player_ids(self, online_players: dict[uuid.UUID, dict[str, Any]]) -> set[str]:
+        """Return set of online player IDs as strings (room._players uses string UUIDs)."""
+        return {str(pid) for pid in online_players.keys()}
+
+    def _get_potential_ghost_players(self, room: Any, online_player_ids: set[str]) -> set[str]:
+        """Return players in room but not online. Empty if room has no get_players."""
+        if not hasattr(room, "get_players"):
+            return set()
+        room_player_ids = set(room.get_players())
+        return room_player_ids - online_player_ids
+
+    def _filter_actual_ghost_players(self, potential_ghost_players: set[str], room: Any) -> set[str]:
+        """Filter to players with zero WebSocket connections (or invalid UUIDs)."""
+        actual: set[str] = set()
+        for ghost_player_id_str in potential_ghost_players:
+            try:
+                ghost_player_uuid = uuid.UUID(ghost_player_id_str)
+                has_connections = self.has_websocket_connection(ghost_player_uuid)
+                if not has_connections:
+                    actual.add(ghost_player_id_str)
+                else:
+                    logger.debug(
+                        "Player in room but not in online_players - keeping due to active connection",
+                        player_id=ghost_player_id_str,
+                        room_id=room.id,
+                        has_websocket=has_connections,
+                    )
+            except (ValueError, AttributeError) as e:
+                logger.warning(
+                    "Invalid player ID format in room - removing",
+                    player_id=ghost_player_id_str,
+                    room_id=room.id,
+                    error=str(e),
+                )
+                actual.add(ghost_player_id_str)
+        return actual
+
+    def _remove_ghost_players_from_room(self, room: Any, ghost_player_ids: set[str]) -> None:
+        """Remove ghost players from room and log."""
+        for ghost_player_id in ghost_player_ids:
+            room.remove_player_silently(ghost_player_id)
+            logger.debug(
+                "DEBUG: Removed actual ghost player from room",
+                ghost_player_id=ghost_player_id,
+                room_id=room.id,
+            )
+
     def cleanup_ghost_players(self, online_players: dict[uuid.UUID, dict[str, Any]]) -> None:
         """
         Clean up ghost players from all rooms.
@@ -342,73 +441,26 @@ class ConnectionCleaner:
         Args:
             online_players: Online players dictionary
         """
-        try:  # pylint: disable=too-many-nested-blocks  # Reason: Room cleanup requires complex nested logic for persistence validation, room iteration, and player tracking
+        try:
             async_persistence = self.get_async_persistence()
             if not async_persistence or not hasattr(async_persistence, "list_rooms"):
                 return
 
-            # Get all online player IDs (convert to strings for comparison with room._players)
-            # CRITICAL FIX: room._players uses string UUIDs, online_players.keys() uses UUID objects
-            # We must convert to the same type for set comparison to work correctly
-            online_player_ids = {str(pid) for pid in online_players.keys()}
+            online_player_ids = self._get_online_player_ids(online_players)
 
-            # Get all rooms from the room cache
             for room in async_persistence.list_rooms():
-                if not hasattr(room, "get_players"):
+                potential = self._get_potential_ghost_players(room, online_player_ids)
+                if not potential:
                     continue
-
-                _room_id = room.id
-
-                # Get players in this room (already strings)
-                room_player_ids = set(room.get_players())
-
-                # Find ghost players (players in room but not online)
-                # Both sets are now strings, so comparison will work correctly
-                potential_ghost_players = room_player_ids - online_player_ids
-
-                if potential_ghost_players:
-                    # CRITICAL FIX: Before removing players, verify they actually have NO connections
-                    # A player might be in room._players but not in online_players during a race condition
-                    # (e.g., during movement, or between connection setup steps)
-                    # Only remove players who have ZERO WebSocket connections
-                    actual_ghost_players = set()
-                    for ghost_player_id_str in potential_ghost_players:
-                        try:
-                            ghost_player_uuid = uuid.UUID(ghost_player_id_str)
-                            # Check if player has ANY WebSocket connections
-                            has_connections = self.has_websocket_connection(ghost_player_uuid)
-                            if not has_connections:
-                                actual_ghost_players.add(ghost_player_id_str)
-                            else:
-                                logger.debug(
-                                    "Player in room but not in online_players - keeping due to active connection",
-                                    player_id=ghost_player_id_str,
-                                    room_id=room.id,
-                                    has_websocket=has_connections,
-                                )
-                        except (ValueError, AttributeError) as e:
-                            # If we can't parse the UUID, it's definitely a ghost
-                            logger.warning(
-                                "Invalid player ID format in room - removing",
-                                player_id=ghost_player_id_str,
-                                room_id=room.id,
-                                error=str(e),
-                            )
-                            actual_ghost_players.add(ghost_player_id_str)
-
-                    if actual_ghost_players:
-                        logger.debug(
-                            "DEBUG: Found actual ghost players in room",
-                            room_id=room.id,
-                            ghost_players=actual_ghost_players,
-                        )
-                        for ghost_player_id in actual_ghost_players:
-                            room.remove_player_silently(ghost_player_id)
-                            logger.debug(
-                                "DEBUG: Removed actual ghost player from room",
-                                ghost_player_id=ghost_player_id,
-                                room_id=room.id,
-                            )
+                actual = self._filter_actual_ghost_players(potential, room)
+                if not actual:
+                    continue
+                logger.debug(
+                    "DEBUG: Found actual ghost players in room",
+                    room_id=room.id,
+                    ghost_players=actual,
+                )
+                self._remove_ghost_players_from_room(room, actual)
 
         except (DatabaseError, SQLAlchemyError) as e:
             logger.error("Error cleaning up ghost players", error=str(e), exc_info=True)
@@ -441,43 +493,31 @@ class ConnectionCleaner:
         except (DatabaseError, SQLAlchemyError) as e:
             logger.error("Error during force cleanup", error=str(e), exc_info=True)
 
-    async def check_and_cleanup(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Cleanup checking requires many parameters for context and cleanup operations
-        self,
-        online_players: dict[uuid.UUID, dict[str, Any]],
-        last_seen: dict[uuid.UUID, float],
-        player_websockets: dict[uuid.UUID, list[str]],
-        active_websockets: dict[str, "WebSocket"],
-        connection_timestamps: dict[str, float],
-        cleanup_stats: dict[str, Any],
-        last_active_update_times: dict[uuid.UUID, float],
-        connection_metadata: dict[str, Any] | None = None,
-    ) -> None:
+    async def check_and_cleanup(self, ctx: CleanupContext) -> None:
         """
         Periodically check for cleanup conditions and perform cleanup if needed.
 
         Args:
-            online_players: Online players dictionary
-            last_seen: Last seen timestamps
-            player_websockets: Player to WebSocket connection mapping
-            active_websockets: Active WebSocket connections
-            connection_timestamps: Connection timestamp tracking
-            cleanup_stats: Cleanup statistics dictionary
-            last_active_update_times: Last active update times
-            connection_metadata: Optional connection metadata (for disconnect_reason logging).
+            ctx: Cleanup context (online_players, last_seen, player_websockets,
+                 active_websockets, connection_timestamps, cleanup_stats,
+                 last_active_update_times, connection_metadata).
         """
         if self.memory_monitor.should_cleanup():
             logger.info("MemoryMonitor triggered cleanup.")
-            cleanup_stats["memory_cleanups"] += 1
-            cleanup_stats["last_cleanup"] = time.time()
+            ctx.cleanup_stats["memory_cleanups"] += 1
+            ctx.cleanup_stats["last_cleanup"] = time.time()
             await self.cleanup_orphaned_data(
-                connection_timestamps, active_websockets, cleanup_stats, connection_metadata
+                ctx.connection_timestamps,
+                ctx.active_websockets,
+                ctx.cleanup_stats,
+                ctx.connection_metadata,
             )
             self.prune_stale_players(
-                last_seen,
-                online_players,
-                player_websockets,
-                active_websockets,
-                last_active_update_times,
+                ctx.last_seen,
+                ctx.online_players,
+                ctx.player_websockets,
+                ctx.active_websockets,
+                ctx.last_active_update_times,
                 max_age_seconds=_stale_prune_max_age_seconds(),
             )
             self.memory_monitor.force_garbage_collection()

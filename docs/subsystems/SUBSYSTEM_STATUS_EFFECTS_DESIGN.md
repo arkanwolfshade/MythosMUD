@@ -60,7 +60,8 @@ flowchart LR
 - **Movement**: \_check_player_posture blocks movement unless position == "standing"; position
   comes from get_stats() (sitting/lying from pose/rest/ground).
 - **Respawn**: When DP reaches -10 (death), respawn flow places player at respawn location and
-  restores DP (see SUBSYSTEM_RESPAWN_DESIGN.md).
+  restores DP (see SUBSYSTEM_RESPAWN_DESIGN.md). Default respawn location is the arena center
+  (`limbo_arena_arena_arena_5_5`); see `player_respawn_service.DEFAULT_RESPAWN_ROOM`.
 - **Room attributes**: no_combat (block combat), no_death (cap damage so DP never below 0) per
   ADR-009.
 

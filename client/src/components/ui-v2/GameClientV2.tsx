@@ -1,18 +1,14 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 
-import { Z_INDEX_OVERLAY_TOP } from '../../constants/layout';
 import type { HealthStatus } from '../../types/health';
-import { determineDpTier } from '../../types/health';
-import type { LucidityStatus } from '../../types/lucidity';
-import { AsciiMinimap } from '../map/AsciiMinimap';
+import { deriveHealthStatusFromPlayer } from '../../types/health';
+import { deriveLucidityStatusFromPlayer, type LucidityStatus } from '../../types/lucidity';
+import { GameClientV2AuxiliaryPanels } from './GameClientV2AuxiliaryPanels';
 import { HeaderBar } from './HeaderBar';
 import { PanelContainer } from './PanelSystem/PanelContainer';
 import { PanelManagerProvider } from './PanelSystem/PanelManager';
 import { usePanelManager } from './PanelSystem/usePanelManager';
-import { CharacterInfoPanel } from './panels/CharacterInfoPanel';
 import { ChatHistoryPanel } from './panels/ChatHistoryPanel';
-import { CommandHistoryPanel } from './panels/CommandHistoryPanel';
-import { CommandInputPanel } from './panels/CommandInputPanel';
 import { GameInfoPanel } from './panels/GameInfoPanel';
 import { LocationPanel } from './panels/LocationPanel';
 import { OccupantsPanel } from './panels/OccupantsPanel';
@@ -98,38 +94,16 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
 }) => {
   const panelManager = usePanelManager();
 
-  // Derive health and lucidity status (similar to GameTerminal)
-  const derivedHealthStatus = useMemo<HealthStatus | null>(() => {
-    if (healthStatus) {
-      return healthStatus;
-    }
-    if (player?.stats?.current_dp !== undefined) {
-      const maxDp = player.stats.max_dp ?? 100;
-      return {
-        current: player.stats.current_dp,
-        max: maxDp,
-        tier: determineDpTier(player.stats.current_dp, maxDp),
-        posture: player.stats.position,
-        inCombat: player.in_combat ?? false,
-      };
-    }
-    return null;
-  }, [healthStatus, player]);
+  // Prefer container-derived status; fall back to projector-authoritative player stats only.
+  const derivedHealthStatus = useMemo<HealthStatus | null>(
+    () => healthStatus ?? deriveHealthStatusFromPlayer(player, undefined),
+    [healthStatus, player]
+  );
 
-  const derivedLucidityStatus = useMemo<LucidityStatus | null>(() => {
-    if (lucidityStatus) {
-      return lucidityStatus;
-    }
-    if (player?.stats?.lucidity !== undefined) {
-      return {
-        current: player.stats.lucidity,
-        max: player.stats.max_lucidity ?? 100,
-        tier: 'lucid',
-        liabilities: [],
-      };
-    }
-    return null;
-  }, [lucidityStatus, player]);
+  const derivedLucidityStatus = useMemo<LucidityStatus | null>(
+    () => lucidityStatus ?? deriveLucidityStatusFromPlayer(player, undefined),
+    [lucidityStatus, player]
+  );
 
   // Handle window resize - scale panels proportionally based on viewport
   // Maintains three-column layout structure from wireframe
@@ -340,172 +314,24 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
           </PanelContainer>
         )}
 
-        {characterInfoPanel && characterInfoPanel.isVisible && (
-          <PanelContainer
-            id={characterInfoPanel.id}
-            title={characterInfoPanel.title}
-            position={characterInfoPanel.position}
-            size={characterInfoPanel.size}
-            zIndex={characterInfoPanel.zIndex}
-            isMinimized={characterInfoPanel.isMinimized}
-            isMaximized={characterInfoPanel.isMaximized}
-            isVisible={characterInfoPanel.isVisible}
-            minSize={characterInfoPanel.minSize}
-            variant="default"
-            onPositionChange={panelManager.updatePosition}
-            onSizeChange={panelManager.updateSize}
-            onMinimize={panelManager.toggleMinimize}
-            onMaximize={panelManager.toggleMaximize}
-            onFocus={panelManager.focusPanel}
-          >
-            <CharacterInfoPanel
-              player={player}
-              healthStatus={derivedHealthStatus}
-              lucidityStatus={derivedLucidityStatus}
-            />
-          </PanelContainer>
-        )}
-
-        {/* Opaque backdrop behind minimap popout: same positioning as Rnd, always on top of other panels */}
-        {minimapPanel &&
-          minimapPanel.isVisible &&
-          (() => {
-            const headerHeight = 48;
-            const isMax = minimapPanel.isMaximized;
-            const pos = isMax ? { x: 0, y: headerHeight } : minimapPanel.position;
-            const sz = isMax
-              ? {
-                  width: typeof window !== 'undefined' ? window.innerWidth : 800,
-                  height: (typeof window !== 'undefined' ? window.innerHeight : 600) - headerHeight,
-                }
-              : minimapPanel.isMinimized
-                ? { width: 200, height: 40 }
-                : minimapPanel.size;
-            const minimapBackdropZ = 2147483646;
-            return (
-              <div
-                aria-hidden
-                className="pointer-events-none rounded border border-gray-700"
-                style={{
-                  position: 'absolute',
-                  left: 0,
-                  top: 0,
-                  width: sz.width,
-                  height: sz.height,
-                  transform: `translate(${pos.x}px, ${pos.y}px)`,
-                  zIndex: minimapBackdropZ,
-                  backgroundColor: '#0a0a0a',
-                }}
-              />
-            );
-          })()}
-        {minimapPanel && minimapPanel.isVisible && (
-          <PanelContainer
-            id={minimapPanel.id}
-            title={minimapPanel.title}
-            position={minimapPanel.position}
-            size={minimapPanel.size}
-            zIndex={Z_INDEX_OVERLAY_TOP}
-            isMinimized={minimapPanel.isMinimized}
-            isMaximized={minimapPanel.isMaximized}
-            isVisible={minimapPanel.isVisible}
-            minSize={minimapPanel.minSize}
-            opaque={minimapPanel.opaque}
-            minHeight={minimapPanel.minHeight}
-            variant="default"
-            className="panel-minimap-opaque"
-            onPositionChange={panelManager.updatePosition}
-            onSizeChange={panelManager.updateSize}
-            onMinimize={panelManager.toggleMinimize}
-            onMaximize={panelManager.toggleMaximize}
-            onFocus={panelManager.focusPanel}
-          >
-            <div
-              className="min-h-[100px] h-full w-full flex flex-col bg-mythos-terminal-background"
-              data-panel="minimap-content"
-            >
-              <div className="text-mythos-terminal-text/80 text-xs shrink-0 px-1 pb-1">Click map to open full view</div>
-              <button
-                type="button"
-                className="appearance-none w-full text-left flex-1 min-h-[80px] flex flex-col overflow-auto cursor-pointer border border-mythos-terminal-border/50 rounded p-1.5 text-mythos-terminal-text bg-mythos-terminal-background"
-                onClick={onMapClick}
-                title="Click to open full map"
-              >
-                {room?.id ? (
-                  <>
-                    <div className="text-xs text-mythos-terminal-text/70 shrink-0 truncate" title={room.id}>
-                      {room.id}
-                    </div>
-                    <div className="flex-1 min-h-[64px] mt-1">
-                      <AsciiMinimap
-                        plane={room.plane ?? ''}
-                        zone={room.zone ?? ''}
-                        subZone={room.sub_zone}
-                        currentRoomId={room.id}
-                        authToken={authToken}
-                        size={5}
-                        variant="inline"
-                        onClick={onMapClick}
-                      />
-                    </div>
-                  </>
-                ) : (
-                  <div className="w-full h-full min-h-[60px] flex items-center justify-center text-mythos-terminal-text/70 text-sm">
-                    No location — click to open map
-                  </div>
-                )}
-              </button>
-            </div>
-          </PanelContainer>
-        )}
-
-        {commandHistoryPanel && commandHistoryPanel.isVisible && (
-          <PanelContainer
-            id={commandHistoryPanel.id}
-            title={commandHistoryPanel.title}
-            position={commandHistoryPanel.position}
-            size={commandHistoryPanel.size}
-            zIndex={commandHistoryPanel.zIndex}
-            isMinimized={commandHistoryPanel.isMinimized}
-            isMaximized={commandHistoryPanel.isMaximized}
-            isVisible={commandHistoryPanel.isVisible}
-            minSize={commandHistoryPanel.minSize}
-            variant="elevated"
-            onPositionChange={panelManager.updatePosition}
-            onSizeChange={panelManager.updateSize}
-            onMinimize={panelManager.toggleMinimize}
-            onMaximize={panelManager.toggleMaximize}
-            onFocus={panelManager.focusPanel}
-          >
-            <CommandHistoryPanel
-              commandHistory={commandHistory}
-              onClearHistory={onClearHistory}
-              onSelectCommand={handleSelectCommand}
-            />
-          </PanelContainer>
-        )}
-
-        {commandInputPanel && commandInputPanel.isVisible && (
-          <PanelContainer
-            id={commandInputPanel.id}
-            title={commandInputPanel.title}
-            position={commandInputPanel.position}
-            size={commandInputPanel.size}
-            zIndex={commandInputPanel.zIndex}
-            isMinimized={commandInputPanel.isMinimized}
-            isMaximized={commandInputPanel.isMaximized}
-            isVisible={commandInputPanel.isVisible}
-            minSize={commandInputPanel.minSize}
-            variant="elevated"
-            onPositionChange={panelManager.updatePosition}
-            onSizeChange={panelManager.updateSize}
-            onMinimize={panelManager.toggleMinimize}
-            onMaximize={panelManager.toggleMaximize}
-            onFocus={panelManager.focusPanel}
-          >
-            <CommandInputPanel onSendCommand={onSendCommand} disabled={!isConnected} isConnected={isConnected} />
-          </PanelContainer>
-        )}
+        <GameClientV2AuxiliaryPanels
+          panelManager={panelManager}
+          characterInfoPanel={characterInfoPanel}
+          minimapPanel={minimapPanel}
+          commandHistoryPanel={commandHistoryPanel}
+          commandInputPanel={commandInputPanel}
+          player={player}
+          derivedHealthStatus={derivedHealthStatus}
+          derivedLucidityStatus={derivedLucidityStatus}
+          room={room}
+          authToken={authToken}
+          onMapClick={onMapClick}
+          commandHistory={commandHistory}
+          onClearHistory={onClearHistory}
+          onSelectCommand={handleSelectCommand}
+          onSendCommand={onSendCommand}
+          isConnected={isConnected}
+        />
       </div>
     </div>
   );

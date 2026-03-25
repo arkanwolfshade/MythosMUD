@@ -4,24 +4,163 @@ Player state update event handlers.
 This module handles player state updates (XP, DP, death, decay).
 """
 
-import uuid
-from typing import Any
+from __future__ import annotations
+
+from collections.abc import Mapping
+from typing import cast
 
 from sqlalchemy.exc import SQLAlchemyError
+from structlog.stdlib import BoundLogger
 
-from ..events.event_types import PlayerDPUpdated
+from ..events.event_types import PlayerDiedEvent, PlayerDPDecayEvent, PlayerDPUpdated
+from ..models.player import Player
 from ..services.player_combat_service import PlayerXPAwardEvent
+from .connection_manager import ConnectionManager
+from .envelope import build_event
 from .player_event_handlers_utils import PlayerEventHandlerUtils
+
+
+def _dp_posture_from_stats(stats: Mapping[str, object], new_dp: int) -> str:
+    """Derive posture string for DP update payloads (standing / lying / from stats)."""
+    if new_dp <= 0:
+        return "lying"
+    position = stats.get("position")
+    if position is None:
+        return "standing"
+    if hasattr(position, "value"):
+        return str(getattr(position, "value", str(position)))
+    return str(position)
+
+
+def _player_snapshot_for_dp(
+    player: Player | None,
+    event: PlayerDPUpdated,
+    logger: BoundLogger,
+) -> tuple[dict[str, object], str, str | None]:
+    """Load stats and display fields for a DP update, or fall back when player is offline."""
+    player_id_str = str(event.player_id)
+    if player is None:
+        logger.debug(
+            "Player not in connection manager for DP update, using event data only",
+            player_id=player_id_str,
+        )
+        return {}, "Unknown", None
+    if not hasattr(player, "get_stats"):
+        return {}, player.name, getattr(player, "current_room_id", None)
+    stats_raw = player.get_stats()
+    stats_dict = cast(dict[str, object], dict(stats_raw))
+    return stats_dict, player.name, getattr(player, "current_room_id", None)
+
+
+def _dp_player_update_payload(
+    event: PlayerDPUpdated,
+    player_id_str: str,
+    stats: dict[str, object],
+    player_name: str,
+    current_room_id: str | None,
+    posture: str,
+) -> dict[str, object]:
+    """Assemble the nested player object for a DP update WebSocket message."""
+    merged_stats: dict[str, object] = {
+        **stats,
+        "current_dp": event.new_dp,
+        "max_dp": event.max_dp,
+        "position": posture,
+    }
+    return {
+        "player_id": player_id_str,
+        "name": player_name,
+        "dp": event.new_dp,
+        "max_dp": event.max_dp,
+        "current_room_id": current_room_id,
+        "stats": merged_stats,
+    }
+
+
+async def _dispatch_player_dp_updated_payload(
+    connection_manager: ConnectionManager,
+    logger: BoundLogger,
+    event: PlayerDPUpdated,
+) -> None:
+    """Build and send the player_dp_updated WebSocket payload."""
+    player_id = event.player_id
+    player_id_str = str(player_id)
+    logger.info(
+        "Received PlayerDPUpdated event",
+        player_id=player_id_str,
+        old_dp=event.old_dp,
+        new_dp=event.new_dp,
+        max_dp=event.max_dp,
+        damage_taken=event.damage_taken,
+    )
+    player = await connection_manager.get_player(player_id)
+    stats, player_name, current_room_id = _player_snapshot_for_dp(player, event, logger)
+    posture = _dp_posture_from_stats(stats, event.new_dp)
+    player_update_data = _dp_player_update_payload(event, player_id_str, stats, player_name, current_room_id, posture)
+    dp_update_event = build_event(
+        "player_dp_updated",
+        {
+            "old_dp": event.old_dp,
+            "new_dp": event.new_dp,
+            "max_dp": event.max_dp,
+            "damage_taken": event.damage_taken,
+            "posture": posture,
+            "player": player_update_data,
+        },
+        player_id=player_id_str,
+    )
+    _ = await connection_manager.send_personal_message(player_id, dp_update_event)
+    logger.info(
+        "Sent DP update to player",
+        player_id=player_id_str,
+        old_dp=event.old_dp,
+        new_dp=event.new_dp,
+        damage_taken=event.damage_taken,
+    )
+
+
+async def _send_player_death_notification(
+    connection_manager: ConnectionManager,
+    logger: BoundLogger,
+    event: PlayerDiedEvent,
+) -> None:
+    """Send player_died envelope to the deceased player's WebSocket session."""
+    player_id_str = str(event.player_id)
+    death_location_value = event.death_location or event.room_id
+    death_event = build_event(
+        "player_died",
+        {
+            "player_id": player_id_str,
+            "player_name": event.player_name,
+            "death_location": death_location_value,
+            "current_dp": -10,
+            "killer_id": event.killer_id,
+            "killer_name": event.killer_name,
+            "message": "You have died. The darkness claims you utterly.",
+        },
+        player_id=player_id_str,
+    )
+    delivery_status = await connection_manager.send_personal_message(event.player_id, death_event)
+    logger.info(
+        "Sent death notification to player",
+        player_id=player_id_str,
+        room_id=event.room_id,
+        delivery_status=delivery_status,
+    )
 
 
 class PlayerStateEventHandler:
     """Handles player state update events (XP, DP, death, decay)."""
 
+    connection_manager: ConnectionManager | None
+    utils: PlayerEventHandlerUtils
+    _logger: BoundLogger
+
     def __init__(
         self,
-        connection_manager: Any,
+        connection_manager: ConnectionManager | None,
         utils: PlayerEventHandlerUtils,
-        logger: Any,
+        logger: BoundLogger,
     ) -> None:
         """
         Initialize state event handler.
@@ -42,7 +181,6 @@ class PlayerStateEventHandler:
         Args:
             event: The PlayerXPAwardEvent containing XP award information
         """
-        # Defensive check: if no connection_manager, skip handling
         if not self.connection_manager:
             self._logger.debug(
                 "Connection manager not available, skipping player XP awarded event", player_id=event.player_id
@@ -50,25 +188,21 @@ class PlayerStateEventHandler:
             return
 
         try:
-            player_id_str = str(event.player_id)
+            player_id = event.player_id
+            player_id_str = str(player_id)
 
-            # Get the current player data to send updated XP
-            player = await self.connection_manager.get_player(uuid.UUID(player_id_str))
+            player = await self.connection_manager.get_player(player_id)
             if not player:
                 self._logger.warning("Player not found for XP award event", player_id=player_id_str)
                 return
 
-            # Create player update event with new XP
-            player_update_data = {
+            player_update_data: dict[str, object] = {
                 "player_id": player_id_str,
                 "name": player.name,
                 "level": player.level,
                 "xp": player.experience_points,
                 "current_room_id": getattr(player, "current_room_id", None),
             }
-
-            # Send personal message to the player
-            from .envelope import build_event
 
             xp_update_event = build_event(
                 "player_xp_updated",
@@ -80,11 +214,7 @@ class PlayerStateEventHandler:
                 player_id=player_id_str,
             )
 
-            # ARCHITECTURE: Server-initiated events (XP updates) sent via WebSocket
-            await self.connection_manager.send_personal_message(
-                player_id_str,
-                xp_update_event,
-            )
+            _ = await self.connection_manager.send_personal_message(player_id, xp_update_event)
 
             self._logger.info(
                 "Sent XP award update to player",
@@ -94,7 +224,7 @@ class PlayerStateEventHandler:
             )
 
         except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError) as e:
-            self._logger.error("Error handling player XP award event", error=str(e), exc_info=True)
+            self._logger.error("Error handling player XP award event", error_message=str(e), exc_info=True)
 
     async def handle_player_dp_updated(self, event: PlayerDPUpdated) -> None:
         """
@@ -103,7 +233,6 @@ class PlayerStateEventHandler:
         Args:
             event: The PlayerDPUpdated event containing DP change information
         """
-        # Defensive check: if no connection_manager, skip handling
         if not self.connection_manager:
             self._logger.debug(
                 "Connection manager not available, skipping player DP updated event", player_id=event.player_id
@@ -111,200 +240,45 @@ class PlayerStateEventHandler:
             return
 
         try:
-            # CRITICAL DEBUG: Log at the very start to verify handler is being called
-            self._logger.info(
-                "handle_player_dp_updated called",
-                event_type=type(event).__name__,
-                player_id=event.player_id,
-                old_dp=event.old_dp,
-                new_dp=event.new_dp,
-                max_dp=event.max_dp,
-            )
-            # event.player_id is now UUID (changed from str to match codebase)
-            player_id = event.player_id
-            player_id_str = str(player_id)  # For logging and string operations
-            self._logger.info(
-                "Received PlayerDPUpdated event",
-                player_id=player_id_str,
-                old_dp=event.old_dp,
-                new_dp=event.new_dp,
-                max_dp=event.max_dp,
-                damage_taken=event.damage_taken,
-            )
-
-            # Check if connection manager is available
-            if not self.connection_manager:
-                self._logger.error(
-                    "Connection manager is not available for DP update",
-                    player_id=player_id_str,
-                )
-                return
-
-            # Get the current player data to send updated DP and stats
-            # CRITICAL: Try to get player from connection manager, but if not found,
-            # still send the DP update event with the data from the event itself
-            # get_player expects UUID, and event.player_id is now UUID
-            player = await self.connection_manager.get_player(player_id)
-
-            # Get full player stats including posture/position
-            if player:
-                stats = player.get_stats() if hasattr(player, "get_stats") else {}
-                player_name = player.name
-                current_room_id = getattr(player, "current_room_id", None)
-            else:
-                # Player not in connection manager - use event data only
-                self._logger.debug(
-                    "Player not in connection manager for DP update, using event data only",
-                    player_id=player_id_str,
-                )
-                stats = {}  # Will be updated from player_update event if available
-                player_name = "Unknown"  # Will be updated from player_update event if available
-                current_room_id = None
-
-            # Posture: when DP <= 0 player is incapacitated and prone (lying)
-            position = stats.get("position") if isinstance(stats, dict) else None
-            if event.new_dp <= 0:
-                posture = "lying"
-            elif position is not None:
-                posture = getattr(position, "value", str(position)) if hasattr(position, "value") else str(position)
-            else:
-                posture = "standing"
-
-            # Create player update event with new DP and full stats
-            player_update_data = {
-                "player_id": player_id_str,
-                "name": player_name,
-                "dp": event.new_dp,
-                "max_dp": event.max_dp,
-                "current_room_id": current_room_id,
-                "stats": {
-                    **stats,
-                    "current_dp": event.new_dp,
-                    "max_dp": event.max_dp,
-                    "position": posture,
-                },  # Ensure DP is set even if stats are empty
-            }
-
-            # Send personal message to the player
-            from .envelope import build_event
-
-            dp_update_event = build_event(
-                "player_dp_updated",
-                {
-                    "old_dp": event.old_dp,
-                    "new_dp": event.new_dp,
-                    "max_dp": event.max_dp,
-                    "damage_taken": event.damage_taken,
-                    "posture": posture,
-                    "player": player_update_data,
-                },
-                player_id=player_id_str,
-            )
-
-            # player_id is now UUID (changed from str to match codebase), so we can use it directly
-            # ARCHITECTURE: Server-initiated events (DP updates) sent via WebSocket
-            await self.connection_manager.send_personal_message(
-                player_id,
-                dp_update_event,
-            )
-
-            self._logger.info(
-                "Sent DP update to player",
-                player_id=player_id_str,
-                old_dp=event.old_dp,
-                new_dp=event.new_dp,
-                damage_taken=event.damage_taken,
-            )
-
+            await _dispatch_player_dp_updated_payload(self.connection_manager, self._logger, event)
         except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError) as e:
-            self._logger.error("Error handling player DP update event", error=str(e), exc_info=True)
+            self._logger.error("Error handling player DP update event", error_message=str(e), exc_info=True)
 
-    async def handle_player_died(self, event: Any) -> None:
+    async def handle_player_died(self, event: PlayerDiedEvent) -> None:
         """
         Handle player death events by sending death notification to the client.
 
         Args:
             event: The PlayerDiedEvent containing death information
         """
-        # Defensive check: if no connection_manager, skip handling
         if not self.connection_manager:
             self._logger.debug(
                 "Connection manager not available, skipping player died event",
-                player_id=getattr(event, "player_id", None),
+                player_id=event.player_id,
             )
             return
 
         try:
-            # Convert UUID to string for build_event (which expects str)
-            player_id_str = str(event.player_id)
-
-            # Send personal message to the player
-            from .envelope import build_event
-
-            death_location_value = event.death_location or event.room_id
-            # Client requires current_dp <= -10 to show respawn modal; we only send death at -10
-            death_event = build_event(
-                "player_died",
-                {
-                    "player_id": player_id_str,
-                    "player_name": event.player_name,
-                    "death_location": death_location_value,  # Use death_location if available, fallback to room_id
-                    "current_dp": -10,  # Death is only sent at -10 DP so client can gate modal
-                    "killer_id": event.killer_id,
-                    "killer_name": event.killer_name,
-                    "message": "You have died. The darkness claims you utterly.",
-                },
-                player_id=player_id_str,
-            )
-
-            # ARCHITECTURE: Server-initiated events (death) sent via WebSocket
-            # CRITICAL FIX: Convert player_id_str to UUID for send_personal_message
-            from uuid import UUID
-
-            try:
-                player_id_uuid = UUID(player_id_str) if isinstance(player_id_str, str) else player_id_str
-                delivery_status = await self.connection_manager.send_personal_message(
-                    player_id_uuid,
-                    death_event,
-                )
-                self._logger.info(
-                    "Sent death notification to player",
-                    player_id=player_id_str,
-                    room_id=event.room_id,
-                    delivery_status=delivery_status,
-                )
-            except (ValueError, TypeError) as uuid_error:
-                self._logger.error(
-                    "Failed to send death notification - invalid player_id format",
-                    player_id=player_id_str,
-                    error=str(uuid_error),
-                    exc_info=True,
-                )
-
+            await _send_player_death_notification(self.connection_manager, self._logger, event)
         except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError) as e:
-            self._logger.error("Error handling player died event", error=str(e), exc_info=True)
+            self._logger.error("Error handling player died event", error_message=str(e), exc_info=True)
 
-    async def handle_player_dp_decay(self, event: Any) -> None:
+    async def handle_player_dp_decay(self, event: PlayerDPDecayEvent) -> None:
         """
         Handle player DP decay events by sending decay notification to the client.
 
         Args:
             event: The PlayerDPDecayEvent containing DP decay information
         """
-        # Defensive check: if no connection_manager, skip handling
         if not self.connection_manager:
             self._logger.debug(
                 "Connection manager not available, skipping player DP decay event",
-                player_id=getattr(event, "player_id", None),
+                player_id=event.player_id,
             )
             return
 
         try:
-            # Convert UUID to string for build_event (which expects str)
             player_id_str = str(event.player_id)
-
-            # Send personal message to the player
-            from .envelope import build_event
 
             decay_event = build_event(
                 "player_dp_decay",
@@ -318,13 +292,9 @@ class PlayerStateEventHandler:
                 player_id=player_id_str,
             )
 
-            # ARCHITECTURE: Server-initiated events (DP decay) sent via WebSocket
-            await self.connection_manager.send_personal_message(
-                player_id_str,
-                decay_event,
-            )
+            _ = await self.connection_manager.send_personal_message(event.player_id, decay_event)
 
             self._logger.debug("Sent DP decay notification to player", player_id=player_id_str, new_dp=event.new_dp)
 
         except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError) as e:
-            self._logger.error("Error handling player DP decay event", error=str(e), exc_info=True)
+            self._logger.error("Error handling player DP decay event", error_message=str(e), exc_info=True)

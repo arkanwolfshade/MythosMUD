@@ -40,6 +40,7 @@ class NPCBundle:  # pylint: disable=too-few-public-methods
 
         logger.debug("Initializing NPC services...")
 
+        from server.npc.combat_integration import NPCCombatIntegration
         from server.npc.lifecycle_manager import NPCLifecycleManager
         from server.npc.population_control import NPCPopulationController
         from server.npc.spawning_service import NPCSpawningService
@@ -47,7 +48,10 @@ class NPCBundle:  # pylint: disable=too-few-public-methods
         from server.services.npc_instance_service import initialize_npc_instance_service
         from server.services.npc_service import NPCService
 
-        self.npc_spawning_service = NPCSpawningService(container.event_bus, None)
+        combat_integration = NPCCombatIntegration(
+            event_bus=container.event_bus, async_persistence=container.async_persistence
+        )
+        self.npc_spawning_service = NPCSpawningService(container.event_bus, None, combat_integration=combat_integration)
 
         self.npc_lifecycle_manager = NPCLifecycleManager(
             event_bus=container.event_bus,

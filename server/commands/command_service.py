@@ -38,6 +38,7 @@ from .combat import (
     handle_kick_command,
     handle_punch_command,
     handle_strike_command,
+    handle_taunt_command,
 )
 from .communication_commands import (
     handle_global_command,
@@ -196,6 +197,7 @@ class CommandService:
             "kick": handle_kick_command,
             "strike": handle_strike_command,
             "flee": handle_flee_command,
+            "taunt": handle_taunt_command,
             # lucidity recovery rites
             "pray": handle_pray_command,
             "meditate": handle_meditate_command,

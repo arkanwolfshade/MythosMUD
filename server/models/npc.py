@@ -8,9 +8,10 @@ and relationships that support the NPC subsystem.
 # pylint: disable=too-few-public-methods  # Reason: SQLAlchemy models are data classes, no instance methods needed
 
 import json
+from collections.abc import Mapping
 from datetime import datetime
 from enum import StrEnum
-from typing import Any, cast
+from typing import ClassVar, cast, override
 
 from sqlalchemy import (
     BigInteger,
@@ -20,6 +21,7 @@ from sqlalchemy import (
     Float,
     ForeignKey,
     Integer,
+    MetaData,
     String,
     Text,
     UniqueConstraint,
@@ -29,11 +31,41 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 from ..npc_metadata import npc_metadata
 
+_JSONDict = dict[str, object]
+
+
+def _set_default_if_missing(instance: object, attr: str, default: object) -> None:
+    """Apply a default attribute value when SQLAlchemy leaves it unset or None."""
+    sentinel = object()
+    current = getattr(instance, attr, sentinel)
+    if current is sentinel or current is None:
+        object.__setattr__(instance, attr, default)
+
+
+_NPC_DEFINITION_DEFAULTS: tuple[tuple[str, object], ...] = (
+    ("required_npc", False),
+    ("max_population", 1),
+    ("spawn_probability", 1.0),
+    ("base_stats", "{}"),
+    ("behavior_config", "{}"),
+    ("ai_integration_stub", "{}"),
+)
+
+
+def _loads_json_dict(raw: str) -> _JSONDict:
+    """Parse JSON object from string; empty dict on failure or non-object root."""
+    try:
+        # json.loads is typed as Any in typeshed; treat root value as object before narrowing.
+        parsed = cast(object, json.loads(raw))
+    except (json.JSONDecodeError, TypeError):
+        return {}
+    return cast(_JSONDict, parsed) if isinstance(parsed, dict) else {}
+
 
 class Base(DeclarativeBase):
     """SQLAlchemy declarative base for NPC database models."""
 
-    metadata = npc_metadata
+    metadata: ClassVar[MetaData] = npc_metadata
 
 
 class NPCDefinitionType(StrEnum):
@@ -53,8 +85,8 @@ class NPCDefinition(Base):
     This represents the "template" from which NPC instances are spawned.
     """
 
-    __tablename__ = "npc_definitions"
-    __table_args__ = (
+    __tablename__: str = "npc_definitions"
+    __table_args__: tuple[UniqueConstraint | CheckConstraint, ...] = (
         UniqueConstraint("name", "sub_zone_id", name="idx_npc_definitions_name_sub_zone"),
         CheckConstraint(
             "npc_type IN ('shopkeeper', 'quest_giver', 'passive_mob', 'aggressive_mob')", name="chk_npc_type"
@@ -112,64 +144,38 @@ class NPCDefinition(Base):
         nullable=False,
     )
 
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, *args: object, **kwargs: object) -> None:
         """Initialize NPCDefinition with defaults."""
         super().__init__(*args, **kwargs)
-        # Apply defaults if not provided (SQLAlchemy may set to None initially)
-        _sentinel = object()
-        required_npc_val = getattr(self, "required_npc", _sentinel)
-        if required_npc_val is _sentinel or required_npc_val is None:
-            object.__setattr__(self, "required_npc", False)
-        max_population_val = getattr(self, "max_population", _sentinel)
-        if max_population_val is _sentinel or max_population_val is None:
-            object.__setattr__(self, "max_population", 1)
-        spawn_probability_val = getattr(self, "spawn_probability", _sentinel)
-        if spawn_probability_val is _sentinel or spawn_probability_val is None:
-            object.__setattr__(self, "spawn_probability", 1.0)
-        base_stats_val = getattr(self, "base_stats", _sentinel)
-        if base_stats_val is _sentinel or base_stats_val is None:
-            object.__setattr__(self, "base_stats", "{}")
-        behavior_config_val = getattr(self, "behavior_config", _sentinel)
-        if behavior_config_val is _sentinel or behavior_config_val is None:
-            object.__setattr__(self, "behavior_config", "{}")
-        ai_integration_stub_val = getattr(self, "ai_integration_stub", _sentinel)
-        if ai_integration_stub_val is _sentinel or ai_integration_stub_val is None:
-            object.__setattr__(self, "ai_integration_stub", "{}")
+        for attr, default in _NPC_DEFINITION_DEFAULTS:
+            _set_default_if_missing(self, attr, default)
 
+    @override
     def __repr__(self) -> str:
         """String representation of the NPC definition."""
         return f"<NPCDefinition(id={self.id}, name={self.name}, type={self.npc_type})>"
 
-    def get_base_stats(self) -> dict[str, Any]:
+    def get_base_stats(self) -> _JSONDict:
         """Get base stats as dictionary."""
-        try:
-            return cast(dict[str, Any], json.loads(self.base_stats))
-        except (json.JSONDecodeError, TypeError):
-            return {}
+        return _loads_json_dict(self.base_stats)
 
-    def set_base_stats(self, stats: dict[str, Any]) -> None:
+    def set_base_stats(self, stats: _JSONDict) -> None:
         """Set base stats from dictionary."""
         self.base_stats = json.dumps(stats)
 
-    def get_behavior_config(self) -> dict[str, Any]:
+    def get_behavior_config(self) -> _JSONDict:
         """Get behavior configuration as dictionary."""
-        try:
-            return cast(dict[str, Any], json.loads(self.behavior_config))
-        except (json.JSONDecodeError, TypeError):
-            return {}
+        return _loads_json_dict(self.behavior_config)
 
-    def set_behavior_config(self, config: dict[str, Any]) -> None:
+    def set_behavior_config(self, config: _JSONDict) -> None:
         """Set behavior configuration from dictionary."""
         self.behavior_config = json.dumps(config)
 
-    def get_ai_integration_stub(self) -> dict[str, Any]:
+    def get_ai_integration_stub(self) -> _JSONDict:
         """Get AI integration stub configuration as dictionary."""
-        try:
-            return cast(dict[str, Any], json.loads(self.ai_integration_stub))
-        except (json.JSONDecodeError, TypeError):
-            return {}
+        return _loads_json_dict(self.ai_integration_stub)
 
-    def set_ai_integration_stub(self, stub: dict[str, Any]) -> None:
+    def set_ai_integration_stub(self, stub: _JSONDict) -> None:
         """Set AI integration stub configuration from dictionary."""
         self.ai_integration_stub = json.dumps(stub)
 
@@ -193,7 +199,7 @@ class NPCSpawnRule(Base):
     player count requirements and environmental conditions.
     """
 
-    __tablename__ = "npc_spawn_rules"
+    __tablename__: str = "npc_spawn_rules"
 
     # Primary key
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
@@ -218,18 +224,16 @@ class NPCSpawnRule(Base):
     # Relationships removed to eliminate circular reference issues
     # npc_definition = relationship("NPCDefinition", back_populates="spawn_rules")
 
+    @override
     def __repr__(self) -> str:
         """String representation of the spawn rule."""
         return f"<NPCSpawnRule(id={self.id}, npc_def_id={self.npc_definition_id}, sub_zone={self.sub_zone_id})>"
 
-    def get_spawn_conditions(self) -> dict[str, Any]:
+    def get_spawn_conditions(self) -> _JSONDict:
         """Get spawn conditions as dictionary."""
-        try:
-            return cast(dict[str, Any], json.loads(self.spawn_conditions))
-        except (json.JSONDecodeError, TypeError):
-            return {}
+        return _loads_json_dict(self.spawn_conditions)
 
-    def set_spawn_conditions(self, conditions: dict[str, Any]) -> None:
+    def set_spawn_conditions(self, conditions: _JSONDict) -> None:
         """Set spawn conditions from dictionary."""
         self.spawn_conditions = json.dumps(conditions)
 
@@ -239,7 +243,7 @@ class NPCSpawnRule(Base):
         max_pop: int = int(self.max_population)
         return bool(current_population < max_pop)
 
-    def _check_missing_key_condition(self, key: str, value: Any, game_state: dict[str, Any]) -> bool | None:
+    def _check_missing_key_condition(self, key: str, value: object, game_state: Mapping[str, object]) -> bool | None:
         """
         Check if missing key condition is acceptable.
 
@@ -252,7 +256,7 @@ class NPCSpawnRule(Base):
             return False
         return None
 
-    def _check_list_condition(self, value: list[Any], game_value: Any) -> bool | None:
+    def _check_list_condition(self, value: list[object], game_value: object) -> bool | None:
         """
         Check list condition.
 
@@ -263,15 +267,25 @@ class NPCSpawnRule(Base):
             return None
         return game_value in value
 
-    def _check_dict_condition(self, value: dict[str, Any], game_value: Any) -> bool:
+    @staticmethod
+    def _game_value_below_bound(bound: object, game_value: object) -> bool:
+        """True if numeric game_value is strictly below bound."""
+        return isinstance(game_value, int | float) and isinstance(bound, int | float) and game_value < bound
+
+    @staticmethod
+    def _game_value_above_bound(bound: object, game_value: object) -> bool:
+        """True if numeric game_value is strictly above bound."""
+        return isinstance(game_value, int | float) and isinstance(bound, int | float) and game_value > bound
+
+    def _check_dict_condition(self, value: _JSONDict, game_value: object) -> bool:
         """Check dict (range) condition."""
-        if "min" in value and game_value < value["min"]:
+        if "min" in value and self._game_value_below_bound(value["min"], game_value):
             return False
-        if "max" in value and game_value > value["max"]:
+        if "max" in value and self._game_value_above_bound(value["max"], game_value):
             return False
         return True
 
-    def _check_simple_condition(self, value: Any, game_value: Any) -> bool | None:
+    def _check_simple_condition(self, value: object, game_value: object) -> bool | None:
         """
         Check simple value condition.
 
@@ -280,36 +294,35 @@ class NPCSpawnRule(Base):
         """
         if value == "any":
             return None
-        result: bool = cast(bool, game_value == value)
-        return result
+        return bool(game_value == value)
 
-    def check_spawn_conditions(self, game_state: dict[str, Any]) -> bool:
+    def _spawn_value_allows_spawn(self, value: object, game_value: object) -> bool:
+        """Return False if this condition value blocks spawning; True otherwise."""
+        if isinstance(value, list):
+            return self._check_list_condition(cast(list[object], value), game_value) is not False
+        if isinstance(value, dict):
+            return self._check_dict_condition(cast(_JSONDict, value), game_value)
+        simple_check = self._check_simple_condition(value, game_value)
+        return simple_check is not False
+
+    def _single_spawn_condition_ok(self, key: str, value: object, game_state: Mapping[str, object]) -> bool:
+        """Evaluate one key from spawn_conditions; False means spawn blocked."""
+        missing_check = self._check_missing_key_condition(key, value, game_state)
+        if missing_check is False:
+            return False
+        if missing_check is True:
+            return True
+        game_value = game_state[key]
+        return self._spawn_value_allows_spawn(value, game_value)
+
+    def check_spawn_conditions(self, game_state: Mapping[str, object]) -> bool:
         """Check if current game state meets spawn conditions."""
         conditions = self.get_spawn_conditions()
         if not conditions:
             return True
-
-        for key, value in conditions.items():
-            missing_check = self._check_missing_key_condition(key, value, game_state)
-            if missing_check is False:
+        for key, val in conditions.items():
+            if not self._single_spawn_condition_ok(key, val, game_state):
                 return False
-            if missing_check is True:
-                continue
-
-            game_value = game_state[key]
-
-            if isinstance(value, list):
-                list_check = self._check_list_condition(value, game_value)
-                if list_check is False:
-                    return False
-            elif isinstance(value, dict):
-                if not self._check_dict_condition(value, game_value):
-                    return False
-            else:
-                simple_check = self._check_simple_condition(value, game_value)
-                if simple_check is False:
-                    return False
-
         return True
 
 
@@ -320,8 +333,8 @@ class NPCRelationship(Base):
     Defines relationships between different NPC types.
     """
 
-    __tablename__ = "npc_relationships"
-    __table_args__ = (
+    __tablename__: str = "npc_relationships"
+    __table_args__: tuple[UniqueConstraint | CheckConstraint, ...] = (
         UniqueConstraint("npc_id_1", "npc_id_2", name="npc_relationships_npc_id_1_npc_id_2_key"),
         CheckConstraint(
             "relationship_type IN ('ally', 'enemy', 'neutral', 'follower')",
@@ -344,6 +357,10 @@ class NPCRelationship(Base):
     relationship_type: Mapped[str] = mapped_column(String(20), nullable=False)
     relationship_strength: Mapped[float] = mapped_column(Float, default=0.5)
 
+    @override
     def __repr__(self) -> str:
         """String representation of the NPC relationship."""
-        return f"<NPCRelationship(id={self.id}, npc1={self.npc_id_1}, npc2={self.npc_id_2}, type={self.relationship_type})>"
+        return (
+            f"<NPCRelationship(id={self.id}, npc1={self.npc_id_1}, "
+            f"npc2={self.npc_id_2}, type={self.relationship_type})>"
+        )

@@ -4,29 +4,55 @@ Unit tests for NPC startup service.
 Tests the NPCStartupService class.
 """
 
+from collections.abc import Mapping
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from server.services.npc_startup_service import NPCStartupService, get_npc_startup_service
+from server.services.npc_startup_service import ARENA_ROOM_IDS, NPCStartupService, get_npc_startup_service
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
 # pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
+# pylint: disable=too-many-lines  # Reason: Many focused startup-spawning scenarios; splitting would obscure related tests
+
+# pyright: reportPrivateUsage=false
+# Reason: unit tests patch and observe NPCStartupService collaborators and private passes.
+
+
+def _assign_container_get_instance(mock_container: MagicMock, getter: MagicMock) -> None:
+    """Attach a typed get_instance mock to a patched ApplicationContainer."""
+    mock_container.get_instance = getter
+
+
+def _errors_len(results: Mapping[str, object]) -> int:
+    """Narrow spawn/startup result dict for len(results['errors']) without propagating Any."""
+    raw_errors = results["errors"]
+    assert isinstance(raw_errors, list)
+    return len(cast(list[object], raw_errors))
 
 
 @pytest.fixture
-def npc_startup_service():
+def npc_startup_service() -> NPCStartupService:
     """Create an NPCStartupService instance."""
     return NPCStartupService()
 
 
-def test_npc_startup_service_init(npc_startup_service):
+def test_arena_room_ids() -> None:
+    """Test ARENA_ROOM_IDS defines 121 arena rooms (11x11) and includes center."""
+    assert len(ARENA_ROOM_IDS) == 121
+    assert "limbo_arena_arena_arena_5_5" in ARENA_ROOM_IDS
+    assert "limbo_arena_arena_arena_0_0" in ARENA_ROOM_IDS
+    assert "limbo_arena_arena_arena_10_10" in ARENA_ROOM_IDS
+
+
+def test_npc_startup_service_init(npc_startup_service: NPCStartupService) -> None:
     """Test NPCStartupService initialization."""
     assert npc_startup_service is not None
 
 
 @pytest.mark.asyncio
-async def test_spawn_npcs_on_startup(npc_startup_service):
+async def test_spawn_npcs_on_startup(npc_startup_service: NPCStartupService) -> None:
     """Test spawn_npcs_on_startup() processes startup spawning."""
     # This is a complex integration test that would require many mocks
     # For now, just verify the method exists and can be called
@@ -44,11 +70,11 @@ async def test_spawn_npcs_on_startup(npc_startup_service):
 
 
 @pytest.mark.asyncio
-async def test_spawn_npcs_on_startup_with_required_npcs(npc_startup_service):
+async def test_spawn_npcs_on_startup_with_required_npcs(npc_startup_service: NPCStartupService) -> None:
     """Test spawn_npcs_on_startup() spawns required NPCs."""
     mock_npc_def = MagicMock()
     mock_npc_def.required_npc = True
-    mock_npc_def.id = "npc_def_001"
+    mock_npc_def.id = 1
     mock_npc_def.name = "RequiredNPC"
     mock_npc_def.room_id = "room_001"
     with patch("server.services.npc_startup_service.get_npc_instance_service") as mock_get_service:
@@ -68,13 +94,15 @@ async def test_spawn_npcs_on_startup_with_required_npcs(npc_startup_service):
                 mock_npc_service.get_npc_definitions = AsyncMock(return_value=[mock_npc_def])
                 with patch.object(npc_startup_service, "_determine_spawn_room", return_value="room_001"):
                     result = await npc_startup_service.spawn_npcs_on_startup()
-                    assert result["total_attempted"] == 1
-                    assert result["total_spawned"] == 1
                     assert result["required_spawned"] == 1
+                    # Arena pass spawns one extra instance per definition that was spawned
+                    assert result["arena_spawned"] == 1
+                    assert result["total_attempted"] == 2  # 1 required + 1 arena
+                    assert result["total_spawned"] == 2
 
 
 @pytest.mark.asyncio
-async def test_spawn_required_npcs_success(npc_startup_service):
+async def test_spawn_required_npcs_success(npc_startup_service: NPCStartupService) -> None:
     """Test _spawn_required_npcs() successfully spawns required NPCs."""
     mock_npc_def = MagicMock()
     mock_npc_def.id = "npc_def_001"
@@ -91,7 +119,7 @@ async def test_spawn_required_npcs_success(npc_startup_service):
 
 
 @pytest.mark.asyncio
-async def test_spawn_required_npcs_no_spawn_room(npc_startup_service):
+async def test_spawn_required_npcs_no_spawn_room(npc_startup_service: NPCStartupService) -> None:
     """Test _spawn_required_npcs() handles missing spawn room."""
     mock_npc_def = MagicMock()
     mock_npc_def.id = "npc_def_001"
@@ -102,11 +130,11 @@ async def test_spawn_required_npcs_no_spawn_room(npc_startup_service):
         assert result["attempted"] == 1
         assert result["spawned"] == 0
         assert result["failed"] == 1
-        assert len(result["errors"]) == 1
+        assert _errors_len(result) == 1
 
 
 @pytest.mark.asyncio
-async def test_spawn_required_npcs_spawn_failure(npc_startup_service):
+async def test_spawn_required_npcs_spawn_failure(npc_startup_service: NPCStartupService) -> None:
     """Test _spawn_required_npcs() handles spawn failures."""
     mock_npc_def = MagicMock()
     mock_npc_def.id = "npc_def_001"
@@ -123,7 +151,7 @@ async def test_spawn_required_npcs_spawn_failure(npc_startup_service):
 
 
 @pytest.mark.asyncio
-async def test_spawn_optional_npcs_with_probability(npc_startup_service):
+async def test_spawn_optional_npcs_with_probability(npc_startup_service: NPCStartupService) -> None:
     """Test _spawn_optional_npcs() spawns based on probability."""
     mock_npc_def = MagicMock()
     mock_npc_def.id = "npc_def_001"
@@ -141,7 +169,7 @@ async def test_spawn_optional_npcs_with_probability(npc_startup_service):
 
 
 @pytest.mark.asyncio
-async def test_spawn_optional_npcs_skips_low_probability(npc_startup_service):
+async def test_spawn_optional_npcs_skips_low_probability(npc_startup_service: NPCStartupService) -> None:
     """Test _spawn_optional_npcs() skips NPCs with low probability."""
     mock_npc_def = MagicMock()
     mock_npc_def.id = "npc_def_001"
@@ -155,7 +183,7 @@ async def test_spawn_optional_npcs_skips_low_probability(npc_startup_service):
 
 
 @pytest.mark.asyncio
-async def test_determine_spawn_room_with_room_id(npc_startup_service):
+async def test_determine_spawn_room_with_room_id(npc_startup_service: NPCStartupService) -> None:
     """Test _determine_spawn_room() uses NPC's room_id when available."""
     mock_npc_def = MagicMock()
     mock_npc_def.name = "TestNPC"
@@ -167,13 +195,13 @@ async def test_determine_spawn_room_with_room_id(npc_startup_service):
         mock_persistence.warmup_room_cache = AsyncMock()
         mock_persistence._room_cache = {"room_001": MagicMock()}  # Mock cache
         mock_instance.async_persistence = mock_persistence
-        mock_container.get_instance.return_value = mock_instance
-        result = await npc_startup_service._determine_spawn_room(mock_npc_def)
+        _assign_container_get_instance(mock_container, MagicMock(return_value=mock_instance))
+        result: str | None = await npc_startup_service._determine_spawn_room(mock_npc_def)
         assert result == "room_001"
 
 
 @pytest.mark.asyncio
-async def test_determine_spawn_room_with_sub_zone(npc_startup_service):
+async def test_determine_spawn_room_with_sub_zone(npc_startup_service: NPCStartupService) -> None:
     """Test _determine_spawn_room() uses sub_zone default when room_id not available."""
     mock_npc_def = MagicMock()
     mock_npc_def.name = "TestNPC"
@@ -187,14 +215,14 @@ async def test_determine_spawn_room_with_sub_zone(npc_startup_service):
         mock_persistence.warmup_room_cache = AsyncMock()
         mock_persistence._room_cache = {}  # Mock cache
         mock_instance.async_persistence = mock_persistence
-        mock_container.get_instance.return_value = mock_instance
+        _assign_container_get_instance(mock_container, MagicMock(return_value=mock_instance))
         with patch("asyncio.to_thread", new_callable=AsyncMock, return_value=mock_room):
-            result = await npc_startup_service._determine_spawn_room(mock_npc_def)
+            result: str | None = await npc_startup_service._determine_spawn_room(mock_npc_def)
             assert result == "earth_arkhamcity_northside_intersection_derby_high"
 
 
 @pytest.mark.asyncio
-async def test_determine_spawn_room_fallback(npc_startup_service):
+async def test_determine_spawn_room_fallback(npc_startup_service: NPCStartupService) -> None:
     """Test _determine_spawn_room() uses fallback room when no other option."""
     mock_npc_def = MagicMock()
     mock_npc_def.name = "TestNPC"
@@ -208,51 +236,51 @@ async def test_determine_spawn_room_fallback(npc_startup_service):
         mock_persistence.warmup_room_cache = AsyncMock()
         mock_persistence._room_cache = {}  # Mock cache
         mock_instance.async_persistence = mock_persistence
-        mock_container.get_instance.return_value = mock_instance
+        _assign_container_get_instance(mock_container, MagicMock(return_value=mock_instance))
         with patch("asyncio.to_thread", new_callable=AsyncMock, return_value=mock_room):
-            result = await npc_startup_service._determine_spawn_room(mock_npc_def)
+            result: str | None = await npc_startup_service._determine_spawn_room(mock_npc_def)
             assert result == "earth_arkhamcity_northside_intersection_derby_high"
 
 
 @pytest.mark.asyncio
-async def test_determine_spawn_room_no_persistence(npc_startup_service):
+async def test_determine_spawn_room_no_persistence(npc_startup_service: NPCStartupService) -> None:
     """Test _determine_spawn_room() returns None when persistence not available."""
     mock_npc_def = MagicMock()
     mock_npc_def.name = "TestNPC"
     with patch("server.container.ApplicationContainer") as mock_container:
         mock_instance = MagicMock()
         mock_instance.async_persistence = None
-        mock_container.get_instance.return_value = mock_instance
-        result = await npc_startup_service._determine_spawn_room(mock_npc_def)
+        _assign_container_get_instance(mock_container, MagicMock(return_value=mock_instance))
+        result: str | None = await npc_startup_service._determine_spawn_room(mock_npc_def)
         assert result is None
 
 
-def test_get_default_room_for_sub_zone(npc_startup_service):
+def test_get_default_room_for_sub_zone(npc_startup_service: NPCStartupService) -> None:
     """Test _get_default_room_for_sub_zone() returns correct room for known sub-zone."""
-    result = npc_startup_service._get_default_room_for_sub_zone("northside")
+    result: str | None = npc_startup_service._get_default_room_for_sub_zone("northside")
     assert result == "earth_arkhamcity_northside_intersection_derby_high"
 
 
-def test_get_default_room_for_sub_zone_unknown(npc_startup_service):
+def test_get_default_room_for_sub_zone_unknown(npc_startup_service: NPCStartupService) -> None:
     """Test _get_default_room_for_sub_zone() returns None for unknown sub-zone."""
-    result = npc_startup_service._get_default_room_for_sub_zone("unknown_zone")
+    result: str | None = npc_startup_service._get_default_room_for_sub_zone("unknown_zone")
     assert result is None
 
 
-def test_get_default_room_for_sub_zone_case_insensitive(npc_startup_service):
+def test_get_default_room_for_sub_zone_case_insensitive(npc_startup_service: NPCStartupService) -> None:
     """Test _get_default_room_for_sub_zone() is case insensitive."""
-    result = npc_startup_service._get_default_room_for_sub_zone("NORTHSIDE")
+    result: str | None = npc_startup_service._get_default_room_for_sub_zone("NORTHSIDE")
     assert result == "earth_arkhamcity_northside_intersection_derby_high"
 
 
-def test_get_npc_startup_service():
+def test_get_npc_startup_service() -> None:
     """Test get_npc_startup_service() returns service instance."""
     service = get_npc_startup_service()
     assert isinstance(service, NPCStartupService)
 
 
 @pytest.mark.asyncio
-async def test_spawn_required_npcs_exception(npc_startup_service):
+async def test_spawn_required_npcs_exception(npc_startup_service: NPCStartupService) -> None:
     """Test _spawn_required_npcs() handles exceptions during spawning."""
     mock_npc_def = MagicMock()
     mock_npc_def.id = "npc_def_001"
@@ -264,11 +292,11 @@ async def test_spawn_required_npcs_exception(npc_startup_service):
         assert result["attempted"] == 1
         assert result["spawned"] == 0
         assert result["failed"] == 1
-        assert len(result["errors"]) == 1
+        assert _errors_len(result) == 1
 
 
 @pytest.mark.asyncio
-async def test_spawn_optional_npcs_no_spawn_room(npc_startup_service):
+async def test_spawn_optional_npcs_no_spawn_room(npc_startup_service: NPCStartupService) -> None:
     """Test _spawn_optional_npcs() handles missing spawn room."""
     mock_npc_def = MagicMock()
     mock_npc_def.id = "npc_def_001"
@@ -284,7 +312,7 @@ async def test_spawn_optional_npcs_no_spawn_room(npc_startup_service):
 
 
 @pytest.mark.asyncio
-async def test_spawn_optional_npcs_exception(npc_startup_service):
+async def test_spawn_optional_npcs_exception(npc_startup_service: NPCStartupService) -> None:
     """Test _spawn_optional_npcs() handles exceptions during spawning."""
     mock_npc_def = MagicMock()
     mock_npc_def.id = "npc_def_001"
@@ -298,11 +326,11 @@ async def test_spawn_optional_npcs_exception(npc_startup_service):
             assert result["attempted"] == 1
             assert result["spawned"] == 0
             assert result["failed"] == 1
-            assert len(result["errors"]) == 1
+            assert _errors_len(result) == 1
 
 
 @pytest.mark.asyncio
-async def test_spawn_optional_npcs_no_probability_attribute(npc_startup_service):
+async def test_spawn_optional_npcs_no_probability_attribute(npc_startup_service: NPCStartupService) -> None:
     """Test _spawn_optional_npcs() handles NPCs without spawn_probability attribute."""
     mock_npc_def = MagicMock()
     mock_npc_def.id = "npc_def_001"
@@ -321,7 +349,7 @@ async def test_spawn_optional_npcs_no_probability_attribute(npc_startup_service)
 
 
 @pytest.mark.asyncio
-async def test_determine_spawn_room_room_id_not_found(npc_startup_service):
+async def test_determine_spawn_room_room_id_not_found(npc_startup_service: NPCStartupService) -> None:
     """Test _determine_spawn_room() handles room_id not found in database."""
     mock_npc_def = MagicMock()
     mock_npc_def.name = "TestNPC"
@@ -336,14 +364,14 @@ async def test_determine_spawn_room_room_id_not_found(npc_startup_service):
         mock_persistence.warmup_room_cache = AsyncMock()
         mock_persistence._room_cache = {}  # Mock cache
         mock_instance.async_persistence = mock_persistence
-        mock_container.get_instance.return_value = mock_instance
+        _assign_container_get_instance(mock_container, MagicMock(return_value=mock_instance))
         with patch("asyncio.to_thread", new_callable=AsyncMock, return_value=mock_room):
-            result = await npc_startup_service._determine_spawn_room(mock_npc_def)
+            result: str | None = await npc_startup_service._determine_spawn_room(mock_npc_def)
             assert result == "earth_arkhamcity_northside_intersection_derby_high"
 
 
 @pytest.mark.asyncio
-async def test_determine_spawn_room_sub_zone_room_not_found(npc_startup_service):
+async def test_determine_spawn_room_sub_zone_room_not_found(npc_startup_service: NPCStartupService) -> None:
     """Test _determine_spawn_room() handles sub-zone default room not found."""
     mock_npc_def = MagicMock()
     mock_npc_def.name = "TestNPC"
@@ -358,14 +386,14 @@ async def test_determine_spawn_room_sub_zone_room_not_found(npc_startup_service)
         mock_persistence.warmup_room_cache = AsyncMock()
         mock_persistence._room_cache = {}  # Mock cache
         mock_instance.async_persistence = mock_persistence
-        mock_container.get_instance.return_value = mock_instance
+        _assign_container_get_instance(mock_container, MagicMock(return_value=mock_instance))
         with patch("asyncio.to_thread", new_callable=AsyncMock, side_effect=[None, mock_room]):
-            result = await npc_startup_service._determine_spawn_room(mock_npc_def)
+            result: str | None = await npc_startup_service._determine_spawn_room(mock_npc_def)
             assert result == "earth_arkhamcity_northside_intersection_derby_high"
 
 
 @pytest.mark.asyncio
-async def test_determine_spawn_room_fallback_not_found(npc_startup_service):
+async def test_determine_spawn_room_fallback_not_found(npc_startup_service: NPCStartupService) -> None:
     """Test _determine_spawn_room() returns None when fallback room not found."""
     mock_npc_def = MagicMock()
     mock_npc_def.name = "TestNPC"
@@ -376,36 +404,36 @@ async def test_determine_spawn_room_fallback_not_found(npc_startup_service):
         mock_persistence = MagicMock()
         mock_persistence.get_room_by_id = MagicMock(return_value=None)
         mock_instance.async_persistence = mock_persistence
-        mock_container.get_instance.return_value = mock_instance
+        _assign_container_get_instance(mock_container, MagicMock(return_value=mock_instance))
         with patch("asyncio.to_thread", new_callable=AsyncMock, return_value=None):
-            result = await npc_startup_service._determine_spawn_room(mock_npc_def)
+            result: str | None = await npc_startup_service._determine_spawn_room(mock_npc_def)
             assert result is None
 
 
 @pytest.mark.asyncio
-async def test_determine_spawn_room_exception(npc_startup_service):
+async def test_determine_spawn_room_exception(npc_startup_service: NPCStartupService) -> None:
     """Test _determine_spawn_room() handles exceptions gracefully."""
     mock_npc_def = MagicMock()
     mock_npc_def.name = "TestNPC"
     with patch("server.container.ApplicationContainer") as mock_container:
-        mock_container.get_instance.side_effect = Exception("Container error")
-        result = await npc_startup_service._determine_spawn_room(mock_npc_def)
+        _assign_container_get_instance(mock_container, MagicMock(side_effect=Exception("Container error")))
+        result: str | None = await npc_startup_service._determine_spawn_room(mock_npc_def)
         assert result is None
 
 
 @pytest.mark.asyncio
-async def test_determine_spawn_room_no_container(npc_startup_service):
+async def test_determine_spawn_room_no_container(npc_startup_service: NPCStartupService) -> None:
     """Test _determine_spawn_room() handles None container."""
     mock_npc_def = MagicMock()
     mock_npc_def.name = "TestNPC"
     with patch("server.container.ApplicationContainer") as mock_container:
-        mock_container.get_instance.return_value = None
-        result = await npc_startup_service._determine_spawn_room(mock_npc_def)
+        _assign_container_get_instance(mock_container, MagicMock(return_value=None))
+        result: str | None = await npc_startup_service._determine_spawn_room(mock_npc_def)
         assert result is None
 
 
 @pytest.mark.asyncio
-async def test_spawn_npcs_on_startup_exception_in_session(npc_startup_service):
+async def test_spawn_npcs_on_startup_exception_in_session(npc_startup_service: NPCStartupService) -> None:
     """Test spawn_npcs_on_startup() handles exceptions during session processing."""
     with patch("server.services.npc_startup_service.get_npc_instance_service") as mock_get_service:
         mock_service = MagicMock()
@@ -421,32 +449,32 @@ async def test_spawn_npcs_on_startup_exception_in_session(npc_startup_service):
                 mock_npc_service.get_npc_definitions = AsyncMock(side_effect=Exception("Database error"))
                 result = await npc_startup_service.spawn_npcs_on_startup()
                 assert "errors" in result
-                assert len(result["errors"]) > 0
+                assert _errors_len(result) > 0
                 assert result["failed_spawns"] > 0
 
 
 @pytest.mark.asyncio
-async def test_spawn_npcs_on_startup_critical_exception(npc_startup_service):
+async def test_spawn_npcs_on_startup_critical_exception(npc_startup_service: NPCStartupService) -> None:
     """Test spawn_npcs_on_startup() handles critical exceptions."""
     with patch("server.services.npc_startup_service.get_npc_instance_service") as mock_get_service:
         mock_get_service.side_effect = Exception("Critical error")
         result = await npc_startup_service.spawn_npcs_on_startup()
         assert "errors" in result
-        assert len(result["errors"]) > 0
+        assert _errors_len(result) > 0
         assert result["total_attempted"] == 0
 
 
 @pytest.mark.asyncio
-async def test_spawn_npcs_on_startup_with_optional_npcs(npc_startup_service):
+async def test_spawn_npcs_on_startup_with_optional_npcs(npc_startup_service: NPCStartupService) -> None:
     """Test spawn_npcs_on_startup() spawns optional NPCs."""
     mock_required_npc = MagicMock()
     mock_required_npc.required_npc = True
-    mock_required_npc.id = "npc_def_001"
+    mock_required_npc.id = 1
     mock_required_npc.name = "RequiredNPC"
     mock_required_npc.room_id = "room_001"
     mock_optional_npc = MagicMock()
     mock_optional_npc.required_npc = False
-    mock_optional_npc.id = "npc_def_002"
+    mock_optional_npc.id = 2
     mock_optional_npc.name = "OptionalNPC"
     mock_optional_npc.spawn_probability = 1.0
     with patch("server.services.npc_startup_service.get_npc_instance_service") as mock_get_service:
@@ -467,7 +495,90 @@ async def test_spawn_npcs_on_startup_with_optional_npcs(npc_startup_service):
                 with patch.object(npc_startup_service, "_determine_spawn_room", return_value="room_001"):
                     with patch("random.random", return_value=0.5):
                         result = await npc_startup_service.spawn_npcs_on_startup()
-                        assert result["total_attempted"] == 2
-                        assert result["total_spawned"] == 2
                         assert result["required_spawned"] == 1
                         assert result["optional_spawned"] == 1
+                        assert result["arena_spawned"] == 2  # one per definition spawned
+                        assert result["total_attempted"] == 4  # 1 required + 1 optional + 2 arena
+                        assert result["total_spawned"] == 4
+
+
+@pytest.mark.asyncio
+async def test_spawn_arena_npcs_no_prior_spawns_returns_empty(npc_startup_service: NPCStartupService) -> None:
+    """Arena pass is skipped when required/optional passes spawned nothing."""
+    mock_instance = MagicMock()
+    required: dict[str, list[dict[str, str | int]]] = {"spawned_npcs": []}
+    optional: dict[str, list[dict[str, str | int]]] = {"spawned_npcs": []}
+    spawn_mock: AsyncMock = AsyncMock()
+    mock_instance.spawn_npc_instance = spawn_mock
+    result = await npc_startup_service._spawn_arena_npcs([], required, optional, mock_instance)
+    assert result == {"attempted": 0, "spawned": 0, "failed": 0, "errors": [], "spawned_npcs": []}
+    spawn_mock.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_spawn_arena_npcs_spawns_each_spawned_definition(npc_startup_service: NPCStartupService) -> None:
+    """One arena instance per definition_id present in required/optional spawned_npcs."""
+    npc_def = MagicMock()
+    npc_def.id = 42
+    npc_def.name = "DupeForArena"
+
+    required: dict[str, list[dict[str, str | int]]] = {
+        "spawned_npcs": [
+            {
+                "npc_id": "n_main",
+                "name": "DupeForArena",
+                "room_id": "room_1",
+                "definition_id": 42,
+            }
+        ]
+    }
+    optional: dict[str, list[dict[str, str | int]]] = {"spawned_npcs": []}
+
+    mock_instance = MagicMock()
+    arena_room = "limbo_arena_arena_arena_5_5"
+    spawn_inst: AsyncMock = AsyncMock(
+        return_value={
+            "success": True,
+            "npc_id": "n_arena",
+            "definition_name": "DupeForArena",
+            "room_id": arena_room,
+        }
+    )
+    mock_instance.spawn_npc_instance = spawn_inst
+
+    with patch("server.container.ApplicationContainer") as mock_ac:
+        inner = MagicMock(async_persistence=MagicMock(warmup_room_cache=AsyncMock()))
+        _assign_container_get_instance(mock_ac, MagicMock(return_value=inner))
+        with patch("server.services.npc_startup_service.random.choice", return_value=arena_room):
+            result = await npc_startup_service._spawn_arena_npcs([npc_def], required, optional, mock_instance)
+
+    assert result["attempted"] == 1
+    assert result["spawned"] == 1
+    assert result["failed"] == 0
+    spawn_inst.assert_awaited_once_with(definition_id=42, room_id=arena_room, reason="startup_arena")
+
+
+@pytest.mark.asyncio
+async def test_spawn_arena_npcs_skips_unknown_definition_id(npc_startup_service: NPCStartupService) -> None:
+    """Stale definition_id in spawned_npcs that is not in definitions list is ignored."""
+    required: dict[str, list[dict[str, str | int]]] = {
+        "spawned_npcs": [
+            {
+                "npc_id": "orphan",
+                "name": "Ghost",
+                "room_id": "r",
+                "definition_id": 999,
+            }
+        ]
+    }
+    optional: dict[str, list[dict[str, str | int]]] = {"spawned_npcs": []}
+    npc_def = MagicMock()
+    npc_def.id = 1
+    npc_def.name = "Real"
+
+    mock_instance = MagicMock()
+    spawn_skip: AsyncMock = AsyncMock()
+    mock_instance.spawn_npc_instance = spawn_skip
+    result = await npc_startup_service._spawn_arena_npcs([npc_def], required, optional, mock_instance)
+    assert result["attempted"] == 0
+    spawn_skip.assert_not_called()

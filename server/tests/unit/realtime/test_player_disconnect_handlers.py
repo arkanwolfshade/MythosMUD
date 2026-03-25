@@ -12,9 +12,11 @@ import pytest
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
 # pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
 from server.realtime.player_disconnect_handlers import (
+    SESSION_AGE_OFF_SECONDS,
     _cleanup_player_references,
     _collect_disconnect_keys,
     _remove_player_from_online_tracking,
+    age_off_disconnected_sessions,
     handle_player_disconnect_broadcast,
 )
 
@@ -223,6 +225,78 @@ def test_cleanup_player_references_partial_cleanup(mock_connection_manager):
     # Should not raise
     _cleanup_player_references(player_id, mock_connection_manager)
     mock_connection_manager.rate_limiter.remove_player_data.assert_called_once()
+
+
+def test_cleanup_player_references_marks_session_for_aging(mock_connection_manager):
+    """Test _cleanup_player_references marks session for 5-min aging instead of immediate removal."""
+    player_id = uuid.uuid4()
+    session_id = "session_123"
+    mock_connection_manager.online_players = {}
+    mock_connection_manager.last_seen = {}
+    mock_connection_manager.last_active_update_times = {}
+    mock_connection_manager.rate_limiter = MagicMock()
+    mock_connection_manager.rate_limiter.remove_player_data = MagicMock()
+    mock_connection_manager.message_queue = MagicMock()
+    mock_connection_manager.message_queue.remove_player_messages = MagicMock()
+    mock_connection_manager.player_sessions = {player_id: session_id}
+    mock_connection_manager.session_connections = {session_id: []}
+    mock_connection_manager.session_disconnect_times = {}
+
+    _cleanup_player_references(player_id, mock_connection_manager)
+
+    # Session kept for aging; disconnect time recorded
+    assert session_id in mock_connection_manager.session_disconnect_times
+    assert player_id in mock_connection_manager.player_sessions
+    assert session_id in mock_connection_manager.session_connections
+
+
+def test_age_off_disconnected_sessions_removes_expired():
+    """Test age_off_disconnected_sessions removes sessions older than 5 minutes."""
+    manager = MagicMock()
+    session_id = "expired_session"
+    player_id = uuid.uuid4()
+    manager.session_disconnect_times = {session_id: 0}  # Epoch = long ago
+    manager.player_sessions = {player_id: session_id}
+    manager.session_connections = {session_id: []}
+
+    count = age_off_disconnected_sessions(manager)
+
+    assert count == 1
+    assert session_id not in manager.session_disconnect_times
+    assert session_id not in manager.session_connections
+    assert player_id not in manager.player_sessions
+
+
+def test_age_off_disconnected_sessions_keeps_recent():
+    """Test age_off_disconnected_sessions keeps sessions disconnected less than 5 minutes."""
+    import time as time_module
+
+    manager = MagicMock()
+    session_id = "recent_session"
+    player_id = uuid.uuid4()
+    # Disconnect 1 min ago; well under SESSION_AGE_OFF_SECONDS (5 min)
+    manager.session_disconnect_times = {session_id: time_module.time() - (SESSION_AGE_OFF_SECONDS - 240)}
+    manager.player_sessions = {player_id: session_id}
+    manager.session_connections = {session_id: []}
+
+    count = age_off_disconnected_sessions(manager)
+
+    assert count == 0
+    assert session_id in manager.session_disconnect_times
+    assert session_id in manager.session_connections
+    assert player_id in manager.player_sessions
+
+
+def test_age_off_disconnected_sessions_missing_attrs_returns_zero():
+    """Test age_off_disconnected_sessions returns 0 when manager lacks session attrs."""
+    manager = MagicMock()
+    manager.session_disconnect_times = None
+    manager.player_sessions = None
+    manager.session_connections = None
+
+    count = age_off_disconnected_sessions(manager)
+
+    assert count == 0
 
 
 @pytest.mark.asyncio

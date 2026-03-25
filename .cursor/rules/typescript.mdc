@@ -1,8 +1,9 @@
-Review the codebase with @.cursor/rules/structlog.mdc   looking for anti-patterns, sematic problems, and bad code and create a plan to remediate any findings---
-description: Enforce modern TypeScript best practices for robust, type-safe JavaScript applications, focusing on strictness, clear type definitions, and runtime validation.
-globs: **/*.{js,jsx}
 ---
-# TypeScript Best Practices (for JS/JSX Type-Checking)
+description: Enforce modern TypeScript best practices for robust, type-safe JavaScript applications, focusing on strictness, clear type definitions, and runtime validation.
+globs: **/*.{ts,tsx,js,jsx}
+---
+
+# TypeScript Best Practices
 
 This guide outlines essential TypeScript best practices for teams working with JavaScript or JSX files that are type-checked by TypeScript (e.g., via `tsconfig.json` with `allowJs` and/or JSDoc annotations). While many examples use native TypeScript syntax for clarity and conciseness, the underlying principles and type-safety benefits apply directly to your `.js`/`.jsx` codebase.
 
@@ -21,7 +22,7 @@ This is the single most impactful change you can make. `strict: true` enables a 
     "strictNullChecks": true, // Prevents `null`/`undefined` access without checks
     "strictPropertyInitialization": true, // Ensures class properties are initialized
     "allowJs": true, // Crucial for type-checking .js/.jsx files
-    "checkJs": true, // Enables type-checking in .js/.jsx files
+    "checkJs": true // Enables type-checking in .js/.jsx files
     // ... other options
   },
   "include": ["**/*.js", "**/*.jsx"] // Ensure your JS/JSX files are included
@@ -121,19 +122,19 @@ When dealing with data from external sources (e.g., API responses), use `unknown
  * @param {unknown} data // Forces runtime checks
  */
 export function processDataGood(data) {
-  if (typeof data === 'object' && data !== null && 'foo' in data) {
+  if (typeof data === "object" && data !== null && "foo" in data) {
     /** @type {{ foo: { bar: string } }} */
     const typedData = data; // Type assertion after narrowing
     console.log(typedData.foo.bar);
   } else {
-    console.error('Invalid data structure');
+    console.error("Invalid data structure");
   }
 }
 ```
 
 ## 4. Implement Robust Runtime Type Validation (Type Guards)
 
-TypeScript's compile-time checks are erased at runtime. For data from external sources (APIs, user input), you *must* perform runtime validation to prevent crashes.
+TypeScript's compile-time checks are erased at runtime. For data from external sources (APIs, user input), you _must_ perform runtime validation to prevent crashes.
 
 ### ✅ GOOD: `typeof` for Primitives
 
@@ -144,7 +145,7 @@ TypeScript's compile-time checks are erased at runtime. For data from external s
  * @returns {boolean}
  */
 export function isString(value) {
-  return typeof value === 'string';
+  return typeof value === "string";
 }
 
 /**
@@ -152,7 +153,7 @@ export function isString(value) {
  * @returns {boolean}
  */
 export function isNumber(value) {
-  return typeof value === 'number' && !isNaN(value);
+  return typeof value === "number" && !isNaN(value);
 }
 ```
 
@@ -175,10 +176,14 @@ interface Product {
  */
 function isProduct(obj) {
   return (
-    typeof obj === 'object' && obj !== null &&
-    'id' in obj && typeof obj.id === 'string' &&
-    'name' in obj && typeof obj.name === 'string' &&
-    'price' in obj && typeof obj.price === 'number'
+    typeof obj === "object" &&
+    obj !== null &&
+    "id" in obj &&
+    typeof obj.id === "string" &&
+    "name" in obj &&
+    typeof obj.name === "string" &&
+    "price" in obj &&
+    typeof obj.price === "number"
   );
 }
 ```
@@ -189,7 +194,7 @@ function isProduct(obj) {
  * @typedef {import('./types').Product} Product
  * @type {typeof import('./types').isProduct}
  */
-import { isProduct } from './types'; // Assuming isProduct is exported from types.ts/d.ts
+import { isProduct } from "./types"; // Assuming isProduct is exported from types.ts/d.ts
 
 /**
  * @param {unknown} apiResponse
@@ -199,7 +204,7 @@ export function handleApiResponse(apiResponse) {
     // TypeScript now knows apiResponse is Product here
     console.log(`Fetched product: ${apiResponse.name} at $${apiResponse.price}`);
   } else {
-    console.error('API response is not a valid Product:', apiResponse);
+    console.error("API response is not a valid Product:", apiResponse);
   }
 }
 ```
@@ -215,7 +220,7 @@ For simple sets of related constants, strict literal union types (`"admin" | "us
 enum UserStatus {
   Active, // 0
   Inactive, // 1
-  Pending // 2
+  Pending, // 2
 }
 // Problem: Can be assigned any number at runtime, e.g., UserStatus.Active = 99
 ```
@@ -226,7 +231,7 @@ enum UserStatus {
 // types.d.ts or types.ts
 /** @typedef {'active' | 'inactive' | 'pending'} UserStatus */
 // Or using native TS:
-type UserStatus = 'active' | 'inactive' | 'pending';
+type UserStatus = "active" | "inactive" | "pending";
 
 // If an enum is truly necessary, use a const string enum for compile-time safety and runtime efficiency:
 const enum UserRole {
@@ -249,7 +254,7 @@ export function updateUserStatus(status) {
   console.log(`User status updated to: ${status}`);
 }
 
-updateUserStatus('active');
+updateUserStatus("active");
 // updateUserStatus('invalid'); // Type error
 ```
 
@@ -290,8 +295,12 @@ Named exports promote explicit imports and make refactoring easier. Avoid defaul
 // export default class UserService { /* ... */ }
 
 // ✅ GOOD: named export
-export class UserService { /* ... */ }
-export const DEFAULT_USER = { /* ... */ };
+export class UserService {
+  /* ... */
+}
+export const DEFAULT_USER = {
+  /* ... */
+};
 ```
 
 ### ✅ GOOD: Organized Imports
@@ -300,14 +309,14 @@ Group imports by type (e.g., library, absolute path, relative path) and sort the
 
 ```javascript
 // some-component.jsx
-import React from 'react'; // Library imports
-import { useSelector } from 'react-redux';
+import React from "react"; // Library imports
+import { useSelector } from "react-redux";
 
-import { API_URL } from 'config/constants'; // Absolute imports (e.g., using path aliases)
-import { selectUser } from 'store/selectors';
+import { API_URL } from "config/constants"; // Absolute imports (e.g., using path aliases)
+import { selectUser } from "store/selectors";
 
-import { Button } from './components/Button'; // Relative imports
-import { formatCurrency } from '../utils/formatters';
+import { Button } from "./components/Button"; // Relative imports
+import { formatCurrency } from "../utils/formatters";
 ```
 
 ##

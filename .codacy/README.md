@@ -16,6 +16,13 @@ The following Codacy CLI commands will **overwrite** this file and remove manual
 
 ## ✅ Current Configuration
 
+### Dependency / filesystem CVE scanning (two tools on purpose)
+
+- **Grype**: primary scanner for local development and `Makefile` targets (`make grype`, `scripts/grype.py`).
+  Codacy does not document Grype as a CLI tool the way it does Trivy.
+- **Trivy**: kept in `.codacy/codacy.yaml` under `tools:` for **Codacy** (cloud analysis and
+  `codacy_cli_analyze` with `tool: trivy`). See the comment block at the top of `codacy.yaml` for why both exist.
+
 **Python Version**: 3.12.10 (matches project Python version)
 
 **Node Version**: 24.11.0 (matches project Node version from .nvmrc)
@@ -38,7 +45,7 @@ The following Codacy CLI commands will **overwrite** this file and remove manual
   - `sqlfluff@3.0.0` - SQL linting and formatting
   - `sqlint@0.2.1` - SQL linting (NOTE: Not installed locally due to dependency conflict with click>=8.1.8; use sqlfluff instead)
   - `stylelint@16.0.0` - CSS linter
-  - `trivy@0.66.0` - Dependency security scanner
+  - `trivy@0.66.0` - Dependency security scanner (**Codacy**; local SCA uses **Grype** via `make grype`)
 
 ## 🔧 Protection Mechanisms
 
@@ -71,7 +78,7 @@ If this file is modified by Codacy extension or CLI:
 
    - `hadolint`, `jackson-linter`, `markdownlint`, `psscriptanalyzer`
 
-   - `shellcheck`, `spectral`, `sqlfluff`, `sqlint`, `stylelint`, `trivy`
+   - `shellcheck`, `spectral`, `sqlfluff`, `sqlint`, `stylelint`, `trivy` (Codacy; local SCA: `make grype`)
 
 5. **Check Python version**: Should be `3.12.10`, not `3.11.11`
 6. **Check Node version**: Should be `24.11.0` (matches `.nvmrc`), not `22.2.0`

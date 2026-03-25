@@ -178,6 +178,80 @@ describe('projector', () => {
       expect(next.player?.in_combat).toBe(false);
     });
 
+    it('player_attacked merges target_current_dp into player stats for Character Panel sync', () => {
+      const prev = getInitialGameState();
+      prev.player = {
+        name: 'Hero',
+        stats: { current_dp: 100, max_dp: 100, lucidity: 80 },
+      };
+      const event: GameEvent = {
+        event_type: 'player_attacked',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          attacker_name: 'Shoggoth',
+          action_type: 'auto_attack',
+          damage: 12,
+          target_current_dp: 55,
+          target_max_dp: 100,
+        },
+      };
+      const next = projectEvent(prev, event);
+      expect(next.player?.stats?.current_dp).toBe(55);
+      expect(next.player?.stats?.max_dp).toBe(100);
+      expect(next.messages).toHaveLength(1);
+      expect(next.messages[0].text).toContain('55/100');
+    });
+
+    it('npc_took_damage appends spell damage line with NPC current_dp', () => {
+      const prev = getInitialGameState();
+      const event: GameEvent = {
+        event_type: 'npc_took_damage',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          npc_name: 'Nightgaunt',
+          damage: 25,
+          current_dp: 55,
+          max_dp: 80,
+        },
+      };
+      const next = projectEvent(prev, event);
+      expect(next.messages).toHaveLength(1);
+      expect(next.messages[0].text).toContain('Dealt 25 damage to Nightgaunt');
+      expect(next.messages[0].text).toContain('55/80');
+    });
+
+    it('follow_request_cleared clears pendingFollowRequest when projected', () => {
+      const prev = getInitialGameState();
+      const withFollow: GameState = {
+        ...prev,
+        pendingFollowRequest: { request_id: 'r1', requestor_name: 'Alice' },
+      };
+      const event: GameEvent = {
+        event_type: 'follow_request_cleared',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { request_id: 'r1' },
+      };
+      const next = projectEvent(withFollow, event);
+      expect(next.pendingFollowRequest).toBeNull();
+    });
+
+    it('combat_target_switch appends room message to messages', () => {
+      const prev = getInitialGameState();
+      const event: GameEvent = {
+        event_type: 'combat_target_switch',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { message: 'The horror turns its gaze to Soandso.' },
+      };
+      const next = projectEvent(prev, event);
+      expect(next.messages).toHaveLength(1);
+      expect(next.messages[0].text).toBe('The horror turns its gaze to Soandso.');
+      expect(next.messages[0].messageType).toBe('combat');
+    });
+
     it('game_state with room replaces previous room (server-authoritative, no merge)', () => {
       const prev = getInitialGameState();
       const withRoom: GameState = {

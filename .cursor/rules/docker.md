@@ -2,6 +2,7 @@
 description: This rule file provides comprehensive guidance on Docker best practices, covering Dockerfile construction, image optimization, and security considerations. It aims to improve the efficiency, maintainability, and security of Docker-based projects.
 globs: Dockerfile,docker-compose.yml,*.dockerfile
 ---
+
 # Docker Best Practices
 
 This document provides comprehensive guidance on Docker best practices, covering Dockerfile construction, image optimization, security considerations, and more. It aims to improve the efficiency, maintainability, and security of Docker-based projects.
@@ -10,7 +11,7 @@ This document provides comprehensive guidance on Docker best practices, covering
 
 **Directory Structure Best Practices:**
 
-- Organize your project with a clear separation of concerns.  For example:
+- Organize your project with a clear separation of concerns. For example:
 
         project-root/
         ├── Dockerfile            # Dockerfile for building the image
@@ -54,14 +55,16 @@ This document provides comprehensive guidance on Docker best practices, covering
 **Sidecar Pattern:** Run a utility container alongside your main application container (e.g., for logging, monitoring).
 
 **Ambassador Pattern:** Proxy requests to a service running outside the container.
+
 - **Adapter Pattern:** Adapt the interface of a service to match the expected interface of a client.
-- **Init Container Pattern:** Run initialization tasks before the main application container starts.  Often used to set up configuration, prepare databases, etc.
+- **Init Container Pattern:** Run initialization tasks before the main application container starts. Often used to set up configuration, prepare databases, etc.
 
 **Recommended Approaches for Common Tasks:**
 
 **Configuration Management:** Use environment variables to configure your application.
 
 **Logging:** Centralize logging using a logging driver or a dedicated logging container (e.g., Fluentd, Logstash).
+
 - **Health Checks:** Implement health checks to ensure that your services are running correctly.
 - **Process Management:** Use a process manager (e.g., `tini`, `dumb-init`) to handle signal forwarding and zombie process reaping.
 
@@ -70,15 +73,17 @@ This document provides comprehensive guidance on Docker best practices, covering
 **Storing secrets in Dockerfile or images:** Never hardcode passwords or API keys in your Dockerfile.
 
 **Running services as root:** Avoid running your application as the root user.
-  - **Installing unnecessary packages:** Keep your images lean by only installing the required dependencies.
-  - **Ignoring `.dockerignore`:** Make sure to use `.dockerignore` to exclude unnecessary files from the build context, reducing image size and build time.
-  - **Using `ADD` instead of `COPY` unnecessarily:** `COPY` is usually more transparent and predictable.
+
+- **Installing unnecessary packages:** Keep your images lean by only installing the required dependencies.
+- **Ignoring `.dockerignore`:** Make sure to use `.dockerignore` to exclude unnecessary files from the build context, reducing image size and build time.
+- **Using `ADD` instead of `COPY` unnecessarily:** `COPY` is usually more transparent and predictable.
 
 **State Management Best Practices:**
 
 **Stateless Applications:** Design your application to be stateless whenever possible.
 
 **Volumes:** Use volumes for persistent storage (e.g., databases, logs).
+
 - **Bind Mounts:** Use bind mounts for development to allow code changes to be reflected immediately in the container.
 
 **Error Handling Patterns:**
@@ -95,6 +100,7 @@ This document provides comprehensive guidance on Docker best practices, covering
 **Multi-stage builds:** Use multi-stage builds to create smaller, more efficient images.
 
 **Minimize layers:** Combine multiple commands into a single layer using `&&`.
+
 - **Use a lightweight base image:** Choose a minimal base image like Alpine Linux.
 - **Optimize caching:** Order your Dockerfile commands to maximize cache reuse.
 
@@ -120,9 +126,10 @@ This document provides comprehensive guidance on Docker best practices, covering
 
 **Common Vulnerabilities and How to Prevent Them:**
 
-**Image vulnerabilities:** Regularly scan your images for vulnerabilities using tools like Clair or Trivy.
+**Image vulnerabilities:** Regularly scan your images for vulnerabilities using tools like Grype, Trivy, or Clair.
 
 **Configuration vulnerabilities:** Secure your container configurations to prevent unauthorized access.
+
 - **Network vulnerabilities:** Limit network exposure and use network policies to isolate containers.
 - **Privilege escalation:** Avoid running containers with unnecessary privileges.
 
@@ -181,6 +188,7 @@ This document provides comprehensive guidance on Docker best practices, covering
 **Not using `.dockerignore`:** This can lead to large image sizes and slow build times.
 
 **Not pinning package versions:** This can lead to unexpected build failures due to dependency updates.
+
 - **Exposing unnecessary ports:** This can increase the attack surface of your application.
 - **Not cleaning up after installing packages:** This can lead to larger image sizes.
 - **Using the shell form of `CMD` or `ENTRYPOINT`:** Use the exec form (`["executable", "param1", "param2"]`) to avoid shell injection vulnerabilities and signal handling issues.
@@ -190,6 +198,7 @@ This document provides comprehensive guidance on Docker best practices, covering
 **File permissions:** Ensure that your application has the correct file permissions.
 
 **Timezone configuration:** Configure the correct timezone for your container.
+
 - **Resource limits:** Set appropriate resource limits for your containers.
 
 **Version-Specific Issues:**
@@ -216,8 +225,9 @@ This document provides comprehensive guidance on Docker best practices, covering
 **Docker Desktop:** For local development and testing.
 
 **Docker Compose:** For orchestrating multi-container applications.
+
 - **Visual Studio Code with Docker extension:** For enhanced Docker development experience.
-- **Container image scanners (e.g., Trivy, Clair):** For identifying vulnerabilities in container images.
+- **Container image scanners (e.g., Grype, Trivy, Clair):** For identifying vulnerabilities in container images.
 
 **Build Configuration:**
 

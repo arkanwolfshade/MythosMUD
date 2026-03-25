@@ -93,8 +93,12 @@ export const MapView: React.FC<MapViewProps> = ({
   const currentRoomId = currentRoom?.id;
 
   const opaqueStyle = hideHeader
-    ? { backgroundColor: '#0a0a0a', opacity: 1 }
-    : { backgroundColor: '#0a0a0a', opacity: 1, zIndex: Z_INDEX_OVERLAY_TOP };
+    ? { backgroundColor: 'var(--color-mythos-terminal-background, #0a0a0a)', opacity: 1 }
+    : {
+        backgroundColor: 'var(--color-mythos-terminal-background, #0a0a0a)',
+        opacity: 1,
+        zIndex: Z_INDEX_OVERLAY_TOP,
+      };
   return (
     <div
       className={`${hideHeader ? 'h-full w-full' : 'fixed inset-0'} bg-mythos-terminal-background flex flex-col`}
@@ -115,7 +119,10 @@ export const MapView: React.FC<MapViewProps> = ({
       )}
 
       {/* Map viewer: opaque so game UI never shows through */}
-      <div className="flex-1 overflow-hidden min-h-0" style={{ backgroundColor: '#0a0a0a' }}>
+      <div
+        className="flex-1 overflow-hidden min-h-0"
+        style={{ backgroundColor: 'var(--color-mythos-terminal-background, #0a0a0a)' }}
+      >
         {currentRoom ? (
           <AsciiMapViewer
             plane={plane}

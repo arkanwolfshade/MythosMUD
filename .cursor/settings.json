@@ -10,10 +10,7 @@
       "enabled": true
     },
     "deploy-on-aws": {
-      "enabled": true
-    },
-    "superpowers": {
-      "enabled": true
+      "enabled": false
     }
   }
 }

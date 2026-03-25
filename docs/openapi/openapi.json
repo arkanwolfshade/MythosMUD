@@ -1556,7 +1556,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MessageResponse"
+                  "$ref": "#/components/schemas/server__schemas__players__player__MessageResponse"
                 }
               }
             }
@@ -1974,7 +1974,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MetricsResponse"
+                  "$ref": "#/components/schemas/server__api__monitoring_models__MetricsResponse"
                 }
               }
             }
@@ -3513,6 +3513,112 @@
         ]
       }
     },
+    "/v1/admin/npc/admin/sessions": {
+      "get": {
+        "tags": [
+          "admin",
+          "npc"
+        ],
+        "summary": "Get Admin Sessions",
+        "description": "Get active admin sessions.",
+        "operationId": "get_admin_sessions_v1_admin_npc_admin_sessions_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminSessionsResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/v1/admin/npc/admin/audit-log": {
+      "get": {
+        "tags": [
+          "admin",
+          "npc"
+        ],
+        "summary": "Get Admin Audit Log",
+        "description": "Get admin audit log.",
+        "operationId": "get_admin_audit_log_v1_admin_npc_admin_audit_log_get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminAuditLogResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/npc/admin/cleanup-sessions": {
+      "post": {
+        "tags": [
+          "admin",
+          "npc"
+        ],
+        "summary": "Cleanup Admin Sessions",
+        "description": "Clean up expired admin sessions.",
+        "operationId": "cleanup_admin_sessions_v1_admin_npc_admin_cleanup_sessions_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminCleanupSessionsResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
     "/v1/admin/npc/definitions": {
       "get": {
         "tags": [
@@ -4177,112 +4283,6 @@
             }
           }
         }
-      }
-    },
-    "/v1/admin/npc/admin/sessions": {
-      "get": {
-        "tags": [
-          "admin",
-          "npc"
-        ],
-        "summary": "Get Admin Sessions",
-        "description": "Get active admin sessions.",
-        "operationId": "get_admin_sessions_v1_admin_npc_admin_sessions_get",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AdminSessionsResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "OAuth2PasswordBearer": []
-          }
-        ]
-      }
-    },
-    "/v1/admin/npc/admin/audit-log": {
-      "get": {
-        "tags": [
-          "admin",
-          "npc"
-        ],
-        "summary": "Get Admin Audit Log",
-        "description": "Get admin audit log.",
-        "operationId": "get_admin_audit_log_v1_admin_npc_admin_audit_log_get",
-        "security": [
-          {
-            "OAuth2PasswordBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "limit",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "default": 100,
-              "title": "Limit"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AdminAuditLogResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/admin/npc/admin/cleanup-sessions": {
-      "post": {
-        "tags": [
-          "admin",
-          "npc"
-        ],
-        "summary": "Cleanup Admin Sessions",
-        "description": "Clean up expired admin sessions.",
-        "operationId": "cleanup_admin_sessions_v1_admin_npc_admin_cleanup_sessions_post",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AdminCleanupSessionsResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "OAuth2PasswordBearer": []
-          }
-        ]
       }
     },
     "/v1/api/admin/nats/subjects/health": {
@@ -7189,25 +7189,6 @@
         "title": "MemoryStatsResponse",
         "description": "Response model for memory statistics."
       },
-      "MessageResponse": {
-        "properties": {
-          "message": {
-            "type": "string",
-            "title": "Message",
-            "description": "Success or status message"
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "required": [
-          "message"
-        ],
-        "title": "MessageResponse",
-        "description": "Generic response model for operations that return a simple message.",
-        "example": {
-          "message": "Operation completed successfully"
-        }
-      },
       "MetricsData": {
         "properties": {
           "uptime_seconds": {
@@ -7292,135 +7273,6 @@
         "type": "object",
         "title": "MetricsData",
         "description": "Comprehensive system metrics data.\n\nThis model represents system metrics with dynamic structure to accommodate\nvarious metric types (NATS, circuit breaker, DLQ, performance, etc.)."
-      },
-      "MetricsResponse": {
-        "properties": {
-          "total_movements": {
-            "type": "integer",
-            "title": "Total Movements"
-          },
-          "successful_movements": {
-            "type": "integer",
-            "title": "Successful Movements"
-          },
-          "failed_movements": {
-            "type": "integer",
-            "title": "Failed Movements"
-          },
-          "success_rate": {
-            "type": "number",
-            "title": "Success Rate"
-          },
-          "failure_rate": {
-            "type": "number",
-            "title": "Failure Rate"
-          },
-          "current_concurrent_movements": {
-            "type": "integer",
-            "title": "Current Concurrent Movements"
-          },
-          "max_concurrent_movements": {
-            "type": "integer",
-            "title": "Max Concurrent Movements"
-          },
-          "avg_movement_time_ms": {
-            "type": "number",
-            "title": "Avg Movement Time Ms"
-          },
-          "max_movement_time_ms": {
-            "type": "number",
-            "title": "Max Movement Time Ms"
-          },
-          "min_movement_time_ms": {
-            "type": "number",
-            "title": "Min Movement Time Ms"
-          },
-          "movements_per_second": {
-            "type": "number",
-            "title": "Movements Per Second"
-          },
-          "uptime_seconds": {
-            "type": "number",
-            "title": "Uptime Seconds"
-          },
-          "integrity_checks": {
-            "type": "integer",
-            "title": "Integrity Checks"
-          },
-          "integrity_violations": {
-            "type": "integer",
-            "title": "Integrity Violations"
-          },
-          "integrity_rate": {
-            "type": "number",
-            "title": "Integrity Rate"
-          },
-          "last_movement_time": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Last Movement Time"
-          },
-          "last_validation_time": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Last Validation Time"
-          },
-          "room_occupancy": {
-            "additionalProperties": {
-              "type": "integer"
-            },
-            "type": "object",
-            "title": "Room Occupancy"
-          },
-          "player_movement_counts": {
-            "additionalProperties": {
-              "type": "integer"
-            },
-            "type": "object",
-            "title": "Player Movement Counts"
-          },
-          "timestamp": {
-            "type": "string",
-            "title": "Timestamp"
-          }
-        },
-        "type": "object",
-        "required": [
-          "total_movements",
-          "successful_movements",
-          "failed_movements",
-          "success_rate",
-          "failure_rate",
-          "current_concurrent_movements",
-          "max_concurrent_movements",
-          "avg_movement_time_ms",
-          "max_movement_time_ms",
-          "min_movement_time_ms",
-          "movements_per_second",
-          "uptime_seconds",
-          "integrity_checks",
-          "integrity_violations",
-          "integrity_rate",
-          "last_movement_time",
-          "last_validation_time",
-          "room_occupancy",
-          "player_movement_counts",
-          "timestamp"
-        ],
-        "title": "MetricsResponse",
-        "description": "Response model for movement metrics."
       },
       "MetricsSummary": {
         "properties": {
@@ -7751,7 +7603,7 @@
               }
             ],
             "title": "Aggression Level",
-            "description": "Aggression level (0-10)"
+            "description": "Aggression level (0-10); scales threat from damage/healing (0 -> 0.5x, 10 -> 1.0x; None = full)"
           },
           "wander_radius": {
             "anyOf": [
@@ -11013,6 +10865,13 @@
           "type": {
             "type": "string",
             "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
           }
         },
         "type": "object",
@@ -11114,6 +10973,135 @@
         "title": "MessageResponse",
         "description": "Generic response model for operations that return a simple message."
       },
+      "server__api__monitoring_models__MetricsResponse": {
+        "properties": {
+          "total_movements": {
+            "type": "integer",
+            "title": "Total Movements"
+          },
+          "successful_movements": {
+            "type": "integer",
+            "title": "Successful Movements"
+          },
+          "failed_movements": {
+            "type": "integer",
+            "title": "Failed Movements"
+          },
+          "success_rate": {
+            "type": "number",
+            "title": "Success Rate"
+          },
+          "failure_rate": {
+            "type": "number",
+            "title": "Failure Rate"
+          },
+          "current_concurrent_movements": {
+            "type": "integer",
+            "title": "Current Concurrent Movements"
+          },
+          "max_concurrent_movements": {
+            "type": "integer",
+            "title": "Max Concurrent Movements"
+          },
+          "avg_movement_time_ms": {
+            "type": "number",
+            "title": "Avg Movement Time Ms"
+          },
+          "max_movement_time_ms": {
+            "type": "number",
+            "title": "Max Movement Time Ms"
+          },
+          "min_movement_time_ms": {
+            "type": "number",
+            "title": "Min Movement Time Ms"
+          },
+          "movements_per_second": {
+            "type": "number",
+            "title": "Movements Per Second"
+          },
+          "uptime_seconds": {
+            "type": "number",
+            "title": "Uptime Seconds"
+          },
+          "integrity_checks": {
+            "type": "integer",
+            "title": "Integrity Checks"
+          },
+          "integrity_violations": {
+            "type": "integer",
+            "title": "Integrity Violations"
+          },
+          "integrity_rate": {
+            "type": "number",
+            "title": "Integrity Rate"
+          },
+          "last_movement_time": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Movement Time"
+          },
+          "last_validation_time": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Validation Time"
+          },
+          "room_occupancy": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Room Occupancy"
+          },
+          "player_movement_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Player Movement Counts"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_movements",
+          "successful_movements",
+          "failed_movements",
+          "success_rate",
+          "failure_rate",
+          "current_concurrent_movements",
+          "max_concurrent_movements",
+          "avg_movement_time_ms",
+          "max_movement_time_ms",
+          "min_movement_time_ms",
+          "movements_per_second",
+          "uptime_seconds",
+          "integrity_checks",
+          "integrity_violations",
+          "integrity_rate",
+          "last_movement_time",
+          "last_validation_time",
+          "room_occupancy",
+          "player_movement_counts",
+          "timestamp"
+        ],
+        "title": "MetricsResponse",
+        "description": "Response model for movement metrics."
+      },
       "server__schemas__metrics__metrics__MetricsResponse": {
         "properties": {
           "metrics": {
@@ -11139,6 +11127,25 @@
               "status": "connected"
             }
           }
+        }
+      },
+      "server__schemas__players__player__MessageResponse": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "Success or status message"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "title": "MessageResponse",
+        "description": "Generic response model for operations that return a simple message.",
+        "example": {
+          "message": "Operation completed successfully"
         }
       }
     },

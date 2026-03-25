@@ -12,6 +12,8 @@ for maintaining control over the eldritch entities that inhabit our world.
 
 from typing import Any, cast
 
+from structlog.stdlib import BoundLogger
+
 from server.events.event_bus import EventBus
 from server.models.npc import NPCDefinition
 from server.npc.lifecycle_manager import NPCLifecycleManager
@@ -22,7 +24,7 @@ from server.services.npc_service import npc_service
 
 from ..structured_logging.enhanced_logging_config import get_logger
 
-logger = get_logger(__name__)
+logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
 
 
 class NPCInstanceService:
@@ -59,7 +61,7 @@ class NPCInstanceService:
             population_controller: NPC population controller (validates population limits)
             event_bus: Event bus for publishing events
         """
-        self.lifecycle_manager = lifecycle_manager
+        self.lifecycle_manager: NPCLifecycleManager = lifecycle_manager
         self.spawning_service = spawning_service
         self.population_controller = population_controller
         self.event_bus = event_bus
@@ -100,10 +102,12 @@ class NPCInstanceService:
 
             # Spawn the NPC using the population controller to ensure proper population limits
             # The population controller will handle all spawning through the lifecycle manager
-            npc_id = self.population_controller.spawn_npc(definition, room_id)
+            npc_id, failure_reason = self.population_controller.spawn_npc(definition, room_id, reason)
 
             if not npc_id:
-                raise RuntimeError(f"Failed to spawn NPC from definition {definition_id}")
+                raise RuntimeError(
+                    f"Failed to spawn NPC from definition {definition_id}: {failure_reason or 'unknown'}"
+                )
 
             logger.info(
                 "Spawned NPC instance",
@@ -247,7 +251,7 @@ class NPCInstanceService:
             # Note: This would need to be implemented in the NPC instance class
             # For now, we'll simulate the move
             if hasattr(npc_instance, "move_to_room"):
-                npc_instance.move_to_room(new_room_id)
+                _ = npc_instance.move_to_room(new_room_id)
             else:
                 # Update the room ID directly if move_to_room method doesn't exist
                 cast(Any, npc_instance).current_room_id = new_room_id

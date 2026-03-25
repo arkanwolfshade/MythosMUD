@@ -8,20 +8,27 @@ Processes queued actions and generates default actions for automatic combat prog
 # pylint: disable=too-few-public-methods  # Reason: Turn processor class with focused responsibility, minimal public interface
 
 import uuid
-from typing import Any
+from typing import TYPE_CHECKING, Any, cast
+
+from structlog.stdlib import BoundLogger
 
 from server.config import get_config
 from server.models.combat import CombatAction, CombatInstance, CombatParticipant, CombatParticipantType, CombatStatus
 from server.services import combat_turn_participant_actions
 from server.structured_logging.enhanced_logging_config import get_logger
 
-logger = get_logger(__name__)
+if TYPE_CHECKING:
+    from server.services.combat_service import CombatService
+
+logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
 
 
 class CombatTurnProcessor:
     """Handles combat turn processing and auto-progression."""
 
-    def __init__(self, combat_service: Any) -> None:
+    _combat_service: "CombatService"
+
+    def __init__(self, combat_service: "CombatService") -> None:
         """
         Initialize the turn processor.
 
@@ -73,6 +80,42 @@ class CombatTurnProcessor:
                     "Round progression triggered", combat_id=combat_id, tick=current_tick, round=combat.combat_round
                 )
                 await self._execute_round(combat, current_tick)
+
+    def _is_npc_still_in_world(self, participant: CombatParticipant) -> bool:
+        """
+        Return True if an NPC participant is still in the lifecycle active_npcs (not slain and removed).
+        Used to skip turns for NPCs killed outside the combat model (e.g. Steal Life) whose
+        CombatParticipant.current_dp was never updated.
+        """
+        if participant.participant_type != CombatParticipantType.NPC:
+            return True
+        try:
+            npc_id_str = self._resolve_npc_participant_to_string_id(participant)
+            # Only string ids are valid for active_npcs lookup; otherwise skip the check.
+            if not npc_id_str or not isinstance(npc_id_str, str):
+                return True
+            return self._npc_id_in_active_npcs(npc_id_str)
+        except Exception:  # pylint: disable=broad-exception-caught  # Best-effort; do not break tick
+            return True
+
+    def _resolve_npc_participant_to_string_id(self, participant: CombatParticipant) -> str | None:
+        """Resolve NPC participant UUID to string npc_id via combat integration service."""
+        npc_svc = getattr(self._combat_service, "_npc_combat_integration_service", None)
+        if not npc_svc or not hasattr(npc_svc, "get_original_string_id"):
+            return None
+        return cast(str | None, npc_svc.get_original_string_id(participant.participant_id))
+
+    def _npc_id_in_active_npcs(self, npc_id_str: str) -> bool:
+        """Return True if npc_id_str is in the lifecycle manager's active_npcs."""
+        from server.services.npc_instance_service import get_npc_instance_service
+
+        npc_instance_service = get_npc_instance_service()
+        if not npc_instance_service or not hasattr(npc_instance_service, "lifecycle_manager"):
+            return True
+        lm = npc_instance_service.lifecycle_manager
+        if not lm or not hasattr(lm, "active_npcs"):
+            return True
+        return npc_id_str in lm.active_npcs
 
     def _load_round_actions(self, combat: CombatInstance, next_round: int) -> None:
         """
@@ -153,11 +196,22 @@ class CombatTurnProcessor:
             # is_alive() requires is_active=True, which might be False for incapacitated players
             if participant.is_dead():
                 continue
+            # NPCs slain outside combat model (e.g. Steal Life) are removed from active_npcs
+            # but CombatParticipant.current_dp is never updated; skip their turn so they stop attacking.
+            if participant.participant_type == CombatParticipantType.NPC and not self._is_npc_still_in_world(
+                participant
+            ):
+                logger.debug(
+                    "Skipping slain NPC participant (no longer in active_npcs)",
+                    combat_id=combat.combat_id,
+                    participant_id=participant.participant_id,
+                )
+                continue
             await self._execute_participant_action(combat, participant, next_round, current_tick)
 
         combat.advance_turn(current_tick)
 
-    async def _execute_queued_action(  # pylint: disable=too-many-locals,too-many-branches,too-many-nested-blocks  # Reason: Method handles complex spell execution with multiple nested conditions - refactoring would reduce clarity of action flow
+    async def _execute_queued_action(
         self, combat: CombatInstance, participant: CombatParticipant, action: CombatAction, current_tick: int
     ) -> None:
         """
@@ -177,121 +231,172 @@ class CombatTurnProcessor:
             action_type=action.action_type,
         )
 
-        # Handle different action types
         if action.action_type == "attack":
-            logger.info(
-                "Executing queued attack",
-                combat_id=combat.combat_id,
-                attacker_id=participant.participant_id,
-                target_id=action.target_id,
-                participant_ids=[str(pid) for pid in combat.participants.keys()],
-            )
-            # Process attack - result is not used as process_attack has side effects (updates combat state)
-            await self._combat_service.process_attack(
-                attacker_id=participant.participant_id, target_id=action.target_id, damage=action.damage
-            )
+            await self._execute_attack_action(combat, participant, action)
         elif action.action_type == "spell":
-            # Execute queued spell action via magic service
-            # Note: Spell costs were already paid when casting started, we just apply effects here
-            if hasattr(self._combat_service, "magic_service") and self._combat_service.magic_service:
-                magic_service = self._combat_service.magic_service
-                try:
-                    # Get spell from registry
-                    spell = magic_service.spell_registry.get_spell(action.spell_id) if action.spell_id else None
-                    if not spell:
-                        logger.warning(
-                            "Spell not found for execution", spell_id=action.spell_id, spell_name=action.spell_name
-                        )
-                        participant.last_action_tick = current_tick
-                        return
-
-                    # Get player and room for target recreation
-                    config = get_config()
-                    app = getattr(config, "_app_instance", None)
-                    if app and hasattr(app.state, "container"):
-                        player_service = getattr(app.state.container, "player_service", None)
-                        if player_service:
-                            player = await player_service.persistence.get_player_by_id(participant.participant_id)
-                            if player:
-                                room_id = player.current_room_id or combat.room_id
-                                # Recreate target from action data
-                                from server.schemas.shared import (  # noqa: PLC0415  # Reason: Local import
-                                    TargetMatch,
-                                    TargetType,
-                                )
-
-                                target_type = TargetType.NPC if action.target_id else TargetType.PLAYER
-                                target_name = action.spell_name or "target"
-                                target = TargetMatch(
-                                    target_id=str(action.target_id)
-                                    if action.target_id
-                                    else str(participant.participant_id),
-                                    target_name=target_name,
-                                    target_type=target_type,
-                                    room_id=room_id,
-                                )
-
-                                # Get mastery from player spell
-                                player_spell = await magic_service.player_spell_repository.get_player_spell(
-                                    participant.participant_id, spell.spell_id
-                                )
-                                mastery = int(player_spell.mastery) if player_spell else 0
-
-                                # Apply spell effects only (costs already paid when casting completed)
-                                # Use spell_effects directly to avoid applying costs again
-                                effect_result = await magic_service.spell_effects.process_effect(
-                                    spell, target, participant.participant_id, mastery
-                                )
-
-                                # Record spell cast and increase mastery (if not already done)
-                                await magic_service.player_spell_repository.record_spell_cast(
-                                    participant.participant_id, spell.spell_id
-                                )
-                                if magic_service.spell_learning_service:
-                                    await magic_service.spell_learning_service.increase_mastery_on_cast(
-                                        participant.participant_id, spell.spell_id, True
-                                    )
-
-                                # Send completion messages and healing events
-                                await magic_service.send_spell_execution_notifications(
-                                    participant.participant_id, spell.spell_id, effect_result, room_id
-                                )
-
-                                logger.info(
-                                    "Queued spell executed",
-                                    participant_id=participant.participant_id,
-                                    spell_id=action.spell_id,
-                                    spell_name=action.spell_name,
-                                    success=effect_result.get("success", False),
-                                )
-                            else:
-                                logger.warning(
-                                    "Player not found for spell execution", participant_id=participant.participant_id
-                                )
-                        else:
-                            logger.warning("Player service not available for spell execution")
-                    else:
-                        logger.warning("App/container not available for spell execution")
-                except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Spell execution errors unpredictable
-                    logger.error(
-                        "Error executing queued spell",
-                        participant_id=participant.participant_id,
-                        spell_id=action.spell_id,
-                        error=str(e),
-                        exc_info=True,
-                    )
-            else:
-                logger.warning("Spell action queued but magic service not available", spell_name=action.spell_name)
+            await self._execute_spell_action(combat, participant, action, current_tick)
         elif action.action_type == "flee_skip":
-            logger.info(
-                "Skipping queued action due to previous flee attempt",
-                combat_id=combat.combat_id,
-                participant_id=participant.participant_id,
-            )
+            self._handle_flee_skip_action(combat, participant)
         else:
-            logger.warning("Unknown action type", action_type=action.action_type)
+            self._log_unknown_action(action)
 
         participant.last_action_tick = current_tick
+
+    async def _execute_attack_action(
+        self, combat: CombatInstance, participant: CombatParticipant, action: CombatAction
+    ) -> None:
+        """Execute a queued attack action."""
+        logger.info(
+            "Executing queued attack",
+            combat_id=combat.combat_id,
+            attacker_id=participant.participant_id,
+            target_id=action.target_id,
+            participant_ids=[str(pid) for pid in combat.participants.keys()],
+        )
+        await self._combat_service.process_attack(
+            attacker_id=participant.participant_id,
+            target_id=action.target_id,
+            damage=action.damage,
+        )
+
+    async def _execute_spell_action(
+        self, combat: CombatInstance, participant: CombatParticipant, action: CombatAction, current_tick: int
+    ) -> None:
+        """Execute a queued spell action via the magic service."""
+        magic_service = getattr(self._combat_service, "magic_service", None)
+        if not magic_service:
+            logger.warning("Spell action queued but magic service not available", spell_name=action.spell_name)
+            return
+
+        spell = self._get_spell_for_action(magic_service, action, participant, current_tick)
+        if not spell:
+            return
+
+        try:
+            player, room_id = await self._get_player_and_room_for_spell(combat, participant)
+            if not player or not room_id:
+                return
+
+            target = self._build_spell_target(action, participant, room_id)
+            effect_result = await self._apply_spell_effects(magic_service, spell, participant, target)
+            await self._finalize_spell_execution(magic_service, participant, spell, effect_result, room_id, action)
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Spell execution errors unpredictable
+            logger.error(
+                "Error executing queued spell",
+                participant_id=participant.participant_id,
+                spell_id=action.spell_id,
+                error=str(e),
+                exc_info=True,
+            )
+
+    def _get_spell_for_action(
+        self, magic_service: Any, action: CombatAction, participant: CombatParticipant, current_tick: int
+    ) -> Any | None:
+        """Resolve the spell object for a queued spell action."""
+        spell = magic_service.spell_registry.get_spell(action.spell_id) if action.spell_id else None
+        if not spell:
+            logger.warning("Spell not found for execution", spell_id=action.spell_id, spell_name=action.spell_name)
+            participant.last_action_tick = current_tick
+            return None
+        return spell
+
+    async def _apply_spell_effects(
+        self,
+        magic_service: Any,
+        spell: Any,
+        participant: CombatParticipant,
+        target: Any,
+    ) -> dict[str, Any]:
+        """Apply spell effects and update mastery."""
+        player_spell = await magic_service.player_spell_repository.get_player_spell(
+            participant.participant_id, spell.spell_id
+        )
+        mastery = int(player_spell.mastery) if player_spell else 0
+
+        effect_result: dict[str, Any] = await magic_service.spell_effects.process_effect(
+            spell, target, participant.participant_id, mastery
+        )
+
+        await magic_service.player_spell_repository.record_spell_cast(participant.participant_id, spell.spell_id)
+        if magic_service.spell_learning_service:
+            await magic_service.spell_learning_service.increase_mastery_on_cast(
+                participant.participant_id, spell.spell_id, True
+            )
+
+        return effect_result
+
+    async def _finalize_spell_execution(
+        self,
+        magic_service: Any,
+        participant: CombatParticipant,
+        spell: Any,
+        effect_result: dict[str, Any],
+        room_id: str,
+        action: CombatAction,
+    ) -> None:
+        """Send notifications and log completion for a queued spell."""
+        await magic_service.send_spell_execution_notifications(
+            participant.participant_id, spell.spell_id, effect_result, room_id
+        )
+
+        logger.info(
+            "Queued spell executed",
+            participant_id=participant.participant_id,
+            spell_id=action.spell_id,
+            spell_name=action.spell_name,
+            success=effect_result.get("success", False),
+        )
+
+    async def _get_player_and_room_for_spell(
+        self, combat: CombatInstance, participant: CombatParticipant
+    ) -> tuple[Any | None, str | None]:
+        """Resolve the casting player and room_id for spell execution."""
+        config = get_config()
+        app = getattr(config, "_app_instance", None)
+        if not app or not hasattr(app.state, "container"):
+            logger.warning("App/container not available for spell execution")
+            return None, None
+
+        player_service = getattr(app.state.container, "player_service", None)
+        if not player_service:
+            logger.warning("Player service not available for spell execution")
+            return None, None
+
+        player = await player_service.persistence.get_player_by_id(participant.participant_id)
+        if not player:
+            logger.warning("Player not found for spell execution", participant_id=participant.participant_id)
+            return None, None
+
+        room_id = player.current_room_id or combat.room_id
+        return player, room_id
+
+    def _build_spell_target(self, action: CombatAction, participant: CombatParticipant, room_id: str) -> Any:
+        """Recreate the spell target from queued action data."""
+        from server.schemas.shared import (  # noqa: PLC0415  # Reason: Local import
+            TargetMatch,
+            TargetType,
+        )
+
+        target_type = TargetType.NPC if action.target_id else TargetType.PLAYER
+        target_name = action.spell_name or "target"
+        return TargetMatch(
+            target_id=str(action.target_id) if action.target_id else str(participant.participant_id),
+            target_name=target_name,
+            target_type=target_type,
+            room_id=room_id,
+        )
+
+    def _handle_flee_skip_action(self, combat: CombatInstance, participant: CombatParticipant) -> None:
+        """Handle a queued flee_skip action by logging and skipping execution."""
+        logger.info(
+            "Skipping queued action due to previous flee attempt",
+            combat_id=combat.combat_id,
+            participant_id=participant.participant_id,
+        )
+
+    def _log_unknown_action(self, action: CombatAction) -> None:
+        """Log unknown action types for diagnostics."""
+        logger.warning("Unknown action type", action_type=action.action_type)
 
     async def _execute_default_action(
         self, combat: CombatInstance, participant: CombatParticipant, current_tick: int

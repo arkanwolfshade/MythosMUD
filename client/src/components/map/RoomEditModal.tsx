@@ -34,6 +34,66 @@ interface EnvironmentOption {
   description: string;
 }
 
+interface RoomEditFormData {
+  name: string;
+  description: string;
+  plane: string;
+  zone: string;
+  sub_zone: string;
+  environment: string;
+}
+
+type EditableRoomField = keyof RoomEditFormData;
+
+const toFormValue = (value: string | null | undefined): string => value ?? '';
+
+const buildInitialFormData = (room: Room): RoomEditFormData => ({
+  name: toFormValue(room.name),
+  description: toFormValue(room.description),
+  plane: toFormValue(room.plane),
+  zone: toFormValue(room.zone),
+  sub_zone: toFormValue(room.sub_zone),
+  environment: toFormValue(room.environment),
+});
+
+const validateName = (value: string): string => {
+  if (!value.trim()) return 'Room name is required';
+  if (value.length > 200) return 'Room name must be 200 characters or less';
+  if (value.length < 1) return 'Room name must be at least 1 character';
+  return '';
+};
+
+const validateDescription = (value: string): string => {
+  if (value.length > 2000) return 'Description must be 2000 characters or less';
+  if (value.trim().length > 0 && value.trim().length < 10) {
+    return 'Description must be at least 10 characters if provided';
+  }
+  return '';
+};
+
+const validatePlane = (value: string): string => (!value.trim() ? 'Plane is required' : '');
+
+const validateZone = (value: string): string => {
+  if (!value.trim()) return 'Zone is required';
+  if (!/^[a-z0-9_]+$/.test(value)) {
+    return 'Zone must contain only lowercase letters, numbers, and underscores';
+  }
+  return '';
+};
+
+const validateSubZone = (value: string): string =>
+  value.trim() && !/^[a-z0-9_]+$/.test(value)
+    ? 'Sub-zone must contain only lowercase letters, numbers, and underscores'
+    : '';
+
+const FIELD_VALIDATORS: Partial<Record<EditableRoomField, (value: string) => string>> = {
+  name: validateName,
+  description: validateDescription,
+  plane: validatePlane,
+  zone: validateZone,
+  sub_zone: validateSubZone,
+};
+
 const ENVIRONMENT_OPTIONS: EnvironmentOption[] = [
   { value: '', label: 'Not Set', description: 'No specific environment type' },
   { value: 'indoors', label: 'Indoors', description: 'Enclosed interior space' },
@@ -48,28 +108,14 @@ const ENVIRONMENT_OPTIONS: EnvironmentOption[] = [
  */
 export const RoomEditModal: React.FC<RoomEditModalProps> = ({ isOpen, onClose, room, onUpdate }) => {
   const [activeTab, setActiveTab] = useState<'basic' | 'location' | 'properties'>('basic');
-  const [formData, setFormData] = useState({
-    name: room.name || '',
-    description: room.description || '',
-    plane: room.plane || '',
-    zone: room.zone || '',
-    sub_zone: room.sub_zone || '',
-    environment: room.environment || '',
-  });
+  const [formData, setFormData] = useState<RoomEditFormData>(() => buildInitialFormData(room));
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
 
   // Reset form when modal opens/closes or room changes
   useEffect(() => {
     if (isOpen && room) {
-      setFormData({
-        name: room.name || '',
-        description: room.description || '',
-        plane: room.plane || '',
-        zone: room.zone || '',
-        sub_zone: room.sub_zone || '',
-        environment: room.environment || '',
-      });
+      setFormData(buildInitialFormData(room));
       setErrors({});
       setTouched({});
       setActiveTab('basic');
@@ -106,50 +152,9 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({ isOpen, onClose, r
 
   // Validate form field
   const validateField = useCallback((field: string, value: string): string => {
-    switch (field) {
-      case 'name':
-        if (!value.trim()) {
-          return 'Room name is required';
-        }
-        if (value.length > 200) {
-          return 'Room name must be 200 characters or less';
-        }
-        if (value.length < 1) {
-          return 'Room name must be at least 1 character';
-        }
-        break;
-      case 'description':
-        if (value.length > 2000) {
-          return 'Description must be 2000 characters or less';
-        }
-        if (value.trim().length > 0 && value.trim().length < 10) {
-          return 'Description must be at least 10 characters if provided';
-        }
-        break;
-      case 'plane':
-        if (!value.trim()) {
-          return 'Plane is required';
-        }
-        break;
-      case 'zone':
-        if (!value.trim()) {
-          return 'Zone is required';
-        }
-        // Validate pattern: lowercase alphanumeric and underscores
-        if (!/^[a-z0-9_]+$/.test(value)) {
-          return 'Zone must contain only lowercase letters, numbers, and underscores';
-        }
-        break;
-      case 'sub_zone':
-        // Validate pattern if provided
-        if (value.trim() && !/^[a-z0-9_]+$/.test(value)) {
-          return 'Sub-zone must contain only lowercase letters, numbers, and underscores';
-        }
-        break;
-      default:
-        break;
-    }
-    return '';
+    const typedField = field as EditableRoomField;
+    const validator = FIELD_VALIDATORS[typedField];
+    return validator ? validator(value) : '';
   }, []);
 
   // Handle field change
@@ -244,18 +249,18 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({ isOpen, onClose, r
   const baseMonoInputClasses = baseInputClasses + ' font-mono text-sm';
 
   return (
-    <div
-      className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
-      onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="room-edit-title"
-    >
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <button
+        type="button"
+        className="absolute inset-0 cursor-default bg-black bg-opacity-75 border-0 p-0"
+        onClick={onClose}
+        aria-label="Dismiss dialog (backdrop)"
+      />
       <div
-        className="bg-mythos-terminal-background border-2 border-mythos-terminal-border rounded-lg w-full max-w-4xl max-h-modal overflow-hidden shadow-xl flex flex-col"
-        onClick={e => {
-          e.stopPropagation();
-        }}
+        className="relative z-10 bg-mythos-terminal-background border-2 border-mythos-terminal-border rounded-lg w-full max-w-4xl max-h-modal overflow-hidden shadow-xl flex flex-col"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="room-edit-title"
       >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-mythos-terminal-border bg-mythos-terminal-surface">

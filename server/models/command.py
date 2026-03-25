@@ -20,7 +20,7 @@ from .command_base import BaseCommand, CommandType, Direction
 from .command_channel import ChannelCommand
 
 # Import combat commands
-from .command_combat import AttackCommand, FleeCommand, KickCommand, PunchCommand, StrikeCommand
+from .command_combat import AttackCommand, FleeCommand, KickCommand, PunchCommand, StrikeCommand, TauntCommand
 
 # Import communication commands
 from .command_communication import (
@@ -169,6 +169,7 @@ __all__ = [
     "PunchCommand",
     "KickCommand",
     "StrikeCommand",
+    "TauntCommand",
     # Magic commands
     "CastCommand",
     "SpellCommand",

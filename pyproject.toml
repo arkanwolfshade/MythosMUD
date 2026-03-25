@@ -44,7 +44,7 @@ dependencies = [
     "playwright>=1.57.0",
     "pytest-timeout>=2.4.0",
     "networkx>=3.6.1", # Graph analysis for alias cycle detection (CRITICAL-3 fix)
-    "python-statemachine>=2.5.0",
+    "python-statemachine>=2.5.0,<3",
     "prometheus-client>=0.23.1",
     "numpy>=2.4.1", # Numerical computing for performance monitoring and statistical calculations
     "aiofiles>=24.1.0", # Async file I/O to prevent blocking the event loop
@@ -81,11 +81,12 @@ dev = [
     "bandit>=1.9.2",  # Python security linter
     "pylint>=4.0.4",  # Python code quality linter
     "pylint-per-file-ignores>=3.2.0",  # Per-file ignore support for pylint (matches ruff per-file-ignores)
-    "sqlfluff>=3.5.0",  # SQL linting and formatting
+    "sqlfluff>=3.5.0,<4",  # SQL linting; stay on v3 until rules/migrations are vetted for v4
     "lizard>=1.19.0",  # Code complexity analyzer (used by Codacy)
     "vulture>=2.11",  # Dead code finder (unused functions, classes, variables)
     # sqlint>=0.2.1 - REMOVED: Conflicts with click>=8.1.8 (sqlint requires click==7.0)
     # Use sqlfluff instead, which provides comprehensive SQL linting
+    "asyncpg-stubs>=0.31.0,<0.32",
 ]
 
 [tool.setuptools.packages.find]
@@ -355,6 +356,7 @@ module = [
     "server.services.holiday_service",
     "server.services.user_manager",
     "server.services.combat_messaging_integration",
+    "server.services.combat_messaging",
     "server.services.combat_death_handler",
     "server.services.combat_cleanup_handler",
     "server.services.combat_persistence_handler",
@@ -393,6 +395,7 @@ dev = [
     "pytest-xdist>=3.8.0", # Parallel test execution (required for -n auto in pytest.ini)
     # sqlint>=0.2.1 - REMOVED: Conflicts with click>=8.1.8 (sqlint requires click==7.0)
     # Use sqlfluff instead, which provides comprehensive SQL linting
+    "basedpyright>=1.38.2",
 ]
 
 [tool.uv]

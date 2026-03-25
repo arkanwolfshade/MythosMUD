@@ -12,6 +12,7 @@ Uses DATABASE_URL from environment (e.g. from .env.e2e_test); defaults to mythos
 import os
 import sys
 
+import asyncpg
 from anyio import run
 
 # Project root is parent of scripts/
@@ -28,13 +29,14 @@ async def _reset_e2e_players() -> None:
     # asyncpg expects postgresql://, not postgresql+asyncpg://
     url = database_url.replace("postgresql+asyncpg://", "postgresql://")
 
-    import asyncpg
+    search_path = os.environ.get("POSTGRES_SEARCH_PATH", "").strip() or "mythos_e2e"
+    server_settings: dict[str, str] = {"search_path": search_path}
 
-    conn = await asyncpg.connect(url)
+    conn = await asyncpg.connect(url, server_settings=server_settings)
     try:
         # Reset room and current_dp for E2E test players (by character name).
         # Omit is_deleted filter: E2E DB may use an older schema without that column (migration 016).
-        await conn.execute(
+        _ = await conn.execute(
             """
             UPDATE players
             SET

@@ -43,6 +43,11 @@ CRITICAL_FILES = {
     "server/services/combat_persistence_handler.py": 90,
     "server/services/combat_monitoring_service.py": 90,
     "server/services/combat_messaging_integration.py": 90,
+    "server/services/combat_messaging/__init__.py": 90,
+    "server/services/combat_messaging/base.py": 90,
+    "server/services/combat_messaging/combat_broadcasts.py": 90,
+    "server/services/combat_messaging/player_broadcasts.py": 90,
+    "server/services/combat_messaging/integration.py": 90,
     "server/services/combat_cleanup_handler.py": 90,
     "server/services/combat_attack_handler.py": 90,
     # Realtime services - critical for WebSocket and real-time game state
@@ -110,53 +115,50 @@ def check_thresholds(file_coverage: dict[str, float]) -> tuple[list[str], list[s
     return failures, warnings
 
 
-def main():
-    """Main entry point."""
-    project_root = Path(__file__).parent.parent
-    coverage_xml = project_root / "coverage.xml"
+def _ensure_coverage_xml_or_exit(coverage_xml: Path) -> None:
+    """Exit if coverage.xml not found. In pre-commit context, exit 0 so commits aren't blocked."""
+    if coverage_xml.exists():
+        return
+    if os.getenv("PRE_COMMIT"):
+        print("INFO: Coverage XML not found. Skipping threshold check.")
+        print("Run 'make test-server-coverage' to generate coverage before committing.")
+        sys.exit(0)
+    print(f"ERROR: Coverage XML not found at {coverage_xml}")
+    print("Run tests with coverage first: make test-server-coverage")
+    sys.exit(1)
 
-    if not coverage_xml.exists():
-        # In pre-commit context, this is okay - coverage may not have been generated yet
-        # Exit with success so commits aren't blocked
-        if os.getenv("PRE_COMMIT"):
-            print("INFO: Coverage XML not found. Skipping threshold check.")
-            print("Run 'make test-server-coverage' to generate coverage before committing.")
-            sys.exit(0)
-        else:
-            print(f"ERROR: Coverage XML not found at {coverage_xml}")
-            print("Run tests with coverage first: make test-server-coverage")
-            sys.exit(1)
 
-    print(f"Checking coverage thresholds from {coverage_xml}...")
-    file_coverage = parse_coverage_xml(coverage_xml)
-
-    failures, warnings = check_thresholds(file_coverage)
-
-    # Print results
+def _print_results_and_exit(failures: list[str], warnings: list[str]) -> None:
+    """Print coverage results and exit with appropriate code."""
     if failures:
         print("\n[FAIL] CRITICAL FILES BELOW THRESHOLD:")
         for failure in failures:
             print(f"  {failure}")
-
     if warnings:
         print(f"\n[WARN] NORMAL FILES BELOW {NORMAL_THRESHOLD}% THRESHOLD ({len(warnings)} files):")
-        # Show first 10 warnings
         for warning in warnings[:10]:
             print(f"  {warning}")
         if len(warnings) > 10:
             print(f"  ... and {len(warnings) - 10} more files")
-
-    # Exit with error if critical files fail
     if failures:
         print(f"\n[FAIL] {len(failures)} critical file(s) below threshold")
         sys.exit(1)
-
     if warnings:
         print(f"\n[WARN] {len(warnings)} normal file(s) below threshold (non-blocking)")
         print("Consider improving coverage for these files in future work.")
-
     print("\n[PASS] All critical files meet coverage thresholds!")
     sys.exit(0)
+
+
+def main():
+    """Main entry point."""
+    project_root = Path(__file__).parent.parent
+    coverage_xml = project_root / "coverage.xml"
+    _ensure_coverage_xml_or_exit(coverage_xml)
+    print(f"Checking coverage thresholds from {coverage_xml}...")
+    file_coverage = parse_coverage_xml(coverage_xml)
+    failures, warnings = check_thresholds(file_coverage)
+    _print_results_and_exit(failures, warnings)
 
 
 if __name__ == "__main__":

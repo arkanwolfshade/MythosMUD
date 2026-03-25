@@ -12,11 +12,11 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from server.commands.rest_command import (
-    _cancel_rest_countdown,
     _check_player_in_combat,
     _check_rest_location,
     _disconnect_player_intentionally,
     _start_rest_countdown,
+    cancel_rest_countdown,
     handle_rest_command,
     is_player_resting,
 )
@@ -364,12 +364,12 @@ async def test_start_rest_countdown_timer_expires(mock_connection_manager, mock_
 
 @pytest.mark.asyncio
 async def test_cancel_rest_countdown_cancels_task(mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
-    """Test _cancel_rest_countdown() cancels the rest countdown task."""
+    """Test cancel_rest_countdown() cancels the rest countdown task."""
     player_id = uuid.uuid4()
     task = asyncio.create_task(asyncio.sleep(100))  # Long-running task
     mock_connection_manager.resting_players[player_id] = task
 
-    await _cancel_rest_countdown(player_id, mock_connection_manager)
+    await cancel_rest_countdown(player_id, mock_connection_manager)
 
     # Verify task was cancelled
     assert task.cancelled()
@@ -378,11 +378,11 @@ async def test_cancel_rest_countdown_cancels_task(mock_connection_manager):  # p
 
 @pytest.mark.asyncio
 async def test_cancel_rest_countdown_not_resting(mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
-    """Test _cancel_rest_countdown() does nothing if player not resting."""
+    """Test cancel_rest_countdown() does nothing if player not resting."""
     player_id = uuid.uuid4()
 
     # Should not raise an error
-    await _cancel_rest_countdown(player_id, mock_connection_manager)
+    await cancel_rest_countdown(player_id, mock_connection_manager)
 
     assert player_id not in mock_connection_manager.resting_players
 

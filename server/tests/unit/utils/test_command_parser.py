@@ -86,6 +86,15 @@ def test_parse_command_with_slash_prefix(command_parser):
     assert result.command_type == CommandType.LOOK
 
 
+def test_parse_command_spawn_alias(command_parser):
+    """Test /spawn parses as alias for npc spawn."""
+    result = command_parser.parse_command("/spawn 1 room_123")
+
+    assert result.command_type == CommandType.NPC
+    assert result.subcommand == "spawn"
+    assert result.args == ["1", "room_123"]
+
+
 def test_parse_command_alias_l(command_parser):
     """Test parse_command handles 'l' alias for local."""
     result = command_parser.parse_command("l hello")
