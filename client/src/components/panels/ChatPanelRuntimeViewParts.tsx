@@ -1,23 +1,16 @@
-import { useLayoutEffect, useRef } from 'react';
+import { lazy, Suspense } from 'react';
 import { AVAILABLE_CHANNELS, CHAT_CHANNEL_OPTIONS } from '../../config/channels';
-import { ansiToHtmlWithBreaks } from '../../utils/ansiToHtml';
-import { SafeHtml } from '../common/SafeHtml';
 import { ChannelSelector } from '../ui/ChannelSelector';
 import { EldritchIcon, MythosIcons } from '../ui/EldritchIcon';
 import { TerminalButton } from '../ui/TerminalButton';
-import { ChatExportDialog } from './ChatExportDialog';
 import { ChannelActivityIndicators } from './chat/ChannelActivityIndicators';
-import {
-  buildChatSearchHighlightHtml,
-  chatPanelMessageRowKey,
-  escapeForChatHighlight,
-  formatChatTimestampUtc,
-  getChatPanelMessageClass,
-  type ChatPanelMessage,
-} from './chatPanelRuntimeUtils';
+import { ChatPanelMessagesLog } from './ChatPanelMessagesLog';
 import type { ChatPanelRuntimeViewProps } from './chatPanelRuntimeViewTypes';
 
-const fontSizeClass = 'text-sm';
+const ChatExportDialogLazy = lazy(async () => {
+  const m = await import('./ChatExportDialog');
+  return { default: m.ChatExportDialog };
+});
 
 type ChatPanelToolbarProps = {
   disabled: boolean;
@@ -299,160 +292,6 @@ function ChatPanelViewingStrip({ viewingLabel, currentChannelMessageCount }: Cha
   );
 }
 
-type ChatPanelMessageRowProps = {
-  message: ChatPanelMessage;
-  index: number;
-  totalVisible: number;
-  isHistoryVisible: boolean;
-  searchQuery: string;
-  currentSearchIndex: number;
-  /** When set, wires the row root element for search scroll targeting (single highlighted row). */
-  setRowElement?: (el: HTMLDivElement | null) => void;
-};
-
-function ChatPanelMessageRow({
-  message,
-  index,
-  totalVisible,
-  isHistoryVisible,
-  searchQuery,
-  currentSearchIndex,
-  setRowElement,
-}: ChatPanelMessageRowProps) {
-  const shouldAnimate = !isHistoryVisible && !searchQuery && index >= totalVisible - 10;
-  const animationClass = shouldAnimate ? 'animate-fade-in' : '';
-  const animationDelay = shouldAnimate ? `${(index - (totalVisible - 10)) * 40}ms` : '0ms';
-  const isHighlighted = currentSearchIndex === index && Boolean(searchQuery);
-
-  return (
-    <div
-      className={
-        `message p-3 bg-mythos-terminal-surface border rounded transition-[border-color,box-shadow,opacity] duration-300 ` +
-        `hover:border-mythos-terminal-primary/30 hover:shadow-lg ${animationClass} ` +
-        (isHighlighted
-          ? 'border-mythos-terminal-warning border-2 shadow-lg shadow-mythos-terminal-warning/50'
-          : 'border-gray-700')
-      }
-      style={{ animationDelay }}
-      data-testid="chat-message"
-      ref={setRowElement}
-    >
-      {message.aliasChain && message.aliasChain.length > 0 && (
-        <div className="mb-3 p-2 bg-mythos-terminal-background border border-mythos-terminal-primary/50 rounded text-xs">
-          <div className="flex items-center gap-2 mb-2">
-            <EldritchIcon name={MythosIcons.move} size={12} variant="warning" aria-hidden />
-            <span className="text-mythos-terminal-warning font-bold">Alias Expansion:</span>
-          </div>
-          <div className="space-y-1">
-            {message.aliasChain.map((alias, chainIndex) => (
-              <div key={chainIndex} className="flex items-center gap-2">
-                <span className="text-mythos-terminal-warning font-bold">{alias.original}</span>
-                <EldritchIcon name={MythosIcons.exit} size={10} variant="primary" aria-hidden />
-                <span className="text-mythos-terminal-success italic">{alias.expanded}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-      <div className="mb-2">
-        <span className="text-xs text-mythos-terminal-text-secondary font-mono">
-          {formatChatTimestampUtc(message.timestamp)}
-        </span>
-      </div>
-      <div
-        className={`message-text min-w-0 ${fontSizeClass} leading-relaxed ${getChatPanelMessageClass(message)}`}
-        data-message-text={message.rawText ?? message.text}
-        onContextMenu={e => e.preventDefault()}
-      >
-        {message.isHtml ? (
-          <SafeHtml
-            html={message.isCompleteHtml ? message.text : ansiToHtmlWithBreaks(message.text)}
-            tag="div"
-            className="wrap-anywhere"
-          />
-        ) : (
-          <SafeHtml
-            html={
-              searchQuery
-                ? buildChatSearchHighlightHtml(message.rawText ?? message.text, searchQuery)
-                : escapeForChatHighlight(message.rawText ?? message.text)
-            }
-            tag="div"
-            className="wrap-anywhere"
-            style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
-          />
-        )}
-      </div>
-    </div>
-  );
-}
-
-type ChatPanelMessagesLogProps = {
-  visibleMessages: ChatPanelMessage[];
-  isHistoryVisible: boolean;
-  searchQuery: string;
-  currentSearchIndex: number;
-};
-
-function ChatPanelMessagesLog({
-  visibleMessages,
-  isHistoryVisible,
-  searchQuery,
-  currentSearchIndex,
-}: ChatPanelMessagesLogProps) {
-  const activeRowRef = useRef<HTMLDivElement | null>(null);
-  const total = visibleMessages.length;
-
-  useLayoutEffect(() => {
-    if (currentSearchIndex < 0 || !searchQuery.trim()) return;
-    const el = activeRowRef.current;
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  }, [currentSearchIndex, searchQuery]);
-
-  if (total === 0) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <div className="text-center space-y-2">
-          <EldritchIcon
-            name={MythosIcons.chat}
-            size={32}
-            variant="secondary"
-            className="mx-auto opacity-50"
-            aria-hidden
-          />
-          <p className="text-mythos-terminal-text-secondary text-sm">
-            No messages yet. Start chatting to see messages here.
-          </p>
-        </div>
-      </div>
-    );
-  }
-  return (
-    <div className="space-y-3">
-      {visibleMessages.map((message, index) => (
-        <ChatPanelMessageRow
-          key={`${chatPanelMessageRowKey(message)}\x1f${index}`}
-          message={message}
-          index={index}
-          totalVisible={total}
-          isHistoryVisible={isHistoryVisible}
-          searchQuery={searchQuery}
-          currentSearchIndex={currentSearchIndex}
-          setRowElement={
-            index === currentSearchIndex
-              ? (el: HTMLDivElement | null) => {
-                  activeRowRef.current = el;
-                }
-              : undefined
-          }
-        />
-      ))}
-    </div>
-  );
-}
-
 type ChatPanelRuntimeChatAreaProps = Pick<
   ChatPanelRuntimeViewProps,
   | 'visibleMessages'
@@ -482,7 +321,7 @@ function ChatPanelRuntimeChatArea({
   return (
     <>
       <div
-        className="flex-1 overflow-auto p-3 bg-mythos-terminal-background border border-gray-700 rounded"
+        className="flex-1 overflow-auto p-3 bg-mythos-terminal-background border border-gray-700 rounded contain-content"
         role="log"
         aria-label="Chat Messages"
         style={{ minHeight: '200px' }}
@@ -495,14 +334,16 @@ function ChatPanelRuntimeChatArea({
         />
       </div>
       {showExportDialog && (
-        <ChatExportDialog
-          visibleCount={visibleMessages.length}
-          exportFormat={exportFormat}
-          isExporting={isExporting}
-          setExportFormat={setExportFormat}
-          onClose={() => setShowExportDialog(false)}
-          onConfirmExport={onConfirmExport}
-        />
+        <Suspense fallback={null}>
+          <ChatExportDialogLazy
+            visibleCount={visibleMessages.length}
+            exportFormat={exportFormat}
+            isExporting={isExporting}
+            setExportFormat={setExportFormat}
+            onClose={() => setShowExportDialog(false)}
+            onConfirmExport={onConfirmExport}
+          />
+        </Suspense>
       )}
     </>
   );
