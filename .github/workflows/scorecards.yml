@@ -81,8 +81,14 @@ jobs:
           set -euo pipefail
           pat_trim=$(printf '%s' "${SUBMODULE_PAT}" | tr -d '\r\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
           if [ -z "${pat_trim}" ]; then
-            echo "::error::MYTHOSMUD_PAT or PRIVATE_SUBMODULE_PAT is required (Contents: Read on mythosmud_data)."
-            exit 1
+            echo "::notice::No MYTHOSMUD_PAT / PRIVATE_SUBMODULE_PAT in this run (common for Dependabot pull_request workflows). Scorecard continues with a placeholder data/ directory; optional: add the same PAT under Dependabot secrets for a full mythosmud_data checkout."
+            rm -rf data
+            mkdir -p data
+            printf '%s\n' \
+              "Placeholder: private submodule mythosmud_data was not cloned (no secrets in this workflow context)." \
+              "CI with PAT: clone runs as before." \
+              > data/README.scorecard-placeholder.md
+            exit 0
           fi
           case "${pat_trim}" in
             github_pat_*) git_user="x-access-token" ;;
