@@ -127,7 +127,11 @@ jobs:
           # For private repositories:
           #   - `publish_results` will always be set to `false`, regardless
           #     of the value entered here.
-          publish_results: true
+          # When `publish_results` is true, scorecard-action enforces that every step in
+          # this job is one of a short allow-listed actions only (no custom `run:`).
+          # This workflow uses shell steps for optional mythosmud_data checkout; keep
+          # publish_results false so analysis + SARIF upload to code scanning still run.
+          publish_results: false
 
       # Upload the results as artifacts (optional). Commenting out will disable uploads of run results in SARIF
       # format to the repository Actions tab.
