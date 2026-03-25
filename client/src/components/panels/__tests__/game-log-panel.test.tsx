@@ -117,7 +117,7 @@ describe('GameLogPanel', () => {
     it('filters messages by type', () => {
       render(<GameLogPanel {...defaultProps} />);
 
-      const messageTypeFilter = screen.getByDisplayValue('All Messages');
+      const messageTypeFilter = screen.getByDisplayValue('All types');
       fireEvent.change(messageTypeFilter, { target: { value: 'system' } });
 
       expect(screen.getByText('System message')).toBeInTheDocument();
@@ -128,7 +128,7 @@ describe('GameLogPanel', () => {
     it('filters messages by time range', () => {
       render(<GameLogPanel {...defaultProps} />);
 
-      const timeFilter = screen.getByDisplayValue('All Time');
+      const timeFilter = screen.getByDisplayValue('Any time');
       fireEvent.change(timeFilter, { target: { value: '5' } });
 
       expect(timeFilter).toHaveValue('5');
@@ -137,7 +137,7 @@ describe('GameLogPanel', () => {
     it('filters messages by search query', () => {
       render(<GameLogPanel {...defaultProps} />);
 
-      const searchInput = screen.getByPlaceholderText('Search messages...');
+      const searchInput = screen.getByPlaceholderText('Words to find in the log');
       fireEvent.change(searchInput, { target: { value: 'System' } });
 
       expect(screen.getByText('System message')).toBeInTheDocument();
@@ -147,10 +147,10 @@ describe('GameLogPanel', () => {
     it('combines type and search filters', () => {
       render(<GameLogPanel {...defaultProps} />);
 
-      const messageTypeFilter = screen.getByDisplayValue('All Messages');
+      const messageTypeFilter = screen.getByDisplayValue('All types');
       fireEvent.change(messageTypeFilter, { target: { value: 'system' } });
 
-      const searchInput = screen.getByPlaceholderText('Search messages...');
+      const searchInput = screen.getByPlaceholderText('Words to find in the log');
       fireEvent.change(searchInput, { target: { value: 'System' } });
 
       expect(screen.getByText('System message')).toBeInTheDocument();
@@ -162,10 +162,10 @@ describe('GameLogPanel', () => {
     it('clears all filters', () => {
       render(<GameLogPanel {...defaultProps} />);
 
-      const messageTypeFilter = screen.getByDisplayValue('All Messages');
+      const messageTypeFilter = screen.getByDisplayValue('All types');
       fireEvent.change(messageTypeFilter, { target: { value: 'system' } });
 
-      const searchInput = screen.getByPlaceholderText('Search messages...');
+      const searchInput = screen.getByPlaceholderText('Words to find in the log');
       fireEvent.change(searchInput, { target: { value: 'System' } });
 
       const clearFiltersButton = screen.getByText('Clear Filters');
@@ -208,19 +208,19 @@ describe('GameLogPanel', () => {
   });
 
   describe('Action Buttons', () => {
-    it('calls onClearMessages when Clear Log is clicked', () => {
+    it('calls onClearMessages when Clear game log is clicked', () => {
       render(<GameLogPanel {...defaultProps} />);
 
-      const clearButton = screen.getByText('Clear Log');
+      const clearButton = screen.getByText('Clear game log');
       fireEvent.click(clearButton);
 
       expect(defaultProps.onClearMessages).toHaveBeenCalled();
     });
 
-    it('calls onDownloadLogs when Download is clicked', () => {
+    it('calls onDownloadLogs when Download log file is clicked', () => {
       render(<GameLogPanel {...defaultProps} />);
 
-      const downloadButton = screen.getByText('Download');
+      const downloadButton = screen.getByText('Download log file');
       fireEvent.click(downloadButton);
 
       expect(defaultProps.onDownloadLogs).toHaveBeenCalled();
@@ -273,7 +273,7 @@ describe('GameLogPanel', () => {
     it('supports search input interaction', () => {
       render(<GameLogPanel {...defaultProps} />);
 
-      const searchInput = screen.getByPlaceholderText('Search messages...');
+      const searchInput = screen.getByPlaceholderText('Words to find in the log');
       fireEvent.change(searchInput, { target: { value: 'test' } });
       expect(searchInput).toHaveValue('test');
 

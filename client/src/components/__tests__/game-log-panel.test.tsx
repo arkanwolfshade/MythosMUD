@@ -104,7 +104,7 @@ describe('GameLogPanel', () => {
     it('filters messages by type', () => {
       render(<GameLogPanel {...defaultProps} />);
 
-      const messageTypeFilter = screen.getByDisplayValue('All Messages');
+      const messageTypeFilter = screen.getByDisplayValue('All types');
       fireEvent.change(messageTypeFilter, { target: { value: 'chat' } });
 
       // Should only show chat messages
@@ -117,7 +117,7 @@ describe('GameLogPanel', () => {
     it('filters messages by time range', () => {
       render(<GameLogPanel {...defaultProps} />);
 
-      const timeFilter = screen.getByDisplayValue('All Time');
+      const timeFilter = screen.getByDisplayValue('Any time');
       fireEvent.change(timeFilter, { target: { value: 'last5min' } });
 
       // Should only show recent messages (this would depend on the current time)
@@ -128,7 +128,7 @@ describe('GameLogPanel', () => {
     it('filters messages by search query', () => {
       render(<GameLogPanel {...defaultProps} />);
 
-      const searchInput = screen.getByPlaceholderText('Search messages...');
+      const searchInput = screen.getByPlaceholderText('Words to find in the log');
       fireEvent.change(searchInput, { target: { value: 'Hello' } });
 
       // Should only show messages containing "Hello"
@@ -142,11 +142,11 @@ describe('GameLogPanel', () => {
       render(<GameLogPanel {...defaultProps} />);
 
       // Set message type filter
-      const messageTypeFilter = screen.getByDisplayValue('All Messages');
+      const messageTypeFilter = screen.getByDisplayValue('All types');
       fireEvent.change(messageTypeFilter, { target: { value: 'chat' } });
 
       // Set search filter
-      const searchInput = screen.getByPlaceholderText('Search messages...');
+      const searchInput = screen.getByPlaceholderText('Words to find in the log');
       fireEvent.change(searchInput, { target: { value: 'Hello' } });
 
       // Should only show chat messages containing "Hello"
@@ -184,7 +184,7 @@ describe('GameLogPanel', () => {
     it('maintains search history', () => {
       render(<GameLogPanel {...defaultProps} />);
 
-      const searchInput = screen.getByPlaceholderText('Search messages...');
+      const searchInput = screen.getByPlaceholderText('Words to find in the log');
 
       // Perform multiple searches
       fireEvent.change(searchInput, { target: { value: 'Hello' } });
@@ -207,7 +207,7 @@ describe('GameLogPanel', () => {
     it('allows selecting from search history', () => {
       render(<GameLogPanel {...defaultProps} />);
 
-      const searchInput = screen.getByPlaceholderText('Search messages...');
+      const searchInput = screen.getByPlaceholderText('Words to find in the log');
 
       // Perform a search
       fireEvent.change(searchInput, { target: { value: 'Hello' } });
@@ -232,10 +232,10 @@ describe('GameLogPanel', () => {
       render(<GameLogPanel {...defaultProps} />);
 
       // Set some filters
-      const messageTypeFilter = screen.getByDisplayValue('All Messages');
+      const messageTypeFilter = screen.getByDisplayValue('All types');
       fireEvent.change(messageTypeFilter, { target: { value: 'chat' } });
 
-      const searchInput = screen.getByPlaceholderText('Search messages...');
+      const searchInput = screen.getByPlaceholderText('Words to find in the log');
       fireEvent.change(searchInput, { target: { value: 'Hello' } });
 
       // Clear filters
@@ -253,7 +253,7 @@ describe('GameLogPanel', () => {
       render(<GameLogPanel {...defaultProps} />);
 
       // Set a filter
-      const messageTypeFilter = screen.getByDisplayValue('All Messages');
+      const messageTypeFilter = screen.getByDisplayValue('All types');
       fireEvent.change(messageTypeFilter, { target: { value: 'chat' } });
 
       // Should show that filters are active
@@ -279,7 +279,7 @@ describe('GameLogPanel', () => {
       render(<GameLogPanel {...defaultProps} />);
 
       // Apply filter
-      const messageTypeFilter = screen.getByDisplayValue('All Messages');
+      const messageTypeFilter = screen.getByDisplayValue('All types');
       fireEvent.change(messageTypeFilter, { target: { value: 'chat' } });
 
       // Should show filtered message count
@@ -322,7 +322,7 @@ describe('GameLogPanel', () => {
     it('calls onClearMessages when clear button is clicked', () => {
       render(<GameLogPanel {...defaultProps} />);
 
-      const clearButton = screen.getByText('Clear Messages');
+      const clearButton = screen.getByText('Clear game log');
       fireEvent.click(clearButton);
 
       expect(defaultProps.onClearMessages).toHaveBeenCalled();
@@ -331,7 +331,7 @@ describe('GameLogPanel', () => {
     it('calls onDownloadLogs when download button is clicked', () => {
       render(<GameLogPanel {...defaultProps} />);
 
-      const downloadButton = screen.getByText('Download Logs');
+      const downloadButton = screen.getByText('Download log file');
       fireEvent.click(downloadButton);
 
       expect(defaultProps.onDownloadLogs).toHaveBeenCalled();
@@ -357,7 +357,7 @@ describe('GameLogPanel', () => {
     it('debounces search input', async () => {
       render(<GameLogPanel {...defaultProps} />);
 
-      const searchInput = screen.getByPlaceholderText('Search messages...');
+      const searchInput = screen.getByPlaceholderText('Words to find in the log');
 
       // Rapidly type in search
       fireEvent.change(searchInput, { target: { value: 'H' } });
@@ -408,13 +408,13 @@ describe('GameLogPanel', () => {
       render(<GameLogPanel {...defaultProps} />);
 
       expect(screen.getByText('Game Log')).toBeInTheDocument();
-      expect(screen.getByPlaceholderText('Search messages...')).toBeInTheDocument();
+      expect(screen.getByPlaceholderText('Words to find in the log')).toBeInTheDocument();
     });
 
     it('supports keyboard navigation', () => {
       render(<GameLogPanel {...defaultProps} />);
 
-      const searchInput = screen.getByPlaceholderText('Search messages...');
+      const searchInput = screen.getByPlaceholderText('Words to find in the log');
 
       // Test keyboard navigation
       fireEvent.keyDown(searchInput, { key: 'Enter' });
