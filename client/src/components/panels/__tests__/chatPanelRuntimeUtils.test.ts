@@ -6,6 +6,7 @@ import {
   buildChatExportPlainText,
   buildChatSearchHighlightHtml,
   buildChatSearchMatchIndices,
+  chatPanelMessageRowKey,
   computeUnreadChatCounts,
   escapeForChatHighlight,
   filterHistoryEligibleMessages,
@@ -17,6 +18,31 @@ import {
 describe('chatPanelRuntimeUtils', () => {
   afterEach(() => {
     vi.useRealTimers();
+  });
+
+  describe('chatPanelMessageRowKey', () => {
+    it('is stable for the same message payload', () => {
+      const m = {
+        text: 'hello',
+        timestamp: '2024-01-01T00:00:00Z',
+        isHtml: false,
+        messageType: 'chat' as const,
+        channel: 'local',
+      };
+      expect(chatPanelMessageRowKey(m)).toBe(chatPanelMessageRowKey(m));
+    });
+
+    it('changes when body text changes', () => {
+      const a = {
+        text: 'hello',
+        timestamp: '2024-01-01T00:00:00Z',
+        isHtml: false,
+        messageType: 'chat' as const,
+        channel: 'local',
+      };
+      const b = { ...a, text: 'goodbye' };
+      expect(chatPanelMessageRowKey(a)).not.toBe(chatPanelMessageRowKey(b));
+    });
   });
 
   describe('formatChatTimestampUtc', () => {

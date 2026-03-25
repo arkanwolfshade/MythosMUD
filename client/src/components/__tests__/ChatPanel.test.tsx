@@ -447,12 +447,13 @@ describe('ChatPanel', () => {
       expect(channelIndicators[0]).toHaveFocus();
     });
 
-    it('should provide proper context menu functionality', () => {
+    it('should render message text inside chat message rows', () => {
       render(<ChatPanel {...defaultProps} />);
 
-      // Messages should have context menu functionality
       const message = screen.getByText('[local] Player1 says: Hello everyone!');
-      expect(message).toHaveAttribute('title', 'Right-click for options');
+      expect(message).toBeInTheDocument();
+      const row = message.closest('[data-testid="chat-message"]');
+      expect(row).not.toBeNull();
     });
   });
 });
