@@ -171,7 +171,7 @@ describe('StatsRollingScreen', () => {
       render(<StatsRollingScreen {...defaultProps} />);
 
       // Check loading state immediately (before fetch completes)
-      expect(screen.getByText("Rolling your character's stats...")).toBeInTheDocument();
+      expect(screen.getByText('Rolling your starting stats...')).toBeInTheDocument();
 
       // Now resolve the fetch to clean up and prevent hanging
       await act(async () => {
@@ -181,7 +181,7 @@ describe('StatsRollingScreen', () => {
       // Wait for state updates to complete using vi.waitFor
       await vi.waitFor(
         () => {
-          expect(screen.queryByText("Rolling your character's stats...")).not.toBeInTheDocument();
+          expect(screen.queryByText('Rolling your starting stats...')).not.toBeInTheDocument();
         },
         { timeout: 1000 }
       );
@@ -344,7 +344,7 @@ describe('StatsRollingScreen', () => {
       });
 
       await waitFor(() => {
-        expect(screen.getByText('Failed to load stats. Please try again.')).toBeInTheDocument();
+        expect(screen.getByText('Unable to load stats. Please try again.')).toBeInTheDocument();
       });
     });
 
@@ -356,7 +356,7 @@ describe('StatsRollingScreen', () => {
       });
 
       await waitFor(() => {
-        expect(screen.getByText('Failed to load stats. Please try again.')).toBeInTheDocument();
+        expect(screen.getByText('Unable to load stats. Please try again.')).toBeInTheDocument();
       });
 
       expect(defaultProps.onError).toHaveBeenCalledWith('Server is unavailable. Please try again later.');

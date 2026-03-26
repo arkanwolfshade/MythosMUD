@@ -3,7 +3,7 @@
  * Separates data fetching from ProfessionSelectionScreen (Rule 3: smart/dumb components).
  */
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Profession } from '../components/ProfessionCard.tsx';
 import { assertProfessionArray } from '../utils/apiTypeGuards.js';
 import { getErrorMessage, isErrorResponse } from '../utils/errorHandler.js';
@@ -41,6 +41,11 @@ export function useProfessions({ baseUrl, authToken, onError }: UseProfessionsOp
   const [professions, setProfessions] = useState<Profession[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const onErrorRef = useRef<UseProfessionsOptions['onError']>(onError);
+
+  useEffect(() => {
+    onErrorRef.current = onError;
+  }, [onError]);
 
   const fetchProfessions = useCallback(async () => {
     try {
@@ -119,18 +124,18 @@ export function useProfessions({ baseUrl, authToken, onError }: UseProfessionsOp
 
       if (SERVER_UNAVAILABLE_PATTERNS.some(pattern => errorLower.includes(pattern))) {
         const unavailableMessage = 'Server is unavailable. Please try again later.';
-        onError?.(unavailableMessage);
+        onErrorRef.current?.(unavailableMessage);
         setError(unavailableMessage);
         return;
       }
 
       setError(errorMessage);
-      onError?.(`Failed to load professions: ${errorMessage}`);
+      onErrorRef.current?.(`Failed to load professions: ${errorMessage}`);
       logger.error('useProfessions', 'Failed to load professions', { error: errorMessage });
     } finally {
       setIsLoading(false);
     }
-  }, [baseUrl, authToken, onError]);
+  }, [baseUrl, authToken]);
 
   useEffect(() => {
     void fetchProfessions();

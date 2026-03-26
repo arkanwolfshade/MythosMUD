@@ -20,6 +20,8 @@ export interface SkillAssignmentScreenProps {
   onError: (error: string) => void;
 }
 
+export const MIN_TOUCH_TARGET_STYLE = { minHeight: 44 };
+
 type SkillsLoadResult = { ok: true; skills: SkillCatalogEntry[] } | { ok: false; error: string; notify: boolean };
 
 export async function loadSkillsCatalog(baseUrl: string, authToken: string): Promise<SkillsLoadResult> {
@@ -42,18 +44,40 @@ export async function loadSkillsCatalog(baseUrl: string, authToken: string): Pro
 export function renderLoadingState() {
   return (
     <div className="skill-assignment-screen" data-testid="skill-assignment-screen">
-      <p>Loading skills catalog...</p>
+      <p>Loading skill options...</p>
     </div>
   );
 }
 
-export function renderErrorState(error: string, onBack: () => void) {
+export function renderErrorState(error: string, onBack: () => void, onRetry?: () => void) {
   return (
     <div className="skill-assignment-screen" data-testid="skill-assignment-screen">
-      <p className="error-message">{error}</p>
-      <button type="button" onClick={onBack} className="back-button">
-        Back
-      </button>
+      <p className="error-message" role="alert" aria-live="assertive">
+        {error}
+      </p>
+      <div className="skill-actions">
+        {onRetry && (
+          <button type="button" onClick={onRetry} className="confirm-button">
+            Retry
+          </button>
+        )}
+        <button type="button" onClick={onBack} className="back-button">
+          Back
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export function renderSkillInstructions() {
+  return (
+    <div className="skill-instructions">
+      <p>Complete both groups before continuing:</p>
+      <ul>
+        <li>Occupation skills: 1x70%, 2x60%, 3x50%, 3x40%</li>
+        <li>Personal interest skills: choose 4 skills at base + 20%</li>
+        <li>Cthulhu Mythos cannot be selected during creation</li>
+      </ul>
     </div>
   );
 }

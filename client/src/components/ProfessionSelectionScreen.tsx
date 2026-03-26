@@ -101,7 +101,7 @@ export function ProfessionSelectionScreen({
     return (
       <div className="profession-selection-screen">
         <div className="loading-container">
-          <h2>Loading professions...</h2>
+          <h2>Loading profession options...</h2>
         </div>
       </div>
     );
@@ -111,12 +111,14 @@ export function ProfessionSelectionScreen({
     return (
       <div className="profession-selection-screen">
         <div className="error-container">
-          <h2>Error Loading Professions</h2>
-          <p className="error-message">{error}</p>
-          <button onClick={fetchProfessions} className="retry-button">
+          <h2>Unable to load profession options</h2>
+          <p className="error-message" role="alert" aria-live="assertive">
+            {error}
+          </p>
+          <button onClick={fetchProfessions} className="retry-button" type="button">
             Retry
           </button>
-          <button onClick={onBack} className="back-button">
+          <button onClick={onBack} className="back-button" type="button">
             Back
           </button>
         </div>

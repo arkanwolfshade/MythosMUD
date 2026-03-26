@@ -90,6 +90,8 @@ export const CharacterNameScreen: React.FC<CharacterNameScreenProps> = ({
   const [name, setName] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const inputId = 'character-name-input';
+  const errorId = 'character-name-error';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -145,9 +147,9 @@ export const CharacterNameScreen: React.FC<CharacterNameScreenProps> = ({
           Enter a name for your character. This is the final step before creation.
         </p>
         <form onSubmit={handleSubmit}>
-          <label htmlFor="character-name-input">Character name</label>
+          <label htmlFor={inputId}>Character name</label>
           <input
-            id="character-name-input"
+            id={inputId}
             type="text"
             value={name}
             onChange={e => {
@@ -157,10 +159,16 @@ export const CharacterNameScreen: React.FC<CharacterNameScreenProps> = ({
             maxLength={50}
             minLength={1}
             disabled={isSubmitting}
+            aria-invalid={Boolean(error)}
+            aria-describedby={error ? errorId : undefined}
             // eslint-disable-next-line jsx-a11y/no-autofocus -- single field form: focus name input on this step
             autoFocus
           />
-          {error && <p className="error-message">{error}</p>}
+          {error && (
+            <p id={errorId} className="error-message" role="alert" aria-live="assertive">
+              {error}
+            </p>
+          )}
           <div className="character-name-actions">
             <button type="button" onClick={onBack} className="back-button">
               Back

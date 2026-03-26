@@ -155,7 +155,7 @@ describe('Profession System Error Handling and Edge Cases', () => {
       fireEvent.click(screen.getByText('Accept Stats'));
 
       await waitFor(() => {
-        expect(screen.getByText('Error Loading Professions')).toBeInTheDocument();
+        expect(screen.getByText('Unable to load profession options')).toBeInTheDocument();
         expect(screen.getByText(/Invalid API response: expected Profession\[\]/)).toBeInTheDocument();
       });
     });
@@ -216,7 +216,7 @@ describe('Profession System Error Handling and Edge Cases', () => {
       await waitFor(() => {
         expect(screen.getByText('Invalid profession ID')).toBeInTheDocument();
       });
-      expect(screen.getByText('Failed to load stats. Please try again.')).toBeInTheDocument();
+      expect(screen.getByText('Unable to load stats. Please try again.')).toBeInTheDocument();
     });
 
     it('should handle malformed stat response gracefully', async () => {

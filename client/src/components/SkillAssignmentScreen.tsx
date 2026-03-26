@@ -1,14 +1,16 @@
-import { useCallback, useEffect, useState } from 'react';
-import {
-  loadSkillsCatalog,
-  OCCUPATION_VALUES,
-  renderErrorState,
-  renderLoadingState,
-  type SkillCatalogEntry,
-  type SkillAssignmentScreenProps,
-} from './SkillAssignmentScreen.helpers.tsx';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { logger } from '../utils/logger.js';
 import type { OccupationSlotPayload, PersonalInterestPayload } from './CharacterNameScreen.tsx';
+import {
+  MIN_TOUCH_TARGET_STYLE,
+  OCCUPATION_VALUES,
+  loadSkillsCatalog,
+  renderErrorState,
+  renderLoadingState,
+  renderSkillInstructions,
+  type SkillAssignmentScreenProps,
+  type SkillCatalogEntry,
+} from './SkillAssignmentScreen.helpers.tsx';
 
 export function SkillAssignmentScreen({
   baseUrl,
@@ -22,6 +24,22 @@ export function SkillAssignmentScreen({
   const [error, setError] = useState<string | null>(null);
   const [occupationSlots, setOccupationSlots] = useState<(number | null)[]>(OCCUPATION_VALUES.map(() => null));
   const [personalInterest, setPersonalInterest] = useState<(number | null)[]>([]);
+
+  const loadCatalog = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    const result = await loadSkillsCatalog(baseUrl, authToken);
+    if (result.ok) {
+      setSkills(result.skills);
+      setPersonalInterest([null, null, null, null]);
+      return;
+    }
+
+    setError(result.error);
+    if (result.notify) {
+      onError(result.error);
+    }
+  }, [authToken, baseUrl, onError]);
 
   useEffect(() => {
     let cancelled = false;
@@ -44,7 +62,7 @@ export function SkillAssignmentScreen({
     };
   }, [baseUrl, authToken, onError]);
 
-  const selectableSkills = skills.filter(s => s.allow_at_creation);
+  const selectableSkills = useMemo(() => skills.filter(s => s.allow_at_creation), [skills]);
 
   /** Skill IDs already used in other occupation slots or any personal interest (for occupation dropdown at excludeOccIndex). */
   const usedForOccupationDropdown = useCallback(
@@ -114,16 +132,13 @@ export function SkillAssignmentScreen({
   }
 
   if (error) {
-    return renderErrorState(error, onBack);
+    return renderErrorState(error, onBack, () => void loadCatalog());
   }
 
   return (
     <div className="skill-assignment-screen" data-testid="skill-assignment-screen">
       <h2>Skill Allocation</h2>
-      <p className="skill-instructions">
-        Assign nine occupation skills (one 70%, two 60%, three 50%, three 40%) and four personal interest skills (base +
-        20% each). Cthulhu Mythos cannot be chosen here.
-      </p>
+      {renderSkillInstructions()}
 
       <section className="occupation-slots">
         <h3>Occupation skills</h3>
@@ -132,9 +147,12 @@ export function SkillAssignmentScreen({
           const options = selectableSkills.filter(s => occupationSlots[i] === s.id || !used.has(s.id));
           return (
             <div key={i} className="slot-row">
-              <label>{value}%</label>
+              <label htmlFor={`occupation-slot-${i}`}>{`Occupation ${i + 1} (${value}%)`}</label>
               <select
+                id={`occupation-slot-${i}`}
+                aria-label={`Occupation skill ${i + 1} value ${value} percent`}
                 value={occupationSlots[i] ?? ''}
+                style={MIN_TOUCH_TARGET_STYLE}
                 onChange={e => {
                   setOccupationSlot(i, e.target.value ? Number(e.target.value) : null);
                 }}
@@ -158,9 +176,12 @@ export function SkillAssignmentScreen({
           const options = selectableSkills.filter(s => personalInterest[i] === s.id || !used.has(s.id));
           return (
             <div key={i} className="slot-row">
-              <label>Personal {i + 1}</label>
+              <label htmlFor={`personal-slot-${i}`}>{`Personal ${i + 1}`}</label>
               <select
+                id={`personal-slot-${i}`}
+                aria-label={`Personal interest slot ${i + 1}`}
                 value={personalInterest[i] ?? ''}
+                style={MIN_TOUCH_TARGET_STYLE}
                 onChange={e => {
                   setPersonalSlot(i, e.target.value ? Number(e.target.value) : null);
                 }}
@@ -178,10 +199,16 @@ export function SkillAssignmentScreen({
       </section>
 
       <div className="skill-actions">
-        <button type="button" onClick={onBack} className="back-button">
+        <button type="button" onClick={onBack} className="back-button" style={MIN_TOUCH_TARGET_STYLE}>
           Back
         </button>
-        <button type="button" onClick={handleConfirm} disabled={!canConfirm} className="confirm-button">
+        <button
+          type="button"
+          onClick={handleConfirm}
+          disabled={!canConfirm}
+          className="confirm-button"
+          style={MIN_TOUCH_TARGET_STYLE}
+        >
           Next: Name character
         </button>
       </div>
