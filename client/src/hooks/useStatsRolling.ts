@@ -4,10 +4,10 @@
  */
 
 import { useCallback, useEffect, useState } from 'react';
+import type { Profession } from '../components/ProfessionCard.tsx';
 import { assertStatsRollResponse } from '../utils/apiTypeGuards.js';
 import { getErrorMessage, isErrorResponse } from '../utils/errorHandler.js';
 import { logger } from '../utils/logger.js';
-import type { Profession } from '../components/ProfessionCard.jsx';
 
 export interface Stats {
   strength: number;
@@ -116,6 +116,109 @@ function handleNetworkError(
   }
 }
 
+interface PerformStatsRollParams {
+  isReroll: boolean;
+  baseUrl: string;
+  authToken: string;
+  professionId?: number;
+  profession?: Profession | null;
+  onError?: (error: string) => void;
+  setCurrentStats: (stats: Stats) => void;
+  setIsLoading: (loading: boolean) => void;
+  setIsRerolling: (rerolling: boolean) => void;
+  setRerollCooldown: (seconds: number) => void;
+  setErrorState: (error: string) => void;
+  setTimeoutMessage: (message: string) => void;
+}
+
+async function performStatsRoll(params: PerformStatsRollParams): Promise<void> {
+  const {
+    isReroll,
+    baseUrl,
+    authToken,
+    professionId,
+    profession,
+    onError,
+    setCurrentStats,
+    setIsLoading,
+    setIsRerolling,
+    setRerollCooldown,
+    setErrorState,
+    setTimeoutMessage,
+  } = params;
+  if (isReroll) {
+    setIsRerolling(true);
+    setRerollCooldown(1);
+  } else {
+    setIsLoading(true);
+  }
+  setErrorState('');
+
+  try {
+    const response = await fetch(`${baseUrl}/api/players/roll-stats`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${authToken}`,
+      },
+      body: JSON.stringify({
+        method: '3d6',
+        profession_id: professionId,
+      }),
+    });
+
+    if (response.ok) {
+      const rawData: unknown = await response.json();
+      const data = assertStatsRollResponse(
+        rawData,
+        isReroll ? 'Invalid stats reroll response from server' : 'Invalid stats roll response from server'
+      );
+      setCurrentStats(data.stats);
+
+      if (!isReroll && data.meets_requirements === false && profession) {
+        setTimeoutMessage(PROFESSION_TIMEOUT_MESSAGE);
+      } else {
+        setTimeoutMessage('');
+      }
+
+      logger.info('useStatsRolling', isReroll ? 'Stats rerolled successfully' : 'Stats rolled successfully', {
+        stats: data.stats,
+        meets_requirements: data.meets_requirements,
+      });
+    } else if (response.status >= 500 && response.status < 600) {
+      const msg = 'Server is unavailable. Please try again later.';
+      setErrorState(msg);
+      onError?.(msg);
+      logger.error('useStatsRolling', 'Server unavailable when rolling stats', {
+        status: response.status,
+      });
+    } else if (response.status === 429) {
+      const rawData: unknown = await response.json();
+      const retryAfter = parseRetryAfter(rawData);
+      setErrorState(`Rate limit exceeded. Please wait ${retryAfter} seconds before trying again.`);
+      setRerollCooldown(retryAfter);
+    } else {
+      const rawData: unknown = await response.json();
+      const errorMessage = parseErrorMessage(rawData, isReroll ? 'Failed to reroll stats' : 'Failed to roll stats');
+      setErrorState(errorMessage);
+      logger.error('useStatsRolling', isReroll ? 'Failed to reroll stats' : 'Failed to roll stats', {
+        error: errorMessage,
+      });
+    }
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : String(err);
+    handleNetworkError(
+      errorMessage,
+      onError,
+      setErrorState,
+      isReroll ? 'Network error rerolling stats' : 'Network error rolling stats'
+    );
+  } finally {
+    setIsLoading(false);
+    setIsRerolling(false);
+  }
+}
+
 export function useStatsRolling({
   baseUrl,
   authToken,
@@ -132,79 +235,21 @@ export function useStatsRolling({
   const [timeoutMessage, setTimeoutMessage] = useState('');
 
   const performRoll = useCallback(
-    async (isReroll: boolean) => {
-      if (isReroll) {
-        setIsRerolling(true);
-        setRerollCooldown(1);
-      } else {
-        setIsLoading(true);
-      }
-      setErrorState('');
-
-      try {
-        const response = await fetch(`${baseUrl}/api/players/roll-stats`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${authToken}`,
-          },
-          body: JSON.stringify({
-            method: '3d6',
-            profession_id: professionId,
-          }),
-        });
-
-        if (response.ok) {
-          const rawData: unknown = await response.json();
-          const data = assertStatsRollResponse(
-            rawData,
-            isReroll ? 'Invalid stats reroll response from server' : 'Invalid stats roll response from server'
-          );
-          setCurrentStats(data.stats);
-
-          if (!isReroll && data.meets_requirements === false && profession) {
-            setTimeoutMessage(PROFESSION_TIMEOUT_MESSAGE);
-          } else {
-            setTimeoutMessage('');
-          }
-
-          logger.info('useStatsRolling', isReroll ? 'Stats rerolled successfully' : 'Stats rolled successfully', {
-            stats: data.stats,
-            meets_requirements: data.meets_requirements,
-          });
-        } else if (response.status >= 500 && response.status < 600) {
-          const msg = 'Server is unavailable. Please try again later.';
-          setErrorState(msg);
-          onError?.(msg);
-          logger.error('useStatsRolling', 'Server unavailable when rolling stats', {
-            status: response.status,
-          });
-        } else if (response.status === 429) {
-          const rawData: unknown = await response.json();
-          const retryAfter = parseRetryAfter(rawData);
-          setErrorState(`Rate limit exceeded. Please wait ${retryAfter} seconds before trying again.`);
-          setRerollCooldown(retryAfter);
-        } else {
-          const rawData: unknown = await response.json();
-          const errorMessage = parseErrorMessage(rawData, isReroll ? 'Failed to reroll stats' : 'Failed to roll stats');
-          setErrorState(errorMessage);
-          logger.error('useStatsRolling', isReroll ? 'Failed to reroll stats' : 'Failed to roll stats', {
-            error: errorMessage,
-          });
-        }
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : String(err);
-        handleNetworkError(
-          errorMessage,
-          onError,
-          setErrorState,
-          isReroll ? 'Network error rerolling stats' : 'Network error rolling stats'
-        );
-      } finally {
-        setIsLoading(false);
-        setIsRerolling(false);
-      }
-    },
+    async (isReroll: boolean) =>
+      performStatsRoll({
+        isReroll,
+        baseUrl,
+        authToken,
+        professionId,
+        profession,
+        onError,
+        setCurrentStats,
+        setIsLoading,
+        setIsRerolling,
+        setRerollCooldown,
+        setErrorState,
+        setTimeoutMessage,
+      }),
     [authToken, baseUrl, professionId, profession, onError]
   );
 

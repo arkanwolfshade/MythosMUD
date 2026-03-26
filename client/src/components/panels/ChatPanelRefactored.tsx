@@ -1,4 +1,3 @@
-import React from 'react';
 import { DEFAULT_CHANNEL } from '../../config/channels';
 import { ChatPanelRefactoredView } from './ChatPanelRefactoredView';
 import type { ChatPanelRefactoredMessage } from './chatPanelRefactoredTypes';
@@ -15,16 +14,17 @@ interface ChatPanelRefactoredProps {
   onChannelSelect?: (channelId: string) => void;
 }
 
-export const ChatPanelRefactored: React.FC<ChatPanelRefactoredProps> = ({
-  messages,
-  onSendChatMessage: _onSendChatMessage,
-  onClearMessages,
-  onDownloadLogs,
-  disabled = false,
-  isConnected = true,
-  selectedChannel = DEFAULT_CHANNEL,
-  onChannelSelect,
-}) => {
+export function ChatPanelRefactored(props: ChatPanelRefactoredProps) {
+  const {
+    messages,
+    onClearMessages,
+    onDownloadLogs,
+    disabled = false,
+    isConnected = true,
+    selectedChannel = DEFAULT_CHANNEL,
+    onChannelSelect,
+  } = props;
+
   const panel = useChatPanelRefactored(messages, selectedChannel, onChannelSelect);
 
   return (
@@ -33,4 +33,4 @@ export const ChatPanelRefactored: React.FC<ChatPanelRefactoredProps> = ({
       panel={panel}
     />
   );
-};
+}

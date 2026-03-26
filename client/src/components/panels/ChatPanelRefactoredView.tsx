@@ -1,7 +1,7 @@
 import { ChatPanelRefactoredToolbar } from './ChatPanelRefactoredToolbar';
-import { ChatHistoryToggle } from './chat/ChatHistoryToggle.jsx';
-import { ChatMessagesList } from './chat/ChatMessagesList.jsx';
-import { ChatStatistics } from './chat/ChatStatistics.jsx';
+import { ChatHistoryToggle } from './chat/ChatHistoryToggle.tsx';
+import { ChatMessagesList } from './chat/ChatMessagesList.tsx';
+import { ChatStatistics } from './chat/ChatStatistics.tsx';
 import type { UseChatPanelRefactoredResult } from './useChatPanelRefactored';
 
 export type ChatPanelRefactoredChromeProps = {

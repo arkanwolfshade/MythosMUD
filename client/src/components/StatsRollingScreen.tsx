@@ -1,7 +1,7 @@
 import React from 'react';
 import { useStatsRolling, type Stats } from '../hooks/useStatsRolling.js';
 import { logger } from '../utils/logger.js';
-import type { Profession } from './ProfessionCard.jsx';
+import type { Profession } from './ProfessionCard.tsx';
 import './StatsRollingScreen.css';
 
 /** Plan 10.6 F2: Stats-first flow; name and create-character happen on CharacterNameScreen. */

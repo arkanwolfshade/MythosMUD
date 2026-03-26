@@ -4,11 +4,11 @@
  */
 
 import { useCallback, useEffect, useState } from 'react';
+import type { Profession } from '../components/ProfessionCard.tsx';
 import { assertProfessionArray } from '../utils/apiTypeGuards.js';
 import { getErrorMessage, isErrorResponse } from '../utils/errorHandler.js';
 import { logger } from '../utils/logger.js';
 import { secureTokenStorage } from '../utils/security.js';
-import type { Profession } from '../components/ProfessionCard.jsx';
 
 const SERVER_UNAVAILABLE_PATTERNS = [
   'failed to fetch',

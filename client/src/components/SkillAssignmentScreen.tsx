@@ -1,40 +1,22 @@
-/**
- * SkillAssignmentScreen: CoC-style skill allocation (plan 10.6 F4).
- * Nine occupation slots (70, 60, 60, 50, 50, 50, 40, 40, 40) and four personal interest (base+20).
- * Cthulhu Mythos disabled. On confirm passes payload to name step; no POST.
- */
-
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import {
+  loadSkillsCatalog,
+  OCCUPATION_VALUES,
+  renderErrorState,
+  renderLoadingState,
+  type SkillCatalogEntry,
+  type SkillAssignmentScreenProps,
+} from './SkillAssignmentScreen.helpers.tsx';
 import { logger } from '../utils/logger.js';
-import type { OccupationSlotPayload, PersonalInterestPayload, SkillsPayload } from './CharacterNameScreen.jsx';
+import type { OccupationSlotPayload, PersonalInterestPayload } from './CharacterNameScreen.tsx';
 
-const OCCUPATION_VALUES = [70, 60, 60, 50, 50, 50, 40, 40, 40] as const;
-
-interface SkillCatalogEntry {
-  id: number;
-  key: string;
-  name: string;
-  description?: string;
-  base_value: number;
-  allow_at_creation: boolean;
-  category?: string;
-}
-
-interface SkillAssignmentScreenProps {
-  baseUrl: string;
-  authToken: string;
-  onSkillsConfirmed: (payload: SkillsPayload) => void;
-  onBack: () => void;
-  onError: (error: string) => void;
-}
-
-export const SkillAssignmentScreen: React.FC<SkillAssignmentScreenProps> = ({
+export function SkillAssignmentScreen({
   baseUrl,
   authToken,
   onSkillsConfirmed,
   onBack,
   onError,
-}) => {
+}: SkillAssignmentScreenProps) {
   const [skills, setSkills] = useState<SkillCatalogEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -44,29 +26,17 @@ export const SkillAssignmentScreen: React.FC<SkillAssignmentScreenProps> = ({
   useEffect(() => {
     let cancelled = false;
     void (async () => {
-      try {
-        const res = await fetch(`${baseUrl}/skills/`, {
-          headers: { Authorization: `Bearer ${authToken}` },
-        });
-        if (!res.ok) {
-          const msg = `Failed to load skills (${res.status})`;
-          if (!cancelled) setError(msg);
-          return;
-        }
-        const data = (await res.json()) as { skills?: SkillCatalogEntry[] };
-        const list = data.skills ?? [];
-        if (!cancelled) {
-          setSkills(list);
+      const result = await loadSkillsCatalog(baseUrl, authToken);
+
+      if (!cancelled) {
+        if (result.ok) {
+          setSkills(result.skills);
           setPersonalInterest([null, null, null, null]);
+        } else {
+          setError(result.error);
+          if (result.notify) onError(result.error);
         }
-      } catch (e) {
-        const msg = e instanceof Error ? e.message : 'Failed to load skills';
-        if (!cancelled) {
-          setError(msg);
-          onError(msg);
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
+        setLoading(false);
       }
     })();
     return () => {
@@ -140,22 +110,11 @@ export const SkillAssignmentScreen: React.FC<SkillAssignmentScreenProps> = ({
   const canConfirm = occupationComplete && personalComplete;
 
   if (loading) {
-    return (
-      <div className="skill-assignment-screen" data-testid="skill-assignment-screen">
-        <p>Loading skills catalog...</p>
-      </div>
-    );
+    return renderLoadingState();
   }
 
   if (error) {
-    return (
-      <div className="skill-assignment-screen" data-testid="skill-assignment-screen">
-        <p className="error-message">{error}</p>
-        <button type="button" onClick={onBack} className="back-button">
-          Back
-        </button>
-      </div>
-    );
+    return renderErrorState(error, onBack);
   }
 
   return (
@@ -228,4 +187,4 @@ export const SkillAssignmentScreen: React.FC<SkillAssignmentScreenProps> = ({
       </div>
     </div>
   );
-};
+}

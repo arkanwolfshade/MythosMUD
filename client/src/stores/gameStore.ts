@@ -69,6 +69,15 @@ export interface ChatMessage {
   channel: 'local' | 'global' | 'party' | 'tell' | 'system' | 'game';
   sender?: string;
   target?: string;
+  /** Server/UI may send a separate display type string; terminal UI maps this alongside `type`. */
+  messageType?: string;
+  isCompleteHtml?: boolean;
+  rawText?: string;
+  aliasChain?: Array<{
+    original: string;
+    expanded: string;
+    alias_name: string;
+  }>;
   [key: string]: unknown;
   tags?: string[];
 }

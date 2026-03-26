@@ -1,6 +1,6 @@
-import { ChannelActivityIndicators } from './chat/ChannelActivityIndicators.jsx';
-import { ChannelSelectorSection } from './chat/ChannelSelectorSection.jsx';
-import { ChatHeader } from './chat/ChatHeader.jsx';
+import { ChannelActivityIndicators } from './chat/ChannelActivityIndicators.tsx';
+import { ChannelSelectorSection } from './chat/ChannelSelectorSection.tsx';
+import { ChatHeader } from './chat/ChatHeader.tsx';
 
 type ChatPanelRefactoredToolbarProps = {
   onClearMessages?: () => void;
