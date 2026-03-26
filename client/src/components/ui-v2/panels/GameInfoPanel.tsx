@@ -9,11 +9,18 @@ interface GameInfoPanelProps {
   messages: ChatMessage[];
   onClearMessages?: () => void;
   onDownloadLogs?: () => void;
+  /** Server flag: show combat strip in header (frame also uses PanelContainer className). */
+  inCombat?: boolean;
 }
 
 // Simplified game info panel without search history and time filters
 // Based on findings from "Event Logging in Non-Euclidean Systems" - Dr. Armitage, 1928
-export const GameInfoPanel: React.FC<GameInfoPanelProps> = ({ messages, onClearMessages, onDownloadLogs }) => {
+export const GameInfoPanel: React.FC<GameInfoPanelProps> = ({
+  messages,
+  onClearMessages,
+  onDownloadLogs,
+  inCombat = false,
+}) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [messageFilter, setMessageFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -79,10 +86,29 @@ export const GameInfoPanel: React.FC<GameInfoPanelProps> = ({ messages, onClearM
   return (
     <div className="h-full flex flex-col bg-mythos-terminal-surface border border-gray-700 rounded">
       {/* Header */}
-      <div className="flex items-center justify-between p-3 border-b border-gray-700 bg-mythos-terminal-background">
+      <div
+        className={`flex items-center justify-between p-3 border-b border-gray-700 bg-mythos-terminal-background ${
+          inCombat ? 'border-b-orange-500/50' : ''
+        }`}
+      >
         <div className="flex items-center space-x-2">
           <EldritchIcon name={MythosIcons.log} size={20} className="text-mythos-terminal-primary" />
+          {inCombat && (
+            <span
+              data-testid="game-info-combat-indicator"
+              className="w-2 h-2 shrink-0 rounded-full bg-orange-500"
+              aria-hidden="true"
+            />
+          )}
           <span className="text-sm font-bold text-mythos-terminal-primary">Game Info</span>
+          {inCombat && (
+            <span
+              className="text-xs font-semibold uppercase tracking-wide text-orange-400"
+              data-testid="game-info-combat-label"
+            >
+              In combat
+            </span>
+          )}
         </div>
         <div className="flex items-center space-x-2">
           <TerminalButton

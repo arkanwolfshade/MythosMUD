@@ -399,6 +399,32 @@ describe('ChatPanelRefactored', () => {
       expect(messagesContainer).toHaveAttribute('aria-label', 'Chat Messages');
     });
 
+    it('should pulse the chat messages area when unread messages exist', () => {
+      const messages = [
+        {
+          text: 'Hello from global',
+          timestamp: '2024-01-01T10:00:00Z',
+          isHtml: false,
+          messageType: 'chat' as const,
+          channel: 'global',
+        },
+        {
+          text: 'Hello from local',
+          timestamp: '2024-01-01T10:01:00Z',
+          isHtml: false,
+          messageType: 'chat' as const,
+          channel: 'local',
+        },
+      ];
+
+      render(
+        <ChatPanelRefactored {...defaultProps} messages={messages} selectedChannel="local" onChannelSelect={vi.fn()} />
+      );
+
+      const messagesContainer = screen.getByRole('log', { name: 'Chat Messages' });
+      expect(messagesContainer).toHaveClass('animate-eldritch-pulse');
+    });
+
     it('should have proper disabled state', () => {
       render(<ChatPanelRefactored {...defaultProps} disabled={true} />);
 

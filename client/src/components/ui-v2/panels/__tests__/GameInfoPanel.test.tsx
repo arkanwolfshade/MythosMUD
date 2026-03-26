@@ -3,9 +3,9 @@
  */
 
 import { fireEvent, render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
-import { GameInfoPanel } from '../GameInfoPanel';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ChatMessage } from '../../types';
+import { GameInfoPanel } from '../GameInfoPanel';
 
 describe('GameInfoPanel', () => {
   const mockOnClearMessages = vi.fn();
@@ -87,5 +87,11 @@ describe('GameInfoPanel', () => {
 
     expect(screen.getByText('System message')).toBeInTheDocument();
     expect(screen.queryByText('Combat message')).not.toBeInTheDocument();
+  });
+
+  it('should show combat header affordances when inCombat is true', () => {
+    render(<GameInfoPanel messages={mockMessages} inCombat />);
+    expect(screen.getByTestId('game-info-combat-indicator')).toBeInTheDocument();
+    expect(screen.getByTestId('game-info-combat-label')).toHaveTextContent('In combat');
   });
 });

@@ -84,7 +84,14 @@ export const CharacterInfoPanel: React.FC<CharacterInfoPanelProps> = ({ player, 
         )}
         {player.in_combat !== undefined && (
           <div className="flex items-center justify-between">
-            <span className="text-base text-mythos-terminal-text-secondary">In Combat:</span>
+            <span className="text-base text-mythos-terminal-text-secondary inline-flex items-center gap-2">
+              <span
+                data-testid="combat-indicator-dot"
+                aria-hidden="true"
+                className={`w-2 h-2 rounded-full ${player.in_combat ? 'bg-mythos-terminal-error' : 'bg-mythos-terminal-border opacity-60'}`}
+              />
+              In Combat:
+            </span>
             <span
               className={`text-base ${player.in_combat ? 'text-mythos-terminal-error' : 'text-mythos-terminal-success'}`}
             >

@@ -6,8 +6,8 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import type { HealthStatus } from '../../../../types/health';
 import type { LucidityStatus } from '../../../../types/lucidity';
-import { CharacterInfoPanel } from '../CharacterInfoPanel';
 import type { Player } from '../../types';
+import { CharacterInfoPanel } from '../CharacterInfoPanel';
 
 describe('CharacterInfoPanel', () => {
   const mockHealthStatus: HealthStatus = {
@@ -131,5 +131,23 @@ describe('CharacterInfoPanel', () => {
     render(<CharacterInfoPanel player={player} healthStatus={mockHealthStatus} lucidityStatus={mockLucidityStatus} />);
     // Magic points meter should not be rendered
     expect(screen.queryByText(/Magic Points/i)).not.toBeInTheDocument();
+  });
+
+  it('should show a combat indicator dot when in_combat is true', () => {
+    const player: Player = {
+      id: 'player1',
+      name: 'TestPlayer',
+      in_combat: true,
+      stats: {
+        current_dp: 100,
+        max_dp: 100,
+        lucidity: 50,
+      },
+    };
+
+    render(<CharacterInfoPanel player={player} healthStatus={mockHealthStatus} lucidityStatus={mockLucidityStatus} />);
+
+    const dot = screen.getByTestId('combat-indicator-dot');
+    expect(dot).toHaveClass('bg-mythos-terminal-error');
   });
 });

@@ -5,16 +5,17 @@ import { deriveHealthStatusFromPlayer } from '../../types/health';
 import { deriveLucidityStatusFromPlayer, type LucidityStatus } from '../../types/lucidity';
 import { GameClientV2AuxiliaryPanels } from './GameClientV2AuxiliaryPanels';
 import { HeaderBar } from './HeaderBar';
-import { PanelContainer } from './PanelSystem/PanelContainer';
-import { PanelManagerProvider } from './PanelSystem/PanelManager';
-import { usePanelManager } from './PanelSystem/usePanelManager';
 import { ChatHistoryPanel } from './panels/ChatHistoryPanel';
 import { GameInfoPanel } from './panels/GameInfoPanel';
 import { LocationPanel } from './panels/LocationPanel';
 import { OccupantsPanel } from './panels/OccupantsPanel';
 import { QuestLogPanel } from './panels/QuestLogPanel';
 import { RoomDescriptionPanel } from './panels/RoomDescriptionPanel';
+import { PanelContainer } from './PanelSystem/PanelContainer';
+import { PanelManagerProvider } from './PanelSystem/PanelManager';
+import { usePanelManager } from './PanelSystem/usePanelManager';
 import type { ChatMessage, MythosTimeState, Player, QuestLogEntry, Room } from './types';
+import { getGameInfoPanelCombatClassName } from './utils/characterInfoPanelOutline';
 import { createDefaultPanelLayout } from './utils/panelLayout';
 import type { ActiveEffectDisplay } from './utils/stateUpdateUtils';
 
@@ -282,13 +283,19 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
             isVisible={gameInfoPanel.isVisible}
             minSize={gameInfoPanel.minSize}
             variant="default"
+            className={getGameInfoPanelCombatClassName(Boolean(player?.in_combat))}
             onPositionChange={panelManager.updatePosition}
             onSizeChange={panelManager.updateSize}
             onMinimize={panelManager.toggleMinimize}
             onMaximize={panelManager.toggleMaximize}
             onFocus={panelManager.focusPanel}
           >
-            <GameInfoPanel messages={messages} onClearMessages={onClearMessages} onDownloadLogs={onDownloadLogs} />
+            <GameInfoPanel
+              messages={messages}
+              onClearMessages={onClearMessages}
+              onDownloadLogs={onDownloadLogs}
+              inCombat={Boolean(player?.in_combat)}
+            />
           </PanelContainer>
         )}
 

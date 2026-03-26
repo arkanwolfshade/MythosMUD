@@ -30,6 +30,9 @@ export function ChatPanelRefactoredView({ chrome, panel }: ChatPanelRefactoredVi
     handleChannelSelect,
   } = panel;
 
+  const totalUnread = Object.values(unreadCounts).reduce((sum, count) => sum + count, 0);
+  const shouldPulse = totalUnread > 0;
+
   return (
     <div className="h-full flex flex-col font-mono">
       <ChatPanelRefactoredToolbar
@@ -49,7 +52,7 @@ export function ChatPanelRefactoredView({ chrome, panel }: ChatPanelRefactoredVi
         currentChannelMessages={chatStats.currentChannelMessages}
       />
       <div
-        className="min-h-panel-chat flex-1 overflow-auto rounded border border-mythos-terminal-border bg-mythos-terminal-background p-3"
+        className={`min-h-panel-chat flex-1 overflow-auto rounded border border-mythos-terminal-border bg-mythos-terminal-background p-3 ${shouldPulse ? 'animate-eldritch-pulse border-mythos-terminal-primary' : ''}`}
         role="log"
         aria-label="Chat Messages"
       >

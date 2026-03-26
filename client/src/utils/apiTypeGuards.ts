@@ -213,27 +213,32 @@ function isObject(value: unknown): value is Record<string, unknown> {
 /**
  * Type guard: Check if value is an array.
  */
-function isArray(value: unknown): value is unknown[] {
+function isArray(value: unknown): boolean {
   return Array.isArray(value);
 }
 
 /**
  * Type guard: Check if value is a CharacterInfo object.
  */
-function isCharacterInfo(value: unknown): value is CharacterInfo {
-  if (!isObject(value)) {
-    return false;
-  }
-
+function isCharacterInfoCoreFields(value: Record<string, unknown>) {
   return (
     isString(value.player_id) &&
     isString(value.name) &&
     isNumber(value.profession_id) &&
     isNumber(value.level) &&
     isString(value.created_at) &&
-    isString(value.last_active) &&
-    (value.profession_name === undefined || value.profession_name === null || isString(value.profession_name))
+    isString(value.last_active)
   );
+}
+
+function isCharacterInfoProfessionNameValid(value: Record<string, unknown>) {
+  const professionName = value.profession_name;
+  return professionName === undefined || professionName === null || isString(professionName);
+}
+
+function isCharacterInfo(value: unknown): boolean {
+  if (!isObject(value)) return false;
+  return isCharacterInfoCoreFields(value) && isCharacterInfoProfessionNameValid(value);
 }
 
 /**
@@ -286,7 +291,8 @@ export function isCharacterInfoArray(value: unknown): value is CharacterInfo[] {
     return false;
   }
 
-  return value.every(item => isCharacterInfo(item));
+  const arr = value as unknown[];
+  return arr.every(item => isCharacterInfo(item));
 }
 
 /**
@@ -297,7 +303,8 @@ export function isServerCharacterResponseArray(value: unknown): value is ServerC
     return false;
   }
 
-  return value.every(item => isServerCharacterResponse(item));
+  const arr = value as unknown[];
+  return arr.every(item => isServerCharacterResponse(item));
 }
 
 /**
@@ -308,14 +315,15 @@ export function isLoginResponse(value: unknown): value is LoginResponse {
     return false;
   }
 
-  return (
-    isString(value.access_token) &&
-    isString(value.token_type) &&
-    isString(value.user_id) &&
-    isArray(value.characters) &&
-    value.characters.every((char: unknown) => isCharacterInfo(char)) &&
-    (value.refresh_token === undefined || isString(value.refresh_token))
-  );
+  if (!isString(value.access_token)) return false;
+  if (!isString(value.token_type)) return false;
+  if (!isString(value.user_id)) return false;
+  if (!isArray(value.characters)) return false;
+
+  const characters = value.characters as unknown[];
+  if (!characters.every((char: unknown) => isCharacterInfo(char))) return false;
+
+  return value.refresh_token === undefined || isString(value.refresh_token);
 }
 
 /**
@@ -354,34 +362,37 @@ function isMechanicalEffect(
 /**
  * Type guard: Check if value is a Profession object.
  */
-function isProfession(value: unknown): value is Profession {
-  if (!isObject(value)) {
-    return false;
-  }
+function hasValidProfessionStatRequirements(value: Record<string, unknown>) {
+  if (!isArray(value.stat_requirements)) return false;
+  const statRequirements = value.stat_requirements as unknown[];
+  return statRequirements.every((item: unknown) => isStatRequirement(item));
+}
 
-  // Check stat_requirements is an array of StatRequirement objects
-  if (!isArray(value.stat_requirements)) {
-    return false;
-  }
-  if (!value.stat_requirements.every((item: unknown) => isStatRequirement(item))) {
-    return false;
-  }
+function hasValidProfessionMechanicalEffects(value: Record<string, unknown>) {
+  if (!isArray(value.mechanical_effects)) return false;
+  const mechanicalEffects = value.mechanical_effects as unknown[];
+  return mechanicalEffects.every((item: unknown) => isMechanicalEffect(item));
+}
 
-  // Check mechanical_effects is an array of MechanicalEffect objects
-  if (!isArray(value.mechanical_effects)) {
-    return false;
-  }
-  if (!value.mechanical_effects.every((item: unknown) => isMechanicalEffect(item))) {
-    return false;
-  }
+function isProfessionFlavorTextValid(value: Record<string, unknown>) {
+  return value.flavor_text === null || isString(value.flavor_text);
+}
 
+function isProfessionCoreFields(value: Record<string, unknown>) {
   return (
     isNumber(value.id) &&
     isString(value.name) &&
     isString(value.description) &&
-    (value.flavor_text === null || isString(value.flavor_text)) &&
+    isProfessionFlavorTextValid(value) &&
     typeof value.is_available === 'boolean'
   );
+}
+
+function isProfession(value: unknown): value is Profession {
+  if (!isObject(value)) return false;
+  if (!hasValidProfessionStatRequirements(value)) return false;
+  if (!hasValidProfessionMechanicalEffects(value)) return false;
+  return isProfessionCoreFields(value);
 }
 
 /**
@@ -392,7 +403,8 @@ export function isProfessionArray(value: unknown): value is Profession[] {
     return false;
   }
 
-  return value.every(item => isProfession(item));
+  const arr = value as unknown[];
+  return arr.every(item => isProfession(item));
 }
 
 const REQUIRED_STATS_FIELDS = [
