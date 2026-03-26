@@ -14,6 +14,7 @@ import { RoomDescriptionPanel } from './panels/RoomDescriptionPanel';
 import { PanelContainer } from './PanelSystem/PanelContainer';
 import { PanelManagerProvider } from './PanelSystem/PanelManager';
 import { usePanelManager } from './PanelSystem/usePanelManager';
+import { TentacleBackdrop } from './TentacleBackdrop';
 import type { ChatMessage, MythosTimeState, Player, QuestLogEntry, Room } from './types';
 import { getGameInfoPanelCombatClassName } from './utils/characterInfoPanelOutline';
 import { createDefaultPanelLayout } from './utils/panelLayout';
@@ -162,183 +163,186 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
   // Render panels only if they exist in the panel manager
   return (
     <div className="h-screen min-h-screen w-full bg-mythos-terminal-background text-mythos-terminal-text font-mono relative overflow-hidden flex flex-col">
-      <HeaderBar
-        playerName={playerName}
-        isConnected={isConnected}
-        isConnecting={isConnecting}
-        error={error}
-        reconnectAttempts={reconnectAttempts}
-        mythosTime={mythosTime}
-        onLogout={onLogout || (() => {})}
-        isLoggingOut={isLoggingOut}
-        activeEffects={activeEffects}
-        followingTarget={followingTarget}
-      />
-
-      {/* Main Content Area - Panels: flex-1 min-h-0 so panel area is bounded and scroll/overflow work */}
-      <div className="flex-1 min-h-0 pt-12 relative">
-        {chatHistoryPanel && chatHistoryPanel.isVisible && (
-          <PanelContainer
-            id={chatHistoryPanel.id}
-            title={chatHistoryPanel.title}
-            position={chatHistoryPanel.position}
-            size={chatHistoryPanel.size}
-            zIndex={chatHistoryPanel.zIndex}
-            isMinimized={chatHistoryPanel.isMinimized}
-            isMaximized={chatHistoryPanel.isMaximized}
-            isVisible={chatHistoryPanel.isVisible}
-            minSize={chatHistoryPanel.minSize}
-            variant="eldritch"
-            onPositionChange={panelManager.updatePosition}
-            onSizeChange={panelManager.updateSize}
-            onMinimize={panelManager.toggleMinimize}
-            onMaximize={panelManager.toggleMaximize}
-            onFocus={panelManager.focusPanel}
-          >
-            <ChatHistoryPanel
-              messages={messages}
-              onSendChatMessage={onSendChatMessage}
-              onClearMessages={onClearMessages}
-              onDownloadLogs={onDownloadLogs}
-              isConnected={isConnected}
-            />
-          </PanelContainer>
-        )}
-
-        {locationPanel && locationPanel.isVisible && (
-          <PanelContainer
-            id={locationPanel.id}
-            title={locationPanel.title}
-            position={locationPanel.position}
-            size={locationPanel.size}
-            zIndex={locationPanel.zIndex}
-            isMinimized={locationPanel.isMinimized}
-            isMaximized={locationPanel.isMaximized}
-            isVisible={locationPanel.isVisible}
-            minSize={locationPanel.minSize}
-            variant="default"
-            onPositionChange={panelManager.updatePosition}
-            onSizeChange={panelManager.updateSize}
-            onMinimize={panelManager.toggleMinimize}
-            onMaximize={panelManager.toggleMaximize}
-            onFocus={panelManager.focusPanel}
-          >
-            <LocationPanel room={room} />
-          </PanelContainer>
-        )}
-
-        {roomDescriptionPanel && roomDescriptionPanel.isVisible && (
-          <PanelContainer
-            id={roomDescriptionPanel.id}
-            title={roomDescriptionPanel.title}
-            position={roomDescriptionPanel.position}
-            size={roomDescriptionPanel.size}
-            zIndex={roomDescriptionPanel.zIndex}
-            isMinimized={roomDescriptionPanel.isMinimized}
-            isMaximized={roomDescriptionPanel.isMaximized}
-            isVisible={roomDescriptionPanel.isVisible}
-            minSize={roomDescriptionPanel.minSize}
-            variant="default"
-            onPositionChange={panelManager.updatePosition}
-            onSizeChange={panelManager.updateSize}
-            onMinimize={panelManager.toggleMinimize}
-            onMaximize={panelManager.toggleMaximize}
-            onFocus={panelManager.focusPanel}
-          >
-            <RoomDescriptionPanel room={room} />
-          </PanelContainer>
-        )}
-
-        {occupantsPanel && occupantsPanel.isVisible && (
-          <PanelContainer
-            id={occupantsPanel.id}
-            title={occupantsTitle}
-            position={occupantsPanel.position}
-            size={occupantsPanel.size}
-            zIndex={occupantsPanel.zIndex}
-            isMinimized={occupantsPanel.isMinimized}
-            isMaximized={occupantsPanel.isMaximized}
-            isVisible={occupantsPanel.isVisible}
-            minSize={occupantsPanel.minSize}
-            variant="default"
-            onPositionChange={panelManager.updatePosition}
-            onSizeChange={panelManager.updateSize}
-            onMinimize={panelManager.toggleMinimize}
-            onMaximize={panelManager.toggleMaximize}
-            onFocus={panelManager.focusPanel}
-          >
-            <OccupantsPanel room={room} />
-          </PanelContainer>
-        )}
-
-        {gameInfoPanel && gameInfoPanel.isVisible && (
-          <PanelContainer
-            id={gameInfoPanel.id}
-            title={gameInfoPanel.title}
-            position={gameInfoPanel.position}
-            size={gameInfoPanel.size}
-            zIndex={gameInfoPanel.zIndex}
-            isMinimized={gameInfoPanel.isMinimized}
-            isMaximized={gameInfoPanel.isMaximized}
-            isVisible={gameInfoPanel.isVisible}
-            minSize={gameInfoPanel.minSize}
-            variant="default"
-            className={getGameInfoPanelCombatClassName(Boolean(player?.in_combat))}
-            onPositionChange={panelManager.updatePosition}
-            onSizeChange={panelManager.updateSize}
-            onMinimize={panelManager.toggleMinimize}
-            onMaximize={panelManager.toggleMaximize}
-            onFocus={panelManager.focusPanel}
-          >
-            <GameInfoPanel
-              messages={messages}
-              onClearMessages={onClearMessages}
-              onDownloadLogs={onDownloadLogs}
-              inCombat={Boolean(player?.in_combat)}
-            />
-          </PanelContainer>
-        )}
-
-        {questLogPanel && questLogPanel.isVisible && (
-          <PanelContainer
-            id={questLogPanel.id}
-            title={questLogPanel.title}
-            position={questLogPanel.position}
-            size={questLogPanel.size}
-            zIndex={questLogPanel.zIndex}
-            isMinimized={questLogPanel.isMinimized}
-            isMaximized={questLogPanel.isMaximized}
-            isVisible={questLogPanel.isVisible}
-            minSize={questLogPanel.minSize}
-            variant="default"
-            onPositionChange={panelManager.updatePosition}
-            onSizeChange={panelManager.updateSize}
-            onMinimize={panelManager.toggleMinimize}
-            onMaximize={panelManager.toggleMaximize}
-            onFocus={panelManager.focusPanel}
-          >
-            <QuestLogPanel questLog={questLog} />
-          </PanelContainer>
-        )}
-
-        <GameClientV2AuxiliaryPanels
-          panelManager={panelManager}
-          characterInfoPanel={characterInfoPanel}
-          minimapPanel={minimapPanel}
-          commandHistoryPanel={commandHistoryPanel}
-          commandInputPanel={commandInputPanel}
-          player={player}
-          derivedHealthStatus={derivedHealthStatus}
-          derivedLucidityStatus={derivedLucidityStatus}
-          room={room}
-          authToken={authToken}
-          onMapClick={onMapClick}
-          commandHistory={commandHistory}
-          onClearHistory={onClearHistory}
-          onSelectCommand={handleSelectCommand}
-          onSendCommand={onSendCommand}
+      <TentacleBackdrop />
+      <div className="relative z-10 flex min-h-0 flex-1 flex-col">
+        <HeaderBar
+          playerName={playerName}
           isConnected={isConnected}
+          isConnecting={isConnecting}
+          error={error}
+          reconnectAttempts={reconnectAttempts}
+          mythosTime={mythosTime}
+          onLogout={onLogout || (() => {})}
+          isLoggingOut={isLoggingOut}
+          activeEffects={activeEffects}
+          followingTarget={followingTarget}
         />
+
+        {/* Main Content Area - Panels: flex-1 min-h-0 so panel area is bounded and scroll/overflow work */}
+        <div className="relative flex min-h-0 flex-1 pt-12">
+          {chatHistoryPanel && chatHistoryPanel.isVisible && (
+            <PanelContainer
+              id={chatHistoryPanel.id}
+              title={chatHistoryPanel.title}
+              position={chatHistoryPanel.position}
+              size={chatHistoryPanel.size}
+              zIndex={chatHistoryPanel.zIndex}
+              isMinimized={chatHistoryPanel.isMinimized}
+              isMaximized={chatHistoryPanel.isMaximized}
+              isVisible={chatHistoryPanel.isVisible}
+              minSize={chatHistoryPanel.minSize}
+              variant="eldritch"
+              onPositionChange={panelManager.updatePosition}
+              onSizeChange={panelManager.updateSize}
+              onMinimize={panelManager.toggleMinimize}
+              onMaximize={panelManager.toggleMaximize}
+              onFocus={panelManager.focusPanel}
+            >
+              <ChatHistoryPanel
+                messages={messages}
+                onSendChatMessage={onSendChatMessage}
+                onClearMessages={onClearMessages}
+                onDownloadLogs={onDownloadLogs}
+                isConnected={isConnected}
+              />
+            </PanelContainer>
+          )}
+
+          {locationPanel && locationPanel.isVisible && (
+            <PanelContainer
+              id={locationPanel.id}
+              title={locationPanel.title}
+              position={locationPanel.position}
+              size={locationPanel.size}
+              zIndex={locationPanel.zIndex}
+              isMinimized={locationPanel.isMinimized}
+              isMaximized={locationPanel.isMaximized}
+              isVisible={locationPanel.isVisible}
+              minSize={locationPanel.minSize}
+              variant="default"
+              onPositionChange={panelManager.updatePosition}
+              onSizeChange={panelManager.updateSize}
+              onMinimize={panelManager.toggleMinimize}
+              onMaximize={panelManager.toggleMaximize}
+              onFocus={panelManager.focusPanel}
+            >
+              <LocationPanel room={room} />
+            </PanelContainer>
+          )}
+
+          {roomDescriptionPanel && roomDescriptionPanel.isVisible && (
+            <PanelContainer
+              id={roomDescriptionPanel.id}
+              title={roomDescriptionPanel.title}
+              position={roomDescriptionPanel.position}
+              size={roomDescriptionPanel.size}
+              zIndex={roomDescriptionPanel.zIndex}
+              isMinimized={roomDescriptionPanel.isMinimized}
+              isMaximized={roomDescriptionPanel.isMaximized}
+              isVisible={roomDescriptionPanel.isVisible}
+              minSize={roomDescriptionPanel.minSize}
+              variant="default"
+              onPositionChange={panelManager.updatePosition}
+              onSizeChange={panelManager.updateSize}
+              onMinimize={panelManager.toggleMinimize}
+              onMaximize={panelManager.toggleMaximize}
+              onFocus={panelManager.focusPanel}
+            >
+              <RoomDescriptionPanel room={room} />
+            </PanelContainer>
+          )}
+
+          {occupantsPanel && occupantsPanel.isVisible && (
+            <PanelContainer
+              id={occupantsPanel.id}
+              title={occupantsTitle}
+              position={occupantsPanel.position}
+              size={occupantsPanel.size}
+              zIndex={occupantsPanel.zIndex}
+              isMinimized={occupantsPanel.isMinimized}
+              isMaximized={occupantsPanel.isMaximized}
+              isVisible={occupantsPanel.isVisible}
+              minSize={occupantsPanel.minSize}
+              variant="default"
+              onPositionChange={panelManager.updatePosition}
+              onSizeChange={panelManager.updateSize}
+              onMinimize={panelManager.toggleMinimize}
+              onMaximize={panelManager.toggleMaximize}
+              onFocus={panelManager.focusPanel}
+            >
+              <OccupantsPanel room={room} />
+            </PanelContainer>
+          )}
+
+          {gameInfoPanel && gameInfoPanel.isVisible && (
+            <PanelContainer
+              id={gameInfoPanel.id}
+              title={gameInfoPanel.title}
+              position={gameInfoPanel.position}
+              size={gameInfoPanel.size}
+              zIndex={gameInfoPanel.zIndex}
+              isMinimized={gameInfoPanel.isMinimized}
+              isMaximized={gameInfoPanel.isMaximized}
+              isVisible={gameInfoPanel.isVisible}
+              minSize={gameInfoPanel.minSize}
+              variant="default"
+              className={getGameInfoPanelCombatClassName(Boolean(player?.in_combat))}
+              onPositionChange={panelManager.updatePosition}
+              onSizeChange={panelManager.updateSize}
+              onMinimize={panelManager.toggleMinimize}
+              onMaximize={panelManager.toggleMaximize}
+              onFocus={panelManager.focusPanel}
+            >
+              <GameInfoPanel
+                messages={messages}
+                onClearMessages={onClearMessages}
+                onDownloadLogs={onDownloadLogs}
+                inCombat={Boolean(player?.in_combat)}
+              />
+            </PanelContainer>
+          )}
+
+          {questLogPanel && questLogPanel.isVisible && (
+            <PanelContainer
+              id={questLogPanel.id}
+              title={questLogPanel.title}
+              position={questLogPanel.position}
+              size={questLogPanel.size}
+              zIndex={questLogPanel.zIndex}
+              isMinimized={questLogPanel.isMinimized}
+              isMaximized={questLogPanel.isMaximized}
+              isVisible={questLogPanel.isVisible}
+              minSize={questLogPanel.minSize}
+              variant="default"
+              onPositionChange={panelManager.updatePosition}
+              onSizeChange={panelManager.updateSize}
+              onMinimize={panelManager.toggleMinimize}
+              onMaximize={panelManager.toggleMaximize}
+              onFocus={panelManager.focusPanel}
+            >
+              <QuestLogPanel questLog={questLog} />
+            </PanelContainer>
+          )}
+
+          <GameClientV2AuxiliaryPanels
+            panelManager={panelManager}
+            characterInfoPanel={characterInfoPanel}
+            minimapPanel={minimapPanel}
+            commandHistoryPanel={commandHistoryPanel}
+            commandInputPanel={commandInputPanel}
+            player={player}
+            derivedHealthStatus={derivedHealthStatus}
+            derivedLucidityStatus={derivedLucidityStatus}
+            room={room}
+            authToken={authToken}
+            onMapClick={onMapClick}
+            commandHistory={commandHistory}
+            onClearHistory={onClearHistory}
+            onSelectCommand={handleSelectCommand}
+            onSendCommand={onSendCommand}
+            isConnected={isConnected}
+          />
+        </div>
       </div>
     </div>
   );

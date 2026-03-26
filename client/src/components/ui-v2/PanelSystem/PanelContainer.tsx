@@ -177,30 +177,28 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
           onDragStop={handleDragStop}
           onDragStart={handleDragStart}
           dragHandleClassName="panel-drag-handle"
-          style={
-            opaque
-              ? { zIndex, backgroundColor: 'var(--color-mythos-terminal-background, #0a0a0a)', opacity: 1 }
-              : { zIndex }
-          }
-          className={`${variantClasses} border rounded ${className}`}
+          style={{
+            zIndex,
+            backgroundColor: 'var(--color-mythos-terminal-background, #0a0a0a)',
+            opacity: 1,
+          }}
+          className={`${variantClasses} overflow-hidden border rounded ${className}`}
           {...(opaque ? { 'data-panel-opaque': 'true' } : {})}
         >
-          {opaque && (
-            <div
-              style={{
-                position: 'absolute',
-                inset: 0,
-                backgroundColor: 'var(--color-mythos-terminal-background, #0a0a0a)',
-                zIndex: 0,
-                pointerEvents: 'none',
-                borderRadius: 'inherit',
-              }}
-              aria-hidden
-            />
-          )}
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              backgroundColor: 'var(--color-mythos-terminal-background, #0a0a0a)',
+              zIndex: 0,
+              pointerEvents: 'none',
+              borderRadius: 'inherit',
+            }}
+            aria-hidden
+          />
           <div
             className="panel-drag-handle flex items-center justify-between h-full px-3 bg-mythos-terminal-background cursor-move"
-            style={opaque ? { position: 'relative', zIndex: 1 } : undefined}
+            style={{ position: 'relative', zIndex: 1 }}
           >
             <span className="text-sm font-bold text-mythos-terminal-primary">{title}</span>
             <div className="flex items-center gap-2">
@@ -244,41 +242,35 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
         onDragStart={handleDragStart}
         onResizeStop={handleResizeStop}
         dragHandleClassName="panel-drag-handle"
-        style={
-          opaque
-            ? { zIndex, backgroundColor: 'var(--color-mythos-terminal-background, #0a0a0a)', opacity: 1 }
-            : { zIndex }
-        }
-        className={`${variantClasses} border rounded ${className}`}
+        style={{
+          zIndex,
+          backgroundColor: 'var(--color-mythos-terminal-background, #0a0a0a)',
+          opacity: 1,
+        }}
+        className={`${variantClasses} overflow-hidden border rounded ${className}`}
         {...(opaque ? { 'data-panel-opaque': 'true' } : {})}
         bounds="window"
       >
-        {/* Opaque underlay so other panels never show through */}
-        {opaque && (
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              backgroundColor: 'var(--color-mythos-terminal-background, #0a0a0a)',
-              zIndex: 0,
-              pointerEvents: 'none',
-              borderRadius: 'inherit',
-            }}
-            aria-hidden
-          />
-        )}
+        {/* Solid underlay on every panel so backdrop art (e.g. tentacles) never reads through the face */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundColor: 'var(--color-mythos-terminal-background, #0a0a0a)',
+            zIndex: 0,
+            pointerEvents: 'none',
+            borderRadius: 'inherit',
+          }}
+          aria-hidden
+        />
         <div
           className="h-full flex flex-col bg-mythos-terminal-background"
-          style={
-            opaque
-              ? {
-                  position: 'relative',
-                  zIndex: 1,
-                  backgroundColor: 'var(--color-mythos-terminal-background, #0a0a0a)',
-                  opacity: 1,
-                }
-              : undefined
-          }
+          style={{
+            position: 'relative',
+            zIndex: 1,
+            backgroundColor: 'var(--color-mythos-terminal-background, #0a0a0a)',
+            opacity: 1,
+          }}
         >
           {/* Panel Header: only this area triggers drag; scrolling content no longer moves the panel */}
           {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions -- drag handle uses mousedown; panel controls are separate buttons */}
