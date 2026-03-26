@@ -344,7 +344,7 @@ describe('ProfessionSelectionScreen', () => {
 
       render(<ProfessionSelectionScreen {...defaultProps} />);
 
-      expect(screen.getByText('Loading professions...')).toBeInTheDocument();
+      expect(screen.getByText('Loading profession options...')).toBeInTheDocument();
     });
 
     it('should hide loading state after professions are loaded', async () => {
@@ -359,7 +359,7 @@ describe('ProfessionSelectionScreen', () => {
       render(<ProfessionSelectionScreen {...defaultProps} />);
 
       await waitFor(() => {
-        expect(screen.queryByText('Loading professions...')).not.toBeInTheDocument();
+        expect(screen.queryByText('Loading profession options...')).not.toBeInTheDocument();
         expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
       });
     });

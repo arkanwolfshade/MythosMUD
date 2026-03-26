@@ -3,6 +3,7 @@
  */
 
 import { fireEvent, render, screen } from '@testing-library/react';
+import React, { type ReactNode } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { GameLogPanel } from '../GameLogPanel';
 
@@ -19,7 +20,7 @@ vi.mock('../ui/EldritchIcon', () => ({
 
 // Mock TerminalButton
 vi.mock('../ui/TerminalButton', () => ({
-  TerminalButton: ({ children, onClick }: { children: React.ReactNode; onClick?: () => void }) => (
+  TerminalButton: ({ children, onClick }: { children: ReactNode; onClick?: () => void }) => (
     <button onClick={onClick}>{children}</button>
   ),
 }));
@@ -74,7 +75,7 @@ describe('GameLogPanel', () => {
   it('should filter messages by search query', () => {
     render(<GameLogPanel messages={mockMessages} />);
 
-    const searchInput = screen.getByPlaceholderText(/search/i);
+    const searchInput = screen.getByLabelText('Search text');
     fireEvent.change(searchInput, { target: { value: 'dark' } });
 
     expect(screen.getByText('You enter a dark room')).toBeInTheDocument();
@@ -85,7 +86,7 @@ describe('GameLogPanel', () => {
     const onClearMessages = vi.fn();
     render(<GameLogPanel messages={mockMessages} onClearMessages={onClearMessages} />);
 
-    const clearButton = screen.getByText(/clear log/i);
+    const clearButton = screen.getByText('Clear game log');
     fireEvent.click(clearButton);
 
     expect(onClearMessages).toHaveBeenCalledTimes(1);
@@ -130,7 +131,7 @@ describe('GameLogPanel', () => {
     render(<GameLogPanel messages={[]} />);
 
     // Should render without errors
-    expect(screen.getByPlaceholderText(/search/i)).toBeInTheDocument();
+    expect(screen.getByLabelText('Search text')).toBeInTheDocument();
   });
 
   it('should clear filters when clear filters button is clicked', () => {
@@ -141,7 +142,7 @@ describe('GameLogPanel', () => {
     const messageFilterSelect = filterSelects[0];
     fireEvent.change(messageFilterSelect, { target: { value: 'emote' } });
 
-    const searchInput = screen.getByPlaceholderText(/search/i);
+    const searchInput = screen.getByLabelText('Search text');
     fireEvent.change(searchInput, { target: { value: 'test' } });
 
     // Find the Clear Filters button (case-insensitive)

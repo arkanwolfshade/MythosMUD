@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import type { Stats } from '../hooks/useStatsRolling.js';
 import { getErrorMessage, isErrorResponse } from '../utils/errorHandler.js';
 import { logger } from '../utils/logger.js';
-import type { Profession } from './ProfessionCard.jsx';
+import type { Profession } from './ProfessionCard.tsx';
 
 export interface OccupationSlotPayload {
   skill_id: number;
@@ -34,6 +34,49 @@ interface CharacterNameScreenProps {
   onBack: () => void;
 }
 
+interface CreateCharacterPayload {
+  name: string;
+  stats: Stats;
+  profession_id: number;
+  occupation_slots: OccupationSlotPayload[];
+  personal_interest: PersonalInterestPayload[];
+}
+
+function buildCreateCharacterPayload(
+  trimmedName: string,
+  stats: Stats,
+  professionId: number,
+  skillsPayload: SkillsPayload
+): CreateCharacterPayload {
+  return {
+    name: trimmedName,
+    stats,
+    profession_id: professionId,
+    occupation_slots: skillsPayload.occupation_slots,
+    personal_interest: skillsPayload.personal_interest,
+  };
+}
+
+function getCreateCharacterErrorMessage(rawData: unknown): string | null {
+  if (isErrorResponse(rawData)) {
+    return getErrorMessage(rawData);
+  }
+  if (typeof rawData !== 'object' || rawData === null) {
+    return null;
+  }
+
+  const data = rawData as Record<string, unknown>;
+  if (typeof data.detail === 'string') {
+    return data.detail;
+  }
+
+  if (typeof data.detail === 'object' && data.detail !== null && 'message' in data.detail) {
+    return String((data.detail as Record<string, unknown>).message);
+  }
+
+  return null;
+}
+
 export const CharacterNameScreen: React.FC<CharacterNameScreenProps> = ({
   stats,
   profession,
@@ -47,6 +90,8 @@ export const CharacterNameScreen: React.FC<CharacterNameScreenProps> = ({
   const [name, setName] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const inputId = 'character-name-input';
+  const errorId = 'character-name-error';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,36 +103,27 @@ export const CharacterNameScreen: React.FC<CharacterNameScreenProps> = ({
     setError(null);
     setIsSubmitting(true);
     try {
+      const payload = buildCreateCharacterPayload(trimmed, stats, profession.id, skillsPayload);
       const response = await fetch(`${baseUrl}/api/players/create-character`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${authToken}`,
         },
-        body: JSON.stringify({
-          name: trimmed,
-          stats,
-          profession_id: profession.id,
-          occupation_slots: skillsPayload.occupation_slots,
-          personal_interest: skillsPayload.personal_interest,
-        }),
+        body: JSON.stringify(payload),
       });
       if (response.ok) {
         logger.info('CharacterNameScreen', 'Character created', { name: trimmed });
         onComplete();
         return;
       }
+
       let errorMessage = 'Failed to create character';
       try {
         const rawData: unknown = await response.json();
-        if (isErrorResponse(rawData)) {
-          errorMessage = getErrorMessage(rawData);
-        } else if (typeof rawData === 'object' && rawData !== null) {
-          const data = rawData as Record<string, unknown>;
-          if (typeof data.detail === 'string') errorMessage = data.detail;
-          else if (data.detail && typeof data.detail === 'object' && 'message' in (data.detail as object)) {
-            errorMessage = String((data.detail as Record<string, unknown>).message);
-          }
+        const parsedErrorMessage = getCreateCharacterErrorMessage(rawData);
+        if (parsedErrorMessage) {
+          errorMessage = parsedErrorMessage;
         }
       } catch {
         // use default
@@ -111,9 +147,9 @@ export const CharacterNameScreen: React.FC<CharacterNameScreenProps> = ({
           Enter a name for your character. This is the final step before creation.
         </p>
         <form onSubmit={handleSubmit}>
-          <label htmlFor="character-name-input">Character name</label>
+          <label htmlFor={inputId}>Character name</label>
           <input
-            id="character-name-input"
+            id={inputId}
             type="text"
             value={name}
             onChange={e => {
@@ -123,10 +159,16 @@ export const CharacterNameScreen: React.FC<CharacterNameScreenProps> = ({
             maxLength={50}
             minLength={1}
             disabled={isSubmitting}
+            aria-invalid={Boolean(error)}
+            aria-describedby={error ? errorId : undefined}
             // eslint-disable-next-line jsx-a11y/no-autofocus -- single field form: focus name input on this step
             autoFocus
           />
-          {error && <p className="error-message">{error}</p>}
+          {error && (
+            <p id={errorId} className="error-message" role="alert" aria-live="assertive">
+              {error}
+            </p>
+          )}
           <div className="character-name-actions">
             <button type="button" onClick={onBack} className="back-button">
               Back

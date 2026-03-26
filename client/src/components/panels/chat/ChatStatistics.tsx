@@ -16,7 +16,11 @@ export const ChatStatistics: React.FC<ChatStatisticsProps> = ({
   const totalUnread = Object.values(unreadCounts).reduce((sum, count) => sum + count, 0);
 
   return (
-    <div className="p-2 border-t border-gray-700 bg-mythos-terminal-surface" role="status" aria-label="Chat Statistics">
+    <div
+      className="p-2 border-t border-mythos-terminal-border bg-mythos-terminal-surface"
+      role="status"
+      aria-label="Chat Statistics"
+    >
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs text-mythos-terminal-text-secondary gap-2 sm:gap-0">
         <div className="flex flex-wrap items-center gap-2 sm:gap-4">
           <div className="flex items-center gap-1">
@@ -36,7 +40,7 @@ export const ChatStatistics: React.FC<ChatStatisticsProps> = ({
             <span>0 sent</span>
           </div>
           <div className="flex items-center gap-1">
-            <div className="w-2 h-2 rounded-full bg-gray-600"></div>
+            <div className="h-2 w-2 rounded-full bg-mythos-terminal-border" />
             <span>Activity: none</span>
           </div>
           {totalUnread > 0 && (

@@ -56,8 +56,12 @@ export default {
         'min-w-input': '200px',
         'min-w-badge': '16px',
       },
+      minWidth: {
+        touch: '44px',
+      },
       minHeight: {
         'panel-sm': '150px',
+        'panel-chat': '200px',
         'panel-md': '300px',
         'panel-test': '600px',
         touch: '44px',

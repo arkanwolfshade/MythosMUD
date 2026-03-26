@@ -270,8 +270,8 @@ export const DraggablePanel: React.FC<DraggablePanelProps> = ({
 
   // baseClasses determined by isGridPositioned (defined earlier)
   const baseClasses = isGridPositioned
-    ? 'font-mono bg-mythos-terminal-surface border border-gray-700 rounded shadow-lg overflow-hidden transition-eldritch duration-eldritch ease-eldritch'
-    : 'font-mono bg-mythos-terminal-surface border border-gray-700 rounded shadow-lg absolute overflow-hidden transition-eldritch duration-eldritch ease-eldritch relative';
+    ? 'font-mono bg-mythos-terminal-surface border border-mythos-terminal-border rounded shadow-lg overflow-hidden transition-eldritch duration-eldritch ease-eldritch'
+    : 'font-mono bg-mythos-terminal-surface border border-mythos-terminal-border rounded shadow-lg absolute overflow-hidden transition-eldritch duration-eldritch ease-eldritch relative';
 
   const variantClasses = {
     default: 'text-mythos-terminal-text',
@@ -282,7 +282,7 @@ export const DraggablePanel: React.FC<DraggablePanelProps> = ({
   };
 
   const headerClasses = {
-    default: 'bg-mythos-terminal-background border-b border-gray-700 cursor-move select-none',
+    default: 'bg-mythos-terminal-background border-b border-mythos-terminal-border cursor-move select-none',
     eldritch:
       'bg-mythos-terminal-background border-b border-mythos-terminal-primary cursor-move select-none animate-eldritch-glow',
     elevated: 'bg-mythos-terminal-background border-b border-mythos-terminal-primary cursor-move select-none',

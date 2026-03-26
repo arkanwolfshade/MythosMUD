@@ -18,7 +18,7 @@ export const ChatHistoryToggle: React.FC<ChatHistoryToggleProps> = ({
   currentChannelMessages,
 }) => {
   return (
-    <div className="p-2 border-b border-gray-700 bg-mythos-terminal-background">
+    <div className="p-2 border-b border-mythos-terminal-border bg-mythos-terminal-background">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <TerminalButton
@@ -33,7 +33,7 @@ export const ChatHistoryToggle: React.FC<ChatHistoryToggleProps> = ({
           <select
             value={chatFilter}
             onChange={e => onFilterChange(e.target.value)}
-            className="bg-mythos-terminal-surface border border-gray-700 rounded px-2 py-1 text-xs text-mythos-terminal-text"
+            className="bg-mythos-terminal-surface border border-mythos-terminal-border rounded px-2 py-1 text-xs text-mythos-terminal-text"
           >
             <option value="all">All Messages</option>
             <option value="current">Current Channel</option>

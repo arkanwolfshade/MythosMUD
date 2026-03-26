@@ -5,15 +5,28 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { sessionManager } from '../security';
 
+/**
+ * Test-only surface for private SessionManager members (see security.ts).
+ * Do not intersect with typeof sessionManager: private fields there collide with
+ * these names and reduce the type to never.
+ */
+type SessionManagerTestHooks = {
+  cleanupInterval?: ReturnType<typeof setInterval> | null;
+  startCleanupInterval(): void;
+  expireSession(sessionId: string): void;
+};
+
+function sessionManagerTestHooks(): SessionManagerTestHooks {
+  return sessionManager as unknown as SessionManagerTestHooks;
+}
+
 describe('Session Management', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.useFakeTimers();
-    // Accessing internal properties for test setup, sessionManager internals not part of public API
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const sessionManagerAny = sessionManager as any;
-    if (!sessionManagerAny.cleanupInterval) {
-      sessionManagerAny.startCleanupInterval();
+    const sm = sessionManagerTestHooks();
+    if (!sm.cleanupInterval) {
+      sm.startCleanupInterval();
     }
   });
 
@@ -91,11 +104,9 @@ describe('Session Management', () => {
   });
 
   it('should handle expireSession when session does not exist', () => {
-    // Accessing internal properties for test setup, sessionManager internals not part of public API
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const sessionManagerAny = sessionManager as any;
+    const sm = sessionManagerTestHooks();
 
-    sessionManagerAny.expireSession('non-existent-session-id');
+    sm.expireSession('non-existent-session-id');
 
     expect(sessionManager.isSessionValid('non-existent-session-id')).toBe(false);
   });
@@ -133,16 +144,14 @@ describe('Session Management', () => {
   });
 
   it('should destroy session manager when cleanupInterval is null', () => {
-    // Accessing internal properties for test setup, sessionManager internals not part of public API
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const sessionManagerAny = sessionManager as any;
+    const sm = sessionManagerTestHooks();
 
     const session1 = sessionManager.createSession('user1', 3600);
     const session2 = sessionManager.createSession('user2', 3600);
 
-    if (sessionManagerAny.cleanupInterval) {
-      clearInterval(sessionManagerAny.cleanupInterval);
-      sessionManagerAny.cleanupInterval = null;
+    if (sm.cleanupInterval) {
+      clearInterval(sm.cleanupInterval);
+      sm.cleanupInterval = null;
     }
 
     const clearIntervalSpy = vi.spyOn(window, 'clearInterval');
@@ -194,21 +203,19 @@ describe('Session Management', () => {
   });
 
   it('should clear existing cleanup interval when starting new one', () => {
-    // Accessing internal properties for test setup, sessionManager internals not part of public API
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const sessionManagerAny = sessionManager as any;
+    const sm = sessionManagerTestHooks();
 
-    if (!sessionManagerAny.cleanupInterval) {
-      sessionManagerAny.startCleanupInterval();
+    if (!sm.cleanupInterval) {
+      sm.startCleanupInterval();
     }
 
     const clearIntervalSpy = vi.spyOn(window, 'clearInterval');
     const setIntervalSpy = vi.spyOn(window, 'setInterval').mockClear();
 
-    const intervalBeforeCall = sessionManagerAny.cleanupInterval;
+    const intervalBeforeCall = sm.cleanupInterval;
     expect(intervalBeforeCall).toBeTruthy();
 
-    sessionManagerAny.startCleanupInterval();
+    sm.startCleanupInterval();
 
     expect(clearIntervalSpy).toHaveBeenCalledWith(intervalBeforeCall);
     expect(setIntervalSpy).toHaveBeenCalled();
@@ -218,40 +225,36 @@ describe('Session Management', () => {
   });
 
   it('should start cleanup interval when none exists', () => {
-    // Accessing internal properties for test setup, sessionManager internals not part of public API
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const sessionManagerAny = sessionManager as any;
+    const sm = sessionManagerTestHooks();
 
-    if (sessionManagerAny.cleanupInterval) {
-      clearInterval(sessionManagerAny.cleanupInterval);
-      sessionManagerAny.cleanupInterval = null;
+    if (sm.cleanupInterval) {
+      clearInterval(sm.cleanupInterval);
+      sm.cleanupInterval = null;
     }
 
     const clearIntervalSpy = vi.spyOn(window, 'clearInterval');
     const setIntervalSpy = vi.spyOn(window, 'setInterval').mockClear();
 
-    sessionManagerAny.startCleanupInterval();
+    sm.startCleanupInterval();
 
     expect(clearIntervalSpy).not.toHaveBeenCalled();
     expect(setIntervalSpy).toHaveBeenCalled();
-    expect(sessionManagerAny.cleanupInterval).toBeTruthy();
+    expect(sm.cleanupInterval).toBeTruthy();
 
     clearIntervalSpy.mockRestore();
     setIntervalSpy.mockRestore();
   });
 
   it('should call cleanupExpiredSessions from interval callback', () => {
-    // Accessing internal properties for test setup, sessionManager internals not part of public API
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const sessionManagerAny = sessionManager as any;
+    const sm = sessionManagerTestHooks();
 
     const cleanupSpy = vi.spyOn(sessionManager, 'cleanupExpiredSessions');
 
-    if (sessionManagerAny.cleanupInterval) {
-      clearInterval(sessionManagerAny.cleanupInterval);
-      sessionManagerAny.cleanupInterval = null;
+    if (sm.cleanupInterval) {
+      clearInterval(sm.cleanupInterval);
+      sm.cleanupInterval = null;
     }
-    sessionManagerAny.startCleanupInterval();
+    sm.startCleanupInterval();
 
     const session1 = sessionManager.createSession('user1', 1);
     const session2 = sessionManager.createSession('user2', 3600);

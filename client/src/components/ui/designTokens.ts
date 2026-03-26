@@ -128,7 +128,7 @@ export const variants = {
   button: {
     primary: 'bg-mythos-terminal-primary text-black hover:bg-mythos-terminal-primary/90',
     secondary:
-      'bg-mythos-terminal-surface border border-gray-700 text-mythos-terminal-text hover:bg-mythos-terminal-background',
+      'bg-mythos-terminal-surface border border-mythos-terminal-border text-mythos-terminal-text hover:bg-mythos-terminal-background',
     error: 'bg-mythos-terminal-error text-white hover:bg-red-600',
     success: 'bg-mythos-terminal-success text-black hover:bg-green-600',
     warning: 'bg-mythos-terminal-warning text-black hover:bg-yellow-600',
@@ -136,14 +136,14 @@ export const variants = {
 
   input: {
     default:
-      'bg-mythos-terminal-surface border border-gray-700 text-mythos-terminal-text focus:border-mythos-terminal-primary focus:ring-1 focus:ring-mythos-terminal-primary',
+      'bg-mythos-terminal-surface border border-mythos-terminal-border text-mythos-terminal-text focus:border-mythos-terminal-primary focus:ring-1 focus:ring-mythos-terminal-primary',
     error:
       'bg-mythos-terminal-surface border border-red-500 text-mythos-terminal-text focus:border-red-500 focus:ring-1 focus:ring-red-500',
   },
 
   panel: {
-    default: 'bg-mythos-terminal-surface border border-gray-700',
-    elevated: 'bg-mythos-terminal-surface border border-gray-700 shadow-lg',
+    default: 'bg-mythos-terminal-surface border border-mythos-terminal-border',
+    elevated: 'bg-mythos-terminal-surface border border-mythos-terminal-border shadow-lg',
     eldritch:
       'bg-mythos-terminal-surface border border-mythos-terminal-primary/50 shadow-lg shadow-mythos-terminal-primary/20',
   },

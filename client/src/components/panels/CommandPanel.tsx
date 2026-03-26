@@ -161,18 +161,18 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
 
   return (
     <div
-      className="command-panel h-full flex flex-col bg-mythos-terminal-surface border border-gray-700 rounded"
+      className="command-panel h-full flex flex-col bg-mythos-terminal-surface border border-mythos-terminal-border rounded"
       data-testid="command-panel"
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-3 border-b border-gray-700 bg-mythos-terminal-background">
+      <div className="flex items-center justify-between p-3 border-b border-mythos-terminal-border bg-mythos-terminal-background">
         <div className="flex items-center space-x-2">
           <EldritchIcon name={MythosIcons.command} size={20} className="text-mythos-terminal-primary" />
         </div>
       </div>
 
       {/* Command Input */}
-      <div className="p-3 border-b border-gray-700 bg-mythos-terminal-background">
+      <div className="p-3 border-b border-mythos-terminal-border bg-mythos-terminal-background">
         <form onSubmit={handleCommandSubmit} className="space-y-2">
           <TerminalInput
             ref={inputRef}
@@ -200,7 +200,7 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
       </div>
 
       {/* Command History */}
-      <div className="flex-1 overflow-y-auto p-3 space-y-1 min-h-panel-sm" style={{ minHeight: '150px' }}>
+      <div className="min-h-panel-sm flex-1 overflow-y-auto space-y-1 p-3">
         <div className="flex items-center justify-between mb-2">
           <h4 className="text-sm font-bold text-mythos-terminal-primary">Recent Commands</h4>
           {onClearHistory && commandHistory.length > 0 && (
@@ -237,7 +237,7 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
 
       {/* Logout Button */}
       {onLogout && (
-        <div className="p-3 border-t border-gray-700 bg-mythos-terminal-background">
+        <div className="p-3 border-t border-mythos-terminal-border bg-mythos-terminal-background">
           <LogoutButton onLogout={onLogout} disabled={disabled || !isConnected} isLoggingOut={isLoggingOut} />
         </div>
       )}

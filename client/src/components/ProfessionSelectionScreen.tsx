@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useProfessions } from '../hooks/useProfessions.js';
 import { logger } from '../utils/logger.js';
-import type { Profession } from './ProfessionCard.jsx';
-import { ProfessionCard } from './ProfessionCard.jsx';
+import type { Profession } from './ProfessionCard.tsx';
+import { ProfessionCard } from './ProfessionCard.tsx';
 
 interface ProfessionSelectionScreenProps {
   characterName?: string; // MULTI-CHARACTER: Made optional - character name is now entered later
@@ -13,14 +13,68 @@ interface ProfessionSelectionScreenProps {
   authToken: string;
 }
 
-export const ProfessionSelectionScreen: React.FC<ProfessionSelectionScreenProps> = ({
+interface ProfessionSelectionContentProps {
+  characterName?: string;
+  professions: Profession[];
+  selectedProfession: Profession | null;
+  onSelect: (profession: Profession) => void;
+  onBack: () => void;
+  onNext: () => void;
+}
+
+function ProfessionSelectionContent({
+  characterName,
+  professions,
+  selectedProfession,
+  onSelect,
+  onBack,
+  onNext,
+}: ProfessionSelectionContentProps) {
+  return (
+    <div className="profession-selection-screen">
+      <div className="profession-selection-container">
+        <header className="profession-selection-header">
+          <h1>Choose Your Profession</h1>
+          {characterName && <p className="character-welcome">Welcome, {characterName}</p>}
+          <p className="profession-instructions">
+            Select a profession that defines your character's background and abilities. Each profession has different
+            stat requirements and will influence your character's development.
+          </p>
+        </header>
+
+        <div className="professions-grid">
+          {professions.map(profession => (
+            <ProfessionCard
+              key={profession.id}
+              profession={profession}
+              isSelected={selectedProfession?.id === profession.id}
+              onSelect={onSelect}
+            />
+          ))}
+        </div>
+
+        <div className="profession-selection-actions">
+          <button onClick={onBack} className="back-button" type="button">
+            Back
+          </button>
+
+          <button onClick={onNext} className="next-button" disabled={!selectedProfession} type="button">
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function ProfessionSelectionScreen({
   characterName,
   onProfessionSelected,
   onError,
   onBack,
   baseUrl,
   authToken,
-}) => {
+}: ProfessionSelectionScreenProps) {
   const { professions, isLoading, error, fetchProfessions } = useProfessions({
     baseUrl,
     authToken,
@@ -43,15 +97,11 @@ export const ProfessionSelectionScreen: React.FC<ProfessionSelectionScreenProps>
     }
   };
 
-  const handleBack = () => {
-    onBack();
-  };
-
   if (isLoading) {
     return (
       <div className="profession-selection-screen">
         <div className="loading-container">
-          <h2>Loading professions...</h2>
+          <h2>Loading profession options...</h2>
         </div>
       </div>
     );
@@ -61,12 +111,14 @@ export const ProfessionSelectionScreen: React.FC<ProfessionSelectionScreenProps>
     return (
       <div className="profession-selection-screen">
         <div className="error-container">
-          <h2>Error Loading Professions</h2>
-          <p className="error-message">{error}</p>
-          <button onClick={fetchProfessions} className="retry-button">
+          <h2>Unable to load profession options</h2>
+          <p className="error-message" role="alert" aria-live="assertive">
+            {error}
+          </p>
+          <button onClick={fetchProfessions} className="retry-button" type="button">
             Retry
           </button>
-          <button onClick={handleBack} className="back-button">
+          <button onClick={onBack} className="back-button" type="button">
             Back
           </button>
         </div>
@@ -75,38 +127,13 @@ export const ProfessionSelectionScreen: React.FC<ProfessionSelectionScreenProps>
   }
 
   return (
-    <div className="profession-selection-screen">
-      <div className="profession-selection-container">
-        <header className="profession-selection-header">
-          <h1>Choose Your Profession</h1>
-          {characterName && <p className="character-welcome">Welcome, {characterName}</p>}
-          <p className="profession-instructions">
-            Select a profession that defines your character's background and abilities. Each profession has different
-            stat requirements and will influence your character's development.
-          </p>
-        </header>
-
-        <div className="professions-grid">
-          {professions.map(profession => (
-            <ProfessionCard
-              key={profession.id}
-              profession={profession}
-              isSelected={selectedProfession?.id === profession.id}
-              onSelect={handleProfessionSelect}
-            />
-          ))}
-        </div>
-
-        <div className="profession-selection-actions">
-          <button onClick={handleBack} className="back-button" type="button">
-            Back
-          </button>
-
-          <button onClick={handleNext} className="next-button" disabled={!selectedProfession} type="button">
-            Next
-          </button>
-        </div>
-      </div>
-    </div>
+    <ProfessionSelectionContent
+      characterName={characterName}
+      professions={professions}
+      selectedProfession={selectedProfession}
+      onSelect={handleProfessionSelect}
+      onBack={onBack}
+      onNext={handleNext}
+    />
   );
-};
+}

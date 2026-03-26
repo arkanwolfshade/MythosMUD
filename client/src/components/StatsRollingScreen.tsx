@@ -1,7 +1,7 @@
 import React from 'react';
 import { useStatsRolling, type Stats } from '../hooks/useStatsRolling.js';
 import { logger } from '../utils/logger.js';
-import type { Profession } from './ProfessionCard.jsx';
+import type { Profession } from './ProfessionCard.tsx';
 import './StatsRollingScreen.css';
 
 /** Plan 10.6 F2: Stats-first flow; name and create-character happen on CharacterNameScreen. */
@@ -60,7 +60,7 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
       <div className="stats-rolling-screen" data-testid="stats-rolling-screen">
         <div className="loading-container">
           <div className="loading-spinner"></div>
-          <p>Rolling your character's stats...</p>
+          <p>Rolling your starting stats...</p>
         </div>
       </div>
     );
@@ -70,9 +70,13 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
     return (
       <div className="stats-rolling-screen" data-testid="stats-rolling-screen">
         <div className="error-container">
-          <p>Failed to load stats. Please try again.</p>
-          {error && <p className="error-message">{error}</p>}
-          <button onClick={rollStats} className="retry-button">
+          <p>Unable to load stats. Please try again.</p>
+          {error && (
+            <p className="error-message" role="alert" aria-live="assertive">
+              {error}
+            </p>
+          )}
+          <button onClick={rollStats} className="retry-button" type="button">
             Retry
           </button>
         </div>
@@ -140,11 +144,15 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
         </div>
       </div>
 
-      {error && <div className="error-message">{error}</div>}
+      {error && (
+        <div className="error-message" role="alert" aria-live="assertive">
+          {error}
+        </div>
+      )}
 
       <div className="stats-actions">
         {onBack && (
-          <button onClick={onBack} className="back-button">
+          <button onClick={onBack} className="back-button" type="button">
             Back
           </button>
         )}
@@ -153,11 +161,12 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
           onClick={rerollStats}
           disabled={rerollCooldown > 0 || isRerolling || isLoading}
           className="reroll-button"
+          type="button"
         >
           {isRerolling ? 'Rerolling...' : rerollCooldown > 0 ? `Reroll (${rerollCooldown}s)` : 'Reroll Stats'}
         </button>
 
-        <button onClick={handleAcceptStats} className="accept-button">
+        <button onClick={handleAcceptStats} className="accept-button" type="button">
           Accept Stats
         </button>
       </div>

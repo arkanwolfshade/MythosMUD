@@ -8,7 +8,7 @@
  * then narrow with type guards before use.
  */
 
-import type { Profession } from '../components/ProfessionCard.jsx';
+import type { Profession } from '../components/ProfessionCard.tsx';
 import type { CharacterInfo, LoginResponse } from '../types/auth.js';
 
 /**
@@ -69,30 +69,33 @@ export interface AsciiMapApiResponse {
   viewport?: { x?: number; y?: number };
 }
 
+function hasValidOptionalString(value: unknown): boolean {
+  return value === undefined || typeof value === 'string';
+}
+
+function hasValidOptionalNumber(value: unknown): boolean {
+  return value === undefined || typeof value === 'number';
+}
+
+function isValidAsciiViewport(value: unknown): boolean {
+  if (value === undefined) {
+    return true;
+  }
+  if (!isObject(value)) {
+    return false;
+  }
+  return hasValidOptionalNumber(value.x) && hasValidOptionalNumber(value.y);
+}
+
 /**
  * Type guard: Check if value is an AsciiMapApiResponse.
  */
 export function isAsciiMapApiResponse(value: unknown): value is AsciiMapApiResponse {
-  if (typeof value !== 'object' || value === null) {
+  if (!isObject(value)) {
     return false;
   }
-  const o = value as Record<string, unknown>;
-  if (o.map_html !== undefined && typeof o.map_html !== 'string') {
-    return false;
-  }
-  if (o.viewport !== undefined) {
-    if (typeof o.viewport !== 'object' || o.viewport === null) {
-      return false;
-    }
-    const v = o.viewport as Record<string, unknown>;
-    if (v.x !== undefined && typeof v.x !== 'number') {
-      return false;
-    }
-    if (v.y !== undefined && typeof v.y !== 'number') {
-      return false;
-    }
-  }
-  return true;
+
+  return hasValidOptionalString(value.map_html) && isValidAsciiViewport(value.viewport);
 }
 
 /**
@@ -237,26 +240,42 @@ function isCharacterInfo(value: unknown): value is CharacterInfo {
  * Type guard: Check if value is a ServerCharacterResponse object.
  * Server may return either 'id' or 'player_id' field.
  */
+function hasServerCharacterIdentifierFields(value: Record<string, unknown>): boolean {
+  const hasValidIdField = value.id === undefined || isString(value.id);
+  const hasValidPlayerIdField = value.player_id === undefined || isString(value.player_id);
+  if (!hasValidIdField || !hasValidPlayerIdField) {
+    return false;
+  }
+  return value.id !== undefined || value.player_id !== undefined;
+}
+
+function hasServerCharacterCoreFields(value: Record<string, unknown>): boolean {
+  if (!isString(value.name)) {
+    return false;
+  }
+  if (!isNumber(value.profession_id)) {
+    return false;
+  }
+  if (!isNumber(value.level)) {
+    return false;
+  }
+  if (!isString(value.created_at)) {
+    return false;
+  }
+  if (!isString(value.last_active)) {
+    return false;
+  }
+  return value.profession_name === undefined || isString(value.profession_name);
+}
+
 export function isServerCharacterResponse(value: unknown): value is ServerCharacterResponse {
   if (!isObject(value)) {
     return false;
   }
-
-  // Must have either id or player_id
-  const hasId = value.id === undefined || isString(value.id);
-  const hasPlayerId = value.player_id === undefined || isString(value.player_id);
-  if (!hasId && !hasPlayerId) {
+  if (!hasServerCharacterIdentifierFields(value)) {
     return false;
   }
-
-  return (
-    isString(value.name) &&
-    isNumber(value.profession_id) &&
-    isNumber(value.level) &&
-    isString(value.created_at) &&
-    isString(value.last_active) &&
-    (value.profession_name === undefined || isString(value.profession_name))
-  );
+  return hasServerCharacterCoreFields(value);
 }
 
 /**
@@ -318,11 +337,18 @@ function isMechanicalEffect(
   if (!isObject(value)) {
     return false;
   }
-  return (
-    isString(value.effect_type) &&
-    (isNumber(value.value) || isString(value.value)) &&
-    (value.description === undefined || value.description === null || isString(value.description))
-  );
+
+  if (!isString(value.effect_type)) {
+    return false;
+  }
+
+  const hasValidEffectValue = isNumber(value.value) || isString(value.value);
+  if (!hasValidEffectValue) {
+    return false;
+  }
+
+  const description = value.description;
+  return description === undefined || description === null || isString(description);
 }
 
 /**
@@ -369,6 +395,46 @@ export function isProfessionArray(value: unknown): value is Profession[] {
   return value.every(item => isProfession(item));
 }
 
+const REQUIRED_STATS_FIELDS = [
+  'strength',
+  'dexterity',
+  'constitution',
+  'size',
+  'intelligence',
+  'power',
+  'education',
+  'charisma',
+  'luck',
+] as const;
+
+function hasValidStatsObject(value: unknown): value is Record<string, unknown> {
+  if (!isObject(value)) {
+    return false;
+  }
+  return REQUIRED_STATS_FIELDS.every(stat => isNumber(value[stat]));
+}
+
+function hasValidStatSummary(value: unknown): value is Record<string, unknown> {
+  if (!isObject(value)) {
+    return false;
+  }
+  return isNumber(value.total) && isNumber(value.average) && isNumber(value.highest) && isNumber(value.lowest);
+}
+
+function hasValidOptionalRollFields(value: Record<string, unknown>): boolean {
+  if (value.profession_id !== undefined && value.profession_id !== null && !isNumber(value.profession_id)) {
+    return false;
+  }
+  if (
+    value.meets_requirements !== undefined &&
+    value.meets_requirements !== null &&
+    typeof value.meets_requirements !== 'boolean'
+  ) {
+    return false;
+  }
+  return isString(value.method_used);
+}
+
 /**
  * Type guard: Check if value is a StatsRollResponse.
  */
@@ -377,52 +443,15 @@ export function isStatsRollResponse(value: unknown): value is StatsRollResponse 
     return false;
   }
 
-  // Validate stats object
-  if (!isObject(value.stats)) {
+  if (!hasValidStatsObject(value.stats)) {
     return false;
   }
 
-  const stats = value.stats as Record<string, unknown>;
-  // Server Stats model includes: strength, dexterity, constitution, size, intelligence,
-  // power, education, charisma, luck
-  // Note: wisdom is NOT in the server Stats model - it was removed/never existed
-  const requiredStats = [
-    'strength',
-    'dexterity',
-    'constitution',
-    'size',
-    'intelligence',
-    'power',
-    'education',
-    'charisma',
-    'luck',
-  ];
-  if (!requiredStats.every(stat => isNumber(stats[stat]))) {
+  if (!hasValidStatSummary(value.stat_summary)) {
     return false;
   }
 
-  // Validate stat_summary
-  if (!isObject(value.stat_summary)) {
-    return false;
-  }
-
-  const statSummary = value.stat_summary as Record<string, unknown>;
-  if (
-    !isNumber(statSummary.total) ||
-    !isNumber(statSummary.average) ||
-    !isNumber(statSummary.highest) ||
-    !isNumber(statSummary.lowest)
-  ) {
-    return false;
-  }
-
-  return (
-    (value.profession_id === undefined || value.profession_id === null || isNumber(value.profession_id)) &&
-    (value.meets_requirements === undefined ||
-      value.meets_requirements === null ||
-      typeof value.meets_requirements === 'boolean') &&
-    isString(value.method_used)
-  );
+  return hasValidOptionalRollFields(value);
 }
 
 /**

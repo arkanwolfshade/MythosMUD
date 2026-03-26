@@ -72,6 +72,14 @@ export default tseslint.config([
     },
   },
   {
+    // Vite / Vitest config runs in Node; eslint-env comments are unsupported in flat config.
+    files: ['vite*.ts', 'vitest.config.ts'],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.node,
+    },
+  },
+  {
     files: ['src/test/**/*.js'],
     languageOptions: {
       ecmaVersion: 2020,

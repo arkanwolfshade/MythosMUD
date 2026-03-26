@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ALL_MESSAGES_CHANNEL, DEFAULT_CHANNEL, getChannelById } from '../../config/channels';
 import { resolveChatExportPayload } from './chatPanelExportFormat';
 import {
@@ -78,46 +78,55 @@ export function useChatPanelRuntime(props: ChatPanelProps): ChatPanelRuntimeView
     [messages, normalizedSelectedChannel, clearedChannels, isAllChannelSelected]
   );
 
-  const handleChannelSelect = (channelId: string) => {
-    setCurrentChannel(channelId);
-    if (channelId === ALL_MESSAGES_CHANNEL.id) {
-      setClearedChannels({});
-    } else {
-      setClearedChannels(prev => ({ ...prev, [channelId]: historyEligibleMessages.length }));
-    }
-    onChannelSelect?.(channelId);
-  };
+  const historyEligibleLength = historyEligibleMessages.length;
+
+  const handleChannelSelect = useCallback(
+    (channelId: string) => {
+      setCurrentChannel(channelId);
+      if (channelId === ALL_MESSAGES_CHANNEL.id) {
+        setClearedChannels({});
+      } else {
+        setClearedChannels(prev => ({ ...prev, [channelId]: historyEligibleLength }));
+      }
+      onChannelSelect?.(channelId);
+    },
+    [historyEligibleLength, onChannelSelect]
+  );
 
   const viewingLabel =
     normalizedSelectedChannel === ALL_MESSAGES_CHANNEL.id
       ? ALL_MESSAGES_CHANNEL.name
       : (getChannelById(normalizedSelectedChannel)?.name ?? normalizedSelectedChannel);
 
-  const toggleHistory = () => {
+  const toggleHistory = useCallback(() => {
     setIsHistoryVisible(prev => !prev);
     setCurrentSearchIndex(-1);
-  };
+  }, []);
 
-  const handleSearchNext = () => {
+  const handleSearchNext = useCallback(() => {
     if (searchMatches.size === 0) return;
     const matches = Array.from(searchMatches).sort((a, b) => a - b);
-    const nextIndex = matches.findIndex(idx => idx > currentSearchIndex);
-    setCurrentSearchIndex(nextIndex >= 0 ? matches[nextIndex] : matches[0]);
-  };
+    setCurrentSearchIndex(prev => {
+      const nextIndex = matches.findIndex(idx => idx > prev);
+      return nextIndex >= 0 ? matches[nextIndex] : matches[0];
+    });
+  }, [searchMatches]);
 
-  const handleSearchPrevious = () => {
+  const handleSearchPrevious = useCallback(() => {
     if (searchMatches.size === 0) return;
     const matches = Array.from(searchMatches).sort((a, b) => b - a);
-    const prevIndex = matches.findIndex(idx => idx < currentSearchIndex);
-    setCurrentSearchIndex(prevIndex >= 0 ? matches[prevIndex] : matches[0]);
-  };
+    setCurrentSearchIndex(prev => {
+      const prevIndex = matches.findIndex(idx => idx < prev);
+      return prevIndex >= 0 ? matches[prevIndex] : matches[0];
+    });
+  }, [searchMatches]);
 
-  const handleSearchChange = (query: string) => {
+  const handleSearchChange = useCallback((query: string) => {
     setSearchQuery(query);
     setCurrentSearchIndex(-1);
-  };
+  }, []);
 
-  const handleExport = () => {
+  const handleExport = useCallback(() => {
     if (isExporting) return;
     setIsExporting(true);
     const { content, filename, mimeType } = resolveChatExportPayload(exportFormat, visibleMessages);
@@ -134,7 +143,7 @@ export function useChatPanelRuntime(props: ChatPanelProps): ChatPanelRuntimeView
       setIsExporting(false);
       setShowExportDialog(false);
     }, 500);
-  };
+  }, [exportFormat, isExporting, visibleMessages]);
 
   return {
     disabled,

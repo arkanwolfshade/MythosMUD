@@ -16,6 +16,12 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["vite.config.ts", "vitest.config.ts"],
+  "include": [
+    "vite.config.ts",
+    "vite.userConfig.ts",
+    "vite.proxyAuthorization.ts",
+    "vite.vitestOptions.ts",
+    "vitest.config.ts"
+  ],
   "exclude": ["playwright.config.ts"]
 }

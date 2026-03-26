@@ -1,4 +1,4 @@
-import React, { RefObject } from 'react';
+import React, { type RefObject } from 'react';
 import { ansiToHtmlWithBreaks } from '../../utils/ansiToHtml';
 import { SafeHtml } from '../common/SafeHtml';
 import { EldritchIcon, MythosIcons } from '../ui/EldritchIcon';
@@ -25,6 +25,9 @@ interface GameLogMessagesListProps {
 export const GameLogMessagesList: React.FC<GameLogMessagesListProps> = ({ messages, messagesEndRef }) => (
   <div
     className="game-log-messages-scroll min-h-panel-md flex-1 overflow-y-auto bg-[linear-gradient(180deg,rgba(0,40,0,0.22)_0%,transparent_10rem)] p-3"
+    role="log"
+    aria-label="Game log messages"
+    aria-relevant="additions"
     style={{ minHeight: '300px' }}
   >
     {messages.length === 0 ? (
@@ -34,7 +37,7 @@ export const GameLogMessagesList: React.FC<GameLogMessagesListProps> = ({ messag
           The chronicle is silent
         </p>
         <p className="mt-2 max-w-[min(100%,65ch)] font-mono text-sm leading-relaxed text-mythos-terminal-text-secondary/90">
-          System, combat, and room events will stream here as they occur.
+          System, combat, and room lines appear here as the server sends them.
         </p>
       </div>
     ) : (

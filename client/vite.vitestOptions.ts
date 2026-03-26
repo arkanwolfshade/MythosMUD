@@ -1,0 +1,103 @@
+/// <reference types="vitest/config" />
+/**
+ * Vitest `test` options for Vite merged config. Extracted to keep vite.config.ts under
+ * complexity limits (Lizard can over-count nested config blocks).
+ */
+import type { UserConfig } from 'vite';
+
+export const vitestTestOptions: NonNullable<UserConfig['test']> = {
+  environment: 'happy-dom',
+  globals: true,
+  setupFiles: ['./src/test/setup.ts'],
+  exclude: [
+    'tests/**/*',
+    'node_modules/**/*',
+    '**/*.spec.tsx',
+    '**/components/__tests__/game-log-panel.test.tsx',
+    '**/App.integration.test.tsx',
+    '**/__tests__/CharacterCreationNavigation.test.tsx',
+    '**/__tests__/App.logout.test.tsx',
+    '**/__tests__/ProfessionPersistence.test.tsx',
+    '**/__tests__/StatRollingWithProfessionRequirements.test.tsx',
+    '**/__tests__/LogoutFlow.integration.test.tsx',
+    '**/components/__tests__/LogoutFlow.integration.test.tsx',
+  ],
+  pool: 'threads',
+  coverage: {
+    provider: 'v8',
+    enabled: true,
+    clean: false,
+    include: ['src/**/*.{ts,tsx}'],
+    exclude: [
+      'src/**/*.test.{ts,tsx}',
+      'src/test/**/*',
+      'src/**/*.d.ts',
+      'src/main.tsx',
+      'src/vite-env.d.ts',
+      'tests/**/*',
+    ],
+    thresholds: {
+      statements: 70,
+      branches: 68,
+      functions: 70,
+      lines: 70,
+      'src/utils/security.ts': { statements: 90, branches: 90, functions: 90, lines: 90 },
+      'src/utils/errorHandler.ts': { statements: 90, branches: 90, functions: 90, lines: 90 },
+      'src/utils/logoutHandler.ts': { statements: 90, branches: 90, functions: 90, lines: 90 },
+      'src/hooks/useGameConnection.ts': { statements: 90, branches: 90, functions: 90, lines: 90 },
+      'src/hooks/useWebSocketConnection.ts': { statements: 90, branches: 90, functions: 90, lines: 90 },
+      'src/hooks/useSessionManagement.ts': { statements: 90, branches: 90, functions: 90, lines: 90 },
+      'src/stores/sessionStore.ts': { statements: 90, branches: 90, functions: 90, lines: 90 },
+      'src/stores/connectionStore.ts': { statements: 90, branches: 90, functions: 90, lines: 90 },
+      'src/stores/gameStore.ts': { statements: 85, branches: 85, functions: 85, lines: 85 },
+      'src/stores/commandStore.ts': { statements: 85, branches: 85, functions: 85, lines: 85 },
+      'src/stores/containerStore.ts': { statements: 85, branches: 85, functions: 85, lines: 85 },
+      'src/stores/stateNormalization.ts': { statements: 85, branches: 85, functions: 85, lines: 85 },
+      'src/hooks/useGameTerminal.ts': { statements: 85, branches: 85, functions: 85, lines: 85 },
+      'src/hooks/useConnectionStateMachine.ts': { statements: 85, branches: 85, functions: 80, lines: 85 },
+      'src/contexts/GameTerminalContext.tsx': { statements: 85, branches: 85, functions: 85, lines: 85 },
+      'src/contexts/PanelContext.tsx': { statements: 85, branches: 85, functions: 85, lines: 85 },
+      'src/components/ui-v2/eventHandlers/messageHandlers.ts': {
+        statements: 90,
+        branches: 90,
+        functions: 90,
+        lines: 90,
+      },
+      'src/components/ui-v2/eventHandlers/playerHandlers.ts': {
+        statements: 90,
+        branches: 90,
+        functions: 90,
+        lines: 90,
+      },
+      'src/components/ui-v2/eventHandlers/roomHandlers.ts': {
+        statements: 90,
+        branches: 88,
+        functions: 90,
+        lines: 90,
+      },
+      'src/components/ui-v2/eventHandlers/systemHandlers.ts': {
+        statements: 90,
+        branches: 90,
+        functions: 90,
+        lines: 90,
+      },
+      'src/components/ui-v2/eventHandlers/combatHandlers.ts': {
+        statements: 90,
+        branches: 90,
+        functions: 90,
+        lines: 90,
+      },
+      'src/components/ui-v2/utils/stateUpdateUtils.ts': { statements: 90, branches: 90, functions: 90, lines: 90 },
+      'src/components/ui-v2/utils/messageUtils.ts': { statements: 90, branches: 90, functions: 90, lines: 90 },
+      'src/components/ui-v2/utils/roomMergeUtils.ts': { statements: 90, branches: 90, functions: 90, lines: 90 },
+      'src/components/ui-v2/hooks/useEventProcessing.ts': {
+        statements: 90,
+        branches: 85,
+        functions: 90,
+        lines: 90,
+      },
+    },
+    reporter: ['text', 'html', 'json'],
+    reportsDirectory: './coverage',
+  },
+};

@@ -117,7 +117,7 @@ export const useGameTerminal = (): GameTerminalState => {
   const clearChatMessages = useGameStore(state => state.clearChatMessages);
   const clearHistory = useCommandStore(state => state.clearHistory);
 
-  // Transform chat messages to match component interface
+  // Transform chat messages to match component interface (non-enumerable extras mirror prior behavior)
   const transformedMessages = chatMessages.map(msg => {
     type AliasChainItem = {
       original: string;
@@ -129,7 +129,7 @@ export const useGameTerminal = (): GameTerminalState => {
       text: msg.text,
       timestamp: msg.timestamp,
       isHtml: msg.isHtml,
-      messageType: (msg as { messageType?: string }).messageType ?? msg.type,
+      messageType: msg.messageType ?? msg.type,
     } as {
       text: string;
       timestamp: string;
@@ -144,16 +144,14 @@ export const useGameTerminal = (): GameTerminalState => {
     if (typeof msg.isCompleteHtml === 'boolean') {
       Object.defineProperty(base, 'isCompleteHtml', { value: msg.isCompleteHtml, enumerable: false });
     }
-    if ((msg as { channel?: string }).channel) {
-      Object.defineProperty(base, 'channel', { value: (msg as { channel?: string }).channel, enumerable: false });
+    if (msg.channel) {
+      Object.defineProperty(base, 'channel', { value: msg.channel, enumerable: false });
     }
-    if ((msg as { rawText?: string }).rawText) {
-      Object.defineProperty(base, 'rawText', { value: (msg as { rawText?: string }).rawText, enumerable: false });
+    if (msg.rawText) {
+      Object.defineProperty(base, 'rawText', { value: msg.rawText, enumerable: false });
     }
     if (Array.isArray(msg.aliasChain) && msg.aliasChain.length > 0) {
-      // Type guard to ensure aliasChain has the correct structure
-      const aliasChain = msg.aliasChain as AliasChainItem[];
-      Object.defineProperty(base, 'aliasChain', { value: aliasChain, enumerable: false });
+      Object.defineProperty(base, 'aliasChain', { value: msg.aliasChain, enumerable: false });
     }
 
     return base;

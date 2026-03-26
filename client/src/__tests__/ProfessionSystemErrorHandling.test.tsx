@@ -1,7 +1,18 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { App } from '../App';
-import { CharacterNameScreen } from '../components/CharacterNameScreen.jsx';
+import { CharacterNameScreen } from '../components/CharacterNameScreen.tsx';
+import {
+  DEFAULT_ROLLED_STATS,
+  createDefaultRollStatsFetchResponse,
+  createMockLoginResponse,
+  createMockProfessions,
+  createMockSkills,
+  fillSkillSlotsAndConfirm,
+  registerTestUserFromLoginScreen,
+  setupBasicMocks,
+} from './professionSystemErrorHandling.test.helpers.ts';
 
 // Mock fetch globally
 const mockFetch = vi.fn();
@@ -38,164 +49,9 @@ describe('Profession System Error Handling and Edge Cases', () => {
     vi.clearAllMocks();
   });
 
-  // Helper function to create a valid LoginResponse mock
-  const createMockLoginResponse = (
-    characters: Array<{
-      id?: string;
-      player_id: string;
-      name: string;
-      profession_id: number;
-      profession_name?: string;
-      level: number;
-      created_at: string;
-      last_active: string;
-    }> = []
-  ) => ({
-    access_token: 'mock-token',
-    token_type: 'Bearer',
-    user_id: 'test-user-id',
-    characters: characters.map(char => ({
-      player_id: char.player_id,
-      name: char.name,
-      profession_id: char.profession_id,
-      profession_name: char.profession_name,
-      level: char.level,
-      created_at: char.created_at,
-      last_active: char.last_active,
-    })),
-  });
-
-  const createMockProfessions = () => [
-    {
-      id: 0,
-      name: 'Tramp',
-      description: 'A wandering soul with no particular skills or connections.',
-      flavor_text: 'You have spent your days drifting from place to place, learning to survive on your wits alone.',
-      stat_requirements: [],
-      mechanical_effects: [],
-      is_available: true,
-    },
-    {
-      id: 1,
-      name: 'Gutter Rat',
-      description: 'A street-smart survivor from the urban underbelly.',
-      flavor_text: 'The alleys and gutters have been your home, teaching you the harsh realities of city life.',
-      stat_requirements: [],
-      mechanical_effects: [],
-      is_available: true,
-    },
-  ];
-
-  /** Plan 10.6: skills step needs catalog; 13+ skills for 9 occupation + 4 personal slots. */
-  const createMockSkills = () =>
-    Array.from({ length: 20 }, (_, i) => ({
-      id: i + 1,
-      key: `skill_${i + 1}`,
-      name: `Skill ${i + 1}`,
-      base_value: 5 + (i % 50),
-      allow_at_creation: true,
-    }));
-
-  const fillSkillSlotsAndConfirm = async () => {
-    await waitFor(() => {
-      expect(screen.getByText('Skill Allocation')).toBeInTheDocument();
-    });
-    const comboboxes = screen.getAllByRole('combobox');
-    expect(comboboxes.length).toBeGreaterThanOrEqual(13);
-    for (let i = 0; i < 13; i++) {
-      fireEvent.change(comboboxes[i], { target: { value: String((i % 20) + 1) } });
-    }
-    fireEvent.click(screen.getByRole('button', { name: /Next: Name character/i }));
-  };
-
-  const setupBasicMocks = () => {
-    const registrationResponse = {
-      ok: true,
-      json: vi.fn().mockResolvedValue(createMockLoginResponse([])),
-    };
-
-    const professionsResponse = {
-      ok: true,
-      json: vi.fn().mockResolvedValue({
-        professions: createMockProfessions(),
-      }),
-    };
-
-    const statsResponse = {
-      ok: true,
-      json: vi.fn().mockResolvedValue({
-        stats: {
-          strength: 12,
-          dexterity: 14,
-          constitution: 10,
-          size: 55,
-          intelligence: 16,
-          power: 50,
-          education: 40,
-          wisdom: 8,
-          charisma: 13,
-          luck: 50,
-        },
-        stat_summary: {
-          total: 73,
-          average: 12.17,
-          highest: 16,
-          lowest: 8,
-        },
-        profession_id: 0,
-        meets_requirements: true,
-        method_used: '3d6',
-      }),
-    };
-
-    const characterCreationResponse = {
-      ok: true,
-      json: vi.fn().mockResolvedValue({
-        player: {
-          id: 1,
-          name: 'testuser',
-          profession_id: 0,
-        },
-      }),
-    };
-
-    mockFetch.mockImplementation(url => {
-      if (url.includes('/auth/register')) {
-        return Promise.resolve(registrationResponse);
-      } else if (url.includes('/professions')) {
-        return Promise.resolve(professionsResponse);
-      } else if (url.includes('/players/roll-stats')) {
-        return Promise.resolve(statsResponse);
-      } else if (url.includes('/players/create-character')) {
-        return Promise.resolve(characterCreationResponse);
-      }
-      return Promise.reject(new Error('Unknown endpoint'));
-    });
-  };
-
   describe('Profession Selection Error Handling', () => {
     it('should handle profession API failure gracefully', async () => {
-      const statsResponse = {
-        ok: true,
-        json: vi.fn().mockResolvedValue({
-          stats: {
-            strength: 12,
-            dexterity: 14,
-            constitution: 10,
-            size: 55,
-            intelligence: 16,
-            power: 50,
-            education: 40,
-            wisdom: 8,
-            charisma: 13,
-            luck: 50,
-          },
-          stat_summary: { total: 73, average: 12.17, highest: 16, lowest: 8 },
-          profession_id: 0,
-          meets_requirements: true,
-          method_used: '3d6',
-        }),
-      };
+      const statsResponse = createDefaultRollStatsFetchResponse();
       mockFetch.mockImplementation(url => {
         if (url.includes('/auth/register')) {
           return Promise.resolve({
@@ -212,19 +68,7 @@ describe('Profession System Error Handling and Edge Cases', () => {
 
       render(<App />);
 
-      // Register user
-      fireEvent.click(screen.getByText('Need an account? Register'));
-      fireEvent.click(screen.getByText('Enter the Void'));
-
-      const usernameInput = screen.getByPlaceholderText('Username');
-      const passwordInput = screen.getByPlaceholderText('Password');
-      const inviteCodeInput = screen.getByPlaceholderText('Invite Code');
-      const registerButton = screen.getByText('Enter the Void');
-
-      fireEvent.change(usernameInput, { target: { value: 'testuser' } });
-      fireEvent.change(passwordInput, { target: { value: 'testpass' } });
-      fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
-      fireEvent.click(registerButton);
+      registerTestUserFromLoginScreen();
 
       // Plan 10.6: stats first; advance to profession so profession fetch runs and fails
       await waitFor(() => {
@@ -243,27 +87,7 @@ describe('Profession System Error Handling and Edge Cases', () => {
     });
 
     it('should handle empty profession list gracefully', async () => {
-      const statsResponse = {
-        ok: true,
-        json: vi.fn().mockResolvedValue({
-          stats: {
-            strength: 12,
-            dexterity: 14,
-            constitution: 10,
-            size: 55,
-            intelligence: 16,
-            power: 50,
-            education: 40,
-            wisdom: 8,
-            charisma: 13,
-            luck: 50,
-          },
-          stat_summary: { total: 73, average: 12.17, highest: 16, lowest: 8 },
-          profession_id: 0,
-          meets_requirements: true,
-          method_used: '3d6',
-        }),
-      };
+      const statsResponse = createDefaultRollStatsFetchResponse();
       mockFetch.mockImplementation(url => {
         if (url.includes('/auth/register')) {
           return Promise.resolve({
@@ -283,18 +107,7 @@ describe('Profession System Error Handling and Edge Cases', () => {
 
       render(<App />);
 
-      fireEvent.click(screen.getByText('Need an account? Register'));
-      fireEvent.click(screen.getByText('Enter the Void'));
-
-      const usernameInput = screen.getByPlaceholderText('Username');
-      const passwordInput = screen.getByPlaceholderText('Password');
-      const inviteCodeInput = screen.getByPlaceholderText('Invite Code');
-      const registerButton = screen.getByText('Enter the Void');
-
-      fireEvent.change(usernameInput, { target: { value: 'testuser' } });
-      fireEvent.change(passwordInput, { target: { value: 'testpass' } });
-      fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
-      fireEvent.click(registerButton);
+      registerTestUserFromLoginScreen();
 
       // Plan 10.6: stats first, then profession
       await waitFor(() => {
@@ -308,27 +121,7 @@ describe('Profession System Error Handling and Edge Cases', () => {
     });
 
     it('should handle malformed profession data gracefully', async () => {
-      const statsResponse = {
-        ok: true,
-        json: vi.fn().mockResolvedValue({
-          stats: {
-            strength: 12,
-            dexterity: 14,
-            constitution: 10,
-            size: 55,
-            intelligence: 16,
-            power: 50,
-            education: 40,
-            wisdom: 8,
-            charisma: 13,
-            luck: 50,
-          },
-          stat_summary: { total: 73, average: 12.17, highest: 16, lowest: 8 },
-          profession_id: 0,
-          meets_requirements: true,
-          method_used: '3d6',
-        }),
-      };
+      const statsResponse = createDefaultRollStatsFetchResponse();
       mockFetch.mockImplementation(url => {
         if (url.includes('/auth/register')) {
           return Promise.resolve({
@@ -354,18 +147,7 @@ describe('Profession System Error Handling and Edge Cases', () => {
 
       render(<App />);
 
-      fireEvent.click(screen.getByText('Need an account? Register'));
-      fireEvent.click(screen.getByText('Enter the Void'));
-
-      const usernameInput = screen.getByPlaceholderText('Username');
-      const passwordInput = screen.getByPlaceholderText('Password');
-      const inviteCodeInput = screen.getByPlaceholderText('Invite Code');
-      const registerButton = screen.getByText('Enter the Void');
-
-      fireEvent.change(usernameInput, { target: { value: 'testuser' } });
-      fireEvent.change(passwordInput, { target: { value: 'testpass' } });
-      fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
-      fireEvent.click(registerButton);
+      registerTestUserFromLoginScreen();
 
       await waitFor(() => {
         expect(screen.getByText('Character Creation')).toBeInTheDocument();
@@ -373,7 +155,7 @@ describe('Profession System Error Handling and Edge Cases', () => {
       fireEvent.click(screen.getByText('Accept Stats'));
 
       await waitFor(() => {
-        expect(screen.getByText('Error Loading Professions')).toBeInTheDocument();
+        expect(screen.getByText('Unable to load profession options')).toBeInTheDocument();
         expect(screen.getByText(/Invalid API response: expected Profession\[\]/)).toBeInTheDocument();
       });
     });
@@ -395,18 +177,7 @@ describe('Profession System Error Handling and Edge Cases', () => {
 
       render(<App />);
 
-      fireEvent.click(screen.getByText('Need an account? Register'));
-      fireEvent.click(screen.getByText('Enter the Void'));
-
-      const usernameInput = screen.getByPlaceholderText('Username');
-      const passwordInput = screen.getByPlaceholderText('Password');
-      const inviteCodeInput = screen.getByPlaceholderText('Invite Code');
-      const registerButton = screen.getByText('Enter the Void');
-
-      fireEvent.change(usernameInput, { target: { value: 'testuser' } });
-      fireEvent.change(passwordInput, { target: { value: 'testpass' } });
-      fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
-      fireEvent.click(registerButton);
+      registerTestUserFromLoginScreen();
 
       // Plan 10.6: stats step loads and calls roll-stats on mount; when it fails we return to login
       await waitFor(
@@ -439,24 +210,13 @@ describe('Profession System Error Handling and Edge Cases', () => {
 
       render(<App />);
 
-      fireEvent.click(screen.getByText('Need an account? Register'));
-      fireEvent.click(screen.getByText('Enter the Void'));
-
-      const usernameInput = screen.getByPlaceholderText('Username');
-      const passwordInput = screen.getByPlaceholderText('Password');
-      const inviteCodeInput = screen.getByPlaceholderText('Invite Code');
-      const registerButton = screen.getByText('Enter the Void');
-
-      fireEvent.change(usernameInput, { target: { value: 'testuser' } });
-      fireEvent.change(passwordInput, { target: { value: 'testpass' } });
-      fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
-      fireEvent.click(registerButton);
+      registerTestUserFromLoginScreen();
 
       // When roll-stats returns 400, stats screen shows error view (no "Character Creation" header)
       await waitFor(() => {
         expect(screen.getByText('Invalid profession ID')).toBeInTheDocument();
       });
-      expect(screen.getByText('Failed to load stats. Please try again.')).toBeInTheDocument();
+      expect(screen.getByText('Unable to load stats. Please try again.')).toBeInTheDocument();
     });
 
     it('should handle malformed stat response gracefully', async () => {
@@ -480,18 +240,7 @@ describe('Profession System Error Handling and Edge Cases', () => {
 
       render(<App />);
 
-      fireEvent.click(screen.getByText('Need an account? Register'));
-      fireEvent.click(screen.getByText('Enter the Void'));
-
-      const usernameInput = screen.getByPlaceholderText('Username');
-      const passwordInput = screen.getByPlaceholderText('Password');
-      const inviteCodeInput = screen.getByPlaceholderText('Invite Code');
-      const registerButton = screen.getByText('Enter the Void');
-
-      fireEvent.change(usernameInput, { target: { value: 'testuser' } });
-      fireEvent.change(passwordInput, { target: { value: 'testpass' } });
-      fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
-      fireEvent.click(registerButton);
+      registerTestUserFromLoginScreen();
 
       await waitFor(
         () => {
@@ -509,7 +258,7 @@ describe('Profession System Error Handling and Edge Cases', () => {
     });
 
     it('should handle character creation API failure gracefully', async () => {
-      setupBasicMocks();
+      setupBasicMocks(mockFetch);
 
       mockFetch.mockImplementation(url => {
         if (url.includes('/auth/register')) {
@@ -525,27 +274,7 @@ describe('Profession System Error Handling and Edge Cases', () => {
             }),
           });
         } else if (url.includes('/players/roll-stats')) {
-          return Promise.resolve({
-            ok: true,
-            json: vi.fn().mockResolvedValue({
-              stats: {
-                strength: 12,
-                dexterity: 14,
-                constitution: 10,
-                size: 55,
-                intelligence: 16,
-                power: 50,
-                education: 40,
-                wisdom: 8,
-                charisma: 13,
-                luck: 50,
-              },
-              stat_summary: { total: 73, average: 12.17, highest: 16, lowest: 8 },
-              profession_id: 0,
-              meets_requirements: true,
-              method_used: '3d6',
-            }),
-          });
+          return Promise.resolve(createDefaultRollStatsFetchResponse());
         } else if (url.includes('/skills/')) {
           return Promise.resolve({
             ok: true,
@@ -559,18 +288,7 @@ describe('Profession System Error Handling and Edge Cases', () => {
 
       render(<App />);
 
-      fireEvent.click(screen.getByText('Need an account? Register'));
-      fireEvent.click(screen.getByText('Enter the Void'));
-
-      const usernameInput = screen.getByPlaceholderText('Username');
-      const passwordInput = screen.getByPlaceholderText('Password');
-      const inviteCodeInput = screen.getByPlaceholderText('Invite Code');
-      const registerButton = screen.getByText('Enter the Void');
-
-      fireEvent.change(usernameInput, { target: { value: 'testuser' } });
-      fireEvent.change(passwordInput, { target: { value: 'testpass' } });
-      fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
-      fireEvent.click(registerButton);
+      registerTestUserFromLoginScreen();
 
       await waitFor(() => {
         expect(screen.getByText('Character Creation')).toBeInTheDocument();
@@ -620,24 +338,15 @@ describe('Profession System Error Handling and Edge Cases', () => {
         return Promise.reject(new Error('Unexpected request'));
       });
 
-      const stats = {
-        strength: 12,
-        dexterity: 14,
-        constitution: 10,
-        size: 55,
-        intelligence: 16,
-        power: 50,
-        education: 40,
-        wisdom: 8,
-        charisma: 13,
-        luck: 50,
-      };
+      const stats = { ...DEFAULT_ROLLED_STATS };
       const profession = {
         id: 1,
         name: 'Tramp',
         description: 'A wanderer',
         flavor_text: null,
         stat_requirements: [],
+        mechanical_effects: [],
+        is_available: true,
       };
       const skillsPayload = { occupation_slots: [], personal_interest: [] };
       const onComplete = vi.fn();
@@ -672,21 +381,10 @@ describe('Profession System Error Handling and Edge Cases', () => {
 
   describe('Edge Cases', () => {
     it('should handle rapid profession selection changes', async () => {
-      setupBasicMocks();
+      setupBasicMocks(mockFetch);
       render(<App />);
 
-      fireEvent.click(screen.getByText('Need an account? Register'));
-      fireEvent.click(screen.getByText('Enter the Void'));
-
-      const usernameInput = screen.getByPlaceholderText('Username');
-      const passwordInput = screen.getByPlaceholderText('Password');
-      const inviteCodeInput = screen.getByPlaceholderText('Invite Code');
-      const registerButton = screen.getByText('Enter the Void');
-
-      fireEvent.change(usernameInput, { target: { value: 'testuser' } });
-      fireEvent.change(passwordInput, { target: { value: 'testpass' } });
-      fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
-      fireEvent.click(registerButton);
+      registerTestUserFromLoginScreen();
 
       await waitFor(() => {
         expect(screen.getByText('Character Creation')).toBeInTheDocument();
@@ -709,21 +407,10 @@ describe('Profession System Error Handling and Edge Cases', () => {
     });
 
     it('should handle rapid stat rerolling', async () => {
-      setupBasicMocks();
+      setupBasicMocks(mockFetch);
       render(<App />);
 
-      fireEvent.click(screen.getByText('Need an account? Register'));
-      fireEvent.click(screen.getByText('Enter the Void'));
-
-      const usernameInput = screen.getByPlaceholderText('Username');
-      const passwordInput = screen.getByPlaceholderText('Password');
-      const inviteCodeInput = screen.getByPlaceholderText('Invite Code');
-      const registerButton = screen.getByText('Enter the Void');
-
-      fireEvent.change(usernameInput, { target: { value: 'testuser' } });
-      fireEvent.change(passwordInput, { target: { value: 'testpass' } });
-      fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
-      fireEvent.click(registerButton);
+      registerTestUserFromLoginScreen();
 
       // Plan 10.6: stats first; wait for stats screen
       await waitFor(() => {
@@ -755,18 +442,7 @@ describe('Profession System Error Handling and Edge Cases', () => {
       render(<App />);
 
       // Try to register
-      fireEvent.click(screen.getByText('Need an account? Register'));
-      fireEvent.click(screen.getByText('Enter the Void'));
-
-      const usernameInput = screen.getByPlaceholderText('Username');
-      const passwordInput = screen.getByPlaceholderText('Password');
-      const inviteCodeInput = screen.getByPlaceholderText('Invite Code');
-      const registerButton = screen.getByText('Enter the Void');
-
-      fireEvent.change(usernameInput, { target: { value: 'testuser' } });
-      fireEvent.change(passwordInput, { target: { value: 'testpass' } });
-      fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
-      fireEvent.click(registerButton);
+      registerTestUserFromLoginScreen();
 
       // Should handle timeout gracefully
       await waitFor(() => {
@@ -775,7 +451,7 @@ describe('Profession System Error Handling and Edge Cases', () => {
     });
 
     it('should handle concurrent API calls gracefully', async () => {
-      setupBasicMocks();
+      setupBasicMocks(mockFetch);
       mockFetch.mockImplementation(url => {
         if (url.includes('/auth/register')) {
           return Promise.resolve({
@@ -788,27 +464,7 @@ describe('Profession System Error Handling and Edge Cases', () => {
             json: vi.fn().mockResolvedValue({ professions: createMockProfessions() }),
           });
         } else if (url.includes('/players/roll-stats')) {
-          return Promise.resolve({
-            ok: true,
-            json: vi.fn().mockResolvedValue({
-              stats: {
-                strength: 12,
-                dexterity: 14,
-                constitution: 10,
-                size: 55,
-                intelligence: 16,
-                power: 50,
-                education: 40,
-                wisdom: 8,
-                charisma: 13,
-                luck: 50,
-              },
-              stat_summary: { total: 73, average: 12.17, highest: 16, lowest: 8 },
-              profession_id: 0,
-              meets_requirements: true,
-              method_used: '3d6',
-            }),
-          });
+          return Promise.resolve(createDefaultRollStatsFetchResponse());
         } else if (url.includes('/skills/')) {
           return Promise.resolve({
             ok: true,
@@ -820,18 +476,7 @@ describe('Profession System Error Handling and Edge Cases', () => {
 
       render(<App />);
 
-      fireEvent.click(screen.getByText('Need an account? Register'));
-      fireEvent.click(screen.getByText('Enter the Void'));
-
-      const usernameInput = screen.getByPlaceholderText('Username');
-      const passwordInput = screen.getByPlaceholderText('Password');
-      const inviteCodeInput = screen.getByPlaceholderText('Invite Code');
-      const registerButton = screen.getByText('Enter the Void');
-
-      fireEvent.change(usernameInput, { target: { value: 'testuser' } });
-      fireEvent.change(passwordInput, { target: { value: 'testpass' } });
-      fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
-      fireEvent.click(registerButton);
+      registerTestUserFromLoginScreen();
 
       await waitFor(() => {
         expect(screen.getByText('Character Creation')).toBeInTheDocument();

@@ -17,7 +17,7 @@ export const ChannelSelectorSection: React.FC<ChannelSelectorSectionProps> = ({
 }) => {
   return (
     <div
-      className="p-3 border-b border-gray-700 bg-mythos-terminal-surface"
+      className="p-3 border-b border-mythos-terminal-border bg-mythos-terminal-surface"
       role="region"
       aria-label="Channel Selection"
     >

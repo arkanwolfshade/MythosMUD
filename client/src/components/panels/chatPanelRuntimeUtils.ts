@@ -20,6 +20,22 @@ export interface ChatPanelMessage {
   tags?: string[];
 }
 
+/**
+ * Stable-enough row key for React lists without server message ids (append-heavy chat log).
+ * Agent-readable: avoids index keys so new messages at the end do not reshuffle identity.
+ */
+export function chatPanelMessageRowKey(message: ChatPanelMessage): string {
+  const body = message.rawText ?? message.text;
+  const channel = message.channel ?? '';
+  const mt = message.messageType ?? '';
+  let h = 0;
+  for (let i = 0; i < body.length; i += 1) {
+    h = (Math.imul(31, h) + body.charCodeAt(i)) | 0;
+  }
+  const hash = (h >>> 0).toString(36);
+  return `${message.timestamp}\x1f${channel}\x1f${mt}\x1f${body.length}\x1f${hash}`;
+}
+
 export { filterMessagesForChannelView } from './chatPanelChannelFilter';
 export { computeUnreadChatCounts } from './chatPanelUnreadCounts';
 

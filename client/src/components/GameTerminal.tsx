@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { DEFAULT_CHANNEL } from '../config/channels.js';
 import type { HealthStatus } from '../types/health.js';
@@ -6,17 +6,17 @@ import { determineDpTier } from '../types/health.js';
 import type { HallucinationMessage, LucidityStatus, RescueState } from '../types/lucidity.js';
 import type { MythosTimeState } from '../types/mythosTime.js';
 import { debugLogger } from '../utils/debugLogger.js';
-import { DraggablePanel } from './DraggablePanel.jsx';
-import { HolidayBanner, MythosTimeHud } from './MythosTimeHud.jsx';
-import { RoomInfoPanel } from './RoomInfoPanel.jsx';
-import { HealthMeter } from './health/HealthMeter.jsx';
-import { IncapacitatedBanner } from './health/IncapacitatedBanner.jsx';
-import { HallucinationTicker } from './lucidity/HallucinationTicker.jsx';
-import { LucidityMeter } from './lucidity/LucidityMeter.jsx';
-import { RescueStatusBanner } from './lucidity/RescueStatusBanner.jsx';
-import { ChatPanel } from './panels/ChatPanel.jsx';
-import { CommandPanel } from './panels/CommandPanel.jsx';
-import { GameLogPanel } from './panels/GameLogPanel.jsx';
+import { DraggablePanel } from './DraggablePanel.tsx';
+import { HolidayBanner, MythosTimeHud } from './MythosTimeHud.tsx';
+import { RoomInfoPanel } from './RoomInfoPanel.tsx';
+import { HealthMeter } from './health/HealthMeter.tsx';
+import { IncapacitatedBanner } from './health/IncapacitatedBanner.tsx';
+import { HallucinationTicker } from './lucidity/HallucinationTicker.tsx';
+import { LucidityMeter } from './lucidity/LucidityMeter.tsx';
+import { RescueStatusBanner } from './lucidity/RescueStatusBanner.tsx';
+import { ChatPanel } from './panels/ChatPanel.tsx';
+import { CommandPanel } from './panels/CommandPanel.tsx';
+import { GameLogPanel } from './panels/GameLogPanel.tsx';
 
 const formatPosture = (value?: string): string => {
   if (!value) {
@@ -138,7 +138,7 @@ interface GameTerminalProps {
   mythosTime?: MythosTimeState | null;
 }
 
-export const GameTerminal: React.FC<GameTerminalProps> = ({
+export function GameTerminal({
   playerName,
   isConnected,
   isConnecting,
@@ -167,7 +167,7 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
   onClearMessages,
   onClearHistory,
   mythosTime = null,
-}) => {
+}: GameTerminalProps) {
   // MOTD is now handled by the interstitial screen in App.tsx
   const debug = debugLogger('GameTerminal');
   const [selectedChatChannel, setSelectedChatChannel] = useState(DEFAULT_CHANNEL);
@@ -584,4 +584,4 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
       </div>
     </div>
   );
-};
+}

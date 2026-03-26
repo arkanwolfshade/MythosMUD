@@ -1,72 +1,60 @@
-/**
- * SkillAssignmentScreen: CoC-style skill allocation (plan 10.6 F4).
- * Nine occupation slots (70, 60, 60, 50, 50, 50, 40, 40, 40) and four personal interest (base+20).
- * Cthulhu Mythos disabled. On confirm passes payload to name step; no POST.
- */
-
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { logger } from '../utils/logger.js';
-import type { OccupationSlotPayload, PersonalInterestPayload, SkillsPayload } from './CharacterNameScreen.jsx';
+import type { OccupationSlotPayload, PersonalInterestPayload } from './CharacterNameScreen.tsx';
+import {
+  MIN_TOUCH_TARGET_STYLE,
+  OCCUPATION_VALUES,
+  loadSkillsCatalog,
+  renderErrorState,
+  renderLoadingState,
+  renderSkillInstructions,
+  type SkillAssignmentScreenProps,
+  type SkillCatalogEntry,
+} from './SkillAssignmentScreen.helpers.tsx';
 
-const OCCUPATION_VALUES = [70, 60, 60, 50, 50, 50, 40, 40, 40] as const;
-
-interface SkillCatalogEntry {
-  id: number;
-  key: string;
-  name: string;
-  description?: string;
-  base_value: number;
-  allow_at_creation: boolean;
-  category?: string;
-}
-
-interface SkillAssignmentScreenProps {
-  baseUrl: string;
-  authToken: string;
-  onSkillsConfirmed: (payload: SkillsPayload) => void;
-  onBack: () => void;
-  onError: (error: string) => void;
-}
-
-export const SkillAssignmentScreen: React.FC<SkillAssignmentScreenProps> = ({
+export function SkillAssignmentScreen({
   baseUrl,
   authToken,
   onSkillsConfirmed,
   onBack,
   onError,
-}) => {
+}: SkillAssignmentScreenProps) {
   const [skills, setSkills] = useState<SkillCatalogEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [occupationSlots, setOccupationSlots] = useState<(number | null)[]>(OCCUPATION_VALUES.map(() => null));
   const [personalInterest, setPersonalInterest] = useState<(number | null)[]>([]);
 
+  const loadCatalog = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    const result = await loadSkillsCatalog(baseUrl, authToken);
+    if (result.ok) {
+      setSkills(result.skills);
+      setPersonalInterest([null, null, null, null]);
+      return;
+    }
+
+    setError(result.error);
+    if (result.notify) {
+      onError(result.error);
+    }
+  }, [authToken, baseUrl, onError]);
+
   useEffect(() => {
     let cancelled = false;
     void (async () => {
-      try {
-        const res = await fetch(`${baseUrl}/skills/`, {
-          headers: { Authorization: `Bearer ${authToken}` },
-        });
-        if (!res.ok) {
-          const msg = `Failed to load skills (${res.status})`;
-          if (!cancelled) setError(msg);
-          return;
-        }
-        const data = (await res.json()) as { skills?: SkillCatalogEntry[] };
-        const list = data.skills ?? [];
-        if (!cancelled) {
-          setSkills(list);
+      const result = await loadSkillsCatalog(baseUrl, authToken);
+
+      if (!cancelled) {
+        if (result.ok) {
+          setSkills(result.skills);
           setPersonalInterest([null, null, null, null]);
+        } else {
+          setError(result.error);
+          if (result.notify) onError(result.error);
         }
-      } catch (e) {
-        const msg = e instanceof Error ? e.message : 'Failed to load skills';
-        if (!cancelled) {
-          setError(msg);
-          onError(msg);
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
+        setLoading(false);
       }
     })();
     return () => {
@@ -74,7 +62,7 @@ export const SkillAssignmentScreen: React.FC<SkillAssignmentScreenProps> = ({
     };
   }, [baseUrl, authToken, onError]);
 
-  const selectableSkills = skills.filter(s => s.allow_at_creation);
+  const selectableSkills = useMemo(() => skills.filter(s => s.allow_at_creation), [skills]);
 
   /** Skill IDs already used in other occupation slots or any personal interest (for occupation dropdown at excludeOccIndex). */
   const usedForOccupationDropdown = useCallback(
@@ -140,31 +128,17 @@ export const SkillAssignmentScreen: React.FC<SkillAssignmentScreenProps> = ({
   const canConfirm = occupationComplete && personalComplete;
 
   if (loading) {
-    return (
-      <div className="skill-assignment-screen" data-testid="skill-assignment-screen">
-        <p>Loading skills catalog...</p>
-      </div>
-    );
+    return renderLoadingState();
   }
 
   if (error) {
-    return (
-      <div className="skill-assignment-screen" data-testid="skill-assignment-screen">
-        <p className="error-message">{error}</p>
-        <button type="button" onClick={onBack} className="back-button">
-          Back
-        </button>
-      </div>
-    );
+    return renderErrorState(error, onBack, () => void loadCatalog());
   }
 
   return (
     <div className="skill-assignment-screen" data-testid="skill-assignment-screen">
       <h2>Skill Allocation</h2>
-      <p className="skill-instructions">
-        Assign nine occupation skills (one 70%, two 60%, three 50%, three 40%) and four personal interest skills (base +
-        20% each). Cthulhu Mythos cannot be chosen here.
-      </p>
+      {renderSkillInstructions()}
 
       <section className="occupation-slots">
         <h3>Occupation skills</h3>
@@ -173,9 +147,12 @@ export const SkillAssignmentScreen: React.FC<SkillAssignmentScreenProps> = ({
           const options = selectableSkills.filter(s => occupationSlots[i] === s.id || !used.has(s.id));
           return (
             <div key={i} className="slot-row">
-              <label>{value}%</label>
+              <label htmlFor={`occupation-slot-${i}`}>{`Occupation ${i + 1} (${value}%)`}</label>
               <select
+                id={`occupation-slot-${i}`}
+                aria-label={`Occupation skill ${i + 1} value ${value} percent`}
                 value={occupationSlots[i] ?? ''}
+                style={MIN_TOUCH_TARGET_STYLE}
                 onChange={e => {
                   setOccupationSlot(i, e.target.value ? Number(e.target.value) : null);
                 }}
@@ -199,9 +176,12 @@ export const SkillAssignmentScreen: React.FC<SkillAssignmentScreenProps> = ({
           const options = selectableSkills.filter(s => personalInterest[i] === s.id || !used.has(s.id));
           return (
             <div key={i} className="slot-row">
-              <label>Personal {i + 1}</label>
+              <label htmlFor={`personal-slot-${i}`}>{`Personal ${i + 1}`}</label>
               <select
+                id={`personal-slot-${i}`}
+                aria-label={`Personal interest slot ${i + 1}`}
                 value={personalInterest[i] ?? ''}
+                style={MIN_TOUCH_TARGET_STYLE}
                 onChange={e => {
                   setPersonalSlot(i, e.target.value ? Number(e.target.value) : null);
                 }}
@@ -219,13 +199,19 @@ export const SkillAssignmentScreen: React.FC<SkillAssignmentScreenProps> = ({
       </section>
 
       <div className="skill-actions">
-        <button type="button" onClick={onBack} className="back-button">
+        <button type="button" onClick={onBack} className="back-button" style={MIN_TOUCH_TARGET_STYLE}>
           Back
         </button>
-        <button type="button" onClick={handleConfirm} disabled={!canConfirm} className="confirm-button">
+        <button
+          type="button"
+          onClick={handleConfirm}
+          disabled={!canConfirm}
+          className="confirm-button"
+          style={MIN_TOUCH_TARGET_STYLE}
+        >
           Next: Name character
         </button>
       </div>
     </div>
   );
-};
+}
