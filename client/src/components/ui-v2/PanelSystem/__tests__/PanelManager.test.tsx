@@ -2,6 +2,7 @@
  * Tests for PanelManager component and hook.
  */
 
+import '@testing-library/jest-dom/vitest';
 import { act, render, renderHook, screen } from '@testing-library/react';
 import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -9,6 +10,19 @@ import { PanelManager } from '../../../../components/PanelManager';
 import type { PanelState } from '../../types';
 import { PanelManagerProvider } from '../PanelManager';
 import { usePanelManager } from '../usePanelManager';
+
+function panelStateFixture(id: string, z: number): PanelState {
+  return {
+    id,
+    title: id,
+    position: { x: 50, y: 50 },
+    size: { width: 320, height: 240 },
+    zIndex: z,
+    isMinimized: false,
+    isMaximized: false,
+    isVisible: true,
+  };
+}
 
 // Mock localStorage
 const localStorageMock = (() => {
@@ -117,6 +131,63 @@ describe('PanelManager', () => {
 
       expect(result.current.panels).toHaveProperty('panel1');
       expect(result.current.panels.panel1.position).toEqual({ x: 100, y: 100 });
+    });
+
+    it('should clamp oversized stored layout to viewport and persist', () => {
+      const savedPanels: Record<string, PanelState> = {
+        panel1: {
+          id: 'panel1',
+          title: 'Panel 1',
+          position: { x: 0, y: 0 },
+          size: { width: 2000, height: 400 },
+          zIndex: 1000,
+          isMinimized: false,
+          isMaximized: false,
+          isVisible: true,
+        },
+      };
+
+      localStorageMock.setItem('mythosmud-ui-v2-panel-layout', JSON.stringify(savedPanels));
+
+      const innerSpy = vi.spyOn(window, 'innerWidth', 'get').mockReturnValue(800);
+      const innerHSpy = vi.spyOn(window, 'innerHeight', 'get').mockReturnValue(600);
+
+      const { result } = renderHook(() => usePanelManager(), { wrapper });
+
+      act(() => {});
+
+      expect(result.current.panels.panel1.size.width).toBeLessThanOrEqual(800);
+      const raw = localStorageMock.getItem('mythosmud-ui-v2-panel-layout');
+      expect(raw).toBeTruthy();
+      const persisted = JSON.parse(raw as string) as Record<string, PanelState>;
+      expect(persisted.panel1.size.width).toBe(result.current.panels.panel1.size.width);
+
+      innerSpy.mockRestore();
+      innerHSpy.mockRestore();
+    });
+
+    it('should persist z-index when focusing a panel', () => {
+      const twoPanels: Record<string, PanelState> = {
+        a: panelStateFixture('a', 1000),
+        b: panelStateFixture('b', 1001),
+      };
+
+      const wrapperTwo = ({ children }: { children: React.ReactNode }) => (
+        <PanelManagerProvider defaultPanels={twoPanels}>{children}</PanelManagerProvider>
+      );
+
+      const { result } = renderHook(() => usePanelManager(), { wrapper: wrapperTwo });
+
+      act(() => {});
+
+      act(() => {
+        result.current.focusPanel('a');
+      });
+
+      const raw = localStorageMock.getItem('mythosmud-ui-v2-panel-layout');
+      expect(raw).toBeTruthy();
+      const persisted = JSON.parse(raw as string) as Record<string, PanelState>;
+      expect(persisted.a.zIndex).toBeGreaterThan(persisted.b.zIndex);
     });
 
     it('should handle corrupted localStorage data gracefully', () => {

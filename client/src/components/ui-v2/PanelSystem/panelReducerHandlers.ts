@@ -94,6 +94,7 @@ export function handleFocusPanel(state: PanelManagerState, payload: { id: string
     ...state.panels,
     [id]: { ...panel, zIndex: state.nextZIndex },
   };
+  savePanelLayout(updatedPanels);
   return {
     ...state,
     panels: updatedPanels,
