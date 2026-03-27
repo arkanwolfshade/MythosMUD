@@ -221,13 +221,12 @@ function isArray(value: unknown): boolean {
  * Type guard: Check if value is a CharacterInfo object.
  */
 function isCharacterInfoCoreFields(value: Record<string, unknown>) {
+  const requiredStringFields = ['player_id', 'name', 'created_at', 'last_active'] as const;
+  const requiredNumberFields = ['profession_id', 'level'] as const;
+
   return (
-    isString(value.player_id) &&
-    isString(value.name) &&
-    isNumber(value.profession_id) &&
-    isNumber(value.level) &&
-    isString(value.created_at) &&
-    isString(value.last_active)
+    requiredStringFields.every(field => isString(value[field])) &&
+    requiredNumberFields.every(field => isNumber(value[field]))
   );
 }
 
@@ -236,41 +235,44 @@ function isCharacterInfoProfessionNameValid(value: Record<string, unknown>) {
   return professionName === undefined || professionName === null || isString(professionName);
 }
 
-function isCharacterInfo(value: unknown): boolean {
-  if (!isObject(value)) return false;
-  return isCharacterInfoCoreFields(value) && isCharacterInfoProfessionNameValid(value);
+function isCharacterInfoObject(value: unknown): value is Record<string, unknown> {
+  return isObject(value);
 }
+
+const isCharacterInfo = (value: unknown): value is CharacterInfo => {
+  if (!isCharacterInfoObject(value)) {
+    return false;
+  }
+  return isCharacterInfoCoreFields(value) && isCharacterInfoProfessionNameValid(value);
+};
 
 /**
  * Type guard: Check if value is a ServerCharacterResponse object.
  * Server may return either 'id' or 'player_id' field.
  */
 function hasServerCharacterIdentifierFields(value: Record<string, unknown>): boolean {
-  const hasValidIdField = value.id === undefined || isString(value.id);
-  const hasValidPlayerIdField = value.player_id === undefined || isString(value.player_id);
-  if (!hasValidIdField || !hasValidPlayerIdField) {
-    return false;
-  }
+  const hasValidIdField = hasOptionalString(value.id);
+  const hasValidPlayerIdField = hasOptionalString(value.player_id);
+  return hasValidIdField && hasValidPlayerIdField && hasAtLeastOneIdentifier(value);
+}
+
+function hasOptionalString(value: unknown): boolean {
+  return value === undefined || isString(value);
+}
+
+function hasAtLeastOneIdentifier(value: Record<string, unknown>): boolean {
   return value.id !== undefined || value.player_id !== undefined;
 }
 
 function hasServerCharacterCoreFields(value: Record<string, unknown>): boolean {
-  if (!isString(value.name)) {
-    return false;
-  }
-  if (!isNumber(value.profession_id)) {
-    return false;
-  }
-  if (!isNumber(value.level)) {
-    return false;
-  }
-  if (!isString(value.created_at)) {
-    return false;
-  }
-  if (!isString(value.last_active)) {
-    return false;
-  }
-  return value.profession_name === undefined || isString(value.profession_name);
+  const requiredStringFields = ['name', 'created_at', 'last_active'] as const;
+  const requiredNumberFields = ['profession_id', 'level'] as const;
+
+  return (
+    requiredStringFields.every(field => isString(value[field])) &&
+    requiredNumberFields.every(field => isNumber(value[field])) &&
+    hasOptionalString(value.profession_name)
+  );
 }
 
 export function isServerCharacterResponse(value: unknown): value is ServerCharacterResponse {

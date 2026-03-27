@@ -102,6 +102,30 @@ describe.concurrent('apiTypeGuards', () => {
       };
       expect(isServerCharacterResponse(value)).toBe(false);
     });
+
+    it('should return false when neither id nor player_id is present', () => {
+      const value = {
+        name: 'Test',
+        profession_id: 1,
+        level: 1,
+        created_at: '2020-01-01',
+        last_active: '2020-01-01',
+      };
+      expect(isServerCharacterResponse(value)).toBe(false);
+    });
+
+    it('should return false when profession_name is invalid type', () => {
+      const value = {
+        id: 'char-1',
+        name: 'Test',
+        profession_id: 1,
+        profession_name: 123,
+        level: 1,
+        created_at: '2020-01-01',
+        last_active: '2020-01-01',
+      };
+      expect(isServerCharacterResponse(value)).toBe(false);
+    });
   });
 
   describe('isServerCharacterResponseArray', () => {
@@ -436,6 +460,36 @@ describe.concurrent('apiTypeGuards', () => {
 
     it('should return false for non-array', () => {
       expect(isCharacterInfoArray(null)).toBe(false);
+    });
+
+    it('should return true when profession_name is null', () => {
+      const value = [
+        {
+          player_id: 'p1',
+          name: 'Test',
+          profession_id: 1,
+          profession_name: null,
+          level: 1,
+          created_at: '2020-01-01',
+          last_active: '2020-01-01',
+        },
+      ];
+      expect(isCharacterInfoArray(value)).toBe(true);
+    });
+
+    it('should return false when profession_name is not string/null/undefined', () => {
+      const value = [
+        {
+          player_id: 'p1',
+          name: 'Test',
+          profession_id: 1,
+          profession_name: 123,
+          level: 1,
+          created_at: '2020-01-01',
+          last_active: '2020-01-01',
+        },
+      ];
+      expect(isCharacterInfoArray(value)).toBe(false);
     });
   });
 
