@@ -108,7 +108,7 @@ Add to `players.stats` JSONB:
 
 - `power` (POW): INTEGER 1-100 (new stat)
 - `current_mp`: INTEGER >= 0
-- `max_mp`: INTEGER >= 0 (initially POW * 0.2, then tracked independently)
+- `max_mp`: INTEGER >= 0 (initially POW \* 0.2, then tracked independently)
 
 ## Implementation Phases
 
@@ -119,7 +119,7 @@ Add to `players.stats` JSONB:
 [x] Add `power` stat to `Stats` model (`server/models/game.py`)
 
 - [x] Add `current_mp` and `max_mp` to `Stats` model
-- [x] Update player stats defaults to include power (default 50) and MP (max_mp = power * 0.2)
+- [x] Update player stats defaults to include power (default 50) and MP (max_mp = power \* 0.2)
 - [x] Create database migration for new stats
 - [x] Update player creation to initialize MP from POW
 - [x] Add MP display to client UI (`client/src/stores/gameStore.ts`)
@@ -263,9 +263,9 @@ Add to `players.stats` JSONB:
 
 **Mythos Spells**:
 
-  - Cost MP + lucidity
-  - Increase corruption on learn/cast (per spell definition)
-  - School: "mythos"
+- Cost MP + lucidity
+- Increase corruption on learn/cast (per spell definition)
+- School: "mythos"
 - **Non-Mythos Spells**:
   - Cost MP only
   - No corruption
@@ -291,7 +291,7 @@ Check `PlayerCombatService.get_player_combat_state()` for combat status
 Effects are extensible via JSONB `effect_data` field
 
 - Common effects: heal, damage, status_effect, stat_modify, lucidity_adjust, corruption_adjust, teleport, create_object
-- Mastery increases effect magnitude (e.g., heal_amount * (1 + mastery/100))
+- Mastery increases effect magnitude (e.g., heal_amount \* (1 + mastery/100))
 
 ## Testing Strategy
 
