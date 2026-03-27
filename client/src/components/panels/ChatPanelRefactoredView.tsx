@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import { ChatPanelRefactoredToolbar } from './ChatPanelRefactoredToolbar';
 import { ChatHistoryToggle } from './chat/ChatHistoryToggle.tsx';
 import { ChatMessagesList } from './chat/ChatMessagesList.tsx';
@@ -30,7 +32,7 @@ export function ChatPanelRefactoredView({ chrome, panel }: ChatPanelRefactoredVi
     handleChannelSelect,
   } = panel;
 
-  const totalUnread = Object.values(unreadCounts).reduce((sum, count) => sum + count, 0);
+  const totalUnread = useMemo(() => Object.values(unreadCounts).reduce((sum, count) => sum + count, 0), [unreadCounts]);
   const shouldPulse = totalUnread > 0;
 
   return (

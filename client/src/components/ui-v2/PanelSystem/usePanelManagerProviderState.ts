@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useReducer } from 'react';
 
 import type { PanelPosition, PanelSize, PanelState } from '../types';
 import type { PanelManagerContextValue } from './PanelManagerContext';
-import { resolveInitialPanelLayout } from './panelManagerInitialLayout';
+import { resolveInitialPanelLayout } from './panelLayoutBootstrap';
 import { panelReducer } from './panelManagerReducer';
 
 export function usePanelManagerProviderState(defaultPanels: Record<string, PanelState>): PanelManagerContextValue {

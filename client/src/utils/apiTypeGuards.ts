@@ -218,16 +218,24 @@ function isArray(value: unknown): value is unknown[] {
 }
 
 /**
+ * Shared core shape for CharacterInfo and ServerCharacterResponse:
+ * name, timestamps, profession_id, level (excludes id/player_id and profession_name rules).
+ */
+const SHARED_CHARACTER_CORE_STRING_FIELDS = ['name', 'created_at', 'last_active'] as const;
+const SHARED_CHARACTER_CORE_NUMBER_FIELDS = ['profession_id', 'level'] as const;
+
+function hasSharedCharacterRecordCoreFields(value: Record<string, unknown>): boolean {
+  return (
+    SHARED_CHARACTER_CORE_STRING_FIELDS.every(field => isString(value[field])) &&
+    SHARED_CHARACTER_CORE_NUMBER_FIELDS.every(field => isNumber(value[field]))
+  );
+}
+
+/**
  * Type guard: Check if value is a CharacterInfo object.
  */
 function isCharacterInfoCoreFields(value: Record<string, unknown>) {
-  const requiredStringFields = ['player_id', 'name', 'created_at', 'last_active'] as const;
-  const requiredNumberFields = ['profession_id', 'level'] as const;
-
-  return (
-    requiredStringFields.every(field => isString(value[field])) &&
-    requiredNumberFields.every(field => isNumber(value[field]))
-  );
+  return hasSharedCharacterRecordCoreFields(value) && isString(value.player_id);
 }
 
 function isCharacterInfoProfessionNameValid(value: Record<string, unknown>) {
@@ -265,14 +273,7 @@ function hasAtLeastOneIdentifier(value: Record<string, unknown>): boolean {
 }
 
 function hasServerCharacterCoreFields(value: Record<string, unknown>): boolean {
-  const requiredStringFields = ['name', 'created_at', 'last_active'] as const;
-  const requiredNumberFields = ['profession_id', 'level'] as const;
-
-  return (
-    requiredStringFields.every(field => isString(value[field])) &&
-    requiredNumberFields.every(field => isNumber(value[field])) &&
-    hasOptionalString(value.profession_name)
-  );
+  return hasSharedCharacterRecordCoreFields(value) && hasOptionalString(value.profession_name);
 }
 
 export function isServerCharacterResponse(value: unknown): value is ServerCharacterResponse {

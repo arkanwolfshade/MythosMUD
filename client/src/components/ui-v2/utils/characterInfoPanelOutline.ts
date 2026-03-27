@@ -36,21 +36,21 @@ function getMpSeverity(player: Player | null) {
 }
 
 /**
- * Border + outer glow only (no transform / border-width animation) so the panel does not shift.
+ * Inset ring + glow (no border-width on the box) so severity changes do not shift layout.
  * Severity is max(DP, MP): steady DP cannot be overridden by "high" MP alone.
  */
 function getOutlineClassesForWorstSeverity(worst: number) {
   if (worst <= 0) return '';
   if (worst === 1) {
-    return 'border-2 border-emerald-500/90 animate-mythos-glow-emerald';
+    return 'ring-2 ring-inset ring-emerald-500/90 animate-mythos-glow-emerald';
   }
   if (worst === 2) {
-    return 'border-2 border-amber-400/90 animate-mythos-glow-amber';
+    return 'ring-2 ring-inset ring-amber-400/90 animate-mythos-glow-amber';
   }
   if (worst === 3) {
-    return 'border-2 border-orange-500/90 animate-mythos-glow-orange';
+    return 'ring-2 ring-inset ring-orange-500/90 animate-mythos-glow-orange';
   }
-  return 'border-2 border-rose-600/90 animate-mythos-glow-danger';
+  return 'ring-2 ring-inset ring-rose-600/90 animate-mythos-glow-danger';
 }
 
 export function getCharacterInfoPanelOutlineClassName(
