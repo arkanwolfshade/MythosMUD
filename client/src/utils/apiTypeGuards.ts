@@ -213,7 +213,7 @@ function isObject(value: unknown): value is Record<string, unknown> {
 /**
  * Type guard: Check if value is an array.
  */
-function isArray(value: unknown): boolean {
+function isArray(value: unknown): value is unknown[] {
   return Array.isArray(value);
 }
 
@@ -292,9 +292,7 @@ export function isCharacterInfoArray(value: unknown): value is CharacterInfo[] {
   if (!isArray(value)) {
     return false;
   }
-
-  const arr = value as unknown[];
-  return arr.every(item => isCharacterInfo(item));
+  return value.every(item => isCharacterInfo(item));
 }
 
 /**
@@ -304,9 +302,7 @@ export function isServerCharacterResponseArray(value: unknown): value is ServerC
   if (!isArray(value)) {
     return false;
   }
-
-  const arr = value as unknown[];
-  return arr.every(item => isServerCharacterResponse(item));
+  return value.every(item => isServerCharacterResponse(item));
 }
 
 /**
@@ -321,9 +317,7 @@ export function isLoginResponse(value: unknown): value is LoginResponse {
   if (!isString(value.token_type)) return false;
   if (!isString(value.user_id)) return false;
   if (!isArray(value.characters)) return false;
-
-  const characters = value.characters as unknown[];
-  if (!characters.every((char: unknown) => isCharacterInfo(char))) return false;
+  if (!value.characters.every(char => isCharacterInfo(char))) return false;
 
   return value.refresh_token === undefined || isString(value.refresh_token);
 }
