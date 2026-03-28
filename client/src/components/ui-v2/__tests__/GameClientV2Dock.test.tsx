@@ -10,6 +10,9 @@ import { GameClientV2 } from '../GameClientV2';
 
 const dockTest = vi.hoisted(() => ({
   invisibleIds: new Set<string>(),
+  /** How many times dock-mounted panel bodies executed (must stay 0 when slot is invisible). */
+  chatHistoryBodyRenders: 0,
+  gameInfoBodyRenders: 0,
 }));
 
 /** Split panel shape so Lizard parameter-count stays under the file threshold (object keys count toward it). */
@@ -104,11 +107,17 @@ vi.mock('../PanelSystem/usePanelManager', () => ({
 }));
 
 vi.mock('../panels/ChatHistoryPanel', () => ({
-  ChatHistoryPanel: () => <div data-testid="chat-history-panel">Chat History</div>,
+  ChatHistoryPanel: () => {
+    dockTest.chatHistoryBodyRenders += 1;
+    return <div data-testid="chat-history-panel">Chat History</div>;
+  },
 }));
 
 vi.mock('../panels/GameInfoPanel', () => ({
-  GameInfoPanel: () => <div data-testid="game-info-panel">Game Info</div>,
+  GameInfoPanel: () => {
+    dockTest.gameInfoBodyRenders += 1;
+    return <div data-testid="game-info-panel">Game Info</div>;
+  },
 }));
 
 vi.mock('../panels/LocationPanel', () => ({
@@ -155,6 +164,8 @@ describe('GameClientV2 main dock visibility', () => {
 
   beforeEach(() => {
     dockTest.invisibleIds.clear();
+    dockTest.chatHistoryBodyRenders = 0;
+    dockTest.gameInfoBodyRenders = 0;
     vi.clearAllMocks();
     Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: 1920 });
     Object.defineProperty(window, 'innerHeight', { writable: true, configurable: true, value: 1080 });
@@ -165,6 +176,7 @@ describe('GameClientV2 main dock visibility', () => {
     render(<GameClientV2 {...defaultProps} />);
     expect(screen.queryByTestId('panel-chatHistory')).not.toBeInTheDocument();
     expect(screen.queryByTestId('chat-history-panel')).not.toBeInTheDocument();
+    expect(dockTest.chatHistoryBodyRenders).toBe(0);
   });
 
   it('still renders other dock slots when one main dock panel is invisible', () => {
@@ -173,5 +185,13 @@ describe('GameClientV2 main dock visibility', () => {
     expect(screen.queryByTestId('panel-gameInfo')).not.toBeInTheDocument();
     expect(screen.getByTestId('panel-location')).toBeInTheDocument();
     expect(screen.getByTestId('panel-questLog')).toBeInTheDocument();
+    expect(dockTest.gameInfoBodyRenders).toBe(0);
+    expect(dockTest.chatHistoryBodyRenders).toBeGreaterThan(0);
+  });
+
+  it('runs dock panel bodies when the slot is visible', () => {
+    render(<GameClientV2 {...defaultProps} />);
+    expect(dockTest.chatHistoryBodyRenders).toBeGreaterThan(0);
+    expect(dockTest.gameInfoBodyRenders).toBeGreaterThan(0);
   });
 });

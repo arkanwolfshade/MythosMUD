@@ -133,4 +133,50 @@ describe('clampPanelLayoutToViewport', () => {
     const clamped = clampPanelLayoutToViewport({ tooTall: p }, vw, vh);
     expect(clamped.tooTall.size.height).toBeLessThan(500);
   });
+
+  it('respects minSize width up to max horizontal fit when the stored width is tiny', () => {
+    const vw = 500;
+    const vh = 600;
+    const padding = PANEL_VIEWPORT_PADDING;
+    const maxWFit = vw - padding - -padding;
+    const p = basePanel({
+      id: 'narrow',
+      position: { x: 40, y: 40 },
+      size: { width: 50, height: 200 },
+      minSize: { width: 220, height: 100 },
+    });
+    const clamped = clampPanelLayoutToViewport({ narrow: p }, vw, vh);
+    expect(clamped.narrow.size.width).toBe(Math.min(220, maxWFit));
+  });
+
+  it('shifts a panel that overflows only the left edge into padded bounds', () => {
+    const vw = 800;
+    const vh = 600;
+    const padding = PANEL_VIEWPORT_PADDING;
+    const p = basePanel({
+      id: 'lefty',
+      position: { x: -500, y: 80 },
+      size: { width: 200, height: 200 },
+    });
+    const clamped = clampPanelLayoutToViewport({ lefty: p }, vw, vh);
+    expect(clamped.lefty.position.x).toBeGreaterThanOrEqual(-padding);
+    expect(layoutFitsViewport(clamped, vw, vh)).toBe(true);
+  });
+
+  it('clamps position and size when a wide tall panel overflows bottom-right simultaneously', () => {
+    const vw = 640;
+    const vh = 480;
+    const maxRight = vw - PANEL_VIEWPORT_PADDING;
+    const maxBottom = vh - PANEL_VIEWPORT_PADDING;
+    const p = basePanel({
+      id: 'corner',
+      position: { x: 520, y: 400 },
+      size: { width: 900, height: 700 },
+    });
+    const clamped = clampPanelLayoutToViewport({ corner: p }, vw, vh);
+    const q = clamped.corner;
+    expect(q.position.x + q.size.width).toBeLessThanOrEqual(maxRight);
+    expect(q.position.y + q.size.height).toBeLessThanOrEqual(maxBottom);
+    expect(layoutFitsViewport(clamped, vw, vh)).toBe(true);
+  });
 });
