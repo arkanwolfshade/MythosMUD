@@ -1,14 +1,29 @@
 #!/usr/bin/env python3
-"""Run npm scripts in client/ for pre-commit (cross-platform; no /bin/sh)."""
+"""Run npm scripts in client/ for pre-commit (cross-platform; no /bin/sh).
+
+Uses subprocess only to execute npm with a fixed argument list; the only variable
+from the environment is the resolved npm executable path (see main()).
+"""
 
 from __future__ import annotations
 
 import shutil
-import subprocess
+import subprocess  # nosec B404  # required to spawn npm; no shell, args are fixed (lint|format) + resolved PATH
 import sys
 from pathlib import Path
 
 CLIENT = Path(__file__).resolve().parent.parent / "client"
+
+
+def _resolved_npm() -> str | None:
+    """Return absolute path to npm (prefer npm.cmd on Windows), or None if not found."""
+    if sys.platform == "win32":
+        w = shutil.which("npm.cmd") or shutil.which("npm")
+    else:
+        w = shutil.which("npm")
+    if w is None:
+        return None
+    return str(Path(w).resolve())
 
 
 def main() -> int:
@@ -16,22 +31,17 @@ def main() -> int:
     if script not in ("lint", "format"):
         print("usage: precommit_run_npm.py lint|format", file=sys.stderr)
         return 2
-    if shutil.which("npm") is None and shutil.which("npm.cmd") is None:
+    npm = _resolved_npm()
+    if npm is None:
         print(
             "[ERROR] npm not found on PATH. Install Node.js (or activate nvm) so git hooks can run client lint/format.",
             file=sys.stderr,
         )
         return 127
     client = str(CLIENT)
-    # Windows: npm is npm.cmd; list-form CreateProcess cannot spawn it without cmd.exe.
-    if sys.platform == "win32":
-        # Literal "cmd.exe" (PATH resolution); avoids ComSpec env false positives from static scanners.
-        if script == "lint":
-            return subprocess.call(["cmd.exe", "/c", "npm run lint"], cwd=client)
-        return subprocess.call(["cmd.exe", "/c", "npm run format"], cwd=client)
-    if script == "lint":
-        return subprocess.call(["npm", "run", "lint"], cwd=client)
-    return subprocess.call(["npm", "run", "format"], cwd=client)
+    sub = "lint" if script == "lint" else "format"
+    # List-form invocation: no shell; npm from shutil.which; sub is only "lint" or "format".
+    return subprocess.call([npm, "run", sub], cwd=client)  # nosec B603
 
 
 if __name__ == "__main__":
