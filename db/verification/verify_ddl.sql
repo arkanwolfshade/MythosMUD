@@ -1,4 +1,5 @@
 -- Verification script to check if all required tables exist in the database
+-- PostgreSQL only: do not add T-SQL session options (e.g. SET ANSI_NULLS ON); they are not valid here.
 -- Run this against each database (mythos_dev, mythos_unit, mythos_e2e)
 -- Tables are defined in authoritative DDL: db/mythos_dev_ddl.sql, db/mythos_unit_ddl.sql,
 -- db/mythos_e2e_ddl.sql. (This script checks schema 'public'; for named schemas, adjust
