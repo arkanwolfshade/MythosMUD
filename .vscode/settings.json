@@ -71,9 +71,8 @@
     "editor.defaultFormatter": "charliermarsh.ruff",
     "editor.formatOnSave": true
   },
-  // Absolute .venv python.exe: avoids Windows "Open with" on pyenv-win's extensionless shims\python.
-  // Base interpreter is pyvenv.cfg home: .../pyenv-win/versions/3.12.10/
-  "python.defaultInterpreterPath": "F:/projects/MythosMUD/.venv/Scripts/python.exe",
+  // Repo .venv via workspaceFolder (portable). Override in User settings if you need a different interpreter.
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/Scripts/python.exe",
   "pylint.importStrategy": "fromEnvironment",
   "pylint.args": ["--rcfile=${workspaceFolder}/.pylintrc"],
   "[typescript]": {
