@@ -71,8 +71,6 @@
     "editor.defaultFormatter": "charliermarsh.ruff",
     "editor.formatOnSave": true
   },
-  // Repo .venv via workspaceFolder (portable). Override in User settings if you need a different interpreter.
-  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/Scripts/python.exe",
   "pylint.importStrategy": "fromEnvironment",
   "pylint.args": ["--rcfile=${workspaceFolder}/.pylintrc"],
   "[typescript]": {
