@@ -25,14 +25,14 @@ import type { ActiveEffectDisplay } from './utils/stateUpdateUtils';
 /** Panel ids rendered in the main dock (single source for mapped PanelContainers). */
 type MainDockPanelId = 'chatHistory' | 'location' | 'roomDescription' | 'occupants' | 'gameInfo' | 'questLog';
 
-type MainDockPanelConfig = {
+/** Dock slot metadata (stable); panel bodies read messages/room in render to avoid invalidating a memo on every chat line. */
+type MainDockSlotMeta = {
   id: MainDockPanelId;
   variant: PanelVariant;
   /** When set, replaces panel manager title (e.g. Occupants count). */
   titleOverride?: string;
   /** Optional PanelContainer className (e.g. combat frame on Game Info). */
   panelClassName?: string;
-  content: React.ReactNode;
 };
 
 const calculateOccupantCount = (room: Room | null): number => {
@@ -161,12 +161,26 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
     return 'Occupants';
   }, [room]);
 
-  const mainDockPanels = useMemo<MainDockPanelConfig[]>(
+  const mainDockSlots = useMemo<MainDockSlotMeta[]>(
     () => [
+      { id: 'chatHistory', variant: 'eldritch' },
+      { id: 'location', variant: 'default' },
+      { id: 'roomDescription', variant: 'default' },
+      { id: 'occupants', variant: 'default', titleOverride: occupantsTitle },
       {
-        id: 'chatHistory',
-        variant: 'eldritch',
-        content: (
+        id: 'gameInfo',
+        variant: 'default',
+        panelClassName: getGameInfoPanelCombatClassName(Boolean(player?.in_combat)),
+      },
+      { id: 'questLog', variant: 'default' },
+    ],
+    [occupantsTitle, player]
+  );
+
+  const renderMainDockSlotContent = (id: MainDockPanelId): React.ReactNode => {
+    switch (id) {
+      case 'chatHistory':
+        return (
           <ChatHistoryPanel
             messages={messages}
             onSendChatMessage={onSendChatMessage}
@@ -174,45 +188,30 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
             onDownloadLogs={onDownloadLogs}
             isConnected={isConnected}
           />
-        ),
-      },
-      {
-        id: 'location',
-        variant: 'default',
-        content: <LocationPanel room={room} />,
-      },
-      {
-        id: 'roomDescription',
-        variant: 'default',
-        content: <RoomDescriptionPanel room={room} />,
-      },
-      {
-        id: 'occupants',
-        variant: 'default',
-        titleOverride: occupantsTitle,
-        content: <OccupantsPanel room={room} />,
-      },
-      {
-        id: 'gameInfo',
-        variant: 'default',
-        panelClassName: getGameInfoPanelCombatClassName(Boolean(player?.in_combat)),
-        content: (
+        );
+      case 'location':
+        return <LocationPanel room={room} />;
+      case 'roomDescription':
+        return <RoomDescriptionPanel room={room} />;
+      case 'occupants':
+        return <OccupantsPanel room={room} />;
+      case 'gameInfo':
+        return (
           <GameInfoPanel
             messages={messages}
             onClearMessages={onClearMessages}
             onDownloadLogs={onDownloadLogs}
             inCombat={Boolean(player?.in_combat)}
           />
-        ),
-      },
-      {
-        id: 'questLog',
-        variant: 'default',
-        content: <QuestLogPanel questLog={questLog} />,
-      },
-    ],
-    [messages, onSendChatMessage, onClearMessages, onDownloadLogs, isConnected, room, occupantsTitle, player, questLog]
-  );
+        );
+      case 'questLog':
+        return <QuestLogPanel questLog={questLog} />;
+      default: {
+        const _exhaustive: never = id;
+        return _exhaustive;
+      }
+    }
+  };
 
   const characterInfoPanel = panelManager.getPanel('characterInfo');
   const commandHistoryPanel = panelManager.getPanel('commandHistory');
@@ -239,7 +238,7 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
 
         {/* Main Content Area - Panels: flex-1 min-h-0 so panel area is bounded and scroll/overflow work */}
         <div className="relative flex min-h-0 flex-1 pt-12">
-          {mainDockPanels.map(slot => {
+          {mainDockSlots.map(slot => {
             const panel = panelManager.getPanel(slot.id);
             if (!panel?.isVisible) {
               return null;
@@ -264,7 +263,7 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
                 onMaximize={panelManager.toggleMaximize}
                 onFocus={panelManager.focusPanel}
               >
-                {slot.content}
+                {renderMainDockSlotContent(slot.id)}
               </PanelContainer>
             );
           })}

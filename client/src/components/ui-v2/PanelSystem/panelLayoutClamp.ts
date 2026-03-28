@@ -77,19 +77,12 @@ function clampTopLeftWithinBounds(
   maxRight: number,
   maxBottom: number
 ): { x: number; y: number; width: number; height: number } {
-  let w = width;
-  let h = height;
-  const cx = Math.max(minX, Math.min(x, maxRight - w));
-  const cy = Math.max(minY, Math.min(y, maxBottom - h));
+  // Position is clamped so the rect fits: cx <= maxRight - width (and cy likewise). No second
+  // shrink pass is needed; dimensions already came from clampDimensionsToViewport.
+  const cx = Math.max(minX, Math.min(x, maxRight - width));
+  const cy = Math.max(minY, Math.min(y, maxBottom - height));
 
-  if (cx + w > maxRight) {
-    w = Math.max(1, maxRight - cx);
-  }
-  if (cy + h > maxBottom) {
-    h = Math.max(1, maxBottom - cy);
-  }
-
-  return { x: cx, y: cy, width: w, height: h };
+  return { x: cx, y: cy, width, height };
 }
 
 function clampSinglePanel(

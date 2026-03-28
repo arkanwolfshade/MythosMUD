@@ -3,14 +3,28 @@
     {
       "name": "📁 Main (Integration)",
       "path": ".",
+      "settings": {
+        "python.defaultInterpreterPath": "F:/projects/MythosMUD/.venv/Scripts/python.exe",
+        "pylint.enabled": true,
+        "pylint.importStrategy": "fromEnvironment",
+        "pylint.args": ["--rcfile=${workspaceFolder}/.pylintrc"],
+      },
     },
     {
       "name": "📁 Chaosium",
       "path": "C:/Users/arkan/Proton Drive/arkanwolfshade/My files/Chaosium",
+      "settings": {
+        "python.defaultInterpreterPath": "F:/projects/MythosMUD/.venv/Scripts/python.exe",
+        "pylint.enabled": false,
+      },
     },
     {
       "name": "📁 Cursor Plans",
       "path": "C:/Users/arkan/.cursor/plans",
+      "settings": {
+        "python.defaultInterpreterPath": "F:/projects/MythosMUD/.venv/Scripts/python.exe",
+        "pylint.enabled": false,
+      },
     },
   ],
   "settings": {
@@ -19,8 +33,11 @@
       "source.fixAll": "explicit",
       "source.organizeImports": "explicit",
     },
-    "python.defaultInterpreterPath": "./.venv/Scripts/python.exe",
     "python.terminal.activateEnvironment": true,
+    "terminal.integrated.env.windows": {
+      "VIRTUAL_ENV": "F:/projects/MythosMUD/.venv",
+      "PATH": "F:/projects/MythosMUD/.venv/Scripts;${env:PATH}",
+    },
     "python.linting.enabled": true,
     "python.linting.ruffEnabled": true,
     "python.formatting.provider": "ruff",
@@ -39,10 +56,6 @@
     "git.confirmSync": false,
     "git.autofetch": true,
     "git.allowNoVerifyCommit": false,
-    "terminal.integrated.env.windows": {
-      "VIRTUAL_ENV": "${workspaceFolder}/.venv",
-      "PATH": "${workspaceFolder}/.venv/Scripts;${env:PATH}",
-    },
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "[javascript]": {
       "editor.defaultFormatter": "esbenp.prettier-vscode",

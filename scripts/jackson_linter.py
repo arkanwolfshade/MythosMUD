@@ -26,6 +26,14 @@ EXCLUDE_DIRS: frozenset[str] = frozenset(
 )
 # Temporary/output JSON filename patterns to skip.
 EXCLUDE_PATTERNS: tuple[str, ...] = ("*_output.json", "*_temp.json", "*_tmp.json")
+
+
+def _is_vscode_jsonc_settings(path: Path) -> bool:
+    """VS Code allows JSON with Comments in settings.json; stdlib json cannot parse it."""
+    parts = path.parts
+    return len(parts) >= 2 and parts[-2] == ".vscode" and parts[-1] == "settings.json"
+
+
 # Fallback encodings when UTF-8 decode fails.
 _FALLBACK_ENCODINGS: tuple[str, ...] = ("utf-16", "utf-16-le", "utf-16-be", "latin-1")
 
@@ -38,6 +46,8 @@ def collect_json_files(root: Path | None = None) -> list[Path]:
         if any(part in EXCLUDE_DIRS for part in json_file.parts):
             continue
         if any(json_file.match(pattern) for pattern in EXCLUDE_PATTERNS):
+            continue
+        if _is_vscode_jsonc_settings(json_file):
             continue
         found.append(json_file)
     return found

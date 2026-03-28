@@ -4,7 +4,9 @@
 PROJECT_ROOT := $(if $(findstring MythosMUD-,$(CURDIR)),$(abspath $(CURDIR)/..),$(CURDIR))
 
 # Common command patterns
-PYTHON := cd $(PROJECT_ROOT) && python
+# Use uv-run interpreter so Windows does not spawn bare `python` (pyenv-win shims / PATH gaps
+# trigger "Select an app to open 'python'").
+PYTHON := cd $(PROJECT_ROOT) && uv run python
 UV := cd $(PROJECT_ROOT) && uv run
 POWERSHELL := cd $(PROJECT_ROOT) && powershell -ExecutionPolicy Bypass -File
 
