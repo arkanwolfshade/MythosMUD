@@ -82,8 +82,14 @@
   },
   "overrides": {
     "flatted": "^3.4.2",
-    "glob": "^10.4.5",
+    "glob": "^13.0.6",
     "inflight": "npm:@jsdevtools/inflight@^1.0.6",
-    "sourcemap-codec": "npm:@jridgewell/sourcemap-codec@^1.4.15"
+    "sourcemap-codec": "npm:@jridgewell/sourcemap-codec@^1.4.15",
+    "@stoplight/spectral-core": {
+      "minimatch": "3.1.4"
+    },
+    "@stoplight/spectral-ruleset-bundler": {
+      "rollup": "^2.80.0"
+    }
   }
 }

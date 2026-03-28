@@ -7,42 +7,92 @@ This tool analyzes all project dependencies and provides upgrade recommendations
 with risk assessment and migration guidance.
 """
 
+from __future__ import annotations
+
 import json
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import cast
 
-from packaging import version
+from utils.dependency_analysis_types import (
+    AnalysisSnapshot,
+    BreakingChange,
+    DepInfo,
+    PriorityItem,
+    RiskAssessment,
+    UpdateStrategy,
+)
+from utils.dependency_risk import assess_npm_risk, assess_python_risk, categorize_update
 from utils.safe_subprocess import safe_run_static
+
+
+def _dep_info_from_npm_row(pkg: str, info: dict[str, object]) -> DepInfo:
+    """Build DepInfo from one npm outdated JSON row."""
+    cur = info["current"]
+    lat = info["latest"]
+    cur_s = cur if isinstance(cur, str) else str(cur)
+    lat_s = lat if isinstance(lat, str) else str(lat)
+    wanted_o = info.get("wanted", cur_s)
+    wanted_s = wanted_o if isinstance(wanted_o, str) else str(wanted_o)
+    type_o = info.get("type", "dependencies")
+    type_s = type_o if isinstance(type_o, str) else str(type_o)
+    return {
+        "current": cur_s,
+        "wanted": wanted_s,
+        "latest": lat_s,
+        "type": type_s,
+        "ecosystem": "npm",
+        "update_type": categorize_update(cur_s, lat_s),
+        "risk_level": assess_npm_risk(pkg, cur_s, lat_s),
+    }
+
+
+def _parse_npm_outdated_json(stdout: str) -> dict[str, DepInfo]:
+    """Parse npm outdated --json stdout into DepInfo rows."""
+    raw = cast(object, json.loads(stdout))
+    if not isinstance(raw, dict):
+        return {}
+    npm_data = cast(dict[str, dict[str, object]], raw)
+    return {pkg: _dep_info_from_npm_row(pkg, info) for pkg, info in npm_data.items()}
 
 
 class DependencyAnalyzer:
     """Comprehensive dependency analysis and upgrade planning"""
 
-    def __init__(self, project_root: Path):
+    project_root: Path
+    client_dir: Path
+    analysis_results: AnalysisSnapshot | None
+
+    def __init__(self, project_root: Path) -> None:
         self.project_root = project_root
         self.client_dir = project_root / "client"
-        self.analysis_results = {}
+        self.analysis_results = None
 
-    def analyze_all_dependencies(self) -> dict[str, Any]:
+    def analyze_all_dependencies(self) -> AnalysisSnapshot:
         """Analyze all project dependencies"""
         print("🔍 Analyzing MythosMUD dependencies...")
 
-        analysis = {
+        client_dependencies = self._analyze_npm_dependencies()
+        server_dependencies = self._analyze_python_dependencies()
+        update_strategy = self._determine_strategy(client_dependencies, server_dependencies)
+        risk_assessment = self._assess_risks(client_dependencies, server_dependencies)
+        priority_order = self._prioritize_updates(client_dependencies, server_dependencies)
+
+        analysis: AnalysisSnapshot = {
             "timestamp": datetime.now().isoformat(),
             "project": "MythosMUD",
-            "client_dependencies": self._analyze_npm_dependencies(),
-            "server_dependencies": self._analyze_python_dependencies(),
-            "update_strategy": self._determine_strategy(),
-            "risk_assessment": self._assess_risks(),
-            "priority_order": self._prioritize_updates(),
+            "client_dependencies": client_dependencies,
+            "server_dependencies": server_dependencies,
+            "update_strategy": update_strategy,
+            "risk_assessment": risk_assessment,
+            "priority_order": priority_order,
         }
 
         self.analysis_results = analysis
         return analysis
 
-    def _analyze_npm_dependencies(self) -> dict[str, Any]:
+    def _analyze_npm_dependencies(self) -> dict[str, DepInfo]:
         """Analyze NPM dependencies"""
         print("📦 Analyzing NPM dependencies...")
 
@@ -59,30 +109,15 @@ class DependencyAnalyzer:
             )
 
             if result.returncode != 0 and result.stdout:
-                npm_data = json.loads(result.stdout)
-                deps = {}
-
-                for pkg, info in npm_data.items():
-                    deps[pkg] = {
-                        "current": info["current"],
-                        "wanted": info["wanted"],
-                        "latest": info["latest"],
-                        "type": info.get("type", "dependencies"),
-                        "ecosystem": "npm",
-                        "update_type": self._categorize_update(info["current"], info["latest"]),
-                        "risk_level": self._assess_npm_risk(pkg, info["current"], info["latest"]),
-                    }
-
-                return deps
-            else:
-                print("✅ All NPM dependencies are up to date")
-                return {}
+                return _parse_npm_outdated_json(result.stdout)
+            print("✅ All NPM dependencies are up to date")
+            return {}
 
         except Exception as e:
             print(f"❌ Error analyzing NPM dependencies: {e}")
             return {}
 
-    def _analyze_python_dependencies(self) -> dict[str, Any]:
+    def _analyze_python_dependencies(self) -> dict[str, DepInfo]:
         """Analyze Python dependencies"""
         print("🐍 Analyzing Python dependencies...")
 
@@ -102,7 +137,7 @@ class DependencyAnalyzer:
             if result.returncode == 0 and result.stdout:
                 # Parse the output manually since --format=json might not be available
                 lines = result.stdout.strip().split("\n")
-                deps = {}
+                deps: dict[str, DepInfo] = {}
 
                 # Skip header lines
                 for line in lines[2:]:  # Skip the header and separator lines
@@ -117,98 +152,27 @@ class DependencyAnalyzer:
                                 "current": current_version,
                                 "latest": latest_version,
                                 "ecosystem": "pip",
-                                "update_type": self._categorize_update(current_version, latest_version),
-                                "risk_level": self._assess_python_risk(pkg_name, current_version, latest_version),
+                                "update_type": categorize_update(current_version, latest_version),
+                                "risk_level": assess_python_risk(pkg_name, current_version, latest_version),
                             }
 
                 return deps
-            else:
-                print("✅ All Python dependencies are up to date")
-                return {}
+            print("✅ All Python dependencies are up to date")
+            return {}
 
         except Exception as e:
             print(f"❌ Error analyzing Python dependencies: {e}")
             return {}
 
-    def _categorize_update(self, current_ver: str, latest_ver: str) -> str:
-        """Categorize update by semver"""
-        try:
-            current = version.parse(current_ver)
-            latest = version.parse(latest_ver)
-
-            if latest.major > current.major:
-                return "major"
-            elif latest.minor > current.minor:
-                return "minor"
-            elif latest.micro > current.micro:
-                return "patch"
-            else:
-                return "none"
-        except Exception:
-            return "unknown"
-
-    def _assess_npm_risk(self, package_name: str, current: str, latest: str) -> str:
-        """Assess risk level for NPM package updates"""
-        update_type = self._categorize_update(current, latest)
-
-        # High-risk packages that require careful handling
-        high_risk_packages = [
-            "react",
-            "react-dom",
-            "typescript",
-            "vite",
-            "eslint",
-            "@types/react",
-            "@types/react-dom",
-            "tailwindcss",
-        ]
-
-        # Medium-risk packages
-        medium_risk_packages = [
-            "@playwright/test",
-            "@testing-library/react",
-            "prettier",
-            "typescript-eslint",
-            "@vitejs/plugin-react",
-        ]
-
-        if update_type == "major":
-            return "HIGH"
-        elif update_type == "minor" and package_name in high_risk_packages:
-            return "MEDIUM"
-        elif update_type == "minor" and package_name in medium_risk_packages:
-            return "LOW"
-        elif update_type == "patch":
-            return "LOW"
-        else:
-            return "LOW"
-
-    def _assess_python_risk(self, package_name: str, current: str, latest: str) -> str:
-        """Assess risk level for Python package updates"""
-        update_type = self._categorize_update(current, latest)
-
-        # High-risk packages that require careful handling
-        high_risk_packages = ["fastapi", "pydantic", "sqlalchemy", "uvicorn", "pytest", "pytest-asyncio", "structlog"]
-
-        # Medium-risk packages
-        medium_risk_packages = ["httpx", "python-jose", "argon2-cffi", "fastapi-users", "click", "nats-py"]
-
-        if update_type == "major":
-            return "HIGH"
-        elif update_type == "minor" and package_name in high_risk_packages:
-            return "MEDIUM"
-        elif update_type == "minor" and package_name in medium_risk_packages:
-            return "LOW"
-        elif update_type == "patch":
-            return "LOW"
-        else:
-            return "LOW"
-
-    def _determine_strategy(self) -> dict[str, Any]:
+    def _determine_strategy(
+        self,
+        client_dependencies: dict[str, DepInfo],
+        server_dependencies: dict[str, DepInfo],
+    ) -> UpdateStrategy:
         """Determine overall upgrade strategy"""
-        all_deps = {}
-        all_deps.update(self.analysis_results.get("client_dependencies", {}))
-        all_deps.update(self.analysis_results.get("server_dependencies", {}))
+        all_deps: dict[str, DepInfo] = {}
+        all_deps.update(client_dependencies)
+        all_deps.update(server_dependencies)
 
         # Count by update type
         update_counts = {"major": 0, "minor": 0, "patch": 0, "unknown": 0}
@@ -237,14 +201,19 @@ class DependencyAnalyzer:
             "total_packages": len(all_deps),
         }
 
-    def _assess_risks(self) -> dict[str, Any]:
+    def _assess_risks(
+        self,
+        client_dependencies: dict[str, DepInfo],
+        server_dependencies: dict[str, DepInfo],
+    ) -> RiskAssessment:
         """Assess overall project risks"""
-        all_deps = {}
-        all_deps.update(self.analysis_results.get("client_dependencies", {}))
-        all_deps.update(self.analysis_results.get("server_dependencies", {}))
+        all_deps: dict[str, DepInfo] = {}
+        all_deps.update(client_dependencies)
+        all_deps.update(server_dependencies)
 
-        risks = {
-            "breaking_changes": [],
+        breaking_changes: list[BreakingChange] = []
+        risks: RiskAssessment = {
+            "breaking_changes": breaking_changes,
             "security_vulnerabilities": [],
             "compatibility_issues": [],
             "overall_risk": "LOW",
@@ -253,7 +222,7 @@ class DependencyAnalyzer:
         # Check for potential breaking changes
         for pkg_name, dep_info in all_deps.items():
             if dep_info["update_type"] == "major":
-                risks["breaking_changes"].append(
+                breaking_changes.append(
                     {
                         "package": pkg_name,
                         "current": dep_info["current"],
@@ -270,14 +239,17 @@ class DependencyAnalyzer:
 
         return risks
 
-    def _prioritize_updates(self) -> list[dict[str, Any]]:
+    def _prioritize_updates(
+        self,
+        client_dependencies: dict[str, DepInfo],
+        server_dependencies: dict[str, DepInfo],
+    ) -> list[PriorityItem]:
         """Create prioritized list of updates"""
-        all_deps = {}
-        all_deps.update(self.analysis_results.get("client_dependencies", {}))
-        all_deps.update(self.analysis_results.get("server_dependencies", {}))
+        all_deps: dict[str, DepInfo] = {}
+        all_deps.update(client_dependencies)
+        all_deps.update(server_dependencies)
 
-        # Sort by priority
-        priority_order = []
+        priority_order: list[PriorityItem] = []
 
         # Group by priority
         for pkg_name, dep_info in all_deps.items():
@@ -317,56 +289,65 @@ class DependencyAnalyzer:
     def _report_executive_and_stats(self) -> str:
         """Build report header, executive summary, and update statistics section."""
         r = self.analysis_results
-        return f"""
-# MythosMUD Dependency Upgrade Report
+        if r is None:
+            raise RuntimeError("analysis_results must be set before building report sections")
+        us = r["update_strategy"]
+        ra = r["risk_assessment"]
+        return f"""# MythosMUD Dependency Upgrade Report
+
 Generated: {r["timestamp"]}
 
 ## Executive Summary
 
-**Overall Strategy**: {r["update_strategy"]["strategy"]}
-**Priority Level**: {r["update_strategy"]["priority"]}
-**Total Packages**: {r["update_strategy"]["total_packages"]}
-**Overall Risk**: {r["risk_assessment"]["overall_risk"]}
+**Overall Strategy**: {us["strategy"]}
+**Priority Level**: {us["priority"]}
+**Total Packages**: {us["total_packages"]}
+**Overall Risk**: {ra["overall_risk"]}
 
 ## Update Statistics
 
 ### By Update Type
-- Major Updates: {r["update_strategy"]["update_counts"]["major"]}
-- Minor Updates: {r["update_strategy"]["update_counts"]["minor"]}
-- Patch Updates: {r["update_strategy"]["update_counts"]["patch"]}
+
+- Major Updates: {us["update_counts"]["major"]}
+- Minor Updates: {us["update_counts"]["minor"]}
+- Patch Updates: {us["update_counts"]["patch"]}
 
 ### By Risk Level
-- High Risk: {r["update_strategy"]["risk_counts"]["HIGH"]}
-- Medium Risk: {r["update_strategy"]["risk_counts"]["MEDIUM"]}
-- Low Risk: {r["update_strategy"]["risk_counts"]["LOW"]}
+
+- High Risk: {us["risk_counts"]["HIGH"]}
+- Medium Risk: {us["risk_counts"]["MEDIUM"]}
+- Low Risk: {us["risk_counts"]["LOW"]}
 
 ## Priority Update List
 
 """
 
-    def _report_priority_list(self, items: list[dict[str, Any]], top_n: int = 10) -> str:
+    def _report_priority_list(self, items: list[PriorityItem], top_n: int = 10) -> str:
         """Format the top N priority items as markdown."""
         risk_emoji = {"HIGH": "🔴", "MEDIUM": "🟡", "LOW": "🟢"}
         update_emoji = {"major": "⚡", "minor": "📈", "patch": "🔧"}
-        parts = []
+        parts: list[str] = []
         for i, item in enumerate(items[:top_n], 1):
             re_ = risk_emoji.get(item["risk_level"], "🟢")
             ue_ = update_emoji.get(item["update_type"], "🔧")
-            parts.append(f"""
-### {i}. {item["package"]} {re_} {ue_}
+            parts.append(
+                f"""### {i}. {item["package"]} {re_} {ue_}
+
 - **Current**: {item["current"]} → **Latest**: {item["latest"]}
 - **Update Type**: {item["update_type"]}
 - **Risk Level**: {item["risk_level"]}
 - **Ecosystem**: {item["ecosystem"]}
 - **Priority Score**: {item["priority_score"]}
-""")
+
+"""
+            )
         return "".join(parts)
 
-    def _report_breaking_changes(self, breaking_changes: list[dict[str, Any]]) -> str:
+    def _report_breaking_changes(self, breaking_changes: list[BreakingChange]) -> str:
         """Format breaking changes section."""
         if not breaking_changes:
             return ""
-        lines = ["\n## ⚠️ Breaking Changes Detected\n\n"]
+        lines: list[str] = ["\n## Breaking Changes Detected\n\n"]
         for change in breaking_changes:
             lines.append(
                 f"- **{change['package']}**: {change['current']} → {change['latest']} ({change['ecosystem']})\n"
@@ -376,23 +357,23 @@ Generated: {r["timestamp"]}
     def _report_recommendations(self, strategy: str) -> str:
         """Format recommendations section based on strategy."""
         if strategy == "INCREMENTAL":
-            return """
-### Incremental Upgrade Strategy
+            return """### Incremental Upgrade Strategy
+
 1. **Phase 1**: Update patch versions (low risk)
 2. **Phase 2**: Update minor versions (medium risk)
 3. **Phase 3**: Plan major version updates (high risk)
 4. **Testing**: Full test suite after each phase
 """
         if strategy == "BATCHED":
-            return """
-### Batched Upgrade Strategy
+            return """### Batched Upgrade Strategy
+
 1. **Batch 1**: All patch updates together
 2. **Batch 2**: Minor updates in groups of 3-5
 3. **Batch 3**: Major updates individually
 4. **Testing**: Regression testing after each batch
 """
-        return """
-### Immediate Upgrade Strategy
+        return """### Immediate Upgrade Strategy
+
 1. **All Updates**: Can be applied immediately
 2. **Testing**: Standard test suite
 3. **Monitoring**: Watch for any issues
@@ -400,18 +381,22 @@ Generated: {r["timestamp"]}
 
     def generate_report(self) -> str:
         """Generate comprehensive upgrade report."""
-        if not self.analysis_results:
-            self.analyze_all_dependencies()
+        if self.analysis_results is None:
+            _ = self.analyze_all_dependencies()
+
+        r = self.analysis_results
+        if r is None:
+            raise RuntimeError("analysis_results missing after analyze_all_dependencies")
 
         report = self._report_executive_and_stats()
-        report += self._report_priority_list(self.analysis_results["priority_order"])
-        report += self._report_breaking_changes(self.analysis_results["risk_assessment"]["breaking_changes"])
-        report += "\n## 📋 Recommendations\n\n"
-        report += self._report_recommendations(self.analysis_results["update_strategy"]["strategy"])
+        report += self._report_priority_list(r["priority_order"])
+        report += self._report_breaking_changes(r["risk_assessment"]["breaking_changes"])
+        report += "\n## Recommendations\n\n"
+        report += self._report_recommendations(r["update_strategy"]["strategy"])
         return report
 
 
-def main():
+def main() -> int:
     """Main execution function"""
     project_root = Path(__file__).parent.parent
     analyzer = DependencyAnalyzer(project_root)
@@ -420,7 +405,7 @@ def main():
     print("=" * 50)
 
     # Run analysis
-    analyzer.analyze_all_dependencies()
+    _ = analyzer.analyze_all_dependencies()
 
     # Generate report
     report = analyzer.generate_report()
@@ -428,7 +413,7 @@ def main():
     # Save report
     report_path = project_root / "dependency_upgrade_report.md"
     with open(report_path, "w", encoding="utf-8") as f:
-        f.write(report)
+        _ = f.write(report)
 
     print(f"\n📄 Report saved to: {report_path}")
     print("\n" + report)

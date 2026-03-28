@@ -2,12 +2,14 @@
  * Tests for CharacterInfoPanel component.
  */
 
+import '@testing-library/jest-dom/vitest';
 import { render, screen } from '@testing-library/react';
+import React from 'react';
 import { describe, expect, it } from 'vitest';
 import type { HealthStatus } from '../../../../types/health';
 import type { LucidityStatus } from '../../../../types/lucidity';
-import { CharacterInfoPanel } from '../CharacterInfoPanel';
 import type { Player } from '../../types';
+import { CharacterInfoPanel } from '../CharacterInfoPanel';
 
 describe('CharacterInfoPanel', () => {
   const mockHealthStatus: HealthStatus = {
@@ -25,8 +27,25 @@ describe('CharacterInfoPanel', () => {
     liabilities: [],
   };
 
+  /** Dedupe CharacterInfoPanel render + default health/lucidity fixtures. */
+  function renderCharacterPanel(
+    player: Player | null,
+    overrides: Partial<{
+      healthStatus: HealthStatus | null;
+      lucidityStatus: LucidityStatus | null;
+    }> = {}
+  ) {
+    return render(
+      <CharacterInfoPanel
+        player={player}
+        healthStatus={overrides.healthStatus !== undefined ? overrides.healthStatus : mockHealthStatus}
+        lucidityStatus={overrides.lucidityStatus !== undefined ? overrides.lucidityStatus : mockLucidityStatus}
+      />
+    );
+  }
+
   it('should render "No character information available" when player is null', () => {
-    render(<CharacterInfoPanel player={null} healthStatus={null} lucidityStatus={null} />);
+    renderCharacterPanel(null, { healthStatus: null, lucidityStatus: null });
     expect(screen.getByText('No character information available')).toBeInTheDocument();
   });
 
@@ -36,13 +55,7 @@ describe('CharacterInfoPanel', () => {
       name: 'TestPlayer',
     } as Player;
 
-    render(
-      <CharacterInfoPanel
-        player={playerWithoutStats}
-        healthStatus={mockHealthStatus}
-        lucidityStatus={mockLucidityStatus}
-      />
-    );
+    renderCharacterPanel(playerWithoutStats);
     expect(screen.getByText('No character information available')).toBeInTheDocument();
   });
 
@@ -58,12 +71,12 @@ describe('CharacterInfoPanel', () => {
         dexterity: 10,
         constitution: 10,
         intelligence: 10,
-        wisdom: 10,
+        power: 10,
         charisma: 10,
       },
     };
 
-    render(<CharacterInfoPanel player={player} healthStatus={mockHealthStatus} lucidityStatus={mockLucidityStatus} />);
+    renderCharacterPanel(player);
     expect(screen.getByText('TestPlayer')).toBeInTheDocument();
   });
 
@@ -79,7 +92,7 @@ describe('CharacterInfoPanel', () => {
       },
     };
 
-    render(<CharacterInfoPanel player={player} healthStatus={mockHealthStatus} lucidityStatus={mockLucidityStatus} />);
+    renderCharacterPanel(player);
     expect(screen.getByText('Professor')).toBeInTheDocument();
   });
 
@@ -95,7 +108,7 @@ describe('CharacterInfoPanel', () => {
       },
     };
 
-    render(<CharacterInfoPanel player={player} healthStatus={mockHealthStatus} lucidityStatus={mockLucidityStatus} />);
+    renderCharacterPanel(player);
     expect(screen.getByText('5')).toBeInTheDocument();
   });
 
@@ -112,7 +125,7 @@ describe('CharacterInfoPanel', () => {
       },
     };
 
-    render(<CharacterInfoPanel player={player} healthStatus={mockHealthStatus} lucidityStatus={mockLucidityStatus} />);
+    renderCharacterPanel(player);
     // Magic points meter should be rendered
     expect(screen.getByText(/Magic Points/i)).toBeInTheDocument();
   });
@@ -128,8 +141,26 @@ describe('CharacterInfoPanel', () => {
       },
     };
 
-    render(<CharacterInfoPanel player={player} healthStatus={mockHealthStatus} lucidityStatus={mockLucidityStatus} />);
+    renderCharacterPanel(player);
     // Magic points meter should not be rendered
     expect(screen.queryByText(/Magic Points/i)).not.toBeInTheDocument();
+  });
+
+  it('should show a combat indicator dot when in_combat is true', () => {
+    const player: Player = {
+      id: 'player1',
+      name: 'TestPlayer',
+      in_combat: true,
+      stats: {
+        current_dp: 100,
+        max_dp: 100,
+        lucidity: 50,
+      },
+    };
+
+    renderCharacterPanel(player);
+
+    const dot = screen.getByTestId('combat-indicator-dot');
+    expect(dot).toHaveClass('bg-mythos-terminal-error');
   });
 });

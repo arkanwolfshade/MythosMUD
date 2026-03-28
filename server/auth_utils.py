@@ -1,14 +1,19 @@
 """Authentication utilities for JWT token generation and validation.
 
+JWT encode/decode use PyJWT only. The ``python-jose`` / ``ecdsa`` packages are not project
+dependencies; they do not appear in ``pyproject.toml`` or ``uv.lock``. Do not reintroduce them.
+
 This module provides functions for creating and verifying JWT access tokens
 used for user authentication in the MythosMUD server.
 """
 
 import os
+from collections.abc import Mapping
 from datetime import UTC, datetime, timedelta
-from typing import Any
+from typing import cast
 
-from jose import JWTError, jwt
+import jwt
+from structlog.stdlib import BoundLogger
 
 # Import our Argon2 implementation
 from server.auth.argon2_utils import hash_password as argon2_hash_password
@@ -17,7 +22,7 @@ from server.exceptions import AuthenticationError
 from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.error_logging import log_and_raise
 
-logger = get_logger(__name__)
+logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
 
 # Use environment variable for secret key - CRITICAL: Must be set in production
 # Use MYTHOSMUD_JWT_SECRET for consistency with FastAPI Users system
@@ -32,6 +37,8 @@ if not SECRET_KEY:
     )
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
+# Match fastapi-users JWT audience so decode_access_token validates the same claim.
+TOKEN_AUDIENCE = "fastapi-users:auth"
 
 logger.info("Auth utilities initialized", algorithm=ALGORITHM, token_expire_minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
 
@@ -48,8 +55,6 @@ def hash_password(password: str) -> str:
     try:
         hashed = argon2_hash_password(password)
         logger.debug("Password hashed successfully")
-        if not isinstance(hashed, str):
-            raise TypeError("Password hash must be a string")
         return hashed
     except (AuthenticationError, ValueError, TypeError, RuntimeError) as e:
         logger.error("Password hashing failed", error=str(e))
@@ -75,8 +80,6 @@ def verify_password(password: str, password_hash: str) -> bool:
             logger.debug("Password verification successful")
         else:
             logger.debug("Password verification failed")
-        if not isinstance(result, bool):
-            raise TypeError("Password verification must return a bool")
         return result
     except (ValueError, TypeError, AttributeError, RuntimeError) as e:
         logger.error("Password verification error", error=str(e))
@@ -84,7 +87,7 @@ def verify_password(password: str, password_hash: str) -> bool:
 
 
 def create_access_token(
-    data: dict[str, Any],
+    data: Mapping[str, object],
     expires_delta: timedelta | None = None,
     secret_key: str | None = SECRET_KEY,
     algorithm: str = ALGORITHM,
@@ -92,9 +95,11 @@ def create_access_token(
     """Create a JWT access token."""
     logger.debug("Creating access token", expires_delta=expires_delta)
 
-    to_encode = data.copy()
+    to_encode = dict(data)
     expire = datetime.now(UTC) + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
     to_encode.update({"exp": expire})
+    if "aud" not in to_encode:
+        to_encode["aud"] = TOKEN_AUDIENCE
 
     if secret_key is None:
         raise AuthenticationError("JWT secret key is not configured")
@@ -102,10 +107,8 @@ def create_access_token(
     try:
         token = jwt.encode(to_encode, secret_key, algorithm=algorithm)
         logger.debug("Access token created successfully")
-        if not isinstance(token, str):
-            raise TypeError("JWT token must be a string")
         return token
-    except (JWTError, ValueError, TypeError, AttributeError, RuntimeError) as e:
+    except (jwt.PyJWTError, ValueError, TypeError, AttributeError, RuntimeError) as e:
         logger.error("Failed to create access token", error=str(e))
         log_and_raise(
             AuthenticationError,
@@ -117,7 +120,7 @@ def create_access_token(
 
 def decode_access_token(
     token: str | None, secret_key: str | None = SECRET_KEY, algorithm: str = ALGORITHM
-) -> dict[str, Any] | None:
+) -> dict[str, object] | None:
     """Decode and validate a JWT access token."""
     if token is None:
         logger.debug("No token provided for decoding")
@@ -128,12 +131,10 @@ def decode_access_token(
         return None
 
     try:
-        payload = jwt.decode(token, secret_key, algorithms=[algorithm], audience="fastapi-users:auth")
+        payload = jwt.decode(token, secret_key, algorithms=[algorithm], audience=TOKEN_AUDIENCE)
         logger.debug("Access token decoded successfully")
-        if not isinstance(payload, dict):
-            raise TypeError("JWT payload must be a dict")
-        return payload
-    except JWTError as e:
+        return cast(dict[str, object], payload)
+    except jwt.PyJWTError as e:
         logger.warning("JWT decode error", error=str(e))
         return None
     except (ValueError, TypeError, AttributeError, RuntimeError) as e:

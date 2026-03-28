@@ -2,7 +2,8 @@
 
 Repository-specific instructions for GitHub Copilot to generate code aligned with MythosMUD standards. Canonical
 project rules for Cursor IDE are in `.cursor/rules/`; the repo root `CLAUDE.md` is a supporting consolidated
-reference (kept in sync when Cursor rules change).
+reference (kept in sync when Cursor rules change). Codacy MCP workflow for agents is documented in
+`.cursor/rules/codacy.mdc`.
 
 ---
 

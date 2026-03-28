@@ -15,8 +15,7 @@ dependencies = [
     "pydantic>=2.12.5",
     "pydantic-settings>=2.12.0",
     "argon2-cffi>=25.1.0",
-    "python-jose>=3.5.0",
-    "PyJWT>=2.10.1",  # Required by fastapi-users for JWT token handling
+    "PyJWT>=2.10.1",  # JWT for auth_utils and fastapi-users
     "faker>=40.1.0",
     "python-dotenv>=1.2.1",
     "sqlalchemy>=2.0.45",
@@ -56,8 +55,6 @@ dependencies = [
     "python-multipart>=0.0.22",  # Fixes alert #12 - CVE-2024-53981, CVE-2024-24762
     "fonttools>=4.60.2",  # Fixes alert #21 - CVE-2025-66034, CVE-2023-45139
     "pillow>=12.1.1",  # Image handling (transitive from playwright/matplotlib); pin for security/consistency
-    # Note: ecdsa>=0.19.1 is already latest, but CVE-2024-23342 has no patch available
-    # This is a transitive dependency of python-jose. Alert #13, #20 may remain open.
 ]
 
 [project.scripts]
@@ -385,7 +382,6 @@ dev = [
     "types-psutil>=7.2.1.20251231",
     "types-jsonschema>=4.25.1.20251009",
     "types-psycopg2>=2.9.21.20251012",
-    "types-python-jose>=3.5.0.20250531",
     "types-networkx>=3.6.1.20251220",
     "bandit>=1.9.2", # Python security linter
     "pylint>=4.0.4", # Python code quality linter

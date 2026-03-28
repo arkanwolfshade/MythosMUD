@@ -20,6 +20,91 @@ body {
   flex-direction: column !important;
 }
 
+/* ui-v2 TentacleBackdrop: sepia line-art; tune in one place (reads on #0a0a0a). */
+:root {
+  --mythos-tentacle-sepia: rgba(168, 142, 118, 0.48);
+  --mythos-tentacle-sepia-mid: rgba(150, 128, 104, 0.4);
+  --mythos-tentacle-sepia-soft: rgba(132, 112, 92, 0.34);
+}
+
+.mythos-tentacle-svg {
+  display: block;
+}
+
+.mythos-tentacle-stroke {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Tiled pattern strokes: packed 88x88 cells */
+.mythos-tentacle-stroke--tile-a {
+  stroke: var(--mythos-tentacle-sepia);
+  stroke-width: 0.95;
+}
+
+.mythos-tentacle-stroke--tile-b {
+  stroke: var(--mythos-tentacle-sepia-mid);
+  stroke-width: 0.85;
+}
+
+.mythos-tentacle-stroke--tile-c {
+  stroke: var(--mythos-tentacle-sepia-soft);
+  stroke-width: 0.88;
+}
+
+.mythos-tentacle-stroke--tile-d {
+  stroke: var(--mythos-tentacle-sepia);
+  stroke-width: 0.8;
+}
+
+.mythos-tentacle-stroke--tile-e {
+  stroke: var(--mythos-tentacle-sepia-mid);
+  stroke-width: 0.72;
+}
+
+.mythos-tentacle-dash-path {
+  stroke-dasharray: 14 22;
+  animation: mythos-tentacle-dash-shift 48s linear infinite;
+}
+
+@keyframes mythos-tentacle-drift {
+  0%,
+  100% {
+    opacity: 0.94;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes mythos-tentacle-dash-shift {
+  0% {
+    stroke-dashoffset: 0;
+  }
+
+  100% {
+    stroke-dashoffset: -140;
+  }
+}
+
+.mythos-tentacle-drift {
+  animation: mythos-tentacle-drift 22s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mythos-tentacle-drift {
+    animation: none !important;
+    opacity: 1;
+  }
+
+  .mythos-tentacle-dash-path {
+    animation: none !important;
+  }
+}
+
 /* Server-rendered ASCII map/minimap: styling via class only (no inline style to avoid XSS) */
 .ascii-map {
   font-family: monospace;
@@ -293,6 +378,97 @@ body {
 
 .animate-eldritch-border {
   animation: eldritch-border 2s linear infinite;
+}
+
+/* Panel outlines: pulse outer glow only (no transform / border-width) — avoids panel jump. */
+@keyframes mythos-glow-emerald {
+  0%,
+  100% {
+    box-shadow:
+      0 0 4px rgba(16, 185, 129, 0.25),
+      0 0 10px rgba(16, 185, 129, 0.12);
+  }
+  50% {
+    box-shadow:
+      0 0 10px rgba(16, 185, 129, 0.45),
+      0 0 22px rgba(16, 185, 129, 0.22);
+  }
+}
+
+@keyframes mythos-glow-amber {
+  0%,
+  100% {
+    box-shadow:
+      0 0 5px rgba(251, 191, 36, 0.35),
+      0 0 12px rgba(245, 158, 11, 0.2);
+  }
+  50% {
+    box-shadow:
+      0 0 12px rgba(251, 191, 36, 0.55),
+      0 0 26px rgba(245, 158, 11, 0.32);
+  }
+}
+
+@keyframes mythos-glow-orange {
+  0%,
+  100% {
+    box-shadow:
+      0 0 5px rgba(249, 115, 22, 0.35),
+      0 0 12px rgba(234, 88, 12, 0.22);
+  }
+  50% {
+    box-shadow:
+      0 0 12px rgba(249, 115, 22, 0.55),
+      0 0 26px rgba(234, 88, 12, 0.35);
+  }
+}
+
+@keyframes mythos-glow-danger {
+  0%,
+  100% {
+    box-shadow:
+      0 0 6px rgba(225, 29, 72, 0.4),
+      0 0 14px rgba(190, 18, 60, 0.25);
+  }
+  50% {
+    box-shadow:
+      0 0 14px rgba(225, 29, 72, 0.65),
+      0 0 30px rgba(190, 18, 60, 0.4);
+  }
+}
+
+@keyframes mythos-glow-combat {
+  0%,
+  100% {
+    box-shadow:
+      0 0 4px rgba(249, 115, 22, 0.3),
+      0 0 10px rgba(234, 88, 12, 0.18);
+  }
+  50% {
+    box-shadow:
+      0 0 11px rgba(249, 115, 22, 0.5),
+      0 0 24px rgba(234, 88, 12, 0.28);
+  }
+}
+
+.animate-mythos-glow-emerald {
+  animation: mythos-glow-emerald 2.4s ease-in-out infinite;
+}
+
+.animate-mythos-glow-amber {
+  animation: mythos-glow-amber 2.4s ease-in-out infinite;
+}
+
+.animate-mythos-glow-orange {
+  animation: mythos-glow-orange 2.4s ease-in-out infinite;
+}
+
+.animate-mythos-glow-danger {
+  animation: mythos-glow-danger 2.4s ease-in-out infinite;
+}
+
+.animate-mythos-glow-combat {
+  animation: mythos-glow-combat 2.6s ease-in-out infinite;
 }
 
 .animate-fade-in {

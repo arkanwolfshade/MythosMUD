@@ -97,7 +97,7 @@ export const vitestTestOptions: NonNullable<UserConfig['test']> = {
         lines: 90,
       },
     },
-    reporter: ['text', 'html', 'json'],
+    reporter: ['text', 'html', 'json', 'lcov'],
     reportsDirectory: './coverage',
   },
 };

@@ -8,6 +8,9 @@
 
 Configuration for AI behavior when interacting with Codacy's MCP Server
 
+This path is the canonical Codacy integration documentation for the repo (referenced in PR descriptions and agent
+configuration). Changes belong here rather than duplicating long policy in commit messages alone.
+
 ## using any tool that accepts the arguments: `provider`, `organization`, or `repository`
 
 - ALWAYS use:
@@ -87,5 +90,3 @@ Configuration for AI behavior when interacting with Codacy's MCP Server
 - If the user accepts, run the `codacy_setup_repository` tool
 - Do not ever try to run the `codacy_setup_repository` tool on your own
 - After setup, immediately retry the action that failed (only retry once)
-
----

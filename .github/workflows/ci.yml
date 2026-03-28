@@ -386,6 +386,13 @@ jobs:
         run: npm run knip
       - name: Run unit tests with coverage
         run: npm run test:coverage
+      - name: Upload frontend coverage to Codacy
+        if: ${{ success() && !env.ACT }}
+        uses: codacy/codacy-coverage-reporter-action@89d6c85cfafaec52c72b6c5e8b2878d33104c699 # v1.3.0
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          coverage-reports: client/coverage/lcov.info
+          language: javascript
       - name: Run E2E tests
         continue-on-error: true # E2E tests require backend server, may fail in frontend-only CI
         run: npm run test

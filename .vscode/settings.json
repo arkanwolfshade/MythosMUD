@@ -71,6 +71,8 @@
     "editor.defaultFormatter": "charliermarsh.ruff",
     "editor.formatOnSave": true
   },
+  "pylint.importStrategy": "fromEnvironment",
+  "pylint.args": ["--rcfile=${workspaceFolder}/.pylintrc"],
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true

@@ -11,6 +11,7 @@ import {
   assertRefreshTokenResponse,
   assertServerCharacterResponseArray,
   assertStatsRollResponse,
+  isCharacterInfo,
   isCharacterInfoArray,
   isLoginResponse,
   isProfessionArray,
@@ -96,6 +97,30 @@ describe.concurrent('apiTypeGuards', () => {
         player_id: 456,
         name: 'Test',
         profession_id: 1,
+        level: 1,
+        created_at: '2020-01-01',
+        last_active: '2020-01-01',
+      };
+      expect(isServerCharacterResponse(value)).toBe(false);
+    });
+
+    it('should return false when neither id nor player_id is present', () => {
+      const value = {
+        name: 'Test',
+        profession_id: 1,
+        level: 1,
+        created_at: '2020-01-01',
+        last_active: '2020-01-01',
+      };
+      expect(isServerCharacterResponse(value)).toBe(false);
+    });
+
+    it('should return false when profession_name is invalid type', () => {
+      const value = {
+        id: 'char-1',
+        name: 'Test',
+        profession_id: 1,
+        profession_name: 123,
         level: 1,
         created_at: '2020-01-01',
         last_active: '2020-01-01',
@@ -419,6 +444,18 @@ describe.concurrent('apiTypeGuards', () => {
     });
   });
 
+  describe('isCharacterInfo', () => {
+    it('should return false for non-object inputs', () => {
+      expect(isCharacterInfo(null)).toBe(false);
+      expect(isCharacterInfo(undefined)).toBe(false);
+      expect(isCharacterInfo('not an object')).toBe(false);
+      expect(isCharacterInfo(0)).toBe(false);
+      expect(isCharacterInfo(true)).toBe(false);
+      expect(isCharacterInfo(Symbol('x'))).toBe(false);
+      expect(isCharacterInfo([])).toBe(false);
+    });
+  });
+
   describe('isCharacterInfoArray', () => {
     it('should return true for valid array of CharacterInfo', () => {
       const value = [
@@ -436,6 +473,36 @@ describe.concurrent('apiTypeGuards', () => {
 
     it('should return false for non-array', () => {
       expect(isCharacterInfoArray(null)).toBe(false);
+    });
+
+    it('should return true when profession_name is null', () => {
+      const value = [
+        {
+          player_id: 'p1',
+          name: 'Test',
+          profession_id: 1,
+          profession_name: null,
+          level: 1,
+          created_at: '2020-01-01',
+          last_active: '2020-01-01',
+        },
+      ];
+      expect(isCharacterInfoArray(value)).toBe(true);
+    });
+
+    it('should return false when profession_name is not string/null/undefined', () => {
+      const value = [
+        {
+          player_id: 'p1',
+          name: 'Test',
+          profession_id: 1,
+          profession_name: 123,
+          level: 1,
+          created_at: '2020-01-01',
+          last_active: '2020-01-01',
+        },
+      ];
+      expect(isCharacterInfoArray(value)).toBe(false);
     });
   });
 
