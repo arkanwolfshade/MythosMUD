@@ -11,6 +11,7 @@ import {
   assertRefreshTokenResponse,
   assertServerCharacterResponseArray,
   assertStatsRollResponse,
+  isCharacterInfo,
   isCharacterInfoArray,
   isLoginResponse,
   isProfessionArray,
@@ -440,6 +441,18 @@ describe.concurrent('apiTypeGuards', () => {
   describe('assertProfessionArray', () => {
     it('should throw with custom message when invalid', () => {
       expect(() => assertProfessionArray(null, 'Custom ProfessionArray error')).toThrow('Custom ProfessionArray error');
+    });
+  });
+
+  describe('isCharacterInfo', () => {
+    it('should return false for non-object inputs', () => {
+      expect(isCharacterInfo(null)).toBe(false);
+      expect(isCharacterInfo(undefined)).toBe(false);
+      expect(isCharacterInfo('not an object')).toBe(false);
+      expect(isCharacterInfo(0)).toBe(false);
+      expect(isCharacterInfo(true)).toBe(false);
+      expect(isCharacterInfo(Symbol('x'))).toBe(false);
+      expect(isCharacterInfo([])).toBe(false);
     });
   });
 

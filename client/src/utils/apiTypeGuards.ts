@@ -247,12 +247,12 @@ function isCharacterInfoObject(value: unknown): value is Record<string, unknown>
   return isObject(value);
 }
 
-const isCharacterInfo = (value: unknown): value is CharacterInfo => {
+export function isCharacterInfo(value: unknown): value is CharacterInfo {
   if (!isCharacterInfoObject(value)) {
     return false;
   }
   return isCharacterInfoCoreFields(value) && isCharacterInfoProfessionNameValid(value);
-};
+}
 
 /**
  * Type guard: Check if value is a ServerCharacterResponse object.
