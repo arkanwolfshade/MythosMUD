@@ -445,6 +445,7 @@ closely related to each other or are asked with the goal of having a single answ
 ## 📚 REFERENCES
 
 - **Canonical rules (Cursor):** `.cursor/rules/` (source of truth for Cursor IDE)
+- **Codacy (AI agents):** `.cursor/rules/codacy.mdc` (MCP provider, repo IDs, post-edit analysis)
 - **Legacy root file:** `.cursorrules` (minimal stub; see .cursor/rules/ and AGENTS.md)
 - **Consolidated reference:** this file (CLAUDE.md) for non-Cursor tools and humans
 - **Sync policy:** When you add or change rules in `.cursor/rules/` or Cursor agents/skills, update this file and

@@ -4,17 +4,196 @@ Manual Dependency Analysis for MythosMUD
 Based on the data we collected from npm outdated and uv pip list --outdated
 """
 
+from __future__ import annotations
+
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import TypedDict
 
-from packaging import version
+from utils.dependency_analysis_types import (
+    AnalysisSnapshot,
+    BreakingChange,
+    DepInfo,
+    PriorityItem,
+    RiskAssessment,
+    UpdateStrategy,
+)
+from utils.dependency_risk import assess_npm_risk, assess_python_risk, categorize_update
+
+
+class NpmManualRow(TypedDict):
+    current: str
+    wanted: str
+    latest: str
+
+
+class PipManualRow(TypedDict):
+    current: str
+    latest: str
+
+
+def _report_executive_and_stats(analysis: AnalysisSnapshot) -> str:
+    us = analysis["update_strategy"]
+    ra = analysis["risk_assessment"]
+    uc = us["update_counts"]
+    rc = us["risk_counts"]
+    return f"""
+# MythosMUD Dependency Upgrade Report
+Generated: {analysis["timestamp"]}
+
+## Executive Summary
+
+**Overall Strategy**: {us["strategy"]}
+**Priority Level**: {us["priority"]}
+**Total Packages**: {us["total_packages"]}
+**Overall Risk**: {ra["overall_risk"]}
+
+## Update Statistics
+
+### By Update Type
+- Major Updates: {uc["major"]}
+- Minor Updates: {uc["minor"]}
+- Patch Updates: {uc["patch"]}
+
+### By Risk Level
+- High Risk: {rc["HIGH"]}
+- Medium Risk: {rc["MEDIUM"]}
+- Low Risk: {rc["LOW"]}
+
+## Priority Update List
+
+"""
+
+
+def _risk_label(level: str) -> str:
+    return {"HIGH": "[HIGH]", "MEDIUM": "[MED]", "LOW": "[LOW]"}.get(level, level)
+
+
+def _update_label(u: str) -> str:
+    return {"major": "(major)", "minor": "(minor)", "patch": "(patch)"}.get(u, u)
+
+
+def _report_priority_block(order: list[PriorityItem]) -> str:
+    lines: list[str] = []
+    for i, item in enumerate(order[:15], 1):
+        risk = _risk_label(item["risk_level"])
+        ut = _update_label(item["update_type"])
+        lines.append(
+            f"""
+### {i}. {item["package"]} {risk} {ut}
+- **Current**: {item["current"]} -> **Latest**: {item["latest"]}
+- **Update Type**: {item["update_type"]}
+- **Risk Level**: {item["risk_level"]}
+- **Ecosystem**: {item["ecosystem"]}
+- **Priority Score**: {item["priority_score"]}
+"""
+        )
+    return "".join(lines)
+
+
+def _report_breaking_section(ra: RiskAssessment) -> str:
+    if not ra["breaking_changes"]:
+        return ""
+    lines = ["\n## Breaking Changes Detected\n\n"]
+    for change in ra["breaking_changes"]:
+        lines.append(f"- **{change['package']}**: {change['current']} -> {change['latest']} ({change['ecosystem']})\n")
+    return "".join(lines)
+
+
+def _report_strategy_block(strategy: str) -> str:
+    header = "\n## Detailed Recommendations\n\n"
+    if strategy == "INCREMENTAL":
+        return (
+            header
+            + """
+### Incremental Upgrade Strategy
+1. **Phase 1**: Update patch versions (low risk)
+2. **Phase 2**: Update minor versions (medium risk)
+3. **Phase 3**: Plan major version updates (high risk)
+4. **Testing**: Full test suite after each phase
+"""
+        )
+    if strategy == "BATCHED":
+        return (
+            header
+            + """
+### Batched Upgrade Strategy
+1. **Batch 1**: All patch updates together
+2. **Batch 2**: Minor updates in groups of 3-5
+3. **Batch 3**: Major updates individually
+4. **Testing**: Regression testing after each batch
+"""
+        )
+    return (
+        header
+        + """
+### Immediate Upgrade Strategy
+1. **All Updates**: Can be applied immediately
+2. **Testing**: Standard test suite
+3. **Monitoring**: Watch for any issues
+"""
+    )
+
+
+def _npm_upgrade_block(npm_packages: list[PriorityItem]) -> str:
+    if not npm_packages:
+        return ""
+    lines = ["### NPM Package Updates\n\n", "```bash\n", "cd client\n"]
+    for pkg in npm_packages[:5]:
+        lines.append(f"npm install {pkg['package']}@{pkg['latest']}\n")
+    lines.extend(["```\n\n"])
+    return "".join(lines)
+
+
+def _pip_upgrade_block(python_packages: list[PriorityItem]) -> str:
+    if not python_packages:
+        return ""
+    lines = ["### Python Package Updates\n\n", "```bash\n"]
+    for pkg in python_packages[:5]:
+        lines.append(f"uv pip install {pkg['package']}=={pkg['latest']}\n")
+    lines.extend(["```\n\n"])
+    return "".join(lines)
+
+
+def _report_upgrade_commands(priority_order: list[PriorityItem]) -> str:
+    npm_packages = [p for p in priority_order if p["ecosystem"] == "npm"]
+    python_packages = [p for p in priority_order if p["ecosystem"] == "pip"]
+    return "\n## Upgrade Commands\n\n" + _npm_upgrade_block(npm_packages) + _pip_upgrade_block(python_packages)
+
+
+def _report_testing_section() -> str:
+    return """
+## Testing Strategy
+
+### Pre-Upgrade Testing
+1. **Current State**: Run full test suite to establish baseline
+2. **Backup**: Create git commit point before upgrades
+3. **Documentation**: Note current working state
+
+### Post-Upgrade Testing
+1. **Unit Tests**: `make test` (from project root)
+2. **Integration Tests**: `make test`
+3. **Client Tests**: `cd client && npm test`
+4. **Linting**: `make lint`
+5. **Manual Testing**: Key user flows
+
+### Rollback Plan
+```bash
+# If issues arise, rollback to previous state
+git checkout HEAD~1
+cd client && npm install
+uv pip install -r requirements.txt  # or equivalent
+```
+"""
 
 
 class ManualDependencyAnalyzer:
     """Manual dependency analysis based on collected data"""
 
-    def __init__(self):
+    npm_outdated_data: dict[str, NpmManualRow]
+    python_outdated_data: dict[str, PipManualRow]
+
+    def __init__(self) -> None:
         self.npm_outdated_data = {
             "@eslint/js": {"current": "9.33.0", "wanted": "9.35.0", "latest": "9.35.0"},
             "@playwright/test": {"current": "1.54.2", "wanted": "1.55.0", "latest": "1.55.0"},
@@ -57,109 +236,34 @@ class ManualDependencyAnalyzer:
             "wcmatch": {"current": "8.5.2", "latest": "10.1"},
         }
 
-    def categorize_update(self, current_ver: str, latest_ver: str) -> str:
-        """Categorize update by semver"""
-        try:
-            current = version.parse(current_ver)
-            latest = version.parse(latest_ver)
-
-            if latest.major > current.major:
-                return "major"
-            elif latest.minor > current.minor:
-                return "minor"
-            elif latest.micro > current.micro:
-                return "patch"
-            else:
-                return "none"
-        except Exception:
-            return "unknown"
-
-    def assess_npm_risk(self, package_name: str, current: str, latest: str) -> str:
-        """Assess risk level for NPM package updates"""
-        update_type = self.categorize_update(current, latest)
-
-        # High-risk packages that require careful handling
-        high_risk_packages = [
-            "react",
-            "react-dom",
-            "typescript",
-            "vite",
-            "eslint",
-            "@types/react",
-            "@types/react-dom",
-            "tailwindcss",
-        ]
-
-        # Medium-risk packages
-        medium_risk_packages = [
-            "@playwright/test",
-            "@testing-library/react",
-            "prettier",
-            "typescript-eslint",
-            "@vitejs/plugin-react",
-        ]
-
-        if update_type == "major":
-            return "HIGH"
-        elif update_type == "minor" and package_name in high_risk_packages:
-            return "MEDIUM"
-        elif update_type == "minor" and package_name in medium_risk_packages:
-            return "LOW"
-        elif update_type == "patch":
-            return "LOW"
-        else:
-            return "LOW"
-
-    def assess_python_risk(self, package_name: str, current: str, latest: str) -> str:
-        """Assess risk level for Python package updates"""
-        update_type = self.categorize_update(current, latest)
-
-        # High-risk packages that require careful handling
-        high_risk_packages = ["fastapi", "pydantic", "sqlalchemy", "uvicorn", "pytest", "pytest-asyncio", "structlog"]
-
-        # Medium-risk packages
-        medium_risk_packages = ["httpx", "argon2-cffi", "fastapi-users", "click", "nats-py"]
-
-        if update_type == "major":
-            return "HIGH"
-        elif update_type == "minor" and package_name in high_risk_packages:
-            return "MEDIUM"
-        elif update_type == "minor" and package_name in medium_risk_packages:
-            return "LOW"
-        elif update_type == "patch":
-            return "LOW"
-        else:
-            return "LOW"
-
-    def _process_npm_dependencies(self) -> dict[str, Any]:
-        """Process NPM dependencies."""
-        npm_deps = {}
+    def _process_npm_dependencies(self) -> dict[str, DepInfo]:
+        npm_deps: dict[str, DepInfo] = {}
         for pkg, info in self.npm_outdated_data.items():
+            cur, lat = info["current"], info["latest"]
             npm_deps[pkg] = {
-                "current": info["current"],
+                "current": cur,
                 "wanted": info["wanted"],
-                "latest": info["latest"],
+                "latest": lat,
                 "ecosystem": "npm",
-                "update_type": self.categorize_update(info["current"], info["latest"]),
-                "risk_level": self.assess_npm_risk(pkg, info["current"], info["latest"]),
+                "update_type": categorize_update(cur, lat),
+                "risk_level": assess_npm_risk(pkg, cur, lat),
             }
         return npm_deps
 
-    def _process_python_dependencies(self) -> dict[str, Any]:
-        """Process Python dependencies."""
-        python_deps = {}
+    def _process_python_dependencies(self) -> dict[str, DepInfo]:
+        python_deps: dict[str, DepInfo] = {}
         for pkg, info in self.python_outdated_data.items():
+            cur, lat = info["current"], info["latest"]
             python_deps[pkg] = {
-                "current": info["current"],
-                "latest": info["latest"],
+                "current": cur,
+                "latest": lat,
                 "ecosystem": "pip",
-                "update_type": self.categorize_update(info["current"], info["latest"]),
-                "risk_level": self.assess_python_risk(pkg, info["current"], info["latest"]),
+                "update_type": categorize_update(cur, lat),
+                "risk_level": assess_python_risk(pkg, cur, lat),
             }
         return python_deps
 
-    def _count_updates_and_risks(self, all_deps: dict[str, Any]) -> tuple[dict[str, int], dict[str, int]]:
-        """Count dependencies by update type and risk level."""
+    def _count_updates_and_risks(self, all_deps: dict[str, DepInfo]) -> tuple[dict[str, int], dict[str, int]]:
         update_counts = {"major": 0, "minor": 0, "patch": 0, "unknown": 0}
         risk_counts = {"HIGH": 0, "MEDIUM": 0, "LOW": 0}
 
@@ -170,35 +274,32 @@ class ManualDependencyAnalyzer:
         return update_counts, risk_counts
 
     def _determine_update_strategy(self, update_counts: dict[str, int]) -> tuple[str, str]:
-        """Determine update strategy and priority."""
         if update_counts["major"] > 0:
             return "INCREMENTAL", "HIGH"
-        elif update_counts["minor"] > 3:
+        if update_counts["minor"] > 3:
             return "BATCHED", "MEDIUM"
-        else:
-            return "IMMEDIATE", "LOW"
+        return "IMMEDIATE", "LOW"
 
-    def _calculate_priority_score(self, dep_info: dict[str, Any]) -> int:
-        """Calculate priority score for a dependency."""
+    def _calculate_priority_score(self, dep_info: DepInfo) -> int:
         priority_score = 0
-
-        if dep_info["update_type"] == "major":
+        ut = dep_info["update_type"]
+        if ut == "major":
             priority_score += 100
-        elif dep_info["update_type"] == "minor":
+        elif ut == "minor":
             priority_score += 50
-        elif dep_info["update_type"] == "patch":
+        elif ut == "patch":
             priority_score += 10
 
-        if dep_info["risk_level"] == "HIGH":
+        rl = dep_info["risk_level"]
+        if rl == "HIGH":
             priority_score += 20
-        elif dep_info["risk_level"] == "MEDIUM":
+        elif rl == "MEDIUM":
             priority_score += 10
 
         return priority_score
 
-    def _create_priority_order(self, all_deps: dict[str, Any]) -> list[dict[str, Any]]:
-        """Create priority order for dependencies."""
-        priority_order = []
+    def _create_priority_order(self, all_deps: dict[str, DepInfo]) -> list[PriorityItem]:
+        priority_order: list[PriorityItem] = []
         for pkg_name, dep_info in all_deps.items():
             priority_score = self._calculate_priority_score(dep_info)
             priority_order.append(
@@ -216,9 +317,8 @@ class ManualDependencyAnalyzer:
         priority_order.sort(key=lambda x: x["priority_score"], reverse=True)
         return priority_order
 
-    def _identify_breaking_changes(self, all_deps: dict[str, Any]) -> list[dict[str, Any]]:
-        """Identify breaking changes (major version updates)."""
-        breaking_changes = []
+    def _identify_breaking_changes(self, all_deps: dict[str, DepInfo]) -> list[BreakingChange]:
+        breaking_changes: list[BreakingChange] = []
         for pkg_name, dep_info in all_deps.items():
             if dep_info["update_type"] == "major":
                 breaking_changes.append(
@@ -231,52 +331,20 @@ class ManualDependencyAnalyzer:
                 )
         return breaking_changes
 
-    def _determine_overall_risk(self, breaking_changes: list[dict[str, Any]]) -> str:
-        """Determine overall risk level."""
+    def _determine_overall_risk(self, breaking_changes: list[BreakingChange]) -> str:
         if len(breaking_changes) > 2:
             return "HIGH"
-        elif len(breaking_changes) > 0:
+        if len(breaking_changes) > 0:
             return "MEDIUM"
-        else:
-            return "LOW"
+        return "LOW"
 
-    def _build_analysis_dict(
-        self,
-        npm_deps: dict[str, Any],
-        python_deps: dict[str, Any],
-        all_deps: dict[str, Any],
-        update_counts: dict[str, int],
-        risk_counts: dict[str, int],
-        strategy: str,
-        priority: str,
-        breaking_changes: list[dict[str, Any]],
-        overall_risk: str,
-        priority_order: list[dict[str, Any]],
-    ) -> dict[str, Any]:
-        """Build the final analysis dictionary."""
-        return {
-            "timestamp": datetime.now().isoformat(),
-            "project": "MythosMUD",
-            "client_dependencies": npm_deps,
-            "server_dependencies": python_deps,
-            "update_strategy": {
-                "strategy": strategy,
-                "priority": priority,
-                "update_counts": update_counts,
-                "risk_counts": risk_counts,
-                "total_packages": len(all_deps),
-            },
-            "risk_assessment": {"breaking_changes": breaking_changes, "overall_risk": overall_risk},
-            "priority_order": priority_order,
-        }
-
-    def analyze_dependencies(self) -> dict[str, Any]:
+    def analyze_dependencies(self) -> AnalysisSnapshot:
         """Analyze all dependencies"""
-        print("🔍 Analyzing MythosMUD dependencies...")
+        print("Analyzing MythosMUD dependencies...")
 
         npm_deps = self._process_npm_dependencies()
         python_deps = self._process_python_dependencies()
-        all_deps = {**npm_deps, **python_deps}
+        all_deps: dict[str, DepInfo] = {**npm_deps, **python_deps}
 
         update_counts, risk_counts = self._count_updates_and_risks(all_deps)
         strategy, priority = self._determine_update_strategy(update_counts)
@@ -284,169 +352,63 @@ class ManualDependencyAnalyzer:
         breaking_changes = self._identify_breaking_changes(all_deps)
         overall_risk = self._determine_overall_risk(breaking_changes)
 
-        return self._build_analysis_dict(
-            npm_deps,
-            python_deps,
-            all_deps,
-            update_counts,
-            risk_counts,
-            strategy,
-            priority,
-            breaking_changes,
-            overall_risk,
-            priority_order,
-        )
+        update_strategy: UpdateStrategy = {
+            "strategy": strategy,
+            "priority": priority,
+            "update_counts": update_counts,
+            "risk_counts": risk_counts,
+            "total_packages": len(all_deps),
+        }
+        risk_assessment: RiskAssessment = {
+            "breaking_changes": breaking_changes,
+            "security_vulnerabilities": [],
+            "compatibility_issues": [],
+            "overall_risk": overall_risk,
+        }
 
-    def generate_report(self, analysis: dict[str, Any]) -> str:
+        return {
+            "timestamp": datetime.now().isoformat(),
+            "project": "MythosMUD",
+            "client_dependencies": npm_deps,
+            "server_dependencies": python_deps,
+            "update_strategy": update_strategy,
+            "risk_assessment": risk_assessment,
+            "priority_order": priority_order,
+        }
+
+    def generate_report(self, analysis: AnalysisSnapshot) -> str:
         """Generate comprehensive upgrade report"""
-        report = f"""
-# MythosMUD Dependency Upgrade Report
-Generated: {analysis["timestamp"]}
-
-## Executive Summary
-
-**Overall Strategy**: {analysis["update_strategy"]["strategy"]}
-**Priority Level**: {analysis["update_strategy"]["priority"]}
-**Total Packages**: {analysis["update_strategy"]["total_packages"]}
-**Overall Risk**: {analysis["risk_assessment"]["overall_risk"]}
-
-## Update Statistics
-
-### By Update Type
-- Major Updates: {analysis["update_strategy"]["update_counts"]["major"]}
-- Minor Updates: {analysis["update_strategy"]["update_counts"]["minor"]}
-- Patch Updates: {analysis["update_strategy"]["update_counts"]["patch"]}
-
-### By Risk Level
-- High Risk: {analysis["update_strategy"]["risk_counts"]["HIGH"]}
-- Medium Risk: {analysis["update_strategy"]["risk_counts"]["MEDIUM"]}
-- Low Risk: {analysis["update_strategy"]["risk_counts"]["LOW"]}
-
-## Priority Update List
-
-"""
-
-        for i, item in enumerate(analysis["priority_order"][:15], 1):
-            risk_emoji = {"HIGH": "🔴", "MEDIUM": "🟡", "LOW": "🟢"}[item["risk_level"]]
-            update_emoji = {"major": "⚡", "minor": "📈", "patch": "🔧"}[item["update_type"]]
-
-            report += f"""
-### {i}. {item["package"]} {risk_emoji} {update_emoji}
-- **Current**: {item["current"]} → **Latest**: {item["latest"]}
-- **Update Type**: {item["update_type"]}
-- **Risk Level**: {item["risk_level"]}
-- **Ecosystem**: {item["ecosystem"]}
-- **Priority Score**: {item["priority_score"]}
-"""
-
-        # Breaking changes section
-        if analysis["risk_assessment"]["breaking_changes"]:
-            report += "\n## ⚠️ Breaking Changes Detected\n\n"
-            for change in analysis["risk_assessment"]["breaking_changes"]:
-                report += (
-                    f"- **{change['package']}**: {change['current']} → {change['latest']} ({change['ecosystem']})\n"
-                )
-
-        # Detailed recommendations
-        report += "\n## 📋 Detailed Recommendations\n\n"
-
-        strategy = analysis["update_strategy"]["strategy"]
-        if strategy == "INCREMENTAL":
-            report += """
-### Incremental Upgrade Strategy
-1. **Phase 1**: Update patch versions (low risk)
-2. **Phase 2**: Update minor versions (medium risk)
-3. **Phase 3**: Plan major version updates (high risk)
-4. **Testing**: Full test suite after each phase
-"""
-        elif strategy == "BATCHED":
-            report += """
-### Batched Upgrade Strategy
-1. **Batch 1**: All patch updates together
-2. **Batch 2**: Minor updates in groups of 3-5
-3. **Batch 3**: Major updates individually
-4. **Testing**: Regression testing after each batch
-"""
-        else:
-            report += """
-### Immediate Upgrade Strategy
-1. **All Updates**: Can be applied immediately
-2. **Testing**: Standard test suite
-3. **Monitoring**: Watch for any issues
-"""
-
-        # Specific upgrade commands
-        report += "\n## 🚀 Upgrade Commands\n\n"
-
-        # NPM upgrades
-        npm_packages = [pkg for pkg in analysis["priority_order"] if pkg["ecosystem"] == "npm"]
-        if npm_packages:
-            report += "### NPM Package Updates\n\n"
-            report += "```bash\n"
-            report += "cd client\n"
-            for pkg in npm_packages[:5]:  # Top 5 NPM packages
-                report += f"npm install {pkg['package']}@{pkg['latest']}\n"
-            report += "```\n\n"
-
-        # Python upgrades
-        python_packages = [pkg for pkg in analysis["priority_order"] if pkg["ecosystem"] == "pip"]
-        if python_packages:
-            report += "### Python Package Updates\n\n"
-            report += "```bash\n"
-            for pkg in python_packages[:5]:  # Top 5 Python packages
-                report += f"uv pip install {pkg['package']}=={pkg['latest']}\n"
-            report += "```\n\n"
-
-        # Testing strategy
-        report += "\n## 🧪 Testing Strategy\n\n"
-        report += """
-### Pre-Upgrade Testing
-1. **Current State**: Run full test suite to establish baseline
-2. **Backup**: Create git commit point before upgrades
-3. **Documentation**: Note current working state
-
-### Post-Upgrade Testing
-1. **Unit Tests**: `make test` (from project root)
-2. **Integration Tests**: `make test`
-3. **Client Tests**: `cd client && npm test`
-4. **Linting**: `make lint`
-5. **Manual Testing**: Key user flows
-
-### Rollback Plan
-```bash
-# If issues arise, rollback to previous state
-git checkout HEAD~1
-cd client && npm install
-uv pip install -r requirements.txt  # or equivalent
-```
-"""
-
-        return report
+        us = analysis["update_strategy"]
+        parts = [
+            _report_executive_and_stats(analysis),
+            _report_priority_block(analysis["priority_order"]),
+            _report_breaking_section(analysis["risk_assessment"]),
+            _report_strategy_block(us["strategy"]),
+            _report_upgrade_commands(analysis["priority_order"]),
+            _report_testing_section(),
+        ]
+        return "".join(parts)
 
 
-def main():
+def main() -> int:
     """Main execution function"""
     analyzer = ManualDependencyAnalyzer()
 
-    print("🔬 MythosMUD Manual Dependency Analysis")
+    print("MythosMUD Manual Dependency Analysis")
     print("=" * 50)
 
-    # Run analysis
     analysis = analyzer.analyze_dependencies()
-
-    # Generate report
     report = analyzer.generate_report(analysis)
 
-    # Save report
     report_path = Path("dependency_upgrade_report.md")
     with open(report_path, "w", encoding="utf-8") as f:
-        f.write(report)
+        _ = f.write(report)
 
-    print(f"\n📄 Report saved to: {report_path}")
+    print(f"\nReport saved to: {report_path}")
     print("\n" + report)
 
     return 0
 
 
 if __name__ == "__main__":
-    main()
+    _ = main()
