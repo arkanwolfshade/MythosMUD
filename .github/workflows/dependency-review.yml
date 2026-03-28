@@ -85,5 +85,8 @@ jobs:
           git remote set-url origin "https://github.com/${repo}.git"
           cd ..
 
+      # Transitive dev deps (e.g. stacktracey via Spectral) may score <3 on OpenSSF; warn only below 2.
       - name: "Dependency Review"
         uses: actions/dependency-review-action@2031cfc080254a8a887f58cffee85186f0e49e48 # v4.9.0
+        with:
+          warn-on-openssf-scorecard-level: 2
