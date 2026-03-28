@@ -5,8 +5,8 @@ Unit tests for authentication utilities.
 from datetime import timedelta
 from typing import Any
 
+import jwt
 import pytest
-from jose import JWTError
 
 from server.auth_utils import (
     create_access_token,
@@ -160,12 +160,12 @@ def test_decode_access_token_wrong_secret():
 
 
 def test_create_access_token_jwt_error():
-    """Test create_access_token handles JWTError."""
+    """Test create_access_token handles PyJWTError."""
     from unittest.mock import patch
 
     data = {"sub": "testuser"}
-    with patch("jose.jwt.encode") as mock_encode:
-        mock_encode.side_effect = JWTError("JWT error")
+    with patch("server.auth_utils.jwt.encode") as mock_encode:
+        mock_encode.side_effect = jwt.PyJWTError("JWT error")
         with pytest.raises(AuthenticationError, match="Failed to create access token"):
             create_access_token(data)
 
@@ -175,7 +175,7 @@ def test_create_access_token_value_error():
     from unittest.mock import patch
 
     data = {"sub": "testuser"}
-    with patch("jose.jwt.encode") as mock_encode:
+    with patch("server.auth_utils.jwt.encode") as mock_encode:
         mock_encode.side_effect = ValueError("Value error")
         with pytest.raises(AuthenticationError, match="Failed to create access token"):
             create_access_token(data)
@@ -186,7 +186,7 @@ def test_decode_access_token_value_error():
     from unittest.mock import patch
 
     token = create_access_token({"sub": "testuser"})
-    with patch("jose.jwt.decode") as mock_decode:
+    with patch("server.auth_utils.jwt.decode") as mock_decode:
         mock_decode.side_effect = ValueError("Value error")
         result = decode_access_token(token)
         assert result is None
@@ -197,7 +197,7 @@ def test_decode_access_token_type_error():
     from unittest.mock import patch
 
     token = create_access_token({"sub": "testuser"})
-    with patch("jose.jwt.decode") as mock_decode:
+    with patch("server.auth_utils.jwt.decode") as mock_decode:
         mock_decode.side_effect = TypeError("Type error")
         result = decode_access_token(token)
         assert result is None
@@ -208,7 +208,7 @@ def test_decode_access_token_runtime_error():
     from unittest.mock import patch
 
     token = create_access_token({"sub": "testuser"})
-    with patch("jose.jwt.decode") as mock_decode:
+    with patch("server.auth_utils.jwt.decode") as mock_decode:
         mock_decode.side_effect = RuntimeError("Runtime error")
         result = decode_access_token(token)
         assert result is None
@@ -310,7 +310,7 @@ def test_create_access_token_attribute_error():
     from unittest.mock import patch
 
     data = {"sub": "testuser"}
-    with patch("jose.jwt.encode") as mock_encode:
+    with patch("server.auth_utils.jwt.encode") as mock_encode:
         mock_encode.side_effect = AttributeError("Attribute error")
         with pytest.raises(AuthenticationError, match="Failed to create access token"):
             create_access_token(data)
@@ -321,7 +321,7 @@ def test_create_access_token_runtime_error():
     from unittest.mock import patch
 
     data = {"sub": "testuser"}
-    with patch("jose.jwt.encode") as mock_encode:
+    with patch("server.auth_utils.jwt.encode") as mock_encode:
         mock_encode.side_effect = RuntimeError("Runtime error")
         with pytest.raises(AuthenticationError, match="Failed to create access token"):
             create_access_token(data)
@@ -332,7 +332,7 @@ def test_decode_access_token_attribute_error():
     from unittest.mock import patch
 
     token = create_access_token({"sub": "testuser"})
-    with patch("jose.jwt.decode") as mock_decode:
+    with patch("server.auth_utils.jwt.decode") as mock_decode:
         mock_decode.side_effect = AttributeError("Attribute error")
         result = decode_access_token(token)
         assert result is None

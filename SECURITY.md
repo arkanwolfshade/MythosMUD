@@ -334,19 +334,13 @@ All 11 active Dependabot security alerts have been addressed:
 
 #### Known Limitations
 
-1. **ecdsa** ([Alerts #13](https://github.com/arkanwolfshade/MythosMUD/security/dependabot/13),
+1. **ecdsa / python-jose (resolved for MythosMUD direct deps)** — Previously, `ecdsa` was pulled in transitively via
 
-   [#20](https://github.com/arkanwolfshade/MythosMUD/security/dependabot/20)) - HIGH
+   `python-jose` (GHSA-wj6h-64fc-37mp / CVE-2024-23342). PyPI has no fixed `ecdsa` release that satisfies scanners
 
-   **CVE-2024-23342**: Minerva timing attack on P-256 curve
+   expecting `>=0.20.0`. **Mitigation**: `server/auth_utils.py` now uses **PyJWT** only (same stack as fastapi-users);
 
-   **Status**: Already at latest version 0.19.1, but no patched version available
-
-   **Note**: This is a transitive dependency of python-jose. The vulnerability is a side-channel timing attack that
-
-   maintainers have marked out of scope. No patch is currently available from upstream.
-
-   **Mitigation**: Using latest available version. Consider alternative crypto libraries for high-security use cases.
+   `python-jose` was removed from `pyproject.toml`, so the vulnerable `ecdsa` package is no longer in `uv.lock`.
 
 #### Testing Performed
 

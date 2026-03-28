@@ -8,7 +8,7 @@ import os
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
-from jose import JWTError, jwt
+import jwt
 
 # Import our Argon2 implementation
 from server.auth.argon2_utils import hash_password as argon2_hash_password
@@ -32,6 +32,8 @@ if not SECRET_KEY:
     )
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
+# Match fastapi-users JWT audience so decode_access_token validates the same claim.
+TOKEN_AUDIENCE = "fastapi-users:auth"
 
 logger.info("Auth utilities initialized", algorithm=ALGORITHM, token_expire_minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
 
@@ -95,6 +97,8 @@ def create_access_token(
     to_encode = data.copy()
     expire = datetime.now(UTC) + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
     to_encode.update({"exp": expire})
+    if "aud" not in to_encode:
+        to_encode["aud"] = TOKEN_AUDIENCE
 
     if secret_key is None:
         raise AuthenticationError("JWT secret key is not configured")
@@ -105,7 +109,7 @@ def create_access_token(
         if not isinstance(token, str):
             raise TypeError("JWT token must be a string")
         return token
-    except (JWTError, ValueError, TypeError, AttributeError, RuntimeError) as e:
+    except (jwt.PyJWTError, ValueError, TypeError, AttributeError, RuntimeError) as e:
         logger.error("Failed to create access token", error=str(e))
         log_and_raise(
             AuthenticationError,
@@ -128,12 +132,12 @@ def decode_access_token(
         return None
 
     try:
-        payload = jwt.decode(token, secret_key, algorithms=[algorithm], audience="fastapi-users:auth")
+        payload = jwt.decode(token, secret_key, algorithms=[algorithm], audience=TOKEN_AUDIENCE)
         logger.debug("Access token decoded successfully")
         if not isinstance(payload, dict):
             raise TypeError("JWT payload must be a dict")
         return payload
-    except JWTError as e:
+    except jwt.PyJWTError as e:
         logger.warning("JWT decode error", error=str(e))
         return None
     except (ValueError, TypeError, AttributeError, RuntimeError) as e:
