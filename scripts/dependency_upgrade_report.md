@@ -1,6 +1,6 @@
-
 # MythosMUD Dependency Upgrade Report
-Generated: 2026-03-27T19:31:06.842685
+
+Generated: 2026-03-27T19:38:23.888865
 
 ## Executive Summary
 
@@ -12,19 +12,21 @@ Generated: 2026-03-27T19:31:06.842685
 ## Update Statistics
 
 ### By Update Type
+
 - Major Updates: 9
 - Minor Updates: 18
 - Patch Updates: 9
 
 ### By Risk Level
+
 - High Risk: 9
 - Medium Risk: 1
 - Low Risk: 26
 
 ## Priority Update List
 
-
 ### 1. argon2-cffi [HIGH] (major)
+
 - **Current**: 23.1.0 -> **Latest**: 25.1.0
 - **Update Type**: major
 - **Risk Level**: HIGH
@@ -32,6 +34,7 @@ Generated: 2026-03-27T19:31:06.842685
 - **Priority Score**: 120
 
 ### 2. argon2-cffi-bindings [HIGH] (major)
+
 - **Current**: 21.2.0 -> **Latest**: 25.1.0
 - **Update Type**: major
 - **Risk Level**: HIGH
@@ -39,6 +42,7 @@ Generated: 2026-03-27T19:31:06.842685
 - **Priority Score**: 120
 
 ### 3. boltons [HIGH] (major)
+
 - **Current**: 21.0.0 -> **Latest**: 25.0.0
 - **Update Type**: major
 - **Risk Level**: HIGH
@@ -46,6 +50,7 @@ Generated: 2026-03-27T19:31:06.842685
 - **Priority Score**: 120
 
 ### 4. glom [HIGH] (major)
+
 - **Current**: 22.1.0 -> **Latest**: 24.11.0
 - **Update Type**: major
 - **Risk Level**: HIGH
@@ -53,6 +58,7 @@ Generated: 2026-03-27T19:31:06.842685
 - **Priority Score**: 120
 
 ### 5. importlib-metadata [HIGH] (major)
+
 - **Current**: 7.1.0 -> **Latest**: 8.7.0
 - **Update Type**: major
 - **Risk Level**: HIGH
@@ -60,6 +66,7 @@ Generated: 2026-03-27T19:31:06.842685
 - **Priority Score**: 120
 
 ### 6. protobuf [HIGH] (major)
+
 - **Current**: 4.25.8 -> **Latest**: 6.32.0
 - **Update Type**: major
 - **Risk Level**: HIGH
@@ -67,6 +74,7 @@ Generated: 2026-03-27T19:31:06.842685
 - **Priority Score**: 120
 
 ### 7. pytest-asyncio [HIGH] (major)
+
 - **Current**: 0.24.0 -> **Latest**: 1.1.0
 - **Update Type**: major
 - **Risk Level**: HIGH
@@ -74,6 +82,7 @@ Generated: 2026-03-27T19:31:06.842685
 - **Priority Score**: 120
 
 ### 8. rich [HIGH] (major)
+
 - **Current**: 13.5.3 -> **Latest**: 14.1.0
 - **Update Type**: major
 - **Risk Level**: HIGH
@@ -81,6 +90,7 @@ Generated: 2026-03-27T19:31:06.842685
 - **Priority Score**: 120
 
 ### 9. wcmatch [HIGH] (major)
+
 - **Current**: 8.5.2 -> **Latest**: 10.1
 - **Update Type**: major
 - **Risk Level**: HIGH
@@ -88,6 +98,7 @@ Generated: 2026-03-27T19:31:06.842685
 - **Priority Score**: 120
 
 ### 10. eslint [MED] (minor)
+
 - **Current**: 9.33.0 -> **Latest**: 9.35.0
 - **Update Type**: minor
 - **Risk Level**: MEDIUM
@@ -95,6 +106,7 @@ Generated: 2026-03-27T19:31:06.842685
 - **Priority Score**: 60
 
 ### 11. @eslint/js [LOW] (minor)
+
 - **Current**: 9.33.0 -> **Latest**: 9.35.0
 - **Update Type**: minor
 - **Risk Level**: LOW
@@ -102,6 +114,7 @@ Generated: 2026-03-27T19:31:06.842685
 - **Priority Score**: 50
 
 ### 12. @playwright/test [LOW] (minor)
+
 - **Current**: 1.54.2 -> **Latest**: 1.55.0
 - **Update Type**: minor
 - **Risk Level**: LOW
@@ -109,6 +122,7 @@ Generated: 2026-03-27T19:31:06.842685
 - **Priority Score**: 50
 
 ### 13. @testing-library/jest-dom [LOW] (minor)
+
 - **Current**: 6.7.0 -> **Latest**: 6.8.0
 - **Update Type**: minor
 - **Risk Level**: LOW
@@ -116,6 +130,7 @@ Generated: 2026-03-27T19:31:06.842685
 - **Priority Score**: 50
 
 ### 14. lucide-react [LOW] (minor)
+
 - **Current**: 0.540.0 -> **Latest**: 0.542.0
 - **Update Type**: minor
 - **Risk Level**: LOW
@@ -123,6 +138,7 @@ Generated: 2026-03-27T19:31:06.842685
 - **Priority Score**: 50
 
 ### 15. typescript-eslint [LOW] (minor)
+
 - **Current**: 8.40.0 -> **Latest**: 8.42.0
 - **Update Type**: minor
 - **Risk Level**: LOW
@@ -143,8 +159,8 @@ Generated: 2026-03-27T19:31:06.842685
 
 ## Detailed Recommendations
 
-
 ### Incremental Upgrade Strategy
+
 1. **Phase 1**: Update patch versions (low risk)
 2. **Phase 2**: Update minor versions (medium risk)
 3. **Phase 3**: Plan major version updates (high risk)
@@ -173,15 +189,16 @@ uv pip install glom==24.11.0
 uv pip install importlib-metadata==8.7.0
 ```
 
-
 ## Testing Strategy
 
 ### Pre-Upgrade Testing
+
 1. **Current State**: Run full test suite to establish baseline
 2. **Backup**: Create git commit point before upgrades
 3. **Documentation**: Note current working state
 
 ### Post-Upgrade Testing
+
 1. **Unit Tests**: `make test` (from project root)
 2. **Integration Tests**: `make test`
 3. **Client Tests**: `cd client && npm test`
@@ -189,6 +206,7 @@ uv pip install importlib-metadata==8.7.0
 5. **Manual Testing**: Key user flows
 
 ### Rollback Plan
+
 ```bash
 # If issues arise, rollback to previous state
 git checkout HEAD~1

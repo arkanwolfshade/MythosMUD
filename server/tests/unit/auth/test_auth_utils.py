@@ -3,7 +3,6 @@ Unit tests for authentication utilities.
 """
 
 from datetime import timedelta
-from typing import Any
 
 import jwt
 import pytest
@@ -19,7 +18,7 @@ from server.exceptions import AuthenticationError
 
 # autouse: required for test isolation in this module - JWT encode/decode needs secret
 @pytest.fixture(autouse=True)
-def setup_jwt_secret(monkeypatch):
+def setup_jwt_secret(monkeypatch: pytest.MonkeyPatch) -> None:
     """Set JWT secret for tests."""
     monkeypatch.setenv("MYTHOSMUD_JWT_SECRET", "test-secret-key-for-testing-only")
 
@@ -59,7 +58,7 @@ def test_hash_password_raises_on_error():
 
     with patch("server.auth_utils.argon2_hash_password", side_effect=ValueError("test error")):
         with pytest.raises(AuthenticationError):
-            hash_password("test")
+            _ = hash_password("test")
 
 
 def test_verify_password_returns_false_on_error():
@@ -136,7 +135,7 @@ def test_create_access_token_with_none_secret():
     """Test create_access_token raises AuthenticationError when secret is None."""
     data = {"sub": "testuser"}
     with pytest.raises(AuthenticationError, match="JWT secret key is not configured"):
-        create_access_token(data, secret_key=None)
+        _ = create_access_token(data, secret_key=None)
 
 
 def test_decode_access_token_none_token():
@@ -167,7 +166,7 @@ def test_create_access_token_jwt_error():
     with patch("server.auth_utils.jwt.encode") as mock_encode:
         mock_encode.side_effect = jwt.PyJWTError("JWT error")
         with pytest.raises(AuthenticationError, match="Failed to create access token"):
-            create_access_token(data)
+            _ = create_access_token(data)
 
 
 def test_create_access_token_value_error():
@@ -178,7 +177,7 @@ def test_create_access_token_value_error():
     with patch("server.auth_utils.jwt.encode") as mock_encode:
         mock_encode.side_effect = ValueError("Value error")
         with pytest.raises(AuthenticationError, match="Failed to create access token"):
-            create_access_token(data)
+            _ = create_access_token(data)
 
 
 def test_decode_access_token_value_error():
@@ -223,7 +222,7 @@ def test_hash_password_authentication_error():
         side_effect=AuthenticationError("Auth error"),
     ):
         with pytest.raises(AuthenticationError):
-            hash_password("test")
+            _ = hash_password("test")
 
 
 def test_hash_password_value_error():
@@ -232,7 +231,7 @@ def test_hash_password_value_error():
 
     with patch("server.auth_utils.argon2_hash_password", side_effect=ValueError("Value error")):
         with pytest.raises(AuthenticationError):
-            hash_password("test")
+            _ = hash_password("test")
 
 
 def test_hash_password_type_error():
@@ -241,7 +240,7 @@ def test_hash_password_type_error():
 
     with patch("server.auth_utils.argon2_hash_password", side_effect=TypeError("Type error")):
         with pytest.raises(AuthenticationError):
-            hash_password("test")
+            _ = hash_password("test")
 
 
 def test_hash_password_runtime_error():
@@ -250,7 +249,7 @@ def test_hash_password_runtime_error():
 
     with patch("server.auth_utils.argon2_hash_password", side_effect=RuntimeError("Runtime error")):
         with pytest.raises(AuthenticationError):
-            hash_password("test")
+            _ = hash_password("test")
 
 
 def test_verify_password_attribute_error():
@@ -273,7 +272,7 @@ def test_verify_password_runtime_error():
 
 def test_create_access_token_with_empty_data():
     """Test create_access_token with empty data dict."""
-    data: dict[str, Any] = {}
+    data: dict[str, object] = {}
     token = create_access_token(data)
     assert isinstance(token, str)
     assert len(token) > 0
@@ -313,7 +312,7 @@ def test_create_access_token_attribute_error():
     with patch("server.auth_utils.jwt.encode") as mock_encode:
         mock_encode.side_effect = AttributeError("Attribute error")
         with pytest.raises(AuthenticationError, match="Failed to create access token"):
-            create_access_token(data)
+            _ = create_access_token(data)
 
 
 def test_create_access_token_runtime_error():
@@ -324,7 +323,7 @@ def test_create_access_token_runtime_error():
     with patch("server.auth_utils.jwt.encode") as mock_encode:
         mock_encode.side_effect = RuntimeError("Runtime error")
         with pytest.raises(AuthenticationError, match="Failed to create access token"):
-            create_access_token(data)
+            _ = create_access_token(data)
 
 
 def test_decode_access_token_attribute_error():
@@ -341,13 +340,13 @@ def test_decode_access_token_attribute_error():
 def test_hash_password_empty_string():
     """Test hashing empty string password raises AuthenticationError."""
     with pytest.raises(AuthenticationError, match="Password cannot be empty"):
-        hash_password("")
+        _ = hash_password("")
 
 
 def test_verify_password_empty_string():
     """Test verifying empty string password - cannot hash empty password."""
     with pytest.raises(AuthenticationError, match="Password cannot be empty"):
-        hash_password("")
+        _ = hash_password("")
 
 
 def test_create_access_token_with_none_expires_delta():
@@ -385,14 +384,14 @@ def test_hash_password_with_very_long_password():
     """Test hashing a very long password raises AuthenticationError."""
     long_password = "a" * 10000
     with pytest.raises(AuthenticationError, match="Password must not exceed 1024 characters"):
-        hash_password(long_password)
+        _ = hash_password(long_password)
 
 
 def test_verify_password_with_very_long_password():
     """Test verifying a very long password - cannot hash password exceeding limit."""
     long_password = "a" * 10000
     with pytest.raises(AuthenticationError, match="Password must not exceed 1024 characters"):
-        hash_password(long_password)
+        _ = hash_password(long_password)
 
 
 def test_create_access_token_with_custom_expires_delta_zero():

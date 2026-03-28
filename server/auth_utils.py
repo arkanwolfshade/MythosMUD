@@ -8,6 +8,7 @@ used for user authentication in the MythosMUD server.
 """
 
 import os
+from collections.abc import Mapping
 from datetime import UTC, datetime, timedelta
 from typing import cast
 
@@ -86,7 +87,7 @@ def verify_password(password: str, password_hash: str) -> bool:
 
 
 def create_access_token(
-    data: dict[str, object],
+    data: Mapping[str, object],
     expires_delta: timedelta | None = None,
     secret_key: str | None = SECRET_KEY,
     algorithm: str = ALGORITHM,
@@ -94,7 +95,7 @@ def create_access_token(
     """Create a JWT access token."""
     logger.debug("Creating access token", expires_delta=expires_delta)
 
-    to_encode = data.copy()
+    to_encode = dict(data)
     expire = datetime.now(UTC) + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
     to_encode.update({"exp": expire})
     if "aud" not in to_encode:

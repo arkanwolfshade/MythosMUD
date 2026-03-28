@@ -37,8 +37,8 @@ def _report_executive_and_stats(analysis: AnalysisSnapshot) -> str:
     ra = analysis["risk_assessment"]
     uc = us["update_counts"]
     rc = us["risk_counts"]
-    return f"""
-# MythosMUD Dependency Upgrade Report
+    return f"""# MythosMUD Dependency Upgrade Report
+
 Generated: {analysis["timestamp"]}
 
 ## Executive Summary
@@ -51,11 +51,13 @@ Generated: {analysis["timestamp"]}
 ## Update Statistics
 
 ### By Update Type
+
 - Major Updates: {uc["major"]}
 - Minor Updates: {uc["minor"]}
 - Patch Updates: {uc["patch"]}
 
 ### By Risk Level
+
 - High Risk: {rc["HIGH"]}
 - Medium Risk: {rc["MEDIUM"]}
 - Low Risk: {rc["LOW"]}
@@ -79,13 +81,14 @@ def _report_priority_block(order: list[PriorityItem]) -> str:
         risk = _risk_label(item["risk_level"])
         ut = _update_label(item["update_type"])
         lines.append(
-            f"""
-### {i}. {item["package"]} {risk} {ut}
+            f"""### {i}. {item["package"]} {risk} {ut}
+
 - **Current**: {item["current"]} -> **Latest**: {item["latest"]}
 - **Update Type**: {item["update_type"]}
 - **Risk Level**: {item["risk_level"]}
 - **Ecosystem**: {item["ecosystem"]}
 - **Priority Score**: {item["priority_score"]}
+
 """
         )
     return "".join(lines)
@@ -94,7 +97,7 @@ def _report_priority_block(order: list[PriorityItem]) -> str:
 def _report_breaking_section(ra: RiskAssessment) -> str:
     if not ra["breaking_changes"]:
         return ""
-    lines = ["\n## Breaking Changes Detected\n\n"]
+    lines: list[str] = ["\n## Breaking Changes Detected\n\n"]
     for change in ra["breaking_changes"]:
         lines.append(f"- **{change['package']}**: {change['current']} -> {change['latest']} ({change['ecosystem']})\n")
     return "".join(lines)
@@ -105,8 +108,8 @@ def _report_strategy_block(strategy: str) -> str:
     if strategy == "INCREMENTAL":
         return (
             header
-            + """
-### Incremental Upgrade Strategy
+            + """### Incremental Upgrade Strategy
+
 1. **Phase 1**: Update patch versions (low risk)
 2. **Phase 2**: Update minor versions (medium risk)
 3. **Phase 3**: Plan major version updates (high risk)
@@ -116,8 +119,8 @@ def _report_strategy_block(strategy: str) -> str:
     if strategy == "BATCHED":
         return (
             header
-            + """
-### Batched Upgrade Strategy
+            + """### Batched Upgrade Strategy
+
 1. **Batch 1**: All patch updates together
 2. **Batch 2**: Minor updates in groups of 3-5
 3. **Batch 3**: Major updates individually
@@ -126,8 +129,8 @@ def _report_strategy_block(strategy: str) -> str:
         )
     return (
         header
-        + """
-### Immediate Upgrade Strategy
+        + """### Immediate Upgrade Strategy
+
 1. **All Updates**: Can be applied immediately
 2. **Testing**: Standard test suite
 3. **Monitoring**: Watch for any issues
@@ -141,7 +144,7 @@ def _npm_upgrade_block(npm_packages: list[PriorityItem]) -> str:
     lines = ["### NPM Package Updates\n\n", "```bash\n", "cd client\n"]
     for pkg in npm_packages[:5]:
         lines.append(f"npm install {pkg['package']}@{pkg['latest']}\n")
-    lines.extend(["```\n\n"])
+    lines.append("```\n\n")
     return "".join(lines)
 
 
@@ -151,7 +154,7 @@ def _pip_upgrade_block(python_packages: list[PriorityItem]) -> str:
     lines = ["### Python Package Updates\n\n", "```bash\n"]
     for pkg in python_packages[:5]:
         lines.append(f"uv pip install {pkg['package']}=={pkg['latest']}\n")
-    lines.extend(["```\n\n"])
+    lines.append("```\n\n")
     return "".join(lines)
 
 
@@ -162,15 +165,16 @@ def _report_upgrade_commands(priority_order: list[PriorityItem]) -> str:
 
 
 def _report_testing_section() -> str:
-    return """
-## Testing Strategy
+    return """## Testing Strategy
 
 ### Pre-Upgrade Testing
+
 1. **Current State**: Run full test suite to establish baseline
 2. **Backup**: Create git commit point before upgrades
 3. **Documentation**: Note current working state
 
 ### Post-Upgrade Testing
+
 1. **Unit Tests**: `make test` (from project root)
 2. **Integration Tests**: `make test`
 3. **Client Tests**: `cd client && npm test`
@@ -178,6 +182,7 @@ def _report_testing_section() -> str:
 5. **Manual Testing**: Key user flows
 
 ### Rollback Plan
+
 ```bash
 # If issues arise, rollback to previous state
 git checkout HEAD~1

@@ -289,11 +289,12 @@ class DependencyAnalyzer:
     def _report_executive_and_stats(self) -> str:
         """Build report header, executive summary, and update statistics section."""
         r = self.analysis_results
-        assert r is not None
+        if r is None:
+            raise RuntimeError("analysis_results must be set before building report sections")
         us = r["update_strategy"]
         ra = r["risk_assessment"]
-        return f"""
-# MythosMUD Dependency Upgrade Report
+        return f"""# MythosMUD Dependency Upgrade Report
+
 Generated: {r["timestamp"]}
 
 ## Executive Summary
@@ -306,11 +307,13 @@ Generated: {r["timestamp"]}
 ## Update Statistics
 
 ### By Update Type
+
 - Major Updates: {us["update_counts"]["major"]}
 - Minor Updates: {us["update_counts"]["minor"]}
 - Patch Updates: {us["update_counts"]["patch"]}
 
 ### By Risk Level
+
 - High Risk: {us["risk_counts"]["HIGH"]}
 - Medium Risk: {us["risk_counts"]["MEDIUM"]}
 - Low Risk: {us["risk_counts"]["LOW"]}
@@ -327,21 +330,24 @@ Generated: {r["timestamp"]}
         for i, item in enumerate(items[:top_n], 1):
             re_ = risk_emoji.get(item["risk_level"], "🟢")
             ue_ = update_emoji.get(item["update_type"], "🔧")
-            parts.append(f"""
-### {i}. {item["package"]} {re_} {ue_}
+            parts.append(
+                f"""### {i}. {item["package"]} {re_} {ue_}
+
 - **Current**: {item["current"]} → **Latest**: {item["latest"]}
 - **Update Type**: {item["update_type"]}
 - **Risk Level**: {item["risk_level"]}
 - **Ecosystem**: {item["ecosystem"]}
 - **Priority Score**: {item["priority_score"]}
-""")
+
+"""
+            )
         return "".join(parts)
 
     def _report_breaking_changes(self, breaking_changes: list[BreakingChange]) -> str:
         """Format breaking changes section."""
         if not breaking_changes:
             return ""
-        lines = ["\n## ⚠️ Breaking Changes Detected\n\n"]
+        lines: list[str] = ["\n## Breaking Changes Detected\n\n"]
         for change in breaking_changes:
             lines.append(
                 f"- **{change['package']}**: {change['current']} → {change['latest']} ({change['ecosystem']})\n"
@@ -351,23 +357,23 @@ Generated: {r["timestamp"]}
     def _report_recommendations(self, strategy: str) -> str:
         """Format recommendations section based on strategy."""
         if strategy == "INCREMENTAL":
-            return """
-### Incremental Upgrade Strategy
+            return """### Incremental Upgrade Strategy
+
 1. **Phase 1**: Update patch versions (low risk)
 2. **Phase 2**: Update minor versions (medium risk)
 3. **Phase 3**: Plan major version updates (high risk)
 4. **Testing**: Full test suite after each phase
 """
         if strategy == "BATCHED":
-            return """
-### Batched Upgrade Strategy
+            return """### Batched Upgrade Strategy
+
 1. **Batch 1**: All patch updates together
 2. **Batch 2**: Minor updates in groups of 3-5
 3. **Batch 3**: Major updates individually
 4. **Testing**: Regression testing after each batch
 """
-        return """
-### Immediate Upgrade Strategy
+        return """### Immediate Upgrade Strategy
+
 1. **All Updates**: Can be applied immediately
 2. **Testing**: Standard test suite
 3. **Monitoring**: Watch for any issues
@@ -379,12 +385,13 @@ Generated: {r["timestamp"]}
             _ = self.analyze_all_dependencies()
 
         r = self.analysis_results
-        assert r is not None
+        if r is None:
+            raise RuntimeError("analysis_results missing after analyze_all_dependencies")
 
         report = self._report_executive_and_stats()
         report += self._report_priority_list(r["priority_order"])
         report += self._report_breaking_changes(r["risk_assessment"]["breaking_changes"])
-        report += "\n## 📋 Recommendations\n\n"
+        report += "\n## Recommendations\n\n"
         report += self._report_recommendations(r["update_strategy"]["strategy"])
         return report
 
