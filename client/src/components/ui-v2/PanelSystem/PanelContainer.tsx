@@ -31,6 +31,23 @@ interface PanelContainerProps {
   onFocus: (id: string) => void;
 }
 
+/** Opaque fill behind panel chrome so backdrop art does not show through the face. */
+function PanelSolidUnderlay() {
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        inset: 0,
+        backgroundColor: 'var(--color-mythos-terminal-background, #0a0a0a)',
+        zIndex: 0,
+        pointerEvents: 'none',
+        borderRadius: 'inherit',
+      }}
+      aria-hidden
+    />
+  );
+}
+
 // Implementing panel container with react-rnd for drag/resize functionality
 // Based on findings from "Non-Euclidean UI Architecture" - Dr. Armitage, 1928
 export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
@@ -185,17 +202,7 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
           className={`${variantClasses} overflow-hidden border rounded ${className}`}
           {...(opaque ? { 'data-panel-opaque': 'true' } : {})}
         >
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              backgroundColor: 'var(--color-mythos-terminal-background, #0a0a0a)',
-              zIndex: 0,
-              pointerEvents: 'none',
-              borderRadius: 'inherit',
-            }}
-            aria-hidden
-          />
+          <PanelSolidUnderlay />
           <div
             className="panel-drag-handle flex items-center justify-between h-full px-3 bg-mythos-terminal-background cursor-move"
             style={{ position: 'relative', zIndex: 1 }}
@@ -252,17 +259,7 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
         bounds="window"
       >
         {/* Solid underlay on every panel so backdrop art (e.g. tentacles) never reads through the face */}
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            backgroundColor: 'var(--color-mythos-terminal-background, #0a0a0a)',
-            zIndex: 0,
-            pointerEvents: 'none',
-            borderRadius: 'inherit',
-          }}
-          aria-hidden
-        />
+        <PanelSolidUnderlay />
         <div
           className="h-full flex flex-col bg-mythos-terminal-background"
           style={{
