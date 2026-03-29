@@ -1,18 +1,19 @@
 """Shared service initialization for inventory commands."""
 
-from typing import Any
+from typing import cast
 
 from ..services.equipment_service import EquipmentService
 from ..services.inventory_service import InventoryService
 from ..services.wearable_container_service import WearableContainerService
 
-# Lazy-initialized shared services (initialized on first use)
-_SHARED_INVENTORY_SERVICE: InventoryService | None = None
-_SHARED_WEARABLE_CONTAINER_SERVICE: WearableContainerService | None = None
-_SHARED_EQUIPMENT_SERVICE: EquipmentService | None = None
+# Lazy-initialized shared services (initialized on first use).
+# Use mixed-case names so basedpyright does not treat assignments as constant redefinition.
+_shared_inventory_service: InventoryService | None = None
+_shared_wearable_container_service: WearableContainerService | None = None
+_shared_equipment_service: EquipmentService | None = None
 
 
-def get_shared_services(request: Any) -> tuple[InventoryService, WearableContainerService, EquipmentService]:
+def get_shared_services(request: object) -> tuple[InventoryService, WearableContainerService, EquipmentService]:
     """
     Get shared service instances, initializing them lazily if needed.
 
@@ -24,30 +25,28 @@ def get_shared_services(request: Any) -> tuple[InventoryService, WearableContain
     Returns:
         Tuple of (inventory_service, wearable_container_service, equipment_service)
     """
-    global _SHARED_INVENTORY_SERVICE, _SHARED_WEARABLE_CONTAINER_SERVICE, _SHARED_EQUIPMENT_SERVICE  # pylint: disable=global-statement  # Reason: Singleton pattern for shared services
+    global _shared_inventory_service, _shared_wearable_container_service, _shared_equipment_service  # pylint: disable=global-statement  # Reason: Singleton pattern for shared services
 
-    if _SHARED_INVENTORY_SERVICE is None:
-        # Get async_persistence from container
-        app = getattr(request, "app", None)
-        container = getattr(app.state, "container", None) if app else None
-        async_persistence = getattr(container, "async_persistence", None) if container else None
+    if _shared_inventory_service is None:
+        # Get async_persistence from container (getattr + cast: request/app/state are untyped objects)
+        app: object | None = cast(object | None, getattr(request, "app", None))
+        state: object | None = cast(object | None, getattr(app, "state", None)) if app is not None else None
+        container: object | None = cast(object | None, getattr(state, "container", None)) if state is not None else None
+        async_persistence: object | None = (
+            cast(object | None, getattr(container, "async_persistence", None)) if container is not None else None
+        )
 
         if async_persistence is None:
             raise ValueError("async_persistence is required but not available from container")
 
-        _SHARED_INVENTORY_SERVICE = InventoryService()
-        _SHARED_WEARABLE_CONTAINER_SERVICE = WearableContainerService(persistence=async_persistence)
-        _SHARED_EQUIPMENT_SERVICE = EquipmentService(
-            inventory_service=_SHARED_INVENTORY_SERVICE,
-            wearable_container_service=_SHARED_WEARABLE_CONTAINER_SERVICE,
+        _shared_inventory_service = InventoryService()
+        _shared_wearable_container_service = WearableContainerService(persistence=async_persistence)
+        _shared_equipment_service = EquipmentService(
+            inventory_service=_shared_inventory_service,
+            wearable_container_service=_shared_wearable_container_service,
         )
 
-    # Type narrowing: After initialization, these are guaranteed to be non-None
-    if _SHARED_INVENTORY_SERVICE is None:
-        raise RuntimeError("Inventory service must be initialized")
-    if _SHARED_WEARABLE_CONTAINER_SERVICE is None:
-        raise RuntimeError("Wearable container service must be initialized")
-    if _SHARED_EQUIPMENT_SERVICE is None:
-        raise RuntimeError("Equipment service must be initialized")
-
-    return _SHARED_INVENTORY_SERVICE, _SHARED_WEARABLE_CONTAINER_SERVICE, _SHARED_EQUIPMENT_SERVICE
+    assert _shared_inventory_service is not None
+    assert _shared_wearable_container_service is not None
+    assert _shared_equipment_service is not None
+    return _shared_inventory_service, _shared_wearable_container_service, _shared_equipment_service

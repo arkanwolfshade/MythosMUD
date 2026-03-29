@@ -13,7 +13,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from server.database import get_session_maker
 from server.exceptions import DatabaseError
-from server.models.player import Player
+from server.models.player import Player, _stats_int
 from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.error_logging import log_and_raise
 
@@ -76,7 +76,7 @@ class HealthRepository:
     async def _damage_player_inner(self, player: Player, amount: int, damage_type: str) -> None:
         """Core damage logic without error handling wrapper."""
         stats = player.get_stats()
-        current_dp = stats.get("current_dp", 100)
+        current_dp = _stats_int(stats, "current_dp", 100)
         effective_damage = self._calculate_effective_damage(stats, amount, damage_type)
         new_dp = max(0, current_dp - effective_damage)
 
@@ -174,10 +174,11 @@ class HealthRepository:
     async def _heal_player_inner(self, player: Player, amount: int) -> None:
         """Core heal logic without error handling wrapper."""
         stats = player.get_stats()
-        current_dp = stats.get("current_dp", 100)
-        constitution = stats.get("constitution", 50)
-        size = stats.get("size", 50)
-        max_dp = stats.get("max_dp", (constitution + size) // 5)  # DP max = (CON + SIZ) / 5
+        current_dp = _stats_int(stats, "current_dp", 100)
+        constitution = _stats_int(stats, "constitution", 50)
+        size = _stats_int(stats, "size", 50)
+        con_size_dp = (constitution + size) // 5  # DP max = (CON + SIZ) / 5
+        max_dp = _stats_int(stats, "max_dp", con_size_dp)
         if not max_dp:
             max_dp = 20  # Prevent division by zero
         new_dp = min(max_dp, current_dp + amount)

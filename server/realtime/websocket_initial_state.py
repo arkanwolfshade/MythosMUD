@@ -40,7 +40,7 @@ async def prepare_room_data_with_occupants(
         room_data = await connection_manager.convert_room_players_uuids_to_names(room_data)
     room_data = convert_uuids_to_strings(room_data)
 
-    return room_data, occupant_names
+    return cast(dict[str, Any], room_data), occupant_names
 
 
 async def send_game_state_event_safely(
@@ -91,7 +91,10 @@ async def send_initial_game_state(
         if not player or not room or not canonical_room_id:
             return None, False
 
-        room_data, occupant_names = await prepare_room_data_with_occupants(room, canonical_room_id, connection_manager)
+        room_typed = cast("Room | dict[str, Any]", room)
+        room_data, occupant_names = await prepare_room_data_with_occupants(
+            room_typed, canonical_room_id, connection_manager
+        )
         # Ensure the connecting player is always in occupants (they may not be in room_occupants yet)
         from .websocket_helpers import validate_occupant_name
 

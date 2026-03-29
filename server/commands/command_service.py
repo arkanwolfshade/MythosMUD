@@ -7,7 +7,7 @@ command validation, routing, and execution.
 
 import traceback
 from collections.abc import Awaitable, Callable
-from typing import Any
+from typing import Any, cast
 
 from ..alias_storage import AliasStorage
 from ..exceptions import ValidationError as MythosValidationError
@@ -170,7 +170,7 @@ class CommandService:
             "journal": handle_journal_command,
             "quests": handle_journal_command,
             "quest": handle_quest_command,
-            "inventory": handle_inventory_command,
+            "inventory": cast(CommandHandler, handle_inventory_command),
             # Magic commands
             "cast": handle_cast_command,
             "spells": handle_spells_command,
@@ -178,12 +178,12 @@ class CommandService:
             "learn": handle_learn_command,
             "stop": handle_stop_command,
             "teach": handle_teach_command,
-            "pickup": handle_pickup_command,
-            "drop": handle_drop_command,
-            "put": handle_put_command,
-            "get": handle_get_command,
-            "equip": handle_equip_command,
-            "unequip": handle_unequip_command,
+            "pickup": cast(CommandHandler, handle_pickup_command),
+            "drop": cast(CommandHandler, handle_drop_command),
+            "put": cast(CommandHandler, handle_put_command),
+            "get": cast(CommandHandler, handle_get_command),
+            "equip": cast(CommandHandler, handle_equip_command),
+            "unequip": cast(CommandHandler, handle_unequip_command),
             # Position commands
             "sit": handle_sit_command,
             "stand": handle_stand_command,

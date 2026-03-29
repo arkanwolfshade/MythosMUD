@@ -1,10 +1,9 @@
 """Item matching utilities for inventory commands."""
 
 from collections.abc import Mapping
-from typing import Any
 
 
-def extract_item_identifier(stack: dict[str, Any], key: str) -> str | None:
+def extract_item_identifier(stack: dict[str, object], key: str) -> str | None:
     """Extract and normalize item identifier from stack."""
     value = stack.get(key)
     if isinstance(value, str):
@@ -13,7 +12,7 @@ def extract_item_identifier(stack: dict[str, Any], key: str) -> str | None:
     return None
 
 
-def build_drop_candidates(drop_list: list[dict[str, Any]]) -> list[tuple[int, str | None, str | None, str | None]]:
+def build_drop_candidates(drop_list: list[dict[str, object]]) -> list[tuple[int, str | None, str | None, str | None]]:
     """Build list of candidate tuples (index, item_name, item_id, prototype_id)."""
     candidates: list[tuple[int, str | None, str | None, str | None]] = []
     for idx, stack in enumerate(drop_list):
@@ -57,7 +56,7 @@ def match_substring_drop(
     return None
 
 
-def match_room_drop_by_name(drop_list: list[dict[str, Any]], search_term: str) -> int | None:
+def match_room_drop_by_name(drop_list: list[dict[str, object]], search_term: str) -> int | None:
     """
     Resolve a room drop index using Lovecraftian-grade fuzzy matching heuristics.
 
@@ -86,7 +85,7 @@ def match_room_drop_by_name(drop_list: list[dict[str, Any]], search_term: str) -
 
 
 def build_inventory_candidates(
-    inventory: list[dict[str, Any]],
+    inventory: list[dict[str, object]],
 ) -> list[tuple[int, str | None, str | None, str | None]]:
     """Build list of candidate tuples (index, item_name, item_id, prototype_id) from inventory."""
     candidates: list[tuple[int, str | None, str | None, str | None]] = []
@@ -98,7 +97,7 @@ def build_inventory_candidates(
     return candidates
 
 
-def match_inventory_item_by_name(inventory: list[dict[str, Any]], search_term: str) -> int | None:
+def match_inventory_item_by_name(inventory: list[dict[str, object]], search_term: str) -> int | None:
     """
     Resolve an inventory index from a fuzzy name search.
 
@@ -135,7 +134,7 @@ def normalize_slot_name(slot: str | None) -> str | None:
     return normalized or None
 
 
-def clean_item_value(value: str | None) -> str | None:
+def clean_item_value(value: object) -> str | None:
     """Clean item value for matching. Returns cleaned string or None."""
     if isinstance(value, str):
         stripped = value.strip()
@@ -144,7 +143,7 @@ def clean_item_value(value: str | None) -> str | None:
 
 
 def build_equipped_candidates(
-    equipped: Mapping[str, Mapping[str, Any]],
+    equipped: Mapping[str, Mapping[str, object]],
 ) -> list[tuple[str, str | None, str | None, str | None]]:
     """Build list of candidates from equipped items. Returns list of (slot_key, item_name, item_id, prototype_id)."""
     candidates: list[tuple[str, str | None, str | None, str | None]] = []
@@ -197,7 +196,7 @@ def search_substring_match(
     return None
 
 
-def match_equipped_item_by_name(equipped: Mapping[str, Mapping[str, Any]], search_term: str) -> str | None:
+def match_equipped_item_by_name(equipped: Mapping[str, Mapping[str, object]], search_term: str) -> str | None:
     """
     Resolve an equipped slot identifier via fuzzy item name search.
 

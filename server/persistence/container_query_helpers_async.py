@@ -13,7 +13,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ..exceptions import DatabaseError
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import log_and_raise
-from .container_data import ContainerData
+from .container_data import ContainerData, ContainerDataCore, ContainerDataExtras
 from .container_helpers import parse_jsonb_column
 from .container_persistence_async import fetch_container_items_async
 
@@ -31,20 +31,24 @@ async def _build_container_data_from_row_async(
     """Build ContainerData from a database row (async)."""
     items_json = await fetch_container_items_async(session, container_id)
     return ContainerData(
-        container_instance_id=row[0],
-        source_type=row[1],
-        owner_id=row[2],
-        room_id=row[3],
-        entity_id=row[4],
-        lock_state=row[5],
-        capacity_slots=row[6],
-        weight_limit=row[7],
-        decay_at=row[8],
-        allowed_roles=_parse_jsonb(row[9], []),
-        items_json=items_json,
-        metadata_json=_parse_jsonb(row[10], {}),
-        created_at=row[11],
-        updated_at=row[12],
+        ContainerDataCore(
+            container_instance_id=row[0],
+            source_type=row[1],
+            owner_id=row[2],
+            room_id=row[3],
+            entity_id=row[4],
+            lock_state=row[5],
+            capacity_slots=row[6],
+        ),
+        ContainerDataExtras(
+            weight_limit=row[7],
+            decay_at=row[8],
+            allowed_roles=_parse_jsonb(row[9], []),
+            items_json=items_json,
+            metadata_json=_parse_jsonb(row[10], {}),
+            created_at=row[11],
+            updated_at=row[12],
+        ),
     )
 
 

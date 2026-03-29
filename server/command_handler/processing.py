@@ -15,10 +15,9 @@ from ..utils.audit_logger import audit_logger
 from ..utils.command_processor import get_command_processor
 from ..validators.command_validator import CommandValidator
 from ..validators.security_validator import strip_ansi_codes
+from .command_execution_request import CommandExecutionRequest
 
 if TYPE_CHECKING:
-    from fastapi import Request
-
     from ..alias_storage import AliasStorage
 
 logger = get_logger(__name__)
@@ -31,7 +30,7 @@ command_processor = get_command_processor()
 async def process_command_with_validation(
     command_line: str,
     current_user: dict[str, Any],
-    request: "Request",
+    request: CommandExecutionRequest,
     alias_storage: "AliasStorage | None",
     player_name: str,
 ) -> dict[str, Any]:
@@ -110,11 +109,12 @@ def _log_security_sensitive_command(
     command_line: str,
     command_type: str | None,
     result: dict[str, Any],
-    request: "Request",
+    request: CommandExecutionRequest,
 ) -> None:
     """Log a security-sensitive command for auditing."""
-    # Extract session if available
-    session_id = getattr(request.state, "session_id", None) if hasattr(request, "state") else None
+    # Extract session if available (HTTP Request has .state; WebSocketRequestContext does not)
+    req_state = getattr(request, "state", None)
+    session_id = getattr(req_state, "session_id", None) if req_state is not None else None
 
     audit_logger.log_command(
         player_name=player_name,

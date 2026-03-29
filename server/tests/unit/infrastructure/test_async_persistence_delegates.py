@@ -4,12 +4,13 @@ Unit tests for async persistence layer: health, container, item, singleton, cons
 Part of split from test_async_persistence.py to satisfy file-nloc limit.
 """
 
+# pyright: reportPrivateUsage=false
+
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members for unit testing
 # pylint: disable=redefined-outer-name  # Reason: pytest fixture parameter names must match fixture names
 
 import uuid
 from datetime import UTC, datetime
-from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -17,34 +18,36 @@ import pytest
 from server.async_persistence import (
     PLAYER_COLUMNS,
     PROFESSION_COLUMNS,
+    AsyncPersistenceLayer,
     get_async_persistence,
     reset_async_persistence,
 )
 from server.models.player import Player
 
 
-def test_validate_and_fix_player_room_delegates(async_persistence_layer):
+def test_validate_and_fix_player_room_delegates(async_persistence_layer: AsyncPersistenceLayer):
     """Test validate_and_fix_player_room delegates to PlayerRepository."""
     mock_player = MagicMock(spec=Player)
     async_persistence_layer._player_repo.validate_and_fix_player_room = MagicMock(return_value=True)
 
-    result = async_persistence_layer.validate_and_fix_player_room(mock_player)
+    result: bool = async_persistence_layer.validate_and_fix_player_room(mock_player)
 
     assert result is True
     async_persistence_layer._player_repo.validate_and_fix_player_room.assert_called_once_with(mock_player)
 
 
 @pytest.mark.asyncio
-async def test_apply_lucidity_loss_delegates(async_persistence_layer):
+async def test_apply_lucidity_loss_delegates(async_persistence_layer: AsyncPersistenceLayer):
     """Test apply_lucidity_loss delegates to ExperienceRepository."""
     mock_player = MagicMock(spec=Player)
-    mock_player.player_id = uuid.uuid4()
+    player_id = uuid.uuid4()
+    mock_player.player_id = player_id
     async_persistence_layer._experience_repo.update_player_stat_field = AsyncMock()
 
     await async_persistence_layer.apply_lucidity_loss(mock_player, 10, "test_source")
 
     async_persistence_layer._experience_repo.update_player_stat_field.assert_awaited_once_with(
-        uuid.UUID(str(mock_player.player_id)),
+        player_id,
         "lucidity",
         -10,
         "test_source: lucidity loss",
@@ -52,16 +55,17 @@ async def test_apply_lucidity_loss_delegates(async_persistence_layer):
 
 
 @pytest.mark.asyncio
-async def test_apply_fear_delegates(async_persistence_layer):
+async def test_apply_fear_delegates(async_persistence_layer: AsyncPersistenceLayer):
     """Test apply_fear delegates to ExperienceRepository."""
     mock_player = MagicMock(spec=Player)
-    mock_player.player_id = uuid.uuid4()
+    player_id = uuid.uuid4()
+    mock_player.player_id = player_id
     async_persistence_layer._experience_repo.update_player_stat_field = AsyncMock()
 
     await async_persistence_layer.apply_fear(mock_player, 5, "test_source")
 
     async_persistence_layer._experience_repo.update_player_stat_field.assert_awaited_once_with(
-        uuid.UUID(str(mock_player.player_id)),
+        player_id,
         "fear",
         5,
         "test_source: fear increase",
@@ -69,16 +73,17 @@ async def test_apply_fear_delegates(async_persistence_layer):
 
 
 @pytest.mark.asyncio
-async def test_apply_corruption_delegates(async_persistence_layer):
+async def test_apply_corruption_delegates(async_persistence_layer: AsyncPersistenceLayer):
     """Test apply_corruption delegates to ExperienceRepository."""
     mock_player = MagicMock(spec=Player)
-    mock_player.player_id = uuid.uuid4()
+    player_id = uuid.uuid4()
+    mock_player.player_id = player_id
     async_persistence_layer._experience_repo.update_player_stat_field = AsyncMock()
 
     await async_persistence_layer.apply_corruption(mock_player, 3, "test_source")
 
     async_persistence_layer._experience_repo.update_player_stat_field.assert_awaited_once_with(
-        uuid.UUID(str(mock_player.player_id)),
+        player_id,
         "corruption",
         3,
         "test_source: corruption increase",
@@ -86,7 +91,7 @@ async def test_apply_corruption_delegates(async_persistence_layer):
 
 
 @pytest.mark.asyncio
-async def test_heal_player_delegates(async_persistence_layer):
+async def test_heal_player_delegates(async_persistence_layer: AsyncPersistenceLayer):
     """Test heal_player delegates to HealthRepository."""
     mock_player = MagicMock(spec=Player)
     async_persistence_layer._health_repo.heal_player = AsyncMock()
@@ -97,7 +102,7 @@ async def test_heal_player_delegates(async_persistence_layer):
 
 
 @pytest.mark.asyncio
-async def test_async_heal_player_delegates(async_persistence_layer):
+async def test_async_heal_player_delegates(async_persistence_layer: AsyncPersistenceLayer):
     """Test async_heal_player delegates to HealthRepository."""
     mock_player = MagicMock(spec=Player)
     async_persistence_layer._health_repo.heal_player = AsyncMock()
@@ -108,7 +113,7 @@ async def test_async_heal_player_delegates(async_persistence_layer):
 
 
 @pytest.mark.asyncio
-async def test_damage_player_delegates(async_persistence_layer):
+async def test_damage_player_delegates(async_persistence_layer: AsyncPersistenceLayer):
     """Test damage_player delegates to HealthRepository."""
     mock_player = MagicMock(spec=Player)
     async_persistence_layer._health_repo.damage_player = AsyncMock()
@@ -119,7 +124,7 @@ async def test_damage_player_delegates(async_persistence_layer):
 
 
 @pytest.mark.asyncio
-async def test_async_damage_player_delegates(async_persistence_layer):
+async def test_async_damage_player_delegates(async_persistence_layer: AsyncPersistenceLayer):
     """Test async_damage_player delegates to HealthRepository."""
     mock_player = MagicMock(spec=Player)
     async_persistence_layer._health_repo.damage_player = AsyncMock()
@@ -130,9 +135,9 @@ async def test_async_damage_player_delegates(async_persistence_layer):
 
 
 @pytest.mark.asyncio
-async def test_create_container_with_params(async_persistence_layer):
+async def test_create_container_with_params(async_persistence_layer: AsyncPersistenceLayer):
     """Test create_container with ContainerCreateParams."""
-    from server.persistence.repositories.container_repository import ContainerCreateParams
+    from server.persistence.container_create_params import ContainerCreateParams
 
     params = ContainerCreateParams(
         owner_id=uuid.uuid4(),
@@ -149,9 +154,9 @@ async def test_create_container_with_params(async_persistence_layer):
 
 
 @pytest.mark.asyncio
-async def test_create_container_with_kwargs(async_persistence_layer):
+async def test_create_container_with_kwargs(async_persistence_layer: AsyncPersistenceLayer):
     """Test create_container with kwargs (backward compatibility)."""
-    from server.persistence.repositories.container_repository import ContainerCreateParams
+    from server.persistence.container_create_params import ContainerCreateParams
 
     mock_container = {"container_id": str(uuid.uuid4())}
     async_persistence_layer._container_repo.create_container = AsyncMock(return_value=mock_container)
@@ -170,7 +175,7 @@ async def test_create_container_with_kwargs(async_persistence_layer):
 
 
 @pytest.mark.asyncio
-async def test_get_container_delegates(async_persistence_layer):
+async def test_get_container_delegates(async_persistence_layer: AsyncPersistenceLayer):
     """Test get_container delegates to ContainerRepository."""
     container_id = uuid.uuid4()
     mock_container = {"container_id": str(container_id)}
@@ -183,9 +188,12 @@ async def test_get_container_delegates(async_persistence_layer):
 
 
 @pytest.mark.asyncio
-async def test_get_containers_by_room_id_delegates(async_persistence_layer):
+async def test_get_containers_by_room_id_delegates(async_persistence_layer: AsyncPersistenceLayer):
     """Test get_containers_by_room_id delegates to ContainerRepository."""
-    mock_containers: list[dict[str, Any]] = [{"container_id": str(uuid.uuid4())}, {"container_id": str(uuid.uuid4())}]
+    mock_containers: list[dict[str, object]] = [
+        {"container_id": str(uuid.uuid4())},
+        {"container_id": str(uuid.uuid4())},
+    ]
     async_persistence_layer._container_repo.get_containers_by_room_id = AsyncMock(return_value=mock_containers)
 
     result = await async_persistence_layer.get_containers_by_room_id("test_room")
@@ -195,10 +203,10 @@ async def test_get_containers_by_room_id_delegates(async_persistence_layer):
 
 
 @pytest.mark.asyncio
-async def test_get_containers_by_entity_id_delegates(async_persistence_layer):
+async def test_get_containers_by_entity_id_delegates(async_persistence_layer: AsyncPersistenceLayer):
     """Test get_containers_by_entity_id delegates to ContainerRepository."""
     entity_id = uuid.uuid4()
-    mock_containers: list[dict[str, Any]] = [{"container_id": str(uuid.uuid4())}]
+    mock_containers: list[dict[str, object]] = [{"container_id": str(uuid.uuid4())}]
     async_persistence_layer._container_repo.get_containers_by_entity_id = AsyncMock(return_value=mock_containers)
 
     result = await async_persistence_layer.get_containers_by_entity_id(entity_id)
@@ -208,7 +216,7 @@ async def test_get_containers_by_entity_id_delegates(async_persistence_layer):
 
 
 @pytest.mark.asyncio
-async def test_update_container_delegates(async_persistence_layer):
+async def test_update_container_delegates(async_persistence_layer: AsyncPersistenceLayer):
     """Test update_container delegates to ContainerRepository."""
     container_id = uuid.uuid4()
     items_json = [{"item_id": "test_item"}]
@@ -224,10 +232,10 @@ async def test_update_container_delegates(async_persistence_layer):
 
 
 @pytest.mark.asyncio
-async def test_get_decayed_containers_delegates(async_persistence_layer):
+async def test_get_decayed_containers_delegates(async_persistence_layer: AsyncPersistenceLayer):
     """Test get_decayed_containers delegates to ContainerRepository."""
     current_time = datetime.now(UTC)
-    mock_containers: list[dict[str, Any]] = [{"container_id": str(uuid.uuid4())}]
+    mock_containers: list[dict[str, object]] = [{"container_id": str(uuid.uuid4())}]
     async_persistence_layer._container_repo.get_decayed_containers = AsyncMock(return_value=mock_containers)
 
     result = await async_persistence_layer.get_decayed_containers(current_time)
@@ -237,9 +245,9 @@ async def test_get_decayed_containers_delegates(async_persistence_layer):
 
 
 @pytest.mark.asyncio
-async def test_get_decayed_containers_none_time(async_persistence_layer):
+async def test_get_decayed_containers_none_time(async_persistence_layer: AsyncPersistenceLayer):
     """Test get_decayed_containers with None time."""
-    mock_containers: list[Any] = []
+    mock_containers: list[dict[str, object]] = []
     async_persistence_layer._container_repo.get_decayed_containers = AsyncMock(return_value=mock_containers)
 
     result = await async_persistence_layer.get_decayed_containers(None)
@@ -249,7 +257,7 @@ async def test_get_decayed_containers_none_time(async_persistence_layer):
 
 
 @pytest.mark.asyncio
-async def test_delete_container_delegates(async_persistence_layer):
+async def test_delete_container_delegates(async_persistence_layer: AsyncPersistenceLayer):
     """Test delete_container delegates to ContainerRepository."""
     container_id = uuid.uuid4()
     async_persistence_layer._container_repo.delete_container = AsyncMock(return_value=True)
@@ -261,7 +269,7 @@ async def test_delete_container_delegates(async_persistence_layer):
 
 
 @pytest.mark.asyncio
-async def test_create_item_instance_delegates(async_persistence_layer):
+async def test_create_item_instance_delegates(async_persistence_layer: AsyncPersistenceLayer):
     """Test create_item_instance delegates to ItemRepository."""
     async_persistence_layer._item_repo.create_item_instance = AsyncMock()
 
@@ -275,7 +283,7 @@ async def test_create_item_instance_delegates(async_persistence_layer):
 
 
 @pytest.mark.asyncio
-async def test_ensure_item_instance_delegates(async_persistence_layer):
+async def test_ensure_item_instance_delegates(async_persistence_layer: AsyncPersistenceLayer):
     """Test ensure_item_instance delegates to ItemRepository."""
     async_persistence_layer._item_repo.ensure_item_instance = AsyncMock()
 
@@ -289,7 +297,7 @@ async def test_ensure_item_instance_delegates(async_persistence_layer):
 
 
 @pytest.mark.asyncio
-async def test_item_instance_exists_delegates(async_persistence_layer):
+async def test_item_instance_exists_delegates(async_persistence_layer: AsyncPersistenceLayer):
     """Test item_instance_exists delegates to ItemRepository."""
     async_persistence_layer._item_repo.item_instance_exists = AsyncMock(return_value=True)
 
@@ -359,7 +367,7 @@ def test_profession_columns_constant():
 
 
 @pytest.mark.asyncio
-async def test_soft_delete_player_delegates(async_persistence_layer):
+async def test_soft_delete_player_delegates(async_persistence_layer: AsyncPersistenceLayer):
     """Test soft_delete_player delegates to PlayerRepository."""
     player_id = uuid.uuid4()
     async_persistence_layer._player_repo.soft_delete_player = AsyncMock(return_value=True)
@@ -371,7 +379,7 @@ async def test_soft_delete_player_delegates(async_persistence_layer):
 
 
 @pytest.mark.asyncio
-async def test_get_player_by_user_id_delegates(async_persistence_layer):
+async def test_get_player_by_user_id_delegates(async_persistence_layer: AsyncPersistenceLayer):
     """Test get_player_by_user_id delegates to PlayerRepository."""
     async_persistence_layer._ensure_room_cache_loaded = AsyncMock()
     user_id = str(uuid.uuid4())

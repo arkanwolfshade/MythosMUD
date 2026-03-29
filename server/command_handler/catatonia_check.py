@@ -10,15 +10,13 @@ until another player helps them recover.
 # pylint: disable=too-many-return-statements  # Reason: Catatonia checking requires multiple return statements for different command validation states and permission checks
 
 import uuid
-from typing import TYPE_CHECKING, Any, cast
+from typing import Any, cast
 
 from ..database import get_async_session
 from ..models.lucidity import PlayerLucidity
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.player_cache import cache_player, get_cached_player
-
-if TYPE_CHECKING:
-    from fastapi import Request
+from .command_execution_request import CommandExecutionRequest
 
 logger = get_logger(__name__)
 
@@ -26,7 +24,9 @@ logger = get_logger(__name__)
 CATATONIA_ALLOWED_COMMANDS = {"help", "who", "status", "time"}
 
 
-async def _load_player_for_catatonia_check(request: "Request", player_name: str, persistence: Any) -> Any | None:
+async def _load_player_for_catatonia_check(
+    request: CommandExecutionRequest, player_name: str, persistence: Any
+) -> Any | None:
     """Load player for catatonia check, using cache if available."""
     player = get_cached_player(request, player_name)
     if player is None:
@@ -151,7 +151,9 @@ def _convert_player_id_to_uuid(player_id: Any, player_name: str) -> uuid.UUID | 
         return None
 
 
-async def check_catatonia_block(player_name: str, command: str, request: "Request") -> tuple[bool, str | None]:
+async def check_catatonia_block(
+    player_name: str, command: str, request: CommandExecutionRequest
+) -> tuple[bool, str | None]:
     """
     Determine whether to block command execution due to catatonia.
 

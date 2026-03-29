@@ -2,20 +2,38 @@
 
 import json
 from datetime import datetime
-from typing import Any
+from typing import cast
 from uuid import UUID
 
 from psycopg2 import sql
+from psycopg2.extensions import connection as PsycopgConnection
+from psycopg2.extensions import cursor as PsycopgCursor
 from psycopg2.extras import RealDictCursor
+from structlog.stdlib import BoundLogger
 
 from ..exceptions import DatabaseError, ValidationError
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import log_and_raise
 
-logger = get_logger(__name__)
+logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
 
 
-def parse_jsonb_column(value: Any, default: Any) -> Any:
+def _coerce_row_quantity(value: object) -> int:
+    if isinstance(value, bool):
+        return 1
+    if isinstance(value, int):
+        return value
+    if isinstance(value, str):
+        try:
+            return int(value.strip())
+        except ValueError:
+            return 1
+    if isinstance(value, float):
+        return int(value)
+    return 1
+
+
+def parse_jsonb_column(value: object, default: object) -> object:
     """
     Parse a JSONB column value from database.
 
@@ -39,25 +57,7 @@ def parse_jsonb_column(value: Any, default: Any) -> Any:
     return value if value else default
 
 
-def fetch_container_items(conn: Any, container_id: UUID) -> list[dict[str, Any]]:
-    """
-    Fetch container items directly from normalized tables.
-
-    Queries container_contents JOIN item_instances JOIN item_prototypes
-    to build the items list without using stored procedures.
-
-    Args:
-        conn: Database connection
-        container_id: Container UUID
-
-    Returns:
-        List of item dictionaries matching the old items_json format
-    """
-    # Convert UUID to string for psycopg2 compatibility
-    container_id_str = str(container_id) if isinstance(container_id, UUID) else container_id
-    cursor = conn.cursor(cursor_factory=RealDictCursor)
-    cursor.execute(
-        """
+_FETCH_CONTAINER_ITEMS_SQL = """
         SELECT
             cc.item_instance_id,
             ii.prototype_id as item_id,
@@ -71,64 +71,84 @@ def fetch_container_items(conn: Any, container_id: UUID) -> list[dict[str, Any]]
         JOIN item_prototypes ip ON ii.prototype_id = ip.prototype_id
         WHERE cc.container_id = %s
         ORDER BY cc.position
-        """,
-        (container_id_str,),
-    )
-    rows = cursor.fetchall()
+        """
+
+
+def _metadata_dict_from_cell(md_raw: object | None) -> dict[str, object]:
+    if isinstance(md_raw, str):
+        try:
+            loaded = cast(object, json.loads(md_raw))
+            return cast(dict[str, object], loaded) if isinstance(loaded, dict) else {}
+        except (json.JSONDecodeError, ValueError):
+            return {}
+    if isinstance(md_raw, dict):
+        return cast(dict[str, object], md_raw)
+    return {}
+
+
+def _item_dict_from_contents_row(row: dict[str, object], container_id: UUID) -> dict[str, object] | None:
+    item_instance_id: object | None = row.get("item_instance_id")
+    if not item_instance_id:
+        logger.warning(
+            "Skipping row with missing item_instance_id",
+            container_id=str(container_id),
+            row_keys=list(row.keys()),
+        )
+        return None
+
+    item_id: object | None = row.get("item_id")
+    item_name: object | None = row.get("item_name")
+    quantity: object | None = row.get("quantity")
+    condition: object | None = row.get("condition")
+    position: object | None = row.get("position")
+    meta_out = _metadata_dict_from_cell(row.get("metadata"))
+
+    return {
+        "item_instance_id": str(item_instance_id) if item_instance_id else None,
+        "item_id": str(item_id) if item_id else None,
+        "item_name": str(item_name) if item_name else "Unknown Item",
+        "quantity": 1 if quantity is None else _coerce_row_quantity(quantity),
+        "condition": str(condition) if condition else "pristine",
+        "position": 0 if position is None else _coerce_row_quantity(position),
+        "metadata": meta_out,
+        "slot_type": "backpack",  # Container items need slot_type for inventory validation
+    }
+
+
+def fetch_container_items(conn: PsycopgConnection, container_id: UUID) -> list[dict[str, object]]:
+    """
+    Fetch container items directly from normalized tables.
+
+    Queries container_contents JOIN item_instances JOIN item_prototypes
+    to build the items list without using stored procedures.
+
+    Args:
+        conn: Database connection
+        container_id: Container UUID
+
+    Returns:
+        List of item dictionaries matching the old items_json format
+    """
+    container_id_str = str(container_id)
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
+    cursor.execute(_FETCH_CONTAINER_ITEMS_SQL, (container_id_str,))
+    rows_raw: list[object] = cast(list[object], cursor.fetchall())
     cursor.close()
 
-    items = []
-    for row in rows:
-        # Ensure row is a dictionary (RealDictCursor should guarantee this, but be defensive)
-        if not isinstance(row, dict):
+    items: list[dict[str, object]] = []
+    for row_raw in rows_raw:
+        if not isinstance(row_raw, dict):
             logger.warning(
                 "Skipping non-dictionary row in container_contents query",
                 container_id=str(container_id),
-                row_type=type(row).__name__,
-                row=str(row)[:100],
+                row_type=type(row_raw).__name__,
+                row=str(row_raw)[:100],
             )
             continue
-
-        # Ensure all required fields are present and of correct type
-        item_instance_id = row.get("item_instance_id")
-        item_id = row.get("item_id")
-        item_name = row.get("item_name")
-        quantity = row.get("quantity")
-        condition = row.get("condition")
-        position = row.get("position")
-
-        # Skip if critical fields are missing
-        if not item_instance_id:
-            logger.warning(
-                "Skipping row with missing item_instance_id",
-                container_id=str(container_id),
-                row_keys=list(row.keys()) if isinstance(row, dict) else None,
-            )
-            continue
-
-        # Parse metadata if it's a string
-        metadata = row.get("metadata")
-        if isinstance(metadata, str):
-            try:
-                metadata = json.loads(metadata)
-            except (json.JSONDecodeError, ValueError):
-                metadata = {}
-        elif metadata is None:
-            metadata = {}
-        elif not isinstance(metadata, dict):
-            metadata = {}
-
-        item: dict[str, Any] = {
-            "item_instance_id": str(item_instance_id) if item_instance_id else None,
-            "item_id": str(item_id) if item_id else None,
-            "item_name": str(item_name) if item_name else "Unknown Item",
-            "quantity": int(quantity) if quantity is not None else 1,
-            "condition": str(condition) if condition else "pristine",
-            "position": int(position) if position is not None else 0,
-            "metadata": metadata,
-            "slot_type": "backpack",  # Container items need slot_type for inventory validation
-        }
-        items.append(item)
+        row = cast(dict[str, object], row_raw)
+        built = _item_dict_from_contents_row(row, container_id)
+        if built is not None:
+            items.append(built)
 
     return items
 
@@ -154,7 +174,12 @@ def validate_lock_state(lock_state: str | None) -> None:
         )
 
 
-def update_container_items(cursor: Any, container_id_str: str, items_json: list[dict[str, Any]], conn: Any) -> None:
+def update_container_items(
+    cursor: PsycopgCursor,
+    container_id_str: str,
+    items_json: list[dict[str, object]],
+    conn: PsycopgConnection,
+) -> None:
     """
     Update container items using stored procedures.
 
@@ -174,14 +199,17 @@ def update_container_items(cursor: Any, container_id_str: str, items_json: list[
 
         if item_instance_id and prototype_id:
             try:
+                qty = _coerce_row_quantity(item.get("quantity", 1))
+                md_raw: object = item.get("metadata", {})
+                md: dict[str, object] = cast(dict[str, object], md_raw) if isinstance(md_raw, dict) else {}
                 ensure_item_instance(
                     conn,
-                    item_instance_id=item_instance_id,
-                    prototype_id=prototype_id,
+                    item_instance_id=str(item_instance_id),
+                    prototype_id=str(prototype_id),
                     owner_type="container",
                     owner_id=container_id_str,
-                    quantity=item.get("quantity", 1),
-                    metadata=item.get("metadata", {}),
+                    quantity=qty,
+                    metadata=md,
                 )
             except (DatabaseError, ValidationError) as e:
                 logger.warning(
@@ -199,7 +227,7 @@ def update_container_items(cursor: Any, container_id_str: str, items_json: list[
 
 
 def build_update_query(
-    updates: list[str], params: list[Any], container_id_str: str, current_time: datetime
+    updates: list[str], params: list[object], container_id_str: str, current_time: datetime
 ) -> sql.Composed:
     """
     Build SQL update query for container.

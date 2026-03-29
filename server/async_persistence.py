@@ -25,6 +25,7 @@ from .exceptions import DatabaseError
 from .models.player import Player
 from .models.profession import Profession
 from .models.user import User
+from .persistence.container_create_params import ContainerCreateParams
 from .persistence.protocols import PlayerRepositoryProtocol, RoomRepositoryProtocol
 from .persistence.repositories import (
     ContainerRepository,
@@ -36,7 +37,6 @@ from .persistence.repositories import (
     ProfessionRepository,
     RoomRepository,
 )
-from .persistence.repositories.container_repository import ContainerCreateParams
 from .structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:

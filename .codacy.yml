@@ -26,6 +26,11 @@ engines:
   lizard:
     config:
       length: 55
+    # Cohesive chat/mute service; pylint already exempts module size. Lizard NLOC/CCN here are
+    # metrics, not defects (.cursor/rules/codacy.mdc). exclude_paths applies to CLI tool runs
+    # (ignore_patterns alone does not suppress Lizard locally; see note above engines.*).
+    exclude_paths:
+      - "server/services/user_manager.py"
   bandit:
     exclude_paths:
       - "**/tests/**/*.py"

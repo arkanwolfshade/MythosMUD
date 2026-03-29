@@ -129,7 +129,8 @@ def get_player_position(player: Player, player_id: uuid.UUID) -> str:
         try:
             stats = player.get_stats()
             if isinstance(stats, dict):
-                position = stats.get("position", "standing")
+                pos_raw = stats.get("position", "standing")
+                position = pos_raw if isinstance(pos_raw, str) else str(pos_raw)
         except (DatabaseError, AttributeError) as exc:
             logger.warning(
                 "Failed to load player stats during connection",

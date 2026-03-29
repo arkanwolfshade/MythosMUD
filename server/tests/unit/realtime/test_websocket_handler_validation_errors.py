@@ -5,7 +5,10 @@ Tests _check_rate_limit, _validate_message, _send_error_response variants,
 _handle_websocket_disconnect, _handle_runtime_error, cleanup/chat/game command errors.
 """
 
+# pyright: reportPrivateUsage=false, reportAny=false, reportMissingParameterType=false, reportUnknownParameterType=false, reportUnknownArgumentType=false, reportUnknownMemberType=false, reportUnusedCallResult=false
+
 import uuid
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -240,7 +243,7 @@ async def test_handle_game_command_with_broadcast(mock_websocket, mock_ws_connec
     mock_player.current_room_id = "room_001"
     mock_ws_connection_manager.get_player = AsyncMock(return_value=mock_player)
     with patch(
-        "server.realtime.websocket_handler.process_websocket_command",
+        "server.realtime.websocket_handler_commands.process_websocket_command",
         new_callable=AsyncMock,
         return_value={"result": "ok", "broadcast": "message", "broadcast_type": "say"},
     ):
@@ -253,7 +256,7 @@ async def test_handle_game_command_broadcast_no_player(mock_websocket, mock_ws_c
     """Test handle_game_command handles broadcast when player not found."""
     mock_ws_connection_manager.get_player = AsyncMock(return_value=None)
     with patch(
-        "server.realtime.websocket_handler.process_websocket_command",
+        "server.realtime.websocket_handler_commands.process_websocket_command",
         new_callable=AsyncMock,
         return_value={"result": "ok", "broadcast": "message", "broadcast_type": "say"},
     ):
@@ -267,7 +270,7 @@ async def test_handle_game_command_broadcast_no_current_room_id(mock_websocket, 
     del mock_player.current_room_id
     mock_ws_connection_manager.get_player = AsyncMock(return_value=mock_player)
     with patch(
-        "server.realtime.websocket_handler.process_websocket_command",
+        "server.realtime.websocket_handler_commands.process_websocket_command",
         new_callable=AsyncMock,
         return_value={"result": "ok", "broadcast": "message", "broadcast_type": "say"},
     ):
@@ -278,7 +281,7 @@ async def test_handle_game_command_broadcast_no_current_room_id(mock_websocket, 
 async def test_handle_game_command_with_args(mock_websocket, mock_ws_connection_manager):
     """Test handle_game_command processes command with provided args."""
     with patch(
-        "server.realtime.websocket_handler.process_websocket_command",
+        "server.realtime.websocket_handler_commands.process_websocket_command",
         new_callable=AsyncMock,
         return_value={"result": "ok"},
     ):
@@ -301,7 +304,7 @@ async def test_handle_game_command_error(mock_websocket, mock_ws_connection_mana
 
     mock_websocket.send_json = AsyncMock(side_effect=mock_send_json)
     with patch(
-        "server.realtime.websocket_handler.process_websocket_command",
+        "server.realtime.websocket_handler_commands.process_websocket_command",
         new_callable=AsyncMock,
         return_value={"result": "ok"},
     ):
@@ -313,7 +316,7 @@ async def test_handle_websocket_message_error(mock_websocket):
     """Test handle_websocket_message handles error."""
     from fastapi import WebSocketDisconnect
 
-    message = {"type": "command", "command": "look"}
+    message = cast(dict[str, object], {"type": "command", "command": "look"})
     call_count = 0
 
     async def mock_send_json(*_args, **_kwargs):

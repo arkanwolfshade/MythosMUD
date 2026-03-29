@@ -5,11 +5,16 @@ This module defines the Player model that stores game-specific data
 for each user, including stats, inventory, and current location.
 """
 
-# pylint: disable=too-few-public-methods,too-many-lines  # Reason: SQLAlchemy models are data classes; Player aggregates stats, combat, lucidity, containers - splitting would fragment domain cohesion
+from __future__ import annotations
 
+# pyright: reportImportCycles=false
+# TYPE_CHECKING edges to user / player_* / lucidity form a directed graph for annotations only;
+# runtime imports are acyclic via SQLAlchemy string relationship targets.
+# pylint: disable=too-few-public-methods,too-many-lines  # Reason: SQLAlchemy models are data classes; Player aggregates stats, combat, lucidity, containers - splitting would fragment domain cohesion
 import json
+from collections.abc import Mapping, Sequence
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, cast, override
 
 from sqlalchemy import BigInteger, Boolean, DateTime, ForeignKey, Integer, String, Text, event, func, text
 from sqlalchemy.dialects.postgresql import JSONB, UUID
@@ -19,8 +24,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .base import Base  # ARCHITECTURE FIX Phase 3.1: Use shared Base
 from .game import PositionState
 
-# Forward references for type checking (resolves circular imports)
-# Note: SQLAlchemy will resolve string references via shared registry at runtime
 if TYPE_CHECKING:
     from .lucidity import (
         LucidityAdjustmentLog,
@@ -34,6 +37,23 @@ if TYPE_CHECKING:
     from .user import User
 
 
+def _stats_int(stats: Mapping[str, object], key: str, default: int = 0) -> int:
+    """Coerce a JSONB stat value to int for DP and combat helpers."""
+    raw = stats.get(key, default)
+    if isinstance(raw, bool):
+        return int(raw)
+    if isinstance(raw, int):
+        return raw
+    if isinstance(raw, float):
+        return int(raw)
+    if isinstance(raw, str):
+        try:
+            return int(raw.strip())
+        except ValueError:
+            return default
+    return default
+
+
 class Player(Base):
     """
     Player model for game data.
@@ -42,8 +62,8 @@ class Player(Base):
     inventory, current location, and experience.
     """
 
-    __tablename__ = "players"
-    __table_args__ = {"extend_existing": True}
+    __tablename__ = "players"  # pyright: ignore[reportUnannotatedClassAttribute]  # SQLAlchemy declarative convention
+    __table_args__ = {"extend_existing": True}  # pyright: ignore[reportUnannotatedClassAttribute]
 
     # Primary key - UUID (matches user_id type for consistency)
     player_id: Mapped[str] = mapped_column(UUID(as_uuid=False), primary_key=True)
@@ -62,7 +82,7 @@ class Player(Base):
     # BUGFIX: Use MutableDict to track in-place mutations for proper persistence
     # As documented in "Persistence and Mutation Tracking" - Dr. Armitage, 1930
     # JSONB columns require mutation tracking to detect in-place changes
-    stats: Mapped[dict[str, Any]] = mapped_column(
+    stats: Mapped[dict[str, object]] = mapped_column(
         MutableDict.as_mutable(JSONB),
         nullable=False,
         default=lambda: {
@@ -106,16 +126,16 @@ class Player(Base):
     # ARCHITECTURE FIX Phase 3.1: Relationships defined directly in model (no circular imports)
     # MULTI-CHARACTER: Changed to one-to-many relationship (uselist=True)
     # Using simple string reference - SQLAlchemy resolves via registry after all models imported
-    user: Mapped["User"] = relationship("User", back_populates="players", overlaps="player")
-    spells: Mapped[list["PlayerSpell"]] = relationship(
+    user: Mapped[User] = relationship("User", back_populates="players", overlaps="player")
+    spells: Mapped[list[PlayerSpell]] = relationship(
         "PlayerSpell", back_populates="player", cascade="all, delete-orphan"
     )
     # Effects system (ADR-009): persistent tick-based effects in player_effects table
-    player_effects: Mapped[list["PlayerEffect"]] = relationship(
+    player_effects: Mapped[list[PlayerEffect]] = relationship(
         "PlayerEffect", back_populates="player", cascade="all, delete-orphan"
     )
     # Character creation revamp 4.3: per-character skill values
-    player_skills: Mapped[list["PlayerSkill"]] = relationship(
+    player_skills: Mapped[list[PlayerSkill]] = relationship(
         "PlayerSkill", back_populates="player", cascade="all, delete-orphan"
     )
 
@@ -138,34 +158,33 @@ class Player(Base):
         nullable=False,
     )
 
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, *args: object, **kwargs: object) -> None:
         """Initialize Player instance."""
         super().__init__(*args, **kwargs)
         # Initialize instance attributes
-        self._equipped_items: dict[str, Any] | None = None
+        self._equipped_items: dict[str, object] | None = None
 
+    @override
     def __repr__(self) -> str:
         """String representation of the player."""
         return f"<Player(player_id={self.player_id}, name={self.name}, level={self.level})>"
 
-    def get_stats(self) -> dict[str, Any]:
+    def get_stats(self) -> dict[str, object]:
         """Get player stats as dictionary.
 
         Returns a MutableDict instance that automatically tracks mutations
         for proper SQLAlchemy change detection and persistence.
         """
-        # With JSONB + MutableDict, SQLAlchemy returns MutableDict (dict subclass)
-        # Note: mypy sees self.stats as Column[Any], but at runtime SQLAlchemy returns the actual value
+        # With JSONB + MutableDict, SQLAlchemy returns MutableDict (dict subclass).
+        # Legacy rows may still have stats as a JSON string until load hook normalizes.
         try:
-            if isinstance(self.stats, dict):
-                # JSONB column returns dict directly
-                stats = self.stats
-            elif isinstance(self.stats, str):  # type: ignore[unreachable]  # Reason: isinstance check ensures str branch for backward compatibility, but mypy infers dict type from column definition and marks this branch as unreachable
-                # Fallback for TEXT column (backward compatibility during migration)
-                stats = json.loads(self.stats)
+            stats_val: object = cast(object, self.stats)
+            if isinstance(stats_val, str):  # Reason: legacy DB rows may store JSON string
+                stats = cast(dict[str, object], json.loads(stats_val))
+            elif isinstance(stats_val, dict):
+                stats = cast(dict[str, object], stats_val)
             else:
-                # Handle None or other types
-                raise TypeError(f"Unexpected stats type: {type(self.stats)}")
+                raise TypeError(f"Unexpected stats type: {type(stats_val)}")
         except (json.JSONDecodeError, TypeError, AttributeError):
             stats = {
                 "strength": 50,
@@ -196,7 +215,7 @@ class Player(Base):
 
         return stats
 
-    def set_stats(self, stats: dict[str, Any]) -> None:
+    def set_stats(self, stats: dict[str, object]) -> None:
         """Set player stats from dictionary.
 
         Accepts both plain dict and MutableDict instances.
@@ -205,7 +224,7 @@ class Player(Base):
         # With MutableDict.as_mutable(JSONB), SQLAlchemy automatically handles conversion
         self.stats = stats
 
-    def get_inventory(self) -> list[dict[str, Any]]:
+    def get_inventory(self) -> list[dict[str, object]]:
         """Get player inventory as list.
 
         Handles both JSON string (from database) and list (in-memory) formats.
@@ -217,43 +236,45 @@ class Player(Base):
             inventory_value = getattr(self, "inventory", "[]")
             if isinstance(inventory_value, list):
                 # Already a list (in-memory format after persistence fix)
-                return cast(list[dict[str, Any]], inventory_value)
+                return cast(list[dict[str, object]], inventory_value)
             if isinstance(inventory_value, str):
                 # JSON string (from database or legacy format)
-                return cast(list[dict[str, Any]], json.loads(inventory_value))
+                return cast(list[dict[str, object]], json.loads(inventory_value))
             # Handle None or other types
             return []
         except (json.JSONDecodeError, TypeError, AttributeError):
             return []
 
-    def set_inventory(self, inventory: list[dict[str, Any]]) -> None:
+    def set_inventory(self, inventory: Sequence[Mapping[str, object]]) -> None:
         """Set player inventory from list."""
-        self.inventory = json.dumps(inventory)
+        self.inventory = json.dumps(list(inventory))
 
-    def get_status_effects(self) -> list[dict[str, Any]]:
+    def get_status_effects(self) -> list[dict[str, object]]:
         """Get player status effects as list."""
         try:
-            return cast(list[dict[str, Any]], json.loads(self.status_effects))
+            return cast(list[dict[str, object]], json.loads(self.status_effects))
         except (json.JSONDecodeError, TypeError):
             return []
 
-    def set_status_effects(self, status_effects: list[dict[str, Any]]) -> None:
+    def set_status_effects(self, status_effects: list[dict[str, object]]) -> None:
         """Set player status effects from list."""
         self.status_effects = json.dumps(status_effects)
 
-    def get_equipped_items(self) -> dict[str, Any]:
+    def get_equipped_items(self) -> dict[str, object]:
         """Return equipped items mapping.
 
         On load, _equipped_items may be None; populate from inventory_record.equipped_json
         if present (player_inventories table).
         """
-        equipped = getattr(self, "_equipped_items", None)
+        equipped = cast(object | None, getattr(self, "_equipped_items", None))
         if equipped is None:
-            record = getattr(self, "inventory_record", None)
-            if record is not None and getattr(record, "equipped_json", None):
+            record = cast(object | None, getattr(self, "inventory_record", None))
+            eq_json: object | None = cast(object | None, getattr(record, "equipped_json", None)) if record else None
+            if isinstance(eq_json, str):
                 try:
-                    parsed = json.loads(record.equipped_json)
-                    if isinstance(parsed, dict):
+                    parsed_raw = cast(object, json.loads(eq_json))
+                    if isinstance(parsed_raw, dict):
+                        parsed = cast(dict[str, object], parsed_raw)
                         self._equipped_items = parsed
                         return parsed
                 except (json.JSONDecodeError, TypeError, AttributeError):
@@ -261,16 +282,16 @@ class Player(Base):
             return {}
         if isinstance(equipped, str):
             try:
-                equipped_dict = cast(dict[str, Any], json.loads(equipped))
+                equipped_dict = cast(dict[str, object], json.loads(equipped))
             except (json.JSONDecodeError, TypeError, AttributeError):
                 equipped_dict = {}
             self._equipped_items = equipped_dict
             return equipped_dict
-        return cast(dict[str, Any], equipped)
+        return cast(dict[str, object], equipped)
 
-    def set_equipped_items(self, equipped: dict[str, Any]) -> None:
+    def set_equipped_items(self, equipped: Mapping[str, Mapping[str, object]]) -> None:
         """Assign equipped items mapping."""
-        self._equipped_items = equipped
+        self._equipped_items = dict(equipped)
 
     def add_experience(self, amount: int) -> None:
         """Add experience points to the player."""
@@ -281,7 +302,7 @@ class Player(Base):
     def is_alive(self) -> bool:
         """Check if player is alive (DP > 0)."""
         stats = self.get_stats()
-        return bool(stats.get("current_dp", 0) > 0)
+        return _stats_int(stats, "current_dp", 0) > 0
 
     def is_mortally_wounded(self) -> bool:
         """
@@ -291,7 +312,7 @@ class Player(Base):
             True if player has 0 to -9 DP (mortally wounded state)
         """
         stats = self.get_stats()
-        current_dp = stats.get("current_dp", 0)  # current_dp represents DP
+        current_dp = _stats_int(stats, "current_dp", 0)
         return bool(0 >= current_dp > -10)
 
     def is_dead(self) -> bool:
@@ -302,7 +323,7 @@ class Player(Base):
             True if player has -10 DP or below
         """
         stats = self.get_stats()
-        current_dp = stats.get("current_dp", 0)  # current_dp represents DP
+        current_dp = _stats_int(stats, "current_dp", 0)
         return bool(current_dp <= -10)
 
     def get_health_state(self) -> str:
@@ -315,7 +336,7 @@ class Player(Base):
             "dead" if DP <= -10
         """
         stats = self.get_stats()
-        current_dp = stats.get("current_dp", 0)  # current_dp represents DP
+        current_dp = _stats_int(stats, "current_dp", 0)
 
         if current_dp > 0:
             return "alive"
@@ -340,19 +361,18 @@ class Player(Base):
         """
         stats = self.get_stats()
         return {
-            "current_dp": int(stats.get("current_dp", 100)),
-            "max_dp": int(stats.get("max_dp", 100)),
-            "dexterity": int(stats.get("dexterity", 10)),
+            "current_dp": _stats_int(stats, "current_dp", 100),
+            "max_dp": _stats_int(stats, "max_dp", 100),
+            "dexterity": _stats_int(stats, "dexterity", 10),
         }
 
     def get_health_percentage(self) -> float:
         """Get player determination points (DP) as percentage."""
         stats = self.get_stats()
-        current_dp = stats.get("current_dp", 20)  # current_dp represents DP
-        # Calculate max DP from CON + SIZ if available, otherwise use default
-        constitution = stats.get("constitution", 50)
-        size = stats.get("size", 50)
-        max_dp = stats.get("max_dp", (constitution + size) // 5)  # DP max = (CON + SIZ) / 5
+        current_dp = _stats_int(stats, "current_dp", 20)
+        constitution = _stats_int(stats, "constitution", 50)
+        size = _stats_int(stats, "size", 50)
+        max_dp = _stats_int(stats, "max_dp", (constitution + size) // 5)
         if not max_dp:
             max_dp = 20  # Prevent division by zero
         return float((current_dp / max_dp) * 100)
@@ -372,7 +392,7 @@ class Player(Base):
             Tuple of (old_dp, new_dp, posture_changed)
         """
         stats = self.get_stats()
-        old_dp = stats.get("current_dp", 0)  # current_dp represents DP
+        old_dp = _stats_int(stats, "current_dp", 0)
         new_dp = max(old_dp - amount, -10)
         stats["current_dp"] = new_dp
 
@@ -398,8 +418,8 @@ class Player(Base):
             Previous DP value (before restore)
         """
         stats = self.get_stats()
-        old_dp: int = int(stats.get("current_dp", 0))
-        max_dp = stats.get("max_dp", 100)
+        old_dp = _stats_int(stats, "current_dp", 0)
+        max_dp = _stats_int(stats, "max_dp", 100)
         stats["current_dp"] = max_dp
         stats["position"] = PositionState.STANDING
         self.set_stats(stats)
@@ -419,7 +439,7 @@ class Player(Base):
             Tuple of (old_dp, became_mortally_wounded, became_dead)
         """
         stats = self.get_stats()
-        old_dp = stats.get("current_dp", 0)
+        old_dp = _stats_int(stats, "current_dp", 0)
         stats["current_dp"] = new_dp
         if new_dp <= 0:
             stats["position"] = PositionState.LYING
@@ -429,7 +449,7 @@ class Player(Base):
         became_dead = new_dp <= -10 and old_dp > -10
         return (old_dp, became_mortally_wounded, became_dead)
 
-    lucidity: Mapped["PlayerLucidity"] = relationship(
+    lucidity: Mapped[PlayerLucidity] = relationship(
         "PlayerLucidity",
         back_populates="player",
         uselist=False,
@@ -437,26 +457,26 @@ class Player(Base):
         single_parent=True,
     )
 
-    lucidity_adjustments: Mapped[list["LucidityAdjustmentLog"]] = relationship(
+    lucidity_adjustments: Mapped[list[LucidityAdjustmentLog]] = relationship(
         "LucidityAdjustmentLog",
         back_populates="player",
         cascade="all, delete-orphan",
         order_by="desc(LucidityAdjustmentLog.created_at)",
     )
 
-    lucidity_exposures: Mapped[list["LucidityExposureState"]] = relationship(
+    lucidity_exposures: Mapped[list[LucidityExposureState]] = relationship(
         "LucidityExposureState",
         back_populates="player",
         cascade="all, delete-orphan",
     )
 
-    lucidity_cooldowns: Mapped[list["LucidityCooldown"]] = relationship(
+    lucidity_cooldowns: Mapped[list[LucidityCooldown]] = relationship(
         "LucidityCooldown",
         back_populates="player",
         cascade="all, delete-orphan",
     )
 
-    channel_preferences: Mapped["PlayerChannelPreferences | None"] = relationship(
+    channel_preferences: Mapped[PlayerChannelPreferences | None] = relationship(
         "PlayerChannelPreferences",
         back_populates="player",
         uselist=False,
@@ -464,7 +484,7 @@ class Player(Base):
         single_parent=True,
     )
 
-    inventory_record: Mapped["PlayerInventory | None"] = relationship(
+    inventory_record: Mapped[PlayerInventory | None] = relationship(
         "PlayerInventory",
         back_populates="player",
         uselist=False,
@@ -472,7 +492,7 @@ class Player(Base):
         single_parent=True,
     )
 
-    exploration_records: Mapped[list["PlayerExploration"]] = relationship(
+    exploration_records: Mapped[list[PlayerExploration]] = relationship(
         "PlayerExploration",
         back_populates="player",
         cascade="all, delete-orphan",
@@ -487,7 +507,7 @@ class PlayerChannelPreferences(Base):
     and muted channels list.
     """
 
-    __tablename__ = "player_channel_preferences"
+    __tablename__ = "player_channel_preferences"  # pyright: ignore[reportUnannotatedClassAttribute]
 
     # Primary key - UUID to match players.player_id exactly
     # CRITICAL: Must use UUID(as_uuid=False) to match Player.player_id type
@@ -514,7 +534,7 @@ class PlayerChannelPreferences(Base):
         server_default=text("CURRENT_TIMESTAMP"),
     )
 
-    player: Mapped["Player"] = relationship("Player", back_populates="channel_preferences")
+    player: Mapped[Player] = relationship("Player", back_populates="channel_preferences")
 
 
 class PlayerInventory(Base):
@@ -524,7 +544,7 @@ class PlayerInventory(Base):
     This matches the player_inventories table in PostgreSQL.
     """
 
-    __tablename__ = "player_inventories"
+    __tablename__ = "player_inventories"  # pyright: ignore[reportUnannotatedClassAttribute]
 
     player_id: Mapped[str] = mapped_column(
         UUID(as_uuid=False),
@@ -540,7 +560,7 @@ class PlayerInventory(Base):
         server_default=text("CURRENT_TIMESTAMP"),
     )
 
-    player: Mapped["Player"] = relationship("Player", back_populates="inventory_record")
+    player: Mapped[Player] = relationship("Player", back_populates="inventory_record")
 
 
 class PlayerExploration(Base):
@@ -548,7 +568,7 @@ class PlayerExploration(Base):
     Junction table tracking which rooms each player has explored.
     """
 
-    __tablename__ = "player_exploration"
+    __tablename__ = "player_exploration"  # pyright: ignore[reportUnannotatedClassAttribute]
 
     id: Mapped[str] = mapped_column(UUID(as_uuid=False), primary_key=True, server_default=text("gen_random_uuid()"))
     player_id: Mapped[str] = mapped_column(
@@ -559,14 +579,14 @@ class PlayerExploration(Base):
     )
     explored_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, server_default=text("now()"))
 
-    player: Mapped["Player"] = relationship("Player", back_populates="exploration_records")
+    player: Mapped[Player] = relationship("Player", back_populates="exploration_records")
 
 
 # Event listener to handle legacy string stats in database
 # Converts JSON strings to dicts before MutableDict coercion
 # As documented in "Legacy Data Migration Patterns" - Dr. Armitage, 1931
 @event.listens_for(Player, "load")
-def _convert_legacy_stats_string(target: Player, _context: Any) -> None:
+def _convert_legacy_stats_string(target: Player, _context: object) -> None:  # pyright: ignore[reportUnusedFunction]  # Reason: SQLAlchemy registers this listener; static analysis does not see the hookup
     """
     Convert legacy string stats to dict during SQLAlchemy load event.
 

@@ -19,6 +19,7 @@ from ..config import get_config
 from ..config.npc_config import NPCMaintenanceConfig
 from ..database import get_async_session
 from ..models.combat import CombatStatus
+from ..models.player import _stats_int
 from ..realtime.connection_manager_api import broadcast_game_event
 from ..realtime.login_grace_period import (
     _grace_period_expiration_handler,
@@ -378,7 +379,7 @@ async def _process_mortally_wounded_player(
 
     await session.refresh(player)
     stats = player.get_stats()
-    new_dp = stats.get("current_dp", 0)
+    new_dp = _stats_int(stats, "current_dp", 0)
 
     if container.combat_service:
         await combat_messaging_integration.send_dp_decay_message(str(player.player_id), new_dp)
@@ -413,7 +414,7 @@ async def _process_mortally_wounded_player(
                     player_id=player_id_uuid,
                     old_dp=new_dp + 1,
                     new_dp=new_dp,
-                    max_dp=stats.get("max_dp", 100),
+                    max_dp=_stats_int(stats, "max_dp", 100),
                 )
             )
 

@@ -5,6 +5,8 @@ Tests _resolve_and_setup_app_state_services, _cleanup_connection mute cleanup,
 _handle_websocket_message_loop, and handle_websocket_connection.
 """
 
+# pyright: reportPrivateUsage=false, reportAny=false, reportMissingParameterType=false, reportUnknownParameterType=false, reportUnknownArgumentType=false, reportUnknownMemberType=false
+
 import asyncio
 import uuid
 from unittest.mock import AsyncMock, MagicMock, patch
@@ -14,8 +16,10 @@ import pytest
 from server.realtime.websocket_handler import (
     _cleanup_connection,
     _handle_websocket_message_loop,
-    _resolve_and_setup_app_state_services,
     handle_websocket_connection,
+)
+from server.realtime.websocket_handler_app_state import (
+    resolve_and_setup_app_state_services as _resolve_and_setup_app_state_services,
 )
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice

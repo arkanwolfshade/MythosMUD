@@ -12,12 +12,15 @@ import json
 import uuid
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from typing import Any
+from typing import Literal, cast
 
+from structlog.stdlib import BoundLogger
+
+from ..async_persistence import AsyncPersistenceLayer
 from ..structured_logging.enhanced_logging_config import get_logger
-from .chat_logger import chat_logger
+from .chat_logger import ChatLogger, chat_logger
 
-logger = get_logger("communications.user_manager")
+logger: BoundLogger = cast(BoundLogger, get_logger("communications.user_manager"))
 
 
 class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: User manager requires many state tracking and configuration attributes
@@ -27,6 +30,10 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
     Handles player muting, channel muting, permissions, and user state
     tracking with integration to AI logging systems.
     """
+
+    chat_logger: ChatLogger
+    data_dir: Path
+    _mute_cache_ttl: timedelta
 
     def __init__(self, data_dir: Path | None = None, mute_cache_ttl: int = 300) -> None:
         """
@@ -38,15 +45,15 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
         """
         # Player mute storage: {player_id: {target_id: mute_info}}
         # Using UUID objects as keys for type safety and consistency
-        self._player_mutes: dict[uuid.UUID, dict[uuid.UUID, dict[str, Any]]] = {}
+        self._player_mutes: dict[uuid.UUID, dict[uuid.UUID, dict[str, object]]] = {}
 
         # Channel mute storage: {player_id: {channel: mute_info}}
         # Using UUID objects as keys for type safety and consistency
-        self._channel_mutes: dict[uuid.UUID, dict[str, Any]] = {}
+        self._channel_mutes: dict[uuid.UUID, dict[str, dict[str, object]]] = {}
 
         # Global mute storage: {player_id: mute_info}
         # Using UUID objects as keys for type safety and consistency
-        self._global_mutes: dict[uuid.UUID, dict[str, Any]] = {}
+        self._global_mutes: dict[uuid.UUID, dict[str, object]] = {}
 
         # Admin players (immune to mutes)
         # Using UUID objects for type safety and consistency
@@ -102,8 +109,9 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
             from ..container import ApplicationContainer
 
             container = ApplicationContainer.get_instance()
-            if container and container.async_persistence:
-                persistence = container.async_persistence
+            ap_layer: object | None = getattr(container, "async_persistence", None) if container else None
+            if ap_layer:
+                persistence = cast(AsyncPersistenceLayer, ap_layer)
                 player = await persistence.get_player_by_id(player_id_uuid)
                 if player:
                     player.set_admin_status(True)
@@ -148,8 +156,9 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
             from ..container import ApplicationContainer
 
             container = ApplicationContainer.get_instance()
-            if container and container.async_persistence:
-                persistence = container.async_persistence
+            ap_layer_rm: object | None = getattr(container, "async_persistence", None) if container else None
+            if ap_layer_rm:
+                persistence = cast(AsyncPersistenceLayer, ap_layer_rm)
                 player = await persistence.get_player_by_id(player_id_uuid)
                 if player:
                     player.set_admin_status(False)
@@ -222,8 +231,9 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
             from ..container import ApplicationContainer
 
             container = ApplicationContainer.get_instance()
-            if container and container.async_persistence:
-                persistence = container.async_persistence
+            ap_layer_admin: object | None = getattr(container, "async_persistence", None) if container else None
+            if ap_layer_admin:
+                persistence = cast(AsyncPersistenceLayer, ap_layer_admin)
                 player = await persistence.get_player_by_id(player_id_uuid)
             else:
                 player = None
@@ -324,8 +334,8 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
             )
 
             # Save mute data for both players
-            self.save_player_mutes(muter_id_uuid)
-            self.save_player_mutes(target_id_uuid)
+            _ = self.save_player_mutes(muter_id_uuid)
+            _ = self.save_player_mutes(target_id_uuid)
 
             return True
 
@@ -360,7 +370,7 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
             target_id_uuid = self._normalize_to_uuid(target_id)
 
             # Load unmuter's mute data to ensure it's available
-            self.load_player_mutes(unmuter_id_uuid)
+            _ = self.load_player_mutes(unmuter_id_uuid)
 
             # Check if mute exists
             if unmuter_id_uuid in self._player_mutes and target_id_uuid in self._player_mutes[unmuter_id_uuid]:
@@ -389,8 +399,8 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
                 )
 
                 # Save mute data for both players
-                self.save_player_mutes(unmuter_id_uuid)
-                self.save_player_mutes(target_id_uuid)
+                _ = self.save_player_mutes(unmuter_id_uuid)
+                _ = self.save_player_mutes(target_id_uuid)
 
                 return True
             logger.warning("Attempted to unmute non-muted player", unmuter_id=unmuter_id_uuid, target_id=target_id_uuid)
@@ -465,7 +475,7 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
             )
 
             # Save mute data for the player
-            self.save_player_mutes(player_id_uuid)
+            _ = self.save_player_mutes(player_id_uuid)
 
             return True
 
@@ -521,7 +531,7 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
                 )
 
                 # Save mute data for the player
-                self.save_player_mutes(player_id_uuid)
+                _ = self.save_player_mutes(player_id_uuid)
 
                 return True
             logger.warning("Attempted to unmute non-muted channel", player_id=player_id_uuid, channel=channel)
@@ -608,8 +618,8 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
             )
 
             # Save mute data for both players
-            self.save_player_mutes(muter_id_uuid)
-            self.save_player_mutes(target_id_uuid)
+            _ = self.save_player_mutes(muter_id_uuid)
+            _ = self.save_player_mutes(target_id_uuid)
 
             return True
 
@@ -638,7 +648,7 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
             target_id_uuid = self._normalize_to_uuid(target_id)
 
             # Load unmuter's mute data to ensure it's available
-            self.load_player_mutes(unmuter_id_uuid)
+            _ = self.load_player_mutes(unmuter_id_uuid)
 
             # Check if global mute exists
             if target_id_uuid in self._global_mutes:
@@ -663,8 +673,8 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
                 )
 
                 # Save mute data for both players
-                self.save_player_mutes(unmuter_id_uuid)
-                self.save_player_mutes(target_id_uuid)
+                _ = self.save_player_mutes(unmuter_id_uuid)
+                _ = self.save_player_mutes(target_id_uuid)
 
                 return True
             logger.warning(
@@ -680,6 +690,34 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
                 target_id=target_id,
             )
             return False
+
+    def _resolve_player_mute_vs_target(
+        self, player_id_uuid: uuid.UUID, target_id_uuid: uuid.UUID
+    ) -> Literal["active", "expired", "absent"]:
+        """
+        Classify mute state for (player_id -> target_id). Removes expired entries.
+
+        AI: Extracted from is_player_muted to keep cyclomatic complexity within tooling limits.
+        """
+        if player_id_uuid not in self._player_mutes:
+            return "absent"
+        bucket = self._player_mutes[player_id_uuid]
+        if target_id_uuid not in bucket:
+            return "absent"
+        mute_info = bucket[target_id_uuid]
+        ex_chk = mute_info.get("expires_at")
+        if isinstance(ex_chk, datetime) and ex_chk < datetime.now(UTC):
+            logger.info(
+                "=== USER MANAGER: Mute is EXPIRED ===",
+                player_id=str(player_id_uuid),
+                target_id=str(target_id_uuid),
+                expires_at=ex_chk,
+            )
+            del bucket[target_id_uuid]
+            if not bucket:
+                del self._player_mutes[player_id_uuid]
+            return "expired"
+        return "active"
 
     def is_player_muted(self, player_id: uuid.UUID | str, target_id: uuid.UUID | str) -> bool:
         """
@@ -707,15 +745,15 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
 
             # Load player's mute data to ensure it's available
             load_result = self.load_player_mutes(player_id_uuid)
+            has_bucket = player_id_uuid in self._player_mutes
             logger.info(
                 "=== USER MANAGER: Mute data load result ===",
                 player_id=str(player_id_uuid),
                 load_result=load_result,
-                has_mute_data=player_id_uuid in self._player_mutes,
+                has_mute_data=has_bucket,
             )
 
-            # Check if mute exists and is not expired
-            if player_id_uuid in self._player_mutes:
+            if has_bucket:
                 muted_players = list(self._player_mutes[player_id_uuid].keys())
                 logger.info(
                     "=== USER MANAGER: Player's muted players list ===",
@@ -725,40 +763,23 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
                     target_in_list=target_id_uuid in self._player_mutes[player_id_uuid],
                 )
 
-                if target_id_uuid in self._player_mutes[player_id_uuid]:
-                    mute_info = self._player_mutes[player_id_uuid][target_id_uuid]
+            outcome = self._resolve_player_mute_vs_target(player_id_uuid, target_id_uuid)
+            if outcome == "active":
+                mute_info = self._player_mutes[player_id_uuid][target_id_uuid]
+                logger.info(
+                    "=== USER MANAGER: Mute EXISTS and is VALID ===",
+                    player_id=str(player_id_uuid),
+                    target_id=str(target_id_uuid),
+                    mute_info=mute_info,
+                )
+                return True
 
-                    # Check if mute is expired
-                    if mute_info["expires_at"] and mute_info["expires_at"] < datetime.now(UTC):
-                        logger.info(
-                            "=== USER MANAGER: Mute is EXPIRED ===",
-                            player_id=str(player_id_uuid),
-                            target_id=str(target_id_uuid),
-                            expires_at=mute_info["expires_at"],
-                        )
-                        # Remove expired mute
-                        del self._player_mutes[player_id_uuid][target_id_uuid]
-                        if not self._player_mutes[player_id_uuid]:
-                            del self._player_mutes[player_id_uuid]
-                        return False
-
-                    logger.info(
-                        "=== USER MANAGER: Mute EXISTS and is VALID ===",
-                        player_id=str(player_id_uuid),
-                        target_id=str(target_id_uuid),
-                        mute_info=mute_info,
-                    )
-                    return True
+            if has_bucket and outcome == "absent":
                 logger.info(
                     "=== USER MANAGER: Target NOT in muted players list ===",
                     player_id=str(player_id_uuid),
                     target_id=str(target_id_uuid),
-                    muted_players=[str(p) for p in muted_players],
-                )
-                logger.info(
-                    "=== USER MANAGER: Player has NO mute data loaded ===",
-                    player_id=str(player_id_uuid),
-                    target_id=str(target_id_uuid),
+                    muted_players=[str(p) for p in self._player_mutes[player_id_uuid].keys()],
                 )
 
             logger.info(
@@ -797,14 +818,15 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
             target_id_uuid = self._normalize_to_uuid(target_id)
 
             # Load player's mute data asynchronously to ensure it's available
-            await self.load_player_mutes_async(player_id_uuid)
+            _ = await self.load_player_mutes_async(player_id_uuid)
 
             # Check if mute exists and is not expired
             if player_id_uuid in self._player_mutes and target_id_uuid in self._player_mutes[player_id_uuid]:
                 mute_info = self._player_mutes[player_id_uuid][target_id_uuid]
 
                 # Check if mute is expired
-                if mute_info["expires_at"] and mute_info["expires_at"] < datetime.now(UTC):
+                ex_async = mute_info.get("expires_at")
+                if isinstance(ex_async, datetime) and ex_async < datetime.now(UTC):
                     # Remove expired mute
                     del self._player_mutes[player_id_uuid][target_id_uuid]
                     if not self._player_mutes[player_id_uuid]:
@@ -845,7 +867,8 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
                 mute_info = self._channel_mutes[player_id_uuid][channel]
 
                 # Check if mute is expired
-                if mute_info["expires_at"] and mute_info["expires_at"] < datetime.now(UTC):
+                ex_ch = mute_info.get("expires_at")
+                if isinstance(ex_ch, datetime) and ex_ch < datetime.now(UTC):
                     # Remove expired mute
                     del self._channel_mutes[player_id_uuid][channel]
                     if not self._channel_mutes[player_id_uuid]:
@@ -885,7 +908,8 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
                 mute_info = self._global_mutes[player_id_uuid]
 
                 # Check if mute is expired
-                if mute_info["expires_at"] and mute_info["expires_at"] < datetime.now(UTC):
+                ex_gl = mute_info.get("expires_at")
+                if isinstance(ex_gl, datetime) and ex_gl < datetime.now(UTC):
                     # Remove expired mute
                     del self._global_mutes[player_id_uuid]
                     return False
@@ -948,34 +972,46 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
             )
             return False
 
-    def _get_active_player_mutes(self, player_id_uuid: uuid.UUID, current_time: datetime) -> dict[Any, Any]:
+    def _get_active_player_mutes(
+        self, player_id_uuid: uuid.UUID, current_time: datetime
+    ) -> dict[uuid.UUID, dict[str, object]]:
         """Get active player mutes for a player."""
-        active_mutes = {}
+        active_mutes: dict[uuid.UUID, dict[str, object]] = {}
         if player_id_uuid in self._player_mutes:
             for target_id_uuid, mute_info in self._player_mutes[player_id_uuid].items():
-                if not mute_info["expires_at"] or mute_info["expires_at"] > current_time:
-                    active_mutes[target_id_uuid] = mute_info
+                expires_raw = mute_info.get("expires_at")
+                if isinstance(expires_raw, datetime) and expires_raw <= current_time:
+                    continue
+                active_mutes[target_id_uuid] = mute_info
         return active_mutes
 
-    def _get_active_channel_mutes(self, player_id_uuid: uuid.UUID, current_time: datetime) -> dict[str, Any]:
+    def _get_active_channel_mutes(
+        self, player_id_uuid: uuid.UUID, current_time: datetime
+    ) -> dict[str, dict[str, object]]:
         """Get active channel mutes for a player."""
-        active_mutes = {}
+        active_mutes: dict[str, dict[str, object]] = {}
         if player_id_uuid in self._channel_mutes:
             for channel, mute_info in self._channel_mutes[player_id_uuid].items():
-                if not mute_info["expires_at"] or mute_info["expires_at"] > current_time:
-                    active_mutes[channel] = mute_info
+                expires_raw = mute_info.get("expires_at")
+                if isinstance(expires_raw, datetime) and expires_raw <= current_time:
+                    continue
+                active_mutes[channel] = mute_info
         return active_mutes
 
-    def _get_active_global_mutes(self, player_id_uuid: uuid.UUID, current_time: datetime) -> dict[Any, Any]:
+    def _get_active_global_mutes(
+        self, player_id_uuid: uuid.UUID, current_time: datetime
+    ) -> dict[uuid.UUID, dict[str, object]]:
         """Get active global mutes applied by a player."""
-        active_mutes = {}
+        active_mutes: dict[uuid.UUID, dict[str, object]] = {}
         for target_id_uuid, mute_info in self._global_mutes.items():
             if mute_info["muted_by"] == player_id_uuid:
-                if not mute_info["expires_at"] or mute_info["expires_at"] > current_time:
-                    active_mutes[target_id_uuid] = mute_info
+                expires_raw = mute_info.get("expires_at")
+                if isinstance(expires_raw, datetime) and expires_raw <= current_time:
+                    continue
+                active_mutes[target_id_uuid] = mute_info
         return active_mutes
 
-    def get_player_mutes(self, player_id: uuid.UUID | str) -> dict[str, Any]:
+    def get_player_mutes(self, player_id: uuid.UUID | str) -> dict[str, object]:
         """
         Get all mutes applied by a player.
 
@@ -989,7 +1025,7 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
             player_id_uuid = self._normalize_to_uuid(player_id)
             current_time = datetime.now(UTC)
 
-            mutes: dict[str, Any] = {
+            mutes: dict[str, object] = {
                 "player_mutes": self._get_active_player_mutes(player_id_uuid, current_time),
                 "channel_mutes": self._get_active_channel_mutes(player_id_uuid, current_time),
                 "global_mutes": self._get_active_global_mutes(player_id_uuid, current_time),
@@ -999,13 +1035,25 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
 
         except OSError as e:
             logger.error("File system error getting player mutes", error=str(e), error_type=type(e).__name__)
-            return {"player_mutes": {}, "channel_mutes": {}, "global_mutes": {}}
+            return {
+                "player_mutes": cast(dict[uuid.UUID, dict[str, object]], {}),
+                "channel_mutes": cast(dict[str, dict[str, object]], {}),
+                "global_mutes": cast(dict[uuid.UUID, dict[str, object]], {}),
+            }
         except (ValueError, TypeError) as e:
             logger.error("Data validation error getting player mutes", error=str(e), error_type=type(e).__name__)
-            return {"player_mutes": {}, "channel_mutes": {}, "global_mutes": {}}
+            return {
+                "player_mutes": cast(dict[uuid.UUID, dict[str, object]], {}),
+                "channel_mutes": cast(dict[str, dict[str, object]], {}),
+                "global_mutes": cast(dict[uuid.UUID, dict[str, object]], {}),
+            }
         except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors
             logger.error("Unexpected error getting player mutes", error=str(e), error_type=type(e).__name__)
-            return {"player_mutes": {}, "channel_mutes": {}, "global_mutes": {}}
+            return {
+                "player_mutes": cast(dict[uuid.UUID, dict[str, object]], {}),
+                "channel_mutes": cast(dict[str, dict[str, object]], {}),
+                "global_mutes": cast(dict[uuid.UUID, dict[str, object]], {}),
+            }
 
     def is_player_muted_by_others(self, player_id: uuid.UUID | str) -> bool:
         """
@@ -1044,26 +1092,26 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
             # Normalize to UUID for dictionary operations
             player_id_uuid = self._normalize_to_uuid(player_id)
 
-            muted_by = []
+            muted_by: list[tuple[str, str]] = []
 
             # Check global mutes
             if player_id_uuid in self._global_mutes:
                 mute_info = self._global_mutes[player_id_uuid]
-                muter_name = mute_info.get("muted_by_name", "Unknown")
+                muter_name = str(mute_info.get("muted_by_name", "Unknown"))
                 muted_by.append((muter_name, "global"))
 
             # Check personal mutes
             for _muter_id_uuid, mutes in self._player_mutes.items():
                 if player_id_uuid in mutes:
                     mute_info = mutes[player_id_uuid]
-                    muter_name = mute_info.get("muted_by_name", "Unknown")
+                    muter_name = str(mute_info.get("muted_by_name", "Unknown"))
                     muted_by.append((muter_name, "personal"))
 
             return muted_by
         except (ValueError, TypeError):
             return []
 
-    def get_system_stats(self) -> dict[str, Any]:
+    def get_system_stats(self) -> dict[str, object]:
         """
         Get system-wide user management statistics.
 
@@ -1074,7 +1122,7 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
             # Clean up expired mutes first
             self._cleanup_expired_mutes()
 
-            stats = {
+            stats: dict[str, object] = {
                 "total_players_with_mutes": len(self._player_mutes),
                 "total_channel_mutes": sum(len(mutes) for mutes in self._channel_mutes.values()),
                 "total_global_mutes": len(self._global_mutes),
@@ -1086,14 +1134,15 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
 
         except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors
             logger.error("Error getting system stats", error=str(e))
-            return {}
+            return cast(dict[str, object], {})
 
     def _cleanup_player_mutes(self, current_time: datetime) -> None:
         """Clean up expired player mutes."""
         for player_id in list(self._player_mutes.keys()):
             for target_id in list(self._player_mutes[player_id].keys()):
                 mute_info = self._player_mutes[player_id][target_id]
-                if mute_info["expires_at"] and mute_info["expires_at"] < current_time:
+                ex_p = mute_info.get("expires_at")
+                if isinstance(ex_p, datetime) and ex_p < current_time:
                     del self._player_mutes[player_id][target_id]
 
             if not self._player_mutes[player_id]:
@@ -1104,7 +1153,8 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
         for player_id in list(self._channel_mutes.keys()):
             for channel in list(self._channel_mutes[player_id].keys()):
                 mute_info = self._channel_mutes[player_id][channel]
-                if mute_info["expires_at"] and mute_info["expires_at"] < current_time:
+                ex_c = mute_info.get("expires_at")
+                if isinstance(ex_c, datetime) and ex_c < current_time:
                     del self._channel_mutes[player_id][channel]
 
             if not self._channel_mutes[player_id]:
@@ -1114,7 +1164,8 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
         """Clean up expired global mutes."""
         for player_id in list(self._global_mutes.keys()):
             mute_info = self._global_mutes[player_id]
-            if mute_info["expires_at"] and mute_info["expires_at"] < current_time:
+            ex_g = mute_info.get("expires_at")
+            if isinstance(ex_g, datetime) and ex_g < current_time:
                 del self._global_mutes[player_id]
 
     def _cleanup_expired_mutes(self) -> None:
@@ -1133,27 +1184,36 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
         player_id_str = str(player_id)
         return self.data_dir / f"mutes_{player_id_str}.json"
 
-    def _convert_mute_info_timestamps(self, mute_info: dict[str, Any]) -> None:
+    def _convert_mute_info_timestamps(self, mute_info: dict[str, object]) -> None:
         """Convert timestamp strings in mute_info to datetime objects."""
         if "muted_at" in mute_info:
-            mute_info["muted_at"] = datetime.fromisoformat(mute_info["muted_at"])
+            ma = mute_info["muted_at"]
+            if isinstance(ma, str):
+                mute_info["muted_at"] = datetime.fromisoformat(ma)
         if "expires_at" in mute_info and mute_info["expires_at"]:
-            mute_info["expires_at"] = datetime.fromisoformat(mute_info["expires_at"])
+            ex = mute_info["expires_at"]
+            if isinstance(ex, str):
+                mute_info["expires_at"] = datetime.fromisoformat(ex)
 
-    def _convert_mute_info_uuids(self, mute_info: dict[str, Any]) -> None:
+    def _convert_mute_info_uuids(self, mute_info: dict[str, object]) -> None:
         """Convert UUID strings in mute_info to UUID objects."""
         if "target_id" in mute_info and isinstance(mute_info["target_id"], str):
             mute_info["target_id"] = uuid.UUID(mute_info["target_id"])
         if "muted_by" in mute_info and isinstance(mute_info["muted_by"], str):
             mute_info["muted_by"] = uuid.UUID(mute_info["muted_by"])
 
-    def _load_player_mutes_from_data(self, data: dict[str, Any], player_id_uuid: uuid.UUID) -> None:
+    def _load_player_mutes_from_data(self, data: dict[str, object], player_id_uuid: uuid.UUID) -> None:
         """Load player mutes from JSON data into memory."""
-        if "player_mutes" not in data:
+        raw_pm = data.get("player_mutes")
+        if not isinstance(raw_pm, dict):
             return
 
         self._player_mutes[player_id_uuid] = {}
-        for target_id_str, mute_info in data["player_mutes"].items():
+        raw_pm_map = cast(dict[str, object], raw_pm)
+        for target_id_str, mute_info_raw in raw_pm_map.items():
+            if not isinstance(mute_info_raw, dict):
+                continue
+            mute_info = cast(dict[str, object], mute_info_raw)
             self._convert_mute_info_timestamps(mute_info)
             self._convert_mute_info_uuids(mute_info)
 
@@ -1163,22 +1223,32 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
             except (ValueError, TypeError):
                 logger.warning("Invalid UUID format in player_mutes", target_id=target_id_str)
 
-    def _load_channel_mutes_from_data(self, data: dict[str, Any], player_id_uuid: uuid.UUID) -> None:
+    def _load_channel_mutes_from_data(self, data: dict[str, object], player_id_uuid: uuid.UUID) -> None:
         """Load channel mutes from JSON data into memory."""
-        if "channel_mutes" not in data:
+        raw_cm = data.get("channel_mutes")
+        if not isinstance(raw_cm, dict):
             return
 
         self._channel_mutes[player_id_uuid] = {}
-        for channel, mute_info in data["channel_mutes"].items():
+        raw_cm_map = cast(dict[str, object], raw_cm)
+        for channel, mute_info_raw in raw_cm_map.items():
+            if not isinstance(mute_info_raw, dict):
+                continue
+            mute_info = cast(dict[str, object], mute_info_raw)
             self._convert_mute_info_timestamps(mute_info)
             self._channel_mutes[player_id_uuid][channel] = mute_info
 
-    def _load_global_mutes_from_data(self, data: dict[str, Any]) -> None:
+    def _load_global_mutes_from_data(self, data: dict[str, object]) -> None:
         """Load global mutes from JSON data into memory."""
-        if "global_mutes" not in data:
+        raw_gm = data.get("global_mutes")
+        if not isinstance(raw_gm, dict):
             return
 
-        for target_id_str, mute_info in data["global_mutes"].items():
+        raw_gm_map = cast(dict[str, object], raw_gm)
+        for target_id_str, mute_info_raw in raw_gm_map.items():
+            if not isinstance(mute_info_raw, dict):
+                continue
+            mute_info = cast(dict[str, object], mute_info_raw)
             self._convert_mute_info_timestamps(mute_info)
             self._convert_mute_info_uuids(mute_info)
 
@@ -1196,43 +1266,62 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
         except (ValueError, TypeError):
             pass
 
-    def _serialize_mute_info_for_json(self, mute_info: dict[str, Any]) -> dict[str, Any]:
+    def _serialize_mute_info_for_json(self, mute_info: dict[str, object]) -> dict[str, object]:
         """Convert mute_info datetime and UUID objects to JSON-serializable formats."""
-        serialized_mute = mute_info.copy()
-        if "muted_at" in serialized_mute:
-            serialized_mute["muted_at"] = serialized_mute["muted_at"].isoformat()
-        if "expires_at" in serialized_mute and serialized_mute["expires_at"]:
-            serialized_mute["expires_at"] = serialized_mute["expires_at"].isoformat()
-        if "target_id" in serialized_mute and isinstance(serialized_mute["target_id"], uuid.UUID):
-            serialized_mute["target_id"] = str(serialized_mute["target_id"])
-        if "muted_by" in serialized_mute and isinstance(serialized_mute["muted_by"], uuid.UUID):
-            serialized_mute["muted_by"] = str(serialized_mute["muted_by"])
+        serialized_mute: dict[str, object] = dict(mute_info)
+        ma = serialized_mute.get("muted_at")
+        if isinstance(ma, datetime):
+            serialized_mute["muted_at"] = ma.isoformat()
+        ex = serialized_mute.get("expires_at")
+        if ex is not None and isinstance(ex, datetime):
+            serialized_mute["expires_at"] = ex.isoformat()
+        tid = serialized_mute.get("target_id")
+        if isinstance(tid, uuid.UUID):
+            serialized_mute["target_id"] = str(tid)
+        mb = serialized_mute.get("muted_by")
+        if isinstance(mb, uuid.UUID):
+            serialized_mute["muted_by"] = str(mb)
         return serialized_mute
 
-    def _save_player_mutes_to_data(self, data: dict[str, Any], player_id_uuid: uuid.UUID) -> None:
+    def _save_player_mutes_to_data(self, data: dict[str, object], player_id_uuid: uuid.UUID) -> None:
         """Save player mutes to data dictionary for JSON serialization."""
         if player_id_uuid not in self._player_mutes:
             return
 
+        raw_pm = data.get("player_mutes")
+        if not isinstance(raw_pm, dict):
+            return
+        player_mutes_out = cast(dict[str, object], raw_pm)
+
         for target_id_uuid, mute_info in self._player_mutes[player_id_uuid].items():
             serialized_mute = self._serialize_mute_info_for_json(mute_info)
-            data["player_mutes"][str(target_id_uuid)] = serialized_mute
+            player_mutes_out[str(target_id_uuid)] = serialized_mute
 
-    def _save_channel_mutes_to_data(self, data: dict[str, Any], player_id_uuid: uuid.UUID) -> None:
+    def _save_channel_mutes_to_data(self, data: dict[str, object], player_id_uuid: uuid.UUID) -> None:
         """Save channel mutes to data dictionary for JSON serialization."""
         if player_id_uuid not in self._channel_mutes:
             return
 
+        raw_cm = data.get("channel_mutes")
+        if not isinstance(raw_cm, dict):
+            return
+        channel_mutes_out = cast(dict[str, object], raw_cm)
+
         for channel, mute_info in self._channel_mutes[player_id_uuid].items():
             serialized_mute = self._serialize_mute_info_for_json(mute_info)
-            data["channel_mutes"][channel] = serialized_mute
+            channel_mutes_out[channel] = serialized_mute
 
-    def _save_global_mutes_to_data(self, data: dict[str, Any], player_id_uuid: uuid.UUID) -> None:
+    def _save_global_mutes_to_data(self, data: dict[str, object], player_id_uuid: uuid.UUID) -> None:
         """Save global mutes applied by this player to data dictionary for JSON serialization."""
+        raw_gm = data.get("global_mutes")
+        if not isinstance(raw_gm, dict):
+            return
+        global_mutes_out = cast(dict[str, object], raw_gm)
+
         for target_id_uuid, mute_info in self._global_mutes.items():
             if mute_info.get("muted_by") == player_id_uuid:  # Compare UUID objects
                 serialized_mute = self._serialize_mute_info_for_json(mute_info)
-                data["global_mutes"][str(target_id_uuid)] = serialized_mute
+                global_mutes_out[str(target_id_uuid)] = serialized_mute
 
     def load_player_mutes(self, player_id: uuid.UUID | str) -> bool:
         """
@@ -1257,7 +1346,10 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
             with open(mute_file, encoding="utf-8") as f:
                 raw = f.read()
             # Empty or whitespace-only file: treat as valid empty mute data (avoids JSONDecodeError)
-            data = json.loads(raw) if raw.strip() else {}
+            parsed: object = json.loads(raw) if raw.strip() else {}
+            if not isinstance(parsed, dict):
+                raise TypeError("Mute file root must be a JSON object")
+            data: dict[str, object] = cast(dict[str, object], parsed)
 
             # Load all mute types from JSON data
             self._load_player_mutes_from_data(data, player_id_uuid)
@@ -1265,7 +1357,7 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
             self._load_global_mutes_from_data(data)
 
             # Load admin status (using UUID object as key)
-            if "is_admin" in data and data["is_admin"]:
+            if bool(data.get("is_admin")):
                 self._admin_players.add(player_id_uuid)
 
             # Update cache (using UUID object as key)
@@ -1346,7 +1438,7 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
             significantly improving performance when loading multiple players.
         """
         # Filter out players with valid cache (normalize to UUID first)
-        players_to_load = []
+        players_to_load: list[uuid.UUID | str] = []
         for pid in player_ids:
             try:
                 pid_uuid = self._normalize_to_uuid(pid)
@@ -1408,6 +1500,7 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
         Returns:
             True if data was saved successfully, False otherwise
         """
+        payload: dict[str, object] | None = None
         try:
             # Normalize to UUID for dictionary operations
             player_id_uuid = self._normalize_to_uuid(player_id)
@@ -1416,23 +1509,23 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
             mute_file = self._get_player_mute_file(player_id_uuid)
 
             # Prepare data for serialization
-            data: dict[str, Any] = {
+            payload = {
                 "player_id": player_id_str,  # Use string for JSON serialization
                 "last_updated": datetime.now(UTC).isoformat(),
-                "player_mutes": {},
-                "channel_mutes": {},
-                "global_mutes": {},
+                "player_mutes": cast(dict[str, object], {}),
+                "channel_mutes": cast(dict[str, object], {}),
+                "global_mutes": cast(dict[str, object], {}),
                 "is_admin": player_id_uuid in self._admin_players,  # Use UUID for dictionary lookup
             }
 
             # Save all mute types to data dictionary
-            self._save_player_mutes_to_data(data, player_id_uuid)
-            self._save_channel_mutes_to_data(data, player_id_uuid)
-            self._save_global_mutes_to_data(data, player_id_uuid)
+            self._save_player_mutes_to_data(payload, player_id_uuid)
+            self._save_channel_mutes_to_data(payload, player_id_uuid)
+            self._save_global_mutes_to_data(payload, player_id_uuid)
 
             # Validate data is serializable before writing
             try:
-                json.dumps(data, indent=2, ensure_ascii=False)
+                _ = json.dumps(payload, indent=2, ensure_ascii=False)
             except (TypeError, ValueError) as e:
                 logger.error("Data is not JSON serializable", error=str(e), error_type=type(e).__name__)
                 return False
@@ -1443,10 +1536,10 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
             temp_file = mute_file.with_suffix(".tmp")
             try:
                 with open(temp_file, "w", encoding="utf-8") as f:
-                    json.dump(data, f, indent=2, ensure_ascii=False)
+                    json.dump(payload, f, indent=2, ensure_ascii=False)
 
                 # Atomically replace the original file
-                temp_file.replace(mute_file)
+                _ = temp_file.replace(mute_file)
             except Exception as e:
                 # Clean up temp file if it exists
                 if temp_file.exists():
@@ -1461,7 +1554,7 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
                 "Error saving player mute data",
                 error=str(e),
                 player_id=player_id,
-                data_keys=list(data.keys()) if "data" in locals() else None,
+                data_keys=list(payload.keys()) if payload is not None else None,
             )
             return False
 

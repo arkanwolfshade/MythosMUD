@@ -1,7 +1,7 @@
 """Query helper functions for container persistence operations."""
 
 from datetime import UTC, datetime
-from typing import Any
+from typing import Any, cast
 from uuid import UUID
 
 import psycopg2
@@ -10,7 +10,7 @@ from psycopg2.extras import RealDictCursor
 from ..exceptions import DatabaseError
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import log_and_raise
-from .container_data import ContainerData
+from .container_data import ContainerData, ContainerDataCore, ContainerDataExtras
 from .container_helpers import fetch_container_items, parse_jsonb_column
 
 logger = get_logger(__name__)
@@ -31,20 +31,24 @@ def _build_container_data_from_row(conn: Any, row: dict[str, Any]) -> ContainerD
     items_json = fetch_container_items(conn, container_id)
 
     return ContainerData(
-        container_instance_id=container_id,
-        source_type=row["source_type"],
-        owner_id=row["owner_id"],
-        room_id=row["room_id"],
-        entity_id=row["entity_id"],
-        lock_state=row["lock_state"],
-        capacity_slots=row["capacity_slots"],
-        weight_limit=row["weight_limit"],
-        decay_at=row["decay_at"],
-        allowed_roles=parse_jsonb_column(row["allowed_roles"], []),
-        items_json=items_json,
-        metadata_json=parse_jsonb_column(row["metadata_json"], {}),
-        created_at=row["created_at"],
-        updated_at=row["updated_at"],
+        ContainerDataCore(
+            container_instance_id=container_id,
+            source_type=row["source_type"],
+            owner_id=row["owner_id"],
+            room_id=row["room_id"],
+            entity_id=row["entity_id"],
+            lock_state=row["lock_state"],
+            capacity_slots=row["capacity_slots"],
+        ),
+        ContainerDataExtras(
+            weight_limit=row["weight_limit"],
+            decay_at=row["decay_at"],
+            allowed_roles=cast(list[str], parse_jsonb_column(row["allowed_roles"], [])),
+            items_json=items_json,
+            metadata_json=cast(dict[str, object], parse_jsonb_column(row["metadata_json"], {})),
+            created_at=row["created_at"],
+            updated_at=row["updated_at"],
+        ),
     )
 
 

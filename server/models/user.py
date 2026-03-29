@@ -9,6 +9,8 @@ The base class fields (email, hashed_password) use legacy Column() but we type
 our custom fields with Mapped[] for better type safety.
 """
 
+from __future__ import annotations
+
 from datetime import datetime
 from typing import TYPE_CHECKING, Any
 
@@ -81,11 +83,11 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
     # ARCHITECTURE FIX Phase 3.1: Relationships defined directly in model (no circular imports)
     # MULTI-CHARACTER: Changed to one-to-many relationship (uselist=True) to support multiple characters per user
     # Using simple string references - SQLAlchemy resolves via registry after all models imported
-    players: Mapped[list["Player"]] = relationship("Player", uselist=True, back_populates="user", lazy="select")
-    created_invites: Mapped[list["Invite"]] = relationship(
+    players: Mapped[list[Player]] = relationship("Player", uselist=True, back_populates="user", lazy="select")
+    created_invites: Mapped[list[Invite]] = relationship(
         "Invite", foreign_keys="Invite.created_by_user_id", back_populates="created_by_user"
     )
-    used_invite: Mapped["Invite | None"] = relationship(
+    used_invite: Mapped[Invite | None] = relationship(
         "Invite", foreign_keys="Invite.used_by_user_id", back_populates="used_by_user", uselist=False
     )
 
