@@ -18,6 +18,8 @@ concurrency:
 # a CLI `--env ACT=true` overrides this per nektos/act precedence over workflow env.
 env:
   ACT: ""
+  # Codacy rejects or mis-associates partial uploads when `github.sha` is the PR merge commit; use head SHA.
+  CODACY_COMMIT_UUID: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
 
 jobs:
   backend:
@@ -352,6 +354,7 @@ jobs:
           CODACY_REPORTER="$(bash scripts/ensure_codacy_coverage_reporter_ci.sh)"
           "${CODACY_REPORTER}" report \
             --project-token "${CODACY_PROJECT_TOKEN}" \
+            --commit-uuid "${CODACY_COMMIT_UUID}" \
             -l Python \
             -r coverage.xml \
             --partial
@@ -427,17 +430,15 @@ jobs:
           fi
           test -s client/coverage/lcov.info
           CODACY_REPORTER="$(bash scripts/ensure_codacy_coverage_reporter_ci.sh)"
-          # Codacy language names are case-sensitive; Vitest LCOV maps .ts/.tsx — upload for
-          # both Javascript and TypeScript per https://docs.codacy.com/coverage-reporter/uploading-coverage-in-advanced-scenarios/
-          for LANG in Javascript TypeScript; do
-            "${CODACY_REPORTER}" report \
-              --project-token "${CODACY_PROJECT_TOKEN}" \
-              -l "${LANG}" \
-              --force-coverage-parser lcov \
-              -r client/coverage/lcov.info \
-              --prefix client \
-              --partial
-          done
+          # Vitest LCOV references .ts/.tsx; Codacy language name must match supported enums (TypeScript).
+          "${CODACY_REPORTER}" report \
+            --project-token "${CODACY_PROJECT_TOKEN}" \
+            --commit-uuid "${CODACY_COMMIT_UUID}" \
+            -l TypeScript \
+            --force-coverage-parser lcov \
+            -r client/coverage/lcov.info \
+            --prefix client \
+            --partial
       - name: Run E2E tests
         continue-on-error: true # E2E tests require backend server, may fail in frontend-only CI
         run: npm run test
@@ -468,4 +469,5 @@ jobs:
           fi
           CODACY_REPORTER="$(bash scripts/ensure_codacy_coverage_reporter_ci.sh)"
           "${CODACY_REPORTER}" final \
-            --project-token "${CODACY_PROJECT_TOKEN}"
+            --project-token "${CODACY_PROJECT_TOKEN}" \
+            --commit-uuid "${CODACY_COMMIT_UUID}"
