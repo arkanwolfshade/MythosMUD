@@ -1,4 +1,5 @@
-import { render } from '@testing-library/react';
+import { cleanup, render } from '@testing-library/react';
+import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { PerformanceTester, type PerformanceTestResult } from '../../utils/performanceTester';
 import { ChatPanel } from '../panels/ChatPanel';
@@ -165,6 +166,9 @@ describe('Performance Tests', () => {
       const result = await performanceTester.runTest(
         'ChatPanel - Large Message List Render',
         () => {
+          // RTL appends a new root each render; without cleanup, N iterations stack N trees and
+          // inflate timings (looks like a regression or flakiness). Reset DOM before each sample.
+          cleanup();
           render(<ChatPanel {...defaultProps} />);
         },
         { iterations: 20, warmupIterations: 3 }
@@ -234,6 +238,7 @@ describe('Performance Tests', () => {
       const result = await performanceTester.runTest(
         'GameLogPanel - Large Game Log Render',
         () => {
+          cleanup();
           render(<GameLogPanel {...defaultProps} />);
         },
         { iterations: 5, warmupIterations: 1 }
@@ -298,6 +303,7 @@ describe('Performance Tests', () => {
       const result = await performanceTester.runTest(
         'CommandPanel - Large Command History Render',
         () => {
+          cleanup();
           render(<CommandPanel {...defaultProps} />);
         },
         { iterations: 100, warmupIterations: 10 }
@@ -355,6 +361,7 @@ describe('Performance Tests', () => {
       const result = await performanceTester.runMemoryTest(
         'ChatPanel - Memory Usage',
         () => {
+          cleanup();
           render(
             <ChatPanel
               messages={largeMessages}
@@ -390,6 +397,7 @@ describe('Performance Tests', () => {
       const result = await performanceTester.runMemoryTest(
         'GameLogPanel - Memory Usage',
         () => {
+          cleanup();
           render(<GameLogPanel messages={largeMessages} onClearMessages={vi.fn()} onDownloadLogs={vi.fn()} />);
         },
         { iterations: 2, warmupIterations: 0 }
@@ -417,6 +425,7 @@ describe('Performance Tests', () => {
       const result = await performanceTester.runTest(
         'Integration - All Panels Render',
         () => {
+          cleanup();
           // Render all three panels
           render(
             <ChatPanel
@@ -457,6 +466,7 @@ describe('Performance Tests', () => {
       await performanceTester.runTest(
         'Benchmark - Quick Render',
         () => {
+          cleanup();
           render(<CommandPanel commandHistory={[]} onSendCommand={vi.fn()} onClearHistory={vi.fn()} />);
         },
         { iterations: 5, warmupIterations: 1 }

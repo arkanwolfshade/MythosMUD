@@ -9,24 +9,35 @@ until another player helps them recover.
 
 # pylint: disable=too-many-return-statements  # Reason: Catatonia checking requires multiple return statements for different command validation states and permission checks
 
+from __future__ import annotations
+
 import uuid
-from typing import Any, cast
+from typing import Protocol, cast
+
+from sqlalchemy.ext.asyncio import AsyncSession
+from structlog.stdlib import BoundLogger
 
 from ..database import get_async_session
 from ..models.lucidity import PlayerLucidity
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.player_cache import cache_player, get_cached_player
-from .command_execution_request import CommandExecutionRequest
+from .command_execution_request import CommandExecutionRequest, command_request_app_state
 
-logger = get_logger(__name__)
+logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
 
 # Commands that are allowed even during catatonia
 CATATONIA_ALLOWED_COMMANDS = {"help", "who", "status", "time"}
 
 
+class _PersistenceGetPlayerByName(Protocol):
+    """Minimal persistence surface used by catatonia load path."""
+
+    async def get_player_by_name(self, player_name: str) -> object | None: ...
+
+
 async def _load_player_for_catatonia_check(
-    request: CommandExecutionRequest, player_name: str, persistence: Any
-) -> Any | None:
+    request: CommandExecutionRequest, player_name: str, persistence: _PersistenceGetPlayerByName
+) -> object | None:
     """Load player for catatonia check, using cache if available."""
     player = get_cached_player(request, player_name)
     if player is None:
@@ -45,22 +56,37 @@ async def _load_player_for_catatonia_check(
     return player
 
 
-def _check_catatonia_registry(state: Any, player_id: str | uuid.UUID, player_name: str) -> tuple[bool, str | None]:
+def _registry_player_id_value(raw: object) -> uuid.UUID | str:
+    """Normalize player_id for CatatoniaRegistry.is_catatonic (uuid.UUID | str)."""
+    if isinstance(raw, (uuid.UUID, str)):
+        return raw
+    return str(raw)
+
+
+def _check_catatonia_registry(state: object, player_id: uuid.UUID | str, player_name: str) -> tuple[bool, str | None]:
     """Check catatonia status via registry."""
-    registry = getattr(state, "__dict__", {}).get("catatonia_registry")
-    if registry is not None and hasattr(registry, "is_catatonic"):
-        try:
-            if registry.is_catatonic(player_id):
-                logger.info(
-                    "Catatonic player command blocked via registry",
-                    player=player_name,
-                )
-                return (
-                    True,
-                    "Your body lies unresponsive, trapped in catatonia. Another must ground you.",
-                )
-        except (ImportError, AttributeError, TypeError, RuntimeError):  # pragma: no cover - defensive
-            logger.exception("Catatonia registry lookup failed", player=player_name)
+    # getattr: works with __slots__ / Starlette State; avoid probing raw __dict__.
+    registry: object | None = cast(object | None, getattr(state, "catatonia_registry", None))
+    if registry is None:
+        return False, None
+    # Explicit None branch before callable(): cast(object|None)+callable-only made mypy mark try as unreachable.
+    raw_is_cat: object | None = cast(object | None, getattr(registry, "is_catatonic", None))
+    if raw_is_cat is None:
+        return False, None
+    if not callable(raw_is_cat):
+        return False, None
+    try:
+        if raw_is_cat(player_id):
+            logger.info(
+                "Catatonic player command blocked via registry",
+                player=player_name,
+            )
+            return (
+                True,
+                "Your body lies unresponsive, trapped in catatonia. Another must ground you.",
+            )
+    except (ImportError, AttributeError, TypeError, RuntimeError):  # pragma: no cover - defensive
+        logger.exception("Catatonia registry lookup failed", player=player_name)
     return False, None
 
 
@@ -71,9 +97,11 @@ def _is_catatonic(lucidity_record: PlayerLucidity | None) -> bool:
     return lucidity_record.current_tier == "catatonic" or lucidity_record.current_lcd <= 0
 
 
-async def _fetch_lucidity_record(session: Any, player_id_uuid: uuid.UUID, player_name: str) -> PlayerLucidity | None:
+async def _fetch_lucidity_record(
+    session: AsyncSession, player_id_uuid: uuid.UUID, player_name: str
+) -> PlayerLucidity | None:
     """Fetch lucidity record from database session."""
-    lucidity_record = await session.get(PlayerLucidity, player_id_uuid)
+    lucidity_record: PlayerLucidity | None = await session.get(PlayerLucidity, player_id_uuid)
     logger.debug(
         "Lucidity record retrieved",
         player=player_name,
@@ -82,8 +110,7 @@ async def _fetch_lucidity_record(session: Any, player_id_uuid: uuid.UUID, player
         current_lcd=lucidity_record.current_lcd if lucidity_record else None,
         current_tier=lucidity_record.current_tier if lucidity_record else None,
     )
-    result: PlayerLucidity | None = cast(PlayerLucidity | None, lucidity_record)
-    return result
+    return lucidity_record
 
 
 async def _query_lucidity_record(player_id_uuid: uuid.UUID, player_name: str) -> PlayerLucidity | None:
@@ -127,7 +154,7 @@ async def _check_catatonia_database(player_id_uuid: uuid.UUID, player_name: str)
     return False, None
 
 
-def _convert_player_id_to_uuid(player_id: Any, player_name: str) -> uuid.UUID | None:
+def _convert_player_id_to_uuid(player_id: object, player_name: str) -> uuid.UUID | None:
     """Convert player_id to UUID, returning None if conversion fails."""
     try:
         if isinstance(player_id, uuid.UUID):
@@ -163,7 +190,7 @@ async def check_catatonia_block(
     Args:
         player_name: The name of the player
         command: The command being executed
-        request: The FastAPI request object
+        request: HTTP Request or WebSocketRequestContext (CommandExecutionRequest)
 
     Returns:
         Tuple of (should_block, blocking_message)
@@ -171,8 +198,7 @@ async def check_catatonia_block(
     if command in CATATONIA_ALLOWED_COMMANDS:
         return False, None
 
-    app = getattr(request, "app", None)
-    state = getattr(app, "state", None) if app else None
+    state = command_request_app_state(request)
     if state is None:
         return False, None
 
@@ -180,21 +206,25 @@ async def check_catatonia_block(
     if persistence is None:
         return False, None
 
-    player = await _load_player_for_catatonia_check(request, player_name, persistence)
+    persistence_typed = cast(_PersistenceGetPlayerByName, persistence)
+    player = await _load_player_for_catatonia_check(request, player_name, persistence_typed)
     if not player:
         return False, None
 
-    player_id = getattr(player, "player_id", None)
-    if not player_id:
+    player_obj: object = player
+    player_id_raw: object | None = getattr(player_obj, "player_id", None)
+    if player_id_raw is None:
         return False, None
 
+    registry_key = _registry_player_id_value(player_id_raw)
+
     # Check registry first
-    blocked, message = _check_catatonia_registry(state, player_id, player_name)
+    blocked, message = _check_catatonia_registry(state, registry_key, player_name)
     if blocked:
         return blocked, message
 
     # Check database - convert player_id to UUID if needed
-    player_id_uuid = _convert_player_id_to_uuid(player_id, player_name)
+    player_id_uuid = _convert_player_id_to_uuid(player_id_raw, player_name)
     if player_id_uuid is None:
         return False, None
 

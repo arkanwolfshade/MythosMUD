@@ -30,6 +30,10 @@ interface ExtendedPerformance extends Performance {
 export class PerformanceTester {
   private results: PerformanceTestResult[] = [];
 
+  /**
+   * Runs the callback many times. If the callback uses `@testing-library/react` `render()`, call
+   * `cleanup()` at the start of each iteration so roots do not accumulate (otherwise timings drift up).
+   */
   async runTest(
     name: string,
     testFunction: () => void | Promise<void>,
