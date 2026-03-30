@@ -12,14 +12,14 @@ from .inventory_service_helpers import get_shared_services
 
 
 def find_item_in_inventory(
-    inventory: list[dict[str, object]], item_name: str
+    inventory: Sequence[Mapping[str, object]], item_name: str
 ) -> tuple[dict[str, object] | None, int | None]:
     """Find an item in inventory by name or index."""
     try:
         index = int(item_name)
         if 1 <= index <= len(inventory):
             item_index = index - 1
-            return inventory[item_index], item_index
+            return cast(dict[str, object], inventory[item_index]), item_index
     except ValueError:
         pass
 
@@ -27,7 +27,7 @@ def find_item_in_inventory(
     for idx, item in enumerate(inventory):
         item_name_check = str(item.get("item_name", item.get("name", ""))).lower()
         if target_lower in item_name_check:
-            return item, idx
+            return cast(dict[str, object], item), idx
 
     return None, None
 

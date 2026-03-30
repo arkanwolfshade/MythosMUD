@@ -120,17 +120,24 @@ def validate_occupant_name(name: object) -> bool:
     return not is_uuid
 
 
+def _accumulate_valid_occupant_name(occ: dict[str, object], room_id: str, occupant_names: list[str]) -> None:
+    """Parse one occupant row: append display name or log when it looks like a UUID."""
+    raw = occ.get("player_name") or occ.get("name")
+    name = raw if isinstance(raw, str) else None
+    if not name:
+        return
+    if validate_occupant_name(name):
+        occupant_names.append(name)
+        return
+    logger.warning("Skipping UUID as player name", name=name, room_id=room_id)
+
+
 async def get_occupant_names(room_occupants: list[dict[str, object]], room_id: str) -> list[str]:
     """Extract and validate occupant names from room occupants list."""
     occupant_names: list[str] = []
     try:
         for occ in room_occupants or []:
-            raw = occ.get("player_name") or occ.get("name")
-            name = raw if isinstance(raw, str) else None
-            if name and validate_occupant_name(name):
-                occupant_names.append(name)
-            elif name:
-                logger.warning("Skipping UUID as player name", name=name, room_id=room_id)
+            _accumulate_valid_occupant_name(occ, room_id, occupant_names)
     except (ImportError, RuntimeError, AttributeError) as e:
         logger.error("Error transforming occupants", room_id=room_id, error=str(e))
     return occupant_names
@@ -231,6 +238,61 @@ async def prepare_player_data(
         return build_basic_player_data(player)
 
 
+async def _get_tracked_player_from_connection_manager(
+    connection_manager: object, player_id: uuid.UUID
+) -> object | None:
+    """Resolve the live player object from the connection manager (must expose current_room_id)."""
+    get_player = getattr(connection_manager, "get_player", None)
+    if not callable(get_player):
+        return None
+    player = await cast(Coroutine[None, None, object], get_player(player_id))
+    if not player or not hasattr(player, "current_room_id"):
+        return None
+    return player
+
+
+def _fetch_room_for_tracked_player(async_persistence: object, player: object) -> tuple[object, object] | None:
+    """
+    Load the room instance for the player's current_room_id.
+
+    Returns:
+        (room, current_room_id) or None if persistence cannot resolve a room.
+    """
+    get_room_by_id_raw = getattr(async_persistence, "get_room_by_id", None)
+    if not callable(get_room_by_id_raw):
+        return None
+    fetch_room_by_id: Callable[[str], object] = cast(Callable[[str], object], get_room_by_id_raw)
+    current_rid = cast(object | None, getattr(player, "current_room_id", None))
+    if current_rid is None:
+        return None
+    # getattr + cast is opaque to pylint; runtime guarded by callable() above.
+    room = fetch_room_by_id(str(current_rid))  # pylint: disable=not-callable
+    if not room:
+        return None
+    return room, current_rid
+
+
+def _ensure_player_in_room_occupancy(
+    room: object,
+    *,
+    player_id_str: str,
+    player_id: uuid.UUID,
+    current_rid: object,
+) -> None:
+    """If the room tracks occupancy, register the player when missing."""
+    has_player_raw = getattr(room, "has_player", None)
+    if not callable(has_player_raw):
+        return
+    has_player_fn: Callable[[str], object] = cast(Callable[[str], object], has_player_raw)
+    if has_player_fn(player_id_str):  # pylint: disable=not-callable
+        return
+    logger.info("Adding player to room", player_id=player_id, room_id=str(current_rid))
+    player_entered_raw = getattr(room, "player_entered", None)
+    if callable(player_entered_raw):
+        player_entered_fn: Callable[[str], object] = cast(Callable[[str], object], player_entered_raw)
+        _ = player_entered_fn(player_id_str)  # pylint: disable=not-callable
+
+
 async def get_player_and_room(
     player_id: uuid.UUID, player_id_str: str, connection_manager: object
 ) -> tuple[object | None, object | None, str | None]:
@@ -240,11 +302,8 @@ async def get_player_and_room(
     Returns:
         Tuple of (player, room, canonical_room_id) or (None, None, None) if not found
     """
-    get_player = getattr(connection_manager, "get_player", None)
-    if not callable(get_player):
-        return None, None, None
-    player = await cast(Coroutine[None, None, object], get_player(player_id))
-    if not player or not hasattr(player, "current_room_id"):
+    player = await _get_tracked_player_from_connection_manager(connection_manager, player_id)
+    if player is None:
         return None, None, None
 
     from ..async_persistence import get_async_persistence
@@ -253,28 +312,12 @@ async def get_player_and_room(
     if not async_persistence:
         return None, None, None
 
-    get_room_by_id_raw = getattr(async_persistence, "get_room_by_id", None)
-    if not callable(get_room_by_id_raw):
+    room_bundle = _fetch_room_for_tracked_player(async_persistence, player)
+    if room_bundle is None:
         return None, None, None
-    fetch_room_by_id: Callable[[str], object] = cast(Callable[[str], object], get_room_by_id_raw)
-    current_rid = cast(object | None, getattr(player, "current_room_id", None))
-    if current_rid is None:
-        room = None
-    else:
-        # getattr + cast is opaque to pylint; runtime guarded by callable() above.
-        room = fetch_room_by_id(str(current_rid))  # pylint: disable=not-callable
-    if not room:
-        return None, None, None
+    room, current_rid = room_bundle
 
-    has_player_raw = getattr(room, "has_player", None)
-    if callable(has_player_raw):
-        has_player_fn: Callable[[str], object] = cast(Callable[[str], object], has_player_raw)
-        if not has_player_fn(player_id_str):  # pylint: disable=not-callable
-            logger.info("Adding player to room", player_id=player_id, room_id=str(current_rid))
-            player_entered_raw = getattr(room, "player_entered", None)
-            if callable(player_entered_raw):
-                player_entered_fn: Callable[[str], object] = cast(Callable[[str], object], player_entered_raw)
-                _ = player_entered_fn(player_id_str)  # pylint: disable=not-callable
+    _ensure_player_in_room_occupancy(room, player_id_str=player_id_str, player_id=player_id, current_rid=current_rid)
 
     canonical_raw = cast(object | None, getattr(room, "id", None)) or current_rid
     canonical_room_id = str(canonical_raw) if canonical_raw is not None else None

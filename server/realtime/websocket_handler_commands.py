@@ -64,11 +64,12 @@ async def validate_player_and_persistence(
     return player, None
 
 
-def _parse_game_command_tokens(command: str, args: list[object] | None) -> tuple[str, list[str]] | None:
+def parse_game_command_tokens(command: str, args: list[object] | None) -> tuple[str, list[str]] | None:
     """
     Return (cmd_lower, arg_list) or None if command is empty after strip.
 
     When args is None, command string is split on whitespace.
+    Public for unit tests and reuse; primary caller is handle_game_command.
     """
     if args is None:
         parts = command.strip().split()
@@ -130,7 +131,7 @@ async def handle_game_command(
     """
     try:
         cm = resolve_websocket_connection_manager(connection_manager)
-        parsed = _parse_game_command_tokens(command, args)
+        parsed = parse_game_command_tokens(command, args)
         if parsed is None:
             await _send_invalid_command_empty(websocket, player_id)
             return
@@ -159,57 +160,56 @@ async def handle_game_command(
             logger.debug("Could not send command error response; client already disconnected", player_id=player_id)
 
 
-async def _attach_room_state_to_result(result: dict[str, object], app_state: object, player_id: str) -> None:
-    """Mutate result with room_state when player moved and handler supports it."""
-    if not (result.get("room_changed") and result.get("room_id")):
-        return
+def _resolve_get_room_state_callable(
+    app_state: object,
+) -> Callable[[str, object], Awaitable[object | None]] | None:
+    """Return get_room_state_event(player_id, room_id) coroutine factory, or None if unavailable."""
     event_handler = cast(object | None, getattr(app_state, "event_handler", None))
     if not event_handler or not hasattr(event_handler, "player_handler"):
-        return
+        return None
+    player_handler = cast(object | None, getattr(event_handler, "player_handler", None))
+    if player_handler is None:
+        return None
+    get_room_raw = getattr(player_handler, "get_room_state_event", None)
+    if not callable(get_room_raw):
+        return None
+    return cast(Callable[[str, object], Awaitable[object | None]], get_room_raw)
+
+
+async def _invoke_get_room_state_event(
+    get_room: Callable[[str, object], Awaitable[object | None]],
+    player_id: str,
+    room_id: object,
+) -> object | None:
+    """Await get_room_state_event; log and return None on expected integration errors."""
     try:
-        eh: object = event_handler
-        player_handler = cast(object | None, getattr(eh, "player_handler", None))
-        if player_handler is None:
-            return
-        ph: object = player_handler
-        get_room_raw = getattr(ph, "get_room_state_event", None)
-        if not callable(get_room_raw):
-            return
-        get_room = cast(Callable[[str, object], Awaitable[object | None]], get_room_raw)
-        room_state_event = await get_room(player_id, result["room_id"])
-        if room_state_event:
-            result["room_state"] = room_state_event
+        return await get_room(player_id, room_id)
     except (TypeError, ValueError, AttributeError) as room_state_err:
         logger.debug(
             "Could not attach room_state to command_response",
             player_id=player_id,
-            room_id=result.get("room_id"),
+            room_id=room_id,
             error=str(room_state_err),
         )
+        return None
 
 
-async def process_websocket_command(
-    cmd: str, args: list[str], player_id: str, connection_manager: "ConnectionManager | None" = None
+async def _attach_room_state_to_result(result: dict[str, object], app_state: object, player_id: str) -> None:
+    """Mutate result with room_state when player moved and handler supports it."""
+    if not (result.get("room_changed") and result.get("room_id")):
+        return
+    get_room = _resolve_get_room_state_callable(app_state)
+    if get_room is None:
+        return
+    room_state_event = await _invoke_get_room_state_event(get_room, player_id, result["room_id"])
+    if room_state_event:
+        result["room_state"] = room_state_event
+
+
+async def _websocket_unified_command_result(
+    cm: "ConnectionManager", player: object, player_id: str, cmd: str, args: list[str]
 ) -> dict[str, object]:
-    """
-    Process a command for WebSocket connections.
-
-    Args:
-        cmd: The command name
-        args: Command arguments
-        player_id: The player's ID
-        connection_manager: ConnectionManager instance (optional, will resolve from app.state if not provided)
-
-    Returns:
-        dict: Command result
-    """
-    logger.debug("Processing command", cmd=cmd, args=args, player_id=player_id)
-
-    cm = resolve_websocket_connection_manager(connection_manager)
-    player, error_result = await validate_player_and_persistence(cm, player_id)
-    if error_result:
-        return {"result": error_result}
-
+    """Build request context, run process_command_unified, attach room_state when applicable."""
     from ..alias_storage import AliasStorage
     from ..command_handler_unified import process_command_unified
     from ..config import get_config
@@ -221,16 +221,12 @@ async def process_websocket_command(
         logger.error("No app state available for WebSocket request context")
         return {"result": "Server configuration error. Please try again."}
 
-    request_context = create_websocket_request_context(
-        app_state=app_state,
-        user=player,
-    )
+    request_context = create_websocket_request_context(app_state=app_state, user=player)
     player_name = cast(str, getattr(player, "name", "Unknown"))
     config = get_config()
     aliases_dir = config.game.aliases_dir
     alias_storage = AliasStorage(storage_dir=aliases_dir) if aliases_dir else AliasStorage()
     request_context.set_alias_storage(alias_storage)
-
     _ = resolve_and_setup_app_state_services(app_state, request_context)
 
     command_line = f"{cmd} {' '.join(str(a) for a in args)}".strip()
@@ -247,6 +243,17 @@ async def process_websocket_command(
     if not isinstance(unified_obj, dict):
         raise TypeError("Command handler must return a dict")
     result = cast(dict[str, object], unified_obj)
-
     await _attach_room_state_to_result(result, app_state, player_id)
     return result
+
+
+async def process_websocket_command(
+    cmd: str, args: list[str], player_id: str, connection_manager: "ConnectionManager | None" = None
+) -> dict[str, object]:
+    """Run unified command pipeline for WebSocket; returns command_response dict."""
+    logger.debug("Processing command", cmd=cmd, args=args, player_id=player_id)
+    cm = resolve_websocket_connection_manager(connection_manager)
+    player, error_result = await validate_player_and_persistence(cm, player_id)
+    if error_result:
+        return {"result": error_result}
+    return await _websocket_unified_command_result(cm, player, player_id, cmd, args)

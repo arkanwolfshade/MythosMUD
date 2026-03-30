@@ -46,7 +46,7 @@ def _cfg_bool(config: Mapping[str, object], key: str, default: bool = False) -> 
     raw = config[key]
     if isinstance(raw, bool):
         return raw
-    if isinstance(raw, (int, float)):
+    if isinstance(raw, int | float):
         return bool(raw)
     return default
 
@@ -55,7 +55,7 @@ def _cfg_float(config: Mapping[str, object], key: str, default: float) -> float:
     raw = config.get(key, default)
     if isinstance(raw, bool):
         return default
-    if isinstance(raw, (int, float)):
+    if isinstance(raw, int | float):
         return float(raw)
     return default
 

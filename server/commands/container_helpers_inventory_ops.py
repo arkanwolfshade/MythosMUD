@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from collections.abc import Awaitable
+from collections.abc import Awaitable, Mapping, Sequence
 from typing import cast
 from uuid import UUID
 
@@ -318,7 +318,7 @@ def parse_container_items(
 
 
 def find_item_in_container(
-    container_items: list[dict[str, object]],
+    container_items: Sequence[Mapping[str, object]],
     item_name: str,
     _player: Player,
     _container_id: UUID | None,
@@ -328,8 +328,7 @@ def find_item_in_container(
         index = int(item_name)
         if 1 <= index <= len(container_items):
             item_index = index - 1
-            item_found = container_items[item_index]
-            return item_found, item_index
+            return cast(dict[str, object], container_items[item_index]), item_index
     except ValueError:
         pass
 
@@ -337,7 +336,7 @@ def find_item_in_container(
     for idx, item in enumerate(container_items):
         item_name_check = str(item.get("item_name", item.get("name", ""))).lower()
         if target_lower in item_name_check:
-            return item, idx
+            return cast(dict[str, object], item), idx
 
     return None, None
 
