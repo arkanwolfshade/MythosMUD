@@ -33,6 +33,16 @@ origin; credentials and traffic remain protected in transit.
 
 See [deployment.md](deployment.md) for production server setup.
 
+## Connection Grace Periods
+
+Two distinct grace periods are active in realtime flow:
+
+- **Disconnect grace period**: 30 seconds. On unexpected disconnect, the player remains
+  reconnectable for 30s and is indicated as **(linkdead)** in room displays.
+- **Login grace period**: 10 seconds immediately after login. During this time the player
+  is indicated as **(warded)** and actions that require normal vulnerability (for example
+  combat initiation) are blocked until the period expires.
+
 ## Deprecated Endpoints
 
 - **`GET /api/ws/{player_id}`**: Deprecated. Use `GET /api/ws` with JWT (query param or
