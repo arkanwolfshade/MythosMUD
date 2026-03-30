@@ -585,5 +585,19 @@ async def test_validate_combat_location_false_when_player_npc_different_rooms(
     assert ok is False
 
 
+@pytest.mark.asyncio
+async def test_validate_combat_location_false_when_room_id_format_invalid_but_matching(
+    integration_service: NPCCombatIntegrationService,
+) -> None:
+    """Malformed room_id must be rejected even when all participants match it."""
+    malformed_room_id = "room id with spaces"
+    integration_service._data_provider = MagicMock()
+    integration_service._data_provider.get_player_room_id = AsyncMock(return_value=malformed_room_id)
+    npc = MagicMock()
+    npc.current_room = malformed_room_id
+    ok = await integration_service._validate_combat_location("player-1", "npc-1", malformed_room_id, npc)
+    assert ok is False
+
+
 # Removed test_setup_npc_for_combat - the method setup_npc_for_combat doesn't exist on NPCCombatIntegrationService
 # If this functionality is needed, the method should be implemented first
