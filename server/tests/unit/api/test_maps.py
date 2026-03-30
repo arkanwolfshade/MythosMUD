@@ -1,107 +1,240 @@
-"""
-Unit tests for map API orchestration (server.api.maps).
+# pyright: reportPrivateUsage=false
+# Tests intentionally exercise maps.py helpers; those names are module-private by convention.
+"""Unit tests for server.api.maps helpers (exploration filter, room id, coordinate prep)."""
 
-Verifies that get_ascii_map / _prepare_ascii_map_context correctly omit unexplored
-rooms for non-admin users when the exploration service is used (Codacy PR#421 r2861147548).
-"""
+from __future__ import annotations
 
 import uuid
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from fastapi import Request
 from sqlalchemy.ext.asyncio import AsyncSession
+from starlette.datastructures import QueryParams
 
 from server.api.map_helpers import MapZoneContext
-from server.api.maps import _prepare_ascii_map_context
+from server.api.maps import (
+    _apply_exploration_filter_if_needed,
+    _filter_explored_rooms,
+    _get_current_room_id,
+    _get_player_and_exploration_service,
+    _needs_coordinate_generation,
+    _prepare_ascii_map_context,
+)
+from server.exceptions import DatabaseError
+from server.game.room_service import RoomService
+from server.models.user import User
+from server.services.exploration_service import ExplorationService
 
-# pylint: disable=redefined-outer-name  # Reason: pytest fixture names
+_MapRoom = dict[str, object]
+_MapRooms = list[_MapRoom]
 
 
 @pytest.fixture
 def mock_request() -> MagicMock:
-    """Minimal request mock for map context."""
     req = MagicMock(spec=Request)
-    req.query_params = MagicMock()
-    req.query_params.get = MagicMock(return_value=None)
+    req.query_params = QueryParams()
     return req
 
 
 @pytest.fixture
-def zone_context() -> MapZoneContext:
-    """Standard zone for tests."""
-    return MapZoneContext(plane="material", zone="arkham", sub_zone=None)
-
-
-@pytest.fixture
-def two_rooms() -> list[dict]:
-    """Two rooms as returned by load_rooms_with_coordinates; one will be 'explored'."""
-    return [
-        {"id": "material_arkham_room_1", "name": "Explored Room", "map_x": 0, "map_y": 0, "exits": {}},
-        {"id": "material_arkham_room_2", "name": "Unexplored Room", "map_x": 1, "map_y": 0, "exits": {}},
-    ]
-
-
-@pytest.fixture
-def mock_user_and_player():
-    """Fake user and player for authenticated flow."""
-    user_id = uuid.uuid4()
-    player_id = uuid.uuid4()
-    user = MagicMock()
-    user.id = user_id
+def mock_user_and_player() -> tuple[MagicMock, MagicMock, uuid.UUID]:
+    user = MagicMock(spec=User)
+    user.is_superuser = False
+    user.is_admin = False
     player = MagicMock()
-    player.id = player_id
+    player_id = uuid.uuid4()
+    player.player_id = player_id
     return user, player, player_id
 
 
+def _two_rooms() -> _MapRooms:
+    return [
+        {"id": "r1", "exits": cast(dict[str, object], {})},
+        {"id": "r2", "exits": cast(dict[str, object], {})},
+    ]
+
+
+async def _ensure_coords_stub(
+    _session: AsyncSession,
+    _zone_ctx: MapZoneContext,
+    rooms: _MapRooms,
+    _player: object,
+    _player_id: uuid.UUID | None,
+    _exploration_service: ExplorationService,
+    _current_user: User | None,
+    _room_service: RoomService,
+) -> _MapRooms:
+    return rooms
+
+
 @pytest.mark.asyncio
-async def test_prepare_ascii_map_context_filters_unexplored_rooms_for_authenticated_user(
+async def test_filter_explored_rooms_calls_room_service() -> None:
+    player_id = uuid.uuid4()
+    two_rooms = _two_rooms()
+    explored_only: _MapRooms = [two_rooms[0]]
+    mock_room_service = MagicMock(spec=RoomService)
+    filter_mock: AsyncMock = AsyncMock(return_value=explored_only)
+    mock_room_service.filter_rooms_by_exploration = filter_mock
+
+    result = await _filter_explored_rooms(
+        two_rooms,
+        player_id,
+        MagicMock(spec=ExplorationService),
+        AsyncMock(spec=AsyncSession),
+        mock_room_service,
+    )
+
+    assert result == explored_only
+    filter_mock.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_prepare_ascii_map_context_applies_exploration_filter(
     mock_request: MagicMock,
-    zone_context: MapZoneContext,
-    two_rooms: list[dict],
-    mock_user_and_player: tuple,
+    mock_user_and_player: tuple[MagicMock, MagicMock, uuid.UUID],
 ) -> None:
-    """
-    For an authenticated non-admin user, rooms not present in exploration_service
-    are omitted from the payload (Codacy PR#421 r2861147548).
-    """
     user, player, player_id = mock_user_and_player
-    explored_only = [two_rooms[0]]  # only first room "explored"
+    two_rooms = _two_rooms()
+    explored_only: _MapRooms = [two_rooms[0]]
+    zone_context = MapZoneContext(plane="p", zone="zone_a", sub_zone=None)
 
-    mock_session = AsyncMock(spec=AsyncSession)
-    mock_persistence = AsyncMock()
-    mock_persistence.get_player_by_user_id = AsyncMock(return_value=player)
-
-    mock_exploration_service = MagicMock()
-    mock_room_service = MagicMock()
-    mock_room_service.filter_rooms_by_exploration = AsyncMock(return_value=explored_only)
+    mock_room_service = MagicMock(spec=RoomService)
+    filter_mock: AsyncMock = AsyncMock(return_value=explored_only)
+    mock_room_service.filter_rooms_by_exploration = filter_mock
 
     with (
-        patch("server.api.maps.load_rooms_with_coordinates", new_callable=AsyncMock, return_value=two_rooms),
-        patch("server.api.maps._get_current_room_id", new_callable=AsyncMock, return_value=None),
-        patch(
-            "server.api.maps._get_player_and_exploration_service",
-            new_callable=AsyncMock,
-            return_value=(player, player_id, mock_exploration_service),
-        ),
-        patch("server.api.maps._filter_explored_rooms", new_callable=AsyncMock, return_value=explored_only),
-        patch(
-            "server.api.maps._ensure_coordinates_generated",
-            new_callable=AsyncMock,
-            side_effect=lambda _s, _zc, rooms, *_a, **_k: rooms,
-        ),
+        patch("server.api.maps.load_rooms_with_coordinates", new_callable=AsyncMock) as load_mock,
+        patch("server.api.maps._get_current_room_id", new_callable=AsyncMock) as gr,
+        patch("server.api.maps._get_player_and_exploration_service", new_callable=AsyncMock) as gp,
+        patch("server.api.maps._ensure_coordinates_generated", new_callable=AsyncMock) as ensure,
     ):
-        rooms, current_room_id = await _prepare_ascii_map_context(
-            request=mock_request,
-            zone_context=zone_context,
-            current_user=user,
-            session=mock_session,
-            persistence=mock_persistence,
-            exploration_service=mock_exploration_service,
-            room_service=mock_room_service,
+        load_mock.return_value = two_rooms
+        gr.return_value = "r1"
+        gp.return_value = (player, player_id, MagicMock(spec=ExplorationService))
+        ensure.side_effect = _ensure_coords_stub
+
+        rooms_out, cur_id = await _prepare_ascii_map_context(
+            mock_request,
+            zone_context,
+            user,
+            AsyncMock(spec=AsyncSession),
+            MagicMock(),
+            MagicMock(spec=ExplorationService),
+            mock_room_service,
         )
 
-    assert len(rooms) == 1
-    assert rooms[0]["id"] == "material_arkham_room_1"
-    assert rooms[0]["name"] == "Explored Room"
-    assert current_room_id is None
+    assert rooms_out == explored_only
+    assert cur_id == "r1"
+    filter_mock.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_get_current_room_id_from_query_param(mock_request: MagicMock) -> None:
+    mock_request.query_params = QueryParams("current_room_id=room_from_q")
+    persistence = MagicMock()
+    gpid: AsyncMock = AsyncMock()
+    persistence.get_player_by_user_id = gpid
+    out = await _get_current_room_id(mock_request, MagicMock(spec=User), persistence)
+    assert out == "room_from_q"
+    gpid.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_get_current_room_id_from_player(mock_request: MagicMock) -> None:
+    mock_request.query_params = QueryParams()
+    cu = MagicMock(spec=User)
+    cu.id = uuid.uuid4()
+    pl = MagicMock()
+    pl.current_room_id = "room_from_p"
+    persistence = MagicMock()
+    persistence.get_player_by_user_id = AsyncMock(return_value=pl)
+    out = await _get_current_room_id(mock_request, cu, persistence)
+    assert out == "room_from_p"
+
+
+@pytest.mark.asyncio
+async def test_get_current_room_id_none_when_persistence_errors(mock_request: MagicMock) -> None:
+    mock_request.query_params = QueryParams()
+    cu = MagicMock(spec=User)
+    cu.id = uuid.uuid4()
+    persistence = MagicMock()
+    persistence.get_player_by_user_id = AsyncMock(side_effect=DatabaseError("db err"))
+    out = await _get_current_room_id(mock_request, cu, persistence)
+    assert out is None
+
+
+@pytest.mark.asyncio
+async def test_get_player_and_exploration_returns_none_when_no_player() -> None:
+    persistence = MagicMock()
+    persistence.get_player_by_user_id = AsyncMock(return_value=None)
+    cu = MagicMock(spec=User)
+    cu.is_admin = False
+    cu.is_superuser = False
+    cu.id = uuid.uuid4()
+    triple = await _get_player_and_exploration_service(cu, persistence, MagicMock(spec=ExplorationService))
+    p: MagicMock | None
+    pid: uuid.UUID | None
+    es: ExplorationService | None
+    p, pid, es = cast(
+        tuple[MagicMock | None, uuid.UUID | None, ExplorationService | None],
+        triple,
+    )
+    assert p is None
+    assert pid is None
+    assert es is None
+
+
+@pytest.mark.asyncio
+async def test_apply_exploration_filter_if_needed_skips_for_superuser() -> None:
+    user = MagicMock(spec=User)
+    user.is_superuser = True
+    rooms = _two_rooms()
+    mock_rs = MagicMock(spec=RoomService)
+    filter_mock: AsyncMock = AsyncMock()
+    mock_rs.filter_rooms_by_exploration = filter_mock
+    out = await _apply_exploration_filter_if_needed(
+        rooms,
+        user,
+        MagicMock(),
+        uuid.uuid4(),
+        MagicMock(spec=ExplorationService),
+        AsyncMock(spec=AsyncSession),
+        mock_rs,
+    )
+    assert out == rooms
+    filter_mock.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_apply_exploration_filter_if_needed_calls_for_normal_user() -> None:
+    user = MagicMock(spec=User)
+    user.is_superuser = False
+    user.is_admin = False
+    rooms = _two_rooms()
+    filtered: _MapRooms = [rooms[0]]
+    mock_rs = MagicMock(spec=RoomService)
+    filter_mock: AsyncMock = AsyncMock(return_value=filtered)
+    mock_rs.filter_rooms_by_exploration = filter_mock
+    out = await _apply_exploration_filter_if_needed(
+        rooms,
+        user,
+        MagicMock(),
+        uuid.uuid4(),
+        MagicMock(spec=ExplorationService),
+        AsyncMock(spec=AsyncSession),
+        mock_rs,
+    )
+    assert out == filtered
+    filter_mock.assert_awaited_once()
+
+
+def test_needs_coordinate_generation_true_when_missing() -> None:
+    rooms: _MapRooms = [{"id": "a", "map_x": None, "map_y": None}]
+    assert _needs_coordinate_generation(rooms) is True
+
+
+def test_needs_coordinate_generation_false_when_present() -> None:
+    rooms: _MapRooms = [{"id": "a", "map_x": 1, "map_y": 2}]
+    assert _needs_coordinate_generation(rooms) is False

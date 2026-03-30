@@ -6,17 +6,22 @@ including size limits, schema validation, CSRF protection, and JSON depth limits
 """
 
 import json
-from typing import Any, cast
+from collections.abc import Mapping
+from typing import ClassVar, cast
 
 from pydantic import BaseModel, ValidationError
+from structlog.stdlib import BoundLogger
 
 from ..structured_logging.enhanced_logging_config import get_logger
 
-logger = get_logger(__name__)
+logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
 
 
 class MessageValidationError(Exception):
     """Raised when message validation fails."""
+
+    message: str
+    error_type: str
 
     def __init__(self, message: str, error_type: str = "validation_error") -> None:
         self.message = message
@@ -36,9 +41,12 @@ class WebSocketMessageValidator:
     """
 
     # Configuration constants
-    MAX_MESSAGE_SIZE = 10 * 1024  # 10KB maximum message size
-    MAX_JSON_DEPTH = 10  # Maximum JSON nesting depth
-    MAX_JSON_STRING_LENGTH = 10000  # Maximum string length in JSON
+    MAX_MESSAGE_SIZE: ClassVar[int] = 10 * 1024  # 10KB maximum message size
+    MAX_JSON_DEPTH: ClassVar[int] = 10  # Maximum JSON nesting depth
+    MAX_JSON_STRING_LENGTH: ClassVar[int] = 10000  # Maximum string length in JSON
+
+    max_message_size: int
+    max_json_depth: int
 
     def __init__(self, max_message_size: int | None = None, max_json_depth: int | None = None) -> None:
         """
@@ -78,7 +86,7 @@ class WebSocketMessageValidator:
             )
         return True
 
-    def validate_json_structure(self, message: dict[str, Any]) -> bool:
+    def validate_json_structure(self, message: Mapping[str, object]) -> bool:
         """
         Validate JSON structure including depth limits.
 
@@ -108,7 +116,7 @@ class WebSocketMessageValidator:
 
         return True
 
-    def _calculate_depth(self, obj: Any, current_depth: int = 0) -> int:
+    def _calculate_depth(self, obj: object, current_depth: int = 0) -> int:
         """
         Calculate the maximum nesting depth of a JSON structure.
 
@@ -122,17 +130,19 @@ class WebSocketMessageValidator:
         if current_depth > self.max_json_depth:
             return current_depth
 
-        if isinstance(obj, dict):
-            if not obj:
+        if isinstance(obj, Mapping):
+            mapping = cast(Mapping[str, object], obj)
+            if not mapping:
                 return current_depth
-            return max(self._calculate_depth(v, current_depth + 1) for v in obj.values())
+            return max(self._calculate_depth(v, current_depth + 1) for v in mapping.values())
         if isinstance(obj, list):
-            if not obj:
+            seq = cast(list[object], obj)
+            if not seq:
                 return current_depth
-            return max(self._calculate_depth(item, current_depth + 1) for item in obj)
+            return max(self._calculate_depth(item, current_depth + 1) for item in seq)
         return current_depth
 
-    def _validate_string_lengths(self, obj: Any) -> None:
+    def _validate_string_lengths(self, obj: object) -> None:
         """
         Validate that strings in the JSON structure don't exceed length limits.
 
@@ -142,16 +152,18 @@ class WebSocketMessageValidator:
         Raises:
             MessageValidationError: If any string exceeds length limit
         """
-        if isinstance(obj, dict):
-            for key, value in obj.items():
-                if isinstance(key, str) and len(key) > self.MAX_JSON_STRING_LENGTH:
+        if isinstance(obj, Mapping):
+            mapping = cast(Mapping[str, object], obj)
+            for key, value in mapping.items():
+                if len(key) > self.MAX_JSON_STRING_LENGTH:
                     raise MessageValidationError(
                         f"String key length {len(key)} exceeds maximum {self.MAX_JSON_STRING_LENGTH}",
                         error_type="string_length_exceeded",
                     )
                 self._validate_string_lengths(value)
         elif isinstance(obj, list):
-            for item in obj:
+            seq = cast(list[object], obj)
+            for item in seq:
                 self._validate_string_lengths(item)
         elif isinstance(obj, str):
             if len(obj) > self.MAX_JSON_STRING_LENGTH:
@@ -160,7 +172,7 @@ class WebSocketMessageValidator:
                     error_type="string_length_exceeded",
                 )
 
-    def validate_schema(self, message: dict[str, Any], schema: type[BaseModel] | None = None) -> bool:
+    def validate_schema(self, message: Mapping[str, object], schema: type[BaseModel] | None = None) -> bool:
         """
         Validate message against Pydantic schema.
 
@@ -175,11 +187,7 @@ class WebSocketMessageValidator:
             MessageValidationError: If message doesn't match schema
         """
         if schema is None:
-            # Basic validation - ensure required fields exist
-            if not isinstance(message, dict):
-                raise MessageValidationError("Message must be a JSON object", error_type="invalid_type")
-
-            # Check for required top-level fields
+            # Basic validation - ensure required top-level fields exist
             if "type" not in message and "message" not in message:
                 raise MessageValidationError(
                     "Message must contain 'type' or 'message' field",
@@ -189,7 +197,7 @@ class WebSocketMessageValidator:
 
         try:
             # Validate against Pydantic schema
-            schema.model_validate(message)
+            _ = schema.model_validate(message)
             return True
         except ValidationError as e:
             logger.warning("Schema validation failed", errors=str(e), message_keys=list(message.keys()))
@@ -198,7 +206,22 @@ class WebSocketMessageValidator:
                 error_type="schema_validation_failed",
             ) from e
 
-    def validate_csrf(self, message: dict[str, Any], player_id: str, expected_token: str | None = None) -> bool:
+    @staticmethod
+    def _extract_csrf_token_string(message: Mapping[str, object]) -> str | None:
+        """Return the first string CSRF token from known keys, or None if absent."""
+        for key in ("csrfToken", "csrf_token"):
+            raw = message.get(key)
+            if raw is None:
+                continue
+            if isinstance(raw, str):
+                return raw
+            raise MessageValidationError(
+                f"Field {key} must be a string when present",
+                error_type="csrf_invalid_type",
+            )
+        return None
+
+    def validate_csrf(self, message: Mapping[str, object], player_id: str, expected_token: str | None = None) -> bool:
         """
         Validate CSRF token in message.
 
@@ -213,8 +236,8 @@ class WebSocketMessageValidator:
         Raises:
             MessageValidationError: If CSRF token is missing or invalid
         """
-        # Extract CSRF token from message
-        csrf_token = message.get("csrfToken") or message.get("csrf_token")
+        # Extract CSRF token from message (only string values count as tokens)
+        csrf_token = self._extract_csrf_token_string(message)
 
         # If no token is present and no token is expected, allow (for backward compatibility)
         if csrf_token is None and expected_token is None:
@@ -242,12 +265,52 @@ class WebSocketMessageValidator:
                 logger.warning(
                     "CSRF token mismatch",
                     player_id=player_id,
-                    token_present=bool(csrf_token),
+                    token_present=True,
                     expected_present=bool(expected_token),
                 )
                 raise MessageValidationError("CSRF token mismatch", error_type="csrf_token_invalid")
 
         return True
+
+    def _parse_outer_json_object(self, data: str, player_id: str) -> dict[str, object]:
+        """Parse raw payload to a dict; validate size and outer JSON structure."""
+        _ = self.validate_size(data)
+        try:
+            parsed = cast(object, json.loads(data))
+        except json.JSONDecodeError as e:
+            logger.warning("Invalid JSON in message", player_id=player_id, error=str(e))
+            raise MessageValidationError(f"Invalid JSON: {e}", error_type="json_parse_error") from e
+        if not isinstance(parsed, dict):
+            raise MessageValidationError("Message must be a JSON object", error_type="invalid_type")
+        message = cast(dict[str, object], parsed)
+        _ = self.validate_json_structure(message)
+        return message
+
+    def _unwrap_string_inner_message_if_json(self, message: dict[str, object]) -> dict[str, object]:
+        """
+        If ``message["message"]`` is a JSON string, parse and validate inner object.
+
+        On inner JSON decode failure, returns the outer ``message`` unchanged.
+        """
+        raw_inner = message.get("message")
+        if not isinstance(raw_inner, str):
+            return message
+        try:
+            _ = self.validate_size(raw_inner)
+            inner_parsed = cast(object, json.loads(raw_inner))
+            if not isinstance(inner_parsed, dict):
+                raise MessageValidationError(
+                    "Inner message must be a JSON object",
+                    error_type="invalid_type",
+                )
+            inner_message = cast(dict[str, object], inner_parsed)
+            _ = self.validate_json_structure(inner_message)
+            outer_csrf = self._extract_csrf_token_string(message)
+            if outer_csrf is not None and "csrfToken" not in inner_message and "csrf_token" not in inner_message:
+                inner_message["csrfToken"] = outer_csrf
+            return inner_message
+        except json.JSONDecodeError:
+            return message
 
     def parse_and_validate(
         self,
@@ -255,7 +318,7 @@ class WebSocketMessageValidator:
         player_id: str,
         schema: type[BaseModel] | None = None,
         csrf_token: str | None = None,
-    ) -> dict[str, Any]:
+    ) -> dict[str, object]:
         """
         Parse and validate a complete WebSocket message.
 
@@ -273,64 +336,23 @@ class WebSocketMessageValidator:
         Raises:
             MessageValidationError: If validation fails at any stage
         """
-        # Step 1: Validate size
-        self.validate_size(data)
-
-        # Step 2: Parse JSON
-        try:
-            message = json.loads(data)
-        except json.JSONDecodeError as e:
-            logger.warning("Invalid JSON in message", player_id=player_id, error=str(e))
-            raise MessageValidationError(f"Invalid JSON: {e}", error_type="json_parse_error") from e
-
-        # Step 3: Validate JSON structure (depth, string lengths)
-        self.validate_json_structure(message)
-
-        # Step 4: Validate schema against outer message if schema is provided
-        # This must happen before extracting inner message, as the schema (e.g., WrappedMessage)
-        # expects the outer message structure
+        message = self._parse_outer_json_object(data, player_id)
         if schema is not None:
-            self.validate_schema(message, schema)
-
-        # Step 5: Handle nested message format (from useWebSocketConnection)
-        if "message" in message and isinstance(message["message"], str):
-            try:
-                # Parse inner message
-                inner_data = message["message"]
-                # Validate inner message size
-                self.validate_size(inner_data)
-                inner_message = json.loads(inner_data)
-                # Validate inner message structure
-                self.validate_json_structure(inner_message)
-                # Use inner message, preserve CSRF token from outer if present and not None
-                # Human reader: Only copy csrfToken if it exists in outer message and is not None
-                # AI reader: Copy csrfToken from outer to inner message only if it has a non-None value
-                outer_csrf = message.get("csrfToken") or message.get("csrf_token")
-                if outer_csrf is not None and "csrfToken" not in inner_message and "csrf_token" not in inner_message:
-                    inner_message["csrfToken"] = outer_csrf
-                message = inner_message
-            except json.JSONDecodeError:
-                # If inner message is not JSON, use outer message as-is
-                pass
-
-        # Step 6: Validate schema against inner message if no schema was provided earlier
-        # (This allows schema validation of inner messages when no outer schema is specified)
+            _ = self.validate_schema(message, schema)
+        message = self._unwrap_string_inner_message_if_json(message)
         if schema is None:
-            self.validate_schema(message, schema)
-
-        # Step 6: Validate CSRF token
-        self.validate_csrf(message, player_id, csrf_token)
-
-        # Step 7: Remove CSRF token from result (it's only needed for validation)
-        # Human reader: csrfToken is a validation field, not part of the actual message content
-        # AI reader: Remove csrfToken and csrf_token from the returned message after validation
-        message.pop("csrfToken", None)
-        message.pop("csrf_token", None)
-
-        logger.debug("Message validation successful", player_id=player_id, message_type=message.get("type"))
-
-        result: dict[str, Any] = cast(dict[str, Any], message)
-        return result
+            _ = self.validate_schema(message, schema)
+        _ = self.validate_csrf(message, player_id, csrf_token)
+        # csrfToken is validation-only; strip before returning payload to handlers
+        _ = message.pop("csrfToken", None)
+        _ = message.pop("csrf_token", None)
+        msg_type = message.get("type")
+        logger.debug(
+            "Message validation successful",
+            player_id=player_id,
+            message_type=msg_type if isinstance(msg_type, str) else None,
+        )
+        return message
 
 
 # Global validator instance

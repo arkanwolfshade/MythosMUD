@@ -1,46 +1,59 @@
 """Container data class for persistence operations."""
 
+from dataclasses import dataclass
 from datetime import datetime
-from typing import Any
+from typing import final
 from uuid import UUID
 
 
+@dataclass(frozen=True)
+class ContainerDataCore:
+    """Identity and placement fields for a container row."""
+
+    container_instance_id: UUID
+    source_type: str
+    owner_id: UUID | None = None
+    room_id: str | None = None
+    entity_id: UUID | None = None
+    lock_state: str = "unlocked"
+    capacity_slots: int = 20
+
+
+@dataclass(frozen=True)
+class ContainerDataExtras:
+    """Optional payload and timestamps for a container row."""
+
+    weight_limit: int | None = None
+    decay_at: datetime | None = None
+    allowed_roles: list[str] | None = None
+    items_json: list[dict[str, object]] | None = None
+    metadata_json: dict[str, object] | None = None
+    created_at: datetime | None = None
+    updated_at: datetime | None = None
+
+
+@final
 class ContainerData:  # pylint: disable=too-many-instance-attributes,too-few-public-methods  # Reason: Container data requires many fields to capture complete container state
     """Data class for container information."""
 
-    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Container data initialization requires many parameters to capture complete container state
-        self,
-        container_instance_id: UUID,
-        source_type: str,
-        owner_id: UUID | None = None,
-        room_id: str | None = None,
-        entity_id: UUID | None = None,
-        lock_state: str = "unlocked",
-        capacity_slots: int = 20,
-        weight_limit: int | None = None,
-        decay_at: datetime | None = None,
-        allowed_roles: list[str] | None = None,
-        items_json: list[dict[str, Any]] | None = None,
-        metadata_json: dict[str, Any] | None = None,
-        created_at: datetime | None = None,
-        updated_at: datetime | None = None,
-    ) -> None:
-        self.container_instance_id = container_instance_id
-        self.source_type = source_type
-        self.owner_id = owner_id
-        self.room_id = room_id
-        self.entity_id = entity_id
-        self.lock_state = lock_state
-        self.capacity_slots = capacity_slots
-        self.weight_limit = weight_limit
-        self.decay_at = decay_at
-        self.allowed_roles = allowed_roles or []
-        self.items_json = items_json or []
-        self.metadata_json = metadata_json or {}
-        self.created_at = created_at
-        self.updated_at = updated_at
+    def __init__(self, core: ContainerDataCore, extras: ContainerDataExtras | None = None) -> None:
+        e = extras or ContainerDataExtras()
+        self.container_instance_id = core.container_instance_id
+        self.source_type = core.source_type
+        self.owner_id = core.owner_id
+        self.room_id = core.room_id
+        self.entity_id = core.entity_id
+        self.lock_state = core.lock_state
+        self.capacity_slots = core.capacity_slots
+        self.weight_limit = e.weight_limit
+        self.decay_at = e.decay_at
+        self.allowed_roles = e.allowed_roles or []
+        self.items_json = e.items_json or []
+        self.metadata_json = e.metadata_json or {}
+        self.created_at = e.created_at
+        self.updated_at = e.updated_at
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> dict[str, object]:
         """
         Convert container data to dictionary.
 

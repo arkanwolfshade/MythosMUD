@@ -9,17 +9,22 @@ of investigator artifacts across environmental props, wearable gear, and corpses
 from __future__ import annotations
 
 import json
+from dataclasses import dataclass
 from datetime import UTC, datetime
-from typing import Any
+from typing import cast
 from uuid import UUID
 
 import psycopg2
+from psycopg2.extensions import connection as PsycopgConnection
+from psycopg2.extensions import cursor as PsycopgCursor
 from psycopg2.extras import RealDictCursor
+from structlog.stdlib import BoundLogger
 
 from ..exceptions import DatabaseError, ValidationError
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import log_and_raise
-from .container_data import ContainerData
+from .container_create_params import ContainerCreateParams
+from .container_data import ContainerData, ContainerDataCore, ContainerDataExtras
 from .container_helpers import (
     build_update_query,
     fetch_container_items,
@@ -27,55 +32,159 @@ from .container_helpers import (
     update_container_items,
     validate_lock_state,
 )
+from .item_instance_persistence import ensure_item_instance
 
-logger = get_logger(__name__)
+logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
 
 # Re-export functions with original names for backward compatibility with tests
 _fetch_container_items = fetch_container_items
 _parse_jsonb_column = parse_jsonb_column
 
 
-def create_container(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Container creation requires many parameters and intermediate variables for complex container logic
-    conn: Any,
-    source_type: str,
-    owner_id: UUID | None = None,
-    room_id: str | None = None,
-    entity_id: UUID | None = None,
-    lock_state: str = "unlocked",
-    capacity_slots: int = 20,
-    weight_limit: int | None = None,
-    decay_at: datetime | None = None,
-    allowed_roles: list[str] | None = None,
-    items_json: list[dict[str, Any]] | None = None,
-    metadata_json: dict[str, Any] | None = None,
-    container_item_instance_id: str | None = None,
-) -> ContainerData:
-    """
-    Create a new container in the database.
+def _as_uuid(value: object) -> UUID:
+    if isinstance(value, UUID):
+        return value
+    return UUID(str(value))
 
-    Args:
-        conn: Database connection
-        source_type: Type of container ('environment', 'equipment', 'corpse')
-        owner_id: UUID of container owner (optional)
-        room_id: Room identifier for environmental/corpse containers (optional)
-        entity_id: Player/NPC UUID for wearable containers (optional)
-        lock_state: Lock state ('unlocked', 'locked', 'sealed')
-        capacity_slots: Maximum number of inventory slots (1-20)
-        weight_limit: Optional maximum weight capacity
-        decay_at: Timestamp when corpse container should decay (optional)
-        allowed_roles: List of role names allowed to access container (optional)
-        items_json: List of InventoryStack items (optional)
-        metadata_json: Optional metadata dictionary (optional)
-        container_item_instance_id: Item instance ID that IS this container (optional)
 
-    Returns:
-        ContainerData: The created container data
+def _as_opt_uuid(value: object) -> UUID | None:
+    if value is None:
+        return None
+    if isinstance(value, UUID):
+        return value
+    return UUID(str(value))
 
-    Raises:
-        ValidationError: If validation fails
-        DatabaseError: If database operation fails
-    """
-    # Validate source_type
+
+def _as_opt_str(value: object) -> str | None:
+    if value is None:
+        return None
+    return str(value)
+
+
+def _as_opt_datetime(value: object) -> datetime | None:
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        return value
+    return None
+
+
+def _coerce_item_quantity(value: object) -> int:
+    if isinstance(value, bool):
+        return 1
+    if isinstance(value, int):
+        return value
+    if isinstance(value, str):
+        try:
+            return int(value.strip())
+        except ValueError:
+            return 1
+    if isinstance(value, float):
+        return int(value)
+    return 1
+
+
+def _allowed_roles_from_row(value: object) -> list[str]:
+    parsed: object = parse_jsonb_column(value, [])
+    if isinstance(parsed, list):
+        seq = cast(list[object], parsed)
+        return [str(x) for x in seq]
+    return []
+
+
+def _metadata_from_row(value: object) -> dict[str, object]:
+    parsed: object = parse_jsonb_column(value, {})
+    if isinstance(parsed, dict):
+        return cast(dict[str, object], parsed)
+    return {}
+
+
+def _int_from_row(value: object, default: int) -> int:
+    if isinstance(value, int):
+        return value
+    if isinstance(value, str):
+        try:
+            return int(value.strip())
+        except ValueError:
+            return default
+    return default
+
+
+def _opt_int_from_row(value: object) -> int | None:
+    if value is None:
+        return None
+    if isinstance(value, int):
+        return value
+    if isinstance(value, str):
+        try:
+            return int(value.strip())
+        except ValueError:
+            return None
+    return None
+
+
+_INSERT_CONTAINER_SQL = """
+            INSERT INTO containers (
+                source_type, owner_id, room_id, entity_id, lock_state,
+                capacity_slots, weight_limit, decay_at, allowed_roles,
+                metadata_json, container_item_instance_id, created_at, updated_at
+            ) VALUES (
+                %s, %s, %s, %s, %s, %s, %s, %s, %s::jsonb, %s::jsonb, %s, %s, %s
+            )
+            RETURNING container_instance_id, created_at, updated_at
+            """
+
+
+@dataclass
+class _InsertBindSource:
+    """Snapshot of row fields for INSERT bind tuple (internal)."""
+
+    source_type: str
+    owner_id: UUID | None
+    room_id: str | None
+    entity_id: UUID | None
+    lock_state: str
+    capacity_slots: int
+    weight_limit: int | None
+    decay_at: datetime | None
+    allowed_roles: list[str] | None
+    metadata_json: dict[str, object] | None
+    container_item_instance_id: str | None
+    current_time: datetime
+
+
+@dataclass(frozen=True)
+class _CreateOutcome:
+    """Post-insert wiring for logging and get_container vs fallback."""
+
+    container_id: UUID
+    source_type: str
+    owner_id: UUID | None
+    room_id: str | None
+    entity_id: UUID | None
+    lock_state: str
+    capacity_slots: int
+    weight_limit: int | None
+    decay_at: datetime | None
+    allowed_roles: list[str]
+    items_json: list[dict[str, object]] | None
+    metadata_json: dict[str, object] | None
+    created_at: datetime | None
+    updated_at: datetime | None
+
+
+_SELECT_CONTAINER_BY_ID_SQL = """
+            SELECT
+                container_instance_id, source_type, owner_id, room_id, entity_id,
+                lock_state, capacity_slots, weight_limit, decay_at,
+                allowed_roles, metadata_json, created_at, updated_at,
+                container_item_instance_id
+            FROM containers
+            WHERE container_instance_id = %s
+            """
+
+
+def _validate_new_container_params(source_type: str, capacity_slots: int, lock_state: str) -> None:
     if source_type not in ("environment", "equipment", "corpse"):
         log_and_raise(
             ValidationError,
@@ -85,8 +194,6 @@ def create_container(  # pylint: disable=too-many-arguments,too-many-positional-
             details={"source_type": source_type},
             user_friendly="Invalid container type",
         )
-
-    # Validate capacity_slots
     if capacity_slots < 1 or capacity_slots > 20:
         log_and_raise(
             ValidationError,
@@ -96,8 +203,6 @@ def create_container(  # pylint: disable=too-many-arguments,too-many-positional-
             details={"capacity_slots": capacity_slots},
             user_friendly="Invalid container capacity",
         )
-
-    # Validate lock_state
     if lock_state not in ("unlocked", "locked", "sealed"):
         log_and_raise(
             ValidationError,
@@ -108,131 +213,241 @@ def create_container(  # pylint: disable=too-many-arguments,too-many-positional-
             user_friendly="Invalid lock state",
         )
 
-    try:
-        # Generate UUID for container
-        container_id = UUID(int=0)  # Will be generated by database DEFAULT
-        current_time = datetime.now(UTC).replace(tzinfo=None)
 
-        # Prepare JSONB data (items are now stored in container_contents table)
-        metadata_jsonb = json.dumps(metadata_json or {})
-        allowed_roles_jsonb = json.dumps(allowed_roles or [])
-
-        # Insert container (items_json column removed - items go in container_contents)
-        # Convert UUID objects to strings for psycopg2 compatibility
-        owner_id_str = str(owner_id) if owner_id and isinstance(owner_id, UUID) else owner_id
-        entity_id_str = str(entity_id) if entity_id and isinstance(entity_id, UUID) else entity_id
-
-        cursor = conn.cursor(cursor_factory=RealDictCursor)
-        cursor.execute(
-            """
-            INSERT INTO containers (
-                source_type, owner_id, room_id, entity_id, lock_state,
-                capacity_slots, weight_limit, decay_at, allowed_roles,
-                metadata_json, container_item_instance_id, created_at, updated_at
-            ) VALUES (
-                %s, %s, %s, %s, %s, %s, %s, %s, %s::jsonb, %s::jsonb, %s, %s, %s
-            )
-            RETURNING container_instance_id, created_at, updated_at
-            """,
-            (
-                source_type,
-                owner_id_str,
-                room_id,
-                entity_id_str,
-                lock_state,
-                capacity_slots,
-                weight_limit,
-                decay_at,
-                allowed_roles_jsonb,
-                metadata_jsonb,
-                container_item_instance_id,
-                current_time,
-                current_time,
-            ),
-        )
-        row = cursor.fetchone()
-        conn.commit()
-        cursor.close()
-
-        if not row:
-            log_and_raise(
-                DatabaseError,
-                "Failed to create container - no ID returned",
-                operation="create_container",
-                source_type=source_type,
-                user_friendly="Failed to create container",
-            )
-
-        # RealDictCursor returns a dict-like row
-        container_id = row["container_instance_id"]
-        created_at = row["created_at"]
-        updated_at = row["updated_at"]
-
-        # Add items to container_contents using stored procedure
-        # First ensure item instances exist, then add them to container
-        if items_json:
-            cursor = conn.cursor()
-            for position, item in enumerate(items_json):
-                item_instance_id = item.get("item_instance_id") or item.get("item_id")
-                prototype_id = item.get("item_id") or item.get("prototype_id")
-
-                if item_instance_id and prototype_id:
-                    # Ensure item instance exists in database before adding to container
-                    # This is required for foreign key constraint on container_contents
-                    from .item_instance_persistence import ensure_item_instance
-
-                    try:
-                        ensure_item_instance(
-                            conn,
-                            item_instance_id=item_instance_id,
-                            prototype_id=prototype_id,
-                            owner_type="container",
-                            owner_id=str(container_id),
-                            quantity=item.get("quantity", 1),
-                            metadata=item.get("metadata", {}),
-                        )
-                    except (DatabaseError, ValidationError) as e:
-                        logger.warning(
-                            "Failed to ensure item instance exists, skipping item",
-                            item_instance_id=item_instance_id,
-                            prototype_id=prototype_id,
-                            error=str(e),
-                        )
-                        continue
-
-                    # Now add item to container
-                    cursor.execute(
-                        "SELECT add_item_to_container(%s, %s, %s)",
-                        (container_id, item_instance_id, position),
-                    )
-            conn.commit()
-            cursor.close()
-
-        logger.info(
-            "Container created",
-            container_id=str(container_id),
+def _insert_container_row(
+    conn: PsycopgConnection, bind: tuple[object, ...], source_type: str
+) -> tuple[UUID, datetime | None, datetime | None]:
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
+    cursor.execute(_INSERT_CONTAINER_SQL, bind)
+    row = cursor.fetchone()
+    conn.commit()
+    cursor.close()
+    if not row:
+        log_and_raise(
+            DatabaseError,
+            "Failed to create container - no ID returned",
+            operation="create_container",
             source_type=source_type,
-            room_id=room_id,
-            entity_id=str(entity_id) if entity_id else None,
+            user_friendly="Failed to create container",
         )
+    row_dict = cast(dict[str, object], row)
+    return (
+        _as_uuid(row_dict["container_instance_id"]),
+        _as_opt_datetime(row_dict["created_at"]),
+        _as_opt_datetime(row_dict["updated_at"]),
+    )
 
-        # Get container with items using get_container (which uses stored procedure)
-        return get_container(conn, container_id) or ContainerData(
-            container_instance_id=container_id,
-            source_type=source_type,
-            owner_id=owner_id,
-            room_id=room_id,
-            entity_id=entity_id,
-            lock_state=lock_state,
-            capacity_slots=capacity_slots,
-            weight_limit=weight_limit,
-            decay_at=decay_at,
-            allowed_roles=allowed_roles or [],
-            items_json=items_json or [],
-            metadata_json=metadata_json or {},
+
+def _insert_bind_tuple(src: _InsertBindSource) -> tuple[object, ...]:
+    metadata_jsonb = json.dumps(src.metadata_json or {})
+    allowed_roles_jsonb = json.dumps(src.allowed_roles or [])
+    owner_id_str: str | None = str(src.owner_id) if src.owner_id is not None else None
+    entity_id_str: str | None = str(src.entity_id) if src.entity_id is not None else None
+    return (
+        src.source_type,
+        owner_id_str,
+        src.room_id,
+        entity_id_str,
+        src.lock_state,
+        src.capacity_slots,
+        src.weight_limit,
+        src.decay_at,
+        allowed_roles_jsonb,
+        metadata_jsonb,
+        src.container_item_instance_id,
+        src.current_time,
+        src.current_time,
+    )
+
+
+def _after_container_insert(
+    conn: PsycopgConnection,
+    src: _InsertBindSource,
+    container_id: UUID,
+    created_at: datetime | None,
+    updated_at: datetime | None,
+    items_json: list[dict[str, object]] | None,
+) -> ContainerData:
+    if items_json:
+        _seed_new_container_items(conn, container_id, items_json)
+    return _log_and_resolve_created_container(
+        conn,
+        _CreateOutcome(
+            container_id=container_id,
+            source_type=src.source_type,
+            owner_id=src.owner_id,
+            room_id=src.room_id,
+            entity_id=src.entity_id,
+            lock_state=src.lock_state,
+            capacity_slots=src.capacity_slots,
+            weight_limit=src.weight_limit,
+            decay_at=src.decay_at,
+            allowed_roles=src.allowed_roles or [],
+            items_json=items_json,
+            metadata_json=src.metadata_json,
             created_at=created_at,
             updated_at=updated_at,
+        ),
+    )
+
+
+def _log_and_resolve_created_container(conn: PsycopgConnection, out: _CreateOutcome) -> ContainerData:
+    logger.info(
+        "Container created",
+        container_id=str(out.container_id),
+        source_type=out.source_type,
+        room_id=out.room_id,
+        entity_id=str(out.entity_id) if out.entity_id else None,
+    )
+    return get_container(conn, out.container_id) or ContainerData(
+        ContainerDataCore(
+            container_instance_id=out.container_id,
+            source_type=out.source_type,
+            owner_id=out.owner_id,
+            room_id=out.room_id,
+            entity_id=out.entity_id,
+            lock_state=out.lock_state,
+            capacity_slots=out.capacity_slots,
+        ),
+        ContainerDataExtras(
+            weight_limit=out.weight_limit,
+            decay_at=out.decay_at,
+            allowed_roles=out.allowed_roles,
+            items_json=out.items_json or [],
+            metadata_json=out.metadata_json or {},
+            created_at=out.created_at,
+            updated_at=out.updated_at,
+        ),
+    )
+
+
+def _seed_new_container_items(conn: PsycopgConnection, container_id: UUID, items_json: list[dict[str, object]]) -> None:
+    cursor_items = conn.cursor()
+    for position, item in enumerate(items_json):
+        item_instance_raw: object = item.get("item_instance_id") or item.get("item_id")
+        prototype_raw: object = item.get("item_id") or item.get("prototype_id")
+        if item_instance_raw is None or prototype_raw is None:
+            continue
+        item_instance_id = str(item_instance_raw)
+        prototype_id = str(prototype_raw)
+        md_raw: object = item.get("metadata", {})
+        item_metadata: dict[str, object] = cast(dict[str, object], md_raw) if isinstance(md_raw, dict) else {}
+        try:
+            ensure_item_instance(
+                conn,
+                item_instance_id=item_instance_id,
+                prototype_id=prototype_id,
+                owner_type="container",
+                owner_id=str(container_id),
+                quantity=_coerce_item_quantity(item.get("quantity", 1)),
+                metadata=item_metadata,
+            )
+        except (DatabaseError, ValidationError) as e:
+            logger.warning(
+                "Failed to ensure item instance exists, skipping item",
+                item_instance_id=item_instance_id,
+                prototype_id=prototype_id,
+                error=str(e),
+            )
+            continue
+        cursor_items.execute(
+            "SELECT add_item_to_container(%s, %s, %s)",
+            (str(container_id), item_instance_id, position),
         )
+    conn.commit()
+    cursor_items.close()
+
+
+def _fetch_container_row_dict(conn: PsycopgConnection, container_id_str: str) -> dict[str, object] | None:
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
+    cursor.execute(_SELECT_CONTAINER_BY_ID_SQL, (container_id_str,))
+    row = cursor.fetchone()
+    cursor.close()
+    if not row:
+        return None
+    return cast(dict[str, object], row)
+
+
+def _container_data_from_row(conn: PsycopgConnection, row_dict: dict[str, object], container_id: UUID) -> ContainerData:
+    items_json = fetch_container_items(conn, container_id)
+    return ContainerData(
+        ContainerDataCore(
+            container_instance_id=_as_uuid(row_dict["container_instance_id"]),
+            source_type=str(row_dict["source_type"]),
+            owner_id=_as_opt_uuid(row_dict["owner_id"]),
+            room_id=_as_opt_str(row_dict["room_id"]),
+            entity_id=_as_opt_uuid(row_dict["entity_id"]),
+            lock_state=str(row_dict["lock_state"]),
+            capacity_slots=_int_from_row(row_dict["capacity_slots"], 20),
+        ),
+        ContainerDataExtras(
+            weight_limit=_opt_int_from_row(row_dict["weight_limit"]),
+            decay_at=_as_opt_datetime(row_dict["decay_at"]),
+            allowed_roles=_allowed_roles_from_row(row_dict["allowed_roles"]),
+            items_json=items_json,
+            metadata_json=_metadata_from_row(row_dict["metadata_json"]),
+            created_at=_as_opt_datetime(row_dict["created_at"]),
+            updated_at=_as_opt_datetime(row_dict["updated_at"]),
+        ),
+    )
+
+
+def _run_container_update_execute(
+    cursor: PsycopgCursor,
+    conn: PsycopgConnection,
+    container_id_str: str,
+    items_json: list[dict[str, object]] | None,
+    lock_state: str | None,
+    metadata_json: dict[str, object] | None,
+    current_time: datetime,
+) -> tuple[object | None, int]:
+    if items_json is not None:
+        update_container_items(cursor, container_id_str, items_json, conn)
+    updates: list[str] = []
+    params: list[object] = []
+    if lock_state is not None:
+        updates.append("lock_state = %s")
+        params.append(lock_state)
+    if metadata_json is not None:
+        updates.append("metadata_json = %s::jsonb")
+        params.append(json.dumps(metadata_json))
+    if not updates and items_json is None:
+        return None, 0
+    query = build_update_query(updates, params, container_id_str, current_time)
+    # nosemgrep: python.lang.security.audit.sql-injection.sql-injection
+    # nosec B608: Using psycopg2.sql.SQL for safe SQL construction (column names are hardcoded)
+    cursor.execute(query, params)
+    row = cursor.fetchone()
+    # build_update_query appends updated_at; exclude it from "user" field count
+    return row, len(updates) - 1
+
+
+def create_container(
+    conn: PsycopgConnection,
+    source_type: str,
+    params: ContainerCreateParams | None = None,
+) -> ContainerData:
+    """Persist a new container row, optionally seed contents, return hydrated data or fallback."""
+    p = params or ContainerCreateParams()
+    _validate_new_container_params(source_type, p.capacity_slots, p.lock_state)
+
+    try:
+        src = _InsertBindSource(
+            source_type=source_type,
+            owner_id=p.owner_id,
+            room_id=p.room_id,
+            entity_id=p.entity_id,
+            lock_state=p.lock_state,
+            capacity_slots=p.capacity_slots,
+            weight_limit=p.weight_limit,
+            decay_at=p.decay_at,
+            allowed_roles=p.allowed_roles,
+            metadata_json=p.metadata_json,
+            container_item_instance_id=p.container_item_instance_id,
+            current_time=datetime.now(UTC).replace(tzinfo=None),
+        )
+        cid, c_at, u_at = _insert_container_row(conn, _insert_bind_tuple(src), source_type)
+        return _after_container_insert(conn, src, cid, c_at, u_at, p.items_json)
 
     except psycopg2.Error as e:
         conn.rollback()
@@ -246,62 +461,14 @@ def create_container(  # pylint: disable=too-many-arguments,too-many-positional-
         )
 
 
-def get_container(conn: Any, container_id: UUID) -> ContainerData | None:
-    """
-    Get a container by ID.
-
-    Args:
-        conn: Database connection
-        container_id: Container UUID
-
-    Returns:
-        ContainerData: Container data if found, None otherwise
-
-    Raises:
-        DatabaseError: If database operation fails
-    """
+def get_container(conn: PsycopgConnection, container_id: UUID) -> ContainerData | None:
+    """Load one container by id, or None. Raises DatabaseError on psycopg failure."""
     try:
-        cursor = conn.cursor(cursor_factory=RealDictCursor)
-        # Convert UUID to string for psycopg2 compatibility
-        container_id_str = str(container_id) if isinstance(container_id, UUID) else container_id
-        cursor.execute(
-            """
-            SELECT
-                container_instance_id, source_type, owner_id, room_id, entity_id,
-                lock_state, capacity_slots, weight_limit, decay_at,
-                allowed_roles, metadata_json, created_at, updated_at,
-                container_item_instance_id
-            FROM containers
-            WHERE container_instance_id = %s
-            """,
-            (container_id_str,),
-        )
-        row = cursor.fetchone()
-        cursor.close()
-
-        if not row:
+        container_id_str = str(container_id)
+        row_dict = _fetch_container_row_dict(conn, container_id_str)
+        if row_dict is None:
             return None
-
-        # Fetch items directly from normalized tables
-        items_json = fetch_container_items(conn, container_id)
-
-        # Convert row to ContainerData
-        return ContainerData(
-            container_instance_id=row["container_instance_id"],
-            source_type=row["source_type"],
-            owner_id=row["owner_id"],
-            room_id=row["room_id"],
-            entity_id=row["entity_id"],
-            lock_state=row["lock_state"],
-            capacity_slots=row["capacity_slots"],
-            weight_limit=row["weight_limit"],
-            decay_at=row["decay_at"],
-            allowed_roles=parse_jsonb_column(row["allowed_roles"], []),
-            items_json=items_json,
-            metadata_json=parse_jsonb_column(row["metadata_json"], {}),
-            created_at=row["created_at"],
-            updated_at=row["updated_at"],
-        )
+        return _container_data_from_row(conn, row_dict, container_id)
 
     except psycopg2.Error as e:
         log_and_raise(
@@ -315,65 +482,28 @@ def get_container(conn: Any, container_id: UUID) -> ContainerData | None:
 
 
 def update_container(
-    conn: Any,
+    conn: PsycopgConnection,
     container_id: UUID,
-    items_json: list[dict[str, Any]] | None = None,
+    items_json: list[dict[str, object]] | None = None,
     lock_state: str | None = None,
-    metadata_json: dict[str, Any] | None = None,
+    metadata_json: dict[str, object] | None = None,
 ) -> ContainerData | None:
-    """
-    Update a container's items, lock state, or metadata.
-
-    Args:
-        conn: Database connection
-        container_id: Container UUID
-        items_json: New items list (optional)
-        lock_state: New lock state (optional)
-        metadata_json: New metadata (optional)
-
-    Returns:
-        ContainerData: Updated container data if found, None otherwise
-
-    Raises:
-        ValidationError: If validation fails
-        DatabaseError: If database operation fails
-    """
+    """Apply item/lock/metadata updates; returns refreshed row or None if missing."""
     validate_lock_state(lock_state)
 
     try:
-        container_id_str = str(container_id) if isinstance(container_id, UUID) else container_id
-
-        updates: list[str] = []
-        params: list[Any] = []
+        container_id_str = str(container_id)
         current_time = datetime.now(UTC).replace(tzinfo=None)
         cursor = conn.cursor()
-
-        if items_json is not None:
-            update_container_items(cursor, container_id_str, items_json, conn)
-
-        if lock_state is not None:
-            updates.append("lock_state = %s")
-            params.append(lock_state)
-
-        if metadata_json is not None:
-            updates.append("metadata_json = %s::jsonb")
-            params.append(json.dumps(metadata_json))
-
-        row = None
-
-        if updates:
-            query = build_update_query(updates, params, container_id_str, current_time)
-            # nosemgrep: python.lang.security.audit.sql-injection.sql-injection
-            # nosec B608: Using psycopg2.sql.SQL for safe SQL construction (column names are hardcoded)
-            cursor.execute(query, params)
-            row = cursor.fetchone()
-        elif items_json is not None:
-            query = build_update_query(updates, params, container_id_str, current_time)
-            # nosemgrep: python.lang.security.audit.sql-injection.sql-injection
-            # nosec B608: Using psycopg2.sql.SQL for safe SQL construction (column names are hardcoded)
-            cursor.execute(query, params)
-            row = cursor.fetchone()
-
+        row, updated_fields = _run_container_update_execute(
+            cursor,
+            conn,
+            container_id_str,
+            items_json,
+            lock_state,
+            metadata_json,
+            current_time,
+        )
         conn.commit()
         cursor.close()
 
@@ -383,7 +513,7 @@ def update_container(
         logger.info(
             "Container updated",
             container_id=str(container_id),
-            updated_fields=len(updates) - 1,  # Exclude updated_at
+            updated_fields=updated_fields,
         )
 
         return get_container(conn, container_id)
@@ -400,24 +530,11 @@ def update_container(
         )
 
 
-def delete_container(conn: Any, container_id: UUID) -> bool:
-    """
-    Delete a container.
-
-    Args:
-        conn: Database connection
-        container_id: Container UUID
-
-    Returns:
-        bool: True if container was deleted, False if not found
-
-    Raises:
-        DatabaseError: If database operation fails
-    """
+def delete_container(conn: PsycopgConnection, container_id: UUID) -> bool:
+    """Delete by id; True if a row was removed. Raises DatabaseError on failure."""
     try:
         cursor = conn.cursor()
-        # Convert UUID to string for psycopg2 compatibility
-        container_id_str = str(container_id) if isinstance(container_id, UUID) else container_id
+        container_id_str = str(container_id)
         cursor.execute(
             "DELETE FROM containers WHERE container_instance_id = %s RETURNING container_instance_id",
             (container_id_str,),

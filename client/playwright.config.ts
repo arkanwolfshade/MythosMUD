@@ -1,8 +1,20 @@
+/* global process -- Node when Playwright loads this config (satisfies ESLint no-undef in tools without flat-config globals). */
+import { setDefaultResultOrder } from 'node:dns';
+
 import { defineConfig, devices } from '@playwright/test';
+
+/**
+ * Node 17+ often resolves `localhost` to `::1` first; Playwright's browser CDP socket can then
+ * hit `connect EACCES ::1:<port>` on Windows. Prefer IPv4 before any connections run.
+ */
+setDefaultResultOrder('ipv4first');
 
 /**
  * @see https://playwright.dev/docs/test-configuration
  */
+/** Prefer IPv4 loopback: on Windows, `localhost` can resolve to ::1 and Playwright/Node may hit EACCES. */
+const DEV_ORIGIN = 'http://127.0.0.1:5173';
+
 export default defineConfig({
   testDir: './tests',
   /* Only run .spec.ts files, ignore .test.tsx files */
@@ -20,7 +32,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: 'http://localhost:5173',
+    baseURL: DEV_ORIGIN,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
@@ -73,8 +85,9 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:5173',
+    /* Bind dev server to IPv4 loopback so `url` matches and nothing relies on ::1. */
+    command: 'npm run dev -- --host 127.0.0.1',
+    url: DEV_ORIGIN,
     reuseExistingServer: !process.env.CI,
     timeout: 120000,
     stdout: 'pipe',

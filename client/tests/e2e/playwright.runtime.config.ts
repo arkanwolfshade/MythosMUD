@@ -1,4 +1,12 @@
+import { setDefaultResultOrder } from 'node:dns';
+import process from 'node:process';
+
 import { defineConfig, devices } from '@playwright/test';
+
+setDefaultResultOrder('ipv4first');
+
+/** Prefer IPv4 loopback: avoids ::1 EACCES on some Windows setups when using `localhost`. */
+const DEV_ORIGIN = 'http://127.0.0.1:5173';
 
 /**
  * Playwright Runtime Configuration for E2E Tests
@@ -31,7 +39,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: 'http://localhost:5173',
+    baseURL: DEV_ORIGIN,
     /* Run headed locally (do not use headless); headless only in CI. */
     headless: process.env.CI === 'true',
     /* Default timeout for each action (30 seconds) */
@@ -68,8 +76,8 @@ export default defineConfig({
   webServer: process.env.CI
     ? undefined
     : {
-        command: 'npm run dev',
-        url: 'http://localhost:5173',
+        command: 'npm run dev -- --host 127.0.0.1',
+        url: DEV_ORIGIN,
         reuseExistingServer: !process.env.CI,
         timeout: 120000,
       },

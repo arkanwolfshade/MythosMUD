@@ -5,7 +5,10 @@ Tests core WebSocket handler functions: error handling, message processing,
 validation, chat/game commands, and basic app state resolution.
 """
 
+# pyright: reportPrivateUsage=false, reportAny=false, reportMissingParameterType=false, reportUnknownParameterType=false, reportUnknownArgumentType=false, reportUnknownMemberType=false, reportUnusedCallResult=false
+
 import uuid
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -192,7 +195,7 @@ async def test_send_system_message(mock_websocket):
 async def test_handle_chat_message(mock_websocket, mock_ws_connection_manager):
     """Test handle_chat_message handles chat message."""
     with patch(
-        "server.realtime.websocket_handler.process_websocket_command",
+        "server.realtime.websocket_handler_commands.process_websocket_command",
         new_callable=AsyncMock,
         return_value={"result": "ok"},
     ):
@@ -204,7 +207,7 @@ async def test_handle_chat_message(mock_websocket, mock_ws_connection_manager):
 async def test_handle_game_command(mock_websocket, mock_ws_connection_manager):
     """Test handle_game_command processes game command."""
     with patch(
-        "server.realtime.websocket_handler.process_websocket_command",
+        "server.realtime.websocket_handler_commands.process_websocket_command",
         new_callable=AsyncMock,
         return_value={"result": "ok"},
     ):
@@ -230,7 +233,7 @@ async def test_handle_game_command_whitespace_only(mock_websocket, mock_ws_conne
 async def test_handle_game_command_single_word_no_args(mock_websocket, mock_ws_connection_manager):
     """Test handle_game_command handles single word command with no args."""
     with patch(
-        "server.realtime.websocket_handler.process_websocket_command",
+        "server.realtime.websocket_handler_commands.process_websocket_command",
         new_callable=AsyncMock,
         return_value={"result": "ok"},
     ):
@@ -242,7 +245,7 @@ async def test_handle_game_command_single_word_no_args(mock_websocket, mock_ws_c
 async def test_handle_game_command_with_provided_args(mock_websocket, mock_ws_connection_manager):
     """Test handle_game_command processes command with provided args."""
     with patch(
-        "server.realtime.websocket_handler.process_websocket_command",
+        "server.realtime.websocket_handler_commands.process_websocket_command",
         new_callable=AsyncMock,
         return_value={"result": "ok"},
     ):
@@ -253,7 +256,7 @@ async def test_handle_game_command_with_provided_args(mock_websocket, mock_ws_co
 @pytest.mark.asyncio
 async def test_handle_websocket_message(mock_websocket):
     """Test handle_websocket_message routes message."""
-    message = {"type": "command", "command": "look"}
+    message = cast(dict[str, object], {"type": "command", "command": "look"})
     with patch("server.realtime.message_handler_factory.message_handler_factory") as mock_factory:
         mock_factory.handle_message = AsyncMock()
         await handle_websocket_message(mock_websocket, TEST_PLAYER_ID_STR, message)
@@ -263,7 +266,7 @@ async def test_handle_websocket_message(mock_websocket):
 @pytest.mark.asyncio
 async def test_handle_websocket_message_chat(mock_websocket):
     """Test handle_websocket_message routes chat message."""
-    message = {"type": "chat", "message": "Hello"}
+    message = cast(dict[str, object], {"type": "chat", "message": "Hello"})
     with patch("server.realtime.websocket_handler.handle_chat_message", new_callable=AsyncMock) as mock_chat:
         await handle_websocket_message(mock_websocket, TEST_PLAYER_ID_STR, message)
         mock_chat.assert_awaited_once()
@@ -272,7 +275,7 @@ async def test_handle_websocket_message_chat(mock_websocket):
 @pytest.mark.asyncio
 async def test_handle_websocket_message_command(mock_websocket):
     """Test handle_websocket_message routes command message."""
-    message = {"type": "command", "command": "look"}
+    message = cast(dict[str, object], {"type": "command", "command": "look"})
     with patch("server.realtime.websocket_handler.handle_game_command", new_callable=AsyncMock) as mock_cmd:
         await handle_websocket_message(mock_websocket, TEST_PLAYER_ID_STR, message)
         mock_cmd.assert_awaited_once()
@@ -322,7 +325,7 @@ async def test_process_websocket_command_no_app_state(mock_ws_connection_manager
     result = await process_websocket_command("look", [], TEST_PLAYER_ID_STR, mock_ws_connection_manager)
     assert isinstance(result, dict)
     assert "result" in result
-    assert "Server configuration error" in result["result"]
+    assert "Server configuration error" in str(result["result"])
 
 
 @pytest.mark.asyncio
@@ -336,7 +339,7 @@ async def test_process_websocket_command_no_app_in_connection_manager(mock_ws_co
     result = await process_websocket_command("look", [], TEST_PLAYER_ID_STR, mock_ws_connection_manager)
     assert isinstance(result, dict)
     assert "result" in result
-    assert "Server configuration error" in result["result"]
+    assert "Server configuration error" in str(result["result"])
 
 
 @pytest.mark.asyncio

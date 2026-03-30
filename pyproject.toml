@@ -372,6 +372,25 @@ module = [
 disallow_untyped_defs = false
 check_untyped_defs = true
 
+# Based Pyright (IDE / CLI): scope checks to this repo; do not analyze stdlib sources
+# or dependency trees under .venv. If you still see diagnostics on
+# pyenv-win/.../Lib/*.py, that file is outside the project: close it and set the
+# interpreter to this workspace's .venv.
+[tool.basedpyright]
+pythonVersion = "3.12"
+venvPath = "."
+venv = ".venv"
+exclude = [
+    "**/.venv",
+    "**/node_modules",
+    "**/__pycache__",
+    "**/.git",
+    "**/htmlcov",
+    "**/.mypy_cache",
+    "**/.pytest_cache",
+    "**/.ruff_cache",
+]
+
 [dependency-groups]
 dev = [
     "ruff>=0.14.10",

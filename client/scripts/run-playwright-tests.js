@@ -51,6 +51,11 @@ const env = { ...process.env };
 if ('NO_COLOR' in process.env) {
   delete env.FORCE_COLOR;
 }
+// Prefer IPv4 for localhost (Windows can hit EACCES on ::1 when Node resolves localhost to IPv6).
+const ipv4First = '--dns-result-order=ipv4first';
+if (!String(env.NODE_OPTIONS ?? '').includes('dns-result-order')) {
+  env.NODE_OPTIONS = env.NODE_OPTIONS ? `${env.NODE_OPTIONS} ${ipv4First}` : ipv4First;
+}
 
 // Shell is only enabled on Windows to resolve npx from PATH. The command ('npx') and
 // arguments (['playwright', 'test']) are hardcoded constants with no user input, so

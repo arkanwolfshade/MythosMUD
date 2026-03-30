@@ -4,6 +4,8 @@ Unit tests to fill coverage gaps in websocket_handler.py.
 These tests target specific uncovered lines to bring coverage from 84.64% to 90%+.
 """
 
+# pyright: reportPrivateUsage=false, reportAny=false, reportMissingParameterType=false, reportUnknownParameterType=false, reportUnknownArgumentType=false, reportUnknownMemberType=false, reportUnusedCallResult=false
+
 import uuid
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -88,7 +90,7 @@ async def test_handle_game_command_resolve_connection_manager_from_app(mock_webs
 
     with patch("server.main.app", mock_app):
         with patch(
-            "server.realtime.websocket_handler.process_websocket_command",
+            "server.realtime.websocket_handler_commands.process_websocket_command",
             new_callable=AsyncMock,
             return_value={"result": "ok"},
         ):
@@ -101,7 +103,7 @@ async def test_handle_game_command_exception_handling(mock_websocket, mock_ws_co
     """Test handle_game_command exception handling path (lines 472-480)."""
     error = WebSocketDisconnect(1000)
     with patch(
-        "server.realtime.websocket_handler.process_websocket_command",
+        "server.realtime.websocket_handler_commands.process_websocket_command",
         new_callable=AsyncMock,
         side_effect=error,
     ):
@@ -115,7 +117,7 @@ async def test_handle_game_command_runtime_error_handling(mock_websocket, mock_w
     """Test handle_game_command RuntimeError handling path (lines 472-480)."""
     error = RuntimeError("Connection lost")
     with patch(
-        "server.realtime.websocket_handler.process_websocket_command",
+        "server.realtime.websocket_handler_commands.process_websocket_command",
         new_callable=AsyncMock,
         side_effect=error,
     ):
@@ -151,7 +153,7 @@ async def test_process_websocket_command_resolve_connection_manager_from_app(tmp
                 new_callable=AsyncMock,
                 return_value={"result": "ok"},
             ):
-                with patch("server.realtime.websocket_handler._resolve_and_setup_app_state_services"):
+                with patch("server.realtime.websocket_handler_app_state.resolve_and_setup_app_state_services"):
                     result = await process_websocket_command("look", [], TEST_PLAYER_ID_STR, None)
                     assert isinstance(result, dict)
                     assert "result" in result

@@ -26,6 +26,11 @@ engines:
   lizard:
     config:
       length: 55
+    # Cohesive chat/mute service; pylint already exempts module size. Lizard NLOC/CCN here are
+    # metrics, not defects (.cursor/rules/codacy.mdc). exclude_paths applies to CLI tool runs
+    # (ignore_patterns alone does not suppress Lizard locally; see note above engines.*).
+    exclude_paths:
+      - "server/services/user_manager.py"
   bandit:
     exclude_paths:
       - "**/tests/**/*.py"
@@ -201,14 +206,18 @@ ignore_patterns:
   # - PostgreSQL configuration commands (SET)
   # - Comment lines
   # - DO blocks for verification (not data queries)
+  # db/verification/*.sql: SET client_min_messages, DO $$ blocks, information_schema (verify_ddl.sql);
+  # not RAC-layer application queries.
   - pattern_id: "sql:RAC_TABLE_REQUIRED"
     file_paths:
       - "data/db/migrations/11_migrate_weekday_names.sql"
+      - "db/verification/*.sql"
   # Semgrep: RAC table access - internal verification/migration scripts that do not use RAC_ prefix
   # Exclude scripts that run one-off migrations or verification (not production data access).
   # db/databases/databases.sql: GRANT on SEQUENCES is DDL, not a table query; RAC rule is for data tables.
   # db/roles/roles.sql: queries pg_roles (PostgreSQL system catalog), not application data tables.
   # db/migrations/019_*: queries information_schema and migration data tables; RAC rule is for app data access.
+  # db/verification/*.sql: manual schema/data checks (users_players.sql, verify_ddl.sql); RAC_* wrappers N/A.
   - pattern_id: "Semgrep_codacy.generic.sql.rac-table-access"
     file_paths:
       - "scripts/verify_*.py"
@@ -217,6 +226,7 @@ ignore_patterns:
       - "db/databases/databases.sql"
       - "db/roles/roles.sql"
       - "data/db/migrations/*.sql"
+      - "db/verification/*.sql"
   # Semgrep: Python random - game mechanics (dice rolls, stat generation) where crypto is not required
   # Suppress for server/game/ and server/npc/ per Codacy PR feedback.
   - pattern_id: "Semgrep_python_random_rule-random"
