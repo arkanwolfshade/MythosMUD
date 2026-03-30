@@ -13,10 +13,20 @@ concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# `env.ACT` is referenced in `if:` conditions (skip harden-runner / artifacts under nektos/act).
+# Declaring `ACT` here satisfies Actions linters; on github.com it stays empty (falsy). With act,
+# a CLI `--env ACT=true` overrides this per nektos/act precedence over workflow env.
+env:
+  ACT: ""
+
 jobs:
   backend:
     name: Python Backend
     runs-on: ubuntu-latest
+    # Expression form marks the environment as dynamic so Actions language servers skip
+    # false-positive "invalid" diagnostics for optional repo secrets (MYTHOSMUD_*_CI).
+    # Resolves to the job id (e.g. backend); GitHub creates the environment if missing.
+    environment: ${{ github.job }}
     # Optional: Use GitHub Environments for different deployment stages
     # Uncomment and set environment name to use environment-specific secrets:
     # environment: production  # or staging, development
@@ -325,13 +335,24 @@ jobs:
         with:
           name: coverage-html
           path: htmlcov/
-      - name: Upload coverage to Codacy
-        if: ${{ success() && !env.ACT }}
-        uses: codacy/codacy-coverage-reporter-action@89d6c85cfafaec52c72b6c5e8b2878d33104c699 # v1.3.0
-        with:
-          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-          coverage-reports: coverage.xml
-          language: python
+      # Partial upload only; codacy-coverage-finalize runs `final` after frontend partial (Codacy docs).
+      # Token presence checked in shell: `secrets` in step `if` is invalid in some Action linters.
+      - name: Upload Python coverage to Codacy (partial)
+        if: success() && !env.ACT
+        env:
+          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        run: |
+          set -euxo pipefail
+          if [ -z "${CODACY_PROJECT_TOKEN:-}" ]; then
+            echo "::notice::Skipping Codacy partial upload (CODACY_PROJECT_TOKEN unset)."
+            exit 0
+          fi
+          test -f coverage.xml
+          bash <(curl -Ls https://coverage.codacy.com/get.sh) report \
+            --project-token "${CODACY_PROJECT_TOKEN}" \
+            -l Python \
+            -r coverage.xml \
+            --partial
       - name: Cleanup PostgreSQL (for act)
         if: ${{ env.ACT }}
         run: |
@@ -386,15 +407,52 @@ jobs:
         run: npm run knip
       - name: Run unit tests with coverage
         run: npm run test:coverage
-      - name: Upload frontend coverage to Codacy
+      - name: Validate client coverage for Codacy upload
         if: ${{ success() && !env.ACT }}
-        uses: codacy/codacy-coverage-reporter-action@89d6c85cfafaec52c72b6c5e8b2878d33104c699 # v1.3.0
-        with:
-          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-          coverage-reports: client/coverage/lcov.info
-          language: javascript
+        working-directory: ${{ github.workspace }}
+        run: python3 scripts/validate_codacy_coverage_gate.py --lcov client/coverage/lcov.info --min-lcov-line-rate 0.70
+      # --prefix maps Vitest paths (src/...) to client/src/... in the repo (Codacy --prefix).
+      - name: Upload JavaScript coverage to Codacy (partial)
+        if: success() && !env.ACT
+        working-directory: ${{ github.workspace }}
+        env:
+          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        run: |
+          set -euxo pipefail
+          if [ -z "${CODACY_PROJECT_TOKEN:-}" ]; then
+            echo "::notice::Skipping Codacy partial upload (CODACY_PROJECT_TOKEN unset)."
+            exit 0
+          fi
+          test -s client/coverage/lcov.info
+          bash <(curl -Ls https://coverage.codacy.com/get.sh) report \
+            --project-token "${CODACY_PROJECT_TOKEN}" \
+            -l javascript \
+            -r client/coverage/lcov.info \
+            --prefix client \
+            --partial
       - name: Run E2E tests
         continue-on-error: true # E2E tests require backend server, may fail in frontend-only CI
         run: npm run test
       - name: Build React app
         run: npm run build
+
+  # Single `final` after both partial uploads (see Codacy advanced coverage docs).
+  codacy-coverage-finalize:
+    name: Codacy coverage finalize
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    # Job-level `if` cannot use `env` in some Action linters; skip `act` via step `if` + shell guards.
+    if: ${{ !cancelled() && needs.backend.result == 'success' && needs.frontend.result == 'success' }}
+    steps:
+      - name: Finalize Codacy coverage upload
+        if: success() && !env.ACT
+        env:
+          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        run: |
+          set -euxo pipefail
+          if [ -z "${CODACY_PROJECT_TOKEN:-}" ]; then
+            echo "::notice::Skipping Codacy final (CODACY_PROJECT_TOKEN unset)."
+            exit 0
+          fi
+          bash <(curl -Ls https://coverage.codacy.com/get.sh) final \
+            --project-token "${CODACY_PROJECT_TOKEN}"

@@ -53,6 +53,44 @@ def _inventory_rows_after_drop(
     return updated_inventory
 
 
+def _drop_slot_index_or_error(command_data: dict[str, object], inventory_len: int) -> CommandResponse | int:
+    """Resolve 1-based inventory slot from command data or return a usage / range error."""
+    index = command_data.get("index")
+    if not isinstance(index, int) or index < 1:
+        return {"result": "Usage: drop <inventory-number> [quantity]"}
+    if index > inventory_len:
+        return {"result": "You do not have an item in that slot."}
+    return index
+
+
+def _drop_quantity_bounds_or_error(quantity: int, stack_qty: int) -> CommandResponse | None:
+    """Return an error response if drop quantity is out of range for the stack."""
+    if quantity <= 0:
+        return {"result": "Quantity must be a positive number."}
+    if quantity > stack_qty:
+        return {"result": "You do not have that many to drop."}
+    return None
+
+
+def _drop_parsed_quantity_or_error(
+    command_data: dict[str, object],
+    stack: dict[str, object],
+    player: Player,
+) -> CommandResponse | int:
+    """Parse quantity from command + stack; return error dict or a validated int (may still exceed stack)."""
+    quantity, q_err = _drop_quantity_or_error(command_data, stack)
+    if q_err:
+        return q_err
+    if quantity is None:
+        logger.error(
+            "drop quantity invariant failed after validation",
+            player=player.name,
+            player_id=str(player.player_id),
+        )
+        raise RuntimeError("drop quantity is None after _drop_quantity_or_error; internal error")
+    return quantity
+
+
 def _drop_resolve_stack_or_error(
     command_data: dict[str, object],
     connection_manager: object,
@@ -64,25 +102,22 @@ def _drop_resolve_stack_or_error(
     room_manager = cast(RoomDropManager, room_manager_raw)
 
     room_id = str(player.current_room_id)
-    index = command_data.get("index")
-    if not isinstance(index, int) or index < 1:
-        return {"result": "Usage: drop <inventory-number> [quantity]"}
-
     current_inventory = player.get_inventory()
-    if index > len(current_inventory):
-        return {"result": "You do not have an item in that slot."}
+    index_or_err = _drop_slot_index_or_error(command_data, len(current_inventory))
+    if not isinstance(index_or_err, int):
+        return index_or_err
+    index = index_or_err
 
     stack = deepcopy(current_inventory[index - 1])
-    quantity, q_err = _drop_quantity_or_error(command_data, stack)
-    if q_err:
-        return q_err
-    assert quantity is not None
+    quantity_or_err = _drop_parsed_quantity_or_error(command_data, stack, player)
+    if not isinstance(quantity_or_err, int):
+        return quantity_or_err
+    quantity = quantity_or_err
 
     stack_qty = coerce_int(stack.get("quantity", 1), default=1)
-    if quantity <= 0:
-        return {"result": "Quantity must be a positive number."}
-    if quantity > stack_qty:
-        return {"result": "You do not have that many to drop."}
+    bounds_err = _drop_quantity_bounds_or_error(quantity, stack_qty)
+    if bounds_err:
+        return bounds_err
 
     previous_inventory = clone_inventory(player)
     return room_manager, room_id, stack, quantity, previous_inventory, index

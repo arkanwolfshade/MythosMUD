@@ -82,6 +82,16 @@ repos:
         always_run: false
         stages: [pre-commit]
         exclude: ^docs/examples/logging/
+      - id: no-production-assert
+        name: No assert in production server Python
+        entry: python scripts/check_no_production_assert.py
+        language: python
+        types: [python]
+        pass_filenames: true
+        always_run: false
+        stages: [pre-commit]
+        files: ^server/
+        exclude: ^server/tests/
       - id: npm-lint
         name: npm lint (client)
         entry: python scripts/precommit_run_npm.py lint

@@ -6,6 +6,7 @@ including size limits, schema validation, CSRF protection, and JSON depth limits
 """
 
 import json
+from collections.abc import Mapping
 from typing import ClassVar, cast
 
 from pydantic import BaseModel, ValidationError
@@ -85,7 +86,7 @@ class WebSocketMessageValidator:
             )
         return True
 
-    def validate_json_structure(self, message: dict[str, object]) -> bool:
+    def validate_json_structure(self, message: Mapping[str, object]) -> bool:
         """
         Validate JSON structure including depth limits.
 
@@ -129,8 +130,8 @@ class WebSocketMessageValidator:
         if current_depth > self.max_json_depth:
             return current_depth
 
-        if isinstance(obj, dict):
-            mapping = cast(dict[str, object], obj)
+        if isinstance(obj, Mapping):
+            mapping = cast(Mapping[str, object], obj)
             if not mapping:
                 return current_depth
             return max(self._calculate_depth(v, current_depth + 1) for v in mapping.values())
@@ -151,8 +152,8 @@ class WebSocketMessageValidator:
         Raises:
             MessageValidationError: If any string exceeds length limit
         """
-        if isinstance(obj, dict):
-            mapping = cast(dict[str, object], obj)
+        if isinstance(obj, Mapping):
+            mapping = cast(Mapping[str, object], obj)
             for key, value in mapping.items():
                 if len(key) > self.MAX_JSON_STRING_LENGTH:
                     raise MessageValidationError(
@@ -171,7 +172,7 @@ class WebSocketMessageValidator:
                     error_type="string_length_exceeded",
                 )
 
-    def validate_schema(self, message: dict[str, object], schema: type[BaseModel] | None = None) -> bool:
+    def validate_schema(self, message: Mapping[str, object], schema: type[BaseModel] | None = None) -> bool:
         """
         Validate message against Pydantic schema.
 
@@ -206,7 +207,7 @@ class WebSocketMessageValidator:
             ) from e
 
     @staticmethod
-    def _extract_csrf_token_string(message: dict[str, object]) -> str | None:
+    def _extract_csrf_token_string(message: Mapping[str, object]) -> str | None:
         """Return the first string CSRF token from known keys, or None if absent."""
         for key in ("csrfToken", "csrf_token"):
             raw = message.get(key)
@@ -220,7 +221,7 @@ class WebSocketMessageValidator:
             )
         return None
 
-    def validate_csrf(self, message: dict[str, object], player_id: str, expected_token: str | None = None) -> bool:
+    def validate_csrf(self, message: Mapping[str, object], player_id: str, expected_token: str | None = None) -> bool:
         """
         Validate CSRF token in message.
 

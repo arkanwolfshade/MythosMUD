@@ -133,7 +133,14 @@ async def _put_run_validated(rt: PutCommandRuntime, work: PutValidatedWork) -> C
     )
     if cid_error:
         return cid_error
-    assert container_id is not None
+    if container_id is None:
+        logger.error(
+            "put container_id invariant failed after resolution",
+            player=work.player.name,
+            player_id=str(work.player.player_id),
+            container_name=work.container_name,
+        )
+        raise RuntimeError("container_id is None after _put_resolve_container_id; internal error")
 
     return await _put_transfer_finish(
         rt.container_service,

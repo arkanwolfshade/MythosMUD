@@ -352,7 +352,7 @@ def _seed_new_container_items(conn: PsycopgConnection, container_id: UUID, items
             continue
         cursor_items.execute(
             "SELECT add_item_to_container(%s, %s, %s)",
-            (container_id, item_instance_id, position),
+            (str(container_id), item_instance_id, position),
         )
     conn.commit()
     cursor_items.close()
