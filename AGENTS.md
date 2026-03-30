@@ -54,3 +54,38 @@ single-file consolidated reference usable outside Cursor, see the repo root [CLA
 - Client ui-v2 real-time UI is driven from WebSocket events through the event projector under
   `client/src/components/ui-v2/eventLog` into `GameState`; desyncs between log lines and meters often mean missing
   merges in the projector, not only panel components
+
+## Cursor Cloud specific instructions
+
+### Services overview
+
+| Service | Command | Port | Notes |
+|---------|---------|------|-------|
+| FastAPI backend | `uv run uvicorn server.main:app --host 0.0.0.0 --port 54731` | 54731 | Loads `.env.local` automatically |
+| React client | `cd client && npm run dev` | 5173 | Vite dev server |
+| PostgreSQL 16 | `sudo service postgresql start` | 5432 | User `postgres`, password in `.env.local` |
+| NATS server | auto-started by backend via `NATS_SERVER_PATH` | 4222 | Binary at `/usr/local/bin/nats-server` |
+
+### Environment setup gotchas
+
+- **pg_hba.conf**: PostgreSQL must be configured for `md5` password auth (not default `peer`) for the
+  `postgres` user on local and host connections. The backup is at `/etc/postgresql/16/main/pg_hba.conf.bak`.
+- **Database schemas**: The DDL file hardcodes a `SET search_path` to the dev schema name. When applying
+  to unit/e2e databases, the schema inside was renamed to match the target database name. Future DDL
+  re-applications may need the same schema rename treatment.
+- **`.env.local`**: Must be copied from `env.local.example` (not `env.unit_test.example`). The
+  `NATS_SERVER_PATH` must point to `/usr/local/bin/nats-server` on Linux.
+- **Makefile PowerShell targets**: `make test-server` calls PowerShell scripts
+  (`scripts/apply_procedures.ps1`, etc.) which require `pwsh`. On Linux Cloud VMs without PowerShell,
+  run server tests directly: `uv run pytest server/tests/ -m "not integration"`.
+- **Client test failures**: A few client tests in `useRespawnHandlers.test.ts` have a pre-existing URL
+  mismatch (expects relative URL, gets absolute). These are not caused by environment setup.
+
+### Quick-reference commands
+
+- **Lint server**: `uv run ruff check server/`
+- **Lint client**: `cd client && npx eslint .`
+- **Test server (unit only)**: `uv run pytest server/tests/ -m "not integration"`
+- **Test client**: `cd client && npx vitest run`
+- **Run backend dev**: `uv run uvicorn server.main:app --host 0.0.0.0 --port 54731`
+- **Run client dev**: `cd client && npm run dev`
