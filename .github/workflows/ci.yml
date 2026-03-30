@@ -427,12 +427,17 @@ jobs:
           fi
           test -s client/coverage/lcov.info
           CODACY_REPORTER="$(bash scripts/ensure_codacy_coverage_reporter_ci.sh)"
-          "${CODACY_REPORTER}" report \
-            --project-token "${CODACY_PROJECT_TOKEN}" \
-            -l javascript \
-            -r client/coverage/lcov.info \
-            --prefix client \
-            --partial
+          # Codacy language names are case-sensitive; Vitest LCOV maps .ts/.tsx — upload for
+          # both Javascript and TypeScript per https://docs.codacy.com/coverage-reporter/uploading-coverage-in-advanced-scenarios/
+          for LANG in Javascript TypeScript; do
+            "${CODACY_REPORTER}" report \
+              --project-token "${CODACY_PROJECT_TOKEN}" \
+              -l "${LANG}" \
+              --force-coverage-parser lcov \
+              -r client/coverage/lcov.info \
+              --prefix client \
+              --partial
+          done
       - name: Run E2E tests
         continue-on-error: true # E2E tests require backend server, may fail in frontend-only CI
         run: npm run test
