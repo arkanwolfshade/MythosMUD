@@ -11,6 +11,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from server.commands.container_helpers_inventory_ops import (
+    _coerce_transfer_quantity,
+    _int_transfer_qty,
     extract_items_from_container,
     filter_valid_items,
     find_item_in_container,
@@ -22,6 +24,46 @@ from server.commands.container_helpers_inventory_ops import (
     validate_get_command_inputs,
     validate_put_command_inputs,
 )
+
+
+def test_coerce_transfer_quantity_int_and_str() -> None:
+    assert _coerce_transfer_quantity(7) == 7
+    assert _coerce_transfer_quantity("  14  ") == 14
+    assert _coerce_transfer_quantity("") == 1
+    assert _coerce_transfer_quantity("   ") == 1
+    assert _coerce_transfer_quantity("not-a-number") == 1
+
+
+def test_coerce_transfer_quantity_bool_is_one() -> None:
+    """JSON/bools must not use int(True)==1 for game quantities; treat as default 1."""
+    assert _coerce_transfer_quantity(True) == 1
+    assert _coerce_transfer_quantity(False) == 1
+
+
+def test_coerce_transfer_quantity_float_truncates_toward_zero() -> None:
+    assert _coerce_transfer_quantity(3.9) == 3
+    assert _coerce_transfer_quantity(-2.1) == -2
+
+
+def test_coerce_transfer_quantity_unknown_type_defaults() -> None:
+    assert _coerce_transfer_quantity([]) == 1
+    assert _coerce_transfer_quantity({"q": 3}) == 1
+
+
+def test_int_transfer_qty_uses_explicit_quantity_over_item() -> None:
+    item = {"quantity": 99}
+    assert _int_transfer_qty("5", item) == 5
+    assert _int_transfer_qty(2, item) == 2
+
+
+def test_int_transfer_qty_falsy_quantity_falls_back_to_item() -> None:
+    """Empty string is falsy: use item quantity (untyped JSON often uses str)."""
+    assert _int_transfer_qty("", {"quantity": "3"}) == 3
+
+
+def test_int_transfer_qty_zero_quantity_falls_back_to_item() -> None:
+    """0 is falsy in `quantity if quantity`; coercer still maps to item line."""
+    assert _int_transfer_qty(0, {"quantity": 4}) == 4
 
 
 def test_extract_items_from_container_dict() -> None:

@@ -47,6 +47,34 @@ def test_find_item_in_inventory_miss() -> None:
     assert find_item_in_inventory(inv, "zzz") == (None, None)
 
 
+def test_find_item_in_inventory_index_zero_invalid() -> None:
+    inv = [{"item_name": "only"}]
+    assert find_item_in_inventory(inv, "0") == (None, None)
+
+
+def test_find_item_in_inventory_non_numeric_token_name_search() -> None:
+    """ValueError from int() falls through to case-insensitive substring match."""
+    inv = [{"item_name": "Lantern"}]
+    item, idx = find_item_in_inventory(inv, "lan")
+    assert idx == 0
+    assert item == inv[0]
+
+
+def test_find_item_in_inventory_uppercase_query() -> None:
+    inv = [{"item_name": "rusty key"}]
+    item, idx = find_item_in_inventory(inv, "KEY")
+    assert idx == 0
+    assert item == inv[0]
+
+
+def test_check_item_matches_target_partial_name() -> None:
+    """Substring match in item_name (player-typed targets)."""
+    item = {"item_name": "Hiking Pack", "name": "x"}
+    nm, sm = check_item_matches_target(item, "back", "hik")
+    assert nm is True
+    assert sm is False
+
+
 def test_check_item_matches_target() -> None:
     item = {"item_name": "Backpack", "name": "x"}
     nm, sm = check_item_matches_target(item, "Back", "back")
