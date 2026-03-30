@@ -416,7 +416,7 @@ jobs:
         if: ${{ success() && !env.ACT }}
         working-directory: ${{ github.workspace }}
         run: python3 scripts/validate_codacy_coverage_gate.py --lcov client/coverage/lcov.info --min-lcov-line-rate 0.70
-      # --prefix maps Vitest paths (src/...) to client/src/... in the repo (Codacy --prefix).
+      # --prefix must end with `/` so LCOV `src/...` becomes `client/src/...`, not `clientsrc/...`.
       - name: Upload JavaScript coverage to Codacy (partial)
         if: success() && !env.ACT
         working-directory: ${{ github.workspace }}
@@ -437,7 +437,7 @@ jobs:
             -l TypeScript \
             --force-coverage-parser lcov \
             -r client/coverage/lcov.info \
-            --prefix client \
+            --prefix client/ \
             --partial
       - name: Run E2E tests
         continue-on-error: true # E2E tests require backend server, may fail in frontend-only CI
