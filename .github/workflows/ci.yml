@@ -336,6 +336,7 @@ jobs:
           name: coverage-html
           path: htmlcov/
       # Partial upload only; codacy-coverage-finalize runs `final` after frontend partial (Codacy docs).
+      # Pinned reporter binary (scripts/ensure_codacy_coverage_reporter_ci.sh) avoids curl|bash get.sh.
       # Token presence checked in shell: `secrets` in step `if` is invalid in some Action linters.
       - name: Upload Python coverage to Codacy (partial)
         if: success() && !env.ACT
@@ -348,7 +349,8 @@ jobs:
             exit 0
           fi
           test -f coverage.xml
-          bash <(curl -Ls https://coverage.codacy.com/get.sh) report \
+          CODACY_REPORTER="$(bash scripts/ensure_codacy_coverage_reporter_ci.sh)"
+          "${CODACY_REPORTER}" report \
             --project-token "${CODACY_PROJECT_TOKEN}" \
             -l Python \
             -r coverage.xml \
@@ -424,7 +426,8 @@ jobs:
             exit 0
           fi
           test -s client/coverage/lcov.info
-          bash <(curl -Ls https://coverage.codacy.com/get.sh) report \
+          CODACY_REPORTER="$(bash scripts/ensure_codacy_coverage_reporter_ci.sh)"
+          "${CODACY_REPORTER}" report \
             --project-token "${CODACY_PROJECT_TOKEN}" \
             -l javascript \
             -r client/coverage/lcov.info \
@@ -444,6 +447,10 @@ jobs:
     # Job-level `if` cannot use `env` in some Action linters; skip `act` via step `if` + shell guards.
     if: ${{ !cancelled() && needs.backend.result == 'success' && needs.frontend.result == 'success' }}
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 1
       - name: Finalize Codacy coverage upload
         if: success() && !env.ACT
         env:
@@ -454,5 +461,6 @@ jobs:
             echo "::notice::Skipping Codacy final (CODACY_PROJECT_TOKEN unset)."
             exit 0
           fi
-          bash <(curl -Ls https://coverage.codacy.com/get.sh) final \
+          CODACY_REPORTER="$(bash scripts/ensure_codacy_coverage_reporter_ci.sh)"
+          "${CODACY_REPORTER}" final \
             --project-token "${CODACY_PROJECT_TOKEN}"

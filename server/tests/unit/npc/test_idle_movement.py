@@ -104,6 +104,42 @@ def test_should_idle_move_probability_check(
     assert result is False
 
 
+@patch("server.npc.idle_movement.random.random", return_value=0.24)
+@patch("server.services.combat_service.get_combat_service")
+def test_should_idle_move_probability_passes_when_random_below_threshold(
+    mock_get_combat: MagicMock,
+    _mock_random: MagicMock,
+    idle_movement_handler: IdleMovementHandler,
+) -> None:
+    """Movement runs when random.random() <= idle_movement_probability (exclusive upper bound)."""
+    npc_instance = MagicMock()
+    npc_instance.npc_id = str(uuid.uuid4())
+    npc_instance.is_alive = True
+    npc_instance.is_active = True
+    npc_definition = MagicMock()
+    behavior_config: dict[str, object] = {"idle_movement_enabled": True, "idle_movement_probability": 0.25}
+    mock_get_combat.return_value = MagicMock(_npc_combats={})
+    assert idle_movement_handler.should_idle_move(npc_instance, npc_definition, behavior_config) is True
+
+
+@patch("server.npc.idle_movement.random.random", return_value=0.26)
+@patch("server.services.combat_service.get_combat_service")
+def test_should_idle_move_probability_fails_when_random_above_threshold(
+    mock_get_combat: MagicMock,
+    _mock_random: MagicMock,
+    idle_movement_handler: IdleMovementHandler,
+) -> None:
+    """Movement is skipped when random.random() > idle_movement_probability."""
+    npc_instance = MagicMock()
+    npc_instance.npc_id = str(uuid.uuid4())
+    npc_instance.is_alive = True
+    npc_instance.is_active = True
+    npc_definition = MagicMock()
+    behavior_config: dict[str, object] = {"idle_movement_enabled": True, "idle_movement_probability": 0.25}
+    mock_get_combat.return_value = MagicMock(_npc_combats={})
+    assert idle_movement_handler.should_idle_move(npc_instance, npc_definition, behavior_config) is False
+
+
 @patch("server.npc.idle_movement.random.random", return_value=0.0)
 @patch("server.services.combat_service.get_combat_service")
 def test_should_idle_move_false_when_registered_in_combat(
@@ -225,6 +261,23 @@ def test_get_valid_exits_all_exits_invalid_subzone_returns_empty(idle_movement_h
     idle_movement_handler.movement_integration.validate_subzone_boundary = MagicMock(return_value=False)
     result: dict[str, str] = idle_movement_handler.get_valid_exits("room_001", npc_definition, behavior_config)
     assert result == {}
+
+
+def test_get_valid_exits_keeps_all_exits_when_subzone_boundary_allows(
+    idle_movement_handler: IdleMovementHandler,
+) -> None:
+    """When validate_subzone_boundary accepts every target, all directions remain available."""
+    npc_definition = MagicMock()
+    npc_definition.sub_zone_id = "sub_z"
+    behavior_config: dict[str, object] = {}
+    idle_movement_handler.movement_integration.get_available_exits = MagicMock(
+        return_value={"north": "room_n", "east": "room_e"}
+    )
+    idle_movement_handler.movement_integration.validate_subzone_boundary = MagicMock(return_value=True)
+    result: dict[str, str] = idle_movement_handler.get_valid_exits("room_001", npc_definition, behavior_config)
+    assert result == {"north": "room_n", "east": "room_e"}
+    idle_movement_handler.movement_integration.validate_subzone_boundary.assert_any_call("sub_z", "room_n")
+    idle_movement_handler.movement_integration.validate_subzone_boundary.assert_any_call("sub_z", "room_e")
 
 
 def test_select_exit_empty_dict(idle_movement_handler: IdleMovementHandler) -> None:

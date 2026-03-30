@@ -37,7 +37,7 @@ def _inventory_prototype_id(selected_stack: dict[str, object]) -> str | None:
 
 def _wear_slots_from_prototype(prototype: object) -> list[object]:
     wear_slots_raw: object = getattr(prototype, "wear_slots", [])
-    if isinstance(wear_slots_raw, (list, tuple)):
+    if isinstance(wear_slots_raw, list | tuple):
         return list(cast(Sequence[object], wear_slots_raw))
     return []
 

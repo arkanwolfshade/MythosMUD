@@ -11,12 +11,17 @@ import sys
 from pathlib import Path
 from typing import cast
 
-from defusedxml import ElementTree as etree
-
 # Defaults match repo policy: pyproject [tool.coverage.report] fail_under = 63;
 # client vite.vitestOptions coverage thresholds lines = 70.
 DEFAULT_MIN_PYTHON_LINE_RATE = 0.63
 DEFAULT_MIN_LCOV_LINE_RATE = 0.70
+
+
+def _parse_cobertura_xml(coverage_xml: Path):
+    """Parse Cobertura XML with defusedxml (lazy import: LCOV-only runs skip this dependency)."""
+    from defusedxml import ElementTree as etree
+
+    return etree.parse(str(coverage_xml))
 
 
 def cobertura_root_line_rate(coverage_xml: Path) -> float:
@@ -24,7 +29,7 @@ def cobertura_root_line_rate(coverage_xml: Path) -> float:
     if not coverage_xml.is_file():
         msg = f"coverage XML not found: {coverage_xml}"
         raise FileNotFoundError(msg)
-    tree = etree.parse(str(coverage_xml))
+    tree = _parse_cobertura_xml(coverage_xml)
     root = tree.getroot()
     if root is None:
         msg = "Malformed Cobertura XML: missing root element"
@@ -38,7 +43,7 @@ def cobertura_root_line_rate(coverage_xml: Path) -> float:
 
 def cobertura_has_server_sources(coverage_xml: Path) -> bool:
     """True if report lists at least one class under server/ (relative paths)."""
-    tree = etree.parse(str(coverage_xml))
+    tree = _parse_cobertura_xml(coverage_xml)
     root = tree.getroot()
     if root is None:
         return False
@@ -146,4 +151,7 @@ if __name__ == "__main__":
         main()
     except (ValueError, FileNotFoundError) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
+        sys.exit(1)
+    except ImportError as exc:
+        print(f"ERROR: missing dependency for Cobertura parsing: {exc}", file=sys.stderr)
         sys.exit(1)

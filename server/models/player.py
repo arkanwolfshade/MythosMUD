@@ -21,6 +21,7 @@ from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.ext.mutable import MutableDict, MutableList
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from ..utils.int_coercion import coerce_int
 from .base import Base  # ARCHITECTURE FIX Phase 3.1: Use shared Base
 from .game import PositionState
 
@@ -39,19 +40,7 @@ if TYPE_CHECKING:
 
 def _stats_int(stats: Mapping[str, object], key: str, default: int = 0) -> int:
     """Coerce a JSONB stat value to int for DP and combat helpers."""
-    raw = stats.get(key, default)
-    if isinstance(raw, bool):
-        return int(raw)
-    if isinstance(raw, int):
-        return raw
-    if isinstance(raw, float):
-        return int(raw)
-    if isinstance(raw, str):
-        try:
-            return int(raw.strip())
-        except ValueError:
-            return default
-    return default
+    return coerce_int(stats.get(key, default), default=default)
 
 
 class Player(Base):

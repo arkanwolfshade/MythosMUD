@@ -144,3 +144,51 @@ def test_parse_and_validate_inner_json_depth_exceeded() -> None:
     with pytest.raises(MessageValidationError) as exc:
         _ = v.parse_and_validate(raw, "pid", schema=None, csrf_token=None)
     assert exc.value.error_type == "depth_limit_exceeded"
+
+
+def test_validate_json_structure_accepts_depth_equal_to_limit(validator: WebSocketMessageValidator) -> None:
+    """Depth equal to max_json_depth is allowed (failure is strict `>`)."""
+    # validator fixture: max_json_depth=4; _deep_dict(5) exceeds (depth 5), _deep_dict(3) is depth 4
+    assert validator.validate_json_structure(_deep_dict(3)) is True
+
+
+def test_validate_json_structure_list_nesting_counts_toward_depth() -> None:
+    """Lists contribute to nesting depth the same way as objects."""
+    v = WebSocketMessageValidator(max_message_size=4096, max_json_depth=4)
+    # root dict -> list -> list -> list -> list -> int => depth 5
+    msg: dict[str, object] = {"type": "t", "nested": [[[[1]]]]}
+    with pytest.raises(MessageValidationError) as exc:
+        _ = v.validate_json_structure(msg)
+    assert exc.value.error_type == "depth_limit_exceeded"
+
+
+def test_parse_and_validate_rejects_oversized_raw_payload(validator: WebSocketMessageValidator) -> None:
+    """parse_and_validate applies byte size limit to the full wire payload."""
+    raw = "x" * 400
+    with pytest.raises(MessageValidationError) as exc:
+        _ = validator.parse_and_validate(raw, "pid", schema=None, csrf_token=None)
+    assert exc.value.error_type == "size_limit_exceeded"
+
+
+def test_parse_and_validate_rejects_invalid_json() -> None:
+    v = WebSocketMessageValidator(max_message_size=2048, max_json_depth=10)
+    with pytest.raises(MessageValidationError) as exc:
+        _ = v.parse_and_validate("{not json", "pid", schema=None, csrf_token=None)
+    assert exc.value.error_type == "json_parse_error"
+
+
+def test_parse_and_validate_rejects_non_object_json() -> None:
+    v = WebSocketMessageValidator(max_message_size=2048, max_json_depth=10)
+    with pytest.raises(MessageValidationError) as exc:
+        _ = v.parse_and_validate(json.dumps([1, 2, 3]), "pid", schema=None, csrf_token=None)
+    assert exc.value.error_type == "invalid_type"
+
+
+def test_parse_and_validate_csrf_inner_token_must_match_expected_not_outer_wrapper() -> None:
+    """If inner JSON carries its own csrfToken, it is validated (outer wrapper token is not injected)."""
+    v = WebSocketMessageValidator(max_message_size=8192, max_json_depth=10)
+    inner = json.dumps({"type": "cmd", "data": {}, "csrfToken": "inner-wrong"})
+    raw = json.dumps({"message": inner, "csrfToken": "outer-ok"})
+    with pytest.raises(MessageValidationError) as exc:
+        _ = v.parse_and_validate(raw, "pid", schema=None, csrf_token="outer-ok")
+    assert exc.value.error_type == "csrf_token_invalid"

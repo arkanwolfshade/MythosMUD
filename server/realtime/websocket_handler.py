@@ -100,8 +100,8 @@ async def _check_rate_limit(
     rli: Mapping[str, object] = cast(Mapping[str, object], rate_limit_info)
     max_attempts_raw = rli.get("max_attempts", 0)
     reset_time_raw = rli.get("reset_time", 0.0)
-    max_attempts = int(max_attempts_raw) if isinstance(max_attempts_raw, (int, float)) else 0
-    reset_at = float(reset_time_raw) if isinstance(reset_time_raw, (int, float)) else 0.0
+    max_attempts = int(max_attempts_raw) if isinstance(max_attempts_raw, int | float) else 0
+    reset_at = float(reset_time_raw) if isinstance(reset_time_raw, int | float) else 0.0
     retry_after = max(0, int(reset_at - time.time()))
     error_response = create_websocket_error_response(
         ErrorType.RATE_LIMIT_EXCEEDED,

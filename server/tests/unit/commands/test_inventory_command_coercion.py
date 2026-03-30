@@ -1,4 +1,4 @@
-"""Unit tests for inventory_command_coercion.coerce_int."""
+"""Unit tests for server.utils.int_coercion.coerce_int."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ import math
 
 import pytest
 
-from server.commands.inventory_command_coercion import coerce_int
+from server.utils.int_coercion import coerce_int
 
 
 @pytest.mark.parametrize(
@@ -49,3 +49,12 @@ def test_coerce_int_float_inf_falls_back_to_default() -> None:
 
 def test_coerce_int_unknown_type() -> None:
     assert coerce_int([1], default=9) == 9
+
+
+def test_stats_int_delegates_to_coerce_int() -> None:
+    """JSONB stats use the same coercion as inventory command payloads."""
+    from server.models.player import _stats_int
+
+    assert _stats_int({"x": float("nan")}, "x", default=11) == 11
+    assert _stats_int({"x": 3.9}, "x", default=0) == 3
+    assert _stats_int({}, "missing", default=5) == 5
