@@ -586,11 +586,12 @@ def max_path_length(graph: dict[str, set[str]]) -> int:
 
 
 def emit_results(summary: dict[str, object], failures: list[str], warnings: list[str]) -> int:
-    print(json.dumps(summary, indent=2, sort_keys=True))
-    for warning in warnings:
-        print(f"::warning::{warning}")
-    for reason in failures:
-        print(f"::error::{reason}")
+    # Avoid logging full summary payloads to keep potentially sensitive paths/details out of plaintext logs.
+    print(f"Quality guard summary: hard_fail_reasons={len(failures)}, warnings={len(warnings)}, metrics={len(summary)}")
+    if warnings:
+        print("::warning::Quality guard reported warnings. See local run output for details.")
+    if failures:
+        print("::error::Quality guard reported failures. See local run output for details.")
     return 1 if failures else 0
 
 

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib.util
+import re
 import subprocess
 import sys
 from collections.abc import Callable
@@ -94,3 +95,31 @@ def test_script_exits_0_on_test_file_with_assert(tmp_path: Path) -> None:
         check=False,
     )
     assert r.returncode == 0
+
+
+def test_pre_commit_no_production_assert_hook_patterns_match_expected_paths() -> None:
+    """Verify no-production-assert hook targets server code and excludes tests."""
+    pre_commit = _REPO_ROOT / ".pre-commit-config.yaml"
+    text = pre_commit.read_text(encoding="utf-8")
+
+    block_match = re.search(r"- id: no-production-assert(?P<body>.*?)(?:\n\s*-\sid:|\Z)", text, re.DOTALL)
+    assert block_match is not None
+    body = block_match.group("body")
+
+    files_match = re.search(r"^\s*files:\s*(?P<files>.+)$", body, re.MULTILINE)
+    exclude_match = re.search(r"^\s*exclude:\s*(?P<exclude>.+)$", body, re.MULTILINE)
+    assert files_match is not None
+    assert exclude_match is not None
+
+    files_re = re.compile(files_match.group("files").strip())
+    exclude_re = re.compile(exclude_match.group("exclude").strip())
+
+    production_path = "server/commands/inventory_commands.py"
+    test_path = "server/tests/unit/test_inventory_commands.py"
+    non_server_path = "client/src/App.tsx"
+
+    assert files_re.search(production_path)
+    assert not exclude_re.search(production_path)
+    assert files_re.search(test_path)
+    assert exclude_re.search(test_path)
+    assert not files_re.search(non_server_path)
