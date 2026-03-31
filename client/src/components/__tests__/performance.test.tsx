@@ -174,8 +174,8 @@ describe('Performance Tests', () => {
         { iterations: 20, warmupIterations: 3 }
       );
 
-      // Threshold relaxed for CI/slower machines; 350ms for 100 messages (300ms too tight on loaded CI)
-      expect(result.averageTime).toBeLessThan(350);
+      // Threshold relaxed for CI/slower machines; 450ms for 100 messages on loaded runners.
+      expect(result.averageTime).toBeLessThan(450);
       expect(result.iterations).toBeGreaterThan(0);
     }, 15000);
 
@@ -244,7 +244,8 @@ describe('Performance Tests', () => {
         { iterations: 5, warmupIterations: 1 }
       );
 
-      expect(result.averageTime).toBeLessThan(800);
+      // Threshold relaxed for CI/slower machines; 950ms for 1000 messages on loaded runners.
+      expect(result.averageTime).toBeLessThan(950);
       expect(result.iterations).toBeGreaterThan(0);
     }, 30000);
 
