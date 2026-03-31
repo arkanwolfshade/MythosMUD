@@ -5,6 +5,7 @@ Run quality fragmentation guard with local git SHA detection.
 
 from __future__ import annotations
 
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -12,9 +13,15 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
+def _git_executable() -> str:
+    return shutil.which("git") or "git"
+
+
 def _run_git(args: list[str]) -> str | None:
+    git_path = _git_executable()
+    # nosec B603: args are fixed git subcommands composed by this script.
     result = subprocess.run(
-        ["git", *args],
+        [git_path, *args],
         cwd=REPO_ROOT,
         capture_output=True,
         text=True,
@@ -31,8 +38,10 @@ def _resolve_base_sha() -> str | None:
 
 
 def _changed_files_between(base_sha: str, head_sha: str) -> list[str]:
+    git_path = _git_executable()
+    # nosec B603: git ref inputs are resolved from local git commands in this module.
     result = subprocess.run(
-        ["git", "diff", "--name-only", f"{base_sha}...{head_sha}"],
+        [git_path, "diff", "--name-only", f"{base_sha}...{head_sha}"],
         cwd=REPO_ROOT,
         capture_output=True,
         text=True,
@@ -45,9 +54,11 @@ def _changed_files_between(base_sha: str, head_sha: str) -> list[str]:
 
 def _local_changed_files() -> list[str]:
     changed: set[str] = set()
+    git_path = _git_executable()
     for args in (["diff", "--name-only", "--cached"], ["diff", "--name-only", "HEAD"]):
+        # nosec B603: args are fixed and not user-provided.
         result = subprocess.run(
-            ["git", *args],
+            [git_path, *args],
             cwd=REPO_ROOT,
             capture_output=True,
             text=True,
@@ -101,6 +112,7 @@ def main() -> int:
         return 0
 
     command = _build_guard_command(base_sha, head_sha, changed_files)
+    # nosec B603: command uses sys.executable and a repository-local script path.
     result = subprocess.run(command, cwd=REPO_ROOT, check=False)
     return result.returncode
 

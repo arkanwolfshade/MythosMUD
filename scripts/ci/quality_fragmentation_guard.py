@@ -60,6 +60,7 @@ def _to_int(value: object, default: int) -> int:
 def run_cmd(command: list[str], *, check: bool = True) -> str:
     if command and command[0] == "git":
         command = [_git_executable(), *command[1:]]
+    # nosec B603: command is controlled by this module's fixed call sites.
     result = subprocess.run(command, capture_output=True, text=True, check=False, cwd=REPO_ROOT)
     if check and result.returncode != 0:
         raise RuntimeError(f"Command failed: {' '.join(command)}\n{result.stdout}\n{result.stderr}")
@@ -67,8 +68,15 @@ def run_cmd(command: list[str], *, check: bool = True) -> str:
 
 
 def git_show_file(rev: str, path: str) -> str | None:
+    if not is_safe_git_ref(rev):
+        return None
     result = subprocess.run(
-        [_git_executable(), "show", f"{rev}:{path}"], capture_output=True, text=True, check=False, cwd=REPO_ROOT
+        # nosec B603: git executable is resolved and ref is validated before use.
+        [_git_executable(), "show", f"{rev}:{path}"],
+        capture_output=True,
+        text=True,
+        check=False,
+        cwd=REPO_ROOT,
     )
     return result.stdout if result.returncode == 0 else None
 
@@ -183,7 +191,7 @@ def run_lizard_on_content(path: str, content: str) -> list[LizardFunctionRow]:
     try:
         output = run_cmd(["lizard", "-j", temp_path], check=False)
         return _parse_lizard_output(output)
-    except Exception:
+    except (OSError, UnicodeDecodeError, ValueError):
         return []
     finally:
         Path(temp_path).unlink(missing_ok=True)
@@ -555,7 +563,7 @@ def _is_test_file_path(path: str) -> bool:
 
 
 def _is_public_function_stmt(node: ast.stmt) -> TypeGuard[ast.FunctionDef | ast.AsyncFunctionDef]:
-    return isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and not node.name.startswith("_")
+    return isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef) and not node.name.startswith("_")
 
 
 def _is_tiny_single_use(node: ast.AST, lines: list[str], python_texts: list[tuple[str, str]]) -> bool:
@@ -587,7 +595,7 @@ def collect_python_defs_and_calls(changed_python_files: list[str]) -> tuple[dict
             continue
         try:
             tree = ast.parse(abs_path.read_text(encoding="utf-8"))
-        except Exception:
+        except (OSError, UnicodeDecodeError, ValueError, SyntaxError):
             continue
         definitions.update(dict.fromkeys(_top_level_definitions(tree), rel_path))
         calls_by_file[rel_path] = _named_calls(tree)
@@ -597,7 +605,7 @@ def collect_python_defs_and_calls(changed_python_files: list[str]) -> tuple[dict
 def _top_level_definitions(tree: ast.Module) -> list[str]:
     names: list[str] = []
     for node in tree.body:
-        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+        if isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef):
             names.append(node.name)
     return names
 
