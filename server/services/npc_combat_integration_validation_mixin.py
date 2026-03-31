@@ -15,6 +15,7 @@ from .combat_service import CombatService
 from .npc_combat_data_provider import NPCCombatDataProvider
 from .npc_combat_lucidity import NPCCombatLucidity
 from .npc_combat_uuid_mapping import NPCCombatUUIDMapping
+from .room_data_validator import RoomDataValidator
 
 logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
 
@@ -135,6 +136,15 @@ class NPCCombatIntegrationValidationMixin:
         npc_instance: object,
     ) -> bool:
         """Validate that player and NPC are in the same room."""
+        if not RoomDataValidator.is_valid_room_id(room_id):
+            logger.warning(
+                "Combat room ID format invalid",
+                player_id=player_id,
+                npc_id=npc_id,
+                combat_room_id=room_id,
+            )
+            return False
+
         player_room_id = await self.get_data_provider().get_player_room_id(player_id)
         npc_room_id = getattr(npc_instance, "current_room", None)
 
