@@ -34,7 +34,7 @@
     "react-rnd": "^10.5.3",
     "react-router-dom": "^7.13.1",
     "reactflow": "^11.11.4",
-    "xstate": "^5.28.0",
+    "xstate": "^5.30.0",
     "zustand": "^5.0.12"
   },
   "devDependencies": {
