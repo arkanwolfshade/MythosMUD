@@ -77,7 +77,8 @@ flowchart LR
   command layer also blocks with "You are still warded..."
 - **no_combat rooms**: room.attributes.no_combat (e.g. tutorial, ADR-009) blocks combat with
   "The cosmic forces forbid violence in this place."
-- **Incapacitated (DP <= 0)**: Player cannot attack until death/respawn (DP -10); "You are
+- **Incapacitated (DP <= 0)**: Player cannot attack; DP 0 to -9 is mortally wounded, and
+  DP <= -10 is dead/respawn; "You are
   incapacitated and cannot attack."
 - **Weapon from equipped main_hand**: Prototype metadata.weapon (min_damage, max_damage, modifier,
   damage_types); else config.game.basic_unarmed_damage.
@@ -120,7 +121,8 @@ flowchart LR
 
 - **"You cannot attack ... right now"**: handle_player_attack_on_npc returned False (e.g. grace
   period, room mismatch, NPC not found). Check logs: "Combat initiation failed".
-- **"You are incapacitated"**: current_dp <= 0; player must be healed or respawn (DP -10).
+- **"You are incapacitated"**: current_dp <= 0; DP 0 to -9 is mortally wounded (heal to
+  recover attack), DP <= -10 is dead and must respawn.
 - **"The cosmic forces forbid violence"**: room.attributes.no_combat is true (tutorial/no_combat
   zone).
 - **"Target not found" / "is already dead"**: TargetResolutionService no match or NPC not in
