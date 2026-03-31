@@ -134,6 +134,34 @@ describe('clampPanelLayoutToViewport', () => {
     expect(clamped.tooTall.size.height).toBeLessThan(500);
   });
 
+  it('clamps height to zero when viewport height is smaller than padding', () => {
+    const vw = 800;
+    const vh = 20;
+    const p = basePanel({
+      id: 'tinyViewport',
+      position: { x: 40, y: 40 },
+      size: { width: 300, height: 300 },
+    });
+    const clamped = clampPanelLayoutToViewport({ tinyViewport: p }, vw, vh);
+    expect(clamped.tinyViewport.size.height).toBe(0);
+    expect(clamped.tinyViewport.size.height).toBeGreaterThanOrEqual(0);
+  });
+
+  it('keeps tiny-viewport height non-negative even with minSize and minHeight constraints', () => {
+    const vw = 800;
+    const vh = 10;
+    const p = basePanel({
+      id: 'tinyViewportWithMins',
+      position: { x: 40, y: 40 },
+      size: { width: 300, height: 300 },
+      minSize: { width: 100, height: 250 },
+      minHeight: 500,
+    });
+    const clamped = clampPanelLayoutToViewport({ tinyViewportWithMins: p }, vw, vh);
+    expect(clamped.tinyViewportWithMins.size.height).toBe(0);
+    expect(clamped.tinyViewportWithMins.size.height).toBeGreaterThanOrEqual(0);
+  });
+
   it('respects minSize width up to max horizontal fit when the stored width is tiny', () => {
     const vw = 500;
     const vh = 600;
