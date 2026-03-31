@@ -21,6 +21,7 @@ from server.command_handler.catatonia_check import (
     _is_catatonic,
     _load_player_for_catatonia_check,
     _query_lucidity_record,
+    _registry_player_id_value,
     check_catatonia_block,
 )
 from server.command_handler_unified import (
@@ -34,6 +35,16 @@ from server.command_handler_unified import (
 
 class TestCatatoniaChecks:
     """Test catatonia checking functions."""
+
+    def test_registry_player_id_value_preserves_uuid_and_str(self) -> None:
+        """Registry key normalization keeps UUID and string ids intact."""
+        player_uuid = uuid.uuid4()
+        assert _registry_player_id_value(player_uuid) == player_uuid
+        assert _registry_player_id_value(str(player_uuid)) == str(player_uuid)
+
+    def test_registry_player_id_value_stringifies_non_string_ids(self) -> None:
+        """Registry key normalization stringifies non-UUID, non-string ids."""
+        assert _registry_player_id_value(1234) == "1234"
 
     def test_is_catatonic_with_tier(self):
         """Test _is_catatonic() returns True for catatonic tier."""
@@ -217,6 +228,29 @@ class TestCatatoniaChecks:
         del request.app
         blocked, _message = await check_catatonia_block("testplayer", "look", request)
         assert blocked is False
+
+    @pytest.mark.asyncio
+    async def test_check_catatonia_block_uses_string_registry_key_when_player_id_not_uuid_or_str(self):
+        """Non-UUID/non-string player ids are stringified before registry lookup."""
+        request = Mock(spec=Request)
+        mock_registry = MagicMock()
+        mock_registry.is_catatonic = Mock(return_value=False)
+        mock_state = MagicMock()
+        mock_state.persistence = MagicMock()
+        mock_state.catatonia_registry = mock_registry
+
+        class _Player:
+            player_id = 12345
+
+        with patch("server.command_handler.catatonia_check.command_request_app_state", return_value=mock_state):
+            with patch(
+                "server.command_handler.catatonia_check._load_player_for_catatonia_check", return_value=_Player()
+            ):
+                blocked, message = await check_catatonia_block("testplayer", "look", request)
+
+        assert blocked is False
+        assert message is None
+        mock_registry.is_catatonic.assert_called_once_with("12345")
 
 
 class TestCheckRateLimit:

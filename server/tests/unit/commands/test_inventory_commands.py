@@ -17,7 +17,7 @@ from server.commands.inventory_commands import (
     handle_unequip_command,
 )
 
-from .inventory_commands_test_support import command_result_text
+from .inventory_commands_test_support import PickupTestWiring, command_result_text
 
 
 @pytest.mark.asyncio
@@ -123,6 +123,48 @@ async def test_handle_drop_command_no_target():
 
     assert "result" in result
     assert "usage" in command_result_text(result).lower() or "target" in command_result_text(result).lower()
+
+
+@pytest.mark.asyncio
+async def test_handle_drop_command_broadcasts_room_event_after_persist() -> None:
+    """Drop success path emits inventory_drop broadcast with expected payload."""
+    w = PickupTestWiring()
+    w.player.get_inventory = MagicMock(
+        return_value=[
+            {
+                "item_name": "sword",
+                "item_id": "sword_001",
+                "item_instance_id": "inst_001",
+                "prototype_id": "sword_proto",
+                "slot_type": "inventory",
+                "quantity": 2,
+            }
+        ]
+    )
+    mock_persist = AsyncMock(return_value=None)
+
+    with patch("server.commands.inventory_drop_command.persist_player", mock_persist):
+        with patch(
+            "server.commands.inventory_drop_command.build_and_broadcast_inventory_event",
+            new_callable=AsyncMock,
+        ) as mock_broadcast:
+            result = await handle_drop_command(
+                {"index": 1, "quantity": 1}, {"name": "TestPlayer"}, w.request, None, "TestPlayer"
+            )
+
+    assert "result" in result
+    assert "drop" in command_result_text(result).lower()
+    w.add_room_drop.assert_called_once()
+    mock_persist.assert_awaited_once_with(w.persistence, w.player)
+    mock_broadcast.assert_awaited_once()
+    args = mock_broadcast.await_args.args
+    assert args[2] == "room_001"
+    assert args[3] == "inventory_drop"
+    payload = args[4]
+    assert payload["player_name"] == "TestPlayer"
+    assert payload["item_id"] == "sword_001"
+    assert payload["item_name"] == "sword"
+    assert payload["quantity"] == 1
 
 
 @pytest.mark.asyncio

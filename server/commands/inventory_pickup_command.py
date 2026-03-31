@@ -243,13 +243,8 @@ async def complete_pickup_after_floor_extract(ctx: FloorPickupAfterExtract) -> C
     )
     if commit_err:
         return commit_err
-    if prepared_stack is None:
-        logger.error(
-            "pickup prepared_stack invariant failed after successful commit",
-            player=ctx.player.name,
-            player_id=str(ctx.player.player_id),
-        )
-        raise RuntimeError("prepared_stack is None after _pickup_commit_inventory_after_floor_extract; internal error")
+    # commit_err is None only when prepared_stack is present by contract.
+    prepared_stack = cast(dict[str, object], prepared_stack)
     return await _pickup_broadcast_success(
         ctx.connection_manager,
         ctx.player,

@@ -317,6 +317,30 @@ def test_player_is_dead_false() -> None:
     assert player.is_dead() is False
 
 
+def test_player_is_mortally_wounded_uses_stats_int_coercion() -> None:
+    """String DP values are coerced via _stats_int before mortally-wounded check."""
+    player = Player(
+        player_id=str(uuid4()),
+        user_id=str(uuid4()),
+        name="TestPlayer",
+        stats={"current_dp": "-5"},
+    )
+    assert player.is_mortally_wounded() is True
+    assert player.is_dead() is False
+
+
+def test_player_is_dead_uses_stats_int_nan_default() -> None:
+    """Non-finite DP values fall back to default 0 via _stats_int."""
+    player = Player(
+        player_id=str(uuid4()),
+        user_id=str(uuid4()),
+        name="TestPlayer",
+        stats={"current_dp": float("nan")},
+    )
+    assert player.is_mortally_wounded() is True
+    assert player.is_dead() is False
+
+
 def test_player_get_health_state() -> None:
     """Test Player.get_health_state() returns correct state."""
     player_id = str(uuid4())
@@ -511,7 +535,7 @@ def test_player_apply_dp_decay_caps_at_negative_10() -> None:
         name="TestPlayer",
         stats={"current_dp": -10, "max_dp": 100},
     )
-    old_dp, new_dp, posture_changed = player.apply_dp_decay(amount=5)
+    old_dp, new_dp, _posture_changed = player.apply_dp_decay(amount=5)
     assert old_dp == -10
     assert new_dp == -10
     assert player.get_stats()["current_dp"] == -10
