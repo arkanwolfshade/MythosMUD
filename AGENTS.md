@@ -23,6 +23,153 @@ single-file consolidated reference usable outside Cursor, see the repo root [CLA
   the repo root if needed, then `search_symbols`, `get_symbol`, `get_file_outline`, `get_repo_outline`, or `search_text`
   instead of reading whole files when looking up implementations. See [jCodeMunch QUICKSTART](https://github.com/jgravelle/jcodemunch-mcp/blob/main/QUICKSTART.md).
 
+## Code Quality & CI Policy
+
+Do not game complexity metrics by over-fragmenting code. Prefer cohesive modules over artificially small units.
+
+### Lizard (Hard Gates)
+
+- Enforce these thresholds in CI with hard failures:
+  - Cyclomatic Complexity (`CCN`): `10` max (implemented as threshold `11`, so `>10` fails)
+  - Function length: `55` lines
+- Parameters per function are currently tracked by lizard metrics, but no repository-wide hard threshold is
+  configured yet in existing lizard/Codacy settings.
+- Track file NLOC with a structural threshold of `550` (Codacy-level signal/gate as configured).
+- CI must fail when any threshold is violated.
+- Overrides are allowed only with an inline justification comment on the symbol.
+- Every override must include accompanying tests that cover the risky branches and edge cases.
+
+```python
+def parse_legacy_format(data):  # lizard: allow CCN=14 (legacy parser, heavily tested)
+```
+
+### Codacy (Structural Signals)
+
+- Treat Codacy warnings as structural signals; they are monitored even when not always blocking.
+- Escalate to CI failure when both conditions are true in a PR:
+  - file count increases by more than `20%`
+  - average function size decreases
+- This combined pattern indicates likely AI-driven over-fragmentation and increased internal API surface area.
+
+### AI Guardrails (Critical Section)
+
+- **Rule A — Minimum Useful Function Size**
+  - Fail if a function is `<5` lines and only called once, unless explicitly justified inline.
+- **Rule B — File Fragmentation Limit**
+  - Fail if more than `10` new files are added and average file size is `<50` lines.
+- **Rule C — Call Chain Depth**
+  - Warn if a single flow crosses more than `5` function hops across files.
+- **Rule D — Internal API Surface Area**
+  - Fail if a module exports more than `7` public functions without clear grouping.
+- **Rule E — Single-use Files**
+  - Fail if a file is imported in only one place and is `<100` lines.
+
+### Diff-Based Heuristics
+
+- CI should track:
+  - `files_added`
+  - `avg_function_length`
+  - `avg_file_length`
+- Flag a fragmentation smell when this pattern appears together:
+  - `files_added` increases
+  - `avg_function_length` decreases
+  - `avg_file_length` decreases
+- Investigate and refactor toward cohesion before merge.
+
+### Companion CI Script Spec (Pseudo-Implementation)
+
+- Add one CI job (for example `quality-fragmentation-guard`) that runs on pull requests.
+- Use SHA-pinned GitHub Actions only (never floating tags).
+- The job should compute these metrics for `base...head`:
+  - `files_added`
+  - `avg_function_length`
+  - `avg_file_length`
+  - `new_files_count`
+  - `single_use_small_files`
+  - `single_use_tiny_functions`
+  - `module_public_exports`
+  - `cross_file_call_depth_max`
+- The job should output:
+  - `hard_fail_reasons` (non-empty fails CI)
+  - `warnings` (reported as annotations, non-blocking)
+
+```yaml
+name: quality-fragmentation-guard
+on: [pull_request]
+jobs:
+  quality-fragmentation-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@<pin-sha> # pin to commit hash
+      - uses: actions/setup-python@<pin-sha> # pin to commit hash
+      - name: Install analyzers
+        run: pip install lizard
+      - name: Run guard checks
+        run: python scripts/ci/quality_fragmentation_guard.py --base "$BASE_SHA" --head "$HEAD_SHA"
+```
+
+- Pseudo-logic for `scripts/ci/quality_fragmentation_guard.py`:
+  - Run lizard and fail if any function violates:
+    - `CCN > 10`
+    - `NLOC > 55`
+  - Enforce CCN with existing Ruff configuration (`[tool.ruff.lint.mccabe] max-complexity = 11`), which means
+    functions with complexity `>10` fail.
+  - Treat parameter count as a tracked metric unless and until a hard threshold is configured.
+  - Enforce override policy:
+    - Allow exceedance only when an inline justification exists (for example `# lizard: allow ...`)
+    - Require related tests in the same PR when an override is present
+  - Enforce Codacy structural escalation:
+    - Fail if `files_added_pct > 20%` and `avg_function_length_delta < 0`
+  - Enforce AI guardrails:
+    - Rule A fail: count functions where `length < 5` and `call_count == 1` without inline justification
+    - Rule B fail: `new_files_count > 10` and `avg_new_file_length < 50`
+    - Rule C warn: `cross_file_call_depth_max > 5`
+    - Rule D fail: any module with `public_export_count > 7` and no clear grouping marker
+    - Rule E fail: files where `imported_by_count == 1` and `nloc < 100`
+  - Enforce fragmentation smell detection:
+    - Flag when `files_added` increases while both `avg_function_length` and `avg_file_length` decrease
+  - Print machine-readable JSON summary and GitHub annotations.
+
+- Suggested status check behavior:
+  - Hard failures block merge.
+  - Warnings require reviewer acknowledgement but do not block merge.
+
+### Reviewer PR Checks
+
+- Primary check name in GitHub Actions: `Quality Fragmentation Guard` (job id: `quality-fragmentation-guard`).
+- Where to look:
+  - Open PR checks and inspect the `Quality Fragmentation Guard` job logs.
+  - Read the JSON summary emitted by `scripts/ci/quality_fragmentation_guard.py`.
+  - Review `::error::` and `::warning::` annotations in the check output.
+- Pass/fail signals:
+  - **Pass**: `hard_fail_reasons` is empty.
+  - **Fail**: any entry appears in `hard_fail_reasons` (merge-blocking).
+  - **Warn only**: entries in `warnings` with no hard failures (non-blocking unless reviewer escalates).
+- Typical merge blockers:
+  - lizard threshold violations without inline override justification
+  - override used without related test changes in the PR
+  - file NLOC over threshold (`550`)
+  - fragmentation escalation (`files_added_pct > 20%` with decreasing average function length)
+  - AI guardrail failures (tiny single-use functions/files, export-surface overage without grouping)
+
+## Examples: Acceptable vs Over-Fragmented
+
+- **Acceptable**
+  - Refactor one large function into multiple smaller functions within the same file.
+  - Keep clear functional grouping so the feature remains easy to understand.
+- **Over-Fragmented**
+  - Split related logic across many small files.
+  - Create multiple tiny utility modules with narrow single-use wrappers.
+  - Artificially decompose code only to satisfy local metrics.
+
+### Code Review Checklist
+
+- Does this reduce complexity without increasing fragmentation?
+- Can the feature be understood within `1–3` files?
+- Are any functions unnecessarily small (`<5` lines)?
+- Were new files introduced unnecessarily?
+- Is the call chain easy to follow?
+
 ## Learned User Preferences
 
 - Adopt the project's defined persona: an untenured professor of Occult Studies at Miskatonic University. See @character-tone.mdc for more details.
@@ -59,12 +206,12 @@ single-file consolidated reference usable outside Cursor, see the repo root [CLA
 
 ### Services overview
 
-| Service | Command | Port | Notes |
-|---------|---------|------|-------|
-| FastAPI backend | `uv run uvicorn server.main:app --host 0.0.0.0 --port 54731` | 54731 | Loads `.env.local` automatically |
-| React client | `cd client && npm run dev` | 5173 | Vite dev server |
-| PostgreSQL 16 | `sudo service postgresql start` | 5432 | User `postgres`, password in `.env.local` |
-| NATS server | auto-started by backend via `NATS_SERVER_PATH` | 4222 | Binary at `/usr/local/bin/nats-server` |
+| Service         | Command                                                      | Port  | Notes                                     |
+| --------------- | ------------------------------------------------------------ | ----- | ----------------------------------------- |
+| FastAPI backend | `uv run uvicorn server.main:app --host 0.0.0.0 --port 54731` | 54731 | Loads `.env.local` automatically          |
+| React client    | `cd client && npm run dev`                                   | 5173  | Vite dev server                           |
+| PostgreSQL 16   | `sudo service postgresql start`                              | 5432  | User `postgres`, password in `.env.local` |
+| NATS server     | auto-started by backend via `NATS_SERVER_PATH`               | 4222  | Binary at `/usr/local/bin/nats-server`    |
 
 ### Environment setup gotchas
 

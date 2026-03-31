@@ -23,7 +23,7 @@ PYTEST_COV_OPTS := --cov=server --cov-report=html --cov-report=term-missing --co
 .PHONY: bandit pylint ruff sqlfluff sqlint vulture
 .PHONY: hadolint shellcheck psscriptanalyzer
 .PHONY: stylelint markdownlint jackson-linter
-.PHONY: grype lizard
+.PHONY: grype lizard quality-fragmentation-guard
 .PHONY: codacy-tools
 .PHONY: setup-test-env setup-test-env-force check-postgresql setup-postgresql-test-db verify-schema
 .PHONY: test test-coverage test-client test-client-e2e test-playwright test-client-coverage test-server test-server-coverage test-ci
@@ -58,6 +58,7 @@ help:
 	@echo "  jackson-linter - JSON linter"
 	@echo "  grype          - Dependency/filesystem vulnerability scanner (local SCA)"
 	@echo "  lizard         - Code complexity analyzer"
+	@echo "  quality-fragmentation-guard - Run local PR fragmentation/complexity guard"
 	@echo "  codacy-tools   - Run all Codacy tools"
 	@echo ""
 	@echo "Database Setup:"
@@ -167,6 +168,10 @@ grype:
 
 lizard:
 	$(PYTHON) scripts/lizard.py
+
+quality-fragmentation-guard:
+	@echo "Running quality fragmentation guard..."
+	$(PYTHON) scripts/run_quality_fragmentation_guard.py
 
 # CRITICAL: CI runs the same command (.github/workflows/ci.yml "Dead code check (vulture)")
 # Config: pyproject.toml [tool.vulture], allowlist: vulture_allowlist.py
@@ -298,4 +303,4 @@ run-production:
 # COMPOSITE TARGETS
 # ============================================================================
 
-all: format mypy lint lint-sqlalchemy codacy-tools check-postgresql build openapi-spec test-coverage
+all: format mypy lint lint-sqlalchemy codacy-tools quality-fragmentation-guard check-postgresql build openapi-spec test-coverage
