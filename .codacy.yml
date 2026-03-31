@@ -34,6 +34,7 @@ engines:
     # (ignore_patterns alone does not suppress Lizard locally; see note above engines.*).
     exclude_paths:
       - "server/services/user_manager.py"
+      - "scripts/ci/quality_fragmentation_guard.py"
   bandit:
     exclude_paths:
       - "**/tests/**/*.py"

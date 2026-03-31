@@ -5,22 +5,26 @@ Run quality fragmentation guard with local git SHA detection.
 
 from __future__ import annotations
 
-import shutil
-import subprocess
 import sys
 from pathlib import Path
+
+if __package__ in {None, ""}:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from scripts.utils.safe_subprocess import safe_run
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
 def _git_executable() -> str:
-    return shutil.which("git") or "git"
+    # Use command name with safe_run so PATH resolution is handled by the OS.
+    # Absolute paths outside repo root are intentionally rejected by safe_subprocess validation.
+    return "git"
 
 
 def _run_git(args: list[str]) -> str | None:
     git_path = _git_executable()
-    # nosec B603: args are fixed git subcommands composed by this script.
-    result = subprocess.run(
+    result = safe_run(
         [git_path, *args],
         cwd=REPO_ROOT,
         capture_output=True,
@@ -39,8 +43,7 @@ def _resolve_base_sha() -> str | None:
 
 def _changed_files_between(base_sha: str, head_sha: str) -> list[str]:
     git_path = _git_executable()
-    # nosec B603: git ref inputs are resolved from local git commands in this module.
-    result = subprocess.run(
+    result = safe_run(
         [git_path, "diff", "--name-only", f"{base_sha}...{head_sha}"],
         cwd=REPO_ROOT,
         capture_output=True,
@@ -56,8 +59,7 @@ def _local_changed_files() -> list[str]:
     changed: set[str] = set()
     git_path = _git_executable()
     for args in (["diff", "--name-only", "--cached"], ["diff", "--name-only", "HEAD"]):
-        # nosec B603: args are fixed and not user-provided.
-        result = subprocess.run(
+        result = safe_run(
             [git_path, *args],
             cwd=REPO_ROOT,
             capture_output=True,
@@ -84,7 +86,9 @@ def _resolved_changed_files(cli_files: list[str], base_sha: str, head_sha: str) 
 
 def _build_guard_command(base_sha: str, head_sha: str, changed_files: list[str]) -> list[str]:
     command = [
-        sys.executable,
+        # Use PATH resolution so safe_subprocess validation accepts the executable.
+        # pre-commit often supplies an interpreter path outside repo root.
+        "python",
         "scripts/ci/quality_fragmentation_guard.py",
         "--base",
         base_sha,
@@ -112,8 +116,7 @@ def main() -> int:
         return 0
 
     command = _build_guard_command(base_sha, head_sha, changed_files)
-    # nosec B603: command uses sys.executable and a repository-local script path.
-    result = subprocess.run(command, cwd=REPO_ROOT, check=False)
+    result = safe_run(command, cwd=REPO_ROOT, check=False)
     return result.returncode
 
 

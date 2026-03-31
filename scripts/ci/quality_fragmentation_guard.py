@@ -7,13 +7,27 @@ import argparse
 import ast
 import json
 import re
-import shutil
-import subprocess
+import sys
 import tempfile
 from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
 from typing import TypedDict, TypeGuard, cast
+
+if __package__ in {None, ""}:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+from scripts.ci.quality_fragmentation_graph import compute_python_cross_file_depth
+from scripts.ci.quality_fragmentation_trends import (
+    added_file_stats,
+    append_fragmentation_failures,
+    append_fragmentation_warnings,
+    append_rule_b_failure,
+    append_rule_c_warning,
+    trend_averages,
+)
+from scripts.ci.quality_fragmentation_usage import imported_by_count, is_single_use_small_file
+from scripts.utils.safe_subprocess import safe_run
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CODE_EXTENSIONS = {".py", ".ts", ".tsx", ".js", ".jsx"}
@@ -60,8 +74,7 @@ def _to_int(value: object, default: int) -> int:
 def run_cmd(command: list[str], *, check: bool = True) -> str:
     if command and command[0] == "git":
         command = [_git_executable(), *command[1:]]
-    # nosec B603: command is controlled by this module's fixed call sites.
-    result = subprocess.run(command, capture_output=True, text=True, check=False, cwd=REPO_ROOT)
+    result = safe_run(command, capture_output=True, text=True, check=False, cwd=REPO_ROOT)
     if check and result.returncode != 0:
         raise RuntimeError(f"Command failed: {' '.join(command)}\n{result.stdout}\n{result.stderr}")
     return result.stdout
@@ -70,8 +83,7 @@ def run_cmd(command: list[str], *, check: bool = True) -> str:
 def git_show_file(rev: str, path: str) -> str | None:
     if not is_safe_git_ref(rev):
         return None
-    result = subprocess.run(
-        # nosec B603: git executable is resolved and ref is validated before use.
+    result = safe_run(
         [_git_executable(), "show", f"{rev}:{path}"],
         capture_output=True,
         text=True,
@@ -82,7 +94,9 @@ def git_show_file(rev: str, path: str) -> str | None:
 
 
 def _git_executable() -> str:
-    return shutil.which("git") or "git"
+    # Use command name with safe_run so PATH resolution is handled by the OS.
+    # Absolute paths outside repo root are intentionally rejected by safe_subprocess validation.
+    return "git"
 
 
 def is_code_file(path: str) -> bool:
@@ -149,28 +163,7 @@ def _parse_lizard_output(output: str) -> list[LizardFunctionRow]:
     if not output.strip():
         return []
     parsed_obj = cast(object, json.loads(output))
-    entries: list[object]
-    if isinstance(parsed_obj, list):
-        entries = cast(list[object], parsed_obj)
-    elif isinstance(parsed_obj, dict):
-        parsed_map = cast(dict[str, object], parsed_obj)
-        raw_files = parsed_map.get("files", [])
-        entries = cast(list[object], raw_files) if isinstance(raw_files, list) else []
-    else:
-        entries = []
-    rows: list[LizardFunctionRow] = []
-    for entry_obj in entries:
-        if not isinstance(entry_obj, dict):
-            continue
-        entry_map = cast(dict[str, object], entry_obj)
-        function_list_obj = entry_map.get("function_list", [])
-        if not isinstance(function_list_obj, list):
-            continue
-        for fn_obj in cast(list[object], function_list_obj):
-            if not isinstance(fn_obj, dict):
-                continue
-            rows.append(_map_function_node_to_row(cast(dict[str, object], fn_obj)))
-    return rows
+    return [_map_function_node_to_row(fn_map) for fn_map in _iter_lizard_function_maps(parsed_obj)]
 
 
 def _map_function_node_to_row(fn_map: dict[str, object]) -> LizardFunctionRow:
@@ -181,6 +174,31 @@ def _map_function_node_to_row(fn_map: dict[str, object]) -> LizardFunctionRow:
         "params": _to_int(fn_map.get("parameter_count"), 0),
         "start_line": _to_int(fn_map.get("start_line"), 0),
     }
+
+
+def _iter_lizard_function_maps(parsed_obj: object) -> list[dict[str, object]]:
+    entries = _lizard_entries(parsed_obj)
+    function_maps: list[dict[str, object]] = []
+    for entry_obj in entries:
+        if not isinstance(entry_obj, dict):
+            continue
+        function_list_obj = cast(dict[str, object], entry_obj).get("function_list", [])
+        if not isinstance(function_list_obj, list):
+            continue
+        for fn_obj in cast(list[object], function_list_obj):
+            if isinstance(fn_obj, dict):
+                function_maps.append(cast(dict[str, object], fn_obj))
+    return function_maps
+
+
+def _lizard_entries(parsed_obj: object) -> list[object]:
+    if isinstance(parsed_obj, list):
+        return cast(list[object], parsed_obj)
+    if isinstance(parsed_obj, dict):
+        raw_files = cast(dict[str, object], parsed_obj).get("files", [])
+        if isinstance(raw_files, list):
+            return cast(list[object], raw_files)
+    return []
 
 
 def run_lizard_on_content(path: str, content: str) -> list[LizardFunctionRow]:
@@ -305,10 +323,12 @@ def check_fragmentation_trends(
 ) -> tuple[list[str], list[str], Mapping[str, object]]:
     failures: list[str] = []
     warnings: list[str] = []
-    files_added, files_added_pct = _added_file_stats(ctx)
-    avg_base_fn, avg_head_fn, avg_file_nloc = _trend_averages(base_lengths, head_lengths, file_nlocs)
-    _append_fragmentation_failures(failures, files_added_pct, avg_base_fn, avg_head_fn)
-    _append_fragmentation_warnings(warnings, files_added, avg_base_fn, avg_head_fn, avg_file_nloc)
+    base_files = run_cmd(["git", "ls-tree", "-r", "--name-only", ctx.base]).splitlines()
+    statuses = [changed.status for changed in ctx.changed_code]
+    files_added, files_added_pct = added_file_stats(statuses, base_files, is_code_file)
+    avg_base_fn, avg_head_fn, avg_file_nloc = trend_averages(base_lengths, head_lengths, file_nlocs)
+    append_fragmentation_failures(failures, files_added_pct, avg_base_fn, avg_head_fn)
+    append_fragmentation_warnings(warnings, files_added, avg_base_fn, avg_head_fn, avg_file_nloc, NLOC_MAX)
 
     metrics = {
         "files_added": files_added,
@@ -318,48 +338,6 @@ def check_fragmentation_trends(
         "avg_file_length": round(avg_file_nloc, 2),
     }
     return failures, warnings, metrics
-
-
-def _added_file_stats(ctx: GuardContext) -> tuple[int, float]:
-    base_files = run_cmd(["git", "ls-tree", "-r", "--name-only", ctx.base]).splitlines()
-    base_code_count = sum(1 for path in base_files if is_code_file(path))
-    files_added = sum(1 for changed in ctx.changed_code if changed.status == "A")
-    files_added_pct = (files_added / base_code_count * 100.0) if base_code_count else 0.0
-    return files_added, files_added_pct
-
-
-def _trend_averages(
-    base_lengths: list[float], head_lengths: list[float], file_nlocs: list[int]
-) -> tuple[float, float, float]:
-    return avg(base_lengths), avg(head_lengths), avg([float(value) for value in file_nlocs])
-
-
-def _append_fragmentation_failures(
-    failures: list[str], files_added_pct: float, avg_base_fn: float, avg_head_fn: float
-) -> None:
-    if files_added_pct <= 20.0:
-        return
-    if avg_head_fn >= avg_base_fn:
-        return
-    message = (
-        f"Over-fragmentation signal: files_added_pct={files_added_pct:.2f}% and "
-        f"avg_function_length decreased ({avg_base_fn:.2f} -> {avg_head_fn:.2f})."
-    )
-    failures.append(message)
-
-
-def _append_fragmentation_warnings(
-    warnings: list[str], files_added: int, avg_base_fn: float, avg_head_fn: float, avg_file_nloc: float
-) -> None:
-    if files_added <= 0:
-        return
-    if avg_base_fn <= 0:
-        return
-    if avg_head_fn >= avg_base_fn:
-        return
-    if avg_file_nloc >= NLOC_MAX:
-        return
-    warnings.append("Fragmentation smell: files added while function and file lengths trended down.")
 
 
 def collect_repo_texts(extension: str) -> tuple[list[tuple[str, str]], int]:
@@ -381,20 +359,15 @@ def check_ai_guardrails(
     ctx: GuardContext, *, fast_mode: bool = False
 ) -> tuple[list[str], list[str], Mapping[str, object]]:
     failures: list[str] = []
-    warnings: list[str] = []
-    python_texts, py_read_errors = collect_repo_texts(".py") if not fast_mode else ([], 0)
-    code_texts, code_read_errors = _collect_code_texts() if not fast_mode else ([], 0)
-    total_read_errors = py_read_errors + code_read_errors
-    if total_read_errors:
-        warnings.append(f"Repository scan skipped unreadable files: count={total_read_errors}.")
+    warnings, python_texts, code_texts = _guardrail_scan_inputs(fast_mode)
     module_exports, new_lengths, tiny_single_use, single_use_small = _scan_changed_files(
         ctx.changed_code, python_texts, code_texts, failures, fast_mode=fast_mode
     )
     new_files_count = sum(1 for changed in ctx.changed_code if changed.status == "A")
     avg_new_file = avg(new_lengths)
-    _check_rule_b(failures, new_files_count, avg_new_file)
-    depth = compute_python_cross_file_depth([c.path for c in ctx.changed_code if c.path.endswith(".py")])
-    _check_rule_c(warnings, depth)
+    append_rule_b_failure(failures, new_files_count, avg_new_file)
+    depth = compute_python_cross_file_depth(REPO_ROOT, [c.path for c in ctx.changed_code if c.path.endswith(".py")])
+    append_rule_c_warning(warnings, depth)
     if fast_mode:
         warnings.append("Fast mode: skipped whole-repo single-use analysis for Rule A and Rule E.")
 
@@ -407,6 +380,18 @@ def check_ai_guardrails(
         "module_public_exports": module_exports,
     }
     return failures, warnings, metrics
+
+
+def _guardrail_scan_inputs(fast_mode: bool) -> tuple[list[str], list[tuple[str, str]], list[tuple[str, str]]]:
+    warnings: list[str] = []
+    if fast_mode:
+        return warnings, [], []
+    python_texts, py_read_errors = collect_repo_texts(".py")
+    code_texts, code_read_errors = _collect_code_texts()
+    total_read_errors = py_read_errors + code_read_errors
+    if total_read_errors:
+        warnings.append(f"Repository scan skipped unreadable files: count={total_read_errors}.")
+    return warnings, python_texts, code_texts
 
 
 def _scan_changed_files(
@@ -445,16 +430,6 @@ def _scan_changed_files(
     return module_exports, new_lengths, tiny_single_use, single_use_small
 
 
-def _check_rule_b(failures: list[str], new_files_count: int, avg_new_file: float) -> None:
-    if new_files_count > 10 and avg_new_file < 50:
-        failures.append(f"Rule B violation: new_files={new_files_count}, avg_new_file_length={avg_new_file:.2f} (<50).")
-
-
-def _check_rule_c(warnings: list[str], depth: int) -> None:
-    if depth > 5:
-        warnings.append(f"Rule C warning: estimated cross-file call depth is {depth} (>5).")
-
-
 def _collect_code_texts() -> tuple[list[tuple[str, str]], int]:
     items: list[tuple[str, str]] = []
     read_errors = 0
@@ -473,13 +448,7 @@ def _check_single_use_file(path: str, text: str, code_texts: list[tuple[str, str
 
 
 def _is_single_use_small_file(path: str, text: str, code_texts: list[tuple[str, str]]) -> bool:
-    return imported_by_count(path, code_texts) <= 1 and nloc_for_text(path, text) < 100
-
-
-def imported_by_count(target_path: str, code_texts: list[tuple[str, str]]) -> int:
-    stem = Path(target_path).stem
-    pattern = re.compile(rf"\b{re.escape(stem)}\b")
-    return sum(1 for source_path, text in code_texts if source_path != target_path and pattern.search(text))
+    return is_single_use_small_file(path, nloc_for_text(path, text), code_texts)
 
 
 def _check_exports_and_tiny_functions(
@@ -580,66 +549,6 @@ def _is_tiny_single_use(node: ast.AST, lines: list[str], python_texts: list[tupl
     return usage <= 2
 
 
-def compute_python_cross_file_depth(changed_python_files: list[str]) -> int:
-    definitions, calls = collect_python_defs_and_calls(changed_python_files)
-    graph = build_call_graph(definitions, calls)
-    return max_path_length(graph)
-
-
-def collect_python_defs_and_calls(changed_python_files: list[str]) -> tuple[dict[str, str], dict[str, set[str]]]:
-    definitions: dict[str, str] = {}
-    calls_by_file: dict[str, set[str]] = {}
-    for rel_path in changed_python_files:
-        abs_path = REPO_ROOT / rel_path
-        if not abs_path.exists():
-            continue
-        try:
-            tree = ast.parse(abs_path.read_text(encoding="utf-8"))
-        except (OSError, UnicodeDecodeError, ValueError, SyntaxError):
-            continue
-        definitions.update(dict.fromkeys(_top_level_definitions(tree), rel_path))
-        calls_by_file[rel_path] = _named_calls(tree)
-    return definitions, calls_by_file
-
-
-def _top_level_definitions(tree: ast.Module) -> list[str]:
-    names: list[str] = []
-    for node in tree.body:
-        if isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef):
-            names.append(node.name)
-    return names
-
-
-def _named_calls(tree: ast.Module) -> set[str]:
-    calls: set[str] = set()
-    for node in ast.walk(tree):
-        if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
-            calls.add(node.func.id)
-    return calls
-
-
-def build_call_graph(definitions: dict[str, str], calls_by_file: dict[str, set[str]]) -> dict[str, set[str]]:
-    graph: dict[str, set[str]] = {path: set() for path in calls_by_file}
-    for source, calls in calls_by_file.items():
-        for call_name in calls:
-            target = definitions.get(call_name)
-            if target and target != source:
-                graph[source].add(target)
-    return graph
-
-
-def max_path_length(graph: dict[str, set[str]]) -> int:
-    def dfs(node: str, visiting: set[str]) -> int:
-        if node in visiting:
-            return 0
-        visiting.add(node)
-        child_lengths = [dfs(child, visiting) for child in graph.get(node, set())]
-        visiting.remove(node)
-        return 1 + (max(child_lengths) if child_lengths else 0)
-
-    return max((dfs(start, set()) for start in graph), default=0)
-
-
 def emit_results(summary: dict[str, object], failures: list[str], warnings: list[str]) -> int:
     # Avoid logging full summary payloads to keep potentially sensitive paths/details out of plaintext logs.
     print(f"Quality guard summary: hard_fail_reasons={len(failures)}, warnings={len(warnings)}, metrics={len(summary)}")
@@ -679,8 +588,7 @@ def _file_nloc_failures(ctx: GuardContext, file_nlocs: list[int]) -> list[str]:
             continue
         if _has_file_nloc_override(changed.path):
             continue
-        if nloc > FILE_NLOC_MAX:
-            failures.append(f"{changed.path} exceeds file NLOC threshold ({nloc} > {FILE_NLOC_MAX}).")
+        failures.append(f"{changed.path} exceeds file NLOC threshold ({nloc} > {FILE_NLOC_MAX}).")
     return failures
 
 
