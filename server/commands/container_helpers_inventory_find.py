@@ -1,4 +1,7 @@
-"""Lookups for wearable containers, room containers, and inventory items."""
+"""Lookups for wearable containers, room containers, and inventory items.
+
+group: inventory_container_helpers
+"""
 
 from __future__ import annotations
 

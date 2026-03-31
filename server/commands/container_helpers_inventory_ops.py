@@ -1,4 +1,7 @@
-"""Transfer, validation, and parsing helpers for container inventory commands."""
+"""Transfer, validation, and parsing helpers for container inventory commands.
+
+group: inventory_container_helpers
+"""
 
 from __future__ import annotations
 

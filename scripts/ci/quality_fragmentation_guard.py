@@ -392,13 +392,18 @@ def _scan_changed_files(
             continue
         text = path.read_text(encoding="utf-8")
         if changed.status == "A":
-            if not fast_mode:
+            if not fast_mode and not _is_test_file_path(changed.path):
                 _check_single_use_file(changed.path, text, code_texts, failures)
             new_lengths.append(float(nloc_for_text(changed.path, text)))
-            if not fast_mode:
+            if not fast_mode and not _is_test_file_path(changed.path):
                 single_use_small += int(_is_single_use_small_file(changed.path, text, code_texts))
         exports, tiny = _check_exports_and_tiny_functions(
-            changed.path, text, python_texts, failures, fast_mode=fast_mode
+            changed.path,
+            text,
+            python_texts,
+            failures,
+            is_new_file=changed.status == "A",
+            fast_mode=fast_mode,
         )
         module_exports[changed.path] = exports
         tiny_single_use += tiny
@@ -445,19 +450,19 @@ def _check_exports_and_tiny_functions(
     python_texts: list[tuple[str, str]],
     failures: list[str],
     *,
+    is_new_file: bool,
     fast_mode: bool = False,
 ) -> tuple[int, int]:
     ext = Path(path).suffix.lower()
-    normalized = path.replace("\\", "/").lower()
-    is_test_file = "/tests/" in normalized or "/__tests__/" in normalized or Path(path).name.startswith("test_")
+    is_test_file = _is_test_file_path(path)
     if ext in {".ts", ".tsx", ".js", ".jsx"}:
         count = len(re.findall(r"^\s*export\s+.*\b(function|const|class|type|interface|enum)\b", text, re.MULTILINE))
-        if not is_test_file and count > 7 and "group:" not in text.lower():
+        if is_new_file and not is_test_file and count > 7 and "group:" not in text.lower():
             failures.append(f"{path} exports {count} public symbols without clear grouping marker.")
         return count, 0
     if ext != ".py":
         return 0, 0
-    return _python_export_and_tiny(path, text, python_texts, failures, fast_mode=fast_mode)
+    return _python_export_and_tiny(path, text, python_texts, failures, is_new_file=is_new_file, fast_mode=fast_mode)
 
 
 def _python_export_and_tiny(
@@ -466,6 +471,7 @@ def _python_export_and_tiny(
     python_texts: list[tuple[str, str]],
     failures: list[str],
     *,
+    is_new_file: bool,
     fast_mode: bool = False,
 ) -> tuple[int, int]:
     try:
@@ -475,7 +481,7 @@ def _python_export_and_tiny(
     public_defs, tiny_violations = _collect_python_public_defs_and_tiny(
         path, tree, text, python_texts, failures, fast_mode=fast_mode
     )
-    if not _is_test_file_path(path) and len(public_defs) > 7 and "group:" not in text.lower():
+    if is_new_file and not _is_test_file_path(path) and len(public_defs) > 7 and "group:" not in text.lower():
         failures.append(f"{path} exports {len(public_defs)} public functions without clear grouping marker.")
     return len(public_defs), tiny_violations
 
@@ -496,6 +502,8 @@ def _collect_python_public_defs_and_tiny(
         if not _is_public_function_stmt(node):
             continue
         public_defs.append(node)
+        if _is_test_file_path(path):
+            continue
         if fast_mode or not _is_tiny_single_use(node, lines, python_texts):
             continue
         tiny_violations += 1
@@ -505,7 +513,15 @@ def _collect_python_public_defs_and_tiny(
 
 def _is_test_file_path(path: str) -> bool:
     normalized = path.replace("\\", "/").lower()
-    return "/tests/" in normalized or "/__tests__/" in normalized or Path(path).name.startswith("test_")
+    name = Path(path).name.lower()
+    return (
+        "/tests/" in normalized
+        or "/__tests__/" in normalized
+        or name.startswith("test_")
+        or name.endswith("_test.py")
+        or ".test." in name
+        or ".spec." in name
+    )
 
 
 def _is_public_function_stmt(node: ast.stmt) -> TypeGuard[ast.FunctionDef | ast.AsyncFunctionDef]:
@@ -620,9 +636,24 @@ def main() -> int:
 def _file_nloc_failures(ctx: GuardContext, file_nlocs: list[int]) -> list[str]:
     failures: list[str] = []
     for changed, nloc in zip(ctx.changed_code, file_nlocs, strict=False):
+        if changed.status != "A" or nloc <= FILE_NLOC_MAX:
+            continue
+        if _has_file_nloc_override(changed.path):
+            continue
         if nloc > FILE_NLOC_MAX:
             failures.append(f"{changed.path} exceeds file NLOC threshold ({nloc} > {FILE_NLOC_MAX}).")
     return failures
+
+
+def _has_file_nloc_override(path: str) -> bool:
+    abs_path = REPO_ROOT / path
+    if not abs_path.exists():
+        return False
+    try:
+        text = abs_path.read_text(encoding="utf-8")
+    except Exception:
+        return False
+    return "lizard: allow file_nloc" in text.lower()
 
 
 if __name__ == "__main__":

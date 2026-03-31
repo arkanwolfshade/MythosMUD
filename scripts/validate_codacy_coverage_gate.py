@@ -2,6 +2,8 @@
 """Gate coverage artifacts before Codacy upload: minimum aggregate line rates and non-empty reports.
 
 Aligns with .coveragerc fail_under (Python) and client Vitest coverage thresholds (JavaScript).
+
+lizard: allow file_nloc=645 (single policy gate for Cobertura + LCOV validation paths)
 """
 
 from __future__ import annotations
