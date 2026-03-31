@@ -281,14 +281,30 @@ def test_assess_risks_maps_breaking_change_counts_to_overall_risk(analyzer_api: 
     analyzer = analyzer_api.dependency_analyzer_cls(PROJECT_ROOT)
 
     low = analyzer._assess_risks(  # pyright: ignore[reportPrivateUsage] -- script API
-        {"patch-lib": {"current": "1.0.0", "latest": "1.0.1", "ecosystem": "npm", "update_type": "patch", "risk_level": "LOW"}},
+        {
+            "patch-lib": {
+                "current": "1.0.0",
+                "latest": "1.0.1",
+                "ecosystem": "npm",
+                "update_type": "patch",
+                "risk_level": "LOW",
+            }
+        },
         {},
     )
     assert low["overall_risk"] == "LOW"
     assert low["breaking_changes"] == []
 
     medium = analyzer._assess_risks(  # pyright: ignore[reportPrivateUsage] -- script API
-        {"major-lib": {"current": "1.0.0", "latest": "2.0.0", "ecosystem": "npm", "update_type": "major", "risk_level": "HIGH"}},
+        {
+            "major-lib": {
+                "current": "1.0.0",
+                "latest": "2.0.0",
+                "ecosystem": "npm",
+                "update_type": "major",
+                "risk_level": "HIGH",
+            }
+        },
         {},
     )
     assert medium["overall_risk"] == "MEDIUM"

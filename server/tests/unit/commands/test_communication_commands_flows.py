@@ -311,6 +311,28 @@ async def test_flow_whisper_command_exception_returns_generic_message() -> None:
 
 
 @pytest.mark.asyncio
+async def test_flow_whisper_command_success_sends_private_message() -> None:
+    """Flow-level test for whisper success path."""
+    sender_id = uuid.uuid4()
+    target_id = uuid.uuid4()
+    sender_obj = SimpleNamespace(player_id=sender_id)
+    target_obj = SimpleNamespace(player_id=target_id)
+    player_service = MagicMock()
+    player_service.resolve_player_name = AsyncMock(side_effect=[sender_obj, target_obj])
+    chat_service = MagicMock()
+    send_whisper_message: AsyncMock = AsyncMock(return_value={"success": True, "message": {"id": "wm1"}})
+    chat_service.send_whisper_message = send_whisper_message
+
+    container = SimpleNamespace(player_service=player_service, chat_service=chat_service, user_manager=None)
+    request = SimpleNamespace(app=SimpleNamespace(state=SimpleNamespace(container=container)))
+
+    out = await flow_whisper_command({"target": "bob", "message": "psst"}, request, "alice")
+
+    assert out == {"result": "You whisper to bob: psst"}
+    send_whisper_message.assert_awaited_once_with(sender_id, target_id, "psst")
+
+
+@pytest.mark.asyncio
 async def test_flow_reply_command_success_uses_container_services() -> None:
     """Reply flow resolves player/chat services from request container and sends whisper."""
     sender_id = uuid.uuid4()

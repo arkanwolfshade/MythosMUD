@@ -21,6 +21,7 @@ CCN_MAX = 10
 NLOC_MAX = 55
 PARAMS_MAX = 6
 FILE_NLOC_MAX = 550
+GIT_REF_PATTERN = re.compile(r"^(?:[0-9a-fA-F]{7,40}|[A-Za-z0-9][A-Za-z0-9._/-]{0,199})$")
 
 
 @dataclass
@@ -101,7 +102,20 @@ def parse_args() -> tuple[str, str, list[str], bool]:
     raw_files = cast(list[str] | None, getattr(parsed, "files", None))
     files = [path.strip() for path in (raw_files or []) if path.strip()]
     fast = bool(cast(bool, getattr(parsed, "fast", False)))
-    return base.strip(), head.strip(), files, fast
+    base_ref = base.strip()
+    head_ref = head.strip()
+    if base_ref and not is_safe_git_ref(base_ref):
+        parser.error("Invalid --base git ref format.")
+    if head_ref and not is_safe_git_ref(head_ref):
+        parser.error("Invalid --head git ref format.")
+    return base_ref, head_ref, files, fast
+
+
+def is_safe_git_ref(value: str) -> bool:
+    """Return True when git ref/sha format is safe for subprocess git usage."""
+    if not GIT_REF_PATTERN.fullmatch(value):
+        return False
+    return ".." not in value
 
 
 def build_context(base: str, head: str, files: list[str] | None = None) -> GuardContext:
@@ -140,17 +154,18 @@ def _parse_lizard_output(output: str) -> list[LizardFunctionRow]:
         for fn_obj in cast(list[object], function_list_obj):
             if not isinstance(fn_obj, dict):
                 continue
-            fn_map = cast(dict[str, object], fn_obj)
-            rows.append(
-                {
-                    "name": _to_str(fn_map.get("name"), "<unknown>"),
-                    "nloc": _to_int(fn_map.get("nloc"), 0),
-                    "ccn": _to_int(fn_map.get("cyclomatic_complexity"), 0),
-                    "params": _to_int(fn_map.get("parameter_count"), 0),
-                    "start_line": _to_int(fn_map.get("start_line"), 0),
-                }
-            )
+            rows.append(_map_function_node_to_row(cast(dict[str, object], fn_obj)))
     return rows
+
+
+def _map_function_node_to_row(fn_map: dict[str, object]) -> LizardFunctionRow:
+    return {
+        "name": _to_str(fn_map.get("name"), "<unknown>"),
+        "nloc": _to_int(fn_map.get("nloc"), 0),
+        "ccn": _to_int(fn_map.get("cyclomatic_complexity"), 0),
+        "params": _to_int(fn_map.get("parameter_count"), 0),
+        "start_line": _to_int(fn_map.get("start_line"), 0),
+    }
 
 
 def run_lizard_on_content(path: str, content: str) -> list[LizardFunctionRow]:
@@ -332,8 +347,9 @@ def _append_fragmentation_warnings(
     warnings.append("Fragmentation smell: files added while function and file lengths trended down.")
 
 
-def collect_repo_texts(extension: str) -> list[tuple[str, str]]:
+def collect_repo_texts(extension: str) -> tuple[list[tuple[str, str]], int]:
     texts: list[tuple[str, str]] = []
+    read_errors = 0
     for file_path in REPO_ROOT.rglob(f"*{extension}"):
         if ".git" in file_path.parts or "node_modules" in file_path.parts:
             continue
@@ -341,8 +357,9 @@ def collect_repo_texts(extension: str) -> list[tuple[str, str]]:
             rel = str(file_path.relative_to(REPO_ROOT))
             texts.append((rel, file_path.read_text(encoding="utf-8")))
         except Exception:
+            read_errors += 1
             continue
-    return texts
+    return texts, read_errors
 
 
 def check_ai_guardrails(
@@ -350,8 +367,11 @@ def check_ai_guardrails(
 ) -> tuple[list[str], list[str], Mapping[str, object]]:
     failures: list[str] = []
     warnings: list[str] = []
-    python_texts = collect_repo_texts(".py") if not fast_mode else []
-    code_texts = _collect_code_texts() if not fast_mode else []
+    python_texts, py_read_errors = collect_repo_texts(".py") if not fast_mode else ([], 0)
+    code_texts, code_read_errors = _collect_code_texts() if not fast_mode else ([], 0)
+    total_read_errors = py_read_errors + code_read_errors
+    if total_read_errors:
+        warnings.append(f"Repository scan skipped unreadable files: count={total_read_errors}.")
     module_exports, new_lengths, tiny_single_use, single_use_small = _scan_changed_files(
         ctx.changed_code, python_texts, code_texts, failures, fast_mode=fast_mode
     )
@@ -420,11 +440,14 @@ def _check_rule_c(warnings: list[str], depth: int) -> None:
         warnings.append(f"Rule C warning: estimated cross-file call depth is {depth} (>5).")
 
 
-def _collect_code_texts() -> list[tuple[str, str]]:
+def _collect_code_texts() -> tuple[list[tuple[str, str]], int]:
     items: list[tuple[str, str]] = []
+    read_errors = 0
     for extension in CODE_EXTENSIONS:
-        items.extend(collect_repo_texts(extension))
-    return items
+        ext_items, ext_read_errors = collect_repo_texts(extension)
+        items.extend(ext_items)
+        read_errors += ext_read_errors
+    return items, read_errors
 
 
 def _check_single_use_file(path: str, text: str, code_texts: list[tuple[str, str]], failures: list[str]) -> None:
@@ -529,7 +552,9 @@ def _is_public_function_stmt(node: ast.stmt) -> TypeGuard[ast.FunctionDef | ast.
 
 
 def _is_tiny_single_use(node: ast.AST, lines: list[str], python_texts: list[tuple[str, str]]) -> bool:
-    assert isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+    if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+        msg = "node must be ast.FunctionDef or ast.AsyncFunctionDef"
+        raise TypeError(msg)
     nloc = max(1, (node.end_lineno or node.lineno) - node.lineno + 1)
     if nloc >= 5:
         return False

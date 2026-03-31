@@ -1,3 +1,4 @@
+# pyright: reportPrivateUsage=false
 """Regression tests for scripts/ci/quality_fragmentation_guard.py."""
 
 from __future__ import annotations
@@ -20,6 +21,10 @@ class _ChangedFile(Protocol):
 class _QualityGuardModule(Protocol):
     REPO_ROOT: Path
     ChangedFile: object
+    collect_repo_texts: object
+    _scan_changed_files: object
+    is_safe_git_ref: object
+    _parse_lizard_output: object
 
 
 def _load_guard_module() -> _QualityGuardModule:
@@ -49,7 +54,7 @@ def test_scan_changed_files_skips_single_use_for_test_file(tmp_path: Path) -> No
         guard._scan_changed_files,
     )
 
-    scan_changed_files(changed, [], [], failures)
+    _ = scan_changed_files(changed, [], [], failures)
 
     assert failures == []
 
@@ -71,6 +76,49 @@ def test_scan_changed_files_flags_single_use_for_non_test_file(tmp_path: Path) -
         guard._scan_changed_files,
     )
 
-    scan_changed_files(changed, [], [], failures)
+    _ = scan_changed_files(changed, [], [], failures)
 
     assert any("single-use and small" in failure for failure in failures)
+
+
+def test_is_safe_git_ref_accepts_sha_and_branch_like_ref() -> None:
+    guard = _load_guard_module()
+    is_safe_git_ref = cast(Callable[[str], bool], guard.is_safe_git_ref)
+
+    assert is_safe_git_ref("4b923c4ea016bddb7da5f97d4236ed1b2241e982")
+    assert is_safe_git_ref("chore/codacy")
+
+
+def test_is_safe_git_ref_rejects_suspicious_values() -> None:
+    guard = _load_guard_module()
+    is_safe_git_ref = cast(Callable[[str], bool], guard.is_safe_git_ref)
+
+    assert not is_safe_git_ref("main..HEAD")
+    assert not is_safe_git_ref("$(whoami)")
+
+
+def test_collect_repo_texts_reports_unreadable_files(tmp_path: Path) -> None:
+    guard = _load_guard_module()
+    good = tmp_path / "ok.py"
+    _ = good.write_text("x = 1\n", encoding="utf-8")
+    bad = tmp_path / "bad.py"
+    _ = bad.write_bytes(b"\xff")
+    guard.REPO_ROOT = tmp_path
+
+    collect_repo_texts = cast(Callable[[str], tuple[list[tuple[str, str]], int]], guard.collect_repo_texts)
+    texts, read_errors = collect_repo_texts(".py")
+
+    assert any(path == "ok.py" for path, _text in texts)
+    assert read_errors == 1
+
+
+def test_parse_lizard_output_maps_function_nodes() -> None:
+    guard = _load_guard_module()
+    parse_lizard_output = cast(Callable[[str], list[dict[str, object]]], guard._parse_lizard_output)
+    payload = (
+        '[{"function_list":[{"name":"fn_a","nloc":12,"cyclomatic_complexity":3,"parameter_count":2,"start_line":9}]}]'
+    )
+
+    rows = parse_lizard_output(payload)
+
+    assert rows == [{"name": "fn_a", "nloc": 12, "ccn": 3, "params": 2, "start_line": 9}]
