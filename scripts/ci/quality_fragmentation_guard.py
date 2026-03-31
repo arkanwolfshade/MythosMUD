@@ -7,6 +7,7 @@ import argparse
 import ast
 import json
 import re
+import shutil
 import subprocess
 import tempfile
 from collections.abc import Mapping
@@ -57,6 +58,8 @@ def _to_int(value: object, default: int) -> int:
 
 
 def run_cmd(command: list[str], *, check: bool = True) -> str:
+    if command and command[0] == "git":
+        command = [_git_executable(), *command[1:]]
     result = subprocess.run(command, capture_output=True, text=True, check=False, cwd=REPO_ROOT)
     if check and result.returncode != 0:
         raise RuntimeError(f"Command failed: {' '.join(command)}\n{result.stdout}\n{result.stderr}")
@@ -65,9 +68,13 @@ def run_cmd(command: list[str], *, check: bool = True) -> str:
 
 def git_show_file(rev: str, path: str) -> str | None:
     result = subprocess.run(
-        ["git", "show", f"{rev}:{path}"], capture_output=True, text=True, check=False, cwd=REPO_ROOT
+        [_git_executable(), "show", f"{rev}:{path}"], capture_output=True, text=True, check=False, cwd=REPO_ROOT
     )
     return result.stdout if result.returncode == 0 else None
+
+
+def _git_executable() -> str:
+    return shutil.which("git") or "git"
 
 
 def is_code_file(path: str) -> bool:
@@ -356,7 +363,7 @@ def collect_repo_texts(extension: str) -> tuple[list[tuple[str, str]], int]:
         try:
             rel = str(file_path.relative_to(REPO_ROOT))
             texts.append((rel, file_path.read_text(encoding="utf-8")))
-        except Exception:
+        except (OSError, UnicodeDecodeError, ValueError):
             read_errors += 1
             continue
     return texts, read_errors
@@ -552,9 +559,8 @@ def _is_public_function_stmt(node: ast.stmt) -> TypeGuard[ast.FunctionDef | ast.
 
 
 def _is_tiny_single_use(node: ast.AST, lines: list[str], python_texts: list[tuple[str, str]]) -> bool:
-    if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-        msg = "node must be ast.FunctionDef or ast.AsyncFunctionDef"
-        raise TypeError(msg)
+    if not isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef):
+        raise TypeError(f"Expected FunctionDef or AsyncFunctionDef, got {type(node).__name__}")
     nloc = max(1, (node.end_lineno or node.lineno) - node.lineno + 1)
     if nloc >= 5:
         return False

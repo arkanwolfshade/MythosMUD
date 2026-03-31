@@ -1,4 +1,5 @@
 """Unit tests for container_helpers_inventory_ops (extract, parse, validate, find in container)."""
+# pyright: reportPrivateUsage=false
 
 from __future__ import annotations
 
@@ -51,19 +52,21 @@ def test_coerce_transfer_quantity_unknown_type_defaults() -> None:
 
 
 def test_int_transfer_qty_uses_explicit_quantity_over_item() -> None:
-    item = {"quantity": 99}
+    item: dict[str, object] = {"quantity": 99}
     assert _int_transfer_qty("5", item) == 5
     assert _int_transfer_qty(2, item) == 2
 
 
-def test_int_transfer_qty_falsy_quantity_falls_back_to_item() -> None:
-    """Empty string is falsy: use item quantity (untyped JSON often uses str)."""
-    assert _int_transfer_qty("", {"quantity": "3"}) == 3
+def test_int_transfer_qty_empty_string_uses_default_quantity() -> None:
+    """Empty string is explicit input and coerces to default quantity 1."""
+    item: dict[str, object] = {"quantity": "3"}
+    assert _int_transfer_qty("", item) == 1
 
 
-def test_int_transfer_qty_zero_quantity_falls_back_to_item() -> None:
-    """0 is falsy in `quantity if quantity`; coercer still maps to item line."""
-    assert _int_transfer_qty(0, {"quantity": 4}) == 4
+def test_int_transfer_qty_zero_quantity_keeps_explicit_zero() -> None:
+    """Explicit zero should not fall back to item stack quantity."""
+    item: dict[str, object] = {"quantity": 4}
+    assert _int_transfer_qty(0, item) == 0
 
 
 def test_extract_items_from_container_dict() -> None:
@@ -271,6 +274,23 @@ async def test_transfer_item_to_container_missing_item_identifiers() -> None:
 
 
 @pytest.mark.asyncio
+async def test_transfer_item_to_container_rejects_non_positive_quantity() -> None:
+    cid = uuid.uuid4()
+    player = _player_with_inventory(uuid.uuid4())
+    container_service = MagicMock()
+    container_service.get_container_token = MagicMock(return_value=object())
+    result = await transfer_item_to_container(
+        container_service,
+        MagicMock(),
+        player,
+        cid,
+        {"item_instance_id": uuid.uuid4(), "item_id": uuid.uuid4(), "quantity": 4},
+        0,
+    )
+    assert result == {"error": "Quantity must be a positive number."}
+
+
+@pytest.mark.asyncio
 async def test_transfer_item_to_container_open_container_when_no_token() -> None:
     cid = uuid.uuid4()
     pid = uuid.uuid4()
@@ -382,6 +402,23 @@ async def test_transfer_item_from_container_success_updates_inventory(
     set_inv: MagicMock = cast(MagicMock, player.set_inventory)
     set_inv.assert_called_once_with(new_rows)
     mock_persist.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_transfer_item_from_container_rejects_non_positive_quantity() -> None:
+    cid = uuid.uuid4()
+    player = _player_with_inventory(uuid.uuid4())
+    container_service = MagicMock()
+    container_service.get_container_token = MagicMock(return_value=object())
+    result = await transfer_item_from_container(
+        container_service,
+        MagicMock(),
+        player,
+        cid,
+        {"item_instance_id": uuid.uuid4(), "item_id": uuid.uuid4(), "quantity": 4},
+        0,
+    )
+    assert result == {"error": "Quantity must be a positive number."}
 
 
 @pytest.mark.asyncio

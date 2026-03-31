@@ -59,7 +59,7 @@ def _coerce_transfer_quantity(raw: object) -> int:
 
 
 def _int_transfer_qty(quantity: object | None, item_found: dict[str, object]) -> int:
-    raw: object = quantity if quantity else item_found.get("quantity", 1)
+    raw: object = item_found.get("quantity", 1) if quantity is None else quantity
     return _coerce_transfer_quantity(raw)
 
 
@@ -139,6 +139,8 @@ async def transfer_item_to_container(
             return {"error": "Error: Item is missing required identification fields."}
 
         tq_int = _int_transfer_qty(quantity, item_found)
+        if tq_int <= 0:
+            return {"error": "Quantity must be a positive number."}
         await _ensure_item_instance_for_put(persistence, player, item_found, tq_int)
 
         transfer_to = getattr(container_service, "transfer_to_container", None)
@@ -398,6 +400,8 @@ async def transfer_item_from_container(
 
     try:
         tq_int = _int_transfer_qty(quantity, item_found)
+        if tq_int <= 0:
+            return {"error": "Quantity must be a positive number."}
         transfer_from = getattr(container_service, "transfer_from_container", None)
         if not callable(transfer_from):
             return {"error": "Container transfer is unavailable."}
