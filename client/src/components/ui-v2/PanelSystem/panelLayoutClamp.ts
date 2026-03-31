@@ -97,7 +97,7 @@ function clampSinglePanel(
   const minY = 0;
 
   const maxWFit = maxRight - minX;
-  const maxHFit = maxBottom - minY;
+  const maxHFit = Math.max(0, maxBottom - minY);
 
   const dims = clampDimensionsToViewport(panel, maxWFit, maxHFit);
   const rect = clampTopLeftWithinBounds(
