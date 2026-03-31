@@ -75,13 +75,13 @@ jobs:
           echo "::notice::Will fetch ${suffix}@${sha}"
       - name: Clone private data into data/
         env:
-          SUBMODULE_PAT: ${{ secrets.MYTHOSMUD_PAT || secrets.PRIVATE_SUBMODULE_PAT }}
+          SUBMODULE_PAT: ${{ secrets.MYTHOSMUD_PAT }}
           GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
         run: |
           set -euo pipefail
           pat_trim=$(printf '%s' "${SUBMODULE_PAT}" | tr -d '\r\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
           if [ -z "${pat_trim}" ]; then
-            echo "::notice::No MYTHOSMUD_PAT / PRIVATE_SUBMODULE_PAT in this run (common for Dependabot pull_request workflows). Scorecard continues with a placeholder data/ directory; optional: add the same PAT under Dependabot secrets for a full mythosmud_data checkout."
+            echo "::notice::No MYTHOSMUD_PAT in this run (common for Dependabot pull_request workflows). Scorecard continues with a placeholder data/ directory; optional: add the same PAT under Dependabot secrets for a full mythosmud_data checkout."
             rm -rf data
             mkdir -p data
             printf '%s\n' \

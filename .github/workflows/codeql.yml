@@ -62,13 +62,13 @@ jobs:
           echo "::notice::Will fetch ${suffix}@${sha}"
       - name: Clone private data into data/
         env:
-          SUBMODULE_PAT: ${{ secrets.MYTHOSMUD_PAT || secrets.PRIVATE_SUBMODULE_PAT }}
+          SUBMODULE_PAT: ${{ secrets.MYTHOSMUD_PAT }}
           GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
         run: |
           set -euo pipefail
           pat_trim=$(printf '%s' "${SUBMODULE_PAT}" | tr -d '\r\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
           if [ -z "${pat_trim}" ]; then
-            echo "::error::MYTHOSMUD_PAT or PRIVATE_SUBMODULE_PAT is required (Contents: Read on mythosmud_data)."
+            echo "::error::MYTHOSMUD_PAT is required (Contents: Read on mythosmud_data)."
             exit 1
           fi
           case "${pat_trim}" in
