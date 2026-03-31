@@ -6,6 +6,8 @@ persistence requires careful handling to ensure proper storage and retrieval
 of investigator artifacts across environmental props, wearable gear, and corpses.
 """
 
+# pylint: disable=too-many-lines  # Reason: Single module for container CRUD; split would cross-cut helpers/tests.
+
 from __future__ import annotations
 
 import json
@@ -220,7 +222,6 @@ def _insert_container_row(
     cursor = conn.cursor(cursor_factory=RealDictCursor)
     cursor.execute(_INSERT_CONTAINER_SQL, bind)
     row = cursor.fetchone()
-    conn.commit()
     cursor.close()
     if not row:
         log_and_raise(
@@ -354,7 +355,6 @@ def _seed_new_container_items(conn: PsycopgConnection, container_id: UUID, items
             "SELECT add_item_to_container(%s, %s, %s)",
             (str(container_id), item_instance_id, position),
         )
-    conn.commit()
     cursor_items.close()
 
 
@@ -427,7 +427,12 @@ def create_container(
     source_type: str,
     params: ContainerCreateParams | None = None,
 ) -> ContainerData:
-    """Persist a new container row, optionally seed contents, return hydrated data or fallback."""
+    """Persist a new container row, optionally seed contents, return hydrated data or fallback.
+
+    Commits the connection once after insert, optional item seeding, and resolution succeed.
+    Insert/seed helpers avoid committing so the outer operation controls the transaction boundary;
+    delegated item-instance creation may still commit independently.
+    """
     p = params or ContainerCreateParams()
     _validate_new_container_params(source_type, p.capacity_slots, p.lock_state)
 
@@ -447,7 +452,9 @@ def create_container(
             current_time=datetime.now(UTC).replace(tzinfo=None),
         )
         cid, c_at, u_at = _insert_container_row(conn, _insert_bind_tuple(src), source_type)
-        return _after_container_insert(conn, src, cid, c_at, u_at, p.items_json)
+        created = _after_container_insert(conn, src, cid, c_at, u_at, p.items_json)
+        conn.commit()
+        return created
 
     except psycopg2.Error as e:
         conn.rollback()

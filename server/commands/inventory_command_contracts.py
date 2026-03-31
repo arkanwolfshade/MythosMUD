@@ -1,5 +1,8 @@
 """Shared types for inventory command handlers (Lizard: keep main module small)."""
 
+# pylint: disable=missing-function-docstring
+# RoomDropManager is a typing.Protocol; method bodies are stubs only.
+
 from __future__ import annotations
 
 from collections.abc import Mapping

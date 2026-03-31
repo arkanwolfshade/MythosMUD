@@ -232,3 +232,33 @@ async def test_chat_send_with_room_bundle_chat_failure() -> None:
         cfg,
     )
     assert out == {"result": "ERR nope"}
+
+
+@pytest.mark.asyncio
+async def test_chat_send_with_room_bundle_exception_returns_generic_message() -> None:
+    """Unexpected exceptions must not leak str(e) to the client (PR #461)."""
+    ps = MagicMock()
+    po = SimpleNamespace(current_room_id="r1", player_id=uuid.uuid4())
+    ps.resolve_player_name = AsyncMock(return_value=po)
+    cs = MagicMock()
+
+    async def send(_c: object, _pid: object, _m: str) -> object:
+        raise RuntimeError("internal connection reset by peer")
+
+    cfg = _RoomChannelOutcomeConfig(
+        success_fmt="OK: {0}",
+        success_log="ok",
+        fail_log="fail",
+        err_label="ERR ",
+    )
+    out = await _chat_send_with_room_bundle(
+        {"message": "x"},
+        "alice",
+        ps,
+        cs,
+        "hello",
+        send,
+        cfg,
+    )
+    assert out == {"result": "ERR Something went wrong. Please try again later."}
+    assert "internal connection" not in out["result"]

@@ -1,6 +1,6 @@
 """Unit tests for websocket_handler_commands (parse tokens, validate player, resolve CM)."""
 
-# pyright: reportAny=false, reportUnknownMemberType=false
+# pyright: reportAny=false, reportUnknownMemberType=false, reportPrivateUsage=false
 # WebSocket tests build nested MagicMock app/state graphs and inspect dynamic JSON dicts.
 
 from __future__ import annotations
@@ -12,6 +12,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from server.realtime.websocket_handler_commands import (
+    _resolve_get_room_state_callable,
     handle_game_command,
     parse_game_command_tokens,
     process_websocket_command,
@@ -35,9 +36,32 @@ def test_parse_game_command_tokens_explicit_args() -> None:
     assert parse_game_command_tokens("GET", ["1", "box"]) == ("get", ["1", "box"])
 
 
+def test_parse_game_command_tokens_single_word_no_args() -> None:
+    assert parse_game_command_tokens("  inventory  ", None) == ("inventory", [])
+
+
 def test_resolve_websocket_connection_manager_uses_passed() -> None:
     cm = MagicMock()
     assert resolve_websocket_connection_manager(cm) is cm
+
+
+def test_resolve_get_room_state_callable_requires_player_handler_with_method() -> None:
+    bare = MagicMock(spec=["event_handler"])
+    bare.event_handler = None
+    assert _resolve_get_room_state_callable(bare) is None
+
+    ph = MagicMock(spec=["get_room_state_event"])
+    ph.get_room_state_event = None
+    st = MagicMock()
+    st.event_handler = MagicMock(player_handler=ph)
+    assert _resolve_get_room_state_callable(st) is None
+
+    ph2 = MagicMock()
+    ph2.get_room_state_event = MagicMock(return_value=None)
+    st2 = MagicMock()
+    st2.event_handler = MagicMock(player_handler=ph2)
+    fn = _resolve_get_room_state_callable(st2)
+    assert callable(fn)
 
 
 def test_resolve_websocket_connection_manager_fallback_app_state() -> None:

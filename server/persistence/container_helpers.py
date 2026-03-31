@@ -14,23 +14,16 @@ from structlog.stdlib import BoundLogger
 from ..exceptions import DatabaseError, ValidationError
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import log_and_raise
+from ..utils.int_coercion import coerce_int
 
 logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
 
 
 def _coerce_row_quantity(value: object) -> int:
+    """Normalize quantity/position from DB row cells; bool -> 1 (not coerce_int(False)==0)."""
     if isinstance(value, bool):
         return 1
-    if isinstance(value, int):
-        return value
-    if isinstance(value, str):
-        try:
-            return int(value.strip())
-        except ValueError:
-            return 1
-    if isinstance(value, float):
-        return int(value)
-    return 1
+    return coerce_int(value, default=1)
 
 
 def parse_jsonb_column(value: object, default: object) -> object:

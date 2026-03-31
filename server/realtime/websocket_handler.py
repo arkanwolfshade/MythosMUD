@@ -47,12 +47,16 @@ if TYPE_CHECKING:
     from .message_validator import WebSocketMessageValidator
 
 
-class _PlayerDisconnectService(Protocol):
-    def on_player_disconnect(self, player_id: uuid.UUID) -> None: ...
+class _PlayerDisconnectService(Protocol):  # pylint: disable=too-few-public-methods
+    """Notify subsystems when a WebSocket session ends for a player."""
+
+    def on_player_disconnect(self, player_id: uuid.UUID) -> None: ...  # pylint: disable=missing-function-docstring
 
 
-class _AsyncPersistenceRoomLookup(Protocol):
-    def get_room_by_id(self, room_id: str) -> object | None: ...
+class _AsyncPersistenceRoomLookup(Protocol):  # pylint: disable=too-few-public-methods
+    """Narrow persistence surface for loading ``Room`` by id in the WS handler."""
+
+    def get_room_by_id(self, room_id: str) -> object | None: ...  # pylint: disable=missing-function-docstring
 
 
 # AI Agent: Don't import app at module level - causes circular import!

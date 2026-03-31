@@ -8,6 +8,7 @@ from ..services.wearable_container_service import WearableContainerService
 
 # Lazy-initialized shared services (initialized on first use).
 # Use mixed-case names so basedpyright does not treat assignments as constant redefinition.
+# pylint: disable=invalid-name  # Reason: Mutable module singletons, not true constants; UPPER_CASE misleads readers.
 _shared_inventory_service: InventoryService | None = None
 _shared_wearable_container_service: WearableContainerService | None = None
 _shared_equipment_service: EquipmentService | None = None

@@ -19,6 +19,7 @@ def prototype_registry_from_request(request: object) -> object | None:
 
 
 def prototype_from_registry(registry: object, prototype_id: str) -> object | None:
+    """Return the prototype object for ``prototype_id``, or None if missing or invalid."""
     get_proto = getattr(registry, "get", None)
     if not callable(get_proto):
         return None

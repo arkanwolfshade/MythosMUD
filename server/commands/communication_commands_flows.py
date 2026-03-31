@@ -28,6 +28,9 @@ logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
 CHAT_UNAVAILABLE: dict[str, str] = {"result": "Chat functionality is not available."}
 ADMIN_UNAVAILABLE: dict[str, str] = {"result": "Admin functionality is not available."}
 
+# Client-facing text when chat flows hit an unexpected exception; never echo str(e) (information leakage).
+_GENERIC_UNEXPECTED_CHAT_FAILURE = "Something went wrong. Please try again later."
+
 
 def _str_error_from_chat_result(result: Mapping[str, object]) -> str:
     error_raw = result.get("error", "Unknown error")
@@ -170,7 +173,7 @@ async def _chat_send_with_room_bundle(
             error_message=str(e),
             exc_info=True,
         )
-        return {"result": f"{cfg.err_label}{str(e)}"}
+        return {"result": f"{cfg.err_label}{_GENERIC_UNEXPECTED_CHAT_FAILURE}"}
 
 
 async def flow_say_command(
@@ -178,6 +181,7 @@ async def flow_say_command(
     request: object | None,
     player_name: str,
 ) -> dict[str, str]:
+    """Handle the `say` command: broadcast speech to the current room."""
     logger.debug("Processing say command", player_name=player_name, command_data=command_data)
     msg_or_err = _message_from_command(
         command_data,
@@ -211,6 +215,7 @@ async def flow_local_command(
     request: object | None,
     player_name: str,
 ) -> dict[str, str]:
+    """Handle the `local` command: room-only speech (not global)."""
     logger.debug("Processing local command", player_name=player_name, command_data=command_data)
     msg_or_err = _message_from_command(
         command_data,
@@ -244,6 +249,7 @@ async def flow_global_command(
     request: object | None,
     player_name: str,
 ) -> dict[str, str]:
+    """Handle the `global` command: server-wide chat when permitted."""
     logger.debug("Processing global command", player_name=player_name, command_data=command_data)
     msg_or_err = _message_from_command(
         command_data,
@@ -279,8 +285,14 @@ async def flow_global_command(
         logger.warning("Global command failed", player_name=player_name, error_msg=error_msg)
         return {"result": f"Error sending message: {error_msg}"}
     except (AttributeError, TypeError, ValueError, RuntimeError) as e:
-        logger.error("Global command error", player_name=player_name, error=str(e))
-        return {"result": f"Error sending message: {str(e)}"}
+        logger.error(
+            "Global command error",
+            player_name=player_name,
+            error_type=type(e).__name__,
+            error_message=str(e),
+            exc_info=True,
+        )
+        return {"result": f"Error sending message: {_GENERIC_UNEXPECTED_CHAT_FAILURE}"}
 
 
 def _system_services_triple(
@@ -334,6 +346,7 @@ async def flow_system_command(
     request: object | None,
     player_name: str,
 ) -> dict[str, str]:
+    """Handle the `system` command: admin-only system channel message."""
     logger.debug("Processing system command", player_name=player_name, command_data=command_data)
     msg_or_err = _message_from_command(
         command_data,
@@ -352,8 +365,14 @@ async def flow_system_command(
     try:
         return await _system_send_if_admin(ps, cs, um, player_name, msg_or_err)
     except (AttributeError, TypeError, ValueError, RuntimeError) as e:
-        logger.error("System command error", player_name=player_name, error=str(e))
-        return {"result": f"Error sending system message: {str(e)}"}
+        logger.error(
+            "System command error",
+            player_name=player_name,
+            error_type=type(e).__name__,
+            error_message=str(e),
+            exc_info=True,
+        )
+        return {"result": f"Error sending system message: {_GENERIC_UNEXPECTED_CHAT_FAILURE}"}
 
 
 def _whisper_id_pair_or_error(sender_obj: object, target_obj: object) -> tuple[object, object] | dict[str, str]:
@@ -404,6 +423,7 @@ async def flow_whisper_command(
     request: object | None,
     player_name: str,
 ) -> dict[str, str]:
+    """Handle `whisper`: send a private message to a named online player."""
     logger.debug("Processing whisper command", player_name=player_name, command_data=command_data)
     target = command_data.get("target")
     message = command_data.get("message")
@@ -421,8 +441,14 @@ async def flow_whisper_command(
     try:
         return await _deliver_whisper_message(ps, cs, player_name, target, message)
     except (AttributeError, TypeError, ValueError, RuntimeError) as e:
-        logger.error("Whisper command error", player_name=player_name, error=str(e))
-        return {"result": f"Error sending whisper: {str(e)}"}
+        logger.error(
+            "Whisper command error",
+            player_name=player_name,
+            error_type=type(e).__name__,
+            error_message=str(e),
+            exc_info=True,
+        )
+        return {"result": f"Error sending whisper: {_GENERIC_UNEXPECTED_CHAT_FAILURE}"}
 
 
 async def _deliver_reply_to_last_whisper(
@@ -465,6 +491,7 @@ async def flow_reply_command(
     request: object | None,
     player_name: str,
 ) -> dict[str, str]:
+    """Handle `reply`: whisper back to the last player who whispered to you."""
     logger.debug("Processing reply command", player_name=player_name, command_data=command_data)
     msg_or_err = _message_from_command(
         command_data,
@@ -483,5 +510,11 @@ async def flow_reply_command(
     try:
         return await _deliver_reply_to_last_whisper(ps, cs, player_name, msg_or_err)
     except (AttributeError, TypeError, ValueError, RuntimeError) as e:
-        logger.error("Reply command error", player_name=player_name, error=str(e))
-        return {"result": f"Error sending reply: {str(e)}"}
+        logger.error(
+            "Reply command error",
+            player_name=player_name,
+            error_type=type(e).__name__,
+            error_message=str(e),
+            exc_info=True,
+        )
+        return {"result": f"Error sending reply: {_GENERIC_UNEXPECTED_CHAT_FAILURE}"}

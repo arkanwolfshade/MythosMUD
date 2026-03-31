@@ -131,10 +131,12 @@ jobs:
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version: "3.12"
-      - name: Install uv
+      # Pinned uv binary (scripts/ensure_uv_ci.sh) avoids curl|sh install.sh (supply-chain).
+      - name: Install uv (pinned, SHA256-verified)
         run: |
-          curl -LsSf https://astral.sh/uv/install.sh | sh
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          set -euo pipefail
+          UV_BIN_DIR="$(bash scripts/ensure_uv_ci.sh)"
+          echo "${UV_BIN_DIR}" >> "${GITHUB_PATH}"
       - name: Cache uv virtual environment
         uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
         with:

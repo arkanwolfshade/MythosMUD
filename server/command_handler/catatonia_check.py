@@ -29,10 +29,10 @@ logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
 CATATONIA_ALLOWED_COMMANDS = {"help", "who", "status", "time"}
 
 
-class _PersistenceGetPlayerByName(Protocol):
+class _PersistenceGetPlayerByName(Protocol):  # pylint: disable=too-few-public-methods
     """Minimal persistence surface used by catatonia load path."""
 
-    async def get_player_by_name(self, player_name: str) -> object | None: ...
+    async def get_player_by_name(self, player_name: str) -> object | None: ...  # pylint: disable=missing-function-docstring
 
 
 async def _load_player_for_catatonia_check(
@@ -58,7 +58,7 @@ async def _load_player_for_catatonia_check(
 
 def _registry_player_id_value(raw: object) -> uuid.UUID | str:
     """Normalize player_id for CatatoniaRegistry.is_catatonic (uuid.UUID | str)."""
-    if isinstance(raw, (uuid.UUID, str)):
+    if isinstance(raw, uuid.UUID | str):
         return raw
     return str(raw)
 
