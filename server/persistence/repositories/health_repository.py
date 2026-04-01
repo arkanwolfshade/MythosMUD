@@ -24,7 +24,7 @@ logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
 def _stats_int(stats: dict[str, object], key: str, default: int) -> int:
     """Convert stat values to int with a safe fallback."""
     value = stats.get(key, default)
-    if not isinstance(value, (int, float, str)):
+    if not isinstance(value, int | float | str):
         return default
     try:
         return int(value)
@@ -72,7 +72,7 @@ class HealthRepository:
         # reduces incoming cold damage by that percentage.
         if damage_type in {"cold", "water"}:
             raw_resist: object = stats.get("cold_resistance", 0)
-            if isinstance(raw_resist, (int, float, str)):
+            if isinstance(raw_resist, int | float | str):
                 try:
                     resist_value = int(raw_resist)
                 except (TypeError, ValueError):
