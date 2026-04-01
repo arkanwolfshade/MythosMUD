@@ -60,7 +60,7 @@ async def _handle_get_from_room(
     player: Player,
     room_id: str,
     item_name: str,
-    quantity: int | None,
+    quantity: object | None,
     room_manager: object,
 ) -> CommandResponse:
     """Handle get-from-room (pickup from floor) path."""
@@ -79,7 +79,7 @@ async def _handle_get_from_room(
     if quantity is None:
         qty = coerce_int(drop_list[idx0].get("quantity", 1), default=1)
     else:
-        qty = quantity
+        qty = coerce_int(quantity, default=1)
     if qty <= 0:
         return {"result": "Quantity must be a positive number."}
     extracted_stack = rm.take_room_drop(room_id, idx0, qty)

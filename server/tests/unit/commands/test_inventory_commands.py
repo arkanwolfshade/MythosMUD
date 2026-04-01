@@ -398,3 +398,51 @@ async def test_handle_get_command_no_target():
 
     assert "result" in result
     assert "usage" in command_result_text(result).lower() or "target" in command_result_text(result).lower()
+
+
+@pytest.mark.asyncio
+async def test_handle_get_command_room_quantity_string_coerces_without_type_error() -> None:
+    mock_player = MagicMock()
+    mock_player.name = "TestPlayer"
+    mock_player.player_id = "12345678-1234-5678-1234-567812345678"
+    mock_player.current_room_id = "room_001"
+
+    with patch(
+        "server.commands.inventory_get_command.resolve_state_and_player",
+        new_callable=AsyncMock,
+        return_value=(MagicMock(), MagicMock(), mock_player, None),
+    ):
+        with patch(
+            "server.commands.inventory_get_command.validate_get_command_inputs",
+            new_callable=AsyncMock,
+            return_value=("coin", "room", "1", None, MagicMock()),
+        ):
+            with patch(
+                "server.commands.inventory_get_command.resolve_pickup_item_index",
+                return_value=(0, None, None),
+            ):
+                room_manager = MagicMock()
+                room_manager.list_room_drops = MagicMock(return_value=[{"item_name": "coin", "quantity": 5}])
+                room_manager.take_room_drop = MagicMock(return_value={"item_name": "coin", "quantity": 1})
+
+                with patch(
+                    "server.commands.inventory_get_command.validate_get_command_inputs",
+                    new_callable=AsyncMock,
+                    return_value=("coin", "room", "1", None, room_manager),
+                ):
+                    with patch(
+                        "server.commands.inventory_get_command.complete_pickup_after_floor_extract",
+                        new_callable=AsyncMock,
+                        return_value={"result": "ok"},
+                    ) as complete_pickup:
+                        result = await handle_get_command(
+                            {"item": "coin", "container": "room", "quantity": "1"},
+                            {"name": "TestPlayer"},
+                            MagicMock(),
+                            None,
+                            "TestPlayer",
+                        )
+
+    assert result == {"result": "ok"}
+    room_manager.take_room_drop.assert_called_once_with("room_001", 0, 1)
+    complete_pickup.assert_awaited_once()
