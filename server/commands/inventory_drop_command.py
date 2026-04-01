@@ -33,10 +33,7 @@ def _drop_quantity_or_error(
         return coerce_int(stack.get("quantity", 1), default=1), None
     if isinstance(q_raw, int):
         return q_raw, None
-    try:
-        q = coerce_int(q_raw, default=0)
-    except (TypeError, ValueError):
-        return None, {"result": "Quantity must be a positive number."}
+    q = coerce_int(q_raw, default=0)
     return q, None
 
 
