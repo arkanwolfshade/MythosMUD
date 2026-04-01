@@ -12,6 +12,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from server.realtime.websocket_handler_commands import (
+    _attach_room_state_to_result,
     _resolve_get_room_state_callable,
     handle_game_command,
     parse_game_command_tokens,
@@ -22,6 +23,31 @@ from server.realtime.websocket_handler_commands import (
 
 TEST_PLAYER_ID = uuid.UUID("12345678-1234-5678-1234-567812345678")
 TEST_PLAYER_ID_STR = str(TEST_PLAYER_ID)
+
+
+@pytest.mark.asyncio
+async def test_attach_room_state_to_result_adds_room_state_when_available() -> None:
+    result: dict[str, object] = {"room_changed": True, "room_id": "room-2"}
+    get_room = AsyncMock(return_value={"display": "room-2"})
+    player_handler = MagicMock()
+    player_handler.get_room_state_event = get_room
+    app_state = MagicMock()
+    app_state.event_handler = MagicMock(player_handler=player_handler)
+
+    await _attach_room_state_to_result(result, app_state, TEST_PLAYER_ID_STR)
+
+    assert result.get("room_state") == {"display": "room-2"}
+    get_room.assert_awaited_once_with(TEST_PLAYER_ID_STR, "room-2")
+
+
+@pytest.mark.asyncio
+async def test_attach_room_state_to_result_noop_when_room_not_changed() -> None:
+    result: dict[str, object] = {"result": "ok", "room_changed": False}
+    app_state = MagicMock()
+
+    await _attach_room_state_to_result(result, app_state, TEST_PLAYER_ID_STR)
+
+    assert "room_state" not in result
 
 
 def test_parse_game_command_tokens_splits_string() -> None:
