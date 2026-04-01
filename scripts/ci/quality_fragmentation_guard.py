@@ -9,6 +9,7 @@ import json
 import re
 import sys
 import tempfile
+import warnings
 from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
@@ -406,21 +407,20 @@ def _scan_changed_files(
     new_lengths: list[float] = []
     tiny_single_use = 0
     single_use_small = 0
+    call_usage_map = _build_python_call_usage_map(python_texts) if not fast_mode else {}
     for changed in changed_code:
         path = REPO_ROOT / changed.path
         if not path.exists():
             continue
         text = path.read_text(encoding="utf-8")
         if changed.status == "A":
-            if not fast_mode and not _is_test_file_path(changed.path):
-                _check_single_use_file(changed.path, text, code_texts, failures)
-            new_lengths.append(float(nloc_for_text(changed.path, text)))
-            if not fast_mode and not _is_test_file_path(changed.path):
-                single_use_small += int(_is_single_use_small_file(changed.path, text, code_texts))
+            single_use_small += _process_added_file_checks(
+                changed.path, text, code_texts, failures, new_lengths, fast_mode
+            )
         exports, tiny = _check_exports_and_tiny_functions(
             changed.path,
             text,
-            python_texts,
+            call_usage_map,
             failures,
             is_new_file=changed.status == "A",
             fast_mode=fast_mode,
@@ -428,6 +428,23 @@ def _scan_changed_files(
         module_exports[changed.path] = exports
         tiny_single_use += tiny
     return module_exports, new_lengths, tiny_single_use, single_use_small
+
+
+def _process_added_file_checks(
+    changed_path: str,
+    text: str,
+    code_texts: list[tuple[str, str]],
+    failures: list[str],
+    new_lengths: list[float],
+    fast_mode: bool,
+) -> int:
+    is_test = _is_test_file_path(changed_path)
+    if not fast_mode and not is_test:
+        _check_single_use_file(changed_path, text, code_texts, failures)
+    new_lengths.append(float(nloc_for_text(changed_path, text)))
+    if fast_mode or is_test:
+        return 0
+    return int(_is_single_use_small_file(changed_path, text, code_texts))
 
 
 def _collect_code_texts() -> tuple[list[tuple[str, str]], int]:
@@ -456,7 +473,7 @@ def _is_single_use_small_file(path: str, text: str, code_texts: list[tuple[str, 
 def _check_exports_and_tiny_functions(
     path: str,
     text: str,
-    python_texts: list[tuple[str, str]],
+    call_usage_map: dict[str, int],
     failures: list[str],
     *,
     is_new_file: bool,
@@ -471,13 +488,13 @@ def _check_exports_and_tiny_functions(
         return count, 0
     if ext != ".py":
         return 0, 0
-    return _python_export_and_tiny(path, text, python_texts, failures, is_new_file=is_new_file, fast_mode=fast_mode)
+    return _python_export_and_tiny(path, text, call_usage_map, failures, is_new_file=is_new_file, fast_mode=fast_mode)
 
 
 def _python_export_and_tiny(
     path: str,
     text: str,
-    python_texts: list[tuple[str, str]],
+    call_usage_map: dict[str, int],
     failures: list[str],
     *,
     is_new_file: bool,
@@ -488,7 +505,7 @@ def _python_export_and_tiny(
     except Exception:
         return 0, 0
     public_defs, tiny_violations = _collect_python_public_defs_and_tiny(
-        path, tree, text, python_texts, failures, fast_mode=fast_mode
+        path, tree, text, call_usage_map, failures, fast_mode=fast_mode
     )
     if is_new_file and not _is_test_file_path(path) and len(public_defs) > 7 and "group:" not in text.lower():
         failures.append(f"{path} exports {len(public_defs)} public functions without clear grouping marker.")
@@ -499,7 +516,7 @@ def _collect_python_public_defs_and_tiny(
     path: str,
     tree: ast.Module,
     text: str,
-    python_texts: list[tuple[str, str]],
+    call_usage_map: dict[str, int],
     failures: list[str],
     *,
     fast_mode: bool = False,
@@ -513,7 +530,7 @@ def _collect_python_public_defs_and_tiny(
         public_defs.append(node)
         if _is_test_file_path(path):
             continue
-        if fast_mode or not _is_tiny_single_use(node, lines, python_texts):
+        if fast_mode or not _is_tiny_single_use(node, lines, call_usage_map):
             continue
         tiny_violations += 1
         failures.append(f"{path}:{node.lineno} tiny single-use function '{node.name}' without justification.")
@@ -537,30 +554,34 @@ def _is_public_function_stmt(node: ast.stmt) -> TypeGuard[ast.FunctionDef | ast.
     return isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef) and not node.name.startswith("_")
 
 
-def _count_python_call_usages(function_name: str, python_texts: list[tuple[str, str]]) -> int:
-    """Count call-sites by parsing AST instead of regex over raw text."""
-    usage = 0
-    for _, text in python_texts:
+def _build_python_call_usage_map(python_texts: list[tuple[str, str]]) -> dict[str, int]:
+    """Build a repo-wide call usage map from Python AST call sites."""
+    usage: dict[str, int] = {}
+    for path, text in python_texts:
         try:
-            tree = ast.parse(text)
+            with warnings.catch_warnings():
+                warnings.filterwarnings("ignore", category=SyntaxWarning)
+                tree = ast.parse(text, filename=path)
         except (SyntaxError, ValueError, TypeError):
             continue
-        usage += sum(
-            1
-            for node in ast.walk(tree)
-            if isinstance(node, ast.Call) and _call_targets_name(node, function_name)
-        )
+        for node in (n for n in ast.walk(tree) if isinstance(n, ast.Call)):
+            call_name = _call_target_name(node)
+            if call_name is None:
+                continue
+            usage[call_name] = usage.get(call_name, 0) + 1
     return usage
 
 
-def _call_targets_name(call_node: ast.Call, function_name: str) -> bool:
+def _call_target_name(call_node: ast.Call) -> str | None:
     callee = call_node.func
-    return (isinstance(callee, ast.Name) and callee.id == function_name) or (
-        isinstance(callee, ast.Attribute) and callee.attr == function_name
-    )
+    if isinstance(callee, ast.Name):
+        return callee.id
+    if isinstance(callee, ast.Attribute):
+        return callee.attr
+    return None
 
 
-def _is_tiny_single_use(node: ast.AST, lines: list[str], python_texts: list[tuple[str, str]]) -> bool:
+def _is_tiny_single_use(node: ast.AST, lines: list[str], call_usage_map: dict[str, int]) -> bool:
     if not isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef):
         raise TypeError(f"Expected FunctionDef or AsyncFunctionDef, got {type(node).__name__}")
     nloc = max(1, (node.end_lineno or node.lineno) - node.lineno + 1)
@@ -569,7 +590,7 @@ def _is_tiny_single_use(node: ast.AST, lines: list[str], python_texts: list[tupl
     line = lines[node.lineno - 1] if node.lineno - 1 < len(lines) else ""
     if "lizard: allow" in line:
         return False
-    usage = _count_python_call_usages(node.name, python_texts)
+    usage = call_usage_map.get(node.name, 0)
     return usage <= 2
 
 
