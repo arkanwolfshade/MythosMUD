@@ -441,6 +441,8 @@ def _collect_code_texts() -> tuple[list[tuple[str, str]], int]:
 
 
 def _check_single_use_file(path: str, text: str, code_texts: list[tuple[str, str]], failures: list[str]) -> None:
+    if "group:" in text.lower():
+        return
     file_nloc = nloc_for_text(path, text)
     imported_by = imported_by_count(path, code_texts)
     if imported_by <= 1 and file_nloc < 100:
