@@ -20,10 +20,6 @@ if sys.platform == "win32":
 # Determine project root. In GitHub Actions use GITHUB_WORKSPACE so coverage
 # reports (e.g. htmlcov/) are always written to the workspace for artifact upload.
 _project_root = os.getenv("GITHUB_WORKSPACE") or os.getcwd()
-# Only strip MythosMUD-* parent dir when NOT in GitHub Actions; in CI,
-# GITHUB_WORKSPACE is already the correct root.
-if not os.getenv("GITHUB_ACTIONS") and "MythosMUD-" in _project_root:
-    _project_root = os.path.dirname(_project_root)
 PROJECT_ROOT = _project_root
 
 # Check if we're in CI environment
