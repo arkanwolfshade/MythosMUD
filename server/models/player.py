@@ -12,6 +12,7 @@ from __future__ import annotations
 # runtime imports are acyclic via SQLAlchemy string relationship targets.
 # pylint: disable=too-few-public-methods,too-many-lines  # Reason: SQLAlchemy models are data classes; Player aggregates stats, combat, lucidity, containers - splitting would fragment domain cohesion
 import json
+import uuid as uuid_lib
 from collections.abc import Mapping, Sequence
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, cast, override
@@ -236,7 +237,14 @@ class Player(Base):
 
     def set_inventory(self, inventory: Sequence[Mapping[str, object]]) -> None:
         """Set player inventory from list."""
-        self.inventory = json.dumps(list(inventory))
+
+        def _inventory_json_default(value: object) -> str:
+            if isinstance(value, uuid_lib.UUID):
+                return str(value)
+            msg = f"Object of type {type(value).__name__} is not JSON serializable"
+            raise TypeError(msg)
+
+        self.inventory = json.dumps(list(inventory), default=_inventory_json_default)
 
     def get_status_effects(self) -> list[dict[str, object]]:
         """Get player status effects as list."""

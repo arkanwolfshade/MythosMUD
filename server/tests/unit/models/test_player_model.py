@@ -131,6 +131,21 @@ def test_player_set_inventory() -> None:
     assert player.get_inventory() == new_inventory
 
 
+def test_player_set_inventory_serializes_uuid_values() -> None:
+    """UUID fields in inventory entries should serialize to strings."""
+    player_id = str(uuid4())
+    user_id = str(uuid4())
+    player = Player(player_id=player_id, user_id=user_id, name="TestPlayer")
+
+    instance_id = uuid4()
+    new_inventory: list[dict[str, object]] = [{"item_instance_id": instance_id, "name": "Relic"}]
+
+    player.set_inventory(new_inventory)
+
+    inventory = player.get_inventory()
+    assert inventory[0]["item_instance_id"] == str(instance_id)
+
+
 def test_player_get_status_effects() -> None:
     """Test Player.get_status_effects() parses JSON status effects."""
     player_id = str(uuid4())
