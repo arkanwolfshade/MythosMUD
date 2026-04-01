@@ -289,7 +289,6 @@ module = [
     "prometheus_client.*",
     "psycopg2.*",
     "jsonschema.*",
-    "jose.*",
     "psutil.*",
     "networkx.*",
 ]
