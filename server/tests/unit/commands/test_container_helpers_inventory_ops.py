@@ -180,6 +180,41 @@ async def test_validate_put_command_inputs_no_container_service() -> None:
 
 
 @pytest.mark.asyncio
+async def test_validate_put_command_inputs_success_returns_typed_tuple() -> None:
+    player = MagicMock()
+    player.name = "hero"
+    inventory_rows: list[dict[str, object]] = [{"item_name": "rock", "quantity": 2}]
+    player.get_inventory = MagicMock(return_value=inventory_rows)
+    req = MagicMock()
+    app = MagicMock()
+    state = MagicMock()
+    container_service = MagicMock()
+    state.container_service = container_service
+    app.state = state
+    req.app = app
+    room_manager = MagicMock()
+    cm = MagicMock()
+    cm.room_manager = room_manager
+
+    out = await validate_put_command_inputs(
+        {"item": "rock", "container": "bag", "quantity": "2"},
+        req,
+        cm,
+        player,
+    )
+
+    assert isinstance(out, tuple)
+    item_name, container_name, quantity, out_container_service, out_room_manager, item_found, item_index = out
+    assert item_name == "rock"
+    assert container_name == "bag"
+    assert quantity == "2"
+    assert out_container_service is container_service
+    assert out_room_manager is room_manager
+    assert item_found == inventory_rows[0]
+    assert item_index == 0
+
+
+@pytest.mark.asyncio
 async def test_validate_get_command_inputs_room_keyword() -> None:
     room_manager = object()
     cm = SimpleNamespace(room_manager=room_manager)
