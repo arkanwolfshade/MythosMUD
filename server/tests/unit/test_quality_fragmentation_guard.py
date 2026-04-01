@@ -27,6 +27,10 @@ class _QualityGuardModule(Protocol):
     _parse_lizard_output: object
 
 
+class _QualityTrendsModule(Protocol):
+    append_rule_b_failure: object
+
+
 def _load_guard_module() -> _QualityGuardModule:
     path = _REPO_ROOT / "scripts" / "ci" / "quality_fragmentation_guard.py"
     spec = importlib.util.spec_from_file_location("_quality_fragmentation_guard", path)
@@ -35,6 +39,16 @@ def _load_guard_module() -> _QualityGuardModule:
     sys.modules[spec.name] = mod
     spec.loader.exec_module(mod)
     return cast(_QualityGuardModule, cast(object, mod))
+
+
+def _load_trends_module() -> _QualityTrendsModule:
+    path = _REPO_ROOT / "scripts" / "ci" / "quality_fragmentation_trends.py"
+    spec = importlib.util.spec_from_file_location("_quality_fragmentation_trends", path)
+    assert spec and spec.loader
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = mod
+    spec.loader.exec_module(mod)
+    return cast(_QualityTrendsModule, cast(object, mod))
 
 
 def test_scan_changed_files_skips_single_use_for_test_file(tmp_path: Path) -> None:
@@ -79,6 +93,38 @@ def test_scan_changed_files_flags_single_use_for_non_test_file(tmp_path: Path) -
     _ = scan_changed_files(changed, [], [], failures)
 
     assert any("single-use and small" in failure for failure in failures)
+
+
+def test_scan_changed_files_flags_tiny_single_use_function(tmp_path: Path) -> None:
+    guard = _load_guard_module()
+    code_file = tmp_path / "server" / "commands" / "tiny_rule_a.py"
+    code_file.parent.mkdir(parents=True, exist_ok=True)
+    _ = code_file.write_text("def tiny():\n    return 1\n", encoding="utf-8")
+    guard.REPO_ROOT = tmp_path
+    failures: list[str] = []
+    changed_file_ctor = cast(Callable[[str, str | None, str], _ChangedFile], guard.ChangedFile)
+    changed = [changed_file_ctor("A", None, "server/commands/tiny_rule_a.py")]
+    scan_changed_files = cast(
+        Callable[
+            [list[_ChangedFile], list[tuple[str, str]], list[tuple[str, str]], list[str]],
+            tuple[dict[str, int], list[float], int, int],
+        ],
+        guard._scan_changed_files,
+    )
+
+    _ = scan_changed_files(changed, [], [], failures)
+
+    assert any("tiny single-use function" in failure for failure in failures)
+
+
+def test_append_rule_b_failure_for_fragmentation_limit() -> None:
+    trends = _load_trends_module()
+    append_rule_b_failure = cast(Callable[[list[str], int, float], None], trends.append_rule_b_failure)
+    failures: list[str] = []
+
+    append_rule_b_failure(failures, 11, 49.0)
+
+    assert failures == ["Rule B violation: new_files=11, avg_new_file_length=49.00 (<50)."]
 
 
 def test_is_safe_git_ref_accepts_sha_and_branch_like_ref() -> None:

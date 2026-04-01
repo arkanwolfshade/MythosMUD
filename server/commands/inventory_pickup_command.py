@@ -166,7 +166,7 @@ async def _pickup_commit_inventory_after_floor_extract(
     """Apply stack to player inventory and persist. Returns (error, None) or (None, prepared_stack)."""
     prepared_stack = prepare_extracted_stack(extracted_stack, player.name, player_id_uuid)
 
-    ensure_item_instance_for_pickup(persistence, prepared_stack, player, room_id)
+    await ensure_item_instance_for_pickup(persistence, prepared_stack, player, room_id)
 
     previous_inventory = clone_inventory(player)
 

@@ -107,7 +107,9 @@ def test_fetch_container_items_success():
     assert len(result) == 2
     assert result[0]["item_instance_id"] == str(mock_row1["item_instance_id"])
     assert result[0]["item_name"] == "Test Item"
+    assert result[0]["slot_type"] == "inventory"
     assert result[1]["item_name"] == "Another Item"
+    assert result[1]["slot_type"] == "inventory"
     assert result[1]["metadata"] == {}  # None should become {}
 
 

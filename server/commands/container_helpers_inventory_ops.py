@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import json
 from collections.abc import Awaitable, Mapping, Sequence
+from inspect import isawaitable
 from typing import cast
 from uuid import UUID
 
@@ -72,7 +73,7 @@ async def _ensure_item_instance_for_put(
     if not item_instance_id or not prototype_id or not callable(ensure_item_instance):
         return
     try:
-        _ = ensure_item_instance(
+        result = ensure_item_instance(
             item_instance_id=item_instance_id,
             prototype_id=prototype_id,
             owner_type="player",
@@ -82,6 +83,8 @@ async def _ensure_item_instance_for_put(
             origin_source="inventory",
             origin_metadata={"player_id": str(player.player_id)},
         )
+        if isawaitable(result):
+            _ = await cast(Awaitable[object], result)
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Item instance errors unpredictable
         logger.warning("Failed to ensure item instance before transfer", error=str(e))
 

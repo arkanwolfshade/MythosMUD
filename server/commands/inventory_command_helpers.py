@@ -176,7 +176,7 @@ def prepare_extracted_stack(extracted_stack: dict[str, object], player_name: str
     return copied
 
 
-def ensure_item_instance_for_pickup(
+async def ensure_item_instance_for_pickup(
     persistence: object, extracted_stack: dict[str, object], player: Player, room_id: str
 ) -> None:
     """Ensure item instance exists in database for picked up item."""
@@ -188,7 +188,7 @@ def ensure_item_instance_for_pickup(
         if not callable(ensure_fn):
             return
         try:
-            _: object = ensure_fn(
+            result: object = ensure_fn(
                 item_instance_id=item_instance_id,
                 prototype_id=prototype_id,
                 owner_type="player",
@@ -198,6 +198,8 @@ def ensure_item_instance_for_pickup(
                 origin_source="pickup",
                 origin_metadata={"room_id": room_id},
             )
+            if inspect.isawaitable(result):
+                await cast(Awaitable[object], result)
             logger.debug(
                 "Item instance ensured for picked up item",
                 item_instance_id=item_instance_id,

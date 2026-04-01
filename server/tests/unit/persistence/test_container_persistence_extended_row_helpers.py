@@ -337,3 +337,20 @@ def test_seed_new_container_items_skips_bad_rows_and_handles_ensure_error():
     with patch("server.persistence.container_persistence.ensure_item_instance"):
         _seed_new_container_items(mock_conn, cid, items_ok)
     mock_items2.execute.assert_called()
+
+
+def test_seed_new_container_items_generates_uuid_for_missing_instance_id():
+    mock_conn = MagicMock()
+    mock_items = MagicMock()
+    mock_conn.cursor.return_value = mock_items
+    cid = uuid.uuid4()
+    items_json: list[dict[str, object]] = [{"item_id": "proto-legacy", "quantity": 1, "metadata": {}}]
+
+    with patch("server.persistence.container_persistence.ensure_item_instance") as mock_ensure:
+        _seed_new_container_items(mock_conn, cid, items_json)
+
+    kwargs = mock_ensure.call_args.kwargs
+    assert kwargs["prototype_id"] == "proto-legacy"
+    assert uuid.UUID(kwargs["item_instance_id"])
+    mock_items.execute.assert_called_once()
+    mock_items.close.assert_called_once()

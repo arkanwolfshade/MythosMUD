@@ -231,6 +231,30 @@ async def test_transfer_item_to_container_success_uses_token_from_service() -> N
 
 
 @pytest.mark.asyncio
+async def test_transfer_item_to_container_awaits_async_ensure_item_instance() -> None:
+    cid = uuid.uuid4()
+    pid = uuid.uuid4()
+    player = _player_with_inventory(pid)
+    transfer_to = AsyncMock(return_value={"ok": True})
+    container_service = MagicMock()
+    container_service.get_container_token = MagicMock(return_value=object())
+    container_service.transfer_to_container = transfer_to
+    persistence = MagicMock()
+    persistence.ensure_item_instance = AsyncMock(return_value=None)
+    item_found: dict[str, object] = {
+        "item_instance_id": uuid.uuid4(),
+        "item_id": uuid.uuid4(),
+        "quantity": 1,
+    }
+
+    result = await transfer_item_to_container(container_service, persistence, player, cid, item_found, None)
+
+    assert result == {"success": True, "transfer_quantity": 1}
+    ensure_async: AsyncMock = cast(AsyncMock, persistence.ensure_item_instance)
+    ensure_async.assert_awaited_once()
+
+
+@pytest.mark.asyncio
 async def test_transfer_item_to_container_coerces_string_quantity() -> None:
     cid = uuid.uuid4()
     pid = uuid.uuid4()

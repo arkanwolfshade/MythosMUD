@@ -14,7 +14,7 @@ import json
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import cast
-from uuid import UUID
+from uuid import UUID, uuid4
 
 import psycopg2
 from psycopg2.extensions import connection as PsycopgConnection
@@ -324,38 +324,41 @@ def _log_and_resolve_created_container(conn: PsycopgConnection, out: _CreateOutc
 
 def _seed_new_container_items(conn: PsycopgConnection, container_id: UUID, items_json: list[dict[str, object]]) -> None:
     cursor_items = conn.cursor()
-    for position, item in enumerate(items_json):
-        item_instance_raw: object = item.get("item_instance_id") or item.get("item_id")
-        prototype_raw: object = item.get("item_id") or item.get("prototype_id")
-        if item_instance_raw is None or prototype_raw is None:
-            continue
-        item_instance_id = str(item_instance_raw)
-        prototype_id = str(prototype_raw)
-        md_raw: object = item.get("metadata", {})
-        item_metadata: dict[str, object] = cast(dict[str, object], md_raw) if isinstance(md_raw, dict) else {}
-        try:
-            ensure_item_instance(
-                conn,
-                item_instance_id=item_instance_id,
-                prototype_id=prototype_id,
-                owner_type="container",
-                owner_id=str(container_id),
-                quantity=_coerce_item_quantity(item.get("quantity", 1)),
-                metadata=item_metadata,
+    try:
+        for position, item in enumerate(items_json):
+            prototype_raw: object = item.get("item_id") or item.get("prototype_id")
+            if prototype_raw is None:
+                continue
+            item_instance_raw: object = item.get("item_instance_id")
+            # Legacy payloads may omit instance IDs; generate one instead of reusing prototype IDs.
+            item_instance_id = str(item_instance_raw) if item_instance_raw is not None else str(uuid4())
+            prototype_id = str(prototype_raw)
+            md_raw: object = item.get("metadata", {})
+            item_metadata: dict[str, object] = cast(dict[str, object], md_raw) if isinstance(md_raw, dict) else {}
+            try:
+                ensure_item_instance(
+                    conn,
+                    item_instance_id=item_instance_id,
+                    prototype_id=prototype_id,
+                    owner_type="container",
+                    owner_id=str(container_id),
+                    quantity=_coerce_item_quantity(item.get("quantity", 1)),
+                    metadata=item_metadata,
+                )
+            except (DatabaseError, ValidationError) as e:
+                logger.warning(
+                    "Failed to ensure item instance exists, skipping item",
+                    item_instance_id=item_instance_id,
+                    prototype_id=prototype_id,
+                    error=str(e),
+                )
+                continue
+            cursor_items.execute(
+                "SELECT add_item_to_container(%s, %s, %s)",
+                (str(container_id), item_instance_id, position),
             )
-        except (DatabaseError, ValidationError) as e:
-            logger.warning(
-                "Failed to ensure item instance exists, skipping item",
-                item_instance_id=item_instance_id,
-                prototype_id=prototype_id,
-                error=str(e),
-            )
-            continue
-        cursor_items.execute(
-            "SELECT add_item_to_container(%s, %s, %s)",
-            (str(container_id), item_instance_id, position),
-        )
-    cursor_items.close()
+    finally:
+        cursor_items.close()
 
 
 def _fetch_container_row_dict(conn: PsycopgConnection, container_id_str: str) -> dict[str, object] | None:

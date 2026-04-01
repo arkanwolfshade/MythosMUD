@@ -104,7 +104,8 @@ def _item_dict_from_contents_row(row: dict[str, object], container_id: UUID) -> 
         "condition": str(condition) if condition else "pristine",
         "position": 0 if position is None else _coerce_row_quantity(position),
         "metadata": meta_out,
-        "slot_type": "backpack",  # Container items need slot_type for inventory validation
+        # Items pulled from containers re-enter general inventory, not an equipped wearable slot.
+        "slot_type": "inventory",
     }
 
 
