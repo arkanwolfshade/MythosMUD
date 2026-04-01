@@ -37,6 +37,9 @@ engines:
       - "scripts/ci/quality_fragmentation_guard.py"
   bandit:
     exclude_paths:
+      # Bandit should only scan Python files; exclude lock/docs/tooling artifacts that trigger AST parse failures.
+      - "uv.lock"
+      - "tools/room_toolkit/**"
       - "**/tests/**/*.py"
       - "**/test_*.py"
       - "**/*_test.py"
