@@ -6,18 +6,30 @@ including damage, healing, and DP updates using SQLAlchemy ORM with PostgreSQL.
 """
 
 import uuid
-from typing import Any
+from typing import cast
 
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
+from structlog.stdlib import BoundLogger
 
 from server.database import get_session_maker
 from server.exceptions import DatabaseError
-from server.models.player import Player, _stats_int
+from server.models.player import Player
 from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.error_logging import log_and_raise
 
-logger = get_logger(__name__)
+logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+
+
+def _stats_int(stats: dict[str, object], key: str, default: int) -> int:
+    """Convert stat values to int with a safe fallback."""
+    value = stats.get(key, default)
+    if not isinstance(value, (int, float, str)):
+        return default
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
 
 
 class HealthRepository:
@@ -28,19 +40,19 @@ class HealthRepository:
     to prevent race conditions.
     """
 
-    def __init__(self, event_bus: Any = None) -> None:
+    def __init__(self, event_bus: object | None = None) -> None:
         """
         Initialize the health repository.
 
         Args:
             event_bus: Optional EventBus for publishing DP change events
         """
-        self._event_bus = event_bus
-        self._logger = get_logger(__name__)
+        self._event_bus: object | None = event_bus
+        self._logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
 
     def _calculate_effective_damage(
         self,
-        stats: dict[str, Any],
+        stats: dict[str, object],
         amount: int,
         damage_type: str,
     ) -> int:
@@ -59,10 +71,13 @@ class HealthRepository:
         # Spells like Resist Cold can set a "cold_resistance" stat (0-100) which
         # reduces incoming cold damage by that percentage.
         if damage_type in {"cold", "water"}:
-            raw_resist = stats.get("cold_resistance", 0)
-            try:
-                resist_value = int(raw_resist)
-            except (TypeError, ValueError):
+            raw_resist: object = stats.get("cold_resistance", 0)
+            if isinstance(raw_resist, (int, float, str)):
+                try:
+                    resist_value = int(raw_resist)
+                except (TypeError, ValueError):
+                    resist_value = 0
+            else:
                 resist_value = 0
             if resist_value > 0:
                 resist_clamped = max(0, min(100, resist_value))
@@ -76,7 +91,7 @@ class HealthRepository:
     async def _damage_player_inner(self, player: Player, amount: int, damage_type: str) -> None:
         """Core damage logic without error handling wrapper."""
         stats = player.get_stats()
-        current_dp = _stats_int(stats, "current_dp", 100)
+        current_dp = _stats_int(stats, "current_dp", 20)
         effective_damage = self._calculate_effective_damage(stats, amount, damage_type)
         new_dp = max(0, current_dp - effective_damage)
 
@@ -113,7 +128,7 @@ class HealthRepository:
         """Execute atomic health update via update_player_health procedure."""
         session_maker = get_session_maker()
         async with session_maker() as session:
-            await session.execute(
+            _ = await session.execute(
                 text("SELECT update_player_health(:player_id, :delta)"),
                 {"player_id": str(player_id), "delta": delta},
             )

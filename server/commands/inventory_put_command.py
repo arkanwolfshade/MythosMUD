@@ -172,9 +172,8 @@ async def handle_put_command(
         return validation_result
 
     item_name, container_name, quantity, container_service, room_manager, item_found, item_index = validation_result
-
-    if item_found is None or item_index is None:
-        return {"result": f"'{item_name}' not found in your inventory."}
+    item_found_valid = cast(dict[str, object], item_found)
+    item_index_valid = cast(int, item_index)
 
     put_rt = PutCommandRuntime(
         persistence=persistence,
@@ -188,7 +187,7 @@ async def handle_put_command(
         item_name=item_name,
         container_name=container_name,
         quantity=quantity,
-        item_found=item_found,
-        item_index=item_index,
+        item_found=item_found_valid,
+        item_index=item_index_valid,
     )
     return await _put_run_validated(rt=put_rt, work=put_work)

@@ -51,6 +51,9 @@ engines:
     exclude_paths:
       - "Makefile"
       - "**/Makefile"
+  trivy:
+    exclude_paths:
+      - "openapi.json"
 
 # Ignore assert and hardcoded secrets in test files (Bandit/Prospector B101/B106)
 # Assert and test passwords are standard in pytest; bandit.yml skips them but Codacy

@@ -491,8 +491,8 @@ def test_player_get_combat_stats_defaults() -> None:
         stats={"strength": 50},
     )
     combat_stats = player.get_combat_stats()
-    assert combat_stats["current_dp"] == 100
-    assert combat_stats["max_dp"] == 100
+    assert combat_stats["current_dp"] == 20
+    assert combat_stats["max_dp"] == 20
     assert combat_stats["dexterity"] == 10
 
 

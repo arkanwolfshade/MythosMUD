@@ -28,6 +28,7 @@ class _QualityGuardModule(Protocol):
 
 
 class _QualityTrendsModule(Protocol):
+    append_fragmentation_failures: object
     append_rule_b_failure: object
 
 
@@ -149,6 +150,19 @@ def test_append_rule_b_failure_for_fragmentation_limit() -> None:
     append_rule_b_failure(failures, 11, 49.0)
 
     assert failures == ["Rule B violation: new_files=11, avg_new_file_length=49.00 (<50)."]
+
+
+def test_append_fragmentation_failures_when_files_added_and_avg_function_length_drops() -> None:
+    trends = _load_trends_module()
+    append_fragmentation_failures = cast(
+        Callable[[list[str], float, float, float], None], trends.append_fragmentation_failures
+    )
+    failures: list[str] = []
+
+    append_fragmentation_failures(failures, 21.0, 12.0, 10.0)
+
+    assert len(failures) == 1
+    assert "Over-fragmentation signal" in failures[0]
 
 
 def test_is_safe_git_ref_accepts_sha_and_branch_like_ref() -> None:

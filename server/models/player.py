@@ -349,9 +349,12 @@ class Player(Base):
         Centralizes combat stat semantics per Domain-Driven Design.
         """
         stats = self.get_stats()
+        constitution = _stats_int(stats, "constitution", 50)
+        size = _stats_int(stats, "size", 50)
+        default_max_dp = (constitution + size) // 5
         return {
-            "current_dp": _stats_int(stats, "current_dp", 100),
-            "max_dp": _stats_int(stats, "max_dp", 100),
+            "current_dp": _stats_int(stats, "current_dp", 20),
+            "max_dp": _stats_int(stats, "max_dp", default_max_dp),
             "dexterity": _stats_int(stats, "dexterity", 10),
         }
 
