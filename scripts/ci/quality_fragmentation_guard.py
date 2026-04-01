@@ -537,6 +537,29 @@ def _is_public_function_stmt(node: ast.stmt) -> TypeGuard[ast.FunctionDef | ast.
     return isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef) and not node.name.startswith("_")
 
 
+def _count_python_call_usages(function_name: str, python_texts: list[tuple[str, str]]) -> int:
+    """Count call-sites by parsing AST instead of regex over raw text."""
+    usage = 0
+    for _, text in python_texts:
+        try:
+            tree = ast.parse(text)
+        except (SyntaxError, ValueError, TypeError):
+            continue
+        usage += sum(
+            1
+            for node in ast.walk(tree)
+            if isinstance(node, ast.Call) and _call_targets_name(node, function_name)
+        )
+    return usage
+
+
+def _call_targets_name(call_node: ast.Call, function_name: str) -> bool:
+    callee = call_node.func
+    return (isinstance(callee, ast.Name) and callee.id == function_name) or (
+        isinstance(callee, ast.Attribute) and callee.attr == function_name
+    )
+
+
 def _is_tiny_single_use(node: ast.AST, lines: list[str], python_texts: list[tuple[str, str]]) -> bool:
     if not isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef):
         raise TypeError(f"Expected FunctionDef or AsyncFunctionDef, got {type(node).__name__}")
@@ -546,8 +569,7 @@ def _is_tiny_single_use(node: ast.AST, lines: list[str], python_texts: list[tupl
     line = lines[node.lineno - 1] if node.lineno - 1 < len(lines) else ""
     if "lizard: allow" in line:
         return False
-    pattern = re.compile(rf"\b{re.escape(node.name)}\s*\(")
-    usage = sum(len(pattern.findall(text)) for _, text in python_texts)
+    usage = _count_python_call_usages(node.name, python_texts)
     return usage <= 2
 
 
