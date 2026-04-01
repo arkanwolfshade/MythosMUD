@@ -137,9 +137,33 @@ def test_scan_changed_files_flags_tiny_single_use_function(tmp_path: Path) -> No
         guard._scan_changed_files,
     )
 
-    _ = scan_changed_files(changed, [], [], failures)
+    python_texts = [("server/commands/consumer.py", "def use_it():\n    tiny()\n")]
+    _ = scan_changed_files(changed, python_texts, [], failures)
 
     assert any("tiny single-use function" in failure for failure in failures)
+
+
+def test_scan_changed_files_does_not_flag_tiny_function_with_two_usages(tmp_path: Path) -> None:
+    guard = _load_guard_module()
+    code_file = tmp_path / "server" / "commands" / "tiny_rule_a.py"
+    code_file.parent.mkdir(parents=True, exist_ok=True)
+    _ = code_file.write_text("def tiny():\n    return 1\n", encoding="utf-8")
+    guard.REPO_ROOT = tmp_path
+    failures: list[str] = []
+    changed_file_ctor = cast(Callable[[str, str | None, str], _ChangedFile], guard.ChangedFile)
+    changed = [changed_file_ctor("A", None, "server/commands/tiny_rule_a.py")]
+    scan_changed_files = cast(
+        Callable[
+            [list[_ChangedFile], list[tuple[str, str]], list[tuple[str, str]], list[str]],
+            tuple[dict[str, int], list[float], int, int],
+        ],
+        guard._scan_changed_files,
+    )
+
+    python_texts = [("server/commands/consumer.py", "def use_it():\n    tiny()\n    tiny()\n")]
+    _ = scan_changed_files(changed, python_texts, [], failures)
+
+    assert not any("tiny single-use function" in failure for failure in failures)
 
 
 def test_append_rule_b_failure_for_fragmentation_limit() -> None:

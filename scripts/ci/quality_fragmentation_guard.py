@@ -591,7 +591,7 @@ def _is_tiny_single_use(node: ast.AST, lines: list[str], call_usage_map: dict[st
     if "lizard: allow" in line:
         return False
     usage = call_usage_map.get(node.name, 0)
-    return usage <= 2
+    return usage == 1
 
 
 def emit_results(summary: dict[str, object], failures: list[str], warnings: list[str]) -> int:
