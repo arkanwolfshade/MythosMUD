@@ -481,14 +481,23 @@ def _check_exports_and_tiny_functions(
 ) -> tuple[int, int]:
     ext = Path(path).suffix.lower()
     is_test_file = _is_test_file_path(path)
+    has_group_marker = "group:" in text.lower()
     if ext in {".ts", ".tsx", ".js", ".jsx"}:
         count = len(re.findall(r"^\s*export\s+.*\b(function|const|class|type|interface|enum)\b", text, re.MULTILINE))
-        if is_new_file and not is_test_file and count > 7 and "group:" not in text.lower():
+        if is_new_file and not is_test_file and count > 7 and not has_group_marker:
             failures.append(f"{path} exports {count} public symbols without clear grouping marker.")
         return count, 0
     if ext != ".py":
         return 0, 0
-    return _python_export_and_tiny(path, text, call_usage_map, failures, is_new_file=is_new_file, fast_mode=fast_mode)
+    return _python_export_and_tiny(
+        path,
+        text,
+        call_usage_map,
+        failures,
+        is_new_file=is_new_file,
+        has_group_marker=has_group_marker,
+        fast_mode=fast_mode,
+    )
 
 
 def _python_export_and_tiny(
@@ -498,6 +507,7 @@ def _python_export_and_tiny(
     failures: list[str],
     *,
     is_new_file: bool,
+    has_group_marker: bool,
     fast_mode: bool = False,
 ) -> tuple[int, int]:
     try:
@@ -505,9 +515,15 @@ def _python_export_and_tiny(
     except Exception:
         return 0, 0
     public_defs, tiny_violations = _collect_python_public_defs_and_tiny(
-        path, tree, text, call_usage_map, failures, fast_mode=fast_mode
+        path,
+        tree,
+        text,
+        call_usage_map,
+        failures,
+        has_group_marker=has_group_marker,
+        fast_mode=fast_mode,
     )
-    if is_new_file and not _is_test_file_path(path) and len(public_defs) > 7 and "group:" not in text.lower():
+    if is_new_file and not _is_test_file_path(path) and len(public_defs) > 7 and not has_group_marker:
         failures.append(f"{path} exports {len(public_defs)} public functions without clear grouping marker.")
     return len(public_defs), tiny_violations
 
@@ -519,6 +535,7 @@ def _collect_python_public_defs_and_tiny(
     call_usage_map: dict[str, int],
     failures: list[str],
     *,
+    has_group_marker: bool = False,
     fast_mode: bool = False,
 ) -> tuple[list[ast.FunctionDef | ast.AsyncFunctionDef], int]:
     public_defs: list[ast.FunctionDef | ast.AsyncFunctionDef] = []
@@ -529,6 +546,8 @@ def _collect_python_public_defs_and_tiny(
             continue
         public_defs.append(node)
         if _is_test_file_path(path):
+            continue
+        if has_group_marker:
             continue
         if fast_mode or not _is_tiny_single_use(node, lines, call_usage_map):
             continue
