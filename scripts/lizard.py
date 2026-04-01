@@ -33,7 +33,7 @@ result = subprocess.run(
         lizard_path,
         "server",
         "-C",
-        "11",
+        "10",
         "-a",
         "6",
         "--length",
