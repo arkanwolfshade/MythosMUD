@@ -101,6 +101,34 @@ async def test_validate_message_validation_error(mock_websocket):
 
 
 @pytest.mark.asyncio
+async def test_validate_message_passes_expected_token_from_connection_metadata(
+    mock_websocket, mock_ws_connection_manager
+):
+    """_validate_message should pass expected token from connection metadata into validator."""
+    mock_validator = MagicMock()
+    mock_validator.parse_and_validate = MagicMock(return_value={"type": "test"})
+    metadata = MagicMock()
+    metadata.token = "expected-token"
+    mock_ws_connection_manager.connection_metadata = {"conn_001": metadata}
+
+    result = await _validate_message(
+        mock_websocket,
+        '{"type": "test", "csrfToken": "expected-token"}',
+        TEST_PLAYER_ID_STR,
+        mock_validator,
+        connection_manager=mock_ws_connection_manager,
+    )
+
+    assert result == {"type": "test"}
+    mock_validator.parse_and_validate.assert_called_once_with(
+        data='{"type": "test", "csrfToken": "expected-token"}',
+        player_id=TEST_PLAYER_ID_STR,
+        schema=None,
+        csrf_token="expected-token",
+    )
+
+
+@pytest.mark.asyncio
 async def test_send_error_response_websocket_disconnect(mock_websocket):
     """Test _send_error_response handles WebSocket disconnect."""
     from fastapi import WebSocketDisconnect

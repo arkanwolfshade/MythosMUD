@@ -102,6 +102,12 @@ def test_validate_csrf_matches_expected(validator: WebSocketMessageValidator) ->
     )
 
 
+def test_validate_csrf_present_without_expected_token_rejected(validator: WebSocketMessageValidator) -> None:
+    with pytest.raises(MessageValidationError) as exc:
+        _ = validator.validate_csrf({"type": "cmd", "csrfToken": "present"}, "player-1", None)
+    assert exc.value.error_type == "csrf_token_missing"
+
+
 def test_validate_csrf_snake_case_key(validator: WebSocketMessageValidator) -> None:
     assert (
         validator.validate_csrf(

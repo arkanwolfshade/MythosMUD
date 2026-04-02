@@ -252,14 +252,12 @@ class WebSocketMessageValidator:
         # If token is present, validate it
         if csrf_token is not None:
             if expected_token is None:
-                # Token present but no expected token - log warning but allow for now
-                # TODO: Implement proper CSRF token validation  # pylint: disable=fixme  # Reason: Security enhancement placeholder for CSRF protection
-                logger.debug(
+                logger.warning(
                     "CSRF token present but no expected token available",
                     player_id=player_id,
                     has_token=True,
                 )
-                return True
+                raise MessageValidationError("CSRF token cannot be validated", error_type="csrf_token_missing")
 
             if csrf_token != expected_token:
                 logger.warning(

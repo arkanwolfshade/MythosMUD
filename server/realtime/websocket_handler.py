@@ -122,7 +122,11 @@ async def _check_rate_limit(
 
 
 async def _validate_message(
-    websocket: WebSocket, data: str, player_id_str: str, validator: "WebSocketMessageValidator"
+    websocket: WebSocket,
+    data: str,
+    player_id_str: str,
+    validator: "WebSocketMessageValidator",
+    connection_manager: "ConnectionManager | None" = None,
 ) -> dict[str, object] | None:
     """
     Validate message and send error response if validation fails.
@@ -133,8 +137,21 @@ async def _validate_message(
     from .message_validator import MessageValidationError
 
     try:
-        csrf_token = None
-        message = validator.parse_and_validate(data=data, player_id=player_id_str, schema=None, csrf_token=csrf_token)
+        expected_token: str | None = None
+        if connection_manager is not None:
+            connection_id = connection_manager.get_connection_id_from_websocket(websocket)
+            if connection_id is not None:
+                metadata_raw = connection_manager.connection_metadata.get(connection_id)
+                metadata = cast(object | None, metadata_raw)
+                token_raw = cast(object | None, getattr(metadata, "token", None))
+                if isinstance(token_raw, str):
+                    expected_token = token_raw
+        message = validator.parse_and_validate(
+            data=data,
+            player_id=player_id_str,
+            schema=None,
+            csrf_token=expected_token,
+        )
         return message
     except MessageValidationError as e:
         logger.warning(
@@ -268,7 +285,13 @@ async def _process_message(  # pylint: disable=too-many-arguments,too-many-posit
     if not await _check_rate_limit(websocket, connection_id, player_id_str, connection_manager):
         return True
 
-    message = await _validate_message(websocket, data, player_id_str, validator)
+    message = await _validate_message(
+        websocket,
+        data,
+        player_id_str,
+        validator,
+        connection_manager=connection_manager,
+    )
     if message is None:
         return True
 
