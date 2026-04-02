@@ -130,6 +130,14 @@ if ($procedureFiles.Count -eq 0) {
 }
 
 $env:PGPASSWORD = $dbPassword
+$tempRoot = $env:TEMP
+if ([string]::IsNullOrWhiteSpace($tempRoot)) {
+    $tempRoot = [System.IO.Path]::GetTempPath()
+}
+if ([string]::IsNullOrWhiteSpace($tempRoot)) {
+    Write-Host "[ERROR] Could not determine a temporary directory path (TEMP/GetTempPath)." -ForegroundColor Red
+    exit 1
+}
 
 try {
     foreach ($targetDb in $TargetDbs) {
@@ -138,7 +146,7 @@ try {
         foreach ($file in $procedureFiles) {
             Write-Host "  - $($file.Name)" -ForegroundColor Gray
             if ($file.Name -eq "containers.sql") {
-                $dropFile = Join-Path $env:TEMP "containers_drop_get_container_$targetDb.sql"
+                $dropFile = Join-Path -Path $tempRoot -ChildPath "containers_drop_get_container_$targetDb.sql"
                 @"
 SET client_min_messages = WARNING;
 DROP FUNCTION IF EXISTS $targetDb.get_container(uuid) CASCADE;
