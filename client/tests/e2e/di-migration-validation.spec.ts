@@ -18,7 +18,7 @@
 import { expect, test, type APIResponse, type BrowserContext, type Page } from '@playwright/test';
 
 // Test configuration
-const BASE_URL = 'http://localhost:5173';
+const BASE_URL = 'http://127.0.0.1:5173';
 const SERVER_URL = 'http://localhost:54731';
 /** Versioned API base for v1 endpoints (use for all direct API requests in E2E). */
 const SERVER_API_V1 = `${SERVER_URL}/v1`;

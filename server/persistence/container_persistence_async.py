@@ -19,7 +19,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ..exceptions import DatabaseError, ValidationError
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import log_and_raise
-from .container_data import ContainerData
+from .container_data import ContainerData, ContainerDataCore, ContainerDataExtras
 from .container_helpers import parse_jsonb_column
 
 logger = get_logger(__name__)
@@ -112,16 +112,6 @@ async def _populate_container_items_async(
             text("SELECT add_item_to_container(:cid, :iid, :pos)"),
             {"cid": str(container_id), "iid": str(item_instance_id), "pos": position},
         )
-
-
-def _build_container_result(container_id: Any, created_at: Any, updated_at: Any, **fields: Any) -> ContainerData:
-    """Build ContainerData from create_container row and params."""
-    return ContainerData(
-        container_instance_id=container_id,
-        created_at=created_at,
-        updated_at=updated_at,
-        **fields,
-    )
 
 
 def _row_to_mapping(row: Any) -> dict[str, Any]:
@@ -260,21 +250,25 @@ async def _finalize_container_creation(
     out = await get_container_async(session, container_id)
     if out:
         return out
-    return _build_container_result(
-        container_id,
-        created_at,
-        updated_at,
-        source_type=source_type,
-        owner_id=params.get("owner_id"),
-        room_id=params.get("room_id"),
-        entity_id=params.get("entity_id"),
-        lock_state=params.get("lock_state", "unlocked"),
-        capacity_slots=params.get("capacity_slots", 20),
-        weight_limit=params.get("weight_limit"),
-        decay_at=params.get("decay_at"),
-        allowed_roles=params.get("allowed_roles") or [],
-        items_json=params.get("items_json") or [],
-        metadata_json=params.get("metadata_json") or {},
+    return ContainerData(
+        ContainerDataCore(
+            container_instance_id=container_id,
+            source_type=source_type,
+            owner_id=params.get("owner_id"),
+            room_id=params.get("room_id"),
+            entity_id=params.get("entity_id"),
+            lock_state=params.get("lock_state", "unlocked"),
+            capacity_slots=params.get("capacity_slots", 20),
+        ),
+        ContainerDataExtras(
+            weight_limit=params.get("weight_limit"),
+            decay_at=params.get("decay_at"),
+            allowed_roles=params.get("allowed_roles") or [],
+            items_json=params.get("items_json") or [],
+            metadata_json=params.get("metadata_json") or {},
+            created_at=created_at,
+            updated_at=updated_at,
+        ),
     )
 
 
@@ -341,20 +335,24 @@ async def get_container_async(session: AsyncSession, container_id: UUID) -> Cont
             return None
         items_json = await fetch_container_items_async(session, container_id)
         return ContainerData(
-            container_instance_id=row[0],
-            source_type=row[1],
-            owner_id=row[2],
-            room_id=row[3],
-            entity_id=row[4],
-            lock_state=row[5],
-            capacity_slots=row[6],
-            weight_limit=row[7],
-            decay_at=row[8],
-            allowed_roles=_parse_jsonb(row[9], []),
-            items_json=items_json,
-            metadata_json=_parse_jsonb(row[10], {}),
-            created_at=row[11],
-            updated_at=row[12],
+            ContainerDataCore(
+                container_instance_id=row[0],
+                source_type=row[1],
+                owner_id=row[2],
+                room_id=row[3],
+                entity_id=row[4],
+                lock_state=row[5],
+                capacity_slots=row[6],
+            ),
+            ContainerDataExtras(
+                weight_limit=row[7],
+                decay_at=row[8],
+                allowed_roles=_parse_jsonb(row[9], []),
+                items_json=items_json,
+                metadata_json=_parse_jsonb(row[10], {}),
+                created_at=row[11],
+                updated_at=row[12],
+            ),
         )
     except SQLAlchemyError as e:
         log_and_raise(

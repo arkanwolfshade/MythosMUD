@@ -20,7 +20,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from server.events.event_types import PlayerDeliriumRespawnedEvent, PlayerRespawnedEvent
 from server.models.game import PositionState
 from server.models.lucidity import LucidityActionCode
-from server.models.player import Player
+from server.models.player import Player, _stats_int
 from server.structured_logging.enhanced_logging_config import get_logger
 
 from ..exceptions import DatabaseError
@@ -178,7 +178,7 @@ class PlayerRespawnService:
         """Restore full health and move player to respawn_room; return (old_dp, max_dp, old_room)."""
         old_dp = player.restore_to_full_health()
         stats = player.get_stats()
-        max_dp = stats.get("max_dp", 100)
+        max_dp = _stats_int(stats, "max_dp", 100)
         old_room = player.current_room_id
         player.current_room_id = respawn_room
         return old_dp, max_dp, old_room

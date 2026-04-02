@@ -4,7 +4,7 @@
 
 import { expect, type Page } from '@playwright/test';
 
-const BASE_URL = 'http://localhost:5173';
+const BASE_URL = 'http://127.0.0.1:5173';
 
 export class LoginPage {
   constructor(private readonly page: Page) {}

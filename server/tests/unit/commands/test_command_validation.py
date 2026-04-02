@@ -4,7 +4,11 @@ Unit tests for command validation and blocking.
 Tests catatonia checks, rate limiting, command validation, grace period, casting state, and command blocks.
 """
 
+# pyright: reportPrivateUsage=false, reportAny=false
+# Tests target module-private helpers and MagicMock surfaces that pyright would otherwise flag.
+
 import uuid
+from typing import cast, final
 from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
 import pytest
@@ -17,6 +21,7 @@ from server.command_handler.catatonia_check import (
     _is_catatonic,
     _load_player_for_catatonia_check,
     _query_lucidity_record,
+    _registry_player_id_value,
     check_catatonia_block,
 )
 from server.command_handler_unified import (
@@ -30,6 +35,16 @@ from server.command_handler_unified import (
 
 class TestCatatoniaChecks:
     """Test catatonia checking functions."""
+
+    def test_registry_player_id_value_preserves_uuid_and_str(self) -> None:
+        """Registry key normalization keeps UUID and string ids intact."""
+        player_uuid = uuid.uuid4()
+        assert _registry_player_id_value(player_uuid) == player_uuid
+        assert _registry_player_id_value(str(player_uuid)) == str(player_uuid)
+
+    def test_registry_player_id_value_stringifies_non_string_ids(self) -> None:
+        """Registry key normalization stringifies non-UUID, non-string ids."""
+        assert _registry_player_id_value(1234) == "1234"
 
     def test_is_catatonic_with_tier(self):
         """Test _is_catatonic() returns True for catatonic tier."""
@@ -78,7 +93,8 @@ class TestCatatoniaChecks:
 
         result = await _fetch_lucidity_record(mock_session, player_id, "testplayer")
         assert result == mock_record
-        mock_session.get.assert_awaited_once()
+        get_mock: AsyncMock = cast(AsyncMock, mock_session.get)
+        get_mock.assert_awaited_once()
 
     @pytest.mark.asyncio
     async def test_query_lucidity_record_success(self):
@@ -130,7 +146,7 @@ class TestCatatoniaChecks:
         mock_registry = MagicMock()
         mock_registry.is_catatonic = Mock(return_value=True)
         mock_state = MagicMock()
-        mock_state.__dict__ = {"catatonia_registry": mock_registry}
+        mock_state.catatonia_registry = mock_registry
 
         blocked, message = _check_catatonia_registry(mock_state, player_id, "testplayer")
         assert blocked is True
@@ -143,9 +159,26 @@ class TestCatatoniaChecks:
         mock_registry = MagicMock()
         mock_registry.is_catatonic = Mock(return_value=False)
         mock_state = MagicMock()
-        mock_state.__dict__ = {"catatonia_registry": mock_registry}
+        mock_state.catatonia_registry = mock_registry
 
         blocked, message = _check_catatonia_registry(mock_state, player_id, "testplayer")
+        assert blocked is False
+        assert message is None
+
+    def test_check_catatonia_registry_slotted_state_object(self):
+        """Registry uses getattr(state, 'catatonia_registry') so __slots__ states work."""
+        player_id = uuid.uuid4()
+        mock_registry = MagicMock()
+        mock_registry.is_catatonic = Mock(return_value=False)
+
+        @final
+        class SlottedState:
+            __slots__ = ("catatonia_registry",)
+
+            def __init__(self, reg: object) -> None:
+                self.catatonia_registry = reg
+
+        blocked, message = _check_catatonia_registry(SlottedState(mock_registry), player_id, "testplayer")
         assert blocked is False
         assert message is None
 
@@ -156,8 +189,14 @@ class TestCatatoniaChecks:
         mock_player = MagicMock()
         player_name = "testplayer"
 
+        class _PersistenceUnused:
+            async def get_player_by_name(self, player_name: str) -> object | None:
+                raise AssertionError(
+                    f"persistence must not run when cache supplies the player (got {player_name!r})",
+                ) from None
+
         with patch("server.command_handler.catatonia_check.get_cached_player", return_value=mock_player):
-            result = await _load_player_for_catatonia_check(request, player_name, None)
+            result = await _load_player_for_catatonia_check(request, player_name, _PersistenceUnused())
             assert result == mock_player
 
     @pytest.mark.asyncio
@@ -189,6 +228,29 @@ class TestCatatoniaChecks:
         del request.app
         blocked, _message = await check_catatonia_block("testplayer", "look", request)
         assert blocked is False
+
+    @pytest.mark.asyncio
+    async def test_check_catatonia_block_uses_string_registry_key_when_player_id_not_uuid_or_str(self):
+        """Non-UUID/non-string player ids are stringified before registry lookup."""
+        request = Mock(spec=Request)
+        mock_registry = MagicMock()
+        mock_registry.is_catatonic = Mock(return_value=False)
+        mock_state = MagicMock()
+        mock_state.persistence = MagicMock()
+        mock_state.catatonia_registry = mock_registry
+
+        class _Player:
+            player_id = 12345
+
+        with patch("server.command_handler.catatonia_check.command_request_app_state", return_value=mock_state):
+            with patch(
+                "server.command_handler.catatonia_check._load_player_for_catatonia_check", return_value=_Player()
+            ):
+                blocked, message = await check_catatonia_block("testplayer", "look", request)
+
+        assert blocked is False
+        assert message is None
+        mock_registry.is_catatonic.assert_called_once_with("12345")
 
 
 class TestCheckRateLimit:

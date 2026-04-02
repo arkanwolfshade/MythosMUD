@@ -5,6 +5,8 @@ Provides fixtures used by NATS message handler, WebSocket handler, player room e
 handler, and other realtime tests.
 """
 
+# pyright: reportAny=false, reportMissingParameterType=false, reportUnknownParameterType=false, reportUnknownArgumentType=false
+
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -34,7 +36,7 @@ def mock_connection_manager():
 
 
 @pytest.fixture
-def mock_websocket():
+def mock_websocket() -> MagicMock:
     """Create mock WebSocket for handler tests."""
     ws = MagicMock()
     ws.send_json = AsyncMock()
@@ -43,7 +45,7 @@ def mock_websocket():
 
 
 @pytest.fixture
-def mock_ws_connection_manager():
+def mock_ws_connection_manager() -> MagicMock:
     """Create mock connection manager for WebSocket handler tests."""
     manager = MagicMock()
     manager.get_connection_id_from_websocket = MagicMock(return_value="conn_001")

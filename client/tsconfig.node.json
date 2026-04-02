@@ -4,6 +4,7 @@
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
     "target": "ES2020",
     "lib": ["ES2020"],
+    "types": ["node"],
     "module": "ESNext",
     "skipLibCheck": true,
     "moduleResolution": "bundler",
@@ -21,7 +22,9 @@
     "vite.userConfig.ts",
     "vite.proxyAuthorization.ts",
     "vite.vitestOptions.ts",
-    "vitest.config.ts"
+    "vitest.config.ts",
+    "playwright.config.ts",
+    "tests/e2e/playwright.runtime.config.ts"
   ],
-  "exclude": ["playwright.config.ts"]
+  "exclude": []
 }

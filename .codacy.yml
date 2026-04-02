@@ -25,9 +25,21 @@ exclude_paths:
 engines:
   lizard:
     config:
+      CCN: 11
+      arguments: "-a 6"
+      file-nloc: 550
       length: 55
+    # Cohesive chat/mute service; pylint already exempts module size. Lizard NLOC/CCN here are
+    # metrics, not defects (.cursor/rules/codacy.mdc). exclude_paths applies to CLI tool runs
+    # (ignore_patterns alone does not suppress Lizard locally; see note above engines.*).
+    exclude_paths:
+      - "server/services/user_manager.py"
+      - "scripts/ci/quality_fragmentation_guard.py"
   bandit:
     exclude_paths:
+      # Bandit should only scan Python files; exclude lock/docs/tooling artifacts that trigger AST parse failures.
+      - "uv.lock"
+      - "tools/room_toolkit/**"
       - "**/tests/**/*.py"
       - "**/test_*.py"
       - "**/*_test.py"
@@ -42,6 +54,9 @@ engines:
     exclude_paths:
       - "Makefile"
       - "**/Makefile"
+  trivy:
+    exclude_paths:
+      - "openapi.json"
 
 # Ignore assert and hardcoded secrets in test files (Bandit/Prospector B101/B106)
 # Assert and test passwords are standard in pytest; bandit.yml skips them but Codacy
@@ -228,12 +243,17 @@ ignore_patterns:
     file_paths:
       - "server/game/**/*.py"
       - "server/npc/**/*.py"
-  # # Lizard CCN: Ignore cyclomatic complexity warnings for complexity <= 10
-  # # We want to only report complexity > 10, but Codacy doesn't support custom CCN thresholds
-  # # So we suppress the medium severity warnings (which report complexity > 8)
-  # # This effectively sets our threshold to 11 (only reports complexity > 10)
-  # - pattern_id: 'Lizard_ccn-medium'
-  #   reason: 'Cyclomatic complexity threshold set to 11 (only report > 10). Medium severity reports > 8, which we want to ignore.'
+  # Lizard CCN: Ignore cyclomatic complexity warnings for complexity <= 10
+  # We want to only report complexity > 10, but Codacy doesn't support custom CCN thresholds
+  # So we suppress the medium severity warnings (which report complexity > 8)
+  # This effectively sets our threshold to 11 (only reports complexity > 10)
+  - pattern_id: "Lizard_ccn-medium"
+    reason: "Cyclomatic complexity threshold set to 11 (only report > 10). Medium severity reports > 8, which we want to ignore."
+  # Lizard file NLOC medium uses tool default threshold 500 in Codacy CLI. Project policy is 550.
+  # Suppress this single file until Codacy CLI honors engines.lizard.config.file-nloc=550.
+  - pattern_id: "Lizard_file-nloc-medium"
+    file_paths:
+      - "scripts/ci/quality_fragmentation_guard.py"
 
 # Cyclomatic complexity configuration
 # Set cyclomatic complexity threshold to 11 (only report > 10)

@@ -135,8 +135,8 @@ Actions docs):
 
 1. **Personal Access Token (PAT)**: Required for accessing private repositories
 
-2. **Secret names**: `MYTHOSMUD_PAT` or optional alias `PRIVATE_SUBMODULE_PAT` under **Settings → Secrets and variables →
-   Actions**. Workflows use this **only** for cloning `mythosmud_data`, not for the parent repo checkout.
+2. **Secret name**: `MYTHOSMUD_PAT` under **Settings → Secrets and variables → Actions**. Workflows use this **only**
+   for cloning `mythosmud_data`, not for the parent repo checkout.
 
 3. **Split checkout (workflows)**: First `actions/checkout` uses `submodules: false` and **`github.token`** for the
    parent repo only. A bash step reads **`.gitmodules`** and **`git ls-tree HEAD data`** for **`OWNER/REPO`** and the
@@ -192,32 +192,32 @@ Actions docs):
 See `.github/workflows/ci.yml` (**Resolve data submodule** + **Clone private data into data/**). Minimal sketch:
 
 ```yaml
-      - uses: actions/checkout@v5
-        with:
-          submodules: false
-          token: ${{ github.token }}
-      - id: data_submodule
-        run: |
-          set -euo pipefail
-          u="$(git config -f .gitmodules --get submodule.data.url)"
-          u="${u#https://github.com/}"; u="${u%.git}"
-          sha=$(git ls-tree HEAD data | awk '{print $3}')
-          echo "repository=${u}" >> "${GITHUB_OUTPUT}"
-          echo "sha=${sha}" >> "${GITHUB_OUTPUT}"
-      - env:
-          SUBMODULE_PAT: ${{ secrets.MYTHOSMUD_PAT }}
-          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
-        run: |
-          set -euo pipefail
-          pat=$(printf '%s' "$SUBMODULE_PAT" | tr -d '\r\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-          case "$pat" in github_pat_*) U=x-access-token ;; *) U=$GITHUB_REPOSITORY_OWNER ;; esac
-          export GIT_USER_Q="$U" PAT_Q="$pat"
-          auth=$(python3 -c "import os, urllib.parse as u; print(u.quote(os.environ['GIT_USER_Q'],safe='')+':'+u.quote(os.environ['PAT_Q'],safe=''))")
-          unset GIT_USER_Q PAT_Q
-          rm -rf data && mkdir data && cd data
-          git init -q && git remote add origin "https://${auth}@github.com/${{ steps.data_submodule.outputs.repository }}.git"
-          GIT_TERMINAL_PROMPT=0 git fetch --depth 1 origin "${{ steps.data_submodule.outputs.sha }}"
-          git checkout -q FETCH_HEAD
+- uses: actions/checkout@v5
+  with:
+    submodules: false
+    token: ${{ github.token }}
+- id: data_submodule
+  run: |
+    set -euo pipefail
+    u="$(git config -f .gitmodules --get submodule.data.url)"
+    u="${u#https://github.com/}"; u="${u%.git}"
+    sha=$(git ls-tree HEAD data | awk '{print $3}')
+    echo "repository=${u}" >> "${GITHUB_OUTPUT}"
+    echo "sha=${sha}" >> "${GITHUB_OUTPUT}"
+- env:
+    SUBMODULE_PAT: ${{ secrets.MYTHOSMUD_PAT }}
+    GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+  run: |
+    set -euo pipefail
+    pat=$(printf '%s' "$SUBMODULE_PAT" | tr -d '\r\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+    case "$pat" in github_pat_*) U=x-access-token ;; *) U=$GITHUB_REPOSITORY_OWNER ;; esac
+    export GIT_USER_Q="$U" PAT_Q="$pat"
+    auth=$(python3 -c "import os, urllib.parse as u; print(u.quote(os.environ['GIT_USER_Q'],safe='')+':'+u.quote(os.environ['PAT_Q'],safe=''))")
+    unset GIT_USER_Q PAT_Q
+    rm -rf data && mkdir data && cd data
+    git init -q && git remote add origin "https://${auth}@github.com/${{ steps.data_submodule.outputs.repository }}.git"
+    GIT_TERMINAL_PROMPT=0 git fetch --depth 1 origin "${{ steps.data_submodule.outputs.sha }}"
+    git checkout -q FETCH_HEAD
 ```
 
 ## Troubleshooting
@@ -239,7 +239,7 @@ git submodule update --init --recursive
 
 **For GitHub Actions:**
 
-- Verify `MYTHOSMUD_PAT` (or `PRIVATE_SUBMODULE_PAT`) exists. If fetch of **MythosMUD** fails with _could not read
+- Verify `MYTHOSMUD_PAT` exists. If fetch of **MythosMUD** fails with _could not read
   Username_, a submodule-only PAT was likely passed as `actions/checkout` `token`; use split checkout as in `ci.yml`.
 - **_Invalid username or token_ on submodule clone**: Regenerate the PAT, confirm **Contents: Read** on
   `mythosmud_data`, and **authorize SSO** if your org requires it. CI uses **`x-access-token`** as the HTTPS username for

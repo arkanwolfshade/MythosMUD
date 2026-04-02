@@ -24,7 +24,7 @@ const jsxA11yRecommendedWarnRules = Object.fromEntries(
 const jsxA11yRulesOff = Object.fromEntries(Object.keys(jsxA11y.rules).map(name => [`jsx-a11y/${name}`, 'off']));
 
 export default tseslint.config([
-  globalIgnores(['dist', 'playwright.config.ts', 'playwright-report/**']),
+  globalIgnores(['dist', 'playwright-report/**']),
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
@@ -100,12 +100,13 @@ export default tseslint.config([
     },
   },
   {
-    files: ['playwright.config.ts'],
+    files: ['playwright.config.ts', '**/playwright.runtime.config.ts'],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.node,
+    },
     rules: {
-      // Suppress Playwright connection errors during linting - these are false positives
-      // that occur when Playwright tries to validate the config by connecting to browser ports
-      // on Windows/IPv6. The error "connect EACCES ::1:XXXXX" is a known issue and does not
-      // indicate a configuration problem.
+      'no-undef': 'off',
       '@typescript-eslint/ban-ts-comment': 'off',
     },
   },

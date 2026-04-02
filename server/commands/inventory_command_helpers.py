@@ -1,9 +1,12 @@
 """Command helper functions for inventory operations."""
 
 import inspect
+from collections.abc import Awaitable
 from copy import deepcopy
-from typing import Any, cast
+from typing import cast
 from uuid import UUID
+
+from structlog.stdlib import BoundLogger
 
 from ..exceptions import ValidationError as MythosValidationError
 from ..models.player import Player
@@ -13,21 +16,21 @@ from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
 from .inventory_item_matching import match_room_drop_by_name
 
-logger = get_logger(__name__)
+logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
 
 
-def resolve_state(request: Any) -> tuple[Any, Any]:
+def resolve_state(request: object) -> tuple[object, object]:
     """Resolve persistence and connection manager from request."""
-    app = getattr(request, "app", None)
-    state = getattr(app, "state", None)
-    persistence = getattr(state, "persistence", None)
-    connection_manager = getattr(state, "connection_manager", None)
+    app: object = getattr(request, "app", None)
+    state: object = getattr(app, "state", None) if app is not None else None
+    persistence = getattr(state, "persistence", None) if state is not None else None
+    connection_manager = getattr(state, "connection_manager", None) if state is not None else None
     return persistence, connection_manager
 
 
 async def resolve_player(
-    persistence: Any,
-    current_user: dict[str, Any],
+    persistence: object,
+    current_user: dict[str, object],
     fallback_player_name: str,
 ) -> tuple[Player | None, dict[str, str] | None]:
     """Resolve player from persistence and current user."""
@@ -41,8 +44,17 @@ async def resolve_player(
         logger.warning("Failed to resolve username for inventory command", player=fallback_player_name, error=str(exc))
         return None, {"result": str(exc)}
 
+    get_player = getattr(persistence, "get_player_by_name", None)
+    if not callable(get_player):
+        logger.warning("Persistence missing get_player_by_name", player=fallback_player_name)
+        return None, {"result": "Inventory information is not available."}
+
     try:
-        player = await persistence.get_player_by_name(username)
+        maybe_player = get_player(username)
+        if inspect.isawaitable(maybe_player):
+            player = await cast(Awaitable[Player | None], maybe_player)
+        else:
+            player = cast(Player | None, maybe_player)
     except Exception as exc:  # noqa: B904  # pragma: no cover - defensive logging path  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Persistence errors unpredictable, must handle gracefully
         logger.error("Persistence error resolving player", player=username, error=str(exc))
         return None, {"result": f"Error resolving player: {str(exc)}"}
@@ -54,38 +66,44 @@ async def resolve_player(
     return player, None
 
 
-def clone_inventory(player: Player) -> list[dict[str, Any]]:
+def clone_inventory(player: Player) -> list[dict[str, object]]:
     """Clone player inventory for rollback purposes."""
     return deepcopy(player.get_inventory())
 
 
 async def broadcast_room_event(
-    connection_manager: Any,
+    connection_manager: object,
     room_id: str,
-    event: dict[str, Any],
+    event: dict[str, object],
     *,
     exclude_player: str | None = None,
 ) -> None:
     """Broadcast event to room, excluding optional player."""
-    if not connection_manager or not hasattr(connection_manager, "broadcast_to_room"):
+    broadcast = getattr(connection_manager, "broadcast_to_room", None)
+    if not callable(broadcast):
         return
 
     try:
-        result = connection_manager.broadcast_to_room(str(room_id), event, exclude_player=exclude_player)
+        result = broadcast(str(room_id), event, exclude_player=exclude_player)
         if inspect.isawaitable(result):
             await result
     except Exception as exc:  # noqa: B904  # pragma: no cover - broadcast failures logged but not fatal  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Broadcast errors unpredictable, must not fail command
         logger.warning("Failed to broadcast room event", room_id=room_id, error=str(exc))
 
 
-async def persist_player(persistence: Any, player: Player) -> dict[str, str] | None:
+async def persist_player(persistence: object, player: Player) -> dict[str, str] | None:
     """Persist player changes, returning error dict on failure.
 
     Awaits save_player when persistence is async (e.g. AsyncPersistence) so the
     save completes before return; otherwise inventory would not be persisted.
     """
+    save_player = getattr(persistence, "save_player", None)
+    if not callable(save_player):
+        logger.error("Persistence missing save_player", player=player.name)
+        return {"result": "An error occurred while saving your inventory."}
+
     try:
-        result = persistence.save_player(player)
+        result = save_player(player)
         if inspect.isawaitable(result):
             await result
         return None
@@ -98,7 +116,11 @@ async def persist_player(persistence: Any, player: Player) -> dict[str, str] | N
 
 
 def resolve_pickup_item_index(
-    command_data: dict[str, Any], drop_list: list[dict[str, Any]], player_name: str, player_id: UUID, room_id: str
+    command_data: dict[str, object],
+    drop_list: list[dict[str, object]],
+    player_name: str,
+    player_id: UUID,
+    room_id: str,
 ) -> tuple[int | None, int | None, dict[str, str] | None]:
     """Resolve item index for pickup by index or search term."""
     index = command_data.get("index")
@@ -135,36 +157,38 @@ def resolve_pickup_item_index(
     return None, None, {"result": "Usage: pickup <item-number|item-name> [quantity]"}
 
 
-def prepare_extracted_stack(extracted_stack: dict[str, Any], player_name: str, player_id: UUID) -> dict[str, Any]:
+def prepare_extracted_stack(extracted_stack: dict[str, object], player_name: str, player_id: UUID) -> dict[str, object]:
     """Prepare extracted stack for inventory addition, ensuring it's a dict copy.
 
     Picked-up items (from room or get-from-room) go into general inventory (pockets),
     not into an equipment slot. We set slot_type to 'inventory' so the player must
     equip the item separately to use it in main_hand etc.
     """
-    if isinstance(extracted_stack, dict):
-        extracted_stack = dict(extracted_stack)  # Create a copy to avoid mutating the original
-        extracted_stack["slot_type"] = "inventory"
-        logger.debug(
-            "Pickup: item will be added to general inventory",
-            player=player_name,
-            player_id=player_id,
-            item_id=extracted_stack.get("item_id"),
-            item_name=extracted_stack.get("item_name"),
-        )
-    return extracted_stack
+    copied = dict(extracted_stack)
+    copied["slot_type"] = "inventory"
+    logger.debug(
+        "Pickup: item will be added to general inventory",
+        player=player_name,
+        player_id=player_id,
+        item_id=copied.get("item_id"),
+        item_name=copied.get("item_name"),
+    )
+    return copied
 
 
-def ensure_item_instance_for_pickup(
-    persistence: Any, extracted_stack: dict[str, Any], player: Player, room_id: str
+async def ensure_item_instance_for_pickup(
+    persistence: object, extracted_stack: dict[str, object], player: Player, room_id: str
 ) -> None:
     """Ensure item instance exists in database for picked up item."""
     item_instance_id = extracted_stack.get("item_instance_id")
     prototype_id = extracted_stack.get("prototype_id") or extracted_stack.get("item_id")
 
     if item_instance_id and prototype_id:
+        ensure_fn = getattr(persistence, "ensure_item_instance", None)
+        if not callable(ensure_fn):
+            return
         try:
-            persistence.ensure_item_instance(
+            result: object = ensure_fn(
                 item_instance_id=item_instance_id,
                 prototype_id=prototype_id,
                 owner_type="player",
@@ -174,6 +198,8 @@ def ensure_item_instance_for_pickup(
                 origin_source="pickup",
                 origin_metadata={"room_id": room_id},
             )
+            if inspect.isawaitable(result):
+                await cast(Awaitable[object], result)
             logger.debug(
                 "Item instance ensured for picked up item",
                 item_instance_id=item_instance_id,
@@ -192,18 +218,20 @@ def ensure_item_instance_for_pickup(
 async def add_pickup_to_inventory(
     inventory_service: InventoryService,
     player: Player,
-    extracted_stack: dict[str, Any],
-    room_manager: Any,
+    extracted_stack: dict[str, object],
+    room_manager: object,
     room_id: str,
-) -> tuple[list[dict[str, Any]] | None, dict[str, str] | None]:
+) -> tuple[list[dict[str, object]] | None, dict[str, str] | None]:
     """Add picked up item to inventory, returning updated inventory or error."""
     previous_inventory = clone_inventory(player)
 
     try:
         updated_inventory = inventory_service.add_stack(previous_inventory, extracted_stack)
-        return cast(list[dict[str, Any]], updated_inventory), None
+        return cast(list[dict[str, object]], updated_inventory), None
     except (InventoryCapacityError, InventoryValidationError) as exc:
-        room_manager.add_room_drop(room_id, extracted_stack)
+        add_drop = getattr(room_manager, "add_room_drop", None)
+        if callable(add_drop):
+            _ = add_drop(room_id, extracted_stack)
         logger.info(
             "Pickup rejected",
             player=player.name,
@@ -215,13 +243,14 @@ async def add_pickup_to_inventory(
 
 
 async def build_and_broadcast_inventory_event(
-    connection_manager: Any,
+    connection_manager: object,
     player: Player,
     room_id: str,
     event_type: str,
-    event_data: dict[str, Any],
+    event_data: dict[str, object],
 ) -> None:
     """Build and broadcast an inventory-related event to the room."""
+    from ..realtime.connection_manager import ConnectionManager
     from ..realtime.envelope import build_event
 
     event = build_event(
@@ -229,7 +258,7 @@ async def build_and_broadcast_inventory_event(
         event_data,
         room_id=room_id,
         player_id=str(player.player_id),
-        connection_manager=connection_manager,
+        connection_manager=cast(ConnectionManager | None, connection_manager),
     )
 
     await broadcast_room_event(
@@ -241,15 +270,15 @@ async def build_and_broadcast_inventory_event(
 
 
 async def resolve_state_and_player(
-    request: Any, current_user: dict[str, Any], player_name: str
-) -> tuple[Any, Any, Player | None, dict[str, str] | None]:
+    request: object, current_user: dict[str, object], player_name: str
+) -> tuple[object, object, Player | None, dict[str, str] | None]:
     """Resolve state and player, returning (persistence, connection_manager, player, error)."""
     persistence, connection_manager = resolve_state(request)
     player, error = await resolve_player(persistence, current_user, player_name)
     return persistence, connection_manager, player, error
 
 
-def get_room_manager(connection_manager: Any, player: Player) -> tuple[Any, dict[str, str] | None]:
+def get_room_manager(connection_manager: object, player: Player) -> tuple[object, dict[str, str] | None]:
     """Get room manager from connection manager, returning (room_manager, error)."""
     room_manager = getattr(connection_manager, "room_manager", None)
     if not room_manager:
@@ -266,9 +295,10 @@ def remove_item_from_inventory(player: Player, item_index: int | None, transfer_
     new_inventory = inventory.copy()
     if item_index is not None and 0 <= item_index < len(new_inventory):
         item_to_remove = new_inventory[item_index]
-        current_quantity = item_to_remove.get("quantity", 1)
+        qty_raw = item_to_remove.get("quantity", 1)
+        current_quantity = qty_raw if isinstance(qty_raw, int) else 1
         if transfer_quantity >= current_quantity:
-            new_inventory.pop(item_index)
+            _ = new_inventory.pop(item_index)
         else:
             new_inventory[item_index] = item_to_remove.copy()
             new_inventory[item_index]["quantity"] = current_quantity - transfer_quantity

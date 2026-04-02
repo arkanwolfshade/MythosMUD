@@ -35,3 +35,26 @@ async def test_cold_damage_resistance_reduces_damage() -> None:
         -expected_damage,
         "damage:cold",
     )
+
+
+@pytest.mark.asyncio
+async def test_damage_defaults_current_dp_to_20_when_missing() -> None:
+    """Missing current_dp should use base investigator fallback to avoid inflated health."""
+    repo = HealthRepository()
+    repo.update_player_health = AsyncMock()
+
+    mock_player = MagicMock(spec=Player)
+    mock_player.player_id = uuid.uuid4()
+    mock_player.name = "FallbackPlayer"
+
+    stats: dict[str, int] = {}
+    mock_player.get_stats.return_value = stats
+
+    await repo.damage_player(mock_player, 5, "physical")
+
+    assert stats["current_dp"] == 15
+    repo.update_player_health.assert_awaited_once_with(
+        mock_player.player_id,
+        -5,
+        "damage:physical",
+    )

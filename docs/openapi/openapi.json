@@ -232,7 +232,7 @@
                   "$ref": "#/components/schemas/BearerResponse"
                 },
                 "example": {
-                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiOTIyMWZmYzktNjQwZi00MzcyLTg2ZDMtY2U2NDJjYmE1NjAzIiwiYXVkIjoiZmFzdGFwaS11c2VyczphdXRoIiwiZXhwIjoxNTcxNTA0MTkzfQ.M10bjOe45I5Ncu_uXvOmVV8QxnL-nZfcH96U90JaocI",
+                  "access_token": "FAKE_TOKEN_FOR_DOCUMENTATION_ONLY",
                   "token_type": "bearer"
                 }
               }

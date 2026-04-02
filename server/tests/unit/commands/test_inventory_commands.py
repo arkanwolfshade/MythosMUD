@@ -1,7 +1,7 @@
 """
-Unit tests for inventory command handlers.
+Unit tests for inventory command handlers (except pickup; see test_inventory_commands_pickup).
 
-Tests the inventory command handler functions.
+Tests drop, equip, unequip, put, get, and inventory listing.
 """
 
 from unittest.mock import AsyncMock, MagicMock, patch
@@ -13,10 +13,11 @@ from server.commands.inventory_commands import (
     handle_equip_command,
     handle_get_command,
     handle_inventory_command,
-    handle_pickup_command,
     handle_put_command,
     handle_unequip_command,
 )
+
+from .inventory_commands_test_support import PickupTestWiring, command_result_text
 
 
 @pytest.mark.asyncio
@@ -24,7 +25,7 @@ async def test_handle_inventory_command():
     """Test handle_inventory_command() displays inventory."""
     mock_request = MagicMock()
     mock_app = MagicMock()
-    mock_state = MagicMock()
+    mock_state: MagicMock = MagicMock()
     mock_persistence = AsyncMock()
     mock_player = MagicMock()
     mock_player.name = "TestPlayer"
@@ -33,12 +34,13 @@ async def test_handle_inventory_command():
     mock_player.get_equipped_items = MagicMock(return_value={})
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_state.persistence = mock_persistence
-    mock_state.container = MagicMock()
-    mock_state.container.async_persistence = mock_persistence
+    mock_container: MagicMock = MagicMock()
+    mock_container.async_persistence = mock_persistence
+    mock_state.container = mock_container
     mock_app.state = mock_state
     mock_request.app = mock_app
 
-    with patch("server.commands.inventory_commands.get_shared_services") as mock_get_services:
+    with patch("server.commands.inventory_service_helpers.get_shared_services") as mock_get_services:
         mock_wearable_service = AsyncMock()
         mock_wearable_service.get_wearable_containers_for_player = AsyncMock(return_value=[])
         mock_get_services.return_value = (MagicMock(), mock_wearable_service, MagicMock())
@@ -60,249 +62,10 @@ async def test_handle_inventory_command_no_persistence():
 
     assert "result" in result
     assert (
-        "not available" in result["result"].lower()
-        or "not found" in result["result"].lower()
-        or "error" in result["result"].lower()
+        "not available" in command_result_text(result).lower()
+        or "not found" in command_result_text(result).lower()
+        or "error" in command_result_text(result).lower()
     )
-
-
-@pytest.mark.asyncio
-async def test_handle_pickup_command():
-    """Test handle_pickup_command() picks up item by index."""
-    import uuid
-
-    mock_request = MagicMock()
-    mock_app = MagicMock()
-    mock_state = MagicMock()
-    mock_persistence = MagicMock()
-    mock_connection_manager = MagicMock()
-    mock_room_manager = MagicMock()
-    item_stack = {
-        "item_name": "sword",
-        "item_id": "sword_001",
-        "item_instance_id": str(uuid.uuid4()),
-        "prototype_id": "sword_proto",
-        "slot_type": "inventory",
-        "quantity": 1,
-    }
-    mock_room_manager.list_room_drops = MagicMock(return_value=[item_stack])
-    mock_room_manager.take_room_drop = MagicMock(return_value=item_stack)
-    mock_connection_manager.room_manager = mock_room_manager
-    mock_player = MagicMock()
-    mock_player.name = "TestPlayer"
-    mock_player.player_id = uuid.uuid4()
-    mock_player.current_room_id = "room_001"
-    mock_player.get_inventory = MagicMock(return_value=[])
-    mock_player.set_inventory = MagicMock()
-    mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-    mock_persistence.ensure_item_instance = MagicMock()
-    mock_state.persistence = mock_persistence
-    mock_state.connection_manager = mock_connection_manager
-    mock_state.container = MagicMock()
-    mock_state.container.async_persistence = mock_persistence
-    mock_app.state = mock_state
-    mock_request.app = mock_app
-
-    with patch("server.commands.inventory_commands.get_shared_services") as mock_get_services:
-        from server.services.inventory_service import InventoryService
-
-        mock_inventory_service = InventoryService()
-        mock_get_services.return_value = (mock_inventory_service, MagicMock(), MagicMock())
-        with patch("server.commands.inventory_commands.persist_player", return_value=None):
-            with patch(
-                "server.commands.inventory_commands.build_and_broadcast_inventory_event", new_callable=AsyncMock
-            ):
-                result = await handle_pickup_command(
-                    {"index": 1}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer"
-                )
-                assert "result" in result
-                assert "picks up" in result["result"] or "pick up" in result["result"]
-
-
-@pytest.mark.asyncio
-async def test_handle_pickup_command_no_target():
-    """Test handle_pickup_command() handles missing target."""
-    import uuid
-
-    mock_request = MagicMock()
-    mock_app = MagicMock()
-    mock_state = MagicMock()
-    mock_persistence = MagicMock()
-    mock_connection_manager = MagicMock()
-    mock_room_manager = MagicMock()
-    mock_room_manager.list_room_drops = MagicMock(return_value=[])
-    mock_connection_manager.room_manager = mock_room_manager
-    mock_player = MagicMock()
-    mock_player.name = "TestPlayer"
-    mock_player.player_id = uuid.uuid4()
-    mock_player.current_room_id = "room_001"
-    mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-    mock_state.persistence = mock_persistence
-    mock_state.connection_manager = mock_connection_manager
-    mock_state.container = MagicMock()
-    mock_state.container.async_persistence = mock_persistence
-    mock_app.state = mock_state
-    mock_request.app = mock_app
-
-    result = await handle_pickup_command({}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer")
-
-    assert "result" in result
-    assert "usage" in result["result"].lower() or "pickup" in result["result"].lower()
-
-
-@pytest.mark.asyncio
-async def test_handle_pickup_command_no_room_manager():
-    """Test handle_pickup_command() handles missing room manager."""
-    import uuid
-
-    mock_request = MagicMock()
-    mock_app = MagicMock()
-    mock_state = MagicMock()
-    mock_persistence = MagicMock()
-    mock_connection_manager = MagicMock()
-    mock_connection_manager.room_manager = None
-    mock_player = MagicMock()
-    mock_player.name = "TestPlayer"
-    mock_player.player_id = uuid.uuid4()
-    mock_player.current_room_id = "room_001"
-    mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-    mock_state.persistence = mock_persistence
-    mock_state.connection_manager = mock_connection_manager
-    mock_state.container = MagicMock()
-    mock_state.container.async_persistence = mock_persistence
-    mock_app.state = mock_state
-    mock_request.app = mock_app
-
-    result = await handle_pickup_command({"index": 1}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer")
-    assert "result" in result
-    assert "unavailable" in result["result"].lower() or "not available" in result["result"].lower()
-
-
-@pytest.mark.asyncio
-async def test_handle_pickup_command_invalid_index():
-    """Test handle_pickup_command() handles invalid index."""
-    import uuid
-
-    mock_request = MagicMock()
-    mock_app = MagicMock()
-    mock_state = MagicMock()
-    mock_persistence = MagicMock()
-    mock_connection_manager = MagicMock()
-    mock_room_manager = MagicMock()
-    mock_room_manager.list_room_drops = MagicMock(return_value=[{"item_name": "sword"}])
-    mock_connection_manager.room_manager = mock_room_manager
-    mock_player = MagicMock()
-    mock_player.name = "TestPlayer"
-    mock_player.player_id = uuid.uuid4()
-    mock_player.current_room_id = "room_001"
-    mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-    mock_state.persistence = mock_persistence
-    mock_state.connection_manager = mock_connection_manager
-    mock_state.container = MagicMock()
-    mock_state.container.async_persistence = mock_persistence
-    mock_app.state = mock_state
-    mock_request.app = mock_app
-
-    result = await handle_pickup_command({"index": 5}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer")
-    assert "result" in result
-    assert "no such item" in result["result"].lower() or "not found" in result["result"].lower()
-
-
-@pytest.mark.asyncio
-async def test_handle_pickup_command_search_term_not_found():
-    """Test handle_pickup_command() handles search term not found."""
-    import uuid
-
-    mock_request = MagicMock()
-    mock_app = MagicMock()
-    mock_state = MagicMock()
-    mock_persistence = MagicMock()
-    mock_connection_manager = MagicMock()
-    mock_room_manager = MagicMock()
-    mock_room_manager.list_room_drops = MagicMock(return_value=[{"item_name": "sword"}])
-    mock_connection_manager.room_manager = mock_room_manager
-    mock_player = MagicMock()
-    mock_player.name = "TestPlayer"
-    mock_player.player_id = uuid.uuid4()
-    mock_player.current_room_id = "room_001"
-    mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-    mock_state.persistence = mock_persistence
-    mock_state.connection_manager = mock_connection_manager
-    mock_state.container = MagicMock()
-    mock_state.container.async_persistence = mock_persistence
-    mock_app.state = mock_state
-    mock_request.app = mock_app
-
-    result = await handle_pickup_command(
-        {"search_term": "bow"}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer"
-    )
-    assert "result" in result
-    assert "no item" in result["result"].lower() or "matching" in result["result"].lower()
-
-
-@pytest.mark.asyncio
-async def test_handle_pickup_command_inventory_capacity_error():
-    """Test handle_pickup_command() handles inventory capacity error."""
-    import uuid
-
-    mock_request = MagicMock()
-    mock_app = MagicMock()
-    mock_state = MagicMock()
-    mock_persistence = MagicMock()
-    mock_connection_manager = MagicMock()
-    mock_room_manager = MagicMock()
-    item_stack = {
-        "item_name": "sword",
-        "item_id": "sword_001",
-        "item_instance_id": str(uuid.uuid4()),
-        "prototype_id": "sword_proto",
-        "slot_type": "inventory",
-        "quantity": 1,
-    }
-    mock_room_manager.list_room_drops = MagicMock(return_value=[item_stack])
-    mock_room_manager.take_room_drop = MagicMock(return_value=item_stack)
-    mock_room_manager.add_room_drop = MagicMock()
-    mock_connection_manager.room_manager = mock_room_manager
-    mock_player = MagicMock()
-    mock_player.name = "TestPlayer"
-    mock_player.player_id = uuid.uuid4()
-    mock_player.current_room_id = "room_001"
-    # Fill inventory to capacity to trigger capacity error
-    full_inventory = [
-        {
-            "item_name": f"item_{i}",
-            "item_id": f"item_{i}",
-            "item_instance_id": str(uuid.uuid4()),
-            "prototype_id": f"proto_{i}",
-            "slot_type": "inventory",
-            "quantity": 1,
-        }
-        for i in range(20)
-    ]
-    mock_player.get_inventory = MagicMock(return_value=full_inventory)
-    mock_player.set_inventory = MagicMock()
-    mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-    mock_persistence.ensure_item_instance = MagicMock()
-    mock_state.persistence = mock_persistence
-    mock_state.connection_manager = mock_connection_manager
-    mock_state.container = MagicMock()
-    mock_state.container.async_persistence = mock_persistence
-    mock_app.state = mock_state
-    mock_request.app = mock_app
-
-    with patch("server.commands.inventory_commands.get_shared_services") as mock_get_services:
-        from server.services.inventory_service import InventoryService
-
-        mock_inventory_service = InventoryService()
-        mock_get_services.return_value = (mock_inventory_service, MagicMock(), MagicMock())
-        result = await handle_pickup_command({"index": 1}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer")
-        assert "result" in result
-        assert (
-            "cannot pick" in result["result"].lower()
-            or "full" in result["result"].lower()
-            or "capacity" in result["result"].lower()
-        )
-        mock_room_manager.add_room_drop.assert_called_once()
 
 
 @pytest.mark.asyncio
@@ -310,7 +73,7 @@ async def test_handle_drop_command():
     """Test handle_drop_command() drops item."""
     mock_request = MagicMock()
     mock_app = MagicMock()
-    mock_state = MagicMock()
+    mock_state: MagicMock = MagicMock()
     mock_persistence = AsyncMock()
     mock_connection_manager = MagicMock()
     mock_player = MagicMock()
@@ -321,12 +84,13 @@ async def test_handle_drop_command():
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_state.persistence = mock_persistence
     mock_state.connection_manager = mock_connection_manager
-    mock_state.container = MagicMock()
-    mock_state.container.async_persistence = mock_persistence
+    mock_container: MagicMock = MagicMock()
+    mock_container.async_persistence = mock_persistence
+    mock_state.container = mock_container
     mock_app.state = mock_state
     mock_request.app = mock_app
 
-    with patch("server.commands.inventory_commands.get_shared_services") as mock_get_services:
+    with patch("server.commands.inventory_service_helpers.get_shared_services") as mock_get_services:
         mock_inventory_service = MagicMock()
         mock_inventory_service.remove_item_from_inventory = AsyncMock(return_value={"success": True})
         mock_get_services.return_value = (mock_inventory_service, MagicMock(), MagicMock())
@@ -343,21 +107,64 @@ async def test_handle_drop_command_no_target():
     """Test handle_drop_command() handles missing target."""
     mock_request = MagicMock()
     mock_app = MagicMock()
-    mock_state = MagicMock()
+    mock_state: MagicMock = MagicMock()
     mock_persistence = AsyncMock()
     mock_player = MagicMock()
     mock_player.name = "TestPlayer"
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_state.persistence = mock_persistence
-    mock_state.container = MagicMock()
-    mock_state.container.async_persistence = mock_persistence
+    mock_container: MagicMock = MagicMock()
+    mock_container.async_persistence = mock_persistence
+    mock_state.container = mock_container
     mock_app.state = mock_state
     mock_request.app = mock_app
 
     result = await handle_drop_command({}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer")
 
     assert "result" in result
-    assert "usage" in result["result"].lower() or "target" in result["result"].lower()
+    assert "usage" in command_result_text(result).lower() or "target" in command_result_text(result).lower()
+
+
+@pytest.mark.asyncio
+async def test_handle_drop_command_broadcasts_room_event_after_persist() -> None:
+    """Drop success path emits inventory_drop broadcast with expected payload."""
+    w = PickupTestWiring()
+    w.player.get_inventory = MagicMock(
+        return_value=[
+            {
+                "item_name": "sword",
+                "item_id": "sword_001",
+                "item_instance_id": "inst_001",
+                "prototype_id": "sword_proto",
+                "slot_type": "inventory",
+                "quantity": 2,
+            }
+        ]
+    )
+    mock_persist = AsyncMock(return_value=None)
+
+    with patch("server.commands.inventory_drop_command.persist_player", mock_persist):
+        with patch(
+            "server.commands.inventory_drop_command.build_and_broadcast_inventory_event",
+            new_callable=AsyncMock,
+        ) as mock_broadcast:
+            result = await handle_drop_command(
+                {"index": 1, "quantity": 1}, {"name": "TestPlayer"}, w.request, None, "TestPlayer"
+            )
+
+    assert "result" in result
+    assert "drop" in command_result_text(result).lower()
+    w.add_room_drop.assert_called_once()
+    mock_persist.assert_awaited_once_with(w.persistence, w.player)
+    mock_broadcast.assert_awaited_once()
+    args = mock_broadcast.await_args.args
+    assert args[2] == "room_001"
+    assert args[3] == "inventory_drop"
+    payload = args[4]
+    assert payload["player_name"] == "TestPlayer"
+    assert payload["item_id"] == "sword_001"
+    assert payload["item_name"] == "sword"
+    assert payload["quantity"] == 1
 
 
 @pytest.mark.asyncio
@@ -365,7 +172,7 @@ async def test_handle_equip_command():
     """Test handle_equip_command() equips item."""
     mock_request = MagicMock()
     mock_app = MagicMock()
-    mock_state = MagicMock()
+    mock_state: MagicMock = MagicMock()
     mock_persistence = AsyncMock()
     mock_connection_manager = MagicMock()
     mock_player = MagicMock()
@@ -376,12 +183,13 @@ async def test_handle_equip_command():
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_state.persistence = mock_persistence
     mock_state.connection_manager = mock_connection_manager
-    mock_state.container = MagicMock()
-    mock_state.container.async_persistence = mock_persistence
+    mock_container: MagicMock = MagicMock()
+    mock_container.async_persistence = mock_persistence
+    mock_state.container = mock_container
     mock_app.state = mock_state
     mock_request.app = mock_app
 
-    with patch("server.commands.inventory_commands.get_shared_services") as mock_get_services:
+    with patch("server.commands.inventory_service_helpers.get_shared_services") as mock_get_services:
         mock_inventory_service = MagicMock()
         mock_equipment_service = MagicMock()
         mock_equipment_service.equip_item = AsyncMock(return_value={"success": True})
@@ -399,21 +207,22 @@ async def test_handle_equip_command_no_target():
     """Test handle_equip_command() handles missing target."""
     mock_request = MagicMock()
     mock_app = MagicMock()
-    mock_state = MagicMock()
+    mock_state: MagicMock = MagicMock()
     mock_persistence = AsyncMock()
     mock_player = MagicMock()
     mock_player.name = "TestPlayer"
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_state.persistence = mock_persistence
-    mock_state.container = MagicMock()
-    mock_state.container.async_persistence = mock_persistence
+    mock_container: MagicMock = MagicMock()
+    mock_container.async_persistence = mock_persistence
+    mock_state.container = mock_container
     mock_app.state = mock_state
     mock_request.app = mock_app
 
     result = await handle_equip_command({}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer")
 
     assert "result" in result
-    assert "usage" in result["result"].lower() or "target" in result["result"].lower()
+    assert "usage" in command_result_text(result).lower() or "target" in command_result_text(result).lower()
 
 
 @pytest.mark.asyncio
@@ -421,7 +230,7 @@ async def test_handle_unequip_command():
     """Test handle_unequip_command() unequips item."""
     mock_request = MagicMock()
     mock_app = MagicMock()
-    mock_state = MagicMock()
+    mock_state: MagicMock = MagicMock()
     mock_persistence = AsyncMock()
     mock_connection_manager = MagicMock()
     mock_player = MagicMock()
@@ -434,12 +243,13 @@ async def test_handle_unequip_command():
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_state.persistence = mock_persistence
     mock_state.connection_manager = mock_connection_manager
-    mock_state.container = MagicMock()
-    mock_state.container.async_persistence = mock_persistence
+    mock_container: MagicMock = MagicMock()
+    mock_container.async_persistence = mock_persistence
+    mock_state.container = mock_container
     mock_app.state = mock_state
     mock_request.app = mock_app
 
-    with patch("server.commands.inventory_commands.get_shared_services") as mock_get_services:
+    with patch("server.commands.inventory_service_helpers.get_shared_services") as mock_get_services:
         mock_inventory_service = MagicMock()
         mock_equipment_service = MagicMock()
         mock_equipment_service.unequip_item = AsyncMock(return_value={"success": True})
@@ -457,21 +267,22 @@ async def test_handle_unequip_command_no_target():
     """Test handle_unequip_command() handles missing target."""
     mock_request = MagicMock()
     mock_app = MagicMock()
-    mock_state = MagicMock()
+    mock_state: MagicMock = MagicMock()
     mock_persistence = AsyncMock()
     mock_player = MagicMock()
     mock_player.name = "TestPlayer"
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_state.persistence = mock_persistence
-    mock_state.container = MagicMock()
-    mock_state.container.async_persistence = mock_persistence
+    mock_container: MagicMock = MagicMock()
+    mock_container.async_persistence = mock_persistence
+    mock_state.container = mock_container
     mock_app.state = mock_state
     mock_request.app = mock_app
 
     result = await handle_unequip_command({}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer")
 
     assert "result" in result
-    assert "usage" in result["result"].lower() or "target" in result["result"].lower()
+    assert "usage" in command_result_text(result).lower() or "target" in command_result_text(result).lower()
 
 
 @pytest.mark.asyncio
@@ -479,7 +290,7 @@ async def test_handle_put_command():
     """Test handle_put_command() puts item in container."""
     mock_request = MagicMock()
     mock_app = MagicMock()
-    mock_state = MagicMock()
+    mock_state: MagicMock = MagicMock()
     mock_persistence = AsyncMock()
     mock_connection_manager = MagicMock()
     mock_player = MagicMock()
@@ -490,12 +301,13 @@ async def test_handle_put_command():
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_state.persistence = mock_persistence
     mock_state.connection_manager = mock_connection_manager
-    mock_state.container = MagicMock()
-    mock_state.container.async_persistence = mock_persistence
+    mock_container: MagicMock = MagicMock()
+    mock_container.async_persistence = mock_persistence
+    mock_state.container = mock_container
     mock_app.state = mock_state
     mock_request.app = mock_app
 
-    with patch("server.commands.inventory_commands.get_shared_services") as mock_get_services:
+    with patch("server.commands.inventory_service_helpers.get_shared_services") as mock_get_services:
         mock_inventory_service = MagicMock()
         mock_wearable_service = AsyncMock()
         mock_wearable_service.add_item_to_container = AsyncMock(return_value={"success": True})
@@ -513,21 +325,22 @@ async def test_handle_put_command_no_target():
     """Test handle_put_command() handles missing target."""
     mock_request = MagicMock()
     mock_app = MagicMock()
-    mock_state = MagicMock()
+    mock_state: MagicMock = MagicMock()
     mock_persistence = AsyncMock()
     mock_player = MagicMock()
     mock_player.name = "TestPlayer"
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_state.persistence = mock_persistence
-    mock_state.container = MagicMock()
-    mock_state.container.async_persistence = mock_persistence
+    mock_container: MagicMock = MagicMock()
+    mock_container.async_persistence = mock_persistence
+    mock_state.container = mock_container
     mock_app.state = mock_state
     mock_request.app = mock_app
 
     result = await handle_put_command({}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer")
 
     assert "result" in result
-    assert "usage" in result["result"].lower() or "target" in result["result"].lower()
+    assert "usage" in command_result_text(result).lower() or "target" in command_result_text(result).lower()
 
 
 @pytest.mark.asyncio
@@ -535,7 +348,7 @@ async def test_handle_get_command():
     """Test handle_get_command() gets item from container."""
     mock_request = MagicMock()
     mock_app = MagicMock()
-    mock_state = MagicMock()
+    mock_state: MagicMock = MagicMock()
     mock_persistence = AsyncMock()
     mock_connection_manager = MagicMock()
     mock_player = MagicMock()
@@ -545,12 +358,13 @@ async def test_handle_get_command():
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_state.persistence = mock_persistence
     mock_state.connection_manager = mock_connection_manager
-    mock_state.container = MagicMock()
-    mock_state.container.async_persistence = mock_persistence
+    mock_container: MagicMock = MagicMock()
+    mock_container.async_persistence = mock_persistence
+    mock_state.container = mock_container
     mock_app.state = mock_state
     mock_request.app = mock_app
 
-    with patch("server.commands.inventory_commands.get_shared_services") as mock_get_services:
+    with patch("server.commands.inventory_service_helpers.get_shared_services") as mock_get_services:
         mock_inventory_service = MagicMock()
         mock_wearable_service = AsyncMock()
         mock_wearable_service.remove_item_from_container = AsyncMock(return_value={"success": True})
@@ -568,18 +382,67 @@ async def test_handle_get_command_no_target():
     """Test handle_get_command() handles missing target."""
     mock_request = MagicMock()
     mock_app = MagicMock()
-    mock_state = MagicMock()
+    mock_state: MagicMock = MagicMock()
     mock_persistence = AsyncMock()
     mock_player = MagicMock()
     mock_player.name = "TestPlayer"
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_state.persistence = mock_persistence
-    mock_state.container = MagicMock()
-    mock_state.container.async_persistence = mock_persistence
+    mock_container: MagicMock = MagicMock()
+    mock_container.async_persistence = mock_persistence
+    mock_state.container = mock_container
     mock_app.state = mock_state
     mock_request.app = mock_app
 
     result = await handle_get_command({}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer")
 
     assert "result" in result
-    assert "usage" in result["result"].lower() or "target" in result["result"].lower()
+    assert "usage" in command_result_text(result).lower() or "target" in command_result_text(result).lower()
+
+
+@pytest.mark.asyncio
+async def test_handle_get_command_room_quantity_string_coerces_without_type_error() -> None:
+    mock_player = MagicMock()
+    mock_player.name = "TestPlayer"
+    mock_player.player_id = "12345678-1234-5678-1234-567812345678"
+    mock_player.current_room_id = "room_001"
+
+    with patch(
+        "server.commands.inventory_get_command.resolve_state_and_player",
+        new_callable=AsyncMock,
+        return_value=(MagicMock(), MagicMock(), mock_player, None),
+    ):
+        with patch(
+            "server.commands.inventory_get_command.validate_get_command_inputs",
+            new_callable=AsyncMock,
+            return_value=("coin", "room", "1", None, MagicMock()),
+        ):
+            with patch(
+                "server.commands.inventory_get_command.resolve_pickup_item_index",
+                return_value=(0, None, None),
+            ):
+                room_manager = MagicMock()
+                room_manager.list_room_drops = MagicMock(return_value=[{"item_name": "coin", "quantity": 5}])
+                room_manager.take_room_drop = MagicMock(return_value={"item_name": "coin", "quantity": 1})
+
+                with patch(
+                    "server.commands.inventory_get_command.validate_get_command_inputs",
+                    new_callable=AsyncMock,
+                    return_value=("coin", "room", "1", None, room_manager),
+                ):
+                    with patch(
+                        "server.commands.inventory_get_command.complete_pickup_after_floor_extract",
+                        new_callable=AsyncMock,
+                        return_value={"result": "ok"},
+                    ) as complete_pickup:
+                        result = await handle_get_command(
+                            {"item": "coin", "container": "room", "quantity": "1"},
+                            {"name": "TestPlayer"},
+                            MagicMock(),
+                            None,
+                            "TestPlayer",
+                        )
+
+    assert result == {"result": "ok"}
+    room_manager.take_room_drop.assert_called_once_with("room_001", 0, 1)
+    complete_pickup.assert_awaited_once()

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Run CI test suite with cross-platform CI detection."""
 
+import io
 import os
 import queue
 import subprocess
@@ -12,21 +13,14 @@ from utils.safe_subprocess import safe_run_static
 
 # Configure stdout/stderr encoding for Windows to handle Unicode characters
 if sys.platform == "win32":
-    try:
-        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
-    except AttributeError:
-        # Python < 3.7 doesn't have reconfigure, use buffer directly
-        pass
+    for _stream in (sys.stdout, sys.stderr):
+        if isinstance(_stream, io.TextIOWrapper):
+            _stream.reconfigure(encoding="utf-8", errors="replace")
 
 # Determine project root. In GitHub Actions use GITHUB_WORKSPACE so coverage
 # reports (e.g. htmlcov/) are always written to the workspace for artifact upload.
-_PROJECT_ROOT = os.getenv("GITHUB_WORKSPACE") or os.getcwd()
-# Only strip MythosMUD-* parent dir when NOT in GitHub Actions; in CI,
-# GITHUB_WORKSPACE is already the correct root.
-if not os.getenv("GITHUB_ACTIONS") and "MythosMUD-" in _PROJECT_ROOT:
-    _PROJECT_ROOT = os.path.dirname(_PROJECT_ROOT)
-PROJECT_ROOT = _PROJECT_ROOT
+_project_root = os.getenv("GITHUB_WORKSPACE") or os.getcwd()
+PROJECT_ROOT = _project_root
 
 # Check if we're in CI environment
 CI = os.getenv("CI")
@@ -283,7 +277,7 @@ if IN_CI:
     # a runtime DB and single-worker execution and run under 'make test-playwright' (Makefile).
     # Repository/EventBus and other integration paths are verified in that flow. This keeps the CI
     # backend job fast and stable without a dedicated integration DB; coverage here is unit-only.
-    safe_run_static(
+    _ = safe_run_static(
         python_exe,
         "-m",
         "pytest",
@@ -305,7 +299,7 @@ if IN_CI:
     # Run 2: logging file_setup module only, no xdist (coverage to .coverage.serial)
     env_serial = env.copy()
     env_serial["COVERAGE_FILE"] = os.path.join(PROJECT_ROOT, ".coverage.serial")
-    safe_run_static(
+    _ = safe_run_static(
         python_exe,
         "-m",
         "pytest",
@@ -324,7 +318,7 @@ if IN_CI:
     )
     # Merge coverage and generate reports (--keep before paths so it is not parsed as a path)
     coverage_serial = os.path.join(PROJECT_ROOT, ".coverage.serial")
-    safe_run_static(
+    _ = safe_run_static(
         python_exe,
         "-m",
         "coverage",
@@ -337,7 +331,7 @@ if IN_CI:
         env=env,
     )
     coverage_xml_path = os.path.join(PROJECT_ROOT, "coverage.xml")
-    safe_run_static(
+    _ = safe_run_static(
         python_exe,
         "-m",
         "coverage",
@@ -348,7 +342,7 @@ if IN_CI:
         check=True,
         env=env,
     )
-    safe_run_static(
+    _ = safe_run_static(
         python_exe,
         "-m",
         "coverage",
@@ -362,9 +356,22 @@ if IN_CI:
 
     # Check per-file thresholds
     check_script = os.path.join(PROJECT_ROOT, "scripts", "check_coverage_thresholds.py")
-    safe_run_static(
+    _ = safe_run_static(
         python_exe,
         check_script,
+        cwd=PROJECT_ROOT,
+        check=True,
+        env=env,
+    )
+    # Aggregate gate before Codacy partial upload (matches .coveragerc fail_under)
+    gate_script = os.path.join(PROJECT_ROOT, "scripts", "validate_codacy_coverage_gate.py")
+    _ = safe_run_static(
+        python_exe,
+        gate_script,
+        "--python",
+        coverage_xml_path,
+        "--min-python-line-rate",
+        "0.63",
         cwd=PROJECT_ROOT,
         check=True,
         env=env,
@@ -390,14 +397,14 @@ else:
         if submodule_result.returncode != 0:
             print(
                 "WARNING: Could not initialize data submodule. "
-                "Docker build may fail with 'mythos_unit_dml.sql: No such file or directory'."
+                + "Docker build may fail with 'mythos_unit_dml.sql: No such file or directory'."
             )
             if submodule_result.stderr:
                 print(f"  git submodule error: {submodule_result.stderr.strip()}")
         elif not os.path.isfile(data_dml):
             print(
                 "WARNING: data/db/mythos_unit_dml.sql still missing after submodule init. "
-                "Ensure the mythosmud_data repo contains data/db/mythos_unit_dml.sql."
+                + "Ensure the mythosmud_data repo contains data/db/mythos_unit_dml.sql."
             )
 
     print("Building Docker runner image (this ensures dependencies are up-to-date)...")
@@ -428,16 +435,21 @@ else:
         # Check if error is due to corrupted Docker build cache
         # Error message typically contains "parent snapshot" and "does not exist"
         err_parts: list[str] = []
-        if e.stderr:
-            err_parts.append(str(e.stderr))
-        if e.stdout:
-            err_parts.append(str(e.stdout))
-        if hasattr(e, "output") and e.output:
-            err_parts.append(str(e.output))
+        stderr_raw: object = e.stderr
+        if isinstance(stderr_raw, str) and stderr_raw:
+            err_parts.append(stderr_raw)
+        stdout_raw: object = e.stdout
+        if isinstance(stdout_raw, str) and stdout_raw:
+            err_parts.append(stdout_raw)
+        merged: object | None = getattr(e, "output", None)
+        if isinstance(merged, str) and merged:
+            err_parts.append(merged)
+        elif isinstance(merged, bytes):
+            err_parts.append(merged.decode("utf-8", errors="replace"))
 
         if "parent snapshot" in (s := "".join(err_parts)) and "does not exist" in s:
             print("Docker build cache appears corrupted. Retrying with --no-cache...")
-            safe_run_static(
+            _ = safe_run_static(
                 "docker",
                 "build",
                 "--pull",
@@ -550,14 +562,17 @@ else:
 
     # Read output line by line to avoid deadlock from output buffering
     # Use a queue and thread to read output with timeout detection
-    output_queue = queue.Queue()
-    output_lines = []
+    output_queue: queue.Queue[tuple[str, str]] = queue.Queue()
+    output_lines: list[str] = []
     last_output_time = time.time()
 
-    def read_output():
+    def read_output() -> None:
         """Read process output in background thread."""
+        stdout_pipe = process.stdout
+        if stdout_pipe is None:
+            return
         try:
-            for line in process.stdout:
+            for line in stdout_pipe:
                 output_queue.put(("line", line))
         except OSError as e:
             output_queue.put(("error", str(e)))
@@ -612,7 +627,11 @@ else:
     class Result:
         """Container for subprocess result data (returncode, stdout, stderr)."""
 
-        def __init__(self, retcode, stdout_data, stderr_data):
+        returncode: int
+        stdout: str
+        stderr: str
+
+        def __init__(self, retcode: int, stdout_data: str, stderr_data: str) -> None:
             # pylint: disable=invalid-name
             # Attribute names match subprocess.CompletedProcess interface (returncode, stdout, stderr)
             # These are instance attributes, not constants, so lowercase_with_underscores is correct
@@ -628,12 +647,12 @@ else:
             print(result.stdout)
         except UnicodeEncodeError:
             # Fallback: write directly to buffer with UTF-8
-            sys.stdout.buffer.write(result.stdout.encode("utf-8", errors="replace"))
-            sys.stdout.buffer.write(b"\n")
+            _ = sys.stdout.buffer.write(result.stdout.encode("utf-8", errors="replace"))
+            _ = sys.stdout.buffer.write(b"\n")
         try:
             print(result.stderr, file=sys.stderr)
         except UnicodeEncodeError:
             # Fallback: write directly to buffer with UTF-8
-            sys.stderr.buffer.write(result.stderr.encode("utf-8", errors="replace"))
-            sys.stderr.buffer.write(b"\n")
+            _ = sys.stderr.buffer.write(result.stderr.encode("utf-8", errors="replace"))
+            _ = sys.stderr.buffer.write(b"\n")
         sys.exit(result.returncode)

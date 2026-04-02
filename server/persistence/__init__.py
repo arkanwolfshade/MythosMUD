@@ -5,6 +5,7 @@ This package contains persistence utilities for various game systems.
 """
 
 # Import container persistence functions
+from .container_create_params import ContainerCreateParams
 from .container_data import ContainerData
 from .container_persistence import (
     create_container,
@@ -43,6 +44,7 @@ from .repositories import (
 
 __all__ = [
     # Container persistence (legacy functions)
+    "ContainerCreateParams",
     "ContainerData",
     "create_container",
     "get_container",

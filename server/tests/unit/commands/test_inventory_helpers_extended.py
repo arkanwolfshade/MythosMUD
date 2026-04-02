@@ -11,6 +11,7 @@ import pytest
 from server.commands.inventory_command_helpers import (
     broadcast_room_event,
     clone_inventory,
+    ensure_item_instance_for_pickup,
     persist_player,
     resolve_player,
 )
@@ -133,6 +134,24 @@ async def test_persist_player_general_error():
 
     assert result is not None
     assert "error occurred" in result["result"].lower()
+
+
+@pytest.mark.asyncio
+async def test_ensure_item_instance_for_pickup_awaits_async_ensure() -> None:
+    persistence = MagicMock()
+    persistence.ensure_item_instance = AsyncMock(return_value=None)
+    player = MagicMock()
+    player.player_id = "player-123"
+    extracted_stack: dict[str, object] = {
+        "item_instance_id": "inst-1",
+        "item_id": "proto-1",
+        "quantity": 1,
+    }
+
+    await ensure_item_instance_for_pickup(persistence, extracted_stack, player, "room-1")
+
+    ensure_mock: AsyncMock = persistence.ensure_item_instance
+    ensure_mock.assert_awaited_once()
 
 
 # Note: _render_inventory function doesn't exist - tests skipped

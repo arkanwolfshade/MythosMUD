@@ -8,11 +8,11 @@ delegating to container_persistence_async and container_query_helpers_async
 
 import dataclasses
 import uuid
-from dataclasses import dataclass
 from datetime import datetime
 from typing import Any
 
 from server.database import get_session_maker
+from server.persistence.container_create_params import ContainerCreateParams
 from server.persistence.container_data import ContainerData
 from server.persistence.container_persistence_async import (
     create_container_async,
@@ -38,22 +38,6 @@ def _container_data_to_dict(result: ContainerData) -> dict[str, Any]:
     if "metadata" in result_dict:
         result_dict["metadata_json"] = result_dict.pop("metadata")
     return result_dict
-
-
-@dataclass
-class ContainerCreateParams:  # pylint: disable=too-many-instance-attributes  # Reason: Container creation params requires many fields to capture complete container creation context
-    """Parameters for creating a container."""
-
-    owner_id: uuid.UUID | None = None
-    room_id: str | None = None
-    entity_id: uuid.UUID | None = None
-    lock_state: str = "unlocked"
-    capacity_slots: int = 20
-    weight_limit: int | None = None
-    decay_at: datetime | None = None
-    allowed_roles: list[str] | None = None
-    items_json: list[dict[str, Any]] | None = None
-    metadata_json: dict[str, Any] | None = None
 
 
 class ContainerRepository:

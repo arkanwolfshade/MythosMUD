@@ -13,10 +13,9 @@ from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.alias_graph import AliasGraph
 from ..utils.audit_logger import audit_logger
 from ..validators.command_validator import CommandValidator
+from .command_execution_request import CommandExecutionRequest
 
 if TYPE_CHECKING:
-    from fastapi import Request
-
     from ..alias_storage import AliasStorage
 
 logger = get_logger(__name__)
@@ -152,7 +151,7 @@ def validate_expanded_command(
 async def handle_expanded_command(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Alias expansion requires many parameters for context and expansion logic
     command_line: str,
     current_user: dict[str, Any],
-    request: "Request",
+    request: CommandExecutionRequest,
     alias_storage: "AliasStorage",
     player_name: str,
     depth: int = 0,
