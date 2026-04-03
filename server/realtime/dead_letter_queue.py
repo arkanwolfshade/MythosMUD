@@ -256,7 +256,9 @@ class DeadLetterQueue:
                 oldest_file = sorted(dlq_files)[0]
                 file_stat = oldest_file.stat()
                 oldest_time = datetime.fromtimestamp(file_stat.st_mtime, UTC)
-                oldest_age = (datetime.now(UTC) - oldest_time).total_seconds()
+                # File mtime can be microseconds ahead of datetime.now on some hosts (Windows FS
+                # resolution); clamp so age is never negative for stats consumers.
+                oldest_age = max(0.0, (datetime.now(UTC) - oldest_time).total_seconds())
 
             return {
                 "total_messages": total_messages,
