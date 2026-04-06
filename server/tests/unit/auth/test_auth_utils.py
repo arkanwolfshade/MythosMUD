@@ -15,12 +15,16 @@ from server.auth_utils import (
 )
 from server.exceptions import AuthenticationError
 
+# HS256: PyJWT warns when HMAC keys are below 32 bytes (RFC 7518 Section 3.2).
+_VALID_HS256_TEST_SECRET = "0123456789abcdef0123456789abcdef"
+_OTHER_HS256_TEST_SECRET = "fedcba9876543210fedcba9876543210"
+
 
 # autouse: required for test isolation in this module - JWT encode/decode needs secret
 @pytest.fixture(autouse=True)
 def setup_jwt_secret(monkeypatch: pytest.MonkeyPatch) -> None:
     """Set JWT secret for tests."""
-    monkeypatch.setenv("MYTHOSMUD_JWT_SECRET", "test-secret-key-for-testing-only")
+    monkeypatch.setenv("MYTHOSMUD_JWT_SECRET", _VALID_HS256_TEST_SECRET)
 
 
 def test_hash_password_success():
@@ -122,7 +126,7 @@ def test_decode_access_token_expired():
 def test_create_access_token_with_custom_secret():
     """Test access token creation with custom secret key."""
     data = {"sub": "testuser", "username": "testuser"}
-    custom_secret = "custom-secret-key"
+    custom_secret = "custom-jwt-secret-pad-to-thirty-two"
     token = create_access_token(data, secret_key=custom_secret)
 
     # Should decode with same secret
@@ -154,7 +158,7 @@ def test_decode_access_token_none_secret():
 def test_decode_access_token_wrong_secret():
     """Test decode_access_token with wrong secret returns None."""
     token = create_access_token({"sub": "testuser"})
-    result = decode_access_token(token, secret_key="wrong-secret")
+    result = decode_access_token(token, secret_key=_OTHER_HS256_TEST_SECRET)
     assert result is None
 
 

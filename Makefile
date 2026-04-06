@@ -10,6 +10,19 @@ PYTHON := cd $(PROJECT_ROOT) && uv run python
 UV := cd $(PROJECT_ROOT) && uv run
 POWERSHELL := cd $(PROJECT_ROOT) && powershell -ExecutionPolicy Bypass -File
 
+# When Make's SHELL is Git Bash or WSL bash, `npm` may resolve to a Windows path that bash
+# cannot execute (/bin/bash: C:/Program Files/nodejs/npm: No such file or directory). Run via
+# PowerShell on Windows so the Windows Node/npm install is used. Non-Windows keeps plain npm.
+ifeq ($(OS),Windows_NT)
+define run_npm_client
+	cd $(PROJECT_ROOT) && powershell -NoProfile -ExecutionPolicy Bypass -Command "Set-Location -LiteralPath (Join-Path '$(PROJECT_ROOT)' 'client'); npm run $(1); exit $$LASTEXITCODE"
+endef
+else
+define run_npm_client
+	cd $(PROJECT_ROOT)/client && npm run $(1)
+endef
+endif
+
 # Pytest common options
 # Note: -n auto is already in pytest.ini addopts, so we don't duplicate it here
 PYTEST_OPTS := --maxfail=10 --tb=short
@@ -220,11 +233,11 @@ openapi-spec:
 
 test-client:
 	@echo "Running client unit tests (no coverage)..."
-	cd $(PROJECT_ROOT)/client && npm run test:unit:run
+	$(call run_npm_client,test:unit:run)
 
 test-client-e2e:
 	@echo "Running client E2E tests (Playwright)..."
-	cd $(PROJECT_ROOT)/client && npm run test
+	$(call run_npm_client,test)
 
 # Integration tests (server pytest -m integration) run here: they muck with runtime data
 # and belong in the same flow as Playwright (running server context). They are NOT run by make test-server.
@@ -234,13 +247,13 @@ test-playwright: setup-test-env setup-postgresql-test-db
 	$(POWERSHELL) scripts/apply_arena_migration.ps1 -TargetDbs mythos_e2e
 	$(POWERSHELL) scripts/apply_aggression_level_migration.ps1 -TargetDbs mythos_e2e
 	@echo "Running client E2E runtime tests (Playwright CLI)..."
-	cd $(PROJECT_ROOT)/client && npm run test:e2e:runtime
+	$(call run_npm_client,test:e2e:runtime)
 	@echo "Running server integration tests (runtime DB, single worker)..."
 	$(UV) pytest server/tests/ -m integration -n 1 $(PYTEST_OPTS)
 
 test-client-coverage:
 	@echo "Running client unit tests with coverage..."
-	cd $(PROJECT_ROOT)/client && npm run test:coverage
+	$(call run_npm_client,test:coverage)
 
 test-server: setup-test-env setup-postgresql-test-db
 	@echo "Running server tests (no coverage)..."
