@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "codacy": {
+      "command": "npx",
+      "args": ["-y", "@codacy/codacy-mcp"],
+      "env": {
+        "CODACY_ACCOUNT_TOKEN": "REPLACE_WITH_YOUR_CODACY_ACCOUNT_TOKEN"
+      }
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest"]
+    },
+    "jcodemunch": {
+      "command": "uvx",
+      "args": ["jcodemunch-mcp"]
+    }
+  }
+}
