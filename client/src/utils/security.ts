@@ -332,6 +332,18 @@ class SessionManager {
 export const sessionManager = new SessionManager();
 
 /**
+ * Shared DOMPurify options for server HTML shown in the client.
+ * Exported so SafeHtml can call DOMPurify.sanitize at the render site; CodeQL models that call as a sanitizer.
+ */
+export const INCOMING_HTML_DOMPURIFY_CONFIG: DOMPurifyConfig = {
+  ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'br', 'p', 'span', 'div', 'ul', 'ol', 'li', 'code', 'pre'],
+  ALLOWED_ATTR: ['class'], // no style: XSS via javascript: in url(); map styling via .ascii-map in CSS
+  ALLOW_DATA_ATTR: false,
+  ALLOW_UNKNOWN_PROTOCOLS: false,
+  SAFE_FOR_TEMPLATES: true,
+};
+
+/**
  * Input sanitization utilities
  */
 export const inputSanitizer = {
@@ -463,15 +475,7 @@ export const inputSanitizer = {
       return '';
     }
 
-    const config = {
-      ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'br', 'p', 'span', 'div', 'ul', 'ol', 'li', 'code', 'pre'],
-      ALLOWED_ATTR: ['class'], // no style: XSS via javascript: in url(); map styling via .ascii-map in CSS
-      ALLOW_DATA_ATTR: false,
-      ALLOW_UNKNOWN_PROTOCOLS: false,
-      SAFE_FOR_TEMPLATES: true,
-    } as DOMPurifyConfig;
-
-    return DOMPurify.sanitize(html, config);
+    return DOMPurify.sanitize(html, INCOMING_HTML_DOMPURIFY_CONFIG);
   },
 };
 
