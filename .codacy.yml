@@ -2,6 +2,21 @@
 # Codacy configuration file
 # Suppresses specific rules for package.json dependency version warnings
 # These warnings are informational - package-lock.json locks exact versions
+#
+# --- Enforced coverage (authoritative; CI and local tooling) ---
+# Python: aggregate line coverage >= 63% on Cobertura from pytest --cov=server (omit tests, alembic, etc.);
+#   see .coveragerc, pyproject.toml [tool.coverage.report] fail_under, and
+#   scripts/validate_codacy_coverage_gate.py --min-python-line-rate (run from scripts/run_test_ci.py).
+# TypeScript/React: LCOV aggregate line rate >= 70% before Codacy upload (ci.yml);
+#   Vitest global thresholds lines/statements/functions 70%, branches 68%, plus per-file 85-90% in
+#   client/vite.vitestOptions.ts; instrumented paths are client/src/**/*.{ts,tsx} per Vitest coverage config.
+# Pre-commit: scripts/check_coverage_thresholds.py on coverage.xml -- critical server files 90% (argon2 85%);
+#   other server files below 70% warn only (non-blocking).
+# Codacy dashboard coverage uses analyzed files that appear in uploaded reports; paths outside pytest-cov
+# server/ and Vitest client/src would otherwise read as 0% and depress the aggregate. exclude_paths below
+# align analysis scope with coverable product code. Quality gate numeric thresholds (e.g. diff coverage) are
+# set in Codacy UI: Repository settings > Gates / Goals (not representable in this file); see
+# https://docs.codacy.com/repositories-configure/adjusting-quality-gates/
 
 # Exclude paths from analysis
 # data/ is the mythosmud_data git submodule (Main (Integration)/data) - excluded from Codacy
@@ -18,6 +33,27 @@ exclude_paths:
   - "data/**"
   - ".cursor/**"
   - "**/.pyenv/**"
+  # Coverage alignment: not in pytest-cov --cov=server (would show as 0% on Codacy otherwise).
+  - "scripts/**"
+  - "tools/**"
+  - "server/tests/**"
+  - "server/alembic/**"
+  # Coverage alignment: not in Vitest coverage include (client/src only); Playwright and config live here.
+  - "client/tests/**"
+  - "client/scripts/**"
+  - "client/vite.config.ts"
+  - "client/vite.*.ts"
+  - "client/coverage/**"
+  # Docs, investigations, CI defs, e2e prose -- not unit-test coverable application code.
+  - "docs/**"
+  - "e2e-tests/**"
+  - "investigations/**"
+  - ".github/**"
+  # Generated / artifact trees
+  - "htmlcov/**"
+  - "**/playwright-report/**"
+  - "**/playwright-report-data/**"
+  - "**/test-results/**"
 
 # Bandit: exclude test paths so B101 (assert) and B106 (hardcoded pwd) are not reported in tests.
 # Codacy uses engines.<tool>.exclude_paths; ignore_patterns are not applied to tool analysis.

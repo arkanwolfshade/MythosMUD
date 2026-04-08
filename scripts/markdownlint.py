@@ -5,6 +5,7 @@ markdownlint is a Markdown linter.
 """
 
 import argparse
+import os
 import shutil
 import subprocess
 import sys
@@ -46,10 +47,18 @@ if args.fix:
 else:
     print("This will check for Markdown quality issues...")
 
+# Prefer client devDependency (markdownlint-cli); npx "markdownlint" is the wrong package name
+# and triggers "could not determine executable to run".
+client_bin = project_root / "client" / "node_modules" / ".bin"
+local_markdownlint = client_bin / ("markdownlint.cmd" if os.name == "nt" else "markdownlint")
+if local_markdownlint.exists():
+    runner_prefix: list[str] = [str(local_markdownlint)]
+else:
+    runner_prefix = [npx_path, "-y", "markdownlint-cli"]
+
 # Build command arguments
 cmd_args = [
-    npx_path,
-    "markdownlint",
+    *runner_prefix,
     "**/*.md",
     "--ignore",
     "**/node_modules/**",

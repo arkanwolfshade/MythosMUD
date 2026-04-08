@@ -233,6 +233,8 @@ tsconfig.tsbuildinfo
 .cursorrules
 # Hook state (ephemeral; edited-files.json for test-agent trigger)
 .cursor/hooks/state/
+# MCP: may contain API tokens (e.g. CODACY_ACCOUNT_TOKEN). Copy from mcp.json.example.
+.cursor/mcp.json
 
 # Spyder project settings
 .spyderproject

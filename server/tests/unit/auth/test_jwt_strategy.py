@@ -8,6 +8,9 @@ import pytest
 from server.auth.jwt_strategy import RestartInvalidatingJWTStrategy
 from server.auth.token_epoch import get_auth_epoch, set_auth_epoch
 
+# HS256: use 32+ byte secret so PyJWT does not emit InsecureKeyLengthWarning (RFC 7518).
+_JWT_STRATEGY_TEST_SECRET = "0123456789abcdef0123456789abcdef"
+
 
 @pytest.mark.asyncio
 async def test_read_token_rejects_wrong_epoch():
@@ -15,7 +18,7 @@ async def test_read_token_rejects_wrong_epoch():
     set_auth_epoch("current-epoch")
 
     strategy = RestartInvalidatingJWTStrategy(
-        secret="test-secret",
+        secret=_JWT_STRATEGY_TEST_SECRET,
         lifetime_seconds=3600,
         token_audience=["fastapi-users:auth"],
     )
@@ -28,7 +31,7 @@ async def test_read_token_rejects_wrong_epoch():
         "aud": ["fastapi-users:auth"],
         "srv": "old-epoch-from-before-restart",
     }
-    token = generate_jwt(wrong_epoch_data, "test-secret", 3600)
+    token = generate_jwt(wrong_epoch_data, _JWT_STRATEGY_TEST_SECRET, 3600)
 
     user_manager = MagicMock()
     user_manager.parse_id = MagicMock(return_value=uuid.uuid4())
@@ -46,7 +49,7 @@ async def test_read_token_rejects_missing_epoch():
     set_auth_epoch("current-epoch")
 
     strategy = RestartInvalidatingJWTStrategy(
-        secret="test-secret",
+        secret=_JWT_STRATEGY_TEST_SECRET,
         lifetime_seconds=3600,
         token_audience=["fastapi-users:auth"],
     )
@@ -54,7 +57,7 @@ async def test_read_token_rejects_missing_epoch():
     from fastapi_users.jwt import generate_jwt
 
     no_epoch_data = {"sub": str(uuid.uuid4()), "aud": ["fastapi-users:auth"]}
-    token = generate_jwt(no_epoch_data, "test-secret", 3600)
+    token = generate_jwt(no_epoch_data, _JWT_STRATEGY_TEST_SECRET, 3600)
 
     user_manager = MagicMock()
     result = await strategy.read_token(token, user_manager)
@@ -68,7 +71,7 @@ async def test_read_token_accepts_matching_epoch():
     set_auth_epoch("matching-epoch")
 
     strategy = RestartInvalidatingJWTStrategy(
-        secret="test-secret",
+        secret=_JWT_STRATEGY_TEST_SECRET,
         lifetime_seconds=3600,
         token_audience=["fastapi-users:auth"],
     )
@@ -81,7 +84,7 @@ async def test_read_token_accepts_matching_epoch():
         "aud": ["fastapi-users:auth"],
         "srv": get_auth_epoch(),
     }
-    token = generate_jwt(correct_data, "test-secret", 3600)
+    token = generate_jwt(correct_data, _JWT_STRATEGY_TEST_SECRET, 3600)
 
     mock_user = MagicMock()
     user_manager = MagicMock()
