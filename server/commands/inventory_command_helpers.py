@@ -16,7 +16,7 @@ from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
 from .inventory_item_matching import match_room_drop_by_name
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 def resolve_state(request: object) -> tuple[object, object]:

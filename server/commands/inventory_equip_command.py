@@ -33,7 +33,7 @@ from .inventory_command_prototype import infer_equip_slot_from_prototype
 from .inventory_item_matching import normalize_slot_name
 from .inventory_service_helpers import get_shared_services
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 @dataclass

@@ -7,7 +7,7 @@ This module provides the PassiveMobNPC class with wandering and response behavio
 from __future__ import annotations
 
 import time
-from typing import TYPE_CHECKING, cast, override
+from typing import TYPE_CHECKING, override
 
 from structlog.stdlib import BoundLogger
 
@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from .event_reaction_system import NPCEventReactionSystem
     from .threading import NPCActionMessage
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 class PassiveMobNPC(NPCBase):

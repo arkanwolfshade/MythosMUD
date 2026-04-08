@@ -13,11 +13,13 @@ for better performance and proper type safety with mypy.
 
 import json
 import uuid
-from typing import Any
+from collections.abc import Awaitable, Callable, Mapping
+from typing import Protocol, cast
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from pydantic import ValidationError
+from starlette.responses import Response
 from starlette.types import ASGIApp, Receive, Scope, Send
 
 from ..error_handlers.standardized_responses import StandardizedErrorResponse
@@ -27,7 +29,54 @@ from ..exceptions import (
 )
 from ..structured_logging.enhanced_logging_config import get_logger
 
+# Starlette types HTTP exception handlers as (Request, Exception) -> ...; narrower handlers are safe
+# at runtime because the router only invokes them for the registered exception type.
+HttpExceptionHandler = Callable[[Request, Exception], Awaitable[Response]]
+
 logger = get_logger(__name__)
+
+# Sentinel: user id could not be read (contrast with value None from user.get("id")).
+USER_ID_UNAVAILABLE = object()
+
+
+class _UserObjectWithId(Protocol):
+    """Narrowing for dynamic request.state.user shapes that expose .id (non-Mapping)."""
+
+    id: object
+
+
+def extract_user_id_from_non_mapping(user: object) -> object:
+    """
+    Read user id from a non-Mapping request.state.user (object with get and/or id).
+
+    Returns USER_ID_UNAVAILABLE when no id can be read (matches prior try/except swallow).
+    """
+    get_fn = getattr(user, "get", None)
+    if callable(get_fn):
+        try:
+            return get_fn("id")
+        except (AttributeError, KeyError, TypeError):
+            return USER_ID_UNAVAILABLE
+    if hasattr(user, "id"):
+        try:
+            return cast(_UserObjectWithId, user).id
+        except (AttributeError, TypeError):
+            return USER_ID_UNAVAILABLE
+    return USER_ID_UNAVAILABLE
+
+
+def request_id_from_scope(scope: Scope) -> str | None:
+    """Read request_id from ASGI scope.state (Scope values are Any; avoid untyped .get chains)."""
+    state_raw: object = scope.get("state")
+    if not isinstance(state_raw, Mapping):
+        return None
+    state = cast(Mapping[str, object], state_raw)
+    rid_obj = state.get("request_id")
+    if rid_obj is None:
+        return None
+    if isinstance(rid_obj, str):
+        return rid_obj
+    return str(rid_obj)
 
 
 class ErrorHandlingMiddleware:
@@ -39,6 +88,9 @@ class ErrorHandlingMiddleware:
 
     Unlike BaseHTTPMiddleware, this uses pure ASGI for better performance and type safety.
     """
+
+    app: ASGIApp
+    include_details: bool
 
     def __init__(self, app: ASGIApp, include_details: bool = False) -> None:
         """
@@ -75,7 +127,8 @@ class ErrorHandlingMiddleware:
             # Process the request
             await self.app(scope, receive, send)
 
-        except Exception as exc:  # pylint: disable=broad-exception-caught  # noqa: B904            # JUSTIFICATION: This is error handling middleware that must catch ALL exceptions to ensure
+        except Exception as exc:  # pylint: disable=broad-exception-caught  # noqa: B904
+            # JUSTIFICATION: This is error handling middleware that must catch ALL exceptions to ensure
             # proper error responses are sent. The exception is then passed to _handle_exception which
             # properly categorizes and handles different exception types (HTTPException, ValidationError, etc.)
             # Handle the exception and send error response
@@ -102,14 +155,8 @@ class ErrorHandlingMiddleware:
             response = handler.handle_exception(exc, include_details=self.include_details, response_type="http")
 
             # Log the exception with full context
-            self._log_exception(request, exc, response.status_code)
+            self.log_exception(request, exc, response.status_code)
 
-            # Send the error response (guard against None send callable)
-            # JUSTIFICATION: ASGI spec requires send to be callable, but defensive programming guards
-            # against None. Mypy's type narrowing doesn't account for this runtime check.
-            if send is None:
-                logger.error("Cannot send error response: send callable is None", exc_info=True)  # type: ignore[unreachable]  # Reason: ASGI spec requires send to be callable, but defensive programming guards against None, mypy's type narrowing doesn't account for this runtime check
-                return
             await send(
                 {
                     "type": "http.response.start",
@@ -124,7 +171,8 @@ class ErrorHandlingMiddleware:
                 }
             )
 
-        except Exception as handler_error:  # pylint: disable=broad-exception-caught  # noqa: B904            # JUSTIFICATION: This is a fallback error handler that catches ALL exceptions when the error
+        except Exception as handler_error:  # pylint: disable=broad-exception-caught  # noqa: B904
+            # JUSTIFICATION: This is a fallback error handler that catches ALL exceptions when the error
             # handler itself fails. This is the last resort to ensure some error response is sent even
             # if the primary error handling code encounters an unexpected error.
             # Fallback error handling if the handler itself fails
@@ -132,7 +180,7 @@ class ErrorHandlingMiddleware:
                 "Error in error handler",
                 error=str(handler_error),
                 exc_info=True,
-                request_id=scope["state"].get("request_id"),
+                request_id=request_id_from_scope(scope),
             )
             # Send fallback response
             fallback_body = json.dumps(
@@ -142,7 +190,7 @@ class ErrorHandlingMiddleware:
                         "message": "An unexpected error occurred",
                         "user_friendly": "Please try again later",
                         "details": {
-                            "request_id": scope["state"].get("request_id"),
+                            "request_id": request_id_from_scope(scope),
                             "fallback": True,
                         },
                         "severity": "high",
@@ -150,12 +198,6 @@ class ErrorHandlingMiddleware:
                 }
             ).encode("utf-8")
 
-            # Guard against None send callable
-            # JUSTIFICATION: ASGI spec requires send to be callable, but defensive programming guards
-            # against None. Mypy's type narrowing doesn't account for this runtime check.
-            if send is None:
-                logger.error("Cannot send fallback error response: send callable is None", exc_info=True)  # type: ignore[unreachable]  # Reason: ASGI spec requires send to be callable, but defensive programming guards against None, mypy's type narrowing doesn't account for this runtime check
-                return
             await send(
                 {
                     "type": "http.response.start",
@@ -170,7 +212,7 @@ class ErrorHandlingMiddleware:
                 }
             )
 
-    async def dispatch(self, request: Request, call_next: Any) -> Any:
+    async def dispatch(self, request: Request, call_next: Callable[[Request], Awaitable[Response]]) -> Response:
         """
         Backward-compatible dispatch method for BaseHTTPMiddleware interface.
 
@@ -191,18 +233,22 @@ class ErrorHandlingMiddleware:
         try:
             response = await call_next(request)
             return response
-        except Exception as exc:  # pylint: disable=broad-exception-caught  # noqa: B904            # JUSTIFICATION: This is error handling middleware that must catch ALL exceptions to ensure
+        except Exception as exc:  # pylint: disable=broad-exception-caught  # noqa: B904
+            # JUSTIFICATION: This is error handling middleware that must catch ALL exceptions to ensure
             # proper error responses are returned. The exception is then passed to StandardizedErrorResponse
             # which properly categorizes and handles different exception types (HTTPException, ValidationError, etc.)
             # Handle exception and return JSON response
             handler = StandardizedErrorResponse(request=request)
             response = handler.handle_exception(exc, include_details=self.include_details, response_type="http")
-            self._log_exception(request, exc, response.status_code)
+            self.log_exception(request, exc, response.status_code)
             return response
 
-    def _log_exception(self, request: Request, exc: Exception, status_code: int) -> None:
+    def log_exception(self, request: Request, exc: Exception, status_code: int) -> None:
         """
         Log the exception with full context information.
+
+        Public entry point so unit tests can assert structured log context; also used from
+        ASGI and dispatch paths after StandardizedErrorResponse runs.
 
         Args:
             request: FastAPI request object
@@ -219,17 +265,18 @@ class ErrorHandlingMiddleware:
 
         # Add user information if available
         if hasattr(request.state, "user"):
-            try:
-                if hasattr(request.state.user, "get"):
-                    context_data["user_id"] = request.state.user.get("id")
-                elif hasattr(request.state.user, "id"):
-                    context_data["user_id"] = request.state.user.id
-            except (AttributeError, KeyError, TypeError):
-                pass
+            user_obj = cast(object, request.state.user)
+            if isinstance(user_obj, Mapping):
+                user_map = cast(Mapping[str, object], user_obj)
+                context_data["user_id"] = user_map.get("id")
+            else:
+                extracted = extract_user_id_from_non_mapping(user_obj)
+                if extracted is not USER_ID_UNAVAILABLE:
+                    context_data["user_id"] = extracted
 
         # Add session information if available
         if hasattr(request.state, "session_id"):
-            context_data["session_id"] = request.state.session_id
+            context_data["session_id"] = cast(object, request.state.session_id)
 
         # Determine log level based on exception type and status code
         if isinstance(exc, MythosMUDError | LoggedHTTPException):
@@ -306,35 +353,36 @@ def register_error_handlers(app: FastAPI, include_details: bool = False) -> None
         ```
     """
 
-    @app.exception_handler(MythosMUDError)
     async def mythos_error_handler(request: Request, exc: MythosMUDError) -> JSONResponse:
         """Handle MythosMUDError exceptions."""
         handler = StandardizedErrorResponse(request=request)
         return handler.handle_exception(exc, include_details=include_details)
 
-    @app.exception_handler(ValidationError)
     async def pydantic_validation_error_handler(request: Request, exc: ValidationError) -> JSONResponse:
         """Handle Pydantic ValidationError exceptions."""
         handler = StandardizedErrorResponse(request=request)
         return handler.handle_exception(exc, include_details=include_details)
 
-    @app.exception_handler(HTTPException)
     async def http_exception_handler(request: Request, exc: HTTPException) -> JSONResponse:
         """Handle FastAPI HTTPException exceptions."""
         handler = StandardizedErrorResponse(request=request)
         return handler.handle_exception(exc, include_details=include_details)
 
-    @app.exception_handler(LoggedHTTPException)
     async def logged_http_exception_handler(request: Request, exc: LoggedHTTPException) -> JSONResponse:
         """Handle LoggedHTTPException exceptions."""
         handler = StandardizedErrorResponse(request=request)
         return handler.handle_exception(exc, include_details=include_details)
 
-    @app.exception_handler(Exception)
     async def generic_exception_handler(request: Request, exc: Exception) -> JSONResponse:
         """Handle all other exceptions."""
         handler = StandardizedErrorResponse(request=request)
         return handler.handle_exception(exc, include_details=include_details)
+
+    app.add_exception_handler(MythosMUDError, cast(HttpExceptionHandler, mythos_error_handler))
+    app.add_exception_handler(ValidationError, cast(HttpExceptionHandler, pydantic_validation_error_handler))
+    app.add_exception_handler(HTTPException, cast(HttpExceptionHandler, http_exception_handler))
+    app.add_exception_handler(LoggedHTTPException, cast(HttpExceptionHandler, logged_http_exception_handler))
+    app.add_exception_handler(Exception, generic_exception_handler)
 
     logger.info("Error handlers registered for FastAPI application")
 

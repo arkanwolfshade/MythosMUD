@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     from .combat_integration import NPCCombatIntegration
     from .event_reaction_system import NPCEventReactionSystem
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 class _RoomPersistence(Protocol):

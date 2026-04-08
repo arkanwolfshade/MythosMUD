@@ -14,10 +14,15 @@ import threading
 from dataclasses import dataclass
 from logging.handlers import QueueHandler, QueueListener, RotatingFileHandler
 from pathlib import Path
-from typing import Any, cast
+from typing import cast, override
 
 from server.structured_logging.logging_handlers import SafeRotatingFileHandler, create_aggregator_handler
-from server.structured_logging.logging_utilities import ensure_log_directory, resolve_log_base, rotate_log_files
+from server.structured_logging.logging_utilities import (
+    ensure_log_directory,
+    load_player_guid_formatter_class,
+    resolve_log_base,
+    rotate_log_files,
+)
 
 # Global queue and listener for async logging (initialized once)
 _log_queue: queue.Queue[logging.LogRecord] | None = None  # pylint: disable=invalid-name  # Reason: Module-level singleton pattern uses underscore prefix to indicate private module variable, not a constant
@@ -71,10 +76,10 @@ class _CategoryHandlerConfig:
     """Configuration for category handler setup (reduces parameter count)."""
 
     env_log_dir: Path
-    handler_class: type
+    handler_class: type[RotatingFileHandler]
     max_bytes: int
     backup_count: int
-    player_service: Any | None
+    player_service: object | None
     enable_async: bool
     log_queue: queue.Queue[logging.LogRecord] | None
     environment: str
@@ -133,7 +138,7 @@ def _setup_aggregator_handlers(  # pylint: disable=too-many-arguments,too-many-p
     env_log_dir: Path,
     max_bytes: int,
     backup_count: int,
-    player_service: Any | None,
+    player_service: object | None,
     enable_async: bool,
     log_queue: queue.Queue[logging.LogRecord] | None,
     root_logger: logging.Logger,
@@ -198,7 +203,7 @@ class _ConsoleHandlerConfig:
     env_log_dir: Path
     max_bytes: int
     backup_count: int
-    player_service: Any | None
+    player_service: object | None
     log_level: str
     win_safe_handler: type[RotatingFileHandler]
     base_handler: type[RotatingFileHandler]
@@ -217,7 +222,7 @@ def _setup_console_handler(
         Console handler created
     """
     console_log_path = config.env_log_dir / "console.log"
-    handler_class = config.base_handler
+    handler_class: type[RotatingFileHandler] = config.base_handler
     try:
         if sys.platform == "win32":
             # Windows-safe handler also needs directory safety
@@ -226,6 +231,7 @@ def _setup_console_handler(
             class SafeWinHandlerConsole(base_win_handler):  # type: ignore[misc, valid-type]  # Reason: Dynamic class creation inside conditional block, mypy cannot validate type compatibility at definition time
                 """Windows-safe rotating file handler with directory safety for console logs."""
 
+                @override
                 def shouldRollover(self, record: logging.LogRecord) -> bool:  # noqa: N802  # pylint: disable=invalid-name  # Reason: Method name required by parent class logging.handlers.RotatingFileHandler, cannot change to follow PEP8 naming
                     """Check if log file should roll over, ensuring directory exists first.
 
@@ -271,8 +277,7 @@ def _setup_console_handler(
     # in the rendered message. Adding %(asctime)s - %(name)s - %(levelname)s would cause duplication.
     console_formatter: logging.Formatter
     if config.player_service is not None:
-        from server.structured_logging.player_guid_formatter import PlayerGuidFormatter
-
+        PlayerGuidFormatter = load_player_guid_formatter_class()
         console_formatter = PlayerGuidFormatter(
             player_service=config.player_service,
             fmt="%(message)s",
@@ -351,6 +356,7 @@ def _get_handler_class(
             class SafeWinHandlerCategory(win_safe_handler):  # type: ignore[valid-type,misc]  # mypy: parameter as base class; pylint: disable=too-few-public-methods  # Reason: Handler class with focused responsibility, minimal public interface
                 """Windows-safe rotating file handler with directory safety for categorized logs."""
 
+                @override
                 def shouldRollover(self, record: logging.LogRecord) -> bool:  # noqa: N802  # pylint: disable=invalid-name  # Reason: Overrides parent class method, must match parent signature
                     """Determine if log rollover should occur.
 
@@ -385,17 +391,19 @@ def _convert_max_size_to_bytes(max_size_str: str | int) -> int:
     return max_size_str
 
 
-def _create_formatter(player_service: Any | None) -> logging.Formatter:
+def _create_formatter(player_service: object | None) -> logging.Formatter:
     """Create formatter (with or without PlayerGuidFormatter)."""
     # Note: Using %(message)s only since structlog already includes all metadata (timestamp, logger name, level)
     # in the rendered message. Adding %(asctime)s - %(name)s - %(levelname)s would cause duplication.
     if player_service is not None:
-        from server.structured_logging.player_guid_formatter import PlayerGuidFormatter
-
-        return PlayerGuidFormatter(
-            player_service=player_service,
-            fmt="%(message)s",
-            datefmt=None,
+        PlayerGuidFormatter = load_player_guid_formatter_class()
+        return cast(
+            logging.Formatter,
+            PlayerGuidFormatter(
+                player_service=player_service,
+                fmt="%(message)s",
+                datefmt=None,
+            ),
         )
     return logging.Formatter(
         "%(message)s",
@@ -412,6 +420,8 @@ class LoggerNameFilter(logging.Filter):
     (e.g., communications.log instead of npc.log).
     """
 
+    allowed_prefixes: list[str]
+
     def __init__(self, allowed_prefixes: list[str]) -> None:
         """
         Initialize filter with allowed logger name prefixes.
@@ -422,6 +432,7 @@ class LoggerNameFilter(logging.Filter):
         super().__init__()
         self.allowed_prefixes = allowed_prefixes
 
+    @override
     def filter(self, record: logging.LogRecord) -> bool:
         """
         Check if the log record's logger name matches any allowed prefix.
@@ -475,10 +486,10 @@ def _add_handler_to_loggers(
 
 def _create_handler_for_category(
     log_path: Path,
-    handler_class: type,
+    handler_class: type[RotatingFileHandler],
     max_bytes: int,
     backup_count: int,
-    player_service: Any | None,
+    player_service: object | None,
 ) -> logging.Handler:
     """
     Create handler for a log category with graceful error handling.
@@ -489,7 +500,7 @@ def _create_handler_for_category(
     try:
         ensure_log_directory(log_path)
         try:
-            handler = handler_class(
+            handler: logging.Handler = handler_class(
                 log_path,
                 maxBytes=max_bytes,
                 backupCount=backup_count,
@@ -507,8 +518,7 @@ def _create_handler_for_category(
         handler.setLevel(logging.DEBUG)
         formatter = _create_formatter(player_service)
         handler.setFormatter(formatter)
-        result: logging.Handler = cast(logging.Handler, handler)
-        return result
+        return handler
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Defensive fallback for handler creation failures, must catch all exceptions to prevent logging setup from crashing the application
         # Graceful fallback: if handler creation fails, use NullHandler
         # This prevents logging setup failures from crashing the application
@@ -534,17 +544,32 @@ def _get_handler_classes() -> tuple[type[RotatingFileHandler], type[RotatingFile
     return (win_safe, SafeRotatingFileHandler)
 
 
-def _prepare_log_environment(log_config: dict[str, Any], environment: str, log_level: str) -> tuple[Path, int, int]:
+def _rotation_subconfig(log_config: dict[str, object]) -> dict[str, object]:
+    """Return rotation settings as dict[str, object] for typed .get() without Any."""
+    raw = log_config.get("rotation", {})
+    if not isinstance(raw, dict):
+        return {}
+    # Rotation blocks in config use string keys; cast narrows dict[Unknown, Unknown] for type checkers.
+    return dict(cast(dict[str, object], raw).items())
+
+
+def _prepare_log_environment(log_config: dict[str, object], environment: str, log_level: str) -> tuple[Path, int, int]:
     """Ensure log dirs exist, rotate logs, set root level; return env_log_dir, max_bytes, backup_count."""
-    log_base = resolve_log_base(log_config.get("log_base", "logs"))
+    log_base_raw = log_config.get("log_base", "logs")
+    log_base = resolve_log_base(str(log_base_raw) if log_base_raw is not None else "logs")
     env_log_dir = log_base / environment
     ensure_log_directory(env_log_dir / ".dummy")
     rotate_log_files(env_log_dir)
     root_logger = logging.getLogger()
     root_logger.setLevel(getattr(logging, str(log_level).upper(), logging.INFO))
-    rotation_config = log_config.get("rotation", {})
-    max_bytes = _convert_max_size_to_bytes(rotation_config.get("max_size", "10MB"))
-    backup_count = rotation_config.get("backup_count", 5)
+    rotation_config = _rotation_subconfig(log_config)
+    max_size_raw = rotation_config.get("max_size", "10MB")
+    if isinstance(max_size_raw, (str, int)):
+        max_bytes = _convert_max_size_to_bytes(max_size_raw)
+    else:
+        max_bytes = _convert_max_size_to_bytes("10MB")
+    backup_count_raw = rotation_config.get("backup_count", 5)
+    backup_count = backup_count_raw if isinstance(backup_count_raw, int) else 5
     return (env_log_dir, max_bytes, backup_count)
 
 
@@ -656,9 +681,9 @@ def _get_default_log_categories() -> dict[str, list[str]]:
 
 def setup_enhanced_file_logging(
     environment: str,
-    log_config: dict[str, Any],
+    log_config: dict[str, object],
     log_level: str,
-    player_service: Any | None = None,
+    player_service: object | None = None,
     enable_async: bool = True,
 ) -> None:
     """Set up enhanced file logging with async QueueHandler/QueueListener when enable_async is True."""

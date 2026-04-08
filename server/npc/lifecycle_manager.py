@@ -60,7 +60,7 @@ class _SpawningServiceProtocol(Protocol):
         """Create an NPC instance or return None on failure."""
 
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 # Re-export for backward compatibility
 __all__ = [

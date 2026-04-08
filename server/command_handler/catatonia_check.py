@@ -23,7 +23,7 @@ from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.player_cache import cache_player, get_cached_player
 from .command_execution_request import CommandExecutionRequest, command_request_app_state
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 # Commands that are allowed even during catatonia
 CATATONIA_ALLOWED_COMMANDS = {"help", "who", "status", "time"}

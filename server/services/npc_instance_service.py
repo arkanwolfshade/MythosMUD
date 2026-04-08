@@ -24,7 +24,7 @@ from server.services.npc_service import npc_service
 
 from ..structured_logging.enhanced_logging_config import get_logger
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 class NPCInstanceService:

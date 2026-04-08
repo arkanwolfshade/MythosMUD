@@ -19,7 +19,7 @@ from ..structured_logging.enhanced_logging_config import get_logger
 if TYPE_CHECKING:
     from server.services.npc_combat_integration_service import NPCCombatIntegrationService
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 def generate_npc_id(definition: NPCDefinition | SimpleNPCDefinition, room_id: str) -> str:

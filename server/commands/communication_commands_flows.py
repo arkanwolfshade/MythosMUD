@@ -7,7 +7,6 @@ without changing handler signatures or behavior.
 
 from collections.abc import Awaitable, Callable, Mapping
 from dataclasses import dataclass
-from typing import cast
 
 from structlog.stdlib import BoundLogger
 
@@ -23,7 +22,7 @@ from .communication_commands_support import (
     primary_id,
 )
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 CHAT_UNAVAILABLE: dict[str, str] = {"result": "Chat functionality is not available."}
 ADMIN_UNAVAILABLE: dict[str, str] = {"result": "Admin functionality is not available."}

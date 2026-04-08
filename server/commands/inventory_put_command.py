@@ -21,7 +21,7 @@ from .container_helpers_inventory import (
 from .inventory_command_contracts import CommandResponse
 from .inventory_command_helpers import persist_player, remove_item_from_inventory, resolve_state_and_player
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 @dataclass(frozen=True)

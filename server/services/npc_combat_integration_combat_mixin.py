@@ -16,7 +16,7 @@ from .combat_messaging_integration import CombatMessagingIntegration
 from .combat_service import CombatService
 from .npc_combat_data_provider import NPCCombatDataProvider
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 class _NPCCombatIntegrationDeps(Protocol):

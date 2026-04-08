@@ -29,7 +29,7 @@ from .inventory_command_helpers import (
 )
 from .inventory_service_helpers import get_shared_services
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 async def _unequip_persist_or_rollback(

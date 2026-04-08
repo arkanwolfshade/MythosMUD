@@ -20,7 +20,7 @@ from ..async_persistence import AsyncPersistenceLayer
 from ..structured_logging.enhanced_logging_config import get_logger
 from .chat_logger import ChatLogger, chat_logger
 
-logger: BoundLogger = cast(BoundLogger, get_logger("communications.user_manager"))
+logger: BoundLogger = get_logger("communications.user_manager")
 
 
 class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: User manager requires many state tracking and configuration attributes

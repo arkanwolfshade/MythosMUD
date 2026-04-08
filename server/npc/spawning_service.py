@@ -16,7 +16,7 @@ appear at the right time, in the right place, and under the right conditions.
 from __future__ import annotations
 
 import random
-from typing import TYPE_CHECKING, TypedDict, cast
+from typing import TYPE_CHECKING, TypedDict
 
 from structlog.stdlib import BoundLogger
 
@@ -38,7 +38,7 @@ from server.npc.spawning_request_execution import spawn_npc_from_request
 
 from ..structured_logging.enhanced_logging_config import get_logger
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 class NPCSpawnStatistics(TypedDict):

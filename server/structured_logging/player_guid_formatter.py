@@ -9,11 +9,15 @@ crucial for understanding the flow of events through our eldritch systems.
 
 import logging
 import re
-from typing import Any, cast
+from typing import Literal, cast, override
 
-from .enhanced_logging_config import get_logger
+import structlog
+from structlog.stdlib import BoundLogger
 
-logger = get_logger(__name__)
+# structlog.get_logger here (not enhanced_logging_config.get_logger) avoids an import cycle:
+# enhanced_logging_config -> logging_file_setup -> logging_handlers -> this module.
+# structlog.get_logger is typed as Any; cast for static analysis (matches other structured_logging modules).
+logger = cast(BoundLogger, structlog.get_logger(__name__))  # type: ignore[redundant-cast]
 
 
 class PlayerGuidFormatter(logging.Formatter):
@@ -28,16 +32,29 @@ class PlayerGuidFormatter(logging.Formatter):
     is crucial for understanding the flow of events through our eldritch systems.
     """
 
-    def __init__(self, player_service: Any, *args: Any, **kwargs: Any) -> None:
+    player_service: object
+    uuid_pattern: re.Pattern[str]
+
+    def __init__(
+        self,
+        *,
+        player_service: object,
+        fmt: str | None = None,
+        datefmt: str | None = None,
+        style: Literal["%", "{", "$"] = "%",
+        validate: bool = True,
+    ) -> None:
         """
         Initialize the PlayerGuidFormatter.
 
         Args:
             player_service: Service for accessing player data (PlayerService or PersistenceLayer)
-            *args: Arguments passed to parent logging.Formatter
-            **kwargs: Keyword arguments passed to parent logging.Formatter
+            fmt: Format string for logging.Formatter
+            datefmt: Date format for logging.Formatter
+            style: Format style for logging.Formatter
+            validate: Whether logging.Formatter should validate the format string
         """
-        super().__init__(*args, **kwargs)
+        super().__init__(fmt, datefmt, style, validate=validate)
         self.player_service = player_service
 
         # Compile UUID pattern for efficient matching
@@ -47,6 +64,7 @@ class PlayerGuidFormatter(logging.Formatter):
             r"(?<![0-9a-f-])[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(?![0-9a-f-])", re.IGNORECASE
         )
 
+    @override
     def format(self, record: logging.LogRecord) -> str:
         """
         Format a log record with enhanced player GUID display.
@@ -65,7 +83,7 @@ class PlayerGuidFormatter(logging.Formatter):
 
         return enhanced_message
 
-    def _convert_player_guids(self, message: Any) -> str:
+    def _convert_player_guids(self, message: object) -> str:
         """
         Convert player GUIDs in message to enhanced format.
 
@@ -195,11 +213,16 @@ class PlayerGuidFormatter(logging.Formatter):
             # This is the primary method for player lookup in the formatter
             # Note: The persistence layer only has async methods (get_player_by_id),
             # so synchronous lookups will always fail. This is expected behavior.
-            if hasattr(self.player_service, "persistence") and hasattr(self.player_service.persistence, "get_player"):
-                player = self.player_service.persistence.get_player(guid)
-                if player and hasattr(player, "name"):
-                    result: str = cast(str, player.name)
-                    return result
+            persistence = cast(object | None, getattr(self.player_service, "persistence", None))
+            get_player = (
+                cast(object | None, getattr(persistence, "get_player", None)) if persistence is not None else None
+            )
+            if callable(get_player):
+                player_raw = get_player(guid)
+                if player_raw is not None:
+                    name = getattr(player_raw, "name", None)
+                    if isinstance(name, str):
+                        return name
                 # If persistence layer returns None, return None (no fallback)
                 return None
 

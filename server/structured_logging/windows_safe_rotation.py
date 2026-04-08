@@ -11,6 +11,7 @@ import shutil
 import sys
 import time
 from logging.handlers import RotatingFileHandler, TimedRotatingFileHandler
+from typing import override
 
 
 def _copy_then_truncate(src_path: str, dst_path: str, retries: int = 3, delay: float = 0.1) -> None:
@@ -25,8 +26,8 @@ def _copy_then_truncate(src_path: str, dst_path: str, retries: int = 3, delay: f
         try:
             # Ensure destination directory exists
             os.makedirs(os.path.dirname(dst_path), exist_ok=True)
-            # Copy with metadata
-            shutil.copy2(src_path, dst_path)
+            # Copy with metadata (copy2 returns destination path; we only need the side effect)
+            _ = shutil.copy2(src_path, dst_path)
             # Truncate source file
             with open(src_path, "w", encoding="utf-8"):
                 # Opening with write mode truncates the file
@@ -41,11 +42,22 @@ def _copy_then_truncate(src_path: str, dst_path: str, retries: int = 3, delay: f
         raise last_exc
 
 
+def copy_then_truncate(src_path: str, dst_path: str, retries: int = 3, delay: float = 0.1) -> None:
+    """
+    Copy the source log file to the destination, then truncate the source.
+
+    Public API for Windows-safe rotation; other modules should call this instead of
+    the private implementation used inside this module's handlers.
+    """
+    _copy_then_truncate(src_path, dst_path, retries=retries, delay=delay)
+
+
 class WindowsSafeRotatingFileHandler(RotatingFileHandler):
     """
     Size-based rotating file handler that uses copy-then-truncate on Windows.
     """
 
+    @override
     def doRollover(self) -> None:  # noqa: N802  # Reason: Method name matches logging.handlers.RotatingFileHandler API, must use camelCase to override base class method
         if self.stream:
             self.stream.close()
@@ -73,17 +85,17 @@ class WindowsSafeRotatingFileHandler(RotatingFileHandler):
 
             # Windows-safe rollover for the current log file
             if sys.platform == "win32":
-                _copy_then_truncate(self.baseFilename, dfn)
+                copy_then_truncate(self.baseFilename, dfn)
             else:
                 try:
                     os.rename(self.baseFilename, dfn)
                 except OSError:
                     # Fallback to copy-then-truncate even on non-Windows if needed
-                    _copy_then_truncate(self.baseFilename, dfn)
+                    copy_then_truncate(self.baseFilename, dfn)
 
-        # Reopen the stream
-        self.mode = "a"
-        self.stream = self._open()
+        # Reopen the stream (assign to Handler attributes; cannot re-annotate stream on subclass without Liskov errors vs TextIOWrapper).
+        self.mode = "a"  # pyright: ignore[reportUnannotatedClassAttribute]
+        self.stream = self._open()  # pyright: ignore[reportUnannotatedClassAttribute]
 
 
 class WindowsSafeTimedRotatingFileHandler(TimedRotatingFileHandler):
@@ -91,15 +103,17 @@ class WindowsSafeTimedRotatingFileHandler(TimedRotatingFileHandler):
     Timed rotating file handler that uses copy-then-truncate on Windows.
     """
 
+    @override
     def rotation_filename(self, default_name: str) -> str:  # noqa: D401  # Reason: Method name is inherited from logging.handlers.RotatingFileHandler, docstring not required for override
         # Use default naming
         return default_name
 
+    @override
     def rotate(self, source: str, dest: str) -> None:
         if sys.platform == "win32":
-            _copy_then_truncate(source, dest)
+            copy_then_truncate(source, dest)
         else:
             try:
                 os.rename(source, dest)
             except OSError:
-                _copy_then_truncate(source, dest)
+                copy_then_truncate(source, dest)

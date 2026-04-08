@@ -40,7 +40,7 @@ from server.services.combat_service import CombatService
 from server.services.combat_service_npc import get_combat_id_for_npc, resolve_npc_participant_id_in_combat
 from server.structured_logging.enhanced_logging_config import get_logger
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility class with focused responsibility, minimal public interface

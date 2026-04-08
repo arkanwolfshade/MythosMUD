@@ -13,11 +13,13 @@ are split across multiple modules for better maintainability.
 import json
 import logging
 import re
-from typing import Any, cast
+from collections.abc import Iterable, Mapping
+from typing import Protocol, cast
 
 import structlog
 from structlog.contextvars import merge_contextvars
 from structlog.stdlib import BoundLogger, LoggerFactory
+from structlog.typing import EventDict, Processor
 
 # Import from refactored modules
 from server.structured_logging.logging_context import (
@@ -44,6 +46,7 @@ from server.structured_logging.logging_processors import (
 from server.structured_logging.logging_utilities import (
     detect_environment,
     ensure_log_directory,
+    load_player_guid_formatter_class,
     resolve_log_base,
     rotate_log_files,
 )
@@ -61,12 +64,9 @@ _rotate_log_files = rotate_log_files
 _create_aggregator_handler = create_aggregator_handler
 _setup_enhanced_file_logging = setup_enhanced_file_logging
 
-# Module-level logger for internal use
-# NOTE: Infrastructure files may use structlog.get_logger() directly to avoid
-# circular imports during logging system initialization. This is acceptable for
-# internal logging infrastructure code only. All other modules must use
-# get_logger() from this module.
-logger = structlog.get_logger(__name__)
+# Module-level logger for internal use (infrastructure only; app code uses get_logger()).
+# structlog._config types get_logger as Any; cast -> BoundLogger for basedpyright; mypy flags redundant-cast.
+logger = cast(BoundLogger, structlog.get_logger(__name__))  # type: ignore[redundant-cast]
 
 
 class _LoggingState:  # pylint: disable=too-few-public-methods  # Reason: State container class with focused responsibility, minimal public interface
@@ -79,11 +79,26 @@ class _LoggingState:  # pylint: disable=too-few-public-methods  # Reason: State 
 _logging_state = _LoggingState()
 
 
+class _SupportsAlreadyLoggedFlag(Protocol):
+    """Narrow Exception for optional dedupe flag (matches LoggedException storage)."""
+
+    # Protocol mirrors LoggedException slot name so plain Exception instances can be tagged the same way.
+    _already_logged: bool
+
+
+def _as_str_key_object_dict(raw: object) -> dict[str, object]:
+    """Normalize a nested config mapping to dict[str, object] for typing (no reportExplicitAny)."""
+    if not isinstance(raw, dict):
+        return {}
+    # JSON/YAML logging sections use string keys; cast narrows dict[Unknown, Unknown] for type checkers.
+    return dict(cast(dict[str, object], raw).items())
+
+
 def configure_enhanced_structlog(
     environment: str | None = None,
     log_level: str = "INFO",
-    log_config: dict[str, Any] | None = None,
-    player_service: Any | None = None,
+    log_config: dict[str, object] | None = None,
+    player_service: object | None = None,
     enable_async: bool = True,
 ) -> None:
     """
@@ -123,15 +138,15 @@ def configure_enhanced_structlog(
 
     # Configure standard library logging for file output FIRST
     # This ensures file handlers are set up before structlog configuration
-    if log_config and not log_config.get("disable_logging", False):
+    if log_config and not bool(log_config.get("disable_logging", False)):
         setup_enhanced_file_logging(environment, log_config, log_level, player_service, enable_async)
 
     # Configure structlog with a custom renderer that strips ANSI codes
-    def strip_ansi_renderer(bound_logger: Any, name: str, event_dict: dict[str, Any]) -> str | bytes:
+    def strip_ansi_renderer(_logger: object, name: str, event_dict: EventDict) -> str | bytes:
         """Custom renderer that strips ANSI escape sequences."""
         try:
             # Use KeyValueRenderer to get the formatted message
-            formatted = structlog.processors.KeyValueRenderer()(bound_logger, name, event_dict)
+            formatted = structlog.processors.KeyValueRenderer()(_logger, name, event_dict)
 
             # Strip ANSI escape sequences
             ansi_escape = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
@@ -143,7 +158,7 @@ def configure_enhanced_structlog(
 
     try:
         structlog.configure(
-            processors=base_processors + [strip_ansi_renderer],
+            processors=cast(Iterable[Processor], base_processors + [strip_ansi_renderer]),
             context_class=dict,
             logger_factory=LoggerFactory(),
             wrapper_class=BoundLogger,
@@ -158,24 +173,27 @@ def configure_enhanced_structlog(
             error_type=type(e).__name__,
         )
         structlog.configure(
-            processors=[
-                structlog.stdlib.add_log_level,
-                structlog.processors.TimeStamper(fmt="iso"),
-                structlog.processors.format_exc_info,
-                structlog.dev.ConsoleRenderer(),  # type: ignore[attr-defined]  # Reason: structlog.dev module exists at runtime but type stubs may not include it, this is fallback configuration for error recovery
-            ],
+            processors=cast(
+                Iterable[Processor],
+                [
+                    structlog.stdlib.add_log_level,
+                    structlog.processors.TimeStamper(fmt="iso"),
+                    structlog.processors.format_exc_info,
+                    structlog.dev.ConsoleRenderer(),  # type: ignore[attr-defined]  # Reason: structlog.dev module exists at runtime but type stubs may not include it, this is fallback configuration for error recovery
+                ],
+            ),
             wrapper_class=BoundLogger,
             logger_factory=LoggerFactory(),
         )
 
     # AI Agent: Now that structlog is configured, log the enhanced error handling setup
     # This confirms that the global error handler is capturing all errors from all modules
-    if log_config and not log_config.get("disable_logging", False):
-        env_log_dir = resolve_log_base(log_config.get("log_base", "logs")) / environment
+    if log_config and not bool(log_config.get("disable_logging", False)):
+        log_base_raw = log_config.get("log_base", "logs")
+        env_log_dir = resolve_log_base(str(log_base_raw) if log_base_raw is not None else "logs") / environment
         errors_log_path = env_log_dir / "errors.log"
-        # NOTE: Using structlog.get_logger() directly is acceptable here since structlog
-        # is already configured at this point, and this is infrastructure code.
-        configured_logger = structlog.get_logger(__name__)
+        # NOTE: structlog.get_logger is Any in stubs; cast aligns with BoundLogger.
+        configured_logger = cast(BoundLogger, structlog.get_logger(__name__))  # type: ignore[redundant-cast]
         configured_logger.info(
             "Enhanced error logging configured",
             errors_log_path=str(errors_log_path),
@@ -185,8 +203,8 @@ def configure_enhanced_structlog(
 
 
 def setup_enhanced_logging(
-    config: dict[str, Any],
-    player_service: Any | None = None,
+    config: Mapping[str, object],
+    player_service: object | None = None,
     *,
     force_reconfigure: bool = False,
 ) -> None:
@@ -208,13 +226,16 @@ def setup_enhanced_logging(
         )
         return
 
-    logging_config = config.get("logging", {})
-    environment = logging_config.get("environment", detect_environment())
-    log_level = logging_config.get("level", "INFO")
-    enable_async = logging_config.get("enable_async", True)
+    logging_config = _as_str_key_object_dict(config.get("logging", {}))
+    environment_val = logging_config.get("environment")
+    environment = detect_environment() if environment_val is None else str(environment_val)
+    level_val = logging_config.get("level", "INFO")
+    log_level = str(level_val) if level_val is not None else "INFO"
+    enable_async_raw = logging_config.get("enable_async", True)
+    enable_async = enable_async_raw if isinstance(enable_async_raw, bool) else True
 
     # Check if logging should be disabled
-    disable_logging = logging_config.get("disable_logging", False)
+    disable_logging = bool(logging_config.get("disable_logging", False))
 
     if disable_logging:
         # Configure minimal logging without file handlers
@@ -279,7 +300,7 @@ def _configure_third_party_log_levels() -> None:
         third_party.setLevel(logging.CRITICAL)
 
 
-def get_enhanced_logger(name: str) -> Any:  # Returns BoundLogger but typed as Any for flexibility
+def get_enhanced_logger(name: str) -> BoundLogger:
     """
     Get an enhanced logger instance with structured logging capabilities.
 
@@ -295,11 +316,11 @@ def get_enhanced_logger(name: str) -> Any:  # Returns BoundLogger but typed as A
     # Get the base logger and wrap it with enhanced capabilities
     base_logger = get_logger(name)
 
-    # Return a bound logger with enhanced processors
-    return structlog.wrap_logger(base_logger)
+    # structlog.wrap_logger is typed as Any in stubs; cast aligns with BoundLogger for basedpyright.
+    return cast(BoundLogger, structlog.wrap_logger(base_logger))  # type: ignore[redundant-cast]
 
 
-def get_logger(name: str) -> Any:  # Returns BoundLogger but typed as Any for flexibility
+def get_logger(name: str) -> BoundLogger:
     """
     Get a Structlog logger with the specified name.
 
@@ -318,12 +339,11 @@ def get_logger(name: str) -> Any:  # Returns BoundLogger but typed as Any for fl
     Returns:
         Configured Structlog logger instance
     """
-    # NOTE: This function is the public API wrapper around structlog.get_logger().
-    # Using structlog.get_logger() here is correct as this IS the enhanced logging API.
-    return structlog.get_logger(name)
+    # NOTE: Public API; same as structlog.get_logger with return type for callers.
+    return cast(BoundLogger, structlog.get_logger(name))  # type: ignore[redundant-cast]
 
 
-def update_logging_with_player_service(player_service: Any) -> None:
+def update_logging_with_player_service(player_service: object) -> None:
     """
     Update existing logging handlers to use PlayerGuidFormatter.
 
@@ -333,7 +353,7 @@ def update_logging_with_player_service(player_service: Any) -> None:
     Args:
         player_service: The player service for GUID-to-name conversion
     """
-    from server.structured_logging.player_guid_formatter import PlayerGuidFormatter
+    PlayerGuidFormatter = load_player_guid_formatter_class()
 
     # Set the global player service for structlog processor enhancement
     set_global_player_service(player_service)
@@ -384,7 +404,7 @@ def update_logging_with_player_service(player_service: Any) -> None:
                 handler.setFormatter(enhanced_formatter)
 
     # Log that the enhancement has been applied
-    structured_logger = cast(Any, get_logger("server.structured_logging"))
+    structured_logger = get_logger("server.structured_logging")
     structured_logger.info("Logging system enhanced with PlayerGuidFormatter", player_service_available=True)
 
 
@@ -395,7 +415,7 @@ def log_exception_once(
     *,
     exc: Exception | None = None,
     mark_logged: bool = True,
-    **kwargs: Any,
+    **kwargs: object,
 ) -> None:
     """
     Log an exception once, respecting exceptions that have already been logged.
@@ -409,11 +429,11 @@ def log_exception_once(
         **kwargs: Additional key-value pairs for structured logging.
     """
     if exc is not None:
-        already_logged = getattr(exc, "already_logged", False)
+        already_logged = bool(getattr(exc, "_already_logged", False))
         if already_logged:
             return
-        kwargs.setdefault("error_type", type(exc).__name__)
-        kwargs.setdefault("error", str(exc))
+        _ = kwargs.setdefault("error_type", type(exc).__name__)
+        _ = kwargs.setdefault("error", str(exc))
 
     log_method = getattr(bound_logger, level.lower(), bound_logger.error)
     log_method(message, **kwargs)
@@ -421,6 +441,7 @@ def log_exception_once(
     if exc is not None and mark_logged:
         marker = getattr(exc, "mark_logged", None)
         if callable(marker):
-            marker()  # pylint: disable=not-callable  # Reason: callable() check confirms marker is callable at runtime, pylint cannot detect this through getattr
+            _ = marker()  # pylint: disable=not-callable  # Reason: callable() check confirms marker is callable at runtime, pylint cannot detect this through getattr
         else:
-            cast(Any, exc)._already_logged = True  # pylint: disable=protected-access  # Reason: Accessing protected member _already_logged is necessary for exception logging state tracking, this is part of the exception protocol
+            # Same slot as LoggedException; property already_logged is read-only on that class.
+            cast(_SupportsAlreadyLoggedFlag, cast(object, exc))._already_logged = True  # pyright: ignore[reportPrivateUsage]

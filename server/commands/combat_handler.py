@@ -41,7 +41,7 @@ if TYPE_CHECKING:
     from server.services.combat_service import CombatService
     from server.services.player_combat_service import PlayerCombatService
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 @dataclass(frozen=True)

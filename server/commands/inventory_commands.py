@@ -24,7 +24,7 @@ from .inventory_pickup_command import handle_pickup_command
 from .inventory_put_command import handle_put_command
 from .inventory_unequip_command import handle_unequip_command
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 __all__ = [
     "CommandResponse",

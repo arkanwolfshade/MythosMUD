@@ -4,7 +4,7 @@ NPC death event handling for lifecycle.
 Extracted from lifecycle_manager to keep file NLOC under complexity limits.
 """
 
-from typing import Protocol, cast
+from typing import Protocol
 
 from structlog.stdlib import BoundLogger
 
@@ -17,7 +17,7 @@ from server.npc.population_control import NPCPopulationController
 from ..structured_logging.enhanced_logging_config import get_logger
 from .lifecycle_types import NPCLifecycleEvent, NPCLifecycleRecord, NPCLifecycleState
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 class _LifecycleManagerForDeath(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Structural Protocol; mirrors NPCLifecycleManager without importing it.

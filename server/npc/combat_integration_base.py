@@ -22,7 +22,7 @@ from ..realtime.login_grace_period import is_player_in_login_grace_period
 from ..structured_logging.enhanced_logging_config import get_logger
 from .combat_integration_protocols import NpcCombatServiceProtocol
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 def _resolve_npc_combat_service_raw(app: object) -> object | None:

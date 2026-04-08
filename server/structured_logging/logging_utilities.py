@@ -7,20 +7,34 @@ log file rotation, and environment detection utilities.
 
 # pylint: disable=too-many-return-statements  # Reason: Logging utilities require multiple return statements for different path resolution and environment detection scenarios
 
+from __future__ import annotations
+
 import os
 import sys
 import threading
 import time
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import TYPE_CHECKING, cast
 
 import structlog
+from structlog.stdlib import BoundLogger
+
+if TYPE_CHECKING:
+    from server.structured_logging.player_guid_formatter import PlayerGuidFormatter as _PlayerGuidFormatterType
 
 # NOTE: Infrastructure files may use structlog.get_logger() directly to avoid
 # circular imports during logging system initialization. This is acceptable
 # for internal logging infrastructure code only. All other modules must use
 # get_logger() from enhanced_logging_config.
-logger = structlog.get_logger(__name__)
+# structlog.get_logger is typed as Any; cast for static analysis (matches enhanced_logging_config).
+logger = cast(BoundLogger, structlog.get_logger(__name__))  # type: ignore[redundant-cast]
+
+
+def _rotation_bound_logger() -> BoundLogger:
+    """Structlog logger for rotate_log_files (cast silences basedpyright Any from get_logger)."""
+    return cast(BoundLogger, structlog.get_logger("server.structured_logging"))  # type: ignore[redundant-cast]
+
 
 # Thread-safe directory creation locks (one lock per directory path)
 _dir_locks: dict[str, threading.Lock] = {}
@@ -32,7 +46,7 @@ _created_dirs: set[str] = set()
 _created_dirs_lock = threading.Lock()
 
 
-def ensure_log_directory(log_path: Path) -> None:
+def ensure_log_directory(log_path: Path | None) -> None:
     """
     Thread-safe directory creation for log files.
 
@@ -44,7 +58,7 @@ def ensure_log_directory(log_path: Path) -> None:
     on os.stat() inside mkdir() under heavy filesystem load.
 
     Args:
-        log_path: Path to the log file (directory will be created for parent)
+        log_path: Path to the log file (directory will be created for parent), or None / empty to no-op
     """
     if not log_path or not log_path.parent:
         return
@@ -180,20 +194,20 @@ def rotate_log_files(env_log_dir: Path) -> None:
                     if sys.platform == "win32":
                         try:
                             # Local import to avoid circulars
-                            from server.structured_logging.windows_safe_rotation import _copy_then_truncate
+                            from server.structured_logging.windows_safe_rotation import copy_then_truncate
 
-                            _copy_then_truncate(str(log_file), str(rotated_path))
+                            copy_then_truncate(str(log_file), str(rotated_path))
                         except OSError:
                             # If helper not available, fall back to rename with retry
-                            log_file.rename(rotated_path)
+                            _ = log_file.rename(rotated_path)
                     else:
                         # Attempt the rename operation on non-Windows systems
-                        log_file.rename(rotated_path)
+                        _ = log_file.rename(rotated_path)
 
                     # Log the rotation (this will go to the new log file)
                     # NOTE: Using structlog directly here to avoid circular import.
                     # This is acceptable for infrastructure code during log rotation.
-                    rotation_logger = structlog.get_logger("server.structured_logging")
+                    rotation_logger = _rotation_bound_logger()
                     rotation_logger.info(
                         "Rotated log file",
                         old_name=log_file.name,
@@ -210,7 +224,7 @@ def rotate_log_files(env_log_dir: Path) -> None:
                         # Final attempt failed, log the error
                         # NOTE: Using structlog directly here to avoid circular import.
                         # This is acceptable for infrastructure code during log rotation.
-                        rotation_logger = structlog.get_logger("server.structured_logging")
+                        rotation_logger = _rotation_bound_logger()
                         rotation_logger.warning(
                             "Could not rotate log file after retries",
                             name=log_file.name,
@@ -266,3 +280,20 @@ def detect_environment() -> str:
 
     # Default to local (not "development" - that's not a valid environment)
     return "local"
+
+
+def load_player_guid_formatter_class() -> type[_PlayerGuidFormatterType]:
+    """
+    Return PlayerGuidFormatter without a static import from caller modules.
+
+    Import-graph tools treat `from ... import PlayerGuidFormatter` inside
+    logging_handlers / logging_file_setup as an edge into player_guid_formatter,
+    which produced a false-positive cycle with enhanced_logging_config. A lazy
+    import inside this function keeps the same runtime order without that edge.
+
+    Return type uses TYPE_CHECKING import so mypy/pyright know the real
+    ``player_service`` constructor.
+    """
+    from server.structured_logging.player_guid_formatter import PlayerGuidFormatter
+
+    return PlayerGuidFormatter

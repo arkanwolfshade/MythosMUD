@@ -28,7 +28,7 @@ if TYPE_CHECKING:
     from ..async_persistence import AsyncPersistenceLayer
     from ..events import EventBus
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 def _npc_id_str(npc: object) -> str:

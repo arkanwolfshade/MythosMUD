@@ -1,6 +1,6 @@
 """Register default event reactions for an NPC (greeting, farewell, retaliation, spoke response)."""
 
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING
 
 from structlog.stdlib import BoundLogger
 
@@ -9,7 +9,7 @@ from ..structured_logging.enhanced_logging_config import get_logger
 if TYPE_CHECKING:
     from .event_reaction_system import NPCEventReactionSystem
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 def register_default_reactions_for_npc(

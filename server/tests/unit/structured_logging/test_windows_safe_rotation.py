@@ -13,80 +13,80 @@ import pytest
 from server.structured_logging.windows_safe_rotation import (
     WindowsSafeRotatingFileHandler,
     WindowsSafeTimedRotatingFileHandler,
-    _copy_then_truncate,
+    copy_then_truncate,
 )
 
 
 @pytest.fixture
-def temp_log_file(tmp_path):
+def temp_log_file(tmp_path: Path) -> str:
     """Create a temporary log file for testing."""
     log_file = tmp_path / "test.log"
-    log_file.write_text("test log content\n")
+    _ = log_file.write_text("test log content\n")
     return str(log_file)
 
 
 @pytest.fixture
-def temp_log_dir(tmp_path):
+def temp_log_dir(tmp_path: Path) -> str:
     """Create a temporary directory for log files."""
     return str(tmp_path)
 
 
-def test_copy_then_truncate_success(temp_log_file, tmp_path):
-    """Test _copy_then_truncate() successfully copies and truncates."""
+def test_copy_then_truncate_success(temp_log_file: str, tmp_path: Path) -> None:
+    """Test copy_then_truncate() successfully copies and truncates."""
     dest_file = str(tmp_path / "test.log.1")
-    _copy_then_truncate(temp_log_file, dest_file)
+    copy_then_truncate(temp_log_file, dest_file)
     assert Path(dest_file).exists()
     assert Path(dest_file).read_text() == "test log content\n"
     assert Path(temp_log_file).read_text() == ""
 
 
-def test_copy_then_truncate_creates_directory(tmp_path):
-    """Test _copy_then_truncate() creates destination directory if needed."""
+def test_copy_then_truncate_creates_directory(tmp_path: Path) -> None:
+    """Test copy_then_truncate() creates destination directory if needed."""
     src_file = tmp_path / "test.log"
-    src_file.write_text("test content\n")
+    _ = src_file.write_text("test content\n")
     dest_dir = tmp_path / "subdir"
     dest_file = str(dest_dir / "test.log.1")
-    _copy_then_truncate(str(src_file), dest_file)
+    copy_then_truncate(str(src_file), dest_file)
     assert dest_dir.exists()
     assert Path(dest_file).exists()
 
 
-def test_copy_then_truncate_retries_on_failure(tmp_path):
-    """Test _copy_then_truncate() retries on transient failures."""
+def test_copy_then_truncate_retries_on_failure(tmp_path: Path) -> None:
+    """Test copy_then_truncate() retries on transient failures."""
     src_file = tmp_path / "test.log"
-    src_file.write_text("test content\n")
+    _ = src_file.write_text("test content\n")
     dest_file = str(tmp_path / "test.log.1")
 
     call_count = 0
 
-    def failing_copy2(src, dst):
+    def failing_copy2(src: str, dst: str) -> None:
         nonlocal call_count
         call_count += 1
         if call_count < 2:
             raise OSError("File locked")
-        shutil_copy2(src, dst)
+        _ = shutil_copy2(src, dst)
 
     import shutil
 
     shutil_copy2 = shutil.copy2
     with patch("shutil.copy2", side_effect=failing_copy2):
-        _copy_then_truncate(str(src_file), dest_file)
+        copy_then_truncate(str(src_file), dest_file)
     assert Path(dest_file).exists()
     assert call_count >= 2
 
 
-def test_copy_then_truncate_raises_after_retries(tmp_path):
-    """Test _copy_then_truncate() raises exception after all retries fail."""
+def test_copy_then_truncate_raises_after_retries(tmp_path: Path) -> None:
+    """Test copy_then_truncate() raises exception after all retries fail."""
     src_file = tmp_path / "test.log"
-    src_file.write_text("test content\n")
+    _ = src_file.write_text("test content\n")
     dest_file = str(tmp_path / "test.log.1")
 
     with patch("shutil.copy2", side_effect=OSError("Persistent error")):
         with pytest.raises(OSError, match="Persistent error"):
-            _copy_then_truncate(str(src_file), dest_file)
+            copy_then_truncate(str(src_file), dest_file)
 
 
-def test_windows_safe_rotating_file_handler_init(temp_log_dir):
+def test_windows_safe_rotating_file_handler_init(temp_log_dir: str) -> None:
     """Test WindowsSafeRotatingFileHandler initialization."""
     log_file = os.path.join(temp_log_dir, "test.log")
     handler = WindowsSafeRotatingFileHandler(log_file, maxBytes=1024, backupCount=3)
@@ -96,13 +96,13 @@ def test_windows_safe_rotating_file_handler_init(temp_log_dir):
     handler.close()
 
 
-def test_windows_safe_rotating_file_handler_do_rollover_no_backup(temp_log_dir):
+def test_windows_safe_rotating_file_handler_do_rollover_no_backup(temp_log_dir: str) -> None:
     """Test doRollover() when backupCount is 0."""
     log_file = os.path.join(temp_log_dir, "test.log")
     handler = WindowsSafeRotatingFileHandler(log_file, maxBytes=10, backupCount=0)
     try:
         handler.stream = open(log_file, "w", encoding="utf-8")
-        handler.stream.write("test content")
+        _ = handler.stream.write("test content")
         handler.stream.flush()
         handler.doRollover()
         # Should not create backup files
@@ -111,13 +111,13 @@ def test_windows_safe_rotating_file_handler_do_rollover_no_backup(temp_log_dir):
         handler.close()
 
 
-def test_windows_safe_rotating_file_handler_do_rollover_with_backup(temp_log_dir):
+def test_windows_safe_rotating_file_handler_do_rollover_with_backup(temp_log_dir: str) -> None:
     """Test doRollover() creates backup files."""
     log_file = os.path.join(temp_log_dir, "test.log")
     handler = WindowsSafeRotatingFileHandler(log_file, maxBytes=10, backupCount=2)
     try:
         handler.stream = open(log_file, "w", encoding="utf-8")
-        handler.stream.write("test content")
+        _ = handler.stream.write("test content")
         handler.stream.flush()
         handler.doRollover()
         # Should create backup file
@@ -126,15 +126,15 @@ def test_windows_safe_rotating_file_handler_do_rollover_with_backup(temp_log_dir
         handler.close()
 
 
-def test_windows_safe_rotating_file_handler_do_rollover_rotates_existing_backups(temp_log_dir):
+def test_windows_safe_rotating_file_handler_do_rollover_rotates_existing_backups(temp_log_dir: str) -> None:
     """Test doRollover() rotates existing backup files."""
     log_file = os.path.join(temp_log_dir, "test.log")
     backup1 = Path(f"{log_file}.1")
-    backup1.write_text("old backup 1")
+    _ = backup1.write_text("old backup 1")
     handler = WindowsSafeRotatingFileHandler(log_file, maxBytes=10, backupCount=2)
     try:
         handler.stream = open(log_file, "w", encoding="utf-8")
-        handler.stream.write("new content")
+        _ = handler.stream.write("new content")
         handler.stream.flush()
         handler.doRollover()
         # Should rotate existing backup
@@ -143,13 +143,13 @@ def test_windows_safe_rotating_file_handler_do_rollover_rotates_existing_backups
         handler.close()
 
 
-def test_windows_safe_rotating_file_handler_do_rollover_handles_os_error(temp_log_dir):
+def test_windows_safe_rotating_file_handler_do_rollover_handles_os_error(temp_log_dir: str) -> None:
     """Test doRollover() handles OSError during rotation gracefully."""
     log_file = os.path.join(temp_log_dir, "test.log")
     handler = WindowsSafeRotatingFileHandler(log_file, maxBytes=10, backupCount=2)
     try:
         handler.stream = open(log_file, "w", encoding="utf-8")
-        handler.stream.write("test content")
+        _ = handler.stream.write("test content")
         handler.stream.flush()
 
         with patch("os.rename", side_effect=OSError("Permission denied")):
@@ -159,30 +159,30 @@ def test_windows_safe_rotating_file_handler_do_rollover_handles_os_error(temp_lo
         handler.close()
 
 
-def test_windows_safe_rotating_file_handler_do_rollover_windows_platform(temp_log_dir):
+def test_windows_safe_rotating_file_handler_do_rollover_windows_platform(temp_log_dir: str) -> None:
     """Test doRollover() uses copy-then-truncate on Windows."""
     log_file = os.path.join(temp_log_dir, "test.log")
     handler = WindowsSafeRotatingFileHandler(log_file, maxBytes=10, backupCount=1)
     try:
         handler.stream = open(log_file, "w", encoding="utf-8")
-        handler.stream.write("test content")
+        _ = handler.stream.write("test content")
         handler.stream.flush()
 
         with patch("sys.platform", "win32"):
-            with patch("server.structured_logging.windows_safe_rotation._copy_then_truncate") as mock_copy:
+            with patch("server.structured_logging.windows_safe_rotation.copy_then_truncate") as mock_copy:
                 handler.doRollover()
                 mock_copy.assert_called_once()
     finally:
         handler.close()
 
 
-def test_windows_safe_rotating_file_handler_do_rollover_non_windows_platform(temp_log_dir):
+def test_windows_safe_rotating_file_handler_do_rollover_non_windows_platform(temp_log_dir: str) -> None:
     """Test doRollover() uses rename on non-Windows platforms."""
     log_file = os.path.join(temp_log_dir, "test.log")
     handler = WindowsSafeRotatingFileHandler(log_file, maxBytes=10, backupCount=1)
     try:
         handler.stream = open(log_file, "w", encoding="utf-8")
-        handler.stream.write("test content")
+        _ = handler.stream.write("test content")
         handler.stream.flush()
 
         with patch("sys.platform", "linux"):
@@ -193,18 +193,19 @@ def test_windows_safe_rotating_file_handler_do_rollover_non_windows_platform(tem
         handler.close()
 
 
-def test_windows_safe_rotating_file_handler_do_rollover_no_stream(temp_log_dir):
+def test_windows_safe_rotating_file_handler_do_rollover_no_stream(temp_log_dir: str) -> None:
     """Test doRollover() handles case when stream is None."""
     log_file = os.path.join(temp_log_dir, "test.log")
     handler = WindowsSafeRotatingFileHandler(log_file, maxBytes=10, backupCount=1)
-    # Reason: Intentionally setting stream to None to test error handling path
-    handler.stream = None  # type: ignore[assignment]
+    # Simulate edge state where stream is None; direct assignment is rejected by the type
+    # checker because RotatingFileHandler.stream is typed as TextIOWrapper, not Optional.
+    object.__setattr__(handler, "stream", None)
     handler.doRollover()
     # Should not raise
     handler.close()
 
 
-def test_windows_safe_timed_rotating_file_handler_init(temp_log_dir):
+def test_windows_safe_timed_rotating_file_handler_init(temp_log_dir: str) -> None:
     """Test WindowsSafeTimedRotatingFileHandler initialization."""
     log_file = os.path.join(temp_log_dir, "test.log")
     handler = WindowsSafeTimedRotatingFileHandler(log_file, when="midnight", interval=1, backupCount=5)
@@ -213,7 +214,7 @@ def test_windows_safe_timed_rotating_file_handler_init(temp_log_dir):
     handler.close()
 
 
-def test_windows_safe_timed_rotating_file_handler_rotation_filename(temp_log_dir):
+def test_windows_safe_timed_rotating_file_handler_rotation_filename(temp_log_dir: str) -> None:
     """Test rotation_filename() returns default name."""
     log_file = os.path.join(temp_log_dir, "test.log")
     handler = WindowsSafeTimedRotatingFileHandler(log_file)
@@ -222,24 +223,24 @@ def test_windows_safe_timed_rotating_file_handler_rotation_filename(temp_log_dir
     handler.close()
 
 
-def test_windows_safe_timed_rotating_file_handler_rotate_windows_platform(temp_log_dir):
+def test_windows_safe_timed_rotating_file_handler_rotate_windows_platform(temp_log_dir: str) -> None:
     """Test rotate() uses copy-then-truncate on Windows."""
     log_file = os.path.join(temp_log_dir, "test.log")
     handler = WindowsSafeTimedRotatingFileHandler(log_file)
-    Path(log_file).write_text("test content")
+    _ = Path(log_file).write_text("test content")
 
     with patch("sys.platform", "win32"):
-        with patch("server.structured_logging.windows_safe_rotation._copy_then_truncate") as mock_copy:
+        with patch("server.structured_logging.windows_safe_rotation.copy_then_truncate") as mock_copy:
             handler.rotate(log_file, f"{log_file}.2024-01-01")
             mock_copy.assert_called_once()
     handler.close()
 
 
-def test_windows_safe_timed_rotating_file_handler_rotate_non_windows_platform(temp_log_dir):
+def test_windows_safe_timed_rotating_file_handler_rotate_non_windows_platform(temp_log_dir: str) -> None:
     """Test rotate() uses rename on non-Windows platforms."""
     log_file = os.path.join(temp_log_dir, "test.log")
     handler = WindowsSafeTimedRotatingFileHandler(log_file)
-    Path(log_file).write_text("test content")
+    _ = Path(log_file).write_text("test content")
 
     with patch("sys.platform", "linux"):
         with patch("os.rename") as mock_rename:
@@ -248,15 +249,15 @@ def test_windows_safe_timed_rotating_file_handler_rotate_non_windows_platform(te
     handler.close()
 
 
-def test_windows_safe_timed_rotating_file_handler_rotate_fallback_on_error(temp_log_dir):
+def test_windows_safe_timed_rotating_file_handler_rotate_fallback_on_error(temp_log_dir: str) -> None:
     """Test rotate() falls back to copy-then-truncate on OSError."""
     log_file = os.path.join(temp_log_dir, "test.log")
     handler = WindowsSafeTimedRotatingFileHandler(log_file)
-    Path(log_file).write_text("test content")
+    _ = Path(log_file).write_text("test content")
 
     with patch("sys.platform", "linux"):
         with patch("os.rename", side_effect=OSError("Permission denied")):
-            with patch("server.structured_logging.windows_safe_rotation._copy_then_truncate") as mock_copy:
+            with patch("server.structured_logging.windows_safe_rotation.copy_then_truncate") as mock_copy:
                 handler.rotate(log_file, f"{log_file}.2024-01-01")
                 mock_copy.assert_called_once()
     handler.close()

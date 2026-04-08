@@ -17,7 +17,7 @@ from .npc_combat_lucidity import NPCCombatLucidity
 from .npc_combat_uuid_mapping import NPCCombatUUIDMapping
 from .room_data_validator import RoomDataValidator
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 def _coerce_xp_mapping_value(raw: object) -> int:

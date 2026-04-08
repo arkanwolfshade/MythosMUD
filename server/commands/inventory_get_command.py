@@ -30,7 +30,7 @@ from .inventory_pickup_command import (
     complete_pickup_after_floor_extract,
 )
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 @dataclass(frozen=True)

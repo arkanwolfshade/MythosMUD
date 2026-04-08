@@ -16,7 +16,7 @@ from ..npc.lifecycle_manager import NPCLifecycleManager
 from ..structured_logging.enhanced_logging_config import get_logger
 from .combat_types import CombatParticipantData
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 class NPCCombatDataProvider:

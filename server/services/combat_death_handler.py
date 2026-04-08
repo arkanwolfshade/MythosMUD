@@ -53,7 +53,7 @@ class _CombatServiceDeps(Protocol):
 CombatServiceDeps = _CombatServiceDeps
 
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 class CombatDeathHandler:

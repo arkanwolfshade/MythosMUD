@@ -6,6 +6,7 @@ Tests the PlayerGuidFormatter class for converting player GUIDs to readable form
 
 import logging
 import uuid
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -13,8 +14,13 @@ import pytest
 from server.structured_logging.player_guid_formatter import PlayerGuidFormatter
 
 
+def _player_service_mock(formatter: PlayerGuidFormatter) -> MagicMock:
+    """Narrow player_service to MagicMock for test setup (formatter types it as object)."""
+    return cast(MagicMock, formatter.player_service)
+
+
 @pytest.fixture
-def mock_player_service():
+def mock_player_service() -> MagicMock:
     """Create a mock player service."""
     service = MagicMock()
     service.get_player_by_id = AsyncMock()
@@ -22,7 +28,7 @@ def mock_player_service():
 
 
 @pytest.fixture
-def formatter(mock_player_service):
+def formatter(mock_player_service: MagicMock) -> PlayerGuidFormatter:
     """Create a PlayerGuidFormatter instance."""
     return PlayerGuidFormatter(
         player_service=mock_player_service,
@@ -31,20 +37,24 @@ def formatter(mock_player_service):
     )
 
 
-def test_player_guid_formatter_init(mock_player_service):
+def test_player_guid_formatter_init(mock_player_service: MagicMock) -> None:
     """Test PlayerGuidFormatter initialization."""
-    formatter = PlayerGuidFormatter(mock_player_service)
+    formatter = PlayerGuidFormatter(player_service=mock_player_service)
     assert formatter.player_service == mock_player_service
     assert formatter.uuid_pattern is not None
 
 
-def test_player_guid_formatter_init_with_format(mock_player_service):
+def test_player_guid_formatter_init_with_format(mock_player_service: MagicMock) -> None:
     """Test PlayerGuidFormatter initialization with format string."""
-    formatter = PlayerGuidFormatter(mock_player_service, fmt="%(message)s", datefmt="%Y-%m-%d")
+    formatter = PlayerGuidFormatter(
+        player_service=mock_player_service,
+        fmt="%(message)s",
+        datefmt="%Y-%m-%d",
+    )
     assert formatter.player_service == mock_player_service
 
 
-def test_format_no_guids(formatter):
+def test_format_no_guids(formatter: PlayerGuidFormatter) -> None:
     """Test format() with message containing no GUIDs."""
     record = logging.LogRecord("test", logging.INFO, "", 0, "This is a test message", (), None)
     result = formatter.format(record)
@@ -56,7 +66,7 @@ def test_format_with_guid_no_player_service():
     """Test format() with GUID when player service returns None."""
     mock_service = MagicMock()
     mock_service.get_player_by_id = AsyncMock(return_value=None)
-    formatter = PlayerGuidFormatter(mock_service)
+    formatter = PlayerGuidFormatter(player_service=mock_service)
     test_uuid = str(uuid.uuid4())
     record = logging.LogRecord("test", logging.INFO, "", 0, f"Player {test_uuid} logged in", (), None)
     result = formatter.format(record)
@@ -64,12 +74,12 @@ def test_format_with_guid_no_player_service():
     assert "logged in" in result
 
 
-def test_format_with_guid_player_found(formatter):
+def test_format_with_guid_player_found(formatter: PlayerGuidFormatter) -> None:
     """Test format() with GUID when player is found."""
     test_uuid = uuid.uuid4()
     mock_player = MagicMock()
     mock_player.player_name = "TestPlayer"
-    formatter.player_service.get_player_by_id = AsyncMock(return_value=mock_player)
+    _player_service_mock(formatter).get_player_by_id = AsyncMock(return_value=mock_player)
 
     record = logging.LogRecord("test", logging.INFO, "", 0, f"Player {test_uuid} logged in", (), None)
     result = formatter.format(record)
@@ -77,13 +87,13 @@ def test_format_with_guid_player_found(formatter):
     assert "logged in" in result
 
 
-def test_format_multiple_guids(formatter):
+def test_format_multiple_guids(formatter: PlayerGuidFormatter) -> None:
     """Test format() with multiple GUIDs in message."""
     test_uuid1 = uuid.uuid4()
     test_uuid2 = uuid.uuid4()
     mock_player = MagicMock()
     mock_player.player_name = "TestPlayer"
-    formatter.player_service.get_player_by_id = AsyncMock(return_value=mock_player)
+    _player_service_mock(formatter).get_player_by_id = AsyncMock(return_value=mock_player)
 
     record = logging.LogRecord(
         "test",
@@ -98,43 +108,43 @@ def test_format_multiple_guids(formatter):
     assert "attacked" in result
 
 
-def test_format_guid_at_start(formatter):
+def test_format_guid_at_start(formatter: PlayerGuidFormatter) -> None:
     """Test format() with GUID at start of message."""
     test_uuid = uuid.uuid4()
     mock_player = MagicMock()
     mock_player.player_name = "TestPlayer"
-    formatter.player_service.get_player_by_id = AsyncMock(return_value=mock_player)
+    _player_service_mock(formatter).get_player_by_id = AsyncMock(return_value=mock_player)
 
     record = logging.LogRecord("test", logging.INFO, "", 0, f"{test_uuid} logged in", (), None)
     result = formatter.format(record)
     assert "logged in" in result
 
 
-def test_format_guid_at_end(formatter):
+def test_format_guid_at_end(formatter: PlayerGuidFormatter) -> None:
     """Test format() with GUID at end of message."""
     test_uuid = uuid.uuid4()
     mock_player = MagicMock()
     mock_player.player_name = "TestPlayer"
-    formatter.player_service.get_player_by_id = AsyncMock(return_value=mock_player)
+    _player_service_mock(formatter).get_player_by_id = AsyncMock(return_value=mock_player)
 
     record = logging.LogRecord("test", logging.INFO, "", 0, f"Player logged in: {test_uuid}", (), None)
     result = formatter.format(record)
     assert "logged in" in result
 
 
-def test_format_guid_in_middle(formatter):
+def test_format_guid_in_middle(formatter: PlayerGuidFormatter) -> None:
     """Test format() with GUID in middle of message."""
     test_uuid = uuid.uuid4()
     mock_player = MagicMock()
     mock_player.player_name = "TestPlayer"
-    formatter.player_service.get_player_by_id = AsyncMock(return_value=mock_player)
+    _player_service_mock(formatter).get_player_by_id = AsyncMock(return_value=mock_player)
 
     record = logging.LogRecord("test", logging.INFO, "", 0, f"Player {test_uuid} is online", (), None)
     result = formatter.format(record)
     assert "is online" in result
 
 
-def test_format_invalid_guid_format(formatter):
+def test_format_invalid_guid_format(formatter: PlayerGuidFormatter) -> None:
     """Test format() with invalid GUID format."""
     record = logging.LogRecord("test", logging.INFO, "", 0, "Player 12345 logged in", (), None)
     result = formatter.format(record)
@@ -142,12 +152,12 @@ def test_format_invalid_guid_format(formatter):
     assert "12345" in result
 
 
-def test_format_guid_with_hyphens(formatter):
+def test_format_guid_with_hyphens(formatter: PlayerGuidFormatter) -> None:
     """Test format() handles GUIDs with hyphens correctly."""
     test_uuid = uuid.uuid4()
     mock_player = MagicMock()
     mock_player.player_name = "TestPlayer"
-    formatter.player_service.get_player_by_id = AsyncMock(return_value=mock_player)
+    _player_service_mock(formatter).get_player_by_id = AsyncMock(return_value=mock_player)
 
     # UUID should have hyphens
     uuid_str = str(test_uuid)
@@ -157,10 +167,10 @@ def test_format_guid_with_hyphens(formatter):
     assert "logged in" in result
 
 
-def test_format_player_service_error(formatter):
+def test_format_player_service_error(formatter: PlayerGuidFormatter) -> None:
     """Test format() handles player service errors gracefully."""
     test_uuid = uuid.uuid4()
-    formatter.player_service.get_player_by_id = AsyncMock(side_effect=Exception("Service error"))
+    _player_service_mock(formatter).get_player_by_id = AsyncMock(side_effect=Exception("Service error"))
 
     record = logging.LogRecord("test", logging.INFO, "", 0, f"Player {test_uuid} logged in", (), None)
     # Should not raise, should handle error gracefully
@@ -168,21 +178,21 @@ def test_format_player_service_error(formatter):
     assert "logged in" in result
 
 
-def test_format_empty_message(formatter):
+def test_format_empty_message(formatter: PlayerGuidFormatter) -> None:
     """Test format() with empty message."""
     record = logging.LogRecord("test", logging.INFO, "", 0, "", (), None)
     result = formatter.format(record)
     assert isinstance(result, str)
 
 
-def test_format_message_with_special_characters(formatter):
+def test_format_message_with_special_characters(formatter: PlayerGuidFormatter) -> None:
     """Test format() with message containing special characters."""
     record = logging.LogRecord("test", logging.INFO, "", 0, "Message with <tags> and & symbols", (), None)
     result = formatter.format(record)
     assert "<tags>" in result or "tags" in result
 
 
-def test_uuid_pattern_matching(formatter):
+def test_uuid_pattern_matching(formatter: PlayerGuidFormatter) -> None:
     """Test UUID pattern correctly matches UUID format."""
     test_uuid = uuid.uuid4()
     uuid_str = str(test_uuid)
@@ -191,7 +201,7 @@ def test_uuid_pattern_matching(formatter):
     assert match.group() == uuid_str
 
 
-def test_uuid_pattern_not_matching_partial(formatter):
+def test_uuid_pattern_not_matching_partial(formatter: PlayerGuidFormatter) -> None:
     """Test UUID pattern doesn't match partial UUIDs."""
     # Partial UUID (too short)
     partial = "12345678-1234-1234-1234-12345678901"
@@ -200,7 +210,7 @@ def test_uuid_pattern_not_matching_partial(formatter):
     assert match is None or len(match.group()) != len(partial)
 
 
-def test_uuid_pattern_case_insensitive(formatter):
+def test_uuid_pattern_case_insensitive(formatter: PlayerGuidFormatter) -> None:
     """Test UUID pattern is case insensitive."""
     # UUID with uppercase letters
     test_uuid = uuid.uuid4()
@@ -209,12 +219,12 @@ def test_uuid_pattern_case_insensitive(formatter):
     assert match is not None
 
 
-def test_format_with_different_log_levels(formatter):
+def test_format_with_different_log_levels(formatter: PlayerGuidFormatter) -> None:
     """Test format() works with different log levels."""
     test_uuid = uuid.uuid4()
     mock_player = MagicMock()
     mock_player.player_name = "TestPlayer"
-    formatter.player_service.get_player_by_id = AsyncMock(return_value=mock_player)
+    _player_service_mock(formatter).get_player_by_id = AsyncMock(return_value=mock_player)
 
     for level in [logging.DEBUG, logging.INFO, logging.WARNING, logging.ERROR, logging.CRITICAL]:
         record = logging.LogRecord("test", level, "", 0, f"Player {test_uuid} action", (), None)

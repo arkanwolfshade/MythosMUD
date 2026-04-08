@@ -25,7 +25,7 @@ if TYPE_CHECKING:
     from ..game.movement_service import MovementService
     from ..models.room import Room
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 class NPCMovementIntegration:

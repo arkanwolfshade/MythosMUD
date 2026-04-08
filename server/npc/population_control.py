@@ -45,7 +45,7 @@ from .zone_configuration import ZoneConfiguration
 if TYPE_CHECKING:
     from ..async_persistence import AsyncPersistenceLayer
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 class _PopulationLifecycleManager(Protocol):

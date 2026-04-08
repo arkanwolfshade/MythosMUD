@@ -64,7 +64,7 @@ if TYPE_CHECKING:
     from server.services.player_death_service import PlayerDeathService
     from server.services.player_respawn_service import PlayerRespawnService
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: Combat service requires many state tracking and service attributes

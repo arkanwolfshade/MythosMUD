@@ -28,7 +28,7 @@ from .communication_commands_support import (
     get_pose_persistence,
 )
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 async def handle_say_command(

@@ -22,12 +22,12 @@ from server.structured_logging.logging_utilities import (
 
 
 @pytest.fixture
-def temp_dir(tmp_path):
+def temp_dir(tmp_path: Path) -> Path:
     """Create a temporary directory for testing."""
     return tmp_path
 
 
-def test_ensure_log_directory_creates_directory(temp_dir):
+def test_ensure_log_directory_creates_directory(temp_dir: Path) -> None:
     """Test ensure_log_directory() creates directory when it doesn't exist."""
     log_file = temp_dir / "subdir" / "test.log"
     ensure_log_directory(log_file)
@@ -35,7 +35,7 @@ def test_ensure_log_directory_creates_directory(temp_dir):
     assert log_file.parent.is_dir()
 
 
-def test_ensure_log_directory_existing_directory(temp_dir):
+def test_ensure_log_directory_existing_directory(temp_dir: Path) -> None:
     """Test ensure_log_directory() handles existing directory."""
     log_dir = temp_dir / "existing_dir"
     log_dir.mkdir()
@@ -53,9 +53,8 @@ def test_ensure_log_directory_no_parent():
 
 def test_ensure_log_directory_none_path():
     """Test ensure_log_directory() handles None path."""
-    # Should not raise
-    # Reason: Intentionally passing None to test error handling
-    ensure_log_directory(None)  # type: ignore[arg-type]
+    # Should not raise (defensive no-op for missing path)
+    ensure_log_directory(None)
 
 
 def test_ensure_log_directory_empty_path():
@@ -64,7 +63,7 @@ def test_ensure_log_directory_empty_path():
     ensure_log_directory(empty_path)
 
 
-def test_ensure_log_directory_permission_error(temp_dir):
+def test_ensure_log_directory_permission_error(temp_dir: Path) -> None:
     """Test ensure_log_directory() handles PermissionError gracefully."""
     log_file = temp_dir / "subdir" / "test.log"
     with patch("pathlib.Path.mkdir", side_effect=PermissionError("Permission denied")):
@@ -72,7 +71,7 @@ def test_ensure_log_directory_permission_error(temp_dir):
         ensure_log_directory(log_file)
 
 
-def test_ensure_log_directory_os_error(temp_dir):
+def test_ensure_log_directory_os_error(temp_dir: Path) -> None:
     """Test ensure_log_directory() handles OSError gracefully."""
     log_file = temp_dir / "subdir" / "test.log"
     with patch("pathlib.Path.mkdir", side_effect=OSError("File system error")):
@@ -80,14 +79,14 @@ def test_ensure_log_directory_os_error(temp_dir):
         ensure_log_directory(log_file)
 
 
-def test_ensure_log_directory_thread_safety(temp_dir):
+def test_ensure_log_directory_thread_safety(temp_dir: Path) -> None:
     """Test ensure_log_directory() is thread-safe."""
     import threading
 
     log_file = temp_dir / "subdir" / "test.log"
     results: list[bool] = []
 
-    def create_dir():
+    def create_dir() -> None:
         ensure_log_directory(log_file)
         results.append(log_file.parent.exists())
 
@@ -115,11 +114,11 @@ def test_resolve_log_base_absolute_path():
     assert str(result).replace("\\", "/") == str(abs_path).replace("\\", "/")
 
 
-def test_resolve_log_base_relative_path_with_pyproject(tmp_path):
+def test_resolve_log_base_relative_path_with_pyproject(tmp_path: Path) -> None:
     """Test resolve_log_base() resolves relative path using pyproject.toml."""
     # Create pyproject.toml in temp directory
     pyproject = tmp_path / "pyproject.toml"
-    pyproject.write_text("[project]\nname = 'test'")
+    _ = pyproject.write_text("[project]\nname = 'test'")
 
     with patch("pathlib.Path.cwd", return_value=tmp_path):
         result = resolve_log_base("logs")
@@ -127,7 +126,7 @@ def test_resolve_log_base_relative_path_with_pyproject(tmp_path):
         assert result == tmp_path / "logs"
 
 
-def test_resolve_log_base_relative_path_no_pyproject(tmp_path):
+def test_resolve_log_base_relative_path_no_pyproject(tmp_path: Path) -> None:
     """Test resolve_log_base() falls back to current directory if no pyproject.toml."""
     with patch("pathlib.Path.cwd", return_value=tmp_path):
         result = resolve_log_base("logs")
@@ -135,10 +134,10 @@ def test_resolve_log_base_relative_path_no_pyproject(tmp_path):
         assert result == tmp_path / "logs"
 
 
-def test_resolve_log_base_finds_pyproject_in_parent(tmp_path):
+def test_resolve_log_base_finds_pyproject_in_parent(tmp_path: Path) -> None:
     """Test resolve_log_base() finds pyproject.toml in parent directory."""
     pyproject = tmp_path / "pyproject.toml"
-    pyproject.write_text("[project]\nname = 'test'")
+    _ = pyproject.write_text("[project]\nname = 'test'")
     subdir = tmp_path / "subdir"
     subdir.mkdir()
 
@@ -148,10 +147,10 @@ def test_resolve_log_base_finds_pyproject_in_parent(tmp_path):
         assert result == tmp_path / "logs"
 
 
-def test_resolve_log_base_env_local_directory(tmp_path):
+def test_resolve_log_base_env_local_directory(tmp_path: Path) -> None:
     """Test that log_base 'logs' and environment 'local' yield .../logs/local (H4)."""
     pyproject = tmp_path / "pyproject.toml"
-    pyproject.write_text("[project]\nname = 'test'")
+    _ = pyproject.write_text("[project]\nname = 'test'")
     with patch("pathlib.Path.cwd", return_value=tmp_path):
         log_base = resolve_log_base("logs")
         env_log_dir = log_base / "local"
@@ -161,14 +160,14 @@ def test_resolve_log_base_env_local_directory(tmp_path):
         assert "local" in env_log_dir.parts
 
 
-def test_rotate_log_files_no_directory(tmp_path):
+def test_rotate_log_files_no_directory(tmp_path: Path) -> None:
     """Test rotate_log_files() handles non-existent directory."""
     non_existent = tmp_path / "nonexistent"
     # Should not raise
     rotate_log_files(non_existent)
 
 
-def test_rotate_log_files_empty_directory(tmp_path):
+def test_rotate_log_files_empty_directory(tmp_path: Path) -> None:
     """Test rotate_log_files() handles empty directory."""
     log_dir = tmp_path / "logs"
     log_dir.mkdir()
@@ -176,12 +175,12 @@ def test_rotate_log_files_empty_directory(tmp_path):
     # Should complete without error
 
 
-def test_rotate_log_files_rotates_log_files(tmp_path):
+def test_rotate_log_files_rotates_log_files(tmp_path: Path) -> None:
     """Test rotate_log_files() rotates existing log files."""
     log_dir = tmp_path / "logs"
     log_dir.mkdir()
     log_file = log_dir / "test.log"
-    log_file.write_text("log content")
+    _ = log_file.write_text("log content")
 
     rotate_log_files(log_dir)
 
@@ -190,7 +189,7 @@ def test_rotate_log_files_rotates_log_files(tmp_path):
     assert len(rotated_files) > 0
 
 
-def test_rotate_log_files_skips_empty_files(tmp_path):
+def test_rotate_log_files_skips_empty_files(tmp_path: Path) -> None:
     """Test rotate_log_files() skips empty log files."""
     log_dir = tmp_path / "logs"
     log_dir.mkdir()
@@ -204,38 +203,38 @@ def test_rotate_log_files_skips_empty_files(tmp_path):
     assert len(rotated_files) == 0
 
 
-def test_rotate_log_files_handles_permission_error(tmp_path):
+def test_rotate_log_files_handles_permission_error(tmp_path: Path) -> None:
     """Test rotate_log_files() handles PermissionError gracefully."""
     log_dir = tmp_path / "logs"
     log_dir.mkdir()
     log_file = log_dir / "test.log"
-    log_file.write_text("log content")
+    _ = log_file.write_text("log content")
 
     with patch("pathlib.Path.rename", side_effect=PermissionError("Permission denied")):
         # Should not raise, should handle gracefully
         rotate_log_files(log_dir)
 
 
-def test_rotate_log_files_windows_platform(tmp_path):
+def test_rotate_log_files_windows_platform(tmp_path: Path) -> None:
     """Test rotate_log_files() uses Windows-safe rotation on Windows."""
     log_dir = tmp_path / "logs"
     log_dir.mkdir()
     log_file = log_dir / "test.log"
-    log_file.write_text("log content")
+    _ = log_file.write_text("log content")
 
     with patch("sys.platform", "win32"):
-        with patch("server.structured_logging.windows_safe_rotation._copy_then_truncate") as mock_copy:
+        with patch("server.structured_logging.windows_safe_rotation.copy_then_truncate") as mock_copy:
             rotate_log_files(log_dir)
             # Should use Windows-safe rotation or have rotated the file
             assert mock_copy.called or not log_file.exists() or len(list(log_dir.glob("test.log.*"))) > 0
 
 
-def test_rotate_log_files_non_windows_platform(tmp_path):
+def test_rotate_log_files_non_windows_platform(tmp_path: Path) -> None:
     """Test rotate_log_files() uses rename on non-Windows platforms."""
     log_dir = tmp_path / "logs"
     log_dir.mkdir()
     log_file = log_dir / "test.log"
-    log_file.write_text("log content")
+    _ = log_file.write_text("log content")
 
     with patch("sys.platform", "linux"):
         rotate_log_files(log_dir)
@@ -244,12 +243,12 @@ def test_rotate_log_files_non_windows_platform(tmp_path):
         assert len(rotated_files) > 0 or not log_file.exists()
 
 
-def test_rotate_log_files_retries_on_error(tmp_path):
+def test_rotate_log_files_retries_on_error(tmp_path: Path) -> None:
     """Test rotate_log_files() retries on OSError."""
     log_dir = tmp_path / "logs"
     log_dir.mkdir()
     log_file = log_dir / "test.log"
-    log_file.write_text("log content")
+    _ = log_file.write_text("log content")
 
     # Test that the function handles errors gracefully
     # The retry logic is internal, so we just verify it completes
@@ -258,12 +257,12 @@ def test_rotate_log_files_retries_on_error(tmp_path):
     assert True
 
 
-def test_rotate_log_files_handles_jsonl_files(tmp_path):
+def test_rotate_log_files_handles_jsonl_files(tmp_path: Path) -> None:
     """Test rotate_log_files() rotates .jsonl files."""
     log_dir = tmp_path / "logs"
     log_dir.mkdir()
     jsonl_file = log_dir / "test.jsonl"
-    jsonl_file.write_text('{"message": "test"}')
+    _ = jsonl_file.write_text('{"message": "test"}')
 
     rotate_log_files(log_dir)
 
@@ -272,14 +271,14 @@ def test_rotate_log_files_handles_jsonl_files(tmp_path):
     assert len(rotated_files) > 0 or not jsonl_file.exists()
 
 
-def test_rotate_log_files_recursive_search(tmp_path):
+def test_rotate_log_files_recursive_search(tmp_path: Path) -> None:
     """Test rotate_log_files() searches subdirectories recursively."""
     log_dir = tmp_path / "logs"
     log_dir.mkdir()
     subdir = log_dir / "subdir"
     subdir.mkdir()
     log_file = subdir / "test.log"
-    log_file.write_text("log content")
+    _ = log_file.write_text("log content")
 
     rotate_log_files(log_dir)
 

@@ -15,7 +15,7 @@ from structlog.stdlib import BoundLogger
 from server.npc.lifecycle_manager import NPCLifecycleManager
 from server.structured_logging.enhanced_logging_config import get_logger
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 class EventBusPublish(Protocol):

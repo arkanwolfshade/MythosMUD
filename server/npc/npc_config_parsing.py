@@ -7,7 +7,7 @@ from structlog.stdlib import BoundLogger
 
 from ..structured_logging.enhanced_logging_config import get_logger
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 def parse_stats(stats_json: str, npc_id: str) -> dict[str, object]:

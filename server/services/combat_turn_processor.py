@@ -20,7 +20,7 @@ from server.structured_logging.enhanced_logging_config import get_logger
 if TYPE_CHECKING:
     from server.services.combat_service import CombatService
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 class CombatTurnProcessor:

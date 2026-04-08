@@ -27,7 +27,7 @@ if TYPE_CHECKING:
     from ..events import EventBus
     from .event_reaction_system import NPCEventReactionSystem
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: NPC base requires many fields for complete state

@@ -32,7 +32,7 @@ class _EventBusPublishPort(Protocol):
         ...
 
 
-logger: BoundLogger = cast(BoundLogger, get_logger("communications.event_handlers"))
+logger: BoundLogger = get_logger("communications.event_handlers")
 
 
 def _as_event_data_dict(raw: object) -> dict[str, object]:

@@ -27,7 +27,7 @@ class _AppStateForPlayerService(Protocol):
     player_service: object | None
 
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 def is_websocket_disconnect_message(error_message: str) -> bool:

@@ -22,7 +22,7 @@ from server.exceptions import AuthenticationError
 from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.error_logging import log_and_raise
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 # Use environment variable for secret key - CRITICAL: Must be set in production
 # Use MYTHOSMUD_JWT_SECRET for consistency with FastAPI Users system

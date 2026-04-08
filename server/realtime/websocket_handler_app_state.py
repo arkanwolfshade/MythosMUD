@@ -13,7 +13,7 @@ from ..structured_logging.enhanced_logging_config import get_logger
 if TYPE_CHECKING:
     from .request_context import WebSocketRequestContext
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 def _services_from_container(app_state: object) -> tuple[object | None, object | None]:

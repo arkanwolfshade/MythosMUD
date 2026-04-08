@@ -2,13 +2,11 @@
 
 from __future__ import annotations
 
-from typing import cast
-
 from structlog.stdlib import BoundLogger
 
 from ..structured_logging.enhanced_logging_config import get_logger
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 def schedule_end_combat_if_npc_died_best_effort(npc_id: str) -> None:

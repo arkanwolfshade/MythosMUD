@@ -11,22 +11,35 @@ import re
 import threading
 import uuid
 from datetime import UTC, datetime
-from typing import Any
+from typing import cast
+
+from structlog.typing import EventDict
 
 
 # Type stub for function attribute
 class _PlayerServiceHolder:  # pylint: disable=too-few-public-methods  # Reason: Holder class with focused responsibility, minimal public interface
-    player_service: Any | None = None
+    player_service: object | None = None
 
 
 # Module-level holder for player service to avoid global statement
 _player_service_holder = _PlayerServiceHolder()
 
+
+class _EnhancePlayerIdsTls(threading.local):
+    """Thread-local recursion guard for enhance_player_ids (typed .active for static analysis)."""
+
+    active: bool
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.active = False
+
+
 # Thread-local flag to prevent recursion in enhance_player_ids
-_enhancing_player_ids = threading.local()
+_enhancing_player_ids = _EnhancePlayerIdsTls()
 
 
-def set_global_player_service(player_service: Any) -> None:
+def set_global_player_service(player_service: object) -> None:
     """
     Set the global player service for logging enhancement.
 
@@ -40,7 +53,7 @@ def set_global_player_service(player_service: Any) -> None:
     _player_service_holder.player_service = player_service
 
 
-def sanitize_sensitive_data(_logger: Any, _name: str, event_dict: dict[str, Any]) -> dict[str, Any]:
+def sanitize_sensitive_data(_logger: object, _name: str, event_dict: EventDict) -> EventDict:
     """
     Remove sensitive data from log entries.
 
@@ -96,14 +109,13 @@ def sanitize_sensitive_data(_logger: Any, _name: str, event_dict: dict[str, Any]
         "npc_key",
     }
 
-    def sanitize_dict(d: dict[str, Any]) -> dict[str, Any]:
+    def sanitize_dict(d: dict[str, object]) -> dict[str, object]:
         """Recursively sanitize dictionary values."""
-        sanitized: dict[str, Any] = {}
+        sanitized: dict[str, object] = {}
         for key, value in d.items():
             if isinstance(value, dict):
-                sanitized[key] = sanitize_dict(value)
+                sanitized[key] = sanitize_dict(cast(dict[str, object], value))
             else:
-                # Since dict is typed as dict[str, Any], key is always str
                 key_lower = key.lower()
                 # Check if field is in safe list
                 if key_lower in safe_fields:
@@ -115,10 +127,10 @@ def sanitize_sensitive_data(_logger: Any, _name: str, event_dict: dict[str, Any]
                     sanitized[key] = value
         return sanitized
 
-    return sanitize_dict(event_dict)
+    return cast(EventDict, sanitize_dict(cast(dict[str, object], dict(event_dict))))
 
 
-def add_correlation_id(_logger: Any, _name: str, event_dict: dict[str, Any]) -> dict[str, Any]:
+def add_correlation_id(_logger: object, _name: str, event_dict: EventDict) -> EventDict:
     """
     Add correlation ID to log entries if not already present.
 
@@ -139,7 +151,7 @@ def add_correlation_id(_logger: Any, _name: str, event_dict: dict[str, Any]) -> 
     return event_dict
 
 
-def add_request_context(_logger: Any, _name: str, event_dict: dict[str, Any]) -> dict[str, Any]:
+def add_request_context(_logger: object, _name: str, event_dict: EventDict) -> EventDict:
     """
     Add request context information to log entries.
 
@@ -169,7 +181,7 @@ def add_request_context(_logger: Any, _name: str, event_dict: dict[str, Any]) ->
     return event_dict
 
 
-def enhance_player_ids(_logger: Any, _name: str, event_dict: dict[str, Any]) -> dict[str, Any]:
+def enhance_player_ids(_logger: object, _name: str, event_dict: EventDict) -> EventDict:
     """
     Enhance player_id fields with player names for better log readability.
 
@@ -189,15 +201,18 @@ def enhance_player_ids(_logger: Any, _name: str, event_dict: dict[str, Any]) -> 
 
     # Prevent recursion: if we're already enhancing player IDs, skip immediately
     # Check this FIRST before any other operations
-    if hasattr(_enhancing_player_ids, "active") and _enhancing_player_ids.active:
+    if _enhancing_player_ids.active:
         return event_dict
 
     # Set recursion guard IMMEDIATELY before any operations that might trigger logging
     _enhancing_player_ids.active = True
     try:  # pylint: disable=too-many-nested-blocks  # Reason: Logging processor requires complex nested logic for player ID enhancement, UUID validation, and event dictionary processing
-        if player_service and hasattr(player_service, "persistence"):
+        persistence = cast(object | None, getattr(player_service, "persistence", None)) if player_service else None
+        get_player = cast(object | None, getattr(persistence, "get_player", None)) if persistence is not None else None
+        if callable(get_player):
             # Process any player_id fields in the event dictionary
-            for key, value in event_dict.items():
+            event_items = cast(dict[str, object], event_dict).items()
+            for key, value in event_items:
                 if key == "player_id" and isinstance(value, str):
                     # Check if this looks like a UUID
                     if len(value) == 36 and value.count("-") == 4:
@@ -215,11 +230,12 @@ def enhance_player_ids(_logger: Any, _name: str, event_dict: dict[str, Any]) -> 
                         try:
                             # Try to get the player name
                             # Convert string to UUID if needed
-                            player_id_uuid = uuid.UUID(value) if isinstance(value, str) else value
-                            player = player_service.persistence.get_player(player_id_uuid)
-                            if player and hasattr(player, "name"):
+                            player_id_uuid = uuid.UUID(value)
+                            player = get_player(player_id_uuid)
+                            player_name = getattr(player, "name", None) if player is not None else None
+                            if player_name is not None:
                                 # Enhance the player_id field with the player name
-                                event_dict[key] = f"<{player.name}>: {value}"
+                                event_dict[key] = f"<{player_name}>: {value}"
                         except (AttributeError, KeyError, TypeError, ValueError, _DatabaseErrorType, RecursionError):
                             # Silently skip on recursion or other errors - don't log to avoid infinite loop
                             # If lookup fails, leave the original value

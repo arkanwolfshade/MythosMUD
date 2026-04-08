@@ -22,7 +22,7 @@ from .command_execution_request import CommandExecutionRequest
 if TYPE_CHECKING:
     from ..alias_storage import AliasStorage
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 # Global instances
 command_service = CommandService()

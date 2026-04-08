@@ -45,7 +45,7 @@ def _coerce_effect_int(value: object) -> int:
     return 0
 
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 def _add_healing_threat_if_in_combat(

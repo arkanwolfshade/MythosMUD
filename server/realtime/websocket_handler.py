@@ -73,7 +73,7 @@ __all__ = [
     "broadcast_room_update",  # Re-exported from websocket_room_updates
 ]
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 # Test and legacy import names (basedpyright: public symbols from submodules, not private cross-imports).
 _resolve_and_setup_app_state_services = resolve_and_setup_app_state_services

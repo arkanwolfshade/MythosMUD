@@ -13,7 +13,7 @@ from ..realtime.connection_manager import ConnectionManager
 from ..realtime.login_grace_period import is_player_in_login_grace_period
 from ..structured_logging.enhanced_logging_config import get_logger
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 def _connection_manager_from_config_app() -> ConnectionManager | None:

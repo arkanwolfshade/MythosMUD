@@ -4,7 +4,7 @@ Shopkeeper NPC type for MythosMUD.
 This module provides the ShopkeeperNPC class with buy/sell functionality.
 """
 
-from typing import TYPE_CHECKING, cast, override
+from typing import TYPE_CHECKING, override
 
 from structlog.stdlib import BoundLogger
 
@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from ..events import EventBus
     from .event_reaction_system import NPCEventReactionSystem
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 def _shop_quantity(value: object, default: int = 0) -> int:

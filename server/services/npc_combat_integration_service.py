@@ -16,7 +16,7 @@ All persistence calls wrapped in asyncio.to_thread() to prevent event loop block
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, cast, final
+from typing import TYPE_CHECKING, final
 from uuid import UUID
 
 from sqlalchemy.exc import SQLAlchemyError
@@ -49,7 +49,7 @@ if TYPE_CHECKING:
     from ..realtime.connection_manager import ConnectionManager
     from .combat_service import CombatService
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 @final

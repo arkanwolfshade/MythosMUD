@@ -36,7 +36,7 @@ from .container_helpers import (
 )
 from .item_instance_persistence import ensure_item_instance
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 # Re-export functions with original names for backward compatibility with tests
 _fetch_container_items = fetch_container_items

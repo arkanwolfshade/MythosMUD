@@ -5,13 +5,11 @@ This module contains utility functions extracted from spell_effects to
 keep the main spell effects engine focused and within module size limits.
 """
 
-from typing import cast
-
 from structlog.stdlib import BoundLogger
 
 from server.structured_logging.enhanced_logging_config import get_logger
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 _VALID_STAT_NAMES = (
     "strength",

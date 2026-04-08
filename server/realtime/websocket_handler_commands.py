@@ -20,7 +20,7 @@ from .websocket_helpers import is_client_disconnected_exception
 if TYPE_CHECKING:
     from .connection_manager import ConnectionManager
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 def resolve_websocket_connection_manager(connection_manager: "ConnectionManager | None") -> "ConnectionManager":

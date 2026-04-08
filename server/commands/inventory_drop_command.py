@@ -20,7 +20,7 @@ from .inventory_command_helpers import (
     resolve_state_and_player,
 )
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 _DropResolved = tuple[RoomDropManager, str, dict[str, object], int, list[dict[str, object]], int]
 

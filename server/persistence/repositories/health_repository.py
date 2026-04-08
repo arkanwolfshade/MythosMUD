@@ -6,7 +6,6 @@ including damage, healing, and DP updates using SQLAlchemy ORM with PostgreSQL.
 """
 
 import uuid
-from typing import cast
 
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
@@ -18,7 +17,7 @@ from server.models.player import Player
 from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.error_logging import log_and_raise
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 def _stats_int(stats: dict[str, object], key: str, default: int) -> int:
@@ -48,7 +47,7 @@ class HealthRepository:
             event_bus: Optional EventBus for publishing DP change events
         """
         self._event_bus: object | None = event_bus
-        self._logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+        self._logger: BoundLogger = get_logger(__name__)
 
     def _calculate_effective_damage(
         self,

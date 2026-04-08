@@ -21,7 +21,7 @@ from .player_presence_utils import extract_player_name
 if TYPE_CHECKING:
     from .connection_manager import ConnectionManager
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 # Sessions age off 5 minutes after disconnect; reconnects purge old sessions immediately
 SESSION_AGE_OFF_SECONDS = 300

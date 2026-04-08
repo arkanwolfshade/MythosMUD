@@ -10,11 +10,16 @@ file-based logging handlers with proper rotation, Windows safety, and directory 
 import io
 import logging
 import sys
+import types
+from collections.abc import Callable
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
-from typing import Any
+from typing import Any, cast, override
 
-from server.structured_logging.logging_utilities import ensure_log_directory
+from server.structured_logging.logging_utilities import (
+    ensure_log_directory,
+    load_player_guid_formatter_class,
+)
 
 
 class SafeRotatingFileHandler(RotatingFileHandler):
@@ -25,7 +30,8 @@ class SafeRotatingFileHandler(RotatingFileHandler):
     when shouldRollover() is called from different threads in CI environments.
     """
 
-    def _open(self) -> Any:  # noqa: N802  # Reason: Method name required by parent class logging.handlers.RotatingFileHandler, cannot change to follow PEP8 naming
+    @override
+    def _open(self) -> Any:  # noqa: N802  # Reason: Method name required by parent class logging.handlers.RotatingFileHandler, cannot change to follow PEP8 naming  # pyright: ignore[reportExplicitAny, reportAny]  # Reason: Return is TextIOWrapper from super or StringIO fallback; precise union is Liskov-incompatible with FileHandler stubs
         """
         Open the log file, ensuring directory exists first.
 
@@ -73,6 +79,7 @@ class SafeRotatingFileHandler(RotatingFileHandler):
         # Should never reach here, but call parent as fallback
         return super()._open()
 
+    @override
     def shouldRollover(self, record: logging.LogRecord) -> bool:  # noqa: N802  # Reason: Method name required by parent class logging.handlers.RotatingFileHandler, cannot change to follow PEP8 naming
         """
         Determine if rollover should occur, ensuring directory exists first.
@@ -122,9 +129,37 @@ class WarningOnlyFilter(logging.Filter):  # pylint: disable=too-few-public-metho
     not ERROR or CRITICAL logs (which should only go to errors.log).
     """
 
+    @override
     def filter(self, record: logging.LogRecord) -> bool:
         """Only allow WARNING level logs."""
         return record.levelno == logging.WARNING
+
+
+def _make_exec_for_aggregator(win_base: type[RotatingFileHandler]) -> Callable[[dict[str, object]], None]:
+    """Build types.new_class exec callback bound to the concrete Windows base class."""
+
+    def _exec(ns: dict[str, object]) -> None:
+        def shouldRollover(self: RotatingFileHandler, record: logging.LogRecord) -> bool:  # noqa: N802  # pylint: disable=invalid-name  # Reason: Method name required by parent class logging.handlers.RotatingFileHandler, cannot change to follow PEP8 naming
+            if self.baseFilename:
+                ensure_log_directory(Path(self.baseFilename))
+            # Single superclass win_base; explicit call avoids super() typing on dynamic class.
+            return bool(win_base.shouldRollover(self, record))
+
+        ns["shouldRollover"] = shouldRollover
+        ns["__doc__"] = "Windows-safe rotating file handler with directory safety for aggregator logs."
+
+    return _exec
+
+
+def _aggregator_handler_class_for_windows(win_base: type[RotatingFileHandler]) -> type[RotatingFileHandler]:
+    """Subclass win_base with directory-safe rollover (no dynamic ``class X(base)`` for type checkers)."""
+    created = types.new_class(
+        "SafeWinHandlerAggregator",
+        (win_base,),
+        {},
+        _make_exec_for_aggregator(win_base),
+    )
+    return cast(type[RotatingFileHandler], created)
 
 
 def create_aggregator_handler(
@@ -132,7 +167,7 @@ def create_aggregator_handler(
     log_level: int,
     max_bytes: int,
     backup_count: int,
-    player_service: Any | None = None,
+    player_service: object | None = None,
 ) -> RotatingFileHandler:
     """
     Create an aggregator handler for warnings.log or errors.log.
@@ -166,20 +201,11 @@ def create_aggregator_handler(
     _BaseHandler = SafeRotatingFileHandler
 
     # Determine handler class with Windows safety
-    handler_class = _BaseHandler
+    handler_class: type[RotatingFileHandler] = _BaseHandler
     try:
         if sys.platform == "win32":
             # Windows-safe handler also needs directory safety
-            class SafeWinHandlerAggregator(_WinSafeHandler):  # type: ignore[misc, valid-type]  # Reason: Dynamic class creation inside conditional block, mypy cannot validate type compatibility at definition time
-                """Windows-safe rotating file handler with directory safety for aggregator logs."""
-
-                def shouldRollover(self, record: logging.LogRecord) -> bool:  # noqa: N802  # Reason: Method name required by parent class logging.handlers.RotatingFileHandler, cannot change to follow PEP8 naming
-                    if self.baseFilename:
-                        log_path = Path(self.baseFilename)
-                        ensure_log_directory(log_path)
-                    return bool(super().shouldRollover(record))
-
-            handler_class = SafeWinHandlerAggregator
+            handler_class = _aggregator_handler_class_for_windows(_WinSafeHandler)
     except ImportError:
         # Fallback to safe handler on any detection error
         handler_class = _BaseHandler
@@ -215,8 +241,7 @@ def create_aggregator_handler(
     # in the rendered message. Adding %(asctime)s - %(name)s - %(levelname)s would cause duplication.
     formatter: logging.Formatter
     if player_service is not None:
-        from server.structured_logging.player_guid_formatter import PlayerGuidFormatter
-
+        PlayerGuidFormatter = load_player_guid_formatter_class()
         formatter = PlayerGuidFormatter(
             player_service=player_service,
             fmt="%(message)s",

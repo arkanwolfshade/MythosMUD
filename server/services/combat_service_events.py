@@ -6,7 +6,7 @@ Extracted from combat_service.py to keep module line count under limit.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING
 from uuid import UUID
 
 from structlog.stdlib import BoundLogger
@@ -15,7 +15,7 @@ from server.events.combat_events import NPCDiedEvent, NPCTookDamageEvent
 from server.services.nats_exceptions import NATSError
 from server.structured_logging.enhanced_logging_config import get_logger
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 async def publish_npc_damage_event(

@@ -14,7 +14,7 @@ from server.npc.spawning_models import NPCSpawnRequest, NPCSpawnResult, SimpleNP
 from ..container import ApplicationContainer
 from ..structured_logging.enhanced_logging_config import get_logger
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 def _room_from_persistence(room_id: str) -> Room | None:

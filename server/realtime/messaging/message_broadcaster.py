@@ -23,7 +23,7 @@ from ..envelope import build_event
 if TYPE_CHECKING:
     from ..room_subscription_manager import RoomSubscriptionManager
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 # WebSocket event payloads and per-recipient delivery status from ConnectionManager.
 SendPersonalMessage = Callable[[uuid.UUID, dict[str, object]], Awaitable[dict[str, object]]]

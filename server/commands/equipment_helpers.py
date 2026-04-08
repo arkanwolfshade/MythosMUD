@@ -13,7 +13,7 @@ from ..structured_logging.enhanced_logging_config import get_logger
 from .inventory_item_matching import match_equipped_item_by_name, match_inventory_item_by_name, normalize_slot_name
 from .inventory_service_helpers import get_shared_services
 
-logger: BoundLogger = cast(BoundLogger, get_logger(__name__))
+logger: BoundLogger = get_logger(__name__)
 
 
 def _equip_stack_from_inventory_index(
