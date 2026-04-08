@@ -44,6 +44,7 @@ export const vitestTestOptions: NonNullable<UserConfig['test']> = {
       'src/utils/security.ts': { statements: 90, branches: 90, functions: 90, lines: 90 },
       'src/utils/errorHandler.ts': { statements: 90, branches: 90, functions: 90, lines: 90 },
       'src/utils/logoutHandler.ts': { statements: 90, branches: 90, functions: 90, lines: 90 },
+      'src/utils/localStorageShim.ts': { statements: 90, branches: 90, functions: 90, lines: 90 },
       'src/hooks/useGameConnection.ts': { statements: 90, branches: 90, functions: 90, lines: 90 },
       'src/hooks/useWebSocketConnection.ts': { statements: 90, branches: 90, functions: 90, lines: 90 },
       'src/hooks/useSessionManagement.ts': { statements: 90, branches: 90, functions: 90, lines: 90 },
