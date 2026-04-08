@@ -14,7 +14,7 @@ import json
 import logging
 import re
 from collections.abc import Iterable, Mapping
-from typing import Protocol, cast
+from typing import cast
 
 import structlog
 from structlog.contextvars import merge_contextvars
@@ -77,13 +77,6 @@ class _LoggingState:  # pylint: disable=too-few-public-methods  # Reason: State 
 
 
 _logging_state = _LoggingState()
-
-
-class _SupportsAlreadyLoggedFlag(Protocol):
-    """Narrow Exception for optional dedupe flag (matches LoggedException storage)."""
-
-    # Protocol mirrors LoggedException slot name so plain Exception instances can be tagged the same way.
-    _already_logged: bool
 
 
 def _as_str_key_object_dict(raw: object) -> dict[str, object]:
@@ -443,5 +436,5 @@ def log_exception_once(
         if callable(marker):
             _ = marker()  # pylint: disable=not-callable  # Reason: callable() check confirms marker is callable at runtime, pylint cannot detect this through getattr
         else:
-            # Same slot as LoggedException; property already_logged is read-only on that class.
-            cast(_SupportsAlreadyLoggedFlag, cast(object, exc))._already_logged = True  # pyright: ignore[reportPrivateUsage]
+            # Plain exceptions: set dedupe flag via object.__setattr__ to avoid pylint W0212 on ._already_logged.
+            object.__setattr__(exc, "_already_logged", True)
