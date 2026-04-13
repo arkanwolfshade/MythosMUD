@@ -22,6 +22,8 @@ single-file consolidated reference usable outside Cursor, see the repo root [CLA
 - **jCodeMunch MCP (when enabled in Cursor):** Prefer its tools for code exploration—`list_repos`, `index_folder` on
   the repo root if needed, then `search_symbols`, `get_symbol`, `get_file_outline`, `get_repo_outline`, or `search_text`
   instead of reading whole files when looking up implementations. See [jCodeMunch QUICKSTART](https://github.com/jgravelle/jcodemunch-mcp/blob/main/QUICKSTART.md).
+- **Token efficiency over speed:** Prefer targeted retrieval over dumping large files; see
+  `.cursor/rules/token-efficiency.mdc` (pairs with `jcodemunch.mdc`) and `USER_RULES.md`.
 
 ## Code Quality & CI Policy
 

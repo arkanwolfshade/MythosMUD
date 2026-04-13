@@ -5,8 +5,9 @@
 # Suppress PSAvoidUsingWriteHost: This script uses Write-Host for status/output messages
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Status and output messages require Write-Host for proper display')]
 param(
-    [switch]$Force
-    # Verbose parameter removed - not currently used
+    [switch]$Force,
+    # Env file under project root (e.g. .env.unit_test, .env.e2e_test) or absolute path
+    [string]$EnvFile = ".env.unit_test"
 )
 
 $ErrorActionPreference = "Stop"
@@ -15,13 +16,18 @@ Write-Host "MythosMUD PostgreSQL Test Database Setup" -ForegroundColor Green
 Write-Host "=========================================" -ForegroundColor Green
 Write-Host ""
 
-# Load database URL from .env.unit_test (project root)
+# Load database URL from env file (default: .env.unit_test at project root)
 $ProjectRoot = Split-Path $PSScriptRoot -Parent
-$TestEnvPath = Join-Path -Path $ProjectRoot -ChildPath ".env.unit_test"
+$TestEnvPath = if ([System.IO.Path]::IsPathRooted($EnvFile)) {
+    $EnvFile
+}
+else {
+    Join-Path -Path $ProjectRoot -ChildPath $EnvFile
+}
 
 if (-not (Test-Path $TestEnvPath)) {
-    Write-Host "[ERROR] .env.unit_test file not found at: $TestEnvPath" -ForegroundColor Red
-    Write-Host "[SOLUTION] Run: make setup-test-env" -ForegroundColor Yellow
+    Write-Host "[ERROR] Env file not found at: $TestEnvPath" -ForegroundColor Red
+    Write-Host "[SOLUTION] Run: make setup-test-env  (or copy env.e2e_test.example to .env.e2e_test)" -ForegroundColor Yellow
     exit 1
 }
 
@@ -33,7 +39,7 @@ if ($envContent -match 'DATABASE_URL=(.+)') {
     $databaseUrl = $matches[1].Trim()
 }
 else {
-    Write-Host "[ERROR] DATABASE_URL not found in .env.unit_test" -ForegroundColor Red
+    Write-Host "[ERROR] DATABASE_URL not found in env file: $TestEnvPath" -ForegroundColor Red
     exit 1
 }
 
@@ -48,6 +54,19 @@ $dbPassword = $matches[2]
 $dbHost = $matches[3]
 $dbPort = $matches[4]
 $dbName = $matches[5]
+
+$allowedDbs = @("mythos_unit", "mythos_e2e", "mythos_dev")
+if ($dbName -notin $allowedDbs) {
+    Write-Host "[ERROR] DATABASE_URL database name '$dbName' is not allowed; refusing to create or drop." -ForegroundColor Red
+    Write-Host "[INFO] Allowed names: $($allowedDbs -join ', ')" -ForegroundColor Yellow
+    exit 1
+}
+
+$envLeaf = Split-Path -Leaf $TestEnvPath
+if ($Force -and ($envLeaf -eq '.env.e2e_test') -and ($dbName -ne 'mythos_e2e')) {
+    Write-Host "[ERROR] With -Force and .env.e2e_test, DATABASE_URL must use database mythos_e2e (got '$dbName')." -ForegroundColor Red
+    exit 1
+}
 
 Write-Host "Database Configuration:" -ForegroundColor Yellow
 Write-Host "  Host:     $dbHost" -ForegroundColor Gray
@@ -131,7 +150,6 @@ try {
     }
 
     # Apply environment-specific DDL (db/mythos_<dbname>_ddl.sql)
-    $allowedDbs = @("mythos_unit", "mythos_e2e", "mythos_dev")
     if ($dbName -in $allowedDbs) {
         $schemaFile = Join-Path -Path (Join-Path -Path $ProjectRoot -ChildPath "db") -ChildPath "${dbName}_ddl.sql"
         if (Test-Path $schemaFile) {

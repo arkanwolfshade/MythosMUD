@@ -7,7 +7,7 @@ ConnectionManager instance.
 """
 
 import uuid
-from typing import Any
+from collections.abc import Mapping
 
 from ..exceptions import DatabaseError
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -16,7 +16,7 @@ from .connection_manager import resolve_connection_manager
 logger = get_logger(__name__)
 
 
-async def send_game_event(player_id: uuid.UUID | str, event_type: str, data: dict[str, Any]) -> None:
+async def send_game_event(player_id: uuid.UUID | str, event_type: str, data: Mapping[str, object]) -> None:
     """
     Send a game event to a specific player via WebSocket.
 
@@ -41,13 +41,15 @@ async def send_game_event(player_id: uuid.UUID | str, event_type: str, data: dic
         else:
             player_id_uuid = player_id
         # Pass UUID object directly to build_event (it accepts UUID | str)
-        await manager.send_personal_message(player_id_uuid, build_event(event_type, data, player_id=player_id_uuid))
+        _ = await manager.send_personal_message(
+            player_id_uuid, build_event(event_type, data, player_id=player_id_uuid)
+        )
 
     except (DatabaseError, AttributeError) as e:
         logger.error("Error sending game event", player_id=player_id, error=str(e))
 
 
-async def broadcast_game_event(event_type: str, data: dict[str, Any], exclude_player: str | None = None) -> None:
+async def broadcast_game_event(event_type: str, data: Mapping[str, object], exclude_player: str | None = None) -> None:
     """
     Broadcast a game event to all connected players.
 
@@ -62,14 +64,14 @@ async def broadcast_game_event(event_type: str, data: dict[str, Any], exclude_pl
         manager = resolve_connection_manager()
         if manager is None:
             raise RuntimeError("Connection manager not available")
-        await manager.broadcast_global(build_event(event_type, data), exclude_player)
+        _ = await manager.broadcast_global(build_event(event_type, data), exclude_player)
 
     except (DatabaseError, AttributeError) as e:
         logger.error("Error broadcasting game event", error=str(e))
 
 
 async def send_room_event(
-    room_id: str, event_type: str, data: dict[str, Any], exclude_player: str | None = None
+    room_id: str, event_type: str, data: Mapping[str, object], exclude_player: str | None = None
 ) -> None:
     """
     Send a room event to all players in a specific room.
@@ -86,7 +88,7 @@ async def send_room_event(
         manager = resolve_connection_manager()
         if manager is None:
             raise RuntimeError("Connection manager not available")
-        await manager.broadcast_to_room(
+        _ = await manager.broadcast_to_room(
             room_id,
             build_event(event_type, data, room_id=room_id),
             exclude_player,
@@ -117,7 +119,7 @@ async def send_system_notification(player_id: uuid.UUID | str, message: str, not
         logger.error("Error sending system notification", player_id=player_id, error=str(e))
 
 
-async def send_player_status_update(player_id: uuid.UUID | str, status_data: dict[str, Any]) -> None:
+async def send_player_status_update(player_id: uuid.UUID | str, status_data: Mapping[str, object]) -> None:
     """
     Send a player status update to a player.
 
@@ -132,7 +134,7 @@ async def send_player_status_update(player_id: uuid.UUID | str, status_data: dic
         logger.error("Error sending status update", player_id=player_id, error=str(e))
 
 
-async def send_room_description(player_id: uuid.UUID | str, room_data: dict[str, Any]) -> None:
+async def send_room_description(player_id: uuid.UUID | str, room_data: Mapping[str, object]) -> None:
     """
     Send room description to a player.
 

@@ -26,14 +26,14 @@ function isTestCharacter(name: string): boolean {
 }
 
 /**
- * Logs in as TestAdmin, goes to character selection, and deletes every
+ * Logs in as Ithaqua, goes to character selection, and deletes every
  * character whose name matches test patterns and is not protected.
  * Safe to call multiple times; no-op if no test characters exist.
  */
 export async function cleanupE2ECharacters(page: Page): Promise<void> {
   const loginPage = new LoginPage(page);
   await loginPage.navigate();
-  await loginPage.login('TestAdmin', 'Cthulhu1');
+  await loginPage.login('Ithaqua', 'Cthulhu1');
   await page.waitForLoadState('domcontentloaded', { timeout: 5000 }).catch(() => {});
 
   const characterSelectionHeading = page.getByRole('heading', { name: /Select Your Character/i });

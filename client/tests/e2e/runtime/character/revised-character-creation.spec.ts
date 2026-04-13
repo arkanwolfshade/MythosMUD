@@ -2,7 +2,7 @@
  * Scenario 38: Revised Character Creation (stats → profession → skills → name → create)
  *
  * E2E test for plan 10.8 E1. Ensures the full revised flow completes and the new character
- * appears in the list or game. Uses TestAdmin so ArkanWolfshade/Ithaqua are never polluted
+ * appears in the list or game. Uses Ithaqua (run e2e.bat / bootstrap for clean DB).
  * with E2ERevised_/E4Skills_ characters (canonical E2E accounts must use character names
  * ArkanWolfshade and Ithaqua only).
  */
@@ -27,7 +27,7 @@ test.describe('Revised Character Creation', () => {
   test('should complete stats → profession → skills → name → create and show character', async ({ page }) => {
     const loginPage = new LoginPage(page);
     await loginPage.navigate();
-    await loginPage.login('TestAdmin', 'Cthulhu1');
+    await loginPage.login('Ithaqua', 'Cthulhu1');
 
     await page.waitForLoadState('domcontentloaded', { timeout: 5000 }).catch(() => {});
 
@@ -144,7 +144,7 @@ test.describe('Revised Character Creation', () => {
     const { executeCommand, waitForMessage, getMessages } = await import('../fixtures/auth');
     const loginPage = new LoginPage(page);
     await loginPage.navigate();
-    await loginPage.login('TestAdmin', 'Cthulhu1');
+    await loginPage.login('Ithaqua', 'Cthulhu1');
     await page.waitForLoadState('domcontentloaded', { timeout: 5000 }).catch(() => {});
 
     const statsScreen = page.getByTestId('stats-rolling-screen');

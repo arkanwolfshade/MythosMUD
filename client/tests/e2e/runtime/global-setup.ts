@@ -5,7 +5,7 @@
  *
  * This file runs before all tests to:
  * - Seed E2E users and default characters via scripts/seed_e2e_users.py:
- *   ArkanWolfshade/Cthulhu1 (admin), Ithaqua/Cthulhu1, TestAdmin/Cthulhu1 (superuser, no default char)
+ *   ArkanWolfshade/Cthulhu1 (admin), Ithaqua/Cthulhu1 (regular)
  * - Verify server is running
  * - Verify client is accessible
  */
@@ -20,9 +20,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, '..', '..', '..', '..');
 
-/** E2E server and client base URLs (HTTPS only for secure request checks). */
-const E2E_SERVER_URL = 'https://localhost:54731';
-const E2E_CLIENT_URL = 'https://localhost:5173';
+/** Local dev stack (HTTP, IPv4 loopback; matches playwright.runtime.config baseURL). */
+const E2E_SERVER_URL = 'http://127.0.0.1:54731';
+const E2E_CLIENT_URL = 'http://127.0.0.1:5173';
 
 const E2E_ENV_DEFAULTS: Record<string, string> = {
   DATABASE_URL: 'postgresql://postgres:Cthulhu1@localhost:5432/mythos_e2e',
@@ -66,7 +66,7 @@ function runE2eSeed(): void {
   });
   if (seedResult.status !== 0) {
     console.warn('seed_e2e_users.py failed:', seedResult.stderr || seedResult.stdout);
-    console.warn('E2E logins (ArkanWolfshade, Ithaqua, TestAdmin) may fail with 401 Invalid credentials.');
+    console.warn('E2E logins (ArkanWolfshade, Ithaqua) may fail with 401 Invalid credentials.');
   }
 }
 

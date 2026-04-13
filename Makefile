@@ -1,21 +1,26 @@
 # MythosMUD Makefile
 
-# Project root detection (handles worktree contexts)
-PROJECT_ROOT := $(if $(findstring MythosMUD-,$(CURDIR)),$(abspath $(CURDIR)/..),$(CURDIR))
+# Project root = directory containing this Makefile (main clone or linked worktree).
+# Do not use CURDIR + "MythosMUD-" substring: paths like .../MythosMUD-worktrees/<slug> match
+# that pattern and incorrectly set PROJECT_ROOT to the worktrees parent (breaking targets).
+_THIS_MAKEFILE := $(abspath $(lastword $(MAKEFILE_LIST)))
+PROJECT_ROOT := $(dir $(_THIS_MAKEFILE))
+PROJECT_ROOT := $(PROJECT_ROOT:%/=%)
 
 # Common command patterns
 # Use uv-run interpreter so Windows does not spawn bare `python` (pyenv-win shims / PATH gaps
 # trigger "Select an app to open 'python'").
 PYTHON := cd $(PROJECT_ROOT) && uv run python
 UV := cd $(PROJECT_ROOT) && uv run
-POWERSHELL := cd $(PROJECT_ROOT) && powershell -ExecutionPolicy Bypass -File
+# PowerShell 7+ (pwsh); avoids Windows PowerShell 5.1 for gallery/modules and matches project rules
+POWERSHELL := cd $(PROJECT_ROOT) && pwsh -NoProfile -ExecutionPolicy Bypass -File
 
 # When Make's SHELL is Git Bash or WSL bash, `npm` may resolve to a Windows path that bash
 # cannot execute (/bin/bash: C:/Program Files/nodejs/npm: No such file or directory). Run via
 # PowerShell on Windows so the Windows Node/npm install is used. Non-Windows keeps plain npm.
 ifeq ($(OS),Windows_NT)
 define run_npm_client
-	cd $(PROJECT_ROOT) && powershell -NoProfile -ExecutionPolicy Bypass -Command "Set-Location -LiteralPath (Join-Path '$(PROJECT_ROOT)' 'client'); npm run $(1); exit $$LASTEXITCODE"
+	cd $(PROJECT_ROOT) && pwsh -NoProfile -ExecutionPolicy Bypass -Command "Set-Location -LiteralPath (Join-Path '$(PROJECT_ROOT)' 'client'); npm run $(1); exit $$LASTEXITCODE"
 endef
 else
 define run_npm_client

@@ -1,5 +1,20 @@
 # USER RULES - CRITICAL SERVER MANAGEMENT
 
+## PRIORITY: TOKEN EFFICIENCY OVER SPEED
+
+When exploring code or narrowing down behavior, **optimize for fewer tokens in
+the conversation**, not for the fastest-looking answer. Prefer targeted
+retrieval, smaller payloads, and one clear pass over the code path instead of
+wide reads or repeated full-file dumps.
+
+**Use the jCodemunch MCP** for discovery and navigation (for example
+`plan_turn`, `search_symbols`, `get_file_outline`, `get_symbol_source`,
+`find_references`, `search_text`). Follow `.cursor/rules/jcodemunch.mdc` in
+this repository for the full workflow. Treat whole-file reads and broad text
+scans as a last resort when jCodemunch cannot answer the question.
+
+Workspace mirror (always-on for agents): `.cursor/rules/token-efficiency.mdc`.
+
 ## MANDATORY SERVER RULES
 
 ### NEVER use is_background: true for server startup commands
@@ -56,7 +71,7 @@ Multiple server instances running simultaneously
 ## EXISTING RULES (REINFORCED)
 
 DO NOT START THE SERVER WITHOUT MAKING SURE THERE ARE NO RUNNING
-  INSTANCES!
+INSTANCES!
 
 - Always verify that there is not an existing instance of the server running
 

@@ -5,11 +5,16 @@ Tests the shutdown command functionality.
 """
 
 import time
+from collections.abc import Mapping
+from dataclasses import dataclass, field
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+from _pytest.mark.structures import MarkDecorator
 
-from server.commands.admin_shutdown_command import (
+from ....alias_storage import AliasStorage
+from ....commands.admin_shutdown_command import (
     broadcast_shutdown_notification,
     calculate_notification_times,
     cancel_shutdown_countdown,
@@ -22,19 +27,92 @@ from server.commands.admin_shutdown_command import (
 )
 
 
-@pytest.mark.asyncio
+async def _await_shutdown_result(
+    command_data: Mapping[str, object],
+    current_user: Mapping[str, object],
+    request: object,
+    alias_storage: AliasStorage | None,
+    player_name: str,
+) -> dict[str, str]:
+    """Await handle_shutdown_command; explicit return keeps test assertions typed as dict."""
+
+    # Handler is annotated with dict[str, Any]; copies satisfy runtime and avoid explicit Any here.
+    raw = await handle_shutdown_command(
+        dict(command_data),
+        dict(current_user),
+        request,
+        alias_storage,
+        player_name,
+    )
+    # Cast: some analyzers infer this await as Generator; implementation returns dict[str, str].
+    return cast(dict[str, str], raw)  # pyright: ignore[reportUnnecessaryCast]
+
+
+# MarkGenerator has no static asyncio attribute; getattr + MarkDecorator avoids
+# basedpyright Literal["asyncio"] vs Mark.__getattr__(name: str) mismatch.
+_asyncio_mark: MarkDecorator = cast(
+    MarkDecorator,
+    getattr(pytest.mark, "asyncio"),  # noqa: B009 -- .asyncio trips pyright; getattr keeps name typed as str
+)
+
+
+@dataclass
+class _ShutdownContainerStub:
+    server_shutdown_pending: bool = False
+    shutdown_data: dict[str, object] | None = None
+
+
+@dataclass
+class _PendingCheckStateStub:
+    container: _ShutdownContainerStub
+
+
+@dataclass
+class _PendingCheckAppStub:
+    state: _PendingCheckStateStub
+
+
+class _AppWithoutState:
+    """App double with no state attribute (is_shutdown_pending must return False)."""
+
+
+@dataclass
+class _ShutdownCancelStateStub:
+    container: _ShutdownContainerStub
+    connection_manager: AsyncMock
+
+
+@dataclass
+class _ShutdownCancelAppStub:
+    state: _ShutdownCancelStateStub
+
+
+@dataclass
+class _InitiateStateStub:
+    server_shutdown_pending: bool = False
+    shutdown_data: dict[str, object] | None = None
+    task_registry: MagicMock = field(default_factory=MagicMock)
+    connection_manager: AsyncMock = field(default_factory=AsyncMock)
+
+
+@dataclass
+class _InitiateAppStub:
+    state: _InitiateStateStub
+
+
+@_asyncio_mark
 async def test_handle_shutdown_command_no_player_service():
     """Test handle_shutdown_command() when player service is not available."""
     mock_request = MagicMock()
     mock_request.app = None
 
-    result = await handle_shutdown_command({}, {}, mock_request, None, "TestPlayer")
+    result: dict[str, str] = await _await_shutdown_result({}, {}, mock_request, None, "TestPlayer")
 
     assert "result" in result
     assert "not available" in result["result"]
 
 
-@pytest.mark.asyncio
+@_asyncio_mark
 async def test_handle_shutdown_command_player_not_found():
     """Test handle_shutdown_command() when player is not found."""
     mock_request = MagicMock()
@@ -46,13 +124,13 @@ async def test_handle_shutdown_command_player_not_found():
     mock_app.state = mock_state
     mock_request.app = mock_app
 
-    result = await handle_shutdown_command({}, {}, mock_request, None, "TestPlayer")
+    result: dict[str, str] = await _await_shutdown_result({}, {}, mock_request, None, "TestPlayer")
 
     assert "result" in result
     assert "Unable to verify" in result["result"] or "credentials" in result["result"]
 
 
-@pytest.mark.asyncio
+@_asyncio_mark
 async def test_handle_shutdown_command_no_permission():
     """Test handle_shutdown_command() when player lacks admin permission."""
     mock_request = MagicMock()
@@ -67,13 +145,13 @@ async def test_handle_shutdown_command_no_permission():
     mock_request.app = mock_app
 
     with patch("server.commands.admin_shutdown_command.validate_shutdown_admin_permission", return_value=False):
-        result = await handle_shutdown_command({}, {}, mock_request, None, "TestPlayer")
+        result: dict[str, str] = await _await_shutdown_result({}, {}, mock_request, None, "TestPlayer")
 
     assert "result" in result
     assert "authorization" in result["result"] or "permission" in result["result"]
 
 
-@pytest.mark.asyncio
+@_asyncio_mark
 async def test_handle_shutdown_command_invalid_parameters():
     """Test handle_shutdown_command() with invalid parameters."""
     mock_request = MagicMock()
@@ -91,13 +169,13 @@ async def test_handle_shutdown_command_invalid_parameters():
         patch("server.commands.admin_shutdown_command.validate_shutdown_admin_permission", return_value=True),
         patch("server.commands.admin_shutdown_command.parse_shutdown_parameters", return_value=("error", None)),
     ):
-        result = await handle_shutdown_command({}, {}, mock_request, None, "TestPlayer")
+        result: dict[str, str] = await _await_shutdown_result({}, {}, mock_request, None, "TestPlayer")
 
     assert "result" in result
     assert "Invalid shutdown parameters" in result["result"] or "Usage" in result["result"]
 
 
-@pytest.mark.asyncio
+@_asyncio_mark
 async def test_handle_shutdown_command_cancel():
     """Test handle_shutdown_command() with cancel action."""
     mock_request = MagicMock()
@@ -116,13 +194,13 @@ async def test_handle_shutdown_command_cancel():
         patch("server.commands.admin_shutdown_command.parse_shutdown_parameters", return_value=("cancel", None)),
         patch("server.commands.admin_shutdown_command.cancel_shutdown_countdown", return_value=True),
     ):
-        result = await handle_shutdown_command({}, {}, mock_request, None, "TestPlayer")
+        result: dict[str, str] = await _await_shutdown_result({}, {}, mock_request, None, "TestPlayer")
 
     assert "result" in result
     assert "cancelled" in result["result"].lower() or "cancel" in result["result"].lower()
 
 
-@pytest.mark.asyncio
+@_asyncio_mark
 async def test_handle_shutdown_command_cancel_no_active():
     """Test handle_shutdown_command() with cancel when no active shutdown."""
     mock_request = MagicMock()
@@ -141,13 +219,13 @@ async def test_handle_shutdown_command_cancel_no_active():
         patch("server.commands.admin_shutdown_command.parse_shutdown_parameters", return_value=("cancel", None)),
         patch("server.commands.admin_shutdown_command.cancel_shutdown_countdown", return_value=False),
     ):
-        result = await handle_shutdown_command({}, {}, mock_request, None, "TestPlayer")
+        result: dict[str, str] = await _await_shutdown_result({}, {}, mock_request, None, "TestPlayer")
 
     assert "result" in result
     assert "no active shutdown" in result["result"].lower()
 
 
-@pytest.mark.asyncio
+@_asyncio_mark
 async def test_handle_shutdown_command_initiate():
     """Test handle_shutdown_command() with initiate action."""
     mock_request = MagicMock()
@@ -167,13 +245,13 @@ async def test_handle_shutdown_command_initiate():
         patch("server.commands.admin_shutdown_command.parse_shutdown_parameters", return_value=("initiate", 60)),
         patch("server.commands.admin_shutdown_command.initiate_shutdown_countdown", return_value=True),
     ):
-        result = await handle_shutdown_command({}, {}, mock_request, None, "TestPlayer")
+        result: dict[str, str] = await _await_shutdown_result({}, {}, mock_request, None, "TestPlayer")
 
     assert "result" in result
     assert "shutdown" in result["result"].lower()
 
 
-@pytest.mark.asyncio
+@_asyncio_mark
 async def test_handle_shutdown_command_initiate_superseding():
     """Test handle_shutdown_command() with initiate action superseding existing shutdown."""
     mock_request = MagicMock()
@@ -193,13 +271,13 @@ async def test_handle_shutdown_command_initiate_superseding():
         patch("server.commands.admin_shutdown_command.parse_shutdown_parameters", return_value=("initiate", 60)),
         patch("server.commands.admin_shutdown_command.initiate_shutdown_countdown", return_value=True),
     ):
-        result = await handle_shutdown_command({}, {}, mock_request, None, "TestPlayer")
+        result: dict[str, str] = await _await_shutdown_result({}, {}, mock_request, None, "TestPlayer")
 
     assert "result" in result
     assert "previous shutdown cancelled" in result["result"].lower() or "superseding" in result["result"].lower()
 
 
-@pytest.mark.asyncio
+@_asyncio_mark
 async def test_handle_shutdown_command_initiate_no_seconds():
     """Test handle_shutdown_command() with initiate action but no seconds."""
     mock_request = MagicMock()
@@ -217,13 +295,13 @@ async def test_handle_shutdown_command_initiate_no_seconds():
         patch("server.commands.admin_shutdown_command.validate_shutdown_admin_permission", return_value=True),
         patch("server.commands.admin_shutdown_command.parse_shutdown_parameters", return_value=("initiate", None)),
     ):
-        result = await handle_shutdown_command({}, {}, mock_request, None, "TestPlayer")
+        result: dict[str, str] = await _await_shutdown_result({}, {}, mock_request, None, "TestPlayer")
 
     assert "result" in result
     assert "Invalid shutdown configuration" in result["result"] or "seconds" in result["result"]
 
 
-@pytest.mark.asyncio
+@_asyncio_mark
 async def test_handle_shutdown_command_initiate_failure():
     """Test handle_shutdown_command() with initiate action that fails."""
     mock_request = MagicMock()
@@ -242,7 +320,7 @@ async def test_handle_shutdown_command_initiate_failure():
         patch("server.commands.admin_shutdown_command.parse_shutdown_parameters", return_value=("initiate", 60)),
         patch("server.commands.admin_shutdown_command.initiate_shutdown_countdown", return_value=False),
     ):
-        result = await handle_shutdown_command({}, {}, mock_request, None, "TestPlayer")
+        result: dict[str, str] = await _await_shutdown_result({}, {}, mock_request, None, "TestPlayer")
 
     assert "result" in result
     assert "error" in result["result"].lower() or "failed" in result["result"].lower()
@@ -250,30 +328,22 @@ async def test_handle_shutdown_command_initiate_failure():
 
 def test_is_shutdown_pending_true():
     """Test is_shutdown_pending() returns True when shutdown is pending."""
-    mock_app = MagicMock()
-    mock_app.state = MagicMock()
-    mock_app.state.container = MagicMock()
-    mock_app.state.container.server_shutdown_pending = True
-    result = is_shutdown_pending(mock_app)
-    assert result is True
+    container = _ShutdownContainerStub(server_shutdown_pending=True)
+    app = _PendingCheckAppStub(state=_PendingCheckStateStub(container=container))
+    assert is_shutdown_pending(app) is True
 
 
 def test_is_shutdown_pending_false():
     """Test is_shutdown_pending() returns False when shutdown is not pending."""
-    mock_app = MagicMock()
-    mock_app.state = MagicMock()
-    mock_app.state.container = MagicMock()
-    mock_app.state.container.server_shutdown_pending = False
-    result = is_shutdown_pending(mock_app)
-    assert result is False
+    container = _ShutdownContainerStub(server_shutdown_pending=False)
+    app = _PendingCheckAppStub(state=_PendingCheckStateStub(container=container))
+    assert is_shutdown_pending(app) is False
 
 
 def test_is_shutdown_pending_no_state():
     """Test is_shutdown_pending() returns False when app has no state."""
-    mock_app = MagicMock()
-    del mock_app.state
-    result = is_shutdown_pending(mock_app)
-    assert result is False
+    app = _AppWithoutState()
+    assert is_shutdown_pending(app) is False
 
 
 def test_get_shutdown_blocking_message_login():
@@ -294,14 +364,14 @@ def test_get_shutdown_blocking_message_default():
     assert "shutting down" in result.lower()
 
 
-@pytest.mark.asyncio
+@_asyncio_mark
 async def test_validate_shutdown_admin_permission_no_player():
     """Test validate_shutdown_admin_permission() returns False when player is None."""
     result = await validate_shutdown_admin_permission(None, "TestPlayer")
     assert result is False
 
 
-@pytest.mark.asyncio
+@_asyncio_mark
 async def test_validate_shutdown_admin_permission_not_admin():
     """Test validate_shutdown_admin_permission() returns False when player is not admin."""
     mock_player = MagicMock()
@@ -310,7 +380,7 @@ async def test_validate_shutdown_admin_permission_not_admin():
     assert result is False
 
 
-@pytest.mark.asyncio
+@_asyncio_mark
 async def test_validate_shutdown_admin_permission_admin():
     """Test validate_shutdown_admin_permission() returns True when player is admin."""
     mock_player = MagicMock()
@@ -350,17 +420,18 @@ def test_calculate_notification_times_sorted():
     assert result == sorted(result, reverse=True)
 
 
-@pytest.mark.asyncio
+@_asyncio_mark
 async def test_broadcast_shutdown_notification_success():
     """Test broadcast_shutdown_notification() successfully broadcasts."""
-    mock_connection_manager = AsyncMock()
-    mock_connection_manager.broadcast_global_event = AsyncMock()
+    broadcast_event: AsyncMock = AsyncMock()
+    mock_connection_manager: AsyncMock = AsyncMock()
+    mock_connection_manager.broadcast_global_event = broadcast_event
     result = await broadcast_shutdown_notification(mock_connection_manager, 10)
     assert result is True
-    mock_connection_manager.broadcast_global_event.assert_awaited_once()
+    broadcast_event.assert_awaited_once()
 
 
-@pytest.mark.asyncio
+@_asyncio_mark
 async def test_broadcast_shutdown_notification_failure():
     """Test broadcast_shutdown_notification() handles errors."""
     mock_connection_manager = AsyncMock()
@@ -411,62 +482,67 @@ def test_parse_shutdown_parameters_invalid_string():
     assert seconds is None
 
 
-@pytest.mark.asyncio
+@_asyncio_mark
 async def test_cancel_shutdown_countdown_no_active():
     """Test cancel_shutdown_countdown() when no shutdown is active."""
-    mock_app = MagicMock()
-    mock_app.state = MagicMock()
-    mock_app.state.container = MagicMock()
-    mock_app.state.container.server_shutdown_pending = False
-    mock_app.state.container.shutdown_data = None
-    result = await cancel_shutdown_countdown(mock_app, "TestAdmin")
+    container = _ShutdownContainerStub(server_shutdown_pending=False, shutdown_data=None)
+    connection_manager: AsyncMock = AsyncMock()
+    app = _ShutdownCancelAppStub(
+        state=_ShutdownCancelStateStub(container=container, connection_manager=connection_manager)
+    )
+    result = await cancel_shutdown_countdown(app, "ArkanWolfshade")
     assert result is False
 
 
-@pytest.mark.asyncio
+@_asyncio_mark
 async def test_cancel_shutdown_countdown_success():
     """Test cancel_shutdown_countdown() successfully cancels shutdown."""
-    mock_app = MagicMock()
-    mock_app.state = MagicMock()
-    mock_app.state.container = MagicMock()
-    mock_app.state.container.server_shutdown_pending = True
     mock_task = MagicMock()
     mock_task.done = MagicMock(return_value=False)
-    mock_app.state.container.shutdown_data = {
+    shutdown_data: dict[str, object] = {
         "task": mock_task,
         "end_time": time.time() + 60,
     }
-    mock_app.state.connection_manager = AsyncMock()
-    mock_app.state.connection_manager.broadcast_global_event = AsyncMock()
-    result = await cancel_shutdown_countdown(mock_app, "TestAdmin")
+    container = _ShutdownContainerStub(server_shutdown_pending=True, shutdown_data=shutdown_data)
+    connection_manager: AsyncMock = AsyncMock()
+    connection_manager.broadcast_global_event = AsyncMock()
+    app = _ShutdownCancelAppStub(
+        state=_ShutdownCancelStateStub(container=container, connection_manager=connection_manager)
+    )
+    result = await cancel_shutdown_countdown(app, "ArkanWolfshade")
     assert result is True
-    assert mock_app.state.container.server_shutdown_pending is False
+    assert container.server_shutdown_pending is False
 
 
-@pytest.mark.asyncio
+@_asyncio_mark
 async def test_initiate_shutdown_countdown_success():
     """Test initiate_shutdown_countdown() successfully initiates shutdown."""
-    mock_app = MagicMock()
-    mock_app.state.server_shutdown_pending = False
-    mock_app.state.task_registry = MagicMock()
     mock_task = MagicMock()
-    mock_app.state.task_registry.register_task = MagicMock(return_value=mock_task)
-    result = await initiate_shutdown_countdown(mock_app, 60, "TestAdmin")
+    task_registry = MagicMock()
+    task_registry.register_task = MagicMock(return_value=mock_task)
+    state = _InitiateStateStub(server_shutdown_pending=False, task_registry=task_registry)
+    app = _InitiateAppStub(state=state)
+    result = await initiate_shutdown_countdown(app, 60, "ArkanWolfshade")
     assert result is True
-    assert mock_app.state.server_shutdown_pending is True
+    assert state.server_shutdown_pending is True
 
 
-@pytest.mark.asyncio
+@_asyncio_mark
 async def test_initiate_shutdown_countdown_supersedes():
     """Test initiate_shutdown_countdown() cancels existing shutdown."""
-    mock_app = MagicMock()
-    mock_app.state.server_shutdown_pending = True
-    mock_existing_task = MagicMock()
+    mock_existing_task: MagicMock = MagicMock()
     mock_existing_task.done = MagicMock(return_value=False)
-    mock_app.state.shutdown_data = {"task": mock_existing_task}
-    mock_app.state.task_registry = MagicMock()
+    cancel_mock: MagicMock = MagicMock()
+    mock_existing_task.cancel = cancel_mock
     mock_new_task = MagicMock()
-    mock_app.state.task_registry.register_task = MagicMock(return_value=mock_new_task)
-    result = await initiate_shutdown_countdown(mock_app, 60, "TestAdmin")
+    task_registry = MagicMock()
+    task_registry.register_task = MagicMock(return_value=mock_new_task)
+    state = _InitiateStateStub(
+        server_shutdown_pending=True,
+        shutdown_data={"task": mock_existing_task},
+        task_registry=task_registry,
+    )
+    app = _InitiateAppStub(state=state)
+    result = await initiate_shutdown_countdown(app, 60, "ArkanWolfshade")
     assert result is True
-    mock_existing_task.cancel.assert_called_once()
+    cancel_mock.assert_called_once()

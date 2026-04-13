@@ -7,9 +7,19 @@ from connection_manager.py to reduce its line count.
 
 import inspect
 from collections.abc import Callable
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from ..container import ApplicationContainer
+
+if TYPE_CHECKING:
+    from .connection_manager import ConnectionManager
+
+
+def _coerce_connection_manager(manager: object) -> "ConnectionManager":
+    """Narrow container or test doubles to ConnectionManager for static typing."""
+    from .connection_manager import ConnectionManager
+
+    return cast(ConnectionManager, manager)
 
 # Constants for async compatibility
 _ASYNC_METHODS_REQUIRING_COMPAT: set[str] = {
@@ -24,7 +34,7 @@ _ASYNC_METHODS_REQUIRING_COMPAT: set[str] = {
 }
 
 
-def _ensure_async_compat(manager: "Any | None") -> "Any | None":
+def _ensure_async_compat(manager: "ConnectionManager | None") -> "ConnectionManager | None":
     """
     Ensure connection manager methods are awaitable.
 
@@ -60,7 +70,7 @@ def _ensure_async_compat(manager: "Any | None") -> "Any | None":
     return manager
 
 
-def resolve_connection_manager(candidate: "Any | None" = None) -> "Any | None":
+def resolve_connection_manager(candidate: "ConnectionManager | None" = None) -> "ConnectionManager | None":
     """
     Resolve a connection manager instance.
 
@@ -82,10 +92,9 @@ def resolve_connection_manager(candidate: "Any | None" = None) -> "Any | None":
     # For now, try ApplicationContainer.get_instance() as fallback
     try:
         container = ApplicationContainer.get_instance()
-        if container is not None:
-            manager = getattr(container, "connection_manager", None)
-            if manager is not None:
-                return _ensure_async_compat(manager)
+        manager = getattr(container, "connection_manager", None)
+        if manager is not None:
+            return _ensure_async_compat(_coerce_connection_manager(manager))
     except (AttributeError, RuntimeError, ImportError):
         # Container not available or not initialized
         pass

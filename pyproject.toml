@@ -379,6 +379,8 @@ check_untyped_defs = true
 pythonVersion = "3.12"
 venvPath = "."
 venv = ".venv"
+# Repo root on path so scripts/*.py can import the top-level `server` package (same as runtime sys.path).
+extraPaths = ["."]
 exclude = [
     "**/.venv",
     "**/node_modules",

@@ -12,14 +12,44 @@ End-to-end tests for the MythosMUD client run under this directory using
   [runtime/](runtime/) specs. Requires server and client to be running (or
   started by the config in non-CI).
 
+### Serial suite vs one-off scenarios
+
+[playwright.runtime.config.ts](playwright.runtime.config.ts) sets `workers: 1` and
+`fullyParallel: false`, so the full runtime suite runs **serially** (shared accounts).
+
+To run **one file** or **grep** a subset (from `client/`):
+
+```text
+npm run test:e2e:runtime -- tests/e2e/runtime/communication/chat-messages.spec.ts
+npm run test:e2e:runtime -- --grep "Character Selection"
+```
+
+Extra arguments after `--` are passed to the Playwright CLI.
+
+## Local database bootstrap (mythos_e2e)
+
+From the **repository root**, use `e2e.bat` (Windows) or:
+
+```text
+powershell -ExecutionPolicy Bypass -File scripts/bootstrap_e2e_database.ps1
+```
+
+That force-recreates PostgreSQL `mythos_e2e` (DDL, migrations, procedures) and runs
+`scripts/seed_e2e_users.py`. Requires `.env.e2e_test` (copy from `env.e2e_test.example`).
+
+`runtime/global-setup.ts` still runs `seed_e2e_users.py` before specs as an **idempotent**
+safety net if you skip the full bootstrap.
+
 ## E2E accounts (mythos_e2e)
 
-`runtime/global-setup.ts` runs `scripts/seed_e2e_users.py` before runtime specs.
-On a fresh DB it creates:
+On a fresh DB, seeding creates exactly:
 
 - **ArkanWolfshade** / `Cthulhu1` — admin user and admin character (multiplayer / admin commands).
-- **Ithaqua** / `Cthulhu1` — regular user and character.
-- **TestAdmin** / `Cthulhu1` — superuser only (no default character; used by character-creation tests).
+- **Ithaqua** / `Cthulhu1` — regular user and character (also used for character-creation specs).
+
+Both seeded characters start in **DEFAULT_RESPAWN_ROOM** (matches
+`server.constants.spawn_defaults`; mirrored as `DEFAULT_RESPAWN_ROOM` in
+[runtime/fixtures/test-data.ts](runtime/fixtures/test-data.ts)).
 
 Uses `DATABASE_URL` and `POSTGRES_SEARCH_PATH` from `.env.e2e_test` when present; otherwise defaults to
 `mythos_e2e`. Safe to re-run; existing users and character names are skipped.

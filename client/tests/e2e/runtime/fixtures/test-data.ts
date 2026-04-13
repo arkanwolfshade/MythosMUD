@@ -3,13 +3,16 @@
  *
  * Centralized test data for E2E runtime tests.
  *
- * Canonical accounts for all E2E tests (except character creation/deletion):
- * - ArkanWolfshade / Cthulhu1 / character name ArkanWolfshade
- * - Ithaqua / Cthulhu1 / character name Ithaqua
+ * Canonical accounts (run e2e.bat or scripts/bootstrap_e2e_database.ps1 for a clean mythos_e2e):
+ * - ArkanWolfshade / Cthulhu1 / character name ArkanWolfshade (admin)
+ * - Ithaqua / Cthulhu1 / character name Ithaqua (regular)
  *
- * Playwright global-setup runs scripts/seed_e2e_users.py to create these users and
- * default characters on a fresh mythos_e2e DB. TestAdmin is seeded without a default character.
+ * Playwright global-setup runs scripts/seed_e2e_users.py as an idempotent safety net.
+ * Seeded players use DEFAULT_RESPAWN_ROOM (matches server.constants.spawn_defaults).
  */
+
+/** Matches server.constants.spawn_defaults.DEFAULT_RESPAWN_ROOM */
+export const DEFAULT_RESPAWN_ROOM = 'limbo_arena_arena_arena_5_5' as const;
 
 export interface TestPlayer {
   username: string;
@@ -22,7 +25,7 @@ export interface TestPlayer {
   startingRoom: string;
 }
 
-/** Canonical players for general E2E. Use only these in createMultiPlayerContexts unless testing character creation/deletion. */
+/** Canonical players for E2E. Use in createMultiPlayerContexts for multiplayer flows. */
 export const TEST_PLAYERS: TestPlayer[] = [
   {
     username: 'ArkanWolfshade',
@@ -32,7 +35,7 @@ export const TEST_PLAYERS: TestPlayer[] = [
     email: 'arkanwolfshade@test.local',
     isAdmin: true,
     isSuperuser: false,
-    startingRoom: 'earth_arkhamcity_sanitarium_room_foyer_001',
+    startingRoom: DEFAULT_RESPAWN_ROOM,
   },
   {
     username: 'Ithaqua',
@@ -42,23 +45,14 @@ export const TEST_PLAYERS: TestPlayer[] = [
     email: 'ithaqua@test.local',
     isAdmin: false,
     isSuperuser: false,
-    startingRoom: 'earth_arkhamcity_sanitarium_room_foyer_001',
-  },
-  /** Only for character creation/deletion tests; do not use in general E2E. */
-  {
-    username: 'TestAdmin',
-    password: 'Cthulhu1',
-    userId: 'test-user-admin-001',
-    playerId: 'test-player-admin-001',
-    email: 'testadmin@test.local',
-    isAdmin: true,
-    isSuperuser: true,
-    startingRoom: 'earth_arkhamcity_sanitarium_room_foyer_001',
+    startingRoom: DEFAULT_RESPAWN_ROOM,
   },
 ];
 
 export const TEST_ROOMS = {
+  /** Sanitarium hub used by movement specs after navigation from spawn */
   MAIN_FOYER: 'earth_arkhamcity_sanitarium_room_foyer_001',
+  DEFAULT_RESPAWN_ROOM,
 } as const;
 
 export const TEST_TIMEOUTS = {

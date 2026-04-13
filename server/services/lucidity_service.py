@@ -6,17 +6,19 @@ from __future__ import annotations
 
 import json
 import uuid
-from collections.abc import Callable, Iterable, Sequence
+from collections.abc import Callable, Iterable, Mapping
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from threading import Lock
-from typing import Any, Protocol
+from typing import Protocol, cast
 
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..models.lucidity import LucidityCooldown, LucidityExposureState, PlayerLucidity
 from ..structured_logging.enhanced_logging_config import get_logger
+from ..utils.int_coercion import coerce_int
+from ..utils.liability_types import LiabilityStackEntry
 from .lucidity_event_dispatcher import (
     send_catatonia_event,
     send_lucidity_change_event,
@@ -36,13 +38,13 @@ _delirium_debounce_lock = Lock()
 class _LucidityChangeEventContext:
     """Context for sending a lucidity change event (reduces parameter count)."""
 
-    record: Any
+    record: PlayerLucidity
     delta: int
     previous_tier: str
     new_tier: str
     new_lcd: int
     reason_code: str
-    metadata_map: dict[str, Any]
+    metadata_map: dict[str, object]
     location_id: str | None
 
 
@@ -51,7 +53,7 @@ def _utc_now() -> datetime:
     return datetime.now(UTC).replace(tzinfo=None)
 
 
-LIABILITY_CATALOG: Sequence[str] = (
+LIABILITY_CATALOG: tuple[str, ...] = (
     "night_frayed_reflexes",
     "murmuring_chorus",
     "ritual_compulsion",
@@ -61,7 +63,7 @@ LIABILITY_CATALOG: Sequence[str] = (
 
 Tier = str
 
-TIER_ORDER: Sequence[Tier] = ("lucid", "uneasy", "fractured", "deranged", "catatonic")
+TIER_ORDER: tuple[Tier, ...] = ("lucid", "uneasy", "fractured", "deranged", "catatonic")
 
 
 def resolve_tier(lucidity_value: int) -> Tier:
@@ -82,34 +84,32 @@ def clamp_lucidity(value: int) -> int:
     return max(-100, min(100, value))
 
 
-def decode_liabilities(payload: str | None) -> list[dict[str, Any]]:
+def decode_liabilities(payload: str | None) -> list[LiabilityStackEntry]:
     """Decode liability JSON into structured list."""
     if not payload:
         return []
     try:
-        data = json.loads(payload)
+        data = cast(object, json.loads(payload))
     except (TypeError, json.JSONDecodeError):
         return []
 
     if not isinstance(data, list):
         return []
 
-    normalized: list[dict[str, Any]] = []
-    for entry in data:
+    items: list[object] = cast(list[object], data)
+    normalized: list[LiabilityStackEntry] = []
+    for entry in items:
         if isinstance(entry, dict) and "code" in entry:
-            code = str(entry["code"])
-            stacks = entry.get("stacks", 1)
-            try:
-                stacks_int = int(stacks)
-            except (TypeError, ValueError):
-                stacks_int = 1
+            row = cast(dict[str, object], entry)
+            code = str(row["code"])
+            stacks_int = coerce_int(row.get("stacks", 1), default=1)
             normalized.append({"code": code, "stacks": max(1, stacks_int)})
     return normalized
 
 
-def encode_liabilities(entries: Iterable[dict[str, Any]]) -> str:
+def encode_liabilities(entries: Iterable[LiabilityStackEntry]) -> str:
     """Serialize liability structures into JSON string."""
-    sanitized: list[dict[str, Any]] = []
+    sanitized: list[LiabilityStackEntry] = []
     for entry in entries:
         code = str(entry.get("code", "")).strip()
         stacks = entry.get("stacks", 1)
@@ -134,6 +134,10 @@ class CatatoniaObserverProtocol(Protocol):
     def on_sanitarium_failover(self, *, player_id: uuid.UUID, current_lcd: int) -> None:
         """Handle a player requiring sanitarium failover."""
 
+    def should_trigger_sanitarium_failover(self, player_id: uuid.UUID | str) -> bool:
+        """Return False to suppress failover (debounce); True allows failover handling."""
+        return True  # Structural Protocol stub; concrete observers (e.g. CatatoniaRegistry) override.
+
 
 @dataclass
 class LucidityUpdateResult:
@@ -151,6 +155,12 @@ class LucidityUpdateResult:
 class LucidityService:
     """High-level operations for lucidity adjustments and liability tracking."""
 
+    _session: AsyncSession
+    _repo: LucidityRepository
+    _liability_picker: Callable[[str, int, int, str], str | None]
+    _liability_threshold: int
+    _catatonia_observer: CatatoniaObserverProtocol | None
+
     def __init__(
         self,
         session: AsyncSession,
@@ -166,7 +176,7 @@ class LucidityService:
         self._catatonia_observer = catatonia_observer
 
     async def _handle_catatonia_transitions(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Catatonia transition handling requires many parameters for context and state updates
-        self, record: Any, player_id: uuid.UUID, new_tier: str, previous_tier: str, new_lcd: int
+        self, record: PlayerLucidity, player_id: uuid.UUID, new_tier: str, previous_tier: str, new_lcd: int
     ) -> None:
         """Handle catatonia entry and exit transitions."""
         if new_tier == "catatonic":
@@ -228,9 +238,7 @@ class LucidityService:
         if new_lcd > -100 or previous_lcd <= -100 or not self._catatonia_observer:
             return
         observer = self._catatonia_observer
-        if hasattr(observer, "should_trigger_sanitarium_failover") and not observer.should_trigger_sanitarium_failover(
-            player_id
-        ):
+        if not observer.should_trigger_sanitarium_failover(player_id):
             return
         logger.error("Sanitarium failover triggered", player_id=player_id, previous_lcd=previous_lcd, lcd=new_lcd)
         observer.on_sanitarium_failover(player_id=player_id, current_lcd=new_lcd)
@@ -274,7 +282,7 @@ class LucidityService:
                     liabilities_added.append(liability_added)
         return liabilities_added
 
-    def _get_player_from_record_inspect(self, record: Any) -> Any:
+    def _get_player_from_record_inspect(self, record: PlayerLucidity) -> object | None:
         """Get player from record's relationship via SQLAlchemy inspect if already loaded. Returns None otherwise."""
         try:
             from sqlalchemy import inspect as sqlalchemy_inspect
@@ -283,29 +291,34 @@ class LucidityService:
             if not hasattr(insp, "attrs") or "player" not in insp.attrs:
                 return None
             attr_state = insp.attrs.player
-            if hasattr(attr_state, "loaded_value") and attr_state.loaded_value is not None:
-                return attr_state.loaded_value
-            if hasattr(attr_state, "value") and attr_state.value is not None:
-                return attr_state.value
+            loaded_raw = getattr(attr_state, "loaded_value", None)
+            if loaded_raw is not None:
+                return cast(object, loaded_raw)
+            value_raw = getattr(attr_state, "value", None)
+            if value_raw is not None:
+                return cast(object, value_raw)
             return None
         except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: inspect can fail in many ways; fallback to explicit load
             logger.debug("Inspect operation failed, falling through to explicit load", exc_info=e)
             return None
 
     @staticmethod
-    def _max_lcd_from_stats(stats: dict[str, Any]) -> int:
+    def _max_lcd_from_stats(stats: Mapping[str, object]) -> int:
         """Return max_lcd from stats dict (max_lucidity, education, or 100)."""
-        return int(stats.get("max_lucidity") or stats.get("education") or 100)
+        raw = stats.get("max_lucidity") or stats.get("education") or 100
+        return coerce_int(raw, default=100)
 
-    async def _calculate_max_lcd(self, record: Any, player_id: uuid.UUID) -> int:
+    async def _calculate_max_lcd(self, record: PlayerLucidity, player_id: uuid.UUID) -> int:
         """Calculate max_lcd from player's education stat."""
         default = 100
         player_obj = self._get_player_from_record_inspect(record)
-        if player_obj is not None and hasattr(player_obj, "get_stats"):
-            try:
-                return self._max_lcd_from_stats(player_obj.get_stats())
-            except AttributeError:
-                pass  # Not a real Player (e.g. LoaderCallableStatus); fall through to explicit load
+        if player_obj is not None:
+            get_stats_fn = getattr(player_obj, "get_stats", None)
+            if callable(get_stats_fn):
+                try:
+                    return self._max_lcd_from_stats(cast(dict[str, object], get_stats_fn()))
+                except AttributeError:
+                    pass  # Not a real Player (e.g. LoaderCallableStatus); fall through to explicit load
         try:
             from ..models.player import Player
 
@@ -319,7 +332,7 @@ class LucidityService:
         return default
 
     @staticmethod
-    def _lucidity_event_source(metadata_map: dict[str, Any], location_id: str | None) -> str | None:
+    def _lucidity_event_source(metadata_map: Mapping[str, object], location_id: str | None) -> str | None:
         """Build source string for lucidity change event from metadata and location."""
         raw = (
             metadata_map.get("source")
@@ -357,7 +370,7 @@ class LucidityService:
         delta: int,
         *,
         reason_code: str,
-        metadata: dict[str, Any] | str | None = None,
+        metadata: Mapping[str, object] | str | None = None,
         location_id: str | None = None,
     ) -> LucidityUpdateResult:
         """Apply a LCD delta, log the change, and evaluate liabilities."""
@@ -378,7 +391,7 @@ class LucidityService:
 
         metadata_map = self._coerce_metadata_dict(metadata)
         metadata_payload = self._normalize_metadata(metadata)
-        await self._repo.add_adjustment_log(player_id, delta, reason_code, metadata_payload, location_id)
+        _ = await self._repo.add_adjustment_log(player_id, delta, reason_code, metadata_payload, location_id)
 
         liabilities_added = await self._add_liabilities_for_adjustment(
             player_id, delta, previous_lcd, new_lcd, previous_tier, new_tier, reason_code
@@ -453,7 +466,7 @@ class LucidityService:
         liabilities = decode_liabilities(record.liabilities)
 
         changed = False
-        updated: list[dict[str, Any]] = []
+        updated: list[LiabilityStackEntry] = []
         for entry in liabilities:
             if entry["code"] != liability_code:
                 updated.append(entry)
@@ -515,7 +528,7 @@ class LucidityService:
     def _worsened_tier(self, previous_tier: Tier, new_tier: Tier) -> bool:
         return TIER_ORDER.index(new_tier) > TIER_ORDER.index(previous_tier)
 
-    def _normalize_metadata(self, metadata: dict[str, Any] | str | None) -> str:
+    def _normalize_metadata(self, metadata: Mapping[str, object] | str | None) -> str:
         if metadata is None:
             return "{}"
         if isinstance(metadata, str):
@@ -531,13 +544,13 @@ class LucidityService:
         """Select the first liability not already applied, falling back to the first option."""
         # This deterministic picker ensures predictable unit tests while allowing overrides.
         # Implementations can provide more complex logic with randomization or weighting.
-        existing = set()
+        existing: set[str] = set()
         # Attempt to read liabilities from session identity map if available.
-        # Convert string player_id to UUID for identity_key
-        player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
+        # Parse player_id to UUID for identity_key (parameter is str).
+        player_id_uuid = uuid.UUID(player_id)
         identity_key = self._session.identity_key(PlayerLucidity, (player_id_uuid,))
         instance = self._session.identity_map.get(identity_key)
-        if instance is not None:
+        if isinstance(instance, PlayerLucidity):
             for entry in decode_liabilities(instance.liabilities):
                 existing.add(entry["code"])
 
@@ -546,17 +559,17 @@ class LucidityService:
                 return code
         return LIABILITY_CATALOG[0] if LIABILITY_CATALOG else None
 
-    def _coerce_metadata_dict(self, metadata: dict[str, Any] | str | None) -> dict[str, Any]:
+    def _coerce_metadata_dict(self, metadata: Mapping[str, object] | str | None) -> dict[str, object]:
         """Best-effort conversion of metadata payloads into dictionaries."""
         if metadata is None:
             return {}
         if isinstance(metadata, dict):
-            return metadata
+            return dict(metadata)
         if isinstance(metadata, str):
             try:
-                parsed = json.loads(metadata)
+                parsed = cast(object, json.loads(metadata))
             except json.JSONDecodeError:
                 return {}
             if isinstance(parsed, dict):
-                return parsed
+                return cast(dict[str, object], parsed)
         return {}
