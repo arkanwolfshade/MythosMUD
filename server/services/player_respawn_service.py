@@ -6,24 +6,28 @@ As documented in the Pnakotic Manuscripts, resurrection requires careful navigat
 the spaces between worlds.
 """
 
-# pylint: disable=too-many-locals,too-many-statements,too-many-lines  # Reason: Respawn service requires many intermediate variables and statements for complex respawn logic; single cohesive module preferred over split.
+from __future__ import annotations
 
+# pylint: disable=too-many-locals,too-many-statements,too-many-lines  # Reason: Respawn service requires many intermediate variables and statements for complex respawn logic; single cohesive module preferred over split.
 import random
 import uuid
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from datetime import UTC, datetime, timedelta
-from typing import Any, cast
+from typing import Protocol, cast
 
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from server.events.event_types import PlayerDeliriumRespawnedEvent, PlayerRespawnedEvent
-from server.models.game import PositionState
-from server.models.lucidity import LucidityActionCode
-from server.models.player import Player, _stats_int
-from server.structured_logging.enhanced_logging_config import get_logger
-
+from ..constants.spawn_defaults import DEFAULT_RESPAWN_ROOM
+from ..events.event_types import BaseEvent, PlayerDeliriumRespawnedEvent, PlayerRespawnedEvent
 from ..exceptions import DatabaseError
+from ..models.game import PositionState
+from ..models.lucidity import LucidityActionCode, PlayerLucidity
+from ..models.player import Player
+from ..structured_logging.enhanced_logging_config import get_logger
+from ..utils.int_coercion import coerce_int
+from ..utils.liability_types import DecodeLiabilitiesFn, EncodeLiabilitiesFn
+from .lucidity_service import LucidityService
 
 
 def _utc_now() -> datetime:
@@ -33,8 +37,24 @@ def _utc_now() -> datetime:
 
 logger = get_logger(__name__)
 
-# Default respawn location (arena center; tutorial exit and death/lucidity respawn)
-DEFAULT_RESPAWN_ROOM = "limbo_arena_arena_arena_5_5"
+
+class _RespawnEventPublisher(Protocol):
+    """Minimal surface used by this service to publish respawn-related events."""
+
+    def publish(self, event: BaseEvent) -> None: ...
+
+
+class _PlayerCombatClearing(Protocol):
+    """Minimal surface used to clear combat state when a player respawns."""
+
+    async def clear_player_combat_state(self, player_id: uuid.UUID) -> None: ...
+
+
+class _RandomChoiceSource(Protocol):
+    """Subset of random.Random / random module API used for liability picks."""
+
+    def choice(self, seq: Sequence[str]) -> str: ...
+
 
 # Limbo room for death state isolation
 # NOTE: Room ID is generated as {plane}_{zone}_{sub_zone}_{stable_id}
@@ -54,7 +74,11 @@ class PlayerRespawnService:
     - Clearing combat state when player respawns
     """
 
-    def __init__(self, event_bus: Any | None = None, player_combat_service: Any | None = None) -> None:
+    def __init__(
+        self,
+        event_bus: _RespawnEventPublisher | None = None,
+        player_combat_service: _PlayerCombatClearing | None = None,
+    ) -> None:
         """
         Initialize the player respawn service.
 
@@ -62,8 +86,8 @@ class PlayerRespawnService:
             event_bus: Optional event bus for publishing events
             player_combat_service: Optional player combat service for clearing combat state
         """
-        self._event_bus = event_bus
-        self._player_combat_service = player_combat_service
+        self._event_bus: _RespawnEventPublisher | None = event_bus
+        self._player_combat_service: _PlayerCombatClearing | None = player_combat_service
         logger.info(
             "PlayerRespawnService initialized",
             event_bus_available=bool(event_bus),
@@ -71,7 +95,7 @@ class PlayerRespawnService:
         )
 
     @staticmethod
-    def _normalize_current_dp(stats: dict[str, Any]) -> int:
+    def _normalize_current_dp(stats: dict[str, object]) -> int:
         """Return current_dp as an int, defaulting to 0 for non-numeric values."""
         current_dp = stats.get("current_dp", 0)
         if isinstance(current_dp, int | float):
@@ -116,12 +140,12 @@ class PlayerRespawnService:
     async def _apply_sanitarium_liability_update(
         self,
         player_id: uuid.UUID,
-        lucidity_record: Any,
-        lucidity_service: Any,
-        decode_liabilities: Any,
-        encode_liabilities: Any,
+        lucidity_record: PlayerLucidity,
+        lucidity_service: LucidityService,
+        decode_liabilities: DecodeLiabilitiesFn,
+        encode_liabilities: EncodeLiabilitiesFn,
         liability_catalog: Sequence[str],
-        random_module: Any,
+        random_module: _RandomChoiceSource,
     ) -> None:
         """Increase existing liability stacks or add one liability if none exist."""
         liabilities = decode_liabilities(lucidity_record.liabilities)
@@ -132,7 +156,7 @@ class PlayerRespawnService:
             return
 
         liability_code = random_module.choice(liability_catalog)  # nosec B311 - Game mechanics, not security-critical
-        await lucidity_service.add_liability(player_id, liability_code)
+        _ = await lucidity_service.add_liability(player_id, liability_code)
 
     async def _clear_respawn_combat_state(self, player_id: uuid.UUID, respawn_context: str) -> None:
         """Clear combat state for a respawning player, logging and swallowing DB errors."""
@@ -157,7 +181,7 @@ class PlayerRespawnService:
         player_id: uuid.UUID,
         player_name: str,
         respawn_room: str,
-        stats: dict[str, Any],
+        stats: Mapping[str, object],
         old_room: str,
     ) -> None:
         """Publish standard respawn event when event bus is available."""
@@ -167,8 +191,8 @@ class PlayerRespawnService:
             player_id=player_id,
             player_name=player_name,
             respawn_room_id=respawn_room,
-            old_dp=stats.get("current_dp", 0),
-            new_dp=stats.get("max_dp", 100),
+            old_dp=coerce_int(stats.get("current_dp"), default=0),
+            new_dp=coerce_int(stats.get("max_dp"), default=100),
             death_room_id=old_room if old_room != LIMBO_ROOM_ID else None,
         )
         self._event_bus.publish(event)
@@ -178,7 +202,7 @@ class PlayerRespawnService:
         """Restore full health and move player to respawn_room; return (old_dp, max_dp, old_room)."""
         old_dp = player.restore_to_full_health()
         stats = player.get_stats()
-        max_dp = _stats_int(stats, "max_dp", 100)
+        max_dp = coerce_int(stats.get("max_dp", 100), default=100)
         old_room = player.current_room_id
         player.current_room_id = respawn_room
         return old_dp, max_dp, old_room
@@ -200,7 +224,7 @@ class PlayerRespawnService:
         )
 
     @staticmethod
-    def _apply_sanitarium_player_state(player: Player, respawn_room: str) -> tuple[dict[str, Any], str]:
+    def _apply_sanitarium_player_state(player: Player, respawn_room: str) -> tuple[dict[str, object], str]:
         """Set posture to standing and move player to respawn room; return (stats, old_room)."""
         stats = player.get_stats()
         stats["position"] = PositionState.STANDING
@@ -243,12 +267,20 @@ class PlayerRespawnService:
         self, player_id: uuid.UUID, player: Player, session: AsyncSession
     ) -> tuple[str, str, int, int] | None:
         """Apply delirium-specific lucidity/location updates and return respawn context."""
-        from ..models.lucidity import PlayerLucidity
-
-        lucidity_record = await session.get(PlayerLucidity, player_id)
-        if not lucidity_record:
+        lucidity_row = await session.get(PlayerLucidity, player_id)
+        if lucidity_row is None:
             logger.warning("Lucidity record not found for delirium respawn", player_id=player_id)
             return None
+        # AsyncSession.get is typed as PlayerLucidity | None, but runtime rows can mismatch; widen for isinstance.
+        lucidity_candidate: object = lucidity_row
+        if not isinstance(lucidity_candidate, PlayerLucidity):
+            logger.error(
+                "Unexpected lucidity row type for delirium respawn",
+                player_id=player_id,
+                row_type=type(lucidity_candidate).__name__,
+            )
+            return None
+        lucidity_record = lucidity_candidate
 
         old_lucidity = lucidity_record.current_lcd
         new_lucidity = 10  # Restore to 10 lucidity after delirium respawn
@@ -257,28 +289,36 @@ class PlayerRespawnService:
         lucidity_record.last_updated_at = _utc_now()
 
         respawn_room = DEFAULT_RESPAWN_ROOM
-        player.restore_to_full_health()
+        _ = player.restore_to_full_health()
         old_room = player.current_room_id
         player.current_room_id = respawn_room
         return respawn_room, old_room, old_lucidity, new_lucidity
 
     async def _prepare_sanitarium_respawn(
         self, player_id: uuid.UUID, player: Player, session: AsyncSession
-    ) -> tuple[str, dict[str, Any], str, int, int] | None:
+    ) -> tuple[str, dict[str, object], str, int, int] | None:
         """Apply sanitarium-specific lucidity/liability/state updates and return respawn context."""
-        from ..models.lucidity import PlayerLucidity
-        from ..services.lucidity_service import (
+        from .lucidity_service import (
             LIABILITY_CATALOG,
-            LucidityService,
             decode_liabilities,
             encode_liabilities,
             resolve_tier,
         )
 
-        lucidity_record = await session.get(PlayerLucidity, player_id)
-        if not lucidity_record:
+        lucidity_row = await session.get(PlayerLucidity, player_id)
+        if lucidity_row is None:
             logger.warning("Lucidity record not found for sanitarium respawn", player_id=player_id)
             return None
+        # AsyncSession.get is typed as PlayerLucidity | None, but runtime rows can mismatch; widen for isinstance.
+        lucidity_candidate: object = lucidity_row
+        if not isinstance(lucidity_candidate, PlayerLucidity):
+            logger.error(
+                "Unexpected lucidity row type for sanitarium respawn",
+                player_id=player_id,
+                row_type=type(lucidity_candidate).__name__,
+            )
+            return None
+        lucidity_record = lucidity_candidate
 
         old_lucidity = lucidity_record.current_lcd
         new_lucidity = 1  # Reset to 1 (Deranged tier) per spec
@@ -291,8 +331,8 @@ class PlayerRespawnService:
             player_id=player_id,
             lucidity_record=lucidity_record,
             lucidity_service=lucidity_service,
-            decode_liabilities=decode_liabilities,
-            encode_liabilities=encode_liabilities,
+            decode_liabilities=cast(DecodeLiabilitiesFn, cast(object, decode_liabilities)),
+            encode_liabilities=cast(EncodeLiabilitiesFn, encode_liabilities),
             liability_catalog=LIABILITY_CATALOG,
             random_module=random,
         )
@@ -300,7 +340,7 @@ class PlayerRespawnService:
         respawn_room = DEFAULT_RESPAWN_ROOM
         stats, old_room = self._apply_sanitarium_player_state(player, respawn_room)
         debrief_expires_at = _utc_now() + timedelta(days=365)  # Far future expiration
-        await lucidity_service.set_cooldown(player_id, LucidityActionCode.DEBRIEF_PENDING, debrief_expires_at)
+        _ = await lucidity_service.set_cooldown(player_id, LucidityActionCode.DEBRIEF_PENDING, debrief_expires_at)
 
         return respawn_room, stats, old_room, old_lucidity, new_lucidity
 
@@ -325,6 +365,16 @@ class PlayerRespawnService:
             if not player:
                 logger.warning("Player not found for limbo movement", player_id=player_id)
                 return False
+            # AsyncSession.get is typed as Player | None, but runtime rows can mismatch; widen for isinstance.
+            player_row: object = player
+            if not isinstance(player_row, Player):
+                logger.error(
+                    "Unexpected player row type for limbo movement",
+                    player_id=player_id,
+                    row_type=type(player_row).__name__,
+                )
+                return False
+            player = player_row
 
             # Player must be at -10 or lower DP before moving to limbo (death transition).
             # Catatonia failover is the only exception (lucidity-based, not DP).
