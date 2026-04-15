@@ -23,7 +23,7 @@ dependencies = [
     "fastapi-users[sqlalchemy]>=15.0.3",
     "setuptools>=80.9.0,<81",
     "pre-commit>=4.5.1",
-    "pytest>=9.0.2",
+    "pytest>=9.0.3",
     "pytest-cov>=7.0.0",
     "pytest-mock>=3.15.1",
     "psycopg2-binary>=2.9.11",
@@ -54,7 +54,7 @@ dependencies = [
     "starlette>=0.50.0",  # Fixes alert #14 - CVE-2025-62727, CVE-2025-54121, CVE-2024-47874
     "python-multipart>=0.0.22",  # Fixes alert #12 - CVE-2024-53981, CVE-2024-24762
     "fonttools>=4.60.2",  # Fixes alert #21 - CVE-2025-66034, CVE-2023-45139
-    "pillow>=12.1.1",  # Image handling (transitive from playwright/matplotlib); pin for security/consistency
+    "pillow>=12.2.0",  # Image handling (transitive from playwright/matplotlib); pin for security/consistency
 ]
 
 [project.scripts]
@@ -62,7 +62,7 @@ room-validator = "tools.room_toolkit.room_validator.validator:main"
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=9.0.2",
+    "pytest>=9.0.3",
     "pytest-cov>=7.0.0",
     "pytest-xdist>=3.8.0",  # Parallel test execution (required for -n auto in pytest.ini)
     "networkx>=3.6.1",
