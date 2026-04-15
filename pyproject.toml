@@ -52,7 +52,7 @@ dependencies = [
     "urllib3>=2.6.3",  # Fixes alerts #15, #16, #18 - CVE-2025-66418, CVE-2025-66471
     "pyasn1>=0.6.2",  # Fixes alerts #11, #19 - CVE-2026-23490
     "starlette>=0.50.0",  # Fixes alert #14 - CVE-2025-62727, CVE-2025-54121, CVE-2024-47874
-    "python-multipart>=0.0.22",  # Fixes alert #12 - CVE-2024-53981, CVE-2024-24762
+    "python-multipart>=0.0.26",  # Fixes alert #12 - CVE-2024-53981, CVE-2024-24762
     "fonttools>=4.60.2",  # Fixes alert #21 - CVE-2025-66034, CVE-2023-45139
     "pillow>=12.2.0",  # Image handling (transitive from playwright/matplotlib); pin for security/consistency
 ]
@@ -417,4 +417,4 @@ dev = [
 # Using "copy" mode ensures files are always copied instead of hardlinked
 link-mode = "copy"
 # Force python-multipart>=0.0.22 for CVE-2024-53981/CVE-2024-24762; fastapi-users 15.0.3 pins ==0.0.21
-override-dependencies = ["python-multipart>=0.0.22"]
+override-dependencies = ["python-multipart>=0.0.26"]
