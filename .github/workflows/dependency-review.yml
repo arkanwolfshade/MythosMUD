@@ -104,7 +104,7 @@ jobs:
 
       # Transitive dev deps (e.g. stacktracey via Spectral) may score <3 on OpenSSF; warn only below 2.
       - name: "Dependency Review"
-        uses: actions/dependency-review-action@2031cfc080254a8a887f58cffee85186f0e49e48 # v4.9.0
+        uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
         with:
           warn-on-openssf-scorecard-level: 2
           # Cover indexing delay / parallel submission; timeout exceeds typical Component Detection runs.
