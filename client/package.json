@@ -68,11 +68,11 @@
     "patch-package": "^8.0.1",
     "postcss": "^8.5.13",
     "prettier": "^3.8.3",
-    "stylelint": "^17.5.0",
+    "stylelint": "^17.11.1",
     "tailwindcss": "^4.2.2",
     "typescript": "~6.0.3",
-    "typescript-eslint": "^8.58.0",
     "vite": "^8.0.12",
+    "typescript-eslint": "^8.59.4",
     "vitest": "^4.1.4"
   },
   "optionalDependencies": {
