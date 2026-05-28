@@ -1,6 +1,6 @@
 # Dependency Injection Migration Test Results
 
-**Test File**: `client/tests/e2e/di-migration-validation.spec.ts`
+**Test Files**: `client/tests/e2e/di-migration/suite-*.spec.ts`
 **Execution Date**: 2026-01-15
 **Test Framework**: Playwright
 **Browser**: Chromium

@@ -41,9 +41,7 @@ async def send_game_event(player_id: uuid.UUID | str, event_type: str, data: Map
         else:
             player_id_uuid = player_id
         # Pass UUID object directly to build_event (it accepts UUID | str)
-        _ = await manager.send_personal_message(
-            player_id_uuid, build_event(event_type, data, player_id=player_id_uuid)
-        )
+        _ = await manager.send_personal_message(player_id_uuid, build_event(event_type, data, player_id=player_id_uuid))
 
     except (DatabaseError, AttributeError) as e:
         logger.error("Error sending game event", player_id=player_id, error=str(e))

@@ -1,16 +1,13 @@
 """Lucidity repository and service for eldritch stability management."""
 
-# pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-lines  # Reason: Lucidity service requires many parameters for context and lucidity operations. Lucidity service requires extensive lucidity management logic for comprehensive eldritch stability tracking.
+# pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Lucidity service requires many parameters for context and lucidity operations.
 
 from __future__ import annotations
 
-import json
 import uuid
-from collections.abc import Callable, Iterable, Mapping
-from dataclasses import dataclass
-from datetime import UTC, datetime
-from threading import Lock
-from typing import Protocol, cast
+from collections.abc import Callable, Mapping
+from datetime import datetime
+from typing import cast
 
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -19,137 +16,42 @@ from ..models.lucidity import LucidityCooldown, LucidityExposureState, PlayerLuc
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.int_coercion import coerce_int
 from ..utils.liability_types import LiabilityStackEntry
-from .lucidity_event_dispatcher import (
-    send_catatonia_event,
-    send_lucidity_change_event,
-    send_rescue_update_event,
+from .lucidity_event_dispatcher import LucidityChangeEventExtras, send_lucidity_change_event
+from .lucidity_helpers import (
+    LIABILITY_CATALOG,
+    TIER_ORDER,
+    CatatoniaObserverProtocol,
+    LucidityAdjustmentFinalizeContext,
+    LucidityChangeEventContext,
+    LucidityUpdateResult,
+    Tier,
+    clamp_lucidity,
+    coerce_metadata_dict,
+    decode_liabilities,
+    encode_liabilities,
+    lucidity_event_source,
+    normalize_metadata,
+    resolve_tier,
+    utc_now,
+    worsened_tier,
 )
 from .lucidity_repository import LucidityRepository
+from .lucidity_trigger_handlers import handle_catatonia_transitions, handle_delirium_and_sanitarium_triggers
 
 logger = get_logger(__name__)
 
-# Delirium respawn debounce: do not log/send delirium event again for the same player within this many seconds.
-DELIRIUM_DEBOUNCE_SECONDS = 120
-_last_delirium_trigger: dict[str, datetime] = {}
-_delirium_debounce_lock = Lock()
-
-
-@dataclass(frozen=True)
-class _LucidityChangeEventContext:
-    """Context for sending a lucidity change event (reduces parameter count)."""
-
-    record: PlayerLucidity
-    delta: int
-    previous_tier: str
-    new_tier: str
-    new_lcd: int
-    reason_code: str
-    metadata_map: dict[str, object]
-    location_id: str | None
-
-
-def _utc_now() -> datetime:
-    """Return naive UTC timestamp suitable for PostgreSQL TIMESTAMP WITHOUT TIME ZONE."""
-    return datetime.now(UTC).replace(tzinfo=None)
-
-
-LIABILITY_CATALOG: tuple[str, ...] = (
-    "night_frayed_reflexes",
-    "murmuring_chorus",
-    "ritual_compulsion",
-    "ethereal_chill",
-    "bleak_outlook",
-)
-
-Tier = str
-
-TIER_ORDER: tuple[Tier, ...] = ("lucid", "uneasy", "fractured", "deranged", "catatonic")
-
-
-def resolve_tier(lucidity_value: int) -> Tier:
-    """Derive tier label based on LCD thresholds."""
-    if lucidity_value >= 70:
-        return "lucid"
-    if lucidity_value >= 40:
-        return "uneasy"
-    if lucidity_value >= 20:
-        return "fractured"
-    if lucidity_value >= 1:
-        return "deranged"
-    return "catatonic"
-
-
-def clamp_lucidity(value: int) -> int:
-    """Clamp LCD to allowed range."""
-    return max(-100, min(100, value))
-
-
-def decode_liabilities(payload: str | None) -> list[LiabilityStackEntry]:
-    """Decode liability JSON into structured list."""
-    if not payload:
-        return []
-    try:
-        data = cast(object, json.loads(payload))
-    except (TypeError, json.JSONDecodeError):
-        return []
-
-    if not isinstance(data, list):
-        return []
-
-    items: list[object] = cast(list[object], data)
-    normalized: list[LiabilityStackEntry] = []
-    for entry in items:
-        if isinstance(entry, dict) and "code" in entry:
-            row = cast(dict[str, object], entry)
-            code = str(row["code"])
-            stacks_int = coerce_int(row.get("stacks", 1), default=1)
-            normalized.append({"code": code, "stacks": max(1, stacks_int)})
-    return normalized
-
-
-def encode_liabilities(entries: Iterable[LiabilityStackEntry]) -> str:
-    """Serialize liability structures into JSON string."""
-    sanitized: list[LiabilityStackEntry] = []
-    for entry in entries:
-        code = str(entry.get("code", "")).strip()
-        stacks = entry.get("stacks", 1)
-        try:
-            stacks_int = int(stacks)
-        except (TypeError, ValueError):
-            stacks_int = 1
-        if code:
-            sanitized.append({"code": code, "stacks": max(1, stacks_int)})
-    return json.dumps(sanitized)
-
-
-class CatatoniaObserverProtocol(Protocol):
-    """Protocol for observers interested in catatonia state changes."""
-
-    def on_catatonia_entered(self, *, player_id: uuid.UUID, entered_at: datetime, current_lcd: int) -> None:
-        """Handle a player crossing into catatonia."""
-
-    def on_catatonia_cleared(self, *, player_id: uuid.UUID, resolved_at: datetime) -> None:
-        """Handle a player returning from catatonia."""
-
-    def on_sanitarium_failover(self, *, player_id: uuid.UUID, current_lcd: int) -> None:
-        """Handle a player requiring sanitarium failover."""
-
-    def should_trigger_sanitarium_failover(self, player_id: uuid.UUID | str) -> bool:
-        """Return False to suppress failover (debounce); True allows failover handling."""
-        return True  # Structural Protocol stub; concrete observers (e.g. CatatoniaRegistry) override.
-
-
-@dataclass
-class LucidityUpdateResult:
-    """Normalized response describing the outcome of a lucidity adjustment."""
-
-    player_id: uuid.UUID
-    previous_lcd: int
-    new_lcd: int
-    previous_tier: Tier
-    new_tier: Tier
-    delta: int
-    liabilities_added: list[str]
+__all__ = [
+    "CatatoniaObserverProtocol",
+    "LIABILITY_CATALOG",
+    "LucidityService",
+    "LucidityUpdateResult",
+    "TIER_ORDER",
+    "Tier",
+    "clamp_lucidity",
+    "decode_liabilities",
+    "encode_liabilities",
+    "resolve_tier",
+]
 
 
 class LucidityService:
@@ -175,87 +77,6 @@ class LucidityService:
         self._liability_threshold = liability_threshold
         self._catatonia_observer = catatonia_observer
 
-    async def _handle_catatonia_transitions(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Catatonia transition handling requires many parameters for context and state updates
-        self, record: PlayerLucidity, player_id: uuid.UUID, new_tier: str, previous_tier: str, new_lcd: int
-    ) -> None:
-        """Handle catatonia entry and exit transitions."""
-        if new_tier == "catatonic":
-            if record.catatonia_entered_at is None:
-                entered_at = _utc_now()
-                record.catatonia_entered_at = entered_at
-                logger.warning(
-                    "Player entered catatonia", player_id=player_id, previous_tier=previous_tier, lcd=new_lcd
-                )
-                if self._catatonia_observer:
-                    self._catatonia_observer.on_catatonia_entered(
-                        player_id=player_id, entered_at=entered_at, current_lcd=new_lcd
-                    )
-                await send_catatonia_event(
-                    player_id=player_id,
-                    current_lcd=new_lcd,
-                    message="Your senses collapse into static; only allies can reach you now.",
-                    status="catatonic",
-                )
-        else:
-            if record.catatonia_entered_at is not None:
-                resolved_at = _utc_now()
-                record.catatonia_entered_at = None
-                logger.info("Catatonia resolved", player_id=player_id, tier_after=new_tier, lcd=new_lcd)
-                if self._catatonia_observer:
-                    self._catatonia_observer.on_catatonia_cleared(player_id=player_id, resolved_at=resolved_at)
-                await send_rescue_update_event(
-                    player_id=player_id,
-                    status="success",
-                    current_lcd=new_lcd,
-                    message="Consciousness steadies; the grounding ritual completes.",
-                )
-
-    async def _handle_delirium_trigger(self, player_id: uuid.UUID, new_lcd: int, previous_lcd: int) -> None:
-        """Handle delirium respawn threshold (LCD crosses -10); debounced."""
-        if new_lcd > -10 or previous_lcd <= -10:
-            return
-        player_id_str = str(player_id)
-        with _delirium_debounce_lock:
-            last = _last_delirium_trigger.get(player_id_str)
-            now = datetime.now(UTC)
-            if last is not None:
-                elapsed = (now - last).total_seconds()
-                if elapsed < DELIRIUM_DEBOUNCE_SECONDS:
-                    return
-            _last_delirium_trigger[player_id_str] = now
-        logger.warning(
-            "Delirium respawn threshold reached", player_id=player_id, previous_lcd=previous_lcd, lcd=new_lcd
-        )
-        await send_rescue_update_event(
-            player_id=player_id_str,
-            status="delirium",
-            current_lcd=new_lcd,
-            message="Your mind fractures completely. The sanitarium calls you back from the edge of madness...",
-        )
-
-    async def _handle_sanitarium_trigger(self, player_id: uuid.UUID, new_lcd: int, previous_lcd: int) -> None:
-        """Handle sanitarium failover (LCD crosses -100); uses observer debounce if available."""
-        if new_lcd > -100 or previous_lcd <= -100 or not self._catatonia_observer:
-            return
-        observer = self._catatonia_observer
-        if not observer.should_trigger_sanitarium_failover(player_id):
-            return
-        logger.error("Sanitarium failover triggered", player_id=player_id, previous_lcd=previous_lcd, lcd=new_lcd)
-        observer.on_sanitarium_failover(player_id=player_id, current_lcd=new_lcd)
-        await send_rescue_update_event(
-            player_id=str(player_id),
-            status="sanitarium",
-            current_lcd=new_lcd,
-            message="Orderlies whisk you to Arkham Sanitarium for observation.",
-        )
-
-    async def _handle_delirium_and_sanitarium_triggers(
-        self, player_id: uuid.UUID, new_lcd: int, previous_lcd: int
-    ) -> None:
-        """Handle delirium respawn and sanitarium failover triggers."""
-        await self._handle_delirium_trigger(player_id, new_lcd, previous_lcd)
-        await self._handle_sanitarium_trigger(player_id, new_lcd, previous_lcd)
-
     async def _add_liabilities_for_adjustment(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Liability addition requires many parameters for context and liability tracking
         self,
         player_id: uuid.UUID,
@@ -274,7 +95,7 @@ class LucidityService:
                 liability_added = await self.add_liability(player_id, liability_code)
                 if liability_added:
                     liabilities_added.append(liability_added)
-        elif self._worsened_tier(previous_tier, new_tier):
+        elif worsened_tier(previous_tier, new_tier):
             liability_code = self._liability_picker(str(player_id), previous_lcd, new_lcd, reason_code)
             if liability_code:
                 liability_added = await self.add_liability(player_id, liability_code)
@@ -331,22 +152,10 @@ class LucidityService:
             )
         return default
 
-    @staticmethod
-    def _lucidity_event_source(metadata_map: Mapping[str, object], location_id: str | None) -> str | None:
-        """Build source string for lucidity change event from metadata and location."""
-        raw = (
-            metadata_map.get("source")
-            or metadata_map.get("encounter_category")
-            or metadata_map.get("environment")
-            or location_id
-            or ""
-        )
-        return str(raw).strip() or None
-
     async def _send_lucidity_change_event_if_needed(
         self,
         player_id: uuid.UUID,
-        ctx: _LucidityChangeEventContext,
+        ctx: LucidityChangeEventContext,
     ) -> None:
         """Send lucidity change event if delta or tier changed."""
         if ctx.delta or ctx.previous_tier != ctx.new_tier:
@@ -357,12 +166,75 @@ class LucidityService:
                 current_lcd=current_lcd_to_send,
                 delta=ctx.delta,
                 tier=ctx.new_tier,
-                max_lcd=max_lcd,
-                liabilities=decode_liabilities(ctx.record.liabilities),
-                reason=ctx.reason_code,
-                source=self._lucidity_event_source(ctx.metadata_map, ctx.location_id),
-                metadata=ctx.metadata_map if ctx.metadata_map else None,
+                extras=LucidityChangeEventExtras(
+                    max_lcd=max_lcd,
+                    liabilities=decode_liabilities(ctx.record.liabilities),
+                    reason=ctx.reason_code,
+                    source=lucidity_event_source(ctx.metadata_map, ctx.location_id),
+                    metadata=ctx.metadata_map if ctx.metadata_map else None,
+                ),
             )
+
+    @staticmethod
+    def _apply_delta_to_record(record: PlayerLucidity, delta: int) -> tuple[int, Tier, int, Tier]:
+        """Update record LCD/tier from delta; return previous and new LCD/tier values."""
+        previous_lcd = record.current_lcd
+        previous_tier = record.current_tier
+        new_lcd = clamp_lucidity(previous_lcd + delta)
+        new_tier = resolve_tier(new_lcd)
+        record.current_lcd = new_lcd
+        record.current_tier = new_tier
+        record.last_updated_at = utc_now()
+        return previous_lcd, previous_tier, new_lcd, new_tier
+
+    async def _finalize_lucidity_adjustment(self, ctx: LucidityAdjustmentFinalizeContext) -> LucidityUpdateResult:
+        """Persist adjustment logs, liabilities, events, and return the update result."""
+        metadata_map = coerce_metadata_dict(ctx.metadata)
+        metadata_payload = normalize_metadata(ctx.metadata)
+        _ = await self._repo.add_adjustment_log(
+            ctx.player_id, ctx.delta, ctx.reason_code, metadata_payload, ctx.location_id
+        )
+        liabilities_added = await self._add_liabilities_for_adjustment(
+            ctx.player_id,
+            ctx.delta,
+            ctx.previous_lcd,
+            ctx.new_lcd,
+            ctx.previous_tier,
+            ctx.new_tier,
+            ctx.reason_code,
+        )
+        await self._session.flush()
+        await self._send_lucidity_change_event_if_needed(
+            ctx.player_id,
+            LucidityChangeEventContext(
+                record=ctx.record,
+                delta=ctx.delta,
+                previous_tier=ctx.previous_tier,
+                new_tier=ctx.new_tier,
+                new_lcd=ctx.new_lcd,
+                reason_code=ctx.reason_code,
+                metadata_map=metadata_map,
+                location_id=ctx.location_id,
+            ),
+        )
+        logger.info(
+            "Lucidity adjustment applied",
+            player_id=ctx.player_id,
+            lcd_change=ctx.delta,
+            reason=ctx.reason_code,
+            tier_before=ctx.previous_tier,
+            tier_after=ctx.new_tier,
+            liabilities_added=liabilities_added,
+        )
+        return LucidityUpdateResult(
+            player_id=ctx.player_id,
+            previous_lcd=ctx.previous_lcd,
+            new_lcd=ctx.new_lcd,
+            previous_tier=ctx.previous_tier,
+            new_tier=ctx.new_tier,
+            delta=ctx.delta,
+            liabilities_added=liabilities_added,
+        )
 
     async def apply_lucidity_adjustment(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Lucidity adjustment requires many parameters for context and adjustment tracking
         self,
@@ -375,62 +247,29 @@ class LucidityService:
     ) -> LucidityUpdateResult:
         """Apply a LCD delta, log the change, and evaluate liabilities."""
         record = await self._repo.get_or_create_player_lucidity(player_id)
-
-        previous_lcd = record.current_lcd
-        previous_tier = record.current_tier
-
-        new_lcd = clamp_lucidity(previous_lcd + delta)
-        new_tier = resolve_tier(new_lcd)
-
-        record.current_lcd = new_lcd
-        record.current_tier = new_tier
-        record.last_updated_at = _utc_now()
-
-        await self._handle_catatonia_transitions(record, player_id, new_tier, previous_tier, new_lcd)
-        await self._handle_delirium_and_sanitarium_triggers(player_id, new_lcd, previous_lcd)
-
-        metadata_map = self._coerce_metadata_dict(metadata)
-        metadata_payload = self._normalize_metadata(metadata)
-        _ = await self._repo.add_adjustment_log(player_id, delta, reason_code, metadata_payload, location_id)
-
-        liabilities_added = await self._add_liabilities_for_adjustment(
-            player_id, delta, previous_lcd, new_lcd, previous_tier, new_tier, reason_code
+        previous_lcd, previous_tier, new_lcd, new_tier = self._apply_delta_to_record(record, delta)
+        await handle_catatonia_transitions(
+            record=record,
+            player_id=player_id,
+            new_tier=new_tier,
+            previous_tier=previous_tier,
+            new_lcd=new_lcd,
+            catatonia_observer=self._catatonia_observer,
         )
-
-        await self._session.flush()
-
-        await self._send_lucidity_change_event_if_needed(
-            player_id,
-            _LucidityChangeEventContext(
+        await handle_delirium_and_sanitarium_triggers(player_id, new_lcd, previous_lcd, self._catatonia_observer)
+        return await self._finalize_lucidity_adjustment(
+            LucidityAdjustmentFinalizeContext(
+                player_id=player_id,
                 record=record,
                 delta=delta,
-                previous_tier=previous_tier,
-                new_tier=new_tier,
-                new_lcd=new_lcd,
                 reason_code=reason_code,
-                metadata_map=metadata_map,
+                previous_lcd=previous_lcd,
+                previous_tier=previous_tier,
+                new_lcd=new_lcd,
+                new_tier=new_tier,
+                metadata=metadata,
                 location_id=location_id,
-            ),
-        )
-
-        logger.info(
-            "Lucidity adjustment applied",
-            player_id=player_id,
-            lcd_change=delta,
-            reason=reason_code,
-            tier_before=previous_tier,
-            tier_after=new_tier,
-            liabilities_added=liabilities_added,
-        )
-
-        return LucidityUpdateResult(
-            player_id=player_id,
-            previous_lcd=previous_lcd,
-            new_lcd=new_lcd,
-            previous_tier=previous_tier,
-            new_tier=new_tier,
-            delta=delta,
-            liabilities_added=liabilities_added,
+            )
         )
 
     async def add_liability(self, player_id: uuid.UUID, liability_code: str) -> str | None:
@@ -525,19 +364,6 @@ class LucidityService:
             )
         return deleted_count
 
-    def _worsened_tier(self, previous_tier: Tier, new_tier: Tier) -> bool:
-        return TIER_ORDER.index(new_tier) > TIER_ORDER.index(previous_tier)
-
-    def _normalize_metadata(self, metadata: Mapping[str, object] | str | None) -> str:
-        if metadata is None:
-            return "{}"
-        if isinstance(metadata, str):
-            return metadata
-        try:
-            return json.dumps(metadata)
-        except (TypeError, ValueError):
-            return "{}"
-
     def _default_liability_picker(
         self, player_id: str, _previous_lcd: int, _new_lcd: int, _reason_code: str
     ) -> str | None:
@@ -558,18 +384,3 @@ class LucidityService:
             if code not in existing:
                 return code
         return LIABILITY_CATALOG[0] if LIABILITY_CATALOG else None
-
-    def _coerce_metadata_dict(self, metadata: Mapping[str, object] | str | None) -> dict[str, object]:
-        """Best-effort conversion of metadata payloads into dictionaries."""
-        if metadata is None:
-            return {}
-        if isinstance(metadata, dict):
-            return dict(metadata)
-        if isinstance(metadata, str):
-            try:
-                parsed = cast(object, json.loads(metadata))
-            except json.JSONDecodeError:
-                return {}
-            if isinstance(parsed, dict):
-                return cast(dict[str, object], parsed)
-        return {}

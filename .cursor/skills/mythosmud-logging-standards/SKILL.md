@@ -43,12 +43,12 @@ Import these from `server.logging.enhanced_logging_config` when needed.
 
 ## Summary
 
-| Do | Do not |
-|----|--------|
-| `get_logger(__name__)` | `logging.getLogger()` |
-| `logger.info("msg", key=value)` | `logger.info(f"msg {x}")` |
-| Key-value args | `context={"key": "value"}` |
+| Do                              | Do not                     |
+| ------------------------------- | -------------------------- |
+| `get_logger(__name__)`          | `logging.getLogger()`      |
+| `logger.info("msg", key=value)` | `logger.info(f"msg {x}")`  |
+| Key-value args                  | `context={"key": "value"}` |
 
 ## Reference
 
-- Full rules: [CLAUDE.md](../../CLAUDE.md) "LOGGING STANDARDS" and "Example Patterns"
+- Full rules: [AGENTS.md](../../AGENTS.md) "Logging standards" and "Example patterns"

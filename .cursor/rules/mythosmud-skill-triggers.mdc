@@ -9,7 +9,7 @@ When the context matches a situation below, apply the corresponding project skil
 
 | Situation                                                                | Apply skill                        |
 | ------------------------------------------------------------------------ | ---------------------------------- |
-| Server start/stop, startup, "Press any key to exit", or ports 54731/5173 | **mythosmud-server-runbook**       |
+| Server start/stop, startup, "Press any key to exit", or ports 54768/5173 | **mythosmud-server-runbook**       |
 | Commit message, write/amend commit, or review staged changes             | **mythosmud-commit-messages**      |
 | DB files, persistence, or database paths / player_id                     | **mythosmud-database-placement**   |
 | Adding or editing Python logging, or user mentions logs/logging          | **mythosmud-logging-standards**    |

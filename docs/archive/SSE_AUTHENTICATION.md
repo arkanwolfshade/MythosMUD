@@ -118,7 +118,7 @@ def get_sse_auth_headers() -> dict:
 
 ```bash
 curl -H "Accept: text/event-stream" \
-     "http://localhost:54731/events/testuser?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+     "http://localhost:54768/events/testuser?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
 ```
 
 ### WebSocket Endpoint
@@ -144,7 +144,7 @@ curl -H "Accept: text/event-stream" \
 **Example**:
 
 ```javascript
-const ws = new WebSocket(`ws://localhost:54731/ws/testuser?token=${jwtToken}`);
+const ws = new WebSocket(`ws://localhost:54768/ws/testuser?token=${jwtToken}`);
 ```
 
 ## Error Handling

@@ -6,12 +6,22 @@ Tests the ScheduleService class for managing NPC and environmental schedules.
 
 from datetime import datetime
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from server.schemas.calendar import ScheduleEntry
-from server.services.schedule_service import ScheduleService, normalize_weekday_names
+from server.schemas.calendar import ScheduleCollection, ScheduleEntry
+from server.services.schedule_service import (
+    ScheduleService,
+    _DatabaseLoadResult,
+    normalize_weekday_names,
+)
+
+# pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
+# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
+
+# pyright: reportPrivateUsage=false
+# Reason: unit tests patch and assert ScheduleService private state by design.
 
 
 class TestScheduleService:
@@ -19,21 +29,50 @@ class TestScheduleService:
 
     def test_init_with_collections(self):
         """Test ScheduleService initialization with collections parameter."""
-        from typing import Any
-
-        collections: list[Any] = []
+        collections: list[tuple[Path, ScheduleCollection]] = []
         service = ScheduleService(collections=collections, environment="test")
         assert not service.entries
         # Accessing protected member to verify initialization state
-        assert service._environment == "test"  # pylint: disable=protected-access  # nosec B101  # Reason: pytest uses assert statements for test assertions, not removed in optimized bytecode
+        assert service._environment == "test"
 
     def test_init_without_persistence_raises(self):
         """Test ScheduleService initialization without persistence raises ValueError."""
         with pytest.raises(ValueError, match="async_persistence is required"):
-            ScheduleService(environment="test")
+            _ = ScheduleService(environment="test")
+
+    @pytest.mark.asyncio
+    async def test_async_load_from_database_passes_search_path_for_mythos_e2e(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Regression: tables live in schema mythos_e2e; raw asyncpg must set search_path like SQLAlchemy."""
+        monkeypatch.setenv(
+            "DATABASE_URL",
+            "postgresql+asyncpg://postgres:secret@127.0.0.1:5432/mythos_e2e",
+        )
+        monkeypatch.delenv("POSTGRES_SEARCH_PATH", raising=False)
+
+        settings_seen: dict[str, object] = {}
+
+        mock_conn = MagicMock()
+        mock_conn.fetch = AsyncMock(return_value=[])
+        mock_conn.close = AsyncMock()
+
+        async def fake_connect(url: str, *, server_settings: dict[str, str] | None = None) -> MagicMock:
+            settings_seen["url"] = url
+            settings_seen["server_settings"] = server_settings
+            return mock_conn
+
+        monkeypatch.setattr("server.services.schedule_service.asyncpg.connect", fake_connect)
+
+        svc = object.__new__(ScheduleService)
+        result_container: _DatabaseLoadResult = {"entries": None, "error": None}
+        await ScheduleService._async_load_from_database(svc, result_container)
+
+        assert result_container.get("error") is None
+        assert settings_seen["server_settings"] == {"search_path": "mythos_e2e"}
 
     @patch("server.services.schedule_service.get_calendar_paths_for_environment")
-    def test_init_loads_from_database(self, mock_get_paths):
+    def test_init_loads_from_database(self, mock_get_paths: MagicMock) -> None:
         """Test ScheduleService loads entries from database."""
         mock_get_paths.return_value = (Path("/holidays"), Path("/schedules"))
         mock_persistence = MagicMock()

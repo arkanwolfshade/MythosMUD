@@ -40,7 +40,7 @@ Never assume no server is running
 
 ### After running stop_server.ps1, you MUST verify ports are free with netstat
 
-Run: `netstat -an | findstr :54731`
+Run: `netstat -an | findstr :54768`
 
 - Run: `netstat -an | findstr :5173`
 - Both should return empty results before starting server

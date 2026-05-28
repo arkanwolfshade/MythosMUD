@@ -18,11 +18,19 @@ LiabilityStackEntry = TypedDict(  # noqa: UP013 -- keep functional syntax; class
 # return types here better than Callable[..., SomeAlias] in other modules.
 # Sequence (not Iterable) avoids reportUnknown* on TypedDict elements in __call__ params.
 class DecodeLiabilitiesFn(Protocol):
-    def __call__(self, payload: str | None) -> list[LiabilityStackEntry]: ...
+    """Callable that parses liability JSON into normalized stack entries."""
+
+    def __call__(self, payload: str | None) -> list[LiabilityStackEntry]:
+        """Decode stored liability text (or empty state) into stack rows."""
+        ...
 
 
 class EncodeLiabilitiesFn(Protocol):
-    def __call__(self, entries: Sequence[LiabilityStackEntry]) -> str: ...
+    """Callable that serializes liability stack rows for persistence."""
+
+    def __call__(self, entries: Sequence[LiabilityStackEntry]) -> str:
+        """Encode stack rows into JSON suitable for PlayerLucidity.liabilities."""
+        ...
 
 
 __all__ = ["DecodeLiabilitiesFn", "EncodeLiabilitiesFn", "LiabilityStackEntry"]

@@ -43,7 +43,7 @@ PYTEST_COV_OPTS := --cov=server --cov-report=html --cov-report=term-missing --co
 .PHONY: stylelint markdownlint jackson-linter
 .PHONY: grype lizard quality-fragmentation-guard
 .PHONY: codacy-tools
-.PHONY: setup-test-env setup-test-env-force check-postgresql setup-postgresql-test-db verify-schema
+.PHONY: setup-test-env setup-test-env-force check-postgresql setup-postgresql-test-db bootstrap-e2e-database ensure-e2e-database verify-schema
 .PHONY: test test-coverage test-client test-client-e2e test-playwright test-client-coverage test-server test-server-coverage test-ci
 .PHONY: coverage all
 
@@ -83,7 +83,9 @@ help:
 	@echo "  setup-test-env         - Create test environment files"
 	@echo "  setup-test-env-force  - Overwrite .env.unit_test from template (PostgreSQL)"
 	@echo "  check-postgresql       - Verify PostgreSQL connectivity"
-	@echo "  setup-postgresql-test-db - Create PostgreSQL test database"
+	@echo "  setup-postgresql-test-db - Create PostgreSQL test database (mythos_unit via .env.unit_test)"
+	@echo "  bootstrap-e2e-database   - Force-recreate mythos_e2e (DDL + DML + E2E users)"
+	@echo "  ensure-e2e-database      - Bootstrap mythos_e2e if missing or professions empty"
 	@echo "  verify-schema          - Verify db/mythos_<env>_ddl.sql matches database"
 	@echo ""
 	@echo "Documentation:"
@@ -220,6 +222,14 @@ setup-postgresql-test-db:
 	@echo "Setting up PostgreSQL test database..."
 	$(POWERSHELL) scripts/setup_postgresql_test_db.ps1
 
+bootstrap-e2e-database:
+	@echo "Bootstrapping mythos_e2e (force recreate, DML, E2E users)..."
+	$(POWERSHELL) scripts/bootstrap_e2e_database.ps1
+
+ensure-e2e-database:
+	@echo "Ensuring mythos_e2e has reference seed (professions)..."
+	$(POWERSHELL) scripts/ensure_e2e_database.ps1
+
 verify-schema:
 	@echo "Verifying environment DDL matches database (from .env.local or .env)..."
 	$(POWERSHELL) scripts/verify_schema_match.ps1
@@ -246,7 +256,7 @@ test-client-e2e:
 
 # Integration tests (server pytest -m integration) run here: they muck with runtime data
 # and belong in the same flow as Playwright (running server context). They are NOT run by make test-server.
-test-playwright: setup-test-env setup-postgresql-test-db
+test-playwright: setup-test-env ensure-e2e-database
 	$(POWERSHELL) scripts/apply_procedures.ps1 -TargetDbs mythos_e2e
 	$(POWERSHELL) scripts/apply_coc_spells_migration.ps1 -TargetDbs mythos_e2e
 	$(POWERSHELL) scripts/apply_arena_migration.ps1 -TargetDbs mythos_e2e

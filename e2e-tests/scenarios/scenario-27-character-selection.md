@@ -12,7 +12,7 @@ the selection screen, can select a character, and that the selected character is
 ### BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY
 
 1. **Database State**: Test user has at least 2 active characters
-2. **Server Running**: Development server is running on port 54731
+2. **Server Running**: Development server is running on port 54768
 3. **Client Accessible**: Client is accessible on port 5173
 4. **No Previous Sessions**: Browser is clean with no existing game sessions
 

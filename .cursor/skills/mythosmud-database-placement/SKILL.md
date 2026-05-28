@@ -40,5 +40,5 @@ description: Enforce MythosMUD database placement: production under /data/player
 
 ## Reference
 
-- Full rules: [CLAUDE.md](../../CLAUDE.md) "CRITICAL DATABASE PLACEMENT RULES" and "Database Type Rules"
+- Full rules: [AGENTS.md](../../AGENTS.md) "Critical database placement rules" and "Database type rules"
 - Schema and DB docs: [db/README.md](../../db/README.md)

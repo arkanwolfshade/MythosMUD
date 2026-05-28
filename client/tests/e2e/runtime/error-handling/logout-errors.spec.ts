@@ -8,10 +8,10 @@
  */
 
 import { expect, test } from '@playwright/test';
-import { getMessages, waitForMessage } from '../fixtures/auth';
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
+  ensurePlayerInGame,
   waitForAllPlayersInGame,
 } from '../fixtures/multiplayer';
 
@@ -21,7 +21,9 @@ test.describe('Logout Errors', () => {
   test.beforeAll(async ({ browser }) => {
     // Create contexts for both players
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
-    await waitForAllPlayersInGame(contexts);
+    await waitForAllPlayersInGame(contexts, 60000);
+    await ensurePlayerInGame(contexts[0], 60000);
+    await ensurePlayerInGame(contexts[1], 60000);
   });
 
   test.afterAll(async () => {
@@ -31,34 +33,15 @@ test.describe('Logout Errors', () => {
 
   test('logout button should handle logout successfully', async () => {
     const awContext = contexts[0];
+    const { page } = awContext;
 
-    // Click logout button (UI uses "Exit the Realm" and data-testid="logout-button")
-    // Logout sends /rest and shows a 10-second countdown before redirect
-    const logoutButton = awContext.page.locator(
-      '[data-testid="logout-button"], button:has-text("Exit the Realm"), button:has-text("Exit the realm"), button:has-text("Logout"), button:has-text("Log out")'
-    );
-    await logoutButton.first().click();
+    await ensurePlayerInGame(awContext, 30000);
 
-    // Wait for either logout message or login form. Logout flow: 10s countdown then redirect.
-    await waitForMessage(awContext.page, 'You have been logged out', 5000).catch(() => {});
-    const seesLogoutMessage = await awContext.page
-      .locator('[data-message-text]')
-      .filter({ hasText: /logged out|logout|disconnect/i })
-      .first()
-      .isVisible()
-      .catch(() => false);
+    // performGameClientLogout sends `rest` (~10s server countdown) then disconnect; login can exceed 15s on CI.
+    const logoutButton = page.getByTestId('logout-button');
+    await expect(logoutButton).toBeEnabled({ timeout: 15000 });
+    await logoutButton.click();
 
-    // If no message yet, wait for login form (allow full countdown + redirect: 15s)
-    const loginFormVisible = await awContext.page
-      .locator('input[placeholder*="username" i], input[name*="username" i]')
-      .waitFor({ state: 'visible', timeout: 15000 })
-      .then(() => true)
-      .catch(() => false);
-
-    const messages = await getMessages(awContext.page);
-    const seesLogoutInMessages = messages.some(
-      msg => msg.includes('logged out') || msg.includes('logout') || msg.toLowerCase().includes('disconnect')
-    );
-    expect(seesLogoutMessage || seesLogoutInMessages || loginFormVisible).toBe(true);
+    await expect(page.getByTestId('username-input')).toBeVisible({ timeout: 45000 });
   });
 });

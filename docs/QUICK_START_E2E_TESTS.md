@@ -49,7 +49,7 @@ Watch the server window for:
 
 ```
 Application startup complete
-Uvicorn running on http://0.0.0.0:54731
+Uvicorn running on http://0.0.0.0:54768
 ```
 
 ## Step 3: Run the E2E Tests
@@ -102,7 +102,7 @@ Running 114 tests using 1 worker
 ### Problem: Tests timeout waiting for elements
 
 **Cause**: Server not running or client not started
-**Solution**: Ensure both server (port 54731) and client (port 5173) are running
+**Solution**: Ensure both server (port 54768) and client (port 5173) are running
 
 ### Problem: "element(s) not found" errors
 

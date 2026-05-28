@@ -25,6 +25,14 @@ export async function loginPlayer(page: Page, username: string, password: string
   await loginPage.login(username, password);
   await page.waitForLoadState('domcontentloaded', { timeout: 5000 }).catch(() => {});
 
+  const loginNetworkFailure = page.getByText(/NetworkError when attempting to fetch/i);
+  if (await loginNetworkFailure.isVisible({ timeout: 8000 }).catch(() => false)) {
+    throw new Error(
+      'E2E login: NetworkError on login fetch — backend unreachable or wrong API URL. ' +
+        'Run the FastAPI server on http://127.0.0.1:54768 and ensure Vite proxies /v1 (or env) for E2E.'
+    );
+  }
+
   try {
     await page.waitForFunction(
       () => {
@@ -39,19 +47,12 @@ export async function loginPlayer(page: Page, username: string, password: string
     // Loading might not appear
   }
 
-  await page.waitForFunction(
-    () => {
-      return (
-        document.querySelector('.character-selection') !== null ||
-        document.querySelector('[data-testid="command-input"]') !== null ||
-        document.querySelector('[data-testid="motd-enter-realm"]') !== null ||
-        Array.from(document.querySelectorAll('h1, h2, h3')).some(el =>
-          el.textContent?.includes('Select Your Character')
-        )
-      );
-    },
-    { timeout: TEST_TIMEOUTS.LOGIN }
-  );
+  const postLoginUi = page
+    .locator('.character-selection')
+    .or(page.getByTestId('command-input'))
+    .or(page.getByTestId('motd-enter-realm'))
+    .or(page.locator('h1, h2, h3').filter({ hasText: /Select Your Character/i }));
+  await expect(postLoginUi).toBeVisible({ timeout: TEST_TIMEOUTS.LOGIN });
 
   if (await characterSelection.isVisible()) {
     await characterSelection.selectFirstCharacter();
@@ -117,6 +118,10 @@ export async function executeCommand(page: Page, command: string): Promise<void>
   await commandInput.fill(command);
   // Wait for input to reflect full command (avoids submitting before React state updates)
   await expect(commandInput).toHaveValue(command, { timeout: 5000 });
+  // CommandInputPanel drops submits when `!isConnected` (Send Command stays disabled). Wait for a
+  // playable session so Enter actually dispatches — otherwise waitForMessage times out with no server echo.
+  const sendCommand = page.getByRole('button', { name: 'Send Command' });
+  await expect(sendCommand).toBeEnabled({ timeout: TEST_TIMEOUTS.GAME_LOAD });
   await commandInput.press('Enter');
   // Wait for command to be processed (game log or next prompt)
   await expect(commandInput).toBeVisible({ timeout: 3000 });

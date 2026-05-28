@@ -142,7 +142,7 @@ Required for tests:
 - `DATABASE_URL` - PostgreSQL connection string
 - `DATABASE_NPC_URL` - NPC database connection string
 - `MYTHOSMUD_ADMIN_PASSWORD` - Admin password
-- `SERVER_PORT` - Server port (default: 54731)
+- `SERVER_PORT` - Server port (default: 54768)
 - `LOGGING_ENVIRONMENT` - Logging environment (default: unit_test)
 - `GAME_ALIASES_DIR` - Aliases directory path
 

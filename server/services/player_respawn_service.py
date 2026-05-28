@@ -41,19 +41,25 @@ logger = get_logger(__name__)
 class _RespawnEventPublisher(Protocol):
     """Minimal surface used by this service to publish respawn-related events."""
 
-    def publish(self, event: BaseEvent) -> None: ...
+    def publish(self, event: BaseEvent) -> None:
+        """Deliver a respawn-related domain event to the game's event bus."""
+        ...
 
 
 class _PlayerCombatClearing(Protocol):
     """Minimal surface used to clear combat state when a player respawns."""
 
-    async def clear_player_combat_state(self, player_id: uuid.UUID) -> None: ...
+    async def clear_player_combat_state(self, player_id: uuid.UUID) -> None:
+        """Drop combat involvement for this player after respawn."""
+        ...
 
 
 class _RandomChoiceSource(Protocol):
     """Subset of random.Random / random module API used for liability picks."""
 
-    def choice(self, seq: Sequence[str]) -> str: ...
+    def choice(self, seq: Sequence[str]) -> str:
+        """Return one element from a non-empty sequence of liability codes."""
+        ...
 
 
 # Limbo room for death state isolation
@@ -271,16 +277,7 @@ class PlayerRespawnService:
         if lucidity_row is None:
             logger.warning("Lucidity record not found for delirium respawn", player_id=player_id)
             return None
-        # AsyncSession.get is typed as PlayerLucidity | None, but runtime rows can mismatch; widen for isinstance.
-        lucidity_candidate: object = lucidity_row
-        if not isinstance(lucidity_candidate, PlayerLucidity):
-            logger.error(
-                "Unexpected lucidity row type for delirium respawn",
-                player_id=player_id,
-                row_type=type(lucidity_candidate).__name__,
-            )
-            return None
-        lucidity_record = lucidity_candidate
+        lucidity_record = lucidity_row
 
         old_lucidity = lucidity_record.current_lcd
         new_lucidity = 10  # Restore to 10 lucidity after delirium respawn
@@ -309,16 +306,7 @@ class PlayerRespawnService:
         if lucidity_row is None:
             logger.warning("Lucidity record not found for sanitarium respawn", player_id=player_id)
             return None
-        # AsyncSession.get is typed as PlayerLucidity | None, but runtime rows can mismatch; widen for isinstance.
-        lucidity_candidate: object = lucidity_row
-        if not isinstance(lucidity_candidate, PlayerLucidity):
-            logger.error(
-                "Unexpected lucidity row type for sanitarium respawn",
-                player_id=player_id,
-                row_type=type(lucidity_candidate).__name__,
-            )
-            return None
-        lucidity_record = lucidity_candidate
+        lucidity_record = lucidity_row
 
         old_lucidity = lucidity_record.current_lcd
         new_lucidity = 1  # Reset to 1 (Deranged tier) per spec
@@ -365,16 +353,6 @@ class PlayerRespawnService:
             if not player:
                 logger.warning("Player not found for limbo movement", player_id=player_id)
                 return False
-            # AsyncSession.get is typed as Player | None, but runtime rows can mismatch; widen for isinstance.
-            player_row: object = player
-            if not isinstance(player_row, Player):
-                logger.error(
-                    "Unexpected player row type for limbo movement",
-                    player_id=player_id,
-                    row_type=type(player_row).__name__,
-                )
-                return False
-            player = player_row
 
             # Player must be at -10 or lower DP before moving to limbo (death transition).
             # Catatonia failover is the only exception (lucidity-based, not DP).

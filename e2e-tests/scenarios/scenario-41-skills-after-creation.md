@@ -8,7 +8,7 @@ catalog-base + profession mods). Plan 10.8 E4.
 
 ## Prerequisites
 
-1. **Server running** on port 54731; **client** on 5173.
+1. **Server running** on port 54768; **client** on 5173.
 2. **Test user** that can create a new character (zero or few characters).
 
 ## Execution Steps

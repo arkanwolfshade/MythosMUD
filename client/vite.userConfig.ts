@@ -75,26 +75,26 @@ export function createViteUserConfig(mode: string): UserConfig {
       proxy: {
         // Versioned API: all /v1/* requests go to the backend (including /v1/professions)
         '/v1': {
-          target: 'http://127.0.0.1:54731',
+          target: 'http://127.0.0.1:54768',
           changeOrigin: false,
           ws: true,
           configure: configureForwardAuthorization,
         },
         '/api': {
-          target: 'http://127.0.0.1:54731',
+          target: 'http://127.0.0.1:54768',
           changeOrigin: true,
           ws: true,
         },
         '/auth': {
-          target: 'http://127.0.0.1:54731',
+          target: 'http://127.0.0.1:54768',
           changeOrigin: true,
         },
         '/game': {
-          target: 'http://127.0.0.1:54731',
+          target: 'http://127.0.0.1:54768',
           changeOrigin: true,
         },
         '/professions': {
-          target: 'http://127.0.0.1:54731',
+          target: 'http://127.0.0.1:54768',
           changeOrigin: true,
           configure: configureForwardAuthorization,
         },

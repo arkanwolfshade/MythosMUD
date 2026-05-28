@@ -33,6 +33,6 @@ Run in this order: format first (so lint/mypy see formatted code), then mypy, th
 
 ## Reference
 
-- Definition of Done: [CLAUDE.md](../../CLAUDE.md) "Definition of Done"
+- Definition of Done: [AGENTS.md](../../AGENTS.md) "Development practices" / "Definition of done"
 - Codacy after edit: [.cursor/rules/codacy.mdc](../../rules/codacy.mdc)
 - Makefile targets: [Makefile](../../Makefile) (help, format, mypy, lint, test, test-coverage, all)

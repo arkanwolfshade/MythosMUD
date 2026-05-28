@@ -7,18 +7,80 @@
  * and that the local channel system works correctly for basic multiplayer communication.
  */
 
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import { executeCommand, waitForMessage } from '../fixtures/auth';
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
+  ensureMultiplayerCoLocated,
   ensurePlayerInGame,
   ensurePlayersInSameRoom,
   getPlayerMessages,
   waitForAllPlayersInGame,
   waitForCrossPlayerMessage,
+  type PlayerContext,
 } from '../fixtures/multiplayer';
 import { ensureStanding } from '../fixtures/player';
+
+/** After `look`, room copy is usually in Location / Room Description, not Game Info `[data-message-text]`. */
+async function assertLookVisibleInPanels(page: Page): Promise<void> {
+  const cue = page.getByText(
+    /Arena\s*>\s*Arena|Arena entrance \(center\)|heart of the gladiator|sand and shadow|Exits:\s*North/i
+  );
+  await expect(cue.first()).toBeVisible({ timeout: 45000 });
+}
+
+/**
+ * Occupants can show (linkdead) while the header still says Connected; command_response may not
+ * land on [data-message-text] until both sessions recover. Same pattern as chat-messages.spec.ts.
+ */
+async function nudgeStandBothPlayers(aw: PlayerContext, other: PlayerContext): Promise<void> {
+  await executeCommand(aw.page, 'stand');
+  await executeCommand(other.page, 'stand');
+  await new Promise(r => setTimeout(r, 3000));
+}
+
+/** Warm both sessions with `look` before teleport co-locate (chat-messages / multiplayer recovery pattern). */
+async function primeBothForCoLocate(contexts: PlayerContext[]): Promise<void> {
+  if (contexts.length < 2) return;
+  await Promise.all([ensurePlayerInGame(contexts[0], 30000), ensurePlayerInGame(contexts[1], 30000)]);
+  for (const ctx of contexts) {
+    await ctx.page.bringToFront().catch(() => {});
+    await ctx.page.getByTestId('command-input').click();
+    await executeCommand(ctx.page, 'look');
+    await assertLookVisibleInPanels(ctx.page).catch(() => {});
+  }
+}
+
+/** Server: `You have unmuted {name}.` or `Failed to unmute {name}.` — wait for Game Info pipeline, not Chat-only. */
+async function executeUnmuteAndWaitForAck(
+  aw: PlayerContext,
+  receiver: PlayerContext,
+  targetUsername: string
+): Promise<void> {
+  const ack = new RegExp(`You have unmuted ${targetUsername}|Failed to unmute ${targetUsername}`, 'i');
+  const once = async (): Promise<void> => {
+    await receiver.page.bringToFront().catch(() => {});
+    await expect(receiver.page.getByText(new RegExp(`Player:\\s*${receiver.player.username}\\b`, 'i'))).toBeVisible({
+      timeout: 15000,
+    });
+    await receiver.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
+    await receiver.page.getByTestId('command-input').click();
+    await executeCommand(receiver.page, 'look');
+    await assertLookVisibleInPanels(receiver.page);
+    await receiver.page.getByTestId('command-input').click();
+    await executeCommand(receiver.page, `unmute ${targetUsername}`);
+    await waitForMessage(receiver.page, ack, 45000);
+  };
+  try {
+    await once();
+  } catch {
+    await nudgeStandBothPlayers(aw, receiver);
+    await ensurePlayerInGame(aw, 20000);
+    await ensurePlayerInGame(receiver, 20000);
+    await once();
+  }
+}
 
 test.describe('Local Channel Basic', () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
@@ -29,16 +91,12 @@ test.describe('Local Channel Basic', () => {
     await ensurePlayerInGame(contexts[0], 60000);
     await ensurePlayerInGame(contexts[1], 60000);
 
-    // Local channel requires both players in same room. Force co-location: stand then move both north.
-    const [awContext, ithaquaContext] = contexts;
-    await ensureStanding(awContext.page, 5000);
-    await executeCommand(awContext.page, 'go north');
-    await new Promise(r => setTimeout(r, 2000));
-    await ensureStanding(ithaquaContext.page, 5000);
-    await executeCommand(ithaquaContext.page, 'go north');
-    await new Promise(r => setTimeout(r, 3000));
-    await ensurePlayersInSameRoom(contexts, 2, 60000);
+    // Same-room /local needs a shared cell. Dual "go north" does not guarantee the same grid cell; use
+    // teleport + retries like other runtime multiplayer specs (avoids beforeAll stuck at Occupants (1)).
+    await primeBothForCoLocate(contexts);
+    await ensureMultiplayerCoLocated(contexts, { timeoutMs: 60000, coLocateTimeoutMs: 60000 });
 
+    const [awContext, ithaquaContext] = contexts;
     // Unmute both players to ensure clean state (mute state may persist from previous scenarios)
     try {
       await executeCommand(ithaquaContext.page, 'unmute ArkanWolfshade');
@@ -61,32 +119,33 @@ test.describe('Local Channel Basic', () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    await ensurePlayerInGame(awContext, 15000);
-    await ensurePlayerInGame(ithaquaContext, 15000);
-    await ensurePlayersInSameRoom(contexts, 2, 15000);
+    await ensureMultiplayerCoLocated(contexts, { timeoutMs: 45000, coLocateTimeoutMs: 45000 });
+    await awContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 15000 });
+    await new Promise(r => setTimeout(r, 1500));
+
+    await ensurePlayerInGame(awContext, 30000);
+    await ensurePlayerInGame(ithaquaContext, 30000);
+    await ensurePlayersInSameRoom(contexts, 2, 45000);
+
+    await nudgeStandBothPlayers(awContext, ithaquaContext);
 
     // Ensure receiver (Ithaqua) is not muting sender (AW) so local message is delivered.
-    // Wait for unmute command response so server mute state is updated before AW sends.
-    await executeCommand(ithaquaContext.page, 'unmute ArkanWolfshade');
-    await waitForMessage(
-      ithaquaContext.page,
-      /(You have unmuted ArkanWolfshade|Failed to unmute ArkanWolfshade)\./i,
-      10000
-    );
+    await executeUnmuteAndWaitForAck(awContext, ithaquaContext, 'ArkanWolfshade');
     await new Promise(r => setTimeout(r, 500));
 
     // AW sends local channel message
+    await awContext.page.getByTestId('command-input').click();
     await executeCommand(awContext.page, 'local Hello everyone in the sanitarium');
 
     // Wait for confirmation on AW's side
-    await waitForMessage(awContext.page, 'You say locally: Hello everyone in the sanitarium');
+    await waitForMessage(awContext.page, 'You say locally: Hello everyone in the sanitarium', 45000);
 
     // Wait for message to appear on Ithaqua's side
     // Local channel format is: "{sender_name} (local): {content}"
     await waitForCrossPlayerMessage(
       ithaquaContext,
       /ArkanWolfshade \(local\): Hello everyone in the sanitarium/i,
-      30000
+      45000
     );
 
     // Verify Ithaqua sees the message
@@ -101,22 +160,40 @@ test.describe('Local Channel Basic', () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    await ensurePlayerInGame(awContext, 15000);
-    await ensurePlayerInGame(ithaquaContext, 15000);
-    await ensurePlayersInSameRoom(contexts, 2, 15000);
+    await ensureMultiplayerCoLocated(contexts, { timeoutMs: 45000, coLocateTimeoutMs: 45000 });
+    // Prior test can leave linkdead; prime Game Info like chat-messages "AW should see Ithaqua".
+    await ithaquaContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 15000 });
+    await new Promise(r => setTimeout(r, 1500));
 
-    // Ensure receiver (AW) is not muting sender (Ithaqua). Wait for unmute response before send.
-    await executeCommand(awContext.page, 'unmute Ithaqua');
-    await waitForMessage(awContext.page, /(You have unmuted Ithaqua|Failed to unmute Ithaqua)\./i, 10000);
+    await ensurePlayerInGame(awContext, 30000);
+    await ensurePlayerInGame(ithaquaContext, 30000);
+    await ensurePlayersInSameRoom(contexts, 2, 45000);
+
+    await nudgeStandBothPlayers(awContext, ithaquaContext);
+
+    // Receiver (AW) unmutes sender (Ithaqua); need command_response on AW after occupant recovery.
+    await executeUnmuteAndWaitForAck(ithaquaContext, awContext, 'Ithaqua');
     await new Promise(r => setTimeout(r, 500));
 
-    // Re-ensure both players in game and same room so sender is not linkdead when sending.
-    await ensurePlayerInGame(awContext, 10000);
-    await ensurePlayerInGame(ithaquaContext, 10000);
-    await ensurePlayersInSameRoom(contexts, 2, 10000);
+    await ensurePlayerInGame(awContext, 20000);
+    await ensurePlayerInGame(ithaquaContext, 20000);
+    // Unmute / stand can desync occupant labels while header still says Connected; bilateral look heals Step 1.
+    await awContext.page.bringToFront().catch(() => {});
+    await ensureStanding(awContext.page, 8000);
+    await executeCommand(awContext.page, 'look');
+    await ithaquaContext.page.bringToFront().catch(() => {});
+    await ensureStanding(ithaquaContext.page, 8000);
+    await executeCommand(ithaquaContext.page, 'look');
+    await new Promise(r => setTimeout(r, 2500));
+    await ensurePlayersInSameRoom(contexts, 2, 45000);
     await new Promise(r => setTimeout(r, 2000));
 
-    // Ithaqua sends local reply (sender must still be in game or message is never delivered)
+    await nudgeStandBothPlayers(awContext, ithaquaContext);
+
+    // Ithaqua sends local reply (sender must be focused on some hosts)
+    await ithaquaContext.page.bringToFront().catch(() => {});
+    await ensurePlayerInGame(ithaquaContext, 30000);
+
     await executeCommand(ithaquaContext.page, 'local Greetings ArkanWolfshade');
 
     // Wait for confirmation on Ithaqua's side

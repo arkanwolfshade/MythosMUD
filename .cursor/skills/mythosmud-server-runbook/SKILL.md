@@ -1,6 +1,6 @@
 ---
 name: mythosmud-server-runbook
-description: Follow MythosMUD server lifecycle: stop before start, verify ports 54731 and 5173, run stop script then start_local.ps1 once. Use when starting/stopping the server, debugging port conflicts, or when the user mentions server startup or 'Press any key to exit'.
+description: Follow MythosMUD server lifecycle: stop before start, verify ports 54768 and 5173, run stop script then start_local.ps1 once. Use when starting/stopping the server, debugging port conflicts, or when the user mentions server startup or 'Press any key to exit'.
 ---
 
 # MythosMUD Server Runbook
@@ -17,7 +17,7 @@ Copy and follow before any server start:
 
 ```
 - [ ] Run stop script: ./scripts/stop_server.ps1
-- [ ] Verify port 54731 free: netstat -an | findstr :54731
+- [ ] Verify port 54768 free: netstat -an | findstr :54768
 - [ ] Verify port 5173 free: netstat -an | findstr :5173
 - [ ] Do NOT use is_background: true for server startup
 - [ ] Run start once: ./scripts/start_local.ps1 (is_background: false)
@@ -26,12 +26,12 @@ Copy and follow before any server start:
 
 ## Commands
 
-| Action | Command |
-|--------|---------|
-| Stop first | `./scripts/stop_server.ps1` |
-| Check API port | `netstat -an | findstr :54731` |
-| Check dev server port | `netstat -an | findstr :5173` |
-| Start (once only) | `./scripts/start_local.ps1` |
+| Action                | Command                     |
+| --------------------- | --------------------------- | --------------- |
+| Stop first            | `./scripts/stop_server.ps1` |
+| Check API port        | `netstat -an                | findstr :54768` |
+| Check dev server port | `netstat -an                | findstr :5173`  |
+| Start (once only)     | `./scripts/start_local.ps1` |
 
 ## Critical Rules
 
@@ -41,6 +41,7 @@ Copy and follow before any server start:
 
 ## Reference
 
-- Full rules: project root [CLAUDE.md](../../CLAUDE.md) "ONE SERVER ONLY RULE" and "MANDATORY SERVER STARTUP PROCEDURE"
+- Full rules: project root [AGENTS.md](../../AGENTS.md) "Critical server management rules" (one server only, startup
+  procedure)
 - Rule file: [.cursor/rules/serverstart.mdc](../../rules/serverstart.mdc)
 - Scripts: [scripts/stop_server.ps1](../../scripts/stop_server.ps1), [scripts/start_local.ps1](../../scripts/start_local.ps1)

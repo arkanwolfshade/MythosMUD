@@ -37,30 +37,44 @@ test.describe('Whisper Logging', () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    await ensurePlayerInGame(awContext, 15000);
-    await ensurePlayerInGame(ithaquaContext, 15000);
-
-    // AW sends whisper message (whisper works across rooms)
-    await executeCommand(awContext.page, 'whisper Ithaqua Testing whisper logging functionality');
-
-    // Wait for confirmation
-    await waitForMessage(awContext.page, 'You whisper to Ithaqua: Testing whisper logging functionality', 10000).catch(
-      () => {
-        // Message may succeed even if format differs
-      }
+    const whisperBody = 'Testing whisper logging functionality';
+    const senderAck = new RegExp(
+      `You whisper to Ithaqua:\\s*${whisperBody.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`,
+      'i'
+    );
+    const recipientAck = new RegExp(
+      `ArkanWolfshade whispers to you:\\s*${whisperBody.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`,
+      'i'
     );
 
-    // Verify Ithaqua receives the whisper (privacy maintained)
-    // Recipient sees format: "{sender_name} whispers to you: {content}"
-    await waitForCrossPlayerMessage(
-      ithaquaContext,
-      'ArkanWolfshade whispers to you: Testing whisper logging functionality',
-      10000
-    );
+    const runWhisper = async (): Promise<void> => {
+      await awContext.page.bringToFront().catch(() => {});
+      await ithaquaContext.page.bringToFront().catch(() => {});
+      await ensurePlayerInGame(awContext, 30000);
+      await ensurePlayerInGame(ithaquaContext, 30000);
+      await executeCommand(awContext.page, 'stand');
+      await executeCommand(ithaquaContext.page, 'stand');
+      await new Promise(r => setTimeout(r, 2000));
+
+      await awContext.page.bringToFront().catch(() => {});
+      await executeCommand(awContext.page, `whisper Ithaqua ${whisperBody}`);
+      await waitForMessage(awContext.page, senderAck, 25000);
+      await waitForCrossPlayerMessage(ithaquaContext, recipientAck, 45000);
+    };
+
+    try {
+      await runWhisper();
+    } catch {
+      await executeCommand(awContext.page, 'stand');
+      await ithaquaContext.page.bringToFront().catch(() => {});
+      await executeCommand(ithaquaContext.page, 'stand');
+      await new Promise(r => setTimeout(r, 3000));
+      await ensurePlayerInGame(awContext, 20000);
+      await ensurePlayerInGame(ithaquaContext, 20000);
+      await runWhisper();
+    }
+
     const ithaquaMessages = await getPlayerMessages(ithaquaContext);
-    const seesMessage = ithaquaMessages.some(msg =>
-      msg.includes('ArkanWolfshade whispers to you: Testing whisper logging functionality')
-    );
-    expect(seesMessage).toBe(true);
+    expect(ithaquaMessages.some(msg => recipientAck.test(msg))).toBe(true);
   });
 });

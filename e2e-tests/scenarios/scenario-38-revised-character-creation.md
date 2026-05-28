@@ -10,7 +10,7 @@ character list and is selectable.
 
 ### BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY
 
-1. **Server Running**: Development server is running on port 54731
+1. **Server Running**: Development server is running on port 54768
 2. **Client Accessible**: Client is accessible on port 5173
 3. **Test User**: A test user (e.g. from TEST_PLAYERS) with zero or few characters so the
    creation flow is reachable (login → character selection → "Create New Character" → stats step)

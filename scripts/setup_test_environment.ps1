@@ -15,9 +15,25 @@ $ErrorActionPreference = "Stop"
 $ProjectRoot = Split-Path -Parent $PSScriptRoot
 $TestEnvPath = Join-Path -Path $ProjectRoot -ChildPath ".env.unit_test"
 $ExampleEnvPath = Join-Path -Path $ProjectRoot -ChildPath "env.unit_test.example"
+$E2eEnvPath = Join-Path -Path $ProjectRoot -ChildPath ".env.e2e_test"
+$E2eExamplePath = Join-Path -Path $ProjectRoot -ChildPath "env.e2e_test.example"
 
 Write-Host "MythosMUD Test Environment Setup" -ForegroundColor Green
 Write-Host "=================================" -ForegroundColor Green
+
+if (-not (Test-Path $E2eEnvPath)) {
+    if (Test-Path $E2eExamplePath) {
+        Write-Host "[INFO] Creating E2E environment file from env.e2e_test.example" -ForegroundColor Yellow
+        Copy-Item -LiteralPath $E2eExamplePath -Destination $E2eEnvPath
+        Write-Host "[OK] E2E environment file created: $E2eEnvPath" -ForegroundColor Green
+    }
+    else {
+        Write-Host "[WARNING] env.e2e_test.example not found; Playwright E2E may need .env.e2e_test" -ForegroundColor Yellow
+    }
+}
+else {
+    Write-Host "[OK] E2E environment file already exists: $E2eEnvPath" -ForegroundColor Green
+}
 
 # Check if test environment file exists
 if (Test-Path $TestEnvPath) {

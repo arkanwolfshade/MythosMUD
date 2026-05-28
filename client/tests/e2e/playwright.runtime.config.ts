@@ -62,14 +62,13 @@ export default defineConfig({
   expect: {
     timeout: 30000,
   },
-  /* Configure projects for major browsers.
-   * Use channel 'chrome' to use the system-installed Chrome so we do not depend on
-   * Playwright's bundled chromium/chromium_headless_shell (build 1208) being present.
+  /* Runtime E2E project: bundled Firefox (no system Chrome required).
+   * Install browsers once per machine: `cd client && npx playwright install firefox`
    */
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'], channel: 'chrome' },
+      name: 'firefox',
+      use: { ...devices['Desktop Firefox'] },
     },
   ],
   /* Run your local dev server before starting the tests (disabled in CI) */

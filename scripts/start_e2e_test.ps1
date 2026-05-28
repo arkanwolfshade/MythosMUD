@@ -17,7 +17,7 @@ if ($Help) {
     Write-Host "This script starts BOTH the backend server AND the Vite dev client"
     Write-Host "with the E2E TEST configuration."
     Write-Host ""
-    Write-Host "Backend Server: http://localhost:54731"
+    Write-Host "Backend Server: http://localhost:54768"
     Write-Host "Frontend Client: http://localhost:5173"
     Write-Host "Test database: PostgreSQL (mythos_e2e database)"
     Write-Host ""
@@ -91,15 +91,22 @@ else {
 $env:LOGGING_ENVIRONMENT = "e2e_test"
 Write-Host "Set LOGGING_ENVIRONMENT=e2e_test for Pydantic config" -ForegroundColor Cyan
 Write-Host "Test database: PostgreSQL (mythos_e2e database)" -ForegroundColor Gray
+
+$e2eApiPort = 54768
+$configuredPort = $env:SERVER_PORT
+if ($configuredPort -and ([int]$configuredPort -ne $e2eApiPort)) {
+    Write-Host "[WARNING] .env.e2e_test SERVER_PORT=$configuredPort but Playwright/Vite proxy use $e2eApiPort." -ForegroundColor Yellow
+    Write-Host "[WARNING] Starting backend on port $e2eApiPort (see scripts/start_e2e_test.ps1)." -ForegroundColor Yellow
+}
 Write-Host ""
 
 # Start server using the existing start_server.ps1 script
 # Pass explicit parameters to ensure it uses E2E test settings
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$PWD'; `$env:LOGGING_ENVIRONMENT='e2e_test'; .\scripts\start_server.ps1 -Port 54731 -Environment e2e_test" -WindowStyle Normal
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$PWD'; `$env:LOGGING_ENVIRONMENT='e2e_test'; .\scripts\start_server.ps1 -Port 54768 -Environment e2e_test" -WindowStyle Normal
 
 Write-Host ""
 Write-Host "E2E Test Server starting in new window..." -ForegroundColor Green
-Write-Host "Server will be available at: http://localhost:54731" -ForegroundColor Cyan
+Write-Host "Server will be available at: http://localhost:54768" -ForegroundColor Cyan
 Write-Host ""
 
 # Wait a moment for server to start initializing
@@ -111,13 +118,13 @@ Write-Host ""
 
 # Start Vite dev server in a new window
 $clientPath = Join-Path $PWD "client"
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$clientPath'; `$env:VITE_API_URL='http://localhost:54731'; npm run dev" -WindowStyle Normal
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$clientPath'; `$env:VITE_API_URL='http://localhost:54768'; npm run dev" -WindowStyle Normal
 
 Write-Host ""
 Write-Host "============================================" -ForegroundColor Green
 Write-Host "E2E Test Environment Starting..." -ForegroundColor Green
 Write-Host "============================================" -ForegroundColor Green
-Write-Host "Backend Server: http://localhost:54731" -ForegroundColor Cyan
+Write-Host "Backend Server: http://localhost:54768" -ForegroundColor Cyan
 Write-Host "Frontend Client: http://localhost:5173" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "Wait for both windows to show 'ready' messages, then run:" -ForegroundColor Yellow

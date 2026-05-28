@@ -92,7 +92,7 @@ export default tseslint.config([
     },
   },
   {
-    files: ['tests/e2e/**/*.ts', 'tests/e2e/**/*.tsx'],
+    files: ['tests/e2e/**/*.ts', 'tests/e2e/**/*.tsx', 'tests/e2e/**/*.js'],
     extends: [playwright.configs['flat/recommended']],
     languageOptions: {
       ecmaVersion: 2020,

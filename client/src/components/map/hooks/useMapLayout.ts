@@ -107,7 +107,7 @@ export function useMapLayout(options: UseMapLayoutOptions): UseMapLayoutResult {
     [debounceDelay]
   );
 
-  // Update nodes when initialNodes change
+  /* eslint-disable react-hooks/set-state-in-effect -- sync layout nodes when initialNodes change */
   useEffect(() => {
     if (initialNodes.length !== nodes.length || initialNodes.some((n, i) => n.id !== nodes[i]?.id)) {
       setNodes(initialNodes);
@@ -115,6 +115,7 @@ export function useMapLayout(options: UseMapLayoutOptions): UseMapLayoutResult {
       setHasUnsavedChanges(false);
     }
   }, [initialNodes, nodes]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   // Calculate layout nodes with stored coordinates or auto layout
   // Use initialNodes directly instead of nodes state to avoid stale closure issues

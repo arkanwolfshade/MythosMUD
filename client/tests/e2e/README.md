@@ -61,7 +61,16 @@ Uses `DATABASE_URL` and `POSTGRES_SEARCH_PATH` from `.env.e2e_test` when present
 multiplayer tests do not reuse auth state**; each player uses a fresh browser
 context so that sessions are isolated and cross-player leakage is avoided. See
 [runtime/fixtures/multiplayer.ts](runtime/fixtures/multiplayer.ts) and
-[di-migration-validation.spec.ts](di-migration-validation.spec.ts).
+[di-migration/](di-migration/) (`suite-*.spec.ts`).
+
+### DI migration validation (optional)
+
+From `client/`:
+
+```text
+npx playwright test tests/e2e/di-migration --timeout=600000
+npx playwright test tests/e2e/di-migration -g "Suite 1"
+```
 
 ## Fixtures and structure
 

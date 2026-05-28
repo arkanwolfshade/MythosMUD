@@ -17,6 +17,7 @@ import {
   ensurePlayerInGame,
   waitForAllPlayersInGame,
 } from '../fixtures/multiplayer';
+import { ensureStanding } from '../fixtures/player';
 
 function hasCombatMessage(messages: string[]): boolean {
   return messages.some(msg => {
@@ -68,29 +69,12 @@ test.describe('Combat messages in Game Info', () => {
       .first()
       .waitFor({ state: 'visible', timeout: 15000 });
 
-    // Dr. Francis Morgan is in Main Foyer. Navigate there if needed, then wait for Main Foyer (locator, not
-    // waitForFunction).
-    const inFoyer = await page
-      .getByText('Main Foyer')
-      .first()
-      .isVisible()
-      .catch(() => false);
-    /* eslint-disable playwright/no-conditional-in-test -- optional navigation when not already in Foyer */
-    if (!inFoyer) {
-      const hasLaundry = await page
-        .getByText('Laundry Room')
-        .first()
-        .isVisible()
-        .catch(() => false);
-      if (hasLaundry) {
-        await executeCommand(page, 'go south');
-        await waitForMessage(page, /You go south|Eastern Hallway/i, 10000).catch(() => {});
-      }
-      await executeCommand(page, 'go west');
-      await waitForMessage(page, /You go west|Main Foyer/i, 10000).catch(() => {});
-    }
-    /* eslint-enable playwright/no-conditional-in-test */
-    await page.getByText('Main Foyer').first().waitFor({ state: 'visible', timeout: 15000 });
+    // DEFAULT_RESPAWN_ROOM is the limbo arena grid; room_links do not reach earth_arkhamcity_sanitarium_room_foyer_001,
+    // so walk south/west/north never shows "Main Foyer" where the world's Dr. Francis Morgan template lives.
+    // Spawn his definition (id 54 in mythos_e2e DML) into the current cell for a stable combat target.
+    await ensureStanding(page, 8000);
+    await executeCommand(page, 'npc spawn 54');
+    await waitForMessage(page, /NPC spawned successfully|spawned successfully/i, 20000);
 
     await executeCommand(page, 'attack Dr. Francis Morgan');
 

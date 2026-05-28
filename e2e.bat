@@ -1,11 +1,15 @@
 @echo off
 cd /d "%~dp0"
-pushd logs
-call clean.bat
-popd
+call "%~dp0scripts\clean_logs.bat"
 pwsh -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\bootstrap_e2e_database.ps1"
 if errorlevel 1 (
     echo Error: E2E database bootstrap failed
+    pause
+    exit /b 1
+)
+pwsh -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\ensure_e2e_database.ps1"
+if errorlevel 1 (
+    echo Error: E2E profession seed check failed
     pause
     exit /b 1
 )

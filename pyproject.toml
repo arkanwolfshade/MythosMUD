@@ -403,6 +403,7 @@ dev = [
     "types-jsonschema>=4.25.1.20251009",
     "types-psycopg2>=2.9.21.20251012",
     "types-networkx>=3.6.1.20251220",
+    "asyncpg-stubs>=0.31.0,<0.32", # Type stubs for asyncpg (basedpyright reportMissingTypeStubs)
     "bandit>=1.9.2", # Python security linter
     "pylint>=4.0.4", # Python code quality linter
     "pylint-per-file-ignores>=3.2.0", # Per-file ignore support for pylint (matches ruff per-file-ignores)

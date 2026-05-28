@@ -189,7 +189,7 @@ Remove all YAML config references:
 
 2. **Added required Pydantic env vars**:
 
-   - `SERVER_PORT="54731"`
+   - `SERVER_PORT="54768"`
 
    - `SERVER_HOST="127.0.0.1"`
 

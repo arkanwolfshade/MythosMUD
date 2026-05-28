@@ -10,7 +10,7 @@ lucidity stabilizes.
 
 Before running this scenario you MUST complete the checklist in `@MULTIPLAYER_TEST_RULES.md`. Pay special attention to:
 
-1. **Server State** – Development server running on `54731`, client served on `5173`.
+1. **Server State** – Development server running on `54768`, client served on `5173`.
 
 2. **Database Prep** – The players `ArkanWolfshade` (target) and `Ithaqua` (rescuer) exist in PostgreSQL database
 

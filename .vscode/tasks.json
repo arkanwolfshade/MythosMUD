@@ -5,7 +5,13 @@
       "label": "jcodemunch: watch (index)",
       "type": "shell",
       "command": "uvx",
-      "args": ["--with", "jcodemunch-mcp[watch]", "jcodemunch-mcp", "watch", "${workspaceFolder}"],
+      "args": [
+        "--from",
+        "jcodemunch-mcp[watch] @ git+https://github.com/jgravelle/jcodemunch-mcp",
+        "jcodemunch-mcp",
+        "watch",
+        "${workspaceFolder}"
+      ],
       "problemMatcher": [],
       "presentation": {
         "echo": true,

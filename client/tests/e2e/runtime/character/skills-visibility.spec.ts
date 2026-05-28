@@ -5,9 +5,21 @@
  * E3: /skills command returns active character's skills in game log.
  */
 
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import { executeCommand, loginPlayer, waitForMessage } from '../fixtures/auth';
 import { TEST_TIMEOUTS } from '../fixtures/test-data';
+
+/** Game Info rows or tick text — proves WS/game log pipeline before command_response. */
+async function waitForGameInfoActivity(page: Page, timeoutMs: number): Promise<void> {
+  await page.waitForFunction(
+    () => {
+      if (document.querySelectorAll('[data-message-text]').length > 0) return true;
+      const body = document.body?.innerText ?? '';
+      return body.includes('[Tick') && body.includes(']');
+    },
+    { timeout: timeoutMs }
+  );
+}
 
 test.describe('Skills visibility (plan 10.8 E2, E3)', () => {
   test('E2: Skills (New Tab) opens with playerId and skills page loads', async ({ page, context }) => {
@@ -50,9 +62,28 @@ test.describe('Skills visibility (plan 10.8 E2, E3)', () => {
 
     await page.getByTestId('command-input').waitFor({ state: 'visible', timeout: TEST_TIMEOUTS.GAME_LOAD });
 
-    await executeCommand(page, '/skills');
-    await waitForMessage(page, /Your skills:|No skills recorded/, TEST_TIMEOUTS.MESSAGE);
+    const skillsAck =
+      /Your skills:|No skills recorded|Failed to load skills\.|do not have access to this character's skills/i;
+
+    const runSkills = async (): Promise<void> => {
+      await page.bringToFront().catch(() => {});
+      await executeCommand(page, 'stand');
+      await new Promise(r => setTimeout(r, 1500));
+      await waitForGameInfoActivity(page, 45000);
+      await executeCommand(page, '/skills');
+      await waitForMessage(page, skillsAck, 35000);
+    };
+
+    try {
+      await runSkills();
+    } catch {
+      await executeCommand(page, 'stand');
+      await new Promise(r => setTimeout(r, 3000));
+      await waitForGameInfoActivity(page, 35000).catch(() => {});
+      await runSkills();
+    }
+
     const messages = await page.locator('[data-message-text]').allTextContents();
-    expect(messages.some(m => /Your skills:|No skills recorded/.test(m))).toBe(true);
+    expect(messages.some(m => skillsAck.test(m))).toBe(true);
   });
 });

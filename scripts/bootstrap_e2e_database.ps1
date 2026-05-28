@@ -35,8 +35,8 @@ function Invoke-Step {
     param([string]$Label, [scriptblock]$Action)
     Write-Host "[INFO] $Label" -ForegroundColor Yellow
     & $Action
-    if (-not $?) {
-        Write-Host "[ERROR] Step failed: $Label" -ForegroundColor Red
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "[ERROR] Step failed: $Label (exit $LASTEXITCODE)" -ForegroundColor Red
         exit 1
     }
 }

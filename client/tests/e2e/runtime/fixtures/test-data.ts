@@ -3,7 +3,7 @@
  *
  * Centralized test data for E2E runtime tests.
  *
- * Canonical accounts (run e2e.bat or scripts/bootstrap_e2e_database.ps1 for a clean mythos_e2e):
+ * Canonical accounts (run e2e.bat, make ensure-e2e-database, or scripts/bootstrap_e2e_database.ps1):
  * - ArkanWolfshade / Cthulhu1 / character name ArkanWolfshade (admin)
  * - Ithaqua / Cthulhu1 / character name Ithaqua (regular)
  *

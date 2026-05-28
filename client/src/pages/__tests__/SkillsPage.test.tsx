@@ -21,7 +21,7 @@ vi.mock('../../utils/logger.js', () => ({
 }));
 
 vi.mock('../../utils/config.js', () => ({
-  API_V1_BASE: 'http://localhost:54731/v1',
+  API_V1_BASE: 'http://localhost:54768/v1',
 }));
 
 describe('SkillsPage', () => {

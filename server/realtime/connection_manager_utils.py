@@ -6,8 +6,8 @@ from connection_manager.py to reduce its line count.
 """
 
 import inspect
-from collections.abc import Callable
-from typing import TYPE_CHECKING, Any, cast
+from collections.abc import Callable, Coroutine
+from typing import TYPE_CHECKING, cast
 
 from ..container import ApplicationContainer
 
@@ -21,6 +21,7 @@ def _coerce_connection_manager(manager: object) -> "ConnectionManager":
 
     return cast(ConnectionManager, manager)
 
+
 # Constants for async compatibility
 _ASYNC_METHODS_REQUIRING_COMPAT: set[str] = {
     "handle_new_game_session",
@@ -32,6 +33,20 @@ _ASYNC_METHODS_REQUIRING_COMPAT: set[str] = {
     "broadcast_global",
     "send_personal_message",
 }
+
+
+def _make_async_compat_wrapper(
+    attr: Callable[..., object],
+) -> Callable[..., Coroutine[None, None, object]]:
+    """Wrap a sync or async callable so callers can always await it."""
+
+    async def _async_wrapper(*args: object, **kwargs: object) -> object:
+        result: object = attr(*args, **kwargs)
+        if inspect.isawaitable(result):
+            return cast(object, await result)
+        return result
+
+    return _async_wrapper
 
 
 def _ensure_async_compat(manager: "ConnectionManager | None") -> "ConnectionManager | None":
@@ -49,7 +64,7 @@ def _ensure_async_compat(manager: "ConnectionManager | None") -> "ConnectionMana
         if not hasattr(manager, method_name):
             continue
 
-        attr = getattr(manager, method_name)
+        attr = cast(object, getattr(manager, method_name))
 
         # Already awaitable - nothing to do
         if inspect.iscoroutinefunction(attr) or inspect.isawaitable(attr):
@@ -58,14 +73,8 @@ def _ensure_async_compat(manager: "ConnectionManager | None") -> "ConnectionMana
         # Wrap any callable (including mock-like objects) in an async wrapper
         # This works for both real methods and test mocks without importing Mock types
         if callable(attr):
-
-            async def _async_wrapper(*args: Any, _attr: Any = attr, **kwargs: Any) -> Any:
-                result = _attr(*args, **kwargs)
-                if inspect.isawaitable(result):
-                    return await result
-                return result
-
-            setattr(manager, method_name, _async_wrapper)
+            wrapped = _make_async_compat_wrapper(attr)
+            setattr(manager, method_name, wrapped)
 
     return manager
 
@@ -92,7 +101,7 @@ def resolve_connection_manager(candidate: "ConnectionManager | None" = None) -> 
     # For now, try ApplicationContainer.get_instance() as fallback
     try:
         container = ApplicationContainer.get_instance()
-        manager = getattr(container, "connection_manager", None)
+        manager = cast(object | None, getattr(container, "connection_manager", None))
         if manager is not None:
             return _ensure_async_compat(_coerce_connection_manager(manager))
     except (AttributeError, RuntimeError, ImportError):
@@ -102,7 +111,7 @@ def resolve_connection_manager(candidate: "ConnectionManager | None" = None) -> 
     return None
 
 
-def lazy_import_api_function(name: str) -> Any:
+def lazy_import_api_function(name: str) -> Callable[..., object]:
     """
     Lazy import for API utility functions to avoid circular dependencies.
 
@@ -120,35 +129,35 @@ def lazy_import_api_function(name: str) -> Any:
             broadcast_game_event,
         )
 
-        return cast(Callable[..., Any], broadcast_game_event)
+        return cast(Callable[..., object], broadcast_game_event)
     if name == "send_game_event":
         from .connection_manager_api import (  # pylint: disable=import-outside-toplevel  # Reason: Lazy import to avoid circular dependencies
             send_game_event,
         )
 
-        return cast(Callable[..., Any], send_game_event)
+        return cast(Callable[..., object], send_game_event)
     if name == "send_player_status_update":
         from .connection_manager_api import (  # pylint: disable=import-outside-toplevel  # Reason: Lazy import to avoid circular dependencies
             send_player_status_update,
         )
 
-        return cast(Callable[..., Any], send_player_status_update)
+        return cast(Callable[..., object], send_player_status_update)
     if name == "send_room_description":
         from .connection_manager_api import (  # pylint: disable=import-outside-toplevel  # Reason: Lazy import to avoid circular dependencies
             send_room_description,
         )
 
-        return cast(Callable[..., Any], send_room_description)
+        return cast(Callable[..., object], send_room_description)
     if name == "send_room_event":
         from .connection_manager_api import (  # pylint: disable=import-outside-toplevel  # Reason: Lazy import to avoid circular dependencies
             send_room_event,
         )
 
-        return cast(Callable[..., Any], send_room_event)
+        return cast(Callable[..., object], send_room_event)
     if name == "send_system_notification":
         from .connection_manager_api import (  # pylint: disable=import-outside-toplevel  # Reason: Lazy import to avoid circular dependencies
             send_system_notification,
         )
 
-        return cast(Callable[..., Any], send_system_notification)
+        return cast(Callable[..., object], send_system_notification)
     raise AttributeError(f"Unknown API function: {name}")

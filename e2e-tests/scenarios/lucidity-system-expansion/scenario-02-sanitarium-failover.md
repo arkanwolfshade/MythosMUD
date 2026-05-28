@@ -10,7 +10,7 @@ surface the `"Sanitarium"` rescue outcome.
 
 Complete the global prerequisites in `@MULTIPLAYER_TEST_RULES.md` first. Additional setup for this scenario:
 
-1. **Server & Client** – Server listening on `54731`, client reachable on `5173`.
+1. **Server & Client** – Server listening on `54768`, client reachable on `5173`.
 2. **Players** – `ArkanWolfshade` (victim) and `Ithaqua` (observer) exist in PostgreSQL database `mythos_e2e`.
 3. **Clean Sessions** – No lingering browser tabs for either account.
 

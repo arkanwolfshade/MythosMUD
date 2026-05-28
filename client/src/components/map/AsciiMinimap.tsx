@@ -96,10 +96,11 @@ export const AsciiMinimap: React.FC<AsciiMinimapProps> = ({
     }
   }, [baseUrl, effectivePlane, effectiveZone, effectiveSubZone, currentRoomId, size, authToken]);
 
-  // Fetch minimap when dependencies change
+  /* eslint-disable react-hooks/set-state-in-effect -- refetch when deps change */
   useEffect(() => {
     void fetchMinimap();
   }, [fetchMinimap]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   // Position classes
   const positionClasses = {

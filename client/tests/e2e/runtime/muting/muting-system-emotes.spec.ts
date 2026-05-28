@@ -11,8 +11,33 @@ import { executeCommand, getMessages, waitForMessage } from '../fixtures/auth';
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
+  ensurePlayerInGame,
   waitForAllPlayersInGame,
+  type PlayerContext,
 } from '../fixtures/multiplayer';
+
+function escapeRegExp(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/** Best-effort: command_response does not land on `[data-message-text]` while disconnect banner is up. */
+async function waitForDisconnectBannerClear(page: PlayerContext['page']): Promise<void> {
+  await page
+    .waitForFunction(
+      () => !(document.body?.innerText ?? '').includes('You are disconnected and cannot perform actions'),
+      { timeout: 20000 }
+    )
+    .catch(() => {});
+}
+
+async function getIthaquaMuteTargetName(ithaquaContext: PlayerContext): Promise<string> {
+  await ithaquaContext.page
+    .getByTestId('current-character-name')
+    .waitFor({ state: 'visible', timeout: 15000 })
+    .catch(() => {});
+  const raw = await ithaquaContext.page.getByTestId('current-character-name').textContent();
+  return (raw ?? '').trim() || 'Ithaqua';
+}
 
 test.describe('Muting System and Emotes', () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
@@ -30,29 +55,55 @@ test.describe('Muting System and Emotes', () => {
 
   test('AW should be able to mute Ithaqua', async () => {
     const awContext = contexts[0];
+    const ithaquaContext = contexts[1];
 
-    // AW mutes Ithaqua
-    await executeCommand(awContext.page, 'mute Ithaqua');
+    await Promise.all([ensurePlayerInGame(awContext, 30000), ensurePlayerInGame(ithaquaContext, 30000)]);
 
-    // Wait for mute confirmation
-    await waitForMessage(awContext.page, 'You have muted Ithaqua', 10000).catch(() => {
-      // Message may succeed even if format differs
-    });
+    await awContext.page.bringToFront().catch(() => {});
+    await waitForDisconnectBannerClear(awContext.page);
+    await executeCommand(awContext.page, 'stand');
+    await new Promise(r => setTimeout(r, 1500));
 
-    // Verify mute confirmation appears
-    const messages = await getMessages(awContext.page);
-    const seesMute = messages.some(msg => msg.includes('muted') || msg.includes('Ithaqua'));
-    expect(seesMute).toBe(true);
+    await awContext.page.getByTestId('command-input').click();
+    await executeCommand(awContext.page, 'look');
+    await waitForMessage(awContext.page, /Arena|Exits:|already standing|rise to your feet/i, 20000).catch(() => {});
+
+    const targetName = await getIthaquaMuteTargetName(ithaquaContext);
+    const muteAck = new RegExp(`You have muted\\s+${escapeRegExp(targetName)}\\b`, 'i');
+
+    await awContext.page.bringToFront().catch(() => {});
+    await awContext.page.getByTestId('command-input').click();
+    await executeCommand(awContext.page, `mute ${targetName}`);
+    await waitForMessage(awContext.page, muteAck, 45000);
+    const muteMessages = await getMessages(awContext.page);
+    expect(muteMessages.some(msg => muteAck.test(msg))).toBe(true);
   });
 
   test('AW should not see Ithaqua emote when Ithaqua is muted', async () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    await executeCommand(awContext.page, 'mute Ithaqua');
-    await waitForMessage(awContext.page, /muted|Ithaqua/, 5000).catch(() => {});
+    await Promise.all([ensurePlayerInGame(awContext, 30000), ensurePlayerInGame(ithaquaContext, 30000)]);
+
+    await awContext.page.bringToFront().catch(() => {});
+    await waitForDisconnectBannerClear(awContext.page);
+    await executeCommand(awContext.page, 'stand');
+    await new Promise(r => setTimeout(r, 1500));
+
+    await awContext.page.getByTestId('command-input').click();
+    await executeCommand(awContext.page, 'look');
+    await waitForMessage(awContext.page, /Arena|Exits:|already standing/i, 20000).catch(() => {});
+
+    const targetName = await getIthaquaMuteTargetName(ithaquaContext);
+    const muteAck = new RegExp(`You have muted\\s+${escapeRegExp(targetName)}\\b`, 'i');
+
+    await awContext.page.getByTestId('command-input').click();
+    await executeCommand(awContext.page, `mute ${targetName}`);
+    await waitForMessage(awContext.page, muteAck, 45000);
 
     // Ithaqua uses dance emote
+    await ithaquaContext.page.bringToFront().catch(() => {});
+    await ensurePlayerInGame(ithaquaContext, 30000);
     await executeCommand(ithaquaContext.page, 'dance');
 
     // Wait for Ithaqua's own confirmation
@@ -69,25 +120,44 @@ test.describe('Muting System and Emotes', () => {
     // Verify AW does NOT see Ithaqua's emote
     const awMessages = await getMessages(awContext.page);
     const seesEmote = awMessages.some(
-      msg => msg.includes('Ithaqua') && (msg.includes('dance') || msg.includes('dancing'))
+      msg => msg.includes(targetName) && (msg.includes('dance') || msg.includes('dancing'))
     );
     expect(seesEmote).toBe(false);
   });
 
   test('AW should be able to unmute Ithaqua', async () => {
     const awContext = contexts[0];
+    const ithaquaContext = contexts[1];
 
-    // AW unmutes Ithaqua
-    await executeCommand(awContext.page, 'unmute Ithaqua');
+    const targetName = await getIthaquaMuteTargetName(ithaquaContext);
+    const unmuteAck = new RegExp(`You have unmuted\\s+${escapeRegExp(targetName)}\\b`, 'i');
 
-    // Wait for unmute confirmation
-    await waitForMessage(awContext.page, 'You have unmuted Ithaqua', 10000).catch(() => {
-      // Message may succeed even if format differs
-    });
+    const attemptUnmute = async (): Promise<void> => {
+      await awContext.page.bringToFront().catch(() => {});
+      await Promise.all([ensurePlayerInGame(awContext, 30000), ensurePlayerInGame(ithaquaContext, 20000)]);
+      await waitForDisconnectBannerClear(awContext.page);
+      await executeCommand(awContext.page, 'stand');
+      await new Promise(r => setTimeout(r, 1500));
+      await awContext.page.getByTestId('command-input').click();
+      await executeCommand(awContext.page, 'look');
+      await waitForMessage(awContext.page, /Arena|Exits:|already standing/i, 20000).catch(() => {});
+      await awContext.page.getByTestId('command-input').click();
+      await executeCommand(awContext.page, `unmute ${targetName}`);
+      await waitForMessage(awContext.page, unmuteAck, 45000);
+    };
 
-    // Verify unmute confirmation appears
-    const messages = await getMessages(awContext.page);
-    const seesUnmute = messages.some(msg => msg.includes('unmuted') || msg.includes('Ithaqua'));
-    expect(seesUnmute).toBe(true);
+    try {
+      await attemptUnmute();
+    } catch {
+      await executeCommand(awContext.page, 'stand');
+      await ithaquaContext.page.bringToFront().catch(() => {});
+      await executeCommand(ithaquaContext.page, 'stand');
+      await new Promise(r => setTimeout(r, 3000));
+      await ensurePlayerInGame(awContext, 20000);
+      await ensurePlayerInGame(ithaquaContext, 20000);
+      await attemptUnmute();
+    }
+    const postUnmuteMessages = await getMessages(awContext.page);
+    expect(postUnmuteMessages.some(msg => unmuteAck.test(msg))).toBe(true);
   });
 });

@@ -6,18 +6,75 @@
  * broadcast to all players in the same sub-zone in real-time.
  */
 
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import { executeCommand, waitForMessage } from '../fixtures/auth';
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
+  ensureMultiplayerCoLocated,
   ensurePlayerInGame,
   ensurePlayersInSameRoom,
   getPlayerMessages,
   waitForAllPlayersInGame,
   waitForCrossPlayerMessage,
+  type PlayerContext,
 } from '../fixtures/multiplayer';
-import { ensureStanding } from '../fixtures/player';
+
+/** After `look`, room copy is usually in Location / Room Description, not Game Info `[data-message-text]`. */
+async function assertLookVisibleInPanels(page: Page): Promise<void> {
+  const cue = page.getByText(
+    /Arena\s*>\s*Arena|Arena entrance \(center\)|heart of the gladiator|sand and shadow|Exits:\s*North/i
+  );
+  await expect(cue.first()).toBeVisible({ timeout: 45000 });
+}
+
+async function nudgeStandBothPlayers(aw: PlayerContext, other: PlayerContext): Promise<void> {
+  await executeCommand(aw.page, 'stand');
+  await executeCommand(other.page, 'stand');
+  await new Promise(r => setTimeout(r, 3000));
+}
+
+/** Warm both sessions before teleport co-locate (local-channel-basic / chat-messages pattern). */
+async function primeBothForCoLocate(contexts: PlayerContext[]): Promise<void> {
+  if (contexts.length < 2) return;
+  await Promise.all([ensurePlayerInGame(contexts[0], 30000), ensurePlayerInGame(contexts[1], 30000)]);
+  for (const ctx of contexts) {
+    await ctx.page.bringToFront().catch(() => {});
+    await ctx.page.getByTestId('command-input').click();
+    await executeCommand(ctx.page, 'look');
+    await assertLookVisibleInPanels(ctx.page).catch(() => {});
+  }
+}
+
+/** Server ack in Game Info — same pattern as local-channel-basic (mute filter is per-receiver). */
+async function executeUnmuteAndWaitForAck(
+  aw: PlayerContext,
+  receiver: PlayerContext,
+  targetUsername: string
+): Promise<void> {
+  const ack = new RegExp(`You have unmuted ${targetUsername}|Failed to unmute ${targetUsername}`, 'i');
+  const once = async (): Promise<void> => {
+    await receiver.page.bringToFront().catch(() => {});
+    await expect(receiver.page.getByText(new RegExp(`Player:\\s*${receiver.player.username}\\b`, 'i'))).toBeVisible({
+      timeout: 15000,
+    });
+    await receiver.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
+    await receiver.page.getByTestId('command-input').click();
+    await executeCommand(receiver.page, 'look');
+    await assertLookVisibleInPanels(receiver.page);
+    await receiver.page.getByTestId('command-input').click();
+    await executeCommand(receiver.page, `unmute ${targetUsername}`);
+    await waitForMessage(receiver.page, ack, 45000);
+  };
+  try {
+    await once();
+  } catch {
+    await nudgeStandBothPlayers(aw, receiver);
+    await ensurePlayerInGame(aw, 20000);
+    await ensurePlayerInGame(receiver, 20000);
+    await once();
+  }
+}
 
 test.describe('Local Channel Integration', () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
@@ -27,18 +84,13 @@ test.describe('Local Channel Integration', () => {
     // Ensure each player is fully in game (including tick) with full timeout before shared wait,
     // so the slower client has time to receive the first tick without hitting a 30s cap.
     await Promise.all([ensurePlayerInGame(contexts[0], 60000), ensurePlayerInGame(contexts[1], 60000)]);
-    await waitForAllPlayersInGame(contexts, 20000);
+    await waitForAllPlayersInGame(contexts, 60000);
 
-    // Local channel requires both players in same room. Force co-location: stand then move both north.
+    // Same-room /local needs a shared cell. Dual "go north" races linkdead and split cells; use teleport retries.
+    await primeBothForCoLocate(contexts);
+    await ensureMultiplayerCoLocated(contexts, { timeoutMs: 60000, coLocateTimeoutMs: 60000 });
+
     const [awContext, ithaquaContext] = contexts;
-    await ensureStanding(awContext.page, 10000);
-    await executeCommand(awContext.page, 'go north');
-    await new Promise(r => setTimeout(r, 2000));
-    await ensureStanding(ithaquaContext.page, 10000);
-    await executeCommand(ithaquaContext.page, 'go north');
-    await new Promise(r => setTimeout(r, 3000));
-    await ensurePlayersInSameRoom(contexts, 2, 60000);
-
     // Unmute both players to ensure clean state
     try {
       await executeCommand(ithaquaContext.page, 'unmute ArkanWolfshade');
@@ -61,39 +113,35 @@ test.describe('Local Channel Integration', () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    await ensurePlayerInGame(awContext, 15000);
-    await ensurePlayerInGame(ithaquaContext, 15000);
-    await ensurePlayersInSameRoom(contexts, 2, 15000);
+    await ensureMultiplayerCoLocated(contexts, { timeoutMs: 45000, coLocateTimeoutMs: 45000 });
+    await awContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 15000 });
+    await new Promise(r => setTimeout(r, 1500));
 
-    try {
-      await executeCommand(ithaquaContext.page, 'unmute ArkanWolfshade');
-      await new Promise(r => setTimeout(r, 1000));
-    } catch {
-      // Ignore if already unmuted or command fails
-    }
+    await ensurePlayerInGame(awContext, 30000);
+    await ensurePlayerInGame(ithaquaContext, 30000);
+    await ensurePlayersInSameRoom(contexts, 2, 45000);
 
-    // Re-ensure receiver (Ithaqua) is in game and same room; brief stability wait so receiver is not
-    // gone when sender sends
-    await ensurePlayerInGame(ithaquaContext, 10000);
-    await ensurePlayersInSameRoom(contexts, 2, 10000);
-    await new Promise(r => setTimeout(r, 2000));
+    await nudgeStandBothPlayers(awContext, ithaquaContext);
+    await executeUnmuteAndWaitForAck(awContext, ithaquaContext, 'ArkanWolfshade');
+    await new Promise(r => setTimeout(r, 500));
 
-    // AW sends local message
+    await ensurePlayerInGame(ithaquaContext, 20000);
+    await ensurePlayersInSameRoom(contexts, 2, 45000);
+
+    // Sender focused: command_response lands on Game Info reliably on CI (local-channel-basic).
+    await awContext.page.bringToFront().catch(() => {});
+    await ensurePlayerInGame(awContext, 30000);
+    await awContext.page.getByTestId('command-input').click();
     await executeCommand(awContext.page, 'local Testing player management integration');
 
-    // Wait for confirmation on AW's side
-    await waitForMessage(awContext.page, 'You say locally: Testing player management integration');
+    await waitForMessage(awContext.page, /You say locally:\s*Testing player management integration/i, 45000);
 
-    // Verify both players are still co-located before waiting for cross-player message
-    // Ithaqua may have left/disconnected between setup and message send
     await ensurePlayersInSameRoom(contexts, 2, 10000);
 
-    // Wait for message to appear on Ithaqua's side
-    // Local channel format is: "{sender_name} (local): {content}"
     await waitForCrossPlayerMessage(
       ithaquaContext,
       /ArkanWolfshade \(local\): Testing player management integration/i,
-      30000
+      45000
     );
 
     // Verify Ithaqua sees the message

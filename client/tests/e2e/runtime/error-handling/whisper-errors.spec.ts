@@ -13,8 +13,16 @@ import { executeCommand, getMessages, waitForMessage } from '../fixtures/auth';
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
+  ensurePlayerInGame,
   waitForAllPlayersInGame,
 } from '../fixtures/multiplayer';
+
+/**
+ * Empty-body whisper can surface `Say what?` (older copy) or `You must provide a message to whisper.`
+ * plus `Usage: whisper <player> <message>` — match any plausible rejection (flow may differ by parser path).
+ */
+const EMPTY_WHISPER_REJECTION =
+  /Say what\??\s*Usage:\s*whisper|You must provide a message to whisper\.?\s*Usage:\s*whisper/i;
 
 test.describe('Whisper Errors', () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
@@ -22,7 +30,9 @@ test.describe('Whisper Errors', () => {
   test.beforeAll(async ({ browser }) => {
     // Create contexts for both players
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
-    await waitForAllPlayersInGame(contexts);
+    await waitForAllPlayersInGame(contexts, 60000);
+    await ensurePlayerInGame(contexts[0], 60000);
+    await ensurePlayerInGame(contexts[1], 60000);
   });
 
   test.afterAll(async () => {
@@ -53,16 +63,20 @@ test.describe('Whisper Errors', () => {
 
   test('should reject empty whisper message', async () => {
     const awContext = contexts[0];
+    const { page } = awContext;
 
-    // Send empty whisper message
-    await executeCommand(awContext.page, 'whisper Ithaqua');
+    await ensurePlayerInGame(awContext, 30000);
+    await page.bringToFront().catch(() => {});
+    await page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
+    await page.getByTestId('command-input').click();
 
-    // Wait for error message
-    await waitForMessage(awContext.page, 'You must provide a message to whisper', 10000);
+    // Server: missing whisper body -> usage line (exact prose may be "Say what?" or "You must provide...")
+    await executeCommand(page, 'whisper Ithaqua');
 
-    // Verify error message appears
-    const messages = await getMessages(awContext.page);
-    const seesError = messages.some(msg => msg.includes('You must provide a message to whisper'));
+    await waitForMessage(page, EMPTY_WHISPER_REJECTION, 45000);
+
+    const messages = await getMessages(page);
+    const seesError = messages.some(msg => EMPTY_WHISPER_REJECTION.test(msg));
     expect(seesError).toBe(true);
   });
 

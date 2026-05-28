@@ -16,11 +16,15 @@ if (!existsSync(testsDir)) {
   process.exit(0);
 }
 
+// Local/CI health probe only (loopback). Override via E2E_BACKEND_BASE_URL when needed.
+const E2E_BACKEND_BASE_URL = (process.env.E2E_BACKEND_BASE_URL ?? 'http://localhost:54768').replace(/\/$/, '');
+
 // In CI, check if backend server is available (E2E tests require it)
 async function checkBackendServer() {
   if (process.env.CI === 'true') {
     try {
-      const response = await fetch('http://localhost:54731/v1/monitoring/health', {
+      // nosemgrep: codacy.tools-configs.typescript.react.security.react-insecure-request.react-insecure-request
+      const response = await fetch(`${E2E_BACKEND_BASE_URL}/v1/monitoring/health`, {
         signal: AbortSignal.timeout(2000),
       });
       if (!response.ok) {

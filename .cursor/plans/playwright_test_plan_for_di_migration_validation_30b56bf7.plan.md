@@ -289,7 +289,7 @@ The test file will be organized into test suites covering:
 ```typescript
 // Test configuration
 const BASE_URL = 'http://localhost:5173';
-const SERVER_URL = 'http://localhost:54731';
+const SERVER_URL = 'http://localhost:54768';
 const TEST_USERNAME = 'ArkanWolfshade';
 const TEST_PASSWORD = 'Cthulhu1';
 const ADMIN_USERNAME = 'ArkanWolfshade'; // Admin account

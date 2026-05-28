@@ -118,6 +118,16 @@ try {
     if ($LASTEXITCODE -eq 0 -and ($dbCheck -match '1')) {
         if ($Force) {
             Write-Host "[INFO] Database exists. Dropping (Force mode)..." -ForegroundColor Yellow
+            if ($dbName -in @("mythos_unit", "mythos_e2e")) {
+                Write-Host "[INFO] Terminating other sessions on '$dbName' before drop..." -ForegroundColor Yellow
+                $terminateSql = @"
+SELECT pg_terminate_backend(pid)
+FROM pg_stat_activity
+WHERE datname = '$dbName' AND pid <> pg_backend_pid();
+"@
+                $null = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d postgres -c $terminateSql 2>&1
+                Start-Sleep -Seconds 1
+            }
             $dropResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d postgres -c "DROP DATABASE $dbName;" 2>&1
             if ($LASTEXITCODE -ne 0) {
                 Write-Host "[ERROR] Failed to drop database: $dropResult" -ForegroundColor Red
@@ -203,6 +213,23 @@ try {
     }
     else {
         Write-Host "[WARNING] Container schema normalization migration file not found: $migrationFile" -ForegroundColor Yellow
+    }
+
+    # Authoritative seed (world, NPC definitions, items, etc.) lives in data/db/<dbname>_dml.sql
+    $dmlFile = Join-Path -Path $ProjectRoot -ChildPath "data\db\${dbName}_dml.sql"
+    if (Test-Path $dmlFile) {
+        Write-Host "Loading environment DML ($dbName)..." -ForegroundColor Yellow
+        $dmlResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d $dbName -v ON_ERROR_STOP=1 -f $dmlFile 2>&1
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "[OK] DML applied ($dmlFile)" -ForegroundColor Green
+        }
+        else {
+            Write-Host "[ERROR] Failed to apply DML: $dmlResult" -ForegroundColor Red
+            exit 1
+        }
+    }
+    else {
+        Write-Host "[INFO] DML file not found (skipping): $dmlFile" -ForegroundColor Cyan
     }
 
     Write-Host ""

@@ -149,7 +149,7 @@ multiple characters.
 
 ### Server Configuration
 
-**Server Port**: 54731 (from `server/server_config.yaml`)
+**Server Port**: 54768 (from `server/server_config.yaml`)
 
 **Client Port**: 5173 (from `client/vite.config.ts`)
 
@@ -228,7 +228,7 @@ multiple characters.
 
 2. **VERIFY PORTS**: After stopping, verify ports are free with `netstat -an |
 
-   findstr :54731`and`netstat -an | findstr :5173`
+   findstr :54768`and`netstat -an | findstr :5173`
 
 3. **NO BACKGROUND**: NEVER use `is_background: true` for server startup commands
 4. **SEE OUTPUT**: ALWAYS use `is_background: false` for server startup so you can see what's happening
@@ -288,7 +288,7 @@ Before running ANY server command, ask yourself:
 ```powershell
 # Check if server is running
 
-netstat -an | findstr :54731
+netstat -an | findstr :54768
 # Check if client is running
 
 netstat -an | findstr :5173
@@ -366,7 +366,7 @@ $maxRetries = 5
 $retryCount = 0
 do {
     try {
-        $healthResponse = Invoke-WebRequest -Uri "http://localhost:54731/v1/monitoring/health" -UseBasicParsing -TimeoutSec 30
+        $healthResponse = Invoke-WebRequest -Uri "http://localhost:54768/v1/monitoring/health" -UseBasicParsing -TimeoutSec 30
         if ($healthResponse.StatusCode -eq 200) {
             $healthData = $healthResponse.Content | ConvertFrom-Json
             Write-Host "Server Status: $($healthData.status)"

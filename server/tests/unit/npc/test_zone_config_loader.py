@@ -5,12 +5,12 @@ Tests the zone_config_loader module functions.
 """
 
 import json
-from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
 from server.npc.zone_config_loader import (
+    ZoneLoadResult,
     async_load_zone_configurations,
     extract_zone_name,
     load_zone_configurations,
@@ -19,6 +19,13 @@ from server.npc.zone_config_loader import (
     process_zone_rows,
 )
 from server.npc.zone_configuration import ZoneConfiguration
+
+
+def _empty_zone_load_result() -> ZoneLoadResult:
+    return {
+        "configs": {"zone": {}, "subzone": {}},
+        "error": None,
+    }
 
 
 def test_parse_json_field_none():
@@ -51,7 +58,7 @@ def test_parse_json_field_list():
 def test_parse_json_field_invalid_json():
     """Test parse_json_field() raises error on invalid JSON string."""
     with pytest.raises(json.JSONDecodeError):
-        parse_json_field("invalid json", {})
+        _ = parse_json_field("invalid json", {})
 
 
 def test_extract_zone_name_with_slash():
@@ -83,18 +90,17 @@ async def test_process_zone_rows():
     """Test process_zone_rows() processes zone rows."""
     mock_conn = AsyncMock()
     mock_row = MagicMock()
-    mock_row.__getitem__ = MagicMock(
-        side_effect=lambda key: {
-            "zone_stable_id": "earth/arkhamcity",
-            "zone_type": "urban",
-            "environment": "outdoors",
-            "description": "A city",
-            "weather_patterns": ["fog", "rain"],
-            "special_rules": {"npc_spawn_modifier": 1.2},
-        }.get(key)
-    )
+    mock_row_data = {
+        "zone_stable_id": "earth/arkhamcity",
+        "zone_type": "urban",
+        "environment": "outdoors",
+        "description": "A city",
+        "weather_patterns": ["fog", "rain"],
+        "special_rules": {"npc_spawn_modifier": 1.2},
+    }
+    mock_row.__getitem__ = MagicMock(side_effect=mock_row_data.get)
     mock_conn.fetch = AsyncMock(return_value=[mock_row])
-    result_container: dict[str, Any] = {"configs": {"zone": {}, "subzone": {}}}
+    result_container = _empty_zone_load_result()
     await process_zone_rows(mock_conn, result_container)
     assert "arkhamcity" in result_container["configs"]["zone"]
     assert isinstance(result_container["configs"]["zone"]["arkhamcity"], ZoneConfiguration)
@@ -105,7 +111,7 @@ async def test_process_zone_rows_empty():
     """Test process_zone_rows() handles empty result."""
     mock_conn = AsyncMock()
     mock_conn.fetch = AsyncMock(return_value=[])
-    result_container: dict[str, Any] = {"configs": {"zone": {}, "subzone": {}}}
+    result_container = _empty_zone_load_result()
     await process_zone_rows(mock_conn, result_container)
     assert result_container["configs"]["zone"] == {}
 
@@ -115,20 +121,19 @@ async def test_process_zone_rows_json_strings():
     """Test process_zone_rows() parses JSON string fields."""
     mock_conn = AsyncMock()
     mock_row = MagicMock()
-    mock_row.__getitem__ = MagicMock(
-        side_effect=lambda key: {
-            "zone_stable_id": "earth/arkhamcity",
-            "zone_type": "urban",
-            "environment": "outdoors",
-            "description": "A city",
-            "weather_patterns": '["fog", "rain"]',  # JSON string
-            "special_rules": '{"npc_spawn_modifier": 1.2}',  # JSON string
-        }.get(key)
-    )
+    mock_row_data = {
+        "zone_stable_id": "earth/arkhamcity",
+        "zone_type": "urban",
+        "environment": "outdoors",
+        "description": "A city",
+        "weather_patterns": '["fog", "rain"]',  # JSON string
+        "special_rules": '{"npc_spawn_modifier": 1.2}',  # JSON string
+    }
+    mock_row.__getitem__ = MagicMock(side_effect=mock_row_data.get)
     mock_conn.fetch = AsyncMock(return_value=[mock_row])
-    result_container: dict[str, Any] = {"configs": {"zone": {}, "subzone": {}}}
+    result_container = _empty_zone_load_result()
     await process_zone_rows(mock_conn, result_container)
-    config = result_container["configs"]["zone"]["arkhamcity"]
+    config: ZoneConfiguration = result_container["configs"]["zone"]["arkhamcity"]
     assert config.weather_patterns == ["fog", "rain"]
     assert config.npc_spawn_modifier == 1.2
 
@@ -138,19 +143,18 @@ async def test_process_subzone_rows():
     """Test process_subzone_rows() processes subzone rows."""
     mock_conn = AsyncMock()
     mock_row = MagicMock()
-    mock_row.__getitem__ = MagicMock(
-        side_effect=lambda key: {
-            "zone_stable_id": "earth/arkhamcity",
-            "subzone_stable_id": "downtown",
-            "zone_type": "urban",
-            "environment": "outdoors",
-            "description": "Downtown area",
-            "weather_patterns": ["fog"],
-            "special_rules": {"npc_spawn_modifier": 1.5},
-        }.get(key)
-    )
+    mock_row_data = {
+        "zone_stable_id": "earth/arkhamcity",
+        "subzone_stable_id": "downtown",
+        "zone_type": "urban",
+        "environment": "outdoors",
+        "description": "Downtown area",
+        "weather_patterns": ["fog"],
+        "special_rules": {"npc_spawn_modifier": 1.5},
+    }
+    mock_row.__getitem__ = MagicMock(side_effect=mock_row_data.get)
     mock_conn.fetch = AsyncMock(return_value=[mock_row])
-    result_container: dict[str, Any] = {"configs": {"zone": {}, "subzone": {}}}
+    result_container = _empty_zone_load_result()
     await process_subzone_rows(mock_conn, result_container)
     assert "arkhamcity/downtown" in result_container["configs"]["subzone"]
     assert isinstance(result_container["configs"]["subzone"]["arkhamcity/downtown"], ZoneConfiguration)
@@ -161,7 +165,7 @@ async def test_process_subzone_rows_empty():
     """Test process_subzone_rows() handles empty result."""
     mock_conn = AsyncMock()
     mock_conn.fetch = AsyncMock(return_value=[])
-    result_container: dict[str, Any] = {"configs": {"zone": {}, "subzone": {}}}
+    result_container = _empty_zone_load_result()
     await process_subzone_rows(mock_conn, result_container)
     assert result_container["configs"]["subzone"] == {}
 
@@ -172,7 +176,7 @@ async def test_async_load_zone_configurations_success():
     mock_conn = AsyncMock()
     mock_conn.fetch = AsyncMock(return_value=[])
     mock_conn.close = AsyncMock()
-    result_container: dict[str, Any] = {"configs": {"zone": {}, "subzone": {}}}
+    result_container = _empty_zone_load_result()
     with patch("server.npc.zone_config_loader.asyncpg.connect", new_callable=AsyncMock, return_value=mock_conn):
         with patch.dict("os.environ", {"DATABASE_URL": "postgresql://localhost/test"}):
             await async_load_zone_configurations(result_container)
@@ -180,26 +184,59 @@ async def test_async_load_zone_configurations_success():
 
 
 @pytest.mark.asyncio
-async def test_async_load_zone_configurations_converts_url():
+async def test_async_load_zone_configurations_converts_url(monkeypatch: pytest.MonkeyPatch):
     """Test async_load_zone_configurations() converts SQLAlchemy URL format."""
+    monkeypatch.delenv("POSTGRES_SEARCH_PATH", raising=False)
     mock_conn = AsyncMock()
     mock_conn.fetch = AsyncMock(return_value=[])
     mock_conn.close = AsyncMock()
-    result_container: dict[str, Any] = {"configs": {"zone": {}, "subzone": {}}}
+    result_container = _empty_zone_load_result()
     with patch(
         "server.npc.zone_config_loader.asyncpg.connect", new_callable=AsyncMock, return_value=mock_conn
     ) as mock_connect:
         with patch.dict("os.environ", {"DATABASE_URL": "postgresql+asyncpg://localhost/test"}):
             await async_load_zone_configurations(result_container)
-            # Should convert URL
-            call_args = mock_connect.call_args[0]
-            assert call_args[0] == "postgresql://localhost/test"
+            # Should convert URL and pass server_settings (empty for non-mythos_* DB names)
+            call = mock_connect.call_args
+            assert call is not None
+            assert call[0][0] == "postgresql://localhost/test"
+            assert call.kwargs.get("server_settings") == {}
+
+
+@pytest.mark.asyncio
+async def test_async_load_zone_configurations_passes_search_path_for_mythos_e2e(monkeypatch: pytest.MonkeyPatch):
+    """Regression: zones/subzones live in schema mythos_e2e; raw asyncpg must set search_path."""
+    monkeypatch.setenv(
+        "DATABASE_URL",
+        "postgresql+asyncpg://postgres:secret@127.0.0.1:5432/mythos_e2e",
+    )
+    monkeypatch.delenv("POSTGRES_SEARCH_PATH", raising=False)
+
+    settings_seen: dict[str, str | dict[str, str] | None] = {}
+
+    mock_conn = AsyncMock()
+    mock_conn.fetch = AsyncMock(return_value=[])
+    mock_conn.close = AsyncMock()
+
+    async def fake_connect(url: str, *, server_settings: dict[str, str] | None = None) -> AsyncMock:
+        settings_seen["url"] = url
+        settings_seen["server_settings"] = server_settings
+        return mock_conn
+
+    monkeypatch.setattr("server.npc.zone_config_loader.asyncpg.connect", fake_connect)
+
+    result_container = _empty_zone_load_result()
+    await async_load_zone_configurations(result_container)
+
+    assert result_container.get("error") is None
+    assert settings_seen["server_settings"] == {"search_path": "mythos_e2e"}
+    assert settings_seen["url"] == "postgresql://postgres:secret@127.0.0.1:5432/mythos_e2e"
 
 
 @pytest.mark.asyncio
 async def test_async_load_zone_configurations_no_database_url():
     """Test async_load_zone_configurations() raises error when DATABASE_URL not set."""
-    result_container: dict[str, Any] = {"configs": {"zone": {}, "subzone": {}}}
+    result_container = _empty_zone_load_result()
     with patch.dict("os.environ", {}, clear=True):
         with pytest.raises(ValueError, match="DATABASE_URL environment variable not set"):
             await async_load_zone_configurations(result_container)
@@ -208,7 +245,7 @@ async def test_async_load_zone_configurations_no_database_url():
 @pytest.mark.asyncio
 async def test_async_load_zone_configurations_error():
     """Test async_load_zone_configurations() handles database errors."""
-    result_container: dict[str, Any] = {"configs": {"zone": {}, "subzone": {}}}
+    result_container = _empty_zone_load_result()
     with patch(
         "server.npc.zone_config_loader.asyncpg.connect",
         new_callable=AsyncMock,
@@ -225,12 +262,13 @@ async def test_async_load_zone_configurations_closes_connection():
     """Test async_load_zone_configurations() closes connection."""
     mock_conn = AsyncMock()
     mock_conn.fetch = AsyncMock(return_value=[])
-    mock_conn.close = AsyncMock()
-    result_container: dict[str, Any] = {"configs": {"zone": {}, "subzone": {}}}
+    close_mock: AsyncMock = AsyncMock()
+    mock_conn.close = close_mock
+    result_container = _empty_zone_load_result()
     with patch("server.npc.zone_config_loader.asyncpg.connect", new_callable=AsyncMock, return_value=mock_conn):
         with patch.dict("os.environ", {"DATABASE_URL": "postgresql://localhost/test"}):
             await async_load_zone_configurations(result_container)
-            mock_conn.close.assert_awaited_once()
+            close_mock.assert_awaited_once()
 
 
 def test_load_zone_configurations_success():
@@ -249,29 +287,27 @@ def test_load_zone_configurations_merges_zone_and_subzone():
     mock_conn = AsyncMock()
     # Mock zone row
     mock_zone_row = MagicMock()
-    mock_zone_row.__getitem__ = MagicMock(
-        side_effect=lambda key: {
-            "zone_stable_id": "earth/arkhamcity",
-            "zone_type": "urban",
-            "environment": "outdoors",
-            "description": "A city",
-            "weather_patterns": [],
-            "special_rules": {},
-        }.get(key)
-    )
+    mock_zone_row_data: dict[str, str | list[object] | dict[str, object]] = {
+        "zone_stable_id": "earth/arkhamcity",
+        "zone_type": "urban",
+        "environment": "outdoors",
+        "description": "A city",
+        "weather_patterns": list[object](),
+        "special_rules": dict[str, object](),
+    }
+    mock_zone_row.__getitem__ = MagicMock(side_effect=mock_zone_row_data.get)
     # Mock subzone row
     mock_subzone_row = MagicMock()
-    mock_subzone_row.__getitem__ = MagicMock(
-        side_effect=lambda key: {
-            "zone_stable_id": "earth/arkhamcity",
-            "subzone_stable_id": "downtown",
-            "zone_type": "urban",
-            "environment": "outdoors",
-            "description": "Downtown",
-            "weather_patterns": [],
-            "special_rules": {},
-        }.get(key)
-    )
+    mock_subzone_row_data: dict[str, str | list[object] | dict[str, object]] = {
+        "zone_stable_id": "earth/arkhamcity",
+        "subzone_stable_id": "downtown",
+        "zone_type": "urban",
+        "environment": "outdoors",
+        "description": "Downtown",
+        "weather_patterns": list[object](),
+        "special_rules": dict[str, object](),
+    }
+    mock_subzone_row.__getitem__ = MagicMock(side_effect=mock_subzone_row_data.get)
     # First call returns zone rows, second returns subzone rows
     mock_conn.fetch = AsyncMock(side_effect=[[mock_zone_row], [mock_subzone_row]])
     mock_conn.close = AsyncMock()
@@ -290,13 +326,4 @@ def test_load_zone_configurations_error():
     ):
         with patch.dict("os.environ", {"DATABASE_URL": "postgresql://localhost/test"}):
             with pytest.raises(RuntimeError, match="Failed to load zone configurations"):
-                load_zone_configurations()
-
-
-def test_load_zone_configurations_invalid_configs():
-    """Test load_zone_configurations() raises RuntimeError on invalid configs."""
-    # This test is difficult to mock due to threading, so we'll test the logic path
-    # by checking the source code handles None configs correctly
-    # The actual error handling is tested via the error test above
-    # This test verifies the code structure exists
-    pass  # Test removed - threading makes this difficult to test in isolation
+                _ = load_zone_configurations()

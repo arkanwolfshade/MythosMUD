@@ -50,7 +50,7 @@ alternative is available.
 ### BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY
 
 1. **Database State**: Player has wearable container item in inventory
-2. **Server Running**: Development server is running on port 54731
+2. **Server Running**: Development server is running on port 54768
 3. **Client Accessible**: Client is accessible on port 5173
 4. **Player Connected**: Player is logged in and in game
 
