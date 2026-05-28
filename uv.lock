@@ -1519,6 +1519,7 @@ dev = [
     { name = "types-psutil" },
     { name = "types-psycopg2" },
     { name = "types-python-dateutil" },
+    { name = "vulture" },
     { name = "websocket-client" },
 ]
 
@@ -1610,6 +1611,7 @@ dev = [
     { name = "types-psutil", specifier = ">=7.2.1.20251231" },
     { name = "types-psycopg2", specifier = ">=2.9.21.20251012" },
     { name = "types-python-dateutil", specifier = ">=2.9.0.20251115" },
+    { name = "vulture", specifier = ">=2.11" },
     { name = "websocket-client", specifier = ">=1.9.0" },
 ]
 
