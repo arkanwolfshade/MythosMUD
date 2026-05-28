@@ -1,8 +1,6 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-// Fixtures side-effect import must precede the hook import (vi.mock load order).
-import { useWebSocketConnection } from '../useWebSocketConnection';
-import './useWebSocketConnectionTestFixtures';
+// Fixtures import must load before the hook (@/ paths survive organizeImports on save).
 import {
   defaultOptions,
   latestWebSocketInstance,
@@ -10,7 +8,8 @@ import {
   wsConnectionAfterEach,
   wsConnectionBeforeEach,
   wsTestState,
-} from './useWebSocketConnectionTestFixtures';
+} from '@/hooks/__tests__/useWebSocketConnectionTestFixtures';
+import { useWebSocketConnection } from '@/hooks/useWebSocketConnection';
 
 describe('useWebSocketConnection - Cleanup', () => {
   beforeEach(wsConnectionBeforeEach);
