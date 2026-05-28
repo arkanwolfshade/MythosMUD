@@ -14,8 +14,15 @@ $ProjectRoot = Split-Path $PSScriptRoot -Parent
 Set-Location -LiteralPath $ProjectRoot
 
 $ClientDir = Join-Path $ProjectRoot "client"
-Write-Host "[INFO] Running Playwright runtime E2E (client/)..." -ForegroundColor Cyan
+Write-Host "[INFO] Ensuring Playwright Firefox browser is installed (runtime E2E project)..." -ForegroundColor Cyan
 Set-Location -LiteralPath $ClientDir
+npx playwright install firefox
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[ERROR] playwright install firefox failed (exit $LASTEXITCODE)." -ForegroundColor Red
+    exit $LASTEXITCODE
+}
+
+Write-Host "[INFO] Running Playwright runtime E2E (client/)..." -ForegroundColor Cyan
 npm run test:e2e:runtime
 $playwrightExit = $LASTEXITCODE
 Set-Location -LiteralPath $ProjectRoot

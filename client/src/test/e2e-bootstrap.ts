@@ -126,7 +126,10 @@ export function formatLoginFailure(
     lines.push('401 usually means wrong password or user missing in the DB the server is using.');
   }
   if (status === 400) {
-    lines.push('400 may mean OAuth2 form validation, inactive user, or a non-E2E server on 54768.');
+    lines.push(
+      '400 may mean wrong credentials, inactive user, or a non-E2E server on 54768.',
+      '/v1/auth/jwt/login expects email in the OAuth2 username field; E2E bootstrap uses /v1/auth/login for MythosMUD usernames.'
+    );
   }
   if (status === 503) {
     lines.push('503 may mean the server is shutting down; wait and retry or restart e2e.bat.');

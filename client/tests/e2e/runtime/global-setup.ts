@@ -7,13 +7,13 @@
  * - Ensure mythos_e2e has profession reference data (scripts/ensure_e2e_database.ps1)
  * - Seed E2E users and default characters via scripts/seed_e2e_users.py
  * - Verify users exist in mythos_e2e (scripts/verify_e2e_users_seeded.py)
- * - Verify server health, JWT login, and profession catalog
+ * - Verify server health, username login (/v1/auth/login), and profession catalog
  * - Verify client is accessible
  *
  * Any failure throws after writing logs/e2e_test/bootstrap-errors.log (non-zero Playwright exit).
  */
 
-import { chromium, type FullConfig } from '@playwright/test';
+import type { FullConfig } from '@playwright/test';
 import { spawnSync } from 'child_process';
 
 import {
@@ -87,7 +87,10 @@ async function fetchResponseBodyText(response: Response): Promise<string> {
 }
 
 /**
- * When the E2E server is running, verify health, JWT login, and GET /v1/professions catalog.
+ * When the E2E server is running, verify health, username login, and GET /v1/professions catalog.
+ *
+ * Uses POST /v1/auth/login (JSON), matching the production client. FastAPI Users'
+ * /v1/auth/jwt/login expects email in the OAuth2 username field, not MythosMUD usernames.
  */
 async function verifyServerBootstrap(): Promise<void> {
   const env = loadE2eEnv();
@@ -110,28 +113,27 @@ async function verifyServerBootstrap(): Promise<void> {
     ]);
   }
 
-  const loginBody = new URLSearchParams({ username: E2E_TEST_USERNAME, password: E2E_TEST_PASSWORD });
-  const jwtEndpoint = `${E2E_SERVER_URL}/v1/auth/jwt/login`;
-  const loginResp = await fetch(jwtEndpoint, {
+  const loginEndpoint = `${E2E_SERVER_URL}/v1/auth/login`;
+  const loginResp = await fetch(loginEndpoint, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: loginBody,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username: E2E_TEST_USERNAME, password: E2E_TEST_PASSWORD }),
     signal: AbortSignal.timeout(15000),
   });
 
   if (!loginResp.ok) {
     const bodyText = await fetchResponseBodyText(loginResp);
     failBootstrap(
-      'jwt_login',
+      'auth_login',
       `${E2E_TEST_USERNAME} login rejected by E2E server (HTTP ${loginResp.status}).`,
-      formatLoginFailure(loginResp.status, bodyText, jwtEndpoint, env)
+      formatLoginFailure(loginResp.status, bodyText, loginEndpoint, env)
     );
   }
 
   const loginJson = (await loginResp.json()) as { access_token?: string };
   const token = loginJson.access_token;
   if (!token) {
-    failBootstrap('jwt_login', 'Login returned 200 but no access_token in JSON body.', [
+    failBootstrap('auth_login', 'Login returned 200 but no access_token in JSON body.', [
       JSON.stringify(loginJson).slice(0, 500),
     ]);
   }
@@ -157,15 +159,18 @@ async function verifyServerBootstrap(): Promise<void> {
 }
 
 async function verifyClientAccessible(): Promise<void> {
+  let response: Response;
   try {
-    const browser = await chromium.launch();
-    const context = await browser.newContext();
-    const page = await context.newPage();
-    await page.goto(E2E_CLIENT_URL, { waitUntil: 'load', timeout: 10000 });
-    await browser.close();
+    response = await fetch(E2E_CLIENT_URL, { signal: AbortSignal.timeout(10000) });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    failBootstrap('client', `Client not accessible at ${E2E_CLIENT_URL} (${msg}).`, [
+    failBootstrap('client', `Client not reachable at ${E2E_CLIENT_URL} (${msg}).`, [
+      'Start the Vite client on port 5173 (e2e.bat starts server and client).',
+    ]);
+  }
+
+  if (!response.ok) {
+    failBootstrap('client', `GET ${E2E_CLIENT_URL} returned HTTP ${response.status}.`, [
       'Start the Vite client on port 5173 (e2e.bat starts server and client).',
     ]);
   }
