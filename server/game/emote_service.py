@@ -24,8 +24,8 @@ if TYPE_CHECKING:  # pragma: no cover - type checking only
     from schemas.validator import SchemaValidator
 
 
-_emote_validator: "SchemaValidator | None" = None
-_emote_validator_import_failed = False
+_emote_validator: "SchemaValidator | None" = None  # pylint: disable=invalid-name  # Reason: Private module-level singleton, not a constant
+_emote_validator_import_failed = False  # pylint: disable=invalid-name  # Reason: Private module-level cache flag, not a constant
 
 
 def _get_emote_validator() -> "SchemaValidator | None":
@@ -60,6 +60,8 @@ class _EmoteRowData(TypedDict):
 
 
 class EmoteDefinition(TypedDict):
+    """Public emote payload returned by EmoteService lookups."""
+
     self_message: str
     other_message: str
     aliases: list[str]

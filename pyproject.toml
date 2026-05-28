@@ -78,7 +78,7 @@ dev = [
     "bandit>=1.9.2",  # Python security linter
     "pylint>=4.0.4",  # Python code quality linter
     "pylint-per-file-ignores>=3.2.0",  # Per-file ignore support for pylint (matches ruff per-file-ignores)
-    "sqlfluff>=3.5.0,<4",  # SQL linting; stay on v3 until rules/migrations are vetted for v4
+    "sqlfluff>=4.1.0",  # SQL linting (>=4.1.0 fixes CVE-2026-46373)
     "lizard>=1.19.0",  # Code complexity analyzer (used by Codacy)
     "vulture>=2.11",  # Dead code finder (unused functions, classes, variables)
     # sqlint>=0.2.1 - REMOVED: Conflicts with click>=8.1.8 (sqlint requires click==7.0)
@@ -407,7 +407,7 @@ dev = [
     "bandit>=1.9.2", # Python security linter
     "pylint>=4.0.4", # Python code quality linter
     "pylint-per-file-ignores>=3.2.0", # Per-file ignore support for pylint (matches ruff per-file-ignores)
-    "sqlfluff>=3.5.0", # SQL linting and formatting
+    "sqlfluff>=4.1.0", # SQL linting and formatting (>=4.1.0 fixes CVE-2026-46373)
     "lizard>=1.19.0", # Code complexity analyzer (used by Codacy)
     "vulture>=2.11", # Dead code finder (unused functions, classes, variables)
     "pytest-xdist>=3.8.0", # Parallel test execution (required for -n auto in pytest.ini)

@@ -1,5 +1,8 @@
 /**
  * Shared mocks and helpers for useWebSocketConnection tests.
+ *
+ * Side-effect-import this module before importing `useWebSocketConnection` so
+ * vi.mock registrations run before the hook module loads its dependencies.
  */
 
 import { vi } from 'vitest';

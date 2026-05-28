@@ -19,8 +19,6 @@ from .zone_configuration import ZoneConfiguration, ZoneConfigurationData, ZoneSp
 
 logger = get_logger(__name__)
 
-_EMPTY_ZONE_SPECIAL_RULES: ZoneSpecialRules = {}
-
 
 class _ZoneConfigBucket(TypedDict):
     zone: dict[str, ZoneConfiguration]
@@ -28,6 +26,8 @@ class _ZoneConfigBucket(TypedDict):
 
 
 class ZoneLoadResult(TypedDict):
+    """Result of loading zone and sub-zone configs from PostgreSQL."""
+
     configs: _ZoneConfigBucket
     error: BaseException | None
 
@@ -62,6 +62,15 @@ def parse_json_field(
     if isinstance(default, list):
         return cast(list[object], field_value)
     return cast(dict[str, object], field_value)
+
+
+def parse_zone_special_rules(field_value: object | None) -> ZoneSpecialRules:
+    """Parse a zone special_rules field from the database."""
+    default: dict[str, object] = {}
+    return cast(
+        ZoneSpecialRules,
+        cast(object, parse_json_field(field_value, default)),
+    )
 
 
 def extract_zone_name(stable_id: str) -> str:
@@ -107,13 +116,7 @@ async def process_zone_rows(conn: asyncpg.Connection, result_container: ZoneLoad
             list[str],
             parse_json_field(cast(object, row["weather_patterns"]), []),
         )
-        special_rules = cast(
-            ZoneSpecialRules,
-            parse_json_field(
-                cast(object, row["special_rules"]),
-                cast(dict[str, object], _EMPTY_ZONE_SPECIAL_RULES),
-            ),
-        )
+        special_rules = parse_zone_special_rules(cast(object, row["special_rules"]))
 
         config_data: ZoneConfigurationData = {
             "zone_type": cast(str, row["zone_type"]),
@@ -152,13 +155,7 @@ def _store_subzone_row(row: asyncpg.Record, result_container: ZoneLoadResult) ->
         list[str],
         parse_json_field(cast(object, row["weather_patterns"]), []),
     )
-    special_rules = cast(
-        ZoneSpecialRules,
-        parse_json_field(
-            cast(object, row["special_rules"]),
-            cast(dict[str, object], _EMPTY_ZONE_SPECIAL_RULES),
-        ),
-    )
+    special_rules = parse_zone_special_rules(cast(object, row["special_rules"]))
 
     config_data: ZoneConfigurationData = {
         "zone_type": cast(str, row["zone_type"]),  # Inherited from zone

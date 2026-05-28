@@ -37,6 +37,9 @@ def _utc_now() -> datetime:
 
 logger = get_logger(__name__)
 
+# Protocol stub bodies use Ellipsis per PEP 544; Pylint W2301 conflicts with pyright if replaced with pass.
+# pylint: disable=unnecessary-ellipsis
+
 
 class _RespawnEventPublisher(Protocol):
     """Minimal surface used by this service to publish respawn-related events."""

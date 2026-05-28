@@ -17,6 +17,8 @@ LiabilityStackEntry = TypedDict(  # noqa: UP013 -- keep functional syntax; class
 # Protocols for injectable decode/encode callables. Pyright keeps concrete
 # return types here better than Callable[..., SomeAlias] in other modules.
 # Sequence (not Iterable) avoids reportUnknown* on TypedDict elements in __call__ params.
+# Protocol stub bodies use Ellipsis per PEP 544; Pylint W2301 conflicts with pyright if replaced with pass.
+# pylint: disable=unnecessary-ellipsis
 class DecodeLiabilitiesFn(Protocol):
     """Callable that parses liability JSON into normalized stack entries."""
 
