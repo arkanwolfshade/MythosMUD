@@ -1,4 +1,4 @@
-import { act, renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 // Fixtures import must load before the hook (@/ paths survive organizeImports on save).
 import {
@@ -6,13 +6,49 @@ import {
   defaultOptions,
   fetchSpy,
   latestWebSocketInstance,
-  mockResourceManager,
-  mockedSetInterval,
   wsConnectionAfterEach,
   wsConnectionBeforeEach,
   wsTestState,
 } from '@/hooks/__tests__/useWebSocketConnectionTestFixtures';
 import { useWebSocketConnection } from '@/hooks/useWebSocketConnection';
+import { logger } from '@/utils/logger';
+
+async function connectOpenAndRunPingInterval(options?: { fetchMock: typeof fetchSpy }): Promise<void> {
+  const { result } = renderHook(() => useWebSocketConnection(defaultOptions));
+
+  act(() => {
+    result.current.connect();
+  });
+
+  act(() => {
+    vi.advanceTimersByTime(0);
+  });
+
+  wsTestState.mockWebSocketInstance = latestWebSocketInstance;
+  expect(wsTestState.mockWebSocketInstance).not.toBeNull();
+
+  act(() => {
+    wsTestState.mockWebSocketInstance?.simulateOpen();
+  });
+
+  act(() => {
+    vi.advanceTimersByTime(0);
+  });
+
+  expect(result.current.isConnected).toBe(true);
+
+  if (options?.fetchMock) {
+    options.fetchMock.mockClear();
+  }
+
+  act(() => {
+    vi.advanceTimersByTime(30000);
+  });
+
+  await act(async () => {
+    await Promise.resolve();
+  });
+}
 
 describe('useWebSocketConnection - Ping/Heartbeat', () => {
   beforeEach(wsConnectionBeforeEach);
@@ -109,171 +145,32 @@ describe('useWebSocketConnection - Ping/Heartbeat', () => {
     vi.useRealTimers();
   });
 
-  it('should set up health check interval in dev mode', async () => {
-    // Note: import.meta.env.DEV is true by default in Vitest test mode
-    // This test verifies the interval setup and that health check code exists
-    // without relying on import.meta.env.DEV being true in the callback's closure
-    // (which is a Vite build-time constant limitation)
+  it('should warn when NATS health check returns non-OK response in dev mode', async () => {
+    vi.useFakeTimers();
+    fetchSpy.mockResolvedValue({ ok: false } as Response);
 
-    const { result } = renderHook(() => useWebSocketConnection(defaultOptions));
+    await connectOpenAndRunPingInterval({ fetchMock: fetchSpy });
 
-    act(() => {
-      result.current.connect();
-    });
+    expect(fetchSpy).toHaveBeenCalled();
+    expect(logger.warn).toHaveBeenCalledWith('WebSocketConnection', 'NATS health check failed');
 
-    await waitFor(
-      () => {
-        wsTestState.mockWebSocketInstance = latestWebSocketInstance;
-        expect(wsTestState.mockWebSocketInstance).not.toBeNull();
-      },
-      { timeout: 1000 }
-    );
-
-    act(() => {
-      wsTestState.mockWebSocketInstance?.simulateOpen();
-    });
-
-    await waitFor(
-      () => {
-        expect(result.current.isConnected).toBe(true);
-      },
-      { timeout: 1000 }
-    );
-
-    expect(wsTestState.mockWebSocketInstance?.readyState).toBe(MockWebSocket.OPEN);
-
-    // Verify interval was set up with correct timeout (30 seconds)
-    expect(mockedSetInterval).toHaveBeenCalled();
-    expect(mockedSetInterval).toHaveBeenCalledWith(expect.any(Function), 30000);
-    expect(mockResourceManager.registerInterval).toHaveBeenCalled();
-
-    // Verify the interval callback exists and is a function
-    const mockCalls = mockedSetInterval.mock.calls;
-    const intervalCall = [...mockCalls]
-      .reverse()
-      .find((call: unknown[]) => typeof call[0] === 'function' && call[1] === 30000);
-    expect(intervalCall).toBeDefined();
-    const intervalHandler = intervalCall?.[0] as () => Promise<void>;
-    expect(typeof intervalHandler).toBe('function');
-
-    // Verify DEV mode is enabled in test environment
-    expect(import.meta.env.DEV).toBe(true);
-
-    // The health check code exists in the callback and would execute if DEV mode
-    // was properly detected in the callback's closure. The actual execution is
-    // tested indirectly through the interval setup verification above.
+    vi.useRealTimers();
   });
 
-  it('should set up health check interval that handles failures in dev mode', async () => {
-    // Note: import.meta.env.DEV is true by default in Vitest test mode
-    // This test verifies the interval setup and that health check error handling code exists
-    // without relying on import.meta.env.DEV being true in the callback's closure
-    // (which is a Vite build-time constant limitation)
+  it('should warn when NATS health check fetch throws in dev mode', async () => {
+    vi.useFakeTimers();
+    fetchSpy.mockRejectedValue(new Error('health endpoint unavailable'));
 
-    const { result } = renderHook(() => useWebSocketConnection(defaultOptions));
+    await connectOpenAndRunPingInterval({ fetchMock: fetchSpy });
 
-    act(() => {
-      result.current.connect();
-    });
-
-    await waitFor(
-      () => {
-        wsTestState.mockWebSocketInstance = latestWebSocketInstance;
-        expect(wsTestState.mockWebSocketInstance).not.toBeNull();
-      },
-      { timeout: 1000 }
+    expect(fetchSpy).toHaveBeenCalled();
+    expect(logger.warn).toHaveBeenCalledWith(
+      'WebSocketConnection',
+      'NATS health check error',
+      expect.objectContaining({ error: expect.any(Error) })
     );
 
-    act(() => {
-      wsTestState.mockWebSocketInstance?.simulateOpen();
-    });
-
-    await waitFor(
-      () => {
-        expect(result.current.isConnected).toBe(true);
-      },
-      { timeout: 1000 }
-    );
-
-    expect(wsTestState.mockWebSocketInstance?.readyState).toBe(MockWebSocket.OPEN);
-
-    // Verify interval was set up with correct timeout (30 seconds)
-    expect(mockedSetInterval).toHaveBeenCalled();
-    expect(mockedSetInterval).toHaveBeenCalledWith(expect.any(Function), 30000);
-    expect(mockResourceManager.registerInterval).toHaveBeenCalled();
-
-    // Verify the interval callback exists and is a function
-    const mockCalls = mockedSetInterval.mock.calls;
-    const intervalCall = [...mockCalls]
-      .reverse()
-      .find((call: unknown[]) => typeof call[0] === 'function' && call[1] === 30000);
-    expect(intervalCall).toBeDefined();
-    const intervalHandler = intervalCall?.[0] as () => Promise<void>;
-    expect(typeof intervalHandler).toBe('function');
-
-    // Verify DEV mode is enabled in test environment
-    expect(import.meta.env.DEV).toBe(true);
-
-    // The health check error handling code exists in the callback and would execute
-    // if DEV mode was properly detected. The actual execution is tested indirectly
-    // through the interval setup verification above.
-  });
-
-  it('should set up health check interval that handles errors in dev mode', async () => {
-    // Note: import.meta.env.DEV is true by default in Vitest test mode
-    // This test verifies the interval setup and that health check error handling code exists
-    // without relying on import.meta.env.DEV being true in the callback's closure
-    // (which is a Vite build-time constant limitation)
-
-    const { result } = renderHook(() => useWebSocketConnection(defaultOptions));
-
-    act(() => {
-      result.current.connect();
-    });
-
-    await waitFor(
-      () => {
-        wsTestState.mockWebSocketInstance = latestWebSocketInstance;
-        expect(wsTestState.mockWebSocketInstance).not.toBeNull();
-      },
-      { timeout: 1000 }
-    );
-
-    act(() => {
-      wsTestState.mockWebSocketInstance?.simulateOpen();
-    });
-
-    await waitFor(
-      () => {
-        expect(result.current.isConnected).toBe(true);
-      },
-      { timeout: 1000 }
-    );
-
-    expect(wsTestState.mockWebSocketInstance?.readyState).toBe(MockWebSocket.OPEN);
-
-    // Verify interval was set up with correct timeout (30 seconds)
-    expect(mockedSetInterval).toHaveBeenCalled();
-    expect(mockedSetInterval).toHaveBeenCalledWith(expect.any(Function), 30000);
-    expect(mockResourceManager.registerInterval).toHaveBeenCalled();
-
-    // Verify the interval callback exists and is a function
-    const mockCalls = mockedSetInterval.mock.calls;
-    const intervalCall = [...mockCalls]
-      .reverse()
-      .find((call: unknown[]) => typeof call[0] === 'function' && call[1] === 30000);
-    expect(intervalCall).toBeDefined();
-    const intervalHandler = intervalCall?.[0] as () => Promise<void>;
-    expect(typeof intervalHandler).toBe('function');
-
-    // Verify DEV mode is enabled in test environment
-    expect(import.meta.env.DEV).toBe(true);
-
-    // The health check error handling code exists in the callback and would execute
-    // if DEV mode was properly detected. The actual execution is tested indirectly
-    // through the interval setup verification above.
-
-    vi.unstubAllEnvs();
+    vi.useRealTimers();
   });
 
   it('should not perform health check in non-dev mode', async () => {

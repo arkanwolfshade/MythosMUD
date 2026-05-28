@@ -23,6 +23,30 @@ describe('useWebSocketConnection - Connection Management', () => {
     expect(result.current.lastError).toBeNull();
   });
 
+  it('should include character_id in WebSocket URL when characterId is provided', async () => {
+    const characterId = 'char-uuid-123';
+    const { result } = renderHook(() =>
+      useWebSocketConnection({
+        ...defaultOptions,
+        characterId,
+      })
+    );
+
+    act(() => {
+      result.current.connect();
+    });
+
+    await waitFor(
+      () => {
+        wsTestState.mockWebSocketInstance = latestWebSocketInstance;
+        expect(wsTestState.mockWebSocketInstance).not.toBeNull();
+      },
+      { timeout: 1000 }
+    );
+
+    expect(wsTestState.mockWebSocketInstance?.url).toContain(`character_id=${encodeURIComponent(characterId)}`);
+  });
+
   it('should connect successfully', async () => {
     const onConnected = vi.fn();
     const { result } = renderHook(() =>

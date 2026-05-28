@@ -54,7 +54,6 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
   const websocketRef = useRef<WebSocket | null>(null);
   const lastWebSocketRef = useRef<WebSocket | null>(null);
   const pingIntervalRef = useRef<number | null>(null);
-  const reconnectTimerRef = useRef<number | null>(null);
   const manualDisconnectRef = useRef<boolean>(false);
   const reconnectAttemptsRef = useRef<number>(0);
   const hasEverConnectedRef = useRef<boolean>(false);
@@ -85,13 +84,6 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
       window.clearInterval(pingIntervalRef.current);
       resourceManager.removeInterval(pingIntervalRef.current);
       pingIntervalRef.current = null;
-    }
-
-    // Clear reconnect timer
-    if (reconnectTimerRef.current !== null) {
-      window.clearTimeout(reconnectTimerRef.current);
-      resourceManager.removeTimer(reconnectTimerRef.current);
-      reconnectTimerRef.current = null;
     }
 
     const socketToClose = websocketRef.current ?? lastWebSocketRef.current;
