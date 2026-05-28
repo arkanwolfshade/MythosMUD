@@ -24,6 +24,19 @@ _ALLOWED_INTEGRATION_DB_NAMES = ("mythos_unit", "mythos_e2e")
 # mythos_dev must NEVER be truncated or deleted by tests. Do not add it to allowed names.
 _PROTECTED_DB_NAMES = ("mythos_dev", "mythos_stage", "mythos_prod")
 
+# Reference/world seed loaded from DML + migrations (arena zone, professions, etc.).
+# db_cleanup must not wipe these between integration tests; flow tests create their own rows.
+_REFERENCE_SEED_TABLES = frozenset(
+    {
+        "zones",
+        "subzones",
+        "rooms",
+        "room_links",
+        "zone_configurations",
+        "professions",
+    }
+)
+
 
 def _get_db_name_from_url(url: str) -> str:
     """Extract database name from a PostgreSQL URL. Returns empty string on parse failure."""
@@ -154,6 +167,20 @@ async def session_factory(request: pytest.FixtureRequest) -> AsyncGenerator[asyn
     # Tables persist - cleaned by db_cleanup fixture
 
 
+def _should_preserve_table_on_cleanup(table_name: str) -> bool:
+    """Return True for alembic_version and reference/world seed tables."""
+    return table_name == "alembic_version" or table_name in _REFERENCE_SEED_TABLES
+
+
+async def _delete_mutable_integration_test_rows(session: AsyncSession) -> None:
+    """Remove test-created rows; preserve reference seed (world topology, professions)."""
+    for table in reversed(Base.metadata.sorted_tables):
+        if _should_preserve_table_on_cleanup(table.name):
+            continue
+        await session.execute(table.delete())
+    await session.commit()
+
+
 # autouse: required for test isolation - truncates tables after every integration test
 @pytest.fixture(scope="function", autouse=True)
 async def db_cleanup(
@@ -163,7 +190,8 @@ async def db_cleanup(
     """
     Clean up database after each test.
 
-    Truncates all tables (except alembic_version) to ensure test isolation.
+    Deletes test-created rows from mutable tables. Skips reference/world seed tables
+    (zones, rooms, professions, etc.) so procedure tests and E2E seed data persist.
 
     CRITICAL: This fixture is autouse=True to ensure cleanup happens after every test.
     It runs AFTER the test completes to clean up data.
@@ -197,12 +225,7 @@ async def db_cleanup(
 
         # Use session_factory from parameter (do not call getfixturevalue in teardown)
         async with session_factory() as session:
-            # Truncate all tables except alembic_version
-            # Iterate in reverse order to handle foreign key constraints
-            for table in reversed(Base.metadata.sorted_tables):
-                if table.name != "alembic_version":
-                    await session.execute(table.delete())
-            await session.commit()
+            await _delete_mutable_integration_test_rows(session)
     except (RuntimeError, AttributeError):
         # Event loop is closed or connection issues - this is expected on Windows
         # when the event loop closes before asyncpg connections are fully cleaned up

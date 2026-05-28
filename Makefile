@@ -264,7 +264,7 @@ test-playwright: setup-test-env ensure-e2e-database
 	@echo "Running client E2E runtime tests (Playwright CLI)..."
 	$(call run_npm_client,test:e2e:runtime)
 	@echo "Running server integration tests (runtime DB, single worker)..."
-	$(UV) pytest server/tests/ -m integration -n 1 $(PYTEST_OPTS)
+	$(POWERSHELL) scripts/run_integration_tests_playwright.ps1 $(PYTEST_OPTS)
 
 test-client-coverage:
 	@echo "Running client unit tests with coverage..."
