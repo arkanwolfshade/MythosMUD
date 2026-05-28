@@ -261,10 +261,8 @@ test-playwright: setup-test-env ensure-e2e-database
 	$(POWERSHELL) scripts/apply_coc_spells_migration.ps1 -TargetDbs mythos_e2e
 	$(POWERSHELL) scripts/apply_arena_migration.ps1 -TargetDbs mythos_e2e
 	$(POWERSHELL) scripts/apply_aggression_level_migration.ps1 -TargetDbs mythos_e2e
-	@echo "Running client E2E runtime tests (Playwright CLI)..."
-	$(call run_npm_client,test:e2e:runtime)
-	@echo "Running server integration tests (runtime DB, single worker)..."
-	$(POWERSHELL) scripts/run_integration_tests_playwright.ps1 $(PYTEST_OPTS)
+	@echo "Running Playwright E2E then integration tests (fails fast on Playwright/bootstrap errors)..."
+	$(POWERSHELL) scripts/run_test_playwright.ps1 $(PYTEST_OPTS)
 
 test-client-coverage:
 	@echo "Running client unit tests with coverage..."

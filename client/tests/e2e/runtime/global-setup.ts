@@ -5,133 +5,135 @@
  *
  * This file runs before all tests to:
  * - Ensure mythos_e2e has profession reference data (scripts/ensure_e2e_database.ps1)
- * - Seed E2E users and default characters via scripts/seed_e2e_users.py:
- *   ArkanWolfshade/Cthulhu1 (admin), Ithaqua/Cthulhu1 (regular)
- * - Verify server is running
+ * - Seed E2E users and default characters via scripts/seed_e2e_users.py
+ * - Verify users exist in mythos_e2e (scripts/verify_e2e_users_seeded.py)
+ * - Verify server health, JWT login, and profession catalog
  * - Verify client is accessible
+ *
+ * Any failure throws after writing logs/e2e_test/bootstrap-errors.log (non-zero Playwright exit).
  */
 
 import { chromium, type FullConfig } from '@playwright/test';
 import { spawnSync } from 'child_process';
-import * as fs from 'fs';
-import * as path from 'path';
-import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const projectRoot = path.resolve(__dirname, '..', '..', '..', '..');
+import {
+  countProfessionsPayload,
+  E2E_CLIENT_URL,
+  E2E_PROJECT_ROOT,
+  E2E_SERVER_URL,
+  failBootstrap,
+  formatLoginFailure,
+  loadE2eEnv,
+  spawnOutputDetail,
+} from '../../../src/test/e2e-bootstrap';
 
-/** Local dev stack (HTTP, IPv4 loopback; matches playwright.runtime.config baseURL). */
-const E2E_SERVER_URL = 'http://127.0.0.1:54768';
-const E2E_CLIENT_URL = 'http://127.0.0.1:5173';
-
-const E2E_ENV_DEFAULTS: Record<string, string> = {
-  DATABASE_URL: 'postgresql://postgres:Cthulhu1@localhost:5432/mythos_e2e',
-  POSTGRES_SEARCH_PATH: 'mythos_e2e',
-};
-
-/** Parse .env file content and return only DATABASE_URL and POSTGRES_SEARCH_PATH. */
-function parseE2eEnvContent(content: string): Record<string, string> {
-  const env: Record<string, string> = {};
-  for (const line of content.split('\n')) {
-    const m = line.match(/^([^#][^=]+)=(.*)$/);
-    if (m) {
-      const key = m[1].trim();
-      const value = m[2].trim();
-      if (key === 'DATABASE_URL' || key === 'POSTGRES_SEARCH_PATH') env[key] = value;
-    }
-  }
-  return env;
-}
-
-/** Load DATABASE_URL and POSTGRES_SEARCH_PATH from .env.e2e_test so seed uses same schema as E2E server. */
-function loadE2eEnv(): Record<string, string> {
-  const envPath = path.join(projectRoot, '.env.e2e_test');
-  if (!fs.existsSync(envPath)) return { ...E2E_ENV_DEFAULTS };
-  const content = fs.readFileSync(envPath, 'utf-8');
-  const env = parseE2eEnvContent(content);
-  return {
-    DATABASE_URL: env.DATABASE_URL ?? E2E_ENV_DEFAULTS.DATABASE_URL,
-    POSTGRES_SEARCH_PATH: env.POSTGRES_SEARCH_PATH ?? E2E_ENV_DEFAULTS.POSTGRES_SEARCH_PATH,
-  };
-}
+const E2E_TEST_USERNAME = 'Ithaqua';
+const E2E_TEST_PASSWORD = 'Cthulhu1';
 
 function runEnsureE2eDatabase(): void {
-  const ensureScript = path.join(projectRoot, 'scripts', 'ensure_e2e_database.ps1');
+  const ensureScript = `${E2E_PROJECT_ROOT}/scripts/ensure_e2e_database.ps1`;
   const ensureResult = spawnSync('pwsh', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', ensureScript], {
-    cwd: projectRoot,
+    cwd: E2E_PROJECT_ROOT,
     stdio: 'pipe',
     encoding: 'utf-8',
   });
   if (ensureResult.status !== 0) {
-    const detail = ensureResult.stderr || ensureResult.stdout;
-    throw new Error(
-      `ensure_e2e_database.ps1 failed (exit ${ensureResult.status}). ` +
-        `Run make ensure-e2e-database from repo root. ${detail}`
-    );
+    failBootstrap('ensure_e2e_database', `ensure_e2e_database.ps1 failed (exit ${ensureResult.status}).`, [
+      spawnOutputDetail(ensureResult.stdout, ensureResult.stderr),
+      'Run: make ensure-e2e-database from repo root.',
+    ]);
   }
 }
 
 function runE2eSeed(): void {
   const seedEnv = { ...process.env, ...loadE2eEnv() };
   const seedResult = spawnSync('uv', ['run', 'python', 'scripts/seed_e2e_users.py'], {
-    cwd: projectRoot,
+    cwd: E2E_PROJECT_ROOT,
     shell: true,
     stdio: 'pipe',
     encoding: 'utf-8',
     env: seedEnv,
   });
   if (seedResult.status !== 0) {
-    console.warn('seed_e2e_users.py failed:', seedResult.stderr || seedResult.stdout);
-    console.warn('E2E logins (ArkanWolfshade, Ithaqua) may fail with 401 Invalid credentials.');
+    failBootstrap('seed_e2e_users', `seed_e2e_users.py failed (exit ${seedResult.status}).`, [
+      spawnOutputDetail(seedResult.stdout, seedResult.stderr),
+      'E2E logins (ArkanWolfshade, Ithaqua) will not work until seed succeeds.',
+    ]);
   }
 }
 
-function countProfessionsPayload(raw: unknown): number {
-  if (Array.isArray(raw)) {
-    return raw.length;
+function verifyE2eUsersInDatabase(): void {
+  const seedEnv = { ...process.env, ...loadE2eEnv() };
+  const verifyResult = spawnSync('uv', ['run', 'python', 'scripts/verify_e2e_users_seeded.py'], {
+    cwd: E2E_PROJECT_ROOT,
+    shell: true,
+    stdio: 'pipe',
+    encoding: 'utf-8',
+    env: seedEnv,
+  });
+  if (verifyResult.status !== 0) {
+    failBootstrap('verify_e2e_users', `verify_e2e_users_seeded.py failed (exit ${verifyResult.status}).`, [
+      spawnOutputDetail(verifyResult.stdout, verifyResult.stderr),
+    ]);
   }
-  if (raw !== null && typeof raw === 'object' && 'professions' in raw) {
-    const inner = (raw as { professions: unknown }).professions;
-    return Array.isArray(inner) ? inner.length : 0;
+}
+
+async function fetchResponseBodyText(response: Response): Promise<string> {
+  try {
+    return (await response.text()).trim();
+  } catch {
+    return '(could not read response body)';
   }
-  return 0;
 }
 
 /**
- * When the E2E server is already running, verify GET /v1/professions returns catalog data.
- * Catches wrong DATABASE_URL (e.g. mythos_dev with empty professions) or a stale server process.
+ * When the E2E server is running, verify health, JWT login, and GET /v1/professions catalog.
  */
-async function verifyProfessionsCatalogOnServer(): Promise<void> {
+async function verifyServerBootstrap(): Promise<void> {
+  const env = loadE2eEnv();
+  let health: Response;
   try {
-    const health = await fetch(`${E2E_SERVER_URL}/v1/monitoring/health`, {
+    health = await fetch(`${E2E_SERVER_URL}/v1/monitoring/health`, {
       signal: AbortSignal.timeout(5000),
     });
-    if (!health.ok) {
-      return;
-    }
-  } catch {
-    return;
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    failBootstrap('server_health', `No E2E server at ${E2E_SERVER_URL} (${msg}).`, [
+      'Start the E2E stack from this worktree (e2e.bat or scripts/start_e2e_test.ps1).',
+      'Only one server may use port 54768.',
+    ]);
   }
 
-  const loginBody = new URLSearchParams({ username: 'Ithaqua', password: 'Cthulhu1' });
-  const loginResp = await fetch(`${E2E_SERVER_URL}/v1/auth/jwt/login`, {
+  if (!health.ok) {
+    failBootstrap('server_health', `GET /v1/monitoring/health returned HTTP ${health.status}.`, [
+      await fetchResponseBodyText(health),
+    ]);
+  }
+
+  const loginBody = new URLSearchParams({ username: E2E_TEST_USERNAME, password: E2E_TEST_PASSWORD });
+  const jwtEndpoint = `${E2E_SERVER_URL}/v1/auth/jwt/login`;
+  const loginResp = await fetch(jwtEndpoint, {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: loginBody,
     signal: AbortSignal.timeout(15000),
   });
+
   if (!loginResp.ok) {
-    throw new Error(
-      `E2E server at ${E2E_SERVER_URL} rejected Ithaqua login (${loginResp.status}). ` +
-        'Stop other servers on port 54768 and start the E2E stack with e2e.bat.'
+    const bodyText = await fetchResponseBodyText(loginResp);
+    failBootstrap(
+      'jwt_login',
+      `${E2E_TEST_USERNAME} login rejected by E2E server (HTTP ${loginResp.status}).`,
+      formatLoginFailure(loginResp.status, bodyText, jwtEndpoint, env)
     );
   }
 
   const loginJson = (await loginResp.json()) as { access_token?: string };
   const token = loginJson.access_token;
   if (!token) {
-    throw new Error('E2E login succeeded but no access_token; cannot verify /v1/professions.');
+    failBootstrap('jwt_login', 'Login returned 200 but no access_token in JSON body.', [
+      JSON.stringify(loginJson).slice(0, 500),
+    ]);
   }
 
   const profResp = await fetch(`${E2E_SERVER_URL}/v1/professions/`, {
@@ -139,30 +141,19 @@ async function verifyProfessionsCatalogOnServer(): Promise<void> {
     signal: AbortSignal.timeout(15000),
   });
   if (!profResp.ok) {
-    throw new Error(`GET /v1/professions/ failed with status ${profResp.status} on ${E2E_SERVER_URL}`);
+    failBootstrap('professions_catalog', `GET /v1/professions/ failed with HTTP ${profResp.status}.`, [
+      await fetchResponseBodyText(profResp),
+    ]);
   }
 
   const raw: unknown = await profResp.json();
   const count = countProfessionsPayload(raw);
   if (count === 0) {
-    throw new Error(
-      `E2E server at ${E2E_SERVER_URL} returned an empty profession catalog. ` +
-        'Run make ensure-e2e-database (or e2e.bat), then restart the E2E server on port 54768.'
-    );
+    failBootstrap('professions_catalog', `E2E server returned an empty profession catalog at ${E2E_SERVER_URL}.`, [
+      'Run make ensure-e2e-database (or e2e.bat), then restart the E2E server on port 54768.',
+    ]);
   }
-  console.log(`E2E profession catalog OK (${count} entries) at ${E2E_SERVER_URL}`);
-}
-
-async function verifyServerAccessible(): Promise<void> {
-  try {
-    const response = await fetch(`${E2E_SERVER_URL}/v1/monitoring/health`, {
-      signal: AbortSignal.timeout(5000),
-    });
-    if (!response.ok) console.warn(`Server health check failed: ${response.status}`);
-  } catch {
-    console.warn(`Server not accessible at ${E2E_SERVER_URL}. Make sure the server is running.`);
-    console.warn('Tests may fail if server is not running.');
-  }
+  console.log(`E2E bootstrap OK: ${E2E_TEST_USERNAME} login and ${count} professions at ${E2E_SERVER_URL}`);
 }
 
 async function verifyClientAccessible(): Promise<void> {
@@ -170,13 +161,13 @@ async function verifyClientAccessible(): Promise<void> {
     const browser = await chromium.launch();
     const context = await browser.newContext();
     const page = await context.newPage();
-    await page.goto(E2E_CLIENT_URL, { waitUntil: 'load', timeout: 10000 }).catch(() => {
-      console.warn(`Client not accessible at ${E2E_CLIENT_URL}. Make sure the client is running.`);
-    });
+    await page.goto(E2E_CLIENT_URL, { waitUntil: 'load', timeout: 10000 });
     await browser.close();
-  } catch {
-    console.warn(`Client not accessible at ${E2E_CLIENT_URL}. Make sure the client is running.`);
-    console.warn('Tests may fail if client is not running.');
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    failBootstrap('client', `Client not accessible at ${E2E_CLIENT_URL} (${msg}).`, [
+      'Start the Vite client on port 5173 (e2e.bat starts server and client).',
+    ]);
   }
 }
 
@@ -184,8 +175,8 @@ async function globalSetup(_config: FullConfig): Promise<void> {
   console.log('Starting global setup for E2E runtime tests...');
   runEnsureE2eDatabase();
   runE2eSeed();
-  await verifyProfessionsCatalogOnServer();
-  await verifyServerAccessible();
+  verifyE2eUsersInDatabase();
+  await verifyServerBootstrap();
   await verifyClientAccessible();
   console.log('Global setup complete.');
 }

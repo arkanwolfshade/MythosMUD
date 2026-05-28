@@ -37,8 +37,11 @@ powershell -ExecutionPolicy Bypass -File scripts/bootstrap_e2e_database.ps1
 That force-recreates PostgreSQL `mythos_e2e` (DDL, migrations, procedures) and runs
 `scripts/seed_e2e_users.py`. Requires `.env.e2e_test` (copy from `env.e2e_test.example`).
 
-`runtime/global-setup.ts` still runs `seed_e2e_users.py` before specs as an **idempotent**
-safety net if you skip the full bootstrap.
+`runtime/global-setup.ts` still runs `seed_e2e_users.py` and `verify_e2e_users_seeded.py`
+before specs as an **idempotent** safety net if you skip the full bootstrap. Any bootstrap
+failure throws, writes `logs/e2e_test/bootstrap-errors.log`, and exits Playwright with a
+non-zero code. `make test-playwright` runs integration pytest **only** when Playwright passes
+(`scripts/run_test_playwright.ps1`).
 
 ## E2E accounts (mythos_e2e)
 
