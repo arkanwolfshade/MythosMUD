@@ -46,7 +46,9 @@ async function primeBothForCoLocate(contexts: PlayerContext[]): Promise<void> {
   await Promise.all([ensurePlayerInGame(contexts[0], 30000), ensurePlayerInGame(contexts[1], 30000)]);
   for (const ctx of contexts) {
     await ctx.page.bringToFront().catch(() => {});
-    await ctx.page.getByTestId('command-input').click();
+    await ctx.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
     await executeCommand(ctx.page, 'look');
     await assertLookVisibleInPanels(ctx.page).catch(() => {});
   }
@@ -65,10 +67,14 @@ async function executeUnmuteAndWaitForAck(
       timeout: 15000,
     });
     await receiver.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
-    await receiver.page.getByTestId('command-input').click();
+    await receiver.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
     await executeCommand(receiver.page, 'look');
     await assertLookVisibleInPanels(receiver.page);
-    await receiver.page.getByTestId('command-input').click();
+    await receiver.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
     await executeCommand(receiver.page, `unmute ${targetUsername}`);
     await waitForMessage(receiver.page, ack, 45000);
   };
@@ -134,7 +140,9 @@ test.describe('Local Channel Basic', () => {
     await new Promise(r => setTimeout(r, 500));
 
     // AW sends local channel message
-    await awContext.page.getByTestId('command-input').click();
+    await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
     await executeCommand(awContext.page, 'local Hello everyone in the sanitarium');
 
     // Wait for confirmation on AW's side

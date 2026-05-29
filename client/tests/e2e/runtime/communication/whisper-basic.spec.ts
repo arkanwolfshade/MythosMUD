@@ -92,17 +92,23 @@ test.describe('Whisper Basic', () => {
     await expect(awContext.page.getByText(new RegExp(`Player:\\s*${awContext.player.username}\\b`, 'i'))).toBeVisible({
       timeout: 15000,
     });
-    await awContext.page.getByTestId('command-input').click();
+    await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
     await executeCommand(awContext.page, 'look');
     await assertLookVisibleInPanels(awContext.page);
 
-    await awContext.page.getByTestId('command-input').click();
+    await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
     await executeCommand(awContext.page, `whisper ${ithaquaCharName} ${whisperBody}`);
 
     try {
       await waitForMessage(awContext.page, senderAck, 45000);
     } catch {
-      await awContext.page.getByTestId('command-input').click();
+      await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+        el.focus();
+      });
       await executeCommand(awContext.page, `whisper ${ithaquaCharName} ${whisperBody}`);
       await waitForMessage(awContext.page, senderAck, 45000);
     }
@@ -142,7 +148,9 @@ test.describe('Whisper Basic', () => {
     await expect(awContext.page.getByText(new RegExp(`Player:\\s*${awContext.player.username}\\b`, 'i'))).toBeVisible({
       timeout: 15000,
     });
-    await awContext.page.getByTestId('command-input').click();
+    await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
     await executeCommand(awContext.page, 'look');
     await assertLookVisibleInPanels(awContext.page);
     await new Promise(r => setTimeout(r, 1500));
@@ -151,7 +159,9 @@ test.describe('Whisper Basic', () => {
     await expect(
       ithaquaContext.page.getByText(new RegExp(`Player:\\s*${ithaquaContext.player.username}\\b`, 'i'))
     ).toBeVisible({ timeout: 15000 });
-    await ithaquaContext.page.getByTestId('command-input').click();
+    await ithaquaContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
     await executeCommand(ithaquaContext.page, 'look');
     await assertLookVisibleInPanels(ithaquaContext.page);
 
@@ -159,7 +169,9 @@ test.describe('Whisper Basic', () => {
     const escapedTarget = targetName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const senderAck = new RegExp(`You whisper to ${escapedTarget}:\\s*${replyBody}`, 'i');
 
-    await ithaquaContext.page.getByTestId('command-input').click();
+    await ithaquaContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
     await executeCommand(ithaquaContext.page, `whisper ${targetName} ${replyBody}`);
 
     try {
@@ -168,10 +180,14 @@ test.describe('Whisper Basic', () => {
       await nudgeStandBothPlayers(awContext, ithaquaContext);
       await ensurePlayerInGame(ithaquaContext, 30000);
       await ithaquaContext.page.bringToFront().catch(() => {});
-      await ithaquaContext.page.getByTestId('command-input').click();
+      await ithaquaContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+        el.focus();
+      });
       await executeCommand(ithaquaContext.page, 'look');
       await assertLookVisibleInPanels(ithaquaContext.page);
-      await ithaquaContext.page.getByTestId('command-input').click();
+      await ithaquaContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+        el.focus();
+      });
       await executeCommand(ithaquaContext.page, `whisper ${targetName} ${replyBody}`);
       await waitForMessage(ithaquaContext.page, senderAck, 45000);
     }

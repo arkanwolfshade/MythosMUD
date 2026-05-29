@@ -12,7 +12,17 @@ export interface OccupantsSnapshot {
   hasLinkdead: boolean;
 }
 
+export interface GameUiDiagnostics {
+  isGameUiLoaded: boolean;
+  hasVisibleCommandInput: boolean;
+  hasVisibleGameInfoPanel: boolean;
+  hasVisibleLoginForm: boolean;
+  hasBodyGameUiIndicators: boolean;
+  bodySnippet: string;
+}
+
 export function isGameUiLoadedInBrowser(): boolean;
+export function captureGameUiDiagnosticsInBrowser(): GameUiDiagnostics;
 export function hasConnectedStatusInBrowser(): boolean;
 export function hasRoomSubscriptionInBrowser(): boolean;
 export function hasExpectedOccupantCountInBrowser(expected: number): boolean;

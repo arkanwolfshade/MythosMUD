@@ -4,6 +4,8 @@
  * Helper functions for player authentication in E2E tests.
  */
 
+import './multiplayer-browser-window.d.ts';
+
 import { expect, type Page } from '@playwright/test';
 import { CharacterSelectionPage, LoginPage, MotdPage } from '../pages';
 import { TEST_TIMEOUTS } from './test-data';
@@ -48,18 +50,13 @@ export async function loginPlayer(page: Page, username: string, password: string
   }
 
   const postLoginUi = page
-    .locator('.character-selection')
+    .locator('.character-selection-screen')
     .or(page.getByTestId('command-input'))
-    .or(page.getByTestId('motd-enter-realm'))
-    .or(page.locator('h1, h2, h3').filter({ hasText: /Select Your Character/i }));
-  await expect(postLoginUi).toBeVisible({ timeout: TEST_TIMEOUTS.LOGIN });
+    .or(page.getByTestId('motd-enter-realm'));
+  await expect(postLoginUi.first()).toBeVisible({ timeout: TEST_TIMEOUTS.LOGIN });
 
   if (await characterSelection.isVisible()) {
     await characterSelection.selectFirstCharacter();
-    await page
-      .getByTestId('motd-enter-realm')
-      .waitFor({ state: 'visible', timeout: 10000 })
-      .catch(() => {});
   }
 
   const motdCheck = await page
@@ -76,20 +73,112 @@ export async function loginPlayer(page: Page, username: string, password: string
     await motdPage.waitForGameReady(TEST_TIMEOUTS.GAME_LOAD);
   }
 
-  try {
-    await page.waitForFunction(
-      () => {
-        const input = document.querySelector('[data-testid="command-input"]');
-        return input !== null && (input as HTMLElement).offsetParent !== null;
-      },
-      { timeout: TEST_TIMEOUTS.GAME_LOAD }
-    );
-  } catch {
-    await page
-      .getByTestId('command-input')
-      .waitFor({ state: 'visible', timeout: 5000 })
-      .catch(() => {});
+  await expect(page.getByTestId('command-input')).toBeVisible({ timeout: TEST_TIMEOUTS.GAME_LOAD });
+}
+
+/**
+ * Wait until the client can accept commands (no disconnect banner, WS connected).
+ * Send Command enablement is enforced separately in executeCommand.
+ */
+export async function waitForPlayableSession(page: Page, timeoutMs: number = 30000): Promise<void> {
+  await expect(page.getByTestId('command-input')).toBeVisible({ timeout: Math.min(timeoutMs, 15000) });
+
+  await page
+    .waitForFunction(
+      () => !(document.body?.innerText ?? '').includes('You are disconnected and cannot perform actions'),
+      { timeout: timeoutMs }
+    )
+    .catch(() => {});
+
+  await page.waitForFunction(
+    () =>
+      typeof window.__mythosE2eHasConnectedStatus === 'function'
+        ? window.__mythosE2eHasConnectedStatus() === true
+        : document.body?.innerText?.includes('Connected') === true,
+    { timeout: timeoutMs }
+  );
+}
+
+/**
+ * Restore a playable session when linkdead/disconnect left Send Command disabled.
+ * Re-logs in only when the game UI is visible but commands are still blocked.
+ */
+export async function recoverPlayableSession(
+  page: Page,
+  username: string,
+  password: string,
+  timeoutMs: number = 45000
+): Promise<void> {
+  await page.bringToFront().catch(() => {});
+
+  const sendDisabled = await page
+    .getByRole('button', { name: 'Send Command' })
+    .isDisabled()
+    .catch(() => true);
+  if (!sendDisabled) {
+    try {
+      await waitForPlayableSession(page, 8000);
+      return;
+    } catch {
+      // Fall through to relogin when header says Connected but commands stay blocked.
+    }
   }
+
+  await loginPlayer(page, username, password);
+  await waitForPlayableSession(page, timeoutMs);
+  await executeCommand(page, 'stand').catch(() => {});
+  await expect(page.getByRole('button', { name: 'Send Command' })).toBeEnabled({ timeout: timeoutMs });
+}
+
+/**
+ * Reload the game tab when Send Command is disabled but the game UI is still mounted.
+ * Prefer this over full relogin in multiplayer tests to avoid kicking the other browser session.
+ */
+export async function refreshPlayableSession(page: Page, timeoutMs: number = 45000): Promise<void> {
+  const sendCommand = page.getByRole('button', { name: 'Send Command' });
+  const sendDisabled = await sendCommand.isDisabled().catch(() => true);
+  if (!sendDisabled) {
+    try {
+      await waitForPlayableSession(page, 5000);
+      return;
+    } catch {
+      // Continue to reload when header says Connected but Send stayed disabled.
+    }
+  }
+
+  const onLogin = await page
+    .getByTestId('username-input')
+    .isVisible({ timeout: 2000 })
+    .catch(() => false);
+  if (onLogin) {
+    return;
+  }
+
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await page.waitForFunction(() => window.__mythosE2eIsGameUiLoaded?.() === true, { timeout: timeoutMs });
+  await waitForPlayableSession(page, timeoutMs);
+}
+
+/**
+ * Focus the command input without Playwright click stability (Firefox eldritch-border animation).
+ */
+export async function focusCommandInput(page: Page): Promise<void> {
+  const commandInput = page.getByTestId('command-input');
+  await expect(commandInput).toBeVisible({ timeout: TEST_TIMEOUTS.COMMAND });
+  await commandInput.evaluate((el: HTMLElement) => {
+    el.focus();
+  });
+}
+
+/**
+ * Click without Playwright actionability (Firefox eldritch-border animation never stabilizes).
+ */
+export async function clickWithoutStability(
+  locator: ReturnType<Page['getByRole']> | ReturnType<Page['getByTestId']>
+): Promise<void> {
+  await locator.evaluate((el: HTMLElement) => {
+    el.click();
+  });
 }
 
 /**
@@ -114,6 +203,9 @@ export async function executeCommand(page: Page, command: string): Promise<void>
 
   const commandInput = page.getByTestId('command-input');
   await expect(commandInput).toBeVisible({ timeout: TEST_TIMEOUTS.COMMAND });
+  await commandInput.evaluate((el: HTMLElement) => {
+    el.focus();
+  });
   await commandInput.clear();
   await commandInput.fill(command);
   // Wait for input to reflect full command (avoids submitting before React state updates)

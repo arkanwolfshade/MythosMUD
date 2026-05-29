@@ -7,7 +7,7 @@
  */
 
 import { expect, test, type Page } from '@playwright/test';
-import { executeCommand, getMessages, waitForMessage } from '../fixtures/auth';
+import { clickWithoutStability, executeCommand, getMessages, waitForMessage } from '../fixtures/auth';
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
@@ -19,7 +19,6 @@ import {
   waitForCrossPlayerMessage,
   type PlayerContext,
 } from '../fixtures/multiplayer';
-import { ensureStanding } from '../fixtures/player';
 
 /** Command responses may not reach `[data-message-text]` while this banner is present. */
 async function waitForDisconnectBannerClear(page: Page): Promise<void> {
@@ -54,7 +53,9 @@ async function primeBothForCoLocate(contexts: PlayerContext[]): Promise<void> {
   await Promise.all([ensurePlayerInGame(contexts[0], 30000), ensurePlayerInGame(contexts[1], 30000)]);
   for (const ctx of contexts) {
     await ctx.page.bringToFront().catch(() => {});
-    await ctx.page.getByTestId('command-input').click();
+    await ctx.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
     await executeCommand(ctx.page, 'look');
     await waitForLookReflected(ctx.page).catch(() => {});
   }
@@ -66,18 +67,6 @@ test.describe('Party Commands', () => {
   test.beforeAll(async ({ browser }) => {
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
     await waitForAllPlayersInGame(contexts, 60000);
-    await ensurePlayerInGame(contexts[0], 60000);
-    await ensurePlayerInGame(contexts[1], 60000);
-
-    // Party invite requires target in same room. Co-locate: stand then move both north.
-    const [awContext, ithaquaContext] = contexts;
-    await ensureStanding(awContext.page, 10000);
-    await executeCommand(awContext.page, 'go north');
-    await new Promise(r => setTimeout(r, 2000));
-    await ensureStanding(ithaquaContext.page, 10000);
-    await executeCommand(ithaquaContext.page, 'go north');
-    await new Promise(r => setTimeout(r, 3000));
-    await ensurePlayersInSameRoom(contexts, 2, 60000);
   });
 
   test.afterAll(async () => {
@@ -96,7 +85,9 @@ test.describe('Party Commands', () => {
     await waitForDisconnectBannerClear(awContext.page);
     await expect(awContext.page.getByText(/Player:\s*ArkanWolfshade\b/i)).toBeVisible({ timeout: 15000 });
     // Chat may be empty ("No messages yet"); do not require `[data-message-text]` before priming.
-    await awContext.page.getByTestId('command-input').click();
+    await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
     await executeCommand(awContext.page, 'look');
     try {
       await waitForLookReflected(awContext.page);
@@ -110,11 +101,15 @@ test.describe('Party Commands', () => {
       () => {}
     );
 
-    await awContext.page.getByTestId('command-input').click();
+    await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
     await executeCommand(awContext.page, 'stand');
     await new Promise(r => setTimeout(r, 1500));
 
-    await awContext.page.getByTestId('command-input').click();
+    await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
     await executeCommand(awContext.page, 'party');
 
     // Server: "You are not in a party. Use 'party invite <name>' to form one (you become leader)."
@@ -145,10 +140,11 @@ test.describe('Party Commands', () => {
     // Server: "Party invite sent (pending acceptance)" or "Party invite sent. Waiting for them to accept."
     await waitForMessage(awContext.page, /Party invite sent|pending acceptance|Waiting for them to accept/i, 45000);
 
+    await ithaquaContext.page.bringToFront().catch(() => {});
     await ithaquaContext.page
       .getByText(/invited you to join their party/i)
       .waitFor({ state: 'visible', timeout: 30000 });
-    await ithaquaContext.page.getByRole('button', { name: /Accept/i }).click();
+    await clickWithoutStability(ithaquaContext.page.getByRole('button', { name: /Accept/i }));
     await new Promise(r => setTimeout(r, 1500));
 
     await executeCommand(awContext.page, 'party list');

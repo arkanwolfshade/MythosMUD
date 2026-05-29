@@ -1,24 +1,29 @@
+/// <reference types="node" />
+
 /**
  * Multiplayer Fixtures
  *
  * Helper functions for managing multiple browser contexts in multiplayer scenarios.
  */
 
-import { type Browser, type BrowserContext, type Page } from '@playwright/test';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
+
+import './multiplayer-browser-window.d.ts';
+
+import { expect, type Browser, type BrowserContext, type Page } from '@playwright/test';
 import { MotdPage } from '../pages';
-import { executeCommand, loginPlayer } from './auth';
-import {
-  captureOccupantsSnapshotInBrowser,
-  hasConnectedStatusInBrowser,
-  hasExpectedOccupantCountInBrowser,
-  hasOtherPlayerNamesInBrowser,
-  hasRoomSubscriptionInBrowser,
-  isDisconnectedBannerVisibleInBrowser,
-  isGameUiLoadedInBrowser,
-  type OccupantsSnapshot,
-} from './multiplayer-browser-helpers';
+import { executeCommand, loginPlayer, waitForPlayableSession } from './auth';
+import type { OccupantsSnapshot } from './multiplayer-browser-helpers';
 import { ensureStanding } from './player';
 import { TEST_PLAYERS, TEST_TIMEOUTS, type TestPlayer } from './test-data';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const BROWSER_HELPERS_BUNDLE = join(__dirname, 'multiplayer-browser-helpers.bundle.js');
+
+async function installE2eBrowserHelpers(context: BrowserContext): Promise<void> {
+  await context.addInitScript({ path: BROWSER_HELPERS_BUNDLE });
+}
 
 /** Use 127.0.0.1 to avoid localhost resolving to IPv6 (::1) when server listens on IPv4 only. */
 const SERVER_URL = 'http://127.0.0.1:54768';
@@ -95,6 +100,7 @@ export async function createMultiPlayerContexts(browser: Browser, playerUsername
 
     // Fresh context per player (no storageState). Isolated storage prevents cross-login effects.
     const context = await browser.newContext();
+    await installE2eBrowserHelpers(context);
     const page = await context.newPage();
 
     await loginPlayer(page, player.username, player.password);
@@ -128,16 +134,20 @@ export async function cleanupMultiPlayerContexts(contexts: PlayerContext[] | und
 
 async function waitForPlayerGameUi(page: Page, username: string, timeoutMs: number): Promise<void> {
   try {
-    await page.waitForFunction(isGameUiLoadedInBrowser, { timeout: timeoutMs });
+    await page.waitForFunction(() => window.__mythosE2eIsGameUiLoaded?.() === true, { timeout: timeoutMs });
   } catch {
-    throw new Error(`Player ${username} did not reach game UI within ${timeoutMs}ms (still on login?)`);
+    const diagnostics = await page.evaluate(() => window.__mythosE2eCaptureGameUiDiagnostics?.()).catch(() => null);
+    throw new Error(
+      `Player ${username} did not reach game UI within ${timeoutMs}ms (still on login?). ` +
+        `Diagnostics: ${JSON.stringify(diagnostics)}`
+    );
   }
 }
 
 async function waitForPlayerWebSocket(page: Page, username: string, timeoutMs: number): Promise<void> {
   const wsTimeoutMs = Math.min(timeoutMs, 30000);
   try {
-    await page.waitForFunction(hasConnectedStatusInBrowser, { timeout: wsTimeoutMs });
+    await page.waitForFunction(() => window.__mythosE2eHasConnectedStatus?.() === true, { timeout: wsTimeoutMs });
   } catch {
     throw new Error(
       `Player ${username} WebSocket did not connect within ${wsTimeoutMs}ms (status still shows linkdead?)`
@@ -148,7 +158,7 @@ async function waitForPlayerWebSocket(page: Page, username: string, timeoutMs: n
 async function waitForPlayerRoomSubscription(page: Page, username: string, timeoutMs: number): Promise<void> {
   const tickTimeoutMs = Math.min(timeoutMs, 50000);
   try {
-    await page.waitForFunction(hasRoomSubscriptionInBrowser, { timeout: tickTimeoutMs });
+    await page.waitForFunction(() => window.__mythosE2eHasRoomSubscription?.() === true, { timeout: tickTimeoutMs });
   } catch {
     throw new Error(
       `Player ${username} room subscription not established within ${tickTimeoutMs}ms (no tick message or room state received)`
@@ -178,7 +188,7 @@ async function throwOccupantsWaitTimeout(
   timeoutMs: number
 ): Promise<never> {
   const snapshot = await page
-    .evaluate(captureOccupantsSnapshotInBrowser)
+    .evaluate(() => window.__mythosE2eCaptureOccupantsSnapshot?.())
     .catch(() => ({ error: 'page closed or evaluate failed' }));
   const snapshotStr = JSON.stringify(snapshot, null, 2);
   console.error(
@@ -212,22 +222,26 @@ export async function waitForAllPlayersInGame(
   // Step 1: Wait for all players to reach game UI (not on login screen)
   // Broadened detection: command input, Game Info, game terminal, Player header, Mythos Time, or room content
   await Promise.all(
-    contexts.map(({ page, player }) =>
-      page.waitForFunction(isGameUiLoadedInBrowser, { timeout: timeoutMs }).catch(err => {
+    contexts.map(async ({ page, player }) => {
+      try {
+        await page.waitForFunction(() => window.__mythosE2eIsGameUiLoaded?.() === true, { timeout: timeoutMs });
+      } catch (err) {
+        const diagnostics = await page.evaluate(() => window.__mythosE2eCaptureGameUiDiagnostics?.()).catch(() => null);
         const msg =
           `[instrumentation] waitForAllPlayersInGame failed: Player ${player.username} - ` +
-          `Step 1: game UI - still on login screen after ${timeoutMs}ms`;
+          `Step 1: game UI - still on login screen after ${timeoutMs}ms. ` +
+          `Diagnostics: ${JSON.stringify(diagnostics)}`;
         console.error(msg, err);
-        throw new Error(msg);
-      })
-    )
+        throw new Error(msg, { cause: err });
+      }
+    })
   );
 
   // Step 2: Wait for all players' WebSocket connections to be established (status shows "Connected")
   await Promise.all(
     contexts.map(({ page, player }) =>
       page
-        .waitForFunction(hasConnectedStatusInBrowser, {
+        .waitForFunction(() => window.__mythosE2eHasConnectedStatus?.() === true, {
           timeout: Math.min(timeoutMs, 30000), // Max 30s for WebSocket connection per player
         })
         .catch(err => {
@@ -236,7 +250,7 @@ export async function waitForAllPlayersInGame(
             `[instrumentation] waitForAllPlayersInGame failed: Player ${player.username} - ` +
             `Step 2: WebSocket - status still shows linkdead after ${wsTimeout}ms`;
           console.error(msg, err);
-          throw new Error(msg);
+          throw new Error(msg, { cause: err });
         })
     )
   );
@@ -247,14 +261,16 @@ export async function waitForAllPlayersInGame(
   const step3Timeout = Math.min(timeoutMs, 50000);
   await Promise.all(
     contexts.map(({ page, player }) =>
-      page.waitForFunction(hasRoomSubscriptionInBrowser, { timeout: step3Timeout }).catch(err => {
-        const tickTimeout = step3Timeout;
-        const msg =
-          `[instrumentation] waitForAllPlayersInGame failed: Player ${player.username} - ` +
-          `Step 3: room subscription - no tick message or room state after ${tickTimeout}ms`;
-        console.error(msg, err);
-        throw new Error(msg);
-      })
+      page
+        .waitForFunction(() => window.__mythosE2eHasRoomSubscription?.() === true, { timeout: step3Timeout })
+        .catch(err => {
+          const tickTimeout = step3Timeout;
+          const msg =
+            `[instrumentation] waitForAllPlayersInGame failed: Player ${player.username} - ` +
+            `Step 3: room subscription - no tick message or room state after ${tickTimeout}ms`;
+          console.error(msg, err);
+          throw new Error(msg, { cause: err });
+        })
     )
   );
 
@@ -276,10 +292,72 @@ export async function waitForAllPlayersInGame(
  */
 export async function ensurePlayerInGame(playerContext: PlayerContext, timeoutMs: number = 60000): Promise<void> {
   const { page, player } = playerContext;
+  await waitForPlayableSession(page, Math.min(timeoutMs, 30000)).catch(() => {});
   await waitForPlayerGameUi(page, player.username, timeoutMs);
   await waitForPlayerWebSocket(page, player.username, timeoutMs);
   await waitForPlayerRoomSubscription(page, player.username, timeoutMs);
   await new Promise(resolve => setTimeout(resolve, 1000));
+}
+
+/**
+ * After switching which browser tab is foreground, restore command input when Send stayed disabled.
+ * Reload only when already in the game UI; re-login if reload returns to the login screen.
+ */
+export async function ensureForegroundPlayerPlayable(
+  playerContext: PlayerContext,
+  timeoutMs: number = 45000
+): Promise<void> {
+  const { page, player } = playerContext;
+  await page.bringToFront().catch(() => {});
+
+  const onLogin = await page
+    .getByTestId('username-input')
+    .isVisible({ timeout: 2000 })
+    .catch(() => false);
+  if (onLogin) {
+    await loginPlayer(page, player.username, player.password);
+    return;
+  }
+
+  await ensurePlayerInGame(playerContext, timeoutMs);
+
+  const sendDisabled = await page
+    .getByRole('button', { name: 'Send Command' })
+    .isDisabled()
+    .catch(() => true);
+  if (!sendDisabled) {
+    return;
+  }
+
+  await page.reload({ waitUntil: 'domcontentloaded' });
+
+  const onLoginAfterReload = await page
+    .getByTestId('username-input')
+    .isVisible({ timeout: 5000 })
+    .catch(() => false);
+  if (onLoginAfterReload) {
+    await loginPlayer(page, player.username, player.password);
+    return;
+  }
+
+  await waitForPlayerGameUi(page, player.username, timeoutMs);
+  await waitForPlayerWebSocket(page, player.username, timeoutMs);
+  await waitForPlayerRoomSubscription(page, player.username, timeoutMs);
+  await expect(page.getByRole('button', { name: 'Send Command' })).toBeEnabled({ timeout: timeoutMs });
+}
+
+/**
+ * Foreground the receiver and restore command input so Game Info renders inbound WS events.
+ * Background Firefox tabs often show ticks but miss chat/combat lines until focused.
+ */
+export async function prepareReceiverForInboundMessages(
+  playerContext: PlayerContext,
+  timeoutMs: number = 20000
+): Promise<void> {
+  const { page } = playerContext;
+  // Foreground only: reload/relogin would drop in-flight Game Info rows we are waiting for.
+  await page.bringToFront().catch(() => {});
+  await waitForPlayableSession(page, timeoutMs).catch(() => {});
 }
 
 /**
@@ -294,13 +372,21 @@ export async function waitForCrossPlayerMessage(
   expectedText: string | RegExp,
   timeout: number = 35000
 ): Promise<void> {
+  await prepareReceiverForInboundMessages(playerContext, Math.min(timeout, 25000));
+
   // Use locator for both string and RegExp: Playwright's filter({ hasText }) accepts RegExp.
   // Prefer locator over waitForFunction for auto-wait, retries, and clearer timeout errors.
   // If this times out, the receiving player may have left the game or be in a different room
   // (say is room-scoped); check Game Info for "has left the game" and Occupants for co-location.
   const messageLocator = playerContext.page.locator('[data-message-text]');
   try {
-    await messageLocator.filter({ hasText: expectedText }).first().waitFor({ state: 'visible', timeout });
+    await expect
+      .poll(async () => (await messageLocator.filter({ hasText: expectedText }).count()) > 0, {
+        timeout,
+        message: 'cross-player message in Game Info',
+      })
+      .toBe(true);
+    await messageLocator.filter({ hasText: expectedText }).first().waitFor({ state: 'visible', timeout: 5000 });
   } catch (err) {
     const actualMessages = await getPlayerMessages(playerContext);
     const expectedStr = typeof expectedText === 'string' ? expectedText : expectedText.source;
@@ -357,13 +443,15 @@ export async function ensurePlayersInSameRoom(
   const linkdeadWaitMs = Math.min(25000, timeoutMs);
   await Promise.all(
     contexts.map(({ page, player }) =>
-      page.waitForFunction(hasConnectedStatusInBrowser, { timeout: linkdeadWaitMs }).catch(err => {
-        const msg =
-          `[instrumentation] ensurePlayersInSameRoom failed: Player ${player.username} - ` +
-          `Step 0: header still not Connected within ${linkdeadWaitMs}ms`;
-        console.error(msg, err);
-        throw new Error(msg);
-      })
+      page
+        .waitForFunction(() => window.__mythosE2eHasConnectedStatus?.() === true, { timeout: linkdeadWaitMs })
+        .catch(err => {
+          const msg =
+            `[instrumentation] ensurePlayersInSameRoom failed: Player ${player.username} - ` +
+            `Step 0: header still not Connected within ${linkdeadWaitMs}ms`;
+          console.error(msg, err);
+          throw new Error(msg);
+        })
     )
   );
 
@@ -372,7 +460,11 @@ export async function ensurePlayersInSameRoom(
   await Promise.all(
     contexts.map(({ page, player }) =>
       page
-        .waitForFunction(hasExpectedOccupantCountInBrowser, expectedOccupants, { timeout: timeoutMs })
+        .waitForFunction(
+          (expected: number) => window.__mythosE2eHasExpectedOccupantCount?.(expected) === true,
+          expectedOccupants,
+          { timeout: timeoutMs }
+        )
         .catch(async () => throwOccupantsWaitTimeout(page, player, expectedOccupants, timeoutMs))
     )
   );
@@ -386,7 +478,11 @@ export async function ensurePlayersInSameRoom(
       const expectedNames = getOtherUsernames(ctx);
       if (expectedNames.length === 0) return Promise.resolve();
       return ctx.page
-        .waitForFunction(hasOtherPlayerNamesInBrowser, expectedNames, { timeout: Math.min(10000, timeoutMs) })
+        .waitForFunction(
+          (expectedNames: string[]) => window.__mythosE2eHasOtherPlayerNames?.(expectedNames) === true,
+          expectedNames,
+          { timeout: Math.min(10000, timeoutMs) }
+        )
         .catch(() => {
           throw new Error(
             `ensurePlayersInSameRoom: Player ${ctx.player.username} does not see ${expectedNames.join(', ')} in room ` +
@@ -473,7 +569,9 @@ async function runCoLocateTeleportAttempt(
   // Transient "disconnected" / link-dead UI can leave the receiver at Occupants (1) until state catches up.
   await Promise.all(
     contexts.map(({ page }) =>
-      page.waitForFunction(isDisconnectedBannerVisibleInBrowser, { timeout: 15_000 }).catch(() => {})
+      page
+        .waitForFunction(() => window.__mythosE2eIsDisconnectedBannerVisible?.() === true, { timeout: 15_000 })
+        .catch(() => {})
     )
   );
 

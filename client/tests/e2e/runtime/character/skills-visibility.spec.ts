@@ -22,7 +22,7 @@ async function waitForGameInfoActivity(page: Page, timeoutMs: number): Promise<v
 }
 
 test.describe('Skills visibility (plan 10.8 E2, E3)', () => {
-  test('E2: Skills (New Tab) opens with playerId and skills page loads', async ({ page, context }) => {
+  test('E2: Skills (New Tab) opens with playerId and skills page loads', async ({ page }) => {
     await loginPlayer(page, 'ArkanWolfshade', 'Cthulhu1');
 
     await page.getByTestId('command-input').waitFor({ state: 'visible', timeout: TEST_TIMEOUTS.GAME_LOAD });
@@ -35,8 +35,10 @@ test.describe('Skills visibility (plan 10.8 E2, E3)', () => {
       timeout: 5000,
     });
 
-    const popupPromise = context.waitForEvent('page');
-    await page.getByRole('button', { name: 'Skills (New Tab)' }).click();
+    const popupPromise = page.waitForEvent('popup', { timeout: 30000 });
+    await page.getByRole('button', { name: 'Skills (New Tab)' }).evaluate((el: HTMLElement) => {
+      el.click();
+    });
     const popup = await popupPromise;
     await popup.waitForLoadState('domcontentloaded');
     await popup.waitForLoadState('load', { timeout: 15000 }).catch(() => {});

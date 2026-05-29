@@ -48,7 +48,9 @@ async function primeBothForCoLocate(contexts: PlayerContext[]): Promise<void> {
   await Promise.all([ensurePlayerInGame(contexts[0], 30000), ensurePlayerInGame(contexts[1], 30000)]);
   for (const ctx of contexts) {
     await ctx.page.bringToFront().catch(() => {});
-    await ctx.page.getByTestId('command-input').click();
+    await ctx.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
     await executeCommand(ctx.page, 'look');
     await waitForLookReflected(ctx.page).catch(() => {});
   }
@@ -112,7 +114,9 @@ test.describe('Local Channel Isolation', () => {
 
     await awContext.page.bringToFront().catch(() => {});
     await ensurePlayerInGame(awContext, 30000);
-    await awContext.page.getByTestId('command-input').click();
+    await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
     await executeCommand(awContext.page, 'look');
     await waitForLookReflected(awContext.page);
     await new Promise(r => setTimeout(r, 1000));
@@ -234,7 +238,9 @@ test.describe('Local Channel Isolation', () => {
 
     await awContext.page.bringToFront().catch(() => {});
     await ensurePlayerInGame(awContext, 30000);
-    await awContext.page.getByTestId('command-input').click();
+    await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
     await executeCommand(awContext.page, 'look');
     await waitForLookReflected(awContext.page);
     await new Promise(r => setTimeout(r, 1000));

@@ -68,7 +68,9 @@ test.describe('Whisper Errors', () => {
     await ensurePlayerInGame(awContext, 30000);
     await page.bringToFront().catch(() => {});
     await page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
-    await page.getByTestId('command-input').click();
+    await page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
 
     // Server: missing whisper body -> usage line (exact prose may be "Say what?" or "You must provide...")
     await executeCommand(page, 'whisper Ithaqua');

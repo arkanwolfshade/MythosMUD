@@ -18,6 +18,18 @@ import { executeCommand } from './auth';
  * @param timeoutMs - Max wait for standing confirmation (default: 5000)
  */
 export async function ensureStanding(page: Page, timeoutMs: number = 5000): Promise<void> {
+  const alreadyStanding = await page.evaluate(() => {
+    const bodyText = document.body?.innerText ?? '';
+    return (
+      /Posture:\s*standing\b/i.test(bodyText) ||
+      /Posture\s*\n\s*standing\b/i.test(bodyText) ||
+      /You are already standing/i.test(bodyText)
+    );
+  });
+  if (alreadyStanding) {
+    return;
+  }
+
   await executeCommand(page, 'stand');
   // Prefer page-wide text: command_response sometimes lands before [data-message-text] wiring; linkdead can
   // delay Game Info rows. Character Info "Posture" / value updates independently (player_position_service copy).

@@ -7,7 +7,7 @@
  */
 
 import { expect, test, type Page } from '@playwright/test';
-import { executeCommand, getMessages, waitForMessage } from '../fixtures/auth';
+import { executeCommand, getMessages, recoverPlayableSession, waitForMessage } from '../fixtures/auth';
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
@@ -44,11 +44,9 @@ test.describe('Administrative Set Stat Command', () => {
     const ithaquaContext = contexts[1];
 
     // Admin set resolves the target by name on the server; same-room UI sync is not required.
-    // avoid ensureMultiplayerCoLocated here — repeated ~45s occupant waits can exceed the 180s test timeout.
 
     // Server resolves target by character name; get Ithaqua's current character name
     await ithaquaContext.page.bringToFront().catch(() => {});
-    await ensurePlayerInGame(ithaquaContext, 60000);
     await ithaquaContext.page.getByTestId('current-character-name').waitFor({ state: 'visible', timeout: 10000 });
     const ithaquaCharName =
       (await ithaquaContext.page.getByTestId('current-character-name').textContent())?.trim() ?? 'Ithaqua';
@@ -63,15 +61,21 @@ test.describe('Administrative Set Stat Command', () => {
     await executeCommand(awContext.page, 'stand');
     await new Promise(r => setTimeout(r, 1500));
 
-    await executeCommand(awContext.page, `admin set STR ${ithaquaCharName} 75`);
+    const runAdminSet = async (): Promise<void> => {
+      await executeCommand(awContext.page, `admin set STR ${ithaquaCharName} 75`);
+      await waitForMessage(
+        awContext.page,
+        /Set .+['\u2019]s STR from|STR from \d+ to 75|do not have permission|You do not have permission/i,
+        45000
+      );
+    };
 
-    // Server (admin_setstat_command): "Set {target}'s {stat} from {old} to {new}."
-    // Tolerate straight vs typographic apostrophe in rendered text; allow "You do not have permission".
-    await waitForMessage(
-      awContext.page,
-      /Set .+['\u2019]s STR from|STR from \d+ to 75|do not have permission|You do not have permission/i,
-      45000
-    );
+    try {
+      await runAdminSet();
+    } catch {
+      await recoverPlayableSession(awContext.page, awContext.player.username, awContext.player.password, 45000);
+      await runAdminSet();
+    }
 
     const messages = await getMessages(awContext.page);
     const seesSuccess = messages.some(

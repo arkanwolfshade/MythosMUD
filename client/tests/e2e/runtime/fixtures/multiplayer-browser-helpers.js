@@ -1,19 +1,67 @@
 /**
  * Browser-side helpers for Playwright waitForFunction / page.evaluate().
+ * Each export must be self-contained: Playwright serializes only the export body into the page.
  * Plain JavaScript so Codacy Lizard can parse complexity (TS syntax confuses lizard 1.17.x).
  */
 
 const LOGIN_SUBMIT_BUTTON_LABELS = ['Enter the Void', 'Login'];
 
+function isValidElement(el) {
+  return Boolean(el && el instanceof Element);
+}
+
+function computedStyleHidesElement(style) {
+  if (style.display === 'none') {
+    return true;
+  }
+  if (style.visibility === 'hidden') {
+    return true;
+  }
+  return Number(style.opacity) === 0;
+}
+
+function isElementVisible(el) {
+  if (!isValidElement(el)) {
+    return false;
+  }
+  let current = el;
+  while (current && current instanceof Element) {
+    const style = window.getComputedStyle(current);
+    if (computedStyleHidesElement(style)) {
+      return false;
+    }
+    current = current.parentElement;
+  }
+  const rects = el.getClientRects();
+  if (rects.length > 0) {
+    return true;
+  }
+  return el.isConnected;
+}
+
+function getBodyInnerText() {
+  const body = document.body;
+  if (!body) {
+    return '';
+  }
+  return body.innerText ?? body.textContent ?? '';
+}
+
 function hasUsernameInputInBrowser() {
   const inputs = document.querySelectorAll('input');
   for (const input of inputs) {
+    if (!isElementVisible(input)) {
+      continue;
+    }
     const placeholder = input.getAttribute('placeholder');
     if (placeholder && placeholder.toLowerCase().indexOf('username') >= 0) {
       return true;
     }
     const name = input.getAttribute('name');
     if (name && name.toLowerCase().indexOf('username') >= 0) {
+      return true;
+    }
+    if (input.getAttribute('data-testid') === 'username-input') {
       return true;
     }
   }
@@ -33,7 +81,12 @@ function buttonHasLoginSubmitLabel(text) {
 }
 
 function hasLoginSubmitButtonInBrowser() {
-  return Array.from(document.querySelectorAll('button')).some(button => buttonHasLoginSubmitLabel(button.textContent));
+  return Array.from(document.querySelectorAll('button')).some(button => {
+    if (!isElementVisible(button)) {
+      return false;
+    }
+    return buttonHasLoginSubmitLabel(button.textContent);
+  });
 }
 
 function isLoginFormVisibleInBrowser() {
@@ -50,11 +103,15 @@ function fieldHasCommandPlaceholder(field) {
 }
 
 function hasCommandInputInBrowser() {
-  if (document.querySelector('[data-testid="command-input"]') !== null) {
+  const byTestId = document.querySelector('[data-testid="command-input"]');
+  if (byTestId !== null && isElementVisible(byTestId)) {
     return true;
   }
   const fields = document.querySelectorAll('input, textarea');
   for (const field of fields) {
+    if (!isElementVisible(field)) {
+      continue;
+    }
     if (fieldHasCommandPlaceholder(field)) {
       return true;
     }
@@ -67,11 +124,15 @@ function elementTextIncludesGameInfo(text) {
 }
 
 function hasGameInfoPanelInBrowser() {
-  if (document.querySelector('[data-testid="game-info-panel"]') !== null) {
+  const byTestId = document.querySelector('[data-testid="game-info-panel"]');
+  if (byTestId !== null && isElementVisible(byTestId)) {
     return true;
   }
   const elements = document.querySelectorAll('*');
   for (const el of elements) {
+    if (!isElementVisible(el)) {
+      continue;
+    }
     if (elementTextIncludesGameInfo(el.textContent)) {
       return true;
     }
@@ -87,26 +148,45 @@ function hasBodyTextGameUiIndicators(bodyText) {
 }
 
 function hasPrimaryGameUiMarkersInBrowser() {
+  const gameTerminal = document.querySelector('[data-testid="game-terminal"]');
   return (
     hasCommandInputInBrowser() ||
     hasGameInfoPanelInBrowser() ||
-    document.querySelector('[data-testid="game-terminal"]') !== null
+    (gameTerminal !== null && isElementVisible(gameTerminal))
   );
 }
 
-function getBodyInnerText() {
-  const body = document.body;
-  return body ? body.innerText : '';
-}
-
-export function isGameUiLoadedInBrowser() {
+function evaluateGameUiLoaded() {
+  if (hasCommandInputInBrowser()) {
+    return true;
+  }
+  if (hasGameInfoPanelInBrowser()) {
+    return true;
+  }
+  const bodyText = getBodyInnerText();
+  if (hasBodyTextGameUiIndicators(bodyText)) {
+    return true;
+  }
   if (isLoginFormVisibleInBrowser()) {
     return false;
   }
-  if (hasPrimaryGameUiMarkersInBrowser()) {
-    return true;
-  }
-  return hasBodyTextGameUiIndicators(getBodyInnerText());
+  return hasPrimaryGameUiMarkersInBrowser();
+}
+
+export function isGameUiLoadedInBrowser() {
+  return evaluateGameUiLoaded();
+}
+
+export function captureGameUiDiagnosticsInBrowser() {
+  const bodyText = getBodyInnerText();
+  return {
+    isGameUiLoaded: evaluateGameUiLoaded(),
+    hasVisibleCommandInput: hasCommandInputInBrowser(),
+    hasVisibleGameInfoPanel: hasGameInfoPanelInBrowser(),
+    hasVisibleLoginForm: isLoginFormVisibleInBrowser(),
+    hasBodyGameUiIndicators: hasBodyTextGameUiIndicators(bodyText),
+    bodySnippet: bodyText.slice(0, 400),
+  };
 }
 
 function elementShowsConnectedStatus(text) {
@@ -121,12 +201,20 @@ function elementShowsConnectedStatus(text) {
 
 export function hasConnectedStatusInBrowser() {
   const statusElements = Array.from(document.querySelectorAll('*'));
-  return statusElements.some(el => elementShowsConnectedStatus(el.textContent));
+  return statusElements.some(el => {
+    if (!isElementVisible(el)) {
+      return false;
+    }
+    return elementShowsConnectedStatus(el.textContent);
+  });
 }
 
 function hasTickMessageInBrowser() {
   const gameInfoElements = Array.from(document.querySelectorAll('*'));
   return gameInfoElements.some(el => {
+    if (!isElementVisible(el)) {
+      return false;
+    }
     const text = el.textContent;
     return text !== null && text.indexOf('[Tick') >= 0 && text.indexOf(']') >= 0;
   });
@@ -137,9 +225,12 @@ function isEmptyGameInfoPanelText(text) {
 }
 
 function hasGameInfoAnyMessageInBrowser() {
-  const gameInfoPanel = Array.from(document.querySelectorAll('*')).find(el =>
-    elementTextIncludesGameInfo(el.textContent)
-  );
+  const gameInfoPanel = Array.from(document.querySelectorAll('*')).find(el => {
+    if (!isElementVisible(el)) {
+      return false;
+    }
+    return elementTextIncludesGameInfo(el.textContent);
+  });
   const panelText = gameInfoPanel ? gameInfoPanel.textContent : null;
   if (!panelText) {
     return false;

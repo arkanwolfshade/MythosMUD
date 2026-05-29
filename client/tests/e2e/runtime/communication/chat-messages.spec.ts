@@ -16,6 +16,7 @@ import {
   ensurePlayerInGame,
   ensurePlayersInSameRoom,
   getPlayerMessages,
+  prepareReceiverForInboundMessages,
   waitForAllPlayersInGame,
   waitForCrossPlayerMessage,
   type PlayerContext,
@@ -139,6 +140,9 @@ test.describe('Chat Messages Between Players', () => {
 
     await nudgeStandBothPlayers(awContext, ithaquaContext);
 
+    // Foreground receiver before send so Firefox paints inbound say on [data-message-text].
+    await prepareReceiverForInboundMessages(ithaquaContext, 20000);
+
     // Sender must be focused on some CI hosts; echo lands on [data-message-text] only when WS is healthy.
     await awContext.page.bringToFront().catch(() => {});
     await ensurePlayerInGame(awContext, 30000);
@@ -251,6 +255,8 @@ test.describe('Chat Messages Between Players', () => {
     await new Promise(r => setTimeout(r, 2000));
 
     await nudgeStandBothPlayers(awContext, ithaquaContext);
+
+    await prepareReceiverForInboundMessages(ithaquaContext, 20000);
 
     await awContext.page.bringToFront().catch(() => {});
     await ensurePlayerInGame(awContext, 30000);

@@ -15,24 +15,14 @@ import {
   getPlayerMessages,
   waitForAllPlayersInGame,
 } from '../fixtures/multiplayer';
-import { TEST_TIMEOUTS } from '../fixtures/test-data';
 
 /** Matches server `format_who_result` / error / empty branches (who_commands.py). */
 const WHO_LISTING_LINE =
   /who to see all online|No players found matching|No players are currently online|Player information is not available|Online Players\s*\(|Online Players:/i;
 
-/** CommandInputPanel disables the input when `!isConnected`; wait before fill/Enter. */
-async function waitForCommandReady(page: Page, timeoutMs: number = TEST_TIMEOUTS.GAME_LOAD): Promise<void> {
-  await page.bringToFront().catch(() => {});
-  const commandInput = page.getByTestId('command-input');
-  await expect(commandInput).toBeVisible({ timeout: TEST_TIMEOUTS.COMMAND });
-  await commandInput.scrollIntoViewIfNeeded();
-  await expect(page.getByRole('button', { name: 'Send Command' })).toBeEnabled({ timeout: timeoutMs });
-}
-
 async function expectWhoListingOnPage(page: Page): Promise<void> {
   const tryOnce = async (timeoutMs: number) => {
-    await waitForCommandReady(page, TEST_TIMEOUTS.GAME_LOAD);
+    await page.bringToFront().catch(() => {});
     await executeCommand(page, 'who');
     await expect
       .poll(
@@ -69,12 +59,10 @@ test.describe('Who Command', () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
   test.beforeAll(async ({ browser }) => {
-    // Create contexts for both players
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
     await waitForAllPlayersInGame(contexts, 60000);
     await ensurePlayerInGame(contexts[0], 60000);
     await ensurePlayerInGame(contexts[1], 60000);
-    // Who lists all online players; no co-location required.
   });
 
   test.beforeEach(async () => {
@@ -89,13 +77,11 @@ test.describe('Who Command', () => {
   test('AW should see both players in who list', async () => {
     const awContext = contexts[0];
 
-    // `who` is server-global; same-room occupant sync is unnecessary and can burn the 180s test timeout.
     await awContext.page.bringToFront().catch(() => {});
     await expect(awContext.page.getByText(new RegExp(`Player:\\s*${awContext.player.username}\\b`, 'i'))).toBeVisible({
       timeout: 15000,
     });
     await awContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
-    await waitForCommandReady(awContext.page);
     await executeCommand(awContext.page, 'look');
     await assertLookVisibleInPanels(awContext.page);
 
@@ -105,7 +91,6 @@ test.describe('Who Command', () => {
     await awContext.page.bringToFront().catch(() => {});
     await expectWhoListingOnPage(awContext.page);
 
-    // Verify at least one player name appears in who list (both if timing allows)
     const messages = await getMessages(awContext.page);
     const seesArkan = messages.some(msg => msg.includes('ArkanWolfshade'));
     const seesIthaqua = messages.some(msg => msg.includes('Ithaqua'));
@@ -120,7 +105,6 @@ test.describe('Who Command', () => {
       ithaquaContext.page.getByText(new RegExp(`Player:\\s*${ithaquaContext.player.username}\\b`, 'i'))
     ).toBeVisible({ timeout: 15000 });
     await ithaquaContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
-    await waitForCommandReady(ithaquaContext.page);
     await executeCommand(ithaquaContext.page, 'look');
     await assertLookVisibleInPanels(ithaquaContext.page);
 

@@ -90,7 +90,9 @@ test.describe('Movement Between Rooms', () => {
 
     await ithaquaContext.page.bringToFront().catch(() => {});
     await ithaquaContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
-    await ithaquaContext.page.getByTestId('command-input').click();
+    await ithaquaContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
     await executeCommand(ithaquaContext.page, 'look');
     await waitForMessage(ithaquaContext.page, /Arena|exits|gladiator|sand|Foyer|Hallway/i, 20000).catch(() => {});
 
@@ -99,7 +101,9 @@ test.describe('Movement Between Rooms', () => {
       await ensureStanding(awContext.page, 8000);
       // Movement echoes are system-typed -> Game Info only (Chat stays empty). Prime WS/projector like other MP specs.
       await awContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
-      await awContext.page.getByTestId('command-input').click();
+      await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+        el.focus();
+      });
       await executeCommand(awContext.page, 'look');
       await waitForMessage(awContext.page, /Arena|Foyer|Hallway|gladiator|sand|exits|Room/i, 30000).catch(() => {});
       await executeCommand(awContext.page, 'go east');
@@ -116,7 +120,9 @@ test.describe('Movement Between Rooms', () => {
       await ensurePlayersInSameRoom(contexts, 2, 45000);
       await nudgeStandBoth(awContext, ithaquaContext);
       await ithaquaContext.page.bringToFront().catch(() => {});
-      await ithaquaContext.page.getByTestId('command-input').click();
+      await ithaquaContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+        el.focus();
+      });
       await executeCommand(ithaquaContext.page, 'look');
       await new Promise(r => setTimeout(r, 1500));
       await awContext.page.bringToFront().catch(() => {});
@@ -159,7 +165,9 @@ test.describe('Movement Between Rooms', () => {
     await ensureStanding(ithaquaContext.page, 5000);
     await ithaquaContext.page.bringToFront().catch(() => {});
     await ithaquaContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
-    await ithaquaContext.page.getByTestId('command-input').click();
+    await ithaquaContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
     await executeCommand(ithaquaContext.page, 'go east');
     await waitForMessage(ithaquaContext.page, /You go east|You move east|You head east|Eastern|Hallway/i, 45000).catch(
       () => {}

@@ -8,6 +8,7 @@
  */
 
 import { expect, test } from '@playwright/test';
+import { clickWithoutStability, recoverPlayableSession } from '../fixtures/auth';
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
@@ -32,16 +33,19 @@ test.describe('Logout Errors', () => {
   });
 
   test('logout button should handle logout successfully', async () => {
+    test.setTimeout(120_000);
     const awContext = contexts[0];
     const { page } = awContext;
 
     await ensurePlayerInGame(awContext, 30000);
+    await page.bringToFront().catch(() => {});
+    await recoverPlayableSession(page, awContext.player.username, awContext.player.password, 45000);
 
-    // performGameClientLogout sends `rest` (~10s server countdown) then disconnect; login can exceed 15s on CI.
+    // performGameClientLogout sends `rest` (~10s server countdown) then disconnect; login can exceed 45s after long suites.
     const logoutButton = page.getByTestId('logout-button');
     await expect(logoutButton).toBeEnabled({ timeout: 15000 });
-    await logoutButton.click();
+    await clickWithoutStability(logoutButton);
 
-    await expect(page.getByTestId('username-input')).toBeVisible({ timeout: 45000 });
+    await expect(page.getByTestId('username-input')).toBeVisible({ timeout: 90000 });
   });
 });

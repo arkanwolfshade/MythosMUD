@@ -1,9 +1,77 @@
 import React, { useCallback, useState } from 'react';
+import { stringIndicatesServerUnavailable } from '../mythosApp/serverAvailability.js';
 import type { CharacterInfo } from '../types/auth.js';
-import { isServerCharacterResponseArray } from '../utils/apiTypeGuards.js';
+import { assertServerCharacterResponseArray } from '../utils/apiTypeGuards.js';
 import { getErrorMessage, isErrorResponse } from '../utils/errorHandler.js';
 import { logger } from '../utils/logger.js';
 import './CharacterSelectionScreen.css';
+
+const LOAD_CHARACTERS_ERROR = 'Failed to load characters';
+const SERVER_UNAVAILABLE_MESSAGE = 'Server is unavailable. Please try again later.';
+
+function extractErrorMessageFromResponseBody(rawData: unknown, defaultMessage: string): string {
+  if (isErrorResponse(rawData)) {
+    return getErrorMessage(rawData);
+  }
+
+  const genericMessage = getErrorMessage(rawData);
+  if (genericMessage !== 'An unknown error occurred') {
+    return genericMessage;
+  }
+
+  if (typeof rawData === 'object' && rawData !== null) {
+    const detail = (rawData as Record<string, unknown>).detail;
+    if (typeof detail === 'object' && detail !== null && 'message' in detail) {
+      return String((detail as Record<string, unknown>).message);
+    }
+  }
+
+  return defaultMessage;
+}
+
+async function extractCharactersFetchErrorMessage(response: Response): Promise<string> {
+  if (response.status >= 500 && response.status < 600) {
+    return SERVER_UNAVAILABLE_MESSAGE;
+  }
+
+  try {
+    const rawData: unknown = await response.json();
+    return extractErrorMessageFromResponseBody(rawData, LOAD_CHARACTERS_ERROR);
+  } catch {
+    return LOAD_CHARACTERS_ERROR;
+  }
+}
+
+async function fetchCharactersList(baseUrl: string, authToken: string) {
+  const response = await fetch(`${baseUrl}/api/players/characters`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${authToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(await extractCharactersFetchErrorMessage(response));
+  }
+
+  const rawData: unknown = await response.json();
+  return assertServerCharacterResponseArray(rawData);
+}
+
+function handleRefreshCharactersFailure(error: unknown, onError: (error: string) => void): void {
+  const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+
+  if (stringIndicatesServerUnavailable(errorMessage)) {
+    onError(SERVER_UNAVAILABLE_MESSAGE);
+    logger.error('CharacterSelectionScreen', 'Server unavailable when refreshing characters', {
+      error: errorMessage,
+    });
+    return;
+  }
+
+  logger.error('CharacterSelectionScreen', 'Failed to refresh characters', { error: errorMessage });
+}
 
 interface CharacterSelectionScreenProps {
   characters: CharacterInfo[];
@@ -29,76 +97,12 @@ export const CharacterSelectionScreen: React.FC<CharacterSelectionScreenProps> =
 
   const refreshCharacters = useCallback(async () => {
     try {
-      const response = await fetch(`${baseUrl}/api/players/characters`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
-
-      if (!response.ok) {
-        // Check for server unavailability (5xx errors)
-        if (response.status >= 500 && response.status < 600) {
-          throw new Error('Server is unavailable. Please try again later.');
-        }
-
-        let errorMessage = 'Failed to load characters';
-        try {
-          const rawData: unknown = await response.json();
-          if (isErrorResponse(rawData)) {
-            errorMessage = getErrorMessage(rawData);
-          } else if (typeof rawData === 'object' && rawData !== null) {
-            const errorData = rawData as Record<string, unknown>;
-            errorMessage =
-              typeof errorData.detail === 'object' && errorData.detail !== null && 'message' in errorData.detail
-                ? String((errorData.detail as Record<string, unknown>).message)
-                : typeof errorData.detail === 'string'
-                  ? errorData.detail
-                  : errorMessage;
-          }
-        } catch {
-          // Use default error message if JSON parsing fails
-        }
-        throw new Error(errorMessage);
-      }
-
-      const rawData: unknown = await response.json();
-      if (!isServerCharacterResponseArray(rawData)) {
-        throw new Error('Invalid API response: expected ServerCharacterResponse[]');
-      }
+      const refreshedCharacters = await fetchCharactersList(baseUrl, authToken);
       // Note: The parent component should update the characters prop
       // This is just for refreshing if needed
-      logger.info('CharacterSelectionScreen', 'Characters refreshed', { count: rawData.length });
+      logger.info('CharacterSelectionScreen', 'Characters refreshed', { count: refreshedCharacters.length });
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-
-      // Check if error indicates server unavailability
-      const errorLower = errorMessage.toLowerCase();
-      const serverUnavailablePatterns = [
-        'failed to fetch',
-        'network error',
-        'network request failed',
-        'connection refused',
-        'connection reset',
-        'connection closed',
-        'connection timeout',
-        'server is unavailable',
-        'service unavailable',
-        'bad gateway',
-        'gateway timeout',
-      ];
-
-      if (serverUnavailablePatterns.some(pattern => errorLower.includes(pattern))) {
-        // Pass server unavailability error to parent
-        onError('Server is unavailable. Please try again later.');
-        logger.error('CharacterSelectionScreen', 'Server unavailable when refreshing characters', {
-          error: errorMessage,
-        });
-        return;
-      }
-
-      logger.error('CharacterSelectionScreen', 'Failed to refresh characters', { error: errorMessage });
+      handleRefreshCharactersFailure(error, onError);
     }
   }, [baseUrl, authToken, onError]);
 
@@ -218,6 +222,7 @@ export const CharacterSelectionScreen: React.FC<CharacterSelectionScreenProps> =
                       onClick={() => onCharacterSelected(character.player_id)}
                       className="select-character-button primary"
                       type="button"
+                      data-testid="select-character-button"
                     >
                       Select Character
                     </button>

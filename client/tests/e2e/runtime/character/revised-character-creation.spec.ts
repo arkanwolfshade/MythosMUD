@@ -12,8 +12,6 @@ import { cleanupE2ECharacters } from '../fixtures/character-cleanup';
 import { TEST_TIMEOUTS } from '../fixtures/test-data';
 import { LoginPage } from '../pages';
 
-const CREATION_CHAR_NAME = `E2ERevised_${Date.now()}`;
-
 /**
  * Professions screen paints the h1 even when the API returns []; cards mount only with data.
  * Use Promise.all(waitForResponse, click) so a fast /professions response is never missed.
@@ -24,7 +22,9 @@ async function acceptStatsAndSelectFirstProfession(page: Page): Promise<void> {
     page.waitForResponse(r => r.url().includes('/professions') && r.request().method() === 'GET' && r.ok(), {
       timeout: 90_000,
     }),
-    page.getByRole('button', { name: 'Accept Stats' }).click(),
+    page.getByRole('button', { name: 'Accept Stats' }).evaluate((el: HTMLElement) => {
+      el.click();
+    }),
   ]);
 
   expect(resp.ok(), `GET /professions failed: ${resp.status()}`).toBeTruthy();
@@ -53,8 +53,12 @@ async function acceptStatsAndSelectFirstProfession(page: Page): Promise<void> {
     })
     .toBeGreaterThan(0);
 
-  await cards.first().click();
-  await page.getByRole('button', { name: 'Next' }).click();
+  await cards.first().evaluate((el: HTMLElement) => {
+    el.click();
+  });
+  await page.getByRole('button', { name: 'Next' }).evaluate((el: HTMLElement) => {
+    el.click();
+  });
 }
 
 async function loginAsIthaqua(page: Page): Promise<void> {
@@ -65,31 +69,50 @@ async function loginAsIthaqua(page: Page): Promise<void> {
 
 async function deleteRevisedTestCharacterToMakeRoom(page: Page, createButton: Locator): Promise<void> {
   const testCharPattern = /^(E2ERevised_|E4Skills_)/;
-  const charHeadings = page.locator('h3');
-  const headingCount = await charHeadings.count();
 
-  for (let i = 0; i < headingCount; i++) {
-    const charName =
-      (await charHeadings
-        .nth(i)
-        .textContent()
-        .catch(() => '')) ?? '';
-    if (!testCharPattern.test(charName)) {
-      continue;
+  for (let attempt = 0; attempt < 6; attempt++) {
+    if (await createButton.isVisible({ timeout: 2000 }).catch(() => false)) {
+      return;
     }
 
-    const card = page.locator('.character-card').filter({ hasText: charName });
-    const deleteBtn = card.locator('button.delete-character-button, button:has-text("Delete")').first();
-    if (!(await deleteBtn.isVisible({ timeout: 2000 }).catch(() => false))) {
-      continue;
+    const charHeadings = page.locator('h3');
+    const headingCount = await charHeadings.count();
+    let deletedOne = false;
+
+    for (let i = 0; i < headingCount; i++) {
+      const charName =
+        (await charHeadings
+          .nth(i)
+          .textContent()
+          .catch(() => '')) ?? '';
+      if (!testCharPattern.test(charName)) {
+        continue;
+      }
+
+      const card = page.locator('.character-card').filter({ hasText: charName });
+      const deleteBtn = card.getByRole('button', { name: 'Delete', exact: true });
+      if (!(await deleteBtn.isVisible({ timeout: 2000 }).catch(() => false))) {
+        continue;
+      }
+
+      await deleteBtn.evaluate((el: HTMLElement) => {
+        el.click();
+      });
+      await page.getByText(/Are you sure/i).waitFor({ state: 'visible', timeout: 5000 });
+      await page.getByRole('button', { name: 'Confirm Delete' }).evaluate((el: HTMLElement) => {
+        el.click();
+      });
+      await new Promise(r => setTimeout(r, 2000));
+      deletedOne = true;
+      break;
     }
 
-    await deleteBtn.click();
-    await page.getByText(/Are you sure/i).waitFor({ state: 'visible', timeout: 5000 });
-    await page.getByRole('button', { name: /Confirm Delete|confirm|yes|delete/i }).click({ timeout: 5000 });
-    await createButton.waitFor({ state: 'visible', timeout: 15000 });
-    break;
+    if (!deletedOne) {
+      break;
+    }
   }
+
+  await createButton.waitFor({ state: 'visible', timeout: 20000 });
 }
 
 async function openStatsRollingFromLogin(page: Page): Promise<void> {
@@ -105,13 +128,11 @@ async function openStatsRollingFromLogin(page: Page): Promise<void> {
   const onSelectionScreen = await characterSelectionHeading.isVisible().catch(() => false);
   if (onSelectionScreen) {
     const createButton = page.getByRole('button', { name: /Create New Character/i });
-    const canCreate = await createButton.isVisible({ timeout: 2000 }).catch(() => false);
+    await deleteRevisedTestCharacterToMakeRoom(page, createButton);
 
-    if (!canCreate) {
-      await deleteRevisedTestCharacterToMakeRoom(page, createButton);
-    }
-
-    await createButton.click();
+    await createButton.evaluate((el: HTMLElement) => {
+      el.click();
+    });
   }
 
   await statsScreen.waitFor({ state: 'visible', timeout: TEST_TIMEOUTS.DEFAULT });
@@ -130,52 +151,79 @@ async function assignAllSkillsAndProceedToName(page: Page): Promise<void> {
 async function submitCharacterName(page: Page, characterName: string): Promise<void> {
   await page.getByTestId('character-name-screen').waitFor({ state: 'visible', timeout: TEST_TIMEOUTS.DEFAULT });
   await page.getByPlaceholder('Enter name').fill(characterName);
-  await page.getByRole('button', { name: 'Create Character' }).click();
-}
-
-async function waitForCharacterCreationLanding(
-  page: Page
-): Promise<{ hasCharacterList: boolean; hasGameInput: boolean }> {
-  await Promise.race([
-    page.getByRole('heading', { name: /Select Your Character/i }).waitFor({
-      state: 'visible',
-      timeout: TEST_TIMEOUTS.LOGIN,
+  const [createResponse] = await Promise.all([
+    page.waitForResponse(r => r.url().includes('/create-character') && r.request().method() === 'POST' && r.ok(), {
+      timeout: 90_000,
     }),
-    page.getByTestId('command-input').waitFor({ state: 'visible', timeout: TEST_TIMEOUTS.GAME_LOAD }),
+    page
+      .waitForResponse(
+        r =>
+          r.url().includes('/characters') &&
+          r.request().method() === 'GET' &&
+          r.ok() &&
+          !r.url().includes('create-character'),
+        { timeout: 90_000 }
+      )
+      .catch(() => null),
+    page.getByRole('button', { name: 'Create Character' }).evaluate((el: HTMLElement) => {
+      el.click();
+    }),
   ]);
-
-  const hasCharacterList = await page
-    .getByRole('heading', { name: /Select Your Character/i })
-    .isVisible()
-    .catch(() => false);
-  const hasGameInput = await page
-    .getByTestId('command-input')
-    .isVisible()
-    .catch(() => false);
-  return { hasCharacterList, hasGameInput };
+  expect(createResponse.ok(), `POST create-character failed: ${createResponse.status()}`).toBeTruthy();
 }
 
-async function enterGameFromCharacterListIfNeeded(page: Page): Promise<void> {
-  const onCharacterList = await page
-    .getByRole('heading', { name: /Select Your Character/i })
-    .isVisible()
-    .catch(() => false);
-  if (!onCharacterList) {
-    return;
-  }
+/**
+ * After POST create-character, the client refreshes the character list. Under E2E load that refresh
+ * can fail and creationCompleteActions resets the flow to stats — reload + re-login to recover.
+ */
+async function assertCharacterVisibleOnList(page: Page, characterName: string): Promise<void> {
+  await expect(async () => {
+    const visible = await page
+      .getByText(characterName, { exact: true })
+      .isVisible()
+      .catch(() => false);
+    if (visible) {
+      return;
+    }
 
-  await page
-    .getByRole('button', { name: /Select Character/i })
-    .first()
-    .click();
+    const onStats = await page
+      .getByTestId('stats-rolling-screen')
+      .isVisible()
+      .catch(() => false);
+    if (onStats) {
+      await page.reload({ waitUntil: 'domcontentloaded' });
+      const onLogin = await page
+        .getByTestId('username-input')
+        .isVisible({ timeout: 5000 })
+        .catch(() => false);
+      if (onLogin) {
+        const loginPage = new LoginPage(page);
+        await loginPage.login('Ithaqua', 'Cthulhu1');
+      }
+    }
+
+    await expect(page.getByText(characterName, { exact: true })).toBeVisible({ timeout: 5000 });
+  }).toPass({ timeout: 120_000, intervals: [500, 1000, 2000] });
+}
+
+async function enterGameWithCharacter(page: Page, characterName: string): Promise<void> {
+  const card = page.locator('.character-card').filter({
+    has: page.locator('h3.character-name', { hasText: characterName }),
+  });
+  await card.getByRole('button', { name: 'Select Character' }).evaluate((el: HTMLElement) => {
+    el.click();
+  });
   await page
     .getByTestId('motd-enter-realm')
     .waitFor({ state: 'visible', timeout: 15000 })
     .catch(() => {});
   await page
     .getByTestId('motd-enter-realm')
-    .click()
+    .evaluate((el: HTMLElement) => {
+      el.click();
+    })
     .catch(() => {});
+  await page.getByTestId('command-input').waitFor({ state: 'visible', timeout: TEST_TIMEOUTS.GAME_LOAD });
 }
 
 async function readSkillsMessageText(page: Page): Promise<string> {
@@ -187,6 +235,15 @@ async function readSkillsMessageText(page: Page): Promise<string> {
 }
 
 test.describe('Revised Character Creation', () => {
+  test.beforeAll(async ({ browser }) => {
+    const page = await browser.newPage();
+    try {
+      await cleanupE2ECharacters(page);
+    } finally {
+      await page.close();
+    }
+  });
+
   test.afterAll(async ({ browser }) => {
     const page = await browser.newPage();
     try {
@@ -197,19 +254,14 @@ test.describe('Revised Character Creation', () => {
   });
 
   test('should complete stats → profession → skills → name → create and show character', async ({ page }) => {
+    const creationCharName = `E2ERevised_${Date.now()}`;
     await loginAsIthaqua(page);
     await openStatsRollingFromLogin(page);
     await acceptStatsAndSelectFirstProfession(page);
     await assignAllSkillsAndProceedToName(page);
-    await submitCharacterName(page, CREATION_CHAR_NAME);
-
-    const { hasCharacterList, hasGameInput } = await waitForCharacterCreationLanding(page);
-    /* eslint-disable playwright/no-conditional-in-test, playwright/no-conditional-expect -- either list or game is valid outcome */
-    expect(hasCharacterList || hasGameInput).toBe(true);
-    if (hasCharacterList) {
-      await expect(page.getByText(CREATION_CHAR_NAME)).toBeVisible({ timeout: 5000 });
-    }
-    /* eslint-enable playwright/no-conditional-in-test, playwright/no-conditional-expect */
+    await submitCharacterName(page, creationCharName);
+    await assertCharacterVisibleOnList(page, creationCharName);
+    await expect(page.getByText(creationCharName, { exact: true })).toBeVisible({ timeout: 15_000 });
   });
 
   test('E4: after creation /skills shows character skills (allocated + catalog)', async ({ page }) => {
@@ -219,8 +271,8 @@ test.describe('Revised Character Creation', () => {
     await assignAllSkillsAndProceedToName(page);
     const charName = `E4Skills_${Date.now()}`;
     await submitCharacterName(page, charName);
-    await waitForCharacterCreationLanding(page);
-    await enterGameFromCharacterListIfNeeded(page);
+    await assertCharacterVisibleOnList(page, charName);
+    await enterGameWithCharacter(page, charName);
     const fullText = await readSkillsMessageText(page);
     expect(/:\s*\d+%/.test(fullText) || fullText.includes('No skills recorded')).toBe(true);
   });

@@ -64,7 +64,9 @@ test.describe('Muting System and Emotes', () => {
     await executeCommand(awContext.page, 'stand');
     await new Promise(r => setTimeout(r, 1500));
 
-    await awContext.page.getByTestId('command-input').click();
+    await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
     await executeCommand(awContext.page, 'look');
     await waitForMessage(awContext.page, /Arena|Exits:|already standing|rise to your feet/i, 20000).catch(() => {});
 
@@ -72,7 +74,9 @@ test.describe('Muting System and Emotes', () => {
     const muteAck = new RegExp(`You have muted\\s+${escapeRegExp(targetName)}\\b`, 'i');
 
     await awContext.page.bringToFront().catch(() => {});
-    await awContext.page.getByTestId('command-input').click();
+    await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
     await executeCommand(awContext.page, `mute ${targetName}`);
     await waitForMessage(awContext.page, muteAck, 45000);
     const muteMessages = await getMessages(awContext.page);
@@ -90,14 +94,18 @@ test.describe('Muting System and Emotes', () => {
     await executeCommand(awContext.page, 'stand');
     await new Promise(r => setTimeout(r, 1500));
 
-    await awContext.page.getByTestId('command-input').click();
+    await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
     await executeCommand(awContext.page, 'look');
     await waitForMessage(awContext.page, /Arena|Exits:|already standing/i, 20000).catch(() => {});
 
     const targetName = await getIthaquaMuteTargetName(ithaquaContext);
     const muteAck = new RegExp(`You have muted\\s+${escapeRegExp(targetName)}\\b`, 'i');
 
-    await awContext.page.getByTestId('command-input').click();
+    await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
     await executeCommand(awContext.page, `mute ${targetName}`);
     await waitForMessage(awContext.page, muteAck, 45000);
 
@@ -138,10 +146,14 @@ test.describe('Muting System and Emotes', () => {
       await waitForDisconnectBannerClear(awContext.page);
       await executeCommand(awContext.page, 'stand');
       await new Promise(r => setTimeout(r, 1500));
-      await awContext.page.getByTestId('command-input').click();
+      await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+        el.focus();
+      });
       await executeCommand(awContext.page, 'look');
       await waitForMessage(awContext.page, /Arena|Exits:|already standing/i, 20000).catch(() => {});
-      await awContext.page.getByTestId('command-input').click();
+      await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+        el.focus();
+      });
       await executeCommand(awContext.page, `unmute ${targetName}`);
       await waitForMessage(awContext.page, unmuteAck, 45000);
     };

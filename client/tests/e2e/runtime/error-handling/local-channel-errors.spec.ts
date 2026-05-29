@@ -51,11 +51,15 @@ test.describe('Local Channel Errors', () => {
 
     await ensurePlayerInGame(awContext, 30000);
     await awContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
-    await awContext.page.getByTestId('command-input').click();
+    await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
     await executeCommand(awContext.page, 'look');
     await waitForMessage(awContext.page, /Arena|gladiator|heart of the|exits|sand/i, 20000).catch(() => {});
 
-    await awContext.page.getByTestId('command-input').click();
+    await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
     await executeCommand(awContext.page, 'local');
 
     await waitForMessage(awContext.page, EMPTY_LOCAL_REJECTION, 45000);
@@ -114,7 +118,9 @@ test.describe('Local Channel Errors', () => {
     // when the other player has left the world; cross-player /local is covered elsewhere.
     await ensurePlayerInGame(awContext, 30000);
     await awContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
-    await awContext.page.getByTestId('command-input').click();
+    await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
     await executeCommand(awContext.page, 'look');
     await waitForMessage(awContext.page, /Arena|gladiator|heart of the|exits|sand/i, 20000).catch(() => {});
 
@@ -134,7 +140,9 @@ test.describe('Local Channel Errors', () => {
     // client’s occupant pane is stale and exhaust the 180s test timeout before `local` runs.
     await ensurePlayerInGame(awContext, 30000);
     await awContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
-    await awContext.page.getByTestId('command-input').click();
+    await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
     await executeCommand(awContext.page, 'look');
     await waitForMessage(awContext.page, /Arena|gladiator|heart of the|exits|sand/i, 20000).catch(() => {});
 
@@ -157,11 +165,15 @@ test.describe('Local Channel Errors', () => {
     // ensureMultiplayerCoLocated here — second client can be gone and this assertion is sender-only.
     await ensurePlayerInGame(awContext, 30000);
     await awContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
-    await awContext.page.getByTestId('command-input').click();
+    await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
     await executeCommand(awContext.page, 'look');
     await waitForMessage(awContext.page, /Arena|gladiator|heart of the|exits|sand/i, 20000).catch(() => {});
 
-    await awContext.page.getByTestId('command-input').click();
+    await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
     await executeCommand(awContext.page, 'local');
 
     await waitForMessage(awContext.page, EMPTY_LOCAL_REJECTION, 45000);
@@ -176,11 +188,15 @@ test.describe('Local Channel Errors', () => {
 
     await ensurePlayerInGame(awContext, 30000);
     await awContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
-    await awContext.page.getByTestId('command-input').click();
+    await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
     await executeCommand(awContext.page, 'look');
     await waitForMessage(awContext.page, /Arena|gladiator|heart of the|exits|sand/i, 20000).catch(() => {});
 
-    await awContext.page.getByTestId('command-input').click();
+    await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
     await executeCommand(awContext.page, 'local   ');
 
     await waitForMessage(awContext.page, EMPTY_LOCAL_REJECTION, 45000);
@@ -202,7 +218,9 @@ test.describe('Local Channel Errors', () => {
     // Occupants (1) on the receiver until look refreshes; prime both before the teleport loop.
     for (const ctx of contexts) {
       await ctx.page.bringToFront().catch(() => {});
-      await ctx.page.getByTestId('command-input').click();
+      await ctx.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+        el.focus();
+      });
       await executeCommand(ctx.page, 'look');
       await waitForMessage(ctx.page, /Arena|gladiator|exits|Occupants|Location/i, 20000).catch(() => {});
     }
@@ -238,11 +256,15 @@ test.describe('Local Channel Errors', () => {
     // ensureMultiplayerCoLocated then retries until the whole test hits 180s. Prime AW like other /local tests.
     await ensurePlayerInGame(awContext, 30000);
     await awContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
-    await awContext.page.getByTestId('command-input').click();
+    await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
     await executeCommand(awContext.page, 'look');
     await waitForMessage(awContext.page, /Arena|gladiator|heart of the|exits|sand/i, 20000).catch(() => {});
 
-    await awContext.page.getByTestId('command-input').click();
+    await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
     await executeCommand(awContext.page, 'local System stability test');
 
     await waitForMessage(awContext.page, 'You say locally: System stability test', 45000);

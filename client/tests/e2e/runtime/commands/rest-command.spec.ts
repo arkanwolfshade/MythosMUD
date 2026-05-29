@@ -42,7 +42,9 @@ test.describe('Rest Command', () => {
     // Header can read Connected while Occupants still shows (linkdead); warm WS + Game Info before asserting.
     await ensurePlayerInGame(awContext, 30000);
     await page.bringToFront().catch(() => {});
-    await page.getByTestId('command-input').click();
+    await page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
     await ensureStanding(page, 8000);
     await executeCommand(page, 'look');
     await waitForMessage(page, /Arena|Exits|gladiator|sand|look/i, 20000).catch(() => {});
