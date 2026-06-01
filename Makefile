@@ -74,7 +74,7 @@ help:
 	@echo "  stylelint      - CSS linter"
 	@echo "  markdownlint   - Markdown linter (use ARGS='--fix' to auto-fix)"
 	@echo "  jackson-linter - JSON linter"
-	@echo "  grype          - Dependency/filesystem vulnerability scanner (local SCA)"
+	@echo "  grype          - Dependency SCA from project root (excludes E2E harness trees; not in make all)"
 	@echo "  lizard         - Code complexity analyzer"
 	@echo "  quality-fragmentation-guard - Run local PR fragmentation/complexity guard"
 	@echo "  codacy-tools   - Run all Codacy tools"
@@ -198,8 +198,9 @@ quality-fragmentation-guard:
 vulture:
 	$(UV) vulture
 
-# Run all Codacy tools (except those already in lint/format)
-codacy-tools: bandit pylint sqlfluff hadolint shellcheck psscriptanalyzer stylelint markdownlint jackson-linter grype lizard vulture
+# Run all Codacy tools (except those already in lint/format).
+# Grype is standalone: make grype (project-root SCA; not part of E2E or make all).
+codacy-tools: bandit pylint sqlfluff hadolint shellcheck psscriptanalyzer stylelint markdownlint jackson-linter lizard vulture
 
 # ============================================================================
 # DATABASE SETUP
