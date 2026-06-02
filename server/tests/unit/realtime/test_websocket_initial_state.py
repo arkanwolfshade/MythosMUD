@@ -55,6 +55,7 @@ def mock_connection_manager() -> AsyncMock:
 def mock_room() -> MagicMock:
     """Create a mock room."""
     room: MagicMock = MagicMock(spec=Room)
+    room.name = "Test Room"
     to_dict_mock: MagicMock = MagicMock(return_value={"id": "room_123", "name": "Test Room"})
     room.to_dict = to_dict_mock
     has_player_mock: MagicMock = MagicMock(return_value=True)

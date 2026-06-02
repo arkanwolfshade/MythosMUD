@@ -247,7 +247,7 @@ async def check_and_send_death_notification(  # pylint: disable=too-many-argumen
         )
 
 
-def _get_npc_lifecycle_manager_from_connection_manager(
+def get_npc_lifecycle_manager_from_connection_manager(
     connection_manager: "ConnectionManager",
 ) -> _NpcLifecycleManagerForOccupants | None:
     """Resolve NPC lifecycle manager from connection manager app state."""
@@ -265,7 +265,7 @@ async def add_npc_occupants_to_list(
     room: "Room", occupant_names: list[str], canonical_room_id: str, connection_manager: "ConnectionManager"
 ) -> None:
     """Add NPC occupants to the occupant names list."""
-    npc_lifecycle_manager = _get_npc_lifecycle_manager_from_connection_manager(connection_manager)
+    npc_lifecycle_manager = get_npc_lifecycle_manager_from_connection_manager(connection_manager)
     if not npc_lifecycle_manager:
         return
     for npc_id in room.get_npcs():
