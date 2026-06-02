@@ -172,38 +172,89 @@ async function submitCharacterName(page: Page, characterName: string): Promise<v
   expect(createResponse.ok(), `POST create-character failed: ${createResponse.status()}`).toBeTruthy();
 }
 
+async function recoverCharacterSelectionAfterCreation(page: Page): Promise<void> {
+  if (page.isClosed()) {
+    return;
+  }
+
+  const onLogin = await page
+    .getByTestId('username-input')
+    .isVisible({ timeout: 2000 })
+    .catch(() => false);
+  if (!onLogin) {
+    await page.goto('/');
+    await page.waitForLoadState('domcontentloaded');
+  }
+
+  const loginPage = new LoginPage(page);
+  if (
+    await page
+      .getByTestId('username-input')
+      .isVisible({ timeout: 5000 })
+      .catch(() => false)
+  ) {
+    await loginPage.login('Ithaqua', 'Cthulhu1');
+  }
+
+  await page
+    .getByRole('heading', { name: /Select Your Character/i })
+    .waitFor({ state: 'visible', timeout: TEST_TIMEOUTS.LOGIN });
+}
+
+/** True when creation refresh failed and the UI is on stats, name, or not on selection. */
+async function needsRecoveryFromWrongCreationScreen(page: Page): Promise<boolean> {
+  const onSelection = await page
+    .getByRole('heading', { name: /Select Your Character/i })
+    .isVisible()
+    .catch(() => false);
+  if (!onSelection) {
+    return true;
+  }
+  const onStats = await page
+    .getByTestId('stats-rolling-screen')
+    .isVisible()
+    .catch(() => false);
+  if (onStats) {
+    return true;
+  }
+  return await page
+    .getByTestId('character-name-screen')
+    .isVisible()
+    .catch(() => false);
+}
+
+async function pollUntilCharacterListed(page: Page, nameLocator: Locator, cardLocator: Locator): Promise<void> {
+  if (await nameLocator.isVisible().catch(() => false)) {
+    return;
+  }
+
+  if (await needsRecoveryFromWrongCreationScreen(page)) {
+    await recoverCharacterSelectionAfterCreation(page);
+  }
+
+  await expect(cardLocator).toBeVisible({ timeout: 5000 });
+}
+
 /**
  * After POST create-character, the client refreshes the character list. Under E2E load that refresh
- * can fail and creationCompleteActions resets the flow to stats — reload + re-login to recover.
+ * can fail and creationCompleteActions resets the flow to stats — re-login to recover (not reload).
  */
 async function assertCharacterVisibleOnList(page: Page, characterName: string): Promise<void> {
-  await expect(async () => {
-    const visible = await page
-      .getByText(characterName, { exact: true })
-      .isVisible()
-      .catch(() => false);
-    if (visible) {
-      return;
-    }
+  const cardLocator = page.locator('.character-card').filter({ hasText: characterName });
+  const nameLocator = page.locator('h3.character-name').filter({ hasText: characterName });
 
-    const onStats = await page
-      .getByTestId('stats-rolling-screen')
-      .isVisible()
-      .catch(() => false);
-    if (onStats) {
-      await page.reload({ waitUntil: 'domcontentloaded' });
-      const onLogin = await page
-        .getByTestId('username-input')
-        .isVisible({ timeout: 5000 })
-        .catch(() => false);
-      if (onLogin) {
-        const loginPage = new LoginPage(page);
-        await loginPage.login('Ithaqua', 'Cthulhu1');
-      }
-    }
+  await page
+    .getByRole('heading', { name: /Select Your Character/i })
+    .or(page.locator('.character-selection-screen'))
+    .waitFor({ state: 'visible', timeout: 30_000 })
+    .catch(async () => {
+      await recoverCharacterSelectionAfterCreation(page);
+    });
 
-    await expect(page.getByText(characterName, { exact: true })).toBeVisible({ timeout: 5000 });
-  }).toPass({ timeout: 120_000, intervals: [500, 1000, 2000] });
+  await expect(async () => pollUntilCharacterListed(page, nameLocator, cardLocator)).toPass({
+    timeout: 120_000,
+    intervals: [1000, 2000, 3000],
+  });
 }
 
 async function enterGameWithCharacter(page: Page, characterName: string): Promise<void> {
@@ -261,7 +312,9 @@ test.describe('Revised Character Creation', () => {
     await assignAllSkillsAndProceedToName(page);
     await submitCharacterName(page, creationCharName);
     await assertCharacterVisibleOnList(page, creationCharName);
-    await expect(page.getByText(creationCharName, { exact: true })).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('h3.character-name').filter({ hasText: creationCharName })).toBeVisible({
+      timeout: 15_000,
+    });
   });
 
   test('E4: after creation /skills shows character skills (allocated + catalog)', async ({ page }) => {

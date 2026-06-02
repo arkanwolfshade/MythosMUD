@@ -10,6 +10,21 @@ import { expect, type Page } from '@playwright/test';
 import { CharacterSelectionPage, LoginPage, MotdPage } from '../pages';
 import { TEST_TIMEOUTS } from './test-data';
 
+/** Last login credentials per page — used by executeCommand recovery in multiplayer tests. */
+const pageSessionCredentials = new WeakMap<Page, { username: string; password: string }>();
+
+export function rememberPageSession(page: Page, username: string, password: string): void {
+  pageSessionCredentials.set(page, { username, password });
+}
+
+export function getPageSessionCredentials(page: Page): { username: string; password: string } | undefined {
+  return pageSessionCredentials.get(page);
+}
+
+function isPageUsable(page: Page): boolean {
+  return !page.isClosed();
+}
+
 /**
  * Login a player and navigate through the full authentication flow.
  * Uses LoginPage, CharacterSelectionPage, and MotdPage for stable locators and actions.
@@ -19,6 +34,7 @@ import { TEST_TIMEOUTS } from './test-data';
  * @param password - Password to login with
  */
 export async function loginPlayer(page: Page, username: string, password: string): Promise<void> {
+  rememberPageSession(page, username, password);
   const loginPage = new LoginPage(page);
   const characterSelection = new CharacterSelectionPage(page);
   const motdPage = new MotdPage(page);
@@ -76,6 +92,39 @@ export async function loginPlayer(page: Page, username: string, password: string
   await expect(page.getByTestId('command-input')).toBeVisible({ timeout: TEST_TIMEOUTS.GAME_LOAD });
 }
 
+/** Grace-period disconnect copy shown in Game Info when the server blocks commands. */
+const GRACE_PERIOD_MESSAGE = 'You are disconnected and cannot perform actions';
+
+/**
+ * Intentionally exit the game via Exit the Realm so the server records a clean logout
+ * instead of starting a linkdead grace period when the browser context closes.
+ */
+export async function logoutPlayer(page: Page, timeoutMs: number = 90000): Promise<void> {
+  await page.bringToFront().catch(() => {});
+
+  const onLogin = await page
+    .getByTestId('username-input')
+    .isVisible({ timeout: 2000 })
+    .catch(() => false);
+  if (onLogin) {
+    return;
+  }
+
+  const logoutButton = page.getByTestId('logout-button');
+  const inGame = await logoutButton.isVisible({ timeout: 3000 }).catch(() => false);
+  if (!inGame) {
+    return;
+  }
+
+  const logoutEnabled = await logoutButton.isEnabled({ timeout: 15000 }).catch(() => false);
+  if (!logoutEnabled) {
+    return;
+  }
+
+  await clickWithoutStability(logoutButton);
+  await expect(page.getByTestId('username-input')).toBeVisible({ timeout: timeoutMs });
+}
+
 /**
  * Wait until the client can accept commands (no disconnect banner, WS connected).
  * Send Command enablement is enforced separately in executeCommand.
@@ -84,10 +133,7 @@ export async function waitForPlayableSession(page: Page, timeoutMs: number = 300
   await expect(page.getByTestId('command-input')).toBeVisible({ timeout: Math.min(timeoutMs, 15000) });
 
   await page
-    .waitForFunction(
-      () => !(document.body?.innerText ?? '').includes('You are disconnected and cannot perform actions'),
-      { timeout: timeoutMs }
-    )
+    .waitForFunction(() => !(document.body?.innerText ?? '').includes(GRACE_PERIOD_MESSAGE), { timeout: timeoutMs })
     .catch(() => {});
 
   await page.waitForFunction(
@@ -99,9 +145,111 @@ export async function waitForPlayableSession(page: Page, timeoutMs: number = 300
   );
 }
 
+export interface EnsurePlayableConnectionOptions {
+  username?: string;
+  password?: string;
+  timeoutMs?: number;
+}
+
+async function assertCommandChannelReady(page: Page, budgetMs: number): Promise<boolean> {
+  try {
+    await waitForPlayableSession(page, Math.min(budgetMs, 30000));
+    const commandInput = page.getByTestId('command-input');
+    await expect(commandInput).toBeVisible({ timeout: Math.min(budgetMs, 10000) });
+    await expect(commandInput).toBeEnabled({ timeout: Math.min(budgetMs, 10000) });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function reconnectPlayableSession(
+  page: Page,
+  options: EnsurePlayableConnectionOptions | undefined,
+  timeoutMs: number
+): Promise<void> {
+  if (options?.username && options?.password) {
+    // Full reload drops the SPA session and returns to login; re-enter the game instead.
+    await recoverPlayableSession(page, options.username, options.password, timeoutMs);
+    return;
+  }
+
+  await refreshPlayableSession(page, timeoutMs);
+  if (await assertCommandChannelReady(page, timeoutMs)) {
+    return;
+  }
+
+  await waitForPlayableSession(page, timeoutMs);
+}
+
+/**
+ * Gate before command execution: header Connected, no grace-period copy, command input enabled.
+ * Send Command stays disabled until the input has text; do not probe readiness with that button.
+ */
+export async function ensurePlayableConnection(page: Page, options?: EnsurePlayableConnectionOptions): Promise<void> {
+  if (!isPageUsable(page)) {
+    throw new Error('Cannot ensure playable connection: browser page is closed');
+  }
+
+  const timeoutMs = options?.timeoutMs ?? 45000;
+  await page.bringToFront().catch(() => {});
+
+  if (await assertCommandChannelReady(page, timeoutMs)) {
+    return;
+  }
+
+  await reconnectPlayableSession(page, options, timeoutMs);
+}
+
+const RECOVER_COMMAND_READY_MS = 8000;
+
+async function isUsernameLoginVisible(page: Page, visibilityTimeoutMs = 2000): Promise<boolean> {
+  return page
+    .getByTestId('username-input')
+    .isVisible({ timeout: visibilityTimeoutMs })
+    .catch(() => false);
+}
+
+async function restorePlayableAfterLogin(
+  page: Page,
+  username: string,
+  password: string,
+  timeoutMs: number
+): Promise<void> {
+  await loginPlayer(page, username, password);
+  await waitForPlayableSession(page, timeoutMs);
+  await assertCommandChannelReady(page, timeoutMs);
+}
+
+/** Grace period / stand without reload; true when command channel is ready. */
+async function tryInPlacePlayableRecovery(page: Page, timeoutMs: number): Promise<boolean> {
+  await waitForPlayableSession(page, Math.min(timeoutMs, 25000)).catch(() => {});
+  if (await assertCommandChannelReady(page, RECOVER_COMMAND_READY_MS)) {
+    return true;
+  }
+  await executeCommandWithoutRecovery(page, 'stand').catch(() => {});
+  return assertCommandChannelReady(page, RECOVER_COMMAND_READY_MS);
+}
+
+/** SPA navigation to login (avoid Exit the Realm — it poisons parallel player sessions). */
+async function recoverPlayableViaSpaNavigation(
+  page: Page,
+  username: string,
+  password: string,
+  timeoutMs: number
+): Promise<void> {
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  if (await isUsernameLoginVisible(page, 10000)) {
+    await loginPlayer(page, username, password);
+  }
+  await waitForPlayableSession(page, timeoutMs);
+  await executeCommandWithoutRecovery(page, 'stand').catch(() => {});
+  await assertCommandChannelReady(page, timeoutMs);
+}
+
 /**
  * Restore a playable session when linkdead/disconnect left Send Command disabled.
- * Re-logs in only when the game UI is visible but commands are still blocked.
+ * Re-logs in only when reload did not restore command input.
  */
 export async function recoverPlayableSession(
   page: Page,
@@ -109,25 +257,31 @@ export async function recoverPlayableSession(
   password: string,
   timeoutMs: number = 45000
 ): Promise<void> {
-  await page.bringToFront().catch(() => {});
-
-  const sendDisabled = await page
-    .getByRole('button', { name: 'Send Command' })
-    .isDisabled()
-    .catch(() => true);
-  if (!sendDisabled) {
-    try {
-      await waitForPlayableSession(page, 8000);
-      return;
-    } catch {
-      // Fall through to relogin when header says Connected but commands stay blocked.
-    }
+  if (!isPageUsable(page)) {
+    throw new Error('Cannot recover playable session: browser page is closed');
   }
 
-  await loginPlayer(page, username, password);
-  await waitForPlayableSession(page, timeoutMs);
-  await executeCommand(page, 'stand').catch(() => {});
-  await expect(page.getByRole('button', { name: 'Send Command' })).toBeEnabled({ timeout: timeoutMs });
+  await page.bringToFront().catch(() => {});
+
+  if (await isUsernameLoginVisible(page)) {
+    await restorePlayableAfterLogin(page, username, password, timeoutMs);
+    return;
+  }
+
+  if (await assertCommandChannelReady(page, RECOVER_COMMAND_READY_MS)) {
+    return;
+  }
+
+  if (await tryInPlacePlayableRecovery(page, timeoutMs)) {
+    return;
+  }
+
+  if (await isUsernameLoginVisible(page)) {
+    await restorePlayableAfterLogin(page, username, password, timeoutMs);
+    return;
+  }
+
+  await recoverPlayableViaSpaNavigation(page, username, password, timeoutMs);
 }
 
 /**
@@ -135,15 +289,12 @@ export async function recoverPlayableSession(
  * Prefer this over full relogin in multiplayer tests to avoid kicking the other browser session.
  */
 export async function refreshPlayableSession(page: Page, timeoutMs: number = 45000): Promise<void> {
-  const sendCommand = page.getByRole('button', { name: 'Send Command' });
-  const sendDisabled = await sendCommand.isDisabled().catch(() => true);
-  if (!sendDisabled) {
-    try {
-      await waitForPlayableSession(page, 5000);
-      return;
-    } catch {
-      // Continue to reload when header says Connected but Send stayed disabled.
-    }
+  if (!isPageUsable(page)) {
+    return;
+  }
+
+  if (await assertCommandChannelReady(page, 5000)) {
+    return;
   }
 
   const onLogin = await page
@@ -154,7 +305,20 @@ export async function refreshPlayableSession(page: Page, timeoutMs: number = 450
     return;
   }
 
+  if (!isPageUsable(page)) {
+    return;
+  }
+
   await page.reload({ waitUntil: 'domcontentloaded' });
+
+  const onLoginAfterReload = await page
+    .getByTestId('username-input')
+    .isVisible({ timeout: 5000 })
+    .catch(() => false);
+  if (onLoginAfterReload) {
+    return;
+  }
+
   await page.waitForFunction(() => window.__mythosE2eIsGameUiLoaded?.() === true, { timeout: timeoutMs });
   await waitForPlayableSession(page, timeoutMs);
 }
@@ -182,6 +346,40 @@ export async function clickWithoutStability(
 }
 
 /**
+ * Submit a command when the session is already verified playable (no recovery loop).
+ * Use after ensurePlayableConnection to avoid logout/relogin during multiplayer co-locate.
+ */
+export async function executeCommandTrusted(page: Page, command: string): Promise<void> {
+  const isOnLoginScreen = await page
+    .getByTestId('username-input')
+    .isVisible()
+    .catch(() => false);
+
+  if (isOnLoginScreen) {
+    throw new Error(
+      'Cannot execute command: Still on login screen. Login may have failed or not completed. URL: ' + page.url()
+    );
+  }
+
+  await executeCommandWithoutRecovery(page, command);
+}
+
+async function executeCommandWithoutRecovery(page: Page, command: string): Promise<void> {
+  const commandInput = page.getByTestId('command-input');
+  await expect(commandInput).toBeVisible({ timeout: TEST_TIMEOUTS.COMMAND });
+  await commandInput.evaluate((el: HTMLElement) => {
+    el.focus();
+  });
+  await commandInput.clear();
+  await commandInput.fill(command);
+  await expect(commandInput).toHaveValue(command, { timeout: 5000 });
+  const sendCommand = page.getByRole('button', { name: 'Send Command' });
+  await expect(sendCommand).toBeEnabled({ timeout: TEST_TIMEOUTS.GAME_LOAD });
+  await commandInput.press('Enter');
+  await expect(commandInput).toBeVisible({ timeout: 3000 });
+}
+
+/**
  * Execute a command via the command input field.
  *
  * @param page - Playwright page instance
@@ -189,7 +387,6 @@ export async function clickWithoutStability(
  * @returns Promise that resolves when command is sent
  */
 export async function executeCommand(page: Page, command: string): Promise<void> {
-  // First, verify we're not still on the login screen (check for login form by test id)
   const isOnLoginScreen = await page
     .getByTestId('username-input')
     .isVisible()
@@ -201,22 +398,13 @@ export async function executeCommand(page: Page, command: string): Promise<void>
     );
   }
 
-  const commandInput = page.getByTestId('command-input');
-  await expect(commandInput).toBeVisible({ timeout: TEST_TIMEOUTS.COMMAND });
-  await commandInput.evaluate((el: HTMLElement) => {
-    el.focus();
+  const session = getPageSessionCredentials(page);
+  await ensurePlayableConnection(page, {
+    username: session?.username,
+    password: session?.password,
+    timeoutMs: TEST_TIMEOUTS.GAME_LOAD,
   });
-  await commandInput.clear();
-  await commandInput.fill(command);
-  // Wait for input to reflect full command (avoids submitting before React state updates)
-  await expect(commandInput).toHaveValue(command, { timeout: 5000 });
-  // CommandInputPanel drops submits when `!isConnected` (Send Command stays disabled). Wait for a
-  // playable session so Enter actually dispatches — otherwise waitForMessage times out with no server echo.
-  const sendCommand = page.getByRole('button', { name: 'Send Command' });
-  await expect(sendCommand).toBeEnabled({ timeout: TEST_TIMEOUTS.GAME_LOAD });
-  await commandInput.press('Enter');
-  // Wait for command to be processed (game log or next prompt)
-  await expect(commandInput).toBeVisible({ timeout: 3000 });
+  await executeCommandWithoutRecovery(page, command);
 }
 
 /**

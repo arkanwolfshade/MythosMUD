@@ -7,7 +7,7 @@ This module handles player respawn and delirium respawn events.
 # pylint: disable=too-many-lines  # Reason: Respawn handler requires comprehensive room data preparation, occupant extraction, and event building logic
 
 import uuid
-from typing import Any
+from typing import Any, cast
 
 from anyio import sleep
 from sqlalchemy.exc import SQLAlchemyError
@@ -331,8 +331,12 @@ class PlayerRespawnEventHandler:
 
             # Convert NPC IDs to names if needed
             if room_data and isinstance(room_data, dict):
-                npc_names = await self._convert_npc_ids_to_names(room_data.get("npcs", []), npc_names, occupant_names)
-                player_names = self._merge_player_lists(room_data.get("players", []), player_names, occupant_names)
+                npc_names = await self._convert_npc_ids_to_names(
+                    cast(list[str], room_data.get("npcs", [])), npc_names, occupant_names
+                )
+                player_names = self._merge_player_lists(
+                    cast(list[str], room_data.get("players", [])), player_names, occupant_names
+                )
 
                 # Update room_data with name arrays
                 room_data["npcs"] = npc_names

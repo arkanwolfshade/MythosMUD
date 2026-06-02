@@ -5,7 +5,7 @@ Tests the connection disconnection functions.
 """
 
 import uuid
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -111,10 +111,13 @@ async def test_disconnect_all_websockets(mock_manager):
     mock_websocket = MagicMock()
     mock_websocket.close = AsyncMock()
     mock_manager.active_websockets = {"conn_001": mock_websocket, "conn_002": mock_websocket}
-    mock_manager._safe_close_websocket = AsyncMock()
     mock_manager.connection_metadata = {"conn_001": {}, "conn_002": {}}
-    await _disconnect_all_websockets(connection_ids, player_id, mock_manager)
-    assert mock_manager._safe_close_websocket.await_count == 2
+    with patch(
+        "server.realtime.connection_disconnection.safe_close_websocket_impl",
+        new_callable=AsyncMock,
+    ) as mock_safe_close:
+        await _disconnect_all_websockets(connection_ids, player_id, mock_manager)
+        assert mock_safe_close.await_count == 2
 
 
 @pytest.mark.asyncio
@@ -153,7 +156,6 @@ async def test_cleanup_websocket_disconnect(mock_manager):
     # disconnect_lock needs to be an asyncio.Lock
     mock_manager.disconnect_lock = asyncio.Lock()
     mock_manager.has_websocket_connection = MagicMock(return_value=False)
-    mock_manager._safe_close_websocket = AsyncMock()
     # cleanup_websocket_disconnect takes (player_id, manager, is_force_disconnect)
     result = await cleanup_websocket_disconnect(player_id, mock_manager, False)
     # Should return bool indicating if should track disconnect
@@ -174,7 +176,6 @@ async def test_disconnect_connection_by_id_impl(mock_manager):
     mock_manager.connection_metadata = {connection_id: mock_metadata}
     mock_manager.player_websockets = {player_id: {connection_id}}
     mock_manager.active_websockets = {connection_id: MagicMock()}
-    mock_manager._safe_close_websocket = AsyncMock()
     # disconnect_connection_by_id_impl takes (connection_id, manager)
     result = await disconnect_connection_by_id_impl(connection_id, mock_manager)
     # Should return True if connection found and disconnected

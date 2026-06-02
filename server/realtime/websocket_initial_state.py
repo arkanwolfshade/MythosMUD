@@ -7,12 +7,15 @@ This module handles sending initial game state to connecting players.
 # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Initial state preparation requires many parameters for complete game state context
 
 import uuid
-from typing import TYPE_CHECKING, Any, cast
+from collections.abc import Mapping
+from typing import TYPE_CHECKING, Protocol, cast
 
 from fastapi import WebSocket
 from starlette.websockets import WebSocketDisconnect
 
+from ..models.room import Room
 from ..structured_logging.enhanced_logging_config import get_logger
+from ..utils.int_coercion import coerce_int
 from .envelope import build_event
 from .websocket_helpers import (
     convert_uuids_to_strings,
@@ -22,29 +25,73 @@ from .websocket_helpers import (
 )
 
 if TYPE_CHECKING:
-    from ..models.room import Room
+    from ..models.player import Player
     from .connection_manager import ConnectionManager
+    from .event_handler import RealTimeEventHandler
 
 logger = get_logger(__name__)
 
 
+class _RealTimeHandlerContainer(Protocol):
+    """Minimal app.state.container shape for resolving the real-time event handler."""
+
+    real_time_event_handler: "RealTimeEventHandler | None"
+
+
+class _AppWithState(Protocol):
+    """Minimal FastAPI/Starlette app shape for reading ``state``."""
+
+    state: object
+
+
+class _AppStateForEventHandler(Protocol):
+    """Minimal app.state shape for resolving the real-time event handler."""
+
+    container: _RealTimeHandlerContainer | None
+    event_handler: "RealTimeEventHandler | None"
+
+
+class _NpcOccupantDisplay(Protocol):
+    """Minimal NPC instance shape for room occupant name display."""
+
+    name: str
+
+
+class _NpcLifecycleManagerForOccupants(Protocol):
+    """Minimal lifecycle manager shape for listing NPC names in a room."""
+
+    active_npcs: Mapping[str, _NpcOccupantDisplay]
+
+
+class _ContainerWithNpcLifecycle(Protocol):
+    """Minimal app.state.container shape for resolving the NPC lifecycle manager."""
+
+    npc_lifecycle_manager: _NpcLifecycleManagerForOccupants | None
+
+
+class _AppStateWithNpcLifecycle(Protocol):
+    """Minimal app.state shape for resolving the NPC lifecycle manager."""
+
+    container: _ContainerWithNpcLifecycle | None
+    npc_lifecycle_manager: _NpcLifecycleManagerForOccupants | None
+
+
 async def prepare_room_data_with_occupants(
-    room: "Room | dict[str, Any]", canonical_room_id: str, connection_manager: "ConnectionManager"
-) -> tuple[dict[str, Any], list[str]]:
+    room: "Room | dict[str, object]", canonical_room_id: str, connection_manager: "ConnectionManager"
+) -> tuple[dict[str, object], list[str]]:
     """Prepare room data and get occupant names."""
     room_occupants = await connection_manager.get_room_occupants(str(canonical_room_id))
     occupant_names = await get_occupant_names(room_occupants, str(canonical_room_id))
 
-    room_data = room.to_dict() if hasattr(room, "to_dict") else room
-    if isinstance(room_data, dict):
-        room_data = await connection_manager.convert_room_players_uuids_to_names(room_data)
-    room_data = convert_uuids_to_strings(room_data)
+    room_data = room if isinstance(room, dict) else room.to_dict()
+    room_data = await connection_manager.convert_room_players_uuids_to_names(room_data)
+    room_data = cast(dict[str, object], convert_uuids_to_strings(room_data))
 
-    return cast(dict[str, Any], room_data), occupant_names
+    return room_data, occupant_names
 
 
 async def send_game_state_event_safely(
-    websocket: WebSocket, game_state_event: dict[str, Any], player_id_str: str
+    websocket: WebSocket, game_state_event: dict[str, object], player_id_str: str
 ) -> bool:
     """
     Send game state event with proper error handling.
@@ -91,7 +138,7 @@ async def send_initial_game_state(
         if not player or not room or not canonical_room_id:
             return None, False
 
-        room_typed = cast("Room | dict[str, Any]", room)
+        room_typed = cast("Room | dict[str, object]", room)
         room_data, occupant_names = await prepare_room_data_with_occupants(
             room_typed, canonical_room_id, connection_manager
         )
@@ -99,7 +146,7 @@ async def send_initial_game_state(
         from .websocket_helpers import validate_occupant_name
 
         player_name = getattr(player, "name", None)
-        if player_name and validate_occupant_name(player_name) and player_name not in occupant_names:
+        if isinstance(player_name, str) and validate_occupant_name(player_name) and player_name not in occupant_names:
             occupant_names.append(player_name)
 
         player_data_for_client = await prepare_player_data(player, player_id, connection_manager)
@@ -124,20 +171,20 @@ async def send_initial_game_state(
         return None, False
 
 
-def _get_death_location_name(room: "Room | dict[str, Any]") -> str:
+def _get_death_location_name(room: Room | dict[str, object]) -> str:
     """Extract death location name from room object or dict."""
     if isinstance(room, dict):
         name = room.get("name")
         return str(name) if name is not None else "Unknown Location"
-    if hasattr(room, "name"):
-        name = getattr(room, "name", None)
-        return str(name) if name is not None else "Unknown Location"
+    room_name = cast(object, room.name)
+    if isinstance(room_name, str):
+        return room_name
     return "Unknown Location"
 
 
 async def _get_player_for_death_check(
     player_id: uuid.UUID, connection_manager: "ConnectionManager"
-) -> tuple[Any, str | None] | None:
+) -> tuple["Player", str | None] | None:
     """Get player and updated room ID for death check."""
     from ..async_persistence import get_async_persistence
 
@@ -158,7 +205,7 @@ async def check_and_send_death_notification(  # pylint: disable=too-many-argumen
     player_id: uuid.UUID,
     player_id_str: str,
     canonical_room_id: str,
-    room: "Room | dict[str, Any]",
+    room: "Room | dict[str, object]",
     connection_manager: "ConnectionManager",
 ) -> None:
     """Check if player is dead and send death notification if needed."""
@@ -172,7 +219,7 @@ async def check_and_send_death_notification(  # pylint: disable=too-many-argumen
         canonical_room_id = updated_room_id
 
     stats = player.get_stats() if hasattr(player, "get_stats") else {}
-    current_dp = stats.get("current_dp", 20) if isinstance(stats.get("current_dp"), int) else 20
+    current_dp = coerce_int(stats.get("current_dp"), default=20)
 
     # Only send death notification when player is actually dead (DP <= -10).
     # Do not send based on limbo alone: player must only be in limbo at -10 DP, so if they are
@@ -190,7 +237,8 @@ async def check_and_send_death_notification(  # pylint: disable=too-many-argumen
             },
             player_id=player_id_str,
         )
-        await websocket.send_json(death_event)
+        if await send_game_state_event_safely(websocket, death_event, player_id_str):
+            return
         logger.info(
             "Sent death notification to player on login",
             player_id=player_id_str,
@@ -199,73 +247,82 @@ async def check_and_send_death_notification(  # pylint: disable=too-many-argumen
         )
 
 
+def _get_npc_lifecycle_manager_from_connection_manager(
+    connection_manager: "ConnectionManager",
+) -> _NpcLifecycleManagerForOccupants | None:
+    """Resolve NPC lifecycle manager from connection manager app state."""
+    app = cast(object | None, getattr(connection_manager, "app", None))
+    if app is None:
+        return None
+    app_state = cast(_AppStateWithNpcLifecycle, cast(_AppWithState, app).state)
+    # Prefer container, fallback to app.state for backward compatibility
+    if app_state.container is not None:
+        return app_state.container.npc_lifecycle_manager
+    return app_state.npc_lifecycle_manager
+
+
 async def add_npc_occupants_to_list(
     room: "Room", occupant_names: list[str], canonical_room_id: str, connection_manager: "ConnectionManager"
 ) -> None:
     """Add NPC occupants to the occupant names list."""
-    if not hasattr(connection_manager, "app"):
-        return
-
-    # Prefer container, fallback to app.state for backward compatibility
-    npc_lifecycle_manager = None
-    if hasattr(connection_manager.app.state, "container") and connection_manager.app.state.container:
-        npc_lifecycle_manager = connection_manager.app.state.container.npc_lifecycle_manager
-    elif hasattr(connection_manager.app.state, "npc_lifecycle_manager"):
-        npc_lifecycle_manager = connection_manager.app.state.npc_lifecycle_manager
-
+    npc_lifecycle_manager = _get_npc_lifecycle_manager_from_connection_manager(connection_manager)
     if not npc_lifecycle_manager:
         return
-    npc_ids = room.get_npcs()
-    for npc_id in npc_ids:
+    for npc_id in room.get_npcs():
         npc = npc_lifecycle_manager.active_npcs.get(npc_id)
-        if npc and hasattr(npc, "name"):
-            occupant_names.append(npc.name)
-            logger.info(
-                "Added NPC to room occupants display",
-                npc_name=npc.name,
-                npc_id=npc_id,
-                room_id=canonical_room_id,
-            )
+        if npc is None:
+            continue
+        occupant_names.append(npc.name)
+        logger.info(
+            "Added NPC to room occupants display",
+            npc_name=npc.name,
+            npc_id=npc_id,
+            room_id=canonical_room_id,
+        )
 
 
 async def prepare_initial_room_data(
-    room: "Room | dict[str, Any]", connection_manager: "ConnectionManager"
-) -> dict[str, Any]:
+    room: "Room | dict[str, object]", connection_manager: "ConnectionManager"
+) -> dict[str, object]:
     """Prepare room data for initial state event."""
-    room_data_for_update = room.to_dict() if hasattr(room, "to_dict") else room
-    if isinstance(room_data_for_update, dict):
-        room_data_for_update = await connection_manager.convert_room_players_uuids_to_names(room_data_for_update)
-    return cast(dict[str, Any], room_data_for_update)
+    room_data_for_update = room if isinstance(room, dict) else room.to_dict()
+    room_data_for_update = await connection_manager.convert_room_players_uuids_to_names(room_data_for_update)
+    return cast(dict[str, object], room_data_for_update)
 
 
-def get_event_handler_for_initial_state(connection_manager: "ConnectionManager", websocket: WebSocket) -> Any:
-    """Get event handler from connection manager or websocket app state."""
+def _get_event_handler_from_app_host(
+    host: "ConnectionManager | WebSocket",
+) -> "RealTimeEventHandler | None":
+    """Resolve real-time event handler from a connection manager or websocket app."""
+    app = cast(object | None, host.app)
+    if app is None:
+        return None
+    app_state = cast(_AppStateForEventHandler, cast(_AppWithState, app).state)
     # Prefer container, fallback to app.state for backward compatibility
-    event_handler = None
-    if hasattr(connection_manager, "app") and connection_manager.app:
-        if hasattr(connection_manager.app.state, "container") and connection_manager.app.state.container:
-            event_handler = connection_manager.app.state.container.real_time_event_handler
-        else:
-            event_handler = getattr(connection_manager.app.state, "event_handler", None)
-    if not event_handler and hasattr(websocket, "app") and websocket.app:
-        if hasattr(websocket.app.state, "container") and websocket.app.state.container:
-            event_handler = websocket.app.state.container.real_time_event_handler
-        else:
-            event_handler = getattr(websocket.app.state, "event_handler", None)
-    return event_handler
+    if app_state.container is not None:
+        return app_state.container.real_time_event_handler
+    return app_state.event_handler
+
+
+def get_event_handler_for_initial_state(
+    connection_manager: "ConnectionManager", websocket: WebSocket
+) -> "RealTimeEventHandler | None":
+    """Get event handler from connection manager or websocket app state."""
+    event_handler = _get_event_handler_from_app_host(connection_manager)
+    if event_handler:
+        return event_handler
+    return _get_event_handler_from_app_host(websocket)
 
 
 async def send_occupants_snapshot_if_needed(
-    event_handler: Any, room: "Room", player_id: uuid.UUID, player_id_str: str, canonical_room_id: str
+    event_handler: "RealTimeEventHandler | None",
+    room: "Room",
+    player_id: uuid.UUID,
+    player_id_str: str,
+    canonical_room_id: str,
 ) -> None:
     """Send occupants snapshot if event handler is available (include connecting player via ensure_player_included)."""
-    if not event_handler:
-        return
-    if not hasattr(event_handler, "player_handler"):
-        return
-    if not hasattr(event_handler.player_handler, "send_occupants_snapshot_to_player"):
-        return
-    if not room:
+    if not event_handler or not room:
         return
     # Always send snapshot so connecting player is included (they may not be in room._players yet)
     await event_handler.player_handler.send_occupants_snapshot_to_player(player_id, str(canonical_room_id))
@@ -300,8 +357,8 @@ async def send_initial_room_state(
 
         connecting_player = await connection_manager.get_player(player_id)
         if connecting_player:
-            player_name = getattr(connecting_player, "name", None)
-            if player_name and validate_occupant_name(player_name) and player_name not in occupant_names:
+            player_name = connecting_player.name
+            if validate_occupant_name(player_name) and player_name not in occupant_names:
                 occupant_names.append(player_name)
 
         room_data_for_update = await prepare_initial_room_data(room, connection_manager)
@@ -311,7 +368,8 @@ async def send_initial_room_state(
             {"room": room_data_for_update, "entities": [], "occupants": occupant_names},
             player_id=player_id_str,
         )
-        await websocket.send_json(initial_state)
+        if await send_game_state_event_safely(websocket, initial_state, player_id_str):
+            return
         logger.debug(
             "Sent initial room state to connecting player", player_id=player_id_str, occupants_sent=occupant_names
         )

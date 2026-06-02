@@ -5,7 +5,7 @@
  */
 
 import { type Page } from '@playwright/test';
-import { executeCommand } from './auth';
+import { executeCommand, executeCommandTrusted, getPageSessionCredentials, loginPlayer } from './auth';
 
 /**
  * Ensure the player is standing before movement.
@@ -18,6 +18,19 @@ import { executeCommand } from './auth';
  * @param timeoutMs - Max wait for standing confirmation (default: 5000)
  */
 export async function ensureStanding(page: Page, timeoutMs: number = 5000): Promise<void> {
+  const onLogin = await page
+    .getByTestId('username-input')
+    .isVisible({ timeout: 1000 })
+    .catch(() => false);
+  if (onLogin) {
+    const session = getPageSessionCredentials(page);
+    if (session) {
+      await loginPlayer(page, session.username, session.password);
+    } else {
+      throw new Error('Cannot ensure standing: on login screen with no saved session credentials');
+    }
+  }
+
   const alreadyStanding = await page.evaluate(() => {
     const bodyText = document.body?.innerText ?? '';
     return (
@@ -30,7 +43,7 @@ export async function ensureStanding(page: Page, timeoutMs: number = 5000): Prom
     return;
   }
 
-  await executeCommand(page, 'stand');
+  await executeCommandTrusted(page, 'stand');
   // Prefer page-wide text: command_response sometimes lands before [data-message-text] wiring; linkdead can
   // delay Game Info rows. Character Info "Posture" / value updates independently (player_position_service copy).
   await page.waitForFunction(

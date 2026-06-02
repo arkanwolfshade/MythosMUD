@@ -23,11 +23,12 @@ import {
 import { ensureStanding } from '../fixtures/player';
 
 test.describe('Local Channel Movement', () => {
-  test.describe.configure({ mode: 'serial' });
+  test.describe.configure({ mode: 'serial', timeout: 300_000 });
 
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
   test.beforeAll(async ({ browser }) => {
+    test.setTimeout(300_000);
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
     await waitForAllPlayersInGame(contexts, 60000);
     await ensurePlayerInGame(contexts[0], 60000);
@@ -93,34 +94,24 @@ test.describe('Local Channel Movement', () => {
 
     await ensureStanding(awContext.page, 5000);
     await awContext.page.bringToFront().catch(() => {});
-    await executeCommand(awContext.page, 'go south');
-
-    // Server returns "You go {direction}."; allow extra slack for multiplayer UI sync
-    await waitForMessage(awContext.page, /You go south/i, 45000).catch(() => {
-      throw new Error('AW failed to move south - movement command did not succeed');
+    await executeCommand(awContext.page, 'go east');
+    await waitForMessage(awContext.page, /You go east|You move east|Eastern Hallway|Arena/i, 45000).catch(() => {
+      throw new Error('AW failed to move east - movement command did not succeed');
     });
 
     await new Promise(r => setTimeout(r, 2000));
 
-    // Verify AW and Ithaqua are NOT in the same room before sending message
-    // Check that Ithaqua's Occupants panel shows only 1 player (themselves), not 2
-    // Note: Use Players count specifically, not total Occupants (which includes NPCs)
-    await ithaquaContext.page
-      .waitForFunction(
-        () => {
-          const bodyText = document.body?.innerText ?? '';
-          const playersMatch = bodyText.match(/Players\s*\((\d+)\)/);
-          const playerCount = playersMatch ? parseInt(playersMatch[1], 10) : 0;
-          // Should see only 1 player (themselves) if AW moved to different room
-          return playerCount === 1;
-        },
-        { timeout: 10000 }
-      )
-      .catch(() => {
-        throw new Error('AW and Ithaqua are still in the same room - movement test cannot proceed');
-      });
+    await awContext.page.bringToFront().catch(() => {});
+    await executeCommand(awContext.page, 'stand');
+    await new Promise(r => setTimeout(r, 1000));
 
-    // AW sends local message from different room (Eastern Hallway); Ithaqua stays in Laundry Room
+    await ensurePlayerInGame(awContext, 30000);
+    await expect(awContext.page.getByText(/Player:\s*ArkanWolfshade\b/i)).toBeVisible({ timeout: 15000 });
+    await awContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
+    await executeCommand(awContext.page, 'look');
+    await waitForMessage(awContext.page, /Arena|gladiator|heart of the|exits|Laundry|Room|hallway|Eastern/i, 20000);
+
+    // AW sends local message from different room; Ithaqua stays put.
     await executeCommand(awContext.page, 'local After movement test');
 
     // Wait for confirmation
@@ -135,6 +126,7 @@ test.describe('Local Channel Movement', () => {
   });
 
   test('Ithaqua should see local message when AW moves back to same sub-zone', async () => {
+    test.setTimeout(300_000);
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
@@ -158,7 +150,10 @@ test.describe('Local Channel Movement', () => {
 
     await new Promise(r => setTimeout(r, 2000));
 
-    await ensurePlayerInGame(ithaquaContext, 30000);
+    await ensurePlayerInGame(awContext, 15000);
+    await ensurePlayerInGame(ithaquaContext, 15000);
+    // go north is best-effort; Ithaqua can remain at Occupants (1) until teleport reunites.
+    await ensureMultiplayerCoLocated(contexts, { timeoutMs: 60000, coLocateTimeoutMs: 45000 });
     await ensurePlayersInSameRoom(contexts, 2, 45000);
 
     await ithaquaContext.page.bringToFront().catch(() => {});

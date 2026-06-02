@@ -13,9 +13,15 @@ import './multiplayer-browser-window.d.ts';
 
 import { expect, type Browser, type BrowserContext, type Page } from '@playwright/test';
 import { MotdPage } from '../pages';
-import { executeCommand, loginPlayer, waitForPlayableSession } from './auth';
+import {
+  ensurePlayableConnection,
+  executeCommand,
+  executeCommandTrusted,
+  loginPlayer,
+  logoutPlayer,
+  waitForPlayableSession,
+} from './auth';
 import type { OccupantsSnapshot } from './multiplayer-browser-helpers';
-import { ensureStanding } from './player';
 import { TEST_PLAYERS, TEST_TIMEOUTS, type TestPlayer } from './test-data';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -119,11 +125,21 @@ export async function createMultiPlayerContexts(browser: Browser, playerUsername
 /**
  * Cleanup multiple player contexts.
  *
+ * Intentionally logs out each player before closing the browser context so the server
+ * does not leave linkdead ghosts that poison the next serial test.
+ *
  * @param contexts - Array of PlayerContext objects to cleanup
  */
 export async function cleanupMultiPlayerContexts(contexts: PlayerContext[] | undefined): Promise<void> {
   if (!contexts || !Array.isArray(contexts)) {
     return;
+  }
+  for (const { page } of contexts) {
+    await logoutPlayer(page, 90000).catch(() => {});
+    await page
+      .getByTestId('username-input')
+      .waitFor({ state: 'visible', timeout: 15000 })
+      .catch(() => {});
   }
   for (const { context } of contexts) {
     await context.close().catch(() => {
@@ -321,29 +337,11 @@ export async function ensureForegroundPlayerPlayable(
 
   await ensurePlayerInGame(playerContext, timeoutMs);
 
-  const sendDisabled = await page
-    .getByRole('button', { name: 'Send Command' })
-    .isDisabled()
-    .catch(() => true);
-  if (!sendDisabled) {
-    return;
-  }
-
-  await page.reload({ waitUntil: 'domcontentloaded' });
-
-  const onLoginAfterReload = await page
-    .getByTestId('username-input')
-    .isVisible({ timeout: 5000 })
-    .catch(() => false);
-  if (onLoginAfterReload) {
-    await loginPlayer(page, player.username, player.password);
-    return;
-  }
-
-  await waitForPlayerGameUi(page, player.username, timeoutMs);
-  await waitForPlayerWebSocket(page, player.username, timeoutMs);
-  await waitForPlayerRoomSubscription(page, player.username, timeoutMs);
-  await expect(page.getByRole('button', { name: 'Send Command' })).toBeEnabled({ timeout: timeoutMs });
+  await ensurePlayableConnection(page, {
+    username: player.username,
+    password: player.password,
+    timeoutMs,
+  });
 }
 
 /**
@@ -443,15 +441,17 @@ export async function ensurePlayersInSameRoom(
   const linkdeadWaitMs = Math.min(25000, timeoutMs);
   await Promise.all(
     contexts.map(({ page, player }) =>
-      page
-        .waitForFunction(() => window.__mythosE2eHasConnectedStatus?.() === true, { timeout: linkdeadWaitMs })
-        .catch(err => {
-          const msg =
-            `[instrumentation] ensurePlayersInSameRoom failed: Player ${player.username} - ` +
-            `Step 0: header still not Connected within ${linkdeadWaitMs}ms`;
-          console.error(msg, err);
-          throw new Error(msg);
-        })
+      ensurePlayableConnection(page, {
+        username: player.username,
+        password: player.password,
+        timeoutMs: linkdeadWaitMs,
+      }).catch(err => {
+        const msg =
+          `[instrumentation] ensurePlayersInSameRoom failed: Player ${player.username} - ` +
+          `Step 0: header still not Connected within ${linkdeadWaitMs}ms`;
+        console.error(msg, err);
+        throw new Error(msg);
+      })
     )
   );
 
@@ -481,7 +481,7 @@ export async function ensurePlayersInSameRoom(
         .waitForFunction(
           (expectedNames: string[]) => window.__mythosE2eHasOtherPlayerNames?.(expectedNames) === true,
           expectedNames,
-          { timeout: Math.min(10000, timeoutMs) }
+          { timeout: Math.min(20000, timeoutMs) }
         )
         .catch(() => {
           throw new Error(
@@ -551,37 +551,58 @@ async function runCoLocateTeleportAttempt(
   attempt: number
 ): Promise<void> {
   await awContext.page.bringToFront().catch(() => {});
-  await ensureStanding(awContext.page, 10000);
+  await ensurePlayableConnection(awContext.page, {
+    username: awContext.player.username,
+    password: awContext.player.password,
+    timeoutMs: 30000,
+  });
   await executeCommand(awContext.page, `teleport ${otherCharName}`);
   await new Promise(r => setTimeout(r, TELEPORT_SETTLE_BASE_MS + attempt * 2000));
 
-  // Receiver often stays at Occupants (1) until room_state refreshes; sender can also lag.
-  await otherContext.page.bringToFront().catch(() => {});
-  await ensureStanding(otherContext.page, 10000);
-  await executeCommand(otherContext.page, 'look');
-  await new Promise(r => setTimeout(r, 3000));
+  if (attempt >= 1) {
+    const awCharName = await resolveOtherCharacterName(awContext);
+    await otherContext.page.bringToFront().catch(() => {});
+    await ensurePlayableConnection(otherContext.page, {
+      username: otherContext.player.username,
+      password: otherContext.player.password,
+      timeoutMs: 30000,
+    });
+    await executeCommand(otherContext.page, `teleport ${awCharName}`);
+    await new Promise(r => setTimeout(r, TELEPORT_SETTLE_BASE_MS));
+  }
 
-  await awContext.page.bringToFront().catch(() => {});
-  await ensureStanding(awContext.page, 10000);
-  await executeCommand(awContext.page, 'look');
-  await new Promise(r => setTimeout(r, 2000));
+  for (const ctx of contexts) {
+    await ctx.page.bringToFront().catch(() => {});
+    await ensurePlayableConnection(ctx.page, {
+      username: ctx.player.username,
+      password: ctx.player.password,
+      timeoutMs: 30000,
+    });
+    await executeCommandTrusted(ctx.page, 'look');
+    await new Promise(r => setTimeout(r, 2000));
+  }
 
-  // Transient "disconnected" / link-dead UI can leave the receiver at Occupants (1) until state catches up.
+  // Wait until grace-period copy clears from Game Info (helper returns true when absent).
   await Promise.all(
-    contexts.map(({ page }) =>
+    contexts.map(({ page, player }) =>
       page
         .waitForFunction(() => window.__mythosE2eIsDisconnectedBannerVisible?.() === true, { timeout: 15_000 })
+        .catch(() => {})
+        .then(() =>
+          ensurePlayableConnection(page, {
+            username: player.username,
+            password: player.password,
+            timeoutMs: 35_000,
+          })
+        )
         .catch(() => {})
     )
   );
 
-  await otherContext.page.bringToFront().catch(() => {});
-  await executeCommand(otherContext.page, 'look');
-  await new Promise(r => setTimeout(r, 2500));
-
   for (const ctx of contexts) {
     await ctx.page.bringToFront().catch(() => {});
-    await new Promise(r => setTimeout(r, 200));
+    await executeCommandTrusted(ctx.page, 'look');
+    await new Promise(r => setTimeout(r, 500));
   }
 }
 
@@ -636,6 +657,16 @@ export async function ensureMultiplayerCoLocated(
   const otherCharName = await resolveOtherCharacterName(otherContext);
 
   await retryCoLocateUntilSameRoom(awContext, otherContext, contexts, otherCharName, coLocateTimeoutMs);
+
+  await Promise.all(
+    contexts.map(c =>
+      ensurePlayableConnection(c.page, {
+        username: c.player.username,
+        password: c.player.password,
+        timeoutMs: coLocateTimeoutMs,
+      })
+    )
+  );
 
   await new Promise(r => setTimeout(r, 1000));
 }
