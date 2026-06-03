@@ -5,7 +5,13 @@
  */
 
 import { type Page } from '@playwright/test';
-import { executeCommand, executeCommandTrusted, getPageSessionCredentials, loginPlayer } from './auth';
+import {
+  executeCommand,
+  executeCommandTrusted,
+  getPageSessionCredentials,
+  loginPlayer,
+  waitForPlayableSession,
+} from './auth';
 
 /**
  * Ensure the player is standing before movement.
@@ -26,6 +32,7 @@ export async function ensureStanding(page: Page, timeoutMs: number = 5000): Prom
     const session = getPageSessionCredentials(page);
     if (session) {
       await loginPlayer(page, session.username, session.password);
+      await waitForPlayableSession(page, Math.max(timeoutMs, 15000));
     } else {
       throw new Error('Cannot ensure standing: on login screen with no saved session credentials');
     }

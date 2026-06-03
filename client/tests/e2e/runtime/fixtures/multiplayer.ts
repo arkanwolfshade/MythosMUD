@@ -352,10 +352,25 @@ export async function prepareReceiverForInboundMessages(
   playerContext: PlayerContext,
   timeoutMs: number = 20000
 ): Promise<void> {
-  const { page } = playerContext;
-  // Foreground only: reload/relogin would drop in-flight Game Info rows we are waiting for.
+  const { page, player } = playerContext;
   await page.bringToFront().catch(() => {});
+
+  const onLogin = await page
+    .getByTestId('username-input')
+    .isVisible({ timeout: 2000 })
+    .catch(() => false);
+  if (onLogin) {
+    await loginPlayer(page, player.username, player.password);
+    await ensurePlayerInGame(playerContext, timeoutMs);
+    return;
+  }
+
   await waitForPlayableSession(page, timeoutMs).catch(() => {});
+  await ensurePlayableConnection(page, {
+    username: player.username,
+    password: player.password,
+    timeoutMs,
+  }).catch(() => {});
 }
 
 /**

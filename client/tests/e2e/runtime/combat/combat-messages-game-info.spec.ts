@@ -9,7 +9,7 @@
  */
 
 import { expect, test } from '@playwright/test';
-import { executeCommand, getMessages, loginPlayer, waitForMessage } from '../fixtures/auth';
+import { executeCommand, getMessages, waitForMessage } from '../fixtures/auth';
 import type { PlayerContext } from '../fixtures/multiplayer';
 import {
   cleanupMultiPlayerContexts,
@@ -146,10 +146,9 @@ test.describe('Combat messages in Game Info', () => {
     const { page } = awContext;
 
     await page.bringToFront().catch(() => {});
-    await ensurePlayerInGame(awContext, 15000);
-    // Fresh login in beforeAll applies entry_ward; relogin clears stale ward state from long serial suites.
-    await loginPlayer(page, awContext.player.username, awContext.player.password);
     await ensurePlayerInGame(awContext, 30000);
+    // beforeAll login applies entry_ward (~10s); do not relogin here — that re-applies ward and can drop to login UI.
+    await page.getByTestId('command-input').waitFor({ state: 'visible', timeout: 15000 });
     await waitForEntryWardCleared(page, 60000);
 
     // Wait for room state so Location/Exits are loaded (avoids "Unknown" and "You can't go that way").

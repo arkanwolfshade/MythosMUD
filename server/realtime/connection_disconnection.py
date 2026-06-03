@@ -63,7 +63,7 @@ async def _disconnect_single_websocket(
     _cleanup_connection_tracking(connection_id, manager)
 
 
-async def _disconnect_all_websockets(
+async def disconnect_all_websockets_impl(
     connection_ids: list[str], player_id: uuid.UUID, manager: _DisconnectConnectionManager
 ) -> None:
     """
@@ -175,10 +175,10 @@ async def cleanup_websocket_disconnect(
             )
 
             # Disconnect all WebSocket connections
-            await _disconnect_all_websockets(connection_ids, player_id, manager)
+            await disconnect_all_websockets_impl(connection_ids, player_id, manager)
 
-            # Remove from tracking
-            del manager.player_websockets[player_id]
+            # Remove from tracking (on-close handler may have already cleared this entry)
+            _ = manager.player_websockets.pop(player_id, None)
 
             # Check if we need to track disconnection
             should_track_disconnect = await _track_disconnect_if_needed(player_id, manager, is_force_disconnect)
@@ -210,7 +210,7 @@ async def _disconnect_websocket_by_connection_id(
     if player_id in manager.player_websockets and connection_id in manager.player_websockets[player_id]:
         manager.player_websockets[player_id].remove(connection_id)
         if not manager.player_websockets[player_id]:
-            del manager.player_websockets[player_id]
+            _ = manager.player_websockets.pop(player_id, None)
 
 
 def _cleanup_fully_disconnected_player(player_id: uuid.UUID, manager: _DisconnectConnectionManager) -> None:

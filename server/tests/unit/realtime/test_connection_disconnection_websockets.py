@@ -8,11 +8,12 @@ Tests the websocket disconnection functions in connection_disconnection.py.
 # Reason: Unit tests target connection_disconnection module helpers not exposed as public API.
 
 import uuid
+from collections.abc import Generator
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from server.realtime.connection_disconnection import _disconnect_all_websockets, disconnect_connection_by_id_impl
+from server.realtime.connection_disconnection import disconnect_all_websockets_impl, disconnect_connection_by_id_impl
 from server.realtime.message_queue import MessageQueue
 from server.realtime.rate_limiter import RateLimiter
 
@@ -34,7 +35,7 @@ def mock_manager() -> MagicMock:
 
 
 @pytest.fixture
-def mock_safe_close_websocket() -> AsyncMock:
+def mock_safe_close_websocket() -> Generator[AsyncMock, None, None]:
     """Patch safe_close_websocket_impl used by disconnection helpers."""
     with patch(
         "server.realtime.connection_disconnection.safe_close_websocket_impl",
@@ -44,15 +45,15 @@ def mock_safe_close_websocket() -> AsyncMock:
 
 
 @pytest.mark.asyncio
-async def test_disconnect_all_websockets_empty_list(mock_manager: MagicMock):
-    """Test _disconnect_all_websockets() with empty connection list."""
+async def testdisconnect_all_websockets_impl_empty_list(mock_manager: MagicMock):
+    """Test disconnect_all_websockets_impl() with empty connection list."""
     player_id = uuid.uuid4()
-    await _disconnect_all_websockets([], player_id, mock_manager)
+    await disconnect_all_websockets_impl([], player_id, mock_manager)
     # Should complete without errors
 
 
 @pytest.mark.asyncio
-async def test_disconnect_all_websockets_idempotent_second_pass(
+async def testdisconnect_all_websockets_impl_idempotent_second_pass(
     mock_manager: MagicMock, mock_safe_close_websocket: AsyncMock
 ):
     """Second disconnect pass must not KeyError when registry already cleared."""
@@ -63,14 +64,14 @@ async def test_disconnect_all_websockets_idempotent_second_pass(
     active_websockets: dict[str, MagicMock | None] = {connection_id: mock_websocket}
     mock_manager.active_websockets = active_websockets
     mock_manager.connection_metadata = {connection_id: MagicMock()}
-    await _disconnect_all_websockets([connection_id], player_id, mock_manager)
-    await _disconnect_all_websockets([connection_id], player_id, mock_manager)
+    await disconnect_all_websockets_impl([connection_id], player_id, mock_manager)
+    await disconnect_all_websockets_impl([connection_id], player_id, mock_manager)
     assert connection_id not in active_websockets
     safe_close_websocket.assert_awaited_once()
 
 
 @pytest.mark.asyncio
-async def test_disconnect_all_websockets_continues_after_none_websocket(
+async def testdisconnect_all_websockets_impl_continues_after_none_websocket(
     mock_manager: MagicMock, mock_safe_close_websocket: AsyncMock
 ):
     """None websocket on one connection must not skip remaining connection ids."""
@@ -80,7 +81,7 @@ async def test_disconnect_all_websockets_continues_after_none_websocket(
     active_websockets: dict[str, MagicMock | None] = {"conn_bad": None, "conn_good": good_socket}
     mock_manager.active_websockets = active_websockets
     mock_manager.connection_metadata = {}
-    await _disconnect_all_websockets(["conn_bad", "conn_good"], player_id, mock_manager)
+    await disconnect_all_websockets_impl(["conn_bad", "conn_good"], player_id, mock_manager)
     assert "conn_bad" not in active_websockets
     assert "conn_good" not in active_websockets
     safe_close_websocket.assert_awaited_once()
