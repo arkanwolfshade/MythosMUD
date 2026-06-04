@@ -12,7 +12,7 @@ globalThis.fetch = vi.fn();
 
 // Mock config
 vi.mock('../../../utils/config', () => ({
-  getVersionedApiBaseUrl: () => 'http://localhost:54731/v1',
+  getVersionedApiBaseUrl: () => 'http://localhost:54768/v1',
 }));
 
 describe('saveMapChanges', () => {

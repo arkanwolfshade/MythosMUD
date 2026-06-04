@@ -1,0 +1,20 @@
+# MythosMUD local SCA (make grype). Scans dependency manifests under repo root and client/;
+# excludes E2E harness docs, test artifacts, and other non-dependency trees.
+exclude:
+  - "**/.git/**"
+  - "**/node_modules/**"
+  - "**/.venv/**"
+  - "**/dist/**"
+  - "**/build/**"
+  - "**/htmlcov/**"
+  - "e2e-tests/**"
+  - "logs/**"
+  - "client/test-results/**"
+  - "client/playwright-report/**"
+  - "client/playwright-report-data/**"
+  - "client/tests/**"
+  - "server/tests/**"
+  - "data/**"
+  - "docs/**"
+  - ".cursor/**"
+  - "investigations/**"

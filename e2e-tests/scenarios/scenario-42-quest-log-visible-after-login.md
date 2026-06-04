@@ -7,7 +7,7 @@ shows either the quest log content or the empty state. Part of the quest subsyst
 
 ## Prerequisites
 
-1. **Server running** on port 54731; **client** on 5173.
+1. **Server running** on port 54768; **client** on 5173.
 2. **Test user** with at least one character (e.g. ArkanWolfshade) so login reaches game.
 3. **E2E database** may have quest data or not; test accepts either "Quest log" (with entries)
    or "You have no active or completed quests." (empty state).

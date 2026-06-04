@@ -8,7 +8,7 @@ This document provides a comprehensive specification for the MythosMUD health en
 
 ### Endpoint Information
 
-**URL**: `http://localhost:54731/monitoring/health`
+**URL**: `http://localhost:54768/monitoring/health`
 
 **Method**: `GET`
 
@@ -117,14 +117,14 @@ This results in the full endpoint path: `/monitoring/health`
 ```powershell
 # Basic health check
 
-$response = Invoke-WebRequest -Uri "http://localhost:54731/monitoring/health" -UseBasicParsing
+$response = Invoke-WebRequest -Uri "http://localhost:54768/monitoring/health" -UseBasicParsing
 $response.StatusCode  # Should be 200
 $healthData = $response.Content | ConvertFrom-Json
 $healthData.status  # Should be "healthy"
 
 # Pretty-printed response
 
-(Invoke-WebRequest -Uri "http://localhost:54731/monitoring/health" -UseBasicParsing).Content | ConvertFrom-Json | ConvertTo-Json -Depth 10
+(Invoke-WebRequest -Uri "http://localhost:54768/monitoring/health" -UseBasicParsing).Content | ConvertFrom-Json | ConvertTo-Json -Depth 10
 ```
 
 #### cURL (Cross-platform)
@@ -132,15 +132,15 @@ $healthData.status  # Should be "healthy"
 ```bash
 # Basic health check
 
-curl -s http://localhost:54731/monitoring/health
+curl -s http://localhost:54768/monitoring/health
 
 # With status code
 
-curl -s -w "HTTP Status: %{http_code}\n" http://localhost:54731/monitoring/health
+curl -s -w "HTTP Status: %{http_code}\n" http://localhost:54768/monitoring/health
 
 # Pretty-printed JSON
 
-curl -s http://localhost:54731/monitoring/health | jq .
+curl -s http://localhost:54768/monitoring/health | jq .
 ```
 
 ### Automated Testing
@@ -174,13 +174,13 @@ The `MULTIPLAYER_SCENARIOS_PLAYBOOK.md` contains an incorrect health endpoint UR
 **❌ Incorrect (Current)**:
 
 ```powershell
-curl http://localhost:54731/health
+curl http://localhost:54768/health
 ```
 
 **✅ Correct (Should be)**:
 
 ```powershell
-curl http://localhost:54731/monitoring/health
+curl http://localhost:54768/monitoring/health
 ```
 
 ### Required Fix
@@ -198,7 +198,7 @@ The playbook needs to be updated to use the correct endpoint path. This affects:
 ```powershell
 # Test server health
 
-$healthResponse = Invoke-WebRequest -Uri "http://localhost:54731/monitoring/health" -UseBasicParsing
+$healthResponse = Invoke-WebRequest -Uri "http://localhost:54768/monitoring/health" -UseBasicParsing
 if ($healthResponse.StatusCode -eq 200) {
     $healthData = $healthResponse.Content | ConvertFrom-Json
     Write-Host "Server Status: $($healthData.status)"
@@ -218,7 +218,7 @@ Write-Host "Client Status: $($clientResponse.StatusCode)"
 ```bash
 # Test server health
 
-curl -s -w "HTTP Status: %{http_code}\n" http://localhost:54731/monitoring/health
+curl -s -w "HTTP Status: %{http_code}\n" http://localhost:54768/monitoring/health
 
 # Test client accessibility
 
@@ -243,7 +243,7 @@ The health endpoint can be integrated with monitoring systems:
 
 function Test-MythosMUDHealth {
     param(
-        [string]$ServerUrl = "http://localhost:54731/monitoring/health",
+        [string]$ServerUrl = "http://localhost:54768/monitoring/health",
         [int]$TimeoutSeconds = 10
     )
 
@@ -332,11 +332,11 @@ Consider implementing caching for high-frequency health checks:
 ```powershell
 # Check if server is running
 
-netstat -an | findstr :54731
+netstat -an | findstr :54768
 
 # Test basic connectivity
 
-Test-NetConnection -ComputerName localhost -Port 54731
+Test-NetConnection -ComputerName localhost -Port 54768
 
 # Check server logs
 

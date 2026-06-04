@@ -62,6 +62,7 @@ export const SkillsPage: React.FC = () => {
   useEffect(() => {
     const token = secureTokenStorage.getToken();
     if (!token) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- auth gate before fetch
       setError('Not authenticated. Please log in first.');
       setIsLoading(false);
       return;

@@ -8,7 +8,7 @@ active character's ID in the URL and the skills page loads and shows that charac
 
 ## Prerequisites
 
-1. **Server running** on port 54731; **client** on 5173.
+1. **Server running** on port 54768; **client** on 5173.
 2. **Test user** with at least one character (so login reaches game).
 3. **Character has skills** (created via revised flow or existing data) so the skills page
    can show a non-empty list (or "No skills recorded" is acceptable).

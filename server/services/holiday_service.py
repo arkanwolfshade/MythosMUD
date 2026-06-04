@@ -9,12 +9,16 @@ querying holiday data from calendar JSON files.
 from __future__ import annotations
 
 import asyncio
+import os
 import threading
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from typing import Any
+from typing import TypedDict, cast
+
+import asyncpg
 
 from server.async_persistence import AsyncPersistenceLayer
+from server.database_config_helpers import get_asyncpg_server_settings_for_database_url
 from server.schemas.calendar import HolidayCollection, HolidayEntry
 from server.structured_logging.enhanced_logging_config import get_logger
 from server.time.time_service import ChronicleLike
@@ -29,6 +33,50 @@ def _ensure_utc(value: datetime) -> datetime:
     return value.astimezone(UTC)
 
 
+class _HolidayLoadResult(TypedDict):
+    collection: HolidayCollection | None
+    error: BaseException | None
+
+
+_CALENDAR_HOLIDAYS_QUERY = """
+    SELECT
+        stable_id,
+        name,
+        tradition,
+        month,
+        day,
+        duration_hours,
+        season,
+        bonus_tags
+    FROM calendar_holidays
+    ORDER BY month, day, name
+"""
+
+
+def _string_list_from_row(value: object) -> list[str]:
+    """Normalize nullable PostgreSQL array columns to string values."""
+    if value is None:
+        return []
+    if not isinstance(value, list):
+        return []
+    seq = cast(list[object], value)
+    return [str(item) for item in seq]
+
+
+def _holiday_entry_from_row(row: asyncpg.Record) -> HolidayEntry:
+    """Build a HolidayEntry from a calendar_holidays row."""
+    return HolidayEntry(
+        id=cast(str, row["stable_id"]),
+        name=cast(str, row["name"]),
+        tradition=cast(str, row["tradition"]),
+        month=cast(int, row["month"]),
+        day=cast(int, row["day"]),
+        duration_hours=cast(int, row["duration_hours"]),
+        season=cast(str, row["season"]),
+        bonus_tags=_string_list_from_row(cast(object, row["bonus_tags"])),
+    )
+
+
 class HolidayService:
     """Tracks active Mythos holidays and upcoming triggers."""
 
@@ -41,14 +89,14 @@ class HolidayService:
         environment: str | None = None,
         async_persistence: AsyncPersistenceLayer | None = None,
     ) -> None:
-        self._chronicle = chronicle
-        self._environment = normalize_environment(environment)
-        self._async_persistence = async_persistence
+        self._chronicle: ChronicleLike = chronicle
+        self._environment: str = normalize_environment(environment)
+        self._async_persistence: AsyncPersistenceLayer | None = async_persistence
 
         resolved_data_path: Path | None = Path(data_path) if data_path is not None else None
         if resolved_data_path is None and collection is None:
             resolved_data_path = get_calendar_paths_for_environment(self._environment)[0]
-        self._data_path = resolved_data_path
+        self._data_path: Path | None = resolved_data_path
 
         # Declare _collection once to avoid mypy redefinition error
         if collection is None:
@@ -81,7 +129,7 @@ class HolidayService:
 
     def _load_from_database(self) -> HolidayCollection | None:
         """Load holidays from PostgreSQL database."""
-        result_container: dict[str, Any] = {"collection": None, "error": None}
+        result_container: _HolidayLoadResult = {"collection": None, "error": None}
 
         def run_async() -> None:
             new_loop = asyncio.new_event_loop()
@@ -97,21 +145,15 @@ class HolidayService:
 
         error = result_container.get("error")
         if error is not None:
-            if isinstance(error, BaseException):
-                raise error
-            raise RuntimeError(f"Unexpected error type: {type(error)}")
+            raise error
 
         collection = result_container.get("collection")
         if isinstance(collection, HolidayCollection):
             return collection
         return None
 
-    async def _async_load_from_database(self, result_container: dict[str, Any]) -> None:
+    async def _async_load_from_database(self, result_container: _HolidayLoadResult) -> None:
         """Async helper to load holidays from PostgreSQL database."""
-        import os
-
-        import asyncpg
-
         try:
             # Get database URL from environment
             database_url = os.getenv("DATABASE_URL")
@@ -122,39 +164,12 @@ class HolidayService:
             if database_url.startswith("postgresql+asyncpg://"):
                 database_url = database_url.replace("postgresql+asyncpg://", "postgresql://", 1)
 
-            # Use asyncpg directly to avoid event loop conflicts
-            conn = await asyncpg.connect(database_url)
+            server_settings = get_asyncpg_server_settings_for_database_url(database_url)
+            # Use asyncpg directly to avoid event loop conflicts; match engine search_path
+            conn = await asyncpg.connect(database_url, server_settings=server_settings)
             try:
-                # Query calendar_holidays table
-                query = """
-                    SELECT
-                        stable_id,
-                        name,
-                        tradition,
-                        month,
-                        day,
-                        duration_hours,
-                        season,
-                        bonus_tags
-                    FROM calendar_holidays
-                    ORDER BY month, day, name
-                """
-                rows = await conn.fetch(query)
-
-                holidays = []
-                for row in rows:
-                    holiday_entry = HolidayEntry(
-                        id=row["stable_id"],
-                        name=row["name"],
-                        tradition=row["tradition"],
-                        month=row["month"],
-                        day=row["day"],
-                        duration_hours=row["duration_hours"],
-                        season=row["season"],
-                        bonus_tags=list(row["bonus_tags"]) if row["bonus_tags"] else [],  # Convert array to list
-                    )
-                    holidays.append(holiday_entry)
-
+                rows = await conn.fetch(_CALENDAR_HOLIDAYS_QUERY)
+                holidays = [_holiday_entry_from_row(row) for row in rows]
                 result_container["collection"] = HolidayCollection(holidays=holidays)
             finally:
                 await conn.close()
@@ -182,14 +197,14 @@ class HolidayService:
         # Activate newly matching holidays
         for entry in self._collection.holidays:
             if entry.month == current.month and entry.day == current.day:
-                self._active_started.setdefault(entry.id, current)
+                _ = self._active_started.setdefault(entry.id, current)
 
         return self.get_active_holidays()
 
     def get_active_holidays(self) -> list[HolidayEntry]:
         """Return currently active holiday entries."""
 
-        entries = []
+        entries: list[HolidayEntry] = []
         for holiday_id in self._active_started:
             entry = self._collection.id_map.get(holiday_id)
             if entry:

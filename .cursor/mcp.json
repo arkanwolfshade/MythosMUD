@@ -1,0 +1,26 @@
+{
+  "mcpServers": {
+    "jcodemunch": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": ["--from", "git+https://github.com/jgravelle/jcodemunch-mcp", "jcodemunch-mcp"]
+    },
+    "codacy": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@codacy/codacy-mcp@latest"],
+      "envFile": "${workspaceFolder}/.env.mcp.local"
+    },
+    "playwright": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest"]
+    },
+    "context7": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"],
+      "envFile": "${workspaceFolder}/.env.mcp.local"
+    }
+  }
+}

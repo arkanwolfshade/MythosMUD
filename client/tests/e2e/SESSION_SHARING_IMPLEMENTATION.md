@@ -61,7 +61,7 @@ client/tests/e2e/
 ├── .auth/                    # Authentication storage state (gitignored)
 │   ├── user-auth.json       # Regular user session
 │   └── admin-auth.json      # Admin user session
-└── di-migration-validation.spec.ts
+└── di-migration/suite-*.spec.ts
 ```
 
 ## Performance Impact

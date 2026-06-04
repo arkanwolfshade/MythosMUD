@@ -6,7 +6,7 @@
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'User-facing startup script requires Write-Host for status messages')]
 
 param(
-    [string]$ServerPort = "54731",
+    [string]$ServerPort = "54768",
     [string]$ClientPort = "5173",
     [switch]$ServerOnly,
     [switch]$ClientOnly,
@@ -19,7 +19,7 @@ if ($Help) {
     Write-Host "Usage: .\start_local.ps1 [-ServerPort <port>] [-ClientPort <port>] [-ServerOnly] [-ClientOnly] [-Help]"
     Write-Host ""
     Write-Host "Parameters:"
-    Write-Host "    -ServerPort <port>    Port to run the server on (default: 54731)"
+    Write-Host "    -ServerPort <port>    Port to run the server on (default: 54768)"
     Write-Host "    -ClientPort <port>    Port to run the client on (default: 5173)"
     Write-Host "    -ServerOnly           Start only the server"
     Write-Host "    -ClientOnly           Start only the client"

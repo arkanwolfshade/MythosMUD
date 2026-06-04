@@ -264,7 +264,7 @@ jobs:
             echo "Warning: env.unit_test.example not found, creating minimal .env.unit_test"
             # Use environment variables that are already set in the job env section
             cat > .env.unit_test << 'EOF'
-          SERVER_PORT=54731
+          SERVER_PORT=54768
           EOF
             echo "POSTGRES_SEARCH_PATH=mythos_unit" >> .env.unit_test
             echo "DATABASE_URL=${DATABASE_URL}" >> .env.unit_test

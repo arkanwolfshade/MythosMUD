@@ -166,7 +166,7 @@ DEBUG=false
 ./scripts/start_local.ps1
 ```
 
-The server should now be running at [http://localhost:54731](http://localhost:54731)
+The server should now be running at [http://localhost:54768](http://localhost:54768)
 
 ---
 
@@ -471,7 +471,7 @@ uv sync --reinstall
 ```sh
 # Check if server is running on correct port
 
-curl http://localhost:54731/game/status
+curl http://localhost:54768/game/status
 
 # Verify Vite proxy configuration in client/vite.config.ts
 # Ensure target ports match server configuration

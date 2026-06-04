@@ -30,7 +30,7 @@ This guide explains how to use the comprehensive memory leak monitoring system i
 ./scripts/start_server.ps1
 ```
 
-The server runs on `http://localhost:54731` by default.
+The server runs on `http://localhost:54768` by default.
 
 ### 2. Check Metrics Immediately
 
@@ -41,7 +41,7 @@ The server runs on `http://localhost:54731` by default.
 
 # Or manually
 
-Invoke-RestMethod -Uri "http://localhost:54731/monitoring/memory-leaks" | ConvertTo-Json -Depth 10
+Invoke-RestMethod -Uri "http://localhost:54768/monitoring/memory-leaks" | ConvertTo-Json -Depth 10
 ```
 
 ---
@@ -55,11 +55,11 @@ The primary endpoint aggregates all metrics from all sources:
 ```powershell
 # PowerShell
 
-Invoke-RestMethod -Uri "http://localhost:54731/monitoring/memory-leaks" | ConvertTo-Json -Depth 10
+Invoke-RestMethod -Uri "http://localhost:54768/monitoring/memory-leaks" | ConvertTo-Json -Depth 10
 
 # Browser
 
-http://localhost:54731/monitoring/memory-leaks
+http://localhost:54768/monitoring/memory-leaks
 ```
 
 ### Response includes
@@ -78,7 +78,7 @@ Connection metrics (websockets, metadata, orphaned connections)
 #### Connection Metrics
 
 ```powershell
-Invoke-RestMethod -Uri "http://localhost:54731/monitoring/memory" | ConvertTo-Json
+Invoke-RestMethod -Uri "http://localhost:54768/monitoring/memory" | ConvertTo-Json
 ```
 
 Returns connection statistics including active websockets, closed websockets count, and orphaned connections.
@@ -86,7 +86,7 @@ Returns connection statistics including active websockets, closed websockets cou
 #### EventBus Metrics
 
 ```powershell
-Invoke-RestMethod -Uri "http://localhost:54731/monitoring/eventbus" | ConvertTo-Json
+Invoke-RestMethod -Uri "http://localhost:54768/monitoring/eventbus" | ConvertTo-Json
 ```
 
 Returns subscriber counts by event type, active task count, and subscription churn rate. Useful for detecting event
@@ -95,7 +95,7 @@ subscription leaks.
 #### Cache Metrics
 
 ```powershell
-Invoke-RestMethod -Uri "http://localhost:54731/monitoring/caches" | ConvertTo-Json
+Invoke-RestMethod -Uri "http://localhost:54768/monitoring/caches" | ConvertTo-Json
 ```
 
 Returns cache sizes, hit rates, expired entry counts, expiration rates, and capacity utilization. Helps identify
@@ -104,7 +104,7 @@ cache-related memory leaks.
 #### Task Metrics
 
 ```powershell
-Invoke-RestMethod -Uri "http://localhost:54731/monitoring/tasks" | ConvertTo-Json
+Invoke-RestMethod -Uri "http://localhost:54768/monitoring/tasks" | ConvertTo-Json
 ```
 
 Returns active task counts, task lifecycle metrics, and service-level breakdown. Tracks orphaned tasks and task growth
@@ -457,7 +457,7 @@ _alert_thresholds = {
 ```powershell
 # Check if server is running
 
-Invoke-WebRequest -Uri "http://localhost:54731/monitoring/health"
+Invoke-WebRequest -Uri "http://localhost:54768/monitoring/health"
 
 # Check server logs
 
@@ -487,8 +487,8 @@ This means Docker Desktop is not running
 
 ### Metrics Not Appearing
 
-1. **Check server is running**: `http://localhost:54731/monitoring/health`
-2. **Check endpoint directly**: `http://localhost:54731/monitoring/memory-leaks`
+1. **Check server is running**: `http://localhost:54768/monitoring/health`
+2. **Check endpoint directly**: `http://localhost:54768/monitoring/memory-leaks`
 3. **Check server logs** for errors
 4. **Verify metrics collector initialized**: Look for "Memory leak metrics collector initialized" in logs
 
@@ -513,7 +513,7 @@ $startup = (Get-Content logs/local/memory_leak_metrics.json | ConvertFrom-Json).
 
 # Get current metrics
 
-$current = Invoke-RestMethod -Uri "http://localhost:54731/monitoring/memory-leaks"
+$current = Invoke-RestMethod -Uri "http://localhost:54768/monitoring/memory-leaks"
 
 # Compare closed websockets
 
@@ -537,7 +537,7 @@ Or create your own custom check:
 ```powershell
 # Custom metrics check
 
-$metrics = Invoke-RestMethod -Uri "http://localhost:54731/monitoring/memory-leaks"
+$metrics = Invoke-RestMethod -Uri "http://localhost:54768/monitoring/memory-leaks"
 
 Write-Host "=== Memory Leak Metrics ===" -ForegroundColor Cyan
 Write-Host "Closed WebSockets: $($metrics.connection.closed_websockets_count)" -ForegroundColor $(if

@@ -54,7 +54,7 @@ The `/attack` slash command is not starting combat when used against NPCs. Inves
 
 **Server Status:**
 
-- Server is running and listening on port 54731
+- Server is running and listening on port 54768
 - WebSocket connections established
 - No server errors in recent logs
 

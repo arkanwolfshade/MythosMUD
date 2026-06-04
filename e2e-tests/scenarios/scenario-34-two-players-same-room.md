@@ -12,7 +12,7 @@ Tests that when two players are in the same room, they can see each other in the
 ### BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY
 
 1. **Database State**: Both players are in `earth_arkhamcity_sanitarium_room_foyer_001`
-2. **Server Running**: Development server is running on port 54731
+2. **Server Running**: Development server is running on port 54768
 3. **Client Accessible**: Client is accessible on port 5173
 4. **Both Players Connected**: AW and Ithaqua are both logged in and in the same room
 

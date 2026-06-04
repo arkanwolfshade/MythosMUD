@@ -73,7 +73,7 @@ try {
 
     Write-Host "Starting MythosMUD client on port $Port..." -ForegroundColor Yellow
     Write-Host "Client will be available at: http://localhost:$Port" -ForegroundColor Cyan
-    Write-Host "Make sure the server is running on port 54731" -ForegroundColor Cyan
+    Write-Host "Make sure the server is running on port 54768" -ForegroundColor Cyan
     Write-Host ""
     Write-Host "Press Ctrl+C to stop the client" -ForegroundColor Gray
     Write-Host ""

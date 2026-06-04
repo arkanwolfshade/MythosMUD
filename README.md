@@ -258,8 +258,8 @@ See [DEVELOPMENT.md](docs/DEVELOPMENT.md) for full setup instructions.
 
 6. **Visit:**
    - Frontend: <http://localhost:5173>
-   - Backend API: <http://localhost:54731>
-   - API Documentation: <http://localhost:54731/docs>
+   - Backend API: <http://localhost:54768>
+   - API Documentation: <http://localhost:54768/docs>
 
 7. **Test the setup:**
 

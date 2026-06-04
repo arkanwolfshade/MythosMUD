@@ -1,6 +1,6 @@
 #Requires -Version 5.1
-# Suppress PSAvoidUsingWriteHost: This script uses Write-Host for status/output messages
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Status and management messages require Write-Host for proper display')]
+# Suppress PSAvoidUsingWriteHost: Write-Host is intentional for status messages.
+# Script-level SuppressMessageAttribute is omitted so this file can be dot-sourced from stop_server.ps1 (pwsh).
 
 <#
 .SYNOPSIS
@@ -18,6 +18,8 @@
     Version: 1.0
     Requires: PowerShell 5.1 or higher
 #>
+
+. (Join-Path $PSScriptRoot 'MythosMudProcessScope.ps1')
 
 # NATS Server Configuration
 # Try to find NATS server in common locations
@@ -348,8 +350,12 @@ function Stop-NatsServer {
 
         if ($natsProcesses) {
             foreach ($process in $natsProcesses) {
+                if (-not (Test-MythosMudProjectProcess -ProcessId $process.Id)) {
+                    Write-Host "Skipping NATS PID $($process.Id): not owned by this MythosMUD repo" -ForegroundColor Yellow
+                    continue
+                }
                 Write-Host "Stopping NATS process: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Yellow
-                Stop-Process -Id $process.Id -Force
+                Stop-MythosMudProjectProcessTree -ProcessId $process.Id
             }
         }
 
@@ -360,8 +366,12 @@ function Stop-NatsServer {
                 try {
                     $process = Get-Process -Id $connection.OwningProcess -ErrorAction SilentlyContinue
                     if ($process) {
+                        if (-not (Test-MythosMudProjectProcess -ProcessId $process.Id)) {
+                            Write-Host "Skipping PID $($process.Id) on NATS port: not owned by this MythosMUD repo" -ForegroundColor Yellow
+                            continue
+                        }
                         Write-Host "Stopping process using NATS port: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Yellow
-                        Stop-Process -Id $process.Id -Force
+                        Stop-MythosMudProjectProcessTree -ProcessId $process.Id
                     }
                 }
                 catch {

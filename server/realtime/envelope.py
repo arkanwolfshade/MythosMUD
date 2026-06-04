@@ -20,10 +20,13 @@ import json
 import uuid
 from collections.abc import Mapping
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING, cast, override
+from typing import Protocol, cast, override
 
-if TYPE_CHECKING:
-    from server.realtime.connection_manager import ConnectionManager
+
+class _SupportsEventSequence(Protocol):
+    """Minimal typing for connection_manager passed to build_event (see get_next_sequence_impl)."""
+
+    sequence_counter: int
 
 
 class UUIDEncoder(json.JSONEncoder):
@@ -66,7 +69,7 @@ def build_event(  # pylint: disable=too-many-arguments,too-many-positional-argum
     room_id: str | None = None,
     player_id: uuid.UUID | str | None = None,
     sequence_number: int | None = None,
-    connection_manager: ConnectionManager | None = None,
+    connection_manager: _SupportsEventSequence | None = None,
 ) -> dict[str, object]:
     """
     Create a normalized event envelope.
@@ -77,7 +80,7 @@ def build_event(  # pylint: disable=too-many-arguments,too-many-positional-argum
         room_id: Optional room ID for room-scoped events
         player_id: Optional player ID for player-scoped events (UUID or string)
         sequence_number: Optional explicit sequence number
-        connection_manager: Optional ConnectionManager for sequence generation
+        connection_manager: Optional object with sequence_counter (see _SupportsEventSequence)
 
     If sequence_number is not provided and connection_manager is available,
     uses connection_manager's sequence counter. Otherwise uses global fallback.

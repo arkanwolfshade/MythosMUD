@@ -28,7 +28,7 @@ test covers:
 ### Prerequisites
 
 1. Ensure server is stopped: `./scripts/stop_server.ps1`
-2. Verify ports 54731 and 5173 are free
+2. Verify ports 54768 and 5173 are free
 3. Get 10 active invite codes: `python load-tests/get_invite_codes.py`
 4. Start server: `./scripts/start_local.ps1`
 
@@ -140,7 +140,8 @@ Review the generated report in `logs/local/load_test_analysis_report.txt` and:
 
 ## Notes
 
-The test uses a consistent password for all players: `LoadTest123!`
+Registration passwords are ephemeral: `registerPlayer()` calls `generateLoadTestCredential()`
+(per player, never stored in source or env).
 
 - All players start in the default starting room
 - Some commands (like `whisper`) require coordination between players

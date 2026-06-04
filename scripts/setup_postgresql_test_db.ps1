@@ -5,8 +5,9 @@
 # Suppress PSAvoidUsingWriteHost: This script uses Write-Host for status/output messages
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Status and output messages require Write-Host for proper display')]
 param(
-    [switch]$Force
-    # Verbose parameter removed - not currently used
+    [switch]$Force,
+    # Env file under project root (e.g. .env.unit_test, .env.e2e_test) or absolute path
+    [string]$EnvFile = ".env.unit_test"
 )
 
 $ErrorActionPreference = "Stop"
@@ -15,13 +16,18 @@ Write-Host "MythosMUD PostgreSQL Test Database Setup" -ForegroundColor Green
 Write-Host "=========================================" -ForegroundColor Green
 Write-Host ""
 
-# Load database URL from .env.unit_test (project root)
+# Load database URL from env file (default: .env.unit_test at project root)
 $ProjectRoot = Split-Path $PSScriptRoot -Parent
-$TestEnvPath = Join-Path -Path $ProjectRoot -ChildPath ".env.unit_test"
+$TestEnvPath = if ([System.IO.Path]::IsPathRooted($EnvFile)) {
+    $EnvFile
+}
+else {
+    Join-Path -Path $ProjectRoot -ChildPath $EnvFile
+}
 
 if (-not (Test-Path $TestEnvPath)) {
-    Write-Host "[ERROR] .env.unit_test file not found at: $TestEnvPath" -ForegroundColor Red
-    Write-Host "[SOLUTION] Run: make setup-test-env" -ForegroundColor Yellow
+    Write-Host "[ERROR] Env file not found at: $TestEnvPath" -ForegroundColor Red
+    Write-Host "[SOLUTION] Run: make setup-test-env  (or copy env.e2e_test.example to .env.e2e_test)" -ForegroundColor Yellow
     exit 1
 }
 
@@ -33,7 +39,7 @@ if ($envContent -match 'DATABASE_URL=(.+)') {
     $databaseUrl = $matches[1].Trim()
 }
 else {
-    Write-Host "[ERROR] DATABASE_URL not found in .env.unit_test" -ForegroundColor Red
+    Write-Host "[ERROR] DATABASE_URL not found in env file: $TestEnvPath" -ForegroundColor Red
     exit 1
 }
 
@@ -48,6 +54,19 @@ $dbPassword = $matches[2]
 $dbHost = $matches[3]
 $dbPort = $matches[4]
 $dbName = $matches[5]
+
+$allowedDbs = @("mythos_unit", "mythos_e2e", "mythos_dev")
+if ($dbName -notin $allowedDbs) {
+    Write-Host "[ERROR] DATABASE_URL database name '$dbName' is not allowed; refusing to create or drop." -ForegroundColor Red
+    Write-Host "[INFO] Allowed names: $($allowedDbs -join ', ')" -ForegroundColor Yellow
+    exit 1
+}
+
+$envLeaf = Split-Path -Leaf $TestEnvPath
+if ($Force -and ($envLeaf -eq '.env.e2e_test') -and ($dbName -ne 'mythos_e2e')) {
+    Write-Host "[ERROR] With -Force and .env.e2e_test, DATABASE_URL must use database mythos_e2e (got '$dbName')." -ForegroundColor Red
+    exit 1
+}
 
 Write-Host "Database Configuration:" -ForegroundColor Yellow
 Write-Host "  Host:     $dbHost" -ForegroundColor Gray
@@ -99,6 +118,16 @@ try {
     if ($LASTEXITCODE -eq 0 -and ($dbCheck -match '1')) {
         if ($Force) {
             Write-Host "[INFO] Database exists. Dropping (Force mode)..." -ForegroundColor Yellow
+            if ($dbName -in @("mythos_unit", "mythos_e2e")) {
+                Write-Host "[INFO] Terminating other sessions on '$dbName' before drop..." -ForegroundColor Yellow
+                $terminateSql = @"
+SELECT pg_terminate_backend(pid)
+FROM pg_stat_activity
+WHERE datname = '$dbName' AND pid <> pg_backend_pid();
+"@
+                $null = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d postgres -c $terminateSql 2>&1
+                Start-Sleep -Seconds 1
+            }
             $dropResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d postgres -c "DROP DATABASE $dbName;" 2>&1
             if ($LASTEXITCODE -ne 0) {
                 Write-Host "[ERROR] Failed to drop database: $dropResult" -ForegroundColor Red
@@ -131,7 +160,6 @@ try {
     }
 
     # Apply environment-specific DDL (db/mythos_<dbname>_ddl.sql)
-    $allowedDbs = @("mythos_unit", "mythos_e2e", "mythos_dev")
     if ($dbName -in $allowedDbs) {
         $schemaFile = Join-Path -Path (Join-Path -Path $ProjectRoot -ChildPath "db") -ChildPath "${dbName}_ddl.sql"
         if (Test-Path $schemaFile) {
@@ -185,6 +213,23 @@ try {
     }
     else {
         Write-Host "[WARNING] Container schema normalization migration file not found: $migrationFile" -ForegroundColor Yellow
+    }
+
+    # Authoritative seed (world, NPC definitions, items, etc.) lives in data/db/<dbname>_dml.sql
+    $dmlFile = Join-Path -Path $ProjectRoot -ChildPath "data\db\${dbName}_dml.sql"
+    if (Test-Path $dmlFile) {
+        Write-Host "Loading environment DML ($dbName)..." -ForegroundColor Yellow
+        $dmlResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d $dbName -v ON_ERROR_STOP=1 -f $dmlFile 2>&1
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "[OK] DML applied ($dmlFile)" -ForegroundColor Green
+        }
+        else {
+            Write-Host "[ERROR] Failed to apply DML: $dmlResult" -ForegroundColor Red
+            exit 1
+        }
+    }
+    else {
+        Write-Host "[INFO] DML file not found (skipping): $dmlFile" -ForegroundColor Cyan
     }
 
     Write-Host ""

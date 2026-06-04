@@ -376,7 +376,22 @@ class NPCCombatIntegrationService(NPCCombatIntegrationValidationMixin, NPCCombat
             return await self._run_npc_attack_on_player_after_grace(
                 npc_id, target_id, room_id, attack_damage, npc_instance
             )
-        except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError) as e:
+        except ValueError as e:
+            if "already dead" in str(e).lower():
+                logger.debug(
+                    "NPC attack on player skipped - target already dead",
+                    npc_id=npc_id,
+                    target_id=target_id,
+                )
+                return False
+            logger.error(
+                "Error handling NPC attack on player",
+                error=str(e),
+                npc_id=npc_id,
+                target_id=target_id,
+            )
+            return False
+        except (AttributeError, ImportError, SQLAlchemyError, TypeError) as e:
             logger.error(
                 "Error handling NPC attack on player",
                 error=str(e),

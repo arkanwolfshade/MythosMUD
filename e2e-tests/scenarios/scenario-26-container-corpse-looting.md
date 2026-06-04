@@ -52,7 +52,7 @@ enforcement. No automated alternative is available.
 ### BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY
 
 1. **Database State**: Two players available for testing
-2. **Server Running**: Development server is running on port 54731
+2. **Server Running**: Development server is running on port 54768
 3. **Client Accessible**: Client is accessible on port 5173
 4. **Death System**: Player death system functional
 5. **Both Players Connected**: Both players are logged in

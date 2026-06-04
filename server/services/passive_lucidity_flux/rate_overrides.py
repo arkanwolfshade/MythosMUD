@@ -6,13 +6,20 @@ import asyncio
 import json
 import os
 import threading
-from typing import Any
+from collections.abc import Mapping
+from typing import TypedDict, cast
 
 import asyncpg
 
+from ...database_config_helpers import get_asyncpg_server_settings_for_database_url
 from ...structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
+
+
+class _LucidityRateLoadResult(TypedDict):
+    overrides: dict[str, float]
+    error: BaseException | None
 
 
 def build_override_key(plane: str | None, zone: str | None, sub_zone: str | None) -> str:
@@ -44,11 +51,12 @@ def rate_to_flux(rate: float) -> float:
     return -rate_float
 
 
-def extract_lucidity_rate(config: dict[str, Any]) -> float | None:
+def extract_lucidity_rate(config: Mapping[str, object]) -> float | None:
     """Extract lucidity_drain_rate from special_rules config."""
-    special_rules = config.get("special_rules")
-    if not isinstance(special_rules, dict):
+    special_rules_obj = config.get("special_rules")
+    if not isinstance(special_rules_obj, dict):
         return None
+    special_rules = cast(dict[str, object], special_rules_obj)
     value = special_rules.get("lucidity_drain_rate")
     if isinstance(value, int | float):
         return float(value)
@@ -70,26 +78,46 @@ def _parse_zone_stable_id(zone_stable_id: str) -> tuple[str | None, str | None]:
     return plane, zone
 
 
-def _process_override_row(row: asyncpg.Record, result_container: dict[str, Any]) -> None:
+def _parse_special_rules_from_raw(special_rules_raw: object) -> dict[str, object]:
+    """Parse special_rules column value into a dict."""
+    if isinstance(special_rules_raw, str):
+        parsed_rules = cast(object, json.loads(special_rules_raw))
+        if isinstance(parsed_rules, dict):
+            return cast(dict[str, object], parsed_rules)
+        return {}
+    if isinstance(special_rules_raw, dict):
+        return cast(dict[str, object], special_rules_raw)
+    return {}
+
+
+def _warn_if_rate_exceeds_threshold(
+    rate: float,
+    zone_stable_id: str,
+    subzone_stable_id: str | None,
+) -> None:
+    if rate <= 10.0:
+        return
+    logger.warning(
+        "Lucidity drain rate from database exceeds threshold",
+        rate=rate,
+        zone_stable_id=zone_stable_id,
+        subzone_stable_id=subzone_stable_id,
+        message="This may indicate a configuration error (e.g., 100 instead of 0.1)",
+    )
+
+
+def _process_override_row(row: asyncpg.Record, result_container: _LucidityRateLoadResult) -> None:
     """Process a single zone/subzone row and add override to result_container if valid."""
-    zone_stable_id = row["zone_stable_id"]
-    subzone_stable_id = row["subzone_stable_id"]
-    special_rules = row["special_rules"] or {}
-    if isinstance(special_rules, str):
-        special_rules = json.loads(special_rules)
+    zone_stable_id = str(cast(object, row["zone_stable_id"]))
+    subzone_stable_id_raw: object = cast(object, row["subzone_stable_id"])
+    subzone_stable_id = str(subzone_stable_id_raw) if subzone_stable_id_raw is not None else None
+    special_rules = _parse_special_rules_from_raw(cast(object, row["special_rules"]))
 
     rate = extract_lucidity_rate({"special_rules": special_rules})
     if rate is None:
         return
 
-    if rate > 10.0:
-        logger.warning(
-            "Lucidity drain rate from database exceeds threshold",
-            rate=rate,
-            zone_stable_id=zone_stable_id,
-            subzone_stable_id=subzone_stable_id,
-            message="This may indicate a configuration error (e.g., 100 instead of 0.1)",
-        )
+    _warn_if_rate_exceeds_threshold(rate, zone_stable_id, subzone_stable_id)
 
     plane, zone = _parse_zone_stable_id(zone_stable_id)
     sub_zone = subzone_stable_id or None
@@ -107,7 +135,7 @@ def _process_override_row(row: asyncpg.Record, result_container: dict[str, Any])
     )
 
 
-async def _async_load_lucidity_rate_overrides(result_container: dict[str, Any]) -> None:
+async def _async_load_lucidity_rate_overrides(result_container: _LucidityRateLoadResult) -> None:
     """Async helper to load lucidity rate overrides from PostgreSQL."""
     try:
         database_url = os.getenv("DATABASE_URL")
@@ -115,7 +143,8 @@ async def _async_load_lucidity_rate_overrides(result_container: dict[str, Any]) 
             raise ValueError("DATABASE_URL environment variable not set")
 
         database_url = _normalize_database_url(database_url)
-        conn = await asyncpg.connect(database_url)
+        server_settings = get_asyncpg_server_settings_for_database_url(database_url)
+        conn = await asyncpg.connect(database_url, server_settings=server_settings)
         try:
             query = """
                 SELECT
@@ -149,7 +178,7 @@ async def _async_load_lucidity_rate_overrides(result_container: dict[str, Any]) 
 def load_lucidity_rate_overrides() -> dict[str, float]:
     """Load lucidity rate overrides from PostgreSQL zones/subzones tables."""
     overrides: dict[str, float] = {}
-    result_container: dict[str, Any] = {"overrides": {}, "error": None}
+    result_container: _LucidityRateLoadResult = {"overrides": {}, "error": None}
 
     def run_async() -> None:
         new_loop = asyncio.new_event_loop()
@@ -168,7 +197,7 @@ def load_lucidity_rate_overrides() -> dict[str, float]:
         logger.warning("Could not load lucidity rate overrides from database", error=str(error))
         return overrides
 
-    overrides = result_container.get("overrides", {})
+    overrides = result_container["overrides"]
     if overrides:
         logger.info("Loaded lucidity rate overrides from database", count=len(overrides))
     else:

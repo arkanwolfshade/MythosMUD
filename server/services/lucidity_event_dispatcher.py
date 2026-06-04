@@ -5,15 +5,16 @@
 from __future__ import annotations
 
 import uuid
-from collections.abc import Iterable
-from typing import Any
+from collections.abc import Iterable, Mapping
+from dataclasses import dataclass
 
 from ..structured_logging.enhanced_logging_config import get_logger
+from ..utils.liability_types import LiabilityStackEntry
 
 logger = get_logger(__name__)
 
 
-async def _dispatch_player_event(player_id: uuid.UUID | str, event_type: str, payload: dict[str, Any]) -> None:
+async def _dispatch_player_event(player_id: uuid.UUID | str, event_type: str, payload: Mapping[str, object]) -> None:
     """Send an event to a specific player, swallowing transport errors in headless tests."""
     # Convert UUID to string for send_game_event (which expects str for JSON serialization)
     player_id_str = str(player_id) if isinstance(player_id, uuid.UUID) else player_id
@@ -49,7 +50,7 @@ async def _dispatch_player_event(player_id: uuid.UUID | str, event_type: str, pa
         )
 
 
-def _format_liabilities(liabilities: Iterable[dict[str, Any]] | None) -> list[str]:
+def _format_liabilities(liabilities: Iterable[LiabilityStackEntry] | None) -> list[str]:
     """Flatten liability entries into human-readable strings for the client."""
     formatted: list[str] = []
     if not liabilities:
@@ -72,40 +73,48 @@ def _format_liabilities(liabilities: Iterable[dict[str, Any]] | None) -> list[st
     return formatted
 
 
+@dataclass(frozen=True)
+class LucidityChangeEventExtras:
+    """Optional lucidity change event fields (reduces send_lucidity_change_event parameter count)."""
+
+    max_lcd: int | None = None
+    liabilities: Iterable[LiabilityStackEntry] | None = None
+    reason: str | None = None
+    source: str | None = None
+    metadata: Mapping[str, object] | None = None
+
+
 async def send_lucidity_change_event(
     player_id: uuid.UUID | str,
     *,
     current_lcd: int,
     delta: int,
     tier: str,
-    max_lcd: int | None = None,
-    liabilities: Iterable[dict[str, Any]] | None = None,
-    reason: str | None = None,
-    source: str | None = None,
-    metadata: dict[str, Any] | None = None,
+    extras: LucidityChangeEventExtras | None = None,
 ) -> None:
     """Notify a player that their LCD changed."""
+    event_extras = extras or LucidityChangeEventExtras()
     # Convert UUID to string for JSON payload (client expects string)
     player_id_str = str(player_id) if isinstance(player_id, uuid.UUID) else player_id
     # Use provided max_lcd or default to 100 for backward compatibility
     # Note: max_lcd should be calculated from player's education stat (max_lucidity = education)
-    payload: dict[str, Any] = {
+    payload: dict[str, object] = {
         "player_id": player_id_str,
         "current_lcd": current_lcd,
-        "max_lcd": max_lcd if max_lcd is not None else 100,
+        "max_lcd": event_extras.max_lcd if event_extras.max_lcd is not None else 100,
         "delta": delta,
         "tier": tier,
     }
 
-    liability_strings = _format_liabilities(liabilities)
+    liability_strings = _format_liabilities(event_extras.liabilities)
     if liability_strings:
         payload["liabilities"] = liability_strings
-    if reason:
-        payload["reason"] = reason
-    if source:
-        payload["source"] = source
-    if metadata:
-        payload["metadata"] = metadata
+    if event_extras.reason:
+        payload["reason"] = event_extras.reason
+    if event_extras.source:
+        payload["source"] = event_extras.source
+    if event_extras.metadata:
+        payload["metadata"] = event_extras.metadata
 
     await _dispatch_player_event(player_id, "lucidity_change", payload)
 
@@ -120,7 +129,7 @@ async def send_catatonia_event(  # pylint: disable=too-many-arguments,too-many-p
     target_name: str | None = None,
 ) -> None:
     """Emit a catatonia state event to the affected player."""
-    payload: dict[str, Any] = {
+    payload: dict[str, object] = {
         "status": status,
         "rescuer_name": rescuer_name,
         "target_name": target_name,
@@ -145,7 +154,7 @@ async def send_rescue_update_event(
     eta_seconds: float | None = None,
 ) -> None:
     """Send rescue progress/status updates to either participant."""
-    payload: dict[str, Any] = {
+    payload: dict[str, object] = {
         "status": status,
         "rescuer_name": rescuer_name,
         "target_name": target_name,
@@ -167,10 +176,10 @@ async def send_hallucination_event(
     *,
     hallucination_type: str,
     message: str,
-    metadata: dict[str, Any] | None = None,
+    metadata: Mapping[str, object] | None = None,
 ) -> None:
     """Send a hallucination event to a player."""
-    payload: dict[str, Any] = {
+    payload: dict[str, object] = {
         "hallucination_type": hallucination_type,
         "message": message,
     }
@@ -181,6 +190,7 @@ async def send_hallucination_event(
 
 
 __all__ = [
+    "LucidityChangeEventExtras",
     "send_catatonia_event",
     "send_rescue_update_event",
     "send_lucidity_change_event",

@@ -5,15 +5,67 @@ This module handles WebSocket connection disconnection operations.
 """
 
 import uuid
-from typing import Any
+from typing import Protocol
+
+from anyio import Lock
+from fastapi import WebSocket
 
 from ..exceptions import DatabaseError
 from ..structured_logging.enhanced_logging_config import get_logger
+from .connection_manager_methods import safe_close_websocket_impl
+from .connection_models import ConnectionMetadata
+from .message_queue import MessageQueue
+from .rate_limiter import RateLimiter
+from .room_subscription_manager import RoomSubscriptionManager
 
 logger = get_logger(__name__)
 
 
-async def _disconnect_all_websockets(connection_ids: list[str], player_id: uuid.UUID, manager: Any) -> None:
+class _DisconnectConnectionManager(Protocol):
+    """Connection manager surface used by disconnection helpers."""
+
+    active_websockets: dict[str, WebSocket]
+    connection_metadata: dict[str, ConnectionMetadata]
+    player_websockets: dict[uuid.UUID, list[str]]
+    rate_limiter: RateLimiter
+    message_queue: MessageQueue
+    room_manager: RoomSubscriptionManager
+    processed_disconnects: set[uuid.UUID]
+    last_seen: dict[uuid.UUID, float]
+    last_active_update_times: dict[uuid.UUID, float]
+    disconnect_lock: Lock
+    processed_disconnect_lock: Lock
+
+    def has_websocket_connection(self, player_id: uuid.UUID) -> bool:
+        """Return True when the player still has at least one WebSocket connection."""
+        ...
+
+
+def _cleanup_connection_tracking(connection_id: str, manager: _DisconnectConnectionManager) -> None:
+    """Remove connection registry entries; safe when already cleaned up elsewhere."""
+    _ = manager.active_websockets.pop(connection_id, None)
+    _ = manager.connection_metadata.pop(connection_id, None)
+    manager.rate_limiter.remove_connection_message_data(connection_id)
+
+
+async def _disconnect_single_websocket(
+    connection_id: str, player_id: uuid.UUID, manager: _DisconnectConnectionManager
+) -> None:
+    """Close one WebSocket and clean tracking. Idempotent for duplicate disconnect calls."""
+    websocket = manager.active_websockets.get(connection_id)
+    if websocket is None:
+        _cleanup_connection_tracking(connection_id, manager)
+        return
+
+    logger.info("DEBUG: Closing WebSocket", connection_id=connection_id, player_id=player_id)
+    await safe_close_websocket_impl(manager, websocket, code=1000, reason="Connection closed")
+    logger.info("Successfully closed WebSocket", connection_id=connection_id, player_id=player_id)
+    _cleanup_connection_tracking(connection_id, manager)
+
+
+async def disconnect_all_websockets_impl(
+    connection_ids: list[str], player_id: uuid.UUID, manager: _DisconnectConnectionManager
+) -> None:
     """
     Disconnect all WebSocket connections for a player.
 
@@ -23,24 +75,12 @@ async def _disconnect_all_websockets(connection_ids: list[str], player_id: uuid.
         manager: ConnectionManager instance
     """
     for connection_id in connection_ids:
-        if connection_id in manager.active_websockets:
-            websocket = manager.active_websockets[connection_id]
-            # Guard against None websocket (can happen during cleanup)
-            if websocket is None:
-                del manager.active_websockets[connection_id]
-                return
-            logger.info("DEBUG: Closing WebSocket", connection_id=connection_id, player_id=player_id)
-            await manager._safe_close_websocket(websocket, code=1000, reason="Connection closed")  # pylint: disable=protected-access  # Reason: Accessing protected member _safe_close_websocket is necessary for connection disconnection implementation, this is part of the internal API
-            logger.info("Successfully closed WebSocket", connection_id=connection_id, player_id=player_id)
-            del manager.active_websockets[connection_id]
-
-        # Clean up metadata and rate limiting
-        if connection_id in manager.connection_metadata:
-            del manager.connection_metadata[connection_id]
-        manager.rate_limiter.remove_connection_message_data(connection_id)
+        await _disconnect_single_websocket(connection_id, player_id, manager)
 
 
-async def _track_disconnect_if_needed(player_id: uuid.UUID, manager: Any, is_force_disconnect: bool) -> bool:
+async def _track_disconnect_if_needed(
+    player_id: uuid.UUID, manager: _DisconnectConnectionManager, is_force_disconnect: bool
+) -> bool:
     """
     Track disconnection if needed.
 
@@ -64,7 +104,9 @@ async def _track_disconnect_if_needed(player_id: uuid.UUID, manager: Any, is_for
         return False
 
 
-def _cleanup_room_subscriptions(player_id: uuid.UUID, manager: Any, is_force_disconnect: bool) -> None:
+def _cleanup_room_subscriptions(
+    player_id: uuid.UUID, manager: _DisconnectConnectionManager, is_force_disconnect: bool
+) -> None:
     """
     Clean up room subscriptions if needed.
 
@@ -77,10 +119,10 @@ def _cleanup_room_subscriptions(player_id: uuid.UUID, manager: Any, is_force_dis
         logger.debug("Preserving room membership during force disconnect", player_id=player_id)
         return
 
-    manager.room_manager.remove_player_from_all_rooms(str(player_id))
+    _ = manager.room_manager.remove_player_from_all_rooms(str(player_id))
 
 
-def _cleanup_player_data(player_id: uuid.UUID, manager: Any) -> None:
+def _cleanup_player_data(player_id: uuid.UUID, manager: _DisconnectConnectionManager) -> None:
     """
     Clean up rate limiting and message data for a player.
 
@@ -95,12 +137,12 @@ def _cleanup_player_data(player_id: uuid.UUID, manager: Any) -> None:
     manager.message_queue.remove_player_messages(str(player_id))
     if player_id in manager.last_seen:
         del manager.last_seen[player_id]
-    manager.last_active_update_times.pop(player_id, None)
+    _ = manager.last_active_update_times.pop(player_id, None)
 
 
 async def cleanup_websocket_disconnect(
     player_id: uuid.UUID,
-    manager: Any,  # ConnectionManager
+    manager: _DisconnectConnectionManager,
     is_force_disconnect: bool = False,
 ) -> bool:
     """
@@ -133,10 +175,10 @@ async def cleanup_websocket_disconnect(
             )
 
             # Disconnect all WebSocket connections
-            await _disconnect_all_websockets(connection_ids, player_id, manager)
+            await disconnect_all_websockets_impl(connection_ids, player_id, manager)
 
-            # Remove from tracking
-            del manager.player_websockets[player_id]
+            # Remove from tracking (on-close handler may have already cleared this entry)
+            _ = manager.player_websockets.pop(player_id, None)
 
             # Check if we need to track disconnection
             should_track_disconnect = await _track_disconnect_if_needed(player_id, manager, is_force_disconnect)
@@ -155,9 +197,35 @@ async def cleanup_websocket_disconnect(
     return should_track_disconnect
 
 
+async def _disconnect_websocket_by_connection_id(
+    connection_id: str, player_id: uuid.UUID, manager: _DisconnectConnectionManager
+) -> None:
+    """Close one WebSocket by connection ID and update player_websockets tracking."""
+    websocket = manager.active_websockets.pop(connection_id, None)
+    if websocket is not None:
+        logger.info("DEBUG: Closing WebSocket by connection ID", connection_id=connection_id)
+        await safe_close_websocket_impl(manager, websocket, code=1000, reason="Connection closed")
+        logger.info("DEBUG: Successfully closed WebSocket by connection ID", connection_id=connection_id)
+
+    if player_id in manager.player_websockets and connection_id in manager.player_websockets[player_id]:
+        manager.player_websockets[player_id].remove(connection_id)
+        if not manager.player_websockets[player_id]:
+            _ = manager.player_websockets.pop(player_id, None)
+
+
+def _cleanup_fully_disconnected_player(player_id: uuid.UUID, manager: _DisconnectConnectionManager) -> None:
+    """Remove player-scoped tracking when no websocket connections remain."""
+    if manager.has_websocket_connection(player_id):
+        return
+
+    _cleanup_player_data(player_id, manager)
+    _cleanup_room_subscriptions(player_id, manager, is_force_disconnect=False)
+    logger.info("Player has no remaining connections, cleaned up player data", player_id=player_id)
+
+
 async def disconnect_connection_by_id_impl(
     connection_id: str,
-    manager: Any,  # ConnectionManager
+    manager: _DisconnectConnectionManager,
 ) -> bool:
     """
     Disconnect a specific connection by its ID.
@@ -174,7 +242,7 @@ async def disconnect_connection_by_id_impl(
             logger.warning("Connection not found in metadata", connection_id=connection_id)
             return False
 
-        metadata = manager.connection_metadata[connection_id]
+        metadata: ConnectionMetadata = manager.connection_metadata[connection_id]
         player_id = metadata.player_id
         connection_type = metadata.connection_type
 
@@ -186,35 +254,11 @@ async def disconnect_connection_by_id_impl(
         )
 
         if connection_type == "websocket":
-            if connection_id in manager.active_websockets:
-                websocket = manager.active_websockets[connection_id]
-                # Guard against None websocket (can happen during cleanup)
-                if websocket is None:
-                    del manager.active_websockets[connection_id]
-                    return False
-                logger.info("DEBUG: Closing WebSocket by connection ID", connection_id=connection_id)
-                await manager._safe_close_websocket(websocket, code=1000, reason="Connection closed")  # pylint: disable=protected-access  # Reason: Accessing protected member _safe_close_websocket is necessary for connection disconnection implementation, this is part of the internal API
-                logger.info("DEBUG: Successfully closed WebSocket by connection ID", connection_id=connection_id)
-                del manager.active_websockets[connection_id]
+            await _disconnect_websocket_by_connection_id(connection_id, player_id, manager)
 
-            # Remove from player's connection list
-            if player_id in manager.player_websockets and connection_id in manager.player_websockets[player_id]:
-                manager.player_websockets[player_id].remove(connection_id)
-                if not manager.player_websockets[player_id]:
-                    del manager.player_websockets[player_id]
-
-        # Clean up metadata
-        del manager.connection_metadata[connection_id]
-
-        # Clean up player data if no connections remain
-        if not manager.has_websocket_connection(player_id):
-            manager.rate_limiter.remove_player_data(str(player_id))
-            manager.message_queue.remove_player_messages(str(player_id))
-            if player_id in manager.last_seen:
-                del manager.last_seen[player_id]
-            manager.last_active_update_times.pop(player_id, None)
-            manager.room_manager.remove_player_from_all_rooms(str(player_id))
-            logger.info("Player has no remaining connections, cleaned up player data", player_id=player_id)
+        _ = manager.connection_metadata.pop(connection_id, None)
+        manager.rate_limiter.remove_connection_message_data(connection_id)
+        _cleanup_fully_disconnected_player(player_id, manager)
 
         logger.info(
             "Successfully disconnected connection", connection_type=connection_type, connection_id=connection_id

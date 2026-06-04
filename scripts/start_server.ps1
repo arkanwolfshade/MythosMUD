@@ -17,14 +17,14 @@
     The host address to bind the server to. Default is "127.0.0.1".
 
 .PARAMETER Port
-    The port number to bind the server to. Default is 54731.
+    The port number to bind the server to. Default is 54768.
 
 .PARAMETER Reload
     When specified, enables auto-reload for development. Default is false (hot reloading disabled due to client compatibility issues).
 
 .EXAMPLE
     .\start_server.ps1
-    Starts the server with default settings (127.0.0.1:54731 without reload).
+    Starts the server with default settings (127.0.0.1:54768 without reload).
 
 .EXAMPLE
     .\start_server.ps1 -ServerHost "0.0.0.0" -Port 8080 -Reload
@@ -56,6 +56,8 @@ param(
     [Parameter(HelpMessage = "Show help information")]
     [switch]$Help
 )
+
+. (Join-Path $PSScriptRoot 'MythosMudProcessScope.ps1')
 
 # Function to load environment variables
 function Import-EnvironmentConfig {
@@ -117,7 +119,7 @@ function Get-ServerConfig {
     )
 
     $defaultHost = "127.0.0.1"
-    $defaultPort = 54731
+    $defaultPort = 54768
 
     if (Test-Path $EnvFile) {
         try {
@@ -173,10 +175,14 @@ function Stop-ServerProcess {
         }
 
         if ($serverProcesses) {
-            Write-Host "Found $($serverProcesses.Count) existing server process(es). Terminating..." -ForegroundColor Yellow
+            Write-Host "Found $($serverProcesses.Count) candidate server process(es). Checking repo scope..." -ForegroundColor Yellow
             $serverProcesses | ForEach-Object {
+                if (-not (Test-MythosMudProjectProcess -ProcessId $_.Id)) {
+                    Write-Host "  Skipping PID $($_.Id): not owned by this MythosMUD repo" -ForegroundColor Cyan
+                    return
+                }
                 Write-Host "  Terminating process: $($_.ProcessName) (PID: $($_.Id))" -ForegroundColor Gray
-                Stop-Process -Id $_.Id -Force
+                Stop-MythosMudProjectProcessTree -ProcessId $_.Id
             }
             Start-Sleep -Seconds 2
         }

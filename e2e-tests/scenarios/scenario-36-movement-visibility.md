@@ -13,7 +13,7 @@ Tests that when one player moves to a different room, other players in the origi
 ### BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY
 
 1. **Database State**: Both players are in `earth_arkhamcity_sanitarium_room_foyer_001`
-2. **Server Running**: Development server is running on port 54731
+2. **Server Running**: Development server is running on port 54768
 3. **Client Accessible**: Client is accessible on port 5173
 4. **Both Players Connected**: AW and Ithaqua are both logged in and in the same room
 5. **Room Connections**: Verify there is an adjacent room AW can move to

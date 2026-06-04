@@ -9,7 +9,7 @@ alwaysApply: true
 
 ## MANDATORY SERVER STARTUP PROCEDURE
 1. **STOP FIRST**: Before starting a server, ALWAYS run `./scripts/stop_server.ps1`
-2. **VERIFY PORTS**: After stopping, verify ports are free with `netstat -an | findstr :54731` and `netstat -an | findstr :5173`
+2. **VERIFY PORTS**: After stopping, verify ports are free with `netstat -an | findstr :54768` and `netstat -an | findstr :5173`
 3. **NO BACKGROUND**: NEVER use `is_background: true` for server startup commands
 4. **SEE OUTPUT**: ALWAYS use `is_background: false` for server startup so you can see what's happening
 5. **ONE START ONLY**: Run `./scripts/start_local.ps1` with `is_background: false` exactly ONCE

@@ -14,7 +14,7 @@ in Phase 4 of the Item System implementation.
 1. **Stop Game Services**
 
    - `./scripts/stop_server.ps1`
-   - Confirm ports `54731` and `5173` are free.
+   - Confirm ports `54768` and `5173` are free.
 
 2. **Regenerate Databases**
 

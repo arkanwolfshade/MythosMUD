@@ -28,5 +28,6 @@ Apply when adding or changing:
 
 ## Reference
 
-- Full requirements: [CLAUDE.md](../../CLAUDE.md) "CRITICAL SECURITY & PRIVACY REQUIREMENTS" and "COPPA Compliance Requirements"
-- Security standards: [CLAUDE.md](../../CLAUDE.md) "Security Implementation Standards"
+- Full requirements: [AGENTS.md](../../AGENTS.md) "Critical security and privacy requirements" / "COPPA compliance
+  requirements"
+- Security standards: [AGENTS.md](../../AGENTS.md) "Security implementation standards"

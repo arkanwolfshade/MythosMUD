@@ -9,17 +9,40 @@ import asyncio
 import json
 import os
 import threading
-from typing import Any
+from typing import TypedDict, cast, overload
 
 import asyncpg
 
+from ..database_config_helpers import get_asyncpg_server_settings_for_database_url
 from ..structured_logging.enhanced_logging_config import get_logger
-from .zone_configuration import ZoneConfiguration
+from .zone_configuration import ZoneConfiguration, ZoneConfigurationData, ZoneSpecialRules
 
 logger = get_logger(__name__)
 
 
-def parse_json_field(field_value: Any, default: Any) -> Any:
+class _ZoneConfigBucket(TypedDict):
+    zone: dict[str, ZoneConfiguration]
+    subzone: dict[str, ZoneConfiguration]
+
+
+class ZoneLoadResult(TypedDict):
+    """Result of loading zone and sub-zone configs from PostgreSQL."""
+
+    configs: _ZoneConfigBucket
+    error: BaseException | None
+
+
+@overload
+def parse_json_field(field_value: object | None, default: list[object]) -> list[object]: ...
+
+
+@overload
+def parse_json_field(field_value: object | None, default: dict[str, object]) -> dict[str, object]: ...
+
+
+def parse_json_field(
+    field_value: object | None, default: list[object] | dict[str, object]
+) -> list[object] | dict[str, object]:
     """
     Parse a JSON field from database, handling both dict/list and string formats.
 
@@ -33,8 +56,21 @@ def parse_json_field(field_value: Any, default: Any) -> Any:
     if field_value is None:
         return default
     if isinstance(field_value, str):
-        return json.loads(field_value)
-    return field_value
+        if isinstance(default, list):
+            return cast(list[object], json.loads(field_value))
+        return cast(dict[str, object], json.loads(field_value))
+    if isinstance(default, list):
+        return cast(list[object], field_value)
+    return cast(dict[str, object], field_value)
+
+
+def parse_zone_special_rules(field_value: object | None) -> ZoneSpecialRules:
+    """Parse a zone special_rules field from the database."""
+    default: dict[str, object] = {}
+    return cast(
+        ZoneSpecialRules,
+        cast(object, parse_json_field(field_value, default)),
+    )
 
 
 def extract_zone_name(stable_id: str) -> str:
@@ -51,7 +87,7 @@ def extract_zone_name(stable_id: str) -> str:
     return zone_parts[1] if len(zone_parts) > 1 else stable_id
 
 
-async def process_zone_rows(conn: Any, result_container: dict[str, Any]) -> None:
+async def process_zone_rows(conn: asyncpg.Connection, result_container: ZoneLoadResult) -> None:
     """
     Process zone rows from database and populate zone configurations.
 
@@ -74,15 +110,18 @@ async def process_zone_rows(conn: Any, result_container: dict[str, Any]) -> None
     zone_rows = await conn.fetch(zone_query)
 
     for row in zone_rows:
-        zone_stable_id = row["zone_stable_id"]
+        zone_stable_id = cast(str, row["zone_stable_id"])
         zone_name = extract_zone_name(zone_stable_id)
-        weather_patterns = parse_json_field(row["weather_patterns"], [])
-        special_rules = parse_json_field(row["special_rules"], {})
+        weather_patterns = cast(
+            list[str],
+            parse_json_field(cast(object, row["weather_patterns"]), []),
+        )
+        special_rules = parse_zone_special_rules(cast(object, row["special_rules"]))
 
-        config_data = {
-            "zone_type": row["zone_type"],
-            "environment": row["environment"],
-            "description": row["description"],
+        config_data: ZoneConfigurationData = {
+            "zone_type": cast(str, row["zone_type"]),
+            "environment": cast(str, row["environment"]),
+            "description": cast(str, row["description"]),
             "weather_patterns": weather_patterns,
             "special_rules": special_rules,
         }
@@ -91,7 +130,54 @@ async def process_zone_rows(conn: Any, result_container: dict[str, Any]) -> None
         result_container["configs"]["zone"][zone_name] = zone_config
 
 
-async def process_subzone_rows(conn: Any, result_container: dict[str, Any]) -> None:
+_SUBZONE_QUERY = """
+    SELECT
+        sz.id,
+        z.stable_id as zone_stable_id,
+        sz.stable_id as subzone_stable_id,
+        sz.environment,
+        sz.description,
+        sz.special_rules,
+        z.zone_type,
+        z.weather_patterns
+    FROM subzones sz
+    JOIN zones z ON sz.zone_id = z.id
+    ORDER BY z.stable_id, sz.stable_id
+"""
+
+
+def _store_subzone_row(row: asyncpg.Record, result_container: ZoneLoadResult) -> None:
+    """Build and store one subzone configuration from a database row."""
+    zone_stable_id = cast(str, row["zone_stable_id"])
+    subzone_stable_id = cast(str, row["subzone_stable_id"])
+    zone_name = extract_zone_name(zone_stable_id)
+    weather_patterns = cast(
+        list[str],
+        parse_json_field(cast(object, row["weather_patterns"]), []),
+    )
+    special_rules = parse_zone_special_rules(cast(object, row["special_rules"]))
+
+    config_data: ZoneConfigurationData = {
+        "zone_type": cast(str, row["zone_type"]),  # Inherited from zone
+        "environment": cast(str, row["environment"]),
+        "description": cast(str, row["description"]),
+        "weather_patterns": weather_patterns,  # Inherited from zone
+        "special_rules": special_rules,
+    }
+
+    zone_config = ZoneConfiguration(config_data)
+    subzone_key = f"{zone_name}/{subzone_stable_id}"
+    result_container["configs"]["subzone"][subzone_key] = zone_config
+    logger.debug(
+        "Loaded subzone configuration",
+        subzone_key=subzone_key,
+        zone_stable_id=zone_stable_id,
+        subzone_stable_id=subzone_stable_id,
+        zone_name=zone_name,
+    )
+
+
+async def process_subzone_rows(conn: asyncpg.Connection, result_container: ZoneLoadResult) -> None:
     """
     Process subzone rows from database and populate subzone configurations.
 
@@ -99,50 +185,12 @@ async def process_subzone_rows(conn: Any, result_container: dict[str, Any]) -> N
         conn: Database connection
         result_container: Container to store results
     """
-    subzone_query = """
-        SELECT
-            sz.id,
-            z.stable_id as zone_stable_id,
-            sz.stable_id as subzone_stable_id,
-            sz.environment,
-            sz.description,
-            sz.special_rules,
-            z.zone_type,
-            z.weather_patterns
-        FROM subzones sz
-        JOIN zones z ON sz.zone_id = z.id
-        ORDER BY z.stable_id, sz.stable_id
-    """
-    subzone_rows = await conn.fetch(subzone_query)
-
+    subzone_rows = await conn.fetch(_SUBZONE_QUERY)
     for row in subzone_rows:
-        zone_stable_id = row["zone_stable_id"]
-        subzone_stable_id = row["subzone_stable_id"]
-        zone_name = extract_zone_name(zone_stable_id)
-        weather_patterns = parse_json_field(row["weather_patterns"], [])
-        special_rules = parse_json_field(row["special_rules"], {})
-
-        config_data = {
-            "zone_type": row["zone_type"],  # Inherited from zone
-            "environment": row["environment"],
-            "description": row["description"],
-            "weather_patterns": weather_patterns,  # Inherited from zone
-            "special_rules": special_rules,
-        }
-
-        zone_config = ZoneConfiguration(config_data)
-        subzone_key = f"{zone_name}/{subzone_stable_id}"
-        result_container["configs"]["subzone"][subzone_key] = zone_config
-        logger.debug(
-            "Loaded subzone configuration",
-            subzone_key=subzone_key,
-            zone_stable_id=zone_stable_id,
-            subzone_stable_id=subzone_stable_id,
-            zone_name=zone_name,
-        )
+        _store_subzone_row(row, result_container)
 
 
-async def async_load_zone_configurations(result_container: dict[str, Any]) -> None:
+async def async_load_zone_configurations(result_container: ZoneLoadResult) -> None:
     """Async helper to load zone configurations from PostgreSQL database."""
     try:
         # Get database URL from environment
@@ -154,8 +202,9 @@ async def async_load_zone_configurations(result_container: dict[str, Any]) -> No
         if database_url.startswith("postgresql+asyncpg://"):
             database_url = database_url.replace("postgresql+asyncpg://", "postgresql://", 1)
 
-        # Use asyncpg directly to avoid event loop conflicts
-        conn = await asyncpg.connect(database_url)
+        server_settings = get_asyncpg_server_settings_for_database_url(database_url)
+        # Use asyncpg directly to avoid event loop conflicts; match engine search_path
+        conn = await asyncpg.connect(database_url, server_settings=server_settings)
         try:
             await process_zone_rows(conn, result_container)
             await process_subzone_rows(conn, result_container)
@@ -176,7 +225,10 @@ def load_zone_configurations() -> dict[str, ZoneConfiguration]:
     Raises:
         RuntimeError: If loading fails
     """
-    result_container: dict[str, Any] = {"configs": {"zone": {}, "subzone": {}}, "error": None}
+    result_container: ZoneLoadResult = {
+        "configs": {"zone": {}, "subzone": {}},
+        "error": None,
+    }
 
     def run_async() -> None:
         new_loop = asyncio.new_event_loop()
@@ -195,24 +247,19 @@ def load_zone_configurations() -> dict[str, ZoneConfiguration]:
     thread.start()
     thread.join()
 
-    error = result_container.get("error")
+    error = result_container["error"]
     if error is not None:
         logger.error(
             "Failed to load zone configs from database",
             error=str(error),
             error_type=type(error).__name__,
         )
-        if isinstance(error, BaseException):
-            raise RuntimeError("Failed to load zone configurations from database") from error
-        raise RuntimeError(f"Failed to load zone configurations from database: {error}")
+        raise RuntimeError("Failed to load zone configurations from database") from error
 
     # Merge zone and subzone configs into a single dict for backward compatibility
-    configs = result_container.get("configs")
-    if configs is None or not isinstance(configs, dict):
-        logger.error("Invalid configs in result_container", configs_type=type(configs).__name__)
-        raise RuntimeError("Failed to load zone configurations: invalid configs structure")
-    zone_configs = configs.get("zone", {})
-    subzone_configs = configs.get("subzone", {})
+    configs = result_container["configs"]
+    zone_configs = configs["zone"]
+    subzone_configs = configs["subzone"]
     merged_configs = {**zone_configs, **subzone_configs}
     logger.info(
         "Loaded zone configurations from PostgreSQL database",

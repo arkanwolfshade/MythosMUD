@@ -98,6 +98,7 @@ export const MonitoringPanel: React.FC<MonitoringPanelProps> = ({
   }, [baseUrl]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- load monitoring + interval
     void fetchMonitoringData();
 
     if (refreshInterval > 0) {

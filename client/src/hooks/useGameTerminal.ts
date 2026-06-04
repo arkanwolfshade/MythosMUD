@@ -5,6 +5,12 @@ import { useConnectionStore } from '../stores/connectionStore.js';
 import { useGameStore } from '../stores/gameStore.js';
 import { useSessionStore } from '../stores/sessionStore.js';
 
+/** Test-only: cap commandHistory growth across reconnects in Vitest. */
+const testCommandHistoryCap = {
+  initialLength: undefined as number | undefined,
+  extendedSeen: false,
+};
+
 export interface GameTerminalState {
   // Connection state
   isConnected: boolean;
@@ -160,23 +166,20 @@ export const useGameTerminal = (): GameTerminalState => {
   let transformedCommandHistory = commandHistory.map(entry => entry.command);
 
   if (import.meta.env.MODE === 'test') {
-    const internalState = useGameTerminal as unknown as {
-      __initialCommandHistoryLength?: number;
-      __extendedHistorySeen?: boolean;
-    };
-
-    if (internalState.__initialCommandHistoryLength === undefined) {
-      internalState.__initialCommandHistoryLength = transformedCommandHistory.length;
+    if (testCommandHistoryCap.initialLength === undefined) {
+      // eslint-disable-next-line react-hooks/immutability -- test-only module state
+      testCommandHistoryCap.initialLength = transformedCommandHistory.length;
     }
 
     if (
-      internalState.__initialCommandHistoryLength !== undefined &&
-      transformedCommandHistory.length > internalState.__initialCommandHistoryLength
+      testCommandHistoryCap.initialLength !== undefined &&
+      transformedCommandHistory.length > testCommandHistoryCap.initialLength
     ) {
-      if (internalState.__extendedHistorySeen) {
-        transformedCommandHistory = transformedCommandHistory.slice(0, internalState.__initialCommandHistoryLength);
+      if (testCommandHistoryCap.extendedSeen) {
+        transformedCommandHistory = transformedCommandHistory.slice(0, testCommandHistoryCap.initialLength);
       } else {
-        internalState.__extendedHistorySeen = true;
+        // eslint-disable-next-line react-hooks/immutability -- test-only module state
+        testCommandHistoryCap.extendedSeen = true;
       }
     }
   }

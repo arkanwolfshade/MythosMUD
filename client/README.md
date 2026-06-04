@@ -188,8 +188,8 @@ client/
 Create a `.env` file in the client directory:
 
 ```env
-VITE_API_URL=http://localhost:54731
-VITE_WS_URL=ws://localhost:54731/ws
+VITE_API_URL=http://localhost:54768
+VITE_WS_URL=ws://localhost:54768/ws
 ```
 
 ## Contributing

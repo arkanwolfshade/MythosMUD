@@ -8,7 +8,7 @@ values). Plan 10.8 E3.
 
 ## Prerequisites
 
-1. **Server running** on port 54731; **client** on 5173.
+1. **Server running** on port 54768; **client** on 5173.
 2. **Test user** logged in with a character in game (command input visible).
 3. **Character has skills** (created via revised flow or existing data) so the response is
    non-empty; or assert "No skills recorded" if that is the expected state.

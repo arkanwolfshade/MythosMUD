@@ -7,12 +7,16 @@ querying schedule data from calendar JSON files.
 from __future__ import annotations
 
 import asyncio
+import os
 import threading
 from collections.abc import Sequence
 from datetime import datetime
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, TypedDict, cast
 
+import asyncpg
+
+from server.database_config_helpers import get_asyncpg_server_settings_for_database_url
 from server.schemas.calendar import ScheduleCollection, ScheduleEntry
 from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.project_paths import get_calendar_paths_for_environment, normalize_environment
@@ -35,14 +39,90 @@ def normalize_weekday_names(days: list[str]) -> list[str]:
     return [_LATIN_TO_STANDARD_WEEKDAY.get(d, d) for d in days]
 
 
+_CALENDAR_NPC_SCHEDULES_QUERY = """
+    SELECT
+        stable_id,
+        name,
+        category,
+        start_hour,
+        end_hour,
+        days,
+        applies_to,
+        effects,
+        notes
+    FROM calendar_npc_schedules
+    ORDER BY category, start_hour, name
+"""
+
+
+def _string_list_from_row(value: object) -> list[str]:
+    """Normalize nullable PostgreSQL array columns to string values."""
+    if value is None:
+        return []
+    if not isinstance(value, list):
+        return []
+    seq = cast(list[object], value)
+    return [str(item) for item in seq]
+
+
+def _lower_string_list_from_row(value: object) -> list[str]:
+    """Normalize nullable PostgreSQL array columns to lowercase slug strings."""
+    return [item.lower() for item in _string_list_from_row(value)]
+
+
+def _resolve_asyncpg_database_url() -> str:
+    """Return asyncpg-compatible DATABASE_URL from the environment."""
+    database_url = os.getenv("DATABASE_URL")
+    if not database_url:
+        raise ValueError("DATABASE_URL environment variable not set")
+    if database_url.startswith("postgresql+asyncpg://"):
+        return database_url.replace("postgresql+asyncpg://", "postgresql://", 1)
+    return database_url
+
+
+def _schedule_entry_from_row(row: asyncpg.Record) -> ScheduleEntry:
+    """Build a ScheduleEntry from a calendar_npc_schedules row."""
+    applies_to = _lower_string_list_from_row(cast(object, row["applies_to"]))
+    effects = _lower_string_list_from_row(cast(object, row["effects"]))
+    raw_days = _string_list_from_row(cast(object, row["days"]))
+    days = normalize_weekday_names(raw_days)
+    return ScheduleEntry(
+        id=cast(str, row["stable_id"]),
+        name=cast(str, row["name"]),
+        category=cast(str, row["category"]),
+        start_hour=cast(int, row["start_hour"]),
+        end_hour=cast(int, row["end_hour"]),
+        days=days,
+        applies_to=applies_to,
+        effects=effects,
+        notes=cast(str | None, row["notes"]),
+    )
+
+
+async def _fetch_schedule_entries(conn: asyncpg.Connection) -> list[ScheduleEntry]:
+    """Load and normalize schedule rows from PostgreSQL."""
+    rows = await conn.fetch(_CALENDAR_NPC_SCHEDULES_QUERY)
+    return [_schedule_entry_from_row(row) for row in rows]
+
+
 if TYPE_CHECKING:
     from server.async_persistence import AsyncPersistenceLayer
+
+
+class _DatabaseLoadResult(TypedDict):
+    entries: list[ScheduleEntry] | None
+    error: Exception | None
+
 
 logger = get_logger(__name__)
 
 
 class ScheduleService:
     """Provides schedule lookups for NPCs and environmental consumers."""
+
+    _environment: str
+    _async_persistence: AsyncPersistenceLayer | None
+    _schedule_dir: Path | None
 
     def __init__(
         self,
@@ -83,7 +163,7 @@ class ScheduleService:
 
     def _load_from_database(self) -> list[ScheduleEntry] | None:
         """Load schedules from PostgreSQL database."""
-        result_container = {"entries": None, "error": None}
+        result_container: _DatabaseLoadResult = {"entries": None, "error": None}
 
         def run_async() -> None:
             new_loop = asyncio.new_event_loop()
@@ -104,66 +184,15 @@ class ScheduleService:
 
         return result_container["entries"]
 
-    async def _async_load_from_database(self, result_container: dict[str, Any]) -> None:
+    async def _async_load_from_database(self, result_container: _DatabaseLoadResult) -> None:
         """Async helper to load schedules from PostgreSQL database."""
-        import os
-
-        import asyncpg
-
         try:
-            # Get database URL from environment
-            database_url = os.getenv("DATABASE_URL")
-            if not database_url:
-                raise ValueError("DATABASE_URL environment variable not set")
-
-            # Convert SQLAlchemy-style URL to asyncpg-compatible format
-            if database_url.startswith("postgresql+asyncpg://"):
-                database_url = database_url.replace("postgresql+asyncpg://", "postgresql://", 1)
-
-            # Use asyncpg directly to avoid event loop conflicts
-            conn = await asyncpg.connect(database_url)
+            database_url = _resolve_asyncpg_database_url()
+            server_settings = get_asyncpg_server_settings_for_database_url(database_url)
+            # Use asyncpg directly to avoid event loop conflicts; match engine search_path
+            conn = await asyncpg.connect(database_url, server_settings=server_settings)
             try:
-                # Query calendar_npc_schedules table
-                query = """
-                    SELECT
-                        stable_id,
-                        name,
-                        category,
-                        start_hour,
-                        end_hour,
-                        days,
-                        applies_to,
-                        effects,
-                        notes
-                    FROM calendar_npc_schedules
-                    ORDER BY category, start_hour, name
-                """
-                rows = await conn.fetch(query)
-
-                entries = []
-                for row in rows:
-                    # Normalize applies_to and effects to lowercase to match validation requirements
-                    applies_to = [item.lower() for item in (row["applies_to"] or [])]
-                    effects = [item.lower() for item in (row["effects"] or [])]
-                    # Normalize weekday names: accept Latin (Primus–Septimus) from DB and map to
-                    # standard English (Sunday, Monday, ...) so ScheduleEntry validation passes.
-                    raw_days = list(row["days"]) if row["days"] else []
-                    days = normalize_weekday_names(raw_days)
-
-                    schedule_entry = ScheduleEntry(
-                        id=row["stable_id"],
-                        name=row["name"],
-                        category=row["category"],
-                        start_hour=row["start_hour"],
-                        end_hour=row["end_hour"],
-                        days=days,
-                        applies_to=applies_to,
-                        effects=effects,
-                        notes=row["notes"],
-                    )
-                    entries.append(schedule_entry)
-
-                result_container["entries"] = entries
+                result_container["entries"] = await _fetch_schedule_entries(conn)
             finally:
                 await conn.close()
         except Exception as e:

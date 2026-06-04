@@ -185,6 +185,15 @@ async def test_send_respawn_event_with_retry_waits_for_connection(
 
 
 @pytest.mark.asyncio
+async def test_send_respawn_event_with_retry_no_connection_manager(mock_utils, mock_logger):
+    """Test send_respawn_event_with_retry() is a no-op when connection manager is unset."""
+    handler = PlayerRespawnEventHandler(None, mock_utils, mock_logger)
+    player_id = uuid.uuid4()
+    respawn_event = {"type": "player_respawned"}
+    await handler.send_respawn_event_with_retry(player_id, respawn_event)
+
+
+@pytest.mark.asyncio
 async def test_send_respawn_event_with_retry_timeout(player_respawn_event_handler, mock_connection_manager):
     """Test send_respawn_event_with_retry() times out when connection never available."""
     player_id = uuid.uuid4()
@@ -378,6 +387,32 @@ async def test_handle_player_delirium_respawned_error_handling(player_respawn_ev
     del event.player_name  # Cause AttributeError
     await player_respawn_event_handler.handle_player_delirium_respawned(event)
     mock_logger.error.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_prepare_room_data_for_respawn_no_connection_manager(player_respawn_event_handler):
+    """Test _prepare_room_data_for_respawn() without connection manager uses persistence-only room data."""
+    player_respawn_event_handler.connection_manager = None
+    mock_room = MagicMock()
+    mock_room.to_dict.return_value = {"id": "room_001", "name": "Arkham Sanitarium"}
+    mock_persistence = MagicMock()
+    mock_persistence.get_room_by_id.return_value = mock_room
+
+    with patch(
+        "server.async_persistence.get_async_persistence",
+        return_value=mock_persistence,
+    ):
+        (
+            room_data,
+            npc_names,
+            player_names,
+            occupant_names,
+        ) = await player_respawn_event_handler._prepare_room_data_for_respawn("room_001", "RespawnedPlayer")
+
+    assert room_data == {"id": "room_001", "name": "Arkham Sanitarium"}
+    assert npc_names == []
+    assert player_names == ["RespawnedPlayer"]
+    assert occupant_names == ["RespawnedPlayer"]
 
 
 @pytest.mark.asyncio

@@ -34,7 +34,7 @@ The UI panels in the MythosMUD game client do not automatically adjust their siz
 
 **Server Status:**
 
-- Server running on port 54731 ✓
+- Server running on port 54768 ✓
 - Client running on port 5173 ✓
 - WebSocket and SSE connections established ✓
 

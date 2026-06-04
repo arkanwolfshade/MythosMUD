@@ -960,12 +960,12 @@ whether due to:
 
 ```log
 [WARNING] NATS health check failed
-Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:54731/monitoring/nats/health
+Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:54768/monitoring/nats/health
 ```
 
 **Problem:** The NATS health endpoint appears to be missing or misconfigured
 
-**Expected Endpoint:** `http://localhost:54731/monitoring/nats/health`
+**Expected Endpoint:** `http://localhost:54768/monitoring/nats/health`
 **Actual Behavior:** 404 Not Found
 
 ### Impact

@@ -50,7 +50,7 @@ automated alternative is available.
 ### BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY
 
 1. **Database State**: Both players are in `earth_arkhamcity_sanitarium_room_foyer_001`
-2. **Server Running**: Development server is running on port 54731
+2. **Server Running**: Development server is running on port 54768
 3. **Client Accessible**: Client is accessible on port 5173
 4. **Environmental Container**: Room has at least one environmental container with items
 5. **Both Players Connected**: Both players are logged in and in the same room

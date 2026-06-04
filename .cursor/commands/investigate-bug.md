@@ -385,7 +385,7 @@ The client UI is not displaying chat messages correctly. Messages appear in the 
 # Check server status
 
 ./scripts/stop_server.ps1
-netstat -an | findstr :54731
+netstat -an | findstr :54768
 netstat -an | findstr :5173
 ./scripts/start_local.ps1
 ```
