@@ -93,6 +93,10 @@ jobs:
           git remote set-url origin "https://github.com/${repo}.git"
           cd ..
 
+      # Vendored node_modules must not be scanned (stale fast-uri@3.1.0 was committed previously); use lockfiles.
+      - name: Remove vendored static_data node_modules before snapshot
+        run: rm -rf scripts/static_data/node_modules
+
       # Submit resolved deps for this commit so the dependency review API has snapshots (uv.lock is not
       # fully covered by static graph parsing; UvLock detector is experimental). Same workflow + ordering:
       # https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-dependency-review#best-practices-for-using-the-dependency-review-api-and-the-dependency-submission-api-together
