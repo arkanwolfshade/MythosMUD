@@ -234,20 +234,21 @@ class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Re
         details = self._create_error_details(error, include_details)
 
         # Create appropriate response
+        public_message = user_friendly
         if response_type == "websocket":
             response_data = create_websocket_error_response(
-                error_type=error_type, message=error.message, user_friendly=user_friendly, details=details
+                error_type=error_type, message=public_message, user_friendly=user_friendly, details=details
             )
             return JSONResponse(status_code=status_code, content=response_data)
         if response_type == "sse":
             response_data = create_sse_error_response(
-                error_type=error_type, message=error.message, user_friendly=user_friendly, details=details
+                error_type=error_type, message=public_message, user_friendly=user_friendly, details=details
             )
             return JSONResponse(status_code=status_code, content=response_data)
         # HTTP
         response_data = create_standard_error_response(
             error_type=error_type,
-            message=error.message,
+            message=public_message,
             user_friendly=user_friendly,
             details=details,
             severity=ErrorSeverity.MEDIUM,
@@ -293,16 +294,16 @@ class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Re
         # Create appropriate response
         if response_type == "websocket":
             response_data = create_websocket_error_response(
-                error_type=error_type, message=sanitized_detail, user_friendly=user_friendly, details=details
+                error_type=error_type, message=user_friendly, user_friendly=user_friendly, details=details
             )
         elif response_type == "sse":
             response_data = create_sse_error_response(
-                error_type=error_type, message=sanitized_detail, user_friendly=user_friendly, details=details
+                error_type=error_type, message=user_friendly, user_friendly=user_friendly, details=details
             )
         else:  # HTTP
             response_data = create_standard_error_response(
                 error_type=error_type,
-                message=sanitized_detail,
+                message=user_friendly,
                 user_friendly=user_friendly,
                 details=details,
                 severity=ErrorSeverity.MEDIUM,
@@ -358,7 +359,7 @@ class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Re
         # Create appropriate response
         response_data = create_standard_error_response(
             error_type=error_type,
-            message=str(exc.detail),
+            message=user_friendly,
             user_friendly=user_friendly,
             details=details,
             severity=ErrorSeverity.MEDIUM,
@@ -369,9 +370,6 @@ class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Re
     def _handle_generic_exception(self, exc: Exception, include_details: bool, response_type: str) -> JSONResponse:  # pylint: disable=unused-argument  # Reason: response_type unused in this handler
         """Handle generic exceptions."""
         error_type = ErrorType.INTERNAL_ERROR
-        # Human reader: sanitize exception message to prevent stack trace exposure.
-        # AI reader: never expose stack traces or file paths in user-facing error messages.
-        message = self._sanitize_exception_message(str(exc)) if str(exc) else "An unexpected error occurred"
         user_friendly = ErrorMessages.INTERNAL_ERROR
 
         # Create error details
@@ -388,7 +386,7 @@ class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Re
         # Create appropriate response
         response_data = create_standard_error_response(
             error_type=error_type,
-            message=message,
+            message=user_friendly,
             user_friendly=user_friendly,
             details=details,
             severity=ErrorSeverity.HIGH,
