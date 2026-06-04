@@ -151,7 +151,7 @@ export interface EnsurePlayableConnectionOptions {
   timeoutMs?: number;
 }
 
-async function assertCommandChannelReady(page: Page, budgetMs: number): Promise<boolean> {
+export async function assertCommandChannelReady(page: Page, budgetMs: number): Promise<boolean> {
   try {
     await waitForPlayableSession(page, Math.min(budgetMs, 30000));
     const commandInput = page.getByTestId('command-input');
@@ -364,7 +364,7 @@ export async function executeCommandTrusted(page: Page, command: string): Promis
   await executeCommandWithoutRecovery(page, command);
 }
 
-async function executeCommandWithoutRecovery(page: Page, command: string): Promise<void> {
+export async function executeCommandWithoutRecovery(page: Page, command: string): Promise<void> {
   const commandInput = page.getByTestId('command-input');
   await expect(commandInput).toBeVisible({ timeout: TEST_TIMEOUTS.COMMAND });
   await commandInput.evaluate((el: HTMLElement) => {

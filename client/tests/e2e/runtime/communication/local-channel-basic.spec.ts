@@ -7,8 +7,9 @@
  * and that the local channel system works correctly for basic multiplayer communication.
  */
 
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import { executeCommand, waitForMessage } from '../fixtures/auth';
+import { ensureE2eRuntimeReady } from '../fixtures/e2e-runtime-ready';
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
@@ -16,19 +17,13 @@ import {
   ensurePlayerInGame,
   ensurePlayersInSameRoom,
   getPlayerMessages,
+  prepareReceiverForInboundMessages,
   waitForAllPlayersInGame,
   waitForCrossPlayerMessage,
+  waitForLookReflectedInUi,
   type PlayerContext,
 } from '../fixtures/multiplayer';
 import { ensureStanding } from '../fixtures/player';
-
-/** After `look`, room copy is usually in Location / Room Description, not Game Info `[data-message-text]`. */
-async function assertLookVisibleInPanels(page: Page): Promise<void> {
-  const cue = page.getByText(
-    /Arena\s*>\s*Arena|Arena entrance \(center\)|heart of the gladiator|sand and shadow|Exits:\s*North/i
-  );
-  await expect(cue.first()).toBeVisible({ timeout: 45000 });
-}
 
 /**
  * Occupants can show (linkdead) while the header still says Connected; command_response may not
@@ -50,7 +45,7 @@ async function primeBothForCoLocate(contexts: PlayerContext[]): Promise<void> {
       el.focus();
     });
     await executeCommand(ctx.page, 'look');
-    await assertLookVisibleInPanels(ctx.page).catch(() => {});
+    await waitForLookReflectedInUi(ctx.page).catch(() => {});
   }
 }
 
@@ -71,7 +66,7 @@ async function executeUnmuteAndWaitForAck(
       el.focus();
     });
     await executeCommand(receiver.page, 'look');
-    await assertLookVisibleInPanels(receiver.page);
+    await waitForLookReflectedInUi(receiver.page);
     await receiver.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
       el.focus();
     });
@@ -96,6 +91,8 @@ test.describe('Local Channel Basic', () => {
     await waitForAllPlayersInGame(contexts, 60000);
     await ensurePlayerInGame(contexts[0], 60000);
     await ensurePlayerInGame(contexts[1], 60000);
+
+    await ensureE2eRuntimeReady(contexts, 60000);
 
     // Same-room /local needs a shared cell. Dual "go north" does not guarantee the same grid cell; use
     // teleport + retries like other runtime multiplayer specs (avoids beforeAll stuck at Occupants (1)).
@@ -145,16 +142,12 @@ test.describe('Local Channel Basic', () => {
     });
     await executeCommand(awContext.page, 'local Hello everyone in the sanitarium');
 
-    // Wait for confirmation on AW's side
-    await waitForMessage(awContext.page, 'You say locally: Hello everyone in the sanitarium', 45000);
+    await prepareReceiverForInboundMessages(ithaquaContext, 20000);
 
-    // Wait for message to appear on Ithaqua's side
-    // Local channel format is: "{sender_name} (local): {content}"
-    await waitForCrossPlayerMessage(
-      ithaquaContext,
-      /ArkanWolfshade \(local\): Hello everyone in the sanitarium/i,
-      45000
-    );
+    await Promise.all([
+      waitForMessage(awContext.page, 'You say locally: Hello everyone in the sanitarium', 45000),
+      waitForCrossPlayerMessage(ithaquaContext, /ArkanWolfshade \(local\): Hello everyone in the sanitarium/i, 45000),
+    ]);
 
     // Verify Ithaqua sees the message
     const ithaquaMessages = await getPlayerMessages(ithaquaContext);
@@ -198,18 +191,21 @@ test.describe('Local Channel Basic', () => {
 
     await nudgeStandBothPlayers(awContext, ithaquaContext);
 
+    await prepareReceiverForInboundMessages(awContext, 20000);
+    await new Promise(r => setTimeout(r, 1500));
+
     // Ithaqua sends local reply (sender must be focused on some hosts)
     await ithaquaContext.page.bringToFront().catch(() => {});
     await ensurePlayerInGame(ithaquaContext, 30000);
 
     await executeCommand(ithaquaContext.page, 'local Greetings ArkanWolfshade');
 
-    // Wait for confirmation on Ithaqua's side
-    await waitForMessage(ithaquaContext.page, 'You say locally: Greetings ArkanWolfshade');
+    await prepareReceiverForInboundMessages(awContext, 20000);
 
-    // Wait for message to appear on AW's side
-    // Local channel format is: "{sender_name} (local): {content}"
-    await waitForCrossPlayerMessage(awContext, /Ithaqua \(local\): Greetings ArkanWolfshade/i, 30000);
+    await Promise.all([
+      waitForMessage(ithaquaContext.page, 'You say locally: Greetings ArkanWolfshade'),
+      waitForCrossPlayerMessage(awContext, /Ithaqua \(local\): Greetings ArkanWolfshade/i, 45000),
+    ]);
 
     // Verify AW sees the reply
     const awMessages = await getPlayerMessages(awContext);

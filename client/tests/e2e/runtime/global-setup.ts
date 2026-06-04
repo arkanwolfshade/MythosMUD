@@ -45,6 +45,22 @@ function runEnsureE2eDatabase(): void {
   }
 }
 
+function runE2ePlayerRoomReset(): void {
+  const seedEnv = { ...process.env, ...loadE2eEnv() };
+  const resetResult = spawnSync('uv', ['run', 'python', 'scripts/e2e_reset_players.py'], {
+    cwd: E2E_PROJECT_ROOT,
+    shell: true,
+    stdio: 'pipe',
+    encoding: 'utf-8',
+    env: seedEnv,
+  });
+  if (resetResult.status !== 0) {
+    failBootstrap('e2e_reset_players', `e2e_reset_players.py failed (exit ${resetResult.status}).`, [
+      spawnOutputDetail(resetResult.stdout, resetResult.stderr),
+    ]);
+  }
+}
+
 function runE2eSeed(): void {
   const seedEnv = { ...process.env, ...loadE2eEnv() };
   const seedResult = spawnSync('uv', ['run', 'python', 'scripts/seed_e2e_users.py'], {
@@ -180,6 +196,7 @@ async function globalSetup(_config: FullConfig): Promise<void> {
   console.log('Starting global setup for E2E runtime tests...');
   runEnsureE2eDatabase();
   runE2eSeed();
+  runE2ePlayerRoomReset();
   verifyE2eUsersInDatabase();
   await verifyServerBootstrap();
   await verifyClientAccessible();

@@ -6,12 +6,14 @@
  * Helper functions for managing multiple browser contexts in multiplayer scenarios.
  */
 
+import { spawnSync } from 'child_process';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 
 import './multiplayer-browser-window.d.ts';
 
 import { expect, type Browser, type BrowserContext, type Page } from '@playwright/test';
+import { E2E_PROJECT_ROOT, loadE2eEnv } from '../../../../src/test/e2e-bootstrap';
 import { MotdPage } from '../pages';
 import {
   ensurePlayableConnection,
@@ -394,10 +396,25 @@ export async function waitForCrossPlayerMessage(
   const messageLocator = playerContext.page.locator('[data-message-text]');
   try {
     await expect
-      .poll(async () => (await messageLocator.filter({ hasText: expectedText }).count()) > 0, {
-        timeout,
-        message: 'cross-player message in Game Info',
-      })
+      .poll(
+        async () => {
+          const onLogin = await playerContext.page
+            .getByTestId('username-input')
+            .isVisible({ timeout: 500 })
+            .catch(() => false);
+          if (onLogin) {
+            await loginPlayer(playerContext.page, playerContext.player.username, playerContext.player.password);
+            await ensurePlayerInGame(playerContext, Math.min(timeout, 30000));
+            await prepareReceiverForInboundMessages(playerContext, Math.min(timeout, 15000));
+            return false;
+          }
+          return (await messageLocator.filter({ hasText: expectedText }).count()) > 0;
+        },
+        {
+          timeout,
+          message: 'cross-player message in Game Info',
+        }
+      )
       .toBe(true);
     await messageLocator.filter({ hasText: expectedText }).first().waitFor({ state: 'visible', timeout: 5000 });
   } catch (err) {
@@ -410,10 +427,19 @@ export async function waitForCrossPlayerMessage(
     );
     const leftHint = hasLeftMessage ? ' Receiver appears to have left the game/room before message was sent.' : '';
 
+    const onLoginAtTimeout = await playerContext.page
+      .getByTestId('username-input')
+      .isVisible({ timeout: 500 })
+      .catch(() => false);
+    const sessionHint = onLoginAtTimeout
+      ? ' Receiver is on the login screen (session lost while sender tab had focus). ' +
+        'Call prepareReceiverForInboundMessages(receiver) immediately after send and use Promise.all for sender echo + cross-player wait.'
+      : '';
+
     throw new Error(
       `waitForCrossPlayerMessage timed out: Player ${playerContext.player.username} did not see "${expectedStr}" ` +
         `within ${timeout}ms. Received ${actualMessages.length} message(s): ${JSON.stringify(actualMessages.slice(-5))}. ` +
-        `Possible causes: receiver in different room (say is room-scoped), mute filter blocking delivery, or network delay.${leftHint}`,
+        `Possible causes: receiver in different room (say is room-scoped), mute filter blocking delivery, or network delay.${leftHint}${sessionHint}`,
       { cause: err }
     );
   }
@@ -521,6 +547,74 @@ export interface EnsureMultiplayerCoLocatedOptions {
 const TELEPORT_SETTLE_BASE_MS = 6000;
 const MAX_COLOCATE_ATTEMPTS = 5;
 
+/**
+ * Reset E2E player rows in mythos_e2e (same script as global-teardown).
+ * In-memory server state is stale until players relog; pair with {@link resyncE2ePlayersAfterDatabaseReset}.
+ */
+export function resetE2ePlayerRoomsInDatabase(): void {
+  const seedEnv = { ...process.env, ...loadE2eEnv() };
+  const scriptPath = join(E2E_PROJECT_ROOT, 'scripts', 'e2e_reset_players.py');
+  const result = spawnSync('uv', ['run', 'python', scriptPath], {
+    cwd: E2E_PROJECT_ROOT,
+    shell: true,
+    stdio: 'pipe',
+    encoding: 'utf-8',
+    env: seedEnv,
+  });
+  if (result.status !== 0) {
+    console.warn('[instrumentation] e2e_reset_players.py failed', result.status, result.stderr?.slice(0, 500) ?? '');
+  }
+}
+
+/**
+ * After `look`, room copy is usually in Location / Room Description, not only Game Info `[data-message-text]`.
+ * Accept arena staging or any room that exposes exits (death void has none).
+ */
+export async function waitForLookReflectedInUi(page: Page, timeoutMs: number = 45000): Promise<void> {
+  await page.waitForFunction(
+    () => {
+      const body = document.body?.innerText ?? '';
+      if (
+        /Arena\s*>|heart of the gladiator|gladiator ring|sand and shadow|Main Foyer|Hallway|Eastern|Laundry|Exits:\s*(North|north|east|west|south)/i.test(
+          body
+        )
+      ) {
+        return true;
+      }
+      if (/Exits:\s*\w+/i.test(body)) return true;
+      return Array.from(document.querySelectorAll('[data-message-text]')).some(el => {
+        const v = (el.getAttribute('data-message-text') || '').trim();
+        return /Arena|gladiator|heart of the|Exits:|sand and shadow|Foyer|Hallway/i.test(v);
+      });
+    },
+    { timeout: timeoutMs }
+  );
+}
+
+async function resyncE2ePlayersAfterDatabaseReset(contexts: PlayerContext[], timeoutMs: number): Promise<void> {
+  for (const ctx of contexts) {
+    await ctx.page.bringToFront().catch(() => {});
+    await logoutPlayer(ctx.page, Math.min(timeoutMs, 60000)).catch(() => {});
+    await loginPlayer(ctx.page, ctx.player.username, ctx.player.password);
+    await ensurePlayerInGame(ctx, timeoutMs);
+
+    const motdVisible = await ctx.page
+      .getByTestId('motd-enter-realm')
+      .isVisible({ timeout: 2500 })
+      .catch(() => false);
+    if (motdVisible) {
+      const motdPage = new MotdPage(ctx.page);
+      await motdPage.enterRealm();
+      await motdPage.waitForGameReady(TEST_TIMEOUTS.GAME_LOAD);
+      await ensurePlayerInGame(ctx, timeoutMs);
+    }
+
+    await executeCommand(ctx.page, 'stand');
+    await executeCommandTrusted(ctx.page, 'look');
+    await waitForLookReflectedInUi(ctx.page, Math.min(timeoutMs, 35000)).catch(() => {});
+  }
+}
+
 async function ensureMultiplayerReadyForCoLocate(contexts: PlayerContext[], timeoutMs: number): Promise<void> {
   await waitForAllPlayersInGame(contexts, timeoutMs);
   await Promise.all(contexts.map(c => ensurePlayerInGame(c, timeoutMs)));
@@ -563,28 +657,25 @@ async function runCoLocateTeleportAttempt(
   otherContext: PlayerContext,
   contexts: PlayerContext[],
   otherCharName: string,
-  attempt: number
+  attempt: number,
+  timeoutMs: number
 ): Promise<void> {
+  if (attempt >= 1) {
+    resetE2ePlayerRoomsInDatabase();
+    await resyncE2ePlayersAfterDatabaseReset(contexts, timeoutMs);
+  }
+
   await awContext.page.bringToFront().catch(() => {});
   await ensurePlayableConnection(awContext.page, {
     username: awContext.player.username,
     password: awContext.player.password,
     timeoutMs: 30000,
   });
+  // Admin-only: move AW to the other character before bringing them together (Ithaqua cannot teleport).
+  await executeCommand(awContext.page, `goto ${otherCharName}`);
+  await new Promise(r => setTimeout(r, 2000));
   await executeCommand(awContext.page, `teleport ${otherCharName}`);
   await new Promise(r => setTimeout(r, TELEPORT_SETTLE_BASE_MS + attempt * 2000));
-
-  if (attempt >= 1) {
-    const awCharName = await resolveOtherCharacterName(awContext);
-    await otherContext.page.bringToFront().catch(() => {});
-    await ensurePlayableConnection(otherContext.page, {
-      username: otherContext.player.username,
-      password: otherContext.player.password,
-      timeoutMs: 30000,
-    });
-    await executeCommand(otherContext.page, `teleport ${awCharName}`);
-    await new Promise(r => setTimeout(r, TELEPORT_SETTLE_BASE_MS));
-  }
 
   for (const ctx of contexts) {
     await ctx.page.bringToFront().catch(() => {});
@@ -626,10 +717,11 @@ async function retryCoLocateUntilSameRoom(
   otherContext: PlayerContext,
   contexts: PlayerContext[],
   otherCharName: string,
-  coLocateTimeoutMs: number
+  coLocateTimeoutMs: number,
+  timeoutMs: number
 ): Promise<void> {
   for (let attempt = 0; attempt < MAX_COLOCATE_ATTEMPTS; attempt++) {
-    await runCoLocateTeleportAttempt(awContext, otherContext, contexts, otherCharName, attempt);
+    await runCoLocateTeleportAttempt(awContext, otherContext, contexts, otherCharName, attempt, timeoutMs);
 
     try {
       await ensurePlayersInSameRoom(contexts, contexts.length, coLocateTimeoutMs);
@@ -671,7 +763,7 @@ export async function ensureMultiplayerCoLocated(
   const [awContext, otherContext] = contexts;
   const otherCharName = await resolveOtherCharacterName(otherContext);
 
-  await retryCoLocateUntilSameRoom(awContext, otherContext, contexts, otherCharName, coLocateTimeoutMs);
+  await retryCoLocateUntilSameRoom(awContext, otherContext, contexts, otherCharName, coLocateTimeoutMs, timeoutMs);
 
   await Promise.all(
     contexts.map(c =>

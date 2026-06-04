@@ -11,9 +11,11 @@ import { executeCommand, getMessages } from '../fixtures/auth';
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
+  ensureMultiplayerCoLocated,
   ensurePlayerInGame,
   getPlayerMessages,
   waitForAllPlayersInGame,
+  waitForLookReflectedInUi,
 } from '../fixtures/multiplayer';
 
 /** Matches server `format_who_result` / error / empty branches (who_commands.py). */
@@ -47,14 +49,6 @@ async function expectWhoListingOnPage(page: Page): Promise<void> {
   }
 }
 
-/** After `look`, room copy is often in Location / Room Description, not Game Info `[data-message-text]`. */
-async function assertLookVisibleInPanels(page: Page): Promise<void> {
-  const cue = page.getByText(
-    /Arena\s*>\s*Arena|Arena entrance \(center\)|heart of the gladiator|sand and shadow|Exits:\s*North/i
-  );
-  await expect(cue.first()).toBeVisible({ timeout: 45000 });
-}
-
 test.describe('Who Command', () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
@@ -68,6 +62,7 @@ test.describe('Who Command', () => {
   test.beforeEach(async () => {
     await ensurePlayerInGame(contexts[0], 60000);
     await ensurePlayerInGame(contexts[1], 60000);
+    await ensureMultiplayerCoLocated(contexts, { timeoutMs: 60000, coLocateTimeoutMs: 45000 });
   });
 
   test.afterAll(async () => {
@@ -83,7 +78,7 @@ test.describe('Who Command', () => {
     });
     await awContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
     await executeCommand(awContext.page, 'look');
-    await assertLookVisibleInPanels(awContext.page);
+    await waitForLookReflectedInUi(awContext.page);
 
     await executeCommand(awContext.page, 'stand');
     await new Promise(r => setTimeout(r, 1500));
@@ -106,7 +101,7 @@ test.describe('Who Command', () => {
     ).toBeVisible({ timeout: 15000 });
     await ithaquaContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
     await executeCommand(ithaquaContext.page, 'look');
-    await assertLookVisibleInPanels(ithaquaContext.page);
+    await waitForLookReflectedInUi(ithaquaContext.page);
 
     await executeCommand(ithaquaContext.page, 'stand');
     await new Promise(r => setTimeout(r, 1500));

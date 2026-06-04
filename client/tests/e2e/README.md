@@ -15,7 +15,17 @@ End-to-end tests for the MythosMUD client run under this directory using
 ### Serial suite vs one-off scenarios
 
 [playwright.runtime.config.ts](playwright.runtime.config.ts) sets `workers: 1` and
-`fullyParallel: false`, so the full runtime suite runs **serially** (shared accounts).
+`fullyParallel: false` by default (shared test accounts, one server DB).
+
+**Opt-in parallel** (separate worker processes; start server and Vite yourself):
+
+```powershell
+$env:E2E_RUNTIME_PARALLEL = "1"
+$env:E2E_WORKERS = "2"
+..\..\scripts\e2e-run-parallel.ps1
+```
+
+Parallel mode skips Playwright `webServer` startup.
 
 To run **one file** or **grep** a subset (from `client/`):
 

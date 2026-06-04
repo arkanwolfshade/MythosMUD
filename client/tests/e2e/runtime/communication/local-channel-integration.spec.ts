@@ -6,8 +6,9 @@
  * broadcast to all players in the same sub-zone in real-time.
  */
 
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import { executeCommand, waitForMessage } from '../fixtures/auth';
+import { ensureE2eRuntimeReady } from '../fixtures/e2e-runtime-ready';
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
@@ -17,16 +18,9 @@ import {
   getPlayerMessages,
   waitForAllPlayersInGame,
   waitForCrossPlayerMessage,
+  waitForLookReflectedInUi,
   type PlayerContext,
 } from '../fixtures/multiplayer';
-
-/** After `look`, room copy is usually in Location / Room Description, not Game Info `[data-message-text]`. */
-async function assertLookVisibleInPanels(page: Page): Promise<void> {
-  const cue = page.getByText(
-    /Arena\s*>\s*Arena|Arena entrance \(center\)|heart of the gladiator|sand and shadow|Exits:\s*North/i
-  );
-  await expect(cue.first()).toBeVisible({ timeout: 45000 });
-}
 
 async function nudgeStandBothPlayers(aw: PlayerContext, other: PlayerContext): Promise<void> {
   await executeCommand(aw.page, 'stand');
@@ -44,7 +38,7 @@ async function primeBothForCoLocate(contexts: PlayerContext[]): Promise<void> {
       el.focus();
     });
     await executeCommand(ctx.page, 'look');
-    await assertLookVisibleInPanels(ctx.page).catch(() => {});
+    await waitForLookReflectedInUi(ctx.page).catch(() => {});
   }
 }
 
@@ -65,7 +59,7 @@ async function executeUnmuteAndWaitForAck(
       el.focus();
     });
     await executeCommand(receiver.page, 'look');
-    await assertLookVisibleInPanels(receiver.page);
+    await waitForLookReflectedInUi(receiver.page);
     await receiver.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
       el.focus();
     });
@@ -91,6 +85,8 @@ test.describe('Local Channel Integration', () => {
     // so the slower client has time to receive the first tick without hitting a 30s cap.
     await Promise.all([ensurePlayerInGame(contexts[0], 60000), ensurePlayerInGame(contexts[1], 60000)]);
     await waitForAllPlayersInGame(contexts, 60000);
+
+    await ensureE2eRuntimeReady(contexts, 60000);
 
     // Same-room /local needs a shared cell. Dual "go north" races linkdead and split cells; use teleport retries.
     await primeBothForCoLocate(contexts);

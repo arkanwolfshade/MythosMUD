@@ -10,6 +10,7 @@
 
 import { expect, test, type Page } from '@playwright/test';
 import { executeCommand, waitForMessage } from '../fixtures/auth';
+import { ensureE2eRuntimeReady } from '../fixtures/e2e-runtime-ready';
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
@@ -65,7 +66,8 @@ test.describe('Local Channel Isolation', () => {
     await ensurePlayerInGame(contexts[0], 60000);
     await ensurePlayerInGame(contexts[1], 60000);
 
-    // Same-room /local needs a shared cell; dual "go north" leaves each client at Occupants (1) on different cells.
+    await ensureE2eRuntimeReady(contexts, 60000);
+
     await primeBothForCoLocate(contexts);
     await ensureMultiplayerCoLocated(contexts, { timeoutMs: 60000, coLocateTimeoutMs: 60000 });
 

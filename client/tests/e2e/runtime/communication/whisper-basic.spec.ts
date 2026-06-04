@@ -7,25 +7,20 @@
  * works correctly for private multiplayer communication.
  */
 
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import { executeCommand, waitForMessage } from '../fixtures/auth';
+import { ensureE2eRuntimeReady } from '../fixtures/e2e-runtime-ready';
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
+  ensureMultiplayerCoLocated,
   ensurePlayerInGame,
   getPlayerMessages,
   waitForAllPlayersInGame,
   waitForCrossPlayerMessage,
+  waitForLookReflectedInUi,
   type PlayerContext,
 } from '../fixtures/multiplayer';
-
-/** After `look`, room copy is usually in Location / Room Description, not Game Info `[data-message-text]`. */
-async function assertLookVisibleInPanels(page: Page): Promise<void> {
-  const cue = page.getByText(
-    /Arena\s*>\s*Arena|Arena entrance \(center\)|heart of the gladiator|sand and shadow|Exits:\s*North/i
-  );
-  await expect(cue.first()).toBeVisible({ timeout: 45000 });
-}
 
 /** Both browsers healthy before whisper; room co-location is not required for /whisper delivery. */
 async function nudgeStandBothPlayers(aw: PlayerContext, other: PlayerContext): Promise<void> {
@@ -57,6 +52,7 @@ test.describe('Whisper Basic', () => {
     await waitForAllPlayersInGame(contexts, 60000);
     await ensurePlayerInGame(contexts[0], 60000);
     await ensurePlayerInGame(contexts[1], 60000);
+    await ensureE2eRuntimeReady(contexts, 60000);
   });
 
   test.afterAll(async () => {
@@ -71,6 +67,7 @@ test.describe('Whisper Basic', () => {
 
     await ensurePlayerInGame(awContext, 30000);
     await ensurePlayerInGame(ithaquaContext, 30000);
+    await ensureMultiplayerCoLocated(contexts, { timeoutMs: 60000, coLocateTimeoutMs: 45000 });
     await waitForPlayableUi(contexts);
     await nudgeStandBothPlayers(awContext, ithaquaContext);
     // Best-effort: linkdead clients may omit command_response on [data-message-text]; `look` below still primes UI.
@@ -96,7 +93,7 @@ test.describe('Whisper Basic', () => {
       el.focus();
     });
     await executeCommand(awContext.page, 'look');
-    await assertLookVisibleInPanels(awContext.page);
+    await waitForLookReflectedInUi(awContext.page);
 
     await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
       el.focus();
@@ -128,6 +125,7 @@ test.describe('Whisper Basic', () => {
 
     await ensurePlayerInGame(awContext, 30000);
     await ensurePlayerInGame(ithaquaContext, 30000);
+    await ensureMultiplayerCoLocated(contexts, { timeoutMs: 60000, coLocateTimeoutMs: 45000 });
     await waitForPlayableUi(contexts);
     await nudgeStandBothPlayers(awContext, ithaquaContext);
     await ithaquaContext.page
@@ -152,7 +150,7 @@ test.describe('Whisper Basic', () => {
       el.focus();
     });
     await executeCommand(awContext.page, 'look');
-    await assertLookVisibleInPanels(awContext.page);
+    await waitForLookReflectedInUi(awContext.page);
     await new Promise(r => setTimeout(r, 1500));
 
     await ithaquaContext.page.bringToFront().catch(() => {});
@@ -163,7 +161,7 @@ test.describe('Whisper Basic', () => {
       el.focus();
     });
     await executeCommand(ithaquaContext.page, 'look');
-    await assertLookVisibleInPanels(ithaquaContext.page);
+    await waitForLookReflectedInUi(ithaquaContext.page);
 
     const replyBody = 'Hello back to you';
     const escapedTarget = targetName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -184,7 +182,7 @@ test.describe('Whisper Basic', () => {
         el.focus();
       });
       await executeCommand(ithaquaContext.page, 'look');
-      await assertLookVisibleInPanels(ithaquaContext.page);
+      await waitForLookReflectedInUi(ithaquaContext.page);
       await ithaquaContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
         el.focus();
       });

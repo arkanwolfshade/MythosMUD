@@ -8,6 +8,7 @@
 
 import { expect, test } from '@playwright/test';
 import { executeCommand, getMessages, waitForMessage } from '../fixtures/auth';
+import { ensureE2eRuntimeReady } from '../fixtures/e2e-runtime-ready';
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
@@ -39,6 +40,7 @@ test.describe('Local Channel Errors', () => {
     // 180s beforeAll budget when Occupants UI lags. Most tests are sender-only; co-locate only where needed.
     await waitForAllPlayersInGame(contexts, 60000);
     await Promise.all([ensurePlayerInGame(contexts[0], 60000), ensurePlayerInGame(contexts[1], 60000)]);
+    await ensureE2eRuntimeReady(contexts, 60000);
   });
 
   test.afterAll(async () => {

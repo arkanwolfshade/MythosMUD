@@ -9,6 +9,7 @@
 
 import { expect, test } from '@playwright/test';
 import { clickWithoutStability, recoverPlayableSession } from '../fixtures/auth';
+import { ensureE2eRuntimeReady } from '../fixtures/e2e-runtime-ready';
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
@@ -25,6 +26,7 @@ test.describe('Logout Errors', () => {
     await waitForAllPlayersInGame(contexts, 60000);
     await ensurePlayerInGame(contexts[0], 60000);
     await ensurePlayerInGame(contexts[1], 60000);
+    await ensureE2eRuntimeReady(contexts, 60000);
   });
 
   test.afterAll(async () => {

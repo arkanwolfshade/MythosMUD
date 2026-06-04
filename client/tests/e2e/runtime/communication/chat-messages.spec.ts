@@ -9,6 +9,7 @@
 
 import { expect, test, type Page } from '@playwright/test';
 import { executeCommand, waitForMessage } from '../fixtures/auth';
+import { ensureE2eRuntimeReady } from '../fixtures/e2e-runtime-ready';
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
@@ -71,6 +72,8 @@ test.describe('Chat Messages Between Players', () => {
     await waitForAllPlayersInGame(contexts, 60000);
     await ensurePlayerInGame(contexts[0], 60000);
     await ensurePlayerInGame(contexts[1], 60000);
+
+    await ensureE2eRuntimeReady(contexts, 60000);
 
     // Room-based /say requires both in the same cell. "go north" from both clients often leaves
     // Occupants (1) when the arena grid or transient linkdead prevents room_state from matching;
@@ -150,11 +153,13 @@ test.describe('Chat Messages Between Players', () => {
     // AW sends chat message
     await executeCommand(awContext.page, 'say Hello Ithaqua');
 
-    // Regex: tolerate minor formatting drift; longer timeout after co-locate / linkdead recovery.
-    await waitForMessage(awContext.page, /You say:\s*Hello Ithaqua/i, 45000);
+    // Re-focus receiver immediately after send; do not wait 45s on AW while Ithaqua is backgrounded.
+    await prepareReceiverForInboundMessages(ithaquaContext, 20000);
 
-    // Wait for message to appear on Ithaqua's side with increased timeout and flexibility
-    await waitForCrossPlayerMessage(ithaquaContext, /ArkanWolfshade says: Hello Ithaqua/i, 45000);
+    await Promise.all([
+      waitForMessage(awContext.page, /You say:\s*Hello Ithaqua/i, 45000),
+      waitForCrossPlayerMessage(ithaquaContext, /ArkanWolfshade says: Hello Ithaqua/i, 45000),
+    ]);
 
     // Verify Ithaqua sees the message
     const ithaquaMessages = await getPlayerMessages(ithaquaContext);
@@ -194,6 +199,10 @@ test.describe('Chat Messages Between Players', () => {
 
     await nudgeStandBothPlayers(awContext, ithaquaContext);
 
+    // Foreground receiver before send so Firefox paints inbound say on AW's [data-message-text].
+    await prepareReceiverForInboundMessages(awContext, 20000);
+    await new Promise(r => setTimeout(r, 1500));
+
     // Sender must be the focused context for some CI hosts; echo is on Ithaqua's page, not AW's.
     await ithaquaContext.page.bringToFront().catch(() => {});
     // Prime after nudge: early wait can pass, then stand burst leaves no fresh command_response on chat.
@@ -210,11 +219,12 @@ test.describe('Chat Messages Between Players', () => {
     // Ithaqua sends chat message
     await executeCommand(ithaquaContext.page, 'say Hello ArkanWolfshade');
 
-    // Regex: tolerate minor formatting drift; timeout above default 10s MESSAGE for slow command_response.
-    await waitForMessage(ithaquaContext.page, /You say:\s*Hello ArkanWolfshade/i, 45000);
+    await prepareReceiverForInboundMessages(awContext, 20000);
 
-    // Wait for message to appear on AW's side with increased timeout and flexibility
-    await waitForCrossPlayerMessage(awContext, /Ithaqua says: Hello ArkanWolfshade/i, 45000);
+    await Promise.all([
+      waitForMessage(ithaquaContext.page, /You say:\s*Hello ArkanWolfshade/i, 45000),
+      waitForCrossPlayerMessage(awContext, /Ithaqua says: Hello ArkanWolfshade/i, 45000),
+    ]);
 
     // Verify AW sees the message
     const awMessages = await getPlayerMessages(awContext);
@@ -268,10 +278,12 @@ test.describe('Chat Messages Between Players', () => {
     // AW sends formatted message
     await executeCommand(awContext.page, 'say Testing message formatting');
 
-    await waitForMessage(awContext.page, /You say:.*Testing message formatting/i, 45000);
+    await prepareReceiverForInboundMessages(ithaquaContext, 20000);
 
-    // Wait for message to appear on Ithaqua's side with increased timeout and flexibility
-    await waitForCrossPlayerMessage(ithaquaContext, /ArkanWolfshade says: Testing message formatting/i, 45000);
+    await Promise.all([
+      waitForMessage(awContext.page, /You say:.*Testing message formatting/i, 45000),
+      waitForCrossPlayerMessage(ithaquaContext, /ArkanWolfshade says: Testing message formatting/i, 45000),
+    ]);
 
     // Verify Ithaqua sees properly formatted message
     const ithaquaMessages = await getPlayerMessages(ithaquaContext);

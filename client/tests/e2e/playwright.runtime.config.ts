@@ -8,6 +8,13 @@ setDefaultResultOrder('ipv4first');
 /** Prefer IPv4 loopback: avoids ::1 EACCES on some Windows setups when using `localhost`. */
 const DEV_ORIGIN = 'http://127.0.0.1:5173';
 
+/** Parallel runtime suite (opt-in): workers>1, fullyParallel. Requires server already running at DEV_ORIGIN. */
+const RUNTIME_PARALLEL = process.env.E2E_RUNTIME_PARALLEL === '1' || process.env.E2E_RUNTIME_PARALLEL === 'true';
+const PARALLEL_WORKERS = Math.min(
+  Math.max(1, parseInt(process.env.E2E_WORKERS || process.env.WORKERS || '2', 10) || 2),
+  4
+);
+
 /**
  * Playwright Runtime Configuration for E2E Tests
  *
@@ -23,14 +30,13 @@ export default defineConfig({
   testDir: './runtime',
   /* Only run .spec.ts files */
   testMatch: '**/*.spec.ts',
-  /* Run tests serially to avoid race conditions with shared player accounts */
-  fullyParallel: false,
+  /* Serial by default (shared accounts). Opt-in: E2E_RUNTIME_PARALLEL=1 */
+  fullyParallel: RUNTIME_PARALLEL,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  /* CRITICAL: E2E tests must run serially to avoid race conditions */
-  workers: 1,
+  workers: RUNTIME_PARALLEL ? PARALLEL_WORKERS : 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [['html'], ['list']],
   /* Global setup and teardown */
@@ -71,13 +77,14 @@ export default defineConfig({
       use: { ...devices['Desktop Firefox'] },
     },
   ],
-  /* Run your local dev server before starting the tests (disabled in CI) */
-  webServer: process.env.CI
-    ? undefined
-    : {
-        command: 'npm run dev -- --host 127.0.0.1',
-        url: DEV_ORIGIN,
-        reuseExistingServer: !process.env.CI,
-        timeout: 120000,
-      },
+  /* Local dev: start Vite when not in parallel mode (parallel expects server already up) */
+  webServer:
+    process.env.CI || RUNTIME_PARALLEL
+      ? undefined
+      : {
+          command: 'npm run dev -- --host 127.0.0.1',
+          url: DEV_ORIGIN,
+          reuseExistingServer: !process.env.CI,
+          timeout: 120000,
+        },
 });

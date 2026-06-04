@@ -9,7 +9,7 @@
  */
 
 import { expect, test } from '@playwright/test';
-import { executeCommand, getMessages, waitForMessage } from '../fixtures/auth';
+import { ensurePlayableConnection, executeCommand, getMessages, waitForMessage } from '../fixtures/auth';
 import type { PlayerContext } from '../fixtures/multiplayer';
 import {
   cleanupMultiPlayerContexts,
@@ -121,10 +121,59 @@ async function waitForCombatRoundMessage(page: PlayerContext['page']): Promise<v
     .toBe(true);
 }
 
-async function spawnCombatTargetNpc(page: PlayerContext['page']): Promise<void> {
-  await ensureStanding(page, 8000);
-  await executeCommand(page, 'npc spawn 54');
-  await waitForMessage(page, /NPC spawned successfully|spawned successfully/i, 20000);
+const SPAWN_NPC_NAME = 'Dr. Francis Morgan';
+
+async function assertNpcSpawnVisible(page: PlayerContext['page'], npcName: string): Promise<void> {
+  const occupantCue = page.getByText(new RegExp(npcName.replace(/\./g, '\\.'), 'i'));
+  const bodyHasNpc = page.evaluate(
+    (name: string) => (document.body?.innerText ?? '').toLowerCase().includes(name.toLowerCase()),
+    npcName
+  );
+  const messageCue = page.locator('[data-message-text]').filter({ hasText: new RegExp(npcName, 'i') });
+  await expect
+    .poll(
+      async () =>
+        (await occupantCue
+          .first()
+          .isVisible()
+          .catch(() => false)) ||
+        (await bodyHasNpc) ||
+        (await messageCue
+          .first()
+          .isVisible()
+          .catch(() => false)),
+      { timeout: 30000, message: `spawn visible: ${npcName}` }
+    )
+    .toBe(true);
+}
+
+async function spawnCombatTargetNpc(
+  page: PlayerContext['page'],
+  creds: { username: string; password: string }
+): Promise<void> {
+  await ensurePlayableConnection(page, { ...creds, timeoutMs: 45000 });
+  await page
+    .locator('[data-message-text]')
+    .first()
+    .waitFor({ state: 'visible', timeout: 20000 })
+    .catch(() => {});
+  await executeCommand(page, 'look');
+  await waitForMessage(page, /Arena|gladiator|heart of the|exits|sand/i, 20000).catch(() => {});
+  await ensureStanding(page, 15000);
+  for (let attempt = 0; attempt < 3; attempt++) {
+    await executeCommand(page, 'npc spawn 54');
+    try {
+      await assertNpcSpawnVisible(page, SPAWN_NPC_NAME);
+      await waitForMessage(page, /NPC spawned successfully|spawned successfully/i, 20000).catch(() => {});
+      return;
+    } catch (err) {
+      if (attempt === 2) {
+        throw err;
+      }
+      await executeCommand(page, 'look');
+      await new Promise(r => setTimeout(r, 2000));
+    }
+  }
 }
 
 test.describe('Combat messages in Game Info', () => {
@@ -147,7 +196,11 @@ test.describe('Combat messages in Game Info', () => {
 
     await page.bringToFront().catch(() => {});
     await ensurePlayerInGame(awContext, 30000);
-    // beforeAll login applies entry_ward (~10s); do not relogin here — that re-applies ward and can drop to login UI.
+    await ensurePlayableConnection(page, {
+      username: awContext.player.username,
+      password: awContext.player.password,
+      timeoutMs: 45000,
+    });
     await page.getByTestId('command-input').waitFor({ state: 'visible', timeout: 15000 });
     await waitForEntryWardCleared(page, 60000);
 
@@ -160,10 +213,13 @@ test.describe('Combat messages in Game Info', () => {
     // DEFAULT_RESPAWN_ROOM is the limbo arena grid; room_links do not reach earth_arkhamcity_sanitarium_room_foyer_001,
     // so walk south/west/north never shows "Main Foyer" where the world's Dr. Francis Morgan template lives.
     // Spawn his definition (id 54 in mythos_e2e DML) into the current cell for a stable combat target.
-    await spawnCombatTargetNpc(page);
+    await spawnCombatTargetNpc(page, {
+      username: awContext.player.username,
+      password: awContext.player.password,
+    });
 
     // Login grace / entry_ward blocks combat briefly after entering the realm; retry until In Combat or attack line.
-    expect(await retryUntilCombatStarted(page, 'Dr. Francis Morgan')).toBe(true);
+    expect(await retryUntilCombatStarted(page, SPAWN_NPC_NAME)).toBe(true);
 
     expect(await assertStillConnected(page)).toBe(true);
 

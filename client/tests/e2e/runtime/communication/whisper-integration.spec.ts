@@ -6,7 +6,7 @@
  * recipient and that the whisper system maintains privacy across player sessions.
  */
 
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import { executeCommand, waitForMessage } from '../fixtures/auth';
 import {
   cleanupMultiPlayerContexts,
@@ -17,16 +17,9 @@ import {
   getPlayerMessages,
   waitForAllPlayersInGame,
   waitForCrossPlayerMessage,
+  waitForLookReflectedInUi,
   type PlayerContext,
 } from '../fixtures/multiplayer';
-
-/** After `look`, room copy is usually in Location / Room Description, not Game Info `[data-message-text]`. */
-async function assertLookVisibleInPanels(page: Page): Promise<void> {
-  const cue = page.getByText(
-    /Arena\s*>\s*Arena|Arena entrance \(center\)|heart of the gladiator|sand and shadow|Exits:\s*North/i
-  );
-  await expect(cue.first()).toBeVisible({ timeout: 45000 });
-}
 
 async function nudgeStandBothPlayers(aw: PlayerContext, other: PlayerContext): Promise<void> {
   await executeCommand(aw.page, 'stand');
@@ -79,7 +72,7 @@ test.describe('Whisper Integration', () => {
       el.focus();
     });
     await executeCommand(ithaquaContext.page, 'look');
-    await assertLookVisibleInPanels(ithaquaContext.page);
+    await waitForLookReflectedInUi(ithaquaContext.page);
 
     await awContext.page.bringToFront().catch(() => {});
     await expect(awContext.page.getByText(new RegExp(`Player:\\s*${awContext.player.username}\\b`, 'i'))).toBeVisible({
@@ -89,7 +82,7 @@ test.describe('Whisper Integration', () => {
       el.focus();
     });
     await executeCommand(awContext.page, 'look');
-    await assertLookVisibleInPanels(awContext.page);
+    await waitForLookReflectedInUi(awContext.page);
 
     await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
       el.focus();
