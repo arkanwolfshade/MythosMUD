@@ -67,7 +67,7 @@ $env:MYTHOSMUD_CONFIG_PATH = "E:\projects\GitHub\MythosMUD\server\server_config.
 
 # Use the existing start script
 
-.\scripts\start_e2e_test.ps1 -Port 54731
+.\scripts\start_e2e_test.ps1 -Port 54768
 ```
 
 ### Option B: Fix the directory context

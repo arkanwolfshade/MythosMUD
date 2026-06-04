@@ -1,6 +1,11 @@
+import '@testing-library/jest-dom/vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import React from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ProfessionSelectionScreen } from './ProfessionSelectionScreen';
+
+// Vitest/jsdom tests use Node-style `global`; tell TypeScript it exists here.
+declare const global: typeof globalThis;
 
 // Mock fetch globally using vi.spyOn for proper cleanup
 const fetchSpy = vi.spyOn(global, 'fetch');
@@ -19,7 +24,7 @@ describe('ProfessionSelectionScreen', () => {
     onProfessionSelected: vi.fn(),
     onError: vi.fn(),
     onBack: vi.fn(),
-    baseUrl: 'http://localhost:54731',
+    baseUrl: 'http://localhost:54768',
     authToken: 'mock-token',
   };
 

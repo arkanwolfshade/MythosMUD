@@ -5,7 +5,7 @@ Tests the admin command handler functions.
 """
 
 import uuid
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
 import pytest
 
@@ -34,8 +34,9 @@ async def test_handle_admin_command_status():
     mock_player.is_admin = True
     mock_player_service.resolve_player_name = AsyncMock(return_value=mock_player)
     mock_state.player_service = mock_player_service
-    mock_state.user_manager = MagicMock()
-    mock_state.user_manager.is_admin = MagicMock(return_value=True)
+    mock_user_manager = MagicMock()
+    mock_user_manager.is_admin = MagicMock(return_value=True)
+    mock_state.user_manager = mock_user_manager
     mock_app.state = mock_state
     mock_request.app = mock_app
 
@@ -60,8 +61,8 @@ async def test_handle_admin_command_time():
     mock_components.daypart = "afternoon"
     mock_components.season = "autumn"
     mock_mythos_dt = datetime(1926, 10, 31, 14, 30, 0, tzinfo=UTC)
-    mock_chronicle.get_current_mythos_datetime.return_value = mock_mythos_dt
-    mock_chronicle.get_calendar_components.return_value = mock_components
+    mock_chronicle.get_current_mythos_datetime = Mock(return_value=mock_mythos_dt)
+    mock_chronicle.get_calendar_components = Mock(return_value=mock_components)
     mock_state.holiday_service = None
     mock_app.state = mock_state
     mock_request.app = mock_app
@@ -123,7 +124,8 @@ async def test_handle_mute_command_success():
     mock_app = MagicMock()
     mock_state = MagicMock()
     mock_user_manager = MagicMock()
-    mock_user_manager.mute_player = MagicMock(return_value=True)
+    mute_player_mock: MagicMock = MagicMock(return_value=True)
+    mock_user_manager.mute_player = mute_player_mock
     mock_player_service = AsyncMock()
     mock_current_player = MagicMock()
     mock_current_player.id = uuid.uuid4()
@@ -145,7 +147,7 @@ async def test_handle_mute_command_success():
 
     assert "result" in result
     assert "muted" in result["result"].lower()
-    mock_user_manager.mute_player.assert_called_once()
+    mute_player_mock.assert_called_once()
 
 
 @pytest.mark.asyncio
@@ -185,7 +187,8 @@ async def test_handle_unmute_command_success():
     mock_app = MagicMock()
     mock_state = MagicMock()
     mock_user_manager = MagicMock()
-    mock_user_manager.unmute_player = MagicMock(return_value=True)
+    unmute_player_mock: MagicMock = MagicMock(return_value=True)
+    mock_user_manager.unmute_player = unmute_player_mock
     mock_player_service = AsyncMock()
     mock_current_player = MagicMock()
     mock_current_player.id = uuid.uuid4()
@@ -203,7 +206,36 @@ async def test_handle_unmute_command_success():
 
     assert "result" in result
     assert "unmuted" in result["result"].lower()
-    mock_user_manager.unmute_player.assert_called_once()
+    unmute_player_mock.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_handle_unmute_command_idempotent_when_not_muted():
+    """Test handle_unmute_command() succeeds when target was not muted (E2E cleanup path)."""
+    mock_request = MagicMock()
+    mock_app = MagicMock()
+    mock_state = MagicMock()
+    mock_user_manager = MagicMock()
+    mock_user_manager.unmute_player = MagicMock(return_value=False)
+    is_player_muted_mock: MagicMock = MagicMock(return_value=False)
+    mock_user_manager.is_player_muted = is_player_muted_mock
+    mock_player_service = AsyncMock()
+    mock_current_player = MagicMock()
+    mock_current_player.id = uuid.uuid4()
+    mock_target_player = MagicMock()
+    mock_target_player.id = uuid.uuid4()
+    mock_player_service.resolve_player_name = AsyncMock(side_effect=[mock_current_player, mock_target_player])
+    mock_state.user_manager = mock_user_manager
+    mock_state.player_service = mock_player_service
+    mock_app.state = mock_state
+    mock_request.app = mock_app
+
+    result = await handle_unmute_command(
+        {"target_player": "OtherPlayer"}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer"
+    )
+
+    assert result["result"] == "You have unmuted OtherPlayer."
+    is_player_muted_mock.assert_called_once()
 
 
 @pytest.mark.asyncio
@@ -225,7 +257,8 @@ async def test_handle_mute_global_command_success():
     mock_app = MagicMock()
     mock_state = MagicMock()
     mock_user_manager = MagicMock()
-    mock_user_manager.mute_global = MagicMock(return_value=True)
+    mute_global_mock: MagicMock = MagicMock(return_value=True)
+    mock_user_manager.mute_global = mute_global_mock
     mock_state.user_manager = mock_user_manager
     mock_app.state = mock_state
     mock_request.app = mock_app
@@ -234,7 +267,7 @@ async def test_handle_mute_global_command_success():
 
     assert "result" in result
     assert "activated" in result["result"].lower()
-    mock_user_manager.mute_global.assert_called_once()
+    mute_global_mock.assert_called_once()
 
 
 @pytest.mark.asyncio
@@ -256,7 +289,8 @@ async def test_handle_unmute_global_command_success():
     mock_app = MagicMock()
     mock_state = MagicMock()
     mock_user_manager = MagicMock()
-    mock_user_manager.unmute_global = MagicMock(return_value=True)
+    unmute_global_mock: MagicMock = MagicMock(return_value=True)
+    mock_user_manager.unmute_global = unmute_global_mock
     mock_state.user_manager = mock_user_manager
     mock_app.state = mock_state
     mock_request.app = mock_app
@@ -265,7 +299,7 @@ async def test_handle_unmute_global_command_success():
 
     assert "result" in result
     assert "deactivated" in result["result"].lower()
-    mock_user_manager.unmute_global.assert_called_once()
+    unmute_global_mock.assert_called_once()
 
 
 @pytest.mark.asyncio
@@ -305,7 +339,8 @@ async def test_handle_add_admin_command_success():
     mock_app = MagicMock()
     mock_state = MagicMock()
     mock_user_manager = MagicMock()
-    mock_user_manager.add_admin = MagicMock(return_value=True)
+    add_admin_mock: MagicMock = MagicMock(return_value=True)
+    mock_user_manager.add_admin = add_admin_mock
     mock_player_service = AsyncMock()
     mock_current_player = MagicMock()
     mock_current_player.id = uuid.uuid4()
@@ -323,7 +358,7 @@ async def test_handle_add_admin_command_success():
 
     assert "result" in result
     assert "admin" in result["result"].lower()
-    mock_user_manager.add_admin.assert_called_once()
+    add_admin_mock.assert_called_once()
 
 
 @pytest.mark.asyncio
@@ -345,7 +380,8 @@ async def test_handle_mutes_command_success():
     mock_app = MagicMock()
     mock_state = MagicMock()
     mock_user_manager = MagicMock()
-    mock_user_manager.get_player_mutes = MagicMock(return_value={})
+    get_player_mutes_mock: MagicMock = MagicMock(return_value={})
+    mock_user_manager.get_player_mutes = get_player_mutes_mock
     mock_player_service = AsyncMock()
     mock_current_player = MagicMock()
     mock_current_player.id = uuid.uuid4()
@@ -359,7 +395,7 @@ async def test_handle_mutes_command_success():
 
     assert "result" in result
     assert "No active mutes found" in result["result"]
-    mock_user_manager.get_player_mutes.assert_called_once()
+    get_player_mutes_mock.assert_called_once()
 
 
 @pytest.mark.asyncio

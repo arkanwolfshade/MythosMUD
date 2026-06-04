@@ -138,6 +138,7 @@ export function useProfessions({ baseUrl, authToken, onError }: UseProfessionsOp
   }, [baseUrl, authToken]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- load professions on mount/deps
     void fetchProfessions();
   }, [fetchProfessions]);
 

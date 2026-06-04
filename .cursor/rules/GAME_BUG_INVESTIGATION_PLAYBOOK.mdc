@@ -360,7 +360,7 @@ grep -i "websocket\|connection" logs/development/server.log
 
 ```bash
 # Check WebSocket connections and status
-netstat -an | findstr :54731
+netstat -an | findstr :54768
 ```
 
 - Document WebSocket connection state
@@ -947,7 +947,7 @@ grep -i "websocket\|connection" logs/development/server.log
 
 ```bash
 # Check WebSocket connections and status
-netstat -an | findstr :54731
+netstat -an | findstr :54768
 ```
 
 - Document WebSocket connection state

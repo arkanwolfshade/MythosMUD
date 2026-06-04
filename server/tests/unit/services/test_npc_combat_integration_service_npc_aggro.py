@@ -296,6 +296,28 @@ async def test_handle_npc_attack_on_player_existing_combat_with_other_npc(
     assert result is False
 
 
+@pytest.mark.asyncio
+async def test_handle_npc_attack_on_player_skips_already_dead_target(
+    integration_service: "NPCCombatIntegrationService",
+):
+    """ValueError from combat path when player is dead must not log as error."""
+    target_id = str(uuid.uuid4())
+    with patch(
+        "server.services.npc_combat_integration_service.is_npc_attack_on_player_blocked_by_login_grace_period",
+        return_value=False,
+    ):
+        integration_service._run_npc_attack_on_player_after_grace = AsyncMock(  # type: ignore[method-assign]
+            side_effect=ValueError("Target is already dead")
+        )
+        result = await integration_service.handle_npc_attack_on_player(
+            npc_id="npc_001",
+            target_id=target_id,
+            room_id="room_1",
+            attack_damage=10,
+        )
+    assert result is False
+
+
 def test_setup_combat_uuids_npc_attacker_valid(integration_service: "NPCCombatIntegrationService"):
     """Test _setup_combat_uuids_npc_attacker with valid UUID mapping."""
     npc_id = "npc_001"

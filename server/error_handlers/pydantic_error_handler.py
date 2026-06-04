@@ -16,6 +16,7 @@ from typing import Any
 from pydantic import ValidationError
 
 from ..error_types import (
+    ErrorMessages,
     ErrorSeverity,
     ErrorType,
     create_sse_error_response,
@@ -107,18 +108,19 @@ class PydanticErrorHandler:
             details = self._create_error_details(error_info, error)
 
             # Create appropriate response based on type
+            public_message = user_friendly
             if response_type == "websocket":
                 return create_websocket_error_response(
-                    error_type=error_type, message=error_info["message"], user_friendly=user_friendly, details=details
+                    error_type=error_type, message=public_message, user_friendly=user_friendly, details=details
                 )
             if response_type == "sse":
                 return create_sse_error_response(
-                    error_type=error_type, message=error_info["message"], user_friendly=user_friendly, details=details
+                    error_type=error_type, message=public_message, user_friendly=user_friendly, details=details
                 )
             # Default to HTTP
             return create_standard_error_response(
                 error_type=error_type,
-                message=error_info["message"],
+                message=public_message,
                 user_friendly=user_friendly,
                 details=details,
                 severity=severity,
@@ -142,7 +144,7 @@ class PydanticErrorHandler:
         """
         # AI Agent: Explicit typing to help mypy understand structure
         error_info: dict[str, Any] = {
-            "message": str(error),
+            "message": ErrorMessages.INVALID_INPUT,
             "error_count": len(error.errors()),
             "errors": [],
             "model_class": model_class.__name__ if model_class else None,
@@ -326,7 +328,7 @@ class PydanticErrorHandler:
         Returns:
             Fallback error response
         """
-        message = f"Validation error: {str(error)}"
+        message = ErrorMessages.INVALID_INPUT
         user_friendly = "Please check your input and try again"
 
         if response_type == "websocket":

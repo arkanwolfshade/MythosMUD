@@ -6,7 +6,6 @@ database URLs and connection pool settings.
 """
 
 import os
-from typing import Any
 
 from pydantic import ValidationError as PydanticValidationError
 from sqlalchemy.pool import NullPool
@@ -103,14 +102,14 @@ def normalize_database_url(database_url: str) -> str:
 
 # Default pool settings when config is unavailable (e.g. scripts with only DATABASE_URL set).
 # Matches DatabaseConfig defaults in config/models.py.
-_DEFAULT_POOL_SETTINGS: dict[str, Any] = {
+_DEFAULT_POOL_SETTINGS: dict[str, int] = {
     "pool_size": 5,
     "max_overflow": 10,
     "pool_timeout": 30,
 }
 
 
-def get_postgres_connect_args() -> dict[str, Any]:
+def get_postgres_connect_args() -> dict[str, dict[str, str]]:
     """
     Build connect_args for asyncpg when POSTGRES_SEARCH_PATH is set.
 
@@ -126,7 +125,32 @@ def get_postgres_connect_args() -> dict[str, Any]:
     return {"server_settings": {"search_path": search_path}}
 
 
-def configure_pool_settings(database_url: str) -> dict[str, Any]:
+def get_asyncpg_server_settings_for_database_url(database_url: str) -> dict[str, str]:
+    """
+    Build asyncpg ``server_settings`` so unqualified table names resolve like SQLAlchemy.
+
+    For ``mythos_dev``, ``mythos_unit``, and ``mythos_e2e``, DDL places tables in a schema
+    named like the database. Raw ``asyncpg.connect(url)`` uses PostgreSQL defaults
+    (typically only ``public``), so unqualified names (for example ``FROM zones`` or
+    ``FROM calendar_holidays``) fail with UndefinedTableError
+    unless ``search_path`` matches :func:`DatabaseManager._initialize_database` in
+    ``server.database``.
+
+    Returns:
+        Dict suitable for ``asyncpg.connect(..., server_settings=...)`` (may be empty).
+    """
+    connect_args = get_postgres_connect_args()
+    current = (connect_args.get("server_settings") or {}).get("search_path", "").strip()
+    db_name = database_url.split("/")[-1].split("?")[0] if database_url else ""
+    if db_name in ("mythos_dev", "mythos_unit", "mythos_e2e"):
+        if current != db_name:
+            return {"search_path": db_name}
+    if current:
+        return {"search_path": current}
+    return {}
+
+
+def configure_pool_settings(database_url: str) -> dict[str, object]:
     """
     Configure pool settings based on database URL and config.
 
@@ -139,7 +163,7 @@ def configure_pool_settings(database_url: str) -> dict[str, Any]:
     Returns:
         Dictionary of pool configuration kwargs
     """
-    pool_kwargs: dict[str, Any] = {}
+    pool_kwargs: dict[str, object] = {}
     if "test" in database_url:
         pool_kwargs["poolclass"] = NullPool
     else:

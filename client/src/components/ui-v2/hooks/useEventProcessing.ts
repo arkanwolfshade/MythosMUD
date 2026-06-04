@@ -17,6 +17,7 @@ export const useEventProcessing = ({ setGameState }: UseEventProcessingParams) =
   const processingTimeout = useRef<number | null>(null);
   const eventStoreRef = useRef<EventStore>(new EventStore());
 
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization -- stable queue processor for setTimeout
   const processEventQueue = useCallback(() => {
     if (isProcessingEvent.current || eventQueue.current.length === 0) {
       return;

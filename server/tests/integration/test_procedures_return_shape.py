@@ -12,6 +12,8 @@ import pytest
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
+from server.models.player import Player
+from server.models.user import User
 from server.services.npc_startup_service import ARENA_ROOM_IDS
 
 # Expected column names from db/procedures (used by Python mappers)
@@ -99,10 +101,10 @@ async def test_get_rooms_with_exits_includes_arena_zone_rooms(
     """
     Verify get_rooms_with_exits() (room cache data source) includes arena zone rooms.
 
-    When the DB is seeded with arena DML (mythos_unit_dml, mythos_e2e_dml), the procedure
-    must return all 121 arena rooms so that warmup_room_cache() populates the in-memory
-    cache with the limbo/arena zone. This guards against regressions where arena rooms
-    are missing from the cache.
+    When the DB is seeded with arena DML (migration on mythos_unit / mythos_e2e), the
+    procedure must return all 121 arena rooms so that warmup_room_cache() populates the
+    in-memory cache with the limbo/arena zone. This guards against regressions where
+    arena rooms are missing from the cache.
     """
     async with session_factory() as session:
         result = await session.execute(
@@ -119,7 +121,7 @@ async def test_get_rooms_with_exits_includes_arena_zone_rooms(
     assert not missing, (
         f"get_rooms_with_exits() must return all arena zone rooms (limbo/arena). "
         f"Missing {len(missing)} of {len(ARENA_ROOM_IDS)}: {missing[:5]!s}{'...' if len(missing) > 5 else ''}. "
-        "Ensure the test DB is seeded from data/db/mythos_unit_dml.sql (includes arena zone)."
+        "Ensure the test DB has arena migration applied (apply_arena_migration.ps1)."
     )
     assert "limbo_arena_arena_arena_5_5" in stable_ids, "Arena center room must be in room cache data source"
 
@@ -203,10 +205,25 @@ async def test_add_player_effect_generates_id(
     which would cause a NOT NULL violation when inserting via the procedure.
     """
     async with session_factory() as session:
-        # Use an existing player_id from seed data to satisfy FK constraint.
-        player_result = await session.execute(text("SELECT player_id FROM players LIMIT 1"))
-        player_id = player_result.scalar()
-        assert player_id is not None, "Seed data must include at least one player for add_player_effect test"
+        user_id = uuid.uuid4()
+        player_id = uuid.uuid4()
+        user = User(
+            id=str(user_id),
+            email=f"effect_test_{user_id}@example.com",
+            username=f"effectuser_{str(user_id)[:8]}",
+            display_name=f"Effect User {str(user_id)[:8]}",
+            hashed_password="hashed",
+            is_active=True,
+            is_superuser=False,
+            is_verified=True,
+        )
+        player = Player(
+            player_id=str(player_id),
+            user_id=str(user_id),
+            name=f"effectplayer_{str(player_id)[:8]}",
+        )
+        session.add_all([user, player])
+        await session.flush()
 
         result = await session.execute(
             text(

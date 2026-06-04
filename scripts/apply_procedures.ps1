@@ -42,7 +42,8 @@ if (-not (Test-Path $ProceduresDir)) {
     exit 1
 }
 
-# Resolve env file: explicit > .env.unit_test (when targeting test dbs) > .env.local > .env
+# Resolve env file: explicit > .env.unit_test (when targeting test dbs) > .env.local > .env >
+# .env.unit_test (fallback for host/user/password only; -TargetDbs still names each database).
 $envPath = $null
 if ($EnvFile -and (Test-Path (Join-Path $ProjectRoot $EnvFile))) {
     $envPath = Join-Path $ProjectRoot $EnvFile
@@ -56,9 +57,12 @@ elseif (Test-Path (Join-Path $ProjectRoot ".env.local")) {
 elseif (Test-Path (Join-Path $ProjectRoot ".env")) {
     $envPath = Join-Path $ProjectRoot ".env"
 }
+elseif (Test-Path (Join-Path $ProjectRoot ".env.unit_test")) {
+    $envPath = Join-Path $ProjectRoot ".env.unit_test"
+}
 
 if (-not $envPath) {
-    Write-Host "[ERROR] No env file found. Tried: .env.local, .env.unit_test, .env" -ForegroundColor Red
+    Write-Host "[ERROR] No env file found. Tried: -EnvFile, .env.unit_test (test targets), .env.local, .env, .env.unit_test (fallback)" -ForegroundColor Red
     Write-Host "[SOLUTION] Run: make setup-test-env (for tests) or create .env.local (for dev)" -ForegroundColor Yellow
     exit 1
 }

@@ -1,15 +1,40 @@
+/// <reference types="node" />
+
 /**
  * Multiplayer Fixtures
  *
  * Helper functions for managing multiple browser contexts in multiplayer scenarios.
  */
 
-import { type Browser, type BrowserContext, type Page } from '@playwright/test';
-import { loginPlayer } from './auth';
+import { spawnSync } from 'child_process';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
+
+import './multiplayer-browser-window.d.ts';
+
+import { expect, type Browser, type BrowserContext, type Page } from '@playwright/test';
+import { E2E_PROJECT_ROOT, loadE2eEnv } from '../../../../src/test/e2e-bootstrap';
+import { MotdPage } from '../pages';
+import {
+  ensurePlayableConnection,
+  executeCommand,
+  executeCommandTrusted,
+  loginPlayer,
+  logoutPlayer,
+  waitForPlayableSession,
+} from './auth';
+import type { OccupantsSnapshot } from './multiplayer-browser-helpers';
 import { TEST_PLAYERS, TEST_TIMEOUTS, type TestPlayer } from './test-data';
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const BROWSER_HELPERS_BUNDLE = join(__dirname, 'multiplayer-browser-helpers.bundle.js');
+
+async function installE2eBrowserHelpers(context: BrowserContext): Promise<void> {
+  await context.addInitScript({ path: BROWSER_HELPERS_BUNDLE });
+}
+
 /** Use 127.0.0.1 to avoid localhost resolving to IPv6 (::1) when server listens on IPv4 only. */
-const SERVER_URL = 'http://127.0.0.1:54731';
+const SERVER_URL = 'http://127.0.0.1:54768';
 /** Versioned API base for v1 endpoints (health, etc.). */
 const SERVER_API_V1 = `${SERVER_URL}/v1`;
 const SERVER_READY_POLL_MS = 500;
@@ -40,7 +65,7 @@ async function waitForServerReady(): Promise<void> {
   throw new Error(
     `[instrumentation] Server not ready at ${healthUrl} within ${SERVER_READY_TIMEOUT_MS}ms.${statusHint} ` +
       'Runtime E2E tests require the server to be started first. ' +
-      'Run ./scripts/start_local.ps1 from project root (after ./scripts/stop_server.ps1 if needed) and ensure port 54731 is free.'
+      'Run ./scripts/start_local.ps1 from project root (after ./scripts/stop_server.ps1 if needed) and ensure port 54768 is free.'
   );
 }
 
@@ -83,6 +108,7 @@ export async function createMultiPlayerContexts(browser: Browser, playerUsername
 
     // Fresh context per player (no storageState). Isolated storage prevents cross-login effects.
     const context = await browser.newContext();
+    await installE2eBrowserHelpers(context);
     const page = await context.newPage();
 
     await loginPlayer(page, player.username, player.password);
@@ -101,17 +127,97 @@ export async function createMultiPlayerContexts(browser: Browser, playerUsername
 /**
  * Cleanup multiple player contexts.
  *
+ * Intentionally logs out each player before closing the browser context so the server
+ * does not leave linkdead ghosts that poison the next serial test.
+ *
  * @param contexts - Array of PlayerContext objects to cleanup
  */
 export async function cleanupMultiPlayerContexts(contexts: PlayerContext[] | undefined): Promise<void> {
   if (!contexts || !Array.isArray(contexts)) {
     return;
   }
+  for (const { page } of contexts) {
+    await logoutPlayer(page, 90000).catch(() => {});
+    await page
+      .getByTestId('username-input')
+      .waitFor({ state: 'visible', timeout: 15000 })
+      .catch(() => {});
+  }
   for (const { context } of contexts) {
     await context.close().catch(() => {
       // Ignore errors during cleanup
     });
   }
+}
+
+async function waitForPlayerGameUi(page: Page, username: string, timeoutMs: number): Promise<void> {
+  try {
+    await page.waitForFunction(() => window.__mythosE2eIsGameUiLoaded?.() === true, { timeout: timeoutMs });
+  } catch {
+    const diagnostics = await page.evaluate(() => window.__mythosE2eCaptureGameUiDiagnostics?.()).catch(() => null);
+    throw new Error(
+      `Player ${username} did not reach game UI within ${timeoutMs}ms (still on login?). ` +
+        `Diagnostics: ${JSON.stringify(diagnostics)}`
+    );
+  }
+}
+
+async function waitForPlayerWebSocket(page: Page, username: string, timeoutMs: number): Promise<void> {
+  const wsTimeoutMs = Math.min(timeoutMs, 30000);
+  try {
+    await page.waitForFunction(() => window.__mythosE2eHasConnectedStatus?.() === true, { timeout: wsTimeoutMs });
+  } catch {
+    throw new Error(
+      `Player ${username} WebSocket did not connect within ${wsTimeoutMs}ms (status still shows linkdead?)`
+    );
+  }
+}
+
+async function waitForPlayerRoomSubscription(page: Page, username: string, timeoutMs: number): Promise<void> {
+  const tickTimeoutMs = Math.min(timeoutMs, 50000);
+  try {
+    await page.waitForFunction(() => window.__mythosE2eHasRoomSubscription?.() === true, { timeout: tickTimeoutMs });
+  } catch {
+    throw new Error(
+      `Player ${username} room subscription not established within ${tickTimeoutMs}ms (no tick message or room state received)`
+    );
+  }
+}
+
+function formatOccupantsSnapshotForError(snapshot: unknown): string {
+  if (typeof snapshot !== 'object' || snapshot === null) {
+    return String(snapshot);
+  }
+  if ('error' in snapshot) {
+    return (snapshot as { error?: string }).error ?? 'page closed or evaluate failed';
+  }
+  const snap = snapshot as OccupantsSnapshot;
+  return (
+    `occupants=${snap.occupantsCount ?? '?'} ` +
+    `players=${snap.playersCount ?? '?'} ` +
+    `linkdead=${snap.hasLinkdead ?? '?'}`
+  );
+}
+
+async function throwOccupantsWaitTimeout(
+  page: Page,
+  player: TestPlayer,
+  expectedOccupants: number,
+  timeoutMs: number
+): Promise<never> {
+  const snapshot = await page
+    .evaluate(() => window.__mythosE2eCaptureOccupantsSnapshot?.())
+    .catch(() => ({ error: 'page closed or evaluate failed' }));
+  const snapshotStr = JSON.stringify(snapshot, null, 2);
+  console.error(
+    `[instrumentation] ensurePlayersInSameRoom Step 1 timeout - Player ${player.username} saw:`,
+    snapshotStr
+  );
+  const shortSnap = formatOccupantsSnapshotForError(snapshot);
+  const msg =
+    `[instrumentation] ensurePlayersInSameRoom failed: Player ${player.username} - ` +
+    `Step 1: occupants - did not see ${expectedOccupants} within ${timeoutMs}ms (saw: ${shortSnap})`;
+  throw new Error(msg);
 }
 
 /**
@@ -134,67 +240,35 @@ export async function waitForAllPlayersInGame(
   // Step 1: Wait for all players to reach game UI (not on login screen)
   // Broadened detection: command input, Game Info, game terminal, Player header, Mythos Time, or room content
   await Promise.all(
-    contexts.map(({ page, player }) =>
-      page
-        .waitForFunction(
-          () => {
-            const hasLoginForm =
-              document.querySelector('input[placeholder*="username" i], input[name*="username" i]') !== null &&
-              Array.from(document.querySelectorAll('button')).some(
-                btn => btn.textContent?.includes('Enter the Void') || btn.textContent?.includes('Login')
-              );
-            if (hasLoginForm) return false;
-            const hasCommandInput =
-              document.querySelector('input[placeholder*="command" i], textarea[placeholder*="command" i]') !== null ||
-              document.querySelector('[data-testid="command-input"]') !== null;
-            const hasGameInfo =
-              document.querySelector('[data-testid="game-info-panel"]') !== null ||
-              Array.from(document.querySelectorAll('*')).some(el => el.textContent?.includes('Game Info'));
-            const bodyText = document.body?.innerText ?? '';
-            const hasPlayerHeader = bodyText.includes('Player:') && !bodyText.includes('Enter the Void');
-            const hasMythosTime = bodyText.includes('Mythos Time');
-            const hasGameTerminal = document.querySelector('[data-testid="game-terminal"]') !== null;
-            const hasRoomContent = bodyText.includes('Occupants') || bodyText.includes('Location');
-            return (
-              hasCommandInput || hasGameInfo || hasPlayerHeader || hasMythosTime || hasGameTerminal || hasRoomContent
-            );
-          },
-          { timeout: timeoutMs }
-        )
-        .catch(err => {
-          const msg =
-            `[instrumentation] waitForAllPlayersInGame failed: Player ${player.username} - ` +
-            `Step 1: game UI - still on login screen after ${timeoutMs}ms`;
-          console.error(msg, err);
-          throw new Error(msg);
-        })
-    )
+    contexts.map(async ({ page, player }) => {
+      try {
+        await page.waitForFunction(() => window.__mythosE2eIsGameUiLoaded?.() === true, { timeout: timeoutMs });
+      } catch (err) {
+        const diagnostics = await page.evaluate(() => window.__mythosE2eCaptureGameUiDiagnostics?.()).catch(() => null);
+        const msg =
+          `[instrumentation] waitForAllPlayersInGame failed: Player ${player.username} - ` +
+          `Step 1: game UI - still on login screen after ${timeoutMs}ms. ` +
+          `Diagnostics: ${JSON.stringify(diagnostics)}`;
+        console.error(msg, err);
+        throw new Error(msg, { cause: err });
+      }
+    })
   );
 
   // Step 2: Wait for all players' WebSocket connections to be established (status shows "Connected")
   await Promise.all(
     contexts.map(({ page, player }) =>
       page
-        .waitForFunction(
-          () => {
-            // Look for connection status in the header - should show "Connected" when WebSocket is ready
-            const statusElements = Array.from(document.querySelectorAll('*'));
-            const hasConnectedStatus = statusElements.some(
-              el =>
-                el.textContent?.trim() === 'Connected' ||
-                (el.textContent?.includes('Connected') && !el.textContent?.includes('linkdead'))
-            );
-            return hasConnectedStatus;
-          },
-          { timeout: Math.min(timeoutMs, 30000) } // Max 30s for WebSocket connection per player
-        )
+        .waitForFunction(() => window.__mythosE2eHasConnectedStatus?.() === true, {
+          timeout: Math.min(timeoutMs, 30000), // Max 30s for WebSocket connection per player
+        })
         .catch(err => {
           const wsTimeout = Math.min(timeoutMs, 30000);
           const msg =
             `[instrumentation] waitForAllPlayersInGame failed: Player ${player.username} - ` +
             `Step 2: WebSocket - status still shows linkdead after ${wsTimeout}ms`;
           console.error(msg, err);
-          throw new Error(msg);
+          throw new Error(msg, { cause: err });
         })
     )
   );
@@ -206,40 +280,14 @@ export async function waitForAllPlayersInGame(
   await Promise.all(
     contexts.map(({ page, player }) =>
       page
-        .waitForFunction(
-          () => {
-            // Option 1: Look for tick message in Game Info panel - format: "[Tick 123]"
-            const gameInfoElements = Array.from(document.querySelectorAll('*'));
-            const hasTickMessage = gameInfoElements.some(
-              el => el.textContent?.includes('[Tick') && el.textContent?.includes(']')
-            );
-
-            // Option 2: Check if Game Info has any messages (not just "No messages to display")
-            const gameInfoPanel = Array.from(document.querySelectorAll('*')).find(el =>
-              el.textContent?.includes('Game Info')
-            );
-            const hasAnyMessage =
-              gameInfoPanel &&
-              !gameInfoPanel.textContent?.includes('No messages to display') &&
-              !gameInfoPanel.textContent?.includes('No messages yet');
-
-            // Option 3: Check for room state indicators (room description, occupants, exits)
-            // This indicates room subscription is working even if tick messages haven't appeared yet
-            const bodyText = document.body?.innerText ?? '';
-            const hasRoomState =
-              bodyText.includes('Occupants') && (bodyText.includes('Exits:') || bodyText.includes('Room Description'));
-
-            return hasTickMessage || hasAnyMessage || hasRoomState;
-          },
-          { timeout: step3Timeout }
-        )
+        .waitForFunction(() => window.__mythosE2eHasRoomSubscription?.() === true, { timeout: step3Timeout })
         .catch(err => {
           const tickTimeout = step3Timeout;
           const msg =
             `[instrumentation] waitForAllPlayersInGame failed: Player ${player.username} - ` +
             `Step 3: room subscription - no tick message or room state after ${tickTimeout}ms`;
           console.error(msg, err);
-          throw new Error(msg);
+          throw new Error(msg, { cause: err });
         })
     )
   );
@@ -261,100 +309,70 @@ export async function waitForAllPlayersInGame(
  * @param timeoutMs - Max wait in milliseconds (default: 60000)
  */
 export async function ensurePlayerInGame(playerContext: PlayerContext, timeoutMs: number = 60000): Promise<void> {
-  // Step 1: Wait for game UI to appear (not on login screen)
-  // Broadened detection: command input, Game Info, game terminal, Player header, Mythos Time, or room content
-  await playerContext.page
-    .waitForFunction(
-      () => {
-        const hasLogin =
-          document.querySelector('input[placeholder*="username" i]') !== null &&
-          Array.from(document.querySelectorAll('button')).some(b => b.textContent?.includes('Enter the Void'));
-        if (hasLogin) return false;
-        const hasCommandInput =
-          document.querySelector('[data-testid="command-input"]') !== null ||
-          document.querySelector('input[placeholder*="command" i], textarea[placeholder*="command" i]') !== null;
-        const hasGameInfo =
-          document.querySelector('[data-testid="game-info-panel"]') !== null ||
-          Array.from(document.querySelectorAll('*')).some(el => el.textContent?.includes('Game Info'));
-        const bodyText = document.body?.innerText ?? '';
-        const hasPlayerHeader = bodyText.includes('Player:') && !bodyText.includes('Enter the Void');
-        const hasMythosTime = bodyText.includes('Mythos Time');
-        const hasGameTerminal = document.querySelector('[data-testid="game-terminal"]') !== null;
-        const hasRoomContent = bodyText.includes('Occupants') || bodyText.includes('Location');
-        return hasCommandInput || hasGameInfo || hasPlayerHeader || hasMythosTime || hasGameTerminal || hasRoomContent;
-      },
-      { timeout: timeoutMs }
-    )
-    .catch(_err => {
-      throw new Error(
-        `Player ${playerContext.player.username} did not reach game UI within ${timeoutMs}ms (still on login?)`
-      );
-    });
-
-  // Step 2: Wait for WebSocket connection to be established (status shows "Connected" not "linkdead")
-  await playerContext.page
-    .waitForFunction(
-      () => {
-        // Look for connection status in the header - should show "Connected" when WebSocket is ready
-        const statusElements = Array.from(document.querySelectorAll('*'));
-        const hasConnectedStatus = statusElements.some(
-          el =>
-            el.textContent?.trim() === 'Connected' ||
-            (el.textContent?.includes('Connected') && !el.textContent?.includes('linkdead'))
-        );
-        return hasConnectedStatus;
-      },
-      { timeout: Math.min(timeoutMs, 30000) } // Max 30s for WebSocket connection
-    )
-    .catch(_err => {
-      throw new Error(
-        `Player ${playerContext.player.username} WebSocket did not connect within ${Math.min(
-          timeoutMs,
-          30000
-        )}ms (status still shows linkdead?)`
-      );
-    });
-
-  // Step 3: Wait for room subscription to be established
-  // Check for tick message OR room state indicators (more robust than tick-only)
-  // Use 50s cap so slower clients have time to receive first tick after Connected.
-  const tickTimeoutMs = Math.min(timeoutMs, 50000);
-  await playerContext.page
-    .waitForFunction(
-      () => {
-        // Option 1: Look for tick message in Game Info panel - format: "[Tick 123]"
-        const gameInfoElements = Array.from(document.querySelectorAll('*'));
-        const hasTickMessage = gameInfoElements.some(
-          el => el.textContent?.includes('[Tick') && el.textContent?.includes(']')
-        );
-
-        // Option 2: Check if Game Info has any messages (not just "No messages to display")
-        const gameInfoPanel = Array.from(document.querySelectorAll('*')).find(el =>
-          el.textContent?.includes('Game Info')
-        );
-        const hasAnyMessage =
-          gameInfoPanel &&
-          !gameInfoPanel.textContent?.includes('No messages to display') &&
-          !gameInfoPanel.textContent?.includes('No messages yet');
-
-        // Option 3: Check for room state indicators (room description, occupants, exits)
-        // This indicates room subscription is working even if tick messages haven't appeared yet
-        const bodyText = document.body?.innerText ?? '';
-        const hasRoomState =
-          bodyText.includes('Occupants') && (bodyText.includes('Exits:') || bodyText.includes('Room Description'));
-
-        return hasTickMessage || hasAnyMessage || hasRoomState;
-      },
-      { timeout: tickTimeoutMs }
-    )
-    .catch(_err => {
-      throw new Error(
-        `Player ${playerContext.player.username} room subscription not established within ${tickTimeoutMs}ms (no tick message or room state received)`
-      );
-    });
-
-  // Brief stability wait after room subscription established
+  const { page, player } = playerContext;
+  await waitForPlayableSession(page, Math.min(timeoutMs, 30000)).catch(() => {});
+  await waitForPlayerGameUi(page, player.username, timeoutMs);
+  await waitForPlayerWebSocket(page, player.username, timeoutMs);
+  await waitForPlayerRoomSubscription(page, player.username, timeoutMs);
   await new Promise(resolve => setTimeout(resolve, 1000));
+}
+
+/**
+ * After switching which browser tab is foreground, restore command input when Send stayed disabled.
+ * Reload only when already in the game UI; re-login if reload returns to the login screen.
+ */
+export async function ensureForegroundPlayerPlayable(
+  playerContext: PlayerContext,
+  timeoutMs: number = 45000
+): Promise<void> {
+  const { page, player } = playerContext;
+  await page.bringToFront().catch(() => {});
+
+  const onLogin = await page
+    .getByTestId('username-input')
+    .isVisible({ timeout: 2000 })
+    .catch(() => false);
+  if (onLogin) {
+    await loginPlayer(page, player.username, player.password);
+    return;
+  }
+
+  await ensurePlayerInGame(playerContext, timeoutMs);
+
+  await ensurePlayableConnection(page, {
+    username: player.username,
+    password: player.password,
+    timeoutMs,
+  });
+}
+
+/**
+ * Foreground the receiver and restore command input so Game Info renders inbound WS events.
+ * Background Firefox tabs often show ticks but miss chat/combat lines until focused.
+ */
+export async function prepareReceiverForInboundMessages(
+  playerContext: PlayerContext,
+  timeoutMs: number = 20000
+): Promise<void> {
+  const { page, player } = playerContext;
+  await page.bringToFront().catch(() => {});
+
+  const onLogin = await page
+    .getByTestId('username-input')
+    .isVisible({ timeout: 2000 })
+    .catch(() => false);
+  if (onLogin) {
+    await loginPlayer(page, player.username, player.password);
+    await ensurePlayerInGame(playerContext, timeoutMs);
+    return;
+  }
+
+  await waitForPlayableSession(page, timeoutMs).catch(() => {});
+  await ensurePlayableConnection(page, {
+    username: player.username,
+    password: player.password,
+    timeoutMs,
+  }).catch(() => {});
 }
 
 /**
@@ -369,13 +387,36 @@ export async function waitForCrossPlayerMessage(
   expectedText: string | RegExp,
   timeout: number = 35000
 ): Promise<void> {
+  await prepareReceiverForInboundMessages(playerContext, Math.min(timeout, 25000));
+
   // Use locator for both string and RegExp: Playwright's filter({ hasText }) accepts RegExp.
   // Prefer locator over waitForFunction for auto-wait, retries, and clearer timeout errors.
   // If this times out, the receiving player may have left the game or be in a different room
   // (say is room-scoped); check Game Info for "has left the game" and Occupants for co-location.
   const messageLocator = playerContext.page.locator('[data-message-text]');
   try {
-    await messageLocator.filter({ hasText: expectedText }).first().waitFor({ state: 'visible', timeout });
+    await expect
+      .poll(
+        async () => {
+          const onLogin = await playerContext.page
+            .getByTestId('username-input')
+            .isVisible({ timeout: 500 })
+            .catch(() => false);
+          if (onLogin) {
+            await loginPlayer(playerContext.page, playerContext.player.username, playerContext.player.password);
+            await ensurePlayerInGame(playerContext, Math.min(timeout, 30000));
+            await prepareReceiverForInboundMessages(playerContext, Math.min(timeout, 15000));
+            return false;
+          }
+          return (await messageLocator.filter({ hasText: expectedText }).count()) > 0;
+        },
+        {
+          timeout,
+          message: 'cross-player message in Game Info',
+        }
+      )
+      .toBe(true);
+    await messageLocator.filter({ hasText: expectedText }).first().waitFor({ state: 'visible', timeout: 5000 });
   } catch (err) {
     const actualMessages = await getPlayerMessages(playerContext);
     const expectedStr = typeof expectedText === 'string' ? expectedText : expectedText.source;
@@ -386,10 +427,19 @@ export async function waitForCrossPlayerMessage(
     );
     const leftHint = hasLeftMessage ? ' Receiver appears to have left the game/room before message was sent.' : '';
 
+    const onLoginAtTimeout = await playerContext.page
+      .getByTestId('username-input')
+      .isVisible({ timeout: 500 })
+      .catch(() => false);
+    const sessionHint = onLoginAtTimeout
+      ? ' Receiver is on the login screen (session lost while sender tab had focus). ' +
+        'Call prepareReceiverForInboundMessages(receiver) immediately after send and use Promise.all for sender echo + cross-player wait.'
+      : '';
+
     throw new Error(
       `waitForCrossPlayerMessage timed out: Player ${playerContext.player.username} did not see "${expectedStr}" ` +
         `within ${timeout}ms. Received ${actualMessages.length} message(s): ${JSON.stringify(actualMessages.slice(-5))}. ` +
-        `Possible causes: receiver in different room (say is room-scoped), mute filter blocking delivery, or network delay.${leftHint}`,
+        `Possible causes: receiver in different room (say is room-scoped), mute filter blocking delivery, or network delay.${leftHint}${sessionHint}`,
       { cause: err }
     );
   }
@@ -432,26 +482,17 @@ export async function ensurePlayersInSameRoom(
   const linkdeadWaitMs = Math.min(25000, timeoutMs);
   await Promise.all(
     contexts.map(({ page, player }) =>
-      page
-        .waitForFunction(
-          () => {
-            const statusElements = Array.from(document.querySelectorAll('*'));
-            const hasConnectedStatus = statusElements.some(
-              el =>
-                el.textContent?.trim() === 'Connected' ||
-                (el.textContent?.includes('Connected') && !el.textContent?.includes('linkdead'))
-            );
-            return hasConnectedStatus;
-          },
-          { timeout: linkdeadWaitMs }
-        )
-        .catch(err => {
-          const msg =
-            `[instrumentation] ensurePlayersInSameRoom failed: Player ${player.username} - ` +
-            `Step 0: header still not Connected within ${linkdeadWaitMs}ms`;
-          console.error(msg, err);
-          throw new Error(msg);
-        })
+      ensurePlayableConnection(page, {
+        username: player.username,
+        password: player.password,
+        timeoutMs: linkdeadWaitMs,
+      }).catch(err => {
+        const msg =
+          `[instrumentation] ensurePlayersInSameRoom failed: Player ${player.username} - ` +
+          `Step 0: header still not Connected within ${linkdeadWaitMs}ms`;
+        console.error(msg, err);
+        throw new Error(msg);
+      })
     )
   );
 
@@ -461,62 +502,11 @@ export async function ensurePlayersInSameRoom(
     contexts.map(({ page, player }) =>
       page
         .waitForFunction(
-          (expected: number) => {
-            const bodyText = document.body?.innerText ?? '';
-            // Match "Occupants (2)" or "Occupants (2):" (panel title or RoomInfoPanel)
-            const occupantsMatch = bodyText.match(/Occupants\s*\((\d+)\)/);
-            // Match "Players (2)" (OccupantsPanel structured format - Players column header)
-            const playersMatch = bodyText.match(/Players\s*\((\d+)\)/);
-            const occupantCount = occupantsMatch
-              ? parseInt(occupantsMatch[1], 10)
-              : playersMatch
-                ? parseInt(playersMatch[1], 10)
-                : 0;
-            return occupantCount >= expected;
-          },
+          (expected: number) => window.__mythosE2eHasExpectedOccupantCount?.(expected) === true,
           expectedOccupants,
           { timeout: timeoutMs }
         )
-        .catch(async _err => {
-          // Instrumentation: log what each player actually sees when timeout occurs
-          const snapshot = await page
-            .evaluate(() => {
-              const bodyText = document.body?.innerText ?? '';
-              const occupantsMatch = bodyText.match(/Occupants\s*\((\d+)\)/);
-              const playersMatch = bodyText.match(/Players\s*\((\d+)\)/);
-              const occupantsSection = bodyText
-                .split('\n')
-                .find(line => line.includes('Occupants') || line.includes('Players ('))
-                ?.slice(0, 200);
-              return {
-                hasOccupantsMatch: !!occupantsMatch,
-                occupantsCount: occupantsMatch ? parseInt(occupantsMatch[1], 10) : null,
-                hasPlayersMatch: !!playersMatch,
-                playersCount: playersMatch ? parseInt(playersMatch[1], 10) : null,
-                occupantsSnippet: occupantsSection ?? 'not found',
-                hasLinkdead: bodyText.includes('(linkdead)'),
-              };
-            })
-            .catch(() => ({ error: 'page closed or evaluate failed' }));
-
-          const snapshotStr = JSON.stringify(snapshot, null, 2);
-          console.error(
-            `[instrumentation] ensurePlayersInSameRoom Step 1 timeout - Player ${player.username} saw:`,
-            snapshotStr
-          );
-          const shortSnap =
-            typeof snapshot === 'object' && snapshot !== null && 'error' in snapshot
-              ? ((snapshot as { error?: string }).error ?? 'page closed or evaluate failed')
-              : typeof snapshot === 'object' && snapshot !== null
-                ? `occupants=${(snapshot as { occupantsCount?: number }).occupantsCount ?? '?'} ` +
-                  `players=${(snapshot as { playersCount?: number }).playersCount ?? '?'} ` +
-                  `linkdead=${(snapshot as { hasLinkdead?: boolean }).hasLinkdead ?? '?'}`
-                : String(snapshot);
-          const msg =
-            `[instrumentation] ensurePlayersInSameRoom failed: Player ${player.username} - ` +
-            `Step 1: occupants - did not see ${expectedOccupants} within ${timeoutMs}ms (saw: ${shortSnap})`;
-          throw new Error(msg);
-        })
+        .catch(async () => throwOccupantsWaitTimeout(page, player, expectedOccupants, timeoutMs))
     )
   );
 
@@ -530,12 +520,9 @@ export async function ensurePlayersInSameRoom(
       if (expectedNames.length === 0) return Promise.resolve();
       return ctx.page
         .waitForFunction(
-          (names: string[]) => {
-            const bodyText = document.body?.innerText ?? '';
-            return names.every(name => bodyText.includes(name));
-          },
+          (expectedNames: string[]) => window.__mythosE2eHasOtherPlayerNames?.(expectedNames) === true,
           expectedNames,
-          { timeout: Math.min(10000, timeoutMs) }
+          { timeout: Math.min(20000, timeoutMs) }
         )
         .catch(() => {
           throw new Error(
@@ -548,4 +535,245 @@ export async function ensurePlayersInSameRoom(
 
   // Brief stability wait after all players see each other and are connected
   await new Promise(resolve => setTimeout(resolve, 1000));
+}
+
+export interface EnsureMultiplayerCoLocatedOptions {
+  /** Max wait for waitForAllPlayersInGame / ensurePlayerInGame (default 60000). */
+  timeoutMs?: number;
+  /** Max wait for ensurePlayersInSameRoom occupant sync (default 45000). */
+  coLocateTimeoutMs?: number;
+}
+
+const TELEPORT_SETTLE_BASE_MS = 6000;
+const MAX_COLOCATE_ATTEMPTS = 5;
+
+/**
+ * Reset E2E player rows in mythos_e2e (same script as global-teardown).
+ * In-memory server state is stale until players relog; pair with {@link resyncE2ePlayersAfterDatabaseReset}.
+ */
+export function resetE2ePlayerRoomsInDatabase(): void {
+  const seedEnv = { ...process.env, ...loadE2eEnv() };
+  const scriptPath = join(E2E_PROJECT_ROOT, 'scripts', 'e2e_reset_players.py');
+  const result = spawnSync('uv', ['run', 'python', scriptPath], {
+    cwd: E2E_PROJECT_ROOT,
+    shell: true,
+    stdio: 'pipe',
+    encoding: 'utf-8',
+    env: seedEnv,
+  });
+  if (result.status !== 0) {
+    console.warn('[instrumentation] e2e_reset_players.py failed', result.status, result.stderr?.slice(0, 500) ?? '');
+  }
+}
+
+/**
+ * After `look`, room copy is usually in Location / Room Description, not only Game Info `[data-message-text]`.
+ * Accept arena staging or any room that exposes exits (death void has none).
+ */
+export async function waitForLookReflectedInUi(page: Page, timeoutMs: number = 45000): Promise<void> {
+  await page.waitForFunction(
+    () => {
+      const body = document.body?.innerText ?? '';
+      if (
+        /Arena\s*>|heart of the gladiator|gladiator ring|sand and shadow|Main Foyer|Hallway|Eastern|Laundry|Exits:\s*(North|north|east|west|south)/i.test(
+          body
+        )
+      ) {
+        return true;
+      }
+      if (/Exits:\s*\w+/i.test(body)) return true;
+      return Array.from(document.querySelectorAll('[data-message-text]')).some(el => {
+        const v = (el.getAttribute('data-message-text') || '').trim();
+        return /Arena|gladiator|heart of the|Exits:|sand and shadow|Foyer|Hallway/i.test(v);
+      });
+    },
+    { timeout: timeoutMs }
+  );
+}
+
+async function resyncE2ePlayersAfterDatabaseReset(contexts: PlayerContext[], timeoutMs: number): Promise<void> {
+  for (const ctx of contexts) {
+    await ctx.page.bringToFront().catch(() => {});
+    await logoutPlayer(ctx.page, Math.min(timeoutMs, 60000)).catch(() => {});
+    await loginPlayer(ctx.page, ctx.player.username, ctx.player.password);
+    await ensurePlayerInGame(ctx, timeoutMs);
+
+    const motdVisible = await ctx.page
+      .getByTestId('motd-enter-realm')
+      .isVisible({ timeout: 2500 })
+      .catch(() => false);
+    if (motdVisible) {
+      const motdPage = new MotdPage(ctx.page);
+      await motdPage.enterRealm();
+      await motdPage.waitForGameReady(TEST_TIMEOUTS.GAME_LOAD);
+      await ensurePlayerInGame(ctx, timeoutMs);
+    }
+
+    await executeCommand(ctx.page, 'stand');
+    await executeCommandTrusted(ctx.page, 'look');
+    await waitForLookReflectedInUi(ctx.page, Math.min(timeoutMs, 35000)).catch(() => {});
+  }
+}
+
+async function ensureMultiplayerReadyForCoLocate(contexts: PlayerContext[], timeoutMs: number): Promise<void> {
+  await waitForAllPlayersInGame(contexts, timeoutMs);
+  await Promise.all(contexts.map(c => ensurePlayerInGame(c, timeoutMs)));
+
+  for (const ctx of contexts) {
+    const motdVisible = await ctx.page
+      .getByTestId('motd-enter-realm')
+      .isVisible({ timeout: 2500 })
+      .catch(() => false);
+    if (motdVisible) {
+      const motdPage = new MotdPage(ctx.page);
+      await motdPage.enterRealm();
+      await motdPage.waitForGameReady(TEST_TIMEOUTS.GAME_LOAD);
+      await ensurePlayerInGame(ctx, timeoutMs);
+    }
+  }
+
+  for (const ctx of contexts) {
+    const onLogin = await ctx.page
+      .getByTestId('username-input')
+      .isVisible({ timeout: 2000 })
+      .catch(() => false);
+    if (onLogin) {
+      await loginPlayer(ctx.page, ctx.player.username, ctx.player.password);
+      await ensurePlayerInGame(ctx, timeoutMs);
+    }
+  }
+}
+
+async function resolveOtherCharacterName(otherContext: PlayerContext): Promise<string> {
+  await otherContext.page.getByTestId('current-character-name').waitFor({ state: 'visible', timeout: 15000 });
+  return (
+    (await otherContext.page.getByTestId('current-character-name').textContent())?.trim() ||
+    otherContext.player.username
+  );
+}
+
+async function runCoLocateTeleportAttempt(
+  awContext: PlayerContext,
+  otherContext: PlayerContext,
+  contexts: PlayerContext[],
+  otherCharName: string,
+  attempt: number,
+  timeoutMs: number
+): Promise<void> {
+  if (attempt >= 1) {
+    resetE2ePlayerRoomsInDatabase();
+    await resyncE2ePlayersAfterDatabaseReset(contexts, timeoutMs);
+  }
+
+  await awContext.page.bringToFront().catch(() => {});
+  await ensurePlayableConnection(awContext.page, {
+    username: awContext.player.username,
+    password: awContext.player.password,
+    timeoutMs: 30000,
+  });
+  // Admin-only: move AW to the other character before bringing them together (Ithaqua cannot teleport).
+  await executeCommand(awContext.page, `goto ${otherCharName}`);
+  await new Promise(r => setTimeout(r, 2000));
+  await executeCommand(awContext.page, `teleport ${otherCharName}`);
+  await new Promise(r => setTimeout(r, TELEPORT_SETTLE_BASE_MS + attempt * 2000));
+
+  for (const ctx of contexts) {
+    await ctx.page.bringToFront().catch(() => {});
+    await ensurePlayableConnection(ctx.page, {
+      username: ctx.player.username,
+      password: ctx.player.password,
+      timeoutMs: 30000,
+    });
+    await executeCommandTrusted(ctx.page, 'look');
+    await new Promise(r => setTimeout(r, 2000));
+  }
+
+  // Wait until grace-period copy clears from Game Info (helper returns true when absent).
+  await Promise.all(
+    contexts.map(({ page, player }) =>
+      page
+        .waitForFunction(() => window.__mythosE2eIsDisconnectedBannerVisible?.() === true, { timeout: 15_000 })
+        .catch(() => {})
+        .then(() =>
+          ensurePlayableConnection(page, {
+            username: player.username,
+            password: player.password,
+            timeoutMs: 35_000,
+          })
+        )
+        .catch(() => {})
+    )
+  );
+
+  for (const ctx of contexts) {
+    await ctx.page.bringToFront().catch(() => {});
+    await executeCommandTrusted(ctx.page, 'look');
+    await new Promise(r => setTimeout(r, 500));
+  }
+}
+
+async function retryCoLocateUntilSameRoom(
+  awContext: PlayerContext,
+  otherContext: PlayerContext,
+  contexts: PlayerContext[],
+  otherCharName: string,
+  coLocateTimeoutMs: number,
+  timeoutMs: number
+): Promise<void> {
+  for (let attempt = 0; attempt < MAX_COLOCATE_ATTEMPTS; attempt++) {
+    await runCoLocateTeleportAttempt(awContext, otherContext, contexts, otherCharName, attempt, timeoutMs);
+
+    try {
+      await ensurePlayersInSameRoom(contexts, contexts.length, coLocateTimeoutMs);
+      return;
+    } catch (e) {
+      const lastCoLocateError = e instanceof Error ? e : new Error(String(e));
+      if (attempt === MAX_COLOCATE_ATTEMPTS - 1) {
+        throw lastCoLocateError;
+      }
+      console.error(
+        `[instrumentation] ensureMultiplayerCoLocated: co-locate attempt ${attempt + 1}/${MAX_COLOCATE_ATTEMPTS} failed; retrying teleport`,
+        lastCoLocateError.message
+      );
+    }
+  }
+}
+
+/**
+ * Restore two-player co-location for runtime E2E tests.
+ *
+ * Earlier tests or idle timeouts may leave one character out of the world ("X has left the game");
+ * `ensurePlayerInGame` alone does not fix that. This helper re-runs full readiness, brings any
+ * player stuck on MOTD back in, then admin-teleports player 0 toward player 1's character and
+ * waits until both browsers show the expected occupant count. After teleport, both players run
+ * `look` so Occupants / room_state can catch up (receiver-only refresh still left AW at 2 vs other at 1).
+ */
+export async function ensureMultiplayerCoLocated(
+  contexts: PlayerContext[],
+  options?: EnsureMultiplayerCoLocatedOptions
+): Promise<void> {
+  if (contexts.length < 2) {
+    return;
+  }
+  const timeoutMs = options?.timeoutMs ?? 60000;
+  const coLocateTimeoutMs = options?.coLocateTimeoutMs ?? 45000;
+
+  await ensureMultiplayerReadyForCoLocate(contexts, timeoutMs);
+
+  const [awContext, otherContext] = contexts;
+  const otherCharName = await resolveOtherCharacterName(otherContext);
+
+  await retryCoLocateUntilSameRoom(awContext, otherContext, contexts, otherCharName, coLocateTimeoutMs, timeoutMs);
+
+  await Promise.all(
+    contexts.map(c =>
+      ensurePlayableConnection(c.page, {
+        username: c.player.username,
+        password: c.player.password,
+        timeoutMs: coLocateTimeoutMs,
+      })
+    )
+  );
+
+  await new Promise(r => setTimeout(r, 1000));
 }

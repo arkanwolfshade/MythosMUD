@@ -22,7 +22,7 @@ export function getApiBaseUrl(): string {
   }
 
   // Development: use same origin so requests go through Vite proxy. This allows LAN clients
-  // (e.g. http://<host-ip>:5173) to reach the API via the proxy; absolute localhost:54731
+  // (e.g. http://<host-ip>:5173) to reach the API via the proxy; absolute localhost:54768
   // would point at the client machine and fail from another PC.
   return '';
 }
@@ -36,7 +36,7 @@ export const API_BASE_URL = getApiBaseUrl();
  * Get the versioned API base URL for v1 endpoints (base + /v1).
  * Use for all REST and WebSocket API calls so the client targets /v1/... paths.
  *
- * @returns Versioned API base string (e.g. '' -> '/v1', 'http://host:54731' -> 'http://host:54731/v1')
+ * @returns Versioned API base string (e.g. '' -> '/v1', 'http://host:54768' -> 'http://host:54768/v1')
  */
 export function getVersionedApiBaseUrl(): string {
   const base = getApiBaseUrl();

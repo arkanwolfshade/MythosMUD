@@ -94,4 +94,37 @@ describe('GameInfoPanel', () => {
     expect(screen.getByTestId('game-info-combat-indicator')).toBeInTheDocument();
     expect(screen.getByTestId('game-info-combat-label')).toHaveTextContent('In combat');
   });
+
+  it('should show local and say chat in Game Info for multiplayer E2E', () => {
+    const chatMessages: ChatMessage[] = [
+      {
+        text: 'ArkanWolfshade (local): Hello',
+        timestamp: new Date().toISOString(),
+        isHtml: false,
+        messageType: 'chat',
+        channel: 'local',
+        type: 'say',
+      },
+      {
+        text: 'ArkanWolfshade says: Hi',
+        timestamp: new Date().toISOString(),
+        isHtml: false,
+        messageType: 'chat',
+        channel: 'say',
+        type: 'say',
+      },
+      {
+        text: 'Global channel line',
+        timestamp: new Date().toISOString(),
+        isHtml: false,
+        messageType: 'chat',
+        channel: 'global',
+        type: 'say',
+      },
+    ];
+    render(<GameInfoPanel messages={chatMessages} />);
+    expect(screen.getByText('ArkanWolfshade (local): Hello')).toBeInTheDocument();
+    expect(screen.getByText('ArkanWolfshade says: Hi')).toBeInTheDocument();
+    expect(screen.queryByText('Global channel line')).not.toBeInTheDocument();
+  });
 });

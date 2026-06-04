@@ -22,7 +22,7 @@ for different machine types.
 1. **Check if ports are already in use**:
 
    ```powershell
-   netstat -an | findstr :54731
+   netstat -an | findstr :54768
    netstat -an | findstr :5173
    ```
 
@@ -69,7 +69,7 @@ for different machine types.
 1. **Verify server is running on correct port**:
 
    ```powershell
-   netstat -an | findstr :54731
+   netstat -an | findstr :54768
    ```
 
 2. **Check client accessibility**:
@@ -88,7 +88,7 @@ for different machine types.
 4. **Check network connectivity**:
 
    ```powershell
-   Test-NetConnection -ComputerName localhost -Port 54731
+   Test-NetConnection -ComputerName localhost -Port 54768
    Test-NetConnection -ComputerName localhost -Port 5173
    ```
 
@@ -320,7 +320,7 @@ for different machine types.
 ```powershell
 # Check if server is running
 
-netstat -an | findstr :54731
+netstat -an | findstr :54768
 
 # Check server logs
 
@@ -328,7 +328,7 @@ Get-Content logs/e2e_test/server.log -Tail 50
 
 # Check server health endpoint
 
-Invoke-WebRequest -Uri "http://localhost:54731/v1/monitoring/health" -UseBasicParsing
+Invoke-WebRequest -Uri "http://localhost:54768/v1/monitoring/health" -UseBasicParsing
 ```
 
 ### Check Database State
@@ -379,7 +379,7 @@ If all else fails:
 2. **Clear all ports**:
 
    ```powershell
-   netstat -an | findstr :54731
+   netstat -an | findstr :54768
    netstat -an | findstr :5173
    ```
 
@@ -400,7 +400,7 @@ If all else fails:
 
    # Check server health
 
-   Invoke-WebRequest -Uri "http://localhost:54731/v1/monitoring/health" -UseBasicParsing
+   Invoke-WebRequest -Uri "http://localhost:54768/v1/monitoring/health" -UseBasicParsing
    ```
 
 ## Prevention Strategies

@@ -104,6 +104,11 @@ try {
 
         if (-not (Test-Path $migrationFile)) {
             Write-Host "[ERROR] Migration file not found for '$targetDb': $migrationFile" -ForegroundColor Red
+            $dataGit = Join-Path $ProjectRoot "data\.git"
+            if (-not (Test-Path $dataGit)) {
+                Write-Host "[HINT] The data/ tree is a git submodule (mythosmud_data). From repo root run:" -ForegroundColor Yellow
+                Write-Host "       git submodule update --init --recursive" -ForegroundColor Gray
+            }
             exit 1
         }
 

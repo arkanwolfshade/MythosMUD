@@ -196,7 +196,7 @@ from datetime import datetime
 async def test_whisper_rate_limiting():
     """Automated test for whisper rate limiting."""
 
-    base_url = "http://localhost:54731"
+    base_url = "http://localhost:54768"
 
     # Login as sender
 

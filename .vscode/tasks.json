@@ -1,0 +1,29 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "jcodemunch: watch (index)",
+      "type": "shell",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "jcodemunch-mcp[watch] @ git+https://github.com/jgravelle/jcodemunch-mcp",
+        "jcodemunch-mcp",
+        "watch",
+        "${workspaceFolder}"
+      ],
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "silent",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": false
+      },
+      "runOptions": {
+        "runOn": "folderOpen"
+      }
+    }
+  ]
+}

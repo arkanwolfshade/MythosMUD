@@ -33,7 +33,7 @@ This command leverages the **Test Suite Analyzer** subagent for comprehensive te
 
 - [ ] Current branch: `git branch --show-current`
 - [ ] Working directory: `pwd` (must be project root, "F:\MythosMUD")
-- [ ] No running servers: `netstat -an | findstr :54731`
+- [ ] No running servers: `netstat -an | findstr :54768`
 - [ ] Test environment ready: Check `MYTHOSMUD_ENV=test`
 
 **IF ANY CHECK FAILS**: STOP and resolve before proceeding.

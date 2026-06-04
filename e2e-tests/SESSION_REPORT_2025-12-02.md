@@ -21,7 +21,7 @@ identified **one new bug** (whisper messages not received).
 
 **Database**: `mythos_dev` (PostgreSQL)
 
-**Server**: `http://localhost:54731`
+**Server**: `http://localhost:54768`
 
 **Client**: `http://localhost:5173`
 

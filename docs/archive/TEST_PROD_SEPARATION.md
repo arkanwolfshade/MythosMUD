@@ -73,7 +73,7 @@ def _ensure_logging_initialized():
 
 **Production**: `server/server_config.yaml`
 
-- Port: 54731
+- Port: 54768
 - Host: 0.0.0.0
 - Database: `../data/players/local_players.db`
 - Logging: Enabled (`disable_logging: false`)
@@ -92,7 +92,7 @@ def _ensure_logging_initialized():
 ```bash
 # Normal server startup (uses production config)
 
-python -m uvicorn server.main:app --host 0.0.0.0 --port 54731
+python -m uvicorn server.main:app --host 0.0.0.0 --port 54768
 ```
 
 ### Test Environment

@@ -1,4 +1,7 @@
 # MythosMUD — Claude pointer
 
 - **Cursor IDE:** Canonical project rules live in `.cursor/rules/` (use those when working in Cursor).
-- **Full consolidated reference:** See the repo root [CLAUDE.md](../CLAUDE.md) for a single-file view of project rules (e.g. for Claude Code or other tools that do not read Cursor config).
+- **Authoritative agent reference:** See the repo root [`AGENTS.md`](../AGENTS.md) for the consolidated instructions
+  document (Claude Code, Copilot, and other tools that do not read Cursor config).
+- **Router stub:** [`CLAUDE.md`](../CLAUDE.md) at the repository root only forwards readers to `AGENTS.md`; do not
+  duplicate bodies there.

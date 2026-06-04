@@ -13,6 +13,13 @@ interface GameInfoPanelProps {
   inCombat?: boolean;
 }
 
+/** Room-scoped channels mirrored in Game Info so E2E and players see cross-player delivery. */
+const GAME_INFO_CHAT_CHANNELS = new Set(['party', 'local', 'say']);
+
+function chatMessageVisibleInGameInfo(channel: string | undefined): boolean {
+  return channel != null && GAME_INFO_CHAT_CHANNELS.has(channel);
+}
+
 // Simplified game info panel without search history and time filters
 // Based on findings from "Event Logging in Non-Euclidean Systems" - Dr. Armitage, 1928
 export const GameInfoPanel: React.FC<GameInfoPanelProps> = ({
@@ -65,8 +72,8 @@ export const GameInfoPanel: React.FC<GameInfoPanelProps> = ({
 
   // Filter messages - simplified (no time filter, no search history)
   const filteredMessages = messages.filter(message => {
-    // Exclude chat messages from Game Info except party (party shows here so E2E and users see delivery)
-    if (message.messageType === 'chat' && message.channel !== 'party') {
+    // Exclude chat from Game Info except room-scoped channels (E2E asserts on [data-message-text] here).
+    if (message.messageType === 'chat' && !chatMessageVisibleInGameInfo(message.channel)) {
       return false;
     }
 

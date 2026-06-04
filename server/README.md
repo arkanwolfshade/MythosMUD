@@ -384,7 +384,7 @@ The server provides comprehensive memory leak monitoring endpoints for detecting
    uv run uvicorn main:app
    ```
 
-3. The server will be available at `http://localhost:54731`
+3. The server will be available at `http://localhost:54768`
 
 ## Testing
 

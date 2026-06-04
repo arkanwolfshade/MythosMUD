@@ -14,6 +14,14 @@ from server.config.models import (
     _parse_env_list,
 )
 
+_POSTGRESQL_DATABASE_URL = "postgresql+asyncpg://user:pass@localhost/db"
+
+# pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
+# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
+
+# pyright: reportPrivateUsage=false
+# Reason: unit tests patch and assert ScheduleService private state by design.
+
 
 def test_parse_env_list_none():
     """Test parsing None as env list."""
@@ -59,78 +67,47 @@ def test_default_cors_origins_with_env():
 
 def test_server_config_default_host():
     """Test ServerConfig default host."""
-    with patch.dict(os.environ, {"SERVER_PORT": "54731"}, clear=False):
-        config = ServerConfig()
-        assert config.host == "127.0.0.1"
+    config = ServerConfig(port=54768)
+    assert config.host == "127.0.0.1"
 
 
 def test_server_config_validate_port_valid():
     """Test ServerConfig port validation with valid port."""
-    with patch.dict(os.environ, {"SERVER_PORT": "54731"}, clear=False):
-        config = ServerConfig()
-        assert config.port == 54731
+    config = ServerConfig(port=54768)
+    assert config.port == 54768
 
 
 def test_server_config_validate_port_invalid_low():
     """Test ServerConfig port validation with port too low."""
-    with patch.dict(os.environ, {"SERVER_PORT": "1000"}, clear=False):
-        with pytest.raises(ValueError, match="Port must be between 1024 and 65535"):
-            ServerConfig()
+    with pytest.raises(ValueError, match="Port must be between 1024 and 65535"):
+        _ = ServerConfig(port=1000)
 
 
 def test_server_config_validate_port_invalid_high():
     """Test ServerConfig port validation with port too high."""
-    with patch.dict(os.environ, {"SERVER_PORT": "70000"}, clear=False):
-        with pytest.raises(ValueError, match="Port must be between 1024 and 65535"):
-            ServerConfig()
+    with pytest.raises(ValueError, match="Port must be between 1024 and 65535"):
+        _ = ServerConfig(port=70000)
 
 
 def test_database_config_validate_url_postgresql():
     """Test DatabaseConfig URL validation with PostgreSQL URL."""
-    with patch.dict(
-        os.environ,
-        {
-            "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost/db",
-            "DATABASE_NPC_URL": "postgresql+asyncpg://user:pass@localhost/db",
-        },
-        clear=False,
-    ):
-        config = DatabaseConfig()
-        assert config.url.startswith("postgresql")
+    config = DatabaseConfig(url=_POSTGRESQL_DATABASE_URL, npc_url=_POSTGRESQL_DATABASE_URL)
+    assert config.url.startswith("postgresql")
 
 
 def test_database_config_validate_url_empty():
     """Test DatabaseConfig URL validation with empty URL."""
-    with patch.dict(os.environ, {"DATABASE_URL": "", "DATABASE_NPC_URL": ""}, clear=False):
-        with pytest.raises(ValueError, match="Database URL cannot be empty"):
-            DatabaseConfig()
+    with pytest.raises(ValueError, match="Database URL cannot be empty"):
+        _ = DatabaseConfig(url="", npc_url="")
 
 
 def test_database_config_validate_pool_config_positive():
     """Test DatabaseConfig pool config validation with positive values."""
-    with patch.dict(
-        os.environ,
-        {
-            "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost/db",
-            "DATABASE_NPC_URL": "postgresql+asyncpg://user:pass@localhost/db",
-            "DATABASE_POOL_SIZE": "5",
-        },
-        clear=False,
-    ):
-        config = DatabaseConfig()
-        assert config.pool_size == 5
+    config = DatabaseConfig(url=_POSTGRESQL_DATABASE_URL, npc_url=_POSTGRESQL_DATABASE_URL, pool_size=5)
+    assert config.pool_size == 5
 
 
 def test_database_config_validate_pool_config_invalid():
     """Test DatabaseConfig pool config validation with invalid value."""
-    with patch.dict(
-        os.environ,
-        {
-            "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost/db",
-            "DATABASE_NPC_URL": "postgresql+asyncpg://user:pass@localhost/db",
-            "DATABASE_POOL_SIZE": "0",
-        },
-        clear=False,
-    ):
-        with pytest.raises(ValueError, match="Pool configuration values must be at least 1"):
-            DatabaseConfig()
+    with pytest.raises(ValueError, match="Pool configuration values must be at least 1"):
+        _ = DatabaseConfig(url=_POSTGRESQL_DATABASE_URL, npc_url=_POSTGRESQL_DATABASE_URL, pool_size=0)

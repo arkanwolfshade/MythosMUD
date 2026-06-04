@@ -9,10 +9,11 @@ to appropriate messages for both the player and room occupants.
 import asyncio
 import os
 import threading
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, TypedDict, cast
 
 import asyncpg
 
+from ..database_config_helpers import get_asyncpg_server_settings_for_database_url
 from ..exceptions import ValidationError
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import log_and_raise
@@ -23,34 +24,53 @@ if TYPE_CHECKING:  # pragma: no cover - type checking only
     from schemas.validator import SchemaValidator
 
 
-_EMOTE_VALIDATOR: Optional["SchemaValidator"] = None
-_EMOTE_VALIDATOR_IMPORT_FAILED = False
+_emote_validator: "SchemaValidator | None" = None  # pylint: disable=invalid-name  # Reason: Private module-level singleton, not a constant
+_emote_validator_import_failed = False  # pylint: disable=invalid-name  # Reason: Private module-level cache flag, not a constant
 
 
-def _get_emote_validator() -> Optional["SchemaValidator"]:
+def _get_emote_validator() -> "SchemaValidator | None":
     """Lazily instantiate and cache the emote schema validator."""
-    global _EMOTE_VALIDATOR, _EMOTE_VALIDATOR_IMPORT_FAILED  # pylint: disable=global-statement  # Reason: Singleton pattern for validator caching
+    global _emote_validator, _emote_validator_import_failed  # pylint: disable=global-statement  # Reason: Singleton pattern for validator caching
 
-    if _EMOTE_VALIDATOR is not None:
-        return _EMOTE_VALIDATOR
+    if _emote_validator is not None:
+        return _emote_validator
 
-    if _EMOTE_VALIDATOR_IMPORT_FAILED:
+    if _emote_validator_import_failed:
         return None
 
     try:
         from schemas.validator import create_validator
     except ImportError as exc:  # pragma: no cover - environment without schemas package
         logger.warning("Emote schema validator unavailable", error=str(exc))
-        _EMOTE_VALIDATOR_IMPORT_FAILED = True
+        _emote_validator_import_failed = True
         return None
 
     try:
-        _EMOTE_VALIDATOR = create_validator("emote")
+        _emote_validator = create_validator("emote")
     except Exception as exc:  # noqa: B904  # pragma: no cover - defensive logging path  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Validator creation errors unpredictable, must handle gracefully
         logger.warning("Emote schema validator creation failed", error=str(exc))
-        _EMOTE_VALIDATOR = None
+        _emote_validator = None
 
-    return _EMOTE_VALIDATOR
+    return _emote_validator
+
+
+class _EmoteRowData(TypedDict):
+    self_message: str
+    other_message: str
+
+
+class EmoteDefinition(TypedDict):
+    """Public emote payload returned by EmoteService lookups."""
+
+    self_message: str
+    other_message: str
+    aliases: list[str]
+
+
+class _EmoteLoadResult(TypedDict):
+    emotes: dict[str, _EmoteRowData]
+    aliases: dict[str, list[str]]
+    error: BaseException | None
 
 
 class EmoteService:
@@ -65,15 +85,15 @@ class EmoteService:
                             Emotes are now loaded from PostgreSQL database.
         """
         # Keep emote_file_path for backward compatibility but don't use it
-        self.emote_file_path = emote_file_path
-        self.emotes: dict[str, dict[str, Any]] = {}
+        self.emote_file_path: str | None = emote_file_path
+        self.emotes: dict[str, EmoteDefinition] = {}
         self.alias_to_emote: dict[str, str] = {}
 
         self._load_emotes()
 
     def _load_emotes(self) -> None:
         """Load emote definitions from PostgreSQL database."""
-        result_container: dict[str, Any] = {"emotes": {}, "aliases": {}, "error": None}
+        result_container: _EmoteLoadResult = {"emotes": {}, "aliases": {}, "error": None}
 
         def run_async() -> None:
             new_loop = asyncio.new_event_loop()
@@ -131,7 +151,7 @@ class EmoteService:
 
         logger.info("Loaded emotes from database", emote_count=len(self.emotes), alias_count=len(self.alias_to_emote))
 
-    async def _async_load_emotes(self, result_container: dict[str, Any]) -> None:
+    async def _async_load_emotes(self, result_container: _EmoteLoadResult) -> None:
         """Async helper to load emotes from PostgreSQL database."""
         try:
             # Get database URL from environment
@@ -143,8 +163,9 @@ class EmoteService:
             if database_url.startswith("postgresql+asyncpg://"):
                 database_url = database_url.replace("postgresql+asyncpg://", "postgresql://", 1)
 
-            # Use asyncpg directly to avoid event loop conflicts
-            conn = await asyncpg.connect(database_url)
+            server_settings = get_asyncpg_server_settings_for_database_url(database_url)
+            # Use asyncpg directly to avoid event loop conflicts; match engine search_path
+            conn = await asyncpg.connect(database_url, server_settings=server_settings)
             try:
                 # Query emotes
                 emotes_query = """
@@ -170,17 +191,17 @@ class EmoteService:
 
                 # Build emotes dictionary
                 for row in emote_rows:
-                    stable_id = row["stable_id"]
+                    stable_id = cast(str, row["stable_id"])
                     result_container["emotes"][stable_id] = {
-                        "self_message": row["self_message"],
-                        "other_message": row["other_message"],
+                        "self_message": cast(str, row["self_message"]),
+                        "other_message": cast(str, row["other_message"]),
                     }
                     result_container["aliases"][stable_id] = []
 
                 # Build aliases dictionary
                 for row in alias_rows:
-                    stable_id = row["stable_id"]
-                    alias = row["alias"]
+                    stable_id = cast(str, row["stable_id"])
+                    alias = cast(str, row["alias"])
                     if stable_id in result_container["aliases"]:
                         result_container["aliases"][stable_id].append(alias)
             finally:
@@ -201,7 +222,7 @@ class EmoteService:
         """
         return command.lower() in self.alias_to_emote
 
-    def get_emote_definition(self, command: str) -> dict[str, Any] | None:
+    def get_emote_definition(self, command: str) -> EmoteDefinition | None:
         """
         Get the emote definition for a command.
 
@@ -254,7 +275,7 @@ class EmoteService:
         Returns:
             Dict mapping emote names to their aliases
         """
-        result = {}
+        result: dict[str, list[str]] = {}
         for emote_name, emote_data in self.emotes.items():
             aliases = [emote_name] + emote_data.get("aliases", [])
             result[emote_name] = aliases
@@ -265,7 +286,7 @@ class EmoteService:
         logger.info("Reloading emote definitions")
         self._load_emotes()
 
-    def _validate_emote_payload(self, data: dict[str, Any]) -> list[str]:
+    def _validate_emote_payload(self, data: dict[str, object]) -> list[str]:
         """
         Validate emote definitions against the shared schema when available.
 

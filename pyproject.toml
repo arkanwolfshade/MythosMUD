@@ -51,7 +51,7 @@ dependencies = [
     # Security patches for transitive dependencies (Dependabot alerts #11-21)
     "urllib3>=2.7.0",  # Fixes alerts #15, #16, #18 - CVE-2025-66418, CVE-2025-66471
     "pyasn1>=0.6.2",  # Fixes alerts #11, #19 - CVE-2026-23490
-    "starlette>=0.50.0",  # Fixes alert #14 - CVE-2025-62727, CVE-2025-54121, CVE-2024-47874
+    "starlette>=1.0.1",  # #529/#112 Host-header validation; lock resolves 1.2.x
     "python-multipart>=0.0.27",  # Fixes alert #12 - CVE-2024-53981, CVE-2024-24762
     "fonttools>=4.60.2",  # Fixes alert #21 - CVE-2025-66034, CVE-2023-45139
     "pillow>=12.2.0",  # Image handling (transitive from playwright/matplotlib); pin for security/consistency
@@ -78,7 +78,7 @@ dev = [
     "bandit>=1.9.2",  # Python security linter
     "pylint>=4.0.4",  # Python code quality linter
     "pylint-per-file-ignores>=3.2.0",  # Per-file ignore support for pylint (matches ruff per-file-ignores)
-    "sqlfluff>=4.2.0,<5",  # SQL linting; stay on v3 until rules/migrations are vetted for v4
+    "sqlfluff>=4.2.0,<5",  # SQL linting; >=4.1.0 CVE-2026-46373, >=4.2.0 CVE-2026-46374
     "lizard>=1.19.0",  # Code complexity analyzer (used by Codacy)
     "vulture>=2.11",  # Dead code finder (unused functions, classes, variables)
     # sqlint>=0.2.1 - REMOVED: Conflicts with click>=8.1.8 (sqlint requires click==7.0)
@@ -379,6 +379,8 @@ check_untyped_defs = true
 pythonVersion = "3.12"
 venvPath = "."
 venv = ".venv"
+# Repo root on path so scripts/*.py can import the top-level `server` package (same as runtime sys.path).
+extraPaths = ["."]
 exclude = [
     "**/.venv",
     "**/node_modules",
@@ -401,11 +403,13 @@ dev = [
     "types-jsonschema>=4.25.1.20251009",
     "types-psycopg2>=2.9.21.20251012",
     "types-networkx>=3.6.1.20251220",
+    "asyncpg-stubs>=0.31.0,<0.32", # Type stubs for asyncpg (basedpyright reportMissingTypeStubs)
     "bandit>=1.9.2", # Python security linter
     "pylint>=4.0.4", # Python code quality linter
     "pylint-per-file-ignores>=3.2.0", # Per-file ignore support for pylint (matches ruff per-file-ignores)
-    "sqlfluff>=4.2.0", # SQL linting and formatting
+    "sqlfluff>=4.2.0,<5", # SQL linting and formatting; >=4.1.0 CVE-2026-46373, >=4.2.0 CVE-2026-46374
     "lizard>=1.19.0", # Code complexity analyzer (used by Codacy)
+    "vulture>=2.11", # Dead code finder (unused functions, classes, variables)
     "pytest-xdist>=3.8.0", # Parallel test execution (required for -n auto in pytest.ini)
     # sqlint>=0.2.1 - REMOVED: Conflicts with click>=8.1.8 (sqlint requires click==7.0)
     # Use sqlfluff instead, which provides comprehensive SQL linting

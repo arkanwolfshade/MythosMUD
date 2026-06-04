@@ -270,7 +270,7 @@ vi.mock('../RoomEditModal', () => ({
 }));
 
 vi.mock('../../utils/config', () => ({
-  getApiBaseUrl: () => 'http://localhost:54731',
+  getApiBaseUrl: () => 'http://localhost:54768',
 }));
 
 vi.mock('../utils/saveMapChanges', () => ({

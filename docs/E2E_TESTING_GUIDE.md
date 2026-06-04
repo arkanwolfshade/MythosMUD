@@ -397,7 +397,7 @@ Then wait 10 seconds for it to initialize before running tests.
 
 **Solution**:
 
-1. Verify server is running: `curl http://localhost:54731/v1/monitoring/health`
+1. Verify server is running: `curl http://localhost:54768/v1/monitoring/health`
 2. Check server logs in `logs/development/`
 3. Run test in headed mode to see what's happening: `npm run test:e2e:runtime:headed`
 

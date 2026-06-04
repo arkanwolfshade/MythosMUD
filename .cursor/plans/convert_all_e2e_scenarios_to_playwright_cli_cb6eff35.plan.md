@@ -601,7 +601,7 @@ All 33 scenarios converted to Playwright CLI tests
 Existing Playwright infrastructure (verify/create)
 
 - Test database setup working
-- Server running on port 54731
+- Server running on port 54768
 - Client accessible on port 5173
 - Proper test IDs on UI elements
 

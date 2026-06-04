@@ -121,10 +121,11 @@ export function useRoomMapData(options: UseRoomMapDataOptions): UseRoomMapDataRe
     }
   }, [plane, zone, subZone, includeExits, filterExplored, effectiveBaseUrl, authToken]);
 
-  // Fetch data when dependencies change
+  /* eslint-disable react-hooks/set-state-in-effect -- refetch when deps change */
   useEffect(() => {
     void fetchRooms();
   }, [fetchRooms]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   return {
     rooms,

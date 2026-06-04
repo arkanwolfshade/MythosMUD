@@ -18,7 +18,8 @@ The following Codacy CLI commands will **overwrite** this file and remove manual
 
 ### Dependency / filesystem CVE scanning (two tools on purpose)
 
-- **Grype**: primary scanner for local development and `Makefile` targets (`make grype`, `scripts/grype.py`).
+- **Grype**: primary scanner for local development (`make grype` from project root; `scripts/grype.py`;
+  `.grype.yaml` excludes E2E harness trees). Not part of `make all` / `codacy-tools`.
   Codacy does not document Grype as a CLI tool the way it does Trivy.
 - **Trivy**: kept in `.codacy/codacy.yaml` under `tools:` for **Codacy** (cloud analysis and
   `codacy_cli_analyze` with `tool: trivy`). See the comment block at the top of `codacy.yaml` for why both exist.

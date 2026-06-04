@@ -74,6 +74,8 @@ This makes it trivial to see which directory belongs to which branch and task.
   - Do **not** symlink or share `.cursor/` folders between worktrees.
   - Project-wide rules live in the repo and are shared via Git; local AI state
     is per-worktree.
+  - **MCP:** `.cursor/mcp.json` is committed; put **Codacy** and **Context7** secrets in **`.env.mcp.local`**
+    (gitignored), same as other worktrees.
 
 - **Server rules**:
   - The **ONE SERVER ONLY RULE** still applies:

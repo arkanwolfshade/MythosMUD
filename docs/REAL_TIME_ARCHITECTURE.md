@@ -324,7 +324,7 @@ function handleGameEvent(event: GameEvent) {
 
 3. **Test connections**:
 
-   - Visit `http://localhost:54731/docs` for API documentation
+   - Visit `http://localhost:54768/docs` for API documentation
    - Use browser dev tools to monitor WebSocket connections
    - Check server logs for connection events
 
@@ -332,7 +332,7 @@ function handleGameEvent(event: GameEvent) {
 
 ```typescript
 // Test WebSocket connection
-const ws = new WebSocket('ws://localhost:54731/api/ws?token=test-token');
+const ws = new WebSocket('ws://localhost:54768/api/ws?token=test-token');
 ws.onmessage = (event) => {
   console.log('WS message:', JSON.parse(event.data));
 };

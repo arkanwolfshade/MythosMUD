@@ -63,13 +63,13 @@ Even with optimizations, login still takes 3-4 minutes, which suggests:
 1. **Increase Test Timeout**: Run tests with `--timeout=600000` (10 minutes) to allow for slow login
 
    ```bash
-   npx playwright test tests/e2e/di-migration-validation.spec.ts --timeout=600000
+   npx playwright test tests/e2e/di-migration --timeout=600000
    ```
 
 2. **Run Tests in Smaller Batches**: Test one suite at a time to identify which tests are slowest
 
    ```bash
-   npx playwright test tests/e2e/di-migration-validation.spec.ts -g "Suite 1"
+   npx playwright test tests/e2e/di-migration -g "Suite 1"
    ```
 
 3. **Investigate Login Slowness**:

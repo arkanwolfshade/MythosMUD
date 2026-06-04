@@ -1,21 +1,26 @@
 # MythosMUD Makefile
 
-# Project root detection (handles worktree contexts)
-PROJECT_ROOT := $(if $(findstring MythosMUD-,$(CURDIR)),$(abspath $(CURDIR)/..),$(CURDIR))
+# Project root = directory containing this Makefile (main clone or linked worktree).
+# Do not use CURDIR + "MythosMUD-" substring: paths like .../MythosMUD-worktrees/<slug> match
+# that pattern and incorrectly set PROJECT_ROOT to the worktrees parent (breaking targets).
+_THIS_MAKEFILE := $(abspath $(lastword $(MAKEFILE_LIST)))
+PROJECT_ROOT := $(dir $(_THIS_MAKEFILE))
+PROJECT_ROOT := $(PROJECT_ROOT:%/=%)
 
 # Common command patterns
 # Use uv-run interpreter so Windows does not spawn bare `python` (pyenv-win shims / PATH gaps
 # trigger "Select an app to open 'python'").
 PYTHON := cd $(PROJECT_ROOT) && uv run python
 UV := cd $(PROJECT_ROOT) && uv run
-POWERSHELL := cd $(PROJECT_ROOT) && powershell -ExecutionPolicy Bypass -File
+# PowerShell 7+ (pwsh); avoids Windows PowerShell 5.1 for gallery/modules and matches project rules
+POWERSHELL := cd $(PROJECT_ROOT) && pwsh -NoProfile -ExecutionPolicy Bypass -File
 
 # When Make's SHELL is Git Bash or WSL bash, `npm` may resolve to a Windows path that bash
 # cannot execute (/bin/bash: C:/Program Files/nodejs/npm: No such file or directory). Run via
 # PowerShell on Windows so the Windows Node/npm install is used. Non-Windows keeps plain npm.
 ifeq ($(OS),Windows_NT)
 define run_npm_client
-	cd $(PROJECT_ROOT) && powershell -NoProfile -ExecutionPolicy Bypass -Command "Set-Location -LiteralPath (Join-Path '$(PROJECT_ROOT)' 'client'); npm run $(1); exit $$LASTEXITCODE"
+	cd $(PROJECT_ROOT) && pwsh -NoProfile -ExecutionPolicy Bypass -Command "Set-Location -LiteralPath (Join-Path '$(PROJECT_ROOT)' 'client'); npm run $(1); exit $$LASTEXITCODE"
 endef
 else
 define run_npm_client
@@ -38,7 +43,7 @@ PYTEST_COV_OPTS := --cov=server --cov-report=html --cov-report=term-missing --co
 .PHONY: stylelint markdownlint jackson-linter
 .PHONY: grype lizard quality-fragmentation-guard
 .PHONY: codacy-tools
-.PHONY: setup-test-env setup-test-env-force check-postgresql setup-postgresql-test-db verify-schema
+.PHONY: setup-test-env setup-test-env-force check-postgresql setup-postgresql-test-db bootstrap-e2e-database ensure-e2e-database verify-schema
 .PHONY: test test-coverage test-client test-client-e2e test-playwright test-client-coverage test-server test-server-coverage test-ci
 .PHONY: coverage all
 
@@ -69,7 +74,7 @@ help:
 	@echo "  stylelint      - CSS linter"
 	@echo "  markdownlint   - Markdown linter (use ARGS='--fix' to auto-fix)"
 	@echo "  jackson-linter - JSON linter"
-	@echo "  grype          - Dependency/filesystem vulnerability scanner (local SCA)"
+	@echo "  grype          - Dependency SCA from project root (excludes E2E harness trees; not in make all)"
 	@echo "  lizard         - Code complexity analyzer"
 	@echo "  quality-fragmentation-guard - Run local PR fragmentation/complexity guard"
 	@echo "  codacy-tools   - Run all Codacy tools"
@@ -78,7 +83,9 @@ help:
 	@echo "  setup-test-env         - Create test environment files"
 	@echo "  setup-test-env-force  - Overwrite .env.unit_test from template (PostgreSQL)"
 	@echo "  check-postgresql       - Verify PostgreSQL connectivity"
-	@echo "  setup-postgresql-test-db - Create PostgreSQL test database"
+	@echo "  setup-postgresql-test-db - Create PostgreSQL test database (mythos_unit via .env.unit_test)"
+	@echo "  bootstrap-e2e-database   - Force-recreate mythos_e2e (DDL + DML + E2E users)"
+	@echo "  ensure-e2e-database      - Bootstrap mythos_e2e if missing or professions empty"
 	@echo "  verify-schema          - Verify db/mythos_<env>_ddl.sql matches database"
 	@echo ""
 	@echo "Documentation:"
@@ -191,8 +198,9 @@ quality-fragmentation-guard:
 vulture:
 	$(UV) vulture
 
-# Run all Codacy tools (except those already in lint/format)
-codacy-tools: bandit pylint sqlfluff hadolint shellcheck psscriptanalyzer stylelint markdownlint jackson-linter grype lizard vulture
+# Run all Codacy tools (except those already in lint/format).
+# Grype is standalone: make grype (project-root SCA; not part of E2E or make all).
+codacy-tools: bandit pylint sqlfluff hadolint shellcheck psscriptanalyzer stylelint markdownlint jackson-linter lizard vulture
 
 # ============================================================================
 # DATABASE SETUP
@@ -214,6 +222,14 @@ check-postgresql:
 setup-postgresql-test-db:
 	@echo "Setting up PostgreSQL test database..."
 	$(POWERSHELL) scripts/setup_postgresql_test_db.ps1
+
+bootstrap-e2e-database:
+	@echo "Bootstrapping mythos_e2e (force recreate, DML, E2E users)..."
+	$(POWERSHELL) scripts/bootstrap_e2e_database.ps1
+
+ensure-e2e-database:
+	@echo "Ensuring mythos_e2e has reference seed (professions)..."
+	$(POWERSHELL) scripts/ensure_e2e_database.ps1
 
 verify-schema:
 	@echo "Verifying environment DDL matches database (from .env.local or .env)..."
@@ -241,15 +257,13 @@ test-client-e2e:
 
 # Integration tests (server pytest -m integration) run here: they muck with runtime data
 # and belong in the same flow as Playwright (running server context). They are NOT run by make test-server.
-test-playwright: setup-test-env setup-postgresql-test-db
+test-playwright: setup-test-env ensure-e2e-database
 	$(POWERSHELL) scripts/apply_procedures.ps1 -TargetDbs mythos_e2e
 	$(POWERSHELL) scripts/apply_coc_spells_migration.ps1 -TargetDbs mythos_e2e
 	$(POWERSHELL) scripts/apply_arena_migration.ps1 -TargetDbs mythos_e2e
 	$(POWERSHELL) scripts/apply_aggression_level_migration.ps1 -TargetDbs mythos_e2e
-	@echo "Running client E2E runtime tests (Playwright CLI)..."
-	$(call run_npm_client,test:e2e:runtime)
-	@echo "Running server integration tests (runtime DB, single worker)..."
-	$(UV) pytest server/tests/ -m integration -n 1 $(PYTEST_OPTS)
+	@echo "Running Playwright E2E then integration tests (fails fast on Playwright/bootstrap errors)..."
+	$(POWERSHELL) scripts/run_test_playwright.ps1 $(PYTEST_OPTS)
 
 test-client-coverage:
 	@echo "Running client unit tests with coverage..."

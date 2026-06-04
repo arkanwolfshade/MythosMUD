@@ -5,7 +5,13 @@
  */
 
 import { type Page } from '@playwright/test';
-import { executeCommand } from './auth';
+import {
+  executeCommand,
+  executeCommandTrusted,
+  getPageSessionCredentials,
+  loginPlayer,
+  waitForPlayableSession,
+} from './auth';
 
 /**
  * Ensure the player is standing before movement.
@@ -18,14 +24,45 @@ import { executeCommand } from './auth';
  * @param timeoutMs - Max wait for standing confirmation (default: 5000)
  */
 export async function ensureStanding(page: Page, timeoutMs: number = 5000): Promise<void> {
-  await executeCommand(page, 'stand');
-  // Wait for server confirmation: game message or any "standing" text (posture UI or message)
-  const gameMessage = page.getByText(/You rise to your feet|already standing/i).first();
-  const standingVisible = page.getByText(/standing/i).first();
-  await Promise.race([
-    gameMessage.waitFor({ state: 'attached', timeout: timeoutMs }),
-    standingVisible.waitFor({ state: 'visible', timeout: timeoutMs }),
-  ]);
+  const onLogin = await page
+    .getByTestId('username-input')
+    .isVisible({ timeout: 1000 })
+    .catch(() => false);
+  if (onLogin) {
+    const session = getPageSessionCredentials(page);
+    if (session) {
+      await loginPlayer(page, session.username, session.password);
+      await waitForPlayableSession(page, Math.max(timeoutMs, 15000));
+    } else {
+      throw new Error('Cannot ensure standing: on login screen with no saved session credentials');
+    }
+  }
+
+  const alreadyStanding = await page.evaluate(() => {
+    const bodyText = document.body?.innerText ?? '';
+    return (
+      /Posture:\s*standing\b/i.test(bodyText) ||
+      /Posture\s*\n\s*standing\b/i.test(bodyText) ||
+      /You are already standing/i.test(bodyText)
+    );
+  });
+  if (alreadyStanding) {
+    return;
+  }
+
+  await executeCommandTrusted(page, 'stand');
+  // Prefer page-wide text: command_response sometimes lands before [data-message-text] wiring; linkdead can
+  // delay Game Info rows. Character Info "Posture" / value updates independently (player_position_service copy).
+  await page.waitForFunction(
+    () => {
+      const t = document.body?.innerText ?? '';
+      if (/You rise to your feet|You are already standing/i.test(t)) return true;
+      if (/Posture:\s*standing\b/i.test(t)) return true;
+      if (/Posture\s*\n\s*standing\b/i.test(t)) return true;
+      return false;
+    },
+    { timeout: timeoutMs }
+  );
 }
 
 /**

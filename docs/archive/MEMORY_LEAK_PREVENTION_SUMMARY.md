@@ -225,19 +225,19 @@ class MemoryMonitor:
 #### **Check Memory Status**
 
 ```bash
-curl http://localhost:54731/monitoring/memory
+curl http://localhost:54768/monitoring/memory
 ```
 
 #### **Get Memory Alerts**
 
 ```bash
-curl http://localhost:54731/monitoring/memory-alerts
+curl http://localhost:54768/monitoring/memory-alerts
 ```
 
 #### **Force Cleanup (Admin)**
 
 ```bash
-curl -X POST http://localhost:54731/monitoring/memory/cleanup \
+curl -X POST http://localhost:54768/monitoring/memory/cleanup \
   -H "Authorization: Bearer <admin_token>"
 ```
 

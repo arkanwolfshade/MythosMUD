@@ -5,7 +5,8 @@ Seed canonical E2E auth users and player rows for a fresh mythos_e2e database.
 Creates if missing:
   - ArkanWolfshade / Cthulhu1 (user is_admin, character is_admin for /commands)
   - Ithaqua / Cthulhu1 (regular user and character)
-  - TestAdmin / Cthulhu1 (superuser; no default character — character-creation E2E only)
+
+Both seeded characters use DEFAULT_RESPAWN_ROOM (server.constants.spawn_defaults) for placement.
 
 Player rows use CALL upsert_player (db/procedures/players.sql) so player_inventories stays consistent.
 
@@ -21,6 +22,7 @@ import json
 import os
 import sys
 import uuid
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import cast
@@ -28,18 +30,26 @@ from typing import cast
 import asyncpg
 from anyio import run
 
+# pyright: reportUnnecessaryTypeIgnoreComment=false
+# Reason: reportMissingImports ignores below help editors whose workspace root is not this repo.  # noqa: I001
+
 # Project root is parent of scripts/
 _SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 _PROJECT_ROOT = os.path.dirname(_SCRIPT_DIR)
 if _PROJECT_ROOT not in sys.path:
     sys.path.insert(0, _PROJECT_ROOT)
 
-# First-party import must follow sys.path insert when running as scripts/*.py (no package context).
-from server.auth.argon2_utils import hash_password  # noqa: E402  # pylint: disable=wrong-import-position
+# First-party imports follow sys.path above. Per-line pyright: ignore[reportMissingImports] if workspace root
+# is not this repo (runtime still resolves). noqa: E402, I001 for import order after path setup.
+from server.auth.argon2_utils import hash_password as _hash_password_impl  # noqa: E402, I001  # pylint: disable=wrong-import-position  # pyright: ignore[reportMissingImports, reportUnknownVariableType]
+from server.constants.spawn_defaults import DEFAULT_RESPAWN_ROOM as _default_respawn_room  # noqa: E402, I001  # pylint: disable=wrong-import-position  # pyright: ignore[reportMissingImports, reportUnknownVariableType]
+
+# Strict Pyright may still infer Unknown for symbols imported here; cast to the real types.
+hash_password: Callable[[str], str] = cast(Callable[[str], str], _hash_password_impl)
+# Reason: import may be Unknown in some roots; cast pins str. Ignore if checker already knows str (redundant cast).
+DEFAULT_RESPAWN_ROOM: str = cast(str, _default_respawn_room)  # pyright: ignore[reportUnnecessaryCast]
 
 E2E_PASSWORD = "Cthulhu1"
-
-START_ROOM = "earth_arkhamcity_sanitarium_room_foyer_001"
 
 # Stats aligned with mythos_e2e players.stats default + fields used by gameplay/teardown.
 DEFAULT_STATS: dict[str, int | str] = {
@@ -93,14 +103,6 @@ E2E_USER_SPECS: tuple[E2eUserSpec, ...] = (
         seed_player=True,
         player_is_admin=0,
     ),
-    E2eUserSpec(
-        username="TestAdmin",
-        email="testadmin@test.local",
-        is_superuser=True,
-        is_admin=True,
-        seed_player=False,
-        player_is_admin=0,
-    ),
 )
 
 UPSERT_PLAYER_SQL = """
@@ -134,8 +136,8 @@ async def _ensure_player_for_user(
         character_name,
         "[]",
         "[]",
-        START_ROOM,
-        START_ROOM,
+        DEFAULT_RESPAWN_ROOM,
+        DEFAULT_RESPAWN_ROOM,
         0,
         1,
         player_is_admin,

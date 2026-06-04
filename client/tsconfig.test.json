@@ -2,10 +2,18 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "composite": true,
-    "types": ["vitest/globals", "node"],
+    "types": ["vitest/globals", "@testing-library/jest-dom/vitest", "node", "vite/client"],
     "noEmit": false,
     "allowImportingTsExtensions": false
   },
-  "include": ["src/**/*.test.{ts,tsx}", "src/**/*.spec.{ts,tsx}", "src/test/**/*"],
+  "include": [
+    "src/vite-env.d.ts",
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx",
+    "src/**/*.spec.ts",
+    "src/**/*.spec.tsx",
+    "src/**/*TestFixtures.ts",
+    "src/test/**/*"
+  ],
   "exclude": []
 }

@@ -112,7 +112,7 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({ isOpen, onClose, r
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
 
-  // Reset form when modal opens/closes or room changes
+  /* eslint-disable react-hooks/set-state-in-effect -- reset form when modal opens or room changes */
   useEffect(() => {
     if (isOpen && room) {
       setFormData(buildInitialFormData(room));
@@ -121,6 +121,7 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({ isOpen, onClose, r
       setActiveTab('basic');
     }
   }, [isOpen, room]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   // Handle ESC key
   useEffect(() => {

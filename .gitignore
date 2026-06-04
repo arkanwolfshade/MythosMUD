@@ -20,6 +20,9 @@ $RECYCLE.BIN/
 # =============================================================================
 tmp/
 
+# Codacy CLI/MCP temp artifacts (must not land in repo root)
+*codacy-makefile-test.json
+
 # =============================================================================
 # Python
 # =============================================================================
@@ -233,8 +236,7 @@ tsconfig.tsbuildinfo
 .cursorrules
 # Hook state (ephemeral; edited-files.json for test-agent trigger)
 .cursor/hooks/state/
-# MCP: may contain API tokens (e.g. CODACY_ACCOUNT_TOKEN). Copy from mcp.json.example.
-.cursor/mcp.json
+# MCP: Codacy / Context7 credentials live in `.env.mcp.local` (covered by `.env.*` below).
 
 # Spyder project settings
 .spyderproject

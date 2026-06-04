@@ -7,27 +7,27 @@ description: Write and run MythosMUD tests: server tests under server/tests/unit
 
 ## Where Tests Live
 
-| Area | Location | Notes |
-|------|----------|--------|
-| Server unit | `server/tests/unit/` | By module, e.g. `server/tests/unit/events/` |
-| Server integration | `server/tests/integration/` | Cross-component tests |
-| Client | `client/` | Per project structure (e.g. `__tests__` next to source) |
-| Fixtures/utilities | `server/tests/fixtures/` | Mixins, helpers only — not test classes |
+| Area               | Location                    | Notes                                                   |
+| ------------------ | --------------------------- | ------------------------------------------------------- |
+| Server unit        | `server/tests/unit/`        | By module, e.g. `server/tests/unit/events/`             |
+| Server integration | `server/tests/integration/` | Cross-component tests                                   |
+| Client             | `client/`                   | Per project structure (e.g. `__tests__` next to source) |
+| Fixtures/utilities | `server/tests/fixtures/`    | Mixins, helpers only — not test classes                 |
 
 ## How to Run Tests
 
 - **Always from project root.** Never run tests from `server/` or `client/` as the sole working directory.
 - **Never** use `python -m pytest` from `server/`; use the Makefile from project root.
 
-| Goal | Command |
-|------|--------|
-| Fast suite (unit + critical integration) | `make test` |
-| Full suite (all tests, including slow) | `make test-comprehensive` or `make test-ci` |
-| Server only | `make test-server` |
-| Server with coverage | `make test-server-coverage` |
-| Client only | `make test-client` |
-| Client with coverage | `make test-client-coverage` |
-| All with coverage | `make test-coverage` |
+| Goal                                     | Command                                     |
+| ---------------------------------------- | ------------------------------------------- |
+| Fast suite (unit + critical integration) | `make test`                                 |
+| Full suite (all tests, including slow)   | `make test-comprehensive` or `make test-ci` |
+| Server only                              | `make test-server`                          |
+| Server with coverage                     | `make test-server-coverage`                 |
+| Client only                              | `make test-client`                          |
+| Client with coverage                     | `make test-client-coverage`                 |
+| All with coverage                        | `make test-coverage`                        |
 
 ## Coverage
 
@@ -42,7 +42,7 @@ description: Write and run MythosMUD tests: server tests under server/tests/unit
 
 ## Reference
 
-- Full rules: [CLAUDE.md](../../CLAUDE.md) "TESTING REQUIREMENTS"
+- Full rules: [AGENTS.md](../../AGENTS.md) "Testing requirements"
 - Server remediation: [.cursor/commands/server-test-remediation.md](../../commands/server-test-remediation.md)
 - Client remediation: [.cursor/commands/client-test-remediation.md](../../commands/client-test-remediation.md)
 - Makefile: [Makefile](../../Makefile) (test, test-server, test-client, test-coverage, test-comprehensive)

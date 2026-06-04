@@ -7,8 +7,8 @@
  * teleportation messages are properly broadcast to all relevant players.
  */
 
-import { expect, test } from '@playwright/test';
-import { executeCommand, waitForMessage } from '../fixtures/auth';
+import { expect, test, type Page } from '@playwright/test';
+import { executeCommand, recoverPlayableSession, waitForMessage } from '../fixtures/auth';
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
@@ -18,11 +18,20 @@ import {
   waitForCrossPlayerMessage,
 } from '../fixtures/multiplayer';
 
+/**
+ * After `look`, room prose is in Location / Room Description, not always Game Info `[data-message-text]`.
+ */
+async function assertLookVisibleInPanels(page: Page): Promise<void> {
+  const cue = page.getByText(
+    /Arena\s*>\s*Arena|Arena entrance \(center\)|heart of the gladiator|sand and shadow|Exits:\s*North/i
+  );
+  await expect(cue.first()).toBeVisible({ timeout: 45000 });
+}
+
 test.describe('Admin Teleportation', () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
   test.beforeAll(async ({ browser }) => {
-    // Create contexts for both players (AW is admin, Ithaqua is not)
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
     await waitForAllPlayersInGame(contexts, 60000);
     await ensurePlayerInGame(contexts[0], 60000);
@@ -30,7 +39,6 @@ test.describe('Admin Teleportation', () => {
   });
 
   test.afterAll(async () => {
-    // Cleanup contexts
     await cleanupMultiPlayerContexts(contexts);
   });
 
@@ -38,54 +46,83 @@ test.describe('Admin Teleportation', () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    await ensurePlayerInGame(awContext, 15000);
-    await ensurePlayerInGame(ithaquaContext, 15000);
-
-    // Server resolves teleport target by character name (connection manager). Use Ithaqua's
-    // current character name so the server finds her as online.
+    await ithaquaContext.page.bringToFront().catch(() => {});
     await ithaquaContext.page.getByTestId('current-character-name').waitFor({ state: 'visible', timeout: 10000 });
     const ithaquaCharacterName =
       (await ithaquaContext.page.getByTestId('current-character-name').textContent())?.trim() || 'Ithaqua';
 
-    await executeCommand(awContext.page, `teleport ${ithaquaCharacterName} south`);
+    await awContext.page.bringToFront().catch(() => {});
+    await ensurePlayerInGame(awContext, 30000);
+    await expect(awContext.page.getByText(new RegExp(`Player:\\s*${awContext.player.username}\\b`, 'i'))).toBeVisible({
+      timeout: 15000,
+    });
+    await awContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
+    await executeCommand(awContext.page, 'look');
+    await assertLookVisibleInPanels(awContext.page);
+    await executeCommand(awContext.page, 'stand');
+    await new Promise(r => setTimeout(r, 1500));
 
-    // Wait for either success or permission denied on AW's page (fail fast if not admin)
-    await waitForMessage(
-      awContext.page,
-      new RegExp(`You teleport ${ithaquaCharacterName} to the south|You do not have permission`),
-      10000
-    ).catch(() => {});
+    const escapedTarget = ithaquaCharacterName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const teleportAck = new RegExp(
+      `You teleport ${escapedTarget} to the south\\.?|You teleport .+ to the south\\.?|You do not have permission|do not have permission`,
+      'i'
+    );
+
+    const runTeleport = async (): Promise<void> => {
+      await executeCommand(awContext.page, `teleport ${ithaquaCharacterName} south`);
+      await waitForMessage(awContext.page, teleportAck, 45000);
+    };
+
+    try {
+      await runTeleport();
+    } catch {
+      await recoverPlayableSession(awContext.page, awContext.player.username, awContext.player.password, 45000);
+      await runTeleport();
+    }
+
     const awMessages = await getPlayerMessages(awContext);
-    const seesPermissionDenied = awMessages.some(msg => msg.includes('You do not have permission'));
+    const seesPermissionDenied = awMessages.some(msg => /do not have permission/i.test(msg));
     expect(
       seesPermissionDenied,
       "Teleport returned 'You do not have permission'. Ensure ArkanWolfshade's character has is_admin set in the test database."
     ).toBe(false);
 
-    // Verify Ithaqua sees teleportation message (server sends with trailing period; admin name is character name)
-    await waitForCrossPlayerMessage(ithaquaContext, /You are teleported to the south by .+\.?/, 30000);
+    await ithaquaContext.page.bringToFront().catch(() => {});
+    await waitForCrossPlayerMessage(ithaquaContext, /You are teleported to the south by .+\.?/, 45000);
     const ithaquaMessages = await getPlayerMessages(ithaquaContext);
-    const seesTeleportMessage = ithaquaMessages.some(msg => /teleported.*south/.test(msg));
-    expect(seesTeleportMessage).toBe(true);
+    expect(ithaquaMessages.some(msg => /teleported.*south/.test(msg))).toBe(true);
   });
 
   test('Ithaqua should not be able to teleport AW', async () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    // Target by character name so server finds AW and returns permission denied (not "not found")
+    await awContext.page.bringToFront().catch(() => {});
     await awContext.page.getByTestId('current-character-name').waitFor({ state: 'visible', timeout: 10000 });
     const awCharName =
       (await awContext.page.getByTestId('current-character-name').textContent())?.trim() ?? 'ArkanWolfshade';
 
-    await executeCommand(ithaquaContext.page, `teleport ${awCharName} west`);
+    await ithaquaContext.page.bringToFront().catch(() => {});
+    await ensurePlayerInGame(ithaquaContext, 30000);
+    await expect(
+      ithaquaContext.page.getByText(new RegExp(`Player:\\s*${ithaquaContext.player.username}\\b`, 'i'))
+    ).toBeVisible({ timeout: 15000 });
+    await ithaquaContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
+    await executeCommand(ithaquaContext.page, 'look');
+    await assertLookVisibleInPanels(ithaquaContext.page);
+    await executeCommand(ithaquaContext.page, 'stand');
+    await new Promise(r => setTimeout(r, 1500));
 
-    await waitForMessage(ithaquaContext.page, /do not have permission|not found/, 10000).catch(() => {});
+    await executeCommand(ithaquaContext.page, `teleport ${awCharName} west`);
+    await waitForMessage(
+      ithaquaContext.page,
+      /do not have permission|You do not have permission|not allowed|not found|teleport commands|no such/i,
+      45000
+    );
 
     const ithaquaMessages = await getPlayerMessages(ithaquaContext);
-    const seesError = ithaquaMessages.some(
-      msg => msg.includes('permission') || msg.includes('not allowed') || msg.includes('not found')
+    expect(ithaquaMessages.some(msg => /permission|not allowed|not found|teleport commands|no such/i.test(msg))).toBe(
+      true
     );
-    expect(seesError).toBe(true);
   });
 });

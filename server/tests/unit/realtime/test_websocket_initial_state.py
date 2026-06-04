@@ -8,11 +8,16 @@ Tests the websocket_initial_state module functions.
 # Reason: Pytest fixtures are injected as function parameters, which pylint incorrectly flags as redefining names from outer scope, this is standard pytest usage and cannot be avoided
 
 import uuid
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+from fastapi import WebSocket
 from starlette.websockets import WebSocketState
 
+from server.models.player import Player
+from server.models.room import Room
+from server.realtime.connection_manager import ConnectionManager
 from server.realtime.websocket_initial_state import (
     add_npc_occupants_to_list,
     check_and_send_death_notification,
@@ -26,37 +31,44 @@ from server.realtime.websocket_initial_state import (
 )
 
 
+def _passthrough_room_data(room_data: object) -> object:
+    """Return room data unchanged for convert_room_players_uuids_to_names mocks."""
+    return room_data
+
+
 @pytest.fixture
-def mock_websocket():
+def mock_websocket() -> AsyncMock:
     """Create a mock WebSocket."""
-    websocket = AsyncMock()
-    websocket.send_json = AsyncMock()
-    return websocket
+    return AsyncMock(spec=WebSocket)
 
 
 @pytest.fixture
-def mock_connection_manager():
+def mock_connection_manager() -> AsyncMock:
     """Create a mock connection manager."""
-    manager = AsyncMock()
+    manager: AsyncMock = AsyncMock(spec=ConnectionManager)
     manager.get_room_occupants = AsyncMock(return_value=[])
-    manager.convert_room_players_uuids_to_names = AsyncMock(side_effect=lambda x: x)
+    manager.convert_room_players_uuids_to_names = AsyncMock(side_effect=_passthrough_room_data)
     return manager
 
 
 @pytest.fixture
-def mock_room():
+def mock_room() -> MagicMock:
     """Create a mock room."""
-    room = MagicMock()
-    room.to_dict.return_value = {"id": "room_123", "name": "Test Room"}
-    room.has_player.return_value = True
+    room: MagicMock = MagicMock(spec=Room)
+    room.name = "Test Room"
+    to_dict_mock: MagicMock = MagicMock(return_value={"id": "room_123", "name": "Test Room"})
+    room.to_dict = to_dict_mock
+    has_player_mock: MagicMock = MagicMock(return_value=True)
+    room.has_player = has_player_mock
     return room
 
 
 @pytest.mark.asyncio
-async def test_prepare_room_data_with_occupants(mock_connection_manager, mock_room):
+async def test_prepare_room_data_with_occupants(mock_connection_manager: AsyncMock, mock_room: MagicMock):
     """Test prepare_room_data_with_occupants() prepares room data and occupant names."""
     canonical_room_id = "room_123"
-    mock_connection_manager.get_room_occupants.return_value = [
+    get_room_occupants_mock: AsyncMock = cast(AsyncMock, mock_connection_manager.get_room_occupants)
+    get_room_occupants_mock.return_value = [
         {"player_name": "Player1"},
         {"name": "Player2"},
     ]
@@ -71,9 +83,9 @@ async def test_prepare_room_data_with_occupants(mock_connection_manager, mock_ro
 
 
 @pytest.mark.asyncio
-async def test_send_game_state_event_safely_success(mock_websocket):
+async def test_send_game_state_event_safely_success(mock_websocket: AsyncMock):
     """Test send_game_state_event_safely() successfully sends event."""
-    game_state_event = {"type": "game_state", "data": {}}
+    game_state_event: dict[str, object] = {"type": "game_state", "data": {}}
     player_id_str = "player_123"
 
     # Set application_state to CONNECTED
@@ -81,13 +93,14 @@ async def test_send_game_state_event_safely_success(mock_websocket):
 
     should_exit = await send_game_state_event_safely(mock_websocket, game_state_event, player_id_str)
     assert should_exit is False
-    mock_websocket.send_json.assert_called_once_with(game_state_event)
+    send_json_mock: AsyncMock = cast(AsyncMock, mock_websocket.send_json)
+    send_json_mock.assert_called_once_with(game_state_event)
 
 
 @pytest.mark.asyncio
-async def test_send_game_state_event_safely_disconnected(mock_websocket):
+async def test_send_game_state_event_safely_disconnected(mock_websocket: AsyncMock):
     """Test send_game_state_event_safely() returns True when WebSocket disconnected."""
-    game_state_event = {"type": "game_state", "data": {}}
+    game_state_event: dict[str, object] = {"type": "game_state", "data": {}}
     player_id_str = "player_123"
 
     # Set application_state to DISCONNECTED
@@ -95,33 +108,37 @@ async def test_send_game_state_event_safely_disconnected(mock_websocket):
 
     should_exit = await send_game_state_event_safely(mock_websocket, game_state_event, player_id_str)
     assert should_exit is True
-    mock_websocket.send_json.assert_not_called()
+    send_json_mock: AsyncMock = cast(AsyncMock, mock_websocket.send_json)
+    send_json_mock.assert_not_called()
 
 
 @pytest.mark.asyncio
-async def test_send_game_state_event_safely_close_message_sent(mock_websocket):
+async def test_send_game_state_event_safely_close_message_sent(mock_websocket: AsyncMock):
     """Test send_game_state_event_safely() returns True when close message sent."""
-    game_state_event = {"type": "game_state", "data": {}}
+    game_state_event: dict[str, object] = {"type": "game_state", "data": {}}
     player_id_str = "player_123"
 
     mock_websocket.application_state = WebSocketState.CONNECTED
-    mock_websocket.send_json.side_effect = RuntimeError("close message has been sent")
+    send_json_mock: AsyncMock = cast(AsyncMock, mock_websocket.send_json)
+    send_json_mock.side_effect = RuntimeError("close message has been sent")
 
     should_exit = await send_game_state_event_safely(mock_websocket, game_state_event, player_id_str)
     assert should_exit is True
 
 
 @pytest.mark.asyncio
-async def test_send_initial_game_state_success(mock_websocket, mock_connection_manager, mock_room):
+async def test_send_initial_game_state_success(
+    mock_websocket: AsyncMock, mock_connection_manager: AsyncMock, mock_room: MagicMock
+):
     """Test send_initial_game_state() successfully sends initial game state."""
     player_id = uuid.uuid4()
     player_id_str = str(player_id)
     room_id = "room_123"
 
-    mock_player = MagicMock()
+    mock_player = MagicMock(spec=Player)
     mock_player.current_room_id = room_id
     mock_player.name = "TestPlayer"
-    mock_player.get_stats.return_value = {"hp": 100}
+    mock_player.get_stats = MagicMock(return_value={"hp": 100})
 
     mock_connection_manager.get_player = AsyncMock(return_value=mock_player)
     mock_connection_manager.get_room_occupants = AsyncMock(return_value=[])
@@ -141,11 +158,12 @@ async def test_send_initial_game_state_success(mock_websocket, mock_connection_m
 
         assert canonical_room_id == room_id
         assert should_exit is False
-        mock_websocket.send_json.assert_called_once()
+        send_json_mock: AsyncMock = cast(AsyncMock, mock_websocket.send_json)
+        send_json_mock.assert_called_once()
 
 
 @pytest.mark.asyncio
-async def test_send_initial_game_state_player_not_found(mock_websocket, mock_connection_manager):
+async def test_send_initial_game_state_player_not_found(mock_websocket: AsyncMock, mock_connection_manager: AsyncMock):
     """Test send_initial_game_state() returns None when player not found."""
     player_id = uuid.uuid4()
     player_id_str = str(player_id)
@@ -162,7 +180,7 @@ async def test_send_initial_game_state_player_not_found(mock_websocket, mock_con
 
 
 @pytest.mark.asyncio
-async def test_send_initial_game_state_handles_exception(mock_websocket, mock_connection_manager):
+async def test_send_initial_game_state_handles_exception(mock_websocket: AsyncMock, mock_connection_manager: AsyncMock):
     """Test send_initial_game_state() handles exceptions."""
     player_id = uuid.uuid4()
     player_id_str = str(player_id)
@@ -177,15 +195,17 @@ async def test_send_initial_game_state_handles_exception(mock_websocket, mock_co
 
 
 @pytest.mark.asyncio
-async def test_check_and_send_death_notification_player_dead(mock_websocket, mock_connection_manager, mock_room):
+async def test_check_and_send_death_notification_player_dead(
+    mock_websocket: AsyncMock, mock_connection_manager: AsyncMock, mock_room: MagicMock
+):
     """Test check_and_send_death_notification() sends notification when player dead."""
     player_id = uuid.uuid4()
     player_id_str = str(player_id)
     canonical_room_id = "room_123"
 
-    mock_player = MagicMock()
+    mock_player = MagicMock(spec=Player)
     mock_player.name = "TestPlayer"
-    mock_player.get_stats.return_value = {"current_dp": -15}  # Dead
+    mock_player.get_stats = MagicMock(return_value={"current_dp": -15})  # Dead
 
     with patch("server.async_persistence.get_async_persistence") as mock_get_persistence:
         mock_persistence = AsyncMock()
@@ -196,21 +216,24 @@ async def test_check_and_send_death_notification_player_dead(mock_websocket, moc
             mock_websocket, player_id, player_id_str, canonical_room_id, mock_room, mock_connection_manager
         )
 
-        mock_websocket.send_json.assert_called_once()
-        call_args = mock_websocket.send_json.call_args[0][0]
+        send_json_mock: AsyncMock = cast(AsyncMock, mock_websocket.send_json)
+        send_json_mock.assert_called_once()
+        call_args: dict[str, object] = cast(dict[str, object], send_json_mock.call_args[0][0])
         assert call_args["event_type"] == "player_died"
 
 
 @pytest.mark.asyncio
-async def test_check_and_send_death_notification_player_alive(mock_websocket, mock_connection_manager, mock_room):
+async def test_check_and_send_death_notification_player_alive(
+    mock_websocket: AsyncMock, mock_connection_manager: AsyncMock, mock_room: MagicMock
+):
     """Test check_and_send_death_notification() does not send when player alive."""
     player_id = uuid.uuid4()
     player_id_str = str(player_id)
     canonical_room_id = "room_123"
 
-    mock_player = MagicMock()
+    mock_player = MagicMock(spec=Player)
     mock_player.name = "TestPlayer"
-    mock_player.get_stats.return_value = {"current_dp": 50}  # Alive
+    mock_player.get_stats = MagicMock(return_value={"current_dp": 50})  # Alive
 
     with patch("server.async_persistence.get_async_persistence") as mock_get_persistence:
         mock_persistence = AsyncMock()
@@ -221,11 +244,14 @@ async def test_check_and_send_death_notification_player_alive(mock_websocket, mo
             mock_websocket, player_id, player_id_str, canonical_room_id, mock_room, mock_connection_manager
         )
 
-        mock_websocket.send_json.assert_not_called()
+        send_json_mock: AsyncMock = cast(AsyncMock, mock_websocket.send_json)
+        send_json_mock.assert_not_called()
 
 
 @pytest.mark.asyncio
-async def test_check_and_send_death_notification_in_limbo(mock_websocket, mock_connection_manager, mock_room):
+async def test_check_and_send_death_notification_in_limbo(
+    mock_websocket: AsyncMock, mock_connection_manager: AsyncMock, mock_room: MagicMock
+):
     """Test check_and_send_death_notification() sends notification when in limbo."""
     from server.services.player_respawn_service import LIMBO_ROOM_ID
 
@@ -233,10 +259,10 @@ async def test_check_and_send_death_notification_in_limbo(mock_websocket, mock_c
     player_id_str = str(player_id)
     canonical_room_id = LIMBO_ROOM_ID
 
-    mock_player = MagicMock()
+    mock_player = MagicMock(spec=Player)
     mock_player.name = "TestPlayer"
     # Death notification is only sent when current_dp <= -10 (actually dead, not just in limbo)
-    mock_player.get_stats.return_value = {"current_dp": -10}
+    mock_player.get_stats = MagicMock(return_value={"current_dp": -10})
     mock_player.current_room_id = LIMBO_ROOM_ID
 
     with patch("server.async_persistence.get_async_persistence") as mock_get_persistence:
@@ -248,11 +274,12 @@ async def test_check_and_send_death_notification_in_limbo(mock_websocket, mock_c
             mock_websocket, player_id, player_id_str, canonical_room_id, mock_room, mock_connection_manager
         )
 
-        mock_websocket.send_json.assert_called_once()
+        send_json_mock: AsyncMock = cast(AsyncMock, mock_websocket.send_json)
+        send_json_mock.assert_called_once()
 
 
 @pytest.mark.asyncio
-async def test_add_npc_occupants_to_list_success(mock_connection_manager, mock_room):
+async def test_add_npc_occupants_to_list_success(mock_connection_manager: AsyncMock, mock_room: MagicMock):
     """Test add_npc_occupants_to_list() adds NPC names to list."""
     occupant_names: list[str] = []
     canonical_room_id = "room_123"
@@ -267,13 +294,17 @@ async def test_add_npc_occupants_to_list_success(mock_connection_manager, mock_r
     mock_npc2.is_alive = True
     mock_npc2.current_room_id = "room_123"
 
-    mock_room.get_npcs.return_value = ["npc_1", "npc_2"]
+    get_npcs_mock: MagicMock = MagicMock(return_value=["npc_1", "npc_2"])
+    mock_room.get_npcs = get_npcs_mock
 
     mock_app = MagicMock()
-    mock_app.state = MagicMock()
-    mock_app.state.container = MagicMock()
-    mock_app.state.container.npc_lifecycle_manager = MagicMock()
-    mock_app.state.container.npc_lifecycle_manager.active_npcs = {"npc_1": mock_npc1, "npc_2": mock_npc2}
+    mock_app_state: MagicMock = MagicMock()
+    mock_container: MagicMock = MagicMock()
+    mock_npc_lifecycle_manager: MagicMock = MagicMock()
+    mock_npc_lifecycle_manager.active_npcs = {"npc_1": mock_npc1, "npc_2": mock_npc2}
+    mock_container.npc_lifecycle_manager = mock_npc_lifecycle_manager
+    mock_app_state.container = mock_container
+    mock_app.state = mock_app_state
     mock_connection_manager.app = mock_app
 
     await add_npc_occupants_to_list(mock_room, occupant_names, canonical_room_id, mock_connection_manager)
@@ -283,7 +314,7 @@ async def test_add_npc_occupants_to_list_success(mock_connection_manager, mock_r
 
 
 @pytest.mark.asyncio
-async def test_add_npc_occupants_to_list_no_app(mock_connection_manager, mock_room):
+async def test_add_npc_occupants_to_list_no_app(mock_connection_manager: AsyncMock, mock_room: MagicMock):
     """Test add_npc_occupants_to_list() does nothing when no app."""
     occupant_names: list[str] = []
     canonical_room_id = "room_123"
@@ -298,7 +329,7 @@ async def test_add_npc_occupants_to_list_no_app(mock_connection_manager, mock_ro
 
 
 @pytest.mark.asyncio
-async def test_add_npc_occupants_to_list_filters_dead_npcs(mock_connection_manager, mock_room):
+async def test_add_npc_occupants_to_list_filters_dead_npcs(mock_connection_manager: AsyncMock, mock_room: MagicMock):
     """Test add_npc_occupants_to_list() includes all NPCs (code doesn't filter dead)."""
     occupant_names: list[str] = []
     canonical_room_id = "room_123"
@@ -313,16 +344,20 @@ async def test_add_npc_occupants_to_list_filters_dead_npcs(mock_connection_manag
     mock_npc_dead.is_alive = False
     mock_npc_dead.current_room_id = "room_123"
 
-    mock_room.get_npcs.return_value = ["npc_alive", "npc_dead"]
+    get_npcs_mock: MagicMock = MagicMock(return_value=["npc_alive", "npc_dead"])
+    mock_room.get_npcs = get_npcs_mock
 
     mock_app = MagicMock()
-    mock_app.state = MagicMock()
-    mock_app.state.container = MagicMock()
-    mock_app.state.container.npc_lifecycle_manager = MagicMock()
-    mock_app.state.container.npc_lifecycle_manager.active_npcs = {
+    mock_app_state: MagicMock = MagicMock()
+    mock_container: MagicMock = MagicMock()
+    mock_npc_lifecycle_manager: MagicMock = MagicMock()
+    mock_npc_lifecycle_manager.active_npcs = {
         "npc_alive": mock_npc_alive,
         "npc_dead": mock_npc_dead,
     }
+    mock_container.npc_lifecycle_manager = mock_npc_lifecycle_manager
+    mock_app_state.container = mock_container
+    mock_app.state = mock_app_state
     mock_connection_manager.app = mock_app
 
     await add_npc_occupants_to_list(mock_room, occupant_names, canonical_room_id, mock_connection_manager)
@@ -333,34 +368,43 @@ async def test_add_npc_occupants_to_list_filters_dead_npcs(mock_connection_manag
 
 
 @pytest.mark.asyncio
-async def test_prepare_initial_room_data(mock_connection_manager, mock_room):
+async def test_prepare_initial_room_data(mock_connection_manager: AsyncMock, mock_room: MagicMock):
     """Test prepare_initial_room_data() prepares room data."""
     result = await prepare_initial_room_data(mock_room, mock_connection_manager)
 
     assert isinstance(result, dict)
-    mock_connection_manager.convert_room_players_uuids_to_names.assert_called_once()
+    convert_uuids_mock: AsyncMock = cast(AsyncMock, mock_connection_manager.convert_room_players_uuids_to_names)
+    convert_uuids_mock.assert_called_once()
 
 
-def test_get_event_handler_for_initial_state_from_connection_manager(mock_connection_manager, mock_websocket):
+def test_get_event_handler_for_initial_state_from_connection_manager(
+    mock_connection_manager: AsyncMock, mock_websocket: AsyncMock
+):
     """Test get_event_handler_for_initial_state() gets handler from connection manager."""
     mock_event_handler = MagicMock()
     mock_app = MagicMock()
-    mock_app.state = MagicMock()
-    mock_app.state.container = MagicMock()
-    mock_app.state.container.real_time_event_handler = mock_event_handler
+    mock_app_state: MagicMock = MagicMock()
+    mock_container: MagicMock = MagicMock()
+    mock_container.real_time_event_handler = mock_event_handler
+    mock_app_state.container = mock_container
+    mock_app.state = mock_app_state
     mock_connection_manager.app = mock_app
 
     result = get_event_handler_for_initial_state(mock_connection_manager, mock_websocket)
     assert result is mock_event_handler
 
 
-def test_get_event_handler_for_initial_state_from_websocket(mock_connection_manager, mock_websocket):
+def test_get_event_handler_for_initial_state_from_websocket(
+    mock_connection_manager: AsyncMock, mock_websocket: AsyncMock
+):
     """Test get_event_handler_for_initial_state() gets handler from websocket."""
     mock_event_handler = MagicMock()
     mock_app = MagicMock()
-    mock_app.state = MagicMock()
-    mock_app.state.container = MagicMock()
-    mock_app.state.container.real_time_event_handler = mock_event_handler
+    mock_app_state: MagicMock = MagicMock()
+    mock_container: MagicMock = MagicMock()
+    mock_container.real_time_event_handler = mock_event_handler
+    mock_app_state.container = mock_container
+    mock_app.state = mock_app_state
     mock_connection_manager.app = None
     mock_websocket.app = mock_app
 
@@ -368,7 +412,7 @@ def test_get_event_handler_for_initial_state_from_websocket(mock_connection_mana
     assert result is mock_event_handler
 
 
-def test_get_event_handler_for_initial_state_not_found(mock_connection_manager, mock_websocket):
+def test_get_event_handler_for_initial_state_not_found(mock_connection_manager: AsyncMock, mock_websocket: AsyncMock):
     """Test get_event_handler_for_initial_state() returns None when not found."""
     mock_connection_manager.app = None
     mock_websocket.app = None
@@ -382,7 +426,8 @@ async def test_send_occupants_snapshot_if_needed_success():
     """Test send_occupants_snapshot_if_needed() sends snapshot when conditions met."""
     mock_event_handler = MagicMock()
     mock_player_handler = MagicMock()
-    mock_player_handler.send_occupants_snapshot_to_player = AsyncMock()
+    send_occupants_snapshot_mock: AsyncMock = AsyncMock()
+    mock_player_handler.send_occupants_snapshot_to_player = send_occupants_snapshot_mock
     mock_event_handler.player_handler = mock_player_handler
 
     player_id = uuid.uuid4()
@@ -390,11 +435,12 @@ async def test_send_occupants_snapshot_if_needed_success():
     canonical_room_id = "room_123"
 
     mock_room = MagicMock()
-    mock_room.has_player.return_value = True
+    has_player_mock: MagicMock = MagicMock(return_value=True)
+    mock_room.has_player = has_player_mock
 
     await send_occupants_snapshot_if_needed(mock_event_handler, mock_room, player_id, player_id_str, canonical_room_id)
 
-    mock_player_handler.send_occupants_snapshot_to_player.assert_called_once_with(player_id, canonical_room_id)
+    send_occupants_snapshot_mock.assert_called_once_with(player_id, canonical_room_id)
 
 
 @pytest.mark.asyncio
@@ -415,7 +461,8 @@ async def test_send_occupants_snapshot_if_needed_player_not_in_room():
     """Test send_occupants_snapshot_if_needed() calls send_occupants_snapshot_to_player when handler exists."""
     mock_event_handler = MagicMock()
     mock_player_handler = MagicMock()
-    mock_player_handler.send_occupants_snapshot_to_player = AsyncMock()
+    send_occupants_snapshot_mock: AsyncMock = AsyncMock()
+    mock_player_handler.send_occupants_snapshot_to_player = send_occupants_snapshot_mock
     mock_event_handler.player_handler = mock_player_handler
 
     player_id = uuid.uuid4()
@@ -423,24 +470,30 @@ async def test_send_occupants_snapshot_if_needed_player_not_in_room():
     canonical_room_id = "room_123"
 
     mock_room = MagicMock()
-    mock_room.has_player.return_value = False
+    has_player_mock: MagicMock = MagicMock(return_value=False)
+    mock_room.has_player = has_player_mock
 
     await send_occupants_snapshot_if_needed(mock_event_handler, mock_room, player_id, player_id_str, canonical_room_id)
 
     # Implementation always sends snapshot when handler exists (connecting player may not be in room._players yet)
-    mock_player_handler.send_occupants_snapshot_to_player.assert_called_once_with(player_id, canonical_room_id)
+    send_occupants_snapshot_mock.assert_called_once_with(player_id, canonical_room_id)
 
 
 @pytest.mark.asyncio
-async def test_send_initial_room_state_success(mock_websocket, mock_connection_manager):
+async def test_send_initial_room_state_success(
+    mock_websocket: AsyncMock,
+    mock_connection_manager: AsyncMock,
+) -> None:
     """Test send_initial_room_state() successfully sends initial room state."""
     player_id = uuid.uuid4()
     player_id_str = str(player_id)
     canonical_room_id = "room_123"
 
     mock_room = MagicMock()
-    mock_room.to_dict.return_value = {"id": canonical_room_id, "name": "Test Room"}
-    mock_room.get_npcs.return_value = []
+    to_dict_mock: MagicMock = MagicMock(return_value={"id": canonical_room_id, "name": "Test Room"})
+    mock_room.to_dict = to_dict_mock
+    get_npcs_mock: MagicMock = MagicMock(return_value=[])
+    mock_room.get_npcs = get_npcs_mock
 
     mock_connection_manager.get_room_occupants = AsyncMock(return_value=[])
 
@@ -450,7 +503,7 @@ async def test_send_initial_room_state_success(mock_websocket, mock_connection_m
         patch("server.realtime.websocket_initial_state.get_event_handler_for_initial_state") as mock_get_handler,
     ):
         mock_persistence = MagicMock()
-        mock_persistence.get_room_by_id.return_value = mock_room
+        mock_persistence.get_room_by_id = MagicMock(return_value=mock_room)
         mock_get_persistence.return_value = mock_persistence
         mock_add_npcs.return_value = None
         mock_get_handler.return_value = None
@@ -459,13 +512,17 @@ async def test_send_initial_room_state_success(mock_websocket, mock_connection_m
             mock_websocket, player_id, player_id_str, canonical_room_id, mock_connection_manager
         )
 
-        mock_websocket.send_json.assert_called_once()
-        call_args = mock_websocket.send_json.call_args[0][0]
+        send_json_mock: AsyncMock = cast(AsyncMock, mock_websocket.send_json)
+        send_json_mock.assert_called_once()
+        call_args: dict[str, object] = cast(dict[str, object], send_json_mock.call_args[0][0])
         assert call_args["event_type"] == "room_update"
 
 
 @pytest.mark.asyncio
-async def test_send_initial_room_state_room_not_found(mock_websocket, mock_connection_manager):
+async def test_send_initial_room_state_room_not_found(
+    mock_websocket: AsyncMock,
+    mock_connection_manager: AsyncMock,
+) -> None:
     """Test send_initial_room_state() does nothing when room not found."""
     player_id = uuid.uuid4()
     player_id_str = str(player_id)
@@ -473,18 +530,60 @@ async def test_send_initial_room_state_room_not_found(mock_websocket, mock_conne
 
     with patch("server.async_persistence.get_async_persistence") as mock_get_persistence:
         mock_persistence = MagicMock()
-        mock_persistence.get_room_by_id.return_value = None
+        mock_persistence.get_room_by_id = MagicMock(return_value=None)
         mock_get_persistence.return_value = mock_persistence
 
         await send_initial_room_state(
             mock_websocket, player_id, player_id_str, canonical_room_id, mock_connection_manager
         )
 
-        mock_websocket.send_json.assert_not_called()
+        send_json_mock: AsyncMock = cast(AsyncMock, mock_websocket.send_json)
+        send_json_mock.assert_not_called()
 
 
 @pytest.mark.asyncio
-async def test_send_initial_room_state_handles_exception(mock_websocket, mock_connection_manager):
+async def test_send_initial_room_state_skips_closed_websocket(
+    mock_websocket: AsyncMock,
+    mock_connection_manager: AsyncMock,
+) -> None:
+    """Test send_initial_room_state() skips send when WebSocket already closed."""
+    player_id = uuid.uuid4()
+    player_id_str = str(player_id)
+    canonical_room_id = "room_123"
+
+    mock_room = MagicMock()
+    to_dict_mock: MagicMock = MagicMock(return_value={"id": canonical_room_id, "name": "Test Room"})
+    mock_room.to_dict = to_dict_mock
+    get_npcs_mock: MagicMock = MagicMock(return_value=[])
+    mock_room.get_npcs = get_npcs_mock
+
+    mock_connection_manager.get_room_occupants = AsyncMock(return_value=[])
+    mock_websocket.application_state = WebSocketState.DISCONNECTED
+
+    with (
+        patch("server.async_persistence.get_async_persistence") as mock_get_persistence,
+        patch("server.realtime.websocket_initial_state.add_npc_occupants_to_list") as mock_add_npcs,
+        patch("server.realtime.websocket_initial_state.get_event_handler_for_initial_state") as mock_get_handler,
+    ):
+        mock_persistence = MagicMock()
+        mock_persistence.get_room_by_id = MagicMock(return_value=mock_room)
+        mock_get_persistence.return_value = mock_persistence
+        mock_add_npcs.return_value = None
+        mock_get_handler.return_value = None
+
+        await send_initial_room_state(
+            mock_websocket, player_id, player_id_str, canonical_room_id, mock_connection_manager
+        )
+
+    send_json_mock: AsyncMock = cast(AsyncMock, mock_websocket.send_json)
+    send_json_mock.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_send_initial_room_state_handles_exception(
+    mock_websocket: AsyncMock,
+    mock_connection_manager: AsyncMock,
+) -> None:
     """Test send_initial_room_state() handles exceptions."""
     player_id = uuid.uuid4()
     player_id_str = str(player_id)

@@ -43,11 +43,17 @@ export interface WebSocketConnectionResult {
 export function useWebSocketConnection(options: WebSocketConnectionOptions): WebSocketConnectionResult {
   const { authToken, characterId, sessionId, onConnected, onMessage, onError, onDisconnect } = options;
 
+  // Server stores the handshake JWT as connection metadata.token and requires the same value in
+  // each message as csrfToken (see server.realtime.message_validator / connection_establishment).
+  const authTokenRef = useRef(authToken);
+  useEffect(() => {
+    authTokenRef.current = authToken;
+  }, [authToken]);
+
   const resourceManager = useResourceCleanup();
   const websocketRef = useRef<WebSocket | null>(null);
   const lastWebSocketRef = useRef<WebSocket | null>(null);
   const pingIntervalRef = useRef<number | null>(null);
-  const reconnectTimerRef = useRef<number | null>(null);
   const manualDisconnectRef = useRef<boolean>(false);
   const reconnectAttemptsRef = useRef<number>(0);
   const hasEverConnectedRef = useRef<boolean>(false);
@@ -78,13 +84,6 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
       window.clearInterval(pingIntervalRef.current);
       resourceManager.removeInterval(pingIntervalRef.current);
       pingIntervalRef.current = null;
-    }
-
-    // Clear reconnect timer
-    if (reconnectTimerRef.current !== null) {
-      window.clearTimeout(reconnectTimerRef.current);
-      resourceManager.removeTimer(reconnectTimerRef.current);
-      reconnectTimerRef.current = null;
     }
 
     const socketToClose = websocketRef.current ?? lastWebSocketRef.current;
@@ -133,10 +132,13 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
           return;
         }
 
-        // Send the sanitized message without embedding sensitive tokens
+        // Outer csrfToken must match the JWT used on the WebSocket URL; validator copies it into
+        // the inner payload when the inner JSON omits csrfToken (message_validator._unwrap_*).
+        const tokenForCsrf = authTokenRef.current;
         const outbound = JSON.stringify({
           message: sanitizedMessage,
           timestamp: Date.now(),
+          ...(tokenForCsrf ? { csrfToken: tokenForCsrf } : {}),
         });
 
         websocketRef.current.send(outbound);
@@ -208,15 +210,20 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
         // Enhanced ping with NATS health check
         pingIntervalRef.current = window.setInterval(async () => {
           if (ws.readyState === WebSocket.OPEN) {
-            // Send ping to WebSocket
-            ws.send(JSON.stringify({ type: 'ping' }));
+            // Send ping to WebSocket (same csrf field as other realtime messages)
+            const tokenNow = authTokenRef.current;
+            const pingPayload: { type: string; csrfToken?: string } = { type: 'ping' };
+            if (tokenNow) {
+              pingPayload.csrfToken = tokenNow;
+            }
+            ws.send(JSON.stringify(pingPayload));
 
             // DEV-only: check NATS health via server
             if (import.meta.env.DEV) {
               try {
                 const healthResponse = await fetch(`${API_V1_BASE}/monitoring/health`, {
                   method: 'GET',
-                  headers: { Authorization: `Bearer ${authToken}` },
+                  headers: { Authorization: `Bearer ${authTokenRef.current}` },
                 });
                 if (!healthResponse.ok) {
                   logger.warn('WebSocketConnection', 'NATS health check failed');

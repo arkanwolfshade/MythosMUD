@@ -34,8 +34,8 @@ export function useComponentLifecycleTracking(options: UseComponentLifecycleTrac
 
     return () => {
       // Track unmount with cleanup verification
-      const hasCleanup = cleanupRef.current !== null;
-      collector.trackComponentUnmount(componentName, hasCleanup);
+      const hadCleanup = cleanupRef.current !== null;
+      collector.trackComponentUnmount(componentName, hadCleanup);
 
       // Call cleanup if registered
       if (cleanupRef.current) {
@@ -55,6 +55,7 @@ export function useComponentLifecycleTracking(options: UseComponentLifecycleTrac
   };
 
   return {
+    // eslint-disable-next-line react-hooks/refs -- dev-only cleanup registration flag
     hasCleanup: cleanupRef.current !== null,
     setCleanup,
   };

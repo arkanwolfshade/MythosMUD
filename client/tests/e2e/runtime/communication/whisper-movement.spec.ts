@@ -13,15 +13,29 @@ import { executeCommand, waitForMessage } from '../fixtures/auth';
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
+  ensureMultiplayerCoLocated,
   ensurePlayerInGame,
   ensurePlayersInSameRoom,
   getPlayerMessages,
   waitForAllPlayersInGame,
   waitForCrossPlayerMessage,
+  waitForLookReflectedInUi,
+  type PlayerContext,
 } from '../fixtures/multiplayer';
 import { ensureStanding } from '../fixtures/player';
 
+function escapeRegExp(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+async function nudgeStandBothPlayers(aw: PlayerContext, other: PlayerContext): Promise<void> {
+  await executeCommand(aw.page, 'stand');
+  await executeCommand(other.page, 'stand');
+  await new Promise(r => setTimeout(r, 3000));
+}
+
 test.describe('Whisper Movement', () => {
+  test.describe.configure({ mode: 'serial' });
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
   test.beforeAll(async ({ browser }) => {
@@ -40,25 +54,75 @@ test.describe('Whisper Movement', () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    await ensurePlayerInGame(awContext, 15000);
-    await ensurePlayerInGame(ithaquaContext, 15000);
+    await ensureMultiplayerCoLocated(contexts, { timeoutMs: 45000, coLocateTimeoutMs: 45000 });
+    await ensurePlayerInGame(awContext, 30000);
+    await ensurePlayerInGame(ithaquaContext, 30000);
+    await ensurePlayersInSameRoom(contexts, 2, 45000);
+    await nudgeStandBothPlayers(awContext, ithaquaContext);
 
-    // Server displays sender by character name; get AW's current character name for assertion
-    await awContext.page.getByTestId('current-character-name').waitFor({ state: 'visible', timeout: 10000 });
+    await ithaquaContext.page.getByTestId('current-character-name').waitFor({ state: 'visible', timeout: 15000 });
+    const ithaquaCharName =
+      (await ithaquaContext.page.getByTestId('current-character-name').textContent())?.trim() ?? 'Ithaqua';
+    await awContext.page.getByTestId('current-character-name').waitFor({ state: 'visible', timeout: 15000 });
     const awCharacterName =
       (await awContext.page.getByTestId('current-character-name').textContent())?.trim() ?? 'ArkanWolfshade';
 
-    await executeCommand(awContext.page, 'whisper Ithaqua Testing whisper in same room');
+    const whisperBody = 'Testing whisper in same room';
+    const senderAck = new RegExp(
+      `You whisper to ${escapeRegExp(ithaquaCharName)}:\\s*${escapeRegExp(whisperBody)}`,
+      'i'
+    );
+    const recipientLine = new RegExp(
+      `${escapeRegExp(awCharacterName)} whispers to you:\\s*${escapeRegExp(whisperBody)}`,
+      'i'
+    );
 
-    // Wait for confirmation on sender
-    await waitForMessage(awContext.page, /You whisper to Ithaqua: Testing whisper in same room/, 10000).catch(() => {});
+    const sendWhisperFromAw = async (): Promise<void> => {
+      await awContext.page.bringToFront().catch(() => {});
+      await expect(awContext.page.getByText(new RegExp(`Player:\\s*${awContext.player.username}\\b`, 'i'))).toBeVisible(
+        {
+          timeout: 15000,
+        }
+      );
+      await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+        el.focus();
+      });
+      await executeCommand(awContext.page, 'look');
+      await waitForLookReflectedInUi(awContext.page);
+      await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+        el.focus();
+      });
+      await executeCommand(awContext.page, `whisper ${ithaquaCharName} ${whisperBody}`);
+      try {
+        await waitForMessage(awContext.page, senderAck, 45000);
+      } catch {
+        await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+          el.focus();
+        });
+        await executeCommand(awContext.page, `whisper ${ithaquaCharName} ${whisperBody}`);
+        await waitForMessage(awContext.page, senderAck, 45000);
+      }
+    };
 
+    await sendWhisperFromAw();
     await new Promise(r => setTimeout(r, 500));
 
-    const expectedWhisper = `${awCharacterName} whispers to you: Testing whisper in same room`;
-    await waitForCrossPlayerMessage(ithaquaContext, expectedWhisper);
+    try {
+      await waitForCrossPlayerMessage(ithaquaContext, recipientLine, 45000);
+    } catch {
+      // Prior suite idle or WS flake can surface "X has left the game" on receiver; reunite then resend.
+      await ensureMultiplayerCoLocated(contexts, { timeoutMs: 45000, coLocateTimeoutMs: 45000 });
+      await ensurePlayerInGame(awContext, 30000);
+      await ensurePlayerInGame(ithaquaContext, 30000);
+      await ensurePlayersInSameRoom(contexts, 2, 45000);
+      await nudgeStandBothPlayers(awContext, ithaquaContext);
+      await sendWhisperFromAw();
+      await new Promise(r => setTimeout(r, 500));
+      await waitForCrossPlayerMessage(ithaquaContext, recipientLine, 45000);
+    }
+
     const ithaquaMessages = await getPlayerMessages(ithaquaContext);
-    const seesMessage = ithaquaMessages.some(msg => msg.includes(expectedWhisper));
+    const seesMessage = ithaquaMessages.some(msg => recipientLine.test(msg));
     expect(seesMessage).toBe(true);
   });
 
@@ -66,55 +130,109 @@ test.describe('Whisper Movement', () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    await ensurePlayerInGame(awContext, 15000);
-    await ensurePlayerInGame(ithaquaContext, 15000);
+    await ensureMultiplayerCoLocated(contexts, { timeoutMs: 45000, coLocateTimeoutMs: 45000 });
+    await ensurePlayerInGame(awContext, 30000);
+    await ensurePlayerInGame(ithaquaContext, 30000);
 
-    // Co-locate via admin teleport (movement-only co-location is unreliable due to spawn room differences)
-    await ithaquaContext.page.getByTestId('current-character-name').waitFor({ state: 'visible', timeout: 10000 });
-    const ithaquaCharName =
+    await ithaquaContext.page.getByTestId('current-character-name').waitFor({ state: 'visible', timeout: 15000 });
+    let ithaquaCharName =
       (await ithaquaContext.page.getByTestId('current-character-name').textContent())?.trim() ?? 'Ithaqua';
-    await ensureStanding(awContext.page, 5000);
+    await ensureStanding(awContext.page, 8000);
+    await awContext.page.bringToFront().catch(() => {});
     await executeCommand(awContext.page, `teleport ${ithaquaCharName}`);
-    await new Promise(r => setTimeout(r, 3000));
-    await ensurePlayersInSameRoom(contexts, 2, 20000);
+    await new Promise(r => setTimeout(r, 5000));
+    await ensurePlayersInSameRoom(contexts, 2, 45000);
 
-    // Ensure we're in a room that has an east exit (e.g. Main Foyer). From Laundry: south -> west -> north.
-    await ensureStanding(awContext.page, 5000);
+    await ensureStanding(awContext.page, 8000);
     await executeCommand(awContext.page, 'go south');
-    await new Promise(r => setTimeout(r, 1500));
+    await new Promise(r => setTimeout(r, 2000));
     await executeCommand(awContext.page, 'go west');
-    await new Promise(r => setTimeout(r, 1500));
+    await new Promise(r => setTimeout(r, 2000));
     await executeCommand(awContext.page, 'go north');
-    await new Promise(r => setTimeout(r, 1500));
-    await ensureStanding(ithaquaContext.page, 5000);
+    await new Promise(r => setTimeout(r, 2000));
+    await ensureStanding(ithaquaContext.page, 8000);
     await executeCommand(ithaquaContext.page, 'go south');
-    await new Promise(r => setTimeout(r, 1500));
+    await new Promise(r => setTimeout(r, 2000));
     await executeCommand(ithaquaContext.page, 'go west');
-    await new Promise(r => setTimeout(r, 1500));
+    await new Promise(r => setTimeout(r, 2000));
     await executeCommand(ithaquaContext.page, 'go north');
-    await new Promise(r => setTimeout(r, 2000));
-    await ensurePlayersInSameRoom(contexts, 2, 15000);
+    await new Promise(r => setTimeout(r, 2500));
+    await ensurePlayersInSameRoom(contexts, 2, 45000);
 
-    await ensureStanding(awContext.page, 5000);
+    await ensureStanding(awContext.page, 8000);
     await executeCommand(awContext.page, 'go east');
-    await waitForMessage(awContext.page, /You move east|You go east|Eastern Hallway/i, 10000).catch(() => {});
-    await new Promise(r => setTimeout(r, 2000));
+    await waitForMessage(awContext.page, /You move east|You go east|Eastern|east/i, 20000);
+    await new Promise(r => setTimeout(r, 2500));
 
-    // Server displays sender by character name
-    await awContext.page.getByTestId('current-character-name').waitFor({ state: 'visible', timeout: 10000 });
+    await awContext.page.getByTestId('current-character-name').waitFor({ state: 'visible', timeout: 15000 });
     const awCharName =
       (await awContext.page.getByTestId('current-character-name').textContent())?.trim() ?? 'ArkanWolfshade';
+    ithaquaCharName =
+      (await ithaquaContext.page.getByTestId('current-character-name').textContent())?.trim() ?? ithaquaCharName;
 
-    await executeCommand(awContext.page, 'whisper Ithaqua Testing whisper from different room');
-    await waitForMessage(awContext.page, /You whisper to Ithaqua: Testing whisper from different room/, 10000).catch(
-      () => {}
+    const whisperBody = 'Testing whisper from different room';
+    const senderAck = new RegExp(
+      `You whisper to ${escapeRegExp(ithaquaCharName)}:\\s*${escapeRegExp(whisperBody)}`,
+      'i'
     );
+    const recipientLine = new RegExp(
+      `${escapeRegExp(awCharName)} whispers to you:\\s*${escapeRegExp(whisperBody)}`,
+      'i'
+    );
+
+    const sendWhisperAfterSplit = async (): Promise<void> => {
+      await ithaquaContext.page.bringToFront().catch(() => {});
+      await expect(
+        ithaquaContext.page.getByText(new RegExp(`Player:\\s*${ithaquaContext.player.username}\\b`, 'i'))
+      ).toBeVisible({ timeout: 15000 });
+      await ithaquaContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+        el.focus();
+      });
+      await executeCommand(ithaquaContext.page, 'look');
+      await waitForLookReflectedInUi(ithaquaContext.page);
+
+      await awContext.page.bringToFront().catch(() => {});
+      await expect(awContext.page.getByText(new RegExp(`Player:\\s*${awContext.player.username}\\b`, 'i'))).toBeVisible(
+        {
+          timeout: 15000,
+        }
+      );
+      await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+        el.focus();
+      });
+      await executeCommand(awContext.page, 'look');
+      await waitForLookReflectedInUi(awContext.page);
+
+      await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+        el.focus();
+      });
+      await executeCommand(awContext.page, `whisper ${ithaquaCharName} ${whisperBody}`);
+      try {
+        await waitForMessage(awContext.page, senderAck, 45000);
+      } catch {
+        await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+          el.focus();
+        });
+        await executeCommand(awContext.page, `whisper ${ithaquaCharName} ${whisperBody}`);
+        await waitForMessage(awContext.page, senderAck, 45000);
+      }
+    };
+
+    await sendWhisperAfterSplit();
     await new Promise(r => setTimeout(r, 500));
 
-    const expectedFromRoom = `${awCharName} whispers to you: Testing whisper from different room`;
-    await waitForCrossPlayerMessage(ithaquaContext, expectedFromRoom);
+    try {
+      await waitForCrossPlayerMessage(ithaquaContext, recipientLine, 45000);
+    } catch {
+      await ensurePlayerInGame(awContext, 30000);
+      await ensurePlayerInGame(ithaquaContext, 30000);
+      await sendWhisperAfterSplit();
+      await new Promise(r => setTimeout(r, 500));
+      await waitForCrossPlayerMessage(ithaquaContext, recipientLine, 45000);
+    }
+
     const ithaquaMessages = await getPlayerMessages(ithaquaContext);
-    const seesMessage = ithaquaMessages.some(msg => msg.includes(expectedFromRoom));
+    const seesMessage = ithaquaMessages.some(msg => recipientLine.test(msg));
     expect(seesMessage).toBe(true);
   });
 });

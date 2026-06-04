@@ -4,7 +4,9 @@
       "name": "📁 Main (Integration)",
       "path": ".",
       "settings": {
-        "python.defaultInterpreterPath": "F:/projects/MythosMUD/.venv/Scripts/python.exe",
+        "python.defaultInterpreterPath": "${workspaceFolder}/.venv/Scripts/python.exe",
+        "cursorpyright.venvPath": ".",
+        "cursorpyright.venv": ".venv",
         "pylint.enabled": true,
         "pylint.importStrategy": "fromEnvironment",
         "pylint.args": ["--rcfile=${workspaceFolder}/.pylintrc"],
@@ -35,8 +37,8 @@
     },
     "python.terminal.activateEnvironment": true,
     "terminal.integrated.env.windows": {
-      "VIRTUAL_ENV": "F:/projects/MythosMUD/.venv",
-      "PATH": "F:/projects/MythosMUD/.venv/Scripts;${env:PATH}",
+      "VIRTUAL_ENV": "${workspaceFolder}/.venv",
+      "PATH": "${workspaceFolder}/.venv/Scripts;${env:PATH}",
     },
     "python.linting.enabled": true,
     "python.linting.ruffEnabled": true,

@@ -48,14 +48,14 @@ await mcp_playwright_browser_tab_close({index: 0});
 ```powershell
 # Check if server port is free
 
-netstat -an | findstr :54731
+netstat -an | findstr :54768
 
 # Check if client port is free
 
 netstat -an | findstr :5173
 ```
 
-**Expected Result**: No processes found on ports 54731 and 5173
+**Expected Result**: No processes found on ports 54768 and 5173
 
 ## Database State Cleanup
 
@@ -138,7 +138,7 @@ Get-Process | Where-Object {$_.ProcessName -like "*node*" -and $_.CommandLine -l
 
 # Verify ports are free
 
-netstat -an | findstr :54731
+netstat -an | findstr :54768
 netstat -an | findstr :5173
 ```
 
@@ -148,7 +148,7 @@ After completing cleanup procedures, verify:
 
 - [ ] All browser tabs closed
 - [ ] Server process terminated
-- [ ] Ports 54731 and 5173 are free
+- [ ] Ports 54768 and 5173 are free
 - [ ] No error messages in cleanup process
 - [ ] Database state is consistent (if reset was performed)
 - [ ] Log files archived (if cleanup was performed)
@@ -178,7 +178,7 @@ For scenarios that require manual intervention or when cleanup fails:
 If automatic cleanup fails:
 1. Manually close all browser windows
 2. Run `./scripts/stop_server.ps1`
-3. Verify ports are free with `netstat -an | findstr :54731`
+3. Verify ports are free with `netstat -an | findstr :54768`
 4. Check @TROUBLESHOOTING.md for additional recovery steps
 ```
 

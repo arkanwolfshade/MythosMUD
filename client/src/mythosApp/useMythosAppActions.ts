@@ -14,6 +14,8 @@ import type { useMythosAppState } from './useMythosAppState.ts';
 type AppState = ReturnType<typeof useMythosAppState>;
 
 export function useMythosAppActions(state: AppState) {
+  const { disconnectCallbackRef } = state;
+
   const returnToLogin = useCallback(() => {
     state.setIsAuthenticated(false);
     state.setCharacters([]);
@@ -206,9 +208,9 @@ export function useMythosAppActions(state: AppState) {
 
   const handleDisconnectCallback = useCallback(
     (disconnectFn: () => void) => {
-      state.disconnectCallbackRef.current = disconnectFn;
+      disconnectCallbackRef.current = disconnectFn;
     },
-    [state.disconnectCallbackRef]
+    [disconnectCallbackRef]
   );
 
   const handleLogout = useCallback(async () => {

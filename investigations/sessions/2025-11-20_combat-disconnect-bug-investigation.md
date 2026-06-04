@@ -373,7 +373,7 @@ This ensures that even if NPC death handling encounters errors, the player remai
 
 2. **Test Environment**:
 
-   - Server: Running on localhost:54731
+   - Server: Running on localhost:54768
    - Client: Browser connected via WebSocket and SSE
    - Connection Status: Fully connected throughout test
 

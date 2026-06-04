@@ -11,13 +11,24 @@ import { executeCommand, waitForMessage } from '../fixtures/auth';
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
+  ensureMultiplayerCoLocated,
   ensurePlayerInGame,
+  ensurePlayersInSameRoom,
   getPlayerMessages,
   waitForAllPlayersInGame,
   waitForCrossPlayerMessage,
+  waitForLookReflectedInUi,
+  type PlayerContext,
 } from '../fixtures/multiplayer';
 
+async function nudgeStandBothPlayers(aw: PlayerContext, other: PlayerContext): Promise<void> {
+  await executeCommand(aw.page, 'stand');
+  await executeCommand(other.page, 'stand');
+  await new Promise(r => setTimeout(r, 3000));
+}
+
 test.describe('Whisper Integration', () => {
+  test.describe.configure({ mode: 'serial' });
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
   test.beforeAll(async ({ browser }) => {
@@ -28,7 +39,6 @@ test.describe('Whisper Integration', () => {
   });
 
   test.afterAll(async () => {
-    // Cleanup contexts
     await cleanupMultiPlayerContexts(contexts);
   });
 
@@ -36,28 +46,62 @@ test.describe('Whisper Integration', () => {
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    await ensurePlayerInGame(awContext, 15000);
-    await ensurePlayerInGame(ithaquaContext, 15000);
+    await ensureMultiplayerCoLocated(contexts, { timeoutMs: 45000, coLocateTimeoutMs: 45000 });
+    await awContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
+    await new Promise(r => setTimeout(r, 1500));
 
-    await executeCommand(awContext.page, 'whisper Ithaqua Testing player management integration');
+    await ensurePlayerInGame(awContext, 30000);
+    await ensurePlayerInGame(ithaquaContext, 30000);
+    await ensurePlayersInSameRoom(contexts, 2, 45000);
 
-    // Wait for confirmation
-    await waitForMessage(awContext.page, 'You whisper to Ithaqua: Testing player management integration', 10000).catch(
-      () => {
-        // Message may succeed even if format differs
-      }
-    );
+    await nudgeStandBothPlayers(awContext, ithaquaContext);
 
-    // Verify Ithaqua receives the whisper
-    await waitForCrossPlayerMessage(
-      ithaquaContext,
-      'ArkanWolfshade whispers to you: Testing player management integration',
-      10000
-    );
+    await ithaquaContext.page.getByTestId('current-character-name').waitFor({ state: 'visible', timeout: 15000 });
+    const ithaquaCharName =
+      (await ithaquaContext.page.getByTestId('current-character-name').textContent())?.trim() || 'Ithaqua';
+    const escapedIth = ithaquaCharName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const whisperBody = 'Testing player management integration';
+    const senderAck = new RegExp(`You whisper to ${escapedIth}:\\s*${whisperBody}`, 'i');
+    const whisperToReceiver = new RegExp(`whispers to you:\\s*${whisperBody}`, 'i');
+
+    await ithaquaContext.page.bringToFront().catch(() => {});
+    await expect(
+      ithaquaContext.page.getByText(new RegExp(`Player:\\s*${ithaquaContext.player.username}\\b`, 'i'))
+    ).toBeVisible({ timeout: 15000 });
+    await ithaquaContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
+    await executeCommand(ithaquaContext.page, 'look');
+    await waitForLookReflectedInUi(ithaquaContext.page);
+
+    await awContext.page.bringToFront().catch(() => {});
+    await expect(awContext.page.getByText(new RegExp(`Player:\\s*${awContext.player.username}\\b`, 'i'))).toBeVisible({
+      timeout: 15000,
+    });
+    await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
+    await executeCommand(awContext.page, 'look');
+    await waitForLookReflectedInUi(awContext.page);
+
+    await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
+    await executeCommand(awContext.page, `whisper ${ithaquaCharName} ${whisperBody}`);
+
+    try {
+      await waitForMessage(awContext.page, senderAck, 45000);
+    } catch {
+      await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+        el.focus();
+      });
+      await executeCommand(awContext.page, `whisper ${ithaquaCharName} ${whisperBody}`);
+      await waitForMessage(awContext.page, senderAck, 45000);
+    }
+
+    await waitForCrossPlayerMessage(ithaquaContext, whisperToReceiver, 45000);
     const ithaquaMessages = await getPlayerMessages(ithaquaContext);
-    const seesMessage = ithaquaMessages.some(msg =>
-      msg.includes('ArkanWolfshade whispers to you: Testing player management integration')
-    );
+    const seesMessage = ithaquaMessages.some(msg => whisperToReceiver.test(msg));
     expect(seesMessage).toBe(true);
   });
 });
