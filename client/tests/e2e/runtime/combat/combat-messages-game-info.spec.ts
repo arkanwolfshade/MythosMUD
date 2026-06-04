@@ -124,7 +124,8 @@ async function waitForCombatRoundMessage(page: PlayerContext['page']): Promise<v
 const SPAWN_NPC_NAME = 'Dr. Francis Morgan';
 
 async function assertNpcSpawnVisible(page: PlayerContext['page'], npcName: string): Promise<void> {
-  const occupantCue = page.getByText(new RegExp(npcName.replace(/\./g, '\\.'), 'i'));
+  const escapedNpcName = npcName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const occupantCue = page.getByText(new RegExp(escapedNpcName, 'i'));
   const bodyHasNpc = page.evaluate(
     (name: string) => (document.body?.innerText ?? '').toLowerCase().includes(name.toLowerCase()),
     npcName
