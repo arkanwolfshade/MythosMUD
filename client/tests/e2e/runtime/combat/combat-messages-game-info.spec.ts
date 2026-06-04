@@ -130,7 +130,7 @@ async function assertNpcSpawnVisible(page: PlayerContext['page'], npcName: strin
     (name: string) => (document.body?.innerText ?? '').toLowerCase().includes(name.toLowerCase()),
     npcName
   );
-  const messageCue = page.locator('[data-message-text]').filter({ hasText: new RegExp(npcName, 'i') });
+  const messageCue = page.locator('[data-message-text]').filter({ hasText: new RegExp(escapedNpcName, 'i') });
   await expect
     .poll(
       async () =>
