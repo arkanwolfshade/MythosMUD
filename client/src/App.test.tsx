@@ -668,7 +668,13 @@ describe('App', () => {
       fireEvent.change(passwordInput, { target: { value: 'newpass' } });
       fireEvent.change(inviteInput, { target: { value: 'INVITE123' } });
 
-      // Press Enter
+      await waitFor(() => {
+        expect(usernameInput).toHaveValue('newuser');
+        expect(passwordInput).toHaveValue('newpass');
+        expect(inviteInput).toHaveValue('INVITE123');
+      });
+
+      // Press Enter after React state has committed (avoids CI flake under concurrent rendering)
       fireEvent.keyDown(inviteInput, { key: 'Enter', code: 'Enter' });
 
       await waitFor(() => {

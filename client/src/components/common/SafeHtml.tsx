@@ -4,9 +4,9 @@
  * analyzers such as CodeQL recognize the sanitizer before the React XSS sink.
  */
 
-import DOMPurify from 'dompurify';
 import React from 'react';
 
+import { sanitizeWithDomPurify } from '../../utils/domPurifyClient';
 import { INCOMING_HTML_DOMPURIFY_CONFIG } from '../../utils/security';
 
 interface SafeHtmlProps extends React.HTMLAttributes<HTMLElement> {
@@ -33,6 +33,6 @@ interface SafeHtmlProps extends React.HTMLAttributes<HTMLElement> {
  */
 export const SafeHtml: React.FC<SafeHtmlProps> = ({ html, className, tag: Tag = 'span', ...props }) => {
   const sanitizedHtml =
-    !html || typeof html !== 'string' ? '' : DOMPurify.sanitize(html, INCOMING_HTML_DOMPURIFY_CONFIG);
+    !html || typeof html !== 'string' ? '' : sanitizeWithDomPurify(html, INCOMING_HTML_DOMPURIFY_CONFIG);
   return <Tag className={className} dangerouslySetInnerHTML={{ __html: sanitizedHtml }} {...props} />;
 };
