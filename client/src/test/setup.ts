@@ -5,7 +5,7 @@
 import '@testing-library/jest-dom/vitest';
 import { mkdirSync } from 'fs';
 import { join } from 'path';
-import { afterAll, beforeAll, vi } from 'vitest';
+import { afterAll, beforeAll, beforeEach, vi } from 'vitest';
 
 import { installLocalStorageShim } from '../utils/localStorageShim';
 import { resetDomPurifyClientForTests } from '../utils/domPurifyClient';
@@ -15,6 +15,10 @@ vi.stubEnv('VITE_API_URL', '');
 
 installLocalStorageShim();
 resetDomPurifyClientForTests();
+
+beforeEach(() => {
+  resetDomPurifyClientForTests();
+});
 
 // Type definition for global in test environment
 declare global {

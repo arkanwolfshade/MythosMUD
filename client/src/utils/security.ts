@@ -341,7 +341,8 @@ export const INCOMING_HTML_DOMPURIFY_CONFIG: DOMPurifyConfig = {
   ALLOWED_ATTR: ['class'], // no style: XSS via javascript: in url(); map styling via .ascii-map in CSS
   ALLOW_DATA_ATTR: false,
   ALLOW_UNKNOWN_PROTOCOLS: false,
-  SAFE_FOR_TEMPLATES: true,
+  // Server/game HTML is not a JS template literal; template scrubbing strips legitimate chat text on dompurify 3.4.8+.
+  SAFE_FOR_TEMPLATES: false,
 };
 
 /**
