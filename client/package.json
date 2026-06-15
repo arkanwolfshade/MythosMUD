@@ -29,7 +29,7 @@
     "dompurify": "^3.4.1",
     "lucide-react": "^1.14.0",
     "react": "^19.2.7",
-    "react-dom": "^19.2.4",
+    "react-dom": "^19.2.7",
     "react-grid-layout": "^2.2.2",
     "react-rnd": "^10.5.3",
     "react-resizable": "^3.1.3",
