@@ -8,11 +8,13 @@ import { join } from 'path';
 import { afterAll, beforeAll, vi } from 'vitest';
 
 import { installLocalStorageShim } from '../utils/localStorageShim';
+import { resetDomPurifyClientForTests } from '../utils/domPurifyClient';
 
 // Host .env / CI can set VITE_API_URL to an absolute API origin; tests expect same-origin relative paths.
 vi.stubEnv('VITE_API_URL', '');
 
 installLocalStorageShim();
+resetDomPurifyClientForTests();
 
 // Type definition for global in test environment
 declare global {
