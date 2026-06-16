@@ -9,37 +9,25 @@ const mockMemory = {
   jsHeapSizeLimit: 200 * 1024 * 1024, // 200MB
 };
 
-// Mock performance object
-Object.defineProperty(global, 'performance', {
-  value: {
-    memory: mockMemory,
-  },
-  writable: true,
-});
-
-// Mock window.setInterval and clearInterval
 const mockSetInterval = vi.fn().mockReturnValue(123);
 const mockClearInterval = vi.fn();
 
-Object.defineProperty(global, 'setInterval', {
-  value: mockSetInterval,
-  writable: true,
-});
-
-Object.defineProperty(global, 'clearInterval', {
-  value: mockClearInterval,
-  writable: true,
-});
-
-// Mock window object
-Object.defineProperty(global, 'window', {
-  value: {
-    setInterval: mockSetInterval,
-    clearInterval: mockClearInterval,
-    gtag: vi.fn(),
-  },
-  writable: true,
-});
+function installMemoryMonitorTestMocks(): void {
+  Object.defineProperty(global, 'performance', {
+    value: {
+      memory: mockMemory,
+    },
+    writable: true,
+    configurable: true,
+  });
+  vi.spyOn(window, 'setInterval').mockImplementation(mockSetInterval as typeof window.setInterval);
+  vi.spyOn(window, 'clearInterval').mockImplementation(mockClearInterval as typeof window.clearInterval);
+  Object.defineProperty(window, 'gtag', {
+    value: vi.fn(),
+    writable: true,
+    configurable: true,
+  });
+}
 
 describe('MemoryMonitor', () => {
   let monitor: MemoryMonitor;
@@ -48,6 +36,7 @@ describe('MemoryMonitor', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    installMemoryMonitorTestMocks();
 
     // Mock console methods to prevent stderr noise during tests
     originalConsoleWarn = console.warn;
@@ -66,6 +55,8 @@ describe('MemoryMonitor', () => {
 
   afterEach(() => {
     monitor.stop();
+    vi.restoreAllMocks();
+    Reflect.deleteProperty(window, 'gtag');
 
     // Restore original console methods
     console.warn = originalConsoleWarn;
@@ -316,6 +307,7 @@ describe('useMemoryMonitor Hook', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    installMemoryMonitorTestMocks();
 
     // Mock console methods to prevent stderr noise during tests
     originalConsoleWarn = console.warn;
@@ -329,6 +321,8 @@ describe('useMemoryMonitor Hook', () => {
 
   afterEach(() => {
     monitor.stop();
+    vi.restoreAllMocks();
+    Reflect.deleteProperty(window, 'gtag');
 
     // Restore original console methods
     console.warn = originalConsoleWarn;

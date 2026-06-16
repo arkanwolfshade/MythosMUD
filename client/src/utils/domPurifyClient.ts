@@ -14,6 +14,9 @@ const INCOMING_HTML_PROBE_CONFIG: DOMPurifyConfig = {
 const PLAIN_CHAT_PROBE = '[local] Player1 says: Hello everyone!';
 const HTML_CHAT_PROBE = 'Message with <strong>HTML</strong> content';
 
+let cachedPurify: DOMPurifyInstance | undefined;
+let cachedWindow: (Window & typeof globalThis) | undefined;
+
 function verifiesDomPurifySanitize(purify: DOMPurifyInstance): boolean {
   try {
     const plain = purify.sanitize(PLAIN_CHAT_PROBE, INCOMING_HTML_PROBE_CONFIG);
@@ -24,31 +27,60 @@ function verifiesDomPurifySanitize(purify: DOMPurifyInstance): boolean {
   }
 }
 
-function isUsableDomWindow(windowLike: typeof globalThis.window): windowLike is Window & typeof globalThis {
-  if (!windowLike?.document?.createElement) {
-    return false;
-  }
-  return verifiesDomPurifySanitize(createDOMPurify(windowLike));
+function collectWindowCandidates(): Array<Window & typeof globalThis> {
+  const seen = new Set<Window & typeof globalThis>();
+  const candidates: Array<Window & typeof globalThis> = [];
+  const add = (windowLike: typeof globalThis.window | null | undefined): void => {
+    if (windowLike?.document?.createElement && !seen.has(windowLike)) {
+      seen.add(windowLike);
+      candidates.push(windowLike);
+    }
+  };
+
+  add(globalThis.window);
+  add(globalThis.document?.defaultView ?? undefined);
+  return candidates;
 }
 
 /**
- * Bind DOMPurify to the active window on each sanitize call.
- * Vitest happy-dom initializes window after ESM imports; eager singleton binding in security.ts
- * would otherwise capture a pre-DOM fallback parser (behavior changed in dompurify 3.4.8+).
- * Node 22 on Linux may expose an experimental window that passes createElement checks but still
- * strips chat text when cached; verify with real sanitize() probes and avoid caching instances.
+ * Pick a window that passes incoming HTML sanitize probes when possible.
+ * Some tests replace globalThis.window with a stub; happy-dom's real window may remain on document.defaultView.
+ * Node 22 on Linux may expose an experimental global window that fails probes while defaultView is usable.
  */
-export function getDomPurify(): DOMPurifyInstance {
-  const windowLike = globalThis.window;
-  if (!isUsableDomWindow(windowLike)) {
-    throw new Error('DOMPurify requires a DOM window with HTML parsing (happy-dom in Vitest)');
+function resolveSanitizeWindow(): Window & typeof globalThis {
+  const candidates = collectWindowCandidates();
+  for (const candidate of candidates) {
+    if (verifiesDomPurifySanitize(createDOMPurify(candidate))) {
+      return candidate;
+    }
   }
-  return createDOMPurify(windowLike);
+
+  const fallback = candidates[0];
+  if (fallback) {
+    return fallback;
+  }
+
+  throw new Error('DOMPurify requires a DOM window with HTML parsing (happy-dom in Vitest)');
 }
 
-/** No-op kept for Vitest setup hook compatibility (instances are not cached). */
+/**
+ * Bind DOMPurify to the active window on first use per window reference.
+ * Vitest happy-dom initializes window after ESM imports; eager singleton binding in security.ts
+ * would otherwise capture a pre-DOM fallback parser (behavior changed in dompurify 3.4.8+).
+ */
+export function getDomPurify(): DOMPurifyInstance {
+  const windowLike = resolveSanitizeWindow();
+  if (!cachedPurify || cachedWindow !== windowLike) {
+    cachedPurify = createDOMPurify(windowLike);
+    cachedWindow = windowLike;
+  }
+  return cachedPurify;
+}
+
+/** Clear cached instance when Vitest replaces or restores globalThis.window between tests. */
 export function resetDomPurifyClientForTests(): void {
-  // Intentionally empty: createDOMPurify(window) is invoked per sanitize call.
+  cachedPurify = undefined;
+  cachedWindow = undefined;
 }
 
 /** Wrapper kept explicit for CodeQL XSS sink modeling at call sites (e.g. SafeHtml). */

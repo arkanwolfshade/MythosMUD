@@ -59,6 +59,7 @@ describe('XState Inspector Utilities', () => {
 
   describe('getInspectorOptions', () => {
     it('should return inspector options in development mode', () => {
+      const windowDescriptor = Object.getOwnPropertyDescriptor(global, 'window');
       // Arrange
       Object.defineProperty(import.meta, 'env', {
         value: {
@@ -74,11 +75,19 @@ describe('XState Inspector Utilities', () => {
         configurable: true,
       });
 
-      // Act
-      const options = getInspectorOptions();
+      try {
+        // Act
+        const options = getInspectorOptions();
 
-      // Assert
-      expect(options).toEqual({ inspect: true });
+        // Assert
+        expect(options).toEqual({ inspect: true });
+      } finally {
+        if (windowDescriptor) {
+          Object.defineProperty(global, 'window', windowDescriptor);
+        } else {
+          Reflect.deleteProperty(global, 'window');
+        }
+      }
     });
 
     it('should return empty object when window is undefined or DEV is false', () => {
