@@ -13,6 +13,7 @@ on: [pull_request]
 permissions:
   contents: write
   id-token: write
+  pull-requests: write
 
 jobs:
   dependency-review:
@@ -40,8 +41,22 @@ jobs:
           # (default PR checkout is the merge commit; github.sha would not match pull_request.head.sha).
           ref: ${{ github.event.pull_request.head.sha }}
 
+      - name: Detect Python lockfile changes in PR
+        id: python_lock_changed
+        run: |
+          set -euo pipefail
+          if git diff --name-only \
+            "${{ github.event.pull_request.base.sha }}" \
+            "${{ github.event.pull_request.head.sha }}" \
+            -- uv.lock pyproject.toml | grep -q .; then
+            echo "changed=true" >> "${GITHUB_OUTPUT}"
+          else
+            echo "changed=false" >> "${GITHUB_OUTPUT}"
+          fi
+
       # Private data: shallow git fetch with URL-encoded user:token (same pattern as ci.yml).
       - name: Resolve data submodule (repository + commit)
+        if: steps.python_lock_changed.outputs.changed == 'true'
         id: data_submodule
         run: |
           set -euo pipefail
@@ -64,6 +79,7 @@ jobs:
           echo "sha=${sha}" >> "${GITHUB_OUTPUT}"
           echo "::notice::Will fetch ${suffix}@${sha}"
       - name: Clone private data into data/
+        if: steps.python_lock_changed.outputs.changed == 'true'
         env:
           SUBMODULE_PAT: ${{ secrets.MYTHOSMUD_PAT }}
           GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
@@ -95,22 +111,26 @@ jobs:
 
       # Vendored node_modules must not be scanned (stale fast-uri@3.1.0 was committed previously); use lockfiles.
       - name: Remove vendored static_data node_modules before snapshot
+        if: steps.python_lock_changed.outputs.changed == 'true'
         run: rm -rf scripts/static_data/node_modules
 
-      # Submit resolved deps for this commit so the dependency review API has snapshots (uv.lock is not
-      # fully covered by static graph parsing; UvLock detector is experimental). Same workflow + ordering:
-      # https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-dependency-review#best-practices-for-using-the-dependency-review-api-and-the-dependency-submission-api-together
+      # Component Detection expands uv.lock into a full snapshot. Running it on npm-only PRs makes
+      # Dependency Review treat the entire Python tree as newly added versus main's static graph.
       - name: Submit dependency snapshot (Component Detection)
-        if: github.event.pull_request.head.repo.full_name == github.repository
+        if: >-
+          github.event.pull_request.head.repo.full_name == github.repository &&
+          steps.python_lock_changed.outputs.changed == 'true'
         uses: advanced-security/component-detection-dependency-submission-action@9c110eb34dee187cd9eca76a652b9f6a0ed22927 # v0.1.1
         with:
           detectorArgs: UvLock=EnableIfDefaultOff,NpmLockfile3=EnableIfDefaultOff
 
       # Transitive dev deps (e.g. stacktracey via Spectral) may score <3 on OpenSSF; warn only below 2.
       - name: "Dependency Review"
+        id: dependency_review
         uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
         with:
+          show-patched-versions: true
+          comment-summary-in-pr: on-failure
           warn-on-openssf-scorecard-level: 2
-          # Cover indexing delay / parallel submission; timeout exceeds typical Component Detection runs.
           retry-on-snapshot-warnings: true
           retry-on-snapshot-warnings-timeout: 300

@@ -3,9 +3,10 @@
  * Provides secure token storage, session management, input sanitization, and CSRF protection
  */
 
-import DOMPurify, { type Config as DOMPurifyConfig } from 'dompurify';
+import { type Config as DOMPurifyConfig } from 'dompurify';
 
 import { API_V1_BASE } from './config';
+import { sanitizeWithDomPurify } from './domPurifyClient';
 
 interface Session {
   id: string;
@@ -340,7 +341,8 @@ export const INCOMING_HTML_DOMPURIFY_CONFIG: DOMPurifyConfig = {
   ALLOWED_ATTR: ['class'], // no style: XSS via javascript: in url(); map styling via .ascii-map in CSS
   ALLOW_DATA_ATTR: false,
   ALLOW_UNKNOWN_PROTOCOLS: false,
-  SAFE_FOR_TEMPLATES: true,
+  // Server/game HTML is not a JS template literal; template scrubbing strips legitimate chat text on dompurify 3.4.8+.
+  SAFE_FOR_TEMPLATES: false,
 };
 
 /**
@@ -370,7 +372,7 @@ export const inputSanitizer = {
 
     // Human reader: additional check to remove any remaining <script patterns.
     // AI reader: some edge cases like <script or <SCRIPT might slip through, so we double-check.
-    let sanitized = DOMPurify.sanitize(input, config);
+    let sanitized = sanitizeWithDomPurify(input, config);
     // Remove any remaining script tag patterns (case-insensitive, complete tag matches)
     // Match complete script tags including attributes, newlines, and nested content
     // Human reader: repeatedly remove all script tags to avoid incomplete multi-character sanitization issues.
@@ -406,12 +408,13 @@ export const inputSanitizer = {
       ALLOWED_ATTR: [], // No attributes allowed
       ALLOW_DATA_ATTR: false,
       ALLOW_UNKNOWN_PROTOCOLS: false,
-      SAFE_FOR_TEMPLATES: true,
+      // Plain MUD commands are not HTML template literals; avoid template-scrub side effects.
+      SAFE_FOR_TEMPLATES: false,
       KEEP_CONTENT: true, // Keep text content, just strip tags
     } as DOMPurifyConfig;
 
     // First, remove HTML tags using DOMPurify
-    let sanitized = DOMPurify.sanitize(command, config);
+    let sanitized = sanitizeWithDomPurify(command, config);
 
     // Then, remove dangerous protocol schemes from plain text
     // Human reader: DOMPurify only removes protocols from HTML attributes, not plain text.
@@ -453,7 +456,7 @@ export const inputSanitizer = {
       SAFE_FOR_TEMPLATES: true,
     } as DOMPurifyConfig;
 
-    return DOMPurify.sanitize(message, config).substring(0, 500); // Limit message length
+    return sanitizeWithDomPurify(message, config).substring(0, 500); // Limit message length
   },
 
   /**
@@ -475,7 +478,7 @@ export const inputSanitizer = {
       return '';
     }
 
-    return DOMPurify.sanitize(html, INCOMING_HTML_DOMPURIFY_CONFIG);
+    return sanitizeWithDomPurify(html, INCOMING_HTML_DOMPURIFY_CONFIG);
   },
 };
 

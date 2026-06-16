@@ -114,11 +114,6 @@
     "ast_hash": "c57220c5183730d3fb22467ff94a3293",
     "semantic_hash": ""
   },
-  "client/scripts/run-e2e-runtime-playwright.js": {
-    "mtime": 1780944390.538179,
-    "ast_hash": "11ea2563a5e02aa37fe847dd4d05b34d",
-    "semantic_hash": ""
-  },
   "client/scripts/run-playwright-tests.js": {
     "mtime": 1780609217.8962917,
     "ast_hash": "daef18787e739da4c539b1caec55dc81",
@@ -132,11 +127,6 @@
   "client/src/App.integration.test.tsx": {
     "mtime": 1775192600.3761978,
     "ast_hash": "0a203ca2fc4c7fddc0910aea620f77df",
-    "semantic_hash": ""
-  },
-  "client/src/App.test.tsx": {
-    "mtime": 1775192600.3761978,
-    "ast_hash": "93175460a52efd72680a5d5c9693c1ba",
     "semantic_hash": ""
   },
   "client/src/App.tsx": {
@@ -2729,16 +2719,6 @@
     "ast_hash": "084143a1cc0f08432256e01c824c7c45",
     "semantic_hash": ""
   },
-  "client/src/utils/accountSanctionDenial.test.ts": {
-    "mtime": 1781124068.2520068,
-    "ast_hash": "d5bb6d22b37dccff75b5c44fa855f92b",
-    "semantic_hash": ""
-  },
-  "client/src/utils/accountSanctionDenial.ts": {
-    "mtime": 1781124068.2419822,
-    "ast_hash": "ca2809f3f93cc5ee5a3f6a87fa0cb735",
-    "semantic_hash": ""
-  },
   "client/src/utils/ansiToHtml.test.ts": {
     "mtime": 1775192600.4703593,
     "ast_hash": "bfbe2697bdeaf38974c7ba940b319819",
@@ -2959,11 +2939,6 @@
     "ast_hash": "a21b0f8636d1cc0ba698a0f1e5ea0549",
     "semantic_hash": ""
   },
-  "client/tests/e2e/runtime/admin/admin-kick-ban-command.spec.ts": {
-    "mtime": 1781124068.4199545,
-    "ast_hash": "820c226e0d0407d409cb6898c81d67d9",
-    "semantic_hash": ""
-  },
   "client/tests/e2e/runtime/admin/admin-set-stat-command.spec.ts": {
     "mtime": 1780609217.9282207,
     "ast_hash": "8577e63fc491c69fb0870d7f12e5220a",
@@ -3124,11 +3099,6 @@
     "ast_hash": "57138b5d016374fb0625695888535754",
     "semantic_hash": ""
   },
-  "client/tests/e2e/runtime/fixtures/account-sanctions.ts": {
-    "mtime": 1781124068.4963765,
-    "ast_hash": "3c01b9358a7d97d8d65a8a77df185976",
-    "semantic_hash": ""
-  },
   "client/tests/e2e/runtime/fixtures/auth.ts": {
     "mtime": 1781117327.8965921,
     "ast_hash": "d4bb1d9edfbd9899e9cd41228977013b",
@@ -3137,11 +3107,6 @@
   "client/tests/e2e/runtime/fixtures/character-cleanup.ts": {
     "mtime": 1780609217.9474072,
     "ast_hash": "6e12f7b200653dc8cdbeb05813bc303b",
-    "semantic_hash": ""
-  },
-  "client/tests/e2e/runtime/fixtures/character-name.ts": {
-    "mtime": 1781115693.800238,
-    "ast_hash": "fc4cab5e3e04b614b668fa2d36fd4fbb",
     "semantic_hash": ""
   },
   "client/tests/e2e/runtime/fixtures/database.ts": {
@@ -3177,26 +3142,6 @@
   "client/tests/e2e/runtime/fixtures/multiplayer-browser-window.d.ts": {
     "mtime": 1780609217.950089,
     "ast_hash": "c1ad6fdcf8fe25dcba36cf57580f3c59",
-    "semantic_hash": ""
-  },
-  "client/tests/e2e/runtime/fixtures/multiplayer-co-locate.ts": {
-    "mtime": 1781124068.3507705,
-    "ast_hash": "66a0869b1a6da44bd0d8d4ae439627e4",
-    "semantic_hash": ""
-  },
-  "client/tests/e2e/runtime/fixtures/multiplayer-context.ts": {
-    "mtime": 1781124068.41594,
-    "ast_hash": "0e3a3184a7e69c1601bf364c7c58916a",
-    "semantic_hash": ""
-  },
-  "client/tests/e2e/runtime/fixtures/multiplayer-readiness.ts": {
-    "mtime": 1780944394.1749737,
-    "ast_hash": "7511a826b5090383b637ef799f35fa3d",
-    "semantic_hash": ""
-  },
-  "client/tests/e2e/runtime/fixtures/multiplayer-types.ts": {
-    "mtime": 1780944394.1775482,
-    "ast_hash": "bc1a569befb51f3fec7e7fc3cc01ce2f",
     "semantic_hash": ""
   },
   "client/tests/e2e/runtime/fixtures/multiplayer.ts": {
@@ -3614,11 +3559,6 @@
     "ast_hash": "1ed1eb452e0ab9646da1955c4d35659e",
     "semantic_hash": ""
   },
-  "db/migrations/20260608_account_sanctions.sql": {
-    "mtime": 1780940397.5852053,
-    "ast_hash": "f030429b883b9c03d103b135f31b61b2",
-    "semantic_hash": ""
-  },
   "db/mythos_dev_ddl.sql": {
     "mtime": 1780937648.6944504,
     "ast_hash": "8f74c750df31e5f675c99dfeca23dc8b",
@@ -3632,11 +3572,6 @@
   "db/mythos_unit_ddl.sql": {
     "mtime": 1780937648.6970265,
     "ast_hash": "487a3fab711be4fadd27efe937a5a903",
-    "semantic_hash": ""
-  },
-  "db/procedures/account_sanctions.sql": {
-    "mtime": 1780940397.5842054,
-    "ast_hash": "5c0a8ac97ac7b34a69f1ce71961ec339",
     "semantic_hash": ""
   },
   "db/procedures/containers.sql": {
@@ -4169,19 +4104,9 @@
     "ast_hash": "d339ddca062206e512f24a02e644f017",
     "semantic_hash": ""
   },
-  "scripts/e2e_clear_account_sanctions.py": {
-    "mtime": 1780939251.0212927,
-    "ast_hash": "34358491cc3e5019b272c662c8756f74",
-    "semantic_hash": ""
-  },
   "scripts/e2e_reset_players.py": {
     "mtime": 1780609218.0153394,
     "ast_hash": "f3a5df396f13c831dee55a0a79927590",
-    "semantic_hash": ""
-  },
-  "scripts/e2e_verify_account_sanction.py": {
-    "mtime": 1780945955.9515884,
-    "ast_hash": "e91f01f0229b6016be6dcb059d3c168c",
     "semantic_hash": ""
   },
   "scripts/ensure_codacy_coverage_reporter_ci.sh": {
@@ -5254,11 +5179,6 @@
     "ast_hash": "0975ba797b1b5b46052f31b57a9d73bd",
     "semantic_hash": ""
   },
-  "server/commands/admin_kick_ban_commands.py": {
-    "mtime": 1781038007.608428,
-    "ast_hash": "2b57242ff150dafe81f65e0067b6368d",
-    "semantic_hash": ""
-  },
   "server/commands/admin_mute_commands.py": {
     "mtime": 1780609218.0282125,
     "ast_hash": "fc931e720da8190860fc211f7879acd6",
@@ -6179,16 +6099,6 @@
     "ast_hash": "96dc3c576d539a23d8b15f78f9b303af",
     "semantic_hash": ""
   },
-  "server/game/movement_service_room_ops.py": {
-    "mtime": 1781029174.401372,
-    "ast_hash": "9e8524e3447a446c1aa1ddb082e266ce",
-    "semantic_hash": ""
-  },
-  "server/game/movement_service_validation.py": {
-    "mtime": 1781029174.401372,
-    "ast_hash": "9d5ef46f40005e563b1308e3abaa812e",
-    "semantic_hash": ""
-  },
   "server/game/party_service.py": {
     "mtime": 1775192600.7054272,
     "ast_hash": "79ba026aca09400f2a2616b0940ea750",
@@ -6924,11 +6834,6 @@
     "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
     "semantic_hash": ""
   },
-  "server/realtime/account_sanction_gate.py": {
-    "mtime": 1780946603.7237122,
-    "ast_hash": "a7bc96ade2c40eb46b44d83f02305672",
-    "semantic_hash": ""
-  },
   "server/realtime/channel_broadcasting_strategies.py": {
     "mtime": 1775192600.721166,
     "ast_hash": "7bd07c91117419d60f61dcefef641463",
@@ -7294,16 +7199,6 @@
     "ast_hash": "14a18f12a5e79b4d38a7779db0bceea3",
     "semantic_hash": ""
   },
-  "server/realtime/websocket_handler_connection.py": {
-    "mtime": 1780958027.2837882,
-    "ast_hash": "e0df12e70e3f75631cdbb41dd8dbdf0a",
-    "semantic_hash": ""
-  },
-  "server/realtime/websocket_handler_message_loop.py": {
-    "mtime": 1780951752.393953,
-    "ast_hash": "73315a21dba6500a2626e7e9abac5875",
-    "semantic_hash": ""
-  },
   "server/realtime/websocket_helpers.py": {
     "mtime": 1775601269.2998836,
     "ast_hash": "ccfb021e6fd31c3d84feb435f90aaa83",
@@ -7647,16 +7542,6 @@
   "server/services/__init__.py": {
     "mtime": 1775192600.752519,
     "ast_hash": "7ff7d3f5b5e4078c0011290271a5a36e",
-    "semantic_hash": ""
-  },
-  "server/services/account_sanction_messages.py": {
-    "mtime": 1780937648.7450025,
-    "ast_hash": "f65099f1cd8214b5565001e69703e360",
-    "semantic_hash": ""
-  },
-  "server/services/account_sanction_service.py": {
-    "mtime": 1780937648.7480154,
-    "ast_hash": "b5e4260ab327a98ecf597234158e0548",
     "semantic_hash": ""
   },
   "server/services/active_lucidity_service.py": {
@@ -8314,11 +8199,6 @@
     "ast_hash": "5f322e3384aa5c03f10f876b970f8e7f",
     "semantic_hash": ""
   },
-  "server/tests/integration/test_account_sanctions_procedures.py": {
-    "mtime": 1780937648.7356017,
-    "ast_hash": "a737afd176eb2bebf300fc79364b99c8",
-    "semantic_hash": ""
-  },
   "server/tests/integration/test_aggro_flow.py": {
     "mtime": 1775192600.7839968,
     "ast_hash": "3d57b13f3fd974473ea46c68d3a260e8",
@@ -8602,11 +8482,6 @@
   "server/tests/unit/commands/test_admin_commands_helpers.py": {
     "mtime": 1775192600.7998672,
     "ast_hash": "f10eb24f242e11cedb662e3f20058fd1",
-    "semantic_hash": ""
-  },
-  "server/tests/unit/commands/test_admin_kick_ban_commands.py": {
-    "mtime": 1780937648.7372835,
-    "ast_hash": "3629d99eb847ac0bbe7ed6e7d33176a8",
     "semantic_hash": ""
   },
   "server/tests/unit/commands/test_admin_setstat_command.py": {
@@ -9599,11 +9474,6 @@
     "ast_hash": "db43b6e3d13d37928c280abceda83949",
     "semantic_hash": ""
   },
-  "server/tests/unit/realtime/test_account_sanction_gate.py": {
-    "mtime": 1780937648.7372835,
-    "ast_hash": "fb329b96741a5cf68d1cd2720ee12638",
-    "semantic_hash": ""
-  },
   "server/tests/unit/realtime/test_channel_broadcasting_strategies.py": {
     "mtime": 1775192600.8311448,
     "ast_hash": "3e126f24a63601468eb333c185abfdc3",
@@ -10117,16 +9987,6 @@
   "server/tests/unit/services/nats_subject_manager/test_validation.py": {
     "mtime": 1775192600.8467805,
     "ast_hash": "55cfb3d030b41806863046fb481cfbd2",
-    "semantic_hash": ""
-  },
-  "server/tests/unit/services/test_account_sanction_messages.py": {
-    "mtime": 1780937648.7372835,
-    "ast_hash": "b75567a83a40410b53fad024e74fa222",
-    "semantic_hash": ""
-  },
-  "server/tests/unit/services/test_account_sanction_service.py": {
-    "mtime": 1780937648.7372835,
-    "ast_hash": "b3483e1085f7f997769919f27215928c",
     "semantic_hash": ""
   },
   "server/tests/unit/services/test_active_lucidity_service.py": {
@@ -14372,6 +14232,66 @@
   "data/local/simple_room_graph.png": {
     "mtime": 1775192606.0678165,
     "ast_hash": "9ac2ac5a620145013e8a39392bb9e335",
+    "semantic_hash": ""
+  },
+  "client/src/__tests__/App.demo.test.tsx": {
+    "mtime": 1781564029.0152633,
+    "ast_hash": "775baf47b60590208b0380c2e6071dfc",
+    "semantic_hash": ""
+  },
+  "client/src/__tests__/App.formState.test.tsx": {
+    "mtime": 1781564017.9578338,
+    "ast_hash": "38562fb750099a4662c81317a7486ac4",
+    "semantic_hash": ""
+  },
+  "client/src/__tests__/App.keyboard.test.tsx": {
+    "mtime": 1781564017.9552543,
+    "ast_hash": "04f680233d6968fbd83aaaf7daf29d4e",
+    "semantic_hash": ""
+  },
+  "client/src/__tests__/App.loading.test.tsx": {
+    "mtime": 1781564017.9609554,
+    "ast_hash": "71621ffe2d91ea1b3568f1accf0c0a92",
+    "semantic_hash": ""
+  },
+  "client/src/__tests__/App.login.test.tsx": {
+    "mtime": 1781564017.9635377,
+    "ast_hash": "84c54bc24e15749e8ee78aa5d9926762",
+    "semantic_hash": ""
+  },
+  "client/src/__tests__/App.logoutError.test.tsx": {
+    "mtime": 1781564017.9630208,
+    "ast_hash": "a7729cdc2863a8b2b7deef698e90cb87",
+    "semantic_hash": ""
+  },
+  "client/src/__tests__/App.motd.test.tsx": {
+    "mtime": 1781564017.956287,
+    "ast_hash": "27aa7f081ff3b87cd714934f8cd68bf7",
+    "semantic_hash": ""
+  },
+  "client/src/__tests__/App.registration.test.tsx": {
+    "mtime": 1781564017.9536939,
+    "ast_hash": "31bafb16f98f9ff4c93d4c757139f9ac",
+    "semantic_hash": ""
+  },
+  "client/src/__tests__/App.statsRolling.test.tsx": {
+    "mtime": 1781564017.9619799,
+    "ast_hash": "d07c80918c1fc5e5a6d537e26f493497",
+    "semantic_hash": ""
+  },
+  "client/src/__tests__/App.tokenValidation.test.tsx": {
+    "mtime": 1781564017.9599154,
+    "ast_hash": "1f0c2c0b611ef999da8d2d8a6bb6f1d5",
+    "semantic_hash": ""
+  },
+  "client/src/__tests__/app.test.helpers.ts": {
+    "mtime": 1781563972.1952965,
+    "ast_hash": "bf0ffb1dbf052b6596b3f1e53aa9192d",
+    "semantic_hash": ""
+  },
+  "client/src/__tests__/app.test.mocks.tsx": {
+    "mtime": 1781563970.816918,
+    "ast_hash": "29e746bf2dda6291c1d1547f90396880",
     "semantic_hash": ""
   }
 }

@@ -5,14 +5,23 @@
 import '@testing-library/jest-dom/vitest';
 import { mkdirSync } from 'fs';
 import { join } from 'path';
-import { afterAll, beforeAll, vi } from 'vitest';
+import { afterAll, beforeAll, beforeEach, vi } from 'vitest';
 
+import { installDomPurifyTestWindow } from './domPurifyTestWindow';
+import { resetDomPurifyClientForTests } from '../utils/domPurifyClient';
 import { installLocalStorageShim } from '../utils/localStorageShim';
 
 // Host .env / CI can set VITE_API_URL to an absolute API origin; tests expect same-origin relative paths.
 vi.stubEnv('VITE_API_URL', '');
 
 installLocalStorageShim();
+installDomPurifyTestWindow();
+resetDomPurifyClientForTests();
+
+beforeEach(() => {
+  installDomPurifyTestWindow();
+  resetDomPurifyClientForTests();
+});
 
 // Type definition for global in test environment
 declare global {
