@@ -63,7 +63,7 @@
     "globals": "^17.5.0",
     "happy-dom": "^20.10.2",
     "jsdom": "^29.1.1",
-    "knip": "^6.15.0",
+    "knip": "^6.17.1",
     "markdownlint-cli": "^0.48.0",
     "patch-package": "^8.0.1",
     "postcss": "^8.5.13",
