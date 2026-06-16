@@ -11,6 +11,15 @@ const INCOMING_HTML_PROBE_CONFIG: DOMPurifyConfig = {
   SAFE_FOR_TEMPLATES: false,
 };
 
+const COMMAND_PROBE_CONFIG: DOMPurifyConfig = {
+  ALLOWED_TAGS: [],
+  ALLOWED_ATTR: [],
+  ALLOW_DATA_ATTR: false,
+  ALLOW_UNKNOWN_PROTOCOLS: false,
+  SAFE_FOR_TEMPLATES: false,
+  KEEP_CONTENT: true,
+};
+
 const PLAIN_CHAT_PROBE = '[local] Player1 says: Hello everyone!';
 const HTML_CHAT_PROBE = 'Message with <strong>HTML</strong> content';
 
@@ -21,7 +30,21 @@ function verifiesDomPurifySanitize(purify: DOMPurifyInstance): boolean {
   try {
     const plain = purify.sanitize(PLAIN_CHAT_PROBE, INCOMING_HTML_PROBE_CONFIG);
     const html = purify.sanitize(HTML_CHAT_PROBE, INCOMING_HTML_PROBE_CONFIG);
-    return plain === PLAIN_CHAT_PROBE && html.includes('Message with') && html.includes('HTML');
+    const command = purify.sanitize('say <img src=x onerror=alert(1)>', COMMAND_PROBE_CONFIG);
+    const script = purify.sanitize('<script>alert("xss")</script>Hello World', {
+      ALLOWED_TAGS: ['b'],
+      ALLOWED_ATTR: [],
+      FORBID_TAGS: ['script'],
+      SAFE_FOR_TEMPLATES: true,
+    } as DOMPurifyConfig);
+
+    return (
+      plain === PLAIN_CHAT_PROBE &&
+      html.includes('Message with') &&
+      html.includes('HTML') &&
+      command.trim() === 'say' &&
+      script === 'Hello World'
+    );
   } catch {
     return false;
   }
@@ -37,32 +60,26 @@ function collectWindowCandidates(): Array<Window & typeof globalThis> {
     }
   };
 
-  // Prefer document.defaultView first: Node 22 on Linux may expose a broken globalThis.window
-  // while happy-dom's real window remains on document.defaultView.
+  add(globalThis.__MYTHOSMUD_DOMPURIFY_WINDOW__);
   add(globalThis.document?.defaultView ?? undefined);
   add(globalThis.window);
   return candidates;
 }
 
-function getVitestHappyDomWindow(): (Window & typeof globalThis) | undefined {
-  return globalThis.__MYTHOSMUD_DOMPURIFY_WINDOW__;
-}
-
 function resolveVitestSanitizeWindow(): Window & typeof globalThis {
-  const vitestWindow = getVitestHappyDomWindow();
-  if (!vitestWindow) {
-    throw new Error('Vitest setup must initialize globalThis.__MYTHOSMUD_DOMPURIFY_WINDOW__');
+  for (const candidate of collectWindowCandidates()) {
+    if (verifiesDomPurifySanitize(createDOMPurify(candidate))) {
+      return candidate;
+    }
   }
-  if (!verifiesDomPurifySanitize(createDOMPurify(vitestWindow))) {
-    throw new Error('Vitest DOMPurify window failed incoming HTML sanitize probe');
-  }
-  return vitestWindow;
+
+  throw new Error('Vitest DOMPurify window failed sanitize probe; ensure setup.ts installs a jsdom test window');
 }
 
 /**
  * Pick a window that passes incoming HTML sanitize probes when possible.
- * In Vitest, always use the dedicated happy-dom window from setup.ts first. Node 22 on Linux may expose
- * a global window that false-passes probes but still mangles sanitize output.
+ * In Vitest, prefer the dedicated jsdom window from setup.ts; Node 22 on Linux may expose globals that
+ * false-pass simple probes but still mangle sanitize output.
  */
 function resolveSanitizeWindow(): Window & typeof globalThis {
   if (import.meta.env.VITEST) {

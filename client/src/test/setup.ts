@@ -4,10 +4,10 @@
 // typing the mock is impractical. Prefer vi.mocked(module) or typed mock interfaces where feasible.
 import '@testing-library/jest-dom/vitest';
 import { mkdirSync } from 'fs';
-import { Window as HappyWindow } from 'happy-dom';
 import { join } from 'path';
 import { afterAll, beforeAll, beforeEach, vi } from 'vitest';
 
+import { installDomPurifyTestWindow } from './domPurifyTestWindow';
 import { resetDomPurifyClientForTests } from '../utils/domPurifyClient';
 import { installLocalStorageShim } from '../utils/localStorageShim';
 
@@ -15,20 +15,11 @@ import { installLocalStorageShim } from '../utils/localStorageShim';
 vi.stubEnv('VITE_API_URL', '');
 
 installLocalStorageShim();
-
-function ensureVitestDomPurifyWindow(): void {
-  if (!globalThis.__MYTHOSMUD_DOMPURIFY_WINDOW__) {
-    globalThis.__MYTHOSMUD_DOMPURIFY_WINDOW__ = new HappyWindow({
-      url: 'https://mythosmud.test/',
-    }) as unknown as Window & typeof globalThis;
-  }
-}
-
-ensureVitestDomPurifyWindow();
+installDomPurifyTestWindow();
 resetDomPurifyClientForTests();
 
 beforeEach(() => {
-  ensureVitestDomPurifyWindow();
+  installDomPurifyTestWindow();
   resetDomPurifyClientForTests();
 });
 
