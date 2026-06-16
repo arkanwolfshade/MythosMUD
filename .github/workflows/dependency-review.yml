@@ -31,17 +31,33 @@ jobs:
       # github.token: parent repo only; GITHUB_TOKEN cannot access other private repos (automatic token authentication).
       # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
 
-      - name: "Checkout base ref"
+      - name: "Checkout Repository"
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           fetch-depth: 0
           submodules: false
           token: ${{ github.token }}
-          ref: ${{ github.event.pull_request.base.sha }}
+          # Match PR head commit so submitted snapshots align with dependency-review API head SHA
+          # (default PR checkout is the merge commit; github.sha would not match pull_request.head.sha).
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Detect Python lockfile changes in PR
+        id: python_lock_changed
+        run: |
+          set -euo pipefail
+          if git diff --name-only \
+            "${{ github.event.pull_request.base.sha }}" \
+            "${{ github.event.pull_request.head.sha }}" \
+            -- uv.lock pyproject.toml | grep -q .; then
+            echo "changed=true" >> "${GITHUB_OUTPUT}"
+          else
+            echo "changed=false" >> "${GITHUB_OUTPUT}"
+          fi
 
       # Private data: shallow git fetch with URL-encoded user:token (same pattern as ci.yml).
-      - name: Resolve data submodule (base)
-        id: data_submodule_base
+      - name: Resolve data submodule (repository + commit)
+        if: steps.python_lock_changed.outputs.changed == 'true'
+        id: data_submodule
         run: |
           set -euo pipefail
           data_url="$(git config -f .gitmodules --get submodule.data.url)"
@@ -61,8 +77,9 @@ jobs:
           fi
           echo "repository=${suffix}" >> "${GITHUB_OUTPUT}"
           echo "sha=${sha}" >> "${GITHUB_OUTPUT}"
-          echo "::notice::Base snapshot will fetch ${suffix}@${sha}"
-      - name: Clone private data into data/ (base)
+          echo "::notice::Will fetch ${suffix}@${sha}"
+      - name: Clone private data into data/
+        if: steps.python_lock_changed.outputs.changed == 'true'
         env:
           SUBMODULE_PAT: ${{ secrets.MYTHOSMUD_PAT }}
           GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
@@ -77,8 +94,8 @@ jobs:
             github_pat_*) git_user="x-access-token" ;;
             *) git_user="${GITHUB_REPOSITORY_OWNER}" ;;
           esac
-          repo="${{ steps.data_submodule_base.outputs.repository }}"
-          sha="${{ steps.data_submodule_base.outputs.sha }}"
+          repo="${{ steps.data_submodule.outputs.repository }}"
+          sha="${{ steps.data_submodule.outputs.sha }}"
           export GIT_USER_Q="${git_user}" PAT_Q="${pat_trim}"
           auth_host=$(python3 -c "import os, urllib.parse as u; x=os.environ['GIT_USER_Q']; y=os.environ['PAT_Q']; print(u.quote(x, safe='') + ':' + u.quote(y, safe=''))")
           unset GIT_USER_Q PAT_Q
@@ -93,89 +110,18 @@ jobs:
           cd ..
 
       # Vendored node_modules must not be scanned (stale fast-uri@3.1.0 was committed previously); use lockfiles.
-      - name: Remove vendored static_data node_modules before base snapshot
+      - name: Remove vendored static_data node_modules before snapshot
+        if: steps.python_lock_changed.outputs.changed == 'true'
         run: rm -rf scripts/static_data/node_modules
 
-      # Submit base snapshot so head-only submissions do not appear as thousands of added deps.
-      - name: Submit dependency snapshot (Component Detection, base)
-        if: github.event.pull_request.head.repo.full_name == github.repository
+      # Component Detection expands uv.lock into a full snapshot. Running it on npm-only PRs makes
+      # Dependency Review treat the entire Python tree as newly added versus main's static graph.
+      - name: Submit dependency snapshot (Component Detection)
+        if: >-
+          github.event.pull_request.head.repo.full_name == github.repository &&
+          steps.python_lock_changed.outputs.changed == 'true'
         uses: advanced-security/component-detection-dependency-submission-action@9c110eb34dee187cd9eca76a652b9f6a0ed22927 # v0.1.1
         with:
-          correlator: dependency-review-base
-          detectorArgs: UvLock=EnableIfDefaultOff,NpmLockfile3=EnableIfDefaultOff
-
-      - name: "Checkout head ref"
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-        with:
-          fetch-depth: 0
-          submodules: false
-          token: ${{ github.token }}
-          # Match PR head commit so submitted snapshots align with dependency-review API head SHA
-          # (default PR checkout is the merge commit; github.sha would not match pull_request.head.sha).
-          ref: ${{ github.event.pull_request.head.sha }}
-
-      - name: Resolve data submodule (head)
-        id: data_submodule_head
-        run: |
-          set -euo pipefail
-          data_url="$(git config -f .gitmodules --get submodule.data.url)"
-          suffix="${data_url#https://github.com/}"
-          suffix="${suffix%.git}"
-          if [ -z "${suffix}" ] || [ "${suffix}" = "${data_url}" ]; then
-            echo "::error::submodule.data.url must be https://github.com/OWNER/REPO.git"
-            exit 1
-          fi
-          line=$(git ls-tree HEAD data)
-          mode=$(echo "${line}" | awk '{print $1}')
-          kind=$(echo "${line}" | awk '{print $2}')
-          sha=$(echo "${line}" | awk '{print $3}')
-          if [ "${mode}" != "160000" ] || [ "${kind}" != "commit" ] || [ -z "${sha}" ]; then
-            echo "::error::Path data is not a git submodule at HEAD (expected gitlink 160000 commit)."
-            exit 1
-          fi
-          echo "repository=${suffix}" >> "${GITHUB_OUTPUT}"
-          echo "sha=${sha}" >> "${GITHUB_OUTPUT}"
-          echo "::notice::Head snapshot will fetch ${suffix}@${sha}"
-      - name: Clone private data into data/ (head)
-        env:
-          SUBMODULE_PAT: ${{ secrets.MYTHOSMUD_PAT }}
-          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
-        run: |
-          set -euo pipefail
-          pat_trim=$(printf '%s' "${SUBMODULE_PAT}" | tr -d '\r\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-          if [ -z "${pat_trim}" ]; then
-            echo "::error::MYTHOSMUD_PAT is required (Contents: Read on mythosmud_data)."
-            exit 1
-          fi
-          case "${pat_trim}" in
-            github_pat_*) git_user="x-access-token" ;;
-            *) git_user="${GITHUB_REPOSITORY_OWNER}" ;;
-          esac
-          repo="${{ steps.data_submodule_head.outputs.repository }}"
-          sha="${{ steps.data_submodule_head.outputs.sha }}"
-          export GIT_USER_Q="${git_user}" PAT_Q="${pat_trim}"
-          auth_host=$(python3 -c "import os, urllib.parse as u; x=os.environ['GIT_USER_Q']; y=os.environ['PAT_Q']; print(u.quote(x, safe='') + ':' + u.quote(y, safe=''))")
-          unset GIT_USER_Q PAT_Q
-          rm -rf data
-          mkdir data
-          cd data
-          git init -q
-          git remote add origin "https://${auth_host}@github.com/${repo}.git"
-          GIT_TERMINAL_PROMPT=0 git fetch --depth 1 origin "${sha}"
-          git checkout -q FETCH_HEAD
-          git remote set-url origin "https://github.com/${repo}.git"
-          cd ..
-
-      - name: Remove vendored static_data node_modules before head snapshot
-        run: rm -rf scripts/static_data/node_modules
-
-      # Submit resolved deps for head so uv.lock and npm lockfile3 match the comparison baseline.
-      # https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-dependency-review#best-practices-for-using-the-dependency-review-api-and-the-dependency-submission-api-together
-      - name: Submit dependency snapshot (Component Detection, head)
-        if: github.event.pull_request.head.repo.full_name == github.repository
-        uses: advanced-security/component-detection-dependency-submission-action@9c110eb34dee187cd9eca76a652b9f6a0ed22927 # v0.1.1
-        with:
-          correlator: dependency-review-head
           detectorArgs: UvLock=EnableIfDefaultOff,NpmLockfile3=EnableIfDefaultOff
 
       # Transitive dev deps (e.g. stacktracey via Spectral) may score <3 on OpenSSF; warn only below 2.
@@ -186,6 +132,5 @@ jobs:
           show-patched-versions: true
           comment-summary-in-pr: on-failure
           warn-on-openssf-scorecard-level: 2
-          # Cover indexing delay / parallel submission; timeout exceeds typical Component Detection runs.
           retry-on-snapshot-warnings: true
           retry-on-snapshot-warnings-timeout: 300
