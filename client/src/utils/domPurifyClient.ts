@@ -48,22 +48,31 @@ function getVitestHappyDomWindow(): (Window & typeof globalThis) | undefined {
   return globalThis.__MYTHOSMUD_DOMPURIFY_WINDOW__;
 }
 
+function resolveVitestSanitizeWindow(): Window & typeof globalThis {
+  const vitestWindow = getVitestHappyDomWindow();
+  if (!vitestWindow) {
+    throw new Error('Vitest setup must initialize globalThis.__MYTHOSMUD_DOMPURIFY_WINDOW__');
+  }
+  if (!verifiesDomPurifySanitize(createDOMPurify(vitestWindow))) {
+    throw new Error('Vitest DOMPurify window failed incoming HTML sanitize probe');
+  }
+  return vitestWindow;
+}
+
 /**
  * Pick a window that passes incoming HTML sanitize probes when possible.
- * Some tests replace globalThis.window with a stub; happy-dom's real window may remain on document.defaultView.
+ * In Vitest, always use the dedicated happy-dom window from setup.ts first. Node 22 on Linux may expose
+ * a global window that false-passes probes but still mangles sanitize output.
  */
 function resolveSanitizeWindow(): Window & typeof globalThis {
+  if (import.meta.env.VITEST) {
+    return resolveVitestSanitizeWindow();
+  }
+
   const candidates = collectWindowCandidates();
   for (const candidate of candidates) {
     if (verifiesDomPurifySanitize(createDOMPurify(candidate))) {
       return candidate;
-    }
-  }
-
-  if (import.meta.env.VITEST) {
-    const vitestWindow = getVitestHappyDomWindow();
-    if (vitestWindow && verifiesDomPurifySanitize(createDOMPurify(vitestWindow))) {
-      return vitestWindow;
     }
   }
 

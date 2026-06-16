@@ -18,7 +18,9 @@ installLocalStorageShim();
 
 function ensureVitestDomPurifyWindow(): void {
   if (!globalThis.__MYTHOSMUD_DOMPURIFY_WINDOW__) {
-    globalThis.__MYTHOSMUD_DOMPURIFY_WINDOW__ = new HappyWindow() as unknown as Window & typeof globalThis;
+    globalThis.__MYTHOSMUD_DOMPURIFY_WINDOW__ = new HappyWindow({
+      url: 'https://mythosmud.test/',
+    }) as unknown as Window & typeof globalThis;
   }
 }
 
