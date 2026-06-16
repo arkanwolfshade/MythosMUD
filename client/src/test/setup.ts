@@ -3,13 +3,13 @@
 // TypeScript: In tests, `as any` for mock setup (e.g. vi.mock return values, global overrides) is acceptable when
 // typing the mock is impractical. Prefer vi.mocked(module) or typed mock interfaces where feasible.
 import '@testing-library/jest-dom/vitest';
-import { Window as HappyWindow } from 'happy-dom';
 import { mkdirSync } from 'fs';
+import { Window as HappyWindow } from 'happy-dom';
 import { join } from 'path';
 import { afterAll, beforeAll, beforeEach, vi } from 'vitest';
 
-import { installLocalStorageShim } from '../utils/localStorageShim';
 import { resetDomPurifyClientForTests } from '../utils/domPurifyClient';
+import { installLocalStorageShim } from '../utils/localStorageShim';
 
 // Host .env / CI can set VITE_API_URL to an absolute API origin; tests expect same-origin relative paths.
 vi.stubEnv('VITE_API_URL', '');
