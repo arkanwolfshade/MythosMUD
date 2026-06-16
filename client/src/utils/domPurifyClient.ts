@@ -37,21 +37,33 @@ function collectWindowCandidates(): Array<Window & typeof globalThis> {
     }
   };
 
-  add(globalThis.window);
+  // Prefer document.defaultView first: Node 22 on Linux may expose a broken globalThis.window
+  // while happy-dom's real window remains on document.defaultView.
   add(globalThis.document?.defaultView ?? undefined);
+  add(globalThis.window);
   return candidates;
+}
+
+function getVitestHappyDomWindow(): (Window & typeof globalThis) | undefined {
+  return globalThis.__MYTHOSMUD_DOMPURIFY_WINDOW__;
 }
 
 /**
  * Pick a window that passes incoming HTML sanitize probes when possible.
  * Some tests replace globalThis.window with a stub; happy-dom's real window may remain on document.defaultView.
- * Node 22 on Linux may expose an experimental global window that fails probes while defaultView is usable.
  */
 function resolveSanitizeWindow(): Window & typeof globalThis {
   const candidates = collectWindowCandidates();
   for (const candidate of candidates) {
     if (verifiesDomPurifySanitize(createDOMPurify(candidate))) {
       return candidate;
+    }
+  }
+
+  if (import.meta.env.VITEST) {
+    const vitestWindow = getVitestHappyDomWindow();
+    if (vitestWindow && verifiesDomPurifySanitize(createDOMPurify(vitestWindow))) {
+      return vitestWindow;
     }
   }
 

@@ -17,7 +17,7 @@ describe('domPurifyClient', () => {
     expect(sanitized).toContain('content');
   });
 
-  it('uses document.defaultView when globalThis.window is a stub without HTML parsing', () => {
+  it('uses a dedicated happy-dom window when globalThis.window is a stub', () => {
     const realWindow = globalThis.window;
     const realDefaultView = globalThis.document?.defaultView;
     if (!realDefaultView?.document?.createElement) {

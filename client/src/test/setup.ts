@@ -3,6 +3,7 @@
 // TypeScript: In tests, `as any` for mock setup (e.g. vi.mock return values, global overrides) is acceptable when
 // typing the mock is impractical. Prefer vi.mocked(module) or typed mock interfaces where feasible.
 import '@testing-library/jest-dom/vitest';
+import { Window as HappyWindow } from 'happy-dom';
 import { mkdirSync } from 'fs';
 import { join } from 'path';
 import { afterAll, beforeAll, beforeEach, vi } from 'vitest';
@@ -14,9 +15,18 @@ import { resetDomPurifyClientForTests } from '../utils/domPurifyClient';
 vi.stubEnv('VITE_API_URL', '');
 
 installLocalStorageShim();
+
+function ensureVitestDomPurifyWindow(): void {
+  if (!globalThis.__MYTHOSMUD_DOMPURIFY_WINDOW__) {
+    globalThis.__MYTHOSMUD_DOMPURIFY_WINDOW__ = new HappyWindow() as unknown as Window & typeof globalThis;
+  }
+}
+
+ensureVitestDomPurifyWindow();
 resetDomPurifyClientForTests();
 
 beforeEach(() => {
+  ensureVitestDomPurifyWindow();
   resetDomPurifyClientForTests();
 });
 
