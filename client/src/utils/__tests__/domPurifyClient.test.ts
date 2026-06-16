@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { sanitizeWithDomPurify, resetDomPurifyClientForTests } from '../domPurifyClient';
+import { resetDomPurifyClientForTests, sanitizeWithDomPurify } from '../domPurifyClient';
 import { INCOMING_HTML_DOMPURIFY_CONFIG } from '../security';
 
 describe('domPurifyClient', () => {
