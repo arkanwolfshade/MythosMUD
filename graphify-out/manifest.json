@@ -5,8 +5,8 @@
     "semantic_hash": ""
   },
   ".codacy/tools-configs/eslint.config.mjs": {
-    "mtime": 1781714071.765644,
-    "ast_hash": "36e2dc52f1147055b88e9173ef86b599",
+    "mtime": 1781717799.746943,
+    "ast_hash": "ce6d3cad43ca8b16342f60cb47fe7c9d",
     "semantic_hash": ""
   },
   ".codacy/wsl-bashrc-codacy.sh": {
@@ -90,8 +90,8 @@
     "semantic_hash": ""
   },
   "client/package.json": {
-    "mtime": 1781703900.8684444,
-    "ast_hash": "076a9f139d3482e968bdfc553b32e475",
+    "mtime": 1781716070.3357892,
+    "ast_hash": "e5faad2886d73cff5411f09a833a09f9",
     "semantic_hash": ""
   },
   "client/playwright.config.d.ts": {
@@ -3700,7 +3700,7 @@
     "semantic_hash": ""
   },
   "docs/openapi/openapi.json": {
-    "mtime": 1781708093.7775965,
+    "mtime": 1781718279.522811,
     "ast_hash": "25012726ebae52db86996251b9384285",
     "semantic_hash": ""
   },
@@ -3735,8 +3735,8 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1775192600.5955684,
-    "ast_hash": "cda515bc2b0af9192655937e6dff17e0",
+    "mtime": 1781716223.0072906,
+    "ast_hash": "3f12a36ea6c5c9fe152ab22ca550dabf",
     "semantic_hash": ""
   },
   "pyrightconfig.json": {
@@ -5810,13 +5810,13 @@
     "semantic_hash": ""
   },
   "server/error_handlers/pydantic_error_handler.py": {
-    "mtime": 1781707609.6569858,
-    "ast_hash": "2a43d7e931c0c83cdb5390a44f8887d6",
+    "mtime": 1781717852.9083872,
+    "ast_hash": "0d63bc62f4f7cb23e7d05c4a04bf6b96",
     "semantic_hash": ""
   },
   "server/error_handlers/standardized_responses.py": {
-    "mtime": 1781714092.9888682,
-    "ast_hash": "93e581eedd25a88b3ad28ee18cfa5020",
+    "mtime": 1781717852.9093916,
+    "ast_hash": "e3a1f5789b4c8a387adf7ad1b2defddc",
     "semantic_hash": ""
   },
   "server/error_types.py": {
@@ -6200,8 +6200,8 @@
     "semantic_hash": ""
   },
   "server/legacy_error_handlers.py": {
-    "mtime": 1781713432.0166924,
-    "ast_hash": "48e7df238478d15780c6e4a236ce3a93",
+    "mtime": 1781717852.9143865,
+    "ast_hash": "5caadeff85f63930d5ab1141b2542156",
     "semantic_hash": ""
   },
   "server/main.py": {
@@ -8880,8 +8880,8 @@
     "semantic_hash": ""
   },
   "server/tests/unit/error_handlers/test_standardized_responses_security.py": {
-    "mtime": 1780609218.058495,
-    "ast_hash": "bf6b21c8af6f3badf12373c34167fcf1",
+    "mtime": 1781717852.9083872,
+    "ast_hash": "c23b30ec469e9a4c7851ac64ff1e29f7",
     "semantic_hash": ""
   },
   "server/tests/unit/events/__init__.py": {
@@ -10450,8 +10450,8 @@
     "semantic_hash": ""
   },
   "server/tests/unit/test_legacy_error_handlers.py": {
-    "mtime": 1781713432.0166924,
-    "ast_hash": "0fc4297433f53a5bd8443d258af85b29",
+    "mtime": 1781717852.9179544,
+    "ast_hash": "093e5116877132c7080b532067918ae4",
     "semantic_hash": ""
   },
   "server/tests/unit/test_lucidity_service_smoke.py": {
@@ -11010,12 +11010,12 @@
     "semantic_hash": ""
   },
   ".codacy/cli-config.yaml": {
-    "mtime": 1781714041.9142826,
+    "mtime": 1781717796.9688606,
     "ast_hash": "203ff582a9910dce987a7cf705ef71f9",
     "semantic_hash": ""
   },
   ".codacy/codacy.yaml": {
-    "mtime": 1781714457.3202717,
+    "mtime": 1781717856.6980617,
     "ast_hash": "b657d1aa91f6ddc9bd0130ad3cbf457d",
     "semantic_hash": ""
   },
@@ -11025,7 +11025,7 @@
     "semantic_hash": ""
   },
   ".codacy/tools-configs/analysis_options.yaml": {
-    "mtime": 1781714048.370973,
+    "mtime": 1781717805.1593983,
     "ast_hash": "36910684fda7b41b4891198f6301f08b",
     "semantic_hash": ""
   },
@@ -11035,7 +11035,7 @@
     "semantic_hash": ""
   },
   ".codacy/tools-configs/lizard.yaml": {
-    "mtime": 1781714049.5974438,
+    "mtime": 1781717801.0462086,
     "ast_hash": "b72b693268f5a8ad276d9943f203da40",
     "semantic_hash": ""
   },
@@ -11045,7 +11045,7 @@
     "semantic_hash": ""
   },
   ".codacy/tools-configs/trivy.yaml": {
-    "mtime": 1781714067.851966,
+    "mtime": 1781717797.091426,
     "ast_hash": "874980c67e727321ebe7e1806daf29e8",
     "semantic_hash": ""
   },
@@ -14315,13 +14315,13 @@
     "semantic_hash": ""
   },
   "scripts/ci/quality_fragmentation_ai_guardrails.py": {
-    "mtime": 1781714444.59167,
-    "ast_hash": "121f420c702e4e11fc76296c8bfa63ac",
+    "mtime": 1781715224.805816,
+    "ast_hash": "2fdc80a20bea2954fed7c5eeeaa15bed",
     "semantic_hash": ""
   },
   "scripts/ci/quality_fragmentation_core.py": {
-    "mtime": 1781714444.5870693,
-    "ast_hash": "9dfe952df4ee09d029e1117ea16c7eaf",
+    "mtime": 1781715224.805816,
+    "ast_hash": "dd0c828db10942a545bd015e238868aa",
     "semantic_hash": ""
   },
   "scripts/ci/quality_fragmentation_lizard.py": {

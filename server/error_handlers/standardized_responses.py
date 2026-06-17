@@ -312,9 +312,9 @@ class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Re
         details: dict[str, Any] = {"status_code": exc.status_code}
         # Human reader: sanitize detail to prevent stack trace exposure.
         # AI reader: ensure no stack traces leak into user-facing responses.
-        sanitized_detail = self._sanitize_exception_message(str(exc.detail))
+        sanitized_detail = self._sanitize_http_detail(exc.detail)
         user_friendly = self._get_logged_http_user_friendly_message(error_type, exc, sanitized_detail)
-        if include_details:
+        if include_details and sanitized_detail:
             details["original_detail"] = sanitized_detail
 
         # Create appropriate response
@@ -381,7 +381,9 @@ class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Re
         if include_details:
             # Human reader: sanitize detail to prevent stack trace exposure.
             # AI reader: ensure no stack traces leak into user-facing responses.
-            details["original_detail"] = self._sanitize_exception_message(str(exc.detail))
+            sanitized_detail = self._sanitize_http_detail(exc.detail)
+            if sanitized_detail:
+                details["original_detail"] = sanitized_detail
 
         # Create appropriate response
         response_data = create_standard_error_response(
@@ -403,9 +405,6 @@ class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Re
         details = {}
         if include_details:
             details["exception_type"] = type(exc).__name__
-            # Human reader: sanitize exception message even in detailed mode to prevent stack trace leaks.
-            # AI reader: stack traces should only be in logs, never in API responses.
-            details["exception_message"] = self._sanitize_exception_message(str(exc))
 
         # Log the error
         logger.error("Unhandled exception", error=str(exc), exc_info=True, **self.context.to_dict())
@@ -482,6 +481,16 @@ class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Re
             }
 
         return details
+
+    def _sanitize_http_detail(self, detail: object) -> str:
+        """
+        Sanitize HTTPException detail for optional inclusion in error details.
+
+        Only string details are considered; non-string values are omitted from responses.
+        """
+        if not isinstance(detail, str):
+            return ""
+        return self._sanitize_exception_message(detail)
 
     def _sanitize_exception_message(self, message: str) -> str:
         """

@@ -621,3 +621,44 @@ class TestGracefulDegradation:
         with graceful_degradation("fallback", "test_error"):
             raise ValueError("Test error")
         # Should not raise, but log the error
+
+
+class TestLegacyHandlerSecurity:
+    """Public error.message must not echo HTTPException detail with internal paths."""
+
+    @staticmethod
+    def _response_message(result: JSONResponse) -> str:
+        import json
+
+        body = json.loads(result.body)
+        return body["error"]["message"]
+
+    @pytest.mark.asyncio
+    async def test_logged_http_exception_does_not_expose_raw_detail(self):
+        detail = "Internal failure at C:\\server\\module.py:42"
+        error = LoggedHTTPException(status_code=400, detail=detail)
+        request = Mock(spec=Request)
+        request.url = Mock()
+        request.url.__str__ = Mock(return_value="http://test.com/api")
+        request.method = "POST"
+
+        result = await logged_http_exception_handler(request, error)
+        message = self._response_message(result)
+        assert detail not in message
+        assert "module.py" not in message
+
+    @pytest.mark.asyncio
+    async def test_http_exception_does_not_expose_raw_detail(self):
+        from fastapi import HTTPException
+
+        detail = "Internal failure at C:\\server\\module.py:42"
+        error = HTTPException(status_code=400, detail=detail)
+        request = Mock(spec=Request)
+        request.url = Mock()
+        request.url.__str__ = Mock(return_value="http://test.com/api")
+        request.method = "GET"
+
+        result = await http_exception_handler(request, error)
+        message = self._response_message(result)
+        assert detail not in message
+        assert "module.py" not in message
