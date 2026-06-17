@@ -337,7 +337,7 @@ async def logged_http_exception_handler(request: Request, exc: LoggedHTTPExcepti
     # Create standardized error response
     error_response = create_standard_error_response(
         error_type=error_type,
-        message=str(exc.detail),
+        message=user_friendly,
         user_friendly=user_friendly,
         details={"status_code": exc.status_code},
         severity=ErrorSeverity.MEDIUM,
@@ -391,7 +391,7 @@ async def http_exception_handler(request: Request, exc: HTTPException) -> JSONRe
     # Create standardized error response
     error_response = create_standard_error_response(
         error_type=error_type,
-        message=str(exc.detail),
+        message=user_friendly,
         user_friendly=user_friendly,
         details={"status_code": exc.status_code},
         severity=ErrorSeverity.MEDIUM,

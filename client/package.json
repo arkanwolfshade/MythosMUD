@@ -93,6 +93,8 @@
     },
     "@stoplight/spectral-ruleset-bundler": {
       "rollup": "^2.80.0"
-    }
+    },
+    "markdown-it": ">=14.2.0",
+    "js-yaml": ">=4.2.0"
   }
 }

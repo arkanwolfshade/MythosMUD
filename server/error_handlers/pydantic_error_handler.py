@@ -403,7 +403,7 @@ class PydanticErrorHandler:
         user_friendly = self._generate_user_friendly_message(error_info)
 
         return MythosValidationError(
-            message=str(error),
+            message=error_info["message"],
             context=self.context,
             details=self._create_error_details(error_info, error),
             user_friendly=user_friendly,
