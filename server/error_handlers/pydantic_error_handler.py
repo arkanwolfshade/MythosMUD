@@ -330,27 +330,28 @@ class PydanticErrorHandler:
         """
         message = ErrorMessages.INVALID_INPUT
         user_friendly = "Please check your input and try again"
+        fallback_details = {"fallback": True, "error_count": len(error.errors())}
 
         if response_type == "websocket":
             return create_websocket_error_response(
                 error_type=ErrorType.VALIDATION_ERROR,
                 message=message,
                 user_friendly=user_friendly,
-                details={"fallback": True},
+                details=fallback_details,
             )
         if response_type == "sse":
             return create_sse_error_response(
                 error_type=ErrorType.VALIDATION_ERROR,
                 message=message,
                 user_friendly=user_friendly,
-                details={"fallback": True},
+                details=fallback_details,
             )
         # Default to HTTP
         return create_standard_error_response(
             error_type=ErrorType.VALIDATION_ERROR,
             message=message,
             user_friendly=user_friendly,
-            details={"fallback": True},
+            details=fallback_details,
             severity=ErrorSeverity.MEDIUM,
         )
 

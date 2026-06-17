@@ -96,7 +96,6 @@ def _build_guard_command(base_sha: str, head_sha: str, changed_files: list[str])
         head_sha,
     ]
     command.extend(["--files", *changed_files])
-    command.append("--fast")
     return command
 
 
