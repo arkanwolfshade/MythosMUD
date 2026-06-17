@@ -6,20 +6,27 @@ degradation strategies. As the Necronomicon teaches us, even in the
 face of eldritch horrors, we must maintain order and structure.
 """
 
-# pylint: disable=too-many-return-statements,too-many-lines  # Reason: Error handlers require multiple return statements for different error type handling and response generation. Error handling module requires comprehensive coverage of all error scenarios.
+# pylint: disable=too-many-return-statements  # Reason: Error handlers require multiple return statements for different error type handling and response generation.
 
 import traceback
-from collections.abc import Iterator
+from collections.abc import Awaitable, Callable, Generator
 from contextlib import contextmanager
 from datetime import datetime
-from typing import Any
+from typing import Literal, Protocol, TypeVar, cast
 
-import bleach
-from fastapi import HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
+from starlette.responses import Response
 
-from .error_types import ErrorMessages, ErrorSeverity, ErrorType, create_standard_error_response
+from .error_types import (
+    ErrorMessages,
+    ErrorResponseDetailsInput,
+    ErrorSeverity,
+    ErrorType,
+    HttpStandardErrorResponse,
+    create_standard_error_response,
+)
 from .exceptions import (
     AuthenticationError,
     ConfigurationError,
@@ -34,9 +41,56 @@ from .exceptions import (
     create_error_context,
     handle_exception,
 )
+from .legacy_error_sanitization import (
+    sanitize_context,
+    sanitize_html_content,
+    sanitize_safe_details,
+    sanitize_text_content,
+)
 from .structured_logging.enhanced_logging_config import get_logger
 
+_CircuitBreakerResult = TypeVar("_CircuitBreakerResult")
+
+__all__ = [
+    "CircuitBreaker",
+    "ErrorResponse",
+    "create_error_response",
+    "general_exception_handler",
+    "graceful_degradation",
+    "http_exception_handler",
+    "logged_http_exception_handler",
+    "mythos_exception_handler",
+    "register_error_handlers",
+    "sanitize_html_content",
+    "sanitize_text_content",
+]
+
 logger = get_logger(__name__)
+
+# Starlette types HTTP exception handlers as (Request, Exception) -> ...; narrower handlers are safe
+# at runtime because the router only invokes them for the registered exception type.
+HttpExceptionHandler = Callable[[Request, Exception], Awaitable[Response]]
+
+
+class _AppStateWithLegacyConfig(Protocol):
+    """Minimal app.state shape for legacy error-handler debug config."""
+
+    config: dict[str, bool]
+
+
+class _AppWithLegacyConfigState(Protocol):
+    """Minimal FastAPI app shape for reading legacy config from state."""
+
+    state: _AppStateWithLegacyConfig
+
+
+def _include_error_details_from_request(request: Request) -> bool:
+    """Safely read the debug flag from app.state.config; defaults to False."""
+    try:
+        app_state = cast(_AppWithLegacyConfigState, request.app).state
+        return app_state.config.get("debug", False)
+    except (AttributeError, KeyError):
+        return False
 
 
 class ErrorResponse:
@@ -51,19 +105,19 @@ class ErrorResponse:
         self,
         error_type: ErrorType,
         message: str,
-        details: dict[str, Any] | None = None,
+        details: ErrorResponseDetailsInput | None = None,
         user_friendly: str | None = None,
         status_code: int = 500,
         severity: ErrorSeverity = ErrorSeverity.MEDIUM,
     ) -> None:
-        self.error_type = error_type
-        self.message = message
-        self.details = details or {}
-        self.user_friendly = user_friendly or message
-        self.status_code = status_code
-        self.severity = severity
+        self.error_type: ErrorType = error_type
+        self.message: str = message
+        self.details: ErrorResponseDetailsInput = details if details is not None else {}
+        self.user_friendly: str = user_friendly or message
+        self.status_code: int = status_code
+        self.severity: ErrorSeverity = severity
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> HttpStandardErrorResponse:
         """Convert to dictionary for JSON response."""
         return create_standard_error_response(
             self.error_type,
@@ -99,16 +153,14 @@ def create_error_response(error: MythosMUDError, include_details: bool = False) 
     severity = _get_severity_for_error(error)
 
     # Create response details - always sanitize to prevent information exposure
-    details = {}
+    details: dict[str, object] = {}
     if include_details:
         # Only include safe, non-sensitive details
-        safe_details = {}
-        for key, value in error.details.items():
-            if _is_safe_detail_key(key):
-                safe_details[key] = _sanitize_detail_value(value)
+        details_source = cast(dict[str, object], error.details)
+        safe_details = sanitize_safe_details(details_source)
 
         # Include sanitized context (only safe fields)
-        safe_context = _sanitize_context(error.context)
+        safe_context = sanitize_context(error.context)
 
         details = safe_details
         if safe_context:
@@ -129,7 +181,7 @@ def _map_error_type(error: MythosMUDError) -> ErrorType:
     # Error type mapping factory - provides O(1) lookup and easy extensibility
     # As noted in the restricted archives, this pattern eliminates the need for
     # lengthy if/elif chains while maintaining type safety
-    error_type_mapping = {
+    error_type_mapping: dict[type[MythosMUDError], ErrorType] = {
         AuthenticationError: ErrorType.AUTHENTICATION_FAILED,
         ValidationError: ErrorType.VALIDATION_ERROR,
         ResourceNotFoundError: ErrorType.RESOURCE_NOT_FOUND,
@@ -147,7 +199,7 @@ def _get_severity_for_error(error: MythosMUDError) -> ErrorSeverity:
     """Get appropriate severity level for error type."""
     # Severity mapping factory - maps error types to their appropriate severity levels
     # This pattern allows for easy adjustment of severity levels without code changes
-    severity_mapping = {
+    severity_mapping: dict[type[MythosMUDError], ErrorSeverity] = {
         AuthenticationError: ErrorSeverity.LOW,
         ValidationError: ErrorSeverity.LOW,
         ResourceNotFoundError: ErrorSeverity.LOW,
@@ -165,7 +217,7 @@ def _get_status_code_for_error(error: MythosMUDError) -> int:
     """Get appropriate HTTP status code for error type."""
     # Status code mapping factory - provides consistent HTTP status code mapping
     # This eliminates the need for repetitive if/elif chains and centralizes status code logic
-    status_code_mapping = {
+    status_code_mapping: dict[type[MythosMUDError], int] = {
         AuthenticationError: 401,
         ValidationError: 400,
         ResourceNotFoundError: 404,
@@ -195,11 +247,7 @@ async def mythos_exception_handler(request: Request, exc: MythosMUDError) -> JSO
         exc.context.request_id = str(request.url)
 
     # Create error response
-    # Safely get debug setting from app state, default to False
-    try:
-        include_details = request.app.state.config.get("debug", False)
-    except (AttributeError, KeyError):
-        include_details = False
+    include_details = _include_error_details_from_request(request)
     error_response = create_error_response(exc, include_details=include_details)
 
     # Log the error with request context
@@ -240,11 +288,7 @@ async def general_exception_handler(request: Request, exc: Exception) -> JSONRes
     mythos_error = handle_exception(exc, context)
 
     # Create error response
-    # Safely get debug setting from app state, default to False
-    try:
-        include_details = request.app.state.config.get("debug", False)
-    except (AttributeError, KeyError):
-        include_details = False
+    include_details = _include_error_details_from_request(request)
     error_response = create_error_response(mythos_error, include_details=include_details)
 
     # Log the error
@@ -369,7 +413,7 @@ async def http_exception_handler(request: Request, exc: HTTPException) -> JSONRe
 
 
 @contextmanager
-def graceful_degradation(fallback_value: Any, error_type: str = "unknown") -> Iterator[None]:
+def graceful_degradation(fallback_value: object, error_type: str = "unknown") -> Generator[None]:
     """
     Context manager for graceful degradation.
 
@@ -395,7 +439,7 @@ def graceful_degradation(fallback_value: Any, error_type: str = "unknown") -> It
         # Return fallback value (this will be handled by the calling code)
 
 
-def register_error_handlers(app: Any) -> None:
+def register_error_handlers(app: FastAPI) -> None:
     """
     Register all error handlers with the FastAPI application.
 
@@ -403,17 +447,17 @@ def register_error_handlers(app: Any) -> None:
         app: FastAPI application instance
     """
     # Register MythosMUD exception handler
-    app.add_exception_handler(MythosMUDError, mythos_exception_handler)
+    app.add_exception_handler(MythosMUDError, cast(HttpExceptionHandler, mythos_exception_handler))
 
     # Register LoggedHTTPException handler (must be before generic HTTPException)
-    app.add_exception_handler(LoggedHTTPException, logged_http_exception_handler)
+    app.add_exception_handler(LoggedHTTPException, cast(HttpExceptionHandler, logged_http_exception_handler))
 
     # Register general exception handler
     app.add_exception_handler(Exception, general_exception_handler)
 
     # Register HTTP exception handler
-    app.add_exception_handler(HTTPException, http_exception_handler)
-    app.add_exception_handler(StarletteHTTPException, http_exception_handler)
+    app.add_exception_handler(HTTPException, cast(HttpExceptionHandler, http_exception_handler))
+    app.add_exception_handler(StarletteHTTPException, cast(HttpExceptionHandler, http_exception_handler))
 
     logger.info("Error handlers registered with FastAPI application")
 
@@ -427,13 +471,18 @@ class CircuitBreaker:  # pylint: disable=too-few-public-methods  # Reason: Utili
     """
 
     def __init__(self, failure_threshold: int = 5, timeout: int = 60) -> None:
-        self.failure_threshold = failure_threshold
-        self.timeout = timeout
-        self.failure_count = 0
+        self.failure_threshold: int = failure_threshold
+        self.timeout: int = timeout
+        self.failure_count: int = 0
         self.last_failure_time: datetime | None = None
-        self.state = "CLOSED"  # CLOSED, OPEN, HALF_OPEN
+        self.state: Literal["CLOSED", "OPEN", "HALF_OPEN"] = "CLOSED"
 
-    def call(self, func: Any, *args: Any, **kwargs: Any) -> Any:
+    def call(
+        self,
+        func: Callable[..., _CircuitBreakerResult],
+        *args: object,
+        **kwargs: object,
+    ) -> _CircuitBreakerResult:
         """
         Execute function with circuit breaker protection.
 
@@ -482,217 +531,3 @@ class CircuitBreaker:  # pylint: disable=too-few-public-methods  # Reason: Utili
 
         time_since_failure = (datetime.now() - self.last_failure_time).total_seconds()
         return time_since_failure >= self.timeout
-
-
-def _is_safe_detail_key(key: str) -> bool:
-    """
-    Check if a detail key is safe to expose to users.
-
-    Args:
-        key: The detail key to check
-
-    Returns:
-        True if the key is safe to expose, False otherwise
-    """
-    # Safe keys that don't expose sensitive information
-    safe_keys = {
-        "auth_type",
-        "operation",
-        "table",
-        "field",
-        "value",
-        "game_action",
-        "config_key",
-        "connection_type",
-        "resource_type",
-        "resource_id",
-        "limit_type",
-        "retry_after",
-    }
-
-    # Block keys that might contain sensitive information
-    unsafe_patterns = [
-        "password",
-        "secret",
-        "key",
-        "token",
-        "credential",
-        "path",
-        "file",
-        "sql",
-        "query",
-        "stack",
-        "trace",
-        "internal",
-        "debug",
-        "sensitive",
-        "private",
-    ]
-
-    key_lower = key.lower()
-
-    # Check if key is explicitly safe
-    if key in safe_keys:
-        return True
-
-    # Check if key contains unsafe patterns
-    for pattern in unsafe_patterns:
-        if pattern in key_lower:
-            return False
-
-    return True
-
-
-def _sanitize_detail_value(value: Any) -> Any:
-    """
-    Sanitize a detail value to prevent information exposure.
-
-    Uses bleach for HTML sanitization and custom logic for error-specific patterns.
-
-    Args:
-        value: The value to sanitize
-
-    Returns:
-        Sanitized value safe for user exposure
-    """
-    if isinstance(value, str):
-        # First check for sensitive patterns that should be redacted
-        if any(pattern in value.lower() for pattern in ["traceback", "stack", "file:", "line:", "/", "\\"]):
-            return "[REDACTED]"
-
-        # Use bleach to sanitize any HTML content
-        # This prevents XSS if error messages contain HTML
-        sanitized = bleach.clean(
-            value,
-            tags=[],  # No HTML tags allowed
-            attributes={},  # No attributes allowed
-            strip=True,  # Strip all HTML
-            strip_comments=True,  # Strip comments
-        )
-
-        # Limit length to prevent information disclosure
-        if len(sanitized) > 100:
-            return sanitized[:100] + "..."
-
-        return sanitized
-    if isinstance(value, int | float | bool):
-        return value
-    if isinstance(value, dict):
-        return {k: _sanitize_detail_value(v) for k, v in value.items() if _is_safe_detail_key(k)}
-    if isinstance(value, list):
-        return [_sanitize_detail_value(v) for v in value]
-    # Convert to string and sanitize
-    str_value = str(value)
-    if len(str_value) > 100:
-        str_value = str_value[:100] + "..."
-    return _sanitize_detail_value(str_value)
-
-
-def _sanitize_context(context: Any) -> dict[str, Any] | None:
-    """
-    Sanitize error context to prevent information exposure.
-
-    Args:
-        context: The error context to sanitize
-
-    Returns:
-        Sanitized context dict or None if no safe fields
-    """
-    if not context:
-        return None
-
-    safe_context = {}
-
-    # Only include safe, non-sensitive context fields
-    safe_fields = ["user_id", "room_id", "command", "session_id", "request_id"]
-
-    for field in safe_fields:
-        if hasattr(context, field):
-            value = getattr(context, field)
-            if value is not None:
-                safe_context[field] = _sanitize_detail_value(value)
-
-    # Include timestamp if available
-    if hasattr(context, "timestamp") and context.timestamp:
-        safe_context["timestamp"] = context.timestamp.isoformat()
-
-    # Sanitize metadata if present
-    if hasattr(context, "metadata") and context.metadata:
-        safe_metadata = {}
-        for key, value in context.metadata.items():
-            if _is_safe_detail_key(key):
-                safe_metadata[key] = _sanitize_detail_value(value)
-        if safe_metadata:
-            safe_context["metadata"] = safe_metadata
-
-    return safe_context if safe_context else None
-
-
-def sanitize_html_content(content: str, allow_tags: list[str] | None = None) -> str:
-    """
-    Sanitize HTML content to prevent XSS attacks.
-
-    This is a general utility function that can be used throughout the application
-    for sanitizing user-provided HTML content.
-
-    Args:
-        content: The HTML content to sanitize
-        allow_tags: List of allowed HTML tags (default: basic formatting only)
-
-    Returns:
-        Sanitized HTML content
-    """
-    if not content:
-        return ""
-
-    # Default safe tags for basic formatting
-    if allow_tags is None:
-        allow_tags = ["p", "br", "strong", "em", "u", "i", "b", "ul", "ol", "li", "h1", "h2", "h3", "h4", "h5", "h6"]
-
-    # Default safe attributes
-    safe_attributes = {
-        "p": ["class"],
-        "span": ["class"],
-        "div": ["class"],
-        "h1": ["class"],
-        "h2": ["class"],
-        "h3": ["class"],
-        "h4": ["class"],
-        "h5": ["class"],
-        "h6": ["class"],
-    }
-
-    # Sanitize the content
-    sanitized = bleach.clean(
-        content,
-        tags=allow_tags,
-        attributes=safe_attributes,
-        strip=True,
-        strip_comments=True,
-    )
-
-    return str(sanitized)  # Explicit str for mypy no-any-return (bleach.clean returns str)
-
-
-def sanitize_text_content(content: str, max_length: int = 1000) -> str:
-    """
-    Sanitize plain text content to prevent information exposure.
-
-    Args:
-        content: The text content to sanitize
-        max_length: Maximum allowed length (default: 1000 characters)
-
-    Returns:
-        Sanitized text content
-    """
-    if not content:
-        return ""
-
-    # Remove any HTML tags
-    sanitized = bleach.clean(content, tags=[], strip=True)
-
-    # Limit length
-    if len(sanitized) > max_length:
-        sanitized = sanitized[:max_length] + "..."
-
-    return str(sanitized)  # Explicit str for mypy no-any-return (bleach.clean returns str)

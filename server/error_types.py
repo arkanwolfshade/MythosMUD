@@ -7,8 +7,9 @@ Manuscripts teach us, proper categorization is essential for understanding
 and managing the eldritch forces we encounter.
 """
 
+from collections.abc import Mapping
 from enum import Enum
-from typing import Any
+from typing import TypedDict, cast
 
 
 class ErrorType(Enum):
@@ -71,13 +72,81 @@ class ErrorSeverity(Enum):
     CRITICAL = "critical"
 
 
+class ValidationFieldErrorDetail(TypedDict):
+    """Single field validation error included in error response details."""
+
+    field: str
+    type: str
+    message: str
+    input: object
+
+
+class ErrorContextDetail(TypedDict, total=False):
+    """Request context included in error response details when available."""
+
+    user_id: str | None
+    session_id: str | None
+    request_id: str | None
+
+
+class ErrorResponseDetails(TypedDict, total=False):
+    """Structured details attached to standardized error responses."""
+
+    validation_errors: list[ValidationFieldErrorDetail]
+    error_count: int
+    model_class: str | None
+    context: ErrorContextDetail
+    fallback: bool
+
+
+class StandardErrorPayload(TypedDict):
+    """Nested error payload for HTTP standardized responses."""
+
+    type: str
+    message: str
+    user_friendly: str
+    details: ErrorResponseDetails
+    severity: str
+    timestamp: str
+
+
+class HttpStandardErrorResponse(TypedDict):
+    """HTTP standardized error response envelope."""
+
+    error: StandardErrorPayload
+
+
+class RealtimeErrorResponse(TypedDict):
+    """WebSocket or SSE standardized error response."""
+
+    type: str
+    error_type: str
+    message: str
+    user_friendly: str
+    details: ErrorResponseDetails
+
+
+StandardizedErrorResponseDict = HttpStandardErrorResponse | RealtimeErrorResponse
+
+ErrorResponseDetailsInput = ErrorResponseDetails | Mapping[str, object]
+
+
+def _normalize_error_response_details(
+    details: ErrorResponseDetailsInput | None,
+) -> ErrorResponseDetails:
+    """Coerce caller-provided detail mappings into the response TypedDict shape."""
+    if details is None:
+        return {}
+    return cast(ErrorResponseDetails, dict(details))
+
+
 def create_standard_error_response(
     error_type: ErrorType,
     message: str,
     user_friendly: str | None = None,
-    details: dict[str, Any] | None = None,
+    details: ErrorResponseDetailsInput | None = None,
     severity: ErrorSeverity = ErrorSeverity.MEDIUM,
-) -> dict[str, Any]:
+) -> HttpStandardErrorResponse:
     """
     Create a standardized error response.
 
@@ -93,12 +162,14 @@ def create_standard_error_response(
     """
     from datetime import UTC, datetime
 
+    normalized_details = _normalize_error_response_details(details)
+
     return {
         "error": {
             "type": error_type.value,
             "message": message,
             "user_friendly": user_friendly or message,
-            "details": details or {},
+            "details": normalized_details,
             "severity": severity.value,
             "timestamp": datetime.now(UTC).isoformat(),
         }
@@ -109,8 +180,8 @@ def create_websocket_error_response(
     error_type: ErrorType,
     message: str,
     user_friendly: str | None = None,
-    details: dict[str, Any] | None = None,
-) -> dict[str, Any]:
+    details: ErrorResponseDetailsInput | None = None,
+) -> RealtimeErrorResponse:
     """
     Create a standardized WebSocket error response.
 
@@ -123,12 +194,14 @@ def create_websocket_error_response(
     Returns:
         WebSocket error response dictionary
     """
+    normalized_details = _normalize_error_response_details(details)
+
     return {
         "type": "error",
         "error_type": error_type.value,
         "message": message,
         "user_friendly": user_friendly or message,
-        "details": details or {},
+        "details": normalized_details,
     }
 
 
@@ -136,8 +209,8 @@ def create_sse_error_response(
     error_type: ErrorType,
     message: str,
     user_friendly: str | None = None,
-    details: dict[str, Any] | None = None,
-) -> dict[str, Any]:
+    details: ErrorResponseDetailsInput | None = None,
+) -> RealtimeErrorResponse:
     """
     DEPRECATED: SSE connections are no longer supported.
     This function is kept for backward compatibility but returns the same format as WebSocket errors.
@@ -151,12 +224,14 @@ def create_sse_error_response(
     Returns:
         Error response dictionary (same format as WebSocket errors)
     """
+    normalized_details = _normalize_error_response_details(details)
+
     return {
         "type": "error",
         "error_type": error_type.value,
         "message": message,
         "user_friendly": user_friendly or message,
-        "details": details or {},
+        "details": normalized_details,
     }
 
 

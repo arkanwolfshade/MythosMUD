@@ -31,10 +31,7 @@ from server.legacy_error_handlers import (
     ErrorResponse,
     _get_severity_for_error,
     _get_status_code_for_error,
-    _is_safe_detail_key,
     _map_error_type,
-    _sanitize_context,
-    _sanitize_detail_value,
     create_error_response,
     general_exception_handler,
     graceful_degradation,
@@ -44,6 +41,11 @@ from server.legacy_error_handlers import (
     register_error_handlers,
     sanitize_html_content,
     sanitize_text_content,
+)
+from server.legacy_error_sanitization import (
+    is_safe_detail_key,
+    sanitize_context,
+    sanitize_detail_value,
 )
 
 
@@ -417,66 +419,66 @@ class TestErrorHandlers:
 class TestSanitization:
     """Test sanitization functions."""
 
-    def test_is_safe_detail_key_safe(self):
-        """Test _is_safe_detail_key with safe keys."""
-        assert _is_safe_detail_key("auth_type") is True
-        assert _is_safe_detail_key("operation") is True
-        assert _is_safe_detail_key("table") is True
-        assert _is_safe_detail_key("field") is True
+    def testis_safe_detail_key_safe(self):
+        """Test is_safe_detail_key with safe keys."""
+        assert is_safe_detail_key("auth_type") is True
+        assert is_safe_detail_key("operation") is True
+        assert is_safe_detail_key("table") is True
+        assert is_safe_detail_key("field") is True
 
-    def test_is_safe_detail_key_unsafe(self):
-        """Test _is_safe_detail_key with unsafe keys."""
-        assert _is_safe_detail_key("password") is False
-        assert _is_safe_detail_key("secret") is False
-        assert _is_safe_detail_key("api_key") is False
-        assert _is_safe_detail_key("token") is False
-        assert _is_safe_detail_key("credential") is False
+    def testis_safe_detail_key_unsafe(self):
+        """Test is_safe_detail_key with unsafe keys."""
+        assert is_safe_detail_key("password") is False
+        assert is_safe_detail_key("secret") is False
+        assert is_safe_detail_key("api_key") is False
+        assert is_safe_detail_key("token") is False
+        assert is_safe_detail_key("credential") is False
 
     def test_sanitize_detail_value_string(self):
-        """Test _sanitize_detail_value with string."""
-        result = _sanitize_detail_value("test value")
+        """Test sanitize_detail_value with string."""
+        result = sanitize_detail_value("test value")
         assert result == "test value"
 
     def test_sanitize_detail_value_long_string(self):
-        """Test _sanitize_detail_value with long string."""
+        """Test sanitize_detail_value with long string."""
         long_string = "a" * 150
-        result = _sanitize_detail_value(long_string)
+        result = sanitize_detail_value(long_string)
         assert len(result) <= 103  # 100 + "..."
         assert result.endswith("...")
 
     def test_sanitize_detail_value_traceback(self):
-        """Test _sanitize_detail_value with traceback-like string."""
+        """Test sanitize_detail_value with traceback-like string."""
         traceback_string = "Traceback (most recent call last):\n  File test.py"
-        result = _sanitize_detail_value(traceback_string)
+        result = sanitize_detail_value(traceback_string)
         assert result == "[REDACTED]"
 
     def test_sanitize_detail_value_int(self):
-        """Test _sanitize_detail_value with integer."""
-        result = _sanitize_detail_value(42)
+        """Test sanitize_detail_value with integer."""
+        result = sanitize_detail_value(42)
         assert result == 42
 
     def test_sanitize_detail_value_dict(self):
-        """Test _sanitize_detail_value with dictionary."""
-        # Use "field" which is a safe key according to _is_safe_detail_key()
+        """Test sanitize_detail_value with dictionary."""
+        # Use "field" which is a safe key according to is_safe_detail_key()
         value = {"field": "value", "password": "secret"}
-        result = _sanitize_detail_value(value)
+        result = sanitize_detail_value(value)
         assert "field" in result
         assert "password" not in result
 
     def test_sanitize_detail_value_list(self):
-        """Test _sanitize_detail_value with list."""
+        """Test sanitize_detail_value with list."""
         value = ["item1", "item2"]
-        result = _sanitize_detail_value(value)
+        result = sanitize_detail_value(value)
         assert isinstance(result, list)
         assert len(result) == 2
 
     def test_sanitize_context_with_safe_fields(self):
-        """Test _sanitize_context with safe fields."""
+        """Test sanitize_context with safe fields."""
         context = create_error_context()
         context.user_id = "user123"
         context.room_id = "room456"
         context.command = "look"
-        result = _sanitize_context(context)
+        result = sanitize_context(context)
         assert result is not None
         # Type narrowing: after assert result is not None, result is dict[str, Any]
         # Use .get() to avoid type checker issues with subscript notation
@@ -486,14 +488,14 @@ class TestSanitization:
         assert result.get("command") == "look"
 
     def test_sanitize_context_none(self):
-        """Test _sanitize_context with None."""
-        result = _sanitize_context(None)
+        """Test sanitize_context with None."""
+        result = sanitize_context(None)
         assert result is None
 
     def test_sanitize_context_empty(self):
-        """Test _sanitize_context with empty context."""
+        """Test sanitize_context with empty context."""
         context = create_error_context()
-        result = _sanitize_context(context)
+        result = sanitize_context(context)
         # Should return None if no safe fields are present
         assert result is None or isinstance(result, dict)
 

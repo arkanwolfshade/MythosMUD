@@ -25,6 +25,7 @@ from ..error_types import (
     ErrorMessages,
     ErrorSeverity,
     ErrorType,
+    StandardizedErrorResponseDict,
     create_sse_error_response,
     create_standard_error_response,
     create_websocket_error_response,
@@ -48,6 +49,25 @@ from ..structured_logging.enhanced_logging_config import get_logger
 from .pydantic_error_handler import PydanticErrorHandler
 
 logger = get_logger(__name__)
+
+_SENSITIVE_EXCEPTION_PATTERNS = (
+    "traceback",
+    "stack",
+    "file:",
+    "line:",
+    "traceback (most recent call last)",
+)
+_EXCEPTION_PATH_INDICATORS = (".py", ".js", "c:\\", "/home/", "/usr/", "e:\\")
+
+
+def _contains_sensitive_exception_pattern(message_lower: str) -> bool:
+    return any(pattern in message_lower for pattern in _SENSITIVE_EXCEPTION_PATTERNS)
+
+
+def _contains_file_path_in_exception(message: str, message_lower: str) -> bool:
+    if "/" not in message and "\\" not in message:
+        return False
+    return any(indicator in message_lower for indicator in _EXCEPTION_PATH_INDICATORS)
 
 
 class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Reason: Utility class with focused responsibility, minimal public interface
@@ -144,40 +164,29 @@ class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Re
         self.request = request
         self.context = self._extract_context_from_request(request)
 
-    def _extract_context_from_request(self, request: Request | None) -> ErrorContext:
-        """Extract error context from FastAPI request."""
-        if not request:
-            return create_error_context()
+    @staticmethod
+    def _extract_user_id_from_state(state: Any) -> str | None:
+        """Extract user id from request state when present."""
+        if not (hasattr(state, "user") and state.user):
+            return None
 
-        # Extract context information from request
-        # AI Agent: Explicit typing to prevent mypy from inferring dict[str, str]
-        context_data: dict[str, Any] = {}
+        user = state.user
+        try:
+            if hasattr(user, "get"):
+                return str(user.get("id", ""))
+            if hasattr(user, "__getitem__"):
+                return str(user["id"])
+            if hasattr(user, "id"):
+                return str(user.id)
+        except (KeyError, AttributeError, TypeError):
+            # Silently skip if user information cannot be extracted
+            pass
+        return None
 
-        # Extract user information if available
-        if hasattr(request.state, "user") and request.state.user:
-            # Handle both dict and object-style user attributes
-            try:
-                # Try dict-style access first
-                if hasattr(request.state.user, "get"):
-                    context_data["user_id"] = str(request.state.user.get("id", ""))
-                elif hasattr(request.state.user, "__getitem__"):
-                    context_data["user_id"] = str(request.state.user["id"])
-                elif hasattr(request.state.user, "id"):
-                    context_data["user_id"] = str(request.state.user.id)
-            except (KeyError, AttributeError, TypeError):
-                # Silently skip if user information cannot be extracted
-                pass
-
-        # Extract session information
-        if hasattr(request.state, "session_id"):
-            context_data["session_id"] = request.state.session_id
-
-        # Extract request information
-        # AI Agent: getattr returns Any, which is compatible with str | None in ErrorContext
-        context_data["request_id"] = getattr(request.state, "request_id", None)
-
-        # Extract additional metadata
-        metadata = {}
+    @staticmethod
+    def _extract_request_metadata(request: Request) -> dict[str, str]:
+        """Extract URL, method, and header metadata from a request."""
+        metadata: dict[str, str] = {}
         if hasattr(request, "url"):
             metadata["url"] = str(request.url)
         if hasattr(request, "method"):
@@ -185,8 +194,26 @@ class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Re
         if hasattr(request, "headers"):
             metadata["user_agent"] = request.headers.get("user-agent", "")
             metadata["content_type"] = request.headers.get("content-type", "")
+        return metadata
 
-        context_data["metadata"] = metadata
+    def _extract_context_from_request(self, request: Request | None) -> ErrorContext:
+        """Extract error context from FastAPI request."""
+        if not request:
+            return create_error_context()
+
+        # AI Agent: Explicit typing to prevent mypy from inferring dict[str, str]
+        context_data: dict[str, Any] = {}
+
+        user_id = self._extract_user_id_from_state(request.state)
+        if user_id is not None:
+            context_data["user_id"] = user_id
+
+        if hasattr(request.state, "session_id"):
+            context_data["session_id"] = request.state.session_id
+
+        # AI Agent: getattr returns Any, which is compatible with str | None in ErrorContext
+        context_data["request_id"] = getattr(request.state, "request_id", None)
+        context_data["metadata"] = self._extract_request_metadata(request)
 
         return create_error_context(**context_data)
 
@@ -235,24 +262,23 @@ class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Re
 
         # Create appropriate response
         public_message = user_friendly
+        response_data: StandardizedErrorResponseDict
         if response_type == "websocket":
             response_data = create_websocket_error_response(
                 error_type=error_type, message=public_message, user_friendly=user_friendly, details=details
             )
-            return JSONResponse(status_code=status_code, content=response_data)
-        if response_type == "sse":
+        elif response_type == "sse":
             response_data = create_sse_error_response(
                 error_type=error_type, message=public_message, user_friendly=user_friendly, details=details
             )
-            return JSONResponse(status_code=status_code, content=response_data)
-        # HTTP
-        response_data = create_standard_error_response(
-            error_type=error_type,
-            message=public_message,
-            user_friendly=user_friendly,
-            details=details,
-            severity=ErrorSeverity.MEDIUM,
-        )
+        else:
+            response_data = create_standard_error_response(
+                error_type=error_type,
+                message=public_message,
+                user_friendly=user_friendly,
+                details=details,
+                severity=ErrorSeverity.MEDIUM,
+            )
         return JSONResponse(status_code=status_code, content=response_data)
 
     def _handle_pydantic_validation_error(
@@ -292,6 +318,7 @@ class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Re
             details["original_detail"] = sanitized_detail
 
         # Create appropriate response
+        response_data: StandardizedErrorResponseDict
         if response_type == "websocket":
             response_data = create_websocket_error_response(
                 error_type=error_type, message=user_friendly, user_friendly=user_friendly, details=details
@@ -472,17 +499,9 @@ class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Re
         if not message:
             return "An unexpected error occurred"
 
-        # Check for sensitive patterns that indicate stack traces or file paths
         message_lower = message.lower()
-        sensitive_patterns = ["traceback", "stack", "file:", "line:", "traceback (most recent call last)"]
-
-        # Check for file path patterns (both Windows and Unix)
-        if any(pattern in message_lower for pattern in sensitive_patterns):
-            return "[REDACTED]"
-
-        # Check for file path patterns (contains slashes or backslashes with common path indicators)
-        if ("/" in message or "\\" in message) and any(
-            indicator in message_lower for indicator in [".py", ".js", "c:\\", "/home/", "/usr/", "e:\\"]
+        if _contains_sensitive_exception_pattern(message_lower) or _contains_file_path_in_exception(
+            message, message_lower
         ):
             return "[REDACTED]"
 
@@ -497,6 +516,7 @@ class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Re
         message = "An unexpected error occurred"
         user_friendly = "Please try again later"
 
+        response_data: StandardizedErrorResponseDict
         if response_type == "websocket":
             response_data = create_websocket_error_response(
                 error_type=ErrorType.INTERNAL_ERROR,

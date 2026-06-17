@@ -10,7 +10,7 @@ preservation and understanding.
 import traceback
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
-from typing import Any
+from typing import Any, TypedDict, Unpack
 
 from fastapi import HTTPException
 
@@ -35,7 +35,7 @@ class ErrorContext:
     session_id: str | None = None
     request_id: str | None = None
     timestamp: datetime = field(default_factory=lambda: datetime.now(UTC))
-    metadata: dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, object] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         """Convert context to dictionary for logging."""
@@ -48,6 +48,18 @@ class ErrorContext:
             "timestamp": self.timestamp.isoformat(),
             "metadata": self.metadata,
         }
+
+
+class ErrorContextInitKwargs(TypedDict, total=False):
+    """Keyword arguments accepted by create_error_context and ErrorContext()."""
+
+    user_id: str | None
+    room_id: str | None
+    command: str | None
+    session_id: str | None
+    request_id: str | None
+    timestamp: datetime
+    metadata: dict[str, object]
 
 
 class LoggedException(Exception):
@@ -267,7 +279,7 @@ class RateLimitError(MythosMUDError):
             self.details["retry_after"] = retry_after
 
 
-def create_error_context(**kwargs: Any) -> ErrorContext:
+def create_error_context(**kwargs: Unpack[ErrorContextInitKwargs]) -> ErrorContext:
     """
     Create an error context with the given parameters.
 

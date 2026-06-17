@@ -5,7 +5,7 @@
     "semantic_hash": ""
   },
   ".codacy/tools-configs/eslint.config.mjs": {
-    "mtime": 1781705233.7025566,
+    "mtime": 1781714071.765644,
     "ast_hash": "36e2dc52f1147055b88e9173ef86b599",
     "semantic_hash": ""
   },
@@ -3560,8 +3560,8 @@
     "semantic_hash": ""
   },
   "db/mythos_dev_ddl.sql": {
-    "mtime": 1781705338.8455784,
-    "ast_hash": "ff1536d4c2ebcddebbce4c3073ae05b8",
+    "mtime": 1781706661.5384269,
+    "ast_hash": "ff332cdb30aee426401fa65603e5f437",
     "semantic_hash": ""
   },
   "db/mythos_e2e_ddl.sql": {
@@ -3700,7 +3700,7 @@
     "semantic_hash": ""
   },
   "docs/openapi/openapi.json": {
-    "mtime": 1781705424.2927153,
+    "mtime": 1781708093.7775965,
     "ast_hash": "25012726ebae52db86996251b9384285",
     "semantic_hash": ""
   },
@@ -4035,8 +4035,8 @@
     "semantic_hash": ""
   },
   "scripts/ci/quality_fragmentation_guard.py": {
-    "mtime": 1781705247.4331088,
-    "ast_hash": "cddc0455998ae337250e1a0111ecb30a",
+    "mtime": 1781714444.589663,
+    "ast_hash": "3194feaa73eb339d8c739469b166c626",
     "semantic_hash": ""
   },
   "scripts/ci/quality_fragmentation_trends.py": {
@@ -5810,18 +5810,18 @@
     "semantic_hash": ""
   },
   "server/error_handlers/pydantic_error_handler.py": {
-    "mtime": 1781704177.6764855,
-    "ast_hash": "d8693625771fe0326e679c07a4bdbceb",
+    "mtime": 1781707609.6569858,
+    "ast_hash": "2a43d7e931c0c83cdb5390a44f8887d6",
     "semantic_hash": ""
   },
   "server/error_handlers/standardized_responses.py": {
-    "mtime": 1780609218.0317233,
-    "ast_hash": "0440b94c06d5f6a6722b140c514cb12b",
+    "mtime": 1781714092.9888682,
+    "ast_hash": "93e581eedd25a88b3ad28ee18cfa5020",
     "semantic_hash": ""
   },
   "server/error_types.py": {
-    "mtime": 1775192600.6897647,
-    "ast_hash": "0a3b05334a4bc026e553ac892c525140",
+    "mtime": 1781708296.620697,
+    "ast_hash": "37e9f300eec1e3738322290661bc0317",
     "semantic_hash": ""
   },
   "server/events/__init__.py": {
@@ -5860,8 +5860,8 @@
     "semantic_hash": ""
   },
   "server/exceptions.py": {
-    "mtime": 1775192600.6897647,
-    "ast_hash": "822d639cef368ff508890a0d95bf6b97",
+    "mtime": 1781709278.9105887,
+    "ast_hash": "de8cf3ca6b423a8a325b1a5f688bdd57",
     "semantic_hash": ""
   },
   "server/game/__init__.py": {
@@ -6200,8 +6200,8 @@
     "semantic_hash": ""
   },
   "server/legacy_error_handlers.py": {
-    "mtime": 1775192600.7054272,
-    "ast_hash": "2174969cbb8397e3ec01ce9ff535b96a",
+    "mtime": 1781713432.0166924,
+    "ast_hash": "48e7df238478d15780c6e4a236ce3a93",
     "semantic_hash": ""
   },
   "server/main.py": {
@@ -10450,8 +10450,8 @@
     "semantic_hash": ""
   },
   "server/tests/unit/test_legacy_error_handlers.py": {
-    "mtime": 1775192600.8625982,
-    "ast_hash": "8bef5f3dc8f7ee86ef2880a7ab441dab",
+    "mtime": 1781713432.0166924,
+    "ast_hash": "0fc4297433f53a5bd8443d258af85b29",
     "semantic_hash": ""
   },
   "server/tests/unit/test_lucidity_service_smoke.py": {
@@ -10470,8 +10470,8 @@
     "semantic_hash": ""
   },
   "server/tests/unit/test_quality_fragmentation_guard.py": {
-    "mtime": 1775192600.8782372,
-    "ast_hash": "8ffed7874a7f656d2b64648484a14090",
+    "mtime": 1781714444.5860722,
+    "ast_hash": "e5135ba51408c61bcda9fa5f78cd318f",
     "semantic_hash": ""
   },
   "server/tests/unit/test_validate_codacy_coverage_gate.py": {
@@ -11010,12 +11010,12 @@
     "semantic_hash": ""
   },
   ".codacy/cli-config.yaml": {
-    "mtime": 1781705225.2954206,
+    "mtime": 1781714041.9142826,
     "ast_hash": "203ff582a9910dce987a7cf705ef71f9",
     "semantic_hash": ""
   },
   ".codacy/codacy.yaml": {
-    "mtime": 1781705245.8683455,
+    "mtime": 1781714457.3202717,
     "ast_hash": "b657d1aa91f6ddc9bd0130ad3cbf457d",
     "semantic_hash": ""
   },
@@ -11025,27 +11025,27 @@
     "semantic_hash": ""
   },
   ".codacy/tools-configs/analysis_options.yaml": {
-    "mtime": 1781705235.9840605,
+    "mtime": 1781714048.370973,
     "ast_hash": "36910684fda7b41b4891198f6301f08b",
     "semantic_hash": ""
   },
   ".codacy/tools-configs/languages-config.yaml": {
-    "mtime": 1781705236.5325131,
+    "mtime": 1781714080.652831,
     "ast_hash": "c02ac27bb97cf2a0444e78cdc4acb63c",
     "semantic_hash": ""
   },
   ".codacy/tools-configs/lizard.yaml": {
-    "mtime": 1781705235.5519996,
+    "mtime": 1781714049.5974438,
     "ast_hash": "b72b693268f5a8ad276d9943f203da40",
     "semantic_hash": ""
   },
   ".codacy/tools-configs/semgrep.yaml": {
-    "mtime": 1781705232.2283072,
+    "mtime": 1781714064.879786,
     "ast_hash": "a32b472788ffa75f498053e2b66931e2",
     "semantic_hash": ""
   },
   ".codacy/tools-configs/trivy.yaml": {
-    "mtime": 1781705235.2877655,
+    "mtime": 1781714067.851966,
     "ast_hash": "874980c67e727321ebe7e1806daf29e8",
     "semantic_hash": ""
   },
@@ -14307,6 +14307,26 @@
   "client/src/utils/domPurifyClient.ts": {
     "mtime": 1781621391.6156535,
     "ast_hash": "4e070f47636fa42813af6cf4f481f449",
+    "semantic_hash": ""
+  },
+  "server/legacy_error_sanitization.py": {
+    "mtime": 1781713432.0166924,
+    "ast_hash": "2e84f71683a11d00787ba35645cb5970",
+    "semantic_hash": ""
+  },
+  "scripts/ci/quality_fragmentation_ai_guardrails.py": {
+    "mtime": 1781714444.59167,
+    "ast_hash": "121f420c702e4e11fc76296c8bfa63ac",
+    "semantic_hash": ""
+  },
+  "scripts/ci/quality_fragmentation_core.py": {
+    "mtime": 1781714444.5870693,
+    "ast_hash": "9dfe952df4ee09d029e1117ea16c7eaf",
+    "semantic_hash": ""
+  },
+  "scripts/ci/quality_fragmentation_lizard.py": {
+    "mtime": 1781714444.5870693,
+    "ast_hash": "db993d21bbfd1ed408be9f85cf4c7756",
     "semantic_hash": ""
   }
 }

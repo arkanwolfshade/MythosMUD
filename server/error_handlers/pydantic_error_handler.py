@@ -11,20 +11,25 @@ translated into terms the mortal mind can comprehend, lest madness take hold."
 
 # pylint: disable=too-many-return-statements  # Reason: Error handlers require multiple return statements for different error type handling and response generation
 
-from typing import Any
+from collections.abc import Sequence
+from typing import ClassVar, TypedDict, Unpack
 
 from pydantic import ValidationError
 
 from ..error_types import (
     ErrorMessages,
+    ErrorResponseDetails,
     ErrorSeverity,
     ErrorType,
+    StandardizedErrorResponseDict,
+    ValidationFieldErrorDetail,
     create_sse_error_response,
     create_standard_error_response,
     create_websocket_error_response,
 )
 from ..exceptions import (
     ErrorContext,
+    ErrorContextInitKwargs,
     create_error_context,
 )
 from ..exceptions import (
@@ -33,6 +38,26 @@ from ..exceptions import (
 from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
+
+
+class _ExtractedFieldErrorInfo(TypedDict):
+    """Intermediate field error extracted from a Pydantic ValidationError."""
+
+    field: str
+    error_type: str
+    message: str
+    input_value: object
+    context: dict[str, object]
+
+
+class _ExtractedErrorInfo(TypedDict):
+    """Structured information extracted from a Pydantic ValidationError."""
+
+    message: str
+    error_count: int
+    errors: list[_ExtractedFieldErrorInfo]
+    model_class: str | None
+    fields_with_errors: set[str]
 
 
 class PydanticErrorHandler:
@@ -44,7 +69,7 @@ class PydanticErrorHandler:
     """
 
     # Common field name mappings for user-friendly display
-    FIELD_NAME_MAPPINGS = {
+    FIELD_NAME_MAPPINGS: ClassVar[dict[str, str]] = {
         "message": "message",
         "direction": "direction",
         "target_player": "target player",
@@ -58,7 +83,7 @@ class PydanticErrorHandler:
     }
 
     # Common error type mappings
-    ERROR_TYPE_MAPPINGS = {
+    ERROR_TYPE_MAPPINGS: ClassVar[dict[str, ErrorType]] = {
         "missing": ErrorType.MISSING_REQUIRED_FIELD,
         "value_error": ErrorType.INVALID_INPUT,
         "type_error": ErrorType.INVALID_FORMAT,
@@ -69,6 +94,8 @@ class PydanticErrorHandler:
         "greater_than_equal": ErrorType.INVALID_INPUT,
         "less_than_equal": ErrorType.INVALID_INPUT,
     }
+
+    context: ErrorContext
 
     def __init__(self, context: ErrorContext | None = None) -> None:
         """
@@ -81,7 +108,7 @@ class PydanticErrorHandler:
 
     def handle_validation_error(
         self, error: ValidationError, model_class: type | None = None, response_type: str = "http"
-    ) -> dict[str, Any]:
+    ) -> StandardizedErrorResponseDict:
         """
         Handle a Pydantic ValidationError and convert it to a standardized response.
 
@@ -131,7 +158,7 @@ class PydanticErrorHandler:
             logger.error("Error in PydanticErrorHandler", error=str(e), exc_info=True)
             return self._create_fallback_error_response(error, response_type)
 
-    def _extract_error_info(self, error: ValidationError, model_class: type | None = None) -> dict[str, Any]:
+    def _extract_error_info(self, error: ValidationError, model_class: type | None = None) -> _ExtractedErrorInfo:
         """
         Extract structured information from a Pydantic ValidationError.
 
@@ -142,8 +169,7 @@ class PydanticErrorHandler:
         Returns:
             Dictionary containing extracted error information
         """
-        # AI Agent: Explicit typing to help mypy understand structure
-        error_info: dict[str, Any] = {
+        error_info: _ExtractedErrorInfo = {
             "message": ErrorMessages.INVALID_INPUT,
             "error_count": len(error.errors()),
             "errors": [],
@@ -152,8 +178,8 @@ class PydanticErrorHandler:
         }
 
         for error_detail in error.errors():
-            field_info = {
-                "field": self._get_field_path(error_detail.get("loc", [])),  # type: ignore[arg-type]  # Reason: error_detail.get() returns Any, but _get_field_path accepts Sequence[str | int], runtime validation ensures compatibility
+            field_info: _ExtractedFieldErrorInfo = {
+                "field": self._get_field_path(error_detail.get("loc", ())),
                 "error_type": error_detail.get("type", "unknown"),
                 "message": error_detail.get("msg", "Unknown error"),
                 "input_value": error_detail.get("input"),
@@ -166,12 +192,12 @@ class PydanticErrorHandler:
 
         return error_info
 
-    def _get_field_path(self, location: list[str | int]) -> str:
+    def _get_field_path(self, location: Sequence[str | int]) -> str:
         """
         Convert Pydantic error location to a readable field path.
 
         Args:
-            location: Pydantic error location list
+            location: Pydantic error location tuple or sequence
 
         Returns:
             Readable field path string
@@ -183,7 +209,7 @@ class PydanticErrorHandler:
         path_parts = [str(part) for part in location if not isinstance(part, int)]
         return ".".join(path_parts) if path_parts else ""
 
-    def _determine_error_type(self, error_info: dict[str, Any]) -> ErrorType:
+    def _determine_error_type(self, error_info: _ExtractedErrorInfo) -> ErrorType:
         """
         Determine the appropriate ErrorType based on error information.
 
@@ -202,7 +228,7 @@ class PydanticErrorHandler:
         # Default to validation error
         return ErrorType.VALIDATION_ERROR
 
-    def _determine_severity(self, error_info: dict[str, Any]) -> ErrorSeverity:
+    def _determine_severity(self, error_info: _ExtractedErrorInfo) -> ErrorSeverity:
         """
         Determine the appropriate ErrorSeverity based on error information.
 
@@ -221,7 +247,28 @@ class PydanticErrorHandler:
         # Default to medium severity
         return ErrorSeverity.MEDIUM
 
-    def _generate_user_friendly_message(self, error_info: dict[str, Any]) -> str:
+    def _format_single_field_error_message(self, error: _ExtractedFieldErrorInfo) -> str:
+        """Generate a user-friendly message for one field validation error."""
+        field_name = self._get_display_field_name(error["field"])
+        error_type = error["error_type"]
+        context = error["context"]
+
+        if error_type == "string_too_short":
+            min_length = context.get("min_length", 1)
+            return f"{field_name.capitalize()} must be at least {min_length} characters"
+        if error_type == "string_too_long":
+            max_length = context.get("max_length", 100)
+            return f"{field_name.capitalize()} must be no more than {max_length} characters"
+
+        static_messages = {
+            "extra_forbidden": "Invalid field provided",
+            "missing": f"Please provide {field_name}",
+            "value_error": f"Invalid value for {field_name}",
+            "type_error": f"Invalid format for {field_name}",
+        }
+        return static_messages.get(error_type, f"Invalid {field_name}")
+
+    def _generate_user_friendly_message(self, error_info: _ExtractedErrorInfo) -> str:
         """
         Generate a user-friendly error message from error information.
 
@@ -232,27 +279,8 @@ class PydanticErrorHandler:
             User-friendly error message
         """
         if error_info["error_count"] == 1:
-            # Single error - provide specific message
-            error = error_info["errors"][0]
-            field_name = self._get_display_field_name(error["field"])
+            return self._format_single_field_error_message(error_info["errors"][0])
 
-            if error["error_type"] == "missing":
-                return f"Please provide {field_name}"
-            if error["error_type"] == "value_error":
-                return f"Invalid value for {field_name}"
-            if error["error_type"] == "type_error":
-                return f"Invalid format for {field_name}"
-            if error["error_type"] == "string_too_short":
-                min_length = error["context"].get("min_length", 1)
-                return f"{field_name.capitalize()} must be at least {min_length} characters"
-            if error["error_type"] == "string_too_long":
-                max_length = error["context"].get("max_length", 100)
-                return f"{field_name.capitalize()} must be no more than {max_length} characters"
-            if error["error_type"] == "extra_forbidden":
-                return "Invalid field provided"
-            return f"Invalid {field_name}"
-
-        # Multiple errors - provide general message
         field_count = len(error_info["fields_with_errors"])
         if field_count == 1:
             field_name = self._get_display_field_name(list(error_info["fields_with_errors"])[0])
@@ -282,7 +310,9 @@ class PydanticErrorHandler:
         # Convert snake_case to readable format
         return field_name.replace("_", " ")
 
-    def _create_error_details(self, error_info: dict[str, Any], _original_error: ValidationError) -> dict[str, Any]:  # pylint: disable=unused-argument  # Reason: Parameter reserved for future error context enhancement
+    def _create_error_details(
+        self, error_info: _ExtractedErrorInfo, _original_error: ValidationError
+    ) -> ErrorResponseDetails:  # pylint: disable=unused-argument  # Reason: Parameter reserved for future error context enhancement
         """
         Create detailed error information for debugging.
 
@@ -293,16 +323,17 @@ class PydanticErrorHandler:
         Returns:
             Dictionary containing error details
         """
-        details = {
-            "validation_errors": [
-                {
-                    "field": error["field"],
-                    "type": error["error_type"],
-                    "message": error["message"],
-                    "input": error["input_value"],
-                }
-                for error in error_info["errors"]
-            ],
+        validation_errors: list[ValidationFieldErrorDetail] = [
+            {
+                "field": error["field"],
+                "type": error["error_type"],
+                "message": error["message"],
+                "input": error["input_value"],
+            }
+            for error in error_info["errors"]
+        ]
+        details: ErrorResponseDetails = {
+            "validation_errors": validation_errors,
             "error_count": error_info["error_count"],
             "model_class": error_info["model_class"],
         }
@@ -317,7 +348,9 @@ class PydanticErrorHandler:
 
         return details
 
-    def _create_fallback_error_response(self, error: ValidationError, response_type: str) -> dict[str, Any]:
+    def _create_fallback_error_response(
+        self, error: ValidationError, response_type: str
+    ) -> StandardizedErrorResponseDict:
         """
         Create a fallback error response when normal processing fails.
 
@@ -330,7 +363,7 @@ class PydanticErrorHandler:
         """
         message = ErrorMessages.INVALID_INPUT
         user_friendly = "Please check your input and try again"
-        fallback_details = {"fallback": True, "error_count": len(error.errors())}
+        fallback_details: ErrorResponseDetails = {"fallback": True, "error_count": len(error.errors())}
 
         if response_type == "websocket":
             return create_websocket_error_response(
@@ -377,7 +410,7 @@ class PydanticErrorHandler:
         )
 
     @classmethod
-    def create_handler(cls, **context_kwargs: Any) -> "PydanticErrorHandler":
+    def create_handler(cls, **context_kwargs: Unpack[ErrorContextInitKwargs]) -> "PydanticErrorHandler":
         """
         Create a PydanticErrorHandler with specific context.
 
@@ -393,8 +426,11 @@ class PydanticErrorHandler:
 
 # Convenience functions for common use cases
 def handle_pydantic_error(
-    error: ValidationError, model_class: type | None = None, response_type: str = "http", **context_kwargs: Any
-) -> dict[str, Any]:
+    error: ValidationError,
+    model_class: type | None = None,
+    response_type: str = "http",
+    **context_kwargs: Unpack[ErrorContextInitKwargs],
+) -> StandardizedErrorResponseDict:
     """
     Convenience function to handle a Pydantic ValidationError.
 
@@ -412,7 +448,9 @@ def handle_pydantic_error(
 
 
 def convert_pydantic_error(
-    error: ValidationError, model_class: type | None = None, **context_kwargs: Any
+    error: ValidationError,
+    model_class: type | None = None,
+    **context_kwargs: Unpack[ErrorContextInitKwargs],
 ) -> MythosValidationError:
     """
     Convenience function to convert a Pydantic ValidationError to MythosValidationError.

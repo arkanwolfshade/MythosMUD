@@ -52,12 +52,31 @@ def _load_trends_module() -> _QualityTrendsModule:
     return cast(_QualityTrendsModule, cast(object, mod))
 
 
+def _set_repo_root(guard: _QualityGuardModule, tmp_path: Path) -> None:
+    """Point guard submodules at a temporary repo root for isolated scans."""
+    module_names = (
+        "scripts.ci.quality_fragmentation_core",
+        "scripts.ci.quality_fragmentation_ai_guardrails",
+        "scripts.ci.quality_fragmentation_lizard",
+    )
+    for module_name in module_names:
+        module_path = _REPO_ROOT / "scripts" / "ci" / f"{module_name.rsplit('.', 1)[-1]}.py"
+        if module_name not in sys.modules:
+            spec = importlib.util.spec_from_file_location(module_name, module_path)
+            assert spec and spec.loader
+            mod = importlib.util.module_from_spec(spec)
+            sys.modules[module_name] = mod
+            spec.loader.exec_module(mod)
+        sys.modules[module_name].REPO_ROOT = tmp_path
+    guard.REPO_ROOT = tmp_path
+
+
 def test_scan_changed_files_skips_single_use_for_test_file(tmp_path: Path) -> None:
     guard = _load_guard_module()
     test_file = tmp_path / "server" / "tests" / "unit" / "test_example.py"
     test_file.parent.mkdir(parents=True, exist_ok=True)
     _ = test_file.write_text("def helper():\n    return 1\n", encoding="utf-8")
-    guard.REPO_ROOT = tmp_path
+    _set_repo_root(guard, tmp_path)
     failures: list[str] = []
     changed_file_ctor = cast(Callable[[str, str | None, str], _ChangedFile], guard.ChangedFile)
     changed = [changed_file_ctor("A", None, "server/tests/unit/test_example.py")]
@@ -79,7 +98,7 @@ def test_scan_changed_files_flags_single_use_for_non_test_file(tmp_path: Path) -
     code_file = tmp_path / "server" / "commands" / "new_helper.py"
     code_file.parent.mkdir(parents=True, exist_ok=True)
     _ = code_file.write_text("def helper():\n    return 1\n", encoding="utf-8")
-    guard.REPO_ROOT = tmp_path
+    _set_repo_root(guard, tmp_path)
     failures: list[str] = []
     changed_file_ctor = cast(Callable[[str, str | None, str], _ChangedFile], guard.ChangedFile)
     changed = [changed_file_ctor("A", None, "server/commands/new_helper.py")]
@@ -103,7 +122,7 @@ def test_scan_changed_files_skips_single_use_for_grouped_file(tmp_path: Path) ->
     _ = code_file.write_text(
         '"""group: inventory_container_helpers"""\n\ndef helper():\n    return 1\n', encoding="utf-8"
     )
-    guard.REPO_ROOT = tmp_path
+    _set_repo_root(guard, tmp_path)
     failures: list[str] = []
     changed_file_ctor = cast(Callable[[str, str | None, str], _ChangedFile], guard.ChangedFile)
     changed = [changed_file_ctor("A", None, "server/commands/grouped_helper.py")]
@@ -125,7 +144,7 @@ def test_scan_changed_files_flags_tiny_single_use_function(tmp_path: Path) -> No
     code_file = tmp_path / "server" / "commands" / "tiny_rule_a.py"
     code_file.parent.mkdir(parents=True, exist_ok=True)
     _ = code_file.write_text("def tiny():\n    return 1\n", encoding="utf-8")
-    guard.REPO_ROOT = tmp_path
+    _set_repo_root(guard, tmp_path)
     failures: list[str] = []
     changed_file_ctor = cast(Callable[[str, str | None, str], _ChangedFile], guard.ChangedFile)
     changed = [changed_file_ctor("A", None, "server/commands/tiny_rule_a.py")]
@@ -151,7 +170,7 @@ def test_scan_changed_files_skips_tiny_single_use_for_grouped_file(tmp_path: Pat
         '"""group: inventory_container_helpers"""\n\ndef tiny():\n    return 1\n',
         encoding="utf-8",
     )
-    guard.REPO_ROOT = tmp_path
+    _set_repo_root(guard, tmp_path)
     failures: list[str] = []
     changed_file_ctor = cast(Callable[[str, str | None, str], _ChangedFile], guard.ChangedFile)
     changed = [changed_file_ctor("A", None, "server/commands/grouped_tiny.py")]
@@ -174,7 +193,7 @@ def test_scan_changed_files_does_not_flag_tiny_function_with_two_usages(tmp_path
     code_file = tmp_path / "server" / "commands" / "tiny_rule_a.py"
     code_file.parent.mkdir(parents=True, exist_ok=True)
     _ = code_file.write_text("def tiny():\n    return 1\n", encoding="utf-8")
-    guard.REPO_ROOT = tmp_path
+    _set_repo_root(guard, tmp_path)
     failures: list[str] = []
     changed_file_ctor = cast(Callable[[str, str | None, str], _ChangedFile], guard.ChangedFile)
     changed = [changed_file_ctor("A", None, "server/commands/tiny_rule_a.py")]
@@ -237,7 +256,7 @@ def test_collect_repo_texts_reports_unreadable_files(tmp_path: Path) -> None:
     _ = good.write_text("x = 1\n", encoding="utf-8")
     bad = tmp_path / "bad.py"
     _ = bad.write_bytes(b"\xff")
-    guard.REPO_ROOT = tmp_path
+    _set_repo_root(guard, tmp_path)
 
     collect_repo_texts = cast(Callable[[str], tuple[list[tuple[str, str]], int]], guard.collect_repo_texts)
     texts, read_errors = collect_repo_texts(".py")
