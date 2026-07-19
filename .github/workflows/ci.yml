@@ -58,7 +58,7 @@ jobs:
     steps:
       - name: Harden the runner (Audit all outbound calls)
         if: ${{ !env.ACT }}
-        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
         with:
           egress-policy: audit
       # Standard bootstrap: harden + checkout
@@ -128,7 +128,7 @@ jobs:
           cd ..
 
       - name: Set up Python
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: "3.12"
       # Pinned uv binary (scripts/ensure_uv_ci.sh) avoids curl|sh install.sh (supply-chain).
@@ -138,7 +138,7 @@ jobs:
           UV_BIN_DIR="$(bash scripts/ensure_uv_ci.sh)"
           echo "${UV_BIN_DIR}" >> "${GITHUB_PATH}"
       - name: Cache uv virtual environment
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: .venv-ci
           key: ${{ runner.os }}-uv-${{ hashFiles('**/pyproject.toml', '**/uv.lock') }}
@@ -382,7 +382,7 @@ jobs:
     steps:
       - name: Harden the runner (Audit all outbound calls)
         if: ${{ !env.ACT }}
-        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
         with:
           egress-policy: audit
       # Standard bootstrap: harden + checkout
@@ -396,7 +396,7 @@ jobs:
         with:
           node-version: "22"
       - name: Cache npm dependencies
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: client/node_modules
           key: ${{ runner.os }}-npm-${{ hashFiles('client/package-lock.json') }}
