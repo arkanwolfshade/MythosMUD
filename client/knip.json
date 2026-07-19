@@ -1,8 +1,9 @@
 {
-  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "$schema": "https://unpkg.com/knip@6/schema.json",
   "entry": ["vite.userConfig.ts", "tests/e2e/runtime/global-setup.ts", "tests/e2e/runtime/global-teardown.ts"],
   "project": ["src/**/*.{ts,tsx,js,jsx}", "tests/**/*.ts"],
-  "ignoreDependencies": ["@stoplight/spectral-cli", "markdownlint-cli", "patch-package", "stylelint", "cross-env"],
+  "ignoreDependencies": ["@stoplight/spectral-cli", "markdownlint-cli", "stylelint", "cross-env"],
+  "ignoreBinaries": ["uv", "pwsh"],
   "treatConfigHintsAsErrors": false,
   "rules": {
     "exports": "off",
@@ -10,6 +11,7 @@
     "files": "off",
     "devDependencies": "error",
     "dependencies": "error",
-    "unlisted": "error"
+    "unlisted": "error",
+    "binaries": "error"
   }
 }
