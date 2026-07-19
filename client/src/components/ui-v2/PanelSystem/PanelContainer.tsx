@@ -200,6 +200,8 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
             opacity: 1,
           }}
           className={`${variantClasses} overflow-hidden border rounded ${className}`}
+          data-testid={`game-panel-${id}`}
+          data-panel-minimized="true"
           {...(opaque ? { 'data-panel-opaque': 'true' } : {})}
         >
           <PanelSolidUnderlay />
@@ -209,12 +211,14 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
           >
             <span className="text-sm font-bold text-mythos-terminal-primary">{title}</span>
             <div className="flex items-center gap-2">
-              <TerminalButton variant="secondary" size="sm" onClick={handleMaximize} className="p-1 h-9 w-9">
-                <EldritchIcon
-                  name={isMaximized ? MythosIcons.restore : MythosIcons.maximize}
-                  size={12}
-                  variant="primary"
-                />
+              <TerminalButton
+                variant="secondary"
+                size="sm"
+                onClick={handleMinimize}
+                className="p-1 h-9 w-9"
+                data-testid={`game-panel-${id}-restore`}
+              >
+                <EldritchIcon name={MythosIcons.restore} size={12} variant="primary" />
               </TerminalButton>
               {onClose && (
                 <TerminalButton variant="secondary" size="sm" onClick={handleClose} className="p-1 h-9 w-9">
@@ -255,6 +259,8 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
           opacity: 1,
         }}
         className={`${variantClasses} overflow-hidden border rounded ${className}`}
+        data-testid={`game-panel-${id}`}
+        data-panel-minimized="false"
         {...(opaque ? { 'data-panel-opaque': 'true' } : {})}
         bounds="window"
       >
@@ -277,7 +283,13 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
           >
             <span className="text-sm font-bold text-mythos-terminal-primary">{title}</span>
             <div className="flex items-center gap-2">
-              <TerminalButton variant="secondary" size="sm" onClick={handleMinimize} className="p-1 h-9 w-9">
+              <TerminalButton
+                variant="secondary"
+                size="sm"
+                onClick={handleMinimize}
+                className="p-1 h-9 w-9"
+                data-testid={`game-panel-${id}-minimize`}
+              >
                 <EldritchIcon name={MythosIcons.minimize} size={12} variant="primary" />
               </TerminalButton>
               <TerminalButton variant="secondary" size="sm" onClick={handleMaximize} className="p-1 h-9 w-9">

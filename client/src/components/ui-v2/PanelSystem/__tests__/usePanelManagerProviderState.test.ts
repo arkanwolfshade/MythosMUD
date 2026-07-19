@@ -44,6 +44,90 @@ describe('usePanelManagerProviderState', () => {
     localStorageMock.clear();
   });
 
+  it('toggleMinimize docks panel at bottom and restores saved layout', async () => {
+    Object.defineProperty(window, 'innerWidth', { configurable: true, writable: true, value: 1280 });
+    Object.defineProperty(window, 'innerHeight', { configurable: true, writable: true, value: 800 });
+
+    const panels: Record<string, PanelState> = {
+      chatHistory: {
+        id: 'chatHistory',
+        title: 'Chat History',
+        position: { x: 20, y: 80 },
+        size: { width: 320, height: 240 },
+        zIndex: 1000,
+        isMinimized: false,
+        isMaximized: false,
+        isVisible: true,
+      },
+    };
+
+    const { result } = renderHook(() => usePanelManagerProviderState(panels));
+    await waitFor(() => expect(result.current.getPanel('chatHistory')).toBeDefined());
+
+    act(() => {
+      result.current.toggleMinimize('chatHistory');
+    });
+
+    const minimized = result.current.getPanel('chatHistory');
+    expect(minimized?.isMinimized).toBe(true);
+    expect(minimized?.position.y).toBe(752);
+    expect(minimized?.preMinimizePosition).toEqual({ x: 20, y: 80 });
+    expect(minimized?.preMinimizeSize).toEqual({ width: 320, height: 240 });
+
+    act(() => {
+      result.current.toggleMinimize('chatHistory');
+    });
+
+    const restored = result.current.getPanel('chatHistory');
+    expect(restored?.isMinimized).toBe(false);
+    expect(restored?.position).toEqual({ x: 20, y: 80 });
+    expect(restored?.size).toEqual({ width: 320, height: 240 });
+    expect(restored?.preMinimizePosition).toBeUndefined();
+  });
+
+  it('toggleMinimize stacks multiple panels in the bottom dock', async () => {
+    Object.defineProperty(window, 'innerWidth', { configurable: true, writable: true, value: 1280 });
+    Object.defineProperty(window, 'innerHeight', { configurable: true, writable: true, value: 800 });
+
+    const panels: Record<string, PanelState> = {
+      chatHistory: {
+        id: 'chatHistory',
+        title: 'Chat History',
+        position: { x: 20, y: 80 },
+        size: { width: 320, height: 240 },
+        zIndex: 1000,
+        isMinimized: false,
+        isMaximized: false,
+        isVisible: true,
+      },
+      gameInfo: {
+        id: 'gameInfo',
+        title: 'Game Info',
+        position: { x: 400, y: 80 },
+        size: { width: 320, height: 240 },
+        zIndex: 1001,
+        isMinimized: false,
+        isMaximized: false,
+        isVisible: true,
+      },
+    };
+
+    const { result } = renderHook(() => usePanelManagerProviderState(panels));
+    await waitFor(() => expect(result.current.getPanel('chatHistory')).toBeDefined());
+
+    act(() => {
+      result.current.toggleMinimize('gameInfo');
+      result.current.toggleMinimize('chatHistory');
+    });
+
+    const chat = result.current.getPanel('chatHistory');
+    const info = result.current.getPanel('gameInfo');
+    expect(chat?.position.x).toBe(8);
+    expect(info?.position.x).toBe(216);
+    expect(chat?.position.y).toBe(752);
+    expect(info?.position.y).toBe(752);
+  });
+
   it('toggleMinimize dispatches and flips isMinimized', async () => {
     const { result } = renderHook(() => usePanelManagerProviderState(defaultPanels));
     await waitFor(() => expect(result.current.getPanel('chat')).toBeDefined());

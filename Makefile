@@ -44,6 +44,7 @@ PYTEST_COV_OPTS := --cov=server --cov-report=html --cov-report=term-missing --co
 .PHONY: grype lizard quality-fragmentation-guard
 .PHONY: codacy-tools
 .PHONY: setup-test-env setup-test-env-force check-postgresql setup-postgresql-test-db bootstrap-e2e-database ensure-e2e-database verify-schema
+.PHONY: openapi-spec sync-obsidian-graphify
 .PHONY: test test-coverage test-client test-client-e2e test-playwright test-client-coverage test-server test-server-coverage test-ci
 .PHONY: coverage all
 
@@ -90,6 +91,7 @@ help:
 	@echo ""
 	@echo "Documentation:"
 	@echo "  openapi-spec          - Generate OpenAPI spec to docs/openapi/openapi.json"
+	@echo "  sync-obsidian-graphify - Sync graphify community wiki into Obsidian LLM vault"
 	@echo ""
 	@echo "Testing:"
 	@echo "  test                  - Run all tests (client + server, no coverage)"
@@ -243,6 +245,13 @@ openapi-spec:
 	@echo "Generating OpenAPI spec..."
 	$(UV) python scripts/generate_openapi_spec.py
 
+# Sync graphify community wiki into data/MythosMUD-Obsidian/raw/graphify/
+sync-obsidian-graphify:
+	@echo "Syncing graphify wiki into Obsidian LLM vault..."
+	$(POWERSHELL) scripts/sync_obsidian_graphify.ps1
+
+
+
 # ============================================================================
 # TESTING
 # ============================================================================
@@ -330,4 +339,4 @@ run-production:
 # COMPOSITE TARGETS
 # ============================================================================
 
-all: format mypy lint lint-sqlalchemy codacy-tools quality-fragmentation-guard check-postgresql build openapi-spec test-coverage
+all: format mypy lint lint-sqlalchemy codacy-tools quality-fragmentation-guard check-postgresql build openapi-spec test-coverage sync-obsidian-graphify

@@ -35,6 +35,11 @@ bodies).
   jCodeMunch usage, see [QUICKSTART](https://github.com/jgravelle/jcodemunch-mcp/blob/main/QUICKSTART.md).
 - **Token efficiency over speed:** Prefer targeted retrieval over dumping large files; see
   `.cursor/rules/token-efficiency.mdc` (pairs with `jcodemunch.mdc`) and `USER_RULES.md`.
+- **Obsidian LLM wiki (permanent memory):** Karpathy-pattern vault at
+  `data/MythosMUD-Obsidian/` (`raw/` immutable, `wiki/` agent-owned, schema in vault
+  `AGENTS.md`). File durable lore, design, and answers there; sync code-graph community
+  articles with `./scripts/sync_obsidian_graphify.ps1`. Skill: `mythosmud-llm-wiki`. Live
+  code questions still use graphify + jCodemunch first.
 
 ---
 
@@ -655,6 +660,8 @@ jobs:
 
 ## Learned workspace facts
 
+- Permanent agent memory is the Obsidian LLM wiki at `data/MythosMUD-Obsidian/` (Karpathy raw/wiki/schema);
+  open that folder as an Obsidian vault; sync graphify community wiki via `./scripts/sync_obsidian_graphify.ps1`
 - MythosMUD may exist in more than one directory (for example `f:\projects\MythosMUD` and `F:\MythosMUD`); align the
   Cursor workspace root with where you run tests and apply edits, or tooling and the editor can diverge
 - Client ui-v2 real-time UI is driven from WebSocket events through the event projector under
@@ -717,5 +724,9 @@ jobs:
 - **Legacy stub:** `.cursorrules` (points at `.cursor/rules/` and this file)
 - **Documentation:** [`docs/TESTING.md`](docs/TESTING.md); [`README.md`](README.md) and [`CONTRIBUTING.md`](CONTRIBUTING.md)
   (including `docs/DEVELOPMENT.md` where referenced)
+- **LLM wiki (Obsidian):** [`data/MythosMUD-Obsidian/`](data/MythosMUD-Obsidian/) — schema
+  [`data/MythosMUD-Obsidian/AGENTS.md`](data/MythosMUD-Obsidian/AGENTS.md); skill
+  `mythosmud-llm-wiki`; Karpathy pattern
+  [gist](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)
 - **User-specific rules:** `USER_RULES.md`
 - **Task tracking:** [GitHub Issues](https://github.com/arkanwolfshade/MythosMUD/issues)

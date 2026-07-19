@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { PanelState } from '../../types';
 import { savePanelLayout } from '../panelLayoutValidation';
+import { computeMinimizedDockPosition } from '../panelMinimizeDock';
 import {
   handleClosePanel,
   handleFocusPanel,
@@ -97,21 +98,100 @@ describe('panelReducerHandlers', () => {
     expect(savePanelLayout).not.toHaveBeenCalled();
   });
 
-  it('handleToggleMinimize toggles minimized and clears maximized state', () => {
+  it('handleToggleMinimize toggles minimized, docks at bottom, and clears maximized state', () => {
     const state = stateFixture();
-    const next = handleToggleMinimize(state, { id: 'test' });
+    const next = handleToggleMinimize(state, { id: 'test', viewportWidth: 1280, viewportHeight: 800 });
 
     expect(next.panels.test.isMinimized).toBe(true);
     expect(next.panels.test.isMaximized).toBe(false);
+    expect(next.panels.test.preMinimizePosition).toEqual({ x: 10, y: 60 });
+    expect(next.panels.test.position.y).toBe(800 - 40 - 8);
     expect(savePanelLayout).toHaveBeenCalledWith(next.panels);
+  });
+
+  it('handleToggleMinimize restores saved layout when expanding', () => {
+    const state: PanelManagerState = {
+      ...stateFixture(),
+      panels: {
+        test: {
+          ...panelFixture('test'),
+          isMinimized: true,
+          preMinimizePosition: { x: 10, y: 60 },
+          preMinimizeSize: { width: 300, height: 200 },
+          position: { x: 8, y: 752 },
+        },
+      },
+    };
+
+    const next = handleToggleMinimize(state, { id: 'test', viewportWidth: 1280, viewportHeight: 800 });
+
+    expect(next.panels.test.isMinimized).toBe(false);
+    expect(next.panels.test.position).toEqual({ x: 10, y: 60 });
+    expect(next.panels.test.size).toEqual({ width: 300, height: 200 });
+    expect(next.panels.test.preMinimizePosition).toBeUndefined();
   });
 
   it('handleToggleMinimize is a no-op when panel id is missing', () => {
     const state = stateFixture();
-    const next = handleToggleMinimize(state, { id: 'missing' });
+    const next = handleToggleMinimize(state, { id: 'missing', viewportWidth: 1280, viewportHeight: 800 });
 
     expect(next).toBe(state);
     expect(savePanelLayout).not.toHaveBeenCalled();
+  });
+
+  it('handleToggleMinimize stacks two minimized panels in dock order', () => {
+    const state: PanelManagerState = {
+      ...stateFixture(),
+      panels: {
+        chatHistory: panelFixture('chatHistory'),
+        gameInfo: panelFixture('gameInfo'),
+      },
+    };
+
+    let next = handleToggleMinimize(state, { id: 'gameInfo', viewportWidth: 1280, viewportHeight: 800 });
+    next = handleToggleMinimize(next, { id: 'chatHistory', viewportWidth: 1280, viewportHeight: 800 });
+
+    expect(next.panels.chatHistory.position).toEqual({ x: 8, y: 752 });
+    expect(next.panels.gameInfo.position).toEqual({ x: 216, y: 752 });
+  });
+
+  it('handleScaleToViewport relayouts minimized panels in the bottom dock', () => {
+    const state: PanelManagerState = {
+      ...stateFixture(),
+      panels: {
+        test: { ...panelFixture('test'), isMinimized: true, position: { x: 400, y: 300 } },
+      },
+    };
+
+    const next = handleScaleToViewport(state, {
+      viewportWidth: 1280,
+      viewportHeight: 800,
+      scaleFunction: () => ({}),
+    });
+
+    expect(next.panels.test.position).toEqual({ x: 8, y: 752 });
+  });
+
+  it('handleToggleMaximize restores minimized panel layout before maximizing', () => {
+    const state: PanelManagerState = {
+      ...stateFixture(),
+      panels: {
+        test: {
+          ...panelFixture('test'),
+          isMinimized: true,
+          preMinimizePosition: { x: 10, y: 60 },
+          preMinimizeSize: { width: 300, height: 200 },
+          position: { x: 8, y: 752 },
+        },
+      },
+    };
+
+    const next = handleToggleMaximize(state, { id: 'test' });
+
+    expect(next.panels.test.isMinimized).toBe(false);
+    expect(next.panels.test.isMaximized).toBe(true);
+    expect(next.panels.test.position).toEqual({ x: 10, y: 60 });
+    expect(next.panels.test.size).toEqual({ width: 300, height: 200 });
   });
 
   it('handleToggleMaximize maximizes target and un-maximizes others', () => {
@@ -270,7 +350,8 @@ describe('panelReducerHandlers', () => {
     });
 
     expect(next.panels.test.position).toEqual({ x: 400, y: 300 });
-    expect(next.panels.minimized.position).toEqual(state.panels.minimized.position);
+    // Scale layout is skipped for minimized panels, but dock relayout still runs on viewport change.
+    expect(next.panels.minimized.position).toEqual(computeMinimizedDockPosition(0, 800, 600));
     expect(next.panels.maximized.position).toEqual(state.panels.maximized.position);
     expect(next.panels.missing).toBeUndefined();
     expect(savePanelLayout).toHaveBeenCalledWith(next.panels);

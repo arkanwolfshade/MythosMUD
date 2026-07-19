@@ -1,0 +1,29 @@
+---
+description: Obsidian LLM wiki is MythosMUD permanent agent memory (Karpathy pattern)
+alwaysApply: true
+---
+
+# MythosMUD LLM Wiki (permanent memory)
+
+The project's compounding knowledge base lives in:
+
+`data/MythosMUD-Obsidian/`
+
+Follow Karpathy's LLM Wiki pattern (raw / wiki / schema). Full schema:
+`data/MythosMUD-Obsidian/AGENTS.md`. Skill: `.cursor/skills/mythosmud-llm-wiki/SKILL.md`.
+
+## Agent obligations
+
+- Treat `wiki/` as durable memory: file reusable answers, design notes, and lore
+  there instead of leaving them only in chat.
+- Never modify immutable sources under `raw/` (except regenerating
+  `raw/graphify/` via `./scripts/sync_obsidian_graphify.ps1`).
+- On ingest / query-file / lint: update `index.md` and append `log.md`.
+- For live codebase structure, still use **graphify** (`query` / `path` /
+  `explain`) and jCodemunch first; promote lasting insights into `wiki/code/`.
+- Do **not** dump the full per-node graphify Obsidian export into this vault.
+
+## Triggers (apply skill)
+
+- "ingest", "Obsidian", "LLM wiki", "permanent memory", "file this in the wiki"
+- Syncing graphify into the vault after `graphify update`

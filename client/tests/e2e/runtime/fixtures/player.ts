@@ -6,8 +6,8 @@
 
 import { type Page } from '@playwright/test';
 import {
+  ensurePlayableConnection,
   executeCommand,
-  executeCommandTrusted,
   getPageSessionCredentials,
   loginPlayer,
   waitForPlayableSession,
@@ -50,7 +50,17 @@ export async function ensureStanding(page: Page, timeoutMs: number = 5000): Prom
     return;
   }
 
-  await executeCommandTrusted(page, 'stand');
+  const session = getPageSessionCredentials(page);
+  if (session) {
+    await ensurePlayableConnection(page, {
+      username: session.username,
+      password: session.password,
+      timeoutMs: Math.max(timeoutMs, 20000),
+    });
+  }
+
+  await page.bringToFront().catch(() => {});
+  await executeCommand(page, 'stand');
   // Prefer page-wide text: command_response sometimes lands before [data-message-text] wiring; linkdead can
   // delay Game Info rows. Character Info "Posture" / value updates independently (player_position_service copy).
   await page.waitForFunction(

@@ -116,6 +116,9 @@ export interface PanelState {
   opaque?: boolean;
   /** Minimum content height in px so the panel does not collapse (e.g. inline map visibility). */
   minHeight?: number;
+  /** Layout saved when minimizing; restored when the panel is expanded again. */
+  preMinimizePosition?: PanelPosition;
+  preMinimizeSize?: PanelSize;
 }
 
 export interface PanelLayout {
