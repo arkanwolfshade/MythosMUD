@@ -8,7 +8,7 @@
  */
 
 import { expect, test, type Page } from '@playwright/test';
-import { executeCommand, waitForMessage } from '../fixtures/auth';
+import { ensurePlayableConnection, executeCommand, waitForMessage } from '../fixtures/auth';
 import { ensureE2eRuntimeReady } from '../fixtures/e2e-runtime-ready';
 import {
   cleanupMultiPlayerContexts,
@@ -28,7 +28,19 @@ import {
  * render on [data-message-text] until sessions recover. Matches local-channel-basic pattern.
  */
 async function nudgeStandBothPlayers(aw: PlayerContext, other: PlayerContext): Promise<void> {
+  await ensurePlayableConnection(aw.page, {
+    username: aw.player.username,
+    password: aw.player.password,
+    timeoutMs: 25000,
+  });
+  await ensurePlayableConnection(other.page, {
+    username: other.player.username,
+    password: other.player.password,
+    timeoutMs: 25000,
+  });
+  await aw.page.bringToFront().catch(() => {});
   await executeCommand(aw.page, 'stand');
+  await other.page.bringToFront().catch(() => {});
   await executeCommand(other.page, 'stand');
   await new Promise(r => setTimeout(r, 3000));
 }
@@ -203,8 +215,17 @@ test.describe('Chat Messages Between Players', () => {
     await prepareReceiverForInboundMessages(awContext, 20000);
     await new Promise(r => setTimeout(r, 1500));
 
-    // Sender must be the focused context for some CI hosts; echo is on Ithaqua's page, not AW's.
     await ithaquaContext.page.bringToFront().catch(() => {});
+    await ensurePlayableConnection(ithaquaContext.page, {
+      username: ithaquaContext.player.username,
+      password: ithaquaContext.player.password,
+      timeoutMs: 30000,
+    });
+    await ensurePlayableConnection(awContext.page, {
+      username: awContext.player.username,
+      password: awContext.player.password,
+      timeoutMs: 30000,
+    });
     // Prime after nudge: early wait can pass, then stand burst leaves no fresh command_response on chat.
     await ithaquaContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
     await ensurePlayerInGame(ithaquaContext, 30000);

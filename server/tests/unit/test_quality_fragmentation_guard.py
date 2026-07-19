@@ -9,6 +9,8 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Protocol, cast
 
+import pytest
+
 _REPO_ROOT = Path(__file__).resolve().parents[3]
 
 
@@ -275,3 +277,52 @@ def test_parse_lizard_output_maps_function_nodes() -> None:
     rows = parse_lizard_output(payload)
 
     assert rows == [{"name": "fn_a", "nloc": 12, "ccn": 3, "params": 2, "start_line": 9}]
+
+
+def test_run_cmd_decodes_subprocess_output_as_utf8(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Windows defaults text=True to cp1252; lizard/git can emit UTF-8 bytes (e.g. 0x8f)."""
+    from subprocess import CompletedProcess
+
+    core_path = _REPO_ROOT / "scripts" / "ci" / "quality_fragmentation_core.py"
+    spec = importlib.util.spec_from_file_location("_quality_fragmentation_core_utf8", core_path)
+    assert spec and spec.loader
+    core = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = core
+    spec.loader.exec_module(core)
+
+    captured: dict[str, object] = {}
+
+    def fake_safe_run(command: list[str], **kwargs: object) -> CompletedProcess[str]:
+        captured.update(kwargs)
+        return CompletedProcess(command, 0, stdout="ok\n", stderr="")
+
+    monkeypatch.setattr(core, "safe_run", fake_safe_run)
+    run_cmd = cast(Callable[..., str], core.run_cmd)
+    assert run_cmd(["git", "status"], check=False) == "ok\n"
+    assert captured.get("encoding") == "utf-8"
+    assert captured.get("errors") == "replace"
+    assert captured.get("text") is True
+
+
+def test_git_show_file_decodes_subprocess_output_as_utf8(monkeypatch: pytest.MonkeyPatch) -> None:
+    """git show of UTF-8 sources must not use the Windows cp1252 locale codec."""
+    from subprocess import CompletedProcess
+
+    core_path = _REPO_ROOT / "scripts" / "ci" / "quality_fragmentation_core.py"
+    spec = importlib.util.spec_from_file_location("_quality_fragmentation_core_git_show", core_path)
+    assert spec and spec.loader
+    core = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = core
+    spec.loader.exec_module(core)
+
+    captured: dict[str, object] = {}
+
+    def fake_safe_run(command: list[str], **kwargs: object) -> CompletedProcess[str]:
+        captured.update(kwargs)
+        return CompletedProcess(command, 0, stdout="content\n", stderr="")
+
+    monkeypatch.setattr(core, "safe_run", fake_safe_run)
+    git_show_file = cast(Callable[[str, str], str | None], core.git_show_file)
+    assert git_show_file("abc1234", "server/foo.py") == "content\n"
+    assert captured.get("encoding") == "utf-8"
+    assert captured.get("errors") == "replace"

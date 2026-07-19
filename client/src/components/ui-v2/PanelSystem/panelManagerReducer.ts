@@ -16,7 +16,7 @@ export type PanelAction =
   | { type: 'INIT_PANELS'; payload: Record<string, PanelState> }
   | { type: 'UPDATE_POSITION'; payload: { id: string; position: PanelPosition } }
   | { type: 'UPDATE_SIZE'; payload: { id: string; size: PanelSize } }
-  | { type: 'TOGGLE_MINIMIZE'; payload: { id: string } }
+  | { type: 'TOGGLE_MINIMIZE'; payload: { id: string; viewportWidth?: number; viewportHeight?: number } }
   | { type: 'TOGGLE_MAXIMIZE'; payload: { id: string } }
   | { type: 'SET_VISIBILITY'; payload: { id: string; isVisible: boolean } }
   | { type: 'FOCUS_PANEL'; payload: { id: string } }

@@ -4,6 +4,12 @@
  */
 
 import type { PanelPosition, PanelSize, PanelState } from '../types';
+import {
+  getDefaultViewport,
+  preparePanelForMinimize,
+  preparePanelForRestore,
+  relayoutMinimizedDock,
+} from './panelMinimizeDock';
 import { savePanelLayout } from './panelLayoutValidation';
 
 export interface PanelManagerState {
@@ -41,16 +47,22 @@ export function handleUpdateSize(
   return { ...state, panels: updatedPanels };
 }
 
-export function handleToggleMinimize(state: PanelManagerState, payload: { id: string }): PanelManagerState {
-  const { id } = payload;
+export function handleToggleMinimize(
+  state: PanelManagerState,
+  payload: { id: string; viewportWidth?: number; viewportHeight?: number }
+): PanelManagerState {
+  const { id, viewportWidth: vw, viewportHeight: vh } = payload;
   const panel = state.panels[id];
   if (!panel) return state;
-  const updatedPanels = {
-    ...state.panels,
-    [id]: { ...panel, isMinimized: !panel.isMinimized, isMaximized: false },
-  };
-  savePanelLayout(updatedPanels);
-  return { ...state, panels: updatedPanels };
+
+  const viewport = vw != null && vh != null ? { width: vw, height: vh } : getDefaultViewport();
+
+  const updatedPanels = { ...state.panels };
+  updatedPanels[id] = panel.isMinimized ? preparePanelForRestore(panel) : preparePanelForMinimize(panel);
+
+  const dockedPanels = relayoutMinimizedDock(updatedPanels, viewport.width, viewport.height);
+  savePanelLayout(dockedPanels);
+  return { ...state, panels: dockedPanels };
 }
 
 export function handleToggleMaximize(state: PanelManagerState, payload: { id: string }): PanelManagerState {
@@ -65,13 +77,16 @@ export function handleToggleMaximize(state: PanelManagerState, payload: { id: st
       }
     });
   }
+  const restoredPanel = panel.isMinimized ? preparePanelForRestore(panel) : panel;
   updatedPanels[id] = {
-    ...panel,
+    ...restoredPanel,
     isMaximized: !panel.isMaximized,
     isMinimized: false,
   };
-  savePanelLayout(updatedPanels);
-  return { ...state, panels: updatedPanels };
+  const viewport = getDefaultViewport();
+  const dockedPanels = relayoutMinimizedDock(updatedPanels, viewport.width, viewport.height);
+  savePanelLayout(dockedPanels);
+  return { ...state, panels: dockedPanels };
 }
 
 export function handleSetVisibility(
@@ -157,8 +172,9 @@ export function handleScaleToViewport(
     };
   });
 
-  savePanelLayout(updatedPanels);
-  return { ...state, panels: updatedPanels };
+  const dockedPanels = relayoutMinimizedDock(updatedPanels, viewportWidth, viewportHeight);
+  savePanelLayout(dockedPanels);
+  return { ...state, panels: dockedPanels };
 }
 
 function constrainPanelHeight(newPanel: PanelState, currentPanel: PanelState, maxHeight: number): number {

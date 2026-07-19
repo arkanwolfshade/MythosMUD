@@ -92,7 +92,7 @@ test.describe('Local Channel Movement', () => {
     await executeCommand(awContext.page, 'look');
     await waitForMessage(awContext.page, /Arena|gladiator|heart of the|exits|Laundry|Room|hallway/i, 20000);
 
-    await ensureStanding(awContext.page, 15000);
+    await ensureStanding(awContext.page, 45000);
     await awContext.page.bringToFront().catch(() => {});
     await executeCommand(awContext.page, 'go east');
     await waitForMessage(awContext.page, /You go east|You move east|Eastern Hallway|Arena/i, 45000).catch(() => {

@@ -28,7 +28,9 @@ export function usePanelManagerProviderState(defaultPanels: Record<string, Panel
   }, []);
 
   const toggleMinimize = useCallback((id: string) => {
-    dispatch({ type: 'TOGGLE_MINIMIZE', payload: { id } });
+    const vw = typeof window !== 'undefined' ? window.innerWidth : 1920;
+    const vh = typeof window !== 'undefined' ? window.innerHeight : 1080;
+    dispatch({ type: 'TOGGLE_MINIMIZE', payload: { id, viewportWidth: vw, viewportHeight: vh } });
   }, []);
 
   const toggleMaximize = useCallback((id: string) => {

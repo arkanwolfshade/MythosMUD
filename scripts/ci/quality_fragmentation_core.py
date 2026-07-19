@@ -40,7 +40,16 @@ class GuardContext:
 def run_cmd(command: list[str], *, check: bool = True) -> str:
     if command and command[0] == "git":
         command = [_git_executable(), *command[1:]]
-    result = safe_run(command, capture_output=True, text=True, check=False, cwd=REPO_ROOT)
+    # UTF-8: Windows text=True defaults to cp1252 and fails on lizard/git bytes (e.g. 0x8f).
+    result = safe_run(
+        command,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        check=False,
+        cwd=REPO_ROOT,
+    )
     if check and result.returncode != 0:
         raise RuntimeError(f"Command failed: {' '.join(command)}\n{result.stdout}\n{result.stderr}")
     return result.stdout
@@ -53,6 +62,8 @@ def git_show_file(rev: str, path: str) -> str | None:
         [_git_executable(), "show", f"{rev}:{path}"],
         capture_output=True,
         text=True,
+        encoding="utf-8",
+        errors="replace",
         check=False,
         cwd=REPO_ROOT,
     )

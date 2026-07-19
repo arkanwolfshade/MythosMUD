@@ -129,6 +129,40 @@ async def test_validate_message_passes_expected_token_from_connection_metadata(
 
 
 @pytest.mark.asyncio
+async def test_validate_message_restores_csrf_from_message_jwt_when_metadata_token_missing(
+    mock_websocket, mock_ws_connection_manager
+):
+    """When metadata.token is missing, validate JWT from message and restore metadata."""
+    from server.realtime.message_validator import WebSocketMessageValidator
+
+    base_validator = WebSocketMessageValidator()
+    mock_validator = MagicMock()
+    mock_validator._extract_csrf_token_string = base_validator._extract_csrf_token_string
+    mock_validator.parse_and_validate = MagicMock(return_value={"type": "ping"})
+    mock_ws_connection_manager._validate_token = AsyncMock(return_value=True)
+    metadata = MagicMock()
+    metadata.token = None
+    mock_ws_connection_manager.connection_metadata = {"conn_001": metadata}
+
+    result = await _validate_message(
+        mock_websocket,
+        '{"type": "ping", "csrfToken": "jwt-from-client"}',
+        TEST_PLAYER_ID_STR,
+        mock_validator,
+        connection_manager=mock_ws_connection_manager,
+    )
+
+    assert result == {"type": "ping"}
+    assert metadata.token == "jwt-from-client"
+    mock_validator.parse_and_validate.assert_called_once_with(
+        data='{"type": "ping", "csrfToken": "jwt-from-client"}',
+        player_id=TEST_PLAYER_ID_STR,
+        schema=None,
+        csrf_token="jwt-from-client",
+    )
+
+
+@pytest.mark.asyncio
 async def test_send_error_response_websocket_disconnect(mock_websocket):
     """Test _send_error_response handles WebSocket disconnect."""
     from fastapi import WebSocketDisconnect

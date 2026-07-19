@@ -1,0 +1,12 @@
+# Regenerable graphify community dump inside the Obsidian LLM wiki (circular if re-indexed)
+data/MythosMUD-Obsidian/raw/graphify/
+
+# Obsidian local state
+data/MythosMUD-Obsidian/.obsidian/
+data/MythosMUD-Obsidian/.cursor/
+
+# Coverage / generated HTML (not project knowledge)
+htmlcov/
+coverage/
+client/coverage/
+**/lcov-report/

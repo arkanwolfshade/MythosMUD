@@ -351,6 +351,31 @@ server/tests/data/players/unit_test_players.db
 data/players/local_players.db
 
 # =============================================================================
+# Graphify knowledge graph
+# =============================================================================
+# Commit durable artifacts other developers need to query/navigate the graph:
+#   graphify-out/graph.json
+#   graphify-out/manifest.json          (incremental update baseline)
+#   graphify-out/GRAPH_REPORT.md
+#   graphify-out/.graphify_labels.json  (community names)
+#   graphify-out/wiki/                  (optional community articles)
+# Ignore ephemeral extraction/session/cache/viz outputs (regenerable).
+graphify-out/cache/
+graphify-out/.graphify_*
+!graphify-out/.graphify_labels.json
+graphify-out/label_batches/
+graphify-out/_label_communities.py
+graphify-out/_finalize_labels.py
+graphify-out/_detect_backend.txt
+graphify-out/_label_helpers.txt
+graphify-out/GRAPH_TREE.html
+graphify-out/graph.html
+graphify-out/graph.svg
+graphify-out/obsidian/
+graphify-out/cypher.txt
+graphify-out/memory/
+
+# =============================================================================
 # Project-Specific Files
 # =============================================================================
 

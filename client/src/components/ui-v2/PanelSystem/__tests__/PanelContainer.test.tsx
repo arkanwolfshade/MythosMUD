@@ -1,45 +1,55 @@
 import { fireEvent, render, screen } from '@testing-library/react';
+import type { CSSProperties, ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { PanelContainer } from '../PanelContainer';
 
+type MockRndProps = {
+  children: ReactNode;
+  position: { x: number; y: number };
+  size: { width: number; height: number };
+  onDragStart?: () => void;
+  style?: CSSProperties;
+  className?: string;
+  'data-testid'?: string;
+  'data-panel-minimized'?: string;
+};
+
+const { MockRnd } = vi.hoisted(() => {
+  function MockRnd(props: MockRndProps) {
+    const {
+      children,
+      position,
+      size,
+      onDragStart,
+      style,
+      className,
+      'data-testid': dataTestId,
+      'data-panel-minimized': dataPanelMinimized,
+    } = props;
+
+    return (
+      <div
+        data-testid={dataTestId ?? 'rnd-container'}
+        data-panel-minimized={dataPanelMinimized}
+        data-position-x={position.x}
+        data-position-y={position.y}
+        data-size-width={size.width}
+        data-size-height={size.height}
+        style={style}
+        className={className}
+        onMouseDown={onDragStart}
+      >
+        {children}
+      </div>
+    );
+  }
+
+  return { MockRnd };
+});
+
 // Mock react-rnd
 vi.mock('react-rnd', () => ({
-  Rnd: ({
-    children,
-    position,
-    size,
-    onDragStart,
-    style,
-    className,
-  }: {
-    children: React.ReactNode;
-    position: { x: number; y: number };
-    size: { width: number; height: number };
-    onDragStart?: () => void;
-    onDragStop?: (e: unknown, d: { x: number; y: number }) => void;
-    onResizeStop?: (
-      e: unknown,
-      direction: unknown,
-      ref: HTMLElement,
-      delta: unknown,
-      position: { x: number; y: number }
-    ) => void;
-    style?: React.CSSProperties;
-    className?: string;
-  }) => (
-    <div
-      data-testid="rnd-container"
-      data-position-x={position.x}
-      data-position-y={position.y}
-      data-size-width={size.width}
-      data-size-height={size.height}
-      style={style}
-      className={className}
-      onMouseDown={onDragStart}
-    >
-      {children}
-    </div>
-  ),
+  Rnd: MockRnd,
 }));
 
 // Mock child components
@@ -64,19 +74,21 @@ vi.mock('../../../ui/TerminalButton', () => ({
     className,
     variant,
     size,
+    ...rest
   }: {
     children: React.ReactNode;
     onClick?: () => void;
     className?: string;
     variant?: string;
     size?: string;
-  }) => (
+  } & Record<string, unknown>) => (
     <button
       onClick={onClick}
       className={className}
       data-testid="terminal-button"
       data-variant={variant}
       data-size={size}
+      {...rest}
     >
       {children}
     </button>
@@ -84,6 +96,8 @@ vi.mock('../../../ui/TerminalButton', () => ({
 }));
 
 describe('PanelContainer', () => {
+  const panelRootTestId = 'game-panel-test-panel';
+
   const defaultProps = {
     id: 'test-panel',
     title: 'Test Panel',
@@ -128,7 +142,7 @@ describe('PanelContainer', () => {
     it('should apply correct position and size', () => {
       const { container } = render(<PanelContainer {...defaultProps} />);
 
-      const rndContainer = container.querySelector('[data-testid="rnd-container"]');
+      const rndContainer = container.querySelector(`[data-testid="${panelRootTestId}"]`);
       expect(rndContainer).toHaveAttribute('data-position-x', '100');
       expect(rndContainer).toHaveAttribute('data-position-y', '100');
       expect(rndContainer).toHaveAttribute('data-size-width', '400');
@@ -138,14 +152,14 @@ describe('PanelContainer', () => {
     it('should apply zIndex to container', () => {
       const { container } = render(<PanelContainer {...defaultProps} zIndex={2000} />);
 
-      const rndContainer = container.querySelector('[data-testid="rnd-container"]') as HTMLElement;
+      const rndContainer = container.querySelector(`[data-testid="${panelRootTestId}"]`) as HTMLElement;
       expect(rndContainer.style.zIndex).toBe('2000');
     });
 
     it('should apply custom className', () => {
       const { container } = render(<PanelContainer {...defaultProps} className="custom-class" />);
 
-      const rndContainer = container.querySelector('[data-testid="rnd-container"]');
+      const rndContainer = container.querySelector(`[data-testid="${panelRootTestId}"]`);
       expect(rndContainer).toHaveClass('custom-class');
     });
   });
@@ -154,21 +168,21 @@ describe('PanelContainer', () => {
     it('should apply default variant classes', () => {
       const { container } = render(<PanelContainer {...defaultProps} variant="default" />);
 
-      const rndContainer = container.querySelector('[data-testid="rnd-container"]');
+      const rndContainer = container.querySelector(`[data-testid="${panelRootTestId}"]`);
       expect(rndContainer).toHaveClass('border-gray-700');
     });
 
     it('should apply eldritch variant classes', () => {
       const { container } = render(<PanelContainer {...defaultProps} variant="eldritch" />);
 
-      const rndContainer = container.querySelector('[data-testid="rnd-container"]');
+      const rndContainer = container.querySelector(`[data-testid="${panelRootTestId}"]`);
       expect(rndContainer).toHaveClass('border-mythos-terminal-primary');
     });
 
     it('should apply elevated variant classes', () => {
       const { container } = render(<PanelContainer {...defaultProps} variant="elevated" />);
 
-      const rndContainer = container.querySelector('[data-testid="rnd-container"]');
+      const rndContainer = container.querySelector(`[data-testid="${panelRootTestId}"]`);
       expect(rndContainer).toHaveClass('border-gray-600');
       expect(rndContainer).toHaveClass('shadow-lg');
     });
@@ -178,23 +192,23 @@ describe('PanelContainer', () => {
     it('should render minimized panel as small bar', () => {
       const { container } = render(<PanelContainer {...defaultProps} isMinimized={true} />);
 
-      const rndContainer = container.querySelector('[data-testid="rnd-container"]');
+      const rndContainer = container.querySelector(`[data-testid="${panelRootTestId}"]`);
       expect(rndContainer).toHaveAttribute('data-size-width', '200');
       expect(rndContainer).toHaveAttribute('data-size-height', '40');
     });
 
-    it('should show maximize button when minimized', () => {
+    it('should show restore button when minimized', () => {
       render(<PanelContainer {...defaultProps} isMinimized={true} />);
-
-      const maximizeIcon = screen.queryByTestId('eldritch-icon-maximize');
-      expect(maximizeIcon).toBeInTheDocument();
-    });
-
-    it('should show restore icon when minimized and maximized', () => {
-      render(<PanelContainer {...defaultProps} isMinimized={true} isMaximized={true} />);
 
       const restoreIcon = screen.queryByTestId('eldritch-icon-restore');
       expect(restoreIcon).toBeInTheDocument();
+    });
+
+    it('should not show maximize button when minimized', () => {
+      render(<PanelContainer {...defaultProps} isMinimized={true} />);
+
+      const maximizeIcon = screen.queryByTestId('eldritch-icon-maximize');
+      expect(maximizeIcon).not.toBeInTheDocument();
     });
 
     it('should not show minimize button when minimized', () => {
@@ -215,7 +229,7 @@ describe('PanelContainer', () => {
     it('should calculate maximized size based on window dimensions', () => {
       const { container } = render(<PanelContainer {...defaultProps} isMaximized={true} />);
 
-      const rndContainer = container.querySelector('[data-testid="rnd-container"]');
+      const rndContainer = container.querySelector(`[data-testid="${panelRootTestId}"]`);
       // Maximized size should be window width x (window height - header height)
       expect(rndContainer).toHaveAttribute('data-size-width', '1920');
       expect(rndContainer).toHaveAttribute('data-size-height', '1032'); // 1080 - 48
@@ -224,7 +238,7 @@ describe('PanelContainer', () => {
     it('should calculate maximized position at top-left', () => {
       const { container } = render(<PanelContainer {...defaultProps} isMaximized={true} />);
 
-      const rndContainer = container.querySelector('[data-testid="rnd-container"]');
+      const rndContainer = container.querySelector(`[data-testid="${panelRootTestId}"]`);
       expect(rndContainer).toHaveAttribute('data-position-x', '0');
       expect(rndContainer).toHaveAttribute('data-position-y', '48'); // Header height
     });
@@ -254,7 +268,7 @@ describe('PanelContainer', () => {
       fireEvent(window, new Event('resize'));
 
       // Component should update (react will re-render)
-      const rndContainer = container.querySelector('[data-testid="rnd-container"]');
+      const rndContainer = container.querySelector(`[data-testid="${panelRootTestId}"]`);
       expect(rndContainer).toBeInTheDocument();
     });
   });
@@ -270,6 +284,27 @@ describe('PanelContainer', () => {
         fireEvent.click(minimizeButton);
         expect(defaultProps.onMinimize).toHaveBeenCalledWith('test-panel');
       }
+    });
+
+    it('exposes stable test ids for panel chrome controls', () => {
+      render(<PanelContainer {...defaultProps} />);
+
+      expect(screen.getByTestId('game-panel-test-panel')).toHaveAttribute('data-panel-minimized', 'false');
+      expect(screen.getByTestId('game-panel-test-panel-minimize')).toBeInTheDocument();
+    });
+
+    it('exposes restore control and minimized marker when collapsed', () => {
+      render(<PanelContainer {...defaultProps} isMinimized={true} />);
+
+      expect(screen.getByTestId('game-panel-test-panel')).toHaveAttribute('data-panel-minimized', 'true');
+      expect(screen.getByTestId('game-panel-test-panel-restore')).toBeInTheDocument();
+    });
+
+    it('should call onMinimize when restore button is clicked on minimized panel', () => {
+      render(<PanelContainer {...defaultProps} isMinimized={true} />);
+
+      fireEvent.click(screen.getByTestId('game-panel-test-panel-restore'));
+      expect(defaultProps.onMinimize).toHaveBeenCalledWith('test-panel');
     });
 
     it('should call onMaximize when maximize button is clicked', () => {
@@ -311,7 +346,7 @@ describe('PanelContainer', () => {
     it('should call onFocus when drag starts', () => {
       const { container } = render(<PanelContainer {...defaultProps} />);
 
-      const rndContainer = container.querySelector('[data-testid="rnd-container"]');
+      const rndContainer = container.querySelector(`[data-testid="${panelRootTestId}"]`);
       if (rndContainer) {
         fireEvent.mouseDown(rndContainer);
         expect(defaultProps.onFocus).toHaveBeenCalledWith('test-panel');
@@ -331,14 +366,14 @@ describe('PanelContainer', () => {
     it('should respect minSize constraints', () => {
       const { container } = render(<PanelContainer {...defaultProps} minSize={{ width: 300, height: 200 }} />);
 
-      const rndContainer = container.querySelector('[data-testid="rnd-container"]');
+      const rndContainer = container.querySelector(`[data-testid="${panelRootTestId}"]`);
       expect(rndContainer).toBeInTheDocument();
     });
 
     it('should respect maxSize constraints', () => {
       const { container } = render(<PanelContainer {...defaultProps} maxSize={{ width: 800, height: 600 }} />);
 
-      const rndContainer = container.querySelector('[data-testid="rnd-container"]');
+      const rndContainer = container.querySelector(`[data-testid="${panelRootTestId}"]`);
       expect(rndContainer).toBeInTheDocument();
     });
   });

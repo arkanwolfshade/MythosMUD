@@ -8,7 +8,7 @@
  */
 
 import { expect, test } from '@playwright/test';
-import { executeCommand, waitForMessage } from '../fixtures/auth';
+import { ensurePlayableConnection, executeCommand, waitForMessage } from '../fixtures/auth';
 import { ensureE2eRuntimeReady } from '../fixtures/e2e-runtime-ready';
 import {
   cleanupMultiPlayerContexts,
@@ -30,7 +30,19 @@ import { ensureStanding } from '../fixtures/player';
  * land on [data-message-text] until both sessions recover. Same pattern as chat-messages.spec.ts.
  */
 async function nudgeStandBothPlayers(aw: PlayerContext, other: PlayerContext): Promise<void> {
+  await ensurePlayableConnection(aw.page, {
+    username: aw.player.username,
+    password: aw.player.password,
+    timeoutMs: 25000,
+  });
+  await ensurePlayableConnection(other.page, {
+    username: other.player.username,
+    password: other.player.password,
+    timeoutMs: 25000,
+  });
+  await aw.page.bringToFront().catch(() => {});
   await executeCommand(aw.page, 'stand');
+  await other.page.bringToFront().catch(() => {});
   await executeCommand(other.page, 'stand');
   await new Promise(r => setTimeout(r, 3000));
 }
@@ -194,8 +206,17 @@ test.describe('Local Channel Basic', () => {
     await prepareReceiverForInboundMessages(awContext, 20000);
     await new Promise(r => setTimeout(r, 1500));
 
-    // Ithaqua sends local reply (sender must be focused on some hosts)
     await ithaquaContext.page.bringToFront().catch(() => {});
+    await ensurePlayableConnection(ithaquaContext.page, {
+      username: ithaquaContext.player.username,
+      password: ithaquaContext.player.password,
+      timeoutMs: 30000,
+    });
+    await ensurePlayableConnection(awContext.page, {
+      username: awContext.player.username,
+      password: awContext.player.password,
+      timeoutMs: 30000,
+    });
     await ensurePlayerInGame(ithaquaContext, 30000);
 
     await executeCommand(ithaquaContext.page, 'local Greetings ArkanWolfshade');

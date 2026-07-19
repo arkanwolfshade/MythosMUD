@@ -9,7 +9,13 @@
  */
 
 import { expect, test } from '@playwright/test';
-import { ensurePlayableConnection, executeCommand, getMessages, waitForMessage } from '../fixtures/auth';
+import {
+  ensurePlayableConnection,
+  executeCommand,
+  getMessages,
+  getPageSessionCredentials,
+  waitForMessage,
+} from '../fixtures/auth';
 import type { PlayerContext } from '../fixtures/multiplayer';
 import {
   cleanupMultiPlayerContexts,
@@ -81,6 +87,15 @@ async function isInCombatStatus(page: PlayerContext['page']): Promise<boolean> {
 }
 
 async function tryStartCombat(page: PlayerContext['page'], targetName: string): Promise<boolean> {
+  const session = getPageSessionCredentials(page);
+  if (session) {
+    await ensurePlayableConnection(page, {
+      username: session.username,
+      password: session.password,
+      timeoutMs: 30000,
+    });
+  }
+  await page.bringToFront().catch(() => {});
   await executeCommand(page, `attack ${targetName}`);
   await new Promise(r => setTimeout(r, 2500));
 
