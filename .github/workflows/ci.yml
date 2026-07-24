@@ -67,7 +67,7 @@ jobs:
       # private mythosmud_data). See https://docs.github.com/en/actions/security-guides/automatic-token-authentication
       # A PAT scoped only to mythosmud_data must not be the checkout token for MythosMUD (parent fetch would fail).
       - name: Checkout repository
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           submodules: false
@@ -388,7 +388,7 @@ jobs:
       # Standard bootstrap: harden + checkout
 
       - name: Checkout repository
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
       - name: Set up Node.js
@@ -456,7 +456,7 @@ jobs:
     if: ${{ !cancelled() && needs.backend.result == 'success' && needs.frontend.result == 'success' }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 1
       - name: Finalize Codacy coverage upload
