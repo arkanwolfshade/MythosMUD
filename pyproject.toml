@@ -54,7 +54,7 @@ dependencies = [
     "starlette>=1.3.1",  # #529/#112 Host-header validation; lock resolves 1.2.x
     "python-multipart>=0.0.27",  # Fixes alert #12 - CVE-2024-53981, CVE-2024-24762
     "fonttools>=4.60.2",  # Fixes alert #21 - CVE-2025-66034, CVE-2023-45139
-    "pillow>=12.2.0",  # Image handling (transitive from playwright/matplotlib); pin for security/consistency
+    "pillow>=12.3.0",  # Image handling (transitive from playwright/matplotlib); pin for security/consistency
 ]
 
 [project.scripts]
