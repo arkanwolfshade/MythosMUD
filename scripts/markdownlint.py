@@ -80,6 +80,10 @@ cmd_args = [
     "**/playwright-report/**",
     "--ignore",
     "**/playwright-report-data/**",
+    "--ignore",
+    "**/graphify-out/**",
+    "--ignore",
+    "**/graphify/**",
 ]
 
 # Add config file if it exists

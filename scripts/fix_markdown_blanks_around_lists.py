@@ -54,7 +54,7 @@ def is_table_row(line: str) -> bool:
     return False
 
 
-def fix_blanks_around_lists(content: str) -> tuple[str, int]:  # noqa: C901
+def fix_blanks_around_lists(content: str) -> tuple[str, int]:  # noqa: C901  # lizard: allow CCN=40 NLOC=92 (legacy MD list fixer; exercised by pre-commit)
     """
     Add blank lines around lists where missing.
 
@@ -259,7 +259,7 @@ def fix_markdown_file(file_path: Path) -> tuple[bool, int]:
         return False, 0
 
 
-def main():  # noqa: C901
+def main():  # noqa: C901  # lizard: allow CCN=14 NLOC=54 (CLI entry; argparse/error branches)
     """Main function to fix MD032 issues."""
     # Suppressed: Utility script with acceptable complexity for file processing logic
     project_root = Path(__file__).parent.parent
@@ -290,7 +290,18 @@ def main():  # noqa: C901
         # Process all markdown files to catch all cases
         # (Some issues might not be in the output if it's from a previous run)
         print("Processing all markdown files to ensure complete coverage...")
-        ignore_dirs = {".git", "node_modules", "__pycache__", ".venv", "venv", "dist", "build", ".venv-ci"}
+        ignore_dirs = {
+            ".git",
+            "node_modules",
+            "__pycache__",
+            ".venv",
+            "venv",
+            "dist",
+            "build",
+            ".venv-ci",
+            "graphify-out",
+            "graphify",
+        }
         all_md_files = []
         for md_file in project_root.rglob("*.md"):
             if any(ignore_dir in md_file.parts for ignore_dir in ignore_dirs):
@@ -304,7 +315,18 @@ def main():  # noqa: C901
         print("Warning: No markdownlint output file found.")
         print("Processing all markdown files...")
         # Fallback: process all markdown files
-        ignore_dirs = {".git", "node_modules", "__pycache__", ".venv", "venv", "dist", "build", ".venv-ci"}
+        ignore_dirs = {
+            ".git",
+            "node_modules",
+            "__pycache__",
+            ".venv",
+            "venv",
+            "dist",
+            "build",
+            ".venv-ci",
+            "graphify-out",
+            "graphify",
+        }
         files_to_fix = []
         for md_file in project_root.rglob("*.md"):
             if any(ignore_dir in md_file.parts for ignore_dir in ignore_dirs):

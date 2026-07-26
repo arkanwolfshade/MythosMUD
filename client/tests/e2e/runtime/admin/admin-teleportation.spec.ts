@@ -17,14 +17,14 @@ import {
   waitForAllPlayersInGame,
   waitForCrossPlayerMessage,
 } from '../fixtures/multiplayer';
+import { despawnSanitariumCultists, ensurePlayableAlive } from '../fixtures/player';
+import { DEFAULT_SPAWN_LOOK_CUE } from '../fixtures/test-data';
 
 /**
  * After `look`, room prose is in Location / Room Description, not always Game Info `[data-message-text]`.
  */
 async function assertLookVisibleInPanels(page: Page): Promise<void> {
-  const cue = page.getByText(
-    /Arena\s*>\s*Arena|Arena entrance \(center\)|heart of the gladiator|sand and shadow|Exits:\s*North/i
-  );
+  const cue = page.getByText(DEFAULT_SPAWN_LOOK_CUE);
   await expect(cue.first()).toBeVisible({ timeout: 45000 });
 }
 
@@ -53,6 +53,9 @@ test.describe('Admin Teleportation', () => {
 
     await awContext.page.bringToFront().catch(() => {});
     await ensurePlayerInGame(awContext, 30000);
+    await ensurePlayableAlive(awContext.page, awContext.player.username, awContext.player.password);
+    await despawnSanitariumCultists(awContext.page);
+    await ensurePlayableAlive(awContext.page, awContext.player.username, awContext.player.password);
     await expect(awContext.page.getByText(new RegExp(`Player:\\s*${awContext.player.username}\\b`, 'i'))).toBeVisible({
       timeout: 15000,
     });
@@ -91,6 +94,10 @@ test.describe('Admin Teleportation', () => {
     await waitForCrossPlayerMessage(ithaquaContext, /You are teleported to the south by .+\.?/, 45000);
     const ithaquaMessages = await getPlayerMessages(ithaquaContext);
     expect(ithaquaMessages.some(msg => /teleported.*south/.test(msg))).toBe(true);
+
+    // Pull Ithaqua back so later foyer-scoped specs are not stranded south of spawn.
+    await awContext.page.bringToFront().catch(() => {});
+    await executeCommand(awContext.page, `teleport ${ithaquaCharacterName}`).catch(() => {});
   });
 
   test('Ithaqua should not be able to teleport AW', async () => {
@@ -102,8 +109,13 @@ test.describe('Admin Teleportation', () => {
     const awCharName =
       (await awContext.page.getByTestId('current-character-name').textContent())?.trim() ?? 'ArkanWolfshade';
 
+    await awContext.page.bringToFront().catch(() => {});
+    await ensurePlayableAlive(awContext.page, awContext.player.username, awContext.player.password);
+    await despawnSanitariumCultists(awContext.page);
+
     await ithaquaContext.page.bringToFront().catch(() => {});
     await ensurePlayerInGame(ithaquaContext, 30000);
+    await ensurePlayableAlive(ithaquaContext.page, ithaquaContext.player.username, ithaquaContext.player.password);
     await expect(
       ithaquaContext.page.getByText(new RegExp(`Player:\\s*${ithaquaContext.player.username}\\b`, 'i'))
     ).toBeVisible({ timeout: 15000 });

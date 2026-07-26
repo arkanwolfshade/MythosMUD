@@ -145,6 +145,27 @@ Describe "NATS Manager Environment Variable Support" {
         }
     }
 
+    Context "Test-NatsServerRunning Function" {
+
+        It "Should return false when only TIME_WAIT connections exist on the NATS port" {
+            Mock Get-NetTCPConnection { return @() } -ParameterFilter { $State -eq "Listen" }
+
+            $result = Test-NatsServerRunning
+
+            $result | Should Be $false
+        }
+
+        It "Should return true when a Listen connection exists on the NATS port" {
+            Mock Get-NetTCPConnection {
+                [pscustomobject]@{ LocalPort = 4222; State = "Listen"; OwningProcess = 1234 }
+            } -ParameterFilter { $State -eq "Listen" }
+
+            $result = Test-NatsServerRunning
+
+            $result | Should Be $true
+        }
+    }
+
     Context "Test-NatsServerInstalled Function" {
 
         It "Should return true when NATS_SERVER_PATH points to valid NATS server" {

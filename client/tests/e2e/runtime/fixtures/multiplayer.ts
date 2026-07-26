@@ -137,10 +137,11 @@ export async function cleanupMultiPlayerContexts(contexts: PlayerContext[] | und
     return;
   }
   for (const { page } of contexts) {
-    await logoutPlayer(page, 90000).catch(() => {});
+    // spaFallback: afterAll must not hang 90s when Exit is disabled in void/ward.
+    await logoutPlayer(page, 25000, { spaFallback: true }).catch(() => {});
     await page
       .getByTestId('username-input')
-      .waitFor({ state: 'visible', timeout: 15000 })
+      .waitFor({ state: 'visible', timeout: 10000 })
       .catch(() => {});
   }
   for (const { context } of contexts) {
@@ -562,10 +563,12 @@ export function resetE2ePlayerRoomsInDatabase(): void {
   const scriptPath = join(E2E_PROJECT_ROOT, 'scripts', 'e2e_reset_players.py');
   const result = spawnSync('uv', ['run', 'python', scriptPath], {
     cwd: E2E_PROJECT_ROOT,
-    shell: true,
+    // shell:false so timeout is honored on Windows (shell:true has hung the Playwright worker).
+    shell: false,
     stdio: 'pipe',
     encoding: 'utf-8',
     env: seedEnv,
+    timeout: 20000,
   });
   if (result.status !== 0) {
     console.warn('[instrumentation] e2e_reset_players.py failed', result.status, result.stderr?.slice(0, 500) ?? '');

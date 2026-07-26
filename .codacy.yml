@@ -54,6 +54,9 @@ exclude_paths:
   - "**/playwright-report/**"
   - "**/playwright-report-data/**"
   - "**/test-results/**"
+  # Graphify knowledge graph + synced community wiki dump (generated, not product code).
+  - "**/graphify-out/**"
+  - "**/graphify/**"
 
 # Bandit: exclude test paths so B101 (assert) and B106 (hardcoded pwd) are not reported in tests.
 # Codacy uses engines.<tool>.exclude_paths; ignore_patterns are not applied to tool analysis.

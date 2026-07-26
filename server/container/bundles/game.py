@@ -130,7 +130,7 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
             self.room_cache_service = None
             self.profession_cache_service = None
 
-    async def initialize(self, container: ApplicationContainer) -> None:  # pylint: disable=too-many-locals,too-many-statements
+    async def initialize(self, container: ApplicationContainer) -> None:  # pylint: disable=too-many-locals,too-many-statements  # lizard: allow NLOC=130 (DI wiring bundle; split when a second domain appears)
         """Initialize game services. Requires Core and Realtime."""
         self._require_core_services(container)
         config = container.config
@@ -278,6 +278,7 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
             spell_learning_service=None,  # Wired in container main after Magic bundle
             inventory_service=self.container_service,
             event_bus=getattr(container, "event_bus", None),
+            async_persistence=async_persistence,
         )
 
         logger.info("Container, level, skill and quest services initialized")

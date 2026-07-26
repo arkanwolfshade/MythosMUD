@@ -212,10 +212,10 @@ Decisions from this review will be recorded below and used in a follow-up implem
 
 | #   | Feature                         | Decision (include / defer / exclude) | Scope / how                                                                          |
 | --- | ------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------ |
-| 1   | Quest goal types                | include                              | Scope 1: complete activity (e.g. exit the tutorial room). Scope 2: kill N targets.   |
+| 1   | Quest goal types                | include                              | Scope 1: complete activity (e.g. exit the tutorial room). Scope 2: kill N targets. Scope 3: collect N items (inventory-backed). |
 | 2   | Quest reward types              | include                              | Scope 1: XP. Scope 2: item. Scope 3: new spell in magic system.                      |
 | 3   | Quest triggers                  | include                              | Scope: room + NPC + item.                                                            |
-| 4   | Event-driven progression        | include                              | Only events for first two goal types: complete-activity + kill N.                    |
+| 4   | Event-driven progression        | include                              | complete-activity, kill N, and collect N (inventory recount on get/drop/put).        |
 | 5   | Declarative quest config (YAML) | include                              | JSONB in a new database table for now.                                               |
 | 6   | Quest givers (questors)         | include                              | NPCs or room data in the database.                                                   |
 | 7   | Quest log / journal             | include                              | Command + API only at first.                                                         |
@@ -234,6 +234,19 @@ Decisions from this review will be recorded below and used in a follow-up implem
   `GET /api/players/{player_id}/quests` (authenticated, `player_id` is the active character).
   Use when opening the Journal panel or after quest-related actions if the server does not push an
   updated game_state.
+
+## Collect N goals and NPC turn-in (implemented)
+
+- **Goal type `collect_n`:** Progress is derived from the player's current holdings of an item
+  **prototype id** (`goal.target`), including stacks in nested `inner_container.items`. Progress
+  is recounted when the quest starts and after inventory mutations (get, drop, put, and similar).
+- **Completion modes (mutually exclusive):** `auto_complete: true` completes when holdings meet
+  the required count and **does not** consume items. `auto_complete: false` requires
+  `turn_in_entities` and **`quest turnin <npc>`** (or room turn-in); turn-in **consumes** the
+  required quantity before rewards apply.
+- **NPC interaction:** `quest ask <npc>` starts quests offered by that NPC (same room, definition
+  trigger match). `quest turnin <npc>` turns in all active quests that list the NPC in
+  `turn_in_entities` when objectives are met.
 
 ## Related documentation
 

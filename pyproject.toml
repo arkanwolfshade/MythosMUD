@@ -100,6 +100,8 @@ min_confidence = 80
 target-version = "py312"
 # line-length checks disabled project-wide; formatter may still use this for wrap
 line-length = 120
+# Generated graphify extract/wiki trees (and any nested **/graphify/** dumps).
+extend-exclude = ["graphify-out", "**/graphify-out", "**/graphify"]
 
 [tool.ruff.lint]
 select = [
@@ -265,6 +267,9 @@ exclude = [
     "^docs/",
     "^tools/",
     "^monitoring/",
+    "^graphify-out/",
+    ".*[\\\\/]graphify-out[\\\\/].*",
+    ".*[\\\\/]graphify[\\\\/].*",
     "^server/alembic/",
     "^alembic/",  # Also exclude root-level alembic if it exists
     "^server/tests/",
@@ -390,6 +395,8 @@ exclude = [
     "**/.mypy_cache",
     "**/.pytest_cache",
     "**/.ruff_cache",
+    "**/graphify-out",
+    "**/graphify",
 ]
 
 [dependency-groups]

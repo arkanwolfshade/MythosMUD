@@ -8,6 +8,7 @@ from uuid import UUID
 
 from structlog.stdlib import BoundLogger
 
+from ..container import get_container
 from ..exceptions import ValidationError as MythosValidationError
 from ..models.player import Player
 from ..schemas.shared import InventorySchemaValidationError
@@ -91,11 +92,34 @@ async def broadcast_room_event(
         logger.warning("Failed to broadcast room event", room_id=room_id, error=str(exc))
 
 
+async def _sync_collect_quests_after_inventory_save(player: Player) -> None:
+    """Refresh collect_n quest progress after a successful inventory persist."""
+    try:
+        container = get_container()
+        quest_service = getattr(container, "quest_service", None) if container else None
+        if not quest_service:
+            return
+        sync = getattr(quest_service, "sync_collect_progress", None)
+        if not callable(sync):
+            return
+        raw_id = getattr(player, "player_id", None) or getattr(player, "id", None)
+        if not raw_id:
+            return
+        player_id = raw_id if isinstance(raw_id, UUID) else UUID(str(raw_id))
+        # pylint: disable=not-callable  # Reason: narrowed by callable() above; pylint misses getattr narrowing
+        result = sync(player_id)
+        if inspect.isawaitable(result):
+            await result
+    except Exception as exc:  # pylint: disable=broad-exception-caught  # Reason: Quest sync must not fail inventory save
+        logger.debug("collect_n quest sync after inventory save skipped", error=str(exc))
+
+
 async def persist_player(persistence: object, player: Player) -> dict[str, str] | None:
     """Persist player changes, returning error dict on failure.
 
     Awaits save_player when persistence is async (e.g. AsyncPersistence) so the
     save completes before return; otherwise inventory would not be persisted.
+    After a successful save, refreshes collect_n quest progress from holdings.
     """
     save_player = getattr(persistence, "save_player", None)
     if not callable(save_player):
@@ -106,6 +130,7 @@ async def persist_player(persistence: object, player: Player) -> dict[str, str] 
         result = save_player(player)
         if inspect.isawaitable(result):
             await result
+        await _sync_collect_quests_after_inventory_save(player)
         return None
     except InventorySchemaValidationError as exc:
         logger.error("Inventory schema validation during persistence", player=player.name, error=str(exc))
