@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Performance Optimization Summary** (10 connections) — `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
+- **Performance Optimization Summary** (9 connections) — `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
 - **Performance Improvements Achieved** (6 connections) — `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
 - **Recommendations for Future Optimization** (5 connections) — `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
 - **Files Modified/Created** (4 connections) — `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [[Chat System Planning]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
@@ -41,10 +41,10 @@
 
 ## Audit Trail
 
-- EXTRACTED: 54 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 54 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

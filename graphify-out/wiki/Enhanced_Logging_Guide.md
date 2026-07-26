@@ -1,56 +1,35 @@
 # Enhanced Logging Guide
 
-> 39 nodes · cohesion 0.05
+> 8 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **Enhanced Logging Implementation Complete** (25 connections) — `docs/archive/IMPLEMENTATION_COMPLETE.md`
-- **🚀 **How to Use the Enhanced System**** (6 connections) — `docs/ENHANCED_LOGGING_GUIDE.md`
-- **🔧 **Usage Examples**** (5 connections) — `docs/archive/IMPLEMENTATION_COMPLETE.md`
-- **🔮 **Future Enhancements**** (3 connections) — `docs/ENHANCED_LOGGING_GUIDE.md`
-- **🚨 **Migration Notes**** (3 connections) — `docs/ENHANCED_LOGGING_GUIDE.md`
-- **🔒 **Security Features**** (3 connections) — `docs/ENHANCED_LOGGING_GUIDE.md`
-- **🧪 **Testing**** (3 connections) — `docs/ENHANCED_LOGGING_GUIDE.md`
-- **🆘 **Troubleshooting**** (3 connections) — `docs/ENHANCED_LOGGING_GUIDE.md`
-- ****Basic Structured Logging**** (1 connections) — `docs/archive/IMPLEMENTATION_COMPLETE.md`
-- **🎉 **Conclusion**** (1 connections) — `docs/archive/IMPLEMENTATION_COMPLETE.md`
-- ****Exception Tracking**** (1 connections) — `docs/archive/IMPLEMENTATION_COMPLETE.md`
-- **📊 **Key Achievements**** (1 connections) — `docs/archive/IMPLEMENTATION_COMPLETE.md`
-- **🚀 **Next Steps**** (1 connections) — `docs/archive/IMPLEMENTATION_COMPLETE.md`
-- **📈 **Performance Benefits**** (1 connections) — `docs/archive/IMPLEMENTATION_COMPLETE.md`
-- ****Performance Monitoring**** (1 connections) — `docs/archive/IMPLEMENTATION_COMPLETE.md`
-- ****Request Context Binding**** (1 connections) — `docs/archive/IMPLEMENTATION_COMPLETE.md`
-- **🔒 **Security Features**** (1 connections) — `docs/archive/IMPLEMENTATION_COMPLETE.md`
-- **🧪 **Testing and Validation**** (1 connections) — `docs/archive/IMPLEMENTATION_COMPLETE.md`
-- **ENHANCED_LOGGING_GUIDE.md** (1 connections) — `docs/ENHANCED_LOGGING_GUIDE.md`
-- ****Automatic Data Sanitization**** (1 connections) — `docs/ENHANCED_LOGGING_GUIDE.md`
-- ****Backward Compatibility**** (1 connections) — `docs/ENHANCED_LOGGING_GUIDE.md`
-- ****Basic Usage**** (1 connections) — `docs/ENHANCED_LOGGING_GUIDE.md`
-- ****Breaking Changes**** (1 connections) — `docs/ENHANCED_LOGGING_GUIDE.md`
-- ****Common Issues**** (1 connections) — `docs/ENHANCED_LOGGING_GUIDE.md`
-- ****Configurable Sensitive Keys**** (1 connections) — `docs/ENHANCED_LOGGING_GUIDE.md`
-- *... and 14 more nodes in this community*
+- **Enhanced Logging Guide** (4 connections) — `docs/ENHANCED_LOGGING_GUIDE.md`
+- **AI Agent Development Guide** (3 connections) — `docs/DEVELOPMENT_AI.md`
+- **MDC Request Context Binding** (2 connections) — `docs/ENHANCED_LOGGING_GUIDE.md`
+- **Error Handling Guide** (2 connections) — `docs/ERROR_HANDLING_GUIDE.md`
+- **MythosMUDError Hierarchy** (2 connections) — `docs/ERROR_HANDLING_GUIDE.md`
+- **AI Enhanced Logging Mandate** (1 connections) — `docs/DEVELOPMENT_AI.md`
+- **Documentation Updates ConnectionManager** (1 connections) — `docs/DOCUMENTATION_UPDATES.md`
+- **measure_performance Span** (1 connections) — `docs/ENHANCED_LOGGING_GUIDE.md`
 
 ## Relationships
 
-- [[Enhanced Logging Guide]] (1 shared connections)
-- [[System Audit Status]] (1 shared connections)
-- [[Archive Plan Planning]] (1 shared connections)
-- [[Plan Modernization Archive]] (1 shared connections)
-- [[Cursor Plans Tailwind]] (1 shared connections)
-- [[Logging Migration Complete]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
+- `docs/DEVELOPMENT_AI.md`
+- `docs/DOCUMENTATION_UPDATES.md`
 - `docs/ENHANCED_LOGGING_GUIDE.md`
-- `docs/archive/IMPLEMENTATION_COMPLETE.md`
+- `docs/ERROR_HANDLING_GUIDE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 81 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 12 (75%)
+- INFERRED: 4 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

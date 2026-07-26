@@ -1,51 +1,32 @@
 # Player Command Developer Guide
 
-> 27 nodes · cohesion 0.07
+> 6 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **🐙 MythosMUD Player Command Developer's Guide** (14 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **Common Patterns** (6 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **Command Anatomy** (5 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **AI-Assisted Development** (4 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **Command System Overview** (4 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **Introduction** (3 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **PLAYER_COMMAND_DEVELOPER_GUIDE.md** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **1. Command Model (Pydantic)** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **1. Room-Based Commands** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **2. Command Handler Function** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **2. Player-Targeted Commands** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **3. Admin-Only Commands** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **3. Command Registration** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **4. Command Parsing** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **4. Event-Driven Commands** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **5. Parameter Validation** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **AI Code Review Checklist** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **Architecture Layers** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **Command Flow** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **Conclusion** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **Example AI Prompt** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **Key Components** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **Prerequisites** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **Reference Documents** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **Table of Contents** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- *... and 2 more nodes in this community*
+- **Player Command Developer Guide** (2 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
+- **Pydantic Code Review** (2 connections) — `docs/PYDANTIC_CODE_REVIEW.md`
+- **Pydantic Model Validation Patterns** (2 connections) — `docs/PYDANTIC_CODE_REVIEW.md`
+- **Python Model Updates Required** (2 connections) — `docs/PYTHON_MODEL_UPDATES_REQUIRED.md`
+- **Player Command Pipeline** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
+- **Python Model Sync Requirements** (1 connections) — `docs/PYTHON_MODEL_UPDATES_REQUIRED.md`
 
 ## Relationships
 
-- [[Player Command Developer]] (4 shared connections)
-- [[Guide Player Command]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
 - `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
+- `docs/PYDANTIC_CODE_REVIEW.md`
+- `docs/PYTHON_MODEL_UPDATES_REQUIRED.md`
 
 ## Audit Trail
 
-- EXTRACTED: 57 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 6 (60%)
+- INFERRED: 4 (40%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

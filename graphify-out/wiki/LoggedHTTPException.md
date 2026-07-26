@@ -1,90 +1,68 @@
 # LoggedHTTPException
 
-> God node · 261 connections · `server/exceptions.py`
+> 229 nodes · cohesion 0.02
 
-**Community:** [[Container Exception Handlers]]
+## Key Concepts
 
-## Connections by Relation
+- **LoggedHTTPException** (401 connections) — `server/exceptions.py`
+- **ContainerServiceError** (91 connections) — `server/services/container_service.py`
+- **ContainerNotFoundError** (49 connections) — `server/services/container_service.py`
+- **ContainerCapacityError** (45 connections) — `server/services/container_service.py`
+- **container_helpers.py** (44 connections) — `server/api/container_helpers.py`
+- **ContainerAccessDeniedError** (41 connections) — `server/services/container_service.py`
+- **ContainerLockedError** (38 connections) — `server/services/container_service.py`
+- **container_service.py** (37 connections) — `server/services/container_service.py`
+- **handle_transfer_items_exceptions()** (32 connections) — `server/api/container_exception_handlers.py`
+- **test_container_exception_handlers.py** (31 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **handle_open_container_exceptions()** (26 connections) — `server/api/container_exception_handlers.py`
+- **handle_loot_all_exceptions()** (25 connections) — `server/api/container_exception_handlers.py`
+- **container_exception_handlers.py** (24 connections) — `server/api/container_exception_handlers.py`
+- **test_container_helpers_loot.py** (24 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
+- **handle_close_container_exceptions()** (22 connections) — `server/api/container_exception_handlers.py`
+- **get_player_id_from_user()** (19 connections) — `server/api/container_helpers.py`
+- **handle_container_service_error()** (19 connections) — `server/api/container_helpers.py`
+- **TestHandleTransferItemsExceptions** (18 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **create_error_context()** (17 connections) — `server/api/container_helpers.py`
+- **get_container_and_player_for_loot_all()** (17 connections) — `server/api/container_helpers.py`
+- **TestHandleLootAllExceptions** (16 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **TestHandleOpenContainerExceptions** (16 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **TestHandleContainerServiceErrorEdgeCases** (15 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
+- **TestExceptionChaining** (14 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **TestExceptionHandlerContext** (14 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- *... and 204 more nodes in this community*
 
-### calls
-- [[handle_transfer_items_exceptions()]] `EXTRACTED`
-- [[roll_character_stats()]] `EXTRACTED`
-- [[handle_open_container_exceptions()]] `EXTRACTED`
-- [[handle_close_container_exceptions()]] `EXTRACTED`
-- [[handle_loot_all_exceptions()]] `EXTRACTED`
-- [[get_player_id_from_user()]] `EXTRACTED`
-- [[handle_container_service_error()]] `EXTRACTED`
-- [[create_character_with_stats()]] `EXTRACTED`
-- [[get_container_and_player_for_loot_all()]] `EXTRACTED`
-- [[_execute_create_character()]] `EXTRACTED`
-- [[_roll_stats_with_profession_preview()]] `EXTRACTED`
-- [[get_player_quests()]] `EXTRACTED`
-- [[start_login_grace_period_endpoint()]] `EXTRACTED`
-- [[update_room_position()]] `EXTRACTED`
-- [[validate_character_stats()]] `EXTRACTED`
-- [[replay_dlq_message()]] `EXTRACTED`
-- [[_validate_character_access()]] `EXTRACTED`
-- [[_update_npc_definition_internal()]] `EXTRACTED`
-- [[get_health_status()]] `EXTRACTED`
-- [[apply_lucidity_loss()]] `EXTRACTED`
+## Relationships
 
-### contains
-- [[exceptions.py]] `EXTRACTED`
+- [ContainerService](ContainerService.md) (160 shared connections)
+- [User](User.md) (82 shared connections)
+- [ContainerComponent](ContainerComponent.md) (60 shared connections)
+- [MythosMUDError](MythosMUDError.md) (35 shared connections)
+- [exceptions.py](exceptions.py.md) (34 shared connections)
+- [ValidationError](ValidationError.md) (31 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (30 shared connections)
+- [__init__.py](__init__.py.md) (29 shared connections)
+- [monitoring.py](monitoring.py.md) (18 shared connections)
+- [character_creation.py](character_creation.py.md) (17 shared connections)
+- [lifespan.py](lifespan.py.md) (15 shared connections)
+- [InventoryMutationGuard](InventoryMutationGuard.md) (14 shared connections)
 
-### imports
-- [[players.py]] `EXTRACTED`
-- [[monitoring.py]] `EXTRACTED`
-- [[test_monitoring_endpoints.py]] `EXTRACTED`
-- [[maps.py]] `EXTRACTED`
-- [[endpoints.py]] `EXTRACTED`
-- [[test_endpoints.py]] `EXTRACTED`
-- [[legacy_error_handlers.py]] `EXTRACTED`
-- [[character_creation.py]] `EXTRACTED`
-- [[test_exceptions.py]] `EXTRACTED`
-- [[container_helpers.py]] `EXTRACTED`
-- [[test_legacy_error_handlers.py]] `EXTRACTED`
-- [[test_container_helpers.py]] `EXTRACTED`
-- [[container_endpoints_loot.py]] `EXTRACTED`
-- [[test_metrics_endpoints.py]] `EXTRACTED`
-- [[test_exceptions_comprehensive.py]] `EXTRACTED`
-- [[rooms.py]] `EXTRACTED`
-- [[real_time.py]] `EXTRACTED`
-- [[standardized_responses.py]] `EXTRACTED`
-- [[npc_definitions_api.py]] `EXTRACTED`
-- [[player_effects.py]] `EXTRACTED`
+## Source Files
 
-### inherits
-- [[LoggedException]] `EXTRACTED`
-- [[HTTPException]] `EXTRACTED`
+- `server/api/container_exception_handlers.py`
+- `server/api/container_helpers.py`
+- `server/exceptions.py`
+- `server/services/container_service.py`
+- `server/tests/unit/api/test_container_exception_handlers.py`
+- `server/tests/unit/api/test_container_helpers.py`
+- `server/tests/unit/api/test_container_helpers_loot.py`
+- `server/tests/unit/api/test_containers.py`
 
-### method
-- [[.__init__()]] `EXTRACTED`
+## Audit Trail
 
-### rationale_for
-- [[HTTPException with automatic logging.      This class extends FastAPI's HTTPExce]] `EXTRACTED`
-
-### uses
-- [[CircuitBreaker]] `INFERRED`
-- [[ErrorResponse]] `INFERRED`
-- [[TestErrorMapping]] `INFERRED`
-- [[TestSanitization]] `INFERRED`
-- [[TestErrorHandlers]] `INFERRED`
-- [[TestCircuitBreaker]] `INFERRED`
-- [[JSONResponse]] `INFERRED`
-- [[MythosMUDError]] `INFERRED`
-- [[Request]] `INFERRED`
-- [[TestTransferAllItemsFromContainer]] `INFERRED`
-- [[TestHelperFunctions]] `INFERRED`
-- [[TestOpenContainer]] `INFERRED`
-- [[TestTransferItems]] `INFERRED`
-- [[TestErrorResponse]] `INFERRED`
-- [[TestLootAllItems]] `INFERRED`
-- [[_AppStateWithLegacyConfig]] `INFERRED`
-- [[_AppWithLegacyConfigState]] `INFERRED`
-- [[FastAPI]] `INFERRED`
-- [[HTTPException]] `INFERRED`
-- [[TestCreateErrorResponse]] `INFERRED`
+- EXTRACTED: 1186 (68%)
+- INFERRED: 557 (32%)
+- AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*
