@@ -70,6 +70,8 @@ def mock_manager(
     processed_disconnect_lock.__aenter__ = AsyncMock(return_value=None)
     processed_disconnect_lock.__aexit__ = AsyncMock(return_value=None)
     manager.processed_disconnect_lock = processed_disconnect_lock
+    intentional_disconnects: set[uuid.UUID] = set()
+    manager.intentional_disconnects = intentional_disconnects
     return manager
 
 
@@ -102,6 +104,21 @@ async def test_track_disconnect_if_needed_force_disconnect(mock_manager: MagicMo
     assert result is False
 
 
+@pytest.mark.asyncio
+async def test_track_disconnect_if_needed_intentional_force_disconnect(
+    mock_manager: MagicMock,
+):
+    """Intentional logout via force_disconnect must still track leave (player_left_game)."""
+    player_id = uuid.uuid4()
+    intentional_disconnects: set[uuid.UUID] = {player_id}
+    mock_manager.intentional_disconnects = intentional_disconnects
+    processed_disconnects: set[uuid.UUID] = set()
+    mock_manager.processed_disconnects = processed_disconnects
+    result = await _track_disconnect_if_needed(player_id, mock_manager, True)
+    assert result is True
+    assert player_id in processed_disconnects
+
+
 def test_cleanup_room_subscriptions(
     mock_manager: MagicMock,
     remove_player_from_all_rooms_mock: MagicMock,
@@ -120,6 +137,18 @@ def test_cleanup_room_subscriptions_force_disconnect(
     player_id = uuid.uuid4()
     _cleanup_room_subscriptions(player_id, mock_manager, True)
     remove_player_from_all_rooms_mock.assert_not_called()
+
+
+def test_cleanup_room_subscriptions_intentional_force_disconnect(
+    mock_manager: MagicMock,
+    remove_player_from_all_rooms_mock: MagicMock,
+):
+    """Intentional logout via force_disconnect must clear room membership (no Occupants ghost)."""
+    player_id = uuid.uuid4()
+    intentional_disconnects: set[uuid.UUID] = {player_id}
+    mock_manager.intentional_disconnects = intentional_disconnects
+    _cleanup_room_subscriptions(player_id, mock_manager, True)
+    remove_player_from_all_rooms_mock.assert_called_once_with(str(player_id))
 
 
 def test_cleanup_room_subscriptions_has_connection(
@@ -228,7 +257,9 @@ async def test_cleanup_websocket_disconnect(mock_manager: MagicMock):
 
 
 @pytest.mark.asyncio
-async def test_cleanup_websocket_disconnect_when_mapping_cleared_during_close(mock_manager: MagicMock):
+async def test_cleanup_websocket_disconnect_when_mapping_cleared_during_close(
+    mock_manager: MagicMock,
+):
     """Rest/force disconnect must not KeyError if on-close path already removed player_websockets."""
     import asyncio
 
@@ -254,7 +285,9 @@ async def test_cleanup_websocket_disconnect_when_mapping_cleared_during_close(mo
         "server.realtime.connection_disconnection.disconnect_all_websockets_impl",
         side_effect=clear_player_mapping_after_close,
     ):
-        result = await cleanup_websocket_disconnect(player_id, mock_manager, is_force_disconnect=True)
+        result = await cleanup_websocket_disconnect(
+            player_id, mock_manager, is_force_disconnect=True
+        )
 
     assert isinstance(result, bool)
     assert player_id not in player_websockets
@@ -263,7 +296,9 @@ async def test_cleanup_websocket_disconnect_when_mapping_cleared_during_close(mo
 @pytest.mark.asyncio
 async def test_disconnect_connection_by_id_impl(mock_manager: MagicMock):
     """Test disconnect_connection_by_id_impl() disconnects connection."""
-    from server.realtime.connection_disconnection import disconnect_connection_by_id_impl
+    from server.realtime.connection_disconnection import (
+        disconnect_connection_by_id_impl,
+    )
 
     connection_id = "conn_001"
     player_id = uuid.uuid4()

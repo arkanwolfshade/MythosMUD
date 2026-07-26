@@ -39,6 +39,7 @@ async function waitForLookReflected(page: Page): Promise<void> {
         return /Arena|gladiator|heart of the|exits|sand|You see/i.test(v);
       });
     },
+    undefined,
     { timeout: 45000 }
   );
 }

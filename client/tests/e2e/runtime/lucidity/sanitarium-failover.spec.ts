@@ -45,6 +45,7 @@ test.describe('Sanitarium Failover Escalation', () => {
           );
           return hasCommandInput || hasGameInfo;
         },
+        undefined,
         { timeout: 5000 }
       )
       .then(() => true)

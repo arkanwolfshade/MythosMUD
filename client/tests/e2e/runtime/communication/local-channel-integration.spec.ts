@@ -16,6 +16,7 @@ import {
   ensurePlayerInGame,
   ensurePlayersInSameRoom,
   getPlayerMessages,
+  prepareReceiverForInboundMessages,
   waitForAllPlayersInGame,
   waitForCrossPlayerMessage,
   waitForLookReflectedInUi,
@@ -130,23 +131,24 @@ test.describe('Local Channel Integration', () => {
     await ensurePlayerInGame(ithaquaContext, 20000);
     await ensurePlayersInSameRoom(contexts, 2, 45000);
 
-    // Sender focused: command_response lands on Game Info reliably on CI (local-channel-basic).
-    await awContext.page.bringToFront().catch(() => {});
-    await ensurePlayerInGame(awContext, 30000);
+    // Brief pause so unmute/stand/look do not trip the 10 cmd/s rate limit before /local.
+    await new Promise(r => setTimeout(r, 1200));
+
     await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
       el.focus();
     });
     await executeCommand(awContext.page, 'local Testing player management integration');
 
-    await waitForMessage(awContext.page, /You say locally:\s*Testing player management integration/i, 45000);
+    await prepareReceiverForInboundMessages(ithaquaContext, 20000);
 
-    await ensurePlayersInSameRoom(contexts, 2, 10000);
-
-    await waitForCrossPlayerMessage(
-      ithaquaContext,
-      /ArkanWolfshade \(local\): Testing player management integration/i,
-      45000
-    );
+    await Promise.all([
+      waitForMessage(awContext.page, /You say locally:\s*Testing player management integration/i, 45000),
+      waitForCrossPlayerMessage(
+        ithaquaContext,
+        /ArkanWolfshade \(local\): Testing player management integration/i,
+        45000
+      ),
+    ]);
 
     // Verify Ithaqua sees the message
     const ithaquaMessages = await getPlayerMessages(ithaquaContext);

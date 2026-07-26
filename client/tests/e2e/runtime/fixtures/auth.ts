@@ -59,6 +59,7 @@ export async function loginPlayer(page: Page, username: string, password: string
         );
         return loading.length === 0;
       },
+      undefined,
       { timeout: TEST_TIMEOUTS.LOGIN }
     );
   } catch {
@@ -133,7 +134,9 @@ export async function waitForPlayableSession(page: Page, timeoutMs: number = 300
   await expect(page.getByTestId('command-input')).toBeVisible({ timeout: Math.min(timeoutMs, 15000) });
 
   await page
-    .waitForFunction(() => !(document.body?.innerText ?? '').includes(GRACE_PERIOD_MESSAGE), { timeout: timeoutMs })
+    .waitForFunction((msg: string) => !(document.body?.innerText ?? '').includes(msg), GRACE_PERIOD_MESSAGE, {
+      timeout: timeoutMs,
+    })
     .catch(() => {});
 
   await page.waitForFunction(
@@ -141,6 +144,7 @@ export async function waitForPlayableSession(page: Page, timeoutMs: number = 300
       typeof window.__mythosE2eHasConnectedStatus === 'function'
         ? window.__mythosE2eHasConnectedStatus() === true
         : document.body?.innerText?.includes('Connected') === true,
+    undefined,
     { timeout: timeoutMs }
   );
 }
@@ -319,7 +323,7 @@ export async function refreshPlayableSession(page: Page, timeoutMs: number = 450
     return;
   }
 
-  await page.waitForFunction(() => window.__mythosE2eIsGameUiLoaded?.() === true, { timeout: timeoutMs });
+  await page.waitForFunction(() => window.__mythosE2eIsGameUiLoaded?.() === true, undefined, { timeout: timeoutMs });
   await waitForPlayableSession(page, timeoutMs);
 }
 

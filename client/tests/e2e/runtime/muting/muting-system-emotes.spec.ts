@@ -25,6 +25,7 @@ async function waitForDisconnectBannerClear(page: PlayerContext['page']): Promis
   await page
     .waitForFunction(
       () => !(document.body?.innerText ?? '').includes('You are disconnected and cannot perform actions'),
+      undefined,
       { timeout: 20000 }
     )
     .catch(() => {});

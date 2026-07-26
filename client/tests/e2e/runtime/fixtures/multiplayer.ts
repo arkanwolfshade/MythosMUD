@@ -152,7 +152,7 @@ export async function cleanupMultiPlayerContexts(contexts: PlayerContext[] | und
 
 async function waitForPlayerGameUi(page: Page, username: string, timeoutMs: number): Promise<void> {
   try {
-    await page.waitForFunction(() => window.__mythosE2eIsGameUiLoaded?.() === true, { timeout: timeoutMs });
+    await page.waitForFunction(() => window.__mythosE2eIsGameUiLoaded?.() === true, undefined, { timeout: timeoutMs });
   } catch {
     const diagnostics = await page.evaluate(() => window.__mythosE2eCaptureGameUiDiagnostics?.()).catch(() => null);
     throw new Error(
@@ -165,7 +165,9 @@ async function waitForPlayerGameUi(page: Page, username: string, timeoutMs: numb
 async function waitForPlayerWebSocket(page: Page, username: string, timeoutMs: number): Promise<void> {
   const wsTimeoutMs = Math.min(timeoutMs, 30000);
   try {
-    await page.waitForFunction(() => window.__mythosE2eHasConnectedStatus?.() === true, { timeout: wsTimeoutMs });
+    await page.waitForFunction(() => window.__mythosE2eHasConnectedStatus?.() === true, undefined, {
+      timeout: wsTimeoutMs,
+    });
   } catch {
     throw new Error(
       `Player ${username} WebSocket did not connect within ${wsTimeoutMs}ms (status still shows linkdead?)`
@@ -176,7 +178,9 @@ async function waitForPlayerWebSocket(page: Page, username: string, timeoutMs: n
 async function waitForPlayerRoomSubscription(page: Page, username: string, timeoutMs: number): Promise<void> {
   const tickTimeoutMs = Math.min(timeoutMs, 50000);
   try {
-    await page.waitForFunction(() => window.__mythosE2eHasRoomSubscription?.() === true, { timeout: tickTimeoutMs });
+    await page.waitForFunction(() => window.__mythosE2eHasRoomSubscription?.() === true, undefined, {
+      timeout: tickTimeoutMs,
+    });
   } catch {
     throw new Error(
       `Player ${username} room subscription not established within ${tickTimeoutMs}ms (no tick message or room state received)`
@@ -242,7 +246,9 @@ export async function waitForAllPlayersInGame(
   await Promise.all(
     contexts.map(async ({ page, player }) => {
       try {
-        await page.waitForFunction(() => window.__mythosE2eIsGameUiLoaded?.() === true, { timeout: timeoutMs });
+        await page.waitForFunction(() => window.__mythosE2eIsGameUiLoaded?.() === true, undefined, {
+          timeout: timeoutMs,
+        });
       } catch (err) {
         const diagnostics = await page.evaluate(() => window.__mythosE2eCaptureGameUiDiagnostics?.()).catch(() => null);
         const msg =
@@ -259,7 +265,7 @@ export async function waitForAllPlayersInGame(
   await Promise.all(
     contexts.map(({ page, player }) =>
       page
-        .waitForFunction(() => window.__mythosE2eHasConnectedStatus?.() === true, {
+        .waitForFunction(() => window.__mythosE2eHasConnectedStatus?.() === true, undefined, {
           timeout: Math.min(timeoutMs, 30000), // Max 30s for WebSocket connection per player
         })
         .catch(err => {
@@ -280,7 +286,7 @@ export async function waitForAllPlayersInGame(
   await Promise.all(
     contexts.map(({ page, player }) =>
       page
-        .waitForFunction(() => window.__mythosE2eHasRoomSubscription?.() === true, { timeout: step3Timeout })
+        .waitForFunction(() => window.__mythosE2eHasRoomSubscription?.() === true, undefined, { timeout: step3Timeout })
         .catch(err => {
           const tickTimeout = step3Timeout;
           const msg =
@@ -587,6 +593,7 @@ export async function waitForLookReflectedInUi(page: Page, timeoutMs: number = 4
         return /Arena|gladiator|heart of the|Exits:|sand and shadow|Foyer|Hallway/i.test(v);
       });
     },
+    undefined,
     { timeout: timeoutMs }
   );
 }
@@ -692,7 +699,9 @@ async function runCoLocateTeleportAttempt(
   await Promise.all(
     contexts.map(({ page, player }) =>
       page
-        .waitForFunction(() => window.__mythosE2eIsDisconnectedBannerVisible?.() === true, { timeout: 15_000 })
+        .waitForFunction(() => window.__mythosE2eIsDisconnectedBannerVisible?.() === true, undefined, {
+          timeout: 15_000,
+        })
         .catch(() => {})
         .then(() =>
           ensurePlayableConnection(page, {

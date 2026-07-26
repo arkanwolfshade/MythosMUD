@@ -71,6 +71,7 @@ export async function ensureStanding(page: Page, timeoutMs: number = 5000): Prom
       if (/Posture\s*\n\s*standing\b/i.test(t)) return true;
       return false;
     },
+    undefined,
     { timeout: timeoutMs }
   );
 }
