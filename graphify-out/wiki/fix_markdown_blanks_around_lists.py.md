@@ -1,6 +1,6 @@
 # fix_markdown_blanks_around_lists.py
 
-> 55 nodes · cohesion 0.06
+> 52 nodes · cohesion 0.06
 
 ## Key Concepts
 
@@ -29,7 +29,7 @@
 - **get_list_type()** (3 connections) — `scripts/fix_markdown_blanks_around_lists.py`
 - **is_code_block_delimiter()** (3 connections) — `scripts/fix_markdown_blanks_around_lists.py`
 - **is_list_item()** (3 connections) — `scripts/fix_markdown_blanks_around_lists.py`
-- *... and 30 more nodes in this community*
+- *... and 27 more nodes in this community*
 
 ## Relationships
 
@@ -44,7 +44,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 168 (100%)
+- EXTRACTED: 165 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -35,8 +35,8 @@
 
 - [User](User.md) (11 shared connections)
 - [get_logger](get_logger.md) (7 shared connections)
-- [.__call__](__call__.md) (6 shared connections)
 - [test_security_headers.py](test_security_headers.py.md) (6 shared connections)
+- [.__call__](__call__.md) (5 shared connections)
 - [lifespan.py](lifespan.py.md) (4 shared connections)
 - [main.py](main.py.md) (4 shared connections)
 - [error_handling_middleware.py](error_handling_middleware.py.md) (3 shared connections)

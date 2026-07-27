@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **overrides** (4 connections) — `package.json`
+- **overrides** (5 connections) — `package.json`
 - **package.json** (3 connections) — `package.json`
 - **dependencies** (2 connections) — `package.json`
 - **eslint** (2 connections) — `package.json`
@@ -26,7 +26,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
+- EXTRACTED: 21 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

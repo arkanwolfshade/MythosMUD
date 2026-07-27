@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **MythosMUD Wiki Log** (13 connections) — `data/MythosMUD-Obsidian/log.md`
+- **MythosMUD Wiki Log** (14 connections) — `data/MythosMUD-Obsidian/log.md`
 - **log.md** (1 connections) — `data/MythosMUD-Obsidian/log.md`
 - **[2026-07-19] ingest | Geography and Major Locations** (1 connections) — `data/MythosMUD-Obsidian/log.md`
 - **[2026-07-19] ingest | MythosMUD worldbuilding** (1 connections) — `data/MythosMUD-Obsidian/log.md`
@@ -28,7 +28,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
+- EXTRACTED: 26 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

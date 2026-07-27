@@ -27,7 +27,7 @@
 - [test_health_monitor.py](test_health_monitor.py.md) (2 shared connections)
 - [.__init__](__init__.md) (1 shared connections)
 - [connection_manager.py](connection_manager.py.md) (1 shared connections)
-- [Community 1299](Community_1299.md) (1 shared connections)
+- [test_register_new_connection_existing_player](test_register_new_connection_existing_player.md) (1 shared connections)
 
 ## Source Files
 

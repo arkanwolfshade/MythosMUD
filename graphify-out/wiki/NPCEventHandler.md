@@ -37,7 +37,7 @@
 - [test_npc_event_handlers_helpers.py](test_npc_event_handlers_helpers.py.md) (2 shared connections)
 - [websocket_initial_state.py](websocket_initial_state.py.md) (1 shared connections)
 - [test_npc_event_handlers.py](test_npc_event_handlers.py.md) (1 shared connections)
-- [Community 1411](Community_1411.md) (1 shared connections)
+- [test_messaging_integration_init](test_messaging_integration_init.md) (1 shared connections)
 - [ConnectionManager](ConnectionManager.md) (1 shared connections)
 
 ## Source Files

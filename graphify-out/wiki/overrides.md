@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **overrides** (16 connections) — `client/package.json`
+- **overrides** (17 connections) — `client/package.json`
 - **@stoplight/spectral-core** (2 connections) — `client/package.json`
 - **@stoplight/spectral-ruleset-bundler** (2 connections) — `client/package.json`
 - **@asyncapi/generator** (1 connections) — `client/package.json`
@@ -33,7 +33,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 35 (100%)
+- EXTRACTED: 36 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

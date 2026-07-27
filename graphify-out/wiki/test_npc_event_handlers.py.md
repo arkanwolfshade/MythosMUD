@@ -19,16 +19,16 @@
 
 - [get_logger](get_logger.md) (5 shared connections)
 - [NPCEventHandler](NPCEventHandler.md) (1 shared connections)
-- [Community 1409](Community_1409.md) (1 shared connections)
-- [Community 1410](Community_1410.md) (1 shared connections)
-- [Community 1411](Community_1411.md) (1 shared connections)
-- [Community 1439](Community_1439.md) (1 shared connections)
-- [Community 1436](Community_1436.md) (1 shared connections)
-- [Community 1437](Community_1437.md) (1 shared connections)
-- [Community 1452](Community_1452.md) (1 shared connections)
-- [Community 1454](Community_1454.md) (1 shared connections)
-- [Community 1451](Community_1451.md) (1 shared connections)
-- [Community 1453](Community_1453.md) (1 shared connections)
+- [test_connection_manager_setter](test_connection_manager_setter.md) (1 shared connections)
+- [test_connection_manager_setter_overrides_lazy_load](test_connection_manager_setter_overrides_lazy_load.md) (1 shared connections)
+- [test_messaging_integration_init](test_messaging_integration_init.md) (1 shared connections)
+- [test_mute_channel_already_muted](test_mute_channel_already_muted.md) (1 shared connections)
+- [.test_get_death_message_default](test_get_death_message_default.md) (1 shared connections)
+- [test_unmute_player_not_muted](test_unmute_player_not_muted.md) (1 shared connections)
+- [test_normalize_command_removes_slash](test_normalize_command_removes_slash.md) (1 shared connections)
+- [test_normalize_command_no_slash](test_normalize_command_no_slash.md) (1 shared connections)
+- [test_is_admin_sync_false](test_is_admin_sync_false.md) (1 shared connections)
+- [test_normalize_command_cleans_whitespace](test_normalize_command_cleans_whitespace.md) (1 shared connections)
 
 ## Source Files
 

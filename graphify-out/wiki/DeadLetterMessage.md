@@ -30,8 +30,8 @@
 - [get_logger](get_logger.md) (1 shared connections)
 - [.from_dict](from_dict.md) (1 shared connections)
 - [ConnectionManager](ConnectionManager.md) (1 shared connections)
-- [Community 1327](Community_1327.md) (1 shared connections)
-- [Community 1326](Community_1326.md) (1 shared connections)
+- [test_process_dict_occupant_with_npc_name](test_process_dict_occupant_with_npc_name.md) (1 shared connections)
+- [test_process_dict_occupant_with_player_name](test_process_dict_occupant_with_player_name.md) (1 shared connections)
 
 ## Source Files
 

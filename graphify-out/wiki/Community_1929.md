@@ -40,11 +40,11 @@
 - [test_nats_service.py](test_nats_service.py.md) (2 shared connections)
 - [Community 1979](Community_1979.md) (1 shared connections)
 - [.state](state.md) (1 shared connections)
-- [Community 1309](Community_1309.md) (1 shared connections)
-- [Community 1308](Community_1308.md) (1 shared connections)
-- [Community 1307](Community_1307.md) (1 shared connections)
-- [Community 1306](Community_1306.md) (1 shared connections)
-- [Community 1310](Community_1310.md) (1 shared connections)
+- [test_get_player_info_player_not_found](test_get_player_info_player_not_found.md) (1 shared connections)
+- [test_get_player_info_invalid_player_id](test_get_player_info_invalid_player_id.md) (1 shared connections)
+- [mock_name_extractor](mock_name_extractor.md) (1 shared connections)
+- [mock_logger](mock_logger.md) (1 shared connections)
+- [test_normalize_event_ids_both_provided](test_normalize_event_ids_both_provided.md) (1 shared connections)
 
 ## Source Files
 

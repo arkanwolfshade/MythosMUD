@@ -33,7 +33,7 @@
 
 - [HealthMonitor](HealthMonitor.md) (2 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
-- [Community 1299](Community_1299.md) (1 shared connections)
+- [test_register_new_connection_existing_player](test_register_new_connection_existing_player.md) (1 shared connections)
 
 ## Source Files
 

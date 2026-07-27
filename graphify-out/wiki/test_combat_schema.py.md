@@ -36,7 +36,7 @@
 - [get_logger](get_logger.md) (18 shared connections)
 - [InventorySchemaValidationError](InventorySchemaValidationError.md) (1 shared connections)
 - [ConnectionManager](ConnectionManager.md) (1 shared connections)
-- [Community 1425](Community_1425.md) (1 shared connections)
+- [.test_get_attack_message_defender_perspective](test_get_attack_message_defender_perspective.md) (1 shared connections)
 
 ## Source Files
 

@@ -19,8 +19,8 @@
 
 - [get_logger](get_logger.md) (5 shared connections)
 - [Community 1503](Community_1503.md) (1 shared connections)
-- [Community 1465](Community_1465.md) (1 shared connections)
-- [Community 1479](Community_1479.md) (1 shared connections)
+- [test_create_command_object_type_error](test_create_command_object_type_error.md) (1 shared connections)
+- [test_check_rate_limit_different_users](test_check_rate_limit_different_users.md) (1 shared connections)
 - [Community 1496](Community_1496.md) (1 shared connections)
 - [Community 1493](Community_1493.md) (1 shared connections)
 - [Community 1494](Community_1494.md) (1 shared connections)
