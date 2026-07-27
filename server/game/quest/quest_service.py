@@ -82,6 +82,18 @@ def _collect_goal_required_count(goal: Any) -> int:
     return int((goal.config or {}).get("count", 1) or 1)
 
 
+def _consume_collect_goals_from_player(player: Any, collect_goals: list[Any]) -> dict[str, Any] | None:
+    """Consume each collect_n goal from player holdings. Return error dict or None."""
+    for goal in collect_goals:
+        prototype_id = _collect_goal_prototype_id(goal)
+        required = _collect_goal_required_count(goal)
+        if not prototype_id or required <= 0:
+            continue
+        if not consume_prototype_from_player(player, prototype_id, required):
+            return {"success": False, "message": "You no longer have the required items."}
+    return None
+
+
 def _build_collect_n_progress(
     definition: QuestDefinitionSchema,
     stacks: list[dict[str, Any]],
@@ -366,13 +378,9 @@ class QuestService:
         player = await self._load_player_for_collect(player_id)
         if not player:
             return {"success": False, "message": "Unable to access inventory for turn-in."}
-        for goal in collect_goals:
-            prototype_id = _collect_goal_prototype_id(goal)
-            required = _collect_goal_required_count(goal)
-            if not prototype_id or required <= 0:
-                continue
-            if not consume_prototype_from_player(player, prototype_id, required):
-                return {"success": False, "message": "You no longer have the required items."}
+        error = _consume_collect_goals_from_player(player, collect_goals)
+        if error:
+            return error
         await self._save_player_after_consume(player)
         return None
 

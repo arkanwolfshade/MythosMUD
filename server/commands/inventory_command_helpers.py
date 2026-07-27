@@ -1,9 +1,9 @@
 """Command helper functions for inventory operations."""
 
 import inspect
-from collections.abc import Awaitable
+from collections.abc import Awaitable, Callable
 from copy import deepcopy
-from typing import cast
+from typing import Any, cast
 from uuid import UUID
 
 from structlog.stdlib import BoundLogger
@@ -92,22 +92,33 @@ async def broadcast_room_event(
         logger.warning("Failed to broadcast room event", room_id=room_id, error=str(exc))
 
 
+def _collect_progress_sync(container: object | None) -> object | None:
+    """Return quest_service.sync_collect_progress when it is callable."""
+    quest_service = getattr(container, "quest_service", None) if container else None
+    if not quest_service:
+        return None
+    sync = getattr(quest_service, "sync_collect_progress", None)
+    return sync if callable(sync) else None
+
+
+def _player_uuid_for_quest_sync(player: Player) -> UUID | None:
+    """Resolve player UUID for collect_n sync; None when missing."""
+    raw_id = getattr(player, "player_id", None) or getattr(player, "id", None)
+    if not raw_id:
+        return None
+    return raw_id if isinstance(raw_id, UUID) else UUID(str(raw_id))
+
+
 async def _sync_collect_quests_after_inventory_save(player: Player) -> None:
     """Refresh collect_n quest progress after a successful inventory persist."""
     try:
-        container = get_container()
-        quest_service = getattr(container, "quest_service", None) if container else None
-        if not quest_service:
+        sync = _collect_progress_sync(get_container())
+        player_id = _player_uuid_for_quest_sync(player)
+        if not sync or not player_id:
             return
-        sync = getattr(quest_service, "sync_collect_progress", None)
-        if not callable(sync):
-            return
-        raw_id = getattr(player, "player_id", None) or getattr(player, "id", None)
-        if not raw_id:
-            return
-        player_id = raw_id if isinstance(raw_id, UUID) else UUID(str(raw_id))
-        # pylint: disable=not-callable  # Reason: narrowed by callable() above; pylint misses getattr narrowing
-        result = sync(player_id)
+        sync_fn = cast(Callable[[UUID], Any], sync)
+        # pylint: disable=not-callable  # Reason: cast from callable-gated object; pylint misses narrowing
+        result = sync_fn(player_id)
         if inspect.isawaitable(result):
             await result
     except Exception as exc:  # pylint: disable=broad-exception-caught  # Reason: Quest sync must not fail inventory save

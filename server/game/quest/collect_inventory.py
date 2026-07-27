@@ -111,15 +111,23 @@ def _consume_from_stack_list(stacks: list[dict[str, Any]], prototype_id: str, re
     return remaining
 
 
+def _deepcopy_dict_stacks(items: list[Any]) -> list[dict[str, Any]]:
+    """Deep-copy stack dicts from a raw inventory list."""
+    return [deepcopy(item) for item in items if isinstance(item, dict)]
+
+
+def _deepcopy_equipped_map(equipped: dict[Any, Any]) -> dict[str, dict[str, Any]]:
+    """Deep-copy equipped slot map keeping only dict stacks."""
+    return {str(slot): deepcopy(item) for slot, item in equipped.items() if isinstance(item, dict)}
+
+
 def _snapshot_holdings(player: Any) -> tuple[list[dict[str, Any]], dict[str, dict[str, Any]]]:
     """Deep-copy inventory list and equipped map from player."""
     get_inventory = getattr(player, "get_inventory", None)
     get_equipped = getattr(player, "get_equipped_items", None)
     inventory_src = list(get_inventory() or []) if callable(get_inventory) else []
     equipped_src = dict(get_equipped() or {}) if callable(get_equipped) else {}
-    inventory = [deepcopy(item) for item in inventory_src if isinstance(item, dict)]
-    equipped = {slot: deepcopy(item) for slot, item in equipped_src.items() if isinstance(item, dict)}
-    return inventory, equipped
+    return _deepcopy_dict_stacks(inventory_src), _deepcopy_equipped_map(equipped_src)
 
 
 def _consume_from_equipped(equipped: dict[str, dict[str, Any]], prototype_id: str, remaining: int) -> int:

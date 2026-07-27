@@ -147,6 +147,15 @@ def _npc_definition_id(npc: Any) -> str | None:
     return str(raw)
 
 
+def _active_npc_ids_in_room(lifecycle: Any, room_id: Any) -> list[Any]:
+    """Return active, includable NPC ids currently in room_id."""
+    return [
+        npc_id
+        for npc_id, npc_instance in (lifecycle.active_npcs or {}).items()
+        if _get_npc_room_id(npc_instance) == room_id and _should_include_npc(npc_instance)
+    ]
+
+
 def _resolve_npc_in_player_room(player: Any, npc_name: str) -> tuple[Any | None, str | None]:
     """
     Find a single matching NPC in the player's current room.
@@ -159,11 +168,7 @@ def _resolve_npc_in_player_room(player: Any, npc_name: str) -> tuple[Any | None,
     lifecycle = _get_lifecycle_manager()
     if not lifecycle:
         return None, "No one here answers."
-    npc_ids: list[Any] = []
-    for npc_id, npc_instance in (lifecycle.active_npcs or {}).items():
-        if _get_npc_room_id(npc_instance) == room_id and _should_include_npc(npc_instance):
-            npc_ids.append(npc_id)
-    matches = _find_matching_npcs(npc_name.lower().strip(), npc_ids)
+    matches = _find_matching_npcs(npc_name.lower().strip(), _active_npc_ids_in_room(lifecycle, room_id))
     if not matches:
         return None, f"You do not see '{npc_name}' here."
     if len(matches) > 1:
