@@ -96,6 +96,7 @@ engines:
   trivy:
     exclude_paths:
       - "openapi.json"
+    # Skip GHSA-qwww-vcr4-c8h2 via root .trivyignore (RSC-only; SPA uses RR 7.x).
 
 # Ignore assert and hardcoded secrets in test files (Bandit/Prospector B101/B106)
 # Assert and test passwords are standard in pytest; bandit.yml skips them but Codacy
@@ -205,8 +206,18 @@ ignore_patterns:
   - pattern_id: "python.lang.security.audit.sqli.asyncpg-sqli"
     file_paths:
       - "scripts/load_world_seed.py"
-  # Semgrep: dangerouslySetInnerHTML in SafeHtml.tsx (false positive - content is sanitized via DOMPurify)
+  # Semgrep/Opengrep: dangerouslySetInnerHTML in SafeHtml.tsx (false positive - DOMPurify sanitizes first)
   - pattern_id: "typescript.react.security.audit.dangerouslysetinnerhtml.dangerouslysetinnerhtml"
+    file_paths:
+      - "client/src/components/common/SafeHtml.tsx"
+  # Opengrep Cloud / CLI IDs for SafeHtml XSS sink (DOMPurify sanitizes first)
+  - pattern_id: "Semgrep_typescript.react.security.audit.react-dangerouslysetinnerhtml.react-dangerouslysetinnerhtml"
+    file_paths:
+      - "client/src/components/common/SafeHtml.tsx"
+  - pattern_id: "typescript.react.security.audit.react-dangerouslysetinnerhtml.react-dangerouslysetinnerhtml"
+    file_paths:
+      - "client/src/components/common/SafeHtml.tsx"
+  - pattern_id: "codacy.tools-configs.typescript.react.security.audit.react-dangerouslysetinnerhtml.react-dangerouslysetinnerhtml"
     file_paths:
       - "client/src/components/common/SafeHtml.tsx"
   # Semgrep: XSS warnings for SafeHtml.tsx (false positive - DOMPurify sanitizes all HTML)
@@ -313,17 +324,10 @@ ignore_patterns:
 # Pylint (line-too-long), ESLint (max-len), Ruff (E501), and markdownlint (MD013) are configured
 # in the project to not enforce line length. Codacy uses those configs; no line-length ignore here.
 
-# Note: Package.json dependency version warnings cannot be suppressed via config file
-# because JSON doesn't support comments. These warnings need to be suppressed via:
-# 1. Codacy web interface (recommended)
-# 2. Or by pinning exact versions (not recommended - breaks npm best practices)
+# Package.json "variant versions" (npm: aliases / OR ranges): prefer removing
+# npm: overrides (e.g. use magic-string ^0.30 instead of sourcemap-codec npm: remap).
+# Caret ranges + committed lockfiles remain best practice; JSON cannot host inline
+# suppressions. PR #409 r2842724151: no duplicate dependency keys in client/package.json.
 #
-# The warnings are about "Package dependencies with variant versions may lead to
-# dependency hijack and confusion attacks" but these are false positives because:
-# - Standard npm caret ranges (^) are used, which is best practice
-# - package-lock.json locks exact versions at install time
-# - No actual security risk exists when package-lock.json is committed
-#
-# PR #409 discussion r2842724151: client/package.json was verified to have no
-# duplicate dependency keys (e.g. cross-env appears once). Suppress the variant
-# versions warning for client/package.json in Codacy UI if it still appears.
+# Trivy SCA: GHSA-qwww-vcr4-c8h2 (react-router RSC CSRF) ignored in .trivyignore —
+# SPA does not use RSC APIs; same rationale as Dependabot #162.

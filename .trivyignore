@@ -1,0 +1,4 @@
+# RSC-mode CSRF only (GHSA-qwww-vcr4-c8h2). MythosMUD SPA uses react-router-dom 7.x
+# without unstable RSC APIs; Dependabot #162 dismissed as tolerable_risk. No
+# compatible react-router-dom 8.x migration yet. Remove when upgrading to 8.3+.
+GHSA-qwww-vcr4-c8h2

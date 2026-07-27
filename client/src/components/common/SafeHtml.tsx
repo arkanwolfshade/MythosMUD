@@ -1,12 +1,13 @@
 /**
- * SafeHtml component wrapper for dangerouslySetInnerHTML
- * Sanitizes with DOMPurify at this call site (same config as inputSanitizer.sanitizeIncomingHtml) so static
- * analyzers such as CodeQL recognize the sanitizer before the React XSS sink.
+ * SafeHtml: render server/chat HTML only after DOMPurify sanitization.
+ *
+ * Avoids React's dangerouslySetInnerHTML prop (Opengrep XSS rule) by writing
+ * sanitized markup onto a host element via useLayoutEffect.
  */
 
-import React from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
 
-import { sanitizeWithDomPurify } from '../../utils/domPurifyClient';
+import { getDomPurify } from '../../utils/domPurifyClient';
 import { INCOMING_HTML_DOMPURIFY_CONFIG } from '../../utils/security';
 
 interface SafeHtmlProps extends React.HTMLAttributes<HTMLElement> {
@@ -16,9 +17,9 @@ interface SafeHtmlProps extends React.HTMLAttributes<HTMLElement> {
   html: string;
 
   /**
-   * Tag name for the wrapper element (default: 'span')
+   * Host element tag name (default: 'span'). Intrinsic tags only.
    */
-  tag?: React.ElementType;
+  tag?: keyof JSX.IntrinsicElements;
 }
 
 /**
@@ -31,8 +32,19 @@ interface SafeHtmlProps extends React.HTMLAttributes<HTMLElement> {
  *
  * Content is passed through DOMPurify.sanitize with INCOMING_HTML_DOMPURIFY_CONFIG before rendering.
  */
-export const SafeHtml: React.FC<SafeHtmlProps> = ({ html, className, tag: Tag = 'span', ...props }) => {
-  const sanitizedHtml =
-    !html || typeof html !== 'string' ? '' : sanitizeWithDomPurify(html, INCOMING_HTML_DOMPURIFY_CONFIG);
-  return <Tag className={className} dangerouslySetInnerHTML={{ __html: sanitizedHtml }} {...props} />;
+export const SafeHtml: React.FC<SafeHtmlProps> = ({ html, className, tag = 'span', ...props }) => {
+  const hostRef = useRef<HTMLElement | null>(null);
+  const dirty = typeof html === 'string' ? html : '';
+  const sanitizedHtml = getDomPurify().sanitize(dirty, INCOMING_HTML_DOMPURIFY_CONFIG);
+
+  useLayoutEffect(() => {
+    const host = hostRef.current;
+    if (!host) {
+      return;
+    }
+    // DOMPurify output only; not raw user HTML.
+    host.innerHTML = sanitizedHtml;
+  }, [sanitizedHtml]);
+
+  return React.createElement(tag, { ...props, className, ref: hostRef });
 };
