@@ -5,12 +5,19 @@ Resolves quest by common name; evaluates triggers and DAG prerequisites;
 applies rewards (XP, item, spell) via injected services.
 """
 
+# pylint: disable=too-many-lines  # Reason: QuestService is one domain coordinator; split when a second domain appears
+
 from __future__ import annotations
 
 import uuid
 from datetime import UTC, datetime
 from typing import Any
 
+from server.game.quest.collect_inventory import (
+    collect_player_stacks,
+    consume_prototype_from_player,
+    count_prototype_in_stacks,
+)
 from server.models.quest import QuestInstance
 from server.schemas.quest import QuestDefinitionSchema
 from server.structured_logging.enhanced_logging_config import get_logger
@@ -28,6 +35,16 @@ def _parse_definition(definition: dict[str, Any]) -> QuestDefinitionSchema:
     return QuestDefinitionSchema.model_validate(definition)
 
 
+def _definition_completion_mode_error(definition: QuestDefinitionSchema) -> str | None:
+    """Return error message if auto_complete and turn_in_entities are mutually invalid."""
+    has_turn_in = bool(definition.turn_in_entities)
+    if definition.auto_complete and has_turn_in:
+        return "Quest definition invalid: auto_complete cannot combine with turn_in_entities."
+    if not definition.auto_complete and not has_turn_in:
+        return "Quest definition invalid: turn-in quests require turn_in_entities."
+    return None
+
+
 def _goals_met(progress: dict[str, Any], definition: QuestDefinitionSchema) -> bool:
     """Return True if all goals are satisfied given current progress."""
     for i, goal in enumerate(definition.goals):
@@ -36,11 +53,62 @@ def _goals_met(progress: dict[str, Any], definition: QuestDefinitionSchema) -> b
         if goal.type == "complete_activity":
             if current != 1:
                 return False
-        elif goal.type == "kill_n":
+        elif goal.type in ("kill_n", "collect_n"):
             required = goal.config.get("count", 1)
             if (current or 0) < required:
                 return False
     return True
+
+
+def _has_collect_n_goals(definition: QuestDefinitionSchema) -> bool:
+    """Return True if definition includes at least one collect_n goal."""
+    return any(goal.type == "collect_n" for goal in definition.goals)
+
+
+def _goal_activity_target(goal: Any, goal_type: str) -> str:
+    """Resolve the activity/npc target string for a progress goal."""
+    if goal_type == "kill_n":
+        return goal.target or (goal.config or {}).get("npc_id", "") or ""
+    return goal.target or ""
+
+
+def _collect_goal_prototype_id(goal: Any) -> str:
+    """Return collect_n prototype id from goal target or config."""
+    return str(goal.target or (goal.config or {}).get("item_prototype_id") or "")
+
+
+def _collect_goal_required_count(goal: Any) -> int:
+    """Return required count for a collect_n goal."""
+    return int((goal.config or {}).get("count", 1) or 1)
+
+
+def _consume_collect_goals_from_player(player: Any, collect_goals: list[Any]) -> dict[str, Any] | None:
+    """Consume each collect_n goal from player holdings. Return error dict or None."""
+    for goal in collect_goals:
+        prototype_id = _collect_goal_prototype_id(goal)
+        required = _collect_goal_required_count(goal)
+        if not prototype_id or required <= 0:
+            continue
+        if not consume_prototype_from_player(player, prototype_id, required):
+            return {"success": False, "message": "You no longer have the required items."}
+    return None
+
+
+def _build_collect_n_progress(
+    definition: QuestDefinitionSchema,
+    stacks: list[dict[str, Any]],
+    existing: dict[str, Any],
+) -> dict[str, Any]:
+    """Recompute collect_n goal counters from holdings into a progress dict."""
+    new_progress = dict(existing or {})
+    for i, goal in enumerate(definition.goals):
+        if goal.type != "collect_n":
+            continue
+        prototype_id = _collect_goal_prototype_id(goal)
+        if not prototype_id:
+            continue
+        new_progress[str(i)] = count_prototype_in_stacks(stacks, prototype_id)
+    return new_progress
 
 
 class QuestService:
@@ -58,6 +126,7 @@ class QuestService:
         spell_learning_service: Any = None,
         inventory_service: Any = None,
         event_bus: Any = None,
+        async_persistence: Any = None,
     ) -> None:
         self._def_repo = quest_definition_repository
         self._instance_repo = quest_instance_repository
@@ -65,6 +134,7 @@ class QuestService:
         self._spell_learning_service = spell_learning_service
         self._inventory_service = inventory_service
         self._event_bus = event_bus
+        self._async_persistence = async_persistence
         logger.info("QuestService initialized")
 
     def set_spell_learning_service(self, service: Any) -> None:
@@ -83,6 +153,9 @@ class QuestService:
         existing: QuestInstance | None,
     ) -> dict[str, Any] | None:
         """Return an error dict if the player cannot start this quest; otherwise None."""
+        mode_err = _definition_completion_mode_error(definition)
+        if mode_err:
+            return {"success": False, "message": mode_err}
         if existing and existing.state == "active":
             return {"success": False, "message": "You already have this quest."}
         if existing and existing.state == "completed":
@@ -118,9 +191,13 @@ class QuestService:
                 quest_id=quest_id,
                 quest_name=definition.name,
             )
+            if _has_collect_n_goals(definition):
+                await self.sync_collect_progress(player_id)
             return {"success": True, "message": f"Quest started: {definition.title}"}
         await self._instance_repo.create(player_id, quest_id, state="active", progress={})
         logger.info("Quest started", player_id=pid, quest_id=quest_id, quest_name=definition.name)
+        if _has_collect_n_goals(definition):
+            await self.sync_collect_progress(player_id)
         return {"success": True, "message": f"Quest started: {definition.title}"}
 
     async def _all_required_completed(self, player_id: uuid.UUID, quest_ids: list[str]) -> bool:
@@ -199,11 +276,7 @@ class QuestService:
         for i, goal in enumerate(definition.goals):
             if goal.type != goal_type:
                 continue
-            if goal_type == "kill_n":
-                target = goal.target or (goal.config or {}).get("npc_id", "")
-            else:
-                target = goal.target or ""
-            if target != activity_target:
+            if _goal_activity_target(goal, goal_type) != activity_target:
                 continue
             new_progress = self._progress_goal(dict(instance.progress), i, goal_type, goal.config or {})
             await self._instance_repo.update_state_and_progress(instance.id, progress=new_progress)
@@ -235,6 +308,81 @@ class QuestService:
             definition = _parse_definition(dict(definition_row.definition))
             if await self._apply_activity_progress(player_id, instance, definition, npc_definition_id, "kill_n"):
                 break
+
+    async def _load_player_for_collect(self, player_id: uuid.UUID) -> Any | None:
+        """Load player via async_persistence for collect_n inventory walks."""
+        persistence = self._async_persistence
+        if not persistence:
+            return None
+        getter = getattr(persistence, "get_player_by_id", None)
+        if not callable(getter):
+            return None
+        # pylint: disable=not-callable  # Reason: narrowed by callable() above; pylint misses getattr narrowing
+        return await getter(player_id)
+
+    async def _sync_collect_for_instance(
+        self,
+        player_id: uuid.UUID,
+        instance: QuestInstance,
+        stacks: list[dict[str, Any]],
+    ) -> None:
+        """Sync collect_n progress for one active instance; auto-complete if needed."""
+        definition_row = await self._def_repo.get_by_id(instance.quest_id)
+        if not definition_row:
+            return
+        definition = _parse_definition(dict(definition_row.definition))
+        if not _has_collect_n_goals(definition):
+            return
+        new_progress = _build_collect_n_progress(definition, stacks, dict(instance.progress or {}))
+        await self._instance_repo.update_state_and_progress(instance.id, progress=new_progress)
+        instance.progress = new_progress
+        if _goals_met(new_progress, definition) and definition.auto_complete:
+            await self._complete_instance(player_id, instance, definition)
+
+    async def sync_collect_progress(self, player_id: uuid.UUID) -> None:
+        """
+        Recompute collect_n progress from current holdings for all active quests.
+
+        Updates progress JSONB; auto-completes when goals met and auto_complete is true
+        (items are not consumed on auto-complete).
+        """
+        player = await self._load_player_for_collect(player_id)
+        if not player:
+            logger.debug("sync_collect_progress skipped: player unavailable", player_id=str(player_id))
+            return
+        stacks = collect_player_stacks(player)
+        active = await self._instance_repo.list_active_by_player(player_id)
+        for instance in active:
+            await self._sync_collect_for_instance(player_id, instance, stacks)
+
+    async def _save_player_after_consume(self, player: Any) -> None:
+        """Persist player after collect_n consumption when async_persistence is wired."""
+        persistence = self._async_persistence
+        if not persistence:
+            return
+        save = getattr(persistence, "save_player", None)
+        if not callable(save):
+            return
+        # pylint: disable=not-callable  # Reason: narrowed by callable() above; pylint misses getattr narrowing
+        result = save(player)
+        if hasattr(result, "__await__"):
+            await result
+
+    async def _consume_collect_n_items(
+        self, player_id: uuid.UUID, definition: QuestDefinitionSchema
+    ) -> dict[str, Any] | None:
+        """Consume collect_n requirements from inventory. Return error dict or None."""
+        collect_goals = [goal for goal in definition.goals if goal.type == "collect_n"]
+        if not collect_goals:
+            return None
+        player = await self._load_player_for_collect(player_id)
+        if not player:
+            return {"success": False, "message": "Unable to access inventory for turn-in."}
+        error = _consume_collect_goals_from_player(player, collect_goals)
+        if error:
+            return error
+        await self._save_player_after_consume(player)
+        return None
 
     async def _complete_instance(
         self,
@@ -336,6 +484,23 @@ class QuestService:
             elif reward.type == "item":
                 await self._apply_item_reward(player_id, quest_id, reward)
 
+    def _turn_in_inventory_full_error(
+        self, player_id: uuid.UUID, definition: QuestDefinitionSchema
+    ) -> dict[str, Any] | None:
+        """Return inventory-full error when an item reward needs a free slot."""
+        if not self._inventory_service:
+            return None
+        for reward in definition.rewards:
+            if reward.type != "item":
+                continue
+            has_slot = getattr(self._inventory_service, "has_inventory_slot", lambda _: True)(player_id)
+            if not has_slot:
+                return {
+                    "success": False,
+                    "message": "Your inventory is full. Free a slot before turning in.",
+                }
+        return None
+
     def _turn_in_validation_error(
         self,
         player_id: uuid.UUID,
@@ -344,6 +509,9 @@ class QuestService:
         at_entity_id: str,
     ) -> dict[str, Any] | None:
         """Return an error dict if turn-in is invalid; otherwise None."""
+        mode_err = _definition_completion_mode_error(definition)
+        if mode_err:
+            return {"success": False, "message": mode_err}
         if definition.auto_complete:
             return {"success": False, "message": "This quest completes automatically."}
         allowed_ids = list(definition.turn_in_entities or [])
@@ -355,15 +523,7 @@ class QuestService:
             return {"success": False, "message": "You do not have this quest active."}
         if not _goals_met(dict(instance.progress), definition):
             return {"success": False, "message": "Quest objectives not yet complete."}
-        for reward in definition.rewards:
-            if reward.type == "item" and self._inventory_service:
-                has_slot = getattr(self._inventory_service, "has_inventory_slot", lambda _: True)(player_id)
-                if not has_slot:
-                    return {
-                        "success": False,
-                        "message": "Your inventory is full. Free a slot before turning in.",
-                    }
-        return None
+        return self._turn_in_inventory_full_error(player_id, definition)
 
     async def turn_in(
         self,
@@ -375,19 +535,45 @@ class QuestService:
         """
         Turn in a quest at an entity (when auto_complete is false).
         Validates turn_in_entities and inventory slot for item rewards; then applies rewards.
+        Consumes collect_n items before completion.
         """
         definition_row = await self._def_repo.get_by_id(quest_id)
         if not definition_row:
             return {"success": False, "message": "Quest not found."}
         definition = _parse_definition(dict(definition_row.definition))
+        # Refresh collect progress from holdings before validating goals.
+        if _has_collect_n_goals(definition):
+            await self.sync_collect_progress(player_id)
         instance = await self._instance_repo.get_by_player_and_quest(player_id, quest_id)
         err = self._turn_in_validation_error(player_id, definition, instance, at_entity_id)
         if err:
             return err
         if instance is None:
             raise RuntimeError("instance must be set when turn-in validation returns no error")
+        consume_err = await self._consume_collect_n_items(player_id, definition)
+        if consume_err:
+            return consume_err
         await self._complete_instance(player_id, instance, definition)
         return {"success": True, "message": f"Quest completed: {definition.title}"}
+
+    async def turn_in_at_entity(
+        self,
+        player_id: uuid.UUID,
+        at_entity_type: str,
+        at_entity_id: str,
+    ) -> list[dict[str, Any]]:
+        """Attempt turn-in for every active quest listing at_entity_id in turn_in_entities."""
+        results: list[dict[str, Any]] = []
+        active = await self._instance_repo.list_active_by_player(player_id)
+        for instance in active:
+            definition_row = await self._def_repo.get_by_id(instance.quest_id)
+            if not definition_row:
+                continue
+            definition = _parse_definition(dict(definition_row.definition))
+            if at_entity_id not in (definition.turn_in_entities or []):
+                continue
+            results.append(await self.turn_in(player_id, instance.quest_id, at_entity_type, at_entity_id))
+        return results
 
     async def abandon(self, player_id: uuid.UUID, quest_name: str) -> dict[str, Any]:
         """Abandon an active quest by common name. No rewards."""
@@ -429,7 +615,7 @@ class QuestService:
                         "target": goal.target,
                         "current": current,
                         "required": required,
-                        "done": current >= required if goal.type == "kill_n" else (current == 1),
+                        "done": (current >= required if goal.type in ("kill_n", "collect_n") else (current == 1)),
                     }
                 )
             entries.append(

@@ -59,6 +59,7 @@ async function waitForLookReflected(page: Page): Promise<void> {
         return /Arena|gladiator|heart of the|exits|sand|You see/i.test(v);
       });
     },
+    undefined,
     { timeout: 45000 }
   );
 }
@@ -155,17 +156,14 @@ test.describe('Chat Messages Between Players', () => {
 
     await nudgeStandBothPlayers(awContext, ithaquaContext);
 
-    // Foreground receiver before send so Firefox paints inbound say on [data-message-text].
-    await prepareReceiverForInboundMessages(ithaquaContext, 20000);
+    // Brief pause so unmute/stand do not trip the 10 cmd/s rate limit before /say.
+    await new Promise(r => setTimeout(r, 1200));
 
-    // Sender must be focused on some CI hosts; echo lands on [data-message-text] only when WS is healthy.
-    await awContext.page.bringToFront().catch(() => {});
-    await ensurePlayerInGame(awContext, 30000);
-
-    // AW sends chat message
+    await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+      el.focus();
+    });
     await executeCommand(awContext.page, 'say Hello Ithaqua');
 
-    // Re-focus receiver immediately after send; do not wait 45s on AW while Ithaqua is backgrounded.
     await prepareReceiverForInboundMessages(ithaquaContext, 20000);
 
     await Promise.all([

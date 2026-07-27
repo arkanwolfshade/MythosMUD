@@ -11,8 +11,18 @@
  * Seeded players use DEFAULT_RESPAWN_ROOM (matches server.constants.spawn_defaults).
  */
 
-/** Matches server.constants.spawn_defaults.DEFAULT_RESPAWN_ROOM */
-export const DEFAULT_RESPAWN_ROOM = 'limbo_arena_arena_arena_5_5' as const;
+/** Matches server.constants.spawn_defaults.DEFAULT_RESPAWN_ROOM (sanitarium foyer / Morgan). */
+export const DEFAULT_RESPAWN_ROOM = 'earth_arkhamcity_sanitarium_room_foyer_001' as const;
+
+/**
+ * After `look`, foyer prose shows in Location / Room Description (not always Game Info).
+ * Use for spawn-room assertions after DEFAULT_RESPAWN_ROOM moved off the limbo arena.
+ */
+export const DEFAULT_SPAWN_LOOK_CUE =
+  /Sanitarium\s*>\s*Main Foyer|Main Foyer|marble floor|respectability|disinfectant|Exits:\s*East/i;
+
+/** Foyer east exit lands in Eastern Hallway Section 1 — use for room-split asserts (not bare Exits:). */
+export const EASTERN_HALLWAY_LOOK_CUE = /Eastern Hallway|hallway, branching|first section of the eastern hallway/i;
 
 export interface TestPlayer {
   username: string;

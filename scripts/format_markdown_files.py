@@ -14,7 +14,9 @@ import re
 from pathlib import Path
 
 
-def fix_bold_items_without_list_marker(content: str) -> str:
+def fix_bold_items_without_list_marker(
+    content: str,
+) -> str:  # lizard: allow CCN=12 (legacy MD bold-list fixer; pre-commit)
     """Remove leading `-` from bold text that isn't part of a list."""
     lines = content.split("\n")
     result_lines = []
@@ -260,7 +262,18 @@ def main():
 
     # Find all markdown files in the project
     # Exclude node_modules, .git, and other common ignore directories
-    ignore_dirs = {".git", "node_modules", "__pycache__", ".venv", "venv", "dist", "build"}
+    ignore_dirs = {
+        ".git",
+        "node_modules",
+        "__pycache__",
+        ".venv",
+        "venv",
+        "dist",
+        "build",
+        ".venv-ci",
+        "graphify-out",
+        "graphify",
+    }
 
     markdown_files = []
     for md_file in project_root.rglob("*.md"):

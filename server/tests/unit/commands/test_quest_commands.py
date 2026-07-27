@@ -5,6 +5,7 @@ Tests handle_journal_command and handle_quest_command with mocked container and 
 """
 
 import uuid
+from contextlib import ExitStack
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -228,3 +229,157 @@ async def test_quest_abandon_failure_message(current_user, mock_request):
 
     assert "result" in result
     assert "do not have" in result["result"].lower() or "unknown" in result["result"].lower()
+
+
+def _enter_quest_command_patches(stack: ExitStack, mock_quest_service, mock_persistence, mock_container):
+    """Register common quest command patches on an ExitStack."""
+    stack.enter_context(patch("server.commands.quest_commands.get_username_from_user", return_value="testuser"))
+    stack.enter_context(
+        patch(
+            "server.commands.quest_commands._get_container_and_persistence",
+            return_value=(mock_container, mock_persistence),
+        )
+    )
+    stack.enter_context(patch("server.commands.quest_commands._get_quest_service", return_value=mock_quest_service))
+
+
+@pytest.mark.asyncio
+async def test_quest_ask_usage_when_no_npc(current_user, mock_request):
+    """Quest ask returns usage when npc name missing."""
+    result = await handle_quest_command(
+        command_data={"args": ["ask"]},
+        current_user=current_user,
+        request=mock_request,
+        _alias_storage=None,
+        _player_name="testuser",
+    )
+
+    assert "Usage" in result["result"] or "ask" in result["result"].lower()
+
+
+@pytest.mark.asyncio
+async def test_quest_ask_success(current_user, mock_request):
+    """Quest ask starts offered quest via NPC trigger."""
+    player_id = uuid.uuid4()
+    mock_player = MagicMock()
+    mock_player.player_id = player_id
+    mock_persistence = AsyncMock()
+    mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
+    mock_quest_service = MagicMock()
+    mock_quest_service.start_quest_by_trigger = AsyncMock(
+        return_value=[{"success": True, "message": "Quest started: Gather Daisies"}]
+    )
+    mock_container = MagicMock()
+    mock_npc = MagicMock()
+    mock_npc.name = "Dr. Morgan"
+    mock_npc.definition = MagicMock(id="54")
+
+    with ExitStack() as stack:
+        _enter_quest_command_patches(stack, mock_quest_service, mock_persistence, mock_container)
+        stack.enter_context(
+            patch("server.commands.quest_commands._resolve_npc_in_player_room", return_value=(mock_npc, None))
+        )
+        result = await handle_quest_command(
+            command_data={"args": ["ask", "morgan"]},
+            current_user=current_user,
+            request=mock_request,
+            _alias_storage=None,
+            _player_name="testuser",
+        )
+
+    assert "started" in result["result"].lower()
+    mock_quest_service.start_quest_by_trigger.assert_awaited_once_with(player_id, "npc", "54")
+
+
+@pytest.mark.asyncio
+async def test_quest_ask_npc_not_in_room(current_user, mock_request):
+    """Quest ask returns error when NPC is not in the room."""
+    player_id = uuid.uuid4()
+    mock_player = MagicMock()
+    mock_player.player_id = player_id
+    mock_persistence = AsyncMock()
+    mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
+    mock_quest_service = MagicMock()
+    mock_container = MagicMock()
+
+    with ExitStack() as stack:
+        _enter_quest_command_patches(stack, mock_quest_service, mock_persistence, mock_container)
+        stack.enter_context(
+            patch(
+                "server.commands.quest_commands._resolve_npc_in_player_room",
+                return_value=(None, "You do not see 'ghost' here."),
+            )
+        )
+        result = await handle_quest_command(
+            command_data={"args": ["ask", "ghost"]},
+            current_user=current_user,
+            request=mock_request,
+            _alias_storage=None,
+            _player_name="testuser",
+        )
+
+    assert "do not see" in result["result"].lower()
+
+
+@pytest.mark.asyncio
+async def test_quest_turnin_success(current_user, mock_request):
+    """Quest turnin completes quests at the NPC."""
+    player_id = uuid.uuid4()
+    mock_player = MagicMock()
+    mock_player.player_id = player_id
+    mock_persistence = AsyncMock()
+    mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
+    mock_quest_service = MagicMock()
+    mock_quest_service.turn_in_at_entity = AsyncMock(
+        return_value=[{"success": True, "message": "Quest completed: Gather Daisies"}]
+    )
+    mock_container = MagicMock()
+    mock_npc = MagicMock()
+    mock_npc.name = "Dr. Morgan"
+    mock_npc.definition = MagicMock(id="54")
+
+    with ExitStack() as stack:
+        _enter_quest_command_patches(stack, mock_quest_service, mock_persistence, mock_container)
+        stack.enter_context(
+            patch("server.commands.quest_commands._resolve_npc_in_player_room", return_value=(mock_npc, None))
+        )
+        result = await handle_quest_command(
+            command_data={"args": ["turnin", "morgan"]},
+            current_user=current_user,
+            request=mock_request,
+            _alias_storage=None,
+            _player_name="testuser",
+        )
+
+    assert "completed" in result["result"].lower()
+    mock_quest_service.turn_in_at_entity.assert_awaited_once_with(player_id, "npc", "54")
+
+
+@pytest.mark.asyncio
+async def test_quest_turnin_npc_not_in_room(current_user, mock_request):
+    """Quest turnin returns error when NPC is not in the room."""
+    player_id = uuid.uuid4()
+    mock_player = MagicMock()
+    mock_player.player_id = player_id
+    mock_persistence = AsyncMock()
+    mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
+    mock_quest_service = MagicMock()
+    mock_container = MagicMock()
+
+    with ExitStack() as stack:
+        _enter_quest_command_patches(stack, mock_quest_service, mock_persistence, mock_container)
+        stack.enter_context(
+            patch(
+                "server.commands.quest_commands._resolve_npc_in_player_room",
+                return_value=(None, "You do not see 'ghost' here."),
+            )
+        )
+        result = await handle_quest_command(
+            command_data={"args": ["turnin", "ghost"]},
+            current_user=current_user,
+            request=mock_request,
+            _alias_storage=None,
+            _player_name="testuser",
+        )
+
+    assert "do not see" in result["result"].lower()

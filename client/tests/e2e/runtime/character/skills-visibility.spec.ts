@@ -17,6 +17,7 @@ async function waitForGameInfoActivity(page: Page, timeoutMs: number): Promise<v
       const body = document.body?.innerText ?? '';
       return body.includes('[Tick') && body.includes(']');
     },
+    undefined,
     { timeout: timeoutMs }
   );
 }

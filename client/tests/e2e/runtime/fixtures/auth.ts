@@ -59,6 +59,7 @@ export async function loginPlayer(page: Page, username: string, password: string
         );
         return loading.length === 0;
       },
+      undefined,
       { timeout: TEST_TIMEOUTS.LOGIN }
     );
   } catch {
@@ -95,34 +96,63 @@ export async function loginPlayer(page: Page, username: string, password: string
 /** Grace-period disconnect copy shown in Game Info when the server blocks commands. */
 const GRACE_PERIOD_MESSAGE = 'You are disconnected and cannot perform actions';
 
+export interface LogoutPlayerOptions {
+  /**
+   * When true, SPA-navigate to login if intentional logout never reaches username-input.
+   * Creates Occupants linkdead ghosts — use only for context cleanup, not leave-message asserts.
+   */
+  spaFallback?: boolean;
+}
+
 /**
  * Intentionally exit the game via Exit the Realm so the server records a clean logout
  * instead of starting a linkdead grace period when the browser context closes.
  */
-export async function logoutPlayer(page: Page, timeoutMs: number = 90000): Promise<void> {
+export async function logoutPlayer(
+  page: Page,
+  timeoutMs: number = 90000,
+  options?: LogoutPlayerOptions
+): Promise<void> {
   await page.bringToFront().catch(() => {});
 
-  const onLogin = await page
-    .getByTestId('username-input')
-    .isVisible({ timeout: 2000 })
-    .catch(() => false);
-  if (onLogin) {
+  if (await isUsernameLoginVisible(page, 2000)) {
     return;
   }
 
+  const spaFallback = options?.spaFallback === true;
+
+  // Prefer intentional Exit-the-Realm / logout so the server emits left_game (not linkdead grace).
   const logoutButton = page.getByTestId('logout-button');
   const inGame = await logoutButton.isVisible({ timeout: 3000 }).catch(() => false);
-  if (!inGame) {
+  if (inGame) {
+    const logoutEnabled = await logoutButton.isEnabled({ timeout: 3000 }).catch(() => false);
+    if (logoutEnabled) {
+      await clickWithoutStability(logoutButton);
+    } else {
+      // Disabled (ward/combat): intentional logout command; DOM click bypasses disabled if still present.
+      await executeCommandWithoutRecovery(page, 'logout').catch(() => {});
+      await logoutButton
+        .evaluate((el: HTMLElement) => {
+          el.click();
+        })
+        .catch(() => {});
+    }
+  } else {
+    await executeCommandWithoutRecovery(page, 'logout').catch(() => {});
+  }
+
+  const loginInput = page.getByTestId('username-input');
+  if (spaFallback) {
+    const softMs = Math.min(timeoutMs, 15000);
+    const reachedLogin = await loginInput.isVisible({ timeout: softMs }).catch(() => false);
+    if (!reachedLogin) {
+      await page.goto('/', { waitUntil: 'domcontentloaded' });
+    }
+    await expect(loginInput).toBeVisible({ timeout: Math.max(timeoutMs - softMs, 10000) });
     return;
   }
 
-  const logoutEnabled = await logoutButton.isEnabled({ timeout: 15000 }).catch(() => false);
-  if (!logoutEnabled) {
-    return;
-  }
-
-  await clickWithoutStability(logoutButton);
-  await expect(page.getByTestId('username-input')).toBeVisible({ timeout: timeoutMs });
+  await expect(loginInput).toBeVisible({ timeout: timeoutMs });
 }
 
 /**
@@ -133,7 +163,9 @@ export async function waitForPlayableSession(page: Page, timeoutMs: number = 300
   await expect(page.getByTestId('command-input')).toBeVisible({ timeout: Math.min(timeoutMs, 15000) });
 
   await page
-    .waitForFunction(() => !(document.body?.innerText ?? '').includes(GRACE_PERIOD_MESSAGE), { timeout: timeoutMs })
+    .waitForFunction((msg: string) => !(document.body?.innerText ?? '').includes(msg), GRACE_PERIOD_MESSAGE, {
+      timeout: timeoutMs,
+    })
     .catch(() => {});
 
   await page.waitForFunction(
@@ -141,6 +173,7 @@ export async function waitForPlayableSession(page: Page, timeoutMs: number = 300
       typeof window.__mythosE2eHasConnectedStatus === 'function'
         ? window.__mythosE2eHasConnectedStatus() === true
         : document.body?.innerText?.includes('Connected') === true,
+    undefined,
     { timeout: timeoutMs }
   );
 }
@@ -319,7 +352,7 @@ export async function refreshPlayableSession(page: Page, timeoutMs: number = 450
     return;
   }
 
-  await page.waitForFunction(() => window.__mythosE2eIsGameUiLoaded?.() === true, { timeout: timeoutMs });
+  await page.waitForFunction(() => window.__mythosE2eIsGameUiLoaded?.() === true, undefined, { timeout: timeoutMs });
   await waitForPlayableSession(page, timeoutMs);
 }
 

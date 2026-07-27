@@ -15,6 +15,7 @@ import uuid
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, cast
 
+from ..constants.spawn_defaults import DEFAULT_EXIT_ROOM_ID
 from ..models.room import Room
 from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -22,9 +23,6 @@ if TYPE_CHECKING:
     from ..events import EventBus
 
 logger = get_logger(__name__)
-
-# Default fixed exit room when not specified in template (arena center)
-DEFAULT_EXIT_ROOM_ID = "limbo_arena_arena_arena_5_5"
 
 
 @dataclass

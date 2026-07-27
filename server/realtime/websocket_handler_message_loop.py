@@ -4,6 +4,8 @@ WebSocket message loop, per-message processing, and loop exception handling.
 Extracted from websocket_handler for Lizard file-nloc limits.
 """
 
+# pylint: disable=protected-access  # Reason: extracted coordinator slice; re-enters websocket_handler private entry points
+
 import json
 import uuid
 from typing import TYPE_CHECKING

@@ -13,11 +13,17 @@ from pydantic import BaseModel, ConfigDict, Field
 
 
 class QuestGoalSchema(BaseModel):
-    """Single goal in a quest definition (complete_activity, kill_n, etc.)."""
+    """Single goal in a quest definition (complete_activity, kill_n, collect_n, etc.)."""
 
-    type: str = Field(..., description="Goal type: complete_activity, kill_n")
-    target: str | None = Field(default=None, description="Target identifier (e.g. exit_tutorial_room, npc def id)")
-    config: dict[str, Any] = Field(default_factory=dict, description="Type-specific config (e.g. count for kill_n)")
+    type: str = Field(..., description="Goal type: complete_activity, kill_n, collect_n")
+    target: str | None = Field(
+        default=None,
+        description="Target identifier (e.g. exit_tutorial_room, npc def id, item prototype id)",
+    )
+    config: dict[str, Any] = Field(
+        default_factory=dict,
+        description="Type-specific config (e.g. count for kill_n / collect_n)",
+    )
 
     model_config = ConfigDict(extra="allow")
 

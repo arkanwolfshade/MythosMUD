@@ -36,6 +36,7 @@ async function waitForPlayableUi(contexts: PlayerContext[]): Promise<void> {
       page
         .waitForFunction(
           () => !(document.body?.innerText ?? '').includes('You are disconnected and cannot perform actions'),
+          undefined,
           { timeout: 20000 }
         )
         .catch(() => {})

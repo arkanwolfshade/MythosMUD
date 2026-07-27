@@ -218,8 +218,8 @@ function Test-NatsServerRunning {
     param()
 
     try {
-        # Check if NATS port is in use
-        $connection = Get-NetTCPConnection -LocalPort $NatsPort -ErrorAction SilentlyContinue
+        # Listen only - TIME_WAIT/CloseWait leftovers (often OwningProcess 0) are not a live NATS.
+        $connection = Get-NetTCPConnection -LocalPort $NatsPort -State Listen -ErrorAction SilentlyContinue
         if ($connection) {
             Write-Host "NATS server is running on port $NatsPort" -ForegroundColor Green
             return $true
@@ -359,12 +359,16 @@ function Stop-NatsServer {
             }
         }
 
-        # Also check for processes using NATS ports
-        $portProcesses = Get-NetTCPConnection -LocalPort $NatsPort -ErrorAction SilentlyContinue
+        # Listeners only - ignore TIME_WAIT rows (PID 0) that are not stoppable processes
+        $portProcesses = Get-NetTCPConnection -LocalPort $NatsPort -State Listen -ErrorAction SilentlyContinue
         if ($portProcesses) {
             foreach ($connection in $portProcesses) {
                 try {
-                    $process = Get-Process -Id $connection.OwningProcess -ErrorAction SilentlyContinue
+                    $ownerPid = [int]$connection.OwningProcess
+                    if ($ownerPid -le 0) {
+                        continue
+                    }
+                    $process = Get-Process -Id $ownerPid -ErrorAction SilentlyContinue
                     if ($process) {
                         if (-not (Test-MythosMudProjectProcess -ProcessId $process.Id)) {
                             Write-Host "Skipping PID $($process.Id) on NATS port: not owned by this MythosMUD repo" -ForegroundColor Yellow

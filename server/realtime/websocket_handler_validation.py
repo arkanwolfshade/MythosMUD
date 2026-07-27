@@ -71,6 +71,7 @@ def extract_csrf_token_from_raw(
         return None
     if not isinstance(parsed, dict):
         return None
+    # pylint: disable=protected-access  # Reason: CSRF parse lives on validator; extracted helper must reuse it
     raw_token = validator._extract_csrf_token_string(cast(dict[str, object], parsed))  # noqa: SLF001
     return raw_token if isinstance(raw_token, str) else None
 

@@ -4,14 +4,145 @@
  * Helper functions for player management in E2E tests.
  */
 
-import { type Page } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 import {
+  clickWithoutStability,
   ensurePlayableConnection,
   executeCommand,
+  getMessages,
   getPageSessionCredentials,
   loginPlayer,
   waitForPlayableSession,
 } from './auth';
+import { resetE2ePlayerRoomsInDatabase } from './multiplayer';
+import { DEFAULT_SPAWN_LOOK_CUE } from './test-data';
+
+/** Zone key for earth_arkhamcity_sanitarium_room_foyer_001 (npc zone command). */
+const SANITARIUM_ZONE_KEY = 'arkhamcity/sanitarium';
+
+export async function dismissDeathInterstitial(page: Page): Promise<void> {
+  const respawnBtn = page.getByRole('button', {
+    name: /Rejoin the earthly plane|Returning to the mortal realm/i,
+  });
+  if (await respawnBtn.isVisible({ timeout: 5000 }).catch(() => false)) {
+    await clickWithoutStability(respawnBtn);
+    await page
+      .getByTestId('command-input')
+      .waitFor({ state: 'visible', timeout: 30000 })
+      .catch(() => {});
+    await new Promise(r => setTimeout(r, 1500));
+  }
+}
+
+async function isInCombatYes(page: Page): Promise<boolean> {
+  return page.evaluate(() => /In Combat:\s*Yes/i.test(document.body?.innerText ?? '')).catch(() => false);
+}
+
+/** Flee until Character Info shows In Combat: No (or attempts exhausted). */
+export async function ensureNotInCombat(page: Page, maxAttempts = 10): Promise<void> {
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    if (!(await isInCombatYes(page))) {
+      return;
+    }
+    await executeCommand(page, 'flee').catch(() => {});
+    await new Promise(r => setTimeout(r, 1500));
+    await dismissDeathInterstitial(page);
+  }
+}
+
+const CULTIST_INSTANCE_ID_RE = /cultist_of_the_yellow_sign_[a-z0-9_]+/gi;
+
+async function isInDeathVoid(page: Page): Promise<boolean> {
+  // Location / live room id only. Game Info can retain limbo_death_void / Death > Void dumps.
+  return page
+    .evaluate(() => {
+      const t = document.body?.innerText ?? '';
+      if (/earth_arkhamcity_sanitarium_room_/i.test(t)) {
+        return false;
+      }
+      const loc = t.match(/Location\s*\n\s*([^\n]+)/i);
+      if (loc?.[1]) {
+        return /Death\s*>\s*Void/i.test(loc[1]);
+      }
+      return false;
+    })
+    .catch(() => false);
+}
+
+/** Collect Cultist of the Yellow Sign instance IDs from npc zone / look text. */
+export async function listSanitariumCultistIds(page: Page): Promise<string[]> {
+  await executeCommand(page, `npc zone ${SANITARIUM_ZONE_KEY}`);
+  await new Promise(r => setTimeout(r, 1200));
+  const messages = await getMessages(page);
+  const bodyText = await page.evaluate(() => document.body?.innerText ?? '');
+  const ids = new Set<string>();
+  for (const text of [...messages, bodyText]) {
+    for (const match of text.matchAll(CULTIST_INSTANCE_ID_RE)) {
+      ids.add(match[0]);
+    }
+  }
+  return [...ids];
+}
+
+/**
+ * Despawn Cultist of the Yellow Sign instances left in the sanitarium zone.
+ * Requires admin. Uses `npc zone arkhamcity/sanitarium` for instance IDs.
+ */
+export async function despawnSanitariumCultists(page: Page): Promise<void> {
+  const ids = await listSanitariumCultistIds(page);
+  for (const id of ids) {
+    await executeCommand(page, `npc despawn ${id}`).catch(() => {});
+  }
+}
+
+/**
+ * Clear death interstitial, combat, and low DP so later specs see foyer spawn state.
+ * Admin DP set is best-effort (non-admins get a harmless failure).
+ * Hard-fails if Location stays on Death > Void after recovery attempts.
+ */
+export async function ensurePlayableAlive(page: Page, username: string, password: string): Promise<void> {
+  await ensurePlayableConnection(page, { username, password, timeoutMs: 30000 });
+  await dismissDeathInterstitial(page);
+  await ensureNotInCombat(page, 4);
+  await executeCommand(page, `admin set DP ${username} 20`).catch(() => {});
+  await dismissDeathInterstitial(page);
+  await ensureStanding(page, 8000).catch(() => {});
+
+  // Void blocks most commands. Full DP in limbo skips the death interstitial, so SPA re-login alone
+  // reloads persisted limbo — drop client, heal DB rows, then re-enter.
+  let recoveredFromVoid = false;
+  if (await isInDeathVoid(page)) {
+    recoveredFromVoid = true;
+    await dismissDeathInterstitial(page);
+    await executeCommand(page, `admin set DP ${username} 20`).catch(() => {});
+    await dismissDeathInterstitial(page);
+  }
+  if (await isInDeathVoid(page)) {
+    recoveredFromVoid = true;
+    // Fast path: do not wait on Exit-the-Realm (void / ward often blocks it for tens of seconds).
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    // Workers=1 default: safe to reset both E2E player rows mid-spec.
+    resetE2ePlayerRoomsInDatabase();
+    await loginPlayer(page, username, password);
+    await waitForPlayableSession(page, 30000);
+    await dismissDeathInterstitial(page);
+    await executeCommand(page, `admin set DP ${username} 20`).catch(() => {});
+    await dismissDeathInterstitial(page);
+    await ensurePlayableConnection(page, { username, password, timeoutMs: 30000 });
+    await executeCommand(page, 'look').catch(() => {});
+    await ensureStanding(page, 8000).catch(() => {});
+  }
+
+  if (await isInDeathVoid(page)) {
+    throw new Error(`ensurePlayableAlive: still in Death > Void for ${username}`);
+  }
+
+  // After void recovery, spawn should be foyer; require it so movement/combat specs do not proceed blind.
+  if (recoveredFromVoid) {
+    await executeCommand(page, 'look').catch(() => {});
+    await expect(page.getByText(DEFAULT_SPAWN_LOOK_CUE).first()).toBeVisible({ timeout: 20000 });
+  }
+}
 
 /**
  * Ensure the player is standing before movement.
@@ -71,6 +202,7 @@ export async function ensureStanding(page: Page, timeoutMs: number = 5000): Prom
       if (/Posture\s*\n\s*standing\b/i.test(t)) return true;
       return false;
     },
+    undefined,
     { timeout: timeoutMs }
   );
 }
@@ -84,8 +216,9 @@ export async function ensureStanding(page: Page, timeoutMs: number = 5000): Prom
  */
 export async function resetPlayerPosition(page: Page, targetPlayer?: string): Promise<void> {
   if (targetPlayer) {
-    // Admin command to teleport player
-    await executeCommand(page, `teleport ${targetPlayer} earth_arkhamcity_sanitarium_room_foyer_001`);
+    // teleport only accepts an optional Direction — pull target to admin's room via goto + teleport
+    await executeCommand(page, `goto ${targetPlayer}`);
+    await executeCommand(page, `teleport ${targetPlayer}`);
   } else {
     await ensureStanding(page, 5000);
     await executeCommand(page, 'go north');

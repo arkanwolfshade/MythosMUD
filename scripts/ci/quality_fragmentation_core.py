@@ -92,19 +92,31 @@ def parse_changed_files(base: str, head: str) -> list[ChangedFile]:
     return changed
 
 
+def _resolve_files_arg(files_from: str, raw_files: list[str] | None) -> list[str]:
+    if files_from:
+        return [line.strip() for line in Path(files_from).read_text(encoding="utf-8").splitlines() if line.strip()]
+    return [path.strip() for path in (raw_files or []) if path.strip()]
+
+
 def parse_args() -> tuple[str, str, list[str], bool]:
     parser = argparse.ArgumentParser(description="Enforce CI quality/fragmentation rules for PRs.")
     _ = parser.add_argument("--base", default="", help="Base commit SHA")
     _ = parser.add_argument("--head", default="", help="Head commit SHA")
     _ = parser.add_argument("--files", nargs="*", default=None, help="Optional explicit list of changed files")
     _ = parser.add_argument(
+        "--files-from",
+        default="",
+        help="Path to newline-separated changed-file list (avoids Windows argv length limits)",
+    )
+    _ = parser.add_argument(
         "--fast", action="store_true", help="Fast local mode (skips expensive whole-repo usage scans)"
     )
     parsed = parser.parse_args()
     base = cast(str, getattr(parsed, "base", ""))
     head = cast(str, getattr(parsed, "head", ""))
+    files_from = cast(str, getattr(parsed, "files_from", "")).strip()
     raw_files = cast(list[str] | None, getattr(parsed, "files", None))
-    files = [path.strip() for path in (raw_files or []) if path.strip()]
+    files = _resolve_files_arg(files_from, raw_files)
     fast = bool(cast(bool, getattr(parsed, "fast", False)))
     base_ref = base.strip()
     head_ref = head.strip()

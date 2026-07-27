@@ -3,7 +3,7 @@
  */
 
 import { expect, test, type Locator, type Page } from '@playwright/test';
-import { loginPlayer } from '../fixtures/auth';
+import { clickWithoutStability, loginPlayer } from '../fixtures/auth';
 import { TEST_TIMEOUTS } from '../fixtures/test-data';
 
 const PANEL_LAYOUT_STORAGE_KEY = 'mythosmud-ui-v2-panel-layout';
@@ -39,7 +39,7 @@ test.describe('Panel minimize dock', () => {
     expect(expandedBox).not.toBeNull();
     expect(expandedBox!.height).toBeGreaterThan(100);
 
-    await page.getByTestId('game-panel-chatHistory-minimize').click();
+    await clickWithoutStability(page.getByTestId('game-panel-chatHistory-minimize'));
 
     await expect(chatPanel).toHaveAttribute('data-panel-minimized', 'true');
     await expect(chatPanel.getByText('Chat', { exact: true })).toHaveCount(0);
@@ -52,7 +52,7 @@ test.describe('Panel minimize dock', () => {
     const bottomEdge = await panelBottomEdge(page, chatPanel);
     expect(bottomEdge).toBeGreaterThanOrEqual(viewportHeight - DOCK_BOTTOM_PADDING - 4);
 
-    await page.getByTestId('game-panel-chatHistory-restore').click();
+    await clickWithoutStability(page.getByTestId('game-panel-chatHistory-restore'));
 
     await expect(chatPanel).toHaveAttribute('data-panel-minimized', 'false');
     await expect(chatPanel.getByText('Chat', { exact: true })).toBeVisible();
@@ -67,8 +67,8 @@ test.describe('Panel minimize dock', () => {
     await loginPlayer(page, 'ArkanWolfshade', 'Cthulhu1');
     await waitForGameReady(page);
 
-    await page.getByTestId('game-panel-gameInfo-minimize').click();
-    await page.getByTestId('game-panel-chatHistory-minimize').click();
+    await clickWithoutStability(page.getByTestId('game-panel-gameInfo-minimize'));
+    await clickWithoutStability(page.getByTestId('game-panel-chatHistory-minimize'));
 
     const chatPanel = page.getByTestId('game-panel-chatHistory');
     const gameInfoPanel = page.getByTestId('game-panel-gameInfo');
