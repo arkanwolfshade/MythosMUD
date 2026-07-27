@@ -78,7 +78,7 @@ def test_get_alias_file_path(alias_storage):
     """Test _get_alias_file_path returns correct path."""
     path = alias_storage._get_alias_file_path("TestPlayer")
     assert path.name == "TestPlayer_aliases.json"
-    assert path.parent == alias_storage.storage_dir.resolve()
+    assert path.parent == Path(os.path.realpath(alias_storage.storage_dir))
 
 
 def test_get_alias_file_path_rejects_traversal(alias_storage, temp_storage_dir):
