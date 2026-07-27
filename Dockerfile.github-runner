@@ -91,16 +91,11 @@ COPY pyproject.toml uv.lock ./
 COPY client/package.json client/package-lock.json ./client/
 COPY client/scripts ./client/scripts/
 WORKDIR /workspace/client
-# Human reader: use npm ci for reproducible builds, fallback to npm install if lock file is out of sync.
-# AI reader: npm ci requires lock file to be in sync with package.json. If it fails, clean and reinstall.
+# Human reader: npm ci only — lockfile integrity hashes pin the tree (OpenSSF Scorecard PinnedDependencies).
+# AI reader: do not fall back to unpinned npm install; fail the image build if lock is out of sync.
 # --legacy-peer-deps: resolve eslint 10 vs eslint-plugin-react-hooks peer conflict (eslint-plugin requires ^3-9).
-# Diagnostic: set -x prints each command before it runs so we see exactly where it hangs.
 RUN set -x && echo "[npm] Starting npm ci..." && \
-    (npm ci --legacy-peer-deps --loglevel verbose || \
-    (echo "[npm] npm ci failed, running fallback npm install..." && \
-    rm -rf node_modules package-lock.json && \
-    echo "[npm] Starting npm install..." && \
-    npm install --legacy-peer-deps --loglevel verbose))
+    npm ci --legacy-peer-deps --loglevel verbose
 
 # Copy full source after dependency layers are cached.
 WORKDIR /workspace

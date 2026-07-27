@@ -197,6 +197,17 @@ For detailed information about our security architecture and implementation:
 
 ## Known Security Considerations
 
+### OpenSSF Scorecard (org-process findings)
+
+In-repo Scorecard and CodeQL findings are fixed in code when feasible. These Scorecard
+checks remain **owner/org process** (not resolved by repository source changes alone):
+
+- **Branch-Protection**: tighten GitHub rulesets (admin enforcement, required approvers,
+  dismiss stale reviews, last-push approval) in repository settings.
+- **CII-Best-Practices**: apply for / maintain the OpenSSF Best Practices badge.
+- **Fuzzing**: adopt a fuzzing program (for example OSS-Fuzz or project atheris targets)
+  when bandwidth allows.
+
 ### Current Environment
 
 **MVP Status**: MythosMUD is currently in beta development

@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING, Any, Optional, cast
 
 from .models import Alias
 from .structured_logging.enhanced_logging_config import get_logger
+from .validators.security_validator import validate_player_name
 
 logger = get_logger(__name__)
 
@@ -73,8 +74,19 @@ class AliasStorage:
         self.storage_dir.mkdir(parents=True, exist_ok=True)
 
     def _get_alias_file_path(self, player_name: str) -> Path:
-        """Get the file path for a player's aliases."""
-        return self.storage_dir / f"{player_name}_aliases.json"
+        """Get the file path for a player's aliases.
+
+        Human: reject path separators / traversal in player_name before touching disk.
+        AI: CodeQL py/path-injection — validate then resolve under storage_dir only.
+        """
+        safe_name = validate_player_name(player_name)
+        if not safe_name:
+            raise ValueError("Player name is required for alias storage path")
+        storage_root = self.storage_dir.resolve()
+        candidate = (storage_root / f"{safe_name}_aliases.json").resolve()
+        if not candidate.is_relative_to(storage_root):
+            raise ValueError("Alias path escapes storage directory")
+        return candidate
 
     def _load_alias_data(self, player_name: str) -> dict[str, Any]:
         """Load alias data from JSON file."""
