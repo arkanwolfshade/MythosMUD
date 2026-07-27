@@ -79,9 +79,9 @@ class AliasStorage:
         Human: reject path separators / traversal in player_name before touching disk.
         AI: CodeQL py/path-injection — basename + realpath/commonpath containment (recognized barriers).
         """
-        safe_name = validate_player_name(player_name)
-        if not safe_name:
+        if not isinstance(player_name, str) or not player_name:
             raise ValueError("Player name is required for alias storage path")
+        safe_name = validate_player_name(player_name)
         # Drop any directory components; CodeQL treats basename as a path sanitizer.
         safe_name = os.path.basename(safe_name)
         if ".." in safe_name or os.sep in safe_name or (os.altsep is not None and os.altsep in safe_name):

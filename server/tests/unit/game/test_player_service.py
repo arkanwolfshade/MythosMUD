@@ -475,13 +475,17 @@ async def test_get_online_players(player_service, mock_persistence):
 
 
 @pytest.mark.asyncio
-async def test_delete_player_success(player_service, mock_persistence):
+async def test_delete_player_success(player_service, mock_persistence, tmp_path, monkeypatch):
     """Test delete_player() successfully deletes player."""
     player_id = uuid.uuid4()
+    mock_player = MagicMock()
+    mock_player.name = "TestPlayer"
+    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
     mock_persistence.delete_player = AsyncMock(return_value=True)
+    monkeypatch.setenv("ALIASES_DIR", str(tmp_path))
     success, message = await player_service.delete_player(player_id)
     assert success is True
-    assert "deleted" in message.lower() or "success" in message.lower()
+    assert "deleted" in message.lower() or "TestPlayer" in message
 
 
 @pytest.mark.asyncio
