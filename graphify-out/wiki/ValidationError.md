@@ -1,75 +1,90 @@
 # ValidationError
 
-> 222 nodes · cohesion 0.01
+> God node · 189 connections · `server/exceptions.py`
 
-## Key Concepts
+**Community:** [[NPC Admin API]]
 
-- **ValidationError** (537 connections) — `server/exceptions.py`
-- **test_command_communication.py** (45 connections) — `server/tests/unit/models/test_command_communication.py`
-- **test_command_factories_communication.py** (29 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_command_magic.py** (27 connections) — `server/tests/unit/models/test_command_magic.py`
-- **player_respawn.py** (24 connections) — `server/api/player_respawn.py`
-- **CastCommand** (20 connections) — `server/models/command_magic.py`
-- **WhisperCommand** (15 connections) — `server/models/command_communication.py`
-- **test_player_respawn_handlers.py** (14 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **_handle_delirium_respawn_validation_error()** (12 connections) — `server/api/player_respawn.py`
-- **_handle_respawn_validation_error()** (11 connections) — `server/api/player_respawn.py`
-- **respawn_player()** (9 connections) — `server/api/player_respawn.py`
-- **respawn_player_from_delirium()** (9 connections) — `server/api/player_respawn.py`
-- **TestValidateCharacterStats** (9 connections) — `server/tests/unit/api/test_character_creation.py`
-- **MythosValidationError** (8 connections)
-- **RespawnResponse** (8 connections) — `server/schemas/players/player_respawn.py`
-- **_user()** (8 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **.create_whisper_command()** (8 connections) — `server/utils/command_factories_communication.py`
-- **test_enhanced_error_logging.py** (7 connections) — `server/tests/unit/utils/test_enhanced_error_logging.py`
-- **test_handle_delirium_validation_generic_500()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_delirium_validation_lucidity_keyword()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_delirium_validation_must_be_delirious()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_delirium_validation_not_found()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_respawn_validation_generic_500()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_respawn_validation_must_be_dead()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_respawn_validation_not_found()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- *... and 197 more nodes in this community*
+## Connections by Relation
 
-## Relationships
+### calls
+- [[get_database_path()]] `EXTRACTED`
+- [[handle_exception()]] `EXTRACTED`
+- [[._get_rooms_for_movement()]] `EXTRACTED`
+- [[._resolve_player_for_movement()]] `EXTRACTED`
+- [[.test_roll_character_stats_profession_not_found()]] `EXTRACTED`
+- [[test_apply_lucidity_loss_validation_maps_to_404()]] `EXTRACTED`
+- [[.test_mythos_exception_handler_sets_request_id()]] `EXTRACTED`
+- [[test_handle_delirium_validation_generic_500()]] `EXTRACTED`
+- [[test_handle_delirium_validation_lucidity_keyword()]] `EXTRACTED`
+- [[test_handle_delirium_validation_must_be_delirious()]] `EXTRACTED`
+- [[test_handle_delirium_validation_not_found()]] `EXTRACTED`
+- [[test_handle_respawn_validation_generic_500()]] `EXTRACTED`
+- [[test_handle_respawn_validation_must_be_dead()]] `EXTRACTED`
+- [[test_handle_respawn_validation_not_found()]] `EXTRACTED`
+- [[test_create_player_validation_error_to_400()]] `EXTRACTED`
+- [[test_parse_command_string_validation_error()]] `EXTRACTED`
+- [[test_get_database_path_none_url()]] `EXTRACTED`
+- [[test_close_db_engine_initialization_failure()]] `EXTRACTED`
+- [[test_get_engine_raises_validation_error()]] `EXTRACTED`
+- [[test_get_session_maker_raises_validation_error()]] `EXTRACTED`
 
-- [BaseCommand](BaseCommand.md) (117 shared connections)
-- [.get_instance](get_instance.md) (45 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (31 shared connections)
-- [exceptions.py](exceptions.py.md) (30 shared connections)
-- [test_command_factories_inventory.py](test_command_factories_inventory.py.md) (30 shared connections)
-- [MythosMUDError](MythosMUDError.md) (29 shared connections)
-- [test_command_inventory.py](test_command_inventory.py.md) (24 shared connections)
-- [test_command_factories_utility.py](test_command_factories_utility.py.md) (20 shared connections)
-- [test_npc_database.py](test_npc_database.py.md) (16 shared connections)
-- [__init__.py](__init__.py.md) (15 shared connections)
-- [test_command_factories_exploration.py](test_command_factories_exploration.py.md) (14 shared connections)
-- [test_player_service.py](test_player_service.py.md) (13 shared connections)
+### contains
+- [[exceptions.py]] `EXTRACTED`
 
-## Source Files
+### imports
+- [[command_service.py]] `EXTRACTED`
+- [[database.py]] `EXTRACTED`
+- [[players.py]] `EXTRACTED`
+- [[test_container_persistence.py]] `EXTRACTED`
+- [[test_player_service.py]] `EXTRACTED`
+- [[test_container_persistence_extended_row_helpers.py]] `EXTRACTED`
+- [[container_persistence.py]] `EXTRACTED`
+- [[test_command_factories_utility.py]] `EXTRACTED`
+- [[legacy_error_handlers.py]] `EXTRACTED`
+- [[character_creation.py]] `EXTRACTED`
+- [[test_command_factories_inventory.py]] `EXTRACTED`
+- [[test_database_helpers.py]] `EXTRACTED`
+- [[test_command_factories_exploration.py]] `EXTRACTED`
+- [[test_database_extended.py]] `EXTRACTED`
+- [[test_exceptions.py]] `EXTRACTED`
+- [[test_command_parser.py]] `EXTRACTED`
+- [[test_database_error_handling.py]] `EXTRACTED`
+- [[test_legacy_error_handlers.py]] `EXTRACTED`
+- [[inventory_command_helpers.py]] `EXTRACTED`
+- [[command_parser.py]] `EXTRACTED`
 
-- `server/api/player_respawn.py`
-- `server/exceptions.py`
-- `server/models/command_communication.py`
-- `server/models/command_magic.py`
-- `server/schemas/players/player_respawn.py`
-- `server/tests/unit/api/test_character_creation.py`
-- `server/tests/unit/api/test_player_respawn_handlers.py`
-- `server/tests/unit/commands/test_command_service.py`
-- `server/tests/unit/models/test_command_communication.py`
-- `server/tests/unit/models/test_command_magic.py`
-- `server/tests/unit/utils/test_command_factories_communication.py`
-- `server/tests/unit/utils/test_command_parser.py`
-- `server/tests/unit/utils/test_command_processor.py`
-- `server/tests/unit/utils/test_enhanced_error_logging.py`
-- `server/utils/command_factories_communication.py`
+### inherits
+- [[MythosMUDError]] `EXTRACTED`
 
-## Audit Trail
+### method
+- [[.__init__()]] `EXTRACTED`
+- [[._log_error()]] `EXTRACTED`
 
-- EXTRACTED: 774 (61%)
-- INFERRED: 485 (39%)
-- AMBIGUOUS: 0 (0%)
+### rationale_for
+- [[Data validation errors (e.g. empty local/whisper message). Log at warning, not e]] `EXTRACTED`
+
+### uses
+- [[CircuitBreaker]] `INFERRED`
+- [[ErrorResponse]] `INFERRED`
+- [[TestErrorMapping]] `INFERRED`
+- [[TestSanitization]] `INFERRED`
+- [[DatabaseManager]] `INFERRED`
+- [[TestErrorHandlers]] `INFERRED`
+- [[TestCircuitBreaker]] `INFERRED`
+- [[JSONResponse]] `INFERRED`
+- [[MythosMUDError]] `INFERRED`
+- [[Request]] `INFERRED`
+- [[TestErrorResponse]] `INFERRED`
+- [[_AppStateWithLegacyConfig]] `INFERRED`
+- [[_AppWithLegacyConfigState]] `INFERRED`
+- [[FastAPI]] `INFERRED`
+- [[HTTPException]] `INFERRED`
+- [[TestCreateErrorResponse]] `INFERRED`
+- [[TestLegacyHandlerSecurity]] `INFERRED`
+- [[TestHandleTransferItemsExceptions]] `INFERRED`
+- [[ErrorResponseDetailsInput]] `INFERRED`
+- [[ErrorSeverity]] `INFERRED`
 
 ---
 
-*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*
+*Part of the graphify knowledge wiki. See [[index]] to navigate.*

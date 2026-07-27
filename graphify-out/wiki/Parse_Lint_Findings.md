@@ -1,4 +1,4 @@
-# parse_lint_findings
+# Parse Lint Findings
 
 > 3 nodes · cohesion 0.67
 
@@ -24,4 +24,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*
+*Part of the graphify knowledge wiki. See [[index]] to navigate.*

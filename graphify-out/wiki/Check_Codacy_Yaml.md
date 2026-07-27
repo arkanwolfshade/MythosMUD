@@ -1,4 +1,4 @@
-# check_codacy_yaml
+# Check Codacy Yaml
 
 > 5 nodes · cohesion 0.50
 
@@ -26,4 +26,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*
+*Part of the graphify knowledge wiki. See [[index]] to navigate.*

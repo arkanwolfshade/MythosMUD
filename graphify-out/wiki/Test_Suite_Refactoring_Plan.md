@@ -1,50 +1,57 @@
 # Test Suite Refactoring Plan
 
-> 46 nodes · cohesion 0.04
+> 33 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **Test Suite Refactoring Plan** (14 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- **Migration Strategy** (7 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- **Testing Standards and Best Practices** (6 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **TEST_SUITE_REFACTORING_PLAN.md** (17 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
 - **Test Organization Principles** (5 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
 - **Appendix B: Test Categories Reference** (4 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
 - **Current State Analysis** (4 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- **Success Criteria** (4 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
 - **Risk Mitigation** (3 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
 - **Tooling Updates** (3 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Hierarchical Test Structure** (2 connections) — `docs/archive/TEST_REFACTORING_FINAL_SUMMARY.md`
 - **Migration File Mapping** (2 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
 - **Proposed Structure** (2 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
 - **Timeline and Milestones** (2 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- **TEST_SUITE_REFACTORING_PLAN.md** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- **1. Test Independence** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- **2. Mock Usage** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- **3. Assertion Quality** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- **4. Test Data Management** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- **5. Performance** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Phased Test Migration** (1 connections) — `docs/archive/TEST_REFACTORING_IMPLEMENTATION_SUMMARY.md`
+- **Legacy Test File Consolidation** (1 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
+- **Test Migration Validation** (1 connections) — `docs/archive/TEST_REFACTORING_STATUS.md`
+- **Test Refactoring Executive Summary** (1 connections) — `docs/archive/TEST_REFACTORING_SUMMARY.md`
 - **6-Week Timeline** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
 - **Appendix A: Full File Mapping** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
 - **Coverage Strategy** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
 - **Current Issues** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
 - **Detailed Mapping (Sample)** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
 - **Directory Hierarchy** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- **Documentation Deliverables** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- *... and 21 more nodes in this community*
+- **Executive Summary** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Integration Test Categories** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Makefile Updates** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Naming Conventions** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Other Test Categories** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [[Archive Refactoring Suite]] (1 shared connections)
+- [[Async Remediation Report]] (1 shared connections)
+- [[UI Animation Testing Standards]] (1 shared connections)
 
 ## Source Files
 
+- `docs/archive/TEST_REFACTORING_FINAL_SUMMARY.md`
+- `docs/archive/TEST_REFACTORING_IMPLEMENTATION_SUMMARY.md`
+- `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
+- `docs/archive/TEST_REFACTORING_STATUS.md`
+- `docs/archive/TEST_REFACTORING_SUMMARY.md`
 - `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 90 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 61 (91%)
+- INFERRED: 6 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*
+*Part of the graphify knowledge wiki. See [[index]] to navigate.*

@@ -1,80 +1,89 @@
 # CombatService
 
-> 1036 nodes · cohesion 0.00
+> God node · 232 connections · `server/services/combat_service.py`
 
-## Key Concepts
+**Community:** [[Combat Service Bundle]]
 
-- **CombatService** (181 connections) — `server/services/combat_service.py`
-- **get_config()** (105 connections) — `server/config/__init__.py`
-- **combat_service.py** (99 connections) — `server/services/combat_service.py`
-- **NATSError** (98 connections) — `server/services/nats_exceptions.py`
-- **NPCCombatIntegrationService** (89 connections) — `server/services/npc_combat_integration_service.py`
-- **NATSService** (71 connections) — `server/services/nats_service.py`
-- **NATSSubjectManager** (56 connections) — `server/services/nats_subject_manager/manager.py`
-- **combat.py** (50 connections) — `server/models/combat.py`
-- **npc_combat_integration_service.py** (50 connections) — `server/services/npc_combat_integration_service.py`
-- **magic_service.py** (39 connections) — `server/game/magic/magic_service.py`
-- **NPCCombatUUIDMapping** (39 connections) — `server/services/npc_combat_uuid_mapping.py`
-- **CombatParticipantData** (38 connections) — `server/services/combat_types.py`
-- **test_combat_event_publisher.py** (37 connections) — `server/tests/unit/services/test_combat_event_publisher.py`
-- **CombatParticipantType** (35 connections) — `server/models/combat.py`
-- **combat_taunt.py** (32 connections) — `server/commands/combat_taunt.py`
-- **TargetType** (31 connections) — `server/schemas/shared/target_resolution.py`
-- **NATSPublishError** (31 connections) — `server/services/nats_exceptions.py`
-- **combat_service_npc.py** (30 connections) — `server/services/combat_service_npc.py`
-- **nats_exceptions.py** (30 connections) — `server/services/nats_exceptions.py`
-- **NPCCombatLucidity** (30 connections) — `server/services/npc_combat_lucidity.py`
-- **NPCCombatDataProvider** (29 connections) — `server/services/npc_combat_data_provider.py`
-- **NPCCombatMemory** (28 connections) — `server/services/npc_combat_memory.py`
-- **CombatEventPublisher** (27 connections) — `server/services/combat_event_publisher.py`
-- **combat_service_start.py** (27 connections) — `server/services/combat_service_start.py`
-- **NATSSubscribeError** (27 connections) — `server/services/nats_exceptions.py`
-- *... and 1011 more nodes in this community*
+## Connections by Relation
 
-## Relationships
+### calls
+- [[initialize_nats_and_combat_services()]] `EXTRACTED`
+- [[_make_service()]] `EXTRACTED`
+- [[._create_combat_service_with_nats()]] `EXTRACTED`
+- [[combat_service()]] `EXTRACTED`
 
-- [CombatInstance](CombatInstance.md) (185 shared connections)
-- [get_logger](get_logger.md) (128 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (45 shared connections)
-- [TargetMatch](TargetMatch.md) (41 shared connections)
-- [test_npc_combat_integration_service.py](test_npc_combat_integration_service.py.md) (41 shared connections)
-- [test_nats_service.py](test_nats_service.py.md) (32 shared connections)
-- [SpellRegistry](SpellRegistry.md) (25 shared connections)
-- [TauntCommandHandler](TauntCommandHandler.md) (24 shared connections)
-- [ConnectionManager](ConnectionManager.md) (20 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (19 shared connections)
-- [spell_effects_heal.py](spell_effects_heal.py.md) (17 shared connections)
-- [exceptions.py](exceptions.py.md) (16 shared connections)
+### contains
+- [[combat_service.py]] `EXTRACTED`
 
-## Source Files
+### imports
+- [[dependencies.py]] `EXTRACTED`
+- [[lifespan_startup.py]] `EXTRACTED`
+- [[npc_combat_integration_service.py]] `EXTRACTED`
+- [[combat_turn_participant_actions.py]] `EXTRACTED`
+- [[spell_effects_heal.py]] `EXTRACTED`
+- [[spell_effects.py]] `EXTRACTED`
+- [[combat_handler.py]] `EXTRACTED`
+- [[combat_service_npc.py]] `EXTRACTED`
+- [[combat_taunt.py]] `EXTRACTED`
+- [[magic_service.py]] `EXTRACTED`
+- [[combat_service_attack.py]] `EXTRACTED`
+- [[combat_loader.py]] `EXTRACTED`
+- [[combat_service_start.py]] `EXTRACTED`
+- [[npc_combat_integration_validation_mixin.py]] `EXTRACTED`
+- [[combat_flee.py]] `EXTRACTED`
+- [[magic_service_completion.py]] `EXTRACTED`
+- [[test_combat_service.py]] `EXTRACTED`
+- [[combat_turn_processor.py]] `EXTRACTED`
+- [[npc_combat_integration_combat_mixin.py]] `EXTRACTED`
+- [[spell_targeting.py]] `EXTRACTED`
 
-- `server/app/game_tick_processing.py`
-- `server/app/lifespan_startup.py`
-- `server/commands/combat_taunt.py`
-- `server/config/__init__.py`
-- `server/container/bundles/combat.py`
-- `server/events/combat_events.py`
-- `server/game/magic/magic_service.py`
-- `server/game/magic/magic_service_completion.py`
-- `server/game/magic/spell_costs.py`
-- `server/game/magic/spell_effects_internal.py`
-- `server/game/magic/spell_targeting.py`
-- `server/game/mechanics.py`
-- `server/infrastructure/nats_broker.py`
-- `server/models/combat.py`
-- `server/realtime/message_formatters.py`
-- `server/schemas/shared/target_resolution.py`
-- `server/services/combat_attack_handler.py`
-- `server/services/combat_cleanup_handler.py`
-- `server/services/combat_death_handler.py`
-- `server/services/combat_event_handler.py`
+### method
+- [[.__init__()]] `EXTRACTED`
+- [[.finalize_attack_result()]] `EXTRACTED`
+- [[.validate_melee_or_end_combat()]] `EXTRACTED`
+- [[.apply_attack_damage()]] `EXTRACTED`
+- [[.apply_damage_and_check_involuntary_flee()]] `EXTRACTED`
+- [[.end_combat_if_npc_died()]] `EXTRACTED`
+- [[.handle_attack_events_and_xp()]] `EXTRACTED`
+- [[._handle_player_dp_update()]] `EXTRACTED`
+- [[.validate_and_get_combat_participants()]] `EXTRACTED`
+- [[.award_xp_to_player()]] `EXTRACTED`
+- [[.check_involuntary_flee()]] `EXTRACTED`
+- [[.end_combat()]] `EXTRACTED`
+- [[.get_combat()]] `EXTRACTED`
+- [[.get_combat_by_participant()]] `EXTRACTED`
+- [[._get_combat_id_for_npc()]] `EXTRACTED`
+- [[.handle_target_state_changes()]] `EXTRACTED`
+- [[.process_attack()]] `EXTRACTED`
+- [[.register_combat_state()]] `EXTRACTED`
+- [[.start_combat()]] `EXTRACTED`
+- [[.validate_melee_location()]] `EXTRACTED`
 
-## Audit Trail
+### rationale_for
+- [[Service for managing combat instances and state.]] `EXTRACTED`
 
-- EXTRACTED: 4389 (92%)
-- INFERRED: 405 (8%)
-- AMBIGUOUS: 0 (0%)
+### uses
+- [[EventBus]] `INFERRED`
+- [[NPCCombatIntegrationService]] `INFERRED`
+- [[NATSService]] `INFERRED`
+- [[PlayerCombatService]] `INFERRED`
+- [[SpellEffects]] `INFERRED`
+- [[NPCCombatDataProvider]] `INFERRED`
+- [[PlayerRespawnService]] `INFERRED`
+- [[CombatEventPublisher]] `INFERRED`
+- [[CombatCommandHandler]] `INFERRED`
+- [[MagicService]] `INFERRED`
+- [[CombatParticipantData]] `INFERRED`
+- [[CombatTurnProcessor]] `INFERRED`
+- [[_MagicServiceCore]] `INFERRED`
+- [[PlayerDeathService]] `INFERRED`
+- [[SpellTargetingService]] `INFERRED`
+- [[NPCDiedEvent]] `INFERRED`
+- [[CombatPersistenceHandler]] `INFERRED`
+- [[UUID]] `INFERRED`
+- [[NPCTookDamageEvent]] `INFERRED`
+- [[Any]] `INFERRED`
 
 ---
 
-*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*
+*Part of the graphify knowledge wiki. See [[index]] to navigate.*

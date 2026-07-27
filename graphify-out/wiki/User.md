@@ -1,79 +1,95 @@
 # User
 
-> 395 nodes · cohesion 0.01
+> God node · 184 connections · `server/models/user.py`
 
-## Key Concepts
+**Community:** [[API Test Fixtures]]
 
-- **User** (306 connections) — `server/models/user.py`
-- **test_users.py** (60 connections) — `server/tests/unit/auth/test_users.py`
-- **user.py** (57 connections) — `server/models/user.py`
-- **Result** (52 connections) — `scripts/run_test_ci.py`
-- **endpoints.py** (52 connections) — `server/auth/endpoints.py`
-- **test_endpoints.py** (51 connections) — `server/tests/unit/auth/test_endpoints.py`
-- **users.py** (47 connections) — `server/auth/users.py`
-- **UserManager** (47 connections) — `server/auth/users.py`
-- **login_user()** (28 connections) — `server/auth/endpoints.py`
-- **register_user()** (28 connections) — `server/auth/endpoints.py`
-- **UserCreate** (27 connections) — `server/auth/endpoints.py`
-- **InviteManager** (24 connections) — `server/auth/invites.py`
-- **test_auth_dependencies.py** (24 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- **LoginRequest** (22 connections) — `server/auth/endpoints.py`
-- **professions.py** (19 connections) — `server/api/professions.py`
-- **dependencies.py** (18 connections) — `server/auth/dependencies.py`
-- **invites.py** (16 connections) — `server/auth/invites.py`
-- **test_professions_endpoints.py** (13 connections) — `server/tests/unit/api/test_professions_endpoints.py`
-- **get_auth_backend()** (12 connections) — `server/auth/users.py`
-- **require_invite_code()** (11 connections) — `server/auth/dependencies.py`
-- **get_current_user_with_logging()** (11 connections) — `server/auth/users.py`
-- **UsernameAuthenticationBackend** (11 connections) — `server/auth/users.py`
-- **test_user.py** (11 connections) — `server/tests/unit/models/test_user.py`
-- **get_all_professions()** (10 connections) — `server/api/professions.py`
-- **get_profession_by_id()** (10 connections) — `server/api/professions.py`
-- *... and 370 more nodes in this community*
+## Connections by Relation
 
-## Relationships
+### calls
+- [[_create_user_object()]] `EXTRACTED`
+- [[test_add_player_effect_generates_id()]] `EXTRACTED`
+- [[test_login_user_generic_exception()]] `EXTRACTED`
+- [[test_lucidity_adjustment_round_trip()]] `EXTRACTED`
+- [[test_login_user_authenticate_raises_exception()]] `EXTRACTED`
+- [[test_login_user_authenticate_returns_none()]] `EXTRACTED`
+- [[test_login_user_http_exception_re_raised()]] `EXTRACTED`
+- [[test_login_user_id_mismatch()]] `EXTRACTED`
+- [[test_login_user_invalid_credentials()]] `EXTRACTED`
+- [[test_login_user_no_email()]] `EXTRACTED`
+- [[test_login_user_player_no_profession_id()]] `EXTRACTED`
+- [[test_login_user_profession_lookup_error()]] `EXTRACTED`
+- [[test_login_user_profession_lookup_none()]] `EXTRACTED`
+- [[test_login_user_profession_lookup_success()]] `EXTRACTED`
+- [[test_login_user_success()]] `EXTRACTED`
+- [[test_login_user_with_characters()]] `EXTRACTED`
+- [[test_register_user_duplicate_username()]] `EXTRACTED`
+- [[test_register_user_success()]] `EXTRACTED`
+- [[quest_seed_data()]] `EXTRACTED`
+- [[test_get_current_superuser_failure()]] `EXTRACTED`
 
-- [LoggedHTTPException](LoggedHTTPException.md) (82 shared connections)
-- [exceptions.py](exceptions.py.md) (35 shared connections)
-- [test_player_preferences_service.py](test_player_preferences_service.py.md) (25 shared connections)
-- [ContainerService](ContainerService.md) (25 shared connections)
-- [ExplorationService](ExplorationService.md) (23 shared connections)
-- [get_logger](get_logger.md) (19 shared connections)
-- [__init__.py](__init__.py.md) (16 shared connections)
-- [get_admin_auth_service](get_admin_auth_service.md) (16 shared connections)
-- [character_creation.py](character_creation.py.md) (15 shared connections)
-- [lifespan.py](lifespan.py.md) (11 shared connections)
-- [factory.py](factory.py.md) (11 shared connections)
-- [Invite](Invite.md) (11 shared connections)
+### contains
+- [[user.py]] `EXTRACTED`
 
-## Source Files
+### imports
+- [[async_persistence.py]] `EXTRACTED`
+- [[__init__.py]] `EXTRACTED`
+- [[players.py]] `EXTRACTED`
+- [[test_users.py]] `EXTRACTED`
+- [[player.py]] `EXTRACTED`
+- [[test_admin_auth_service.py]] `EXTRACTED`
+- [[maps.py]] `EXTRACTED`
+- [[container_endpoints_basic.py]] `EXTRACTED`
+- [[endpoints.py]] `EXTRACTED`
+- [[test_endpoints.py]] `EXTRACTED`
+- [[character_creation.py]] `EXTRACTED`
+- [[users.py]] `EXTRACTED`
+- [[container_helpers.py]] `EXTRACTED`
+- [[test_container_helpers.py]] `EXTRACTED`
+- [[test_async_persistence_core.py]] `EXTRACTED`
+- [[container_endpoints_loot.py]] `EXTRACTED`
+- [[test_metrics_endpoints.py]] `EXTRACTED`
+- [[rooms.py]] `EXTRACTED`
+- [[database_helpers.py]] `EXTRACTED`
+- [[npc_definitions_api.py]] `EXTRACTED`
 
-- `scripts/run_test_ci.py`
-- `server/api/player_helpers.py`
-- `server/api/professions.py`
-- `server/auth/__init__.py`
-- `server/auth/dependencies.py`
-- `server/auth/email_utils.py`
-- `server/auth/endpoints.py`
-- `server/auth/invites.py`
-- `server/auth/users.py`
-- `server/models/user.py`
-- `server/schemas/auth/invite.py`
-- `server/tests/integration/test_db_connectivity.py`
-- `server/tests/unit/api/test_professions_endpoints.py`
-- `server/tests/unit/auth/test_auth_dependencies.py`
-- `server/tests/unit/auth/test_endpoints.py`
-- `server/tests/unit/auth/test_users.py`
-- `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- `server/tests/unit/models/test_user.py`
-- `server/tests/unit/services/test_player_preferences_service.py`
+### inherits
+- [[Base]] `EXTRACTED`
+- [[SQLAlchemyBaseUserTableUUID]] `EXTRACTED`
 
-## Audit Trail
+### method
+- [[.get_display_name()]] `EXTRACTED`
+- [[.is_authenticated()]] `EXTRACTED`
+- [[.__repr__()]] `EXTRACTED`
 
-- EXTRACTED: 1746 (89%)
-- INFERRED: 208 (11%)
-- AMBIGUOUS: 0 (0%)
+### rationale_for
+- [[User model for FastAPI Users v14+ with SQLAlchemy 2.0 typing.      Extends SQLAl]] `EXTRACTED`
+
+### references
+- [[set_display_name_default()]] `EXTRACTED`
+
+### uses
+- [[Player]] `INFERRED`
+- [[Base]] `INFERRED`
+- [[Invite]] `INFERRED`
+- [[PlayerInventory]] `INFERRED`
+- [[PlayerChannelPreferences]] `INFERRED`
+- [[TestTransferAllItemsFromContainer]] `INFERRED`
+- [[TestHelperFunctions]] `INFERRED`
+- [[TestOpenContainer]] `INFERRED`
+- [[TestTransferItems]] `INFERRED`
+- [[PlayerExploration]] `INFERRED`
+- [[TestHandleTransferItemsExceptions]] `INFERRED`
+- [[TestCloseContainer]] `INFERRED`
+- [[TestHandleLootAllExceptions]] `INFERRED`
+- [[TestHandleOpenContainerExceptions]] `INFERRED`
+- [[TestRequestModels]] `INFERRED`
+- [[TestHandleContainerServiceErrorEdgeCases]] `INFERRED`
+- [[TestGetMythosTime]] `INFERRED`
+- [[TestRollCharacterStats]] `INFERRED`
+- [[TestExceptionChaining]] `INFERRED`
+- [[TestExceptionHandlerContext]] `INFERRED`
 
 ---
 
-*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*
+*Part of the graphify knowledge wiki. See [[index]] to navigate.*
