@@ -6,7 +6,7 @@
 
 import React from 'react';
 
-import { sanitizeWithDomPurify } from '../../utils/domPurifyClient';
+import { getDomPurify } from '../../utils/domPurifyClient';
 import { INCOMING_HTML_DOMPURIFY_CONFIG } from '../../utils/security';
 
 interface SafeHtmlProps extends React.HTMLAttributes<HTMLElement> {
@@ -32,7 +32,17 @@ interface SafeHtmlProps extends React.HTMLAttributes<HTMLElement> {
  * Content is passed through DOMPurify.sanitize with INCOMING_HTML_DOMPURIFY_CONFIG before rendering.
  */
 export const SafeHtml: React.FC<SafeHtmlProps> = ({ html, className, tag: Tag = 'span', ...props }) => {
-  const sanitizedHtml =
-    !html || typeof html !== 'string' ? '' : sanitizeWithDomPurify(html, INCOMING_HTML_DOMPURIFY_CONFIG);
-  return <Tag className={className} dangerouslySetInnerHTML={{ __html: sanitizedHtml }} {...props} />;
+  const dirty = typeof html === 'string' ? html : '';
+  // Sanitize adjacent to the sink for CodeQL; Opengrep still flags dynamic HTML (ignored in .codacy.yml).
+  return (
+    <Tag
+      className={className}
+      dangerouslySetInnerHTML={{
+        // nosemgrep: codacy.tools-configs.typescript.react.security.audit.react-dangerouslysetinnerhtml.react-dangerouslysetinnerhtml
+        // Reason: value is always getDomPurify().sanitize(..., INCOMING_HTML_DOMPURIFY_CONFIG)
+        __html: getDomPurify().sanitize(dirty, INCOMING_HTML_DOMPURIFY_CONFIG),
+      }}
+      {...props}
+    />
+  );
 };
