@@ -27,6 +27,7 @@ class _QualityGuardModule(Protocol):
     _scan_changed_files: object
     is_safe_git_ref: object
     _parse_lizard_output: object
+    emit_results: Callable[[dict[str, object], list[str], list[str]], int]
 
 
 class _QualityTrendsModule(Protocol):
@@ -302,6 +303,19 @@ def test_run_cmd_decodes_subprocess_output_as_utf8(monkeypatch: pytest.MonkeyPat
     assert captured.get("encoding") == "utf-8"
     assert captured.get("errors") == "replace"
     assert captured.get("text") is True
+
+
+def test_emit_results_does_not_print_failure_or_warning_bodies(capsys: pytest.CaptureFixture[str]) -> None:
+    """Regression: CodeQL clear-text logging — emit counts only, never path-bearing bodies."""
+    emit_results = _load_guard_module().emit_results
+    sensitive = "C:/secret/private/key.pem failed lizard CCN"
+    code = emit_results({"m": 1}, [sensitive], [sensitive])
+    assert code == 1
+    out = capsys.readouterr().out
+    assert "hard_fail_reasons=1" in out
+    assert "warnings=1" in out
+    assert sensitive not in out
+    assert "private/key.pem" not in out
 
 
 def test_git_show_file_decodes_subprocess_output_as_utf8(monkeypatch: pytest.MonkeyPatch) -> None:

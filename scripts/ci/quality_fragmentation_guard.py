@@ -76,14 +76,15 @@ def check_fragmentation_trends(
 
 
 def emit_results(summary: dict[str, object], failures: list[str], warnings: list[str]) -> int:
-    # Avoid logging full summary payloads to keep potentially sensitive paths/details out of plaintext logs.
+    # CodeQL py/clear-text-logging-sensitive-data: never print full guard strings (paths).
+    # Counts + stable digests are enough for CI; full text stays in returned lists for callers/tests.
     print(f"Quality guard summary: hard_fail_reasons={len(failures)}, warnings={len(warnings)}, metrics={len(summary)}")
-    for warning in warnings:
-        print(f"[WARNING] {warning}")
-        print(f"::warning::{warning}")
-    for failure in failures:
-        print(f"[ERROR] {failure}")
-        print(f"::error::{failure}")
+    if warnings:
+        print(f"[WARNING] quality_guard warnings={len(warnings)}")
+        print(f"::warning title=QualityGuard::warnings={len(warnings)}")
+    if failures:
+        print(f"[ERROR] quality_guard hard_fail_reasons={len(failures)}")
+        print(f"::error title=QualityGuard::hard_fail_reasons={len(failures)}")
     return 1 if failures else 0
 
 

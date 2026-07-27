@@ -9,16 +9,20 @@
 name: "Dependency Review"
 on: [pull_request]
 
-# dependency-submission API requires contents:write; id-token for OIDC when uploading snapshots.
+# Scorecard TokenPermissions: top-level stays read; elevate write only on this job for snapshot upload.
 permissions:
-  contents: write
-  id-token: write
-  pull-requests: write
+  contents: read
 
 jobs:
   dependency-review:
     name: Dependency Review
     runs-on: ubuntu-latest
+    # contents:write — Component Detection dependency-submission API only.
+    # id-token — OIDC when uploading snapshots; pull-requests — failure comment summary.
+    permissions:
+      contents: write
+      id-token: write
+      pull-requests: write
     # Opt into Node 24 for JS actions until dependency-review-action ships node24 (see GitHub changelog).
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true

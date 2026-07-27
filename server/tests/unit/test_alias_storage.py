@@ -78,7 +78,23 @@ def test_get_alias_file_path(alias_storage):
     """Test _get_alias_file_path returns correct path."""
     path = alias_storage._get_alias_file_path("TestPlayer")
     assert path.name == "TestPlayer_aliases.json"
-    assert path.parent == alias_storage.storage_dir
+    assert path.parent == Path(os.path.realpath(alias_storage.storage_dir))
+
+
+def test_get_alias_file_path_rejects_traversal(alias_storage, temp_storage_dir):
+    """Path-injection: traversal and separators must not escape storage_dir."""
+    with pytest.raises(ValueError):
+        alias_storage._get_alias_file_path("../outside")
+    with pytest.raises(ValueError):
+        alias_storage._get_alias_file_path("foo/bar")
+    with pytest.raises(ValueError):
+        alias_storage._get_alias_file_path("foo\\bar")
+    with pytest.raises(ValueError):
+        alias_storage._get_alias_file_path("")
+    # No alias file created outside the storage root.
+    assert list(temp_storage_dir.rglob("*")) == []
+    outside = temp_storage_dir.parent / "outside_aliases.json"
+    assert not outside.exists()
 
 
 def test_load_alias_data_nonexistent_file(alias_storage):
