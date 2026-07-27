@@ -1,16 +1,11 @@
 # Cursor Skills Mythosmud
 
-> 7 nodes · cohesion 0.29
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **MythosMUD ADR Authoring** (6 connections) — `.cursor/skills/mythosmud-adr-authoring/SKILL.md`
-- **SKILL.md** (1 connections) — `.cursor/skills/mythosmud-adr-authoring/SKILL.md`
-- **Index Update** (1 connections) — `.cursor/skills/mythosmud-adr-authoring/SKILL.md`
-- **Location** (1 connections) — `.cursor/skills/mythosmud-adr-authoring/SKILL.md`
-- **Reference** (1 connections) — `.cursor/skills/mythosmud-adr-authoring/SKILL.md`
-- **Structure** (1 connections) — `.cursor/skills/mythosmud-adr-authoring/SKILL.md`
-- **Template** (1 connections) — `.cursor/skills/mythosmud-adr-authoring/SKILL.md`
+- **MythosMUD LLM Wiki Skill** (1 connections) — `.cursor/skills/mythosmud-llm-wiki/SKILL.md`
+- **Obsidian LLM Wiki Vault** (1 connections) — `.cursor/skills/mythosmud-llm-wiki/SKILL.md`
 
 ## Relationships
 
@@ -18,14 +13,14 @@
 
 ## Source Files
 
-- `.cursor/skills/mythosmud-adr-authoring/SKILL.md`
+- `.cursor/skills/mythosmud-llm-wiki/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

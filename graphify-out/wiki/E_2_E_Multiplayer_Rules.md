@@ -1,32 +1,30 @@
 # E 2 E Multiplayer Rules
 
-> 8 nodes · cohesion 0.25
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **Pre-Scenario Setup (REQUIRED)** (8 connections) — `e2e-tests/MULTIPLAYER_TEST_RULES.md`
-- **⚠️ CRITICAL: DO NOT START SERVER UNTIL DATABASE VERIFICATION IS COMPLETE** (1 connections) — `e2e-tests/MULTIPLAYER_TEST_RULES.md`
-- **⚠️ CRITICAL: THIS STEP IS MANDATORY AND CANNOT BE SKIPPED** (1 connections) — `e2e-tests/MULTIPLAYER_TEST_RULES.md`
-- **⚠️ FAILURE TO COMPLETE THIS STEP = COMPLETE TEST FAILURE** (1 connections) — `e2e-tests/MULTIPLAYER_TEST_RULES.md`
-- **Step 1: Environment Verification** (1 connections) — `e2e-tests/MULTIPLAYER_TEST_RULES.md`
-- **Step 2: MANDATORY Database State Verification** (1 connections) — `e2e-tests/MULTIPLAYER_TEST_RULES.md`
-- **Step 3: Start Development Environment (ONLY AFTER DATABASE VERIFICATION)** (1 connections) — `e2e-tests/MULTIPLAYER_TEST_RULES.md`
-- **Step 4: Verify Server Accessibility** (1 connections) — `e2e-tests/MULTIPLAYER_TEST_RULES.md`
+- **Playwright MCP Scenarios** (3 connections) — `e2e-tests/MULTIPLAYER_TEST_RULES.md`
+- **Hybrid E2E Testing Approach** (2 connections) — `e2e-tests/MULTIPLAYER_TEST_RULES.md`
+- **Automated Playwright CLI Tests** (1 connections) — `e2e-tests/MULTIPLAYER_TEST_RULES.md`
+- **Mandatory Execution Order** (1 connections) — `e2e-tests/MULTIPLAYER_TEST_RULES.md`
+- **Room Occupants Fix** (1 connections) — `e2e-tests/OCCUPANT_FIX_VERIFICATION.md`
 
 ## Relationships
 
-- [[Multiplayer Test Rules]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
 - `e2e-tests/MULTIPLAYER_TEST_RULES.md`
+- `e2e-tests/OCCUPANT_FIX_VERIFICATION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,50 +1,46 @@
 # Pylint Unique Findings
 
-> 28 nodes · cohesion 0.07
+> 14 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **3. REFACTOR Findings (935 findings)** (8 connections) — `docs/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **Unique Pylint Findings Analysis** (8 connections) — `docs/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **1. CONVENTION Findings (260 findings)** (7 connections) — `docs/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **Summary of Recommendations** (4 connections) — `docs/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **4. WARNINGS Findings (5 findings)** (3 connections) — `docs/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **2. ERROR Findings (33 findings)** (2 connections) — `docs/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **LINTING_PYLINT_UNIQUE_FINDINGS.md** (1 connections) — `docs/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **1.1 Missing Module Docstrings (C0114)** (1 connections) — `docs/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **1.2 Invalid Name (C0103)** (1 connections) — `docs/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **1.3 Too Many Lines in Module (C0302)** (1 connections) — `docs/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **1.4 Use Implicit Booleaness (C1805, C1804)** (1 connections) — `docs/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **1.5 Singleton Comparison (C0121)** (1 connections) — `docs/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **1.6 Missing Function Docstring (C0116)** (1 connections) — `docs/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **2.1 No Name in Module (E0611)** (1 connections) — `docs/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **3.1 Too Many Instance Attributes (R0902)** (1 connections) — `docs/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **3.2 Too Many Arguments (R0913, R0917)** (1 connections) — `docs/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **3.3 Too Many Local Variables (R0914)** (1 connections) — `docs/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **3.4 Too Many Statements (R0915)** (1 connections) — `docs/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **3.5 Too Many Return Statements (R0911)** (1 connections) — `docs/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **3.6 Too Many Public Methods (R0904)** (1 connections) — `docs/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **3.7 No-Else-Return (R1705)** (1 connections) — `docs/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **4.1 Unused Variable (W0612)** (1 connections) — `docs/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **4.2 Unused Argument (W0613)** (1 connections) — `docs/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **Configure Ruff to Catch (Small subset)** (1 connections) — `docs/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **Executive Summary** (1 connections) — `docs/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- *... and 3 more nodes in this community*
+- **CreateItemInstanceInput** (14 connections) — `server/async_persistence_constants.py`
+- **datetime** (6 connections) — `server/async_persistence.py`
+- **Profession** (5 connections) — `server/async_persistence.py`
+- **.get_decayed_containers()** (4 connections) — `server/async_persistence.py`
+- **.update_player_last_active()** (4 connections) — `server/async_persistence.py`
+- **.create_item_instance()** (3 connections) — `server/async_persistence.py`
+- **.get_profession_by_id()** (3 connections) — `server/async_persistence.py`
+- **async_persistence_constants.py** (3 connections) — `server/async_persistence_constants.py`
+- **Constants and shared types for async persistence layer.  Extracted to keep async** (1 connections) — `server/async_persistence_constants.py`
+- **Optional fields for create_item_instance. owner_type, owner_id, etc. with defaul** (1 connections) — `server/async_persistence_constants.py`
+- **Update the last_active timestamp for a player. Delegates to PlayerRepository.** (1 connections) — `server/async_persistence.py`
+- **Get a profession by ID. Delegates to ProfessionRepository.** (1 connections) — `server/async_persistence.py`
+- **Get decayed containers.** (1 connections) — `server/async_persistence.py`
+- **Create a new item instance. Delegates to ItemRepository.** (1 connections) — `server/async_persistence.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Combat Command Handler](Combat_Command_Handler.md) (5 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (3 shared connections)
+- [Death Delirium UI Modals](Death_Delirium_UI_Modals.md) (2 shared connections)
+- [End-to-End Validation](End-to-End_Validation.md) (2 shared connections)
+- [Async Persistence Types](Async_Persistence_Types.md) (2 shared connections)
+- [Realtime Connection Impl](Realtime_Connection_Impl.md) (2 shared connections)
+- [Async Persistence Layer](Async_Persistence_Layer.md) (1 shared connections)
+- [Room Subscription Helpers](Room_Subscription_Helpers.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/LINTING_PYLINT_UNIQUE_FINDINGS.md`
+- `server/async_persistence.py`
+- `server/async_persistence_constants.py`
 
 ## Audit Trail
 
-- EXTRACTED: 54 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 32 (67%)
+- INFERRED: 16 (33%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

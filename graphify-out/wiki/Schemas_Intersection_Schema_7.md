@@ -4,14 +4,14 @@
 
 ## Key Concepts
 
-- **id** (4 connections) — `schemas/intersection_schema.json`
+- **plane** (4 connections) — `schemas/intersection_schema.json`
 - **description** (1 connections) — `schemas/intersection_schema.json`
 - **pattern** (1 connections) — `schemas/intersection_schema.json`
 - **type** (1 connections) — `schemas/intersection_schema.json`
 
 ## Relationships
 
-- [[Schemas Intersection Schema]] (1 shared connections)
+- [Schemas Intersection Schema](Schemas_Intersection_Schema.md) (1 shared connections)
 
 ## Source Files
 
@@ -25,4 +25,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,64 +1,62 @@
 # Players API Endpoints
 
-> 84 nodes · cohesion 0.08
+> 19 nodes · cohesion 0.01
 
 ## Key Concepts
 
-- **players.py** (64 connections) — `server/api/players.py`
-- **ClassDefinition** (31 connections) — `server/schemas/players/class_definition.py`
-- **test_players_api_coverage.py** (27 connections) — `server/tests/unit/api/test_players_api_coverage.py`
-- **PlayerRead** (25 connections) — `server/api/players.py`
-- **User** (23 connections) — `server/api/players.py`
+- **exceptions.py** (194 connections) — `server/exceptions.py`
 - **FastAPIRequest** (22 connections) — `server/api/players.py`
-- **PlayerService** (20 connections) — `server/api/players.py`
 - **UUID** (19 connections) — `server/api/players.py`
-- **AvailableClassesResponse** (17 connections) — `server/api/players.py`
-- **DeleteCharacterResponse** (17 connections) — `server/api/players.py`
-- **LoginGracePeriodResponse** (17 connections) — `server/api/players.py`
-- **SelectCharacterRequest** (17 connections) — `server/api/players.py`
+- **UUID** (19 connections) — `server/game/player_service.py`
 - **MessageResponse** (17 connections) — `server/api/players.py`
-- **get_player_quests()** (14 connections) — `server/api/players.py`
-- **start_login_grace_period_endpoint()** (14 connections) — `server/api/players.py`
-- **_validate_character_access()** (13 connections) — `server/api/players.py`
-- **select_character()** (12 connections) — `server/api/players.py`
-- **_user()** (12 connections) — `server/tests/unit/api/test_players_api_coverage.py`
-- **_disconnect_other_characters()** (11 connections) — `server/api/players.py`
-- **list_players()** (11 connections) — `server/api/players.py`
-- **_validate_player_for_grace_period()** (11 connections) — `server/api/players.py`
+- **Any** (16 connections) — `server/game/player_service.py`
 - **Any** (11 connections) — `server/api/players.py`
-- **create_player()** (10 connections) — `server/api/players.py`
-- **_validate_character_id()** (10 connections) — `server/api/players.py`
-- **_get_connection_manager()** (9 connections) — `server/api/players.py`
-- *... and 59 more nodes in this community*
+- **Any** (11 connections) — `server/game/player_schema_converter.py`
+- **Any** (7 connections) — `server/game/player_state_service.py`
+- **UUID** (7 connections) — `server/game/player_state_service.py`
+- **Stats** (6 connections) — `server/game/player_service.py`
+- **UUID** (4 connections) — `server/game/player_creation_service.py`
+- **Any** (3 connections) — `server/game/player_respawn_wrapper.py`
+- **Request** (1 connections) — `server/api/skills.py`
+- **Comprehensive exception handling for MythosMUD server.  This module defines the** (1 connections) — `server/exceptions.py`
+- **Any** (1 connections) — `server/game/player_creation_service.py`
+- **Stats** (1 connections) — `server/game/player_creation_service.py`
+- **Any** (1 connections) — `server/game/player_search_service.py`
+- **WeaponStats** (1 connections) — `server/game/player_schema_converter.py`
 
 ## Relationships
 
-- [[Admin NPC Schemas]] (20 shared connections)
-- [[NPC Admin API]] (17 shared connections)
-- [[Container Exception Handlers]] (16 shared connections)
-- [[Look Command Helpers]] (7 shared connections)
-- [[Character Creation API]] (4 shared connections)
-- [[Api Players Quests]] (4 shared connections)
-- [[API Test Fixtures]] (3 shared connections)
-- [[Player Schema Models]] (3 shared connections)
-- [[Player Effects API]] (2 shared connections)
-- [[Game Tick Processing]] (2 shared connections)
-- [[Game Service Bundle]] (2 shared connections)
-- [[Combat Attack Service]] (1 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (8 shared connections)
+- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (4 shared connections)
+- [NPC Admin API](NPC_Admin_API.md) (3 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (2 shared connections)
+- [Room Subscription Helpers](Room_Subscription_Helpers.md) (2 shared connections)
+- [Populate Npc Databases](Populate_Npc_Databases.md) (1 shared connections)
+- [Auth Token Utilities](Auth_Token_Utilities.md) (1 shared connections)
+- [Realtime Connection Impl](Realtime_Connection_Impl.md) (1 shared connections)
+- [API Type Guards](API_Type_Guards.md) (1 shared connections)
+- [Container API Endpoints](Container_API_Endpoints.md) (1 shared connections)
+- [Api Player Respawn](Api_Player_Respawn.md) (1 shared connections)
+- [Game Client Container](Game_Client_Container.md) (1 shared connections)
 
 ## Source Files
 
 - `server/api/players.py`
-- `server/schemas/players/class_definition.py`
-- `server/schemas/players/skill.py`
-- `server/tests/unit/api/test_players_api_coverage.py`
+- `server/api/skills.py`
+- `server/exceptions.py`
+- `server/game/player_creation_service.py`
+- `server/game/player_respawn_wrapper.py`
+- `server/game/player_schema_converter.py`
+- `server/game/player_search_service.py`
+- `server/game/player_service.py`
+- `server/game/player_state_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 456 (70%)
-- INFERRED: 195 (30%)
+- EXTRACTED: 290 (85%)
+- INFERRED: 52 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

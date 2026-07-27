@@ -1,15 +1,18 @@
 # NATS Error Handling Strategy
 
-> 29 nodes · cohesion 0.07
+> 39 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **NATS Error Handling Strategy** (12 connections) — `docs/NATS_ERROR_HANDLING_STRATEGY.md`
+- **Exception Types** (7 connections) — `docs/NATS_ERROR_HANDLING_STRATEGY.md`
 - **Best Practices** (6 connections) — `docs/NATS_ERROR_HANDLING_STRATEGY.md`
 - **Error Handling Patterns** (6 connections) — `docs/NATS_ERROR_HANDLING_STRATEGY.md`
 - **Error Recovery Strategies** (4 connections) — `docs/NATS_ERROR_HANDLING_STRATEGY.md`
+- **NATS Remediation Summary 2026-01-13** (4 connections) — `docs/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Exception Hierarchy** (3 connections) — `docs/NATS_ERROR_HANDLING_STRATEGY.md`
 - **Migration Guide** (3 connections) — `docs/NATS_ERROR_HANDLING_STRATEGY.md`
 - **Testing Error Handling** (3 connections) — `docs/NATS_ERROR_HANDLING_STRATEGY.md`
+- **NATS Manual Ack Pattern** (2 connections) — `docs/NATS_MANUAL_ACKNOWLEDGMENT_GUIDE.md`
 - **NATS Subject Patterns** (2 connections) — `docs/NATS_SUBJECT_PATTERNS.md`
 - **NATS_ERROR_HANDLING_STRATEGY.md** (1 connections) — `docs/NATS_ERROR_HANDLING_STRATEGY.md`
 - **1. Always Handle Exceptions** (1 connections) — `docs/NATS_ERROR_HANDLING_STRATEGY.md`
@@ -21,32 +24,31 @@
 - **From None Return Pattern** (1 connections) — `docs/NATS_ERROR_HANDLING_STRATEGY.md`
 - **From Return-Value Pattern** (1 connections) — `docs/NATS_ERROR_HANDLING_STRATEGY.md`
 - **Integration with Error Boundaries** (1 connections) — `docs/NATS_ERROR_HANDLING_STRATEGY.md`
-- **Overview** (1 connections) — `docs/NATS_ERROR_HANDLING_STRATEGY.md`
-- **Pattern 1: Let Exceptions Propagate** (1 connections) — `docs/NATS_ERROR_HANDLING_STRATEGY.md`
-- **Pattern 2: Catch and Log** (1 connections) — `docs/NATS_ERROR_HANDLING_STRATEGY.md`
-- **Pattern 3: Catch and Retry** (1 connections) — `docs/NATS_ERROR_HANDLING_STRATEGY.md`
-- **Pattern 4: Catch Specific Exceptions** (1 connections) — `docs/NATS_ERROR_HANDLING_STRATEGY.md`
-- **Pattern 5: Catch All NATS Errors** (1 connections) — `docs/NATS_ERROR_HANDLING_STRATEGY.md`
-- **Publish Errors** (1 connections) — `docs/NATS_ERROR_HANDLING_STRATEGY.md`
-- **Request/Response Errors** (1 connections) — `docs/NATS_ERROR_HANDLING_STRATEGY.md`
-- *... and 4 more nodes in this community*
+- **`NATSError`** (1 connections) — `docs/NATS_ERROR_HANDLING_STRATEGY.md`
+- **`NATSHealthCheckError`** (1 connections) — `docs/NATS_ERROR_HANDLING_STRATEGY.md`
+- **`NATSPublishError`** (1 connections) — `docs/NATS_ERROR_HANDLING_STRATEGY.md`
+- **`NATSRequestError`** (1 connections) — `docs/NATS_ERROR_HANDLING_STRATEGY.md`
+- **`NATSSubscribeError`** (1 connections) — `docs/NATS_ERROR_HANDLING_STRATEGY.md`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [[Nats Error Handling]] (1 shared connections)
-- [[NATS Manual Ack Guide]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
 - `docs/NATS_ERROR_HANDLING_STRATEGY.md`
+- `docs/NATS_MANUAL_ACKNOWLEDGMENT_GUIDE.md`
+- `docs/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- `docs/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
 - `docs/NATS_SUBJECT_PATTERNS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 55 (95%)
-- INFERRED: 3 (5%)
+- EXTRACTED: 62 (90%)
+- INFERRED: 7 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

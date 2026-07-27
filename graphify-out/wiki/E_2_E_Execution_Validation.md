@@ -1,44 +1,30 @@
 # E 2 E Execution Validation
 
-> 20 nodes · cohesion 0.10
+> 6 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **Execution Validation Documentation** (8 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **Execution Benefits** (4 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **Execution Options Validation** (4 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **Execution Recommendations** (4 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **Scenario Group Classifications** (4 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **EXECUTION_VALIDATION.md** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **All Scenarios Execution Benefits** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **By Complexity** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **By Functionality** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **By Testing Focus** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **Conclusion** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **For CI/CD** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **For Development** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **For Testing** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **Individual Scenario Execution Benefits** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **Option 1: Individual Scenario Execution** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **Option 2: Scenario Group Execution** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **Option 3: All Scenarios Execution (Legacy Compatibility)** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **Overview** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **Scenario Group Execution Benefits** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
+- **name** (6 connections) — `schemas/alias_schema.json`
+- **description** (1 connections) — `schemas/alias_schema.json`
+- **maxLength** (1 connections) — `schemas/alias_schema.json`
+- **minLength** (1 connections) — `schemas/alias_schema.json`
+- **pattern** (1 connections) — `schemas/alias_schema.json`
+- **type** (1 connections) — `schemas/alias_schema.json`
 
 ## Relationships
 
-- [[E 2 E Cursor Skills]] (1 shared connections)
+- [E 2 E Whisper System](E_2_E_Whisper_System.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/EXECUTION_VALIDATION.md`
+- `schemas/alias_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 39 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

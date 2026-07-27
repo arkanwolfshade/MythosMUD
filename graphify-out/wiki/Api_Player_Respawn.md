@@ -1,48 +1,39 @@
 # Api Player Respawn
 
-> 21 nodes · cohesion 0.21
+> 5 nodes · cohesion 0.01
 
 ## Key Concepts
 
-- **test_player_respawn_handlers.py** (13 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **_handle_delirium_respawn_validation_error()** (12 connections) — `server/api/player_respawn.py`
-- **_handle_respawn_validation_error()** (11 connections) — `server/api/player_respawn.py`
-- **respawn_player()** (9 connections) — `server/api/player_respawn.py`
-- **respawn_player_from_delirium()** (9 connections) — `server/api/player_respawn.py`
-- **_user()** (8 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_delirium_validation_generic_500()** (4 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_delirium_validation_lucidity_keyword()** (4 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_delirium_validation_must_be_delirious()** (4 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_delirium_validation_not_found()** (4 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_respawn_validation_generic_500()** (4 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_respawn_validation_must_be_dead()** (4 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_respawn_validation_not_found()** (4 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
+- **ValidationError** (189 connections) — `server/exceptions.py`
+- **MythosValidationError** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
 - **Request** (4 connections) — `server/api/player_respawn.py`
-- **User** (4 connections) — `server/api/player_respawn.py`
-- **Respawn a dead player at their respawn location with full DP.      This endpoint** (2 connections) — `server/api/player_respawn.py`
-- **Convert ValidationError to appropriate HTTPException for respawn.      Args:** (2 connections) — `server/api/player_respawn.py`
-- **RespawnResponse** (2 connections) — `server/api/player_respawn.py`
-- **PlayerService** (2 connections) — `server/api/player_respawn.py`
 - **ValidationError** (2 connections) — `server/api/player_respawn.py`
-- **Respawn a delirious player at the Sanitarium with restored lucidity.      This e** (1 connections) — `server/api/player_respawn.py`
+- **Data validation errors (e.g. empty local/whisper message). Log at warning, not e** (1 connections) — `server/exceptions.py`
 
 ## Relationships
 
-- [[NPC Admin API]] (15 shared connections)
-- [[Container Exception Handlers]] (5 shared connections)
-- [[Player Respawn Service]] (1 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (12 shared connections)
+- [NPC Admin API](NPC_Admin_API.md) (11 shared connections)
+- [Realtime Connection Impl](Realtime_Connection_Impl.md) (3 shared connections)
+- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (3 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (3 shared connections)
+- [Emote Schema Validator](Emote_Schema_Validator.md) (3 shared connections)
+- [NPC Database Sessions](NPC_Database_Sessions.md) (2 shared connections)
+- [Room Subscription Helpers](Room_Subscription_Helpers.md) (1 shared connections)
+- [Players API Endpoints](Players_API_Endpoints.md) (1 shared connections)
 
 ## Source Files
 
 - `server/api/player_respawn.py`
-- `server/tests/unit/api/test_player_respawn_handlers.py`
+- `server/error_handlers/pydantic_error_handler.py`
+- `server/exceptions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 109 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 128 (63%)
+- INFERRED: 76 (37%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

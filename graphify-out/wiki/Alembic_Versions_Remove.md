@@ -1,14 +1,10 @@
 # Alembic Versions Remove
 
-> 5 nodes · cohesion 0.40
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **2025_11_25_remove_get_container_contents_json_procedure.py** (2 connections) — `server/alembic/versions/2025_11_25_remove_get_container_contents_json_procedure.py`
-- **downgrade()** (2 connections) — `server/alembic/versions/2025_11_25_remove_get_container_contents_json_procedure.py`
-- **upgrade()** (2 connections) — `server/alembic/versions/2025_11_25_remove_get_container_contents_json_procedure.py`
-- **Remove deprecated stored procedure.** (1 connections) — `server/alembic/versions/2025_11_25_remove_get_container_contents_json_procedure.py`
-- **Restore deprecated stored procedure.** (1 connections) — `server/alembic/versions/2025_11_25_remove_get_container_contents_json_procedure.py`
+- **Codacy CLI via WSL on Windows** (1 connections) — `.codacy/README.md`
 
 ## Relationships
 
@@ -16,14 +12,14 @@
 
 ## Source Files
 
-- `server/alembic/versions/2025_11_25_remove_get_container_contents_json_procedure.py`
+- `.codacy/README.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

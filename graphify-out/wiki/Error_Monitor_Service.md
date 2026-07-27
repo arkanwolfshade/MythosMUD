@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [[Message Queue Cleanup]] (1 shared connections)
+- [Mythos Map Builder](Mythos_Map_Builder.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,4 +47,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

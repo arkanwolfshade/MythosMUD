@@ -1,28 +1,25 @@
 # Archive Refactoring Deliverables
 
-> 4 nodes · cohesion 0.50
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **🚀 Next Steps** (4 connections) — `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
-- **For Developers** (1 connections) — `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
-- **For Project Management** (1 connections) — `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
-- **Immediate Actions** (1 connections) — `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
+- **Cursor Lifecycle Hooks** (1 connections) — `docs/CURSOR_HOOKS.md`
 
 ## Relationships
 
-- [[Test Refactoring Deliverables]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
+- `docs/CURSOR_HOOKS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

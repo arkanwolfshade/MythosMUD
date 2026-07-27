@@ -1,33 +1,26 @@
 # Bench Cache
 
-> 9 nodes · cohesion 0.28
+> 2 nodes · cohesion 0.17
 
 ## Key Concepts
 
-- **_FakePersistence** (6 connections) — `scripts/bench_cache.py`
-- **bench_cache.py** (5 connections) — `scripts/bench_cache.py`
-- **bench_room_cache()** (4 connections) — `scripts/bench_cache.py`
-- **Any** (3 connections) — `scripts/bench_cache.py`
-- **.async_get_room()** (2 connections) — `scripts/bench_cache.py`
-- **.__init__()** (1 connections) — `scripts/bench_cache.py`
-- **main()** (1 connections) — `scripts/bench_cache.py`
-- **Lightweight cache benchmark for CI artifacts.  Measures miss vs. hit timings for** (1 connections) — `scripts/bench_cache.py`
-- **Fake persistence layer providing async_get_room with simulated latency.** (1 connections) — `scripts/bench_cache.py`
+- **CombatMessages** (6 connections) — `server/services/combat_messaging_service.py`
+- **Any** (2 connections) — `server/services/combat_messaging_service.py`
 
 ## Relationships
 
-- [[Game Service Bundle]] (4 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (2 shared connections)
 
 ## Source Files
 
-- `scripts/bench_cache.py`
+- `server/services/combat_messaging_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (92%)
-- INFERRED: 2 (8%)
+- EXTRACTED: 6 (75%)
+- INFERRED: 2 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

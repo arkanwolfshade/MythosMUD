@@ -1,6 +1,6 @@
 # Seed E 2 E Users
 
-> 10 nodes · cohesion 0.27
+> 10 nodes · cohesion 0.04
 
 ## Key Concepts
 
@@ -17,7 +17,7 @@
 
 ## Relationships
 
-- [[Argon2 Password Hashing]] (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
@@ -31,4 +31,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -16,7 +16,8 @@
 
 ## Relationships
 
-- [[NPC Admin API]] (2 shared connections)
+- [Players API Endpoints](Players_API_Endpoints.md) (1 shared connections)
+- [Realtime Connection Impl](Realtime_Connection_Impl.md) (1 shared connections)
 
 ## Source Files
 
@@ -30,4 +31,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

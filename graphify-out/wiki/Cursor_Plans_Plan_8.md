@@ -1,12 +1,11 @@
 # Cursor Plans Plan
 
-> 3 nodes · cohesion 0.67
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Logging Aggregator Verification** (2 connections) — `.cursor/plans/logging_aggregator_verification.plan.md`
-- **warnings.log and errors.log Aggregators** (1 connections) — `.cursor/plans/logging_aggregator_verification.plan.md`
-- **Structlog Anti-Pattern Remediation** (1 connections) — `.cursor/plans/structlog_anti-pattern_remediation_1d228d75.plan.md`
+- **Critical File Coverage Improvement** (1 connections) — `.cursor/plans/critical_file_coverage_improvement_0129c9ac.plan.md`
+- **Dead Code Analysis and Removal** (1 connections) — `.cursor/plans/dead_code_analysis_and_removal_746bc5c1.plan.md`
 
 ## Relationships
 
@@ -14,15 +13,15 @@
 
 ## Source Files
 
-- `.cursor/plans/logging_aggregator_verification.plan.md`
-- `.cursor/plans/structlog_anti-pattern_remediation_1d228d75.plan.md`
+- `.cursor/plans/critical_file_coverage_improvement_0129c9ac.plan.md`
+- `.cursor/plans/dead_code_analysis_and_removal_746bc5c1.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (50%)
-- INFERRED: 2 (50%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 2 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,40 +1,35 @@
 # Procedures Readme Semgrep
 
-> 13 nodes · cohesion 0.15
+> 8 nodes · cohesion 0.18
 
 ## Key Concepts
 
 - **PostgreSQL procedures/functions access** (14 connections) — `AGENTS.md`
-- **README.md** (1 connections) — `db/procedures/README.md`
-- **Apply Order** (1 connections) — `db/procedures/README.md`
-- **apply_procedures.ps1** (1 connections) — `db/procedures/README.md`
-- **Container Functions Moved from DDL** (1 connections) — `db/procedures/README.md`
-- **Developer guidelines** (1 connections) — `db/procedures/README.md`
-- **File Format** (1 connections) — `db/procedures/README.md`
-- **Moved from DDL** (1 connections) — `db/procedures/README.md`
-- **References** (1 connections) — `db/procedures/README.md`
-- **Schema Notes** (1 connections) — `db/procedures/README.md`
-- **Usage** (1 connections) — `db/procedures/README.md`
+- **AGENTS.md agent instructions** (6 connections) — `AGENTS.md`
+- **Named Schema Per Database** (2 connections) — `db/README.md`
+- **Obsidian LLM wiki permanent memory** (1 connections) — `AGENTS.md`
+- **Server authority rule** (1 connections) — `AGENTS.md`
+- **CLAUDE.md agent router** (1 connections) — `CLAUDE.md`
 - **no-direct-table-crud-in-python-sql rule** (1 connections) — `.semgrep.yml`
 - **no-select-star-in-python-sql rule** (1 connections) — `.semgrep.yml`
 
 ## Relationships
 
-- [[Readme Procedures]] (1 shared connections)
-- [[Agents User Rules]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
 - `.semgrep.yml`
 - `AGENTS.md`
-- `db/procedures/README.md`
+- `CLAUDE.md`
+- `db/README.md`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (85%)
-- INFERRED: 4 (15%)
+- EXTRACTED: 22 (81%)
+- INFERRED: 5 (19%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

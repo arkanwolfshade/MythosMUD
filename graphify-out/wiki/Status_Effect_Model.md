@@ -1,57 +1,38 @@
 # Status Effect Model
 
-> 28 nodes · cohesion 0.10
+> 9 nodes · cohesion 0.28
 
 ## Key Concepts
 
-- **StatusEffect** (31 connections) — `server/models/game.py`
-- **test_game_status_effect.py** (12 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **.get_active_status_effects()** (4 connections) — `server/models/game.py`
-- **.add_status_effect()** (3 connections) — `server/models/game.py`
-- **.is_active()** (3 connections) — `server/models/game.py`
-- **test_status_effect_creation()** (3 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **test_status_effect_duration_validation_min()** (3 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **test_status_effect_intensity_validation_max()** (3 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **test_status_effect_intensity_validation_min()** (3 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **test_status_effect_is_active_at_duration()** (3 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **test_status_effect_is_active_before_duration()** (3 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **test_status_effect_is_active_permanent()** (3 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **test_status_effect_rejects_extra_fields()** (3 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **test_status_effect_with_source()** (3 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **Check if the status effect is still active.** (1 connections) — `server/models/game.py`
-- **Add a status effect to the player.          Args:             effect: StatusEffe** (1 connections) — `server/models/game.py`
-- **Get all currently active status effects.          Args:             current_tick** (1 connections) — `server/models/game.py`
-- **Represents a status effect applied to a character.** (1 connections) — `server/models/game.py`
-- **Unit tests for StatusEffect model.** (1 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **Test StatusEffect can be created with required fields.** (1 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **Test StatusEffect can have optional source.** (1 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **Test is_active returns True for permanent effects (duration=0).** (1 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **Test is_active returns True when current_tick < duration.** (1 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **Test is_active returns False when current_tick >= duration.** (1 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **Test StatusEffect validates duration is >= 0.** (1 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- *... and 3 more nodes in this community*
+- **Async Remediation Complete** (14 connections) — `docs/ASYNC_REMEDIATION_COMPLETE.md`
+- **Async Remediation Final Report** (12 connections) — `docs/ASYNC_REMEDIATION_FINAL_REPORT.md`
+- **Async Audit 2025-12-03** (4 connections) — `docs/ASYNC_AUDIT_2025-12-03.md`
+- **Passive Lucidity Flux Blocking** (3 connections) — `docs/ASYNC_AUDIT_2025-12-03.md`
+- **Event Loop Blocking** (3 connections) — `docs/ASYNCIO_CODE_REVIEW.md`
+- **asyncio.to_thread Offloading** (2 connections) — `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
+- **Room Cache 60s TTL** (2 connections) — `docs/ASYNC_REMEDIATION_COMPLETE.md`
+- **Async Remediation Summary 2025-12-03** (2 connections) — `docs/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **Asyncio Code Review** (2 connections) — `docs/ASYNCIO_CODE_REVIEW.md`
 
 ## Relationships
 
-- [[Player Model Inventory]] (7 shared connections)
-- [[Game Magic Spell]] (5 shared connections)
-- [[Admin NPC Schemas]] (2 shared connections)
-- [[NPC Admin API]] (2 shared connections)
-- [[Player Schema Converter]] (2 shared connections)
-- [[SQLAlchemy Model Base]] (1 shared connections)
-- [[Memory Profiler Tools]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/models/game.py`
-- `server/tests/unit/models/test_game_status_effect.py`
+- `docs/ASYNCIO_CODE_REVIEW.md`
+- `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
+- `docs/ASYNC_AUDIT_2025-12-03.md`
+- `docs/ASYNC_REMEDIATION_COMPLETE.md`
+- `docs/ASYNC_REMEDIATION_FINAL_REPORT.md`
+- `docs/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 94 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 37 (84%)
+- INFERRED: 7 (16%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

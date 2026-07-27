@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Chat Messages Not Displayed to Sender (Bug #2)** (1 connections) — `e2e-tests/BUGS_FOUND.md`
-- **Player ID Format Mismatch** (1 connections) — `e2e-tests/BUGS_FOUND.md`
+- **Mute Command Server Error (Bug #1)** (1 connections) — `e2e-tests/BUGS_FOUND.md`
+- **Teleport Command Server Error (Bug #3)** (1 connections) — `e2e-tests/BUGS_FOUND.md`
 
 ## Relationships
 
@@ -23,4 +23,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

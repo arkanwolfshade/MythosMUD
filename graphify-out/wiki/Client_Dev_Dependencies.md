@@ -1,6 +1,6 @@
 # Client Dev Dependencies
 
-> 36 nodes · cohesion 0.06
+> 32 nodes · cohesion 0.03
 
 ## Key Concepts
 
@@ -17,7 +17,6 @@
 - **globals** (1 connections) — `client/package.json`
 - **happy-dom** (1 connections) — `client/package.json`
 - **jsdom** (1 connections) — `client/package.json`
-- **knip** (1 connections) — `client/package.json`
 - **markdownlint-cli** (1 connections) — `client/package.json`
 - **patch-package** (1 connections) — `client/package.json`
 - **@playwright/test** (1 connections) — `client/package.json`
@@ -25,15 +24,20 @@
 - **prettier** (1 connections) — `client/package.json`
 - **@stoplight/spectral-cli** (1 connections) — `client/package.json`
 - **stylelint** (1 connections) — `client/package.json`
-- **tailwindcss** (1 connections) — `client/package.json`
 - **@tailwindcss/postcss** (1 connections) — `client/package.json`
 - **@testing-library/dom** (1 connections) — `client/package.json`
 - **@testing-library/jest-dom** (1 connections) — `client/package.json`
-- *... and 11 more nodes in this community*
+- **@testing-library/react** (1 connections) — `client/package.json`
+- **@testing-library/user-event** (1 connections) — `client/package.json`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [[Package Engines Node]] (1 shared connections)
+- [Package Engines Node](Package_Engines_Node.md) (1 shared connections)
+- [Easy Coverage Wins](Easy_Coverage_Wins.md) (1 shared connections)
+- [Fastapi Code Review](Fastapi_Code_Review.md) (1 shared connections)
+- [Cursor Skills Frontend](Cursor_Skills_Frontend.md) (1 shared connections)
+- [Game Chat Pose](Game_Chat_Pose.md) (1 shared connections)
 
 ## Source Files
 
@@ -41,10 +45,10 @@
 
 ## Audit Trail
 
-- EXTRACTED: 71 (100%)
+- EXTRACTED: 67 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,37 +1,36 @@
 # Npc Idle Movement
 
-> 12 nodes · cohesion 0.17
+> 9 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **test_idle_movement.py** (34 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_calculate_distance_to_room_same_subzone()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_get_valid_exits_keeps_all_exits_when_subzone_boundary_allows()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_is_npc_in_combat_false()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **mock_event_bus()** (2 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **mock_persistence()** (2 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Unit tests for idle movement.  Tests the IdleMovementHandler class.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Test _is_npc_in_combat() returns False when NPC is not in combat.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **When validate_subzone_boundary accepts every target, all directions remain avail** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Create a mock event bus.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Test _calculate_distance_to_room() with rooms in same subzone.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **main()** (4 connections) — `scripts/generate_openapi_spec.py`
+- **generate_openapi_spec.py** (3 connections) — `scripts/generate_openapi_spec.py`
+- **_sanitize_token_examples()** (3 connections) — `scripts/generate_openapi_spec.py`
+- **FastAPI** (2 connections) — `server/app/factory.py`
+- **Replace auth token examples with clearly fake placeholders.** (1 connections) — `scripts/generate_openapi_spec.py`
+- **Generate and write OpenAPI spec to docs/openapi/openapi.json.** (1 connections) — `scripts/generate_openapi_spec.py`
+- **Any** (1 connections) — `server/app/factory.py`
+- **ASGIApp** (1 connections) — `server/middleware/comprehensive_logging.py`
+- **ASGIApp** (1 connections) — `server/middleware/security_headers.py`
 
 ## Relationships
 
-- [[Npc Idle Movement]] (30 shared connections)
-- [[Aggressive Mob NPC]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/npc/test_idle_movement.py`
+- `scripts/generate_openapi_spec.py`
+- `server/app/factory.py`
+- `server/middleware/comprehensive_logging.py`
+- `server/middleware/security_headers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 53 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

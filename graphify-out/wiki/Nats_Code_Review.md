@@ -1,47 +1,32 @@
 # Nats Code Review
 
-> 22 nodes · cohesion 0.09
+> 8 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **NATS Code Review - Branch: feature/sqlite-to-postgresql** (10 connections) — `docs/NATS_CODE_REVIEW.md`
-- **Positive Findings ✅** (5 connections) — `docs/NATS_CODE_REVIEW.md`
-- **Critical Issues 🔴** (4 connections) — `docs/NATS_CODE_REVIEW.md`
-- **High Priority Issues 🟡** (4 connections) — `docs/NATS_CODE_REVIEW.md`
-- **Recommendations Summary** (4 connections) — `docs/NATS_CODE_REVIEW.md`
-- **NATS_CODE_REVIEW.md** (1 connections) — `docs/NATS_CODE_REVIEW.md`
-- **1. **Blocking Operations in Message Handlers** (Anti-pattern violation)** (1 connections) — `docs/NATS_CODE_REVIEW.md`
-- **1. **Excellent Error Boundary Implementation**** (1 connections) — `docs/NATS_CODE_REVIEW.md`
-- **2. **Good Connection State Management**** (1 connections) — `docs/NATS_CODE_REVIEW.md`
-- **2. **Missing Message Acknowledgment** (Anti-pattern violation)** (1 connections) — `docs/NATS_CODE_REVIEW.md`
-- **3. **Connection Pool Not Used by Default** (Inefficiency)** (1 connections) — `docs/NATS_CODE_REVIEW.md`
-- **3. **Proper Async/Await Usage**** (1 connections) — `docs/NATS_CODE_REVIEW.md`
-- **4. **Subject Manager Pattern**** (1 connections) — `docs/NATS_CODE_REVIEW.md`
-- **4. **Subject Naming Inconsistency** (Anti-pattern risk)** (1 connections) — `docs/NATS_CODE_REVIEW.md`
-- **5. **No TLS Configuration** (Security concern)** (1 connections) — `docs/NATS_CODE_REVIEW.md`
-- **6. **Error Handler May Block** (Anti-pattern risk)** (1 connections) — `docs/NATS_CODE_REVIEW.md`
-- **Conclusion** (1 connections) — `docs/NATS_CODE_REVIEW.md`
-- **Executive Summary** (1 connections) — `docs/NATS_CODE_REVIEW.md`
-- **Immediate Actions (Critical)** (1 connections) — `docs/NATS_CODE_REVIEW.md`
-- **Long-term (Medium Priority)** (1 connections) — `docs/NATS_CODE_REVIEW.md`
-- **Short-term (High Priority)** (1 connections) — `docs/NATS_CODE_REVIEW.md`
-- **Testing Recommendations** (1 connections) — `docs/NATS_CODE_REVIEW.md`
+- **.call()** (7 connections) — `server/legacy_error_handlers.py`
+- **._on_failure()** (3 connections) — `server/legacy_error_handlers.py`
+- **._on_success()** (3 connections) — `server/legacy_error_handlers.py`
+- **._should_attempt_reset()** (3 connections) — `server/legacy_error_handlers.py`
+- **Execute function with circuit breaker protection.          Args:             fun** (1 connections) — `server/legacy_error_handlers.py`
+- **Handle successful operation.** (1 connections) — `server/legacy_error_handlers.py`
+- **Handle failed operation.** (1 connections) — `server/legacy_error_handlers.py`
+- **Check if circuit breaker should attempt reset.** (1 connections) — `server/legacy_error_handlers.py`
 
 ## Relationships
 
-- [[Code Review Archive]] (1 shared connections)
-- [[Code Review Async]] (1 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (6 shared connections)
 
 ## Source Files
 
-- `docs/NATS_CODE_REVIEW.md`
+- `server/legacy_error_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 44 (100%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

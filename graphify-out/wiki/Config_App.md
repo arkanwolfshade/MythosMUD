@@ -1,30 +1,29 @@
 # Config App
 
-> 6 nodes · cohesion 0.33
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **.__init__()** (4 connections) — `server/config/models/app.py`
-- **._sanitize_environment_for_nested_configs()** (4 connections) — `server/config/models/app.py`
-- **._first_cors_origins_env()** (3 connections) — `server/config/models/app.py`
-- **Initialize configuration and set environment variables for legacy compatibility.** (1 connections) — `server/config/models/app.py`
-- **Return first set CORS origins env var to reduce CCN in _sanitize.** (1 connections) — `server/config/models/app.py`
-- **Normalize environment variables so nested configs can parse them reliably.** (1 connections) — `server/config/models/app.py`
+- **worktree-manager.ps1** (4 connections) — `scripts/worktree-manager.ps1`
+- **Remove-LegacyBranch()** (2 connections) — `scripts/worktree-manager.ps1`
+- **Show-WorktreeInfo()** (2 connections) — `scripts/worktree-manager.ps1`
+- **Show-WorktreeStatus()** (2 connections) — `scripts/worktree-manager.ps1`
+- **Switch-ToWorktree()** (2 connections) — `scripts/worktree-manager.ps1`
 
 ## Relationships
 
-- [[Application Config Settings]] (4 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/config/models/app.py`
+- `scripts/worktree-manager.ps1`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 8 (67%)
+- INFERRED: 4 (33%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

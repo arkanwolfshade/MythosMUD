@@ -1,49 +1,38 @@
 # Commands Inventory Item
 
-> 21 nodes · cohesion 0.11
+> 10 nodes · cohesion 0.02
 
 ## Key Concepts
 
-- **match_room_drop_by_name()** (19 connections) — `server/commands/inventory_item_matching.py`
-- **match_exact_drop()** (4 connections) — `server/commands/inventory_item_matching.py`
-- **match_prefix_drop()** (4 connections) — `server/commands/inventory_item_matching.py`
-- **match_substring_drop()** (4 connections) — `server/commands/inventory_item_matching.py`
-- **test_match_room_drop_by_name_exact()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
-- **Test _match_room_drop_by_name with exact match.** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_match_room_drop_by_name_empty_search()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_match_room_drop_by_name_exact_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_match_room_drop_by_name_item_id_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_match_room_drop_by_name_no_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_match_room_drop_by_name_prefix_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_match_room_drop_by_name_prototype_id_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_match_room_drop_by_name_substring_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **Test _match_room_drop_by_name with prefix match.** (2 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **Match by exact identifier (item_name, item_id, or prototype_id).** (1 connections) — `server/commands/inventory_item_matching.py`
-- **Match by prefix: first item_name, then item_id/prototype_id.** (1 connections) — `server/commands/inventory_item_matching.py`
-- **Match by substring containment in any identifier.** (1 connections) — `server/commands/inventory_item_matching.py`
-- **Resolve a room drop index using Lovecraftian-grade fuzzy matching heuristics.** (1 connections) — `server/commands/inventory_item_matching.py`
-- **Test _match_room_drop_by_name with empty search term.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **Test _match_room_drop_by_name with substring match.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **Test _match_room_drop_by_name with item_id match.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **Any** (8 connections) — `server/services/equipment_service.py`
+- **InventoryStack** (8 connections) — `server/services/equipment_service.py`
+- **CommandResponse** (7 connections) — `server/commands/inventory_equip_command.py`
+- **UUID** (7 connections) — `server/services/inventory_service.py`
+- **InventoryStack** (4 connections) — `server/commands/equipment_helpers.py`
+- **CommandResponse** (4 connections) — `server/commands/inventory_unequip_command.py`
+- **AbstractContextManager** (3 connections) — `server/services/inventory_service.py`
+- **Player** (3 connections) — `server/commands/equipment_helpers.py`
+- **Player** (3 connections) — `server/commands/inventory_equip_command.py`
+- **Player** (3 connections) — `server/commands/inventory_unequip_command.py`
 
 ## Relationships
 
-- [[Commands Inventory Item]] (12 shared connections)
-- [[Admin Summon Command]] (6 shared connections)
-- [[Commands Inventory]] (3 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/commands/inventory_item_matching.py`
-- `server/tests/unit/commands/test_inventory_commands_helpers.py`
-- `server/tests/unit/commands/test_inventory_helpers.py`
+- `server/commands/equipment_helpers.py`
+- `server/commands/inventory_equip_command.py`
+- `server/commands/inventory_unequip_command.py`
+- `server/services/equipment_service.py`
+- `server/services/inventory_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 67 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 38 (76%)
+- INFERRED: 12 (24%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,15 +1,11 @@
 # Tasks Local
 
-> 6 nodes · cohesion 0.33
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Local task notes (agent)** (5 connections) — `TASKS.local.md`
-- **TASKS.local.md** (1 connections) — `TASKS.local.md`
-- **2026-04-03 — Dev machine setup (plan execution)** (1 connections) — `TASKS.local.md`
-- **2026-04-03 — Re-verify after "proceed"** (1 connections) — `TASKS.local.md`
-- **2026-04-08 — E2E bootstrap overhaul (main plan)** (1 connections) — `TASKS.local.md`
-- **2026-04-08 — E2E harness worktree** (1 connections) — `TASKS.local.md`
+- **Local agent task notes** (1 connections) — `TASKS.local.md`
+- **GitHub Issues task tracking** (1 connections) — `TASKS.md`
 
 ## Relationships
 
@@ -18,13 +14,14 @@
 ## Source Files
 
 - `TASKS.local.md`
+- `TASKS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 2 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

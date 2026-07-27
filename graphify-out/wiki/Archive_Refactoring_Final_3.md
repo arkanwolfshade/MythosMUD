@@ -1,28 +1,27 @@
 # Archive Refactoring Final
 
-> 4 nodes · cohesion 0.50
+> 3 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **Metrics & Statistics** (4 connections) — `docs/archive/TEST_REFACTORING_FINAL_SUMMARY.md`
-- **File Organization** (1 connections) — `docs/archive/TEST_REFACTORING_FINAL_SUMMARY.md`
-- **Migration Efficiency** (1 connections) — `docs/archive/TEST_REFACTORING_FINAL_SUMMARY.md`
-- **Test Distribution** (1 connections) — `docs/archive/TEST_REFACTORING_FINAL_SUMMARY.md`
+- **Receive** (1 connections) — `server/middleware/security_headers.py`
+- **Scope** (1 connections) — `server/middleware/security_headers.py`
+- **Send** (1 connections) — `server/middleware/security_headers.py`
 
 ## Relationships
 
-- [[Test Refactoring Deliverables]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/TEST_REFACTORING_FINAL_SUMMARY.md`
+- `server/middleware/security_headers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

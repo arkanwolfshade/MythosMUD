@@ -1,39 +1,25 @@
 # Runbooks Item System
 
-> 12 nodes · cohesion 0.17
+> 1 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **Purpose** (4 connections) — `docs/runbooks/item_system_observability.md`
-- **Disconnect Grace Period (linkdead)** (3 connections) — `docs/realtime.md`
-- **Item System Observability Runbook** (3 connections) — `docs/runbooks/item_system_observability.md`
-- **Gunicorn + Uvicorn Production** (2 connections) — `docs/deployment.md`
-- **HTTPS and WSS Requirement** (2 connections) — `docs/deployment.md`
-- **Login Grace Period (warded)** (2 connections) — `docs/realtime.md`
-- **WebSocket JWT in URL Query String** (2 connections) — `docs/realtime.md`
-- **Linkdead Grace Period** (1 connections) — `docs/debugging-mid-run-drops.md`
-- **item_system_observability.md** (1 connections) — `docs/runbooks/item_system_observability.md`
-- **Administrative Summon Etiquette** (1 connections) — `docs/runbooks/item_system_observability.md`
-- **Migration & Durability Recovery** (1 connections) — `docs/runbooks/item_system_observability.md`
-- **Seed Regeneration Checklist** (1 connections) — `docs/runbooks/item_system_observability.md`
+- **Any** (7 connections) — `server/persistence/repositories/player_repository_mappers.py`
 
 ## Relationships
 
-- [[Subsystems Subsystem Design]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/debugging-mid-run-drops.md`
-- `docs/deployment.md`
-- `docs/realtime.md`
-- `docs/runbooks/item_system_observability.md`
+- `server/persistence/repositories/player_repository_mappers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (74%)
-- INFERRED: 6 (26%)
+- EXTRACTED: 5 (71%)
+- INFERRED: 2 (29%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

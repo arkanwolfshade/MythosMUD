@@ -1,12 +1,11 @@
 # Cursor Plans Plan
 
-> 3 nodes · cohesion 0.67
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Cursor Rules as Canonical Config** (2 connections) — `.cursor/plans/cursor-centric_ai_config_6e46bf3d.plan.md`
-- **Cursor-Centric AI Config** (1 connections) — `.cursor/plans/cursor-centric_ai_config_6e46bf3d.plan.md`
-- **GitHub Worktrees Cursor Setup** (1 connections) — `.cursor/plans/github_worktrees_cursor_setup_ab66558e.plan.md`
+- **Convert E2E Scenarios to Playwright CLI** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
+- **Fix Code Review Findings Issue 353** (1 connections) — `.cursor/plans/fix_code_review_findings_issue_353_f59f87dc.plan.md`
 
 ## Relationships
 
@@ -14,15 +13,15 @@
 
 ## Source Files
 
-- `.cursor/plans/cursor-centric_ai_config_6e46bf3d.plan.md`
-- `.cursor/plans/github_worktrees_cursor_setup_ab66558e.plan.md`
+- `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
+- `.cursor/plans/fix_code_review_findings_issue_353_f59f87dc.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (50%)
-- INFERRED: 2 (50%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 2 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

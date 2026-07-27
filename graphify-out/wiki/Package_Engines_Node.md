@@ -1,6 +1,6 @@
 # Package Engines Node
 
-> 9 nodes · cohesion 0.22
+> 9 nodes · cohesion 0.20
 
 ## Key Concepts
 
@@ -16,10 +16,10 @@
 
 ## Relationships
 
-- [[Package Dependencies Dompurify]] (1 shared connections)
-- [[Client Dev Dependencies]] (1 shared connections)
-- [[Package Overrides Fast Uri]] (1 shared connections)
-- [[Package Scripts Build]] (1 shared connections)
+- [Package Dependencies Dompurify](Package_Dependencies_Dompurify.md) (1 shared connections)
+- [Client Dev Dependencies](Client_Dev_Dependencies.md) (1 shared connections)
+- [Package Overrides Fast Uri](Package_Overrides_Fast_Uri.md) (1 shared connections)
+- [Package Scripts Build](Package_Scripts_Build.md) (1 shared connections)
 
 ## Source Files
 
@@ -33,4 +33,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

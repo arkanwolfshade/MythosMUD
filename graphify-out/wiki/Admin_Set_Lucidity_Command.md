@@ -1,56 +1,55 @@
 # Admin Set Lucidity Command
 
-> 30 nodes · cohesion 0.13
+> 15 nodes · cohesion 0.02
 
 ## Key Concepts
 
-- **admin_setlucidity_command.py** (28 connections) — `server/commands/admin_setlucidity_command.py`
+- **AliasStorage** (132 connections) — `server/alias_storage.py`
+- **alias_storage.py** (64 connections) — `server/alias_storage.py`
+- **Any** (25 connections) — `server/commands/magic_commands.py`
+- **Any** (16 connections) — `server/commands/admin_mute_commands.py`
 - **Any** (12 connections) — `server/commands/admin_setlucidity_command.py`
-- **_execute_lucidity_change()** (11 connections) — `server/commands/admin_setlucidity_command.py`
-- **_handle_admin_set_lucidity_command()** (11 connections) — `server/commands/admin_setlucidity_command.py`
-- **_apply_lucidity_change()** (7 connections) — `server/commands/admin_setlucidity_command.py`
-- **_setup_command_execution()** (7 connections) — `server/commands/admin_setlucidity_command.py`
-- **_validate_command_context()** (6 connections) — `server/commands/admin_setlucidity_command.py`
+- **Any** (10 connections) — `server/commands/admin_summon_command.py`
 - **UUID** (6 connections) — `server/commands/admin_setlucidity_command.py`
-- **_get_current_lcd()** (5 connections) — `server/commands/admin_setlucidity_command.py`
-- **_resolve_target_player()** (5 connections) — `server/commands/admin_setlucidity_command.py`
-- **_check_admin_permissions()** (4 connections) — `server/commands/admin_setlucidity_command.py`
-- **_extract_command_args()** (4 connections) — `server/commands/admin_setlucidity_command.py`
-- **_get_catatonia_registry_from_app()** (4 connections) — `server/commands/admin_setlucidity_command.py`
-- **_get_player_service_from_app()** (4 connections) — `server/commands/admin_setlucidity_command.py`
-- **_validate_lcd_value()** (4 connections) — `server/commands/admin_setlucidity_command.py`
-- **LucidityService** (2 connections) — `server/commands/admin_setlucidity_command.py`
-- **Admin command to set player lucidity levels for testing.  This module provides t** (1 connections) — `server/commands/admin_setlucidity_command.py`
-- **Apply lucidity adjustment and return result message or None on error.** (1 connections) — `server/commands/admin_setlucidity_command.py`
-- **Get player service from container, fallback to app.state for backward compatibil** (1 connections) — `server/commands/admin_setlucidity_command.py`
-- **Get catatonia registry from container, fallback to app.state for backward compat** (1 connections) — `server/commands/admin_setlucidity_command.py`
-- **Resolve target player name to UUID, returning error message if not found.** (1 connections) — `server/commands/admin_setlucidity_command.py`
-- **Execute the lucidity change in database session.** (1 connections) — `server/commands/admin_setlucidity_command.py`
-- **Validate command context and extract arguments, returning error if validation fa** (1 connections) — `server/commands/admin_setlucidity_command.py`
-- **Setup command execution by checking permissions and resolving target player.** (1 connections) — `server/commands/admin_setlucidity_command.py`
-- **Extract target_player and lcd_value from command_data.** (1 connections) — `server/commands/admin_setlucidity_command.py`
-- *... and 5 more nodes in this community*
+- **Any** (4 connections) — `server/commands/channel_commands.py`
+- **Any** (4 connections) — `server/commands/position_commands.py`
+- **Any** (3 connections) — `server/commands/admin_commands.py`
+- **.list_alias_files()** (2 connections) — `server/alias_storage.py`
+- **Alias storage utilities for MythosMUD.  As noted in the restricted archives of M** (1 connections) — `server/alias_storage.py`
+- **List all alias files in the storage directory.** (1 connections) — `server/alias_storage.py`
+- **Manages player alias storage in JSON files.      Each player's aliases are store** (1 connections) — `server/alias_storage.py`
+- **CommandResponse** (1 connections) — `server/commands/inventory_commands.py`
 
 ## Relationships
 
-- [[NPC Admin API]] (8 shared connections)
-- [[Alias Expansion Logic]] (4 shared connections)
-- [[Admin Teleport Commands]] (3 shared connections)
-- [[Lucidity State Models]] (2 shared connections)
-- [[Lucidity Database Models]] (1 shared connections)
-- [[Lucidity Rescue Helpers]] (1 shared connections)
-- [[Admin Status Commands]] (1 shared connections)
+- [Server Config Loading](Server_Config_Loading.md) (22 shared connections)
+- [Command Request App State](Command_Request_App_State.md) (7 shared connections)
+- [Combat Command Handler](Combat_Command_Handler.md) (2 shared connections)
+- [Unified Command Handler](Unified_Command_Handler.md) (1 shared connections)
+- [Cursor Plans Uvicorn](Cursor_Plans_Uvicorn.md) (1 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (1 shared connections)
+- [Spellbook Read Command](Spellbook_Read_Command.md) (1 shared connections)
+- [Room Planning Archive](Room_Planning_Archive.md) (1 shared connections)
+- [Alias Storage Layer](Alias_Storage_Layer.md) (1 shared connections)
 
 ## Source Files
 
+- `server/alias_storage.py`
+- `server/commands/admin_commands.py`
+- `server/commands/admin_mute_commands.py`
 - `server/commands/admin_setlucidity_command.py`
+- `server/commands/admin_summon_command.py`
+- `server/commands/channel_commands.py`
+- `server/commands/inventory_commands.py`
+- `server/commands/magic_commands.py`
+- `server/commands/position_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 134 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 228 (81%)
+- INFERRED: 54 (19%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

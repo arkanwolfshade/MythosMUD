@@ -19,7 +19,7 @@
 
 ## Relationships
 
-- [[CI Quality Scripts]] (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
@@ -33,4 +33,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

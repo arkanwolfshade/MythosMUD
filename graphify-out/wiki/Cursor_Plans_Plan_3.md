@@ -1,16 +1,14 @@
 # Cursor Plans Plan
 
-> 7 nodes · cohesion 0.29
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **Unify Client Message Handling** (3 connections) — `.cursor/plans/unify-client-message-handling_5ae18c30.plan.md`
-- **WebSocket-Only Migration** (3 connections) — `.cursor/plans/websocket-only-migration-347bcba3.plan.md`
-- **WebSocket-Only Architecture** (2 connections) — `.cursor/plans/websocket-only-migration-347bcba3.plan.md`
-- **SSE Connection Removal** (1 connections) — `.cursor/plans/websocket-only-migration-347bcba3.plan.md`
-- **Unified Client Message Pipeline** (1 connections) — `.cursor/plans/unify-client-message-handling_5ae18c30.plan.md`
-- **unify-client-message-handling_5ae18c30.plan.md** (1 connections) — `.cursor/plans/unify-client-message-handling_5ae18c30.plan.md`
-- **WebSocket Best-Practices Remediation** (1 connections) — `.cursor/plans/websocket_best-practices_remediation.plan.md`
+- **Quest System Gap** (2 connections) — `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
+- **Quest Subsystem Implementation** (2 connections) — `.cursor/plans/quest_subsystem_implementation_2c84306e.plan.md`
+- **Quest System** (2 connections) — `.cursor/plans/quest_subsystem_implementation_2c84306e.plan.md`
+- **MUD Subsystems Gap Analysis** (1 connections) — `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
+- **Player Skills and Profession Modifiers** (1 connections) — `.cursor/plans/player_skills_and_profession_modifiers_dff11b8d.plan.md`
 
 ## Relationships
 
@@ -18,16 +16,16 @@
 
 ## Source Files
 
-- `.cursor/plans/unify-client-message-handling_5ae18c30.plan.md`
-- `.cursor/plans/websocket-only-migration-347bcba3.plan.md`
-- `.cursor/plans/websocket_best-practices_remediation.plan.md`
+- `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
+- `.cursor/plans/player_skills_and_profession_modifiers_dff11b8d.plan.md`
+- `.cursor/plans/quest_subsystem_implementation_2c84306e.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (67%)
-- INFERRED: 4 (33%)
+- EXTRACTED: 6 (75%)
+- INFERRED: 2 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

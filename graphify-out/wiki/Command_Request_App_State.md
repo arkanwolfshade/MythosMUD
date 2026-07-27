@@ -1,64 +1,52 @@
 # Command Request App State
 
-> 35 nodes · cohesion 0.07
+> 34 nodes · cohesion 0.04
 
 ## Key Concepts
 
+- **command_handler_unified.py** (52 connections) — `server/command_handler_unified.py`
+- **_prepare_command_for_processing()** (21 connections) — `server/command_handler_unified.py`
+- **_process_alias_expansion()** (19 connections) — `server/command_handler_unified.py`
+- **process_command_unified()** (19 connections) — `server/command_handler_unified.py`
 - **_check_casting_state()** (18 connections) — `server/command_handler_unified.py`
-- **command_request_app_state()** (13 connections) — `server/command_handler/command_execution_request.py`
-- **test_command_execution_request.py** (6 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
-- **TestCheckCastingState** (6 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **_handle_special_command_routing()** (18 connections) — `server/command_handler_unified.py`
+- **_check_all_command_blocks()** (17 connections) — `server/command_handler_unified.py`
+- **_ensure_alias_storage()** (14 connections) — `server/command_handler_unified.py`
+- **Any** (14 connections) — `server/command_handler_unified.py`
+- **_validate_command_basics()** (14 connections) — `server/command_handler_unified.py`
+- **CommandExecutionRequest** (11 connections) — `server/command_handler_unified.py`
+- **_check_rate_limit()** (10 connections) — `server/command_handler_unified.py`
+- **handle_command()** (10 connections) — `server/command_handler_unified.py`
+- **process_command()** (9 connections) — `server/command_handler_unified.py`
+- **_get_grace_check_context()** (7 connections) — `server/command_handler_unified.py`
 - **_get_casting_block_result()** (6 connections) — `server/command_handler_unified.py`
-- **test_command_request_app_state_from_http_request_like_object()** (4 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
-- **test_command_request_app_state_from_websocket_request_context()** (4 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
-- **test_command_request_app_state_missing_app_or_state_returns_none()** (4 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
-- **.test_check_casting_state_allowed_commands()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_check_casting_state_error_handling()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_check_casting_state_is_casting()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_check_casting_state_no_magic_service()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_check_casting_state_not_casting()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_check_casting_state_allowed_command()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_casting_state_handles_error()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_casting_state_no_magic_service()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_casting_state_player_casting()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test check_connections_health handles errors gracefully.** (3 connections) — `server/tests/unit/services/test_health_service.py`
-- **Test _check_casting_state returns None when player is not casting.** (2 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **test_check_connection_state_error()** (2 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
-- **test_check_connections_health_error()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **Return app.state for HTTP Request or WebSocketRequestContext (duck-typed).** (1 connections) — `server/command_handler/command_execution_request.py`
-- **Unit tests for unified command request app-state extraction.** (1 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
-- **Returns app.state for HTTP/FastAPI-style request objects.** (1 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
-- **Returns app.state for WebSocketRequestContext.** (1 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
-- *... and 10 more nodes in this community*
+- **get_help_content()** (6 connections) — `server/command_handler_unified.py`
+- **UUID** (3 connections) — `server/command_handler_unified.py`
+- **Request** (2 connections) — `server/command_handler_unified.py`
+- **Unified Command Handler for MythosMUD.  This module provides a single, unified c** (1 connections) — `server/command_handler_unified.py`
+- **Handle special command routing (alias management, alias expansion, emote). Retur** (1 connections) — `server/command_handler_unified.py`
+- **Unified command processing function for both HTTP and WebSocket.      This is th** (1 connections) — `server/command_handler_unified.py`
+- **Check if player is rate limited. Returns result dict if blocked, None if allowed** (1 connections) — `server/command_handler_unified.py`
+- **Validate basic command requirements. Returns result dict if invalid, None if val** (1 connections) — `server/command_handler_unified.py`
+- **Ensure alias storage is initialized.** (1 connections) — `server/command_handler_unified.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [[Command Alias Handling]] (6 shared connections)
-- [[Catatonia Check Logic]] (5 shared connections)
-- [[Unified Command Handler]] (5 shared connections)
-- [[Alias Expansion Logic]] (4 shared connections)
-- [[WebSocket Request Context]] (2 shared connections)
-- [[Communication Command Flows]] (2 shared connections)
-- [[Command Commands Validation]] (1 shared connections)
-- [[Services Combat Cleanup]] (1 shared connections)
-- [[Health Service Tests]] (1 shared connections)
+- [Admin Set Lucidity Command](Admin_Set_Lucidity_Command.md) (7 shared connections)
+- [Stats Planning Archive](Stats_Planning_Archive.md) (5 shared connections)
+- [Unified Command Handler](Unified_Command_Handler.md) (2 shared connections)
 
 ## Source Files
 
-- `server/command_handler/command_execution_request.py`
 - `server/command_handler_unified.py`
-- `server/tests/unit/command_handler/test_command_execution_request.py`
-- `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- `server/tests/unit/commands/test_command_validation.py`
-- `server/tests/unit/services/test_combat_cleanup_handler.py`
-- `server/tests/unit/services/test_health_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 109 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 279 (98%)
+- INFERRED: 6 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

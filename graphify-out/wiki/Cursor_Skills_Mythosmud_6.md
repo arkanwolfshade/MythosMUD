@@ -1,17 +1,11 @@
 # Cursor Skills Mythosmud
 
-> 8 nodes · cohesion 0.25
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **MythosMUD Full-Stack Feature** (7 connections) — `.cursor/skills/mythosmud-full-stack-feature/SKILL.md`
-- **SKILL.md** (1 connections) — `.cursor/skills/mythosmud-full-stack-feature/SKILL.md`
-- **Authority** (1 connections) — `.cursor/skills/mythosmud-full-stack-feature/SKILL.md`
-- **Checklist** (1 connections) — `.cursor/skills/mythosmud-full-stack-feature/SKILL.md`
-- **Principle** (1 connections) — `.cursor/skills/mythosmud-full-stack-feature/SKILL.md`
-- **Reference** (1 connections) — `.cursor/skills/mythosmud-full-stack-feature/SKILL.md`
-- **Stack Summary** (1 connections) — `.cursor/skills/mythosmud-full-stack-feature/SKILL.md`
-- **When to Touch Each Layer** (1 connections) — `.cursor/skills/mythosmud-full-stack-feature/SKILL.md`
+- **get_logger Structured Logging** (1 connections) — `.cursor/skills/mythosmud-logging-standards/SKILL.md`
+- **MythosMUD Logging Standards Skill** (1 connections) — `.cursor/skills/mythosmud-logging-standards/SKILL.md`
 
 ## Relationships
 
@@ -19,14 +13,14 @@
 
 ## Source Files
 
-- `.cursor/skills/mythosmud-full-stack-feature/SKILL.md`
+- `.cursor/skills/mythosmud-logging-standards/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

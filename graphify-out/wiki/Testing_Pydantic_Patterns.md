@@ -1,13 +1,12 @@
 # Testing Pydantic Patterns
 
-> 22 nodes · cohesion 0.10
+> 21 nodes · cohesion 0.10
 
 ## Key Concepts
 
 - **FieldInfo Type Checker Issues** (9 connections) — `docs/TESTING_PYDANTIC_PATTERNS.md`
 - **Testing Guide** (5 connections) — `docs/TESTING.md`
 - **Alternative Approaches** (3 connections) — `docs/TESTING_PYDANTIC_PATTERNS.md`
-- **Pydantic Testing Patterns** (3 connections) — `docs/TESTING_PYDANTIC_PATTERNS.md`
 - **Solution Pattern** (3 connections) — `docs/TESTING_PYDANTIC_PATTERNS.md`
 - **Quick Start E2E Tests** (2 connections) — `docs/QUICK_START_E2E_TESTS.md`
 - **Test Modernization Plan** (2 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
@@ -40,10 +39,10 @@
 
 ## Audit Trail
 
-- EXTRACTED: 38 (86%)
-- INFERRED: 6 (14%)
+- EXTRACTED: 36 (88%)
+- INFERRED: 5 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

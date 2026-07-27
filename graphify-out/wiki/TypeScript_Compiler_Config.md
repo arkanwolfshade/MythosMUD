@@ -1,6 +1,6 @@
 # TypeScript Compiler Config
 
-> 31 nodes · cohesion 0.06
+> 30 nodes · cohesion 0.04
 
 ## Key Concepts
 
@@ -25,11 +25,11 @@
 - **useDefineForClassFields** (1 connections) — `client/tsconfig.json`
 - **exclude** (1 connections) — `client/tsconfig.json`
 - **include** (1 connections) — `client/tsconfig.json`
-- **@/*** (1 connections) — `client/tsconfig.json`
 - **@api/*** (1 connections) — `client/tsconfig.json`
 - **@components/*** (1 connections) — `client/tsconfig.json`
 - **@hooks/*** (1 connections) — `client/tsconfig.json`
-- *... and 6 more nodes in this community*
+- **@lib/*** (1 connections) — `client/tsconfig.json`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
@@ -41,10 +41,10 @@
 
 ## Audit Trail
 
-- EXTRACTED: 60 (100%)
+- EXTRACTED: 59 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

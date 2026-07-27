@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [[Database Manager Tests]] (1 shared connections)
+- [Dependency Injection Tests](Dependency_Injection_Tests.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,4 +47,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

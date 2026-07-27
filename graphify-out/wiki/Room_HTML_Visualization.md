@@ -1,6 +1,6 @@
 # Room HTML Visualization
 
-> 34 nodes · cohesion 0.09
+> 34 nodes · cohesion 0.08
 
 ## Key Concepts
 
@@ -48,4 +48,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

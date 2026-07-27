@@ -1,71 +1,56 @@
 # Weapon Resolution Helpers
 
-> 106 nodes · cohesion 0.03
+> 19 nodes · cohesion 0.01
 
 ## Key Concepts
 
-- **PrototypeRegistry** (41 connections) — `server/game/items/prototype_registry.py`
-- **PrototypeRegistryError** (25 connections) — `server/game/items/prototype_registry.py`
-- **ItemPrototypeModel** (24 connections) — `server/game/items/models.py`
-- **resolve_weapon_attack_from_equipped()** (22 connections) — `server/game/weapons.py`
-- **test_weapons.py** (15 connections) — `server/tests/unit/game/test_weapons.py`
-- **ItemFactory** (15 connections) — `server/game/items/item_factory.py`
-- **__init__.py** (11 connections) — `server/game/items/__init__.py`
-- **item_factory.py** (10 connections) — `server/game/items/item_factory.py`
-- **ItemInstance** (10 connections) — `server/game/items/item_instance.py`
-- **test_combat_weapon_resolution.py** (9 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
-- **ItemFactoryError** (9 connections) — `server/game/items/item_factory.py`
-- **prototype_registry.py** (9 connections) — `server/game/items/prototype_registry.py`
-- **._initialize_item_services()** (8 connections) — `server/container/bundles/game.py`
-- **WeaponAttackInfo** (8 connections) — `server/game/weapons.py`
-- **weapons.py** (6 connections) — `server/game/weapons.py`
-- **.create_instance()** (6 connections) — `server/game/items/item_factory.py`
-- **.load_from_path()** (6 connections) — `server/game/items/prototype_registry.py`
-- **validate_prototypes.py** (6 connections) — `server/scripts/validate_prototypes.py`
-- **ItemPrototypeModel** (5 connections) — `server/game/items/prototype_registry.py`
-- **initialize_components()** (5 connections) — `server/game/items/component_hooks.py`
-- **.get()** (5 connections) — `server/game/items/prototype_registry.py`
-- **test_resolve_weapon_attack_from_equipped_registry_error_returns_none()** (4 connections) — `server/tests/unit/game/test_weapons.py`
+- **Any** (30 connections) — `server/container/bundles/game.py`
+- **datetime** (29 connections) — `server/container/bundles/game.py`
+- **Exception** (28 connections) — `server/container/bundles/game.py`
+- **Any** (14 connections) — `server/game/skill_service.py`
+- **UUID** (12 connections) — `server/game/skill_service.py`
+- **datetime** (7 connections) — `server/time/tick_scheduler.py`
+- **HolidayResolver** (5 connections) — `server/time/tick_scheduler.py`
 - **ItemInstance** (4 connections) — `server/game/items/item_factory.py`
+- **get_skill_repository()** (4 connections) — `server/dependencies.py`
 - **Any** (4 connections) — `server/game/items/item_factory.py`
-- **PrototypeRegistry** (4 connections) — `server/game/items/item_factory.py`
-- *... and 81 more nodes in this community*
+- **Any** (4 connections) — `server/persistence/repositories/player_skill_repository.py`
+- **Any** (3 connections) — `server/game/items/prototype_registry.py`
+- **Any** (3 connections) — `server/game/weapons.py`
+- **Any** (3 connections) — `server/persistence/repositories/skill_repository.py`
+- **Namespace** (3 connections) — `server/scripts/validate_prototypes.py`
+- **Path** (2 connections) — `server/game/items/prototype_registry.py`
+- **Get a SkillRepository instance for skills catalog queries.      Used by GET /v1/** (1 connections) — `server/dependencies.py`
+- **Any** (1 connections) — `server/game/items/component_hooks.py`
+- **Any** (1 connections) — `server/game/items/item_instance.py`
 
 ## Relationships
 
-- [[Game Service Bundle]] (23 shared connections)
-- [[Combat Aggro Threat]] (11 shared connections)
-- [[NPC Admin API]] (7 shared connections)
-- [[Admin Summon Command]] (4 shared connections)
-- [[Combat Attack Flow]] (2 shared connections)
-- [[Combat Domain Events]] (2 shared connections)
-- [[System Monitoring API]] (2 shared connections)
-- [[Player Schema Converter]] (2 shared connections)
-- [[Migrate Async Persistence]] (1 shared connections)
-- [[Admin NPC Schemas]] (1 shared connections)
-- [[SQLAlchemy Model Base]] (1 shared connections)
+- [Combat Command Handler](Combat_Command_Handler.md) (2 shared connections)
+- [Realtime Connection Impl](Realtime_Connection_Impl.md) (2 shared connections)
+- [Dependency Injection Tests](Dependency_Injection_Tests.md) (1 shared connections)
 
 ## Source Files
 
 - `server/container/bundles/game.py`
-- `server/game/items/__init__.py`
+- `server/dependencies.py`
 - `server/game/items/component_hooks.py`
 - `server/game/items/item_factory.py`
 - `server/game/items/item_instance.py`
-- `server/game/items/models.py`
 - `server/game/items/prototype_registry.py`
+- `server/game/skill_service.py`
 - `server/game/weapons.py`
-- `server/models/item.py`
+- `server/persistence/repositories/player_skill_repository.py`
+- `server/persistence/repositories/skill_repository.py`
 - `server/scripts/validate_prototypes.py`
-- `server/tests/integration/test_combat_weapon_resolution.py`
-- `server/tests/unit/game/test_weapons.py`
+- `server/time/tick_scheduler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 333 (81%)
-- INFERRED: 79 (19%)
+- EXTRACTED: 42 (27%)
+- INFERRED: 116 (73%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

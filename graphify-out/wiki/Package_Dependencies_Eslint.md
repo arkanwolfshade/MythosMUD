@@ -1,6 +1,6 @@
 # Package Dependencies Eslint
 
-> 9 nodes · cohesion 0.22
+> 9 nodes · cohesion 0.18
 
 ## Key Concepts
 
@@ -30,4 +30,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

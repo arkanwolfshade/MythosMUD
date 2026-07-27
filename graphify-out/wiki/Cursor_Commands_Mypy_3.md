@@ -1,30 +1,25 @@
 # Cursor Commands Mypy
 
-> 6 nodes · cohesion 0.33
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **🔧 COMMON FIX TEMPLATES** (6 connections) — `.cursor/commands/mypy-remediation.md`
-- **Template 1: Add Missing Type Imports** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **Template 2: Fix Function Signature** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **Template 3: Handle Optional Values** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **Template 4: Fix Type Narrowing** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **Template 5: Add Generic Type Parameters** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **PostgreSQL Player Persistence** (2 connections) — `server/README.md`
 
 ## Relationships
 
-- [[Cursor Commands Mypy]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.cursor/commands/mypy-remediation.md`
+- `server/README.md`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 1 (50%)
+- INFERRED: 1 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,12 +1,12 @@
 # Code Of Conduct
 
-> 15 nodes · cohesion 0.13
+> 15 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **Contributor Covenant Code of Conduct** (9 connections) — `CODE_OF_CONDUCT.md`
 - **Enforcement Guidelines** (5 connections) — `CODE_OF_CONDUCT.md`
 - **Contributing guide** (3 connections) — `CONTRIBUTING.md`
+- **Security-first contribution principle** (2 connections) — `CONTRIBUTING.md`
 - **CODE_OF_CONDUCT.md** (1 connections) — `CODE_OF_CONDUCT.md`
 - **1. Correction** (1 connections) — `CODE_OF_CONDUCT.md`
 - **2. Warning** (1 connections) — `CODE_OF_CONDUCT.md`
@@ -22,7 +22,7 @@
 
 ## Relationships
 
-- [[Development Ai Agents]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
@@ -31,10 +31,10 @@
 
 ## Audit Trail
 
-- EXTRACTED: 29 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 21 (95%)
+- INFERRED: 1 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

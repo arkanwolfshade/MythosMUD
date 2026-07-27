@@ -1,6 +1,6 @@
 # Package Overrides Fast Uri
 
-> 14 nodes · cohesion 0.14
+> 14 nodes · cohesion 0.11
 
 ## Key Concepts
 
@@ -21,7 +21,7 @@
 
 ## Relationships
 
-- [[Package Engines Node]] (1 shared connections)
+- [Package Engines Node](Package_Engines_Node.md) (1 shared connections)
 
 ## Source Files
 
@@ -35,4 +35,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,13 +1,12 @@
 # Package Dependencies Dompurify
 
-> 13 nodes · cohesion 0.15
+> 12 nodes · cohesion 0.09
 
 ## Key Concepts
 
 - **dependencies** (13 connections) — `client/package.json`
 - **dompurify** (1 connections) — `client/package.json`
 - **lucide-react** (1 connections) — `client/package.json`
-- **react** (1 connections) — `client/package.json`
 - **react-dom** (1 connections) — `client/package.json`
 - **react-grid-layout** (1 connections) — `client/package.json`
 - **react-resizable** (1 connections) — `client/package.json`
@@ -20,7 +19,8 @@
 
 ## Relationships
 
-- [[Package Engines Node]] (1 shared connections)
+- [Package Engines Node](Package_Engines_Node.md) (1 shared connections)
+- [Combat Client Crash Report](Combat_Client_Crash_Report.md) (1 shared connections)
 
 ## Source Files
 
@@ -28,10 +28,10 @@
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
+- EXTRACTED: 24 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

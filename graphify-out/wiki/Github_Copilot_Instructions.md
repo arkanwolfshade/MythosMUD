@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **copilot-instructions.md** (1 connections) — `.github/copilot-instructions.md`
-- **GitHub Copilot instructions (MythosMUD)** (1 connections) — `.github/copilot-instructions.md`
+- **AGENTS.md Authoritative Guidance** (1 connections) — `.github/copilot-instructions.md`
+- **GitHub Copilot Instructions Router** (1 connections) — `.github/copilot-instructions.md`
 
 ## Relationships
 
@@ -23,4 +23,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

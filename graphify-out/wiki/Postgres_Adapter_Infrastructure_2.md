@@ -1,47 +1,32 @@
 # Postgres Adapter Infrastructure
 
-> 19 nodes · cohesion 0.15
+> 6 nodes · cohesion 0.12
 
 ## Key Concepts
 
 - **PostgresCursor** (19 connections) — `server/postgres_adapter.py`
-- **TestPostgresCursor** (13 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test PostgresCursor.fetchone() with row.** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_postgres_cursor_fetchall_empty()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_postgres_cursor_fetchall_with_rows()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_postgres_cursor_fetchone_none()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_postgres_cursor_fetchone_with_row()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_postgres_cursor_initialization()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_postgres_cursor_rowcount()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Create a mock psycopg2 cursor.** (2 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.mock_cursor()** (2 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.mock_cursor()** (2 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.fetchall()** (2 connections) — `server/postgres_adapter.py`
+- **.fetchone()** (2 connections) — `server/postgres_adapter.py`
 - **.rowcount()** (2 connections) — `server/postgres_adapter.py`
-- **Test PostgresCursor class.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test PostgresCursor initialization.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test PostgresCursor.fetchall() with empty result.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test PostgresCursor.rowcount().** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
 - **PostgreSQL cursor wrapper for query result access.** (1 connections) — `server/postgres_adapter.py`
 - **Get the number of rows affected.** (1 connections) — `server/postgres_adapter.py`
 
 ## Relationships
 
-- [[PostgreSQL Adapter Tests]] (6 shared connections)
-- [[Postgres Adapter Infrastructure]] (4 shared connections)
-- [[Postgres Connection Tests]] (3 shared connections)
-- [[Postgres Adapter]] (2 shared connections)
+- [Postgres Adapter](Postgres_Adapter.md) (2 shared connections)
+- [Postgres Adapter Infrastructure](Postgres_Adapter_Infrastructure.md) (2 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
 
 ## Source Files
 
 - `server/postgres_adapter.py`
-- `server/tests/unit/infrastructure/test_postgres_adapter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 58 (87%)
-- INFERRED: 9 (13%)
+- EXTRACTED: 22 (81%)
+- INFERRED: 5 (19%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

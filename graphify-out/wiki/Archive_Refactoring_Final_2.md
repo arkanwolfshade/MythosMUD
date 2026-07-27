@@ -1,28 +1,25 @@
 # Archive Refactoring Final
 
-> 4 nodes · cohesion 0.50
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Lessons Learned** (4 connections) — `docs/archive/TEST_REFACTORING_FINAL_SUMMARY.md`
-- **Challenges & Solutions** (1 connections) — `docs/archive/TEST_REFACTORING_FINAL_SUMMARY.md`
-- **Recommendations for Future** (1 connections) — `docs/archive/TEST_REFACTORING_FINAL_SUMMARY.md`
-- **What Worked Exceptionally Well** (1 connections) — `docs/archive/TEST_REFACTORING_FINAL_SUMMARY.md`
+- **Migration 019 Verification** (1 connections) — `docs/MIGRATION_019_VERIFICATION.md`
 
 ## Relationships
 
-- [[Test Refactoring Deliverables]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/TEST_REFACTORING_FINAL_SUMMARY.md`
+- `docs/MIGRATION_019_VERIFICATION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

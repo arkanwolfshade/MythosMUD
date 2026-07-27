@@ -1,14 +1,10 @@
 # Alembic Versions Add
 
-> 5 nodes · cohesion 0.40
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **2026_02_09_add_player_effects_table.py** (2 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
-- **downgrade()** (2 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
-- **upgrade()** (2 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
-- **Create player_effects table and indexes (ADR-009 effects system).** (1 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
-- **Drop player_effects table and indexes.** (1 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
+- **generate_schema_from_dev.ps1** (1 connections) — `db/README.md`
 
 ## Relationships
 
@@ -16,14 +12,14 @@
 
 ## Source Files
 
-- `server/alembic/versions/2026_02_09_add_player_effects_table.py`
+- `db/README.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

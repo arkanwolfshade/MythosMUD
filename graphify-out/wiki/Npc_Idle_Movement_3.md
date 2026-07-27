@@ -1,27 +1,27 @@
 # Npc Idle Movement
 
-> 3 nodes · cohesion 0.67
+> 2 nodes · cohesion 0.01
 
 ## Key Concepts
 
-- **test_should_idle_move_not_active()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_should_idle_move_not_alive()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Test should_idle_move() returns False when NPC is not alive.** (2 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **Any** (1 connections) — `server/config/models/nats.py`
+- **Any** (1 connections) — `server/services/nats_metrics.py`
 
 ## Relationships
 
-- [[Npc Idle Movement]] (4 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/npc/test_idle_movement.py`
+- `server/config/models/nats.py`
+- `server/services/nats_metrics.py`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

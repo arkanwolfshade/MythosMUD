@@ -1,6 +1,6 @@
 # Pyrightconfig Extends Extra Paths
 
-> 6 nodes · cohesion 0.33
+> 6 nodes · cohesion 0.25
 
 ## Key Concepts
 
@@ -27,4 +27,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

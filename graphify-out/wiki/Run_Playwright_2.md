@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **run_integration_tests_playwright.ps1** (0 connections) — `scripts/run_integration_tests_playwright.ps1`
+- **run_test_playwright.ps1** (0 connections) — `scripts/run_test_playwright.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/run_integration_tests_playwright.ps1`
+- `scripts/run_test_playwright.ps1`
 
 ## Audit Trail
 
@@ -22,4 +22,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

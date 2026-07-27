@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Convert E2E Scenarios to Playwright CLI** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **Fix Code Review Findings Issue 353** (1 connections) — `.cursor/plans/fix_code_review_findings_issue_353_f59f87dc.plan.md`
+- **React Best-Practices Remediation** (1 connections) — `.cursor/plans/react_best-practices_remediation.plan.md`
+- **Room Editor Backend APIs** (1 connections) — `.cursor/plans/room_editor_backend_apis.plan.md`
 
 ## Relationships
 
@@ -13,8 +13,8 @@
 
 ## Source Files
 
-- `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- `.cursor/plans/fix_code_review_findings_issue_353_f59f87dc.plan.md`
+- `.cursor/plans/react_best-practices_remediation.plan.md`
+- `.cursor/plans/room_editor_backend_apis.plan.md`
 
 ## Audit Trail
 
@@ -24,4 +24,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

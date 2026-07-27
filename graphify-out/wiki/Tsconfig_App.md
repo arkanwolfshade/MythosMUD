@@ -1,6 +1,6 @@
 # Tsconfig App
 
-> 22 nodes · cohesion 0.09
+> 22 nodes · cohesion 0.06
 
 ## Key Concepts
 
@@ -43,4 +43,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,28 +1,27 @@
 # Archive Refactoring Deliverables
 
-> 4 nodes · cohesion 0.50
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **🎯 Success Indicators** (4 connections) — `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
-- **Week 1** (1 connections) — `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
-- **Week 3** (1 connections) — `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
-- **Week 6** (1 connections) — `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
+- **Test Coverage Gaps** (2 connections) — `docs/TEST_COVERAGE_GAPS.md`
+- **Disconnect Grace Period Rest Coverage** (1 connections) — `docs/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
 
 ## Relationships
 
-- [[Test Refactoring Deliverables]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
+- `docs/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
+- `docs/TEST_COVERAGE_GAPS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 1 (33%)
+- INFERRED: 2 (67%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

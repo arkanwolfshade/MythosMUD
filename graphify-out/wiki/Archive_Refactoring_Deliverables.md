@@ -1,30 +1,25 @@
 # Archive Refactoring Deliverables
 
-> 6 nodes · cohesion 0.33
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **📚 Documentation Created** (6 connections) — `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
-- **1. **Executive Summary**** (1 connections) — `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
-- **2. **Complete Refactoring Plan**** (1 connections) — `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
-- **3. **File Migration Mapping**** (1 connections) — `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
-- **4. **Test Organization Guide**** (1 connections) — `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
-- **5. **Updated Test README**** (1 connections) — `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
+- **Configuration File Tuples** (1 connections) — `docs/CONFIGURATION_FILES_REFERENCE.md`
 
 ## Relationships
 
-- [[Test Refactoring Deliverables]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
+- `docs/CONFIGURATION_FILES_REFERENCE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

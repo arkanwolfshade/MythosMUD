@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **4pt Spacing System** (1 connections) — `.cursor/skills/frontend-design/reference/spatial-design.md`
-- **Spatial Design Reference** (1 connections) — `.cursor/skills/frontend-design/reference/spatial-design.md`
+- **Responsive Design Reference** (1 connections) — `.cursor/skills/frontend-design/reference/responsive-design.md`
+- **Mobile-First Responsive Design** (1 connections) — `.cursor/skills/frontend-design/reference/responsive-design.md`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `.cursor/skills/frontend-design/reference/spatial-design.md`
+- `.cursor/skills/frontend-design/reference/responsive-design.md`
 
 ## Audit Trail
 
@@ -23,4 +23,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

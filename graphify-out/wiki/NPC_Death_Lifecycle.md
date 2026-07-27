@@ -1,68 +1,59 @@
 # NPC Death Lifecycle
 
-> 223 nodes · cohesion 0.02
+> 32 nodes · cohesion 0.02
 
 ## Key Concepts
 
-- **NPCBase** (92 connections) — `server/npc/npc_base.py`
-- **NPCLifecycleManager** (86 connections) — `server/npc/lifecycle_manager.py`
-- **lifecycle_manager.py** (38 connections) — `server/npc/lifecycle_manager.py`
-- **NPCDied** (34 connections) — `server/events/event_types.py`
-- **NPCThreadManager** (32 connections) — `server/npc/threading.py`
-- **NPCLifecycleState** (28 connections) — `server/npc/lifecycle_types.py`
-- **RoomOccupantsRefreshRequested** (27 connections) — `server/events/event_types.py`
-- **NPCLifecycleEvent** (25 connections) — `server/npc/lifecycle_types.py`
-- **NPCLifecycleRecord** (25 connections) — `server/npc/lifecycle_types.py`
-- **NPCDefinition** (22 connections) — `server/npc/lifecycle_manager.py`
-- **lifecycle_death.py** (19 connections) — `server/npc/lifecycle_death.py`
-- **_LifecycleManagerForDeath** (16 connections) — `server/npc/lifecycle_death.py`
-- **_SpawningServiceProtocol** (16 connections) — `server/npc/lifecycle_manager.py`
-- **_SpawnTrackedNPC** (16 connections) — `server/npc/lifecycle_manager.py`
-- **NPCLifecycleRecord** (14 connections) — `server/npc/lifecycle_manager.py`
-- **._spawn_npc_impl()** (13 connections) — `server/npc/lifecycle_manager.py`
-- **NPCThreadManager** (12 connections) — `server/npc/lifecycle_manager.py`
-- **NPCDied** (12 connections) — `server/npc/lifecycle_death.py`
-- **AsyncPersistenceLayer** (12 connections) — `server/npc/lifecycle_manager.py`
-- **EventBus** (12 connections) — `server/npc/lifecycle_manager.py`
-- **NPCBase** (12 connections) — `server/npc/lifecycle_manager.py`
-- **NPCDied** (12 connections) — `server/npc/lifecycle_manager.py`
-- **NPCEnteredRoom** (12 connections) — `server/npc/lifecycle_manager.py`
-- **NPCLeftRoom** (12 connections) — `server/npc/lifecycle_manager.py`
-- **NPCPopulationController** (12 connections) — `server/npc/lifecycle_manager.py`
-- *... and 198 more nodes in this community*
+- **ErrorContext** (51 connections) — `server/exceptions.py`
+- **create_error_context()** (33 connections) — `server/exceptions.py`
+- **LoggedException** (21 connections) — `server/exceptions.py`
+- **.__init__()** (16 connections) — `server/exceptions.py`
+- **Any** (14 connections) — `server/exceptions.py`
+- **handle_exception()** (13 connections) — `server/exceptions.py`
+- **.__init__()** (7 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.mark_logged()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.to_dict()** (3 connections) — `server/exceptions.py`
+- **.__init__()** (3 connections) — `server/exceptions.py`
+- **._log_error()** (3 connections) — `server/exceptions.py`
+- **.already_logged()** (2 connections) — `server/exceptions.py`
+- **Unpack** (1 connections) — `server/exceptions.py`
+- **Initialize MythosMUD error.          Args:             message: Technical error** (1 connections) — `server/exceptions.py`
+- **Log validation errors at warning so expected user-input errors do not flood erro** (1 connections) — `server/exceptions.py`
+- **Contextual information for error handling.      Provides structured context for** (1 connections) — `server/exceptions.py`
+- **Create an error context with the given parameters.      Args:         **kwargs:** (1 connections) — `server/exceptions.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [[NPC Services Bundle]] (56 shared connections)
-- [[Distributed Event Bus]] (55 shared connections)
-- [[Aggressive Mob NPC]] (24 shared connections)
-- [[NPC Admin API]] (16 shared connections)
-- [[Player Combat XP]] (13 shared connections)
-- [[NPC Definition Schemas]] (10 shared connections)
-- [[Time Event Consumer]] (9 shared connections)
-- [[Npc Config Parsing]] (7 shared connections)
-- [[NPC Movement Integration]] (6 shared connections)
-- [[Async Persistence Layer]] (5 shared connections)
-- [[NPC Occupant Verification]] (4 shared connections)
-- [[Quest Game Events]] (3 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (26 shared connections)
+- [Players API Endpoints](Players_API_Endpoints.md) (4 shared connections)
+- [Api Player Respawn](Api_Player_Respawn.md) (3 shared connections)
+- [API Type Guards](API_Type_Guards.md) (2 shared connections)
+- [Container API Endpoints](Container_API_Endpoints.md) (2 shared connections)
+- [Realtime Connection Impl](Realtime_Connection_Impl.md) (1 shared connections)
+- [Game Client Container](Game_Client_Container.md) (1 shared connections)
+- [Enhanced Logging Exceptions](Enhanced_Logging_Exceptions.md) (1 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (1 shared connections)
 
 ## Source Files
 
-- `server/events/event_types.py`
-- `server/models/room.py`
-- `server/npc/lifecycle_death.py`
-- `server/npc/lifecycle_despawn.py`
-- `server/npc/lifecycle_manager.py`
-- `server/npc/lifecycle_types.py`
-- `server/npc/npc_base.py`
-- `server/npc/threading.py`
+- `server/exceptions.py`
+- `server/utils/error_logging.py`
 
 ## Audit Trail
 
-- EXTRACTED: 719 (66%)
-- INFERRED: 367 (34%)
+- EXTRACTED: 195 (91%)
+- INFERRED: 19 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

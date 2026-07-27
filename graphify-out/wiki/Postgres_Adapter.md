@@ -19,8 +19,8 @@
 
 ## Relationships
 
-- [[Postgres Adapter Infrastructure]] (6 shared connections)
-- [[Postgres Connection Tests]] (3 shared connections)
+- [Postgres Adapter Infrastructure](Postgres_Adapter_Infrastructure.md) (6 shared connections)
+- [Postgres Connection Tests](Postgres_Connection_Tests.md) (3 shared connections)
 
 ## Source Files
 
@@ -34,4 +34,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

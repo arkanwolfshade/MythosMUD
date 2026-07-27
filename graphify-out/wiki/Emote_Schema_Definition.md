@@ -1,6 +1,6 @@
 # Emote Schema Definition
 
-> 36 nodes · cohesion 0.06
+> 36 nodes · cohesion 0.05
 
 ## Key Concepts
 
@@ -47,4 +47,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

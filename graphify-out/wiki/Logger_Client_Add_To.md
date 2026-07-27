@@ -1,37 +1,28 @@
 # Logger Client Add To
 
-> 13 nodes · cohesion 0.35
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **ClientLogger** (13 connections) — `client/src/utils/logger.ts`
-- **.info()** (6 connections) — `client/src/utils/logger.ts`
-- **.addToBuffer()** (5 connections) — `client/src/utils/logger.ts`
-- **.createLogEntry()** (5 connections) — `client/src/utils/logger.ts`
-- **.error()** (5 connections) — `client/src/utils/logger.ts`
-- **.initializeLogging()** (4 connections) — `client/src/utils/logger.ts`
-- **.warn()** (4 connections) — `client/src/utils/logger.ts`
-- **.debug()** (3 connections) — `client/src/utils/logger.ts`
-- **.flushLogs()** (3 connections) — `client/src/utils/logger.ts`
-- **.clearLogs()** (2 connections) — `client/src/utils/logger.ts`
-- **.constructor()** (2 connections) — `client/src/utils/logger.ts`
-- **.downloadLogs()** (2 connections) — `client/src/utils/logger.ts`
-- **.getLogBuffer()** (1 connections) — `client/src/utils/logger.ts`
+- **id** (4 connections) — `schemas/intersection_schema.json`
+- **description** (1 connections) — `schemas/intersection_schema.json`
+- **pattern** (1 connections) — `schemas/intersection_schema.json`
+- **type** (1 connections) — `schemas/intersection_schema.json`
 
 ## Relationships
 
-- [[Client Event Store]] (1 shared connections)
+- [Schemas Intersection Schema](Schemas_Intersection_Schema.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/utils/logger.ts`
+- `schemas/intersection_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 55 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

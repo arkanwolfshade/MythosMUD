@@ -1,58 +1,38 @@
 # Connection Disconnection Cleanup
 
-> 80 nodes · cohesion 0.04
+> 8 nodes · cohesion 0.01
 
 ## Key Concepts
 
-- **connection_disconnection.py** (28 connections) — `server/realtime/connection_disconnection.py`
-- **test_connection_disconnection.py** (28 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
-- **_DisconnectConnectionManager** (18 connections) — `server/realtime/connection_disconnection.py`
-- **UUID** (14 connections) — `server/realtime/connection_disconnection.py`
-- **cleanup_websocket_disconnect()** (13 connections) — `server/realtime/connection_disconnection.py`
-- **disconnect_all_websockets_impl()** (13 connections) — `server/realtime/connection_disconnection.py`
-- **disconnect_connection_by_id_impl()** (12 connections) — `server/realtime/connection_disconnection.py`
-- **test_connection_disconnection_websockets.py** (12 connections) — `server/tests/unit/realtime/test_connection_disconnection_websockets.py`
-- **_cleanup_room_subscriptions()** (11 connections) — `server/realtime/connection_disconnection.py`
-- **_track_disconnect_if_needed()** (11 connections) — `server/realtime/connection_disconnection.py`
-- **_cleanup_player_data()** (10 connections) — `server/realtime/connection_disconnection.py`
-- **_cleanup_fully_disconnected_player()** (8 connections) — `server/realtime/connection_disconnection.py`
-- **_disconnect_single_websocket()** (7 connections) — `server/realtime/connection_disconnection.py`
-- **.has_websocket_connection()** (7 connections) — `server/realtime/connection_disconnection.py`
-- **_disconnect_websocket_by_connection_id()** (6 connections) — `server/realtime/connection_disconnection.py`
-- **_cleanup_connection_tracking()** (4 connections) — `server/realtime/connection_disconnection.py`
-- **.disconnect_connection_by_id()** (3 connections) — `server/realtime/connection_manager.py`
-- **test_cleanup_player_data()** (3 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
-- **test_cleanup_player_data_has_connection()** (3 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
-- **test_cleanup_room_subscriptions()** (3 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
-- **test_cleanup_room_subscriptions_force_disconnect()** (3 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
-- **test_cleanup_room_subscriptions_has_connection()** (3 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
-- **test_cleanup_websocket_disconnect()** (3 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
-- **test_cleanup_websocket_disconnect_when_mapping_cleared_during_close()** (3 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
-- **test_disconnect_all_websockets()** (3 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
-- *... and 55 more nodes in this community*
+- **AttributeError** (39 connections) — `server/npc/combat_integration_base.py`
+- **Any** (7 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **Any** (5 connections) — `server/services/combat_messaging/player_broadcasts.py`
+- **Any** (4 connections) — `server/services/combat_messaging/base.py`
+- **UUID** (3 connections) — `server/realtime/envelope.py`
+- **Any** (3 connections) — `server/realtime/integration/room_event_handler.py`
+- **Any** (3 connections) — `server/realtime/websocket_room_updates.py`
+- **UUID** (2 connections) — `server/realtime/integration/room_event_handler.py`
 
 ## Relationships
 
-- [[Room Occupant Events]] (15 shared connections)
-- [[NPC Admin API]] (5 shared connections)
-- [[Message Queue Cleanup]] (5 shared connections)
-- [[Rate Limiter Service]] (5 shared connections)
-- [[Realtime Connection]] (4 shared connections)
-- [[Player Combat XP]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/realtime/connection_disconnection.py`
-- `server/realtime/connection_manager.py`
-- `server/tests/unit/realtime/test_connection_disconnection.py`
-- `server/tests/unit/realtime/test_connection_disconnection_websockets.py`
+- `server/npc/combat_integration_base.py`
+- `server/realtime/envelope.py`
+- `server/realtime/integration/room_event_handler.py`
+- `server/realtime/websocket_room_updates.py`
+- `server/services/combat_messaging/base.py`
+- `server/services/combat_messaging/combat_broadcasts.py`
+- `server/services/combat_messaging/player_broadcasts.py`
 
 ## Audit Trail
 
-- EXTRACTED: 307 (97%)
-- INFERRED: 8 (3%)
+- EXTRACTED: 26 (39%)
+- INFERRED: 40 (61%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

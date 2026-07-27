@@ -1,28 +1,27 @@
 # Realtime Messaging Message
 
-> 4 nodes · cohesion 0.50
+> 2 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **.__init__()** (4 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **Initialize the message broadcaster.          Args:             room_manager: Roo** (1 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **RoomSubscriptionManager** (1 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **Any** (13 connections) — `server/realtime/room_subscription_manager.py`
 - **SendPersonalMessage** (1 connections) — `server/realtime/messaging/message_broadcaster.py`
 
 ## Relationships
 
-- [[Message Broadcaster Core]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
 - `server/realtime/messaging/message_broadcaster.py`
+- `server/realtime/room_subscription_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

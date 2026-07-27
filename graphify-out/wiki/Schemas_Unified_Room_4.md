@@ -1,21 +1,17 @@
 # Schemas Unified Room
 
-> 8 nodes · cohesion 0.25
+> 4 nodes · cohesion 0.11
 
 ## Key Concepts
 
-- **unified_room_schema.json** (8 connections) — `schemas/unified_room_schema.json`
-- **additionalProperties** (1 connections) — `schemas/unified_room_schema.json`
-- **allOf** (1 connections) — `schemas/unified_room_schema.json`
+- **rest_location** (4 connections) — `schemas/unified_room_schema.json`
+- **default** (1 connections) — `schemas/unified_room_schema.json`
 - **description** (1 connections) — `schemas/unified_room_schema.json`
-- **required** (1 connections) — `schemas/unified_room_schema.json`
-- **$schema** (1 connections) — `schemas/unified_room_schema.json`
-- **title** (1 connections) — `schemas/unified_room_schema.json`
 - **type** (1 connections) — `schemas/unified_room_schema.json`
 
 ## Relationships
 
-- [[Schemas Unified Room]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
@@ -23,10 +19,10 @@
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

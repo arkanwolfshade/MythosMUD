@@ -1,10 +1,9 @@
 # Generate Schema Dev
 
-> 2 nodes · cohesion 1.00
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **generate_schema_from_dev.sh script** (1 connections) — `scripts/generate_schema_from_dev.sh`
 - **generate_schema_from_dev.sh** (1 connections) — `scripts/generate_schema_from_dev.sh`
 
 ## Relationships
@@ -17,10 +16,10 @@
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*
