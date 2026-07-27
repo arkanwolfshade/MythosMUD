@@ -77,16 +77,20 @@ class AliasStorage:
         """Get the file path for a player's aliases.
 
         Human: reject path separators / traversal in player_name before touching disk.
-        AI: CodeQL py/path-injection — validate then resolve under storage_dir only.
+        AI: CodeQL py/path-injection — basename + realpath/commonpath containment (recognized barriers).
         """
         safe_name = validate_player_name(player_name)
         if not safe_name:
             raise ValueError("Player name is required for alias storage path")
-        storage_root = self.storage_dir.resolve()
-        candidate = (storage_root / f"{safe_name}_aliases.json").resolve()
-        if not candidate.is_relative_to(storage_root):
+        # Drop any directory components; CodeQL treats basename as a path sanitizer.
+        safe_name = os.path.basename(safe_name)
+        if ".." in safe_name or os.sep in safe_name or (os.altsep is not None and os.altsep in safe_name):
+            raise ValueError("Invalid player name for alias path")
+        base_dir = os.path.realpath(str(self.storage_dir))
+        candidate = os.path.realpath(os.path.join(base_dir, f"{safe_name}_aliases.json"))
+        if os.path.commonpath([base_dir, candidate]) != base_dir:
             raise ValueError("Alias path escapes storage directory")
-        return candidate
+        return Path(candidate)
 
     def _load_alias_data(self, player_name: str) -> dict[str, Any]:
         """Load alias data from JSON file."""
