@@ -1,15 +1,17 @@
 # Tsconfig Node
 
-> 20 nodes · cohesion 0.07
+> 29 nodes · cohesion 0.07
 
 ## Key Concepts
 
 - **compilerOptions** (17 connections) — `client/tsconfig.node.json`
+- **include** (8 connections) — `client/tsconfig.node.json`
 - **tsconfig.node.json** (3 connections) — `client/tsconfig.node.json`
+- **lib** (2 connections) — `client/tsconfig.node.json`
+- **types** (2 connections) — `client/tsconfig.node.json`
 - **allowImportingTsExtensions** (1 connections) — `client/tsconfig.node.json`
 - **composite** (1 connections) — `client/tsconfig.node.json`
 - **emitDeclarationOnly** (1 connections) — `client/tsconfig.node.json`
-- **lib** (1 connections) — `client/tsconfig.node.json`
 - **module** (1 connections) — `client/tsconfig.node.json`
 - **moduleDetection** (1 connections) — `client/tsconfig.node.json`
 - **moduleResolution** (1 connections) — `client/tsconfig.node.json`
@@ -20,10 +22,14 @@
 - **strict** (1 connections) — `client/tsconfig.node.json`
 - **target** (1 connections) — `client/tsconfig.node.json`
 - **tsBuildInfoFile** (1 connections) — `client/tsconfig.node.json`
-- **types** (1 connections) — `client/tsconfig.node.json`
 - **verbatimModuleSyntax** (1 connections) — `client/tsconfig.node.json`
 - **exclude** (1 connections) — `client/tsconfig.node.json`
-- **include** (1 connections) — `client/tsconfig.node.json`
+- **ES2020** (1 connections) — `client/tsconfig.node.json`
+- **node** (1 connections) — `client/tsconfig.node.json`
+- **playwright.config.ts** (1 connections) — `client/tsconfig.node.json`
+- **vite.userConfig.ts** (1 connections) — `client/tsconfig.node.json`
+- **tests/e2e/playwright.runtime.config.ts** (1 connections) — `client/tsconfig.node.json`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
@@ -35,7 +41,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 38 (100%)
+- EXTRACTED: 56 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

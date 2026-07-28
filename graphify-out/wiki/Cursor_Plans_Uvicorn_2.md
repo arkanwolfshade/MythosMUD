@@ -4,20 +4,20 @@
 
 ## Key Concepts
 
-- **app.state Global State Anti-Pattern** (1 connections) — `.cursor/plans/uvicorn_best_practices_remediation_plan.md`
-- **Uvicorn Best Practices Remediation** (1 connections) — `.cursor/plans/uvicorn_best_practices_remediation_plan.md`
+- **test_get_npc_instance_no_service()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **Test _get_npc_instance() when service is not available.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/uvicorn_best_practices_remediation_plan.md`
+- `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

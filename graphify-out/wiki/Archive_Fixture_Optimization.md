@@ -1,15 +1,17 @@
 # Archive Fixture Optimization
 
-> 2 nodes · cohesion 0.50
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **LevelUpHook** (1 connections) — `server/game/level_service.py`
-- **Any** (1 connections) — `server/game/level_service.py`
+- **.__init__()** (4 connections) — `server/game/level_service.py`
+- **LevelUpHook** (1 connections)
+- **Any** (1 connections)
+- **Initialize the level service.          Args:             async_persistence: Asyn** (1 connections) — `server/game/level_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Weapon Resolution Helpers](Weapon_Resolution_Helpers.md) (1 shared connections)
 
 ## Source Files
 
@@ -17,7 +19,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

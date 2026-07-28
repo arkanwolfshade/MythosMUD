@@ -1,23 +1,56 @@
 # Message Broker Errors
 
-> 1 nodes · cohesion 0.10
+> 27 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **Exception** (9 connections) — `server/infrastructure/nats_broker.py`
+- **NATSMessageBroker** (30 connections) — `server/infrastructure/nats_broker.py`
+- **.connect()** (5 connections) — `server/infrastructure/nats_broker.py`
+- **._start_health_monitoring()** (5 connections) — `server/infrastructure/nats_broker.py`
+- **._error_callback()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **._handle_error_async()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **._handle_reconnect_async()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **._health_check_loop()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **test_connect_with_tls_enabled_passes_tls_options()** (4 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **._disconnected_callback()** (3 connections) — `server/infrastructure/nats_broker.py`
+- **._handle_disconnect_async()** (3 connections) — `server/infrastructure/nats_broker.py`
+- **._perform_health_check()** (3 connections) — `server/infrastructure/nats_broker.py`
+- **._reconnected_callback()** (3 connections) — `server/infrastructure/nats_broker.py`
+- **nats_broker()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **Exception** (2 connections)
+- **Connect to NATS server.          Returns:             bool: True if connection s** (1 connections) — `server/infrastructure/nats_broker.py`
+- **NATS implementation of MessageBroker protocol.      This class wraps NATS client** (1 connections) — `server/infrastructure/nats_broker.py`
+- **Handle NATS errors.          AI: Runs as fire-and-forget async task to prevent b** (1 connections) — `server/infrastructure/nats_broker.py`
+- **Async handler for NATS connection errors.** (1 connections) — `server/infrastructure/nats_broker.py`
+- **Handle NATS disconnection.          AI: Runs as fire-and-forget async task to pr** (1 connections) — `server/infrastructure/nats_broker.py`
+- **Async handler for NATS disconnection events.** (1 connections) — `server/infrastructure/nats_broker.py`
+- **Handle NATS reconnection.          AI: Runs as fire-and-forget async task to pre** (1 connections) — `server/infrastructure/nats_broker.py`
+- **Async handler for NATS reconnection events.** (1 connections) — `server/infrastructure/nats_broker.py`
+- **Start periodic health check monitoring task.** (1 connections) — `server/infrastructure/nats_broker.py`
+- **Periodic health check loop using ping/pong.** (1 connections) — `server/infrastructure/nats_broker.py`
+- **Perform a single health check via flush.          Returns:             True if h** (1 connections) — `server/infrastructure/nats_broker.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Archive Planning E 2 E](Archive_Planning_E_2_E.md) (6 shared connections)
+- [Pydantic Code Review](Pydantic_Code_Review.md) (4 shared connections)
+- [Coverage Disconnect Grace](Coverage_Disconnect_Grace.md) (4 shared connections)
+- [Command Input Utilities](Command_Input_Utilities.md) (3 shared connections)
+- [Community 2205](Community_2205.md) (2 shared connections)
+- [E 2 E Results Scenario](E_2_E_Results_Scenario.md) (1 shared connections)
+- [Infrastructure Postgres Sql](Infrastructure_Postgres_Sql.md) (1 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (1 shared connections)
 
 ## Source Files
 
 - `server/infrastructure/nats_broker.py`
+- `server/tests/unit/infrastructure/test_nats_broker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (22%)
-- INFERRED: 7 (78%)
+- EXTRACTED: 84 (93%)
+- INFERRED: 6 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

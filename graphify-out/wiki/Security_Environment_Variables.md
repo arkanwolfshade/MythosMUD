@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Security Environment Variables** (2 connections) — `docs/SECURITY_ENVIRONMENT_VARIABLES.md`
+- **Security Environment Variables** (0 connections) — `docs/SECURITY_ENVIRONMENT_VARIABLES.md`
 
 ## Relationships
 
@@ -16,7 +16,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

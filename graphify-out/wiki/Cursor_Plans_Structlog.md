@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Realtime Messaging Subsystem** (2 connections) — `docs/CONNECTION_MANAGER_ARCHITECTURE.md`
-- **Realtime Monitoring Subsystem** (2 connections) — `docs/CONNECTION_MANAGER_ARCHITECTURE.md`
+- **Realtime Messaging Subsystem** (1 connections) — `docs/CONNECTION_MANAGER_ARCHITECTURE.md`
+- **Realtime Monitoring Subsystem** (1 connections) — `docs/CONNECTION_MANAGER_ARCHITECTURE.md`
 
 ## Relationships
 
@@ -17,7 +17,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

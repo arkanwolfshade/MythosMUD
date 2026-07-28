@@ -1,26 +1,55 @@
 # Container Open Events
 
-> 4 nodes · cohesion 0.07
+> 46 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **UUID** (6 connections) — `server/services/container_websocket_events.py`
-- **Any** (5 connections) — `server/services/container_websocket_events.py`
-- **datetime** (3 connections) — `server/services/container_websocket_events.py`
-- **ContainerComponent** (2 connections) — `server/services/container_websocket_events.py`
+- **test_container_websocket_events.py** (23 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **container_websocket_events.py** (17 connections) — `server/services/container_websocket_events.py`
+- **emit_container_opened()** (14 connections) — `server/services/container_websocket_events.py`
+- **emit_container_opened_to_room()** (12 connections) — `server/services/container_websocket_events.py`
+- **mock_container()** (12 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **emit_container_updated()** (10 connections) — `server/services/container_websocket_events.py`
+- **emit_container_closed()** (9 connections) — `server/services/container_websocket_events.py`
+- **emit_container_decayed()** (8 connections) — `server/services/container_websocket_events.py`
+- **UUID** (6 connections)
+- **Any** (5 connections)
+- **datetime** (3 connections)
+- **test_emit_container_closed()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_closed_returns_stats()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_decayed()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_opened()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_opened_returns_delivery_status()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_opened_to_room()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_opened_to_room_returns_stats()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_opened_to_room_with_owner()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_opened_with_owner()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_opened_with_owner_id()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_updated()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_updated_empty_diff()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **ContainerComponent** (2 connections)
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Container Component Capacity](Container_Component_Capacity.md) (15 shared connections)
+- [Multiplayer Browser Helpers](Multiplayer_Browser_Helpers.md) (8 shared connections)
+- [Connection Disconnection Cleanup](Connection_Disconnection_Cleanup.md) (3 shared connections)
+- [Game Tick Processing](Game_Tick_Processing.md) (2 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (2 shared connections)
+- [Archive Circuit Breaker](Archive_Circuit_Breaker.md) (1 shared connections)
+- [Community 1599](Community_1599.md) (1 shared connections)
 
 ## Source Files
 
 - `server/services/container_websocket_events.py`
+- `server/tests/unit/services/test_container_websocket_events.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 170 (94%)
+- INFERRED: 10 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

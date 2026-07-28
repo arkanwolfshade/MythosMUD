@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Python Coverage Status** (6 connections) — `docs/PYTHON_COVERAGE_STATUS.md`
 - **Python Coverage Targets** (1 connections) — `docs/PYTHON_COVERAGE_STATUS.md`
+- **Python Coverage Status** (1 connections) — `docs/PYTHON_COVERAGE_STATUS.md`
 
 ## Relationships
 
@@ -17,7 +17,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

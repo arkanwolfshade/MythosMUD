@@ -1,23 +1,25 @@
 # E 2 E Bugs Found
 
-> 2 nodes · cohesion 1.00
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **Chat Messages Not Displayed to Sender (Bug #2)** (1 connections) — `e2e-tests/BUGS_FOUND.md`
-- **Player ID Format Mismatch** (1 connections) — `e2e-tests/BUGS_FOUND.md`
+- **4. Rest/Quit Command During Combat** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **Gap Analysis** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **Industry Practices** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **Our Plan** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [E 2 E Runtime Multiplayer](E_2_E_Runtime_Multiplayer.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/BUGS_FOUND.md`
+- `.cursor/plans/disconnect_grace_period_comparison.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

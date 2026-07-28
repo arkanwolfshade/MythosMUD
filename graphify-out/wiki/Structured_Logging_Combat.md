@@ -1,14 +1,16 @@
 # Structured Logging Combat
 
-> 1 nodes · cohesion 0.67
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **AbstractEventLoop** (2 connections) — `server/events/event_bus.py`
+- **.set_main_loop()** (3 connections) — `server/events/event_bus.py`
+- **AbstractEventLoop** (1 connections)
+- **Set the main event loop - now properly managed for async compatibility.** (1 connections) — `server/events/event_bus.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
 
 ## Source Files
 
@@ -16,8 +18,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 1 (50%)
-- INFERRED: 1 (50%)
+- EXTRACTED: 5 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

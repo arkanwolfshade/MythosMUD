@@ -1,10 +1,11 @@
 # Codacy Wsl Bashrc
 
-> 1 nodes · cohesion 1.00
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
 - **wsl-bashrc-codacy.sh** (1 connections) — `.codacy/wsl-bashrc-codacy.sh`
+- **wsl-bashrc-codacy.sh script** (1 connections) — `.codacy/wsl-bashrc-codacy.sh`
 
 ## Relationships
 
@@ -16,7 +17,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

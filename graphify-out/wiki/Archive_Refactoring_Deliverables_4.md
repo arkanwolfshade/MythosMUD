@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Cursor Lifecycle Hooks** (1 connections) — `docs/CURSOR_HOOKS.md`
+- **Container Item System** (1 connections) — `docs/CONTAINER_SYSTEM_ARCHITECTURE.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/CURSOR_HOOKS.md`
+- `docs/CONTAINER_SYSTEM_ARCHITECTURE.md`
 
 ## Audit Trail
 

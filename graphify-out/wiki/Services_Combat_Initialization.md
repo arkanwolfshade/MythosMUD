@@ -1,11 +1,17 @@
 # Services Combat Initialization
 
-> 2 nodes · cohesion 1.00
+> 8 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **High-Risk Major Package Updates** (2 connections) — `scripts/dependency_upgrade_report.md`
-- **pytest-asyncio Major Upgrade** (1 connections) — `scripts/dependency_upgrade_report.md`
+- **run-vitest.js** (7 connections) — `client/scripts/run-vitest.js`
+- **args** (1 connections) — `client/scripts/run-vitest.js`
+- **clientRoot** (1 connections) — `client/scripts/run-vitest.js`
+- **__dirname** (1 connections) — `client/scripts/run-vitest.js`
+- **env** (1 connections) — `client/scripts/run-vitest.js`
+- **__filename** (1 connections) — `client/scripts/run-vitest.js`
+- **vitest** (1 connections) — `client/scripts/run-vitest.js`
+- **vitestBin** (1 connections) — `client/scripts/run-vitest.js`
 
 ## Relationships
 
@@ -13,11 +19,11 @@
 
 ## Source Files
 
-- `scripts/dependency_upgrade_report.md`
+- `client/scripts/run-vitest.js`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

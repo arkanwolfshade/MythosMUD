@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Follow Command Feature** (1 connections) — `.cursor/plans/follow_command_feature_5e00ae07.plan.md`
-- **FollowService** (1 connections) — `.cursor/plans/follow_command_feature_5e00ae07.plan.md`
+- **Geography and Major Locations.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Geography and Major Locations.md`
+- **Geography and Major Locations (source summary)** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Geography and Major Locations.md`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `.cursor/plans/follow_command_feature_5e00ae07.plan.md`
+- `data/MythosMUD-Obsidian/wiki/sources/Geography and Major Locations.md`
 
 ## Audit Trail
 

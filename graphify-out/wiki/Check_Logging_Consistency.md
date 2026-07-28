@@ -7,7 +7,7 @@
 - **check_file_for_logging_issues()** (4 connections) — `scripts/check_logging_consistency.py`
 - **main()** (4 connections) — `scripts/check_logging_consistency.py`
 - **check_logging_consistency.py** (2 connections) — `scripts/check_logging_consistency.py`
-- **Path** (2 connections) — `scripts/check_logging_consistency.py`
+- **Path** (2 connections)
 - **Check a single file for logging consistency issues.      Args:         file_path** (1 connections) — `scripts/check_logging_consistency.py`
 - **Main function to check all service files for logging consistency.** (1 connections) — `scripts/check_logging_consistency.py`
 

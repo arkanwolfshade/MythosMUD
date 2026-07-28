@@ -13,7 +13,7 @@
 - **fix_line_length()** (3 connections) — `scripts/fix_markdownlint.py`
 - **fix_trailing_punctuation_in_headings()** (3 connections) — `scripts/fix_markdownlint.py`
 - **main()** (3 connections) — `scripts/fix_markdownlint.py`
-- **Path** (2 connections) — `scripts/fix_markdownlint.py`
+- **Path** (2 connections)
 - **Add language tags to fenced code blocks without them.** (1 connections) — `scripts/fix_markdownlint.py`
 - **Break long lines at word boundaries.** (1 connections) — `scripts/fix_markdownlint.py`
 - **Add blank lines before and after headings.** (1 connections) — `scripts/fix_markdownlint.py`

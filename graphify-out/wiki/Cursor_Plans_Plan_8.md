@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Critical File Coverage Improvement** (1 connections) — `.cursor/plans/critical_file_coverage_improvement_0129c9ac.plan.md`
-- **Dead Code Analysis and Removal** (1 connections) — `.cursor/plans/dead_code_analysis_and_removal_746bc5c1.plan.md`
+- **Convert E2E Scenarios to Playwright CLI** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
+- **Fix Code Review Findings Issue 353** (1 connections) — `.cursor/plans/fix_code_review_findings_issue_353_f59f87dc.plan.md`
 
 ## Relationships
 
@@ -13,8 +13,8 @@
 
 ## Source Files
 
-- `.cursor/plans/critical_file_coverage_improvement_0129c9ac.plan.md`
-- `.cursor/plans/dead_code_analysis_and_removal_746bc5c1.plan.md`
+- `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
+- `.cursor/plans/fix_code_review_findings_issue_353_f59f87dc.plan.md`
 
 ## Audit Trail
 

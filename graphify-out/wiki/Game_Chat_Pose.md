@@ -1,9 +1,10 @@
 # Game Chat Pose
 
-> 1 nodes · cohesion 1.00
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
+- **typescript** (2 connections) — `client/package.json`
 - **typescript** (1 connections) — `client/package.json`
 
 ## Relationships
@@ -16,7 +17,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

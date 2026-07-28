@@ -1,23 +1,24 @@
 # Cursor Skills Frontend
 
-> 2 nodes · cohesion 1.00
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **Color and Contrast Reference** (1 connections) — `.cursor/skills/frontend-design/reference/color-and-contrast.md`
-- **OKLCH Color Space** (1 connections) — `.cursor/skills/frontend-design/reference/color-and-contrast.md`
+- **Architecture Overview** (3 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **CircuitBreaker States** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Integration Points** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/skills/frontend-design/reference/color-and-contrast.md`
+- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

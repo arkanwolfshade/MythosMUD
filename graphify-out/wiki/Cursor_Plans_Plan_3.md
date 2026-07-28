@@ -1,14 +1,15 @@
 # Cursor Plans Plan
 
-> 5 nodes · cohesion 0.40
+> 6 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **Quest System Gap** (2 connections) — `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
-- **Quest Subsystem Implementation** (2 connections) — `.cursor/plans/quest_subsystem_implementation_2c84306e.plan.md`
-- **Quest System** (2 connections) — `.cursor/plans/quest_subsystem_implementation_2c84306e.plan.md`
-- **MUD Subsystems Gap Analysis** (1 connections) — `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
-- **Player Skills and Profession Modifiers** (1 connections) — `.cursor/plans/player_skills_and_profession_modifiers_dff11b8d.plan.md`
+- **Round-Based Combat** (3 connections) — `.cursor/plans/combat_round_system_refactor_83b6ba42.plan.md`
+- **Combat Bugs Investigation and Fixes** (2 connections) — `.cursor/plans/combat-bugs-investigation-and-fixes_47c9cae4.plan.md`
+- **Combat Round System Refactor** (2 connections) — `.cursor/plans/combat_round_system_refactor_83b6ba42.plan.md`
+- **Combat Action Queue** (1 connections) — `.cursor/plans/combat_round_system_refactor_83b6ba42.plan.md`
+- **First Weapon Switchblade** (1 connections) — `.cursor/plans/first_weapon_switchblade_85972031.plan.md`
+- **Flee Command and Effect** (1 connections) — `.cursor/plans/flee_command_and_effect_85736dc2.plan.md`
 
 ## Relationships
 
@@ -16,14 +17,15 @@
 
 ## Source Files
 
-- `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
-- `.cursor/plans/player_skills_and_profession_modifiers_dff11b8d.plan.md`
-- `.cursor/plans/quest_subsystem_implementation_2c84306e.plan.md`
+- `.cursor/plans/combat-bugs-investigation-and-fixes_47c9cae4.plan.md`
+- `.cursor/plans/combat_round_system_refactor_83b6ba42.plan.md`
+- `.cursor/plans/first_weapon_switchblade_85972031.plan.md`
+- `.cursor/plans/flee_command_and_effect_85736dc2.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (75%)
-- INFERRED: 2 (25%)
+- EXTRACTED: 4 (40%)
+- INFERRED: 6 (60%)
 - AMBIGUOUS: 0 (0%)
 
 ---

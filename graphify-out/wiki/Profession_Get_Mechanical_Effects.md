@@ -1,14 +1,29 @@
 # Profession Get Mechanical Effects
 
-> 1 nodes · cohesion 0.13
+> 15 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **Any** (9 connections) — `server/models/profession.py`
+- **Any** (8 connections)
+- **.get_mechanical_effects()** (3 connections) — `server/models/profession.py`
+- **.get_skill_modifiers()** (3 connections) — `server/models/profession.py`
+- **.get_stat_modifiers()** (3 connections) — `server/models/profession.py`
+- **.set_mechanical_effects()** (3 connections) — `server/models/profession.py`
+- **.set_skill_modifiers()** (3 connections) — `server/models/profession.py`
+- **.set_stat_modifiers()** (3 connections) — `server/models/profession.py`
+- **.set_stat_requirements()** (3 connections) — `server/models/profession.py`
+- **Set profession stat requirements from dictionary.** (1 connections) — `server/models/profession.py`
+- **Get profession mechanical effects as dictionary.** (1 connections) — `server/models/profession.py`
+- **Set profession mechanical effects from dictionary.** (1 connections) — `server/models/profession.py`
+- **Get stat modifiers as list of {stat, value}.** (1 connections) — `server/models/profession.py`
+- **Set stat modifiers from list of {stat, value}.** (1 connections) — `server/models/profession.py`
+- **Get skill modifiers as list of {skill_key, value}.** (1 connections) — `server/models/profession.py`
+- **Set skill modifiers from list of {skill_key, value}.** (1 connections) — `server/models/profession.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [WebSocket Code Review](WebSocket_Code_Review.md) (7 shared connections)
+- [Commands Npc Admin](Commands_Npc_Admin.md) (1 shared connections)
 
 ## Source Files
 
@@ -16,8 +31,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 8 (89%)
-- INFERRED: 1 (11%)
+- EXTRACTED: 36 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

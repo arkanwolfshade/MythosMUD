@@ -1,23 +1,33 @@
 # Commands Exploration
 
-> 1 nodes · cohesion 0.28
+> 9 nodes · cohesion 0.28
 
 ## Key Concepts
 
-- **Any** (1 connections) — `server/commands/exploration_commands.py`
+- **handle_explore_command()** (8 connections) — `server/commands/exploration_commands.py`
+- **test_exploration_commands.py** (5 connections) — `server/tests/unit/commands/test_exploration_commands.py`
+- **test_handle_explore_command()** (3 connections) — `server/tests/unit/commands/test_exploration_commands.py`
+- **test_handle_explore_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_exploration_commands.py`
+- **Any** (1 connections)
+- **Handle exploration requests by returning a simple message.      This lightweight** (1 connections) — `server/commands/exploration_commands.py`
+- **Unit tests for exploration command handlers.  Tests the exploration command func** (1 connections) — `server/tests/unit/commands/test_exploration_commands.py`
+- **Test handle_explore_command() explores area.** (1 connections) — `server/tests/unit/commands/test_exploration_commands.py`
+- **Test handle_explore_command() handles missing persistence.** (1 connections) — `server/tests/unit/commands/test_exploration_commands.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Admin Set Lucidity Command](Admin_Set_Lucidity_Command.md) (3 shared connections)
+- [Look Command Helpers](Look_Command_Helpers.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/exploration_commands.py`
+- `server/tests/unit/commands/test_exploration_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 23 (96%)
+- INFERRED: 1 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,22 +1,25 @@
 # Archive Who Command
 
-> 1 nodes · cohesion 1.00
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **Structured Logging Correct Patterns** (1 connections) — `docs/examples/logging/README.md`
+- **zone** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **pattern** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Submodule Setup](Submodule_Setup.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/examples/logging/README.md`
+- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

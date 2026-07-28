@@ -1,9 +1,11 @@
 # Schemas Room Schema
 
-> 8 nodes · cohesion 0.18
+> 11 nodes · cohesion 0.18
 
 ## Key Concepts
 
+- **properties** (13 connections) — `schemas/room_schema.json`
+- **sub_zone** (4 connections) — `schemas/room_schema.json`
 - **field1** (2 connections) — `schemas/room_schema.json`
 - **field2** (2 connections) — `schemas/room_schema.json`
 - **field3** (2 connections) — `schemas/room_schema.json`
@@ -12,10 +14,13 @@
 - **description** (1 connections) — `schemas/room_schema.json`
 - **description** (1 connections) — `schemas/room_schema.json`
 - **pattern** (1 connections) — `schemas/room_schema.json`
+- **type** (1 connections) — `schemas/room_schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Schemas Room Schema](Schemas_Room_Schema.md) (7 shared connections)
+- [Cursor Skills Mythosmud](Cursor_Skills_Mythosmud.md) (1 shared connections)
+- [Mythosapp Submitauth Applyauthenticatedsession](Mythosapp_Submitauth_Applyauthenticatedsession.md) (1 shared connections)
 
 ## Source Files
 
@@ -23,7 +28,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 29 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

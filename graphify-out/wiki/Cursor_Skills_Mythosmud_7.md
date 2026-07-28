@@ -4,20 +4,20 @@
 
 ## Key Concepts
 
-- **MythosMUD LLM Wiki Skill** (1 connections) — `.cursor/skills/mythosmud-llm-wiki/SKILL.md`
-- **Obsidian LLM Wiki Vault** (1 connections) — `.cursor/skills/mythosmud-llm-wiki/SKILL.md`
+- **test_create_equip_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_equip_command delegates to inventory factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Quest Instance Repository](Quest_Instance_Repository.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/skills/mythosmud-llm-wiki/SKILL.md`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

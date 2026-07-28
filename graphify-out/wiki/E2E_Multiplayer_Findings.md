@@ -1,11 +1,12 @@
 # E2E Multiplayer Findings
 
-> 3 nodes · cohesion 0.50
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **Main Foyer Starting Room** (5 connections) — `e2e-tests/scenarios/scenario-01-basic-connection.md`
+- **Main Foyer Starting Room** (2 connections) — `e2e-tests/scenarios/scenario-01-basic-connection.md`
 - **Wrong Starting Room Bug** (2 connections) — `e2e-tests/TEST_RESULTS_scenario-01-rerun.md`
+- **Scenario 2 Clean Game State** (1 connections) — `e2e-tests/scenarios/scenario-02-clean-game-state.md`
 - **Players Start in Different Rooms** (1 connections) — `e2e-tests/TEST_RESULTS_scenario-01.md`
 
 ## Relationships
@@ -17,11 +18,12 @@
 - `e2e-tests/TEST_RESULTS_scenario-01-rerun.md`
 - `e2e-tests/TEST_RESULTS_scenario-01.md`
 - `e2e-tests/scenarios/scenario-01-basic-connection.md`
+- `e2e-tests/scenarios/scenario-02-clean-game-state.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (75%)
-- INFERRED: 2 (25%)
+- EXTRACTED: 4 (67%)
+- INFERRED: 2 (33%)
 - AMBIGUOUS: 0 (0%)
 
 ---

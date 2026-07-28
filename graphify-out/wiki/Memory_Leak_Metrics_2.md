@@ -1,22 +1,27 @@
 # Memory Leak Metrics
 
-> 1 nodes · cohesion 1.00
+> 6 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **Memory Leak Monitoring Endpoints** (1 connections) — `docs/MEMORY_LEAK_METRICS_USAGE_GUIDE.md`
+- **Implementation Details** (4 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Integration Examples** (3 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **CircuitBreaker Manager** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Database Operations** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Enhanced CircuitBreaker Class** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **NATS Operations** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/MEMORY_LEAK_METRICS_USAGE_GUIDE.md`
+- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

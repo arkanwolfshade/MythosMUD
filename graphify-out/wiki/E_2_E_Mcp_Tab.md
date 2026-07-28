@@ -1,11 +1,14 @@
 # E 2 E Mcp Tab
 
-> 2 nodes · cohesion 1.00
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **Playwright MCP core-tabs Capability** (1 connections) — `e2e-tests/MCP_TAB_MANAGEMENT_ISSUE.md`
-- **MCP Tab Management Issue** (1 connections) — `e2e-tests/MCP_TAB_MANAGEMENT_ISSUE.md`
+- **2026_02_18_add_player_skills_table.py** (2 connections) — `server/alembic/versions/2026_02_18_add_player_skills_table.py`
+- **downgrade()** (2 connections) — `server/alembic/versions/2026_02_18_add_player_skills_table.py`
+- **upgrade()** (2 connections) — `server/alembic/versions/2026_02_18_add_player_skills_table.py`
+- **Create player_skills table if not exists (matches db/migrations/025).** (1 connections) — `server/alembic/versions/2026_02_18_add_player_skills_table.py`
+- **Drop player_skills table.** (1 connections) — `server/alembic/versions/2026_02_18_add_player_skills_table.py`
 
 ## Relationships
 
@@ -13,11 +16,11 @@
 
 ## Source Files
 
-- `e2e-tests/MCP_TAB_MANAGEMENT_ISSUE.md`
+- `server/alembic/versions/2026_02_18_add_player_skills_table.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

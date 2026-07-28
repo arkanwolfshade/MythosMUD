@@ -1,26 +1,37 @@
 # Architecture Decisions Adr
 
-> 5 nodes · cohesion 0.40
+> 13 nodes · cohesion 0.15
 
 ## Key Concepts
 
-- **command** (5 connections) — `schemas/alias_schema.json`
-- **description** (1 connections) — `schemas/alias_schema.json`
-- **maxLength** (1 connections) — `schemas/alias_schema.json`
-- **minLength** (1 connections) — `schemas/alias_schema.json`
-- **type** (1 connections) — `schemas/alias_schema.json`
+- **properties** (10 connections) — `schemas/calendar/schedule.schema.json`
+- **end_hour** (4 connections) — `schemas/calendar/schedule.schema.json`
+- **category** (3 connections) — `schemas/calendar/schedule.schema.json`
+- **name** (3 connections) — `schemas/calendar/schedule.schema.json`
+- **notes** (2 connections) — `schemas/calendar/schedule.schema.json`
+- **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **maximum** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **minimum** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
 
 ## Relationships
 
-- [E 2 E Whisper System](E_2_E_Whisper_System.md) (1 shared connections)
+- [Chat Archive Advanced](Chat_Archive_Advanced.md) (3 shared connections)
+- [Cursor Commands Lint](Cursor_Commands_Lint.md) (1 shared connections)
+- [E 2 E Execution Status](E_2_E_Execution_Status.md) (1 shared connections)
+- [E 2 E Ai Execution](E_2_E_Ai_Execution.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/alias_schema.json`
+- `schemas/calendar/schedule.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 30 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

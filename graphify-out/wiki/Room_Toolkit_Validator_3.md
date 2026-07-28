@@ -1,10 +1,13 @@
 # Room Toolkit Validator
 
-> 1 nodes · cohesion 1.00
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **Zustand Stores** (1 connections) — `client/README.md`
+- **start_server.ps1** (3 connections) — `scripts/README.md`
+- **Default Server Port 54768** (1 connections) — `scripts/README.md`
+- **start_local.ps1** (1 connections) — `scripts/README.md`
+- **stop_server.ps1** (1 connections) — `scripts/README.md`
 
 ## Relationships
 
@@ -12,12 +15,12 @@
 
 ## Source Files
 
-- `client/README.md`
+- `scripts/README.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 4 (67%)
+- INFERRED: 2 (33%)
 - AMBIGUOUS: 0 (0%)
 
 ---

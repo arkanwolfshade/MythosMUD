@@ -4,12 +4,12 @@
 
 ## Key Concepts
 
-- **Round-Based Combat** (3 connections) — `.cursor/plans/combat_round_system_refactor_83b6ba42.plan.md`
-- **Combat Bugs Investigation and Fixes** (2 connections) — `.cursor/plans/combat-bugs-investigation-and-fixes_47c9cae4.plan.md`
-- **Combat Round System Refactor** (2 connections) — `.cursor/plans/combat_round_system_refactor_83b6ba42.plan.md`
-- **Combat Action Queue** (1 connections) — `.cursor/plans/combat_round_system_refactor_83b6ba42.plan.md`
-- **First Weapon Switchblade** (1 connections) — `.cursor/plans/first_weapon_switchblade_85972031.plan.md`
-- **Flee Command and Effect** (1 connections) — `.cursor/plans/flee_command_and_effect_85736dc2.plan.md`
+- **WebSocket-Only Migration** (3 connections) — `.cursor/plans/websocket-only-migration-347bcba3.plan.md`
+- **Unify Client Message Handling** (2 connections) — `.cursor/plans/unify-client-message-handling_5ae18c30.plan.md`
+- **WebSocket-Only Architecture** (2 connections) — `.cursor/plans/websocket-only-migration-347bcba3.plan.md`
+- **SSE Connection Removal** (1 connections) — `.cursor/plans/websocket-only-migration-347bcba3.plan.md`
+- **Unified Client Message Pipeline** (1 connections) — `.cursor/plans/unify-client-message-handling_5ae18c30.plan.md`
+- **WebSocket Best-Practices Remediation** (1 connections) — `.cursor/plans/websocket_best-practices_remediation.plan.md`
 
 ## Relationships
 
@@ -17,15 +17,14 @@
 
 ## Source Files
 
-- `.cursor/plans/combat-bugs-investigation-and-fixes_47c9cae4.plan.md`
-- `.cursor/plans/combat_round_system_refactor_83b6ba42.plan.md`
-- `.cursor/plans/first_weapon_switchblade_85972031.plan.md`
-- `.cursor/plans/flee_command_and_effect_85736dc2.plan.md`
+- `.cursor/plans/unify-client-message-handling_5ae18c30.plan.md`
+- `.cursor/plans/websocket-only-migration-347bcba3.plan.md`
+- `.cursor/plans/websocket_best-practices_remediation.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (40%)
-- INFERRED: 6 (60%)
+- EXTRACTED: 6 (60%)
+- INFERRED: 4 (40%)
 - AMBIGUOUS: 0 (0%)
 
 ---

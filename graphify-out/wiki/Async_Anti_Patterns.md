@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **asyncio.run Anti-Pattern** (1 connections) — `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
+- **asyncio.run Anti-Pattern** (0 connections) — `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
 
 ## Relationships
 
@@ -16,7 +16,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

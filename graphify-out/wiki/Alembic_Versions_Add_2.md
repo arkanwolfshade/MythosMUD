@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **make verify-schema** (1 connections) — `db/README.md`
+- **npc_combat_integration_service.py.md** (0 connections) — `data/MythosMUD-Obsidian/wiki/npc_combat_integration_service.py.md`
 
 ## Relationships
 
@@ -12,11 +12,11 @@
 
 ## Source Files
 
-- `db/README.md`
+- `data/MythosMUD-Obsidian/wiki/npc_combat_integration_service.py.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

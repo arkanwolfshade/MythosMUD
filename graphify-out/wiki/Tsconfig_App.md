@@ -1,15 +1,17 @@
 # Tsconfig App
 
-> 22 nodes · cohesion 0.06
+> 33 nodes · cohesion 0.06
 
 ## Key Concepts
 
 - **compilerOptions** (19 connections) — `client/tsconfig.app.json`
+- **exclude** (8 connections) — `client/tsconfig.app.json`
+- **lib** (4 connections) — `client/tsconfig.app.json`
 - **tsconfig.app.json** (3 connections) — `client/tsconfig.app.json`
+- **include** (2 connections) — `client/tsconfig.app.json`
 - **allowImportingTsExtensions** (1 connections) — `client/tsconfig.app.json`
 - **erasableSyntaxOnly** (1 connections) — `client/tsconfig.app.json`
 - **jsx** (1 connections) — `client/tsconfig.app.json`
-- **lib** (1 connections) — `client/tsconfig.app.json`
 - **module** (1 connections) — `client/tsconfig.app.json`
 - **moduleDetection** (1 connections) — `client/tsconfig.app.json`
 - **moduleResolution** (1 connections) — `client/tsconfig.app.json`
@@ -24,8 +26,10 @@
 - **tsBuildInfoFile** (1 connections) — `client/tsconfig.app.json`
 - **useDefineForClassFields** (1 connections) — `client/tsconfig.app.json`
 - **verbatimModuleSyntax** (1 connections) — `client/tsconfig.app.json`
-- **exclude** (1 connections) — `client/tsconfig.app.json`
-- **include** (1 connections) — `client/tsconfig.app.json`
+- **DOM** (1 connections) — `client/tsconfig.app.json`
+- **DOM.Iterable** (1 connections) — `client/tsconfig.app.json`
+- **ES2022** (1 connections) — `client/tsconfig.app.json`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
@@ -37,7 +41,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 42 (100%)
+- EXTRACTED: 64 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

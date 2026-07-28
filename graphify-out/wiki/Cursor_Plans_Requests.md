@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **Requests Best Practices Remediation** (1 connections) — `.cursor/plans/requests_best_practices_remediation_plan.md`
-- **Unused requests Dependency** (1 connections) — `.cursor/plans/requests_best_practices_remediation_plan.md`
+- **test_profession_set_mechanical_effects_empty_dict()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **Test set_mechanical_effects handles empty dict.** (1 connections) — `server/tests/unit/models/test_profession.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [WebSocket Code Review](WebSocket_Code_Review.md) (1 shared connections)
+- [Async Persistence Migration](Async_Persistence_Migration.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/requests_best_practices_remediation_plan.md`
+- `server/tests/unit/models/test_profession.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

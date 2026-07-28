@@ -1,23 +1,28 @@
 # Game Magic Spell
 
-> 2 nodes · cohesion 0.33
+> 7 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **graceful_degradation()** (5 connections) — `server/legacy_error_handlers.py`
-- **Context manager for graceful degradation.      Provides fallback behavior when o** (1 connections) — `server/legacy_error_handlers.py`
+- **enum** (5 connections) — `schemas/calendar/holiday.schema.json`
+- **season** (3 connections) — `schemas/calendar/holiday.schema.json`
+- **autumn** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **spring** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **summer** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **winter** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
 
 ## Relationships
 
-- [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
+- [Commands Look Item](Commands_Look_Item.md) (1 shared connections)
 
 ## Source Files
 
-- `server/legacy_error_handlers.py`
+- `schemas/calendar/holiday.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

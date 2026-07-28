@@ -1,15 +1,34 @@
 # Game Service Bundle
 
-> 2 nodes · cohesion 0.12
+> 20 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **Room** (5 connections) — `server/game/instance_manager.py`
-- **UUID** (2 connections) — `server/game/instance_manager.py`
+- **.create_instance()** (7 connections) — `server/game/instance_manager.py`
+- **._build_instance_rooms()** (6 connections) — `server/game/instance_manager.py`
+- **._stable_id_from_room()** (5 connections) — `server/game/instance_manager.py`
+- **Room** (5 connections)
+- **Instance** (4 connections) — `server/game/instance_manager.py`
+- **._get_template_rooms()** (4 connections) — `server/game/instance_manager.py`
+- **._remap_exits()** (4 connections) — `server/game/instance_manager.py`
+- **.get_instance()** (3 connections) — `server/game/instance_manager.py`
+- **.get_room_by_id()** (3 connections) — `server/game/instance_manager.py`
+- **._stable_id_from_target()** (3 connections) — `server/game/instance_manager.py`
+- **UUID** (2 connections)
+- **Return template rooms matching instance_template_id.** (1 connections) — `server/game/instance_manager.py`
+- **Clone template rooms into instance-scoped rooms with remapped exits.** (1 connections) — `server/game/instance_manager.py`
+- **Extract stable_id from room - use room.id if it looks like a full path.** (1 connections) — `server/game/instance_manager.py`
+- **Remap exit targets: same-instance rooms use instance IDs, outside exits use fixe** (1 connections) — `server/game/instance_manager.py`
+- **Extract stable_id from a room ID (may be full path or short form).** (1 connections) — `server/game/instance_manager.py`
+- **Return the instance if it exists.** (1 connections) — `server/game/instance_manager.py`
+- **Look up a room by ID, checking instances first.          Used by persistence lay** (1 connections) — `server/game/instance_manager.py`
+- **An instanced set of rooms, unique per player or group.** (1 connections) — `server/game/instance_manager.py`
+- **Create an instance from room templates with the given template_id.          Args** (1 connections) — `server/game/instance_manager.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Weapon Resolution Helpers](Weapon_Resolution_Helpers.md) (8 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (3 shared connections)
 
 ## Source Files
 
@@ -17,7 +36,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 55 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

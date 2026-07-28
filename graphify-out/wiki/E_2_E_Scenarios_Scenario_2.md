@@ -1,23 +1,33 @@
 # E 2 E Scenarios Scenario
 
-> 1 nodes · cohesion 0.40
+> 10 nodes · cohesion 0.24
 
 ## Key Concepts
 
-- **Whisper Channel System** (5 connections) — `e2e-tests/scenarios/scenario-13-whisper-basic.md`
+- **websocket_endpoint()** (9 connections) — `docs/examples/logging/fastapi_integration.py`
+- **WebSocket** (5 connections) — `docs/examples/logging/fastapi_integration.py`
+- **process_websocket_message()** (3 connections) — `docs/examples/logging/fastapi_integration.py`
+- **.accept()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
+- **.receive_text()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
+- **.send_text()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
+- **WebSocket** (1 connections)
+- **WebSocket endpoint with enhanced logging.** (1 connections) — `docs/examples/logging/fastapi_integration.py`
+- **Simulate WebSocket message processing.** (1 connections) — `docs/examples/logging/fastapi_integration.py`
+- **.client()** (1 connections) — `docs/examples/logging/fastapi_integration.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [FastAPI Auth Integration](FastAPI_Auth_Integration.md) (3 shared connections)
+- [Development Setup Guide](Development_Setup_Guide.md) (2 shared connections)
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-13-whisper-basic.md`
+- `docs/examples/logging/fastapi_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 25 (93%)
+- INFERRED: 2 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

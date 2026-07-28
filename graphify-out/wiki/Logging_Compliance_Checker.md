@@ -1,12 +1,12 @@
 # Logging Compliance Checker
 
-> 47 nodes · cohesion 0.07
+> 48 nodes · cohesion 0.07
 
 ## Key Concepts
 
 - **verify_enhanced_logging_compliance.py** (14 connections) — `scripts/verify_enhanced_logging_compliance.py`
 - **LoggingComplianceChecker** (12 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **Path** (10 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **Path** (10 connections)
 - **check_file()** (8 connections) — `scripts/verify_enhanced_logging_compliance.py`
 - **main()** (7 connections) — `scripts/verify_enhanced_logging_compliance.py`
 - **.visit_Call()** (6 connections) — `scripts/verify_enhanced_logging_compliance.py`
@@ -19,17 +19,17 @@
 - **._check_deprecated_context_param()** (4 connections) — `scripts/verify_enhanced_logging_compliance.py`
 - **._check_fstring_logging()** (4 connections) — `scripts/verify_enhanced_logging_compliance.py`
 - **._check_getlogger_call()** (4 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **Call** (4 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **.visit_ImportFrom()** (4 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **Call** (4 connections)
 - **_should_skip_file()** (4 connections) — `scripts/verify_enhanced_logging_compliance.py`
 - **_group_violations_by_type()** (3 connections) — `scripts/verify_enhanced_logging_compliance.py`
 - **.visit_Assign()** (3 connections) — `scripts/verify_enhanced_logging_compliance.py`
 - **.visit_Import()** (3 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **.visit_ImportFrom()** (3 connections) — `scripts/verify_enhanced_logging_compliance.py`
 - **_print_compliance_success()** (3 connections) — `scripts/verify_enhanced_logging_compliance.py`
 - **_print_fix_instructions()** (3 connections) — `scripts/verify_enhanced_logging_compliance.py`
 - **.__init__()** (2 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **AST** (2 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- *... and 22 more nodes in this community*
+- **AST** (2 connections)
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
@@ -41,7 +41,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 152 (100%)
+- EXTRACTED: 154 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

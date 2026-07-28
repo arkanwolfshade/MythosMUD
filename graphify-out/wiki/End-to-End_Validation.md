@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **UUID** (21 connections) — `server/async_persistence.py`
+- **UUID** (21 connections)
 - **.apply_corruption()** (4 connections) — `server/async_persistence.py`
 - **.apply_fear()** (4 connections) — `server/async_persistence.py`
 - **.apply_lucidity_loss()** (4 connections) — `server/async_persistence.py`

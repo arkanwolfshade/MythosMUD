@@ -1,14 +1,18 @@
 # Config Cors
 
-> 1 nodes · cohesion 0.40
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **Any** (2 connections) — `server/commands/shutdown_process_termination.py`
+- **_find_uvicorn_processes()** (3 connections) — `server/commands/shutdown_process_termination.py`
+- **_terminate_uvicorn_processes()** (3 connections) — `server/commands/shutdown_process_termination.py`
+- **Any** (2 connections)
+- **Find all uvicorn processes using psutil.** (1 connections) — `server/commands/shutdown_process_termination.py`
+- **Terminate all uvicorn processes.** (1 connections) — `server/commands/shutdown_process_termination.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Distributed Event Bus](Distributed_Event_Bus.md) (2 shared connections)
 
 ## Source Files
 
@@ -16,7 +20,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

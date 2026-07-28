@@ -10,10 +10,10 @@
 - **is_production_server_py()** (5 connections) — `scripts/check_no_production_assert.py`
 - **main()** (4 connections) — `scripts/check_no_production_assert.py`
 - **_path_parts_indicate_production_server()** (3 connections) — `scripts/check_no_production_assert.py`
-- **Path** (3 connections) — `scripts/check_no_production_assert.py`
+- **Path** (3 connections)
 - **.visit_Assert()** (2 connections) — `scripts/check_no_production_assert.py`
 - **_excluded_server_module_filename()** (2 connections) — `scripts/check_no_production_assert.py`
-- **Assert** (1 connections) — `scripts/check_no_production_assert.py`
+- **Assert** (1 connections)
 - **.__init__()** (1 connections) — `scripts/check_no_production_assert.py`
 - **True for MythosMUD backend modules under ``server/``, excluding tests and confte** (1 connections) — `scripts/check_no_production_assert.py`
 - **Collect line numbers of assert statements.** (1 connections) — `scripts/check_no_production_assert.py`

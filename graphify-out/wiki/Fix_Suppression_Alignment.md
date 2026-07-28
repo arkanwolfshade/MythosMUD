@@ -8,7 +8,7 @@
 - **parse_alignment_report()** (8 connections) — `scripts/fix_suppression_alignment.py`
 - **fix_file()** (7 connections) — `scripts/fix_suppression_alignment.py`
 - **_apply_fixes_to_line()** (6 connections) — `scripts/fix_suppression_alignment.py`
-- **Any** (5 connections) — `scripts/fix_suppression_alignment.py`
+- **Any** (5 connections)
 - **_group_fixes_by_line()** (4 connections) — `scripts/fix_suppression_alignment.py`
 - **main()** (4 connections) — `scripts/fix_suppression_alignment.py`
 - **_parse_missing_rules()** (4 connections) — `scripts/fix_suppression_alignment.py`
@@ -16,7 +16,7 @@
 - **add_ruff_suppression()** (3 connections) — `scripts/fix_suppression_alignment.py`
 - **_parse_file_line_pattern()** (3 connections) — `scripts/fix_suppression_alignment.py`
 - **_parse_issue_type_header()** (3 connections) — `scripts/fix_suppression_alignment.py`
-- **Path** (3 connections) — `scripts/fix_suppression_alignment.py`
+- **Path** (3 connections)
 - **Parse the alignment report to extract misaligned suppressions.** (1 connections) — `scripts/fix_suppression_alignment.py`
 - **Add ruff noqa comment to a line that has pylint disable.** (1 connections) — `scripts/fix_suppression_alignment.py`
 - **Add pylint disable comment to a line that has noqa.** (1 connections) — `scripts/fix_suppression_alignment.py`

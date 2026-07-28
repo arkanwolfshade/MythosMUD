@@ -1,6 +1,6 @@
 # Emote Schema Definition
 
-> 36 nodes · cohesion 0.05
+> 39 nodes · cohesion 0.05
 
 ## Key Concepts
 
@@ -11,10 +11,11 @@
 - **aliases** (5 connections) — `schemas/emote_schema.json`
 - **self_message** (5 connections) — `schemas/emote_schema.json`
 - **properties** (4 connections) — `schemas/emote_schema.json`
+- **required** (3 connections) — `schemas/emote_schema.json`
 - **patternProperties** (2 connections) — `schemas/emote_schema.json`
 - **properties** (2 connections) — `schemas/emote_schema.json`
+- **required** (2 connections) — `schemas/emote_schema.json`
 - **additionalProperties** (1 connections) — `schemas/emote_schema.json`
-- **required** (1 connections) — `schemas/emote_schema.json`
 - **type** (1 connections) — `schemas/emote_schema.json`
 - **additionalProperties** (1 connections) — `schemas/emote_schema.json`
 - **description** (1 connections) — `schemas/emote_schema.json`
@@ -27,9 +28,8 @@
 - **minProperties** (1 connections) — `schemas/emote_schema.json`
 - **type** (1 connections) — `schemas/emote_schema.json`
 - **$id** (1 connections) — `schemas/emote_schema.json`
-- **description** (1 connections) — `schemas/emote_schema.json`
-- **maxLength** (1 connections) — `schemas/emote_schema.json`
-- *... and 11 more nodes in this community*
+- **emotes** (1 connections) — `schemas/emote_schema.json`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
@@ -41,7 +41,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 70 (100%)
+- EXTRACTED: 76 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

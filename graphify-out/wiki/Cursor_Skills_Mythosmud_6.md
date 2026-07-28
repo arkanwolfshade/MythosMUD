@@ -4,20 +4,20 @@
 
 ## Key Concepts
 
-- **get_logger Structured Logging** (1 connections) — `.cursor/skills/mythosmud-logging-standards/SKILL.md`
-- **MythosMUD Logging Standards Skill** (1 connections) — `.cursor/skills/mythosmud-logging-standards/SKILL.md`
+- **test_send_room_updates_to_entering_player_error_handling()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test send_room_updates_to_entering_player() handles errors.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Stores Statenormalization Basic](Stores_Statenormalization_Basic.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/skills/mythosmud-logging-standards/SKILL.md`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,24 +1,26 @@
 # Realtime Maintenance Connection
 
-> 2 nodes · cohesion 0.08
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **Any** (15 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **UUID** (12 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **short_description** (4 connections) — `schemas/items/item_prototype.schema.json`
+- **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
 
 ## Relationships
 
-- [Realtime Connection Impl](Realtime_Connection_Impl.md) (2 shared connections)
+- [Dual Connection Client Guide](Dual_Connection_Client_Guide.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/maintenance/connection_cleaner.py`
+- `schemas/items/item_prototype.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (93%)
-- INFERRED: 2 (7%)
+- EXTRACTED: 7 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,10 +1,11 @@
 # Cursor Plan Plans
 
-> 1 nodes · cohesion 1.00
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Cursor hooks.json** (1 connections) — `.cursor/plans/cursor_hooks_development_plan_23b08582.plan.md`
+- **LLM Wiki Pattern.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/concepts/LLM Wiki Pattern.md`
+- **LLM Wiki Pattern** (1 connections) — `data/MythosMUD-Obsidian/wiki/concepts/LLM Wiki Pattern.md`
 
 ## Relationships
 
@@ -12,11 +13,11 @@
 
 ## Source Files
 
-- `.cursor/plans/cursor_hooks_development_plan_23b08582.plan.md`
+- `data/MythosMUD-Obsidian/wiki/concepts/LLM Wiki Pattern.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,24 +1,23 @@
 # Message Handling
 
-> 3 nodes · cohesion 0.67
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **GameState Event Projection** (2 connections) — `docs/client-message-handling.md`
-- **Client EventStore** (1 connections) — `docs/client-message-handling.md`
-- **Server Authority over Client State** (1 connections) — `docs/client-message-handling.md`
+- **test_count_occupants_by_type_empty()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test count_occupants_by_type() with empty list.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/client-message-handling.md`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

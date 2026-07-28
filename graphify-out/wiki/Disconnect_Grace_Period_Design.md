@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Disconnect Grace Period and Rest Command** (3 connections) — `.cursor/plans/disconnect_grace_period_and_rest_command_c5c6e64a.plan.md`
+- **Disconnect Grace Period and Rest Command** (2 connections) — `.cursor/plans/disconnect_grace_period_and_rest_command_c5c6e64a.plan.md`
 - **30-Second Disconnect Grace Period** (2 connections) — `.cursor/plans/disconnect_grace_period_and_rest_command_c5c6e64a.plan.md`
 - **LOGIN_WARDED Effect** (2 connections) — `.cursor/plans/effects_system_implementation.plan.md`
 - **Effects System ADR and Implementation** (2 connections) — `.cursor/plans/effects_system_adr_and_implementation_2d137198.plan.md`
@@ -24,8 +24,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 11 (85%)
-- INFERRED: 2 (15%)
+- EXTRACTED: 10 (83%)
+- INFERRED: 2 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

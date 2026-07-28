@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Codacy CLI via WSL on Windows** (1 connections) — `.codacy/README.md`
+- **Codacy CLI via WSL on Windows** (0 connections) — `.codacy/README.md`
 
 ## Relationships
 
@@ -16,7 +16,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

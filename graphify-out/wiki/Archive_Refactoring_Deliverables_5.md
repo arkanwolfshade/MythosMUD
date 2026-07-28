@@ -1,11 +1,10 @@
 # Archive Refactoring Deliverables
 
-> 2 nodes · cohesion 1.00
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Test Coverage Gaps** (2 connections) — `docs/TEST_COVERAGE_GAPS.md`
-- **Disconnect Grace Period Rest Coverage** (1 connections) — `docs/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
+- **Cursor Lifecycle Hooks** (1 connections) — `docs/CURSOR_HOOKS.md`
 
 ## Relationships
 
@@ -13,13 +12,12 @@
 
 ## Source Files
 
-- `docs/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- `docs/TEST_COVERAGE_GAPS.md`
+- `docs/CURSOR_HOOKS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (33%)
-- INFERRED: 2 (67%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

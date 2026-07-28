@@ -1,22 +1,23 @@
 # Run Playwright
 
-> 1 nodes · cohesion 1.00
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **run_integration_tests_playwright.ps1** (0 connections) — `scripts/run_integration_tests_playwright.ps1`
+- **test_parse_behavior_config_not_dict_or_string()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **Test _parse_behavior_config() returns None for non-dict, non-string.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/run_integration_tests_playwright.ps1`
+- `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

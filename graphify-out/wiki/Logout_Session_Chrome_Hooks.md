@@ -1,14 +1,33 @@
 # Logout Session Chrome Hooks
 
-> 1 nodes · cohesion 0.15
+> 17 nodes · cohesion 0.15
 
 ## Key Concepts
 
-- **_JSONDict** (10 connections) — `server/models/npc.py`
+- **_JSONDict** (10 connections)
+- **_loads_json_dict()** (7 connections) — `server/models/npc.py`
+- **.get_base_stats()** (6 connections) — `server/models/npc.py`
+- **.get_spawn_conditions()** (5 connections) — `server/models/npc.py`
+- **.get_ai_integration_stub()** (4 connections) — `server/models/npc.py`
+- **.get_behavior_config()** (4 connections) — `server/models/npc.py`
+- **.set_ai_integration_stub()** (3 connections) — `server/models/npc.py`
+- **.set_base_stats()** (3 connections) — `server/models/npc.py`
+- **.set_behavior_config()** (3 connections) — `server/models/npc.py`
+- **Get base stats as dictionary.** (1 connections) — `server/models/npc.py`
+- **Set base stats from dictionary.** (1 connections) — `server/models/npc.py`
+- **Get behavior configuration as dictionary.** (1 connections) — `server/models/npc.py`
+- **Set behavior configuration from dictionary.** (1 connections) — `server/models/npc.py`
+- **Get AI integration stub configuration as dictionary.** (1 connections) — `server/models/npc.py`
+- **Set AI integration stub configuration from dictionary.** (1 connections) — `server/models/npc.py`
+- **Get spawn conditions as dictionary.** (1 connections) — `server/models/npc.py`
+- **Parse JSON object from string; empty dict on failure or non-object root.** (1 connections) — `server/models/npc.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Distributed Event Bus](Distributed_Event_Bus.md) (7 shared connections)
+- [NPC Definition CRUD](NPC_Definition_CRUD.md) (4 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (1 shared connections)
+- [Combat Command Handler](Combat_Command_Handler.md) (1 shared connections)
 
 ## Source Files
 
@@ -16,8 +35,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 51 (96%)
+- INFERRED: 2 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

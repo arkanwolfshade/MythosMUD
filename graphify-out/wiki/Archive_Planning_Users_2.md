@@ -1,22 +1,23 @@
 # Archive Planning Users
 
-> 1 nodes · cohesion 1.00
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Phase 2 Service Layer Migration** (1 connections) — `docs/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
+- **test_connection_manager_property_lazy_load()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Test connection_manager property lazy loads from container.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
+- `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,17 +1,18 @@
 # Pylint Unique Findings
 
-> 14 nodes · cohesion 0.13
+> 15 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **CreateItemInstanceInput** (14 connections) — `server/async_persistence_constants.py`
-- **datetime** (6 connections) — `server/async_persistence.py`
-- **Profession** (5 connections) — `server/async_persistence.py`
+- **CreateItemInstanceInput** (11 connections) — `server/async_persistence_constants.py`
+- **datetime** (6 connections)
+- **Profession** (5 connections)
 - **.get_decayed_containers()** (4 connections) — `server/async_persistence.py`
 - **.update_player_last_active()** (4 connections) — `server/async_persistence.py`
 - **.create_item_instance()** (3 connections) — `server/async_persistence.py`
 - **.get_profession_by_id()** (3 connections) — `server/async_persistence.py`
 - **async_persistence_constants.py** (3 connections) — `server/async_persistence_constants.py`
+- **TypedDict** (1 connections)
 - **Constants and shared types for async persistence layer.  Extracted to keep async** (1 connections) — `server/async_persistence_constants.py`
 - **Optional fields for create_item_instance. owner_type, owner_id, etc. with defaul** (1 connections) — `server/async_persistence_constants.py`
 - **Update the last_active timestamp for a player. Delegates to PlayerRepository.** (1 connections) — `server/async_persistence.py`
@@ -37,8 +38,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 32 (67%)
-- INFERRED: 16 (33%)
+- EXTRACTED: 34 (74%)
+- INFERRED: 12 (26%)
 - AMBIGUOUS: 0 (0%)
 
 ---

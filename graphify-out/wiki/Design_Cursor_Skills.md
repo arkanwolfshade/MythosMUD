@@ -4,21 +4,22 @@
 
 ## Key Concepts
 
-- **4pt Spacing System** (1 connections) — `.cursor/skills/frontend-design/reference/spatial-design.md`
-- **Spatial Design Reference** (1 connections) — `.cursor/skills/frontend-design/reference/spatial-design.md`
+- **test_handle_event_async_async_subscriber_error()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test _handle_event_async() handles async subscriber errors.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Realtime Event Handlers](Realtime_Event_Handlers.md) (1 shared connections)
+- [Project README Overview](Project_README_Overview.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/skills/frontend-design/reference/spatial-design.md`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,23 +1,51 @@
 # NATS Pattern Matcher
 
-> 1 nodes · cohesion 0.05
+> 47 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **Any** (1 connections) — `server/services/nats_subject_manager/pattern_matcher.py`
+- **test_pattern_matcher.py** (20 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- **PatternMatcher** (13 connections) — `server/services/nats_subject_manager/pattern_matcher.py`
+- **pattern_matcher.py** (4 connections) — `server/services/nats_subject_manager/pattern_matcher.py`
+- **.matches_any_pattern()** (4 connections) — `server/services/nats_subject_manager/pattern_matcher.py`
+- **._components_match_pattern()** (3 connections) — `server/services/nats_subject_manager/pattern_matcher.py`
+- **pattern_matcher()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- **strict_pattern_matcher()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- **test_pattern_matcher_init()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- **test_pattern_matcher_init_strict()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- **.__init__()** (2 connections) — `server/services/nats_subject_manager/pattern_matcher.py`
+- **test_components_match_pattern_exact()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- **test_components_match_pattern_invalid_placeholder_value()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- **test_components_match_pattern_mismatch()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- **test_components_match_pattern_multiple_placeholders()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- **test_components_match_pattern_numbers()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- **test_components_match_pattern_placeholder()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- **test_components_match_pattern_strict_allows_hyphens()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- **test_components_match_pattern_strict_no_underscores()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- **test_matches_any_pattern_different_length()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- **test_matches_any_pattern_exact_match()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- **test_matches_any_pattern_multiple_patterns()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- **test_matches_any_pattern_no_match()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- **test_matches_any_pattern_strict_validation()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- **Any** (1 connections)
+- **Pattern matching utilities for NATS Subject Manager.  This module provides patte** (1 connections) — `server/services/nats_subject_manager/pattern_matcher.py`
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Admin Set Stat Command](Admin_Set_Stat_Command.md) (2 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (1 shared connections)
+- [Manager Services Nats](Manager_Services_Nats.md) (1 shared connections)
 
 ## Source Files
 
 - `server/services/nats_subject_manager/pattern_matcher.py`
+- `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 107 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

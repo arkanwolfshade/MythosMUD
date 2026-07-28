@@ -1,14 +1,17 @@
 # Architecture Api Openapi
 
-> 1 nodes · cohesion 0.67
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **BoundLogger** (1 connections) — `server/tests/conftest.py`
+- **test_logger()** (4 connections) — `server/tests/conftest.py`
+- **BoundLogger** (1 connections)
+- **Provide a logger for tests.** (1 connections) — `server/tests/conftest.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
+- [Common Troubleshooting Guide](Common_Troubleshooting_Guide.md) (1 shared connections)
 
 ## Source Files
 
@@ -16,7 +19,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,14 +1,21 @@
 # Calendar NPC Schedule
 
-> 1 nodes · cohesion 0.29
+> 7 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **Any** (10 connections) — `server/realtime/event_handler.py`
+- **Any** (4 connections)
+- **._create_player_entered_message()** (4 connections) — `server/realtime/event_handler.py`
+- **._create_player_left_message()** (4 connections) — `server/realtime/event_handler.py`
+- **._get_room_occupants()** (3 connections) — `server/realtime/event_handler.py`
+- **Get room occupants (public API for backward compatibility).          Args:** (1 connections) — `server/realtime/event_handler.py`
+- **Create player entered message (public API for tests).          Args:** (1 connections) — `server/realtime/event_handler.py`
+- **Create player left message (public API for tests).          Args:             ev** (1 connections) — `server/realtime/event_handler.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Distributed Event Bus](Distributed_Event_Bus.md) (3 shared connections)
+- [WebSocket Initial State](WebSocket_Initial_State.md) (3 shared connections)
 
 ## Source Files
 
@@ -16,8 +23,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 4 (40%)
-- INFERRED: 6 (60%)
+- EXTRACTED: 18 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

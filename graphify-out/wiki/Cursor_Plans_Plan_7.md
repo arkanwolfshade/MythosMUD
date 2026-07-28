@@ -1,11 +1,12 @@
 # Cursor Plans Plan
 
-> 2 nodes · cohesion 1.00
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **Convert E2E Scenarios to Playwright CLI** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **Fix Code Review Findings Issue 353** (1 connections) — `.cursor/plans/fix_code_review_findings_issue_353_f59f87dc.plan.md`
+- **Logging Aggregator Verification** (2 connections) — `.cursor/plans/logging_aggregator_verification.plan.md`
+- **warnings.log and errors.log Aggregators** (1 connections) — `.cursor/plans/logging_aggregator_verification.plan.md`
+- **Structlog Anti-Pattern Remediation** (1 connections) — `.cursor/plans/structlog_anti-pattern_remediation_1d228d75.plan.md`
 
 ## Relationships
 
@@ -13,13 +14,13 @@
 
 ## Source Files
 
-- `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- `.cursor/plans/fix_code_review_findings_issue_353_f59f87dc.plan.md`
+- `.cursor/plans/logging_aggregator_verification.plan.md`
+- `.cursor/plans/structlog_anti-pattern_remediation_1d228d75.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 2 (100%)
+- EXTRACTED: 2 (50%)
+- INFERRED: 2 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---

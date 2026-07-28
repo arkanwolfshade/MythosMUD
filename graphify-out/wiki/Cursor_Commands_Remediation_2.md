@@ -1,23 +1,29 @@
 # Cursor Commands Remediation
 
-> 2 nodes · cohesion 0.12
+> 8 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **Stats** (11 connections) — `server/game/stats_generator.py`
-- **Any** (2 connections) — `server/game/stats_generator.py`
+- **required** (8 connections) — `schemas/room_schema.json`
+- **description** (1 connections) — `schemas/room_schema.json`
+- **exits** (1 connections) — `schemas/room_schema.json`
+- **id** (1 connections) — `schemas/room_schema.json`
+- **name** (1 connections) — `schemas/room_schema.json`
+- **plane** (1 connections) — `schemas/room_schema.json`
+- **sub_zone** (1 connections) — `schemas/room_schema.json`
+- **zone** (1 connections) — `schemas/room_schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Schemas Room Schema](Schemas_Room_Schema.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/stats_generator.py`
+- `schemas/room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -10,7 +10,7 @@
 - **.migrate()** (5 connections) — `scripts/migrate_room_filenames.py`
 - **.parse_old_filename()** (5 connections) — `scripts/migrate_room_filenames.py`
 - **.update_room_id()** (5 connections) — `scripts/migrate_room_filenames.py`
-- **Path** (4 connections) — `scripts/migrate_room_filenames.py`
+- **Path** (4 connections)
 - **main()** (3 connections) — `scripts/migrate_room_filenames.py`
 - **.__init__()** (3 connections) — `scripts/migrate_room_filenames.py`
 - **migrate_room_filenames.py** (2 connections) — `scripts/migrate_room_filenames.py`

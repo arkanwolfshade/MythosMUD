@@ -12,14 +12,15 @@
 - **repo_root()** (3 connections) — `scripts/grype.py`
 - **_resolve_grype_executable()** (3 connections) — `scripts/grype.py`
 - **_grype_command()** (2 connections) — `scripts/grype.py`
-- **CompletedProcess** (2 connections) — `scripts/grype.py`
-- **Path** (1 connections) — `scripts/grype.py`
+- **CompletedProcess** (2 connections)
+- **Path** (1 connections)
 - **Append Machine and User Path from the registry (matches hadolint.ps1 behavior).** (1 connections) — `scripts/grype.py`
 - **Return the MythosMUD project root (parent of scripts/).** (1 connections) — `scripts/grype.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Load Seed](Load_Seed.md) (1 shared connections)
+- [CI Quality Scripts](CI_Quality_Scripts.md) (1 shared connections)
 
 ## Source Files
 
@@ -27,8 +28,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 36 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 35 (97%)
+- INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,10 +1,12 @@
 # Archive Who Command
 
-> 1 nodes · cohesion 1.00
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **Whisper System Production-Ready** (1 connections) — `e2e-tests/WHISPER_TESTING_COMPLETE.md`
+- **Mythos Terminal Theme Tokens** (2 connections) — `client/src/components/ui/README.md`
+- **UI Screenshot Arena Cell 6,5** (2 connections) — `client/playwright-report/data/02b5b8d40de3d3e45d218acb648636912864265c.png`
+- **MythosMUD Terminal Game UI Layout** (1 connections) — `client/playwright-report/data/02b5b8d40de3d3e45d218acb648636912864265c.png`
 
 ## Relationships
 
@@ -12,12 +14,13 @@
 
 ## Source Files
 
-- `e2e-tests/WHISPER_TESTING_COMPLETE.md`
+- `client/playwright-report/data/02b5b8d40de3d3e45d218acb648636912864265c.png`
+- `client/src/components/ui/README.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (60%)
+- INFERRED: 2 (40%)
 - AMBIGUOUS: 0 (0%)
 
 ---

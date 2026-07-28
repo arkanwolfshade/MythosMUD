@@ -1,15 +1,17 @@
 # Cursor Commands Remediation
 
-> 6 nodes · cohesion 0.25
+> 8 nodes · cohesion 0.25
 
 ## Key Concepts
 
 - **alias** (6 connections) — `schemas/alias_schema.json`
+- **required** (3 connections) — `schemas/alias_schema.json`
 - **$defs** (2 connections) — `schemas/alias_schema.json`
+- **command** (1 connections) — `schemas/alias_schema.json`
 - **additionalProperties** (1 connections) — `schemas/alias_schema.json`
 - **description** (1 connections) — `schemas/alias_schema.json`
-- **required** (1 connections) — `schemas/alias_schema.json`
 - **type** (1 connections) — `schemas/alias_schema.json`
+- **name** (1 connections) — `schemas/alias_schema.json`
 
 ## Relationships
 
@@ -22,7 +24,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

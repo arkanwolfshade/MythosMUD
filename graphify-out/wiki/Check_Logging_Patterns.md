@@ -10,9 +10,9 @@
 - **check_logging_patterns.py** (4 connections) — `scripts/check_logging_patterns.py`
 - **format_violation_report()** (3 connections) — `scripts/check_logging_patterns.py`
 - **.visit_Call()** (3 connections) — `scripts/check_logging_patterns.py`
-- **Path** (3 connections) — `scripts/check_logging_patterns.py`
+- **Path** (3 connections)
 - **.__init__()** (2 connections) — `scripts/check_logging_patterns.py`
-- **Call** (1 connections) — `scripts/check_logging_patterns.py`
+- **Call** (1 connections)
 - **Main function to scan files and report violations.** (1 connections) — `scripts/check_logging_patterns.py`
 - **AST visitor to detect f-string logging violations.** (1 connections) — `scripts/check_logging_patterns.py`
 - **Check for f-string logging patterns.** (1 connections) — `scripts/check_logging_patterns.py`

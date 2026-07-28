@@ -1,10 +1,13 @@
 # Client README Overview
 
-> 1 nodes · cohesion 0.50
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **Vitest Unit Tests** (2 connections) — `client/README.md`
+- **Tiered Test Coverage Strategy** (3 connections) — `client/docs/TEST_COVERAGE_STRATEGY.md`
+- **Critical Code 90% Coverage** (1 connections) — `client/docs/TEST_COVERAGE_STRATEGY.md`
+- **Global 70% Coverage Threshold** (1 connections) — `client/docs/TEST_COVERAGE_STRATEGY.md`
+- **Vitest Unit Tests** (1 connections) — `client/README.md`
 
 ## Relationships
 
@@ -13,11 +16,12 @@
 ## Source Files
 
 - `client/README.md`
+- `client/docs/TEST_COVERAGE_STRATEGY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (50%)
-- INFERRED: 1 (50%)
+- EXTRACTED: 4 (67%)
+- INFERRED: 2 (33%)
 - AMBIGUOUS: 0 (0%)
 
 ---

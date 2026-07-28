@@ -1,14 +1,17 @@
 # Schemas Intersection Schema
 
-> 5 nodes · cohesion 0.25
+> 8 nodes · cohesion 0.25
 
 ## Key Concepts
 
 - **environment** (5 connections) — `schemas/intersection_schema.json`
+- **enum** (4 connections) — `schemas/intersection_schema.json`
 - **default** (1 connections) — `schemas/intersection_schema.json`
 - **description** (1 connections) — `schemas/intersection_schema.json`
-- **enum** (1 connections) — `schemas/intersection_schema.json`
 - **type** (1 connections) — `schemas/intersection_schema.json`
+- **indoors** (1 connections) — `schemas/intersection_schema.json`
+- **outdoors** (1 connections) — `schemas/intersection_schema.json`
+- **underwater** (1 connections) — `schemas/intersection_schema.json`
 
 ## Relationships
 
@@ -20,7 +23,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

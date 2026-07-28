@@ -1,27 +1,44 @@
 # PostgreSQL Adapter Tests
 
-> 4 nodes · cohesion 0.14
+> 18 nodes · cohesion 0.14
 
 ## Key Concepts
 
+- **test_postgres_adapter.py** (14 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **TestUtilityFunctions** (11 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
 - **connect_postgres()** (6 connections) — `server/postgres_adapter.py`
 - **convert_sqlite_to_postgres_query()** (6 connections) — `server/postgres_adapter.py`
+- **.test_connect_postgres()** (4 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.test_connect_postgres_with_driver_prefix()** (4 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.test_convert_sqlite_to_postgres_query_basic()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.test_convert_sqlite_to_postgres_query_insert_replace()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.test_convert_sqlite_to_postgres_query_no_params()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
 - **Create a PostgreSQL connection.      Args:         database_url: PostgreSQL conn** (1 connections) — `server/postgres_adapter.py`
 - **Convert legacy SQLite query syntax to PostgreSQL syntax.      Note: This functio** (1 connections) — `server/postgres_adapter.py`
+- **Unit tests for PostgreSQL adapter.  Tests PostgresRow, PostgresConnection, Postg** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Test utility functions.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Test connect_postgres().** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Test connect_postgres() with driver prefix.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Test convert_sqlite_to_postgres_query() basic conversion.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Test convert_sqlite_to_postgres_query() with no parameters.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Test convert_sqlite_to_postgres_query() with INSERT OR REPLACE.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
 
 ## Relationships
 
-- [Distributed Event Bus](Distributed_Event_Bus.md) (2 shared connections)
-- [Postgres Connection Tests](Postgres_Connection_Tests.md) (1 shared connections)
+- [Postgres Connection Tests](Postgres_Connection_Tests.md) (6 shared connections)
+- [Postgres Adapter Infrastructure](Postgres_Adapter_Infrastructure.md) (6 shared connections)
+- [Postgres Adapter](Postgres_Adapter.md) (4 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (3 shared connections)
 
 ## Source Files
 
 - `server/postgres_adapter.py`
+- `server/tests/unit/infrastructure/test_postgres_adapter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 57 (90%)
+- INFERRED: 6 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

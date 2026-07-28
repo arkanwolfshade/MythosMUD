@@ -7,7 +7,7 @@
 - **load_world_seed.py** (14 connections) — `scripts/load_world_seed.py`
 - **_run_psql_file()** (11 connections) — `scripts/load_world_seed.py`
 - **main()** (8 connections) — `scripts/load_world_seed.py`
-- **Path** (6 connections) — `scripts/load_world_seed.py`
+- **Path** (6 connections)
 - **_apply_schema()** (5 connections) — `scripts/load_world_seed.py`
 - **_apply_schema_with_psql()** (5 connections) — `scripts/load_world_seed.py`
 - **_load_dml_with_psql()** (5 connections) — `scripts/load_world_seed.py`
@@ -20,8 +20,8 @@
 - **_database_url_for_cli()** (3 connections) — `scripts/load_world_seed.py`
 - **_psql_exit_code_extra()** (3 connections) — `scripts/load_world_seed.py`
 - **_psql_heartbeat_wait()** (3 connections) — `scripts/load_world_seed.py`
-- **Popen** (2 connections) — `scripts/load_world_seed.py`
-- **Connection** (2 connections) — `scripts/load_world_seed.py`
+- **Popen** (2 connections)
+- **Connection** (2 connections)
 - **Normalize SQLAlchemy/async driver URLs to a plain postgresql:// form for tools.** (1 connections) — `scripts/load_world_seed.py`
 - **Return (host, port, user, password, dbname) from DATABASE_URL. Password may be e** (1 connections) — `scripts/load_world_seed.py`
 - **Locate psql for DDL (pg_dump files are meant for psql, not one asyncpg.execute b** (1 connections) — `scripts/load_world_seed.py`

@@ -1,9 +1,10 @@
 # CI Quality Scripts
 
-> 24 nodes · cohesion 0.14
+> 26 nodes · cohesion 0.14
 
 ## Key Concepts
 
+- **safe_run_static()** (16 connections) — `scripts/utils/safe_subprocess.py`
 - **worktree-ops.py** (9 connections) — `scripts/worktree-ops.py`
 - **get_project_root()** (8 connections) — `scripts/worktree-ops.py`
 - **get_current_worktree()** (7 connections) — `scripts/worktree-ops.py`
@@ -20,6 +21,7 @@
 - **Return True when sqlint failed to start rather than reporting SQL issues.** (1 connections) — `scripts/sqlint.py`
 - **Return sqlint command argv when the tool is installed and runnable.** (1 connections) — `scripts/sqlint.py`
 - **_skip_sqlint()** (1 connections) — `scripts/sqlint.py`
+- **Execute a command with static arguments (safest option).      This is the safest** (1 connections) — `scripts/utils/safe_subprocess.py`
 - **Run linting (worktree-aware)** (1 connections) — `scripts/worktree-ops.py`
 - **Determine the project root based on current working directory** (1 connections) — `scripts/worktree-ops.py`
 - **Run formatting (worktree-aware)** (1 connections) — `scripts/worktree-ops.py`
@@ -27,21 +29,25 @@
 - **Get the current worktree name** (1 connections) — `scripts/worktree-ops.py`
 - **Run a command with proper error handling** (1 connections) — `scripts/worktree-ops.py`
 - **Install dependencies (worktree-aware)** (1 connections) — `scripts/worktree-ops.py`
-- **Run tests (worktree-aware)** (1 connections) — `scripts/worktree-ops.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Load Seed](Load_Seed.md) (7 shared connections)
+- [Dependency Risk Analyzer](Dependency_Risk_Analyzer.md) (2 shared connections)
+- [Linting Results Comparator](Linting_Results_Comparator.md) (1 shared connections)
+- [Grype Command Handle Result](Grype_Command_Handle_Result.md) (1 shared connections)
 
 ## Source Files
 
 - `scripts/sqlint.py`
+- `scripts/utils/safe_subprocess.py`
 - `scripts/worktree-ops.py`
 
 ## Audit Trail
 
-- EXTRACTED: 80 (93%)
-- INFERRED: 6 (7%)
+- EXTRACTED: 86 (83%)
+- INFERRED: 17 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

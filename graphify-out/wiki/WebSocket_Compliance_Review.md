@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **WebSocket Best Practices Compliance** (1 connections) — `.cursor/websocket-compliance-verification.md`
+- **WebSocket Best Practices Compliance** (0 connections) — `.cursor/websocket-compliance-verification.md`
 
 ## Relationships
 
@@ -16,7 +16,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

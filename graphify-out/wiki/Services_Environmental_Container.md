@@ -1,16 +1,28 @@
 # Services Environmental Container
 
-> 3 nodes · cohesion 0.21
+> 13 nodes · cohesion 0.21
 
 ## Key Concepts
 
-- **Any** (3 connections) — `server/services/environmental_container_loader.py`
-- **ContainerComponent** (2 connections) — `server/services/environmental_container_loader.py`
-- **UUID** (2 connections) — `server/services/environmental_container_loader.py`
+- **.load_container_from_room_json()** (8 connections) — `server/services/environmental_container_loader.py`
+- **.migrate_room_container_to_postgresql()** (7 connections) — `server/services/environmental_container_loader.py`
+- **EnvironmentalContainerLoader** (6 connections) — `server/services/environmental_container_loader.py`
+- **.__init__()** (3 connections) — `server/services/environmental_container_loader.py`
+- **.load_containers_for_room()** (3 connections) — `server/services/environmental_container_loader.py`
+- **Any** (3 connections)
+- **ContainerComponent** (2 connections)
+- **UUID** (2 connections)
+- **Migrate a container from room JSON to PostgreSQL.          Checks if container a** (1 connections) — `server/services/environmental_container_loader.py`
+- **Load all environmental containers for a room from PostgreSQL.          Args:** (1 connections) — `server/services/environmental_container_loader.py`
+- **Service for loading environmental containers from JSON and PostgreSQL.      Hand** (1 connections) — `server/services/environmental_container_loader.py`
+- **Initialize the environmental container loader.          Args:             persis** (1 connections) — `server/services/environmental_container_loader.py`
+- **Load a container definition from room JSON.          Args:             room_json** (1 connections) — `server/services/environmental_container_loader.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Container Component Capacity](Container_Component_Capacity.md) (3 shared connections)
+- [Api Player Respawn](Api_Player_Respawn.md) (2 shared connections)
+- [Realtime Connection Impl](Realtime_Connection_Impl.md) (2 shared connections)
 
 ## Source Files
 
@@ -18,8 +30,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 37 (95%)
+- INFERRED: 2 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

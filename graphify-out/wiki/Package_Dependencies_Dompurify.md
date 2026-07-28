@@ -1,10 +1,21 @@
 # Package Dependencies Dompurify
 
-> 12 nodes · cohesion 0.09
+> 23 nodes · cohesion 0.09
 
 ## Key Concepts
 
 - **dependencies** (13 connections) — `client/package.json`
+- **dompurify** (2 connections) — `client/package.json`
+- **lucide-react** (2 connections) — `client/package.json`
+- **react-dom** (2 connections) — `client/package.json`
+- **react-grid-layout** (2 connections) — `client/package.json`
+- **react-resizable** (2 connections) — `client/package.json`
+- **react-rnd** (2 connections) — `client/package.json`
+- **react-router-dom** (2 connections) — `client/package.json`
+- **reactflow** (2 connections) — `client/package.json`
+- **xstate** (2 connections) — `client/package.json`
+- **@xstate/react** (2 connections) — `client/package.json`
+- **zustand** (2 connections) — `client/package.json`
 - **dompurify** (1 connections) — `client/package.json`
 - **lucide-react** (1 connections) — `client/package.json`
 - **react-dom** (1 connections) — `client/package.json`
@@ -28,7 +39,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 24 (100%)
+- EXTRACTED: 46 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

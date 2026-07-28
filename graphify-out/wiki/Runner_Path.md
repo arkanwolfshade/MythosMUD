@@ -7,7 +7,7 @@
 - **TestRunner** (13 connections) — `scripts/test_runner.py`
 - **.run_tests()** (12 connections) — `scripts/test_runner.py`
 - **main()** (9 connections) — `scripts/test_runner.py`
-- **test_runner.py** (4 connections) — `scripts/test_runner.py`
+- **test_runner.py** (5 connections) — `scripts/test_runner.py`
 - **.run_all_tests()** (4 connections) — `scripts/test_runner.py`
 - **.run_coverage_report()** (4 connections) — `scripts/test_runner.py`
 - **.run_integration_tests()** (4 connections) — `scripts/test_runner.py`
@@ -17,7 +17,7 @@
 - **.run_e2e_tests()** (3 connections) — `scripts/test_runner.py`
 - **.run_unit_tests()** (3 connections) — `scripts/test_runner.py`
 - **.setup_test_environment()** (3 connections) — `scripts/test_runner.py`
-- **Path** (1 connections) — `scripts/test_runner.py`
+- **Path** (1 connections)
 - **Verify test database configuration.          Note: For PostgreSQL databases, sch** (1 connections) — `scripts/test_runner.py`
 - **Build the pytest command with proper configuration.          Args:             t** (1 connections) — `scripts/test_runner.py`
 - **# NOTE: Test runner uses minimal structlog configuration for console output** (1 connections) — `scripts/test_runner.py`
@@ -32,7 +32,8 @@
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Load Seed](Load_Seed.md) (2 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
 
 ## Source Files
 
@@ -40,8 +41,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 80 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 80 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

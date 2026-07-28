@@ -4,20 +4,20 @@
 
 ## Key Concepts
 
-- **Eliminate Raw CRUD SQL** (1 connections) — `.cursor/plans/eliminate-raw-crud-sql_1bc86515.plan.md`
-- **Procedures-First PostgreSQL CRUD** (1 connections) — `.cursor/plans/eliminate-raw-crud-sql_1bc86515.plan.md`
+- **test_unsubscribe_invalid_event_type()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test unsubscribe() raises error for invalid event type.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Realtime Event Handlers](Realtime_Event_Handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/eliminate-raw-crud-sql_1bc86515.plan.md`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,22 +1,23 @@
 # Npc Idle Movement
 
-> 1 nodes · cohesion 0.67
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Any** (1 connections) — `server/npc/population_stats.py`
+- **test_preload_receiver_mute_data_excludes_sender()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test preload_receiver_mute_data() excludes sender from targets.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Game State Provider Tests](Game_State_Provider_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/population_stats.py`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

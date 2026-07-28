@@ -1,11 +1,14 @@
 # Cursor Plans Convert
 
-> 2 nodes · cohesion 1.00
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **Temporal System 4:1 Calendar Conversion** (1 connections) — `.cursor/plans/convert_temporal_system_to_4_1_ratio_with_real-world_calendar_f530d460.plan.md`
-- **4:1 Temporal Compression Ratio** (1 connections) — `.cursor/plans/convert_temporal_system_to_4_1_ratio_with_real-world_calendar_f530d460.plan.md`
+- **DomainError** (3 connections) — `server/domain/exceptions/__init__.py`
+- **__init__.py** (2 connections) — `server/domain/exceptions/__init__.py`
+- **Exception** (1 connections)
+- **Domain-specific exceptions for MythosMUD.  These exceptions represent business r** (1 connections) — `server/domain/exceptions/__init__.py`
+- **Base exception for all domain errors.** (1 connections) — `server/domain/exceptions/__init__.py`
 
 ## Relationships
 
@@ -13,11 +16,11 @@
 
 ## Source Files
 
-- `.cursor/plans/convert_temporal_system_to_4_1_ratio_with_real-world_calendar_f530d460.plan.md`
+- `server/domain/exceptions/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Responsive Design Reference** (1 connections) — `.cursor/skills/frontend-design/reference/responsive-design.md`
-- **Mobile-First Responsive Design** (1 connections) — `.cursor/skills/frontend-design/reference/responsive-design.md`
+- **Eight Interactive States** (1 connections) — `.cursor/skills/frontend-design/reference/interaction-design.md`
+- **Interaction Design Reference** (1 connections) — `.cursor/skills/frontend-design/reference/interaction-design.md`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `.cursor/skills/frontend-design/reference/responsive-design.md`
+- `.cursor/skills/frontend-design/reference/interaction-design.md`
 
 ## Audit Trail
 

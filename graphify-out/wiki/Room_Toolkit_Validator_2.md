@@ -4,23 +4,23 @@
 
 ## Key Concepts
 
-- **start_server.ps1** (5 connections) — `scripts/README.md`
-- **start_local.ps1** (3 connections) — `scripts/README.md`
-- **stop_server.ps1** (3 connections) — `scripts/README.md`
-- **Default Server Port 54768** (1 connections) — `scripts/README.md`
+- **duration_hours** (4 connections) — `db/static/schemas/holidays.schema.json`
+- **maximum** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **minimum** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **type** (1 connections) — `db/static/schemas/holidays.schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Archive Planning Aliases](Archive_Planning_Aliases.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/README.md`
+- `db/static/schemas/holidays.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (83%)
-- INFERRED: 2 (17%)
+- EXTRACTED: 7 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

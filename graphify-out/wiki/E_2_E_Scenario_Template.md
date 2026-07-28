@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Mandatory AI Execution Contract** (6 connections) — `e2e-tests/SCENARIO_TEMPLATE.md`
+- **Mandatory AI Execution Contract** (1 connections) — `e2e-tests/SCENARIO_TEMPLATE.md`
 - **E2E Scenario Template** (1 connections) — `e2e-tests/SCENARIO_TEMPLATE.md`
 
 ## Relationships
@@ -17,7 +17,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

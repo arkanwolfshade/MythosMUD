@@ -1,24 +1,29 @@
 # Game Magic Spell
 
-> 2 nodes · cohesion 0.16
+> 6 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **Any** (6 connections) — `server/game/magic/spell_materials.py`
-- **UUID** (5 connections) — `server/game/magic/spell_materials.py`
+- **graceful_degradation()** (5 connections) — `server/legacy_error_handlers.py`
+- **.test_graceful_degradation_failure()** (3 connections) — `server/tests/unit/test_legacy_error_handlers.py`
+- **.test_graceful_degradation_success()** (3 connections) — `server/tests/unit/test_legacy_error_handlers.py`
+- **Context manager for graceful degradation.      Provides fallback behavior when o** (1 connections) — `server/legacy_error_handlers.py`
+- **Test graceful_degradation with successful operation.** (1 connections) — `server/tests/unit/test_legacy_error_handlers.py`
+- **Test graceful_degradation catches exceptions.** (1 connections) — `server/tests/unit/test_legacy_error_handlers.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Standardized Error Responses](Standardized_Error_Responses.md) (4 shared connections)
 
 ## Source Files
 
-- `server/game/magic/spell_materials.py`
+- `server/legacy_error_handlers.py`
+- `server/tests/unit/test_legacy_error_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (64%)
-- INFERRED: 4 (36%)
+- EXTRACTED: 14 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **AsyncPersistenceLayer** (2 connections) — `docs/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **PersistenceLayer Sync Shim** (2 connections) — `docs/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
+- **AsyncPersistenceLayer** (1 connections) — `docs/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
+- **PersistenceLayer Sync Shim** (1 connections) — `docs/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
 
 ## Relationships
 
@@ -17,7 +17,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

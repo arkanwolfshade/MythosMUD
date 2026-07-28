@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Container Item System** (1 connections) — `docs/CONTAINER_SYSTEM_ARCHITECTURE.md`
+- **.env.local Secrets Pattern** (1 connections) — `docs/CONFIGURATION_FILES_REFERENCE.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/CONTAINER_SYSTEM_ARCHITECTURE.md`
+- `docs/CONFIGURATION_FILES_REFERENCE.md`
 
 ## Audit Trail
 

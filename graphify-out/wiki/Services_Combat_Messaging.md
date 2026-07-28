@@ -1,10 +1,17 @@
 # Services Combat Messaging
 
-> 1 nodes · cohesion 0.25
+> 8 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **required** (1 connections) — `schemas/intersection_schema.json`
+- **required** (8 connections) — `schemas/intersection_schema.json`
+- **description** (1 connections) — `schemas/intersection_schema.json`
+- **exits** (1 connections) — `schemas/intersection_schema.json`
+- **id** (1 connections) — `schemas/intersection_schema.json`
+- **name** (1 connections) — `schemas/intersection_schema.json`
+- **plane** (1 connections) — `schemas/intersection_schema.json`
+- **sub_zone** (1 connections) — `schemas/intersection_schema.json`
+- **zone** (1 connections) — `schemas/intersection_schema.json`
 
 ## Relationships
 
@@ -16,7 +23,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

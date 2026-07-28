@@ -1,23 +1,38 @@
 # Commands Go Command
 
-> 1 nodes · cohesion 0.06
+> 14 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **MutableHeaders** (6 connections) — `server/middleware/security_headers.py`
+- **.resolve_spell_target()** (9 connections) — `server/game/magic/spell_targeting.py`
+- **UUID** (7 connections)
+- **._get_player()** (7 connections) — `server/game/magic/spell_targeting.py`
+- **._get_combat_target()** (6 connections) — `server/game/magic/spell_targeting.py`
+- **._resolve_area_target()** (6 connections) — `server/game/magic/spell_targeting.py`
+- **._resolve_entity_target()** (6 connections) — `server/game/magic/spell_targeting.py`
+- **._resolve_self_target()** (6 connections) — `server/game/magic/spell_targeting.py`
+- **Any** (1 connections)
+- **Resolve the target for a spell cast.          Args:             player_id: ID of** (1 connections) — `server/game/magic/spell_targeting.py`
+- **Get player object from persistence.** (1 connections) — `server/game/magic/spell_targeting.py`
+- **Get the combat target for a player if they are in combat.          Args:** (1 connections) — `server/game/magic/spell_targeting.py`
+- **Resolve self-target spell. Returns (target_match, error_message).** (1 connections) — `server/game/magic/spell_targeting.py`
+- **Resolve area/all target spell. Returns (target_match, error_message).** (1 connections) — `server/game/magic/spell_targeting.py`
+- **Resolve entity/location target spell with explicit target. Returns (target_match** (1 connections) — `server/game/magic/spell_targeting.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Game Magic Spell](Game_Magic_Spell.md) (7 shared connections)
+- [Magic Lifespan Initialization](Magic_Lifespan_Initialization.md) (6 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (1 shared connections)
 
 ## Source Files
 
-- `server/middleware/security_headers.py`
+- `server/game/magic/spell_targeting.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (17%)
-- INFERRED: 5 (83%)
+- EXTRACTED: 54 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

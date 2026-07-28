@@ -8,7 +8,7 @@
 - **main()** (5 connections) — `scripts/fix_syntax_errors.py`
 - **.fix_specific_file()** (5 connections) — `scripts/fix_syntax_errors.py`
 - **.process_files()** (5 connections) — `scripts/fix_syntax_errors.py`
-- **Path** (3 connections) — `scripts/fix_syntax_errors.py`
+- **Path** (3 connections)
 - **.fix_malformed_logger_calls()** (3 connections) — `scripts/fix_syntax_errors.py`
 - **fix_syntax_errors.py** (2 connections) — `scripts/fix_syntax_errors.py`
 - **Process multiple files and return statistics.** (1 connections) — `scripts/fix_syntax_errors.py`

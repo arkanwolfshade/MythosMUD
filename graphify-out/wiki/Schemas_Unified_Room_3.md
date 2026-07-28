@@ -1,18 +1,33 @@
 # Schemas Unified Room
 
-> 5 nodes · cohesion 0.25
+> 19 nodes · cohesion 0.11
 
 ## Key Concepts
 
-- **lock_state** (5 connections) — `schemas/unified_room_schema.json`
+- **properties** (7 connections) — `schemas/unified_room_schema.json`
+- **capacity_slots** (6 connections) — `schemas/unified_room_schema.json`
+- **allowed_roles** (4 connections) — `schemas/unified_room_schema.json`
+- **weight_limit** (4 connections) — `schemas/unified_room_schema.json`
+- **key_item_id** (3 connections) — `schemas/unified_room_schema.json`
+- **items** (2 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
 - **default** (1 connections) — `schemas/unified_room_schema.json`
 - **description** (1 connections) — `schemas/unified_room_schema.json`
-- **enum** (1 connections) — `schemas/unified_room_schema.json`
+- **maximum** (1 connections) — `schemas/unified_room_schema.json`
+- **minimum** (1 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **minimum** (1 connections) — `schemas/unified_room_schema.json`
 - **type** (1 connections) — `schemas/unified_room_schema.json`
 
 ## Relationships
 
-- [Schemas Unified Room](Schemas_Unified_Room.md) (1 shared connections)
+- [Schemas Unified Room](Schemas_Unified_Room.md) (2 shared connections)
+- [Npc Behavior Engine](Npc_Behavior_Engine.md) (1 shared connections)
 
 ## Source Files
 
@@ -20,7 +35,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 39 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

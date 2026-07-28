@@ -1,14 +1,16 @@
 # Realtime Performance Tracker
 
-> 1 nodes · cohesion 0.67
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **Any** (1 connections) — `server/realtime/monitoring/performance_tracker.py`
+- **.get_stats()** (3 connections) — `server/realtime/monitoring/performance_tracker.py`
+- **Any** (1 connections)
+- **Get comprehensive performance statistics with calculated averages.          Retu** (1 connections) — `server/realtime/monitoring/performance_tracker.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
 
 ## Source Files
 
@@ -16,7 +18,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

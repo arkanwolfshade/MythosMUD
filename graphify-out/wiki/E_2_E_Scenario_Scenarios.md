@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Playwright MCP Primary Testing Tool** (3 connections) — `e2e-tests/TESTING_APPROACH.md`
+- **Playwright MCP Primary Testing Tool** (2 connections) — `e2e-tests/TESTING_APPROACH.md`
 - **Standard Playwright Unsuitable for Multiplayer** (1 connections) — `e2e-tests/TESTING_APPROACH.md`
 - **Server Won't Start Troubleshooting** (1 connections) — `e2e-tests/TROUBLESHOOTING.md`
 
@@ -19,8 +19,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 3 (60%)
-- INFERRED: 2 (40%)
+- EXTRACTED: 2 (50%)
+- INFERRED: 2 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---

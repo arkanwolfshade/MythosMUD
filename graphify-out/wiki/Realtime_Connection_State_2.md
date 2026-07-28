@@ -1,14 +1,20 @@
 # Realtime Connection State
 
-> 1 nodes · cohesion 0.67
+> 6 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **Exception** (1 connections) — `server/realtime/connection_state_machine.py`
+- **.on_enter_state()** (4 connections) — `server/realtime/connection_state_machine.py`
+- **.get_stats()** (3 connections) — `server/realtime/connection_state_machine.py`
+- **Any** (2 connections)
+- **State** (2 connections)
+- **Called whenever state machine enters a new state.          Logs state transition** (1 connections) — `server/realtime/connection_state_machine.py`
+- **Get connection statistics.          Returns:             Dictionary with connect** (1 connections) — `server/realtime/connection_state_machine.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Community 1929](Community_1929.md) (2 shared connections)
+- [Look Command Helpers](Look_Command_Helpers.md) (1 shared connections)
 
 ## Source Files
 
@@ -16,7 +22,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

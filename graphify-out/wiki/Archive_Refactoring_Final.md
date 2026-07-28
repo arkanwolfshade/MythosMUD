@@ -1,22 +1,24 @@
 # Archive Refactoring Final
 
-> 1 nodes · cohesion 1.00
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Database Pool Configuration** (2 connections) — `docs/DATABASE_POOL_CONFIGURATION.md`
+- **test_cleanup_empty_subzone_subscriptions_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **Test cleanup_empty_subzone_subscriptions handles NATSError.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (1 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/DATABASE_POOL_CONFIGURATION.md`
+- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

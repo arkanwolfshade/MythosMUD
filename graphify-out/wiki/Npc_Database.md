@@ -13,7 +13,7 @@
 - **get_npc_seed_data_from_postgresql()** (3 connections) — `scripts/init_npc_database.py`
 - **populate_npc_data()** (3 connections) — `scripts/init_npc_database.py`
 - **_print_final_message()** (3 connections) — `scripts/init_npc_database.py`
-- **Namespace** (1 connections) — `scripts/init_npc_database.py`
+- **Namespace** (1 connections)
 - **Populate the database with NPC seed data.      Args:         engine: SQLAlchemy** (1 connections) — `scripts/init_npc_database.py`
 - **Initialize a PostgreSQL database with the NPC schema.      Args:         databas** (1 connections) — `scripts/init_npc_database.py`
 - **Get NPC database URL for the specified environment.      Args:         environme** (1 connections) — `scripts/init_npc_database.py`

@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **Limbo Arena Zone** (1 connections) — `.cursor/plans/gladiator_ring_arena_6a674c58.plan.md`
-- **Gladiator Ring Arena** (1 connections) — `.cursor/plans/gladiator_ring_arena_6a674c58.plan.md`
+- **test_profession_get_mechanical_effects_none()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **Test get_mechanical_effects returns empty dict for invalid value.** (1 connections) — `server/tests/unit/models/test_profession.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [WebSocket Code Review](WebSocket_Code_Review.md) (1 shared connections)
+- [Async Persistence Migration](Async_Persistence_Migration.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/gladiator_ring_arena_6a674c58.plan.md`
+- `server/tests/unit/models/test_profession.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

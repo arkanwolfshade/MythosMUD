@@ -1,22 +1,25 @@
 # Cursor Plans Code
 
-> 1 nodes · cohesion 1.00
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **Code Practice Rules Reference Doc** (0 connections) — `.cursor/plans/code_practice_rules_reference_doc.plan.md`
+- **plane** (4 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **pattern** (1 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Schemas Unified Room](Schemas_Unified_Room.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/code_practice_rules_reference_doc.plan.md`
+- `schemas/unified_room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

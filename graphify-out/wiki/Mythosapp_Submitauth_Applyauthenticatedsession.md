@@ -11,7 +11,7 @@
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Schemas Room Schema](Schemas_Room_Schema.md) (1 shared connections)
 
 ## Source Files
 

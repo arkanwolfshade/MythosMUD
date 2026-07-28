@@ -1,11 +1,12 @@
 # Debugging Mid Run
 
-> 2 nodes · cohesion 1.00
+> 3 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Mid-Run Disconnect Reasons** (1 connections) — `docs/debugging-mid-run-drops.md`
-- **stale_prune Disconnect** (1 connections) — `docs/debugging-mid-run-drops.md`
+- **mythosTheme.ts** (2 connections) — `client/src/theme/mythosTheme.ts`
+- **mythosTheme** (2 connections) — `client/src/theme/mythosTheme.ts`
+- **mythosTheme.test.ts** (2 connections) — `client/src/theme/__tests__/mythosTheme.test.ts`
 
 ## Relationships
 
@@ -13,11 +14,12 @@
 
 ## Source Files
 
-- `docs/debugging-mid-run-drops.md`
+- `client/src/theme/__tests__/mythosTheme.test.ts`
+- `client/src/theme/mythosTheme.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

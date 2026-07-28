@@ -6,7 +6,7 @@
 
 - **jackson_linter.py** (7 connections) — `scripts/jackson_linter.py`
 - **_validate_after_unicode_error()** (7 connections) — `scripts/jackson_linter.py`
-- **Path** (6 connections) — `scripts/jackson_linter.py`
+- **Path** (6 connections)
 - **collect_json_files()** (5 connections) — `scripts/jackson_linter.py`
 - **validate_json_file()** (5 connections) — `scripts/jackson_linter.py`
 - **_file_appears_binary_or_terminal_output()** (4 connections) — `scripts/jackson_linter.py`
@@ -20,7 +20,7 @@
 - **If JSON loads under a non-UTF-8 encoding, return that encoding name; otherwise N** (1 connections) — `scripts/jackson_linter.py`
 - **Try alternate encodings; return True if file is valid or intentionally skipped.** (1 connections) — `scripts/jackson_linter.py`
 - **Parse one JSON file; print errors/warnings. Return True if ok or skipped as non-** (1 connections) — `scripts/jackson_linter.py`
-- **UnicodeDecodeError** (1 connections) — `scripts/jackson_linter.py`
+- **UnicodeDecodeError** (1 connections)
 
 ## Relationships
 

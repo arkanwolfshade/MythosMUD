@@ -1,32 +1,35 @@
 # Command Handler Patterns
 
-> 7 nodes · cohesion 0.29
+> 10 nodes · cohesion 0.27
 
 ## Key Concepts
 
-- **Command Handler Patterns** (10 connections) — `docs/COMMAND_HANDLER_PATTERNS.md`
-- **Command Security Guide** (3 connections) — `docs/COMMAND_SECURITY_GUIDE.md`
-- **Command Models Reference** (2 connections) — `docs/COMMAND_MODELS_REFERENCE.md`
-- **Pydantic Command Models** (2 connections) — `docs/COMMAND_MODELS_REFERENCE.md`
-- **Command Testing Guide** (2 connections) — `docs/COMMAND_TESTING_GUIDE.md`
-- **Command Role-Based Access Control** (1 connections) — `docs/COMMAND_SECURITY_GUIDE.md`
-- **Command Test-Driven Development** (1 connections) — `docs/COMMAND_TESTING_GUIDE.md`
+- **test_level_curve.py** (15 connections) — `server/tests/unit/game/test_level_curve.py`
+- **level_curve.py** (6 connections) — `server/game/level_curve.py`
+- **xp_required_for_level()** (6 connections) — `server/game/level_curve.py`
+- **test_xp_required_for_level_marginal()** (4 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_xp_required_for_level_invalid()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
+- **Level and XP curve for MythosMUD.  Placeholder implementation: XP required for n** (1 connections) — `server/game/level_curve.py`
+- **XP required to go from (level - 1) to level.      Args:         level: Target le** (1 connections) — `server/game/level_curve.py`
+- **Unit tests for level curve (XP to level, level from total XP).  Character creati** (1 connections) — `server/tests/unit/game/test_level_curve.py`
+- **xp_required_for_level(2) equals total_xp_for_level(2) - total_xp_for_level(1).** (1 connections) — `server/tests/unit/game/test_level_curve.py`
+- **xp_required_for_level raises for level < 2.** (1 connections) — `server/tests/unit/game/test_level_curve.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Scenario Conversion Guide](Scenario_Conversion_Guide.md) (8 shared connections)
+- [Commands Npc Admin](Commands_Npc_Admin.md) (6 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/COMMAND_HANDLER_PATTERNS.md`
-- `docs/COMMAND_MODELS_REFERENCE.md`
-- `docs/COMMAND_SECURITY_GUIDE.md`
-- `docs/COMMAND_TESTING_GUIDE.md`
+- `server/game/level_curve.py`
+- `server/tests/unit/game/test_level_curve.py`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (67%)
-- INFERRED: 7 (33%)
+- EXTRACTED: 39 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

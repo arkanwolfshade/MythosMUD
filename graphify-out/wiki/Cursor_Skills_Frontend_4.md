@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **UX Writing Reference** (1 connections) — `.cursor/skills/frontend-design/reference/ux-writing.md`
-- **Verb+Object Button Labels** (1 connections) — `.cursor/skills/frontend-design/reference/ux-writing.md`
+- **Color and Contrast Reference** (1 connections) — `.cursor/skills/frontend-design/reference/color-and-contrast.md`
+- **OKLCH Color Space** (1 connections) — `.cursor/skills/frontend-design/reference/color-and-contrast.md`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `.cursor/skills/frontend-design/reference/ux-writing.md`
+- `.cursor/skills/frontend-design/reference/color-and-contrast.md`
 
 ## Audit Trail
 

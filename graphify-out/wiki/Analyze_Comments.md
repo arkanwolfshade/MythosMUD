@@ -9,8 +9,8 @@
 - **extract_function_and_class_names()** (3 connections) — `scripts/analyze_comments.py`
 - **main()** (3 connections) — `scripts/analyze_comments.py`
 - **check_comment_references_nonexistent_code()** (2 connections) — `scripts/analyze_comments.py`
-- **Path** (2 connections) — `scripts/analyze_comments.py`
-- **Any** (1 connections) — `scripts/analyze_comments.py`
+- **Path** (2 connections)
+- **Any** (1 connections)
 - **Analyze a single file for comment issues.      Args:         file_path: Path to** (1 connections) — `scripts/analyze_comments.py`
 - **Main entry point for comment analysis.** (1 connections) — `scripts/analyze_comments.py`
 - **Extract function and class names from a Python file.      Args:         file_pat** (1 connections) — `scripts/analyze_comments.py`

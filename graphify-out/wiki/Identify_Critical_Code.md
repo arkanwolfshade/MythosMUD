@@ -12,12 +12,12 @@
 - **calculate_priority()** (4 connections) — `scripts/identify_critical_code.py`
 - **check_file_keywords()** (4 connections) — `scripts/identify_critical_code.py`
 - **main()** (4 connections) — `scripts/identify_critical_code.py`
-- **Any** (4 connections) — `scripts/identify_critical_code.py`
+- **Any** (4 connections)
 - **check_function_keywords()** (3 connections) — `scripts/identify_critical_code.py`
-- **AST** (3 connections) — `scripts/identify_critical_code.py`
-- **Path** (2 connections) — `scripts/identify_critical_code.py`
-- **AsyncFunctionDef** (1 connections) — `scripts/identify_critical_code.py`
-- **FunctionDef** (1 connections) — `scripts/identify_critical_code.py`
+- **AST** (3 connections)
+- **Path** (2 connections)
+- **AsyncFunctionDef** (1 connections)
+- **FunctionDef** (1 connections)
 - **Check file path and name for keyword matches.      Args:         file_path: Path** (1 connections) — `scripts/identify_critical_code.py`
 - **Check function name for keyword matches.      Args:         func_name: Function** (1 connections) — `scripts/identify_critical_code.py`
 - **Analyze a single function node for critical indicators.      Args:         node:** (1 connections) — `scripts/identify_critical_code.py`

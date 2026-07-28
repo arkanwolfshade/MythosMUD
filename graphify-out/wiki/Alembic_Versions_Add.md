@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **generate_schema_from_dev.ps1** (1 connections) — `db/README.md`
+- **Mythos Magic** (0 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
 
 ## Relationships
 
@@ -12,11 +12,11 @@
 
 ## Source Files
 
-- `db/README.md`
+- `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

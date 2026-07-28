@@ -10,7 +10,7 @@
 - **visualize_graph()** (4 connections) — `scripts/visualize_arkham_rooms_simple.py`
 - **load_room_data()** (3 connections) — `scripts/visualize_arkham_rooms_simple.py`
 - **print_statistics()** (3 connections) — `scripts/visualize_arkham_rooms_simple.py`
-- **Graph** (2 connections) — `scripts/visualize_arkham_rooms_simple.py`
+- **Graph** (2 connections)
 - **Create a visual representation of the graph.** (1 connections) — `scripts/visualize_arkham_rooms_simple.py`
 - **Print statistics about the room data.** (1 connections) — `scripts/visualize_arkham_rooms_simple.py`
 - **Main function to generate the visualization.** (1 connections) — `scripts/visualize_arkham_rooms_simple.py`

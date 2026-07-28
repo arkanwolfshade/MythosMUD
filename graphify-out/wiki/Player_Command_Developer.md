@@ -1,30 +1,24 @@
 # Player Command Developer
 
-> 6 nodes · cohesion 0.33
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Player Command Developer Guide** (2 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **Pydantic Code Review** (2 connections) — `docs/PYDANTIC_CODE_REVIEW.md`
-- **Pydantic Model Validation Patterns** (2 connections) — `docs/PYDANTIC_CODE_REVIEW.md`
-- **Python Model Updates Required** (2 connections) — `docs/PYTHON_MODEL_UPDATES_REQUIRED.md`
-- **Player Command Pipeline** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **Python Model Sync Requirements** (1 connections) — `docs/PYTHON_MODEL_UPDATES_REQUIRED.md`
+- **test_add_valid_name_to_lists_invalid_name()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test add_valid_name_to_lists() skips invalid name.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- `docs/PYDANTIC_CODE_REVIEW.md`
-- `docs/PYTHON_MODEL_UPDATES_REQUIRED.md`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (60%)
-- INFERRED: 4 (40%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

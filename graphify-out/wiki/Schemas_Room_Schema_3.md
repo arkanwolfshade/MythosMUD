@@ -1,14 +1,20 @@
 # Schemas Room Schema
 
-> 1 nodes · cohesion 0.33
+> 6 nodes · cohesion 0.33
 
 ## Key Concepts
 
+- **room_schema.json** (7 connections) — `schemas/room_schema.json`
+- **additionalProperties** (1 connections) — `schemas/room_schema.json`
 - **description** (1 connections) — `schemas/room_schema.json`
+- **$schema** (1 connections) — `schemas/room_schema.json`
+- **title** (1 connections) — `schemas/room_schema.json`
+- **type** (1 connections) — `schemas/room_schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Schemas Room Schema](Schemas_Room_Schema.md) (1 shared connections)
+- [Cursor Commands Remediation](Cursor_Commands_Remediation.md) (1 shared connections)
 
 ## Source Files
 
@@ -16,7 +22,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

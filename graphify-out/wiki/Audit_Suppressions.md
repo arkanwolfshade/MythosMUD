@@ -6,7 +6,7 @@
 
 - **audit_suppressions.py** (9 connections) — `scripts/audit_suppressions.py`
 - **main()** (8 connections) — `scripts/audit_suppressions.py`
-- **Any** (7 connections) — `scripts/audit_suppressions.py`
+- **Any** (7 connections)
 - **find_suppressions()** (6 connections) — `scripts/audit_suppressions.py`
 - **scan_all_files()** (6 connections) — `scripts/audit_suppressions.py`
 - **print_summary_report()** (5 connections) — `scripts/audit_suppressions.py`
@@ -14,7 +14,7 @@
 - **calculate_statistics()** (4 connections) — `scripts/audit_suppressions.py`
 - **group_by_file()** (4 connections) — `scripts/audit_suppressions.py`
 - **group_by_tool()** (4 connections) — `scripts/audit_suppressions.py`
-- **Path** (4 connections) — `scripts/audit_suppressions.py`
+- **Path** (4 connections)
 - **has_explanation()** (3 connections) — `scripts/audit_suppressions.py`
 - **Scan all Python and TypeScript files for suppressions.      Args:         worksp** (1 connections) — `scripts/audit_suppressions.py`
 - **Calculate summary statistics from suppressions.      Args:         all_suppressi** (1 connections) — `scripts/audit_suppressions.py`

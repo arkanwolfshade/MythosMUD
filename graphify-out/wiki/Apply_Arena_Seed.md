@@ -6,7 +6,7 @@
 
 - **_apply_arena_seed_patch.py** (12 connections) — `scripts/_apply_arena_seed_patch.py`
 - **patch_file()** (8 connections) — `scripts/_apply_arena_seed_patch.py`
-- **Path** (7 connections) — `scripts/_apply_arena_seed_patch.py`
+- **Path** (7 connections)
 - **_append_before_copy_terminator()** (5 connections) — `scripts/_apply_arena_seed_patch.py`
 - **_apply_arena_room_links()** (5 connections) — `scripts/_apply_arena_seed_patch.py`
 - **_apply_arena_room_rows()** (5 connections) — `scripts/_apply_arena_seed_patch.py`

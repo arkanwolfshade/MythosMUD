@@ -4,9 +4,9 @@
 
 ## Key Concepts
 
-- **Playwright DI Migration Validation** (2 connections) — `.cursor/plans/playwright_test_plan_for_di_migration_validation_30b56bf7.plan.md`
-- **Playwright Best-Practices Remediation** (1 connections) — `.cursor/plans/playwright_best-practices_remediation.plan.md`
-- **E2E Harness Overhaul** (1 connections) — `.cursor/plans/refactor-e2e-harness_e2e-harness.plan.md`
+- **Client Updates System Audit** (2 connections) — `.cursor/plans/client_updates_system_audit_628e3fef.plan.md`
+- **Architecture Review Plan** (1 connections) — `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
+- **Option C Replacement Client Updates** (1 connections) — `.cursor/plans/client_updates_system_audit_628e3fef.plan.md`
 
 ## Relationships
 
@@ -14,14 +14,13 @@
 
 ## Source Files
 
-- `.cursor/plans/playwright_best-practices_remediation.plan.md`
-- `.cursor/plans/playwright_test_plan_for_di_migration_validation_30b56bf7.plan.md`
-- `.cursor/plans/refactor-e2e-harness_e2e-harness.plan.md`
+- `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
+- `.cursor/plans/client_updates_system_audit_628e3fef.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 4 (100%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

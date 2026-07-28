@@ -1,20 +1,20 @@
 # Dead Code
 
-> 3 nodes · cohesion 0.67
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Truly Dead Code** (2 connections) — `docs/dead-code.md`
-- **Knip Client Dead Code Tooling** (1 connections) — `docs/dead-code.md`
-- **Vulture Allowlist** (1 connections) — `docs/dead-code.md`
+- **test_occupant_formatter_is_valid_name_for_occupant_none()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Test OccupantFormatter._is_valid_name_for_occupant() returns False for None.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Game State Provider](Game_State_Provider.md) (1 shared connections)
+- [UI Animation Testing Standards](UI_Animation_Testing_Standards.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/dead-code.md`
+- `server/tests/unit/realtime/test_occupant_formatter.py`
 
 ## Audit Trail
 

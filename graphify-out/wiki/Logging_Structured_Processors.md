@@ -1,23 +1,34 @@
 # Logging Structured Processors
 
-> 1 nodes · cohesion 0.04
+> 11 nodes · cohesion 0.20
 
 ## Key Concepts
 
-- **EventDict** (5 connections) — `server/structured_logging/logging_processors.py`
+- **GridLayoutManager.tsx** (6 connections) — `client/src/components/layout/GridLayoutManager.tsx`
+- **GridLayoutManager.test.tsx** (6 connections) — `client/src/components/layout/__tests__/GridLayoutManager.test.tsx`
+- **GridLayoutManager()** (2 connections) — `client/src/components/layout/GridLayoutManager.tsx`
+- **GridLayoutManagerProps** (1 connections) — `client/src/components/layout/GridLayoutManager.tsx`
+- **layoutConfig** (1 connections) — `client/src/components/layout/GridLayoutManager.tsx`
+- **PanelComponent** (1 connections) — `client/src/components/layout/GridLayoutManager.tsx`
+- **ResponsiveGridLayout** (1 connections) — `client/src/components/layout/GridLayoutManager.tsx`
+- **constructor()** (1 connections) — `client/src/components/layout/__tests__/GridLayoutManager.test.tsx`
+- **disconnect()** (1 connections) — `client/src/components/layout/__tests__/GridLayoutManager.test.tsx`
+- **observe()** (1 connections) — `client/src/components/layout/__tests__/GridLayoutManager.test.tsx`
+- **unobserve()** (1 connections) — `client/src/components/layout/__tests__/GridLayoutManager.test.tsx`
 
 ## Relationships
 
-- [Realtime Connection Impl](Realtime_Connection_Impl.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/structured_logging/logging_processors.py`
+- `client/src/components/layout/GridLayoutManager.tsx`
+- `client/src/components/layout/__tests__/GridLayoutManager.test.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (80%)
-- INFERRED: 1 (20%)
+- EXTRACTED: 22 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

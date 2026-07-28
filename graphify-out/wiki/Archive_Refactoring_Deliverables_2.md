@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **.env.local Secrets Pattern** (1 connections) — `docs/CONFIGURATION_FILES_REFERENCE.md`
+- **Configuration File Tuples** (1 connections) — `docs/CONFIGURATION_FILES_REFERENCE.md`
 
 ## Relationships
 

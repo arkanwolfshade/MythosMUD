@@ -1,11 +1,12 @@
 # Check Postgresql
 
-> 2 nodes · cohesion 0.67
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
 - **check_postgresql.sh** (2 connections) — `scripts/check_postgresql.sh`
 - **PGPASSWORD** (1 connections) — `scripts/check_postgresql.sh`
+- **check_postgresql.sh script** (1 connections) — `scripts/check_postgresql.sh`
 
 ## Relationships
 
@@ -17,7 +18,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

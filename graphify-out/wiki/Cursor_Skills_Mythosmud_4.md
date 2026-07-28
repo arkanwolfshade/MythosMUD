@@ -1,14 +1,12 @@
 # Cursor Skills Mythosmud
 
-> 5 nodes · cohesion 0.40
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **MythosMUD Pre-Commit Checklist Skill** (4 connections) — `.cursor/skills/mythosmud-pre-commit-checklist/SKILL.md`
-- **Definition of Done Checklist** (1 connections) — `.cursor/skills/mythosmud-pre-commit-checklist/SKILL.md`
-- **MythosMUD Code Quality AI Skill** (1 connections) — `.cursor/skills/mythosmud-code-quality-ai/SKILL.md`
-- **MythosMUD Commit Messages Skill** (1 connections) — `.cursor/skills/mythosmud-commit-messages/SKILL.md`
-- **MythosMUD Test Writing Skill** (1 connections) — `.cursor/skills/mythosmud-test-writing/SKILL.md`
+- **MythosMUD Server Runbook Skill** (2 connections) — `.cursor/skills/mythosmud-server-runbook/SKILL.md`
+- **MythosMUD Worktree Workflow Skill** (1 connections) — `.cursor/skills/mythosmud-worktree-workflow/SKILL.md`
+- **One Server Only Rule** (1 connections) — `.cursor/skills/mythosmud-server-runbook/SKILL.md`
 
 ## Relationships
 
@@ -16,15 +14,13 @@
 
 ## Source Files
 
-- `.cursor/skills/mythosmud-code-quality-ai/SKILL.md`
-- `.cursor/skills/mythosmud-commit-messages/SKILL.md`
-- `.cursor/skills/mythosmud-pre-commit-checklist/SKILL.md`
-- `.cursor/skills/mythosmud-test-writing/SKILL.md`
+- `.cursor/skills/mythosmud-server-runbook/SKILL.md`
+- `.cursor/skills/mythosmud-worktree-workflow/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (25%)
-- INFERRED: 6 (75%)
+- EXTRACTED: 2 (50%)
+- INFERRED: 2 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---

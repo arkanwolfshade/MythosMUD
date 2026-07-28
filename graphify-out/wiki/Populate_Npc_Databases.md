@@ -6,9 +6,9 @@
 
 - **populate_test_npc_databases.py** (6 connections) — `scripts/populate_test_npc_databases.py`
 - **main()** (5 connections) — `scripts/populate_test_npc_databases.py`
-- **get_npc_data_from_source()** (3 connections) — `scripts/populate_test_npc_databases.py`
+- **get_npc_data_from_source()** (4 connections) — `scripts/populate_test_npc_databases.py`
+- **populate_database()** (4 connections) — `scripts/populate_test_npc_databases.py`
 - **get_npc_database_url()** (3 connections) — `scripts/populate_test_npc_databases.py`
-- **populate_database()** (3 connections) — `scripts/populate_test_npc_databases.py`
 - **Populate a PostgreSQL database with NPC data.      Args:         target_url: Pos** (1 connections) — `scripts/populate_test_npc_databases.py`
 - **Main function to populate test NPC databases.** (1 connections) — `scripts/populate_test_npc_databases.py`
 - **Get NPC database URL for the specified environment.      Args:         environme** (1 connections) — `scripts/populate_test_npc_databases.py`
@@ -16,8 +16,8 @@
 
 ## Relationships
 
+- [Realtime Connection Impl](Realtime_Connection_Impl.md) (3 shared connections)
 - [Players API Endpoints](Players_API_Endpoints.md) (1 shared connections)
-- [Realtime Connection Impl](Realtime_Connection_Impl.md) (1 shared connections)
 
 ## Source Files
 
@@ -25,8 +25,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 24 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 24 (92%)
+- INFERRED: 2 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

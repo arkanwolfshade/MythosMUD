@@ -4,15 +4,15 @@
 
 ## Key Concepts
 
-- **Async Remediation Complete** (14 connections) — `docs/ASYNC_REMEDIATION_COMPLETE.md`
-- **Async Remediation Final Report** (12 connections) — `docs/ASYNC_REMEDIATION_FINAL_REPORT.md`
+- **Async Remediation Complete** (5 connections) — `docs/ASYNC_REMEDIATION_COMPLETE.md`
 - **Async Audit 2025-12-03** (4 connections) — `docs/ASYNC_AUDIT_2025-12-03.md`
 - **Passive Lucidity Flux Blocking** (3 connections) — `docs/ASYNC_AUDIT_2025-12-03.md`
 - **Event Loop Blocking** (3 connections) — `docs/ASYNCIO_CODE_REVIEW.md`
-- **asyncio.to_thread Offloading** (2 connections) — `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
 - **Room Cache 60s TTL** (2 connections) — `docs/ASYNC_REMEDIATION_COMPLETE.md`
 - **Async Remediation Summary 2025-12-03** (2 connections) — `docs/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
 - **Asyncio Code Review** (2 connections) — `docs/ASYNCIO_CODE_REVIEW.md`
+- **asyncio.to_thread Offloading** (1 connections) — `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
+- **Async Remediation Final Report** (1 connections) — `docs/ASYNC_REMEDIATION_FINAL_REPORT.md`
 
 ## Relationships
 
@@ -29,8 +29,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 37 (84%)
-- INFERRED: 7 (16%)
+- EXTRACTED: 16 (70%)
+- INFERRED: 7 (30%)
 - AMBIGUOUS: 0 (0%)
 
 ---

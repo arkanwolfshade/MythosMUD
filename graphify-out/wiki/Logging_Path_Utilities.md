@@ -1,15 +1,43 @@
 # Logging Path Utilities
 
-> 2 nodes · cohesion 0.04
+> 74 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **Path** (23 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
-- **Path** (4 connections) — `server/structured_logging/logging_utilities.py`
+- **test_logging_utilities.py** (40 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **Path** (23 connections)
+- **detect_environment()** (16 connections) — `server/structured_logging/logging_utilities.py`
+- **resolve_log_base()** (13 connections) — `server/structured_logging/logging_utilities.py`
+- **test_ensure_log_directory_creates_directory()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_ensure_log_directory_empty_path()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_ensure_log_directory_existing_directory()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_ensure_log_directory_no_parent()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_ensure_log_directory_os_error()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_ensure_log_directory_permission_error()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_ensure_log_directory_thread_safety()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_resolve_log_base_absolute_path()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_resolve_log_base_env_local_directory()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_resolve_log_base_finds_pyproject_in_parent()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_resolve_log_base_relative_path_no_pyproject()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_resolve_log_base_relative_path_with_pyproject()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_rotate_log_files_empty_directory()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_rotate_log_files_handles_jsonl_files()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_rotate_log_files_handles_permission_error()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_rotate_log_files_no_directory()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_rotate_log_files_non_windows_platform()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_rotate_log_files_recursive_search()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_rotate_log_files_retries_on_error()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_rotate_log_files_rotates_log_files()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_rotate_log_files_skips_empty_files()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- *... and 49 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Logging File Setup](Logging_File_Setup.md) (17 shared connections)
+- [Logging Structured Handlers](Logging_Structured_Handlers.md) (10 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (3 shared connections)
+- [Logging Structured Processors](Logging_Structured_Processors.md) (2 shared connections)
+- [Communication Command Classes](Communication_Command_Classes.md) (2 shared connections)
 
 ## Source Files
 
@@ -18,8 +46,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 26 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 252 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

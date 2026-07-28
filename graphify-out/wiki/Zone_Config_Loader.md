@@ -1,26 +1,54 @@
 # Zone Config Loader
 
-> 3 nodes · cohesion 0.05
+> 81 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **Connection** (5 connections) — `server/npc/zone_config_loader.py`
-- **Record** (4 connections) — `server/npc/zone_config_loader.py`
-- **MonkeyPatch** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_zone_config_loader.py** (35 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **zone_config_loader.py** (22 connections) — `server/npc/zone_config_loader.py`
+- **async_load_zone_configurations()** (13 connections) — `server/npc/zone_config_loader.py`
+- **process_zone_rows()** (13 connections) — `server/npc/zone_config_loader.py`
+- **_empty_zone_load_result()** (13 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **ZoneLoadResult** (12 connections) — `server/npc/zone_config_loader.py`
+- **parse_json_field()** (11 connections) — `server/npc/zone_config_loader.py`
+- **zone_configuration.py** (11 connections) — `server/npc/zone_configuration.py`
+- **extract_zone_name()** (9 connections) — `server/npc/zone_config_loader.py`
+- **load_zone_configurations()** (9 connections) — `server/npc/zone_config_loader.py`
+- **process_subzone_rows()** (9 connections) — `server/npc/zone_config_loader.py`
+- **_store_subzone_row()** (9 connections) — `server/npc/zone_config_loader.py`
+- **ZoneConfigurationData** (7 connections) — `server/npc/zone_configuration.py`
+- **ZoneSpecialRules** (7 connections) — `server/npc/zone_configuration.py`
+- **parse_zone_special_rules()** (6 connections) — `server/npc/zone_config_loader.py`
+- **_ZoneConfigBucket** (5 connections) — `server/npc/zone_config_loader.py`
+- **test_async_load_zone_configurations_converts_url()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_async_load_zone_configurations_passes_search_path_for_mythos_e2e()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_process_subzone_rows()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_process_zone_rows()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_async_load_zone_configurations_closes_connection()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_async_load_zone_configurations_error()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_async_load_zone_configurations_no_database_url()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_async_load_zone_configurations_success()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_process_subzone_rows_empty()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- *... and 56 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Async Remediation Summary](Async_Remediation_Summary.md) (12 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (9 shared connections)
+- [Lucidity Rate Overrides](Lucidity_Rate_Overrides.md) (2 shared connections)
+- [NPC Admin API](NPC_Admin_API.md) (1 shared connections)
+- [NPC Spawn Validator](NPC_Spawn_Validator.md) (1 shared connections)
 
 ## Source Files
 
 - `server/npc/zone_config_loader.py`
+- `server/npc/zone_configuration.py`
 - `server/tests/unit/npc/test_zone_config_loader.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (38%)
-- INFERRED: 8 (62%)
+- EXTRACTED: 309 (96%)
+- INFERRED: 12 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

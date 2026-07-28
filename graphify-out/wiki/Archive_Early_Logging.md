@@ -1,15 +1,19 @@
 # Archive Early Logging
 
-> 2 nodes · cohesion 0.40
+> 6 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **Any** (2 connections) — `server/middleware/security_headers.py`
-- **Request** (1 connections) — `server/middleware/security_headers.py`
+- **.dispatch()** (5 connections) — `server/middleware/security_headers.py`
+- **._add_security_headers_to_response()** (4 connections) — `server/middleware/security_headers.py`
+- **Any** (2 connections)
+- **Request** (1 connections)
+- **Backward-compatible dispatch method for BaseHTTPMiddleware interface.          T** (1 connections) — `server/middleware/security_headers.py`
+- **Add security headers to Response object (compatibility method).** (1 connections) — `server/middleware/security_headers.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Community 2199](Community_2199.md) (2 shared connections)
 
 ## Source Files
 
@@ -17,7 +21,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

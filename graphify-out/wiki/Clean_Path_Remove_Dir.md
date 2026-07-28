@@ -6,7 +6,7 @@
 
 - **remove_dir()** (2 connections) — `scripts/clean.py`
 - **clean.py** (1 connections) — `scripts/clean.py`
-- **Path** (1 connections) — `scripts/clean.py`
+- **Path** (1 connections)
 
 ## Relationships
 

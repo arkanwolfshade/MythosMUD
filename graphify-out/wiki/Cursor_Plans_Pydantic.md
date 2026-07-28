@@ -1,22 +1,31 @@
 # Cursor Plans Pydantic
 
-> 1 nodes · cohesion 1.00
+> 10 nodes · cohesion 0.20
 
 ## Key Concepts
 
-- **Pydantic Anti-Patterns Remediation (3ee32154)** (6 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_3ee32154.plan.md`
+- **TestProcessAliasExpansion** (6 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_process_alias_expansion_invalid_expanded()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_process_alias_expansion_no_alias()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_process_alias_expansion_no_alias_storage()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_process_alias_expansion_unsafe_alias()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _process_alias_expansion function.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _process_alias_expansion returns None when no alias storage.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _process_alias_expansion returns None when alias not found.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _process_alias_expansion returns error for unsafe alias.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _process_alias_expansion returns error for invalid expanded command.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Command Request App State](Command_Request_App_State.md) (5 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/pydantic_anti-patterns_remediation_3ee32154.plan.md`
+- `server/tests/unit/commands/test_command_aliases.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 23 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

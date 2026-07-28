@@ -1,6 +1,6 @@
 # Arena Zone DML Generator
 
-> 56 nodes · cohesion 0.06
+> 58 nodes · cohesion 0.06
 
 ## Key Concepts
 
@@ -12,6 +12,7 @@
 - **gen_room_row()** (7 connections) — `scripts/gen_arena_dml.py`
 - **main()** (7 connections) — `scripts/gen_arena_dml.py`
 - **gen_room_links()** (6 connections) — `scripts/gen_arena_dml.py`
+- **emit_subzone_insert()** (6 connections) — `scripts/gen_arena_migration_sql.py`
 - **sql_escape()** (6 connections) — `scripts/gen_arena_migration_sql.py`
 - **strip_arena_from_file()** (6 connections) — `scripts/strip_arena_from_dml.py`
 - **gen_room_link_id()** (5 connections) — `scripts/gen_arena_dml.py`
@@ -20,16 +21,15 @@
 - **gen_zone_row()** (5 connections) — `scripts/gen_arena_dml.py`
 - **emit_room_links_insert()** (5 connections) — `scripts/gen_arena_migration_sql.py`
 - **emit_rooms_insert()** (5 connections) — `scripts/gen_arena_migration_sql.py`
-- **emit_subzone_insert()** (5 connections) — `scripts/gen_arena_migration_sql.py`
 - **emit_zone_insert()** (5 connections) — `scripts/gen_arena_migration_sql.py`
 - **room_stable_id()** (4 connections) — `scripts/gen_arena_dml.py`
 - **emit_zone_config_insert()** (4 connections) — `scripts/gen_arena_migration_sql.py`
+- **is_arena_subzone_line()** (4 connections) — `scripts/strip_arena_from_dml.py`
 - **all_room_rows()** (3 connections) — `scripts/gen_arena_dml.py`
 - **main()** (3 connections) — `scripts/gen_arena_migration_sql.py`
 - **get_copy_section()** (3 connections) — `scripts/strip_arena_from_dml.py`
 - **is_arena_room_line()** (3 connections) — `scripts/strip_arena_from_dml.py`
-- **is_arena_room_link_line()** (3 connections) — `scripts/strip_arena_from_dml.py`
-- *... and 31 more nodes in this community*
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
@@ -43,7 +43,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 190 (100%)
+- EXTRACTED: 194 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,15 +1,19 @@
 # Coverage Strategy Archive
 
-> 2 nodes · cohesion 0.50
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **_FollowTargetValue** (8 connections) — `server/game/follow_service.py`
-- **TypeGuard** (8 connections) — `server/game/follow_service.py`
+- **_is_npc_follow_value()** (6 connections) — `server/game/follow_service.py`
+- **_FollowTargetValue** (1 connections)
+- **TypeGuard** (1 connections)
+- **True when v is the 3-tuple (target_id, 'npc', display_name).** (1 connections) — `server/game/follow_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
+- [Map Editing Hooks](Map_Editing_Hooks.md) (1 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (1 shared connections)
 
 ## Source Files
 
@@ -17,8 +21,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 2 (12%)
-- INFERRED: 14 (88%)
+- EXTRACTED: 9 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

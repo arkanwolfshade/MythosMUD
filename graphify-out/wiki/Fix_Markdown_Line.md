@@ -11,7 +11,7 @@
 - **wrap_plain_text()** (5 connections) — `scripts/fix_markdown_line_length.py`
 - **parse_markdownlint_output()** (4 connections) — `scripts/fix_markdown_line_length.py`
 - **wrap_list_item()** (4 connections) — `scripts/fix_markdown_line_length.py`
-- **Path** (3 connections) — `scripts/fix_markdown_line_length.py`
+- **Path** (3 connections)
 - **should_skip_line()** (3 connections) — `scripts/fix_markdown_line_length.py`
 - **wrap_header()** (3 connections) — `scripts/fix_markdown_line_length.py`
 - **wrap_line_with_links()** (3 connections) — `scripts/fix_markdown_line_length.py`

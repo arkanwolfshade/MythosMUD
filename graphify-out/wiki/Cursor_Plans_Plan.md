@@ -1,30 +1,24 @@
 # Cursor Plans Plan
 
-> 6 nodes · cohesion 0.33
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Unify Client Message Handling** (3 connections) — `.cursor/plans/unify-client-message-handling_5ae18c30.plan.md`
-- **WebSocket-Only Migration** (3 connections) — `.cursor/plans/websocket-only-migration-347bcba3.plan.md`
-- **WebSocket-Only Architecture** (2 connections) — `.cursor/plans/websocket-only-migration-347bcba3.plan.md`
-- **SSE Connection Removal** (1 connections) — `.cursor/plans/websocket-only-migration-347bcba3.plan.md`
-- **Unified Client Message Pipeline** (1 connections) — `.cursor/plans/unify-client-message-handling_5ae18c30.plan.md`
-- **WebSocket Best-Practices Remediation** (1 connections) — `.cursor/plans/websocket_best-practices_remediation.plan.md`
+- **test_process_room_rows_zone_without_slash()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _process_room_rows handles zone_stable_id without slash.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Realtime Room Subscription](Realtime_Room_Subscription.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/unify-client-message-handling_5ae18c30.plan.md`
-- `.cursor/plans/websocket-only-migration-347bcba3.plan.md`
-- `.cursor/plans/websocket_best-practices_remediation.plan.md`
+- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (64%)
-- INFERRED: 4 (36%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,14 +1,29 @@
 # Chat Logger Service Tests
 
-> 1 nodes · cohesion 0.16
+> 15 nodes · cohesion 0.16
 
 ## Key Concepts
 
-- **Any** (2 connections) — `server/realtime/circuit_breaker.py`
+- **.call()** (9 connections) — `server/realtime/circuit_breaker.py`
+- **._transition_to()** (6 connections) — `server/realtime/circuit_breaker.py`
+- **.get_stats()** (4 connections) — `server/realtime/circuit_breaker.py`
+- **._on_failure()** (4 connections) — `server/realtime/circuit_breaker.py`
+- **._on_success()** (4 connections) — `server/realtime/circuit_breaker.py`
+- **._time_until_retry()** (4 connections) — `server/realtime/circuit_breaker.py`
+- **._should_attempt_reset()** (3 connections) — `server/realtime/circuit_breaker.py`
+- **Any** (2 connections)
+- **Handle successful function call.          Updates state based on current circuit** (1 connections) — `server/realtime/circuit_breaker.py`
+- **Handle failed function call.          Updates state based on failure count:** (1 connections) — `server/realtime/circuit_breaker.py`
+- **Check if enough time has passed to attempt circuit reset.          Returns:** (1 connections) — `server/realtime/circuit_breaker.py`
+- **Calculate seconds until circuit can attempt reset.          Returns:** (1 connections) — `server/realtime/circuit_breaker.py`
+- **Transition circuit to new state.          Args:             new_state: State to** (1 connections) — `server/realtime/circuit_breaker.py`
+- **Get circuit breaker statistics.          Returns:             Dictionary with ci** (1 connections) — `server/realtime/circuit_breaker.py`
+- **Execute function through circuit breaker.          Enforces circuit breaker logi** (1 connections) — `server/realtime/circuit_breaker.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Connection State Hooks](Connection_State_Hooks.md) (8 shared connections)
+- [Code Review Archive](Code_Review_Archive.md) (1 shared connections)
 
 ## Source Files
 
@@ -16,7 +31,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 43 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

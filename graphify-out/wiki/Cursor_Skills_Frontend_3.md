@@ -4,20 +4,20 @@
 
 ## Key Concepts
 
-- **Typography Reference** (1 connections) — `.cursor/skills/frontend-design/reference/typography.md`
-- **Vertical Rhythm Typography** (1 connections) — `.cursor/skills/frontend-design/reference/typography.md`
+- **@types/react** (2 connections) — `client/package.json`
+- **@types/react** (1 connections) — `client/package.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Client Dev Dependencies](Client_Dev_Dependencies.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/skills/frontend-design/reference/typography.md`
+- `client/package.json`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

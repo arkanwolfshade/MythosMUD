@@ -1,23 +1,25 @@
 # E 2 E Scenario Limitation
 
-> 2 nodes · cohesion 1.00
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **Playwright MCP Timing Limitation** (1 connections) — `e2e-tests/SCENARIO_15_TEST_LIMITATION.md`
-- **Whisper Rate Limit Sliding Window** (1 connections) — `e2e-tests/SCENARIO_15_TEST_LIMITATION.md`
+- **long_description** (4 connections) — `schemas/items/item_prototype.schema.json`
+- **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Dual Connection Client Guide](Dual_Connection_Client_Guide.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/SCENARIO_15_TEST_LIMITATION.md`
+- `schemas/items/item_prototype.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

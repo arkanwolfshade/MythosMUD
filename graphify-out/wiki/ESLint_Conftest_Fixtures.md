@@ -1,18 +1,22 @@
 # ESLint Conftest Fixtures
 
-> 5 nodes · cohesion 0.25
+> 9 nodes · cohesion 0.25
 
 ## Key Concepts
 
+- **pytest_asyncio_loop_factories()** (6 connections) — `server/tests/conftest.py`
+- **_create_test_event_loop()** (4 connections) — `server/tests/conftest.py`
 - **eslint.config.js** (3 connections) — `client/eslint.config.js`
-- **Config** (3 connections) — `server/tests/conftest.py`
-- **AbstractEventLoop** (2 connections) — `server/tests/conftest.py`
+- **Config** (3 connections)
+- **AbstractEventLoop** (2 connections)
 - **jsxA11yRecommendedWarnRules** (1 connections) — `client/eslint.config.js`
 - **jsxA11yRulesOff** (1 connections) — `client/eslint.config.js`
+- **Create an event loop suitable for MythosMUD tests.      CRITICAL: On Windows, Se** (1 connections) — `server/tests/conftest.py`
+- **Register platform-appropriate loop factories for pytest-asyncio (Python 3.14+ sa** (1 connections) — `server/tests/conftest.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Common Troubleshooting Guide](Common_Troubleshooting_Guide.md) (4 shared connections)
 
 ## Source Files
 
@@ -21,8 +25,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 20 (91%)
+- INFERRED: 2 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

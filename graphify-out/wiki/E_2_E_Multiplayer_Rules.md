@@ -1,27 +1,23 @@
 # E 2 E Multiplayer Rules
 
-> 5 nodes · cohesion 0.40
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Playwright MCP Scenarios** (3 connections) — `e2e-tests/MULTIPLAYER_TEST_RULES.md`
-- **Hybrid E2E Testing Approach** (2 connections) — `e2e-tests/MULTIPLAYER_TEST_RULES.md`
-- **Automated Playwright CLI Tests** (1 connections) — `e2e-tests/MULTIPLAYER_TEST_RULES.md`
-- **Mandatory Execution Order** (1 connections) — `e2e-tests/MULTIPLAYER_TEST_RULES.md`
-- **Room Occupants Fix** (1 connections) — `e2e-tests/OCCUPANT_FIX_VERIFICATION.md`
+- **test_prepare_room_data_without_to_dict()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test _prepare_room_data() handles room without to_dict method.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Stores Statenormalization Basic](Stores_Statenormalization_Basic.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/MULTIPLAYER_TEST_RULES.md`
-- `e2e-tests/OCCUPANT_FIX_VERIFICATION.md`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

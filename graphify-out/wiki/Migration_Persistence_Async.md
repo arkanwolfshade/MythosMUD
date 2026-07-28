@@ -5,10 +5,10 @@
 ## Key Concepts
 
 - **Persistence Async Migration Plan** (3 connections) — `docs/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Persistence Async Migration Guide** (2 connections) — `docs/PERSISTENCE_ASYNC_MIGRATION_GUIDE.md`
 - **Full Async Persistence Target** (2 connections) — `docs/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
 - **Phase 2 Migration Complete** (2 connections) — `docs/PHASE2_MIGRATION_COMPLETE.md`
 - **Phase 2 Persistence Migration** (2 connections) — `docs/PHASE2_MIGRATION_COMPLETE.md`
+- **Persistence Async Migration Guide** (1 connections) — `docs/PERSISTENCE_ASYNC_MIGRATION_GUIDE.md`
 - **Phase 2 Migration Status** (1 connections) — `docs/PHASE2_MIGRATION_STATUS.md`
 
 ## Relationships
@@ -24,8 +24,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 5 (42%)
-- INFERRED: 7 (58%)
+- EXTRACTED: 4 (36%)
+- INFERRED: 7 (64%)
 - AMBIGUOUS: 0 (0%)
 
 ---

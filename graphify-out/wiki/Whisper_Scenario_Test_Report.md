@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Whisper Location Independence** (1 connections) — `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
+- **Whisper Location Independence** (0 connections) — `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
 
 ## Relationships
 
@@ -16,7 +16,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

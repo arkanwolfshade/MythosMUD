@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Documentation Audit** (10 connections) — `docs/DOCUMENTATION_AUDIT.md`
+- **Documentation Audit** (4 connections) — `docs/DOCUMENTATION_AUDIT.md`
 
 ## Relationships
 
@@ -16,7 +16,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

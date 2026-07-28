@@ -4,9 +4,9 @@
 
 ## Key Concepts
 
-- **Logging Aggregator Verification** (2 connections) — `.cursor/plans/logging_aggregator_verification.plan.md`
-- **warnings.log and errors.log Aggregators** (1 connections) — `.cursor/plans/logging_aggregator_verification.plan.md`
-- **Structlog Anti-Pattern Remediation** (1 connections) — `.cursor/plans/structlog_anti-pattern_remediation_1d228d75.plan.md`
+- **Cursor Rules as Canonical Config** (2 connections) — `.cursor/plans/cursor-centric_ai_config_6e46bf3d.plan.md`
+- **Cursor-Centric AI Config** (1 connections) — `.cursor/plans/cursor-centric_ai_config_6e46bf3d.plan.md`
+- **GitHub Worktrees Cursor Setup** (1 connections) — `.cursor/plans/github_worktrees_cursor_setup_ab66558e.plan.md`
 
 ## Relationships
 
@@ -14,8 +14,8 @@
 
 ## Source Files
 
-- `.cursor/plans/logging_aggregator_verification.plan.md`
-- `.cursor/plans/structlog_anti-pattern_remediation_1d228d75.plan.md`
+- `.cursor/plans/cursor-centric_ai_config_6e46bf3d.plan.md`
+- `.cursor/plans/github_worktrees_cursor_setup_ab66558e.plan.md`
 
 ## Audit Trail
 

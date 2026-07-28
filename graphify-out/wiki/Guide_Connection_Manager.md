@@ -4,13 +4,13 @@
 
 ## Key Concepts
 
-- **AI Agent Development Guide** (4 connections) — `docs/DEVELOPMENT_AI.md`
 - **Enhanced Logging Guide** (4 connections) — `docs/ENHANCED_LOGGING_GUIDE.md`
+- **AI Agent Development Guide** (3 connections) — `docs/DEVELOPMENT_AI.md`
 - **Error Handling Guide** (3 connections) — `docs/ERROR_HANDLING_GUIDE.md`
-- **Documentation Updates ConnectionManager** (2 connections) — `docs/DOCUMENTATION_UPDATES.md`
 - **MDC Request Context Binding** (2 connections) — `docs/ENHANCED_LOGGING_GUIDE.md`
 - **MythosMUDError Hierarchy** (2 connections) — `docs/ERROR_HANDLING_GUIDE.md`
 - **AI Enhanced Logging Mandate** (1 connections) — `docs/DEVELOPMENT_AI.md`
+- **Documentation Updates ConnectionManager** (1 connections) — `docs/DOCUMENTATION_UPDATES.md`
 - **measure_performance Span** (1 connections) — `docs/ENHANCED_LOGGING_GUIDE.md`
 
 ## Relationships
@@ -26,8 +26,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 14 (74%)
-- INFERRED: 5 (26%)
+- EXTRACTED: 12 (71%)
+- INFERRED: 5 (29%)
 - AMBIGUOUS: 0 (0%)
 
 ---

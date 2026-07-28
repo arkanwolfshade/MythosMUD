@@ -1,14 +1,24 @@
 # E 2 E Di Migration
 
-> 1 nodes · cohesion 0.20
+> 11 nodes · cohesion 0.20
 
 ## Key Concepts
 
-- **Any** (4 connections) — `server/realtime/nats_retry_handler.py`
+- **.retry_async()** (5 connections) — `server/realtime/nats_retry_handler.py`
+- **.calculate_backoff()** (4 connections) — `server/realtime/nats_retry_handler.py`
+- **.retry_with_backoff()** (4 connections) — `server/realtime/nats_retry_handler.py`
+- **Any** (4 connections)
+- **.get_retry_stats()** (3 connections) — `server/realtime/nats_retry_handler.py`
+- **.update_config()** (3 connections) — `server/realtime/nats_retry_handler.py`
+- **Calculate exponential backoff delay with jitter.          Args:             atte** (1 connections) — `server/realtime/nats_retry_handler.py`
+- **Retry a function with exponential backoff.          Args:             func: Asyn** (1 connections) — `server/realtime/nats_retry_handler.py`
+- **Get retry statistics.          Returns:             Dictionary with retry metric** (1 connections) — `server/realtime/nats_retry_handler.py`
+- **Retry async function with exponential backoff.          Attempts the function up** (1 connections) — `server/realtime/nats_retry_handler.py`
+- **Update retry configuration dynamically.          Allows runtime adjustment of re** (1 connections) — `server/realtime/nats_retry_handler.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [NATS Retry Handler](NATS_Retry_Handler.md) (6 shared connections)
 
 ## Source Files
 
@@ -16,7 +26,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 28 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

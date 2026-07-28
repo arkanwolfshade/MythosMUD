@@ -1,23 +1,28 @@
 # E 2 E Scenarios Scenario
 
-> 2 nodes · cohesion 1.00
+> 7 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **Architecture Review Remediation** (2 connections) — `.cursor/plans/architecture_review_remediation_9704434e.plan.md`
-- **Deprecated get_async_persistence Global** (1 connections) — `.cursor/plans/architecture_review_remediation_9704434e.plan.md`
+- **enum** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **environment** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **indoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **outdoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **underwater** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Submodule Setup](Submodule_Setup.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/architecture_review_remediation_9704434e.plan.md`
+- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

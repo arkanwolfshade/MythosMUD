@@ -1,22 +1,24 @@
 # Cursor Commands Mypy
 
-> 1 nodes · cohesion 1.00
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **FastAPI** (2 connections) — `server/README.md`
+- **test_last_connected_time_set()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **Test last_connected_time is set on successful connection.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Community 1929](Community_1929.md) (1 shared connections)
+- [Chat Panel Separation](Chat_Panel_Separation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/README.md`
+- `server/tests/unit/realtime/test_connection_state_machine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

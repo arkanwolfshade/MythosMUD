@@ -1,63 +1,75 @@
 # Combat Command Handler
 
-> 24 nodes · cohesion 0.01
+> 409 nodes · cohesion 0.01
 
 ## Key Concepts
 
 - **AsyncPersistenceLayer** (183 connections) — `server/async_persistence.py`
-- **UUID** (19 connections) — `server/services/player_combat_service.py`
-- **Any** (17 connections) — `server/commands/combat_handler.py`
-- **AppWithState** (16 connections) — `server/commands/combat_handler.py`
-- **reset_async_persistence()** (6 connections) — `server/async_persistence.py`
-- **Room** (6 connections) — `server/npc/spawning_request_execution.py`
-- **AppWithState** (6 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **.create_container()** (4 connections) — `server/async_persistence.py`
-- **Any** (4 connections) — `server/validators/combat_validator.py`
-- **.async_list_rooms()** (3 connections) — `server/async_persistence.py`
-- **.list_rooms()** (3 connections) — `server/async_persistence.py`
-- **UUID** (3 connections) — `server/tests/unit/commands/test_flee_command.py`
-- **.close()** (2 connections) — `server/async_persistence.py`
-- **.expire_player_effects_for_tick()** (2 connections) — `server/async_persistence.py`
-- **.get_room_by_id()** (2 connections) — `server/async_persistence.py`
-- **.item_instance_exists()** (2 connections) — `server/async_persistence.py`
-- **List all rooms from the cache. Delegates to RoomRepository.          Returns:** (2 connections) — `server/async_persistence.py`
-- **Close and cleanup resources.          Note: SQLAlchemy async sessions are manage** (1 connections) — `server/async_persistence.py`
-- **Get a room by ID. Checks instance manager first, then cache.          Instanced** (1 connections) — `server/async_persistence.py`
-- **Expire effects for current tick; return list of (player_id, effect_type) expired** (1 connections) — `server/async_persistence.py`
-- **Create a new container.          Args:             source_type: Type of containe** (1 connections) — `server/async_persistence.py`
-- **Async persistence layer using SQLAlchemy ORM for true async PostgreSQL operation** (1 connections) — `server/async_persistence.py`
-- **Check if an item instance exists. Delegates to ItemRepository.** (1 connections) — `server/async_persistence.py`
-- **Reset the global async persistence instance for testing.      DEPRECATED: Use Ap** (1 connections) — `server/async_persistence.py`
+- **PlayerCombatService** (76 connections) — `server/services/player_combat_service.py`
+- **CombatCommandHandler** (54 connections) — `server/commands/combat_handler.py`
+- **combat_handler.py** (47 connections) — `server/commands/combat_handler.py`
+- **TargetResolutionResult** (39 connections) — `server/schemas/shared/target_resolution.py`
+- **test_combat_handler.py** (37 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_player_combat_service.py** (37 connections) — `server/tests/unit/services/test_player_combat_service.py`
+- **test_async_persistence_delegates.py** (35 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_flee_command.py** (28 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **CombatValidator** (28 connections) — `server/validators/combat_validator.py`
+- **CombatCommandHandlerExtras** (25 connections) — `server/commands/combat_handler.py`
+- **combat_loader.py** (25 connections) — `server/commands/combat_loader.py`
+- **ContainerCreateParams** (20 connections) — `server/persistence/container_create_params.py`
+- **_handler_with_persistence()** (20 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **combat.py** (19 connections) — `server/commands/combat.py`
+- **get_combat_command_handler()** (19 connections) — `server/commands/combat_loader.py`
+- **AppWithState** (17 connections) — `server/commands/combat_app_protocols.py`
+- **_NpcWithLife** (17 connections) — `server/commands/combat_handler.py`
+- **UUID** (15 connections)
+- **.event_bus()** (12 connections) — `server/realtime/connection_manager.py`
+- **.__init__()** (11 connections) — `server/commands/combat_handler.py`
+- **target_resolution.py** (11 connections) — `server/schemas/shared/target_resolution.py`
+- **_AppStatePersistence** (10 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **_AppWithPersistence** (10 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **FleeHandlerDeps** (10 connections) — `server/tests/unit/commands/test_flee_command.py`
+- *... and 384 more nodes in this community*
 
 ## Relationships
 
+- [Distributed Event Bus](Distributed_Event_Bus.md) (62 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (45 shared connections)
+- [Flee Command Tests](Flee_Command_Tests.md) (25 shared connections)
+- [Admin Set Lucidity Command](Admin_Set_Lucidity_Command.md) (22 shared connections)
+- [Event Bus Serialization](Event_Bus_Serialization.md) (18 shared connections)
 - [Async Persistence Layer](Async_Persistence_Layer.md) (17 shared connections)
+- [Game Magic Spell](Game_Magic_Spell.md) (15 shared connections)
+- [App Lifespan Management](App_Lifespan_Management.md) (14 shared connections)
 - [End-to-End Validation](End-to-End_Validation.md) (13 shared connections)
 - [Death Delirium UI Modals](Death_Delirium_UI_Modals.md) (13 shared connections)
-- [Pylint Unique Findings](Pylint_Unique_Findings.md) (5 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (4 shared connections)
-- [Calendar Holiday Schemas](Calendar_Holiday_Schemas.md) (4 shared connections)
-- [Dependency Injection Tests](Dependency_Injection_Tests.md) (3 shared connections)
-- [Holiday Persistence Models](Holiday_Persistence_Models.md) (3 shared connections)
-- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (2 shared connections)
-- [Room Subscription Helpers](Room_Subscription_Helpers.md) (2 shared connections)
-- [Weapon Resolution Helpers](Weapon_Resolution_Helpers.md) (2 shared connections)
-- [Admin Set Lucidity Command](Admin_Set_Lucidity_Command.md) (2 shared connections)
+- [Combat Flee Command](Combat_Flee_Command.md) (11 shared connections)
+- [Container Persistence Queries](Container_Persistence_Queries.md) (9 shared connections)
 
 ## Source Files
 
 - `server/async_persistence.py`
+- `server/commands/combat.py`
+- `server/commands/combat_app_protocols.py`
 - `server/commands/combat_handler.py`
-- `server/npc/spawning_request_execution.py`
+- `server/commands/combat_loader.py`
+- `server/npc/idle_movement.py`
+- `server/npc/movement_integration.py`
+- `server/persistence/container_create_params.py`
+- `server/realtime/connection_manager.py`
+- `server/schemas/shared/target_resolution.py`
 - `server/services/player_combat_service.py`
 - `server/tests/unit/commands/test_combat_handler.py`
 - `server/tests/unit/commands/test_flee_command.py`
+- `server/tests/unit/infrastructure/conftest.py`
+- `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- `server/tests/unit/services/test_player_combat_service.py`
 - `server/validators/combat_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 165 (57%)
-- INFERRED: 122 (43%)
+- EXTRACTED: 1525 (89%)
+- INFERRED: 194 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,16 +1,23 @@
 # Codacy Tool Configuration
 
-> 7 nodes · cohesion 0.14
+> 14 nodes · cohesion 0.14
 
 ## Key Concepts
 
 - **codacy.yaml Tool Manifest** (5 connections) — `.codacy/codacy.yaml`
 - **Lizard Complexity Tool Pin** (3 connections) — `.codacy/codacy.yaml`
 - **Trivy Codacy Tool Pin** (3 connections) — `.codacy/codacy.yaml`
-- **MythosMUD Codacy Tool Suite** (3 connections) — `.codacy/README.md`
-- **Grype Local vs Trivy Codacy SCA** (2 connections) — `.codacy/README.md`
-- **Manually Managed codacy.yaml** (2 connections) — `.codacy/README.md`
+- **Lizard Complexity Thresholds** (3 connections) — `.codacy/tools-configs/lizard.yaml`
+- **MythosMUD Codacy Tool Suite** (2 connections) — `.codacy/README.md`
+- **Codacy Tools Language Mapping** (2 connections) — `.codacy/tools-configs/languages-config.yaml`
 - **Codacy CLI Local Mode** (1 connections) — `.codacy/cli-config.yaml`
+- **Grype Local vs Trivy Codacy SCA** (1 connections) — `.codacy/README.md`
+- **Manually Managed codacy.yaml** (1 connections) — `.codacy/README.md`
+- **Dart Analyzer Options** (1 connections) — `.codacy/tools-configs/analysis_options.yaml`
+- **Lizard CCN Minor Threshold 10** (1 connections) — `.codacy/tools-configs/lizard.yaml`
+- **Lizard File NLOC Medium Threshold 500** (1 connections) — `.codacy/tools-configs/lizard.yaml`
+- **Semgrep Security Ruleset** (1 connections) — `.codacy/tools-configs/semgrep.yaml`
+- **Trivy Severity and Scanner Config** (1 connections) — `.codacy/tools-configs/trivy.yaml`
 
 ## Relationships
 
@@ -21,11 +28,16 @@
 - `.codacy/README.md`
 - `.codacy/cli-config.yaml`
 - `.codacy/codacy.yaml`
+- `.codacy/tools-configs/analysis_options.yaml`
+- `.codacy/tools-configs/languages-config.yaml`
+- `.codacy/tools-configs/lizard.yaml`
+- `.codacy/tools-configs/semgrep.yaml`
+- `.codacy/tools-configs/trivy.yaml`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (74%)
-- INFERRED: 5 (26%)
+- EXTRACTED: 16 (62%)
+- INFERRED: 10 (38%)
 - AMBIGUOUS: 0 (0%)
 
 ---

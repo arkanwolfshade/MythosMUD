@@ -1,15 +1,38 @@
 # Magic Game Healing
 
-> 2 nodes · cohesion 0.20
+> 18 nodes · cohesion 0.20
 
 ## Key Concepts
 
-- **UUID** (9 connections) — `server/game/magic/magic_healing_events.py`
-- **Any** (8 connections) — `server/game/magic/magic_healing_events.py`
+- **MagicServiceHealingMixin** (15 connections) — `server/game/magic/magic_healing_events.py`
+- **magic_healing_events.py** (14 connections) — `server/game/magic/magic_healing_events.py`
+- **._publish_dp_event()** (7 connections) — `server/game/magic/magic_healing_events.py`
+- **._send_healing_update_event()** (7 connections) — `server/game/magic/magic_healing_events.py`
+- **._publish_or_send_dp_update()** (6 connections) — `server/game/magic/magic_healing_events.py`
+- **UUID** (6 connections)
+- **._is_heal_other_target()** (5 connections) — `server/game/magic/magic_healing_events.py`
+- **._send_instant_heal_event_if_applied()** (5 connections) — `server/game/magic/magic_healing_events.py`
+- **Any** (5 connections)
+- **._effect_result_has_healing()** (4 connections) — `server/game/magic/magic_healing_events.py`
+- **Healing event notification for spellcasting.  Mixin that sends player_dp_updated** (1 connections) — `server/game/magic/magic_healing_events.py`
+- **Publish DP update via event bus, or send fallback game event.** (1 connections) — `server/game/magic/magic_healing_events.py`
+- **If instant cast applied healing, send DP update event to the healed player.** (1 connections) — `server/game/magic/magic_healing_events.py`
+- **Mixin for MagicService: send DP update events when spells apply healing.** (1 connections) — `server/game/magic/magic_healing_events.py`
+- **True when healing was applied to another player (heal-other, not steal-life or s** (1 connections) — `server/game/magic/magic_healing_events.py`
+- **True if effect result indicates healing was applied (success, effect_applied, he** (1 connections) — `server/game/magic/magic_healing_events.py`
+- **Send player_dp_updated event for the healed player (target for heal other, caste** (1 connections) — `server/game/magic/magic_healing_events.py`
+- **Load player stats and delegate DP event publishing.** (1 connections) — `server/game/magic/magic_healing_events.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Distributed Event Bus](Distributed_Event_Bus.md) (5 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (4 shared connections)
+- [Players API Endpoints](Players_API_Endpoints.md) (3 shared connections)
+- [Game Magic Spell](Game_Magic_Spell.md) (3 shared connections)
+- [Application DI Bundles](Application_DI_Bundles.md) (2 shared connections)
+- [Magic Lifespan Initialization](Magic_Lifespan_Initialization.md) (2 shared connections)
+- [NPC Combat Handler Tests](NPC_Combat_Handler_Tests.md) (2 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (1 shared connections)
 
 ## Source Files
 
@@ -17,8 +40,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 11 (65%)
-- INFERRED: 6 (35%)
+- EXTRACTED: 76 (93%)
+- INFERRED: 6 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

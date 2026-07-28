@@ -1,24 +1,23 @@
 # Fastapi Code Review
 
-> 3 nodes · cohesion 0.67
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **FastAPI Code Review** (2 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **FastAPI Dependency Injection** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **FastAPI Response Models** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
+- **tailwindcss** (2 connections) — `client/package.json`
+- **tailwindcss** (1 connections) — `client/package.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Client Dev Dependencies](Client_Dev_Dependencies.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/FASTAPI_CODE_REVIEW.md`
+- `client/package.json`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

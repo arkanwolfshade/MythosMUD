@@ -9,17 +9,17 @@
 - **main()** (8 connections) — `scripts/error_monitoring.py`
 - **.check_alerts()** (7 connections) — `scripts/error_monitoring.py`
 - **._parse_recent_errors()** (7 connections) — `scripts/error_monitoring.py`
-- **Any** (7 connections) — `scripts/error_monitoring.py`
+- **Any** (7 connections)
 - **.detect_error_trends()** (6 connections) — `scripts/error_monitoring.py`
 - **.monitor_continuously()** (6 connections) — `scripts/error_monitoring.py`
 - **._find_recent_error_logs()** (5 connections) — `scripts/error_monitoring.py`
+- **error_monitoring.py** (4 connections) — `scripts/error_monitoring.py`
 - **._categorize_error()** (4 connections) — `scripts/error_monitoring.py`
 - **._determine_severity()** (4 connections) — `scripts/error_monitoring.py`
 - **.__init__()** (4 connections) — `scripts/error_monitoring.py`
 - **._parse_log_line()** (4 connections) — `scripts/error_monitoring.py`
-- **Path** (4 connections) — `scripts/error_monitoring.py`
-- **error_monitoring.py** (3 connections) — `scripts/error_monitoring.py`
-- **datetime** (3 connections) — `scripts/error_monitoring.py`
+- **Path** (4 connections)
+- **datetime** (3 connections)
 - **Detect error trends over time.          Returns trend analysis results.** (1 connections) — `scripts/error_monitoring.py`
 - **Check for alert conditions.          Returns list of active alerts.** (1 connections) — `scripts/error_monitoring.py`
 - **Monitor errors continuously for a specified duration.          Args:** (1 connections) — `scripts/error_monitoring.py`
@@ -33,6 +33,7 @@
 
 ## Relationships
 
+- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
 - [Mythos Map Builder](Mythos_Map_Builder.md) (1 shared connections)
 
 ## Source Files
@@ -41,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 106 (99%)
+- EXTRACTED: 107 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

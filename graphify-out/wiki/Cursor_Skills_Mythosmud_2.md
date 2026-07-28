@@ -1,26 +1,27 @@
 # Cursor Skills Mythosmud
 
-> 3 nodes · cohesion 0.67
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **MythosMUD Server Runbook Skill** (2 connections) — `.cursor/skills/mythosmud-server-runbook/SKILL.md`
-- **One Server Only Rule** (2 connections) — `.cursor/skills/mythosmud-server-runbook/SKILL.md`
-- **MythosMUD Worktree Workflow Skill** (1 connections) — `.cursor/skills/mythosmud-worktree-workflow/SKILL.md`
+- **name** (5 connections) — `schemas/room_schema.json`
+- **description** (1 connections) — `schemas/room_schema.json`
+- **maxLength** (1 connections) — `schemas/room_schema.json`
+- **minLength** (1 connections) — `schemas/room_schema.json`
+- **type** (1 connections) — `schemas/room_schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Schemas Room Schema](Schemas_Room_Schema.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/skills/mythosmud-server-runbook/SKILL.md`
-- `.cursor/skills/mythosmud-worktree-workflow/SKILL.md`
+- `schemas/room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (60%)
-- INFERRED: 2 (40%)
+- EXTRACTED: 9 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

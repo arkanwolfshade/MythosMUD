@@ -7,7 +7,7 @@
 - **verify_migration.py** (11 connections) — `scripts/verify_migration.py`
 - **_validate_database_data()** (8 connections) — `scripts/verify_migration.py`
 - **verify_database()** (8 connections) — `scripts/verify_migration.py`
-- **Connection** (7 connections) — `scripts/verify_migration.py`
+- **Connection** (7 connections)
 - **_check_foreign_keys()** (4 connections) — `scripts/verify_migration.py`
 - **_check_null_values()** (4 connections) — `scripts/verify_migration.py`
 - **_check_table_exists()** (4 connections) — `scripts/verify_migration.py`

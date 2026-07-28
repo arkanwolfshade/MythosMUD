@@ -1,14 +1,16 @@
 # Agents Guardrails Critical Section
 
-> 1 nodes · cohesion 0.67
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **AsyncSession** (1 connections) — `server/services/coordinate_validator.py`
+- **.__init__()** (3 connections) — `server/services/coordinate_validator.py`
+- **AsyncSession** (1 connections)
+- **Initialize coordinate validator.          Args:             session: Database se** (1 connections) — `server/services/coordinate_validator.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [ASCII Map API](ASCII_Map_API.md) (1 shared connections)
 
 ## Source Files
 
@@ -16,7 +18,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

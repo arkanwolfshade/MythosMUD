@@ -24,8 +24,8 @@
 - **load_pylint_output()** (4 connections) — `scripts/compare_linting_results.py`
 - **parse_pylint_text_output()** (4 connections) — `scripts/compare_linting_results.py`
 - **parse_ruff_text_output()** (4 connections) — `scripts/compare_linting_results.py`
-- **Any** (4 connections) — `scripts/compare_linting_results.py`
-- **Path** (3 connections) — `scripts/compare_linting_results.py`
+- **Any** (4 connections)
+- **Path** (3 connections)
 - **.__eq__()** (2 connections) — `scripts/compare_linting_results.py`
 - **.__hash__()** (2 connections) — `scripts/compare_linting_results.py`
 - **.location_key()** (2 connections) — `scripts/compare_linting_results.py`
@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Load Seed](Load_Seed.md) (1 shared connections)
+- [CI Quality Scripts](CI_Quality_Scripts.md) (1 shared connections)
 
 ## Source Files
 
@@ -41,8 +42,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 164 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 161 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

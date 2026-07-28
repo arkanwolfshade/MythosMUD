@@ -1,22 +1,23 @@
 # Cursor Commands Mypy
 
-> 1 nodes · cohesion 1.00
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **GET /v1/monitoring/health** (1 connections) — `server/README.md`
+- **test_handle_combat_ended_event()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **Test _handle_combat_ended_event delegates to event handler.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (1 shared connections)
 
 ## Source Files
 
-- `server/README.md`
+- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

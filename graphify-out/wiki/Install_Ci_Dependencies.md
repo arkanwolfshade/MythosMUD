@@ -1,10 +1,11 @@
 # Install Ci Dependencies
 
-> 1 nodes · cohesion 1.00
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
 - **install_ci_dependencies.sh** (1 connections) — `scripts/install_ci_dependencies.sh`
+- **install_ci_dependencies.sh script** (1 connections) — `scripts/install_ci_dependencies.sh`
 
 ## Relationships
 
@@ -16,7 +17,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

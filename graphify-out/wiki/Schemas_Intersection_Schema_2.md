@@ -18,8 +18,9 @@
 
 ## Relationships
 
-- [Schemas Intersection Schema](Schemas_Intersection_Schema.md) (7 shared connections)
+- [Schemas Intersection Schema](Schemas_Intersection_Schema.md) (6 shared connections)
 - [Logger Client Add To](Logger_Client_Add_To.md) (1 shared connections)
+- [Community 1855](Community_1855.md) (1 shared connections)
 
 ## Source Files
 

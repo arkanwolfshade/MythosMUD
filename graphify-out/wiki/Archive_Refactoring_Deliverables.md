@@ -1,22 +1,23 @@
 # Archive Refactoring Deliverables
 
-> 1 nodes · cohesion 1.00
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Configuration File Tuples** (1 connections) — `docs/CONFIGURATION_FILES_REFERENCE.md`
+- **test_resolve_connection_manager_from_container_no_manager()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Test _resolve_connection_manager_from_container raises when no manager.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/CONFIGURATION_FILES_REFERENCE.md`
+- `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

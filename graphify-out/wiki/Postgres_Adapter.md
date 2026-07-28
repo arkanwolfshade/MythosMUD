@@ -4,12 +4,12 @@
 
 ## Key Concepts
 
-- **Any** (7 connections) — `server/postgres_adapter.py`
+- **Any** (7 connections)
 - **.execute()** (5 connections) — `server/postgres_adapter.py`
 - **.cursor()** (4 connections) — `server/postgres_adapter.py`
 - **.keys()** (4 connections) — `server/postgres_adapter.py`
 - **.__getitem__()** (3 connections) — `server/postgres_adapter.py`
-- **cursor** (3 connections) — `server/postgres_adapter.py`
+- **cursor** (3 connections)
 - **.__init__()** (2 connections) — `server/postgres_adapter.py`
 - **.__init__()** (2 connections) — `server/postgres_adapter.py`
 - **.__iter__()** (2 connections) — `server/postgres_adapter.py`

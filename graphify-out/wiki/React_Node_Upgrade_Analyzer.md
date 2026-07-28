@@ -13,7 +13,7 @@
 - **main()** (4 connections) — `scripts/react_node_upgrade_analyzer.py`
 - **._assess_node_risk()** (4 connections) — `scripts/react_node_upgrade_analyzer.py`
 - **._assess_react_risk()** (4 connections) — `scripts/react_node_upgrade_analyzer.py`
-- **Any** (3 connections) — `scripts/react_node_upgrade_analyzer.py`
+- **Any** (3 connections)
 - **._calculate_priority()** (3 connections) — `scripts/react_node_upgrade_analyzer.py`
 - **._format_build_tools_priority()** (3 connections) — `scripts/react_node_upgrade_analyzer.py`
 - **._format_node_features()** (3 connections) — `scripts/react_node_upgrade_analyzer.py`

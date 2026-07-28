@@ -1,25 +1,31 @@
 # Npc Behavior Engine
 
-> 4 nodes · cohesion 0.50
+> 10 nodes · cohesion 0.20
 
 ## Key Concepts
 
-- **enabled** (4 connections) — `schemas/unified_room_schema.json`
-- **default** (1 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
-- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **multiplayer-playwright-testing.md** (9 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
+- **🎯 AVAILABLE SCENARIOS** (1 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
+- **🔄 BACKWARD COMPATIBILITY** (1 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
+- **🚨 CRITICAL AI EXECUTOR REQUIREMENTS 🚨** (1 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
+- **📋 EXECUTION OPTIONS** (1 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
+- **📖 MANDATORY EXECUTION ORDER** (1 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
+- **🛑 MANDATORY EXECUTION PROTOCOL 🛑** (1 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
+- **🎮 MODULAR E2E TEST SUITE STRUCTURE 🎮** (1 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
+- **🔧 TESTING APPROACH** (1 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
+- **📝 USAGE EXAMPLES** (1 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
 
 ## Relationships
 
-- [Schemas Unified Room](Schemas_Unified_Room.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/unified_room_schema.json`
+- `.cursor/commands/multiplayer-playwright-testing.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

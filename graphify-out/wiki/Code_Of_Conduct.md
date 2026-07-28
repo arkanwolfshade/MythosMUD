@@ -1,23 +1,11 @@
 # Code Of Conduct
 
-> 15 nodes · cohesion 0.12
+> 3 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **Enforcement Guidelines** (5 connections) — `CODE_OF_CONDUCT.md`
 - **Contributing guide** (3 connections) — `CONTRIBUTING.md`
 - **Security-first contribution principle** (2 connections) — `CONTRIBUTING.md`
-- **CODE_OF_CONDUCT.md** (1 connections) — `CODE_OF_CONDUCT.md`
-- **1. Correction** (1 connections) — `CODE_OF_CONDUCT.md`
-- **2. Warning** (1 connections) — `CODE_OF_CONDUCT.md`
-- **3. Temporary Ban** (1 connections) — `CODE_OF_CONDUCT.md`
-- **4. Permanent Ban** (1 connections) — `CODE_OF_CONDUCT.md`
-- **Attribution** (1 connections) — `CODE_OF_CONDUCT.md`
-- **Enforcement** (1 connections) — `CODE_OF_CONDUCT.md`
-- **Enforcement Responsibilities** (1 connections) — `CODE_OF_CONDUCT.md`
-- **Our Pledge** (1 connections) — `CODE_OF_CONDUCT.md`
-- **Our Standards** (1 connections) — `CODE_OF_CONDUCT.md`
-- **Scope** (1 connections) — `CODE_OF_CONDUCT.md`
 - **TDD write-tests-first workflow** (1 connections) — `CONTRIBUTING.md`
 
 ## Relationships
@@ -26,13 +14,12 @@
 
 ## Source Files
 
-- `CODE_OF_CONDUCT.md`
 - `CONTRIBUTING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (95%)
-- INFERRED: 1 (5%)
+- EXTRACTED: 5 (83%)
+- INFERRED: 1 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

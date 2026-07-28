@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **React Best-Practices Remediation** (1 connections) — `.cursor/plans/react_best-practices_remediation.plan.md`
-- **Room Editor Backend APIs** (1 connections) — `.cursor/plans/room_editor_backend_apis.plan.md`
+- **Critical File Coverage Improvement** (1 connections) — `.cursor/plans/critical_file_coverage_improvement_0129c9ac.plan.md`
+- **Dead Code Analysis and Removal** (1 connections) — `.cursor/plans/dead_code_analysis_and_removal_746bc5c1.plan.md`
 
 ## Relationships
 
@@ -13,8 +13,8 @@
 
 ## Source Files
 
-- `.cursor/plans/react_best-practices_remediation.plan.md`
-- `.cursor/plans/room_editor_backend_apis.plan.md`
+- `.cursor/plans/critical_file_coverage_improvement_0129c9ac.plan.md`
+- `.cursor/plans/dead_code_analysis_and_removal_746bc5c1.plan.md`
 
 ## Audit Trail
 

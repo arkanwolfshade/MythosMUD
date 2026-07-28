@@ -1,15 +1,17 @@
 # Schemas Room Schema
 
-> 2 nodes · cohesion 0.50
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
+- **plane** (4 connections) — `schemas/room_schema.json`
 - **description** (1 connections) — `schemas/room_schema.json`
 - **pattern** (1 connections) — `schemas/room_schema.json`
+- **type** (1 connections) — `schemas/room_schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Schemas Room Schema](Schemas_Room_Schema.md) (1 shared connections)
 
 ## Source Files
 
@@ -17,7 +19,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

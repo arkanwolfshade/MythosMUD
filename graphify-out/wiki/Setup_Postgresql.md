@@ -1,11 +1,12 @@
 # Setup Postgresql
 
-> 2 nodes · cohesion 0.67
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
 - **setup_postgresql_test_db.sh** (2 connections) — `scripts/setup_postgresql_test_db.sh`
 - **PGPASSWORD** (1 connections) — `scripts/setup_postgresql_test_db.sh`
+- **setup_postgresql_test_db.sh script** (1 connections) — `scripts/setup_postgresql_test_db.sh`
 
 ## Relationships
 
@@ -17,7 +18,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

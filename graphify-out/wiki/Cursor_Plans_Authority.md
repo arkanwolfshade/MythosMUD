@@ -1,20 +1,20 @@
 # Cursor Plans Authority
 
-> 3 nodes · cohesion 0.67
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Server Authority Remediation** (2 connections) — `.cursor/plans/server_authority_remediation_de891aa1.plan.md`
-- **game_state Room Replace (not Merge)** (1 connections) — `.cursor/plans/server_authority_remediation_de891aa1.plan.md`
-- **Server Authority Rule** (1 connections) — `.cursor/plans/server_authority_remediation_de891aa1.plan.md`
+- **test_profession_meets_stat_requirements_all_met()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **Test meets_stat_requirements returns True when all requirements are met.** (1 connections) — `server/tests/unit/models/test_profession.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [WebSocket Code Review](WebSocket_Code_Review.md) (1 shared connections)
+- [Async Persistence Migration](Async_Persistence_Migration.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/server_authority_remediation_de891aa1.plan.md`
+- `server/tests/unit/models/test_profession.py`
 
 ## Audit Trail
 

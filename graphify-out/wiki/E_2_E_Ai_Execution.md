@@ -1,23 +1,25 @@
 # E 2 E Ai Execution
 
-> 2 nodes · cohesion 0.42
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **Module** (2 connections) — `scripts/ci/quality_fragmentation_graph.py`
-- **Path** (2 connections) — `scripts/ci/quality_fragmentation_graph.py`
+- **start_hour** (4 connections) — `schemas/calendar/schedule.schema.json`
+- **maximum** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **minimum** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Architecture Decisions Adr](Architecture_Decisions_Adr.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/ci/quality_fragmentation_graph.py`
+- `schemas/calendar/schedule.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

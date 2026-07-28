@@ -1,49 +1,53 @@
 # Dependency Risk Analyzer
 
-> 63 nodes · cohesion 0.06
+> 82 nodes · cohesion 0.06
 
 ## Key Concepts
 
 - **DependencyAnalyzer** (21 connections) — `scripts/dependency_analyzer.py`
 - **ManualDependencyAnalyzer** (20 connections) — `scripts/manual_dependency_analysis.py`
+- **DepInfo** (20 connections) — `scripts/utils/dependency_analysis_types.py`
 - **manual_dependency_analysis.py** (16 connections) — `scripts/manual_dependency_analysis.py`
+- **PriorityItem** (13 connections) — `scripts/utils/dependency_analysis_types.py`
 - **.analyze_dependencies()** (11 connections) — `scripts/manual_dependency_analysis.py`
 - **.analyze_all_dependencies()** (10 connections) — `scripts/dependency_analyzer.py`
 - **.generate_report()** (10 connections) — `scripts/manual_dependency_analysis.py`
+- **AnalysisSnapshot** (10 connections) — `scripts/utils/dependency_analysis_types.py`
 - **.generate_report()** (9 connections) — `scripts/dependency_analyzer.py`
-- **Path** (8 connections) — `scripts/dependency_analyzer.py`
+- **dependency_analysis_types.py** (9 connections) — `scripts/utils/dependency_analysis_types.py`
+- **BreakingChange** (9 connections) — `scripts/utils/dependency_analysis_types.py`
 - **NpmManualRow** (8 connections) — `scripts/manual_dependency_analysis.py`
 - **PipManualRow** (8 connections) — `scripts/manual_dependency_analysis.py`
+- **RiskAssessment** (8 connections) — `scripts/utils/dependency_analysis_types.py`
+- **categorize_update()** (8 connections) — `scripts/utils/dependency_risk.py`
 - **dependency_analyzer.py** (7 connections) — `scripts/dependency_analyzer.py`
 - **._analyze_python_dependencies()** (7 connections) — `scripts/dependency_analyzer.py`
+- **UpdateStrategy** (7 connections) — `scripts/utils/dependency_analysis_types.py`
 - **_dep_info_from_npm_row()** (6 connections) — `scripts/dependency_analyzer.py`
 - **._analyze_npm_dependencies()** (6 connections) — `scripts/dependency_analyzer.py`
 - **main()** (6 connections) — `scripts/dependency_analyzer.py`
+- **TypedDict** (6 connections)
+- **dependency_risk.py** (6 connections) — `scripts/utils/dependency_risk.py`
 - **._assess_risks()** (5 connections) — `scripts/dependency_analyzer.py`
-- **._determine_strategy()** (5 connections) — `scripts/dependency_analyzer.py`
-- **._prioritize_updates()** (5 connections) — `scripts/dependency_analyzer.py`
-- **_parse_npm_outdated_json()** (5 connections) — `scripts/dependency_analyzer.py`
-- **main()** (5 connections) — `scripts/manual_dependency_analysis.py`
-- **._create_priority_order()** (5 connections) — `scripts/manual_dependency_analysis.py`
-- **._process_npm_dependencies()** (5 connections) — `scripts/manual_dependency_analysis.py`
-- **._process_python_dependencies()** (5 connections) — `scripts/manual_dependency_analysis.py`
-- **_report_priority_block()** (5 connections) — `scripts/manual_dependency_analysis.py`
-- **_report_upgrade_commands()** (5 connections) — `scripts/manual_dependency_analysis.py`
-- *... and 38 more nodes in this community*
+- *... and 57 more nodes in this community*
 
 ## Relationships
 
+- [CI Quality Scripts](CI_Quality_Scripts.md) (2 shared connections)
 - [Dependency Injection Tests](Dependency_Injection_Tests.md) (2 shared connections)
+- [Load Seed](Load_Seed.md) (1 shared connections)
 
 ## Source Files
 
 - `scripts/dependency_analyzer.py`
 - `scripts/manual_dependency_analysis.py`
+- `scripts/utils/dependency_analysis_types.py`
+- `scripts/utils/dependency_risk.py`
 
 ## Audit Trail
 
-- EXTRACTED: 243 (88%)
-- INFERRED: 32 (12%)
+- EXTRACTED: 315 (82%)
+- INFERRED: 68 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

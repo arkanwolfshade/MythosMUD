@@ -4,9 +4,9 @@
 
 ## Key Concepts
 
-- **Ruff to Pylint Mapping** (11 connections) — `docs/LINTING_RUFF_PYLINT_MAPPING.md`
 - **Linting Complexity Alignment** (3 connections) — `docs/LINTING_COMPLEXITY_ALIGNMENT.md`
 - **Ruff C901 McCabe Complexity** (2 connections) — `docs/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Ruff to Pylint Mapping** (2 connections) — `docs/LINTING_RUFF_PYLINT_MAPPING.md`
 - **Lizard CCN Threshold (>10)** (2 connections) — `docs/LIZARD_COMPLEXITY_FINDINGS.md`
 - **Lizard Complexity Findings** (2 connections) — `docs/LIZARD_COMPLEXITY_FINDINGS.md`
 - **Pylint Unique Findings** (1 connections) — `docs/LINTING_PYLINT_UNIQUE_FINDINGS.md`
@@ -24,8 +24,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 13 (62%)
-- INFERRED: 8 (38%)
+- EXTRACTED: 4 (33%)
+- INFERRED: 8 (67%)
 - AMBIGUOUS: 0 (0%)
 
 ---

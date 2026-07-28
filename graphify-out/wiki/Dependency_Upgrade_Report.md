@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Incremental Upgrade Strategy (Report)** (2 connections) — `scripts/dependency_upgrade_report.md`
-- **Upgrade Rollback Plan** (2 connections) — `scripts/dependency_upgrade_report.md`
+- **Incremental Upgrade Strategy (Report)** (1 connections) — `scripts/dependency_upgrade_report.md`
+- **Upgrade Rollback Plan** (1 connections) — `scripts/dependency_upgrade_report.md`
 
 ## Relationships
 
@@ -17,8 +17,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 2 (50%)
-- INFERRED: 2 (50%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 2 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

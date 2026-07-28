@@ -5,10 +5,10 @@
 ## Key Concepts
 
 - **worktree-manager.ps1** (4 connections) — `scripts/worktree-manager.ps1`
-- **Remove-LegacyBranch()** (2 connections) — `scripts/worktree-manager.ps1`
-- **Show-WorktreeInfo()** (2 connections) — `scripts/worktree-manager.ps1`
-- **Show-WorktreeStatus()** (2 connections) — `scripts/worktree-manager.ps1`
-- **Switch-ToWorktree()** (2 connections) — `scripts/worktree-manager.ps1`
+- **Remove-LegacyBranch()** (1 connections) — `scripts/worktree-manager.ps1`
+- **Show-WorktreeInfo()** (1 connections) — `scripts/worktree-manager.ps1`
+- **Show-WorktreeStatus()** (1 connections) — `scripts/worktree-manager.ps1`
+- **Switch-ToWorktree()** (1 connections) — `scripts/worktree-manager.ps1`
 
 ## Relationships
 
@@ -20,8 +20,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 8 (67%)
-- INFERRED: 4 (33%)
+- EXTRACTED: 8 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

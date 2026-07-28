@@ -1,10 +1,12 @@
 # Github Workflows Dependency
 
-> 1 nodes · cohesion 0.67
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
+- **Dependency Review Workflow** (2 connections) — `.github/workflows/dependency-review.yml`
 - **Dependabot Dependency Updates** (1 connections) — `.github/dependabot.yml`
+- **UV Lock Dependency Snapshot Gate** (1 connections) — `.github/workflows/dependency-review.yml`
 
 ## Relationships
 
@@ -13,11 +15,12 @@
 ## Source Files
 
 - `.github/dependabot.yml`
+- `.github/workflows/dependency-review.yml`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 2 (50%)
+- INFERRED: 2 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---

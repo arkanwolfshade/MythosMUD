@@ -1,14 +1,26 @@
 # Structured Logging Combat
 
-> 1 nodes · cohesion 0.18
+> 11 nodes · cohesion 0.18
 
 ## Key Concepts
 
-- **datetime** (9 connections) — `server/structured_logging/combat_audit.py`
+- **datetime** (9 connections)
+- **.log_combat_attack()** (3 connections) — `server/structured_logging/combat_audit.py`
+- **.log_combat_death()** (3 connections) — `server/structured_logging/combat_audit.py`
+- **.log_combat_end()** (3 connections) — `server/structured_logging/combat_audit.py`
+- **.log_combat_rate_limit()** (3 connections) — `server/structured_logging/combat_audit.py`
+- **.log_combat_start()** (3 connections) — `server/structured_logging/combat_audit.py`
+- **Log the death of a combat target.          Args:             player_id: ID of th** (1 connections) — `server/structured_logging/combat_audit.py`
+- **Log the end of a combat encounter.          Args:             player_id: ID of t** (1 connections) — `server/structured_logging/combat_audit.py`
+- **Log a combat rate limit event.          Args:             player_id: ID of the p** (1 connections) — `server/structured_logging/combat_audit.py`
+- **Log the start of a combat encounter.          Args:             player_id: ID of** (1 connections) — `server/structured_logging/combat_audit.py`
+- **Log a combat attack.          Args:             player_id: ID of the attacking p** (1 connections) — `server/structured_logging/combat_audit.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Cursor Plans Login](Cursor_Plans_Login.md) (5 shared connections)
+- [Structured Logging Combat](Structured_Logging_Combat.md) (3 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
 
 ## Source Files
 
@@ -16,7 +28,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 29 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

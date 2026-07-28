@@ -8,7 +8,7 @@
 - **fix_room_references.py** (4 connections) — `scripts/fix_room_references.py`
 - **load_room_file()** (4 connections) — `scripts/fix_room_references.py`
 - **save_room_file()** (4 connections) — `scripts/fix_room_references.py`
-- **Path** (3 connections) — `scripts/fix_room_references.py`
+- **Path** (3 connections)
 - **main()** (2 connections) — `scripts/fix_room_references.py`
 - **Load a room file safely.** (1 connections) — `scripts/fix_room_references.py`
 - **Save a room file safely.** (1 connections) — `scripts/fix_room_references.py`

@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Migration 019 Verification** (1 connections) — `docs/MIGRATION_019_VERIFICATION.md`
+- **Database Pool Configuration** (2 connections) — `docs/DATABASE_POOL_CONFIGURATION.md`
 
 ## Relationships
 
@@ -12,11 +12,11 @@
 
 ## Source Files
 
-- `docs/MIGRATION_019_VERIFICATION.md`
+- `docs/DATABASE_POOL_CONFIGURATION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -6,8 +6,8 @@
 
 - **e2e_reset_players.py** (3 connections) — `scripts/e2e_reset_players.py`
 - **_load_default_respawn_room()** (3 connections) — `scripts/e2e_reset_players.py`
-- **main()** (2 connections) — `scripts/e2e_reset_players.py`
-- **_reset_e2e_players()** (2 connections) — `scripts/e2e_reset_players.py`
+- **main()** (3 connections) — `scripts/e2e_reset_players.py`
+- **_reset_e2e_players()** (3 connections) — `scripts/e2e_reset_players.py`
 - **Load DEFAULT_RESPAWN_ROOM from disk so analyzers do not need to resolve the serv** (1 connections) — `scripts/e2e_reset_players.py`
 - **Entry point: run E2E player reset via anyio.** (1 connections) — `scripts/e2e_reset_players.py`
 
@@ -21,8 +21,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 12 (86%)
+- INFERRED: 2 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

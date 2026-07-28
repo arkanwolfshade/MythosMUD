@@ -1,26 +1,23 @@
 # Schemas Unified Room
 
-> 5 nodes · cohesion 0.33
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **container** (6 connections) — `schemas/unified_room_schema.json`
-- **additionalProperties** (1 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
-- **required** (1 connections) — `schemas/unified_room_schema.json`
-- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **__init__.py** (1 connections) — `schemas/__init__.py`
+- **Shared JSON schemas for MythosMUD room validation.  This package contains JSON s** (1 connections) — `schemas/__init__.py`
 
 ## Relationships
 
-- [Schemas Unified Room](Schemas_Unified_Room.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/unified_room_schema.json`
+- `schemas/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

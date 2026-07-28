@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Agent OS** (2 connections) — `.claude/commands/plan-product.md`
+- **Agent OS** (0 connections) — `.claude/commands/plan-product.md`
 
 ## Relationships
 
@@ -16,7 +16,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

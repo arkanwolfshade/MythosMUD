@@ -1,23 +1,34 @@
 # Cursor Plans Best
 
-> 1 nodes · cohesion 0.29
+> 12 nodes · cohesion 0.17
 
 ## Key Concepts
 
-- **Path** (4 connections) — `server/services/user_manager.py`
+- **TestPrepareCommandForProcessing** (7 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **.test_prepare_command_empty_after_cleaning()** (3 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **.test_prepare_command_empty_after_normalization()** (3 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **.test_prepare_command_rate_limited()** (3 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **.test_prepare_command_success()** (3 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **.test_prepare_command_validation_failed()** (3 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **Test _prepare_command_for_processing function.** (1 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **Test _prepare_command_for_processing returns rate limit result when rate limited** (1 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **Test _prepare_command_for_processing returns validation result when validation f** (1 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **Test _prepare_command_for_processing handles empty command after cleaning.** (1 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **Test _prepare_command_for_processing handles empty command after normalization.** (1 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **Test _prepare_command_for_processing successfully prepares command.** (1 connections) — `server/tests/unit/commands/test_command_preparation.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Command Request App State](Command_Request_App_State.md) (6 shared connections)
 
 ## Source Files
 
-- `server/services/user_manager.py`
+- `server/tests/unit/commands/test_command_preparation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 28 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

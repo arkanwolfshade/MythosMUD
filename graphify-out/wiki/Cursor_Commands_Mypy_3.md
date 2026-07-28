@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **PostgreSQL Player Persistence** (2 connections) — `server/README.md`
+- **FastAPI** (1 connections) — `server/README.md`
 
 ## Relationships
 
@@ -16,8 +16,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 1 (50%)
-- INFERRED: 1 (50%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

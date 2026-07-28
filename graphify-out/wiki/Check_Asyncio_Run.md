@@ -9,7 +9,7 @@
 - **main()** (3 connections) — `scripts/check_asyncio_run_guardrails.py`
 - **_strip_string_literals()** (3 connections) — `scripts/check_asyncio_run_guardrails.py`
 - **_strip_triple_quoted_blocks()** (3 connections) — `scripts/check_asyncio_run_guardrails.py`
-- **Path** (1 connections) — `scripts/check_asyncio_run_guardrails.py`
+- **Path** (1 connections)
 - **Remove triple-quoted string blocks from file content.** (1 connections) — `scripts/check_asyncio_run_guardrails.py`
 - **Remove string literals from line to avoid false positives inside docs/strings.** (1 connections) — `scripts/check_asyncio_run_guardrails.py`
 - **Return list of (line_no, line) where asyncio.run( appears in code.** (1 connections) — `scripts/check_asyncio_run_guardrails.py`

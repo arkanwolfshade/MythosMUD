@@ -1,6 +1,6 @@
 # Lint Sqlalchemy Async
 
-> 24 nodes · cohesion 0.11
+> 25 nodes · cohesion 0.11
 
 ## Key Concepts
 
@@ -12,18 +12,19 @@
 - **lint_sqlalchemy_async.py** (4 connections) — `scripts/lint_sqlalchemy_async.py`
 - **._is_wrapped_in_text()** (4 connections) — `scripts/lint_sqlalchemy_async.py`
 - **.visit_Await()** (4 connections) — `scripts/lint_sqlalchemy_async.py`
-- **Path** (3 connections) — `scripts/lint_sqlalchemy_async.py`
+- **.visit_ImportFrom()** (4 connections) — `scripts/lint_sqlalchemy_async.py`
+- **Path** (3 connections)
 - **.visit_Import()** (3 connections) — `scripts/lint_sqlalchemy_async.py`
-- **.visit_ImportFrom()** (3 connections) — `scripts/lint_sqlalchemy_async.py`
-- **Call** (2 connections) — `scripts/lint_sqlalchemy_async.py`
+- **Call** (2 connections)
 - **Check for SQLAlchemy imports.** (2 connections) — `scripts/lint_sqlalchemy_async.py`
-- **Await** (1 connections) — `scripts/lint_sqlalchemy_async.py`
-- **Import** (1 connections) — `scripts/lint_sqlalchemy_async.py`
-- **ImportFrom** (1 connections) — `scripts/lint_sqlalchemy_async.py`
+- **Await** (1 connections)
+- **Import** (1 connections)
+- **ImportFrom** (1 connections)
 - **Lint a single Python file for SQLAlchemy async issues.      Returns:         Lis** (1 connections) — `scripts/lint_sqlalchemy_async.py`
 - **Lint all Python files in a directory recursively.      Returns:         List of** (1 connections) — `scripts/lint_sqlalchemy_async.py`
 - **Main entry point for the linter.** (1 connections) — `scripts/lint_sqlalchemy_async.py`
 - **AST visitor to detect problematic SQLAlchemy async patterns.      Detects patter** (1 connections) — `scripts/lint_sqlalchemy_async.py`
+- **Check for SQLAlchemy text import.** (1 connections) — `scripts/lint_sqlalchemy_async.py`
 - **Check for problematic await patterns.** (1 connections) — `scripts/lint_sqlalchemy_async.py`
 - **Check if this is a problematic execute() call.** (1 connections) — `scripts/lint_sqlalchemy_async.py`
 - **Check if the argument is wrapped in text().** (1 connections) — `scripts/lint_sqlalchemy_async.py`
@@ -39,7 +40,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 66 (100%)
+- EXTRACTED: 68 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

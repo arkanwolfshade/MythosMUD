@@ -1,11 +1,12 @@
 # Cursor Skills Mythosmud
 
-> 2 nodes · cohesion 0.40
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **description** (1 connections) — `schemas/room_schema.json`
-- **maxLength** (1 connections) — `schemas/room_schema.json`
+- **Graphify Code Graph** (2 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Graphify Code Graph.md`
+- **Graphify Code Graph.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Graphify Code Graph.md`
+- **Relationship to this vault** (1 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Graphify Code Graph.md`
 
 ## Relationships
 
@@ -13,11 +14,11 @@
 
 ## Source Files
 
-- `schemas/room_schema.json`
+- `data/MythosMUD-Obsidian/wiki/concepts/Graphify Code Graph.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

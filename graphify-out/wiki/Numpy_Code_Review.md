@@ -1,11 +1,12 @@
 # Numpy Code Review
 
-> 2 nodes · cohesion 1.00
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **NumPy Code Review** (1 connections) — `docs/NUMPY_CODE_REVIEW.md`
-- **NumPy Usage Review** (1 connections) — `docs/NUMPY_CODE_REVIEW.md`
+- **database.ts** (2 connections) — `client/tests/e2e/runtime/fixtures/database.ts`
+- **resetPlayerPositions()** (1 connections) — `client/tests/e2e/runtime/fixtures/database.ts`
+- **verifyTestPlayers()** (1 connections) — `client/tests/e2e/runtime/fixtures/database.ts`
 
 ## Relationships
 
@@ -13,11 +14,11 @@
 
 ## Source Files
 
-- `docs/NUMPY_CODE_REVIEW.md`
+- `client/tests/e2e/runtime/fixtures/database.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,13 +1,14 @@
 # Cursor Plans Plan
 
-> 4 nodes · cohesion 0.50
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **Vite Best-Practices Remediation** (2 connections) — `.cursor/plans/vite_best-practices_remediation_abfe0fbe.plan.md`
-- **Vitest Best-Practices Remediation** (2 connections) — `.cursor/plans/vitest_best-practices_remediation_f589ee02.plan.md`
-- **Test Suite Improvement** (1 connections) — `.cursor/plans/test_suite_improvement_f5a4acf1.plan.md`
-- **import.meta.env (Vite)** (1 connections) — `.cursor/plans/vite_best-practices_remediation_abfe0fbe.plan.md`
+- **Quest System Gap** (2 connections) — `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
+- **Quest Subsystem Implementation** (2 connections) — `.cursor/plans/quest_subsystem_implementation_2c84306e.plan.md`
+- **Quest System** (2 connections) — `.cursor/plans/quest_subsystem_implementation_2c84306e.plan.md`
+- **MUD Subsystems Gap Analysis** (1 connections) — `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
+- **Player Skills and Profession Modifiers** (1 connections) — `.cursor/plans/player_skills_and_profession_modifiers_dff11b8d.plan.md`
 
 ## Relationships
 
@@ -15,14 +16,14 @@
 
 ## Source Files
 
-- `.cursor/plans/test_suite_improvement_f5a4acf1.plan.md`
-- `.cursor/plans/vite_best-practices_remediation_abfe0fbe.plan.md`
-- `.cursor/plans/vitest_best-practices_remediation_f589ee02.plan.md`
+- `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
+- `.cursor/plans/player_skills_and_profession_modifiers_dff11b8d.plan.md`
+- `.cursor/plans/quest_subsystem_implementation_2c84306e.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (33%)
-- INFERRED: 4 (67%)
+- EXTRACTED: 6 (75%)
+- INFERRED: 2 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

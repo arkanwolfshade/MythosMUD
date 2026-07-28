@@ -1,10 +1,16 @@
 # Scripts README Docs
 
-> 1 nodes · cohesion 0.29
+> 7 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **PostgreSQL DDL Initialization** (2 connections) — `scripts/README.md`
+- **generate_sql.mjs** (5 connections) — `scripts/static_data/README.md`
+- **Canonical DML Merge (mythos_*_dml.sql)** (2 connections) — `scripts/static_data/README.md`
+- **world_and_emotes_generated.sql** (2 connections) — `scripts/static_data/README.md`
+- **PostgreSQL DDL Initialization** (1 connections) — `scripts/README.md`
+- **AJV JSON Schema Validation** (1 connections) — `scripts/static_data/README.md`
+- **Deterministic UUID v5 Namespace** (1 connections) — `scripts/static_data/README.md`
+- **generate_sql.mjs Path Resolution Failure** (1 connections) — `scripts/static_data/temp_debug.txt`
 
 ## Relationships
 
@@ -13,11 +19,13 @@
 ## Source Files
 
 - `scripts/README.md`
+- `scripts/static_data/README.md`
+- `scripts/static_data/temp_debug.txt`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (50%)
-- INFERRED: 1 (50%)
+- EXTRACTED: 11 (85%)
+- INFERRED: 2 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

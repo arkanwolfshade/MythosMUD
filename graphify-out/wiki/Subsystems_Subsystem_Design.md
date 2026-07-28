@@ -1,21 +1,25 @@
 # Subsystems Subsystem Design
 
-> 12 nodes · cohesion 0.12
+> 16 nodes · cohesion 0.12
 
 ## Key Concepts
 
 - **PostgreSQL Procedures Migration - Audit Spreadsheet** (5 connections) — `docs/postgresql_procedures_audit.md`
+- **Combat Subsystem** (5 connections) — `docs/subsystems/SUBSYSTEM_COMBAT_DESIGN.md`
 - **Disconnect Grace Period (linkdead)** (3 connections) — `docs/realtime.md`
+- **NPC Subsystem** (3 connections) — `docs/subsystems/SUBSYSTEM_NPC_DESIGN.md`
 - **Gunicorn + Uvicorn Production** (2 connections) — `docs/deployment.md`
 - **HTTPS and WSS Requirement** (2 connections) — `docs/deployment.md`
 - **postgresql_procedures_audit.md** (2 connections) — `docs/postgresql_procedures_audit.md`
 - **Login Grace Period (warded)** (2 connections) — `docs/realtime.md`
 - **WebSocket JWT in URL Query String** (2 connections) — `docs/realtime.md`
+- **Party Subsystem** (2 connections) — `docs/subsystems/SUBSYSTEM_PARTY_DESIGN.md`
 - **Linkdead Grace Period** (1 connections) — `docs/debugging-mid-run-drops.md`
 - **Audit Table** (1 connections) — `docs/postgresql_procedures_audit.md`
 - **Domain Grouping Summary** (1 connections) — `docs/postgresql_procedures_audit.md`
 - **Existing PostgreSQL Functions (Already in DDL)** (1 connections) — `docs/postgresql_procedures_audit.md`
 - **Scope** (1 connections) — `docs/postgresql_procedures_audit.md`
+- **NPCCombatIntegrationService** (1 connections) — `docs/subsystems/SUBSYSTEM_COMBAT_DESIGN.md`
 
 ## Relationships
 
@@ -27,11 +31,14 @@
 - `docs/deployment.md`
 - `docs/postgresql_procedures_audit.md`
 - `docs/realtime.md`
+- `docs/subsystems/SUBSYSTEM_COMBAT_DESIGN.md`
+- `docs/subsystems/SUBSYSTEM_NPC_DESIGN.md`
+- `docs/subsystems/SUBSYSTEM_PARTY_DESIGN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (74%)
-- INFERRED: 6 (26%)
+- EXTRACTED: 25 (74%)
+- INFERRED: 9 (26%)
 - AMBIGUOUS: 0 (0%)
 
 ---

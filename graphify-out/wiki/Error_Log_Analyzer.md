@@ -8,14 +8,14 @@
 - **.analyze_error_patterns()** (10 connections) — `scripts/analyze_error_logs.py`
 - **main()** (7 connections) — `scripts/analyze_error_logs.py`
 - **._parse_log_file()** (6 connections) — `scripts/analyze_error_logs.py`
-- **Any** (6 connections) — `scripts/analyze_error_logs.py`
+- **Any** (6 connections)
 - **.detect_error_trends()** (5 connections) — `scripts/analyze_error_logs.py`
 - **.generate_error_report()** (5 connections) — `scripts/analyze_error_logs.py`
 - **._categorize_error()** (4 connections) — `scripts/analyze_error_logs.py`
 - **._find_error_logs()** (4 connections) — `scripts/analyze_error_logs.py`
 - **._generate_recommendations()** (4 connections) — `scripts/analyze_error_logs.py`
 - **._parse_log_line()** (4 connections) — `scripts/analyze_error_logs.py`
-- **Path** (4 connections) — `scripts/analyze_error_logs.py`
+- **Path** (4 connections)
 - **._extract_error_pattern()** (3 connections) — `scripts/analyze_error_logs.py`
 - **.__init__()** (3 connections) — `scripts/analyze_error_logs.py`
 - **analyze_error_logs.py** (2 connections) — `scripts/analyze_error_logs.py`

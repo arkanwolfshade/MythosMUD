@@ -1,22 +1,23 @@
 # Structured Logging Combat
 
-> 1 nodes · cohesion 0.22
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Any** (4 connections) — `server/structured_logging/combat_audit.py`
+- **test_load_room_cache_async_other_error_raises()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _load_room_cache_async raises other errors.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Cursor Plans Postgresql](Cursor_Plans_Postgresql.md) (1 shared connections)
 
 ## Source Files
 
-- `server/structured_logging/combat_audit.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

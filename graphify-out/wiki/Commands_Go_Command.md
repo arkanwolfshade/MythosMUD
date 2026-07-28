@@ -1,24 +1,25 @@
 # Commands Go Command
 
-> 2 nodes · cohesion 0.22
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **UUID** (12 connections) — `server/game/magic/spell_targeting.py`
-- **Any** (6 connections) — `server/game/magic/spell_targeting.py`
+- **test_handle_item_look_in_room_drops()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look when item is in room drops.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Look Item Commands](Look_Item_Commands.md) (1 shared connections)
+- [Character Selection Screens](Character_Selection_Screens.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/magic/spell_targeting.py`
+- `server/tests/unit/commands/test_look_item.py`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (44%)
-- INFERRED: 10 (56%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

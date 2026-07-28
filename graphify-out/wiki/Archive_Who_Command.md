@@ -1,11 +1,12 @@
 # Archive Who Command
 
-> 2 nodes · cohesion 0.67
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **UI Screenshot Arena Cell 6,5** (4 connections) — `client/playwright-report/data/02b5b8d40de3d3e45d218acb648636912864265c.png`
-- **MythosMUD Terminal Game UI Layout** (1 connections) — `client/playwright-report/data/02b5b8d40de3d3e45d218acb648636912864265c.png`
+- **Who Command Enhancement** (2 connections) — `docs/archive/WHO_COMMAND_FRD.md`
+- **Who Command Name Filtering** (1 connections) — `docs/archive/WHO_COMMAND_FRD.md`
+- **Who Command Implementation Tasks** (1 connections) — `docs/archive/WHO_COMMAND_TASKS.md`
 
 ## Relationships
 
@@ -13,12 +14,13 @@
 
 ## Source Files
 
-- `client/playwright-report/data/02b5b8d40de3d3e45d218acb648636912864265c.png`
+- `docs/archive/WHO_COMMAND_FRD.md`
+- `docs/archive/WHO_COMMAND_TASKS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (40%)
-- INFERRED: 3 (60%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

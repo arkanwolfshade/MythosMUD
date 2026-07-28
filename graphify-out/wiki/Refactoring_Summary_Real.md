@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Real-Time Architecture** (4 connections) — `docs/REAL_TIME_ARCHITECTURE.md`
+- **Real-Time Architecture** (3 connections) — `docs/REAL_TIME_ARCHITECTURE.md`
 - **WebSocket and NATS Realtime Stack** (1 connections) — `docs/REAL_TIME_ARCHITECTURE.md`
 
 ## Relationships
@@ -17,8 +17,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 3 (60%)
-- INFERRED: 2 (40%)
+- EXTRACTED: 2 (50%)
+- INFERRED: 2 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---

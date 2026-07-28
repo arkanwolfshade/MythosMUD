@@ -1,12 +1,11 @@
 # Plan Cursor Plans
 
-> 3 nodes · cohesion 0.67
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Memory Leak Remediation** (2 connections) — `.cursor/plans/memory_leak_remediation_plan_6321808e.plan.md`
-- **Closed WebSockets Deque Cap** (1 connections) — `.cursor/plans/memory_leak_remediation_plan_6321808e.plan.md`
-- **Memory Leak Metrics Collection** (1 connections) — `.cursor/plans/memory_leak_metrics_collection_plan_a4707e8b.plan.md`
+- **README.md** (1 connections) — `db/migrations/README.md`
+- **DDL Migrations (Removed)** (1 connections) — `db/migrations/README.md`
 
 ## Relationships
 
@@ -14,12 +13,11 @@
 
 ## Source Files
 
-- `.cursor/plans/memory_leak_metrics_collection_plan_a4707e8b.plan.md`
-- `.cursor/plans/memory_leak_remediation_plan_6321808e.plan.md`
+- `db/migrations/README.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,17 +1,21 @@
 # Schemas Unified Room
 
-> 4 nodes · cohesion 0.11
+> 8 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **rest_location** (4 connections) — `schemas/unified_room_schema.json`
+- **lock_state** (5 connections) — `schemas/unified_room_schema.json`
+- **enum** (4 connections) — `schemas/unified_room_schema.json`
+- **locked** (1 connections) — `schemas/unified_room_schema.json`
+- **sealed** (1 connections) — `schemas/unified_room_schema.json`
+- **unlocked** (1 connections) — `schemas/unified_room_schema.json`
 - **default** (1 connections) — `schemas/unified_room_schema.json`
 - **description** (1 connections) — `schemas/unified_room_schema.json`
 - **type** (1 connections) — `schemas/unified_room_schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Schemas Unified Room](Schemas_Unified_Room.md) (1 shared connections)
 
 ## Source Files
 
@@ -19,7 +23,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

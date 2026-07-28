@@ -1,6 +1,6 @@
 # Codacy Cli
 
-> 7 nodes · cohesion 0.39
+> 8 nodes · cohesion 0.39
 
 ## Key Concepts
 
@@ -10,6 +10,7 @@
 - **download_file()** (2 connections) — `.codacy/cli.sh`
 - **get_latest_version()** (2 connections) — `.codacy/cli.sh`
 - **handle_rate_limit()** (2 connections) — `.codacy/cli.sh`
+- **cli.sh script** (2 connections) — `.codacy/cli.sh`
 - **get_version_from_yaml()** (1 connections) — `.codacy/cli.sh`
 
 ## Relationships
@@ -22,7 +23,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
+- EXTRACTED: 22 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

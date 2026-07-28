@@ -1,23 +1,26 @@
 # Cursor Skills Frontend
 
-> 1 nodes · cohesion 1.00
+> 4 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **@types/react** (1 connections) — `client/package.json`
+- **main()** (3 connections) — `scripts/e2e_reset_daisy_quest.py`
+- **e2e_reset_daisy_quest.py** (2 connections) — `scripts/e2e_reset_daisy_quest.py`
+- **_reset_daisy_quest()** (2 connections) — `scripts/e2e_reset_daisy_quest.py`
+- **Entry point: clear daisy quest instances via anyio.** (1 connections) — `scripts/e2e_reset_daisy_quest.py`
 
 ## Relationships
 
-- [Client Dev Dependencies](Client_Dev_Dependencies.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `client/package.json`
+- `scripts/e2e_reset_daisy_quest.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 6 (75%)
+- INFERRED: 2 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

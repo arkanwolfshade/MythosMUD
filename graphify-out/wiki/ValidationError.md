@@ -1,6 +1,6 @@
 # ValidationError
 
-> God node · 189 connections · `server/exceptions.py`
+> God node · 537 connections · `server/exceptions.py`
 
 **Community:** [Api Player Respawn](Api_Player_Respawn.md)
 
@@ -13,7 +13,6 @@
 - ._resolve_player_for_movement() `EXTRACTED`
 - .test_roll_character_stats_profession_not_found() `EXTRACTED`
 - test_apply_lucidity_loss_validation_maps_to_404() `EXTRACTED`
-- .test_mythos_exception_handler_sets_request_id() `EXTRACTED`
 - test_handle_delirium_validation_generic_500() `EXTRACTED`
 - test_handle_delirium_validation_lucidity_keyword() `EXTRACTED`
 - test_handle_delirium_validation_must_be_delirious() `EXTRACTED`
@@ -22,11 +21,12 @@
 - test_handle_respawn_validation_must_be_dead() `EXTRACTED`
 - test_handle_respawn_validation_not_found() `EXTRACTED`
 - test_create_player_validation_error_to_400() `EXTRACTED`
-- test_parse_command_string_validation_error() `EXTRACTED`
 - test_get_database_path_none_url() `EXTRACTED`
-- test_close_db_engine_initialization_failure() `EXTRACTED`
 - test_get_engine_raises_validation_error() `EXTRACTED`
 - test_get_session_maker_raises_validation_error() `EXTRACTED`
+- .test_create_error_response_with_details() `EXTRACTED`
+- .test_create_error_response_without_details() `EXTRACTED`
+- .test_mythos_exception_handler() `EXTRACTED`
 
 ### contains
 - exceptions.py `EXTRACTED`
@@ -36,22 +36,44 @@
 - database.py `EXTRACTED`
 - players.py `EXTRACTED`
 - test_container_persistence.py `EXTRACTED`
+- container_persistence.py `EXTRACTED`
 - test_player_service.py `EXTRACTED`
 - test_container_persistence_extended_row_helpers.py `EXTRACTED`
-- container_persistence.py `EXTRACTED`
 - test_command_factories_utility.py `EXTRACTED`
+- inventory_command_helpers.py `EXTRACTED`
 - legacy_error_handlers.py `EXTRACTED`
-- character_creation.py `EXTRACTED`
-- test_command_factories_inventory.py `EXTRACTED`
-- test_database_helpers.py `EXTRACTED`
 - test_command_factories_exploration.py `EXTRACTED`
+- test_command_factories_inventory.py `EXTRACTED`
+- character_creation.py `EXTRACTED`
+- test_database_helpers.py `EXTRACTED`
+- test_command_parser.py `EXTRACTED`
+- command_parser.py `EXTRACTED`
+- player_service.py `EXTRACTED`
 - test_database_extended.py `EXTRACTED`
 - test_exceptions.py `EXTRACTED`
-- test_command_parser.py `EXTRACTED`
 - test_database_error_handling.py `EXTRACTED`
-- test_legacy_error_handlers.py `EXTRACTED`
-- inventory_command_helpers.py `EXTRACTED`
-- command_parser.py `EXTRACTED`
+
+### indirect_call
+- handle_transfer_items_exceptions() `INFERRED`
+- create_container() `INFERRED`
+- .transfer_from_container() `INFERRED`
+- update_container() `INFERRED`
+- ._initialize_database() `INFERRED`
+- validate_room_data() `INFERRED`
+- .open_container() `INFERRED`
+- .handle_exception() `INFERRED`
+- .transfer_to_container() `INFERRED`
+- _execute_movement() `INFERRED`
+- _weapon_from_prototype_registry() `INFERRED`
+- _initialize_npc_database() `INFERRED`
+- .lock_container() `INFERRED`
+- .unlock_container() `INFERRED`
+- _convert_inventory_list_to_inventory_stacks() `INFERRED`
+- register_error_handlers() `INFERRED`
+- get_npc_database_path() `INFERRED`
+- init_npc_db() `INFERRED`
+- _seed_new_container_items() `INFERRED`
+- update_container_items() `INFERRED`
 
 ### inherits
 - MythosMUDError `EXTRACTED`
@@ -71,19 +93,19 @@
 - DatabaseManager `INFERRED`
 - TestErrorHandlers `INFERRED`
 - TestCircuitBreaker `INFERRED`
-- JSONResponse `INFERRED`
-- MythosMUDError `INFERRED`
 - Request `INFERRED`
+- _AppWithLegacyConfigState `INFERRED`
 - TestErrorResponse `INFERRED`
 - _AppStateWithLegacyConfig `INFERRED`
-- _AppWithLegacyConfigState `INFERRED`
-- FastAPI `INFERRED`
-- HTTPException `INFERRED`
 - TestCreateErrorResponse `INFERRED`
 - TestLegacyHandlerSecurity `INFERRED`
-- TestHandleTransferItemsExceptions `INFERRED`
 - ErrorResponseDetailsInput `INFERRED`
-- ErrorSeverity `INFERRED`
+- FastAPI `INFERRED`
+- TestHandleTransferItemsExceptions `INFERRED`
+- TestGracefulDegradation `INFERRED`
+- _CircuitBreakerResult `INFERRED`
+- Exception `INFERRED`
+- HTTPException `INFERRED`
 
 ---
 

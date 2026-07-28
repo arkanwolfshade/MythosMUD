@@ -1,35 +1,54 @@
 # NPC Database Sessions
 
-> 10 nodes · cohesion 0.03
+> 72 nodes · cohesion 0.03
 
 ## Key Concepts
 
+- **test_npc_database.py** (22 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
 - **get_npc_engine()** (14 connections) — `server/npc_database.py`
-- **get_npc_database_path()** (10 connections) — `server/npc_database.py`
+- **get_npc_database_path()** (11 connections) — `server/npc_database.py`
+- **TestNPCDatabaseInitialization** (8 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
 - **ensure_npc_database_directory()** (6 connections) — `server/npc_database.py`
+- **TestCloseNpcDb** (6 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **TestNPCSession** (6 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
 - **reset_npc_database()** (5 connections) — `server/npc_database.py`
-- **AsyncEngine** (2 connections) — `server/npc_database.py`
-- **Path** (2 connections) — `server/npc_database.py`
-- **Get the NPC database engine, initializing if necessary.      Returns:         As** (1 connections) — `server/npc_database.py`
-- **Reset NPC database state for testing.      This function resets all global NPC d** (1 connections) — `server/npc_database.py`
-- **Get the NPC database file path.      DEPRECATED: PostgreSQL does not use file pa** (1 connections) — `server/npc_database.py`
-- **Ensure NPC database directory exists.      DEPRECATED: PostgreSQL does not use f** (1 connections) — `server/npc_database.py`
+- **TestEnsureNPCDatabaseDirectory** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **TestGetNPCDatabasePath** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **TestInitNpcDb** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_close_npc_db_disposes_engine()** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **TestEventLoopHandling** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_database_path_raises_for_non_postgresql()** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_init_npc_db_raises_on_none_engine()** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_engine_raises_on_invalid_url()** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **TestNPCSessionMaker** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **TestResetNPCDatabase** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **reset_state()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_close_npc_db_handles_closed_loop()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_close_npc_db_handles_no_engine()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_ensure_npc_database_directory_creates_directory()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_ensure_npc_database_directory_no_op_for_postgresql()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_engine_recreates_on_loop_change()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_database_path_returns_none_for_postgresql()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- *... and 47 more nodes in this community*
 
 ## Relationships
 
-- [Distributed Event Bus](Distributed_Event_Bus.md) (6 shared connections)
-- [Application DI Bundles](Application_DI_Bundles.md) (2 shared connections)
-- [Api Player Respawn](Api_Player_Respawn.md) (2 shared connections)
+- [Api Player Respawn](Api_Player_Respawn.md) (16 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (13 shared connections)
+- [Application DI Bundles](Application_DI_Bundles.md) (9 shared connections)
 - [Dependency Injection Tests](Dependency_Injection_Tests.md) (1 shared connections)
+- [Realtime Connection Impl](Realtime_Connection_Impl.md) (1 shared connections)
+- [Players API Endpoints](Players_API_Endpoints.md) (1 shared connections)
 
 ## Source Files
 
 - `server/npc_database.py`
+- `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Audit Trail
 
-- EXTRACTED: 40 (93%)
-- INFERRED: 3 (7%)
+- EXTRACTED: 195 (92%)
+- INFERRED: 16 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

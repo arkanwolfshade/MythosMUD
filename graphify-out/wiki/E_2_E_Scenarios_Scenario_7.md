@@ -1,25 +1,29 @@
 # E 2 E Scenarios Scenario
 
-> 2 nodes · cohesion 0.20
+> 6 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **Multi-Character Support System** (5 connections) — `e2e-tests/scenarios/scenario-27-character-selection.md`
-- **Skills Subsystem** (3 connections) — `e2e-tests/scenarios/scenario-39-skills-new-tab.md`
+- **.refresh_configuration()** (5 connections) — `server/services/combat_configuration_service.py`
+- **.clear_cache()** (3 connections) — `server/services/combat_configuration_service.py`
+- **refresh_combat_configuration()** (3 connections) — `server/services/combat_configuration_service.py`
+- **Refresh configuration from source.** (1 connections) — `server/services/combat_configuration_service.py`
+- **Clear configuration cache.** (1 connections) — `server/services/combat_configuration_service.py`
+- **Refresh combat configuration by clearing cache and reloading.** (1 connections) — `server/services/combat_configuration_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Combat Configuration Service](Combat_Configuration_Service.md) (3 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-27-character-selection.md`
-- `e2e-tests/scenarios/scenario-39-skills-new-tab.md`
+- `server/services/combat_configuration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (88%)
-- INFERRED: 1 (12%)
+- EXTRACTED: 14 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
