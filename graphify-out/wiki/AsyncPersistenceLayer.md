@@ -2,7 +2,7 @@
 
 > God node · 183 connections · `server/async_persistence.py`
 
-**Community:** [Combat Command Handler](Combat_Command_Handler.md)
+**Community:** [Server Infrastructure (4)](Server_Infrastructure_%284%29.md)
 
 ## Connections by Relation
 
@@ -54,8 +54,6 @@
 - .apply_lucidity_loss() `EXTRACTED`
 - .async_damage_player() `EXTRACTED`
 - .async_heal_player() `EXTRACTED`
-- .async_list_rooms() `EXTRACTED`
-- ._build_room_objects() `EXTRACTED`
 - .create_container() `EXTRACTED`
 - .damage_player() `EXTRACTED`
 - .get_active_player_effects() `EXTRACTED`
@@ -65,6 +63,8 @@
 - .get_decayed_containers() `EXTRACTED`
 - .get_player_by_name() `EXTRACTED`
 - .get_player_by_user_id() `EXTRACTED`
+- .get_players_by_user_id() `EXTRACTED`
+- .get_players_in_room() `EXTRACTED`
 
 ### rationale_for
 - Async persistence layer using SQLAlchemy ORM for true async PostgreSQL operation `EXTRACTED`
@@ -98,8 +98,8 @@
 - SkillService `INFERRED`
 - RoomCacheLoader `INFERRED`
 - Request `INFERRED`
-- ScheduleService `INFERRED`
 - CombatCommandHandlerExtras `INFERRED`
+- ScheduleService `INFERRED`
 - CombatDeathHandler `INFERRED`
 - _NpcWithLife `INFERRED`
 - _LifecycleManagerForDeath `INFERRED`

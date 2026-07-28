@@ -1,0 +1,26 @@
+# Server Realtime (198)
+
+> 2 nodes
+
+## Key Concepts
+
+- **test_subscribe_player_to_room_invalid_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test subscribe_player_to_room() handles invalid player_id.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+
+## Relationships
+
+- [Server Realtime (106)](Server_Realtime_%28106%29.md) (1 shared connections)
+
+## Source Files
+
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
+
+## Audit Trail
+
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

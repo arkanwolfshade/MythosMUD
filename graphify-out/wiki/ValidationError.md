@@ -1,8 +1,8 @@
 # ValidationError
 
-> God node · 537 connections · `server/exceptions.py`
+> God node · 536 connections · `server/exceptions.py`
 
-**Community:** [Api Player Respawn](Api_Player_Respawn.md)
+**Community:** [Server Utils](Server_Utils.md)
 
 ## Connections by Relation
 
@@ -40,18 +40,18 @@
 - test_player_service.py `EXTRACTED`
 - test_container_persistence_extended_row_helpers.py `EXTRACTED`
 - test_command_factories_utility.py `EXTRACTED`
-- inventory_command_helpers.py `EXTRACTED`
 - legacy_error_handlers.py `EXTRACTED`
 - test_command_factories_exploration.py `EXTRACTED`
 - test_command_factories_inventory.py `EXTRACTED`
 - character_creation.py `EXTRACTED`
 - test_database_helpers.py `EXTRACTED`
 - test_command_parser.py `EXTRACTED`
-- command_parser.py `EXTRACTED`
 - player_service.py `EXTRACTED`
 - test_database_extended.py `EXTRACTED`
 - test_exceptions.py `EXTRACTED`
+- command_parser.py `EXTRACTED`
 - test_database_error_handling.py `EXTRACTED`
+- test_legacy_error_handlers.py `EXTRACTED`
 
 ### indirect_call
 - handle_transfer_items_exceptions() `INFERRED`

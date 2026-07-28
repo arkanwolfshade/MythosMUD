@@ -2,7 +2,7 @@
 
 > God node · 306 connections · `server/models/user.py`
 
-**Community:** [Argon2 Password Hashing](Argon2_Password_Hashing.md)
+**Community:** [Server Admin](Server_Admin.md)
 
 ## Connections by Relation
 

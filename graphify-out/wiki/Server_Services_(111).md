@@ -1,0 +1,32 @@
+# Server Services (111)
+
+> 6 nodes
+
+## Key Concepts
+
+- **.refresh_configuration()** (5 connections) — `server/services/combat_configuration_service.py`
+- **.clear_cache()** (3 connections) — `server/services/combat_configuration_service.py`
+- **refresh_combat_configuration()** (3 connections) — `server/services/combat_configuration_service.py`
+- **Refresh configuration from source.** (1 connections) — `server/services/combat_configuration_service.py`
+- **Clear configuration cache.** (1 connections) — `server/services/combat_configuration_service.py`
+- **Refresh combat configuration by clearing cache and reloading.** (1 connections) — `server/services/combat_configuration_service.py`
+
+## Relationships
+
+- [Server Services (75)](Server_Services_%2875%29.md) (2 shared connections)
+- [Server Config (2)](Server_Config_%282%29.md) (1 shared connections)
+- [Server Commands](Server_Commands.md) (1 shared connections)
+
+## Source Files
+
+- `server/services/combat_configuration_service.py`
+
+## Audit Trail
+
+- EXTRACTED: 14 (100%)
+- INFERRED: 0 (0%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

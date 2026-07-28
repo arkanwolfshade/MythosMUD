@@ -1,8 +1,8 @@
 # DatabaseError
 
-> God node · 432 connections · `server/exceptions.py`
+> God node · 429 connections · `server/exceptions.py`
 
-**Community:** [Realtime Connection Impl](Realtime_Connection_Impl.md)
+**Community:** [Server Persistence](Server_Persistence.md)
 
 ## Connections by Relation
 

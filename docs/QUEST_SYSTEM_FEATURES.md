@@ -210,19 +210,19 @@ Decisions from this review will be recorded below and used in a follow-up implem
 
 ## Review decisions
 
-| #   | Feature                         | Decision (include / defer / exclude) | Scope / how                                                                          |
-| --- | ------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------ |
+| #   | Feature                         | Decision (include / defer / exclude) | Scope / how                                                                                                                     |
+| --- | ------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
 | 1   | Quest goal types                | include                              | Scope 1: complete activity (e.g. exit the tutorial room). Scope 2: kill N targets. Scope 3: collect N items (inventory-backed). |
-| 2   | Quest reward types              | include                              | Scope 1: XP. Scope 2: item. Scope 3: new spell in magic system.                      |
-| 3   | Quest triggers                  | include                              | Scope: room + NPC + item.                                                            |
-| 4   | Event-driven progression        | include                              | complete-activity, kill N, and collect N (inventory recount on get/drop/put).        |
-| 5   | Declarative quest config (YAML) | include                              | JSONB in a new database table for now.                                               |
-| 6   | Quest givers (questors)         | include                              | NPCs or room data in the database.                                                   |
-| 7   | Quest log / journal             | include                              | Command + API only at first.                                                         |
-| 8   | Quest chains / prerequisites    | include                              | Linear chains only for now.                                                          |
-| 9   | Repeatable quests               | defer                                |                                                                                      |
-| 10  | Persistent quest state          | include                              | Quest instances table: FK to characters and quest definitions; holds instance state. |
-| 11  | Design principles (lysator)     | include                              | Add to developer documents.                                                          |
+| 2   | Quest reward types              | include                              | Scope 1: XP. Scope 2: item. Scope 3: new spell in magic system.                                                                 |
+| 3   | Quest triggers                  | include                              | Scope: room + NPC + item.                                                                                                       |
+| 4   | Event-driven progression        | include                              | complete-activity, kill N, and collect N (inventory recount on get/drop/put).                                                   |
+| 5   | Declarative quest config (YAML) | include                              | JSONB in a new database table for now.                                                                                          |
+| 6   | Quest givers (questors)         | include                              | NPCs or room data in the database.                                                                                              |
+| 7   | Quest log / journal             | include                              | Command + API only at first.                                                                                                    |
+| 8   | Quest chains / prerequisites    | include                              | Linear chains only for now.                                                                                                     |
+| 9   | Repeatable quests               | defer                                |                                                                                                                                 |
+| 10  | Persistent quest state          | include                              | Quest instances table: FK to characters and quest definitions; holds instance state.                                            |
+| 11  | Design principles (lysator)     | include                              | Add to developer documents.                                                                                                     |
 
 ---
 
@@ -247,6 +247,16 @@ Decisions from this review will be recorded below and used in a follow-up implem
 - **NPC interaction:** `quest ask <npc>` starts quests offered by that NPC (same room, definition
   trigger match). `quest turnin <npc>` turns in all active quests that list the NPC in
   `turn_in_entities` when objectives are met.
+
+## Feature notes: quest + NPC chat (MVP, issue #146)
+
+Quest lifecycle events (start, every progress tick, complete, abandon) emit personal
+**system** chat via ChatService. Successful `quest ask` / `quest turnin` also emit a
+say-shaped NPC room line (code templates). NPC reaction greet/spoke hooks use the same
+NPC say path. Dialogue trees, milestone-only progress chat, and related work live in
+follow-up [#583](https://github.com/arkanwolfshade/MythosMUD/issues/583).
+
+---
 
 ## Related documentation
 

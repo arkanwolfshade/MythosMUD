@@ -2,7 +2,7 @@
 
 > God node · 181 connections · `server/services/combat_service.py`
 
-**Community:** [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md)
+**Community:** [Server Services (9)](Server_Services_%289%29.md)
 
 ## Connections by Relation
 

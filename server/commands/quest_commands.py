@@ -12,6 +12,12 @@ from typing import Any
 
 from ..alias_storage import AliasStorage
 from ..game.quest import QuestService
+from ..game.quest.quest_chat_notify import (
+    emit_quest_npc_say,
+    quest_ask_npc_line,
+    quest_turnin_npc_line,
+    title_from_quest_result,
+)
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
 from .look_npc import _find_matching_npcs, _get_lifecycle_manager, _get_npc_room_id, _should_include_npc
@@ -233,6 +239,29 @@ async def _handle_quest_abandon(quest_service: Any, player_id: uuid.UUID, remain
     return {"result": result.get("message", "Could not abandon quest.")}
 
 
+def _emit_npc_lines_for_results(
+    *,
+    results: list[dict[str, Any]],
+    prefix: str,
+    line_builder: Any,
+    npc_id: str,
+    npc_name: str,
+    room_id: str,
+) -> None:
+    """Emit quest NPC say lines for successful ask/turnin results."""
+    if not room_id:
+        return
+    for result in results:
+        title = title_from_quest_result(result, prefix=prefix)
+        if title:
+            emit_quest_npc_say(
+                npc_id=npc_id,
+                npc_name=npc_name,
+                room_id=room_id,
+                line=line_builder(title),
+            )
+
+
 async def _handle_quest_npc_sub(
     quest_service: Any,
     player: Any,
@@ -248,12 +277,32 @@ async def _handle_quest_npc_sub(
     if not definition_id:
         return {"result": "That person has nothing to discuss."}
 
+    room_id = getattr(player, "current_room_id", None) or ""
+    npc_id = str(getattr(npc, "npc_id", "") or definition_id)
+    npc_name = str(getattr(npc, "name", "Someone"))
+
     if sub == "ask":
         results = await quest_service.start_quest_by_trigger(player_id, "npc", definition_id)
+        _emit_npc_lines_for_results(
+            results=results,
+            prefix="Quest started: ",
+            line_builder=quest_ask_npc_line,
+            npc_id=npc_id,
+            npc_name=npc_name,
+            room_id=room_id,
+        )
         empty = f"{getattr(npc, 'name', 'They')} have no quests for you."
         return {"result": _format_quest_action_results(results, empty)}
 
     results = await quest_service.turn_in_at_entity(player_id, "npc", definition_id)
+    _emit_npc_lines_for_results(
+        results=results,
+        prefix="Quest completed: ",
+        line_builder=quest_turnin_npc_line,
+        npc_id=npc_id,
+        npc_name=npc_name,
+        room_id=room_id,
+    )
     empty = f"You have nothing to turn in to {getattr(npc, 'name', 'them')}."
     return {"result": _format_quest_action_results(results, empty)}
 

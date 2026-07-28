@@ -18,10 +18,7 @@ from server.async_persistence import AsyncPersistenceLayer
 # Initialize
 
 async_persistence = AsyncPersistenceLayer()
-player_repo = PlayerRepository(
-    room_cache=async_persistence._room_cache,
-    event_bus=event_bus
-)
+player_repo = PlayerRepository(room_cache=async_persistence._room_cache, event_bus=event_bus)
 health_repo = HealthRepository(event_bus=event_bus)
 
 # Use

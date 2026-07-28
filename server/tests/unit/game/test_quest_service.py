@@ -5,7 +5,7 @@ Covers: resolve_name_to_quest_id, start_quest, abandon, get_quest_log with mocke
 """
 
 import uuid
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -100,11 +100,14 @@ async def test_start_quest_success(quest_service, mock_def_repo, mock_instance_r
     mock_instance_repo.get_by_player_and_quest = AsyncMock(return_value=None)
     mock_instance_repo.create = AsyncMock()
 
-    result = await quest_service.start_quest(player_id, "leave_the_tutorial")
+    with patch("server.game.quest.quest_service.notify_quest_started") as notify:
+        result = await quest_service.start_quest(player_id, "leave_the_tutorial")
 
     assert result["success"] is True
     assert "started" in result["message"].lower()
+    assert result.get("title") == "Leave the Tutorial"
     mock_instance_repo.create.assert_awaited_once_with(player_id, "leave_the_tutorial", state="active", progress={})
+    notify.assert_called_once_with(player_id, "Leave the Tutorial")
 
 
 @pytest.mark.asyncio
@@ -251,11 +254,13 @@ async def test_record_complete_activity_updates_progress(quest_service, mock_def
     mock_def_repo.get_by_id = AsyncMock(return_value=row)
     mock_instance_repo.update_state_and_progress = AsyncMock()
 
-    await quest_service.record_complete_activity(player_id, "exit_tutorial_room")
+    with patch("server.game.quest.quest_service.notify_quest_progress") as notify:
+        await quest_service.record_complete_activity(player_id, "exit_tutorial_room")
 
     mock_instance_repo.update_state_and_progress.assert_awaited_once()
     call_kw = mock_instance_repo.update_state_and_progress.call_args[1]
     assert call_kw.get("progress") == {"0": 1}
+    notify.assert_called_once_with(player_id, "Leave the Tutorial")
 
 
 @pytest.mark.asyncio
@@ -273,12 +278,18 @@ async def test_record_complete_activity_auto_completes_when_goals_met(quest_serv
     mock_def_repo.get_by_id = AsyncMock(return_value=row)
     mock_instance_repo.update_state_and_progress = AsyncMock()
 
-    await quest_service.record_complete_activity(player_id, "exit_tutorial_room")
+    with (
+        patch("server.game.quest.quest_service.notify_quest_progress") as notify_progress,
+        patch("server.game.quest.quest_service.notify_quest_completed") as notify_completed,
+    ):
+        await quest_service.record_complete_activity(player_id, "exit_tutorial_room")
 
     assert mock_instance_repo.update_state_and_progress.await_count >= 2
     calls = [c[1] for c in mock_instance_repo.update_state_and_progress.call_args_list]
     completed_call = next((c for c in calls if c.get("state") == "completed"), None)
     assert completed_call is not None
+    notify_progress.assert_called_once_with(player_id, "Leave the Tutorial")
+    notify_completed.assert_called_once_with(player_id, "Leave the Tutorial")
 
 
 # ---- record_kill ----
@@ -325,14 +336,17 @@ async def test_abandon_success(quest_service, mock_def_repo, mock_instance_repo)
     instance.id = uuid.uuid4()
     instance.state = "active"
     mock_def_repo.get_by_name = AsyncMock(return_value=row)
+    mock_def_repo.get_by_id = AsyncMock(return_value=row)
     mock_instance_repo.get_by_player_and_quest = AsyncMock(return_value=instance)
     mock_instance_repo.update_state_and_progress = AsyncMock()
 
-    result = await quest_service.abandon(player_id, "leave_the_tutorial")
+    with patch("server.game.quest.quest_service.notify_quest_abandoned") as notify:
+        result = await quest_service.abandon(player_id, "leave_the_tutorial")
 
     assert result["success"] is True
     assert "abandoned" in result["message"].lower()
     mock_instance_repo.update_state_and_progress.assert_awaited_once_with(instance.id, state="abandoned")
+    notify.assert_called_once_with(player_id, "Leave the Tutorial")
 
 
 @pytest.mark.asyncio
@@ -473,13 +487,16 @@ async def test_turn_in_success(quest_service, mock_def_repo, mock_instance_repo)
     mock_instance_repo.get_by_player_and_quest = AsyncMock(return_value=instance)
     mock_instance_repo.update_state_and_progress = AsyncMock()
 
-    result = await quest_service.turn_in(player_id, "turn_in_quest", "npc", "npc_quest_giver_001")
+    with patch("server.game.quest.quest_service.notify_quest_completed") as notify:
+        result = await quest_service.turn_in(player_id, "turn_in_quest", "npc", "npc_quest_giver_001")
 
     assert result["success"] is True
+    assert result.get("title")
     mock_instance_repo.update_state_and_progress.assert_awaited_once()
     call_kw = mock_instance_repo.update_state_and_progress.call_args[1]
     assert call_kw.get("state") == "completed"
     assert "completed_at" in call_kw
+    notify.assert_called_once()
 
 
 @pytest.mark.asyncio

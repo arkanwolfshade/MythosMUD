@@ -58,6 +58,23 @@ describe('installLocalStorageShim', () => {
     expect(mockStorage.setItem).not.toHaveBeenCalled();
   });
 
+  it('does not invoke Node-style localStorage accessor getters', () => {
+    const get = vi.fn(() => undefined);
+    Object.defineProperty(globalThis, 'localStorage', {
+      get,
+      set: () => {},
+      configurable: true,
+      enumerable: false,
+    });
+
+    installLocalStorageShim();
+
+    expect(get).not.toHaveBeenCalled();
+    expect(typeof globalThis.localStorage.setItem).toBe('function');
+    globalThis.localStorage.setItem('a', '1');
+    expect(globalThis.localStorage.getItem('a')).toBe('1');
+  });
+
   it('replaces broken storage missing clear', () => {
     const broken = {
       removeItem: vi.fn(),

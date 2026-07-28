@@ -176,6 +176,43 @@ def test_extract_chat_message_fields_whisper_target_id(nats_message_handler):
     assert result["target_player_id"] == "target_001"
 
 
+def test_extract_chat_message_fields_system_target_id(nats_message_handler):
+    """Personal system chat maps target_id to target_player_id and keeps speaker_kind."""
+    target = str(uuid.uuid4())
+    message_data = {
+        "channel": "system",
+        "target_id": target,
+        "sender_id": str(uuid.uuid4()),
+        "sender_name": "System",
+        "content": "Quest started: Fetch",
+        "message_id": "msg_sys_001",
+        "speaker_kind": "system",
+    }
+    result = nats_message_handler._extract_chat_message_fields(message_data)
+    assert result["target_player_id"] == target
+    assert result["speaker_kind"] == "system"
+
+
+def test_build_chat_event_includes_speaker_kind(nats_message_handler):
+    """Chat WebSocket event carries speaker_kind for client pass-through."""
+    chat_fields = {
+        "channel": "say",
+        "room_id": "room_1",
+        "party_id": None,
+        "target_player_id": None,
+        "sender_id": str(uuid.uuid4()),
+        "sender_name": "Morgan",
+        "content": "Hello",
+        "message_id": "msg_001",
+        "timestamp": "2024-01-01T00:00:00Z",
+        "target_id": None,
+        "target_name": None,
+        "speaker_kind": "npc",
+    }
+    result = nats_message_handler._build_chat_event(chat_fields, "Morgan says: Hello")
+    assert result["data"]["speaker_kind"] == "npc"
+
+
 def test_convert_ids_to_uuids_uuid_objects(nats_message_handler):
     """Test _convert_ids_to_uuids handles UUID objects."""
     sender_uuid = uuid.uuid4()

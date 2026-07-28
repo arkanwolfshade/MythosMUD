@@ -29,13 +29,8 @@ from server.logging.enhanced_logging_config import bind_request_context
 
 # Bind context for request tracing
 
-bind_request_context(
-    correlation_id="req-123",
-    user_id="user-456",
-    session_id="session-789"
-)
+bind_request_context(correlation_id="req-123", user_id="user-456", session_id="session-789")
 # All subsequent logs automatically include this context
-
 ```
 
 ## Architecture
@@ -164,7 +159,6 @@ logger.warning("Database connection slow", query_time=1.5)
 
 logger.error("Database connection failed", error=str(e))
 # This appears in: persistence.log AND errors.log
-
 ```
 
 ## F-String Logging Anti-Pattern
@@ -181,11 +175,9 @@ logger.debug(f"Message data: {message_data}")
 
 # ✅ CORRECT - Structured logging enables aggregation and analysis
 
-logger.info("Starting combat", attacker=attacker, target=target,
-            room_id=room_id)
+logger.info("Starting combat", attacker=attacker, target=target, room_id=room_id)
 logger.error("Failed to process", error=str(error), operation="combat_start")
-logger.debug("NATS message received", message_data=message_data,
-             message_type=type(message_data))
+logger.debug("NATS message received", message_data=message_data, message_type=type(message_data))
 ```
 
 ### Why f-strings are forbidden
@@ -207,13 +199,11 @@ logger.debug("NATS message received", message_data=message_data,
 ```python
 # ✅ Structured logging with key-value pairs
 
-logger.info("User action completed", user_id=user.id, action="login",
-            success=True)
+logger.info("User action completed", user_id=user.id, action="login", success=True)
 
 # ✅ Error logging with context
 
-logger.error("Operation failed", operation="user_creation", error=str(e),
-             retry_count=3)
+logger.error("Operation failed", operation="user_creation", error=str(e), retry_count=3)
 
 # ✅ Performance logging
 
@@ -222,8 +212,7 @@ with measure_performance("database_query", user_id=user.id):
 
 # ✅ Request context binding
 
-bind_request_context(correlation_id=req_id, user_id=user.id,
-                     session_id=session.id)
+bind_request_context(correlation_id=req_id, user_id=user.id, session_id=session.id)
 ```
 
 ### ❌ FORBIDDEN Anti-Patterns
@@ -319,10 +308,11 @@ import pytest
 from unittest.mock import patch
 from server.logging.enhanced_logging_config import get_logger
 
+
 def test_logging_output():
     logger = get_logger("test.module")
 
-    with patch('server.logging.enhanced_logging_config.structlog') as mock_structlog:
+    with patch("server.logging.enhanced_logging_config.structlog") as mock_structlog:
         logger.info("Test message", key="value")
         mock_structlog.get_logger.assert_called_with("test.module")
 ```
@@ -377,12 +367,14 @@ Logs are automatically rotated based on size and time:
 # OLD - Standard Python logging
 
 import logging
+
 logger = logging.getLogger(__name__)
 logger.info(f"User {user_id} performed {action}")
 
 # NEW - Enhanced structured logging
 
 from server.logging.enhanced_logging_config import get_logger
+
 logger = get_logger(__name__)
 logger.info("User action", user_id=user_id, action=action)
 ```

@@ -127,19 +127,50 @@ describe('handleChatMessage', () => {
     );
   });
 
-  it('should not append message when message is empty', () => {
+  it('should pass through speaker_kind for NPC say messages', () => {
     const event = {
       event_type: 'chat_message',
       timestamp: new Date().toISOString(),
-      sequence_number: 6,
+      sequence_number: 7,
       data: {
-        message: '',
+        message: 'Morgan says: I have a task for you: Fetch.',
         channel: 'say',
+        speaker_kind: 'npc',
       },
     };
 
     handleChatMessage(event, mockContext, mockAppendMessage);
 
-    expect(mockAppendMessage).not.toHaveBeenCalled();
+    expect(mockAppendMessage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        text: 'Morgan says: I have a task for you: Fetch.',
+        channel: 'say',
+        speakerKind: 'npc',
+      })
+    );
+  });
+
+  it('should handle system channel as system messageType', () => {
+    const event = {
+      event_type: 'chat_message',
+      timestamp: new Date().toISOString(),
+      sequence_number: 8,
+      data: {
+        message: '[SYSTEM] Quest started: Fetch',
+        channel: 'system',
+        speaker_kind: 'system',
+      },
+    };
+
+    handleChatMessage(event, mockContext, mockAppendMessage);
+
+    expect(mockAppendMessage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        messageType: 'system',
+        channel: 'system',
+        type: 'system',
+        speakerKind: 'system',
+      })
+    );
   });
 });

@@ -118,6 +118,11 @@ test.describe('collect_n daisy quest ask/turnin', () => {
 
     await executeCommand(page, 'quest ask morgan');
     await waitForMessage(page, /Quest started:\s*Gather Sanitarium Daisies|already have this quest/i, 25000);
+    // NPC say-shaped room line (ChatService) + personal system chat (may duplicate title text).
+    await waitForMessage(page, /I have a task for you:\s*Gather Sanitarium Daisies/i, 25000);
+    const askMsgs = await getMessages(page);
+    expect(askMsgs.some(m => /Quest started:\s*Gather Sanitarium Daisies/i.test(m))).toBe(true);
+    expect(askMsgs.some(m => /I have a task for you:\s*Gather Sanitarium Daisies/i.test(m))).toBe(true);
 
     await executeCommand(page, `/summon ${DAISY_PROTOTYPE} 3`);
     await waitForMessage(page, /You summon\s+3x|Summoning failed/i, 25000);
@@ -127,6 +132,7 @@ test.describe('collect_n daisy quest ask/turnin', () => {
     // get <item> [from] <container> [quantity]; room floor uses container "room"
     await executeCommand(page, 'get daisy from room 3');
     await waitForMessage(page, /You get\s+\d+x|daisy|Sanitarium Daisy/i, 25000);
+    await waitForMessage(page, /Quest progress:\s*Gather Sanitarium Daisies/i, 25000);
 
     await executeCommand(page, 'journal');
     await waitForMessage(page, /Gather Sanitarium Daisies|misc\.herb\.sanitarium_daisy/i, 25000);
@@ -137,7 +143,9 @@ test.describe('collect_n daisy quest ask/turnin', () => {
 
     await executeCommand(page, 'quest turnin morgan');
     await waitForMessage(page, /Quest completed:\s*Gather Sanitarium Daisies/i, 25000);
+    await waitForMessage(page, /You have completed:\s*Gather Sanitarium Daisies/i, 25000);
     const turninMsgs = await getMessages(page);
     expect(turninMsgs.some(m => /Quest completed:\s*Gather Sanitarium Daisies/i.test(m))).toBe(true);
+    expect(turninMsgs.some(m => /You have completed:\s*Gather Sanitarium Daisies/i.test(m))).toBe(true);
   });
 });

@@ -183,7 +183,7 @@ async def test_handle_nats_message_success(nats_message_handler):
     }
     nats_message_handler.circuit_breaker.call = AsyncMock()
     nats_message_handler.metrics.record_message_processed = MagicMock()
-    with patch("server.realtime.nats_message_handler.validate_message", return_value=message_data):
+    with patch("server.realtime.nats_message_handler_processing.validate_message", return_value=message_data):
         await nats_message_handler._handle_nats_message(message_data)
         nats_message_handler.circuit_breaker.call.assert_awaited_once()
 
@@ -200,7 +200,7 @@ async def test_handle_nats_message_circuit_breaker_open(nats_message_handler):
     nats_message_handler.circuit_breaker.call = AsyncMock(side_effect=CircuitBreakerOpen("Circuit open"))
     nats_message_handler.dead_letter_queue.enqueue = MagicMock()
     nats_message_handler.metrics.record_message_dlq = MagicMock()
-    with patch("server.realtime.nats_message_handler.validate_message", return_value=message_data):
+    with patch("server.realtime.nats_message_handler_processing.validate_message", return_value=message_data):
         await nats_message_handler._handle_nats_message(message_data)
         nats_message_handler.dead_letter_queue.enqueue.assert_called_once()
 
@@ -216,7 +216,7 @@ async def test_handle_nats_message_retry_on_failure(nats_message_handler):
     }
     nats_message_handler.circuit_breaker.call = AsyncMock()
     nats_message_handler.metrics.record_message_processed = MagicMock()
-    with patch("server.realtime.nats_message_handler.validate_message", return_value=message_data):
+    with patch("server.realtime.nats_message_handler_processing.validate_message", return_value=message_data):
         await nats_message_handler._handle_nats_message(message_data)
         nats_message_handler.circuit_breaker.call.assert_awaited_once()
 
@@ -233,7 +233,7 @@ async def test_handle_nats_message_dlq_on_final_failure(nats_message_handler):
     nats_message_handler.circuit_breaker.call = AsyncMock(side_effect=NATSError("Unhandled error"))
     nats_message_handler.dead_letter_queue.enqueue_async = AsyncMock()
     nats_message_handler.metrics.record_message_failed = MagicMock()
-    with patch("server.realtime.nats_message_handler.validate_message", return_value=message_data):
+    with patch("server.realtime.nats_message_handler_processing.validate_message", return_value=message_data):
         await nats_message_handler._handle_nats_message(message_data)
         nats_message_handler.dead_letter_queue.enqueue_async.assert_awaited_once()
 
@@ -462,7 +462,7 @@ async def test_handle_nats_message_runtime_error(nats_message_handler):
     nats_message_handler.circuit_breaker.call = AsyncMock(side_effect=RuntimeError("Runtime error"))
     nats_message_handler.dead_letter_queue.enqueue_async = AsyncMock()
     nats_message_handler.metrics.record_message_failed = MagicMock()
-    with patch("server.realtime.nats_message_handler.validate_message", return_value=message_data):
+    with patch("server.realtime.nats_message_handler_processing.validate_message", return_value=message_data):
         await nats_message_handler._handle_nats_message(message_data)
         nats_message_handler.dead_letter_queue.enqueue_async.assert_awaited_once()
         nats_message_handler.metrics.record_message_failed.assert_called_once_with("say", "RuntimeError")
@@ -506,7 +506,7 @@ async def test_handle_nats_message_validation_error(nats_message_handler):
     validation_error = ValueError("Invalid message format")
     nats_message_handler.dead_letter_queue.enqueue_async = AsyncMock()
     nats_message_handler.metrics.record_message_failed = MagicMock()
-    with patch("server.realtime.nats_message_handler.validate_message", side_effect=validation_error):
+    with patch("server.realtime.nats_message_handler_processing.validate_message", side_effect=validation_error):
         await nats_message_handler._handle_nats_message(message_data)
         nats_message_handler.dead_letter_queue.enqueue_async.assert_awaited_once()
         nats_message_handler.metrics.record_message_failed.assert_called_once_with("say", "ValueError")
@@ -665,7 +665,7 @@ async def test_handle_nats_message_connection_manager_resolution_error(nats_mess
     nats_message_handler.dead_letter_queue.enqueue_async = AsyncMock()
     nats_message_handler.metrics.record_message_failed = MagicMock()
 
-    with patch("server.realtime.nats_message_handler.validate_message", return_value=message_data):
+    with patch("server.realtime.nats_message_handler_processing.validate_message", return_value=message_data):
         with patch("server.realtime.nats_message_handler._resolve_connection_manager", return_value=None):
             await nats_message_handler._handle_nats_message(message_data)
             # Should handle the error and add to DLQ
@@ -685,7 +685,7 @@ async def test_handle_nats_message_success_path_metrics(nats_message_handler):
     }
     nats_message_handler.circuit_breaker.call = AsyncMock()
     nats_message_handler.metrics.record_message_processed = MagicMock()
-    with patch("server.realtime.nats_message_handler.validate_message", return_value=message_data):
+    with patch("server.realtime.nats_message_handler_processing.validate_message", return_value=message_data):
         await nats_message_handler._handle_nats_message(message_data)
         nats_message_handler.metrics.record_message_processed.assert_called_once_with("say")
 
@@ -701,7 +701,7 @@ async def test_handle_nats_message_event_type_detection(nats_message_handler):
     }
     nats_message_handler.circuit_breaker.call = AsyncMock()
     nats_message_handler.metrics.record_message_processed = MagicMock()
-    with patch("server.realtime.nats_message_handler.validate_message") as mock_validate:
+    with patch("server.realtime.nats_message_handler_processing.validate_message") as mock_validate:
         await nats_message_handler._handle_nats_message(message_data)
         # Should call validate_message with message_type="event"
         mock_validate.assert_called_once_with(message_data, message_type="event")
@@ -717,7 +717,7 @@ async def test_handle_nats_message_event_data_detection(nats_message_handler):
     }
     nats_message_handler.circuit_breaker.call = AsyncMock()
     nats_message_handler.metrics.record_message_processed = MagicMock()
-    with patch("server.realtime.nats_message_handler.validate_message") as mock_validate:
+    with patch("server.realtime.nats_message_handler_processing.validate_message") as mock_validate:
         await nats_message_handler._handle_nats_message(message_data)
         # Should call validate_message with message_type="event"
         mock_validate.assert_called_once_with(message_data, message_type="event")
@@ -822,7 +822,7 @@ async def test_handle_nats_message_unknown_channel_defaults(nats_message_handler
     }
     nats_message_handler.circuit_breaker.call = AsyncMock()
     nats_message_handler.metrics.record_message_processed = MagicMock()
-    with patch("server.realtime.nats_message_handler.validate_message", return_value=message_data):
+    with patch("server.realtime.nats_message_handler_processing.validate_message", return_value=message_data):
         await nats_message_handler._handle_nats_message(message_data)
         # Should record metrics with "unknown" channel
         nats_message_handler.metrics.record_message_processed.assert_called_once_with("unknown")
@@ -842,7 +842,7 @@ async def test_handle_nats_message_unknown_message_id_defaults(nats_message_hand
     nats_message_handler.circuit_breaker.call = AsyncMock(side_effect=CircuitBreakerOpen("Circuit open"))
     nats_message_handler.dead_letter_queue.enqueue = MagicMock()
     nats_message_handler.metrics.record_message_dlq = MagicMock()
-    with patch("server.realtime.nats_message_handler.validate_message", return_value=message_data):
+    with patch("server.realtime.nats_message_handler_processing.validate_message", return_value=message_data):
         await nats_message_handler._handle_nats_message(message_data)
         # Should handle with "unknown" message_id
         nats_message_handler.dead_letter_queue.enqueue.assert_called_once()
@@ -873,7 +873,7 @@ async def test_handle_nats_message_attribute_error_handled(nats_message_handler)
     nats_message_handler.dead_letter_queue.enqueue_async = AsyncMock()
     nats_message_handler.metrics.record_message_failed = MagicMock()
 
-    with patch("server.realtime.nats_message_handler.validate_message", return_value=message_data):
+    with patch("server.realtime.nats_message_handler_processing.validate_message", return_value=message_data):
         await nats_message_handler._handle_nats_message(message_data)
         # Should handle AttributeError and add to DLQ
         nats_message_handler.dead_letter_queue.enqueue_async.assert_awaited_once()

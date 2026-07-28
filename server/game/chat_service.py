@@ -40,6 +40,12 @@ from .chat_message_senders import (
 )
 from .chat_moderation import ChatModeration
 from .chat_nats_publisher import publish_chat_message_to_nats
+from .chat_npc_system import (
+    send_npc_say_to_room as send_npc_say_to_room_helper,
+)
+from .chat_npc_system import (
+    send_personal_system_message as send_personal_system_message_helper,
+)
 from .chat_pose_helpers import (
     clear_player_pose,
     get_player_pose,
@@ -343,6 +349,16 @@ class ChatService:  # pylint: disable=too-many-instance-attributes  # Reason: Ch
             self.nats_service,
             self.subject_manager,
         )
+
+    async def send_npc_say_to_room(self, npc_id: str, npc_name: str, room_id: str, message: str) -> dict[str, Any]:
+        """Publish a say-shaped room message from an NPC (no player lookup)."""
+        return await send_npc_say_to_room_helper(
+            self, npc_id=npc_id, npc_name=npc_name, room_id=room_id, message=message
+        )
+
+    async def send_personal_system_message(self, player_id: uuid.UUID | str, message: str) -> dict[str, Any]:
+        """Send a system-channel message to one player (quest lifecycle, etc.)."""
+        return await send_personal_system_message_helper(self, player_id, message)
 
     async def send_whisper_message(
         self, sender_id: uuid.UUID | str, target_id: uuid.UUID | str, message: str
