@@ -1,0 +1,44 @@
+# RateLimiter
+
+> 14 nodes
+
+## Key Concepts
+
+- **RateLimiter** (17 connections) — `server/services/rate_limiter.py`
+- **.__init__()** (4 connections) — `server/services/rate_limiter.py`
+- **rate_limiter()** (3 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_rate_limiter_initialization()** (3 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_rate_limiter_legacy_config()** (3 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **.set_limit()** (2 connections) — `server/services/rate_limiter.py`
+- **.reset_player_limits()** (2 connections) — `server/services/rate_limiter.py`
+- **Sliding window rate limiter for chat channels.      Implements per-user, per-cha** (1 connections) — `server/services/rate_limiter.py`
+- **Initialize the rate limiter with configuration-based limits.** (1 connections) — `server/services/rate_limiter.py`
+- **Set a custom rate limit for a channel.          Args:             channel: Chann** (1 connections) — `server/services/rate_limiter.py`
+- **Reset rate limiting for a player.          Args:             player_id: Player I** (1 connections) — `server/services/rate_limiter.py`
+- **Create a RateLimiter instance with mocked config.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test RateLimiter initializes with correct limits.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test RateLimiter handles legacy dict config format.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
+
+## Relationships
+
+- [.check rate limit()](check_rate_limit%28%29.md) (6 shared connections)
+- [test rate limiter](test_rate_limiter.md) (4 shared connections)
+- [Any](Any.md) (2 shared connections)
+- [main()](main%28%29.md) (1 shared connections)
+- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (1 shared connections)
+- [message filtering](message_filtering.md) (1 shared connections)
+
+## Source Files
+
+- `server/services/rate_limiter.py`
+- `server/tests/unit/services/test_rate_limiter.py`
+
+## Audit Trail
+
+- EXTRACTED: 40 (98%)
+- INFERRED: 1 (2%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

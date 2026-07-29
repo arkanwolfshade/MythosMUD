@@ -50,17 +50,17 @@ test.describe('Movement Between Rooms', () => {
     const [awContext, ithaquaContext] = contexts;
     await ensureMultiplayerCoLocated(contexts, { timeoutMs: 60000, coLocateTimeoutMs: 60000 });
     await ensurePlayersInSameRoom(contexts, 2, 60000);
-    await ensureStanding(awContext.page, 15000);
-    await ensureStanding(ithaquaContext.page, 15000);
+    awContext.page = await ensureStanding(awContext.page, 15000);
+    ithaquaContext.page = await ensureStanding(ithaquaContext.page, 15000);
     // Navigate both to Main Foyer (has east exit): south -> west -> north
-    await ensureStanding(awContext.page, 15000);
+    awContext.page = await ensureStanding(awContext.page, 15000);
     await executeCommand(awContext.page, 'go south');
     await new Promise(r => setTimeout(r, 1500));
     await executeCommand(awContext.page, 'go west');
     await new Promise(r => setTimeout(r, 1500));
     await executeCommand(awContext.page, 'go north');
     await new Promise(r => setTimeout(r, 1500));
-    await ensureStanding(ithaquaContext.page, 5000);
+    ithaquaContext.page = await ensureStanding(ithaquaContext.page, 5000);
     await executeCommand(ithaquaContext.page, 'go south');
     await new Promise(r => setTimeout(r, 1500));
     await executeCommand(ithaquaContext.page, 'go west');
@@ -100,7 +100,7 @@ test.describe('Movement Between Rooms', () => {
 
     const awMovesEast = async (): Promise<void> => {
       await awContext.page.bringToFront().catch(() => {});
-      await ensureStanding(awContext.page, 15000);
+      awContext.page = await ensureStanding(awContext.page, 15000);
       // Movement echoes are system-typed -> Game Info only (Chat stays empty). Prime WS/projector like other MP specs.
       await awContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
       await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
@@ -128,7 +128,7 @@ test.describe('Movement Between Rooms', () => {
       await executeCommand(ithaquaContext.page, 'look');
       await new Promise(r => setTimeout(r, 1500));
       await awContext.page.bringToFront().catch(() => {});
-      await ensureStanding(awContext.page, 15000);
+      awContext.page = await ensureStanding(awContext.page, 15000);
       await executeCommand(awContext.page, 'go west');
       await new Promise(r => setTimeout(r, 2000));
       await ensurePlayersInSameRoom(contexts, 2, 45000);
@@ -167,12 +167,12 @@ test.describe('Movement Between Rooms', () => {
     await nudgeStandBoth(awContext, ithaquaContext);
 
     await awContext.page.bringToFront().catch(() => {});
-    await ensureStanding(awContext.page, 15000);
+    awContext.page = await ensureStanding(awContext.page, 15000);
     await executeCommand(awContext.page, 'go east');
     await waitForMessage(awContext.page, /You go east|You move east|You head east|Eastern|Hallway/i, 45000);
 
     await prepareReceiverForInboundMessages(awContext, 30000);
-    await ensureStanding(ithaquaContext.page, 15000);
+    ithaquaContext.page = await ensureStanding(ithaquaContext.page, 15000);
     await ithaquaContext.page.bringToFront().catch(() => {});
     await ithaquaContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
     await executeCommand(ithaquaContext.page, 'go east');

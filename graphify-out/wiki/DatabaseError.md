@@ -1,8 +1,8 @@
 # DatabaseError
 
-> God node · 429 connections · `server/exceptions.py`
+> God node · 397 connections · `server/exceptions.py`
 
-**Community:** [Server Persistence](Server_Persistence.md)
+**Community:** [main()](main%28%29.md)
 
 ## Connections by Relation
 
@@ -20,60 +20,60 @@
 - test_get_current_room_id_none_when_persistence_errors() `EXTRACTED`
 - test_handle_mute_command_exception() `EXTRACTED`
 - test_validate_token_impl_database_error() `EXTRACTED`
-- test_establish_websocket_connection_error() `EXTRACTED`
 - test_subscribe_to_room_events_impl_database_error() `EXTRACTED`
 - test_unsubscribe_from_room_events_impl_database_error() `EXTRACTED`
 - test_canonical_room_id_impl_database_error() `EXTRACTED`
 - test_disconnect_connection_for_session_close_error() `EXTRACTED`
-- test_broadcast_connection_message_impl_error() `EXTRACTED`
-- test_track_player_disconnected_impl_error() `EXTRACTED`
+- test_mark_room_as_explored_sync_with_error_handler() `EXTRACTED`
+- test_change_position_database_error() `EXTRACTED`
+- test_change_position_save_error() `EXTRACTED`
 
 ### contains
 - exceptions.py `EXTRACTED`
 
 ### imports
-- connection_manager_methods.py `EXTRACTED`
 - database.py `EXTRACTED`
 - async_persistence.py `EXTRACTED`
 - players.py `EXTRACTED`
 - test_container_persistence.py `EXTRACTED`
 - container_persistence.py `EXTRACTED`
-- test_player_service.py `EXTRACTED`
 - maps.py `EXTRACTED`
 - test_container_persistence_extended_row_helpers.py `EXTRACTED`
 - test_connection_delegates.py `EXTRACTED`
 - test_npc_service.py `EXTRACTED`
 - legacy_error_handlers.py `EXTRACTED`
 - test_player_respawn_service.py `EXTRACTED`
-- test_connection_establishment.py `EXTRACTED`
-- test_exploration_service.py `EXTRACTED`
 - player_service.py `EXTRACTED`
+- test_exploration_service.py `EXTRACTED`
 - test_exceptions.py `EXTRACTED`
 - player_respawn_service.py `EXTRACTED`
 - test_database_error_handling.py `EXTRACTED`
 - test_container_persistence_extended_crud.py `EXTRACTED`
+- test_legacy_error_handlers.py `EXTRACTED`
+- test_async_persistence_core.py `EXTRACTED`
+- test_player_repository.py `EXTRACTED`
 
 ### indirect_call
 - _handle_admin_set_stat_command() `INFERRED`
-- send_game_event() `INFERRED`
-- track_player_disconnected_impl() `INFERRED`
 - update_container() `INFERRED`
 - create_container() `INFERRED`
-- establish_websocket_connection() `INFERRED`
 - handle_mute_command() `INFERRED`
 - handle_teleport_command() `INFERRED`
 - create_container() `INFERRED`
 - get_container() `INFERRED`
 - update_container() `INFERRED`
 - ._initialize_database() `INFERRED`
-- canonical_room_id_impl() `INFERRED`
 - get_container() `INFERRED`
 - get_container_async() `INFERRED`
 - handle_goto_command() `INFERRED`
-- track_player_connected_impl() `INFERRED`
 - get_containers_by_entity_id() `INFERRED`
 - .move_player() `INFERRED`
 - delete_container() `INFERRED`
+- _disconnect_connection_for_session() `INFERRED`
+- ._ensure_room_cache_loaded() `INFERRED`
+- handle_unmute_command() `INFERRED`
+- get_containers_by_room_id() `INFERRED`
+- create_container_async() `INFERRED`
 
 ### inherits
 - MythosMUDError `EXTRACTED`
@@ -94,17 +94,17 @@
 - TestSanitization `INFERRED`
 - RoomCacheLoader `INFERRED`
 - DatabaseManager `INFERRED`
-- ConnectionCleaner `INFERRED`
 - TestErrorHandlers `INFERRED`
+- [ConnectionCleaner](ConnectionCleaner.md) `INFERRED`
 - [Player](Player.md) `INFERRED`
 - TestCircuitBreaker `INFERRED`
-- UUID `INFERRED`
-- Request `INFERRED`
+- [UUID](UUID.md) `INFERRED`
+- [Request](Request.md) `INFERRED`
 - MythosTimeEventConsumer `INFERRED`
 - _AppWithLegacyConfigState `INFERRED`
-- HealthRepository `INFERRED`
+- [HealthRepository](HealthRepository.md) `INFERRED`
 - TestErrorResponse `INFERRED`
-- Any `INFERRED`
+- [Any](Any.md) `INFERRED`
 
 ---
 

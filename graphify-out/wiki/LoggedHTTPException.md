@@ -2,7 +2,7 @@
 
 > God node · 401 connections · `server/exceptions.py`
 
-**Community:** [Server Api](Server_Api.md)
+**Community:** [APIRouter](APIRouter.md)
 
 ## Connections by Relation
 
@@ -46,9 +46,9 @@
 - test_legacy_error_handlers.py `EXTRACTED`
 - test_metrics_endpoints.py `EXTRACTED`
 - container_endpoints_loot.py `EXTRACTED`
+- real_time.py `EXTRACTED`
 - rooms.py `EXTRACTED`
 - test_exceptions_comprehensive.py `EXTRACTED`
-- real_time.py `EXTRACTED`
 - standardized_responses.py `EXTRACTED`
 - test_container_exception_handlers.py `EXTRACTED`
 - test_containers.py `EXTRACTED`
@@ -97,7 +97,7 @@
 - TestSanitization `INFERRED`
 - TestErrorHandlers `INFERRED`
 - TestCircuitBreaker `INFERRED`
-- Request `INFERRED`
+- [Request](Request.md) `INFERRED`
 - _AppWithLegacyConfigState `INFERRED`
 - TestTransferAllItemsFromContainer `INFERRED`
 - TestHelperFunctions `INFERRED`
@@ -109,7 +109,7 @@
 - TestCreateErrorResponse `INFERRED`
 - TestLegacyHandlerSecurity `INFERRED`
 - ErrorResponseDetailsInput `INFERRED`
-- FastAPI `INFERRED`
+- [FastAPI](FastAPI.md) `INFERRED`
 - TestHandleTransferItemsExceptions `INFERRED`
 
 ---

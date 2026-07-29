@@ -2,7 +2,7 @@
 
 > God node · 167 connections · `server/models/combat.py`
 
-**Community:** [Server Services (28)](Server_Services_%2828%29.md)
+**Community:** [combat](combat.md)
 
 ## Connections by Relation
 

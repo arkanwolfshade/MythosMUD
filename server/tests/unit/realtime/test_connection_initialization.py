@@ -8,12 +8,52 @@ from unittest.mock import MagicMock, patch
 
 from server.realtime.connection_initialization import (
     initialize_connection_cleaner,
+    initialize_connection_state,
+    initialize_core_components,
     initialize_error_handler,
     initialize_game_state_provider,
     initialize_health_monitor,
     initialize_messaging,
     initialize_room_event_handler,
 )
+
+
+def test_initialize_connection_state():
+    """Test initialize_connection_state() sets core tracking attributes."""
+    mock_manager = MagicMock()
+    publisher = MagicMock()
+
+    initialize_connection_state(mock_manager, publisher)
+
+    assert mock_manager.event_publisher is publisher
+    assert mock_manager.active_websockets == {}
+    assert mock_manager.online_players == {}
+    assert mock_manager._health_check_interval == 30.0
+    assert mock_manager._closed_websockets.maxlen == 1000
+
+
+def test_initialize_core_components():
+    """Test initialize_core_components() builds modular components."""
+    mock_manager = MagicMock()
+    mock_memory = MagicMock()
+    mock_memory.max_pending_messages = 50
+
+    with (
+        patch("server.realtime.connection_initialization.MemoryMonitor", return_value=mock_memory),
+        patch("server.realtime.connection_initialization.RateLimiter") as mock_rate,
+        patch("server.realtime.connection_initialization.MessageQueue") as mock_queue,
+        patch("server.realtime.connection_initialization.RoomSubscriptionManager") as mock_room,
+        patch("server.realtime.connection_initialization.PerformanceTracker") as mock_perf,
+        patch("server.realtime.connection_initialization.StatisticsAggregator") as mock_stats,
+    ):
+        initialize_core_components(mock_manager)
+
+        mock_rate.assert_called_once()
+        mock_queue.assert_called_once_with(max_messages_per_player=50)
+        mock_room.assert_called_once()
+        mock_perf.assert_called_once_with(max_samples=1000)
+        mock_stats.assert_called_once()
+        assert mock_manager.health_monitor is None
 
 
 def test_initialize_health_monitor():

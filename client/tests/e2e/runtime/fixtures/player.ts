@@ -106,83 +106,85 @@ export async function despawnSanitariumCultists(page: Page): Promise<void> {
  * Admin DP set is best-effort (non-admins get a harmless failure).
  * Hard-fails if Location stays on Death > Void after recovery attempts.
  */
-export async function ensurePlayableAlive(page: Page, username: string, password: string): Promise<void> {
-  await ensurePlayableConnection(page, { username, password, timeoutMs: 30000 });
-  await dismissDeathInterstitial(page);
-  await ensureNotInCombat(page, 4);
-  await executeCommand(page, `admin set DP ${username} 20`).catch(() => {});
-  await dismissDeathInterstitial(page);
-  await ensureStanding(page, 8000).catch(() => {});
+export async function ensurePlayableAlive(page: Page, username: string, password: string): Promise<Page> {
+  let live = await ensurePlayableConnection(page, { username, password, timeoutMs: 30000 });
+  await dismissDeathInterstitial(live);
+  await ensureNotInCombat(live, 4);
+  await executeCommand(live, `admin set DP ${username} 20`).catch(() => {});
+  await dismissDeathInterstitial(live);
+  live = await ensureStanding(live, 8000).catch(() => live);
 
   // Void blocks most commands. Full DP in limbo skips the death interstitial, so SPA re-login alone
   // reloads persisted limbo — drop client, heal DB rows, then re-enter.
   let recoveredFromVoid = false;
-  if (await isInDeathVoid(page)) {
+  if (await isInDeathVoid(live)) {
     recoveredFromVoid = true;
-    await dismissDeathInterstitial(page);
-    await executeCommand(page, `admin set DP ${username} 20`).catch(() => {});
-    await dismissDeathInterstitial(page);
+    await dismissDeathInterstitial(live);
+    await executeCommand(live, `admin set DP ${username} 20`).catch(() => {});
+    await dismissDeathInterstitial(live);
   }
-  if (await isInDeathVoid(page)) {
+  if (await isInDeathVoid(live)) {
     recoveredFromVoid = true;
     // Fast path: do not wait on Exit-the-Realm (void / ward often blocks it for tens of seconds).
-    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    await live.goto('/', { waitUntil: 'domcontentloaded' });
     // Workers=1 default: safe to reset both E2E player rows mid-spec.
     resetE2ePlayerRoomsInDatabase();
-    await loginPlayer(page, username, password);
-    await waitForPlayableSession(page, 30000);
-    await dismissDeathInterstitial(page);
-    await executeCommand(page, `admin set DP ${username} 20`).catch(() => {});
-    await dismissDeathInterstitial(page);
-    await ensurePlayableConnection(page, { username, password, timeoutMs: 30000 });
-    await executeCommand(page, 'look').catch(() => {});
-    await ensureStanding(page, 8000).catch(() => {});
+    await loginPlayer(live, username, password);
+    await waitForPlayableSession(live, 30000);
+    await dismissDeathInterstitial(live);
+    await executeCommand(live, `admin set DP ${username} 20`).catch(() => {});
+    await dismissDeathInterstitial(live);
+    live = await ensurePlayableConnection(live, { username, password, timeoutMs: 30000 });
+    await executeCommand(live, 'look').catch(() => {});
+    live = await ensureStanding(live, 8000).catch(() => live);
   }
 
-  if (await isInDeathVoid(page)) {
+  if (await isInDeathVoid(live)) {
     throw new Error(`ensurePlayableAlive: still in Death > Void for ${username}`);
   }
 
   // After void recovery, spawn should be foyer; require it so movement/combat specs do not proceed blind.
   if (recoveredFromVoid) {
-    await executeCommand(page, 'look').catch(() => {});
-    await expect(page.getByText(DEFAULT_SPAWN_LOOK_CUE).first()).toBeVisible({ timeout: 20000 });
+    await executeCommand(live, 'look').catch(() => {});
+    await expect(live.getByText(DEFAULT_SPAWN_LOOK_CUE).first()).toBeVisible({ timeout: 20000 });
   }
+  return live;
 }
 
 /**
  * Flee combat and stand so `go` is not rejected as "You can't go that way."
  * (MovementService blocks combat/posture with that generic message.)
  */
-export async function prepareForDirectionalMove(page: Page): Promise<void> {
+export async function prepareForDirectionalMove(page: Page): Promise<Page> {
   await ensureNotInCombat(page, 6);
-  await ensureStanding(page, 10000);
+  return ensureStanding(page, 10000);
 }
 
 /**
  * Foyer east -> Eastern Hallway. Retries after flee/stand; admin teleport east if combat still blocks go.
  */
-export async function goEastFromFoyer(page: Page): Promise<void> {
-  await prepareForDirectionalMove(page);
-  await executeCommand(page, 'go east');
+export async function goEastFromFoyer(page: Page): Promise<Page> {
+  let live = await prepareForDirectionalMove(page);
+  await executeCommand(live, 'go east');
   try {
-    await waitForMessage(page, /You (move|go) east|Eastern Hallway/i, 20000);
+    await waitForMessage(live, /You (move|go) east|Eastern Hallway/i, 20000);
   } catch {
-    await prepareForDirectionalMove(page);
-    await ensureNotInCombat(page, 12);
-    await executeCommand(page, 'go east');
+    live = await prepareForDirectionalMove(live);
+    await ensureNotInCombat(live, 12);
+    await executeCommand(live, 'go east');
     try {
-      await waitForMessage(page, /You (move|go) east|Eastern Hallway/i, 25000);
+      await waitForMessage(live, /You (move|go) east|Eastern Hallway/i, 25000);
     } catch {
       // move_player returns "You can't go that way." while in combat; admin teleport bypasses that gate.
-      const session = getPageSessionCredentials(page);
+      const session = getPageSessionCredentials(live);
       const who = session?.username ?? 'ArkanWolfshade';
-      await executeCommand(page, `teleport ${who} east`);
-      await waitForMessage(page, /teleport|Eastern Hallway|You (move|go) east/i, 25000);
+      await executeCommand(live, `teleport ${who} east`);
+      await waitForMessage(live, /teleport|Eastern Hallway|You (move|go) east/i, 25000);
     }
   }
-  await executeCommand(page, 'look').catch(() => {});
-  await expect(page.getByText(EASTERN_HALLWAY_LOOK_CUE).first()).toBeVisible({ timeout: 20000 });
+  await executeCommand(live, 'look').catch(() => {});
+  await expect(live.getByText(EASTERN_HALLWAY_LOOK_CUE).first()).toBeVisible({ timeout: 20000 });
+  return live;
 }
 
 /**
@@ -195,22 +197,23 @@ export async function goEastFromFoyer(page: Page): Promise<void> {
  * @param page - Playwright page instance
  * @param timeoutMs - Max wait for standing confirmation (default: 10000)
  */
-export async function ensureStanding(page: Page, timeoutMs: number = 10000): Promise<void> {
-  const onLogin = await page
+export async function ensureStanding(page: Page, timeoutMs: number = 10000): Promise<Page> {
+  let live = page;
+  const onLogin = await live
     .getByTestId('username-input')
     .isVisible({ timeout: 1000 })
     .catch(() => false);
   if (onLogin) {
-    const session = getPageSessionCredentials(page);
+    const session = getPageSessionCredentials(live);
     if (session) {
-      await loginPlayer(page, session.username, session.password);
-      await waitForPlayableSession(page, Math.max(timeoutMs, 15000));
+      await loginPlayer(live, session.username, session.password);
+      await waitForPlayableSession(live, Math.max(timeoutMs, 15000));
     } else {
       throw new Error('Cannot ensure standing: on login screen with no saved session credentials');
     }
   }
 
-  const alreadyStanding = await page.evaluate(() => {
+  const alreadyStanding = await live.evaluate(() => {
     const bodyText = document.body?.innerText ?? '';
     return (
       /Posture:\s*standing\b/i.test(bodyText) ||
@@ -219,20 +222,20 @@ export async function ensureStanding(page: Page, timeoutMs: number = 10000): Pro
     );
   });
   if (alreadyStanding) {
-    return;
+    return live;
   }
 
-  const session = getPageSessionCredentials(page);
+  const session = getPageSessionCredentials(live);
   if (session) {
-    await ensurePlayableConnection(page, {
+    live = await ensurePlayableConnection(live, {
       username: session.username,
       password: session.password,
       timeoutMs: Math.max(timeoutMs, 20000),
     });
   }
 
-  await page.bringToFront().catch(() => {});
-  await executeCommand(page, 'stand');
+  await live.bringToFront().catch(() => {});
+  await executeCommand(live, 'stand');
   const halfMs = Math.max(Math.floor(timeoutMs / 2), 4000);
   const standingPredicate = () => {
     const t = document.body?.innerText ?? '';
@@ -242,14 +245,15 @@ export async function ensureStanding(page: Page, timeoutMs: number = 10000): Pro
     return false;
   };
   try {
-    await page.waitForFunction(standingPredicate, undefined, { timeout: halfMs });
-    return;
+    await live.waitForFunction(standingPredicate, undefined, { timeout: halfMs });
+    return live;
   } catch {
     // Re-issue stand once (sitting/prone lag or first command dropped under load).
-    await executeCommand(page, 'stand');
-    await page.waitForFunction(standingPredicate, undefined, {
+    await executeCommand(live, 'stand');
+    await live.waitForFunction(standingPredicate, undefined, {
       timeout: Math.max(timeoutMs - halfMs, 5000),
     });
+    return live;
   }
 }
 
@@ -260,27 +264,28 @@ export async function ensureStanding(page: Page, timeoutMs: number = 10000): Pro
  * @param page - Playwright page instance
  * @param targetPlayer - Username of player to reset (defaults to current player)
  */
-export async function resetPlayerPosition(page: Page, targetPlayer?: string): Promise<void> {
+export async function resetPlayerPosition(page: Page, targetPlayer?: string): Promise<Page> {
   if (targetPlayer) {
     // teleport only accepts an optional Direction — pull target to admin's room via goto + teleport
     await executeCommand(page, `goto ${targetPlayer}`);
     await executeCommand(page, `teleport ${targetPlayer}`);
-  } else {
-    await ensureStanding(page, 5000);
-    await executeCommand(page, 'go north');
-    await page
-      .locator('[data-message-text]')
-      .first()
-      .waitFor({ state: 'attached', timeout: 5000 })
-      .catch(() => {});
-    await ensureStanding(page, 5000);
-    await executeCommand(page, 'go south');
-    await page
-      .locator('[data-message-text]')
-      .first()
-      .waitFor({ state: 'attached', timeout: 5000 })
-      .catch(() => {});
+    return page;
   }
+  let live = await ensureStanding(page, 5000);
+  await executeCommand(live, 'go north');
+  await live
+    .locator('[data-message-text]')
+    .first()
+    .waitFor({ state: 'attached', timeout: 5000 })
+    .catch(() => {});
+  live = await ensureStanding(live, 5000);
+  await executeCommand(live, 'go south');
+  await live
+    .locator('[data-message-text]')
+    .first()
+    .waitFor({ state: 'attached', timeout: 5000 })
+    .catch(() => {});
+  return live;
 }
 
 /**

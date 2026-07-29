@@ -1,0 +1,53 @@
+# Any
+
+> 52 nodes
+
+## Key Concepts
+
+- **TestRoomDataFixer** (20 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **RoomDataFixer** (14 connections) — `server/services/room_data_fixer.py`
+- **.apply_room_data_fixes()** (13 connections) — `server/services/room_data_fixer.py`
+- **.fix_missing_name()** (7 connections) — `server/services/room_data_fixer.py`
+- **.fix_occupant_count_mismatch()** (7 connections) — `server/services/room_data_fixer.py`
+- **.fix_missing_description()** (6 connections) — `server/services/room_data_fixer.py`
+- **.fix_missing_timestamp()** (6 connections) — `server/services/room_data_fixer.py`
+- **Any** (5 connections)
+- **.count_applied_fixes()** (5 connections) — `server/services/room_data_fixer.py`
+- **.test_apply_room_data_fixes_exception_handling()** (5 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **test_room_data_fixer.py** (4 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_name()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_name_no_error()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_name_unknown_id()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_description()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_description_no_error()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_occupant_count_mismatch()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_occupant_count_mismatch_no_error()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_occupant_count_mismatch_no_occupants()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_timestamp()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_timestamp_existing()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_count_applied_fixes()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_count_applied_fixes_no_fixable()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_apply_room_data_fixes_all_fixes()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_apply_room_data_fixes_no_errors()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- *... and 27 more nodes in this community*
+
+## Relationships
+
+- [main()](main%28%29.md) (3 shared connections)
+- [Any](Any.md) (2 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
+
+## Source Files
+
+- `server/services/room_data_fixer.py`
+- `server/tests/unit/services/test_room_data_fixer.py`
+
+## Audit Trail
+
+- EXTRACTED: 160 (96%)
+- INFERRED: 6 (4%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

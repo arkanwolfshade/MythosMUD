@@ -7,19 +7,28 @@ This module contains methods that were extracted from ConnectionManager
 to reduce file complexity and improve maintainability.
 """
 
-# pylint: disable=too-many-lines  # Reason: Connection manager methods require extensive method implementations for comprehensive connection management operations
+# Error handling and cleanup impls live in connection_error_methods / connection_cleanup_methods
+# (keeps this file under Lizard file-nloc 500).
+
+from __future__ import annotations
 
 from typing import Any, cast
 from uuid import UUID
 
 from fastapi import WebSocket
 
+from ..exceptions import DatabaseError
+from ..models import Player
 from ..structured_logging.enhanced_logging_config import get_logger
 from .connection_statistics import (
     get_online_player_by_display_name_impl,
     get_player_presence_info_impl,
     validate_player_presence_impl,
 )
+
+# Avoid TYPE_CHECKING import of ConnectionManager (basedpyright import cycle).
+# Plain assignment: ruff UP040 rejects TypeAlias; Codacy pylint cannot parse PEP 695 `type`.
+ConnectionManager = Any
 
 logger = get_logger(__name__)
 
@@ -29,10 +38,10 @@ logger = get_logger(__name__)
 # ============================================================================
 
 
-def get_memory_stats_impl(manager: Any) -> dict[str, Any]:
+def get_memory_stats_impl(manager: ConnectionManager) -> dict[str, object]:
     """Get comprehensive memory and connection statistics."""
-    result: dict[str, Any] = cast(
-        dict[str, Any],
+    result: dict[str, object] = cast(
+        dict[str, object],
         manager.statistics_aggregator.get_memory_stats(
             active_websockets=manager.active_websockets,
             player_websockets=manager.player_websockets,
@@ -49,10 +58,10 @@ def get_memory_stats_impl(manager: Any) -> dict[str, Any]:
     return result
 
 
-def get_dual_connection_stats_impl(manager: Any) -> dict[str, Any]:
+def get_dual_connection_stats_impl(manager: ConnectionManager) -> dict[str, object]:
     """Get comprehensive connection statistics."""
-    result: dict[str, Any] = cast(
-        dict[str, Any],
+    result: dict[str, object] = cast(
+        dict[str, object],
         manager.statistics_aggregator.get_connection_stats(
             player_websockets=manager.player_websockets,
             connection_metadata=manager.connection_metadata,
@@ -63,40 +72,39 @@ def get_dual_connection_stats_impl(manager: Any) -> dict[str, Any]:
     return result
 
 
-def get_performance_stats_impl(manager: Any) -> dict[str, Any]:
+def get_performance_stats_impl(manager: ConnectionManager) -> dict[str, object]:
     """Get connection performance statistics."""
-    result: dict[str, Any] = cast(dict[str, Any], manager.performance_tracker.get_stats())
+    result: dict[str, object] = cast(dict[str, object], manager.performance_tracker.get_stats())
     return result
 
 
-def get_connection_health_stats_impl(manager: Any) -> dict[str, Any]:
+def get_connection_health_stats_impl(manager: ConnectionManager) -> dict[str, object]:
     """Get comprehensive connection health statistics."""
-    result: dict[str, Any] = cast(
-        dict[str, Any],
+    result: dict[str, object] = cast(
+        dict[str, object],
         manager.statistics_aggregator.get_connection_health_stats(connection_metadata=manager.connection_metadata),
     )
     return result
 
 
-def get_memory_alerts_impl(manager: Any) -> list[str]:
+def get_memory_alerts_impl(manager: ConnectionManager) -> list[str]:
     """Get memory-related alerts."""
-    result: list[str] = cast(
+    return cast(
         list[str],
         manager.statistics_aggregator.get_memory_alerts(
             connection_timestamps=manager.connection_timestamps,
             max_connection_age=manager.memory_monitor.max_connection_age,
         ),
     )
-    return result
 
 
-def get_error_statistics_impl(manager: Any) -> dict[str, Any]:
+def get_error_statistics_impl(manager: ConnectionManager) -> dict[str, object]:
     """Get error handling statistics."""
     if manager.error_handler is None:
         logger.error("Error handler not initialized")
         return {}
-    result: dict[str, Any] = cast(
-        dict[str, Any],
+    result: dict[str, object] = cast(
+        dict[str, object],
         manager.error_handler.get_error_statistics(
             online_players=manager.online_players,
             player_websockets=manager.player_websockets,
@@ -105,13 +113,13 @@ def get_error_statistics_impl(manager: Any) -> dict[str, Any]:
     return result
 
 
-def get_rate_limit_info_impl(manager: Any, player_id: UUID) -> dict[str, Any]:
+def get_rate_limit_info_impl(manager: ConnectionManager, player_id: UUID) -> dict[str, object]:
     """Get rate limit information for a player."""
-    result: dict[str, Any] = cast(dict[str, Any], manager.rate_limiter.get_rate_limit_info(str(player_id)))
+    result: dict[str, object] = cast(dict[str, object], manager.rate_limiter.get_rate_limit_info(str(player_id)))
     return result
 
 
-def get_message_delivery_stats_impl(manager: Any, player_id: UUID) -> dict[str, Any]:
+def get_message_delivery_stats_impl(manager: ConnectionManager, player_id: UUID) -> dict[str, object]:
     """Get message delivery statistics for a player."""
     from .connection_delegates import delegate_personal_message_sender_sync
 
@@ -124,7 +132,7 @@ def get_message_delivery_stats_impl(manager: Any, player_id: UUID) -> dict[str, 
     )
 
 
-def get_active_connection_count_impl(manager: Any) -> int:
+def get_active_connection_count_impl(manager: ConnectionManager) -> int:
     """Get the total number of active connections."""
     return len(manager.active_websockets)
 
@@ -134,69 +142,64 @@ def get_active_connection_count_impl(manager: Any) -> int:
 # ============================================================================
 
 
-def get_player_presence_info_method(manager: Any, player_id: UUID) -> dict[str, Any]:
+def get_player_presence_info_method(manager: ConnectionManager, player_id: UUID) -> dict[str, object]:
     """Get detailed presence information for a player."""
     return get_player_presence_info_impl(player_id, manager)
 
 
-def validate_player_presence_method(manager: Any, player_id: UUID) -> dict[str, Any]:
+def validate_player_presence_method(manager: ConnectionManager, player_id: UUID) -> dict[str, object]:
     """Validate player presence and clean up any inconsistencies."""
     return validate_player_presence_impl(player_id, manager)
 
 
-def get_online_players_impl(manager: Any) -> list[dict[str, Any]]:
+def get_online_players_impl(manager: ConnectionManager) -> list[dict[str, object]]:
     """Get list of online players."""
     return list(manager.online_players.values())
 
 
-def get_online_player_by_display_name_method(manager: Any, display_name: str) -> dict[str, Any] | None:
+def get_online_player_by_display_name_method(manager: ConnectionManager, display_name: str) -> dict[str, object] | None:
     """Get online player information by display name."""
     return get_online_player_by_display_name_impl(display_name, manager)
 
 
-def get_player_session_impl(manager: Any, player_id: UUID) -> str | None:
+def get_player_session_impl(manager: ConnectionManager, player_id: UUID) -> str | None:
     """Get the current session ID for a player."""
-    result: str | None = cast(str | None, manager.player_sessions.get(player_id))
-    return result
+    return cast(str | None, manager.player_sessions.get(player_id))
 
 
-def get_session_connections_impl(manager: Any, session_id: str) -> list[str]:
+def get_session_connections_impl(manager: ConnectionManager, session_id: str) -> list[str]:
     """Get all connection IDs for a session."""
-    result: list[str] = cast(list[str], manager.session_connections.get(session_id, []))
-    return result
+    return cast(list[str], manager.session_connections.get(session_id, []))
 
 
-def validate_session_impl(manager: Any, player_id: UUID, session_id: str) -> bool:
+def validate_session_impl(manager: ConnectionManager, player_id: UUID, session_id: str) -> bool:
     """Validate that a session ID matches the player's current session."""
-    result: bool = cast(bool, manager.player_sessions.get(player_id) == session_id)
-    return result
+    return cast(bool, manager.player_sessions.get(player_id) == session_id)
 
 
-def get_connection_count_impl(manager: Any, player_id: UUID) -> dict[str, int]:
+def get_connection_count_impl(manager: ConnectionManager, player_id: UUID) -> dict[str, int]:
     """Get the number of connections for a player by type."""
     websocket_count = len(manager.player_websockets.get(player_id, []))
     return {"websocket": websocket_count, "total": websocket_count}
 
 
-def has_websocket_connection_impl(manager: Any, player_id: UUID) -> bool:
+def has_websocket_connection_impl(manager: ConnectionManager, player_id: UUID) -> bool:
     """Check if a player has any WebSocket connections."""
     return player_id in manager.player_websockets and len(manager.player_websockets[player_id]) > 0
 
 
-def get_player_websocket_connection_id_impl(manager: Any, player_id: UUID) -> str | None:
+def get_player_websocket_connection_id_impl(manager: ConnectionManager, player_id: UUID) -> str | None:
     """Get the first WebSocket connection ID for a player (backward compatibility)."""
     if manager.player_websockets.get(player_id):
-        result: str = cast(str, manager.player_websockets[player_id][0])
-        return result
+        return cast(str | None, manager.player_websockets[player_id][0])
     return None
 
 
-def get_connection_id_from_websocket_impl(manager: Any, websocket: WebSocket) -> str | None:
+def get_connection_id_from_websocket_impl(manager: ConnectionManager, websocket: WebSocket) -> str | None:
     """Get connection ID from a WebSocket instance."""
     for conn_id, ws in manager.active_websockets.items():
         if ws is websocket:
-            result: str = cast(str, conn_id)
-            return result
+            return cast(str | None, conn_id)
     return None
 
 
@@ -206,11 +209,11 @@ def get_connection_id_from_websocket_impl(manager: Any, websocket: WebSocket) ->
 
 
 async def broadcast_to_room_impl(
-    manager: Any,
+    manager: ConnectionManager,
     room_id: str,
-    event: dict[str, Any],
+    event: dict[str, object],
     exclude_player: UUID | str | None = None,
-) -> dict[str, Any]:
+) -> dict[str, object]:
     """Broadcast a message to all players in a room."""
     from .connection_delegates import delegate_message_broadcaster
 
@@ -226,8 +229,8 @@ async def broadcast_to_room_impl(
 
 
 async def broadcast_global_impl(
-    manager: Any, event: dict[str, Any], exclude_player: str | None = None
-) -> dict[str, Any]:
+    manager: ConnectionManager, event: dict[str, object], exclude_player: str | None = None
+) -> dict[str, object]:
     """Broadcast a message to all connected players."""
     from .connection_delegates import delegate_message_broadcaster
 
@@ -242,11 +245,10 @@ async def broadcast_global_impl(
 
 
 async def broadcast_room_event_impl(
-    manager: Any, event_type: str, room_id: str, data: dict[str, object]
-) -> dict[str, Any]:
+    manager: ConnectionManager, event_type: str, room_id: str, data: dict[str, object]
+) -> dict[str, object]:
     """Broadcast a room-specific event to all players in the room."""
     try:
-        from ..exceptions import DatabaseError
         from .envelope import build_event
 
         event = build_event(event_type, data)
@@ -270,10 +272,11 @@ async def broadcast_room_event_impl(
         }
 
 
-async def broadcast_global_event_impl(manager: Any, event_type: str, data: dict[str, object]) -> dict[str, Any]:
+async def broadcast_global_event_impl(
+    manager: ConnectionManager, event_type: str, data: dict[str, object]
+) -> dict[str, object]:
     """Broadcast a global event to all connected players."""
     try:
-        from ..exceptions import DatabaseError
         from .envelope import build_event
 
         event = build_event(event_type, data)
@@ -295,9 +298,8 @@ async def broadcast_global_event_impl(manager: Any, event_type: str, data: dict[
 # ============================================================================
 
 
-async def force_disconnect_player_impl(manager: Any, player_id: UUID) -> None:
+async def force_disconnect_player_impl(manager: ConnectionManager, player_id: UUID) -> None:
     """Force disconnect a player from all connections (WebSocket only)."""
-    from ..exceptions import DatabaseError
     from .connection_disconnection import (
         _cleanup_player_data,
         _cleanup_room_subscriptions,
@@ -309,7 +311,7 @@ async def force_disconnect_player_impl(manager: Any, player_id: UUID) -> None:
         has_sockets = bool(manager.player_websockets.get(player_id))
         if has_sockets:
             await manager.disconnect_websocket(player_id, is_force_disconnect=True)
-        elif player_id in getattr(manager, "intentional_disconnects", set()):
+        elif player_id in manager.intentional_disconnects:
             # On-close may clear player_websockets before logout's force_disconnect runs.
             # Still emit player_left_game and clear Occupants for intentional logout.
             should_track = await _track_disconnect_if_needed(player_id, manager, True)
@@ -327,10 +329,8 @@ async def force_disconnect_player_impl(manager: Any, player_id: UUID) -> None:
         )
 
 
-async def disconnect_websocket_connection_impl(manager: Any, player_id: UUID, connection_id: str) -> bool:
+async def disconnect_websocket_connection_impl(manager: ConnectionManager, player_id: UUID, connection_id: str) -> bool:
     """Disconnect a specific WebSocket connection for a player."""
-    from ..exceptions import DatabaseError
-
     try:
         if connection_id not in manager.connection_metadata:
             logger.warning("Connection not found in metadata", connection_id=connection_id)
@@ -343,7 +343,7 @@ async def disconnect_websocket_connection_impl(manager: Any, player_id: UUID, co
                 player_id=player_id,
             )
             return False
-        result: bool = cast(bool, await manager.disconnect_connection_by_id(connection_id))
+        result: bool = await manager.disconnect_connection_by_id(connection_id)
         return result
     except (DatabaseError, AttributeError) as e:
         logger.error(
@@ -361,14 +361,14 @@ async def disconnect_websocket_connection_impl(manager: Any, player_id: UUID, co
 # ============================================================================
 
 
-async def check_connection_health_impl(manager: Any, player_id: UUID) -> dict[str, Any]:
+async def check_connection_health_impl(manager: ConnectionManager, player_id: UUID) -> dict[str, object]:
     """Check the health of all connections for a player."""
     if manager.health_monitor is None:
         logger.error("Health monitor not initialized")
         return {"player_id": player_id, "overall_health": "error"}
     method = manager.health_monitor.check_player_connection_health
-    result: dict[str, Any] = cast(
-        dict[str, Any],
+    result: dict[str, object] = cast(
+        dict[str, object],
         await method(
             player_id=player_id,
             player_websockets=manager.player_websockets,
@@ -378,7 +378,7 @@ async def check_connection_health_impl(manager: Any, player_id: UUID) -> dict[st
     return result
 
 
-async def _check_connection_health_impl(manager: Any) -> None:
+async def check_all_connections_health_impl(manager: ConnectionManager) -> None:
     """Check health of all connections and clean up stale/dead ones."""
     from .connection_delegates import delegate_health_monitor
 
@@ -391,7 +391,7 @@ async def _check_connection_health_impl(manager: Any) -> None:
     )
 
 
-async def _periodic_health_check_impl(manager: Any) -> None:
+async def periodic_health_check_impl(manager: ConnectionManager) -> None:
     """Periodic health check task that runs continuously."""
     from .connection_delegates import delegate_health_monitor
 
@@ -404,7 +404,7 @@ async def _periodic_health_check_impl(manager: Any) -> None:
     )
 
 
-def start_health_checks_impl(manager: Any) -> None:
+def start_health_checks_impl(manager: ConnectionManager) -> None:
     """Start the periodic health check task."""
     from .connection_delegates import delegate_health_monitor_sync
 
@@ -417,7 +417,7 @@ def start_health_checks_impl(manager: Any) -> None:
     )
 
 
-def stop_health_checks_impl(manager: Any) -> None:
+def stop_health_checks_impl(manager: ConnectionManager) -> None:
     """Stop the periodic health check task."""
     if manager.health_monitor is None:
         logger.error("Health monitor not initialized")
@@ -426,147 +426,39 @@ def stop_health_checks_impl(manager: Any) -> None:
 
 
 # ============================================================================
-# Error Handling Methods
-# ============================================================================
-
-
-async def detect_and_handle_error_state_impl(
-    manager: Any,
-    player_id: UUID,
-    error_type: str,
-    error_details: str,
-    connection_id: str | None = None,
-) -> dict[str, Any]:
-    """Detect when a client is in an error state and handle it appropriately."""
-    from .connection_delegates import delegate_error_handler
-
-    return await delegate_error_handler(
-        manager.error_handler,
-        "detect_and_handle_error_state",
-        {
-            "player_id": player_id,
-            "error_type": error_type,
-            "success": False,
-            "errors": ["Error handler not initialized"],
-        },
-        player_id,
-        error_type,
-        error_details,
-        connection_id,
-    )
-
-
-async def handle_websocket_error_impl(
-    manager: Any,
-    player_id: UUID,
-    connection_id: str,
-    error_type: str,
-    error_details: str,
-) -> dict[str, Any]:
-    """Handle WebSocket-specific errors."""
-    from .connection_delegates import delegate_error_handler
-
-    return await delegate_error_handler(
-        manager.error_handler,
-        "handle_websocket_error",
-        {
-            "player_id": player_id,
-            "success": False,
-            "errors": ["Error handler not initialized"],
-        },
-        player_id,
-        connection_id,
-        error_type,
-        error_details,
-    )
-
-
-async def handle_authentication_error_impl(
-    manager: Any, player_id: UUID, error_type: str, error_details: str
-) -> dict[str, Any]:
-    """Handle authentication-related errors."""
-    from .connection_delegates import delegate_error_handler
-
-    return await delegate_error_handler(
-        manager.error_handler,
-        "handle_authentication_error",
-        {
-            "player_id": player_id,
-            "success": False,
-            "errors": ["Error handler not initialized"],
-        },
-        player_id,
-        error_type,
-        error_details,
-    )
-
-
-async def handle_security_violation_impl(
-    manager: Any, player_id: UUID, violation_type: str, violation_details: str
-) -> dict[str, Any]:
-    """Handle security violations."""
-    from .connection_delegates import delegate_error_handler
-
-    return await delegate_error_handler(
-        manager.error_handler,
-        "handle_security_violation",
-        {
-            "player_id": player_id,
-            "success": False,
-            "errors": ["Error handler not initialized"],
-        },
-        player_id,
-        violation_type,
-        violation_details,
-    )
-
-
-async def recover_from_error_impl(manager: Any, player_id: UUID, recovery_type: str = "FULL") -> dict[str, Any]:
-    """Attempt to recover from an error state for a player."""
-    from .connection_delegates import delegate_error_handler
-
-    return await delegate_error_handler(
-        manager.error_handler,
-        "recover_from_error",
-        {
-            "player_id": player_id,
-            "success": False,
-            "errors": ["Error handler not initialized"],
-        },
-        player_id,
-        recovery_type,
-    )
-
-
-# ============================================================================
 # Game State Provider Methods
 # ============================================================================
 
 
-async def get_player_impl(manager: Any, player_id: UUID) -> Any:
+async def get_player_impl(manager: ConnectionManager, player_id: UUID) -> Player | None:
     """Get a player from the persistence layer (async version)."""
     from .connection_delegates import delegate_game_state_provider
 
-    return await delegate_game_state_provider(manager.game_state_provider, "get_player", None, player_id)
+    return cast(
+        Player | None,
+        await delegate_game_state_provider(manager.game_state_provider, "get_player", None, player_id),
+    )
 
 
-async def get_players_batch_impl(manager: Any, player_ids: list[UUID]) -> dict[UUID, Any]:
+async def get_players_batch_impl(manager: ConnectionManager, player_ids: list[UUID]) -> dict[UUID, Player]:
     """Get multiple players from the persistence layer in a single batch operation."""
     from .connection_delegates import delegate_game_state_provider
 
-    result: dict[UUID, Any] = cast(
-        dict[UUID, Any],
+    result: dict[UUID, Player] = cast(
+        dict[UUID, Player],
         await delegate_game_state_provider(manager.game_state_provider, "get_players_batch", {}, player_ids),
     )
     return result
 
 
-async def convert_room_players_uuids_to_names_impl(manager: Any, room_data: dict[str, Any]) -> dict[str, Any]:
+async def convert_room_players_uuids_to_names_impl(
+    manager: ConnectionManager, room_data: dict[str, object]
+) -> dict[str, object]:
     """Convert player UUIDs and NPC IDs in room_data to names."""
     from .connection_delegates import delegate_game_state_provider
 
-    result: dict[str, Any] = cast(
-        dict[str, Any],
+    result: dict[str, object] = cast(
+        dict[str, object],
         await delegate_game_state_provider(
             manager.game_state_provider,
             "convert_room_uuids_to_names",
@@ -577,7 +469,7 @@ async def convert_room_players_uuids_to_names_impl(manager: Any, room_data: dict
     return result
 
 
-def get_npcs_batch_impl(manager: Any, npc_ids: list[str]) -> dict[str, str]:
+def get_npcs_batch_impl(manager: ConnectionManager, npc_ids: list[str]) -> dict[str, str]:
     """Get NPC names for multiple NPCs in a batch operation."""
     from .connection_delegates import delegate_game_state_provider_sync
 
@@ -588,12 +480,12 @@ def get_npcs_batch_impl(manager: Any, npc_ids: list[str]) -> dict[str, str]:
     return result
 
 
-async def get_room_occupants_impl(manager: Any, room_id: str) -> list[dict[str, Any]]:
+async def get_room_occupants_impl(manager: ConnectionManager, room_id: str) -> list[dict[str, object]]:
     """Get list of occupants in a room."""
     from .connection_delegates import delegate_game_state_provider
 
-    result: list[dict[str, Any]] = cast(
-        list[dict[str, Any]],
+    result: list[dict[str, object]] = cast(
+        list[dict[str, object]],
         await delegate_game_state_provider(
             manager.game_state_provider,
             "get_room_occupants",
@@ -605,7 +497,9 @@ async def get_room_occupants_impl(manager: Any, room_id: str) -> list[dict[str, 
     return result
 
 
-async def send_initial_game_state_impl(manager: Any, player_id: UUID, player: Any, room_id: str) -> None:
+async def send_initial_game_state_impl(
+    manager: ConnectionManager, player_id: UUID, player: Player, room_id: str
+) -> None:
     """Send initial game_state event to a newly connected player."""
     from .connection_delegates import delegate_game_state_provider
 
@@ -620,109 +514,9 @@ async def send_initial_game_state_impl(manager: Any, player_id: UUID, player: An
     )
 
 
-# ============================================================================
-# Cleanup Methods
-# ============================================================================
-
-
-async def cleanup_dead_connections_impl(manager: Any, player_id: UUID | None = None) -> dict[str, Any]:
-    """Clean up dead connections for a specific player or all players."""
-    from .connection_delegates import delegate_connection_cleaner
-
-    return await delegate_connection_cleaner(
-        manager.connection_cleaner,
-        "cleanup_dead_connections",
-        {
-            "players_checked": 0,
-            "connections_cleaned": 0,
-            "errors": ["Connection cleaner not initialized"],
-        },
-        player_websockets=manager.player_websockets,
-        active_websockets=manager.active_websockets,
-        player_id=player_id,
-    )
-
-
-async def check_and_cleanup_impl(manager: Any) -> None:
-    """Periodically check for cleanup conditions and perform cleanup if needed."""
-    from .connection_delegates import delegate_connection_cleaner
-    from .maintenance.connection_cleaner import CleanupContext
-
-    ctx = CleanupContext(
-        online_players=manager.online_players,
-        last_seen=manager.last_seen,
-        player_websockets=manager.player_websockets,
-        active_websockets=manager.active_websockets,
-        connection_timestamps=manager.connection_timestamps,
-        cleanup_stats=manager.cleanup_stats,
-        last_active_update_times=manager.last_active_update_times,
-        connection_metadata=manager.connection_metadata,
-    )
-    await delegate_connection_cleaner(manager.connection_cleaner, "check_and_cleanup", {}, ctx=ctx)
-
-
-async def force_cleanup_impl(manager: Any) -> None:
-    """Force immediate cleanup of all orphaned data."""
-    from .connection_delegates import delegate_connection_cleaner
-
-    await delegate_connection_cleaner(
-        manager.connection_cleaner,
-        "force_cleanup",
-        {},
-        cleanup_stats=manager.cleanup_stats,
-        cleanup_orphaned_data_callback=manager.cleanup_orphaned_data,
-        prune_stale_players_callback=manager.prune_stale_players,
-    )
-
-
-def cleanup_ghost_players_impl(manager: Any) -> None:
-    """Clean up ghost players from all rooms."""
-    from .connection_delegates import delegate_connection_cleaner_sync
-
-    delegate_connection_cleaner_sync(
-        manager.connection_cleaner,
-        "cleanup_ghost_players",
-        online_players=manager.online_players,
-    )
-
-
-def prune_stale_players_impl(manager: Any, max_age_seconds: int = 90) -> None:
-    """Remove players whose presence is stale beyond the threshold."""
-    from .connection_delegates import delegate_connection_cleaner_sync
-
-    delegate_connection_cleaner_sync(
-        manager.connection_cleaner,
-        "prune_stale_players",
-        last_seen=manager.last_seen,
-        online_players=manager.online_players,
-        player_websockets=manager.player_websockets,
-        active_websockets=manager.active_websockets,
-        last_active_update_times=manager.last_active_update_times,
-        max_age_seconds=max_age_seconds,
-    )
-
-
-async def cleanup_orphaned_data_impl(manager: Any) -> None:
-    """Clean up orphaned data that might accumulate over time."""
-    from .connection_delegates import delegate_connection_cleaner
-    from .player_disconnect_handlers import age_off_disconnected_sessions
-
-    aged = age_off_disconnected_sessions(manager)
-    if aged:
-        logger.debug("Aged off disconnected sessions", count=aged)
-
-    await delegate_connection_cleaner(
-        manager.connection_cleaner,
-        "cleanup_orphaned_data",
-        {},
-        connection_timestamps=manager.connection_timestamps,
-        active_websockets=manager.active_websockets,
-        cleanup_stats=manager.cleanup_stats,
-        connection_metadata=manager.connection_metadata,
-    )
-
-
-async def send_personal_message_impl(manager: Any, player_id: UUID, event: dict[str, Any]) -> dict[str, Any]:
+async def send_personal_message_impl(
+    manager: ConnectionManager, player_id: UUID, event: dict[str, object]
+) -> dict[str, object]:
     """Send a personal message to a player via WebSocket."""
     from .connection_delegates import delegate_personal_message_sender
 
@@ -737,14 +531,14 @@ async def send_personal_message_impl(manager: Any, player_id: UUID, event: dict[
     )
 
 
-async def handle_player_entered_room_impl(manager: Any, event_data: dict[str, Any]) -> None:
+async def handle_player_entered_room_impl(manager: ConnectionManager, event_data: dict[str, object]) -> None:
     """Handle PlayerEnteredRoom events by broadcasting updated occupant count."""
     from .connection_delegates import delegate_room_event_handler
 
     await delegate_room_event_handler(manager.room_event_handler, "handle_player_entered_room", event_data)
 
 
-async def handle_player_left_room_impl(manager: Any, event_data: dict[str, Any]) -> None:
+async def handle_player_left_room_impl(manager: ConnectionManager, event_data: dict[str, object]) -> None:
     """Handle PlayerLeftRoom events by broadcasting updated occupant count."""
     from .connection_delegates import delegate_room_event_handler
 
@@ -756,19 +550,19 @@ async def handle_player_left_room_impl(manager: Any, event_data: dict[str, Any])
 # ============================================================================
 
 
-def is_websocket_open_impl(_manager: Any, websocket: WebSocket) -> bool:
+def is_websocket_open_impl(_manager: ConnectionManager, websocket: WebSocket) -> bool:
     """Check if a WebSocket is open."""
     try:
         from starlette.websockets import WebSocketState
 
-        state = getattr(websocket, "application_state", None)
+        state: object | None = getattr(websocket, "application_state", None)
         return state != WebSocketState.DISCONNECTED
     except (AttributeError, ValueError, TypeError):
         return True
 
 
 async def safe_close_websocket_impl(
-    manager: Any,
+    manager: ConnectionManager,
     websocket: WebSocket,
     code: int = 1000,
     reason: str = "Connection closed",
@@ -795,21 +589,19 @@ async def safe_close_websocket_impl(
 # ============================================================================
 
 
-async def subscribe_to_room_impl(manager: Any, player_id: UUID, room_id: str) -> None:
+async def subscribe_to_room_impl(manager: ConnectionManager, player_id: UUID, room_id: str) -> None:
     """Subscribe a player to a room (compatibility method)."""
     canonical_id = manager.canonical_room_id(room_id) or room_id
-    result: None = cast(None, manager.room_manager.subscribe_to_room(str(player_id), canonical_id))
-    return result
+    _ = manager.room_manager.subscribe_to_room(str(player_id), canonical_id)
 
 
-async def unsubscribe_from_room_impl(manager: Any, player_id: UUID, room_id: str) -> None:
+async def unsubscribe_from_room_impl(manager: ConnectionManager, player_id: UUID, room_id: str) -> None:
     """Unsubscribe a player from a room (compatibility method)."""
     canonical_id = manager.canonical_room_id(room_id) or room_id
-    result: None = cast(None, manager.room_manager.unsubscribe_from_room(str(player_id), canonical_id))
-    return result
+    _ = manager.room_manager.unsubscribe_from_room(str(player_id), canonical_id)
 
 
-def canonical_room_id_public_impl(manager: Any, room_id: str | None) -> str | None:
+def canonical_room_id_public_impl(manager: ConnectionManager, room_id: str | None) -> str | None:
     """Resolve a room id to the canonical Room.id value (public method)."""
     from .connection_room_utils import canonical_room_id_impl
 
@@ -821,24 +613,23 @@ def canonical_room_id_public_impl(manager: Any, room_id: str | None) -> str | No
 # ============================================================================
 
 
-def get_pending_messages_impl(manager: Any, player_id: UUID) -> list[dict[str, Any]]:
+def get_pending_messages_impl(manager: ConnectionManager, player_id: UUID) -> list[dict[str, object]]:
     """Get pending messages for a player."""
-    result: list[dict[str, Any]] = cast(list[dict[str, Any]], manager.message_queue.get_messages(str(player_id)))
+    result: list[dict[str, object]] = cast(list[dict[str, object]], manager.message_queue.get_messages(str(player_id)))
     return result
 
 
-def convert_uuids_to_strings_impl(_manager: Any, obj: Any) -> Any:
+def convert_uuids_to_strings_impl(_manager: ConnectionManager, obj: object) -> object:
     """Recursively convert UUID objects to strings for JSON serialization."""
     from .connection_helpers import convert_uuids_to_strings
 
-    return convert_uuids_to_strings(obj)
+    return cast(object, convert_uuids_to_strings(obj))
 
 
-def get_next_sequence_impl(manager: Any) -> int:
+def get_next_sequence_impl(manager: ConnectionManager) -> int:
     """Get the next sequence number for events."""
     manager.sequence_counter += 1
-    result: int = cast(int, manager.sequence_counter)
-    return result
+    return cast(int, manager.sequence_counter)
 
 
 # ============================================================================
@@ -846,7 +637,7 @@ def get_next_sequence_impl(manager: Any) -> int:
 # ============================================================================
 
 
-async def subscribe_to_room_events_impl(manager: Any) -> None:
+async def subscribe_to_room_events_impl(manager: ConnectionManager) -> None:
     """Subscribe to room movement events for occupant broadcasting."""
     from .connection_event_helpers import (
         subscribe_to_room_events_impl as subscribe_impl,
@@ -855,7 +646,7 @@ async def subscribe_to_room_events_impl(manager: Any) -> None:
     await subscribe_impl(manager)
 
 
-async def unsubscribe_from_room_events_impl(manager: Any) -> None:
+async def unsubscribe_from_room_events_impl(manager: ConnectionManager) -> None:
     """Unsubscribe from room movement events."""
     from .connection_event_helpers import (
         unsubscribe_from_room_events_impl as unsubscribe_impl,

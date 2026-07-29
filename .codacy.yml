@@ -54,9 +54,18 @@ exclude_paths:
   - "**/playwright-report/**"
   - "**/playwright-report-data/**"
   - "**/test-results/**"
-  # Graphify knowledge graph + synced community wiki dump (generated, not product code).
+  # Graphify knowledge graph artifacts, caches, and local config (not product code).
+  # Cover root trees, nested copies (e.g. client/src/__tests__/graphify-out), and
+  # any path whose name contains graphify (scripts, env examples, ignore files).
+  - "graphify-out/**"
   - "**/graphify-out/**"
+  - "graphify/**"
   - "**/graphify/**"
+  - "**/*graphify*"
+  - "**/.graphify*"
+  - ".graphifyignore"
+  - "env.graphify.example"
+  - ".env.graphify.local"
 
 # Bandit: exclude test paths so B101 (assert) and B106 (hardcoded pwd) are not reported in tests.
 # Codacy uses engines.<tool>.exclude_paths; ignore_patterns are not applied to tool analysis.
@@ -74,6 +83,11 @@ engines:
     exclude_paths:
       - "server/services/user_manager.py"
       - "scripts/ci/quality_fragmentation_guard.py"
+      # Generated graphify trees (CLI local scans; root exclude_paths covers Cloud).
+      - "graphify-out/**"
+      - "**/graphify-out/**"
+      - "**/graphify/**"
+      - "**/*graphify*"
   bandit:
     exclude_paths:
       # Bandit should only scan Python files; exclude lock/docs/tooling artifacts that trigger AST parse failures.

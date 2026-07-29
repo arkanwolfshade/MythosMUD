@@ -564,11 +564,11 @@ export async function executeCommand(page: Page, command: string): Promise<void>
   await assertNotStuckOnLogin(activePage);
 
   const creds = getPageSessionCredentials(activePage) ?? session;
-  await ensurePlayableConnection(activePage, {
+  // ensurePlayableConnection may reopen after page death; use its returned live Page.
+  const live = await ensurePlayableConnection(activePage, {
     ...creds,
     timeoutMs: TEST_TIMEOUTS.GAME_LOAD,
   });
-  const live = resolveEnsuredPage(activePage, creds?.username);
   await executeCommandWithoutRecovery(live, command);
 }
 

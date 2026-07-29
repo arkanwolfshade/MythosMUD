@@ -82,7 +82,7 @@ class MemoryLeakMetricsCollector:
                 return {"error": "ConnectionManager not available"}
 
             memory_stats = connection_manager.get_memory_stats()
-            connections = memory_stats.get("connections", {})
+            connections = cast(dict[str, Any], memory_stats.get("connections", {}))
 
             return {
                 "active_websockets_count": connections.get("active_websockets_count", 0),

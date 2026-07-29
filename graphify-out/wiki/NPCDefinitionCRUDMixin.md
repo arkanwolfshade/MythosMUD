@@ -1,0 +1,53 @@
+# NPCDefinitionCRUDMixin
+
+> 30 nodes
+
+## Key Concepts
+
+- **NPCDefinitionCRUDMixin** (18 connections) — `server/services/npc_service/definition_crud.py`
+- **.update_npc_definition()** (9 connections) — `server/services/npc_service/definition_crud.py`
+- **AsyncSession** (8 connections)
+- **.create_npc_definition()** (8 connections) — `server/services/npc_service/definition_crud.py`
+- **._execute_npc_update()** (8 connections) — `server/services/npc_service/definition_crud.py`
+- **.get_npc_definitions()** (7 connections) — `server/services/npc_service/definition_crud.py`
+- **.get_npc_definition()** (7 connections) — `server/services/npc_service/definition_crud.py`
+- **._build_npc_update_data()** (7 connections) — `server/services/npc_service/definition_crud.py`
+- **.get_npc_definition_by_name()** (5 connections) — `server/services/npc_service/definition_crud.py`
+- **._log_npc_definition_created()** (4 connections) — `server/services/npc_service/definition_crud.py`
+- **._add_simple_field()** (4 connections) — `server/services/npc_service/definition_crud.py`
+- **Any** (4 connections)
+- **._add_json_field()** (4 connections) — `server/services/npc_service/definition_crud.py`
+- **.delete_npc_definition()** (4 connections) — `server/services/npc_service/definition_crud.py`
+- **._validate_create_npc_definition_params()** (3 connections) — `server/services/npc_service/definition_crud.py`
+- **._validate_npc_update_params()** (3 connections) — `server/services/npc_service/definition_crud.py`
+- **Mixin providing NPC definition CRUD operations.** (1 connections) — `server/services/npc_service/definition_crud.py`
+- **Get all NPC definitions.** (1 connections) — `server/services/npc_service/definition_crud.py`
+- **Get a specific NPC definition by ID.** (1 connections) — `server/services/npc_service/definition_crud.py`
+- **Get an NPC definition by name (case-insensitive).** (1 connections) — `server/services/npc_service/definition_crud.py`
+- **Create a new NPC definition.** (1 connections) — `server/services/npc_service/definition_crud.py`
+- **Validate create_npc_definition parameters. Raises ValueError if invalid.** (1 connections) — `server/services/npc_service/definition_crud.py`
+- **Log successful NPC definition creation.** (1 connections) — `server/services/npc_service/definition_crud.py`
+- **Validate NPC update parameters.** (1 connections) — `server/services/npc_service/definition_crud.py`
+- **Add a simple field to update_data if value is not None.** (1 connections) — `server/services/npc_service/definition_crud.py`
+- *... and 5 more nodes in this community*
+
+## Relationships
+
+- [main()](main%28%29.md) (11 shared connections)
+- [. repr ()](_repr_%28%29.md) (7 shared connections)
+- [Request](Request.md) (2 shared connections)
+- [.initialize()](initialize%28%29.md) (1 shared connections)
+
+## Source Files
+
+- `server/services/npc_service/definition_crud.py`
+
+## Audit Trail
+
+- EXTRACTED: 116 (99%)
+- INFERRED: 1 (1%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

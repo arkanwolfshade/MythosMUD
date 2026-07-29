@@ -64,7 +64,7 @@ class StatisticsAggregator:
         active_websockets: dict[str, Any],
         player_websockets: dict[uuid.UUID, list[str]],
         connection_timestamps: dict[str, float],
-        cleanup_stats: dict[str, Any],
+        cleanup_stats: dict[str, object],
         player_sessions: dict[uuid.UUID, str],
         session_connections: dict[str, list[str]],
         online_players: dict[uuid.UUID, dict[str, Any]],
@@ -91,92 +91,210 @@ class StatisticsAggregator:
             dict: Comprehensive memory and connection statistics
         """
         try:
-            memory_stats = self.memory_monitor.get_memory_stats()
-            rate_limiter_stats = self.rate_limiter.get_stats()
-            message_queue_stats = self.message_queue.get_stats()
-            room_stats = self.room_manager.get_stats()
-
-            # Calculate connection metrics
-            total_websocket_connections = sum(len(conn_ids) for conn_ids in player_websockets.values())
-            players_with_multiple_connections = sum(1 for conn_ids in player_websockets.values() if len(conn_ids) > 1)
-
-            # Session metrics
-            total_sessions = len(player_sessions)
-            total_session_connections = sum(len(conn_ids) for conn_ids in session_connections.values())
-
-            # Active player count
-            active_player_count = len(online_players)
-
-            # Calculate active_to_player_ratio
-            active_websockets_count = len(active_websockets)
-            active_to_player_ratio = active_websockets_count / active_player_count if active_player_count > 0 else 0.0
-
-            # Calculate orphaned connections (connections without active players)
-            orphaned_connections = 0
-            for conn_id in active_websockets.keys():
-                # Check if this connection is associated with any online player
-                is_orphaned = True
-                for player_id, conn_ids in player_websockets.items():
-                    if conn_id in conn_ids and player_id in online_players:
-                        is_orphaned = False
-                        break
-                if is_orphaned:
-                    orphaned_connections += 1
-
-            return {
-                "memory": memory_stats,
-                "connections": {
-                    "active_websockets": active_websockets_count,
-                    "active_websockets_count": active_websockets_count,
-                    "total_connections": active_websockets_count,
-                    "player_websockets": len(player_websockets),
-                    "player_websockets_count": len(player_websockets),
-                    "connection_timestamps": len(connection_timestamps),
-                    "connection_metadata_count": len(connection_metadata),
-                    "closed_websockets_count": closed_websockets_count,
-                    # Connection metrics
-                    "total_websocket_connections": total_websocket_connections,
-                    "players_with_multiple_connections": players_with_multiple_connections,
-                    "avg_connections_per_player": total_websocket_connections / len(player_websockets)
-                    if player_websockets
-                    else 0,
-                    # New metrics for memory leak detection
-                    "active_to_player_ratio": active_to_player_ratio,
-                    "orphaned_connections": orphaned_connections,
-                },
-                "sessions": {
-                    "total_sessions": total_sessions,
-                    "total_session_connections": total_session_connections,
-                    "avg_connections_per_session": total_session_connections / total_sessions
-                    if total_sessions > 0
-                    else 0,
-                    "session_connection_ratio": total_session_connections / total_websocket_connections
-                    if total_websocket_connections > 0
-                    else 0,
-                },
-                "data_structures": {
-                    "online_players": len(online_players),
-                    "last_seen": len(last_seen),
-                    "room_occupants": len(self.room_manager.room_occupants),
-                    "connection_attempts": len(self.rate_limiter.connection_attempts),
-                    "pending_messages": len(self.message_queue.pending_messages),
-                },
-                "cleanup_stats": cleanup_stats,
-                "memory_monitor": {
-                    "last_cleanup": self.memory_monitor.last_cleanup_time,
-                    "cleanup_interval": self.memory_monitor.cleanup_interval,
-                    "memory_threshold": self.memory_monitor.memory_threshold,
-                    "max_connection_age": self.memory_monitor.max_connection_age,
-                    "max_pending_messages": self.memory_monitor.max_pending_messages,
-                    "max_rate_limit_entries": self.memory_monitor.max_rate_limit_entries,
-                },
-                "rate_limiter": rate_limiter_stats,
-                "message_queue": message_queue_stats,
-                "room_manager": room_stats,
-            }
+            return self._build_memory_stats_payload(
+                active_websockets=active_websockets,
+                player_websockets=player_websockets,
+                connection_timestamps=connection_timestamps,
+                cleanup_stats=cleanup_stats,
+                player_sessions=player_sessions,
+                session_connections=session_connections,
+                online_players=online_players,
+                last_seen=last_seen,
+                closed_websockets_count=closed_websockets_count,
+                connection_metadata=connection_metadata,
+            )
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Memory stats retrieval errors unpredictable, must return empty dict
             logger.error("Error getting memory stats", error=str(e), exc_info=True)
             return {}
+
+    @staticmethod
+    def _count_orphaned_connections(
+        active_websockets: dict[str, Any],
+        player_websockets: dict[uuid.UUID, list[str]],
+        online_players: dict[uuid.UUID, dict[str, Any]],
+    ) -> int:
+        """Count active connections not tied to any online player."""
+        orphaned = 0
+        for conn_id in active_websockets:
+            tied = any(
+                conn_id in conn_ids and player_id in online_players for player_id, conn_ids in player_websockets.items()
+            )
+            if not tied:
+                orphaned += 1
+        return orphaned
+
+    def _memory_connections_section(
+        self,
+        active_websockets: dict[str, Any],
+        player_websockets: dict[uuid.UUID, list[str]],
+        connection_timestamps: dict[str, float],
+        online_players: dict[uuid.UUID, dict[str, Any]],
+        closed_websockets_count: int,
+        connection_metadata: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Build the connections subsection of memory stats."""
+        total_ws = sum(len(conn_ids) for conn_ids in player_websockets.values())
+        active_count = len(active_websockets)
+        return {
+            "active_websockets": active_count,
+            "active_websockets_count": active_count,
+            "total_connections": active_count,
+            "player_websockets": len(player_websockets),
+            "player_websockets_count": len(player_websockets),
+            "connection_timestamps": len(connection_timestamps),
+            "connection_metadata_count": len(connection_metadata),
+            "closed_websockets_count": closed_websockets_count,
+            "total_websocket_connections": total_ws,
+            "players_with_multiple_connections": sum(1 for c in player_websockets.values() if len(c) > 1),
+            "avg_connections_per_player": self._safe_ratio(total_ws, len(player_websockets)),
+            "active_to_player_ratio": self._safe_ratio(active_count, len(online_players)),
+            "orphaned_connections": self._count_orphaned_connections(
+                active_websockets, player_websockets, online_players
+            ),
+        }
+
+    def _memory_sessions_section(
+        self,
+        player_sessions: dict[uuid.UUID, str],
+        session_connections: dict[str, list[str]],
+        total_websocket_connections: int,
+    ) -> dict[str, Any]:
+        """Build the sessions subsection of memory stats."""
+        total_sessions = len(player_sessions)
+        total_session_connections = sum(len(conn_ids) for conn_ids in session_connections.values())
+        return {
+            "total_sessions": total_sessions,
+            "total_session_connections": total_session_connections,
+            "avg_connections_per_session": self._safe_ratio(total_session_connections, total_sessions),
+            "session_connection_ratio": self._safe_ratio(total_session_connections, total_websocket_connections),
+        }
+
+    def _memory_monitor_config_section(self) -> dict[str, Any]:
+        """Expose memory monitor configuration knobs for stats payload."""
+        monitor = self.memory_monitor
+        return {
+            "last_cleanup": monitor.last_cleanup_time,
+            "cleanup_interval": monitor.cleanup_interval,
+            "memory_threshold": monitor.memory_threshold,
+            "max_connection_age": monitor.max_connection_age,
+            "max_pending_messages": monitor.max_pending_messages,
+            "max_rate_limit_entries": monitor.max_rate_limit_entries,
+        }
+
+    def _build_memory_stats_payload(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Assembles multi-section memory stats from several subsystems
+        self,
+        active_websockets: dict[str, Any],
+        player_websockets: dict[uuid.UUID, list[str]],
+        connection_timestamps: dict[str, float],
+        cleanup_stats: dict[str, object],
+        player_sessions: dict[uuid.UUID, str],
+        session_connections: dict[str, list[str]],
+        online_players: dict[uuid.UUID, dict[str, Any]],
+        last_seen: dict[uuid.UUID, float],
+        closed_websockets_count: int,
+        connection_metadata: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Compose memory statistics payload (extracted to keep get_memory_stats CCN low)."""
+        connections = self._memory_connections_section(
+            active_websockets,
+            player_websockets,
+            connection_timestamps,
+            online_players,
+            closed_websockets_count,
+            connection_metadata,
+        )
+        return {
+            "memory": self.memory_monitor.get_memory_stats(),
+            "connections": connections,
+            "sessions": self._memory_sessions_section(
+                player_sessions, session_connections, connections["total_websocket_connections"]
+            ),
+            "data_structures": {
+                "online_players": len(online_players),
+                "last_seen": len(last_seen),
+                "room_occupants": len(self.room_manager.room_occupants),
+                "connection_attempts": len(self.rate_limiter.connection_attempts),
+                "pending_messages": len(self.message_queue.pending_messages),
+            },
+            "cleanup_stats": cleanup_stats,
+            "memory_monitor": self._memory_monitor_config_section(),
+            "rate_limiter": self.rate_limiter.get_stats(),
+            "message_queue": self.message_queue.get_stats(),
+            "room_manager": self.room_manager.get_stats(),
+        }
+
+    @staticmethod
+    def _safe_ratio(numerator: float, denominator: float) -> float:
+        """Return numerator/denominator, or 0 when denominator is empty."""
+        if not denominator:
+            return 0.0
+        return numerator / denominator
+
+    @staticmethod
+    def _session_connection_distribution(session_connections: dict[str, list[str]]) -> dict[int, int]:
+        """Count how many sessions have each connection-count size."""
+        session_connection_counts: dict[int, int] = {}
+        for conn_ids in session_connections.values():
+            count = len(conn_ids)
+            session_connection_counts[count] = session_connection_counts.get(count, 0) + 1
+        return session_connection_counts
+
+    @staticmethod
+    def _connection_age_extrema(connection_ages: list[float]) -> tuple[float, float, float]:
+        """Return (avg, max, min) connection ages; zeros when the list is empty."""
+        if not connection_ages:
+            return 0.0, 0.0, 0.0
+        return sum(connection_ages) / len(connection_ages), max(connection_ages), min(connection_ages)
+
+    def _build_connection_stats(  # pylint: disable=too-many-locals  # Reason: Assembles multi-section stats payload from several subsystems
+        self,
+        player_websockets: dict[uuid.UUID, list[str]],
+        connection_metadata: dict[str, Any],
+        session_connections: dict[str, list[str]],
+        player_sessions: dict[uuid.UUID, str],
+    ) -> dict[str, Any]:
+        """Compose connection statistics payload (extracted to keep get_connection_stats CCN low)."""
+        now = time.time()
+        total_players = len(player_websockets)
+        websocket_only_players = sum(1 for conn_ids in player_websockets.values() if conn_ids)
+        healthy_connections, unhealthy_connections = self._analyze_connection_health(connection_metadata)
+        total_connection_metadata = len(connection_metadata)
+        session_connection_counts = self._session_connection_distribution(session_connections)
+        connection_ages, _ = self._analyze_connection_ages(connection_metadata, now)
+        avg_age, max_age, min_age = self._connection_age_extrema(connection_ages)
+        age_trends = self._build_health_trends(connection_ages)
+        total_sess = sum(len(c) for c in session_connections.values())
+        total_ws = sum(len(c) for c in player_websockets.values())
+        return {
+            "connection_distribution": {
+                "total_players": total_players,
+                "websocket_only_players": websocket_only_players,
+            },
+            "connection_health": {
+                "total_connections": total_connection_metadata,
+                "healthy_connections": healthy_connections,
+                "unhealthy_connections": unhealthy_connections,
+                "health_percentage": self._safe_ratio(healthy_connections * 100, total_connection_metadata),
+            },
+            "session_metrics": {
+                "total_sessions": len(player_sessions),
+                "total_session_connections": total_sess,
+                "session_connection_distribution": session_connection_counts,
+                "avg_connections_per_session": self._safe_ratio(total_sess, len(session_connections)),
+            },
+            "connection_lifecycle": {
+                "avg_connection_age_seconds": avg_age,
+                "max_connection_age_seconds": max_age,
+                "min_connection_age_seconds": min_age,
+                "connections_older_than_1h": age_trends["connections_older_than_1h"],
+                "connections_older_than_24h": age_trends["connections_older_than_24h"],
+            },
+            "performance_metrics": {
+                "total_websocket_connections": total_ws,
+                "avg_connections_per_player": self._safe_ratio(total_ws, total_players),
+            },
+            "timestamp": now,
+        }
 
     def get_connection_stats(
         self,
@@ -198,83 +316,9 @@ class StatisticsAggregator:
             dict: Connection statistics including metrics, health, and performance data
         """
         try:
-            now = time.time()
-
-            # Calculate connection type distribution
-            websocket_only_players = 0
-            total_players = len(player_websockets)
-
-            for player_id in player_websockets.keys():
-                has_websocket = len(player_websockets[player_id]) > 0
-
-                if has_websocket:
-                    websocket_only_players += 1
-
-            # Calculate connection health metrics
-            healthy_connections = 0
-            unhealthy_connections = 0
-            total_connection_metadata = len(connection_metadata)
-
-            for metadata in connection_metadata.values():
-                if metadata.is_healthy:
-                    healthy_connections += 1
-                else:
-                    unhealthy_connections += 1
-
-            # Calculate session distribution
-            session_connection_counts: dict[int, int] = {}
-            for _session_id, conn_ids in session_connections.items():
-                count = len(conn_ids)
-                session_connection_counts[count] = session_connection_counts.get(count, 0) + 1
-
-            # Calculate connection age distribution
-            connection_ages = []
-            for metadata in connection_metadata.values():
-                age = now - metadata.established_at
-                connection_ages.append(age)
-
-            avg_connection_age = sum(connection_ages) / len(connection_ages) if connection_ages else 0
-            max_connection_age = max(connection_ages) if connection_ages else 0
-            min_connection_age = min(connection_ages) if connection_ages else 0
-
-            return {
-                "connection_distribution": {
-                    "total_players": total_players,
-                    "websocket_only_players": websocket_only_players,
-                },
-                "connection_health": {
-                    "total_connections": total_connection_metadata,
-                    "healthy_connections": healthy_connections,
-                    "unhealthy_connections": unhealthy_connections,
-                    "health_percentage": (healthy_connections / total_connection_metadata * 100)
-                    if total_connection_metadata > 0
-                    else 0,
-                },
-                "session_metrics": {
-                    "total_sessions": len(player_sessions),
-                    "total_session_connections": sum(len(conn_ids) for conn_ids in session_connections.values()),
-                    "session_connection_distribution": session_connection_counts,
-                    "avg_connections_per_session": sum(len(conn_ids) for conn_ids in session_connections.values())
-                    / len(session_connections)
-                    if session_connections
-                    else 0,
-                },
-                "connection_lifecycle": {
-                    "avg_connection_age_seconds": avg_connection_age,
-                    "max_connection_age_seconds": max_connection_age,
-                    "min_connection_age_seconds": min_connection_age,
-                    "connections_older_than_1h": sum(1 for age in connection_ages if age > 3600),
-                    "connections_older_than_24h": sum(1 for age in connection_ages if age > 86400),
-                },
-                "performance_metrics": {
-                    "total_websocket_connections": sum(len(conn_ids) for conn_ids in player_websockets.values()),
-                    "avg_connections_per_player": (sum(len(conn_ids) for conn_ids in player_websockets.values()))
-                    / total_players
-                    if total_players > 0
-                    else 0,
-                },
-                "timestamp": now,
-            }
+            return self._build_connection_stats(
+                player_websockets, connection_metadata, session_connections, player_sessions
+            )
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Connection stats retrieval errors unpredictable, must return error response
             logger.error("Error getting connection stats", error=str(e), exc_info=True)
             return {"error": f"Failed to get connection stats: {e}", "timestamp": time.time()}

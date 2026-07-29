@@ -5,15 +5,106 @@ This module provides helper functions for initializing the connection manager
 and its various components.
 """
 
+import time
+from collections import deque
 from typing import Any
+
+from anyio import Lock
 
 from .errors.error_handler import ConnectionErrorHandler
 from .integration.game_state_provider import GameStateProvider
 from .integration.room_event_handler import RoomEventHandler
 from .maintenance.connection_cleaner import ConnectionCleaner
+from .memory_monitor import MemoryMonitor
+from .message_queue import MessageQueue
 from .messaging.message_broadcaster import MessageBroadcaster
 from .messaging.personal_message_sender import PersonalMessageSender
 from .monitoring.health_monitor import HealthMonitor
+from .monitoring.performance_tracker import PerformanceTracker
+from .monitoring.statistics_aggregator import StatisticsAggregator
+from .rate_limiter import RateLimiter
+from .room_subscription_manager import RoomSubscriptionManager
+
+
+def initialize_connection_state(manager: Any, event_publisher: Any | None = None) -> None:
+    """Initialize websocket, presence, session, and health-check state attributes."""
+    manager.active_websockets = {}
+    manager.player_websockets = {}
+    manager.connection_metadata = {}
+    manager.sequence_counter = 0
+    # ARCHITECTURAL FIX: Use async_persistence instead of sync persistence
+    manager.async_persistence = None
+    manager.event_publisher = event_publisher
+    manager._event_bus = None
+    manager.app = None
+    manager._player_combat_service = None
+
+    manager.online_players = {}
+    manager.last_seen = {}
+    manager.last_active_update_interval = 60.0
+    manager.last_active_update_times = {}
+    manager.disconnecting_players = set()
+    manager.disconnect_lock = Lock()
+    manager.processed_disconnects = set()
+    manager.processed_disconnect_lock = Lock()
+    manager.grace_period_players = {}
+    manager.login_grace_period_players = {}
+    manager.login_grace_period_start_times = {}
+    manager.resting_players = {}
+    manager.intentional_disconnects = set()
+    manager.connection_timestamps = {}
+
+    manager.cleanup_stats = {
+        "last_cleanup": time.time(),
+        "cleanups_performed": 0,
+        "memory_cleanups": 0,
+        "time_cleanups": 0,
+        "cleanup_operation_counts": {
+            "dead_connections": 0,
+            "orphaned_data": 0,
+            "ghost_players": 0,
+            "force_cleanup": 0,
+            "check_and_cleanup": 0,
+        },
+        "cleanup_operation_timestamps": [],
+    }
+
+    manager.player_sessions = {}
+    manager.session_connections = {}
+    # Disconnected sessions age off after 5 min; reconnects purge old sessions immediately
+    manager.session_disconnect_times = {}
+    # Use deque with maxlen to prevent unbounded growth (maxlen=1000)
+    manager._closed_websockets = deque(maxlen=1000)
+    manager._disconnect_executor = None
+    manager._health_check_interval = 30.0
+    manager._health_check_task = None
+    # 5 minutes idle = stale connection (aligned with MemoryMonitor.max_connection_age)
+    manager._connection_timeout = 300.0
+    manager._token_revalidation_interval = 300.0
+
+
+def initialize_core_components(manager: Any) -> None:
+    """Initialize modular components and nullable specialized-component stubs."""
+    manager.memory_monitor = MemoryMonitor()
+    manager.rate_limiter = RateLimiter()
+    manager.message_queue = MessageQueue(max_messages_per_player=manager.memory_monitor.max_pending_messages)
+    manager.room_manager = RoomSubscriptionManager()
+    manager.performance_tracker = PerformanceTracker(max_samples=1000)
+    manager.statistics_aggregator = StatisticsAggregator(
+        memory_monitor=manager.memory_monitor,
+        rate_limiter=manager.rate_limiter,
+        message_queue=manager.message_queue,
+        room_manager=manager.room_manager,
+        performance_tracker=manager.performance_tracker,
+    )
+    # Specialized components require callbacks; set after other components exist
+    manager.health_monitor = None
+    manager.error_handler = None
+    manager.connection_cleaner = None
+    manager.game_state_provider = None
+    manager.room_event_handler = None
+    manager.personal_message_sender = None
+    manager.message_broadcaster = None
 
 
 def initialize_health_monitor(manager: Any) -> None:

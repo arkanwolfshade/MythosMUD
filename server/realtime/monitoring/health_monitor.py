@@ -26,7 +26,7 @@ if TYPE_CHECKING:
 
     from fastapi import WebSocket
 
-    from ..connection_manager import ConnectionMetadata
+    from ..connection_models import ConnectionMetadata
     from .performance_tracker import PerformanceTracker
 
 logger = get_logger(__name__)

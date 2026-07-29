@@ -85,7 +85,7 @@ async function leaveEasternHallwayWest(page: Page): Promise<void> {
 /** Park Ithaqua in Main Foyer so AW's east hop creates a real local-scope split. */
 async function ensureIthaquaInFoyer(ithaqua: PlayerContext): Promise<void> {
   await ithaqua.page.bringToFront().catch(() => {});
-  await ensureStanding(ithaqua.page, 5000).catch(() => {});
+  ithaqua.page = await ensureStanding(ithaqua.page, 5000).catch(() => ithaqua.page);
   await softCommand(ithaqua.page, 'look');
   if (await pageShowsEasternHallway(ithaqua.page)) {
     await leaveEasternHallwayWest(ithaqua.page);
@@ -117,8 +117,8 @@ test.describe('Local Channel Isolation', () => {
     }
     const [awContext, ithaquaContext] = contexts;
     // Match whisper prepare: co-locate only. Avoid sync DB reset + SPA re-login (blocks the worker / poisons pair).
-    await ensureStanding(awContext.page, 8000).catch(() => {});
-    await ensureStanding(ithaquaContext.page, 8000).catch(() => {});
+    awContext.page = await ensureStanding(awContext.page, 8000).catch(() => awContext.page);
+    ithaquaContext.page = await ensureStanding(ithaquaContext.page, 8000).catch(() => ithaquaContext.page);
     await executeCommand(awContext.page, `admin set DP ${awContext.player.username} 20`).catch(() => {});
     await executeCommand(awContext.page, `admin set DP ${ithaquaContext.player.username} 20`).catch(() => {});
     await ensureMultiplayerCoLocated(contexts, { timeoutMs: 60000, coLocateTimeoutMs: 45000 });
@@ -193,7 +193,7 @@ test.describe('Local Channel Isolation', () => {
     await ensurePlayerInGame(ithaquaContext, 15000);
 
     // Persist can leave AW in hallway; return to foyer so east is a real room change.
-    await ensureStanding(awContext.page, 5000);
+    awContext.page = await ensureStanding(awContext.page, 5000);
     await returnAwToFoyerIfInHallway(awContext, contexts);
 
     // Keep Ithaqua in foyer; only AW walks east (co-locate can leave both mid-hallway).
@@ -201,7 +201,7 @@ test.describe('Local Channel Isolation', () => {
 
     // Foyer east -> Eastern Hallway (combat leftover from prior specs blocks go as "can't go that way").
     await awContext.page.bringToFront().catch(() => {});
-    await goEastFromFoyer(awContext.page);
+    awContext.page = await goEastFromFoyer(awContext.page);
     await ensureIthaquaInFoyer(ithaquaContext);
 
     // AW sends local message from different room; Ithaqua stays put.
@@ -234,7 +234,7 @@ test.describe('Local Channel Isolation', () => {
     await ensurePlayerInGame(ithaquaContext, 15000);
 
     // Try to move AW back toward Ithaqua (layout varies: Arena vs foyer/hallway names).
-    await ensureStanding(awContext.page, 5000);
+    awContext.page = await ensureStanding(awContext.page, 5000);
     await awContext.page.bringToFront().catch(() => {});
     await executeCommand(awContext.page, 'go west');
     await waitForMessage(awContext.page, /You move west|Main Foyer|Arena/i, 15000).catch(() => {});

@@ -2,7 +2,7 @@
 
 > God node · 306 connections · `server/models/user.py`
 
-**Community:** [Server Admin](Server_Admin.md)
+**Community:** [APIRouter](APIRouter.md)
 
 ## Connections by Relation
 
@@ -74,7 +74,7 @@
 - mock_user() `INFERRED`
 
 ### inherits
-- Base `EXTRACTED`
+- [Base](Base.md) `EXTRACTED`
 - SQLAlchemyBaseUserTableUUID `EXTRACTED`
 
 ### method
@@ -109,9 +109,9 @@
 
 ### uses
 - [Player](Player.md) `INFERRED`
-- Base `INFERRED`
+- [Base](Base.md) `INFERRED`
 - Invite `INFERRED`
-- PlayerChannelPreferences `INFERRED`
+- [PlayerChannelPreferences](PlayerChannelPreferences.md) `INFERRED`
 - PlayerInventory `INFERRED`
 - TestTransferAllItemsFromContainer `INFERRED`
 - TestHelperFunctions `INFERRED`

@@ -58,9 +58,9 @@ test.describe('Administrative Set Stat Command', () => {
 
     await awContext.page.bringToFront().catch(() => {});
     await ensurePlayerInGame(awContext, 30000);
-    await ensurePlayableAlive(awContext.page, awContext.player.username, awContext.player.password);
+    awContext.page = await ensurePlayableAlive(awContext.page, awContext.player.username, awContext.player.password);
     await despawnSanitariumCultists(awContext.page);
-    await ensurePlayableAlive(awContext.page, awContext.player.username, awContext.player.password);
+    awContext.page = await ensurePlayableAlive(awContext.page, awContext.player.username, awContext.player.password);
     await expect(awContext.page.getByText(/Player:\s*ArkanWolfshade\b/i)).toBeVisible({ timeout: 15000 });
     await awContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
     await executeCommand(awContext.page, 'look');
@@ -111,12 +111,16 @@ test.describe('Administrative Set Stat Command', () => {
       (await awContext.page.getByTestId('current-character-name').textContent())?.trim() ?? 'ArkanWolfshade';
 
     await awContext.page.bringToFront().catch(() => {});
-    await ensurePlayableAlive(awContext.page, awContext.player.username, awContext.player.password);
+    awContext.page = await ensurePlayableAlive(awContext.page, awContext.player.username, awContext.player.password);
     await despawnSanitariumCultists(awContext.page);
 
     await ithaquaContext.page.bringToFront().catch(() => {});
     await ensurePlayerInGame(ithaquaContext, 30000);
-    await ensurePlayableAlive(ithaquaContext.page, ithaquaContext.player.username, ithaquaContext.player.password);
+    ithaquaContext.page = await ensurePlayableAlive(
+      ithaquaContext.page,
+      ithaquaContext.player.username,
+      ithaquaContext.player.password
+    );
     await expect(
       ithaquaContext.page.getByText(new RegExp(`Player:\\s*${ithaquaContext.player.username}\\b`, 'i'))
     ).toBeVisible({ timeout: 15000 });

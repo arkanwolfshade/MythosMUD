@@ -1,8 +1,8 @@
 # ValidationError
 
-> God node · 536 connections · `server/exceptions.py`
+> God node · 524 connections · `server/exceptions.py`
 
-**Community:** [Server Utils](Server_Utils.md)
+**Community:** [. init ()](_init_%28%29.md)
 
 ## Connections by Relation
 
@@ -37,19 +37,19 @@
 - players.py `EXTRACTED`
 - test_container_persistence.py `EXTRACTED`
 - container_persistence.py `EXTRACTED`
-- test_player_service.py `EXTRACTED`
 - test_container_persistence_extended_row_helpers.py `EXTRACTED`
 - test_command_factories_utility.py `EXTRACTED`
+- inventory_command_helpers.py `EXTRACTED`
 - legacy_error_handlers.py `EXTRACTED`
 - test_command_factories_exploration.py `EXTRACTED`
 - test_command_factories_inventory.py `EXTRACTED`
 - character_creation.py `EXTRACTED`
 - test_database_helpers.py `EXTRACTED`
-- test_command_parser.py `EXTRACTED`
 - player_service.py `EXTRACTED`
+- test_command_parser.py `EXTRACTED`
+- command_parser.py `EXTRACTED`
 - test_database_extended.py `EXTRACTED`
 - test_exceptions.py `EXTRACTED`
-- command_parser.py `EXTRACTED`
 - test_database_error_handling.py `EXTRACTED`
 - test_legacy_error_handlers.py `EXTRACTED`
 
@@ -63,7 +63,6 @@
 - .open_container() `INFERRED`
 - .handle_exception() `INFERRED`
 - .transfer_to_container() `INFERRED`
-- _execute_movement() `INFERRED`
 - _weapon_from_prototype_registry() `INFERRED`
 - _initialize_npc_database() `INFERRED`
 - .lock_container() `INFERRED`
@@ -74,6 +73,7 @@
 - init_npc_db() `INFERRED`
 - _seed_new_container_items() `INFERRED`
 - update_container_items() `INFERRED`
+- create_item_instance_async() `INFERRED`
 
 ### inherits
 - MythosMUDError `EXTRACTED`
@@ -93,14 +93,14 @@
 - DatabaseManager `INFERRED`
 - TestErrorHandlers `INFERRED`
 - TestCircuitBreaker `INFERRED`
-- Request `INFERRED`
+- [Request](Request.md) `INFERRED`
 - _AppWithLegacyConfigState `INFERRED`
 - TestErrorResponse `INFERRED`
 - _AppStateWithLegacyConfig `INFERRED`
 - TestCreateErrorResponse `INFERRED`
 - TestLegacyHandlerSecurity `INFERRED`
 - ErrorResponseDetailsInput `INFERRED`
-- FastAPI `INFERRED`
+- [FastAPI](FastAPI.md) `INFERRED`
 - TestHandleTransferItemsExceptions `INFERRED`
 - TestGracefulDegradation `INFERRED`
 - _CircuitBreakerResult `INFERRED`

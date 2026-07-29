@@ -7,13 +7,35 @@ ConnectionManager instance.
 """
 
 import uuid
-from collections.abc import Mapping
+from collections.abc import Awaitable, Mapping
+from typing import Protocol, cast
+from uuid import UUID
 
 from ..exceptions import DatabaseError
 from ..structured_logging.enhanced_logging_config import get_logger
-from .connection_manager import resolve_connection_manager
+from .connection_manager_utils import resolve_connection_manager
 
 logger = get_logger(__name__)
+
+
+class _ConnectionManagerAPI(Protocol):
+    """Structural type for API helpers; avoids importing ConnectionManager."""
+
+    def send_personal_message(self, player_id: UUID, event: object) -> Awaitable[object]: ...
+
+    def broadcast_global(self, event: object, exclude_player: str | None = None) -> Awaitable[object]: ...
+
+    def broadcast_to_room(
+        self, room_id: str, event: object, exclude_player: str | None = None
+    ) -> Awaitable[object]: ...
+
+
+def _require_manager() -> _ConnectionManagerAPI:
+    """Resolve manager without importing ConnectionManager (import cycle)."""
+    manager = resolve_connection_manager()
+    if manager is None:
+        raise RuntimeError("Connection manager not available")
+    return cast(_ConnectionManagerAPI, manager)
 
 
 async def send_game_event(player_id: uuid.UUID | str, event_type: str, data: Mapping[str, object]) -> None:
@@ -28,9 +50,7 @@ async def send_game_event(player_id: uuid.UUID | str, event_type: str, data: Map
     try:
         from .envelope import build_event
 
-        manager = resolve_connection_manager()
-        if manager is None:
-            raise RuntimeError("Connection manager not available")
+        manager = _require_manager()
         # Convert player_id to UUID if it's a string
         if isinstance(player_id, str):
             try:
@@ -59,9 +79,7 @@ async def broadcast_game_event(event_type: str, data: Mapping[str, object], excl
     try:
         from .envelope import build_event
 
-        manager = resolve_connection_manager()
-        if manager is None:
-            raise RuntimeError("Connection manager not available")
+        manager = _require_manager()
         _ = await manager.broadcast_global(build_event(event_type, data), exclude_player)
 
     except (DatabaseError, AttributeError) as e:
@@ -83,9 +101,7 @@ async def send_room_event(
     try:
         from .envelope import build_event
 
-        manager = resolve_connection_manager()
-        if manager is None:
-            raise RuntimeError("Connection manager not available")
+        manager = _require_manager()
         _ = await manager.broadcast_to_room(
             room_id,
             build_event(event_type, data, room_id=room_id),

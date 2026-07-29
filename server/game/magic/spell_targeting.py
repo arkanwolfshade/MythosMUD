@@ -6,8 +6,9 @@ of combat targets and validation of target types.
 """
 
 import uuid
-from typing import Any
 
+from server.models.combat import CombatParticipant, CombatParticipantType
+from server.models.player import Player
 from server.models.spell import Spell, SpellTargetType
 from server.schemas.shared import TargetMatch, TargetType
 from server.services.combat_service import CombatService
@@ -25,6 +26,10 @@ class SpellTargetingService:  # pylint: disable=too-few-public-methods  # Reason
     Handles target resolution based on spell requirements, including
     auto-selection of combat targets and validation.
     """
+
+    target_resolution_service: TargetResolutionService
+    combat_service: CombatService | None
+    player_combat_service: PlayerCombatService | None
 
     def __init__(
         self,
@@ -119,30 +124,47 @@ class SpellTargetingService:  # pylint: disable=too-few-public-methods  # Reason
         if spell.target_type in (SpellTargetType.AREA, SpellTargetType.ALL):
             return await self._resolve_area_target(player_id)
 
-        if spell.target_type in (SpellTargetType.ENTITY, SpellTargetType.LOCATION):
-            if not target_name:
-                auto_target = await self._get_combat_target(player_id)
-                if auto_target:
-                    logger.debug("Using combat auto-target", player_id=player_id, target_id=auto_target.target_id)
-                    return auto_target, ""
+        # SpellTargetType is only SELF | AREA | ALL | ENTITY | LOCATION; first two groups handled above.
+        if not target_name:
+            auto_target = await self._get_combat_target(player_id)
+            if auto_target:
+                logger.debug("Using combat auto-target", player_id=player_id, target_id=auto_target.target_id)
+                return auto_target, ""
 
-                return None, f"{spell.name} requires a target."
+            return None, f"{spell.name} requires a target."
 
-            return await self._resolve_entity_target(player_id, spell, target_name)
+        return await self._resolve_entity_target(player_id, spell, target_name)
 
-        return None, f"Unknown target type: {spell.target_type}"
+    async def _get_player(self, player_id: uuid.UUID) -> Player | None:
+        """Get player from persistence."""
+        return await self.target_resolution_service.persistence.get_player_by_id(player_id)
 
-    async def _get_player(self, player_id: uuid.UUID) -> Any:
-        """Get player object from persistence."""
-        # Use target resolution service's persistence
-        if hasattr(self.target_resolution_service.persistence, "get_player_by_id"):
-            import inspect
+    async def _match_combat_opponent(
+        self, participant: CombatParticipant, caster_player_id: uuid.UUID
+    ) -> TargetMatch | None:
+        """Build a TargetMatch for a combat opponent, or None if unresolved."""
+        if participant.participant_type == CombatParticipantType.NPC:
+            player = await self._get_player(caster_player_id)
+            if not player:
+                return None
+            # Placeholder name until NPC lookup is wired through combat state
+            return TargetMatch(
+                target_id=str(participant.participant_id),
+                target_name="combat target",
+                target_type=TargetType.NPC,
+                room_id=player.current_room_id,
+            )
 
-            method = self.target_resolution_service.persistence.get_player_by_id
-            if inspect.iscoroutinefunction(method):
-                return await method(player_id)
-            return method(player_id)
-        return None
+        # CombatParticipantType is only NPC | PLAYER; NPC handled above.
+        target_player = await self._get_player(participant.participant_id)
+        if not target_player:
+            return None
+        return TargetMatch(
+            target_id=str(participant.participant_id),
+            target_name=target_player.name,
+            target_type=TargetType.PLAYER,
+            room_id=target_player.current_room_id,
+        )
 
     async def _get_combat_target(self, player_id: uuid.UUID) -> TargetMatch | None:
         """
@@ -158,40 +180,20 @@ class SpellTargetingService:  # pylint: disable=too-few-public-methods  # Reason
             return None
 
         try:
-            # Check if player is in combat
             combat_state = await self.player_combat_service.get_player_combat_state(player_id)
             if not combat_state or not combat_state.is_in_combat:
                 return None
 
-            # Get combat instance
             combat = await self.combat_service.get_combat_by_participant(player_id)
             if not combat:
                 return None
 
-            # Find the other participant
             for participant in combat.participants.values():
-                if participant.participant_id != player_id:
-                    # Get participant details
-                    if participant.participant_type.value == "npc":
-                        # Get NPC name from room
-                        player = await self._get_player(player_id)
-                        if player:
-                            # For now, return a basic match - could be enhanced
-                            return TargetMatch(
-                                target_id=str(participant.participant_id),
-                                target_name="combat target",
-                                target_type=TargetType.NPC,
-                                room_id=player.current_room_id,
-                            )
-                    elif participant.participant_type.value == "player":
-                        target_player = await self._get_player(participant.participant_id)
-                        if target_player:
-                            return TargetMatch(
-                                target_id=str(participant.participant_id),
-                                target_name=target_player.name,
-                                target_type=TargetType.PLAYER,
-                                room_id=target_player.current_room_id,
-                            )
+                if participant.participant_id == player_id:
+                    continue
+                match = await self._match_combat_opponent(participant, player_id)
+                if match:
+                    return match
 
         except OSError as e:
             logger.warning("Error getting combat target", player_id=player_id, error=str(e))

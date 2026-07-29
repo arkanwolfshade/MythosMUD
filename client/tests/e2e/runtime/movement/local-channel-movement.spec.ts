@@ -172,9 +172,9 @@ test.describe('Local Channel Movement', () => {
     await executeCommand(awContext.page, 'look');
     await waitForMessage(awContext.page, /Arena|gladiator|heart of the|exits|Laundry|Room|hallway/i, 20000);
 
-    await ensureStanding(awContext.page, 45000);
+    awContext.page = await ensureStanding(awContext.page, 45000);
     await awContext.page.bringToFront().catch(() => {});
-    await goEastFromFoyer(awContext.page);
+    awContext.page = await goEastFromFoyer(awContext.page);
 
     await new Promise(r => setTimeout(r, 2000));
 
@@ -218,7 +218,7 @@ test.describe('Local Channel Movement', () => {
     await executeCommand(awContext.page, 'look');
     await waitForMessage(awContext.page, /Arena|gladiator|heart of the|exits|Laundry|Room|hallway/i, 20000);
 
-    await ensureStanding(awContext.page, 5000);
+    awContext.page = await ensureStanding(awContext.page, 5000);
     await awContext.page.bringToFront().catch(() => {});
     await executeCommand(awContext.page, 'go north');
     await waitForMessage(awContext.page, /You go north/i, 45000).catch(() => {

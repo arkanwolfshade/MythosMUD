@@ -1,25 +1,21 @@
 """
 Utility functions and module-level code for ConnectionManager.
 
-This module contains helper functions and lazy import logic that were extracted
-from connection_manager.py to reduce its line count.
+This module contains helper functions that were extracted from connection_manager.py
+to reduce its line count. It must not import connection_manager (even under
+TYPE_CHECKING) or basedpyright reportImportCycles will fail.
 """
 
 import inspect
 from collections.abc import Callable, Coroutine
-from typing import TYPE_CHECKING, cast
+from typing import cast
 
 from ..container import ApplicationContainer
 
-if TYPE_CHECKING:
-    from .connection_manager import ConnectionManager
 
-
-def _coerce_connection_manager(manager: object) -> "ConnectionManager":
-    """Narrow container or test doubles to ConnectionManager for static typing."""
-    from .connection_manager import ConnectionManager
-
-    return cast(ConnectionManager, manager)
+def _coerce_connection_manager(manager: object) -> object:
+    """Pass-through for container values; typing lives at call sites."""
+    return manager
 
 
 # Constants for async compatibility
@@ -49,7 +45,7 @@ def _make_async_compat_wrapper(
     return _async_wrapper
 
 
-def _ensure_async_compat(manager: "ConnectionManager | None") -> "ConnectionManager | None":
+def _ensure_async_compat(manager: object | None) -> object | None:
     """
     Ensure connection manager methods are awaitable.
 
@@ -79,7 +75,7 @@ def _ensure_async_compat(manager: "ConnectionManager | None") -> "ConnectionMana
     return manager
 
 
-def resolve_connection_manager(candidate: "ConnectionManager | None" = None) -> "ConnectionManager | None":
+def resolve_connection_manager(candidate: object | None = None) -> object | None:
     """
     Resolve a connection manager instance.
 
@@ -91,7 +87,8 @@ def resolve_connection_manager(candidate: "ConnectionManager | None" = None) -> 
         candidate: Explicit connection manager to prefer.
 
     Returns:
-        Optional[ConnectionManager]: The resolved connection manager instance (if any)
+        The resolved connection manager instance (if any). Typed as object to avoid
+        an import cycle with connection_manager; cast at typed call sites if needed.
     """
     if candidate is not None:
         return _ensure_async_compat(candidate)
@@ -109,55 +106,3 @@ def resolve_connection_manager(candidate: "ConnectionManager | None" = None) -> 
         pass
 
     return None
-
-
-def lazy_import_api_function(name: str) -> Callable[..., object]:
-    """
-    Lazy import for API utility functions to avoid circular dependencies.
-
-    Args:
-        name: Name of the function to import
-
-    Returns:
-        The imported function, cast to Callable
-
-    Raises:
-        AttributeError: If the function name is not recognized
-    """
-    if name == "broadcast_game_event":
-        from .connection_manager_api import (  # pylint: disable=import-outside-toplevel  # Reason: Lazy import to avoid circular dependencies
-            broadcast_game_event,
-        )
-
-        return cast(Callable[..., object], broadcast_game_event)
-    if name == "send_game_event":
-        from .connection_manager_api import (  # pylint: disable=import-outside-toplevel  # Reason: Lazy import to avoid circular dependencies
-            send_game_event,
-        )
-
-        return cast(Callable[..., object], send_game_event)
-    if name == "send_player_status_update":
-        from .connection_manager_api import (  # pylint: disable=import-outside-toplevel  # Reason: Lazy import to avoid circular dependencies
-            send_player_status_update,
-        )
-
-        return cast(Callable[..., object], send_player_status_update)
-    if name == "send_room_description":
-        from .connection_manager_api import (  # pylint: disable=import-outside-toplevel  # Reason: Lazy import to avoid circular dependencies
-            send_room_description,
-        )
-
-        return cast(Callable[..., object], send_room_description)
-    if name == "send_room_event":
-        from .connection_manager_api import (  # pylint: disable=import-outside-toplevel  # Reason: Lazy import to avoid circular dependencies
-            send_room_event,
-        )
-
-        return cast(Callable[..., object], send_room_event)
-    if name == "send_system_notification":
-        from .connection_manager_api import (  # pylint: disable=import-outside-toplevel  # Reason: Lazy import to avoid circular dependencies
-            send_system_notification,
-        )
-
-        return cast(Callable[..., object], send_system_notification)
-    raise AttributeError(f"Unknown API function: {name}")

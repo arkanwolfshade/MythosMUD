@@ -97,25 +97,26 @@ async function isInDeathVoid(page: PlayerContext['page']): Promise<boolean> {
 }
 
 async function tryStartCombat(page: PlayerContext['page'], target: string): Promise<boolean> {
-  const session = getPageSessionCredentials(page);
+  let live = page;
+  const session = getPageSessionCredentials(live);
   if (session) {
-    await ensurePlayableConnection(page, {
+    live = await ensurePlayableConnection(live, {
       username: session.username,
       password: session.password,
       timeoutMs: 30000,
     });
   }
-  await page.bringToFront().catch(() => {});
-  await executeCommand(page, `attack ${target}`);
+  await live.bringToFront().catch(() => {});
+  await executeCommand(live, `attack ${target}`);
   await new Promise(r => setTimeout(r, 2500));
 
-  if (await isWardBlockingCombat(page)) {
+  if (await isWardBlockingCombat(live)) {
     await new Promise(r => setTimeout(r, 5000));
     return false;
   }
 
-  const inCombat = await isInCombatStatus(page);
-  const messages = await getMessages(page);
+  const inCombat = await isInCombatStatus(live);
+  const messages = await getMessages(live);
   if (inCombat || hasCombatMessage(messages)) {
     return true;
   }
@@ -130,21 +131,22 @@ async function retryUntilCombatStarted(
   getTarget: () => Promise<string>,
   maxAttempts = 18
 ): Promise<boolean> {
+  let live = page;
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
-    if (await isInDeathVoid(page)) {
-      await ensurePlayableAlive(page, creds.username, creds.password);
-      await despawnSanitariumCultists(page);
-      await spawnCombatTargetNpc(page, creds);
+    if (await isInDeathVoid(live)) {
+      live = await ensurePlayableAlive(live, creds.username, creds.password);
+      await despawnSanitariumCultists(live);
+      await spawnCombatTargetNpc(live, creds);
     }
 
-    const messages = await getMessages(page);
+    const messages = await getMessages(live);
     if (messages.some(m => /Multiple targets match/i.test(m))) {
-      await despawnSanitariumCultists(page);
-      await spawnCombatTargetNpc(page, creds);
+      await despawnSanitariumCultists(live);
+      await spawnCombatTargetNpc(live, creds);
     }
 
     const target = await getTarget();
-    if (await tryStartCombat(page, target)) {
+    if (await tryStartCombat(live, target)) {
       return true;
     }
   }
@@ -221,21 +223,21 @@ async function spawnCombatTargetNpc(
   page: PlayerContext['page'],
   creds: { username: string; password: string }
 ): Promise<string> {
-  await ensurePlayableConnection(page, { ...creds, timeoutMs: 45000 });
-  await page
+  let live = await ensurePlayableConnection(page, { ...creds, timeoutMs: 45000 });
+  await live
     .locator('[data-message-text]')
     .first()
     .waitFor({ state: 'visible', timeout: 20000 })
     .catch(() => {});
-  await executeCommand(page, 'look');
-  await waitForMessage(page, /Main Foyer|Sanitarium|marble|Exits/i, 20000).catch(() => {});
-  await ensureStanding(page, 15000);
+  await executeCommand(live, 'look');
+  await waitForMessage(live, /Main Foyer|Sanitarium|marble|Exits/i, 20000).catch(() => {});
+  live = await ensureStanding(live, 15000);
   for (let attempt = 0; attempt < 3; attempt++) {
-    await ensurePlayableConnection(page, { ...creds, timeoutMs: 45000 });
-    await despawnSanitariumCultists(page);
-    await executeCommand(page, `npc spawn ${SPAWN_NPC_ID}`);
+    live = await ensurePlayableConnection(live, { ...creds, timeoutMs: 45000 });
+    await despawnSanitariumCultists(live);
+    await executeCommand(live, `npc spawn ${SPAWN_NPC_ID}`);
     try {
-      const target = await resolveSpawnedCultistTarget(page, attempt === 2);
+      const target = await resolveSpawnedCultistTarget(live, attempt === 2);
       if (target) {
         return target;
       }
@@ -243,7 +245,7 @@ async function spawnCombatTargetNpc(
       if (attempt === 2) {
         throw err;
       }
-      await executeCommand(page, 'look');
+      await executeCommand(live, 'look');
       await new Promise(r => setTimeout(r, 2000));
     }
   }
@@ -268,18 +270,17 @@ test.describe('Combat messages in Game Info', () => {
   test('first combat: combat round messages appear in Game Info and connection stays Connected', async () => {
     test.setTimeout(240_000);
     const awContext = contexts[0];
-    const { page } = awContext;
 
-    await page.bringToFront().catch(() => {});
+    await awContext.page.bringToFront().catch(() => {});
     await ensurePlayerInGame(awContext, 30000);
-    await ensurePlayableAlive(page, awContext.player.username, awContext.player.password);
-    await despawnSanitariumCultists(page);
-    await ensurePlayableAlive(page, awContext.player.username, awContext.player.password);
-    await page.getByTestId('command-input').waitFor({ state: 'visible', timeout: 15000 });
-    await waitForEntryWardCleared(page, 60000);
+    awContext.page = await ensurePlayableAlive(awContext.page, awContext.player.username, awContext.player.password);
+    await despawnSanitariumCultists(awContext.page);
+    awContext.page = await ensurePlayableAlive(awContext.page, awContext.player.username, awContext.player.password);
+    await awContext.page.getByTestId('command-input').waitFor({ state: 'visible', timeout: 15000 });
+    await waitForEntryWardCleared(awContext.page, 60000);
 
     // Wait for room state so Location/Exits are loaded (avoids "Unknown" and "You can't go that way").
-    await page
+    await awContext.page
       .getByText(/Exits:/)
       .first()
       .waitFor({ state: 'visible', timeout: 15000 });
@@ -290,44 +291,44 @@ test.describe('Combat messages in Game Info', () => {
     };
 
     // Spawn one aggressive mob; attack by instance id to avoid "Multiple targets match".
-    let combatTargetId = await spawnCombatTargetNpc(page, creds);
+    let combatTargetId = await spawnCombatTargetNpc(awContext.page, creds);
 
-    await ensurePlayableConnection(page, { ...creds, timeoutMs: 45000 });
-    await ensureStanding(page, 15000);
-    await waitForEntryWardCleared(page, 60000);
+    awContext.page = await ensurePlayableConnection(awContext.page, { ...creds, timeoutMs: 45000 });
+    awContext.page = await ensureStanding(awContext.page, 15000);
+    await waitForEntryWardCleared(awContext.page, 60000);
 
     // Login grace / entry_ward blocks combat briefly after entering the realm; retry until In Combat or attack line.
     expect(
-      await retryUntilCombatStarted(page, creds, async () => {
-        const ids = await listSanitariumCultistIds(page);
+      await retryUntilCombatStarted(awContext.page, creds, async () => {
+        const ids = await listSanitariumCultistIds(awContext.page);
         if (ids.length === 1) {
           combatTargetId = ids[0];
           return combatTargetId;
         }
-        combatTargetId = await spawnCombatTargetNpc(page, creds);
+        combatTargetId = await spawnCombatTargetNpc(awContext.page, creds);
         return combatTargetId;
       })
     ).toBe(true);
 
-    expect(await assertStillConnected(page)).toBe(true);
+    expect(await assertStillConnected(awContext.page)).toBe(true);
 
     // Combat round events can take several ticks; poll Game Info instead of a single locator wait.
-    await waitForCombatRoundMessage(page);
+    await waitForCombatRoundMessage(awContext.page);
 
-    const messages = await getMessages(page);
+    const messages = await getMessages(awContext.page);
     expect(hasCombatMessage(messages)).toBe(true);
 
-    const combatMessageLocator = page
+    const combatMessageLocator = awContext.page
       .locator('[data-message-text]')
       .filter({ hasText: COMBAT_MESSAGE_PATTERN })
       .first();
     await expect(combatMessageLocator).toBeVisible({ timeout: 5000 });
 
-    expect(await assertStillConnected(page)).toBe(true);
+    expect(await assertStillConnected(awContext.page)).toBe(true);
 
     // Flee, despawn hostiles, heal — foyer must be safe for later admin/connection specs.
-    await ensureNotInCombat(page);
-    await despawnSanitariumCultists(page);
-    await ensurePlayableAlive(page, awContext.player.username, awContext.player.password);
+    await ensureNotInCombat(awContext.page);
+    await despawnSanitariumCultists(awContext.page);
+    awContext.page = await ensurePlayableAlive(awContext.page, awContext.player.username, awContext.player.password);
   });
 });

@@ -30,12 +30,12 @@ import { ensureStanding } from '../fixtures/player';
  * land on [data-message-text] until both sessions recover. Same pattern as chat-messages.spec.ts.
  */
 async function nudgeStandBothPlayers(aw: PlayerContext, other: PlayerContext): Promise<void> {
-  await ensurePlayableConnection(aw.page, {
+  aw.page = await ensurePlayableConnection(aw.page, {
     username: aw.player.username,
     password: aw.player.password,
     timeoutMs: 25000,
   });
-  await ensurePlayableConnection(other.page, {
+  other.page = await ensurePlayableConnection(other.page, {
     username: other.player.username,
     password: other.player.password,
     timeoutMs: 25000,
@@ -192,10 +192,10 @@ test.describe('Local Channel Basic', () => {
     await ensurePlayerInGame(ithaquaContext, 20000);
     // Unmute / stand can desync occupant labels while header still says Connected; bilateral look heals Step 1.
     await awContext.page.bringToFront().catch(() => {});
-    await ensureStanding(awContext.page, 8000);
+    awContext.page = await ensureStanding(awContext.page, 8000);
     await executeCommand(awContext.page, 'look');
     await ithaquaContext.page.bringToFront().catch(() => {});
-    await ensureStanding(ithaquaContext.page, 8000);
+    ithaquaContext.page = await ensureStanding(ithaquaContext.page, 8000);
     await executeCommand(ithaquaContext.page, 'look');
     await new Promise(r => setTimeout(r, 2500));
     await ensurePlayersInSameRoom(contexts, 2, 45000);
@@ -206,12 +206,12 @@ test.describe('Local Channel Basic', () => {
 
     await prepareReceiverForInboundMessages(awContext, 20000);
     await ithaquaContext.page.bringToFront().catch(() => {});
-    await ensurePlayableConnection(ithaquaContext.page, {
+    ithaquaContext.page = await ensurePlayableConnection(ithaquaContext.page, {
       username: ithaquaContext.player.username,
       password: ithaquaContext.player.password,
       timeoutMs: 30000,
     });
-    await ensurePlayableConnection(awContext.page, {
+    awContext.page = await ensurePlayableConnection(awContext.page, {
       username: awContext.player.username,
       password: awContext.player.password,
       timeoutMs: 30000,

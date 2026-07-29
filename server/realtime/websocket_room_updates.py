@@ -22,40 +22,61 @@ if TYPE_CHECKING:
 logger = get_logger(__name__)
 
 
+def _parse_occupant_player_id(player_id_raw: object) -> uuid.UUID:
+    """Parse occupant player_id; raises TypeError/ValueError on bad input."""
+    if isinstance(player_id_raw, uuid.UUID):
+        return player_id_raw
+    if isinstance(player_id_raw, str):
+        return uuid.UUID(player_id_raw)
+    raise TypeError("player_id must be UUID or str")
+
+
+def _decorate_occupant_name(
+    name: str, player_id: uuid.UUID, connection_manager: "ConnectionManager | Any"
+) -> str | None:
+    """
+    Apply grace-period labels, or None if the player should be hidden from the room list.
+    """
+    if not connection_manager.has_websocket_connection(player_id) and not is_player_in_grace_period(
+        player_id, connection_manager
+    ):
+        return None
+    if is_player_in_grace_period(player_id, connection_manager) and "(linkdead)" not in name:
+        name = f"{name} (linkdead)"
+    if is_player_in_login_grace_period(player_id, connection_manager) and "(warded)" not in name:
+        name = f"{name} (warded)"
+    return name
+
+
 async def get_player_occupants(connection_manager: "ConnectionManager | Any", room_id: str) -> list[str]:
     """
     Get player occupant names from room.
 
     Includes "(linkdead)" indicator for players in grace period.
     """
-    occupant_names = []
-    try:  # pylint: disable=too-many-nested-blocks  # Reason: Room occupant processing requires complex nested logic for name extraction, grace period checks, and formatting
+    occupant_names: list[str] = []
+    try:
         room_occupants = await connection_manager.get_room_occupants(room_id)
         for occ in room_occupants or []:
             # Only include actual players: skip NPCs even if dict has player_name (e.g. merged format with is_npc).
             if occ.get("is_npc") or "npc_name" in occ:
                 continue
-            name = occ.get("player_name") or occ.get("name")
-            if name:
-                player_id_str = occ.get("player_id")
-                if player_id_str and connection_manager:
-                    try:
-                        player_id = uuid.UUID(player_id_str) if isinstance(player_id_str, str) else player_id_str
-                        # Only show players who are actually connected or in grace period; hide fully disconnected
-                        if not connection_manager.has_websocket_connection(player_id) and not is_player_in_grace_period(
-                            player_id, connection_manager
-                        ):
-                            continue
-                        # Check if player is in disconnect grace period (name may already include "(linkdead)" from occupant processor)
-                        if is_player_in_grace_period(player_id, connection_manager) and "(linkdead)" not in name:
-                            name = f"{name} (linkdead)"
-                        # Check login grace period (can have both indicators)
-                        if is_player_in_login_grace_period(player_id, connection_manager) and "(warded)" not in name:
-                            name = f"{name} (warded)"
-                    except (ValueError, AttributeError, ImportError, TypeError):
-                        # If we can't check grace period, use name as-is
-                        pass
-                occupant_names.append(name)
+            name_obj = occ.get("player_name") or occ.get("name")
+            if not isinstance(name_obj, str):
+                continue
+            name = name_obj
+            player_id_raw = occ.get("player_id")
+            if player_id_raw is not None and connection_manager:
+                try:
+                    player_id = _parse_occupant_player_id(player_id_raw)
+                    decorated = _decorate_occupant_name(name, player_id, connection_manager)
+                    if decorated is None:
+                        continue
+                    name = decorated
+                except (ValueError, AttributeError, ImportError, TypeError):
+                    # If we can't check grace period, use name as-is
+                    pass
+            occupant_names.append(name)
     except (AttributeError, KeyError, TypeError, ValueError) as e:
         logger.error("Error transforming room occupants", room_id=room_id, error=str(e))
     return occupant_names

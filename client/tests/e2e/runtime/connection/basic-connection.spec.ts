@@ -61,7 +61,7 @@ test.describe('Basic Connection/Disconnection Flow', () => {
         (async () => {
           await loginPlayer(ithaquaContext.page, ithaquaContext.player.username, ithaquaContext.player.password);
           await ensurePlayerInGame(ithaquaContext, 45000);
-          await ensurePlayableConnection(ithaquaContext.page, {
+          ithaquaContext.page = await ensurePlayableConnection(ithaquaContext.page, {
             username: ithaquaContext.player.username,
             password: ithaquaContext.player.password,
             timeoutMs: 30000,
@@ -98,7 +98,7 @@ test.describe('Basic Connection/Disconnection Flow', () => {
       const ithaquaContext = contexts[1];
 
       await ensurePlayerInGame(awContext, 45000);
-      await ensurePlayableConnection(awContext.page, {
+      awContext.page = await ensurePlayableConnection(awContext.page, {
         username: awContext.player.username,
         password: awContext.player.password,
         timeoutMs: 30000,

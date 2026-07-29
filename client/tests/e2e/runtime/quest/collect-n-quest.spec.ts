@@ -45,10 +45,10 @@ async function listActiveQuestGiverIds(page: Page): Promise<string[]> {
     return [];
   }
   const ids = new Set<string>();
-  for (const match of latest.matchAll(COLLECT_N.npcInstanceIdRe)) {
+  for (const match of Array.from(latest.matchAll(COLLECT_N.npcInstanceIdRe))) {
     ids.add(match[0].replace(/npc$/i, ''));
   }
-  return [...ids];
+  return Array.from(ids);
 }
 
 /** Despawn quest-giver instances only. Uses withoutRecovery to avoid login storms mid-setup. */
@@ -101,34 +101,98 @@ async function ensureAdminInFoyer(page: Page): Promise<void> {
 }
 
 /** Exactly one quest giver in foyer: zone Active NPCs is truth; Occupants can lag after despawn. */
-async function ensureQuestGiverPresent(page: Page): Promise<void> {
-  await ensurePlayableConnection(page, {
+async function ensureQuestGiverPresent(page: Page): Promise<Page> {
+  const live = await ensurePlayableConnection(page, {
     username: 'ArkanWolfshade',
     password: 'Cthulhu1',
     timeoutMs: 45000,
   });
-  await ensureAdminInFoyer(page);
+  await ensureAdminInFoyer(live);
 
   for (let i = 0; i < 3; i++) {
-    const ids = await listActiveQuestGiverIds(page);
+    const ids = await listActiveQuestGiverIds(live);
     if (ids.length === 1) {
-      await executeCommandWithoutRecovery(page, 'look').catch(() => {});
-      return;
+      await executeCommandWithoutRecovery(live, 'look').catch(() => {});
+      return live;
     }
     if (ids.length > 1) {
-      await despawnQuestGiverInstances(page);
+      await despawnQuestGiverInstances(live);
       continue;
     }
     // ids.length === 0
-    await executeCommandWithoutRecovery(page, `npc spawn ${COLLECT_N.npcSpawnId}`);
-    await waitForMessage(page, /NPC spawned successfully|spawned successfully/i, 20000).catch(() => {});
-    await assertQuestGiverVisible(page);
+    await executeCommandWithoutRecovery(live, `npc spawn ${COLLECT_N.npcSpawnId}`);
+    await waitForMessage(live, /NPC spawned successfully|spawned successfully/i, 20000).catch(() => {});
+    await assertQuestGiverVisible(live);
   }
 
-  const finalIds = await listActiveQuestGiverIds(page);
+  const finalIds = await listActiveQuestGiverIds(live);
   if (finalIds.length !== 1) {
     throw new Error(`Expected exactly one ${COLLECT_N.npcName} in zone, found ${finalIds.length}`);
   }
+  return live;
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+async function loginAdminPlayable(page: Page): Promise<Page> {
+  await loginPlayer(page, 'ArkanWolfshade', 'Cthulhu1');
+  await page.getByTestId('command-input').waitFor({ state: 'visible', timeout: TEST_TIMEOUTS.GAME_LOAD });
+  const live = await ensurePlayableConnection(page, {
+    username: 'ArkanWolfshade',
+    password: 'Cthulhu1',
+    timeoutMs: 45000,
+  });
+  return ensureStanding(live, 10000);
+}
+
+async function abandonCollectNQuest(page: Page): Promise<void> {
+  await executeCommand(page, `quest abandon ${COLLECT_N.questId}`);
+  await waitForMessage(page, /Quest abandoned|do not have this quest|Unknown quest|only abandon/i, 15000).catch(
+    () => {}
+  );
+}
+
+async function askCollectNQuest(page: Page): Promise<void> {
+  const titleRe = new RegExp(`Quest started:\\s*${escapeRegExp(COLLECT_N.questTitle)}|already have this quest`, 'i');
+  await executeCommand(page, `quest ask ${COLLECT_N.npcAskAlias}`);
+  await waitForMessage(page, titleRe, 25000);
+}
+
+async function summonAndPickupCollectItems(page: Page): Promise<void> {
+  await executeCommand(page, `/summon ${COLLECT_N.prototypeId} ${COLLECT_N.count}`);
+  await waitForMessage(page, new RegExp(`You summon\\s+${COLLECT_N.count}x|Summoning failed`, 'i'), 25000);
+  const summonMsgs = await getMessages(page);
+  expect(summonMsgs.some(m => new RegExp(`You summon\\s+${COLLECT_N.count}x`, 'i').test(m))).toBe(true);
+
+  // get <item> [from] <container> [quantity]; room floor uses container "room"
+  await executeCommand(page, `get ${COLLECT_N.itemGetAlias} from room ${COLLECT_N.count}`);
+  const itemNameEsc = escapeRegExp(COLLECT_N.itemDisplayName);
+  await waitForMessage(page, new RegExp(`You get\\s+\\d+x|${COLLECT_N.itemGetAlias}|${itemNameEsc}`, 'i'), 25000);
+}
+
+async function assertCollectNJournalComplete(page: Page): Promise<void> {
+  const protoEsc = escapeRegExp(COLLECT_N.prototypeId);
+  const titleEsc = escapeRegExp(COLLECT_N.questTitle);
+  await executeCommand(page, 'journal');
+  await waitForMessage(page, new RegExp(`${titleEsc}|${protoEsc}`, 'i'), 25000);
+  const journalMsgs = await getMessages(page);
+  expect(
+    journalMsgs.some(
+      m =>
+        new RegExp(titleEsc, 'i').test(m) ||
+        new RegExp(`${protoEsc}.*${COLLECT_N.count}\\s*/\\s*${COLLECT_N.count}`, 'i').test(m)
+    )
+  ).toBe(true);
+}
+
+async function turnInCollectNQuest(page: Page): Promise<void> {
+  const completedRe = new RegExp(`Quest completed:\\s*${escapeRegExp(COLLECT_N.questTitle)}`, 'i');
+  await executeCommand(page, `quest turnin ${COLLECT_N.npcAskAlias}`);
+  await waitForMessage(page, completedRe, 25000);
+  const turninMsgs = await getMessages(page);
+  expect(turninMsgs.some(m => completedRe.test(m))).toBe(true);
 }
 
 test.describe('collect_n quest ask/turnin', () => {
@@ -140,21 +204,14 @@ test.describe('collect_n quest ask/turnin', () => {
 
   test('quest ask fails when the target NPC is not in the room', async ({ page }) => {
     test.setTimeout(120_000);
-    await loginPlayer(page, 'ArkanWolfshade', 'Cthulhu1');
-    await page.getByTestId('command-input').waitFor({ state: 'visible', timeout: TEST_TIMEOUTS.GAME_LOAD });
-    await ensurePlayableConnection(page, {
-      username: 'ArkanWolfshade',
-      password: 'Cthulhu1',
-      timeoutMs: 45000,
-    });
-    await ensureStanding(page, 10000);
-    await executeCommand(page, 'look');
-    await waitForMessage(page, /Foyer|Exits|Sanitarium/i, 20000).catch(() => {});
+    const live = await loginAdminPlayable(page);
+    await executeCommand(live, 'look');
+    await waitForMessage(live, /Foyer|Exits|Sanitarium/i, 20000).catch(() => {});
 
     // Assert the not-in-room path without depending on quest-giver pollution.
-    await executeCommand(page, 'quest ask definitely_not_an_npc_xyz');
-    await waitForMessage(page, /You do not see ['"]?definitely_not_an_npc_xyz['"]? here/i, 25000);
-    const messages = await getMessages(page);
+    await executeCommand(live, 'quest ask definitely_not_an_npc_xyz');
+    await waitForMessage(live, /You do not see ['"]?definitely_not_an_npc_xyz['"]? here/i, 25000);
+    const messages = await getMessages(live);
     expect(messages.some(m => /You do not see ['"]?definitely_not_an_npc_xyz['"]? here/i.test(m))).toBe(true);
   });
 
@@ -162,58 +219,19 @@ test.describe('collect_n quest ask/turnin', () => {
     test.setTimeout(300_000);
     resetCollectNQuestInstances();
 
-    await loginPlayer(page, 'ArkanWolfshade', 'Cthulhu1');
-    await page.getByTestId('command-input').waitFor({ state: 'visible', timeout: TEST_TIMEOUTS.GAME_LOAD });
-    await ensurePlayableConnection(page, {
-      username: 'ArkanWolfshade',
-      password: 'Cthulhu1',
-      timeoutMs: 45000,
-    });
-    await ensureStanding(page, 10000);
-    await executeCommand(page, 'look');
-    await waitForMessage(page, /Foyer|Exits|Sanitarium|Morgan|Arena/i, 20000).catch(() => {});
+    let live = await loginAdminPlayable(page);
+    await executeCommand(live, 'look');
+    await waitForMessage(live, /Foyer|Exits|Sanitarium|Morgan|Arena/i, 20000).catch(() => {});
 
-    await ensureQuestGiverPresent(page);
-
-    await executeCommand(page, `quest abandon ${COLLECT_N.questId}`);
-    await waitForMessage(page, /Quest abandoned|do not have this quest|Unknown quest|only abandon/i, 15000).catch(
-      () => {}
-    );
-
-    const titleRe = new RegExp(
-      `Quest started:\\s*${COLLECT_N.questTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}|already have this quest`,
-      'i'
-    );
-    await executeCommand(page, `quest ask ${COLLECT_N.npcAskAlias}`);
-    await waitForMessage(page, titleRe, 25000);
-
-    await executeCommand(page, `/summon ${COLLECT_N.prototypeId} ${COLLECT_N.count}`);
-    await waitForMessage(page, new RegExp(`You summon\\s+${COLLECT_N.count}x|Summoning failed`, 'i'), 25000);
-    const summonMsgs = await getMessages(page);
-    expect(summonMsgs.some(m => new RegExp(`You summon\\s+${COLLECT_N.count}x`, 'i').test(m))).toBe(true);
-
-    // get <item> [from] <container> [quantity]; room floor uses container "room"
-    await executeCommand(page, `get ${COLLECT_N.itemGetAlias} from room ${COLLECT_N.count}`);
-    const itemNameEsc = COLLECT_N.itemDisplayName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    await waitForMessage(page, new RegExp(`You get\\s+\\d+x|${COLLECT_N.itemGetAlias}|${itemNameEsc}`, 'i'), 25000);
-
-    const protoEsc = COLLECT_N.prototypeId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const titleEsc = COLLECT_N.questTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    await executeCommand(page, 'journal');
-    await waitForMessage(page, new RegExp(`${titleEsc}|${protoEsc}`, 'i'), 25000);
-    const journalMsgs = await getMessages(page);
+    live = await ensureQuestGiverPresent(live);
+    await abandonCollectNQuest(live);
+    await askCollectNQuest(live);
+    await summonAndPickupCollectItems(live);
+    await assertCollectNJournalComplete(live);
+    await turnInCollectNQuest(live);
+    const messages = await getMessages(live);
     expect(
-      journalMsgs.some(
-        m =>
-          new RegExp(titleEsc, 'i').test(m) ||
-          new RegExp(`${protoEsc}.*${COLLECT_N.count}\\s*/\\s*${COLLECT_N.count}`, 'i').test(m)
-      )
+      messages.some(m => new RegExp(`Quest completed:\\s*${escapeRegExp(COLLECT_N.questTitle)}`, 'i').test(m))
     ).toBe(true);
-
-    const completedRe = new RegExp(`Quest completed:\\s*${titleEsc}`, 'i');
-    await executeCommand(page, `quest turnin ${COLLECT_N.npcAskAlias}`);
-    await waitForMessage(page, completedRe, 25000);
-    const turninMsgs = await getMessages(page);
-    expect(turninMsgs.some(m => completedRe.test(m))).toBe(true);
   });
 });

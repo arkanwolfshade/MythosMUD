@@ -42,27 +42,26 @@ test.describe('Rest Command', () => {
     contexts = await ensureFreshMultiPlayerContexts(browser, contexts, ['ArkanWolfshade', 'Ithaqua']);
 
     const awContext = contexts[0];
-    const { page } = awContext;
 
     // Header can read Connected while Occupants still shows (linkdead); warm WS + Game Info before asserting.
     await ensurePlayerInGame(awContext, 30000);
-    await page.bringToFront().catch(() => {});
-    await page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+    await awContext.page.bringToFront().catch(() => {});
+    await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
       el.focus();
     });
-    await ensureStanding(page, 8000);
-    await executeCommand(page, 'look');
-    await waitForMessage(page, /Arena|Exits|gladiator|sand|look/i, 20000).catch(() => {});
-    await page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 15000 });
+    awContext.page = await ensureStanding(awContext.page, 8000);
+    await executeCommand(awContext.page, 'look');
+    await waitForMessage(awContext.page, /Arena|Exits|gladiator|sand|look/i, 20000).catch(() => {});
+    await awContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 15000 });
 
-    await executeCommand(page, '/rest');
+    await executeCommand(awContext.page, '/rest');
 
-    const restLocator = page
+    const restLocator = awContext.page
       .locator('[data-message-text]')
       .filter({ hasText: /settle|begin to rest|disconnect in \d+|seconds/i });
     await restLocator.first().waitFor({ state: 'visible', timeout: 20000 });
 
-    const messages = await getMessages(page);
+    const messages = await getMessages(awContext.page);
     const seesRest = messages.some(msg => {
       const lower = msg.toLowerCase();
       return (
@@ -72,11 +71,11 @@ test.describe('Rest Command', () => {
     expect(seesRest).toBe(true);
 
     // Cancel countdown so the suite does not intentional-disconnect AW or leave test 2 stuck in "already resting".
-    await executeCommand(page, 'go north');
-    await waitForMessage(page, /interrupted|go north|move north|north/i, 15000).catch(() => {});
-    await executeCommand(page, 'go south');
-    await waitForMessage(page, /go south|south|Arena/i, 15000).catch(() => {});
-    await ensureStanding(page, 8000);
+    await executeCommand(awContext.page, 'go north');
+    await waitForMessage(awContext.page, /interrupted|go north|move north|north/i, 15000).catch(() => {});
+    await executeCommand(awContext.page, 'go south');
+    await waitForMessage(awContext.page, /go south|south|Arena/i, 15000).catch(() => {});
+    awContext.page = await ensureStanding(awContext.page, 8000);
   });
 
   test('should block /rest during combat', async () => {
@@ -84,7 +83,7 @@ test.describe('Rest Command', () => {
 
     await ensurePlayerInGame(awContext, 30000);
     await awContext.page.bringToFront().catch(() => {});
-    await ensureStanding(awContext.page, 8000);
+    awContext.page = await ensureStanding(awContext.page, 8000);
     await executeCommand(awContext.page, 'look');
     await awContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 15000 });
 

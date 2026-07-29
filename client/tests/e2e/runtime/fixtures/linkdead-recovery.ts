@@ -26,12 +26,12 @@ export async function ensureSessionHealthy(
   page: Page,
   creds: LinkdeadRecoveryCredentials,
   timeoutMs = 45000
-): Promise<void> {
+): Promise<Page> {
   if (await tryInPlacePlayableRecovery(page, 15000)) {
-    return;
+    return page;
   }
   const { ensurePlayableConnection } = await import('./auth');
-  await ensurePlayableConnection(page, {
+  return ensurePlayableConnection(page, {
     username: creds.username,
     password: creds.password,
     timeoutMs,
