@@ -18,11 +18,11 @@ function channelToMessageType(channel: string): 'whisper' | 'shout' | 'emote' | 
 export function buildChatMessage(
   text: string,
   timestamp: string,
-  opts: { isHtml?: boolean; messageType?: string; channel?: string; speakerKind?: string } = {}
+  opts: { isHtml?: boolean; messageType?: string; channel?: string } = {}
 ): ChatMessage {
-  const { messageType = 'system', channel = 'game', isHtml = false, speakerKind } = opts;
+  const { messageType = 'system', channel = 'game', isHtml = false } = opts;
   const type = channelToMessageType(channel);
-  return { text, timestamp, isHtml, messageType, channel, type, ...(speakerKind ? { speakerKind } : {}) };
+  return { text, timestamp, isHtml, messageType, channel, type };
 }
 
 export function appendMessage(prevMessages: ChatMessage[], message: ChatMessage): ChatMessage[] {

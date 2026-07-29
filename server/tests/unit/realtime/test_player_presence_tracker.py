@@ -30,8 +30,14 @@ def test_build_player_info_new_connection():
     mock_manager = MagicMock()
     mock_manager.player_websockets = {player_id: ["conn_1", "conn_2"]}
 
-    with patch("server.realtime.player_presence_tracker.get_player_position", return_value="standing"):
-        with patch("server.realtime.player_presence_tracker.extract_player_name", return_value="TestPlayer"):
+    with patch(
+        "server.realtime.player_presence_tracker.get_player_position",
+        return_value="standing",
+    ):
+        with patch(
+            "server.realtime.player_presence_tracker.extract_player_name",
+            return_value="TestPlayer",
+        ):
             player_info = _build_player_info(player_id, mock_player, "websocket", mock_manager, True)
 
             assert player_info["player_id"] == player_id
@@ -58,8 +64,14 @@ def test_build_player_info_existing_connection():
     }
     mock_manager.online_players = {player_id: existing_info}
 
-    with patch("server.realtime.player_presence_tracker.get_player_position", return_value="standing"):
-        with patch("server.realtime.player_presence_tracker.extract_player_name", return_value="TestPlayer"):
+    with patch(
+        "server.realtime.player_presence_tracker.get_player_position",
+        return_value="standing",
+    ):
+        with patch(
+            "server.realtime.player_presence_tracker.extract_player_name",
+            return_value="TestPlayer",
+        ):
             player_info = _build_player_info(player_id, mock_player, "websocket", mock_manager, False)
 
             assert player_info["connected_at"] == 1234567890.0
@@ -75,8 +87,14 @@ def test_build_player_info_no_level():
     mock_manager = MagicMock()
     mock_manager.player_websockets = {}
 
-    with patch("server.realtime.player_presence_tracker.get_player_position", return_value="standing"):
-        with patch("server.realtime.player_presence_tracker.extract_player_name", return_value="TestPlayer"):
+    with patch(
+        "server.realtime.player_presence_tracker.get_player_position",
+        return_value="standing",
+    ):
+        with patch(
+            "server.realtime.player_presence_tracker.extract_player_name",
+            return_value="TestPlayer",
+        ):
             player_info = _build_player_info(player_id, mock_player, "websocket", mock_manager, True)
 
             assert player_info["level"] == 1  # Default value
@@ -146,6 +164,7 @@ async def test_track_player_connected_impl_new_connection():
     mock_manager = MagicMock()
     mock_manager.online_players = {}
     mock_manager.player_websockets = {player_id: ["conn_1"]}
+    mock_manager.grace_period_players = {}
     mock_manager.mark_player_seen = MagicMock()
     mock_manager.async_persistence = MagicMock()
     mock_room = MagicMock()
@@ -153,10 +172,17 @@ async def test_track_player_connected_impl_new_connection():
     mock_manager.async_persistence.get_room_by_id = MagicMock(return_value=mock_room)
 
     with patch(
-        "server.realtime.player_presence_tracker.handle_new_connection_setup", new_callable=AsyncMock
+        "server.realtime.player_presence_tracker.handle_new_connection_setup",
+        new_callable=AsyncMock,
     ) as mock_setup:
-        with patch("server.realtime.player_presence_tracker.get_player_position", return_value="standing"):
-            with patch("server.realtime.player_presence_tracker.extract_player_name", return_value="TestPlayer"):
+        with patch(
+            "server.realtime.player_presence_tracker.get_player_position",
+            return_value="standing",
+        ):
+            with patch(
+                "server.realtime.player_presence_tracker.extract_player_name",
+                return_value="TestPlayer",
+            ):
                 with patch("server.realtime.player_presence_tracker.logger") as mock_logger:
                     await track_player_connected_impl(player_id, mock_player, "websocket", mock_manager)
 
@@ -174,16 +200,58 @@ async def test_track_player_connected_impl_existing_connection():
     mock_manager = MagicMock()
     mock_manager.online_players = {player_id: {"connected_at": 1234567890.0}}
     mock_manager.player_websockets = {player_id: ["conn_1"]}
+    mock_manager.grace_period_players = {}
     mock_manager.mark_player_seen = MagicMock()
 
-    with patch("server.realtime.player_presence_tracker.get_player_position", return_value="standing"):
-        with patch("server.realtime.player_presence_tracker.extract_player_name", return_value="TestPlayer"):
+    with patch(
+        "server.realtime.player_presence_tracker.get_player_position",
+        return_value="standing",
+    ):
+        with patch(
+            "server.realtime.player_presence_tracker.extract_player_name",
+            return_value="TestPlayer",
+        ):
             with patch("server.realtime.player_presence_tracker.logger") as mock_logger:
                 await track_player_connected_impl(player_id, mock_player, "websocket", mock_manager)
 
                 mock_manager.mark_player_seen.assert_called_once_with(player_id)
                 mock_logger.info.assert_called_once()
                 # Should log "Player additional connection tracked"
+
+
+@pytest.mark.asyncio
+async def test_track_player_connected_impl_reconnect_during_grace():
+    """Reconnect during disconnect grace must run enter setup (player_entered_game)."""
+    player_id = uuid.uuid4()
+    mock_player = MagicMock()
+    mock_player.current_room_id = "room_123"
+    mock_player.tutorial_instance_id = None
+    mock_manager = MagicMock()
+    mock_manager.online_players = {player_id: {"connected_at": 1234567890.0}}
+    mock_manager.player_websockets = {player_id: ["conn_1"]}
+    mock_manager.grace_period_players = {player_id: MagicMock()}
+    mock_manager.mark_player_seen = MagicMock()
+    mock_manager.async_persistence = MagicMock()
+    mock_room = MagicMock()
+    mock_room.id = "room_123"
+    mock_manager.async_persistence.get_room_by_id = MagicMock(return_value=mock_room)
+
+    with patch(
+        "server.realtime.player_presence_tracker.handle_new_connection_setup",
+        new_callable=AsyncMock,
+    ) as mock_setup:
+        with patch(
+            "server.realtime.player_presence_tracker.get_player_position",
+            return_value="standing",
+        ):
+            with patch(
+                "server.realtime.player_presence_tracker.extract_player_name",
+                return_value="TestPlayer",
+            ):
+                await track_player_connected_impl(player_id, mock_player, "websocket", mock_manager)
+
+                mock_setup.assert_called_once()
+                mock_manager.mark_player_seen.assert_called_once_with(player_id)
 
 
 @pytest.mark.asyncio
@@ -196,13 +264,21 @@ async def test_track_player_connected_impl_no_room_id():
     mock_manager = MagicMock()
     mock_manager.online_players = {}
     mock_manager.player_websockets = {player_id: ["conn_1"]}
+    mock_manager.grace_period_players = {}
     mock_manager.mark_player_seen = MagicMock()
 
     with patch(
-        "server.realtime.player_presence_tracker.handle_new_connection_setup", new_callable=AsyncMock
+        "server.realtime.player_presence_tracker.handle_new_connection_setup",
+        new_callable=AsyncMock,
     ) as mock_setup:
-        with patch("server.realtime.player_presence_tracker.get_player_position", return_value="standing"):
-            with patch("server.realtime.player_presence_tracker.extract_player_name", return_value="TestPlayer"):
+        with patch(
+            "server.realtime.player_presence_tracker.get_player_position",
+            return_value="standing",
+        ):
+            with patch(
+                "server.realtime.player_presence_tracker.extract_player_name",
+                return_value="TestPlayer",
+            ):
                 await track_player_connected_impl(player_id, mock_player, "websocket", mock_manager)
 
                 # Should not call setup when no room_id
@@ -220,8 +296,14 @@ async def test_track_player_connected_impl_error():
     mock_manager.player_websockets = {}
     del mock_manager.mark_player_seen  # Cause AttributeError
 
-    with patch("server.realtime.player_presence_tracker.get_player_position", return_value="standing"):
-        with patch("server.realtime.player_presence_tracker.extract_player_name", return_value="TestPlayer"):
+    with patch(
+        "server.realtime.player_presence_tracker.get_player_position",
+        return_value="standing",
+    ):
+        with patch(
+            "server.realtime.player_presence_tracker.extract_player_name",
+            return_value="TestPlayer",
+        ):
             with patch("server.realtime.player_presence_tracker.logger") as mock_logger:
                 await track_player_connected_impl(player_id, mock_player, "websocket", mock_manager)
 
@@ -386,9 +468,18 @@ async def test_track_player_disconnected_impl_success():
     mock_manager._get_player = AsyncMock(return_value=mock_player)  # pylint: disable=protected-access  # Reason: Accessing protected members is necessary to mock the methods used by player_presence_tracker implementation
     mock_manager._cleanup_ghost_players = MagicMock()  # pylint: disable=protected-access  # Reason: Accessing protected members is necessary to mock the methods used by player_presence_tracker implementation
 
-    with patch("server.realtime.player_presence_tracker._should_skip_disconnect", return_value=False):
-        with patch("server.realtime.player_presence_tracker._acquire_disconnect_lock", return_value=True):
-            with patch("server.realtime.player_presence_tracker._collect_disconnect_keys", return_value=([], [])):
+    with patch(
+        "server.realtime.player_presence_tracker._should_skip_disconnect",
+        return_value=False,
+    ):
+        with patch(
+            "server.realtime.player_presence_tracker._acquire_disconnect_lock",
+            return_value=True,
+        ):
+            with patch(
+                "server.realtime.player_presence_tracker._collect_disconnect_keys",
+                return_value=([], []),
+            ):
                 with patch(
                     "server.realtime.player_presence_tracker.handle_player_disconnect_broadcast"
                 ) as mock_broadcast:
@@ -399,7 +490,8 @@ async def test_track_player_disconnected_impl_success():
                             "server.realtime.player_presence_tracker._cleanup_player_references"
                         ) as mock_cleanup:
                             with patch(
-                                "server.realtime.player_presence_tracker.extract_player_name", return_value="TestPlayer"
+                                "server.realtime.player_presence_tracker.extract_player_name",
+                                return_value="TestPlayer",
                             ):
                                 with patch("server.realtime.player_presence_tracker.logger") as mock_logger:
                                     await track_player_disconnected_impl(player_id, mock_manager, "websocket")
@@ -425,7 +517,10 @@ async def test_track_player_disconnected_impl_skip_disconnect():
     mock_manager = MagicMock()
     mock_manager.has_websocket_connection = MagicMock(return_value=True)
 
-    with patch("server.realtime.player_presence_tracker._should_skip_disconnect", return_value=True):
+    with patch(
+        "server.realtime.player_presence_tracker._should_skip_disconnect",
+        return_value=True,
+    ):
         await track_player_disconnected_impl(player_id, mock_manager, "websocket")
 
         # Should return early, no further processing
@@ -442,7 +537,10 @@ async def test_track_player_disconnected_impl_no_lock():
     mock_manager.disconnect_lock.__aenter__ = AsyncMock(return_value=None)
     mock_manager.disconnect_lock.__aexit__ = AsyncMock(return_value=None)
 
-    with patch("server.realtime.player_presence_tracker._acquire_disconnect_lock", return_value=False):
+    with patch(
+        "server.realtime.player_presence_tracker._acquire_disconnect_lock",
+        return_value=False,
+    ):
         await track_player_disconnected_impl(player_id, mock_manager, "websocket")
 
         # Should return early, no further processing
@@ -464,9 +562,18 @@ async def test_track_player_disconnected_impl_no_player():
     mock_manager._get_player = AsyncMock(return_value=None)  # pylint: disable=protected-access  # Reason: Accessing protected members is necessary to mock the methods used by player_presence_tracker implementation
     mock_manager._cleanup_ghost_players = MagicMock()  # pylint: disable=protected-access  # Reason: Accessing protected members is necessary to mock the methods used by player_presence_tracker implementation
 
-    with patch("server.realtime.player_presence_tracker._should_skip_disconnect", return_value=False):
-        with patch("server.realtime.player_presence_tracker._acquire_disconnect_lock", return_value=True):
-            with patch("server.realtime.player_presence_tracker._collect_disconnect_keys", return_value=([], [])):
+    with patch(
+        "server.realtime.player_presence_tracker._should_skip_disconnect",
+        return_value=False,
+    ):
+        with patch(
+            "server.realtime.player_presence_tracker._acquire_disconnect_lock",
+            return_value=True,
+        ):
+            with patch(
+                "server.realtime.player_presence_tracker._collect_disconnect_keys",
+                return_value=([], []),
+            ):
                 with patch(
                     "server.realtime.player_presence_tracker.handle_player_disconnect_broadcast"
                 ) as mock_broadcast:
@@ -500,8 +607,14 @@ async def test_track_player_disconnected_impl_error():
     mock_manager._cleanup_ghost_players = MagicMock()  # pylint: disable=protected-access  # Reason: Accessing protected members is necessary to mock the methods used by player_presence_tracker implementation
 
     with patch("server.realtime.player_presence_tracker.logger") as mock_logger:
-        with patch("server.realtime.player_presence_tracker._should_skip_disconnect", return_value=False):
-            with patch("server.realtime.player_presence_tracker._acquire_disconnect_lock", return_value=True):
+        with patch(
+            "server.realtime.player_presence_tracker._should_skip_disconnect",
+            return_value=False,
+        ):
+            with patch(
+                "server.realtime.player_presence_tracker._acquire_disconnect_lock",
+                return_value=True,
+            ):
                 await track_player_disconnected_impl(player_id, mock_manager, "websocket")
 
                 mock_logger.error.assert_called_once()
@@ -532,9 +645,18 @@ async def test_track_player_disconnected_impl_finally_cleanup():
         mgr.disconnecting_players.add(pid)
         return True
 
-    with patch("server.realtime.player_presence_tracker._should_skip_disconnect", return_value=False):
-        with patch("server.realtime.player_presence_tracker._acquire_disconnect_lock", side_effect=mock_acquire_lock):
-            with patch("server.realtime.player_presence_tracker._collect_disconnect_keys", return_value=([], [])):
+    with patch(
+        "server.realtime.player_presence_tracker._should_skip_disconnect",
+        return_value=False,
+    ):
+        with patch(
+            "server.realtime.player_presence_tracker._acquire_disconnect_lock",
+            side_effect=mock_acquire_lock,
+        ):
+            with patch(
+                "server.realtime.player_presence_tracker._collect_disconnect_keys",
+                return_value=([], []),
+            ):
                 # Exception is caught internally, but finally block should still execute
                 await track_player_disconnected_impl(player_id, mock_manager, "websocket")
 

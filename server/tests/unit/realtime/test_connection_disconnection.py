@@ -119,6 +119,60 @@ async def test_track_disconnect_if_needed_intentional_force_disconnect(
     assert player_id in processed_disconnects
 
 
+@pytest.mark.asyncio
+async def test_cleanup_websocket_disconnect_intentional_without_sockets(
+    mock_manager: MagicMock,
+    remove_player_from_all_rooms_mock: MagicMock,
+):
+    """Intentional logout with empty player_websockets must still clear rooms and track leave."""
+    import asyncio
+
+    from server.realtime.connection_disconnection import cleanup_websocket_disconnect
+
+    player_id = uuid.uuid4()
+    mock_manager.player_websockets = {}
+    mock_manager.intentional_disconnects = {player_id}
+    processed_disconnects: set[uuid.UUID] = set()
+    mock_manager.processed_disconnects = processed_disconnects
+    mock_manager.has_websocket_connection = MagicMock(return_value=False)
+    mock_manager.disconnect_lock = asyncio.Lock()
+    mock_manager.processed_disconnect_lock = asyncio.Lock()
+
+    result = await cleanup_websocket_disconnect(player_id, mock_manager, is_force_disconnect=True)
+
+    assert result is True
+    assert player_id in processed_disconnects
+    remove_player_from_all_rooms_mock.assert_called_once_with(str(player_id))
+
+
+@pytest.mark.asyncio
+async def test_force_disconnect_player_impl_intentional_without_sockets():
+    """force_disconnect with no sockets must still track intentional leave."""
+    import asyncio
+
+    from server.realtime.connection_manager_methods import force_disconnect_player_impl
+
+    player_id = uuid.uuid4()
+    manager: MagicMock = MagicMock()
+    manager.player_websockets = {}
+    manager.intentional_disconnects = {player_id}
+    manager.processed_disconnects = set()
+    manager.has_websocket_connection = MagicMock(return_value=False)
+    manager.processed_disconnect_lock = asyncio.Lock()
+    manager.disconnect_lock = asyncio.Lock()
+    manager.room_manager = MagicMock()
+    manager.rate_limiter = MagicMock()
+    manager.message_queue = MagicMock()
+    manager.last_seen = {}
+    manager.last_active_update_times = {}
+    manager._track_player_disconnected = AsyncMock()
+
+    await force_disconnect_player_impl(manager, player_id)
+
+    manager._track_player_disconnected.assert_awaited_once_with(player_id)
+    manager.room_manager.remove_player_from_all_rooms.assert_called_once_with(str(player_id))
+
+
 def test_cleanup_room_subscriptions(
     mock_manager: MagicMock,
     remove_player_from_all_rooms_mock: MagicMock,

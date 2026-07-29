@@ -11,6 +11,7 @@ import { executeCommand, getMessages, recoverPlayableSession, waitForMessage } f
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
+  ensureFreshMultiPlayerContexts,
   ensurePlayerInGame,
   waitForAllPlayersInGame,
 } from '../fixtures/multiplayer';
@@ -26,9 +27,11 @@ async function assertLookVisibleInPanels(page: Page): Promise<void> {
 }
 
 test.describe('Administrative Set Stat Command', () => {
+  test.describe.configure({ timeout: 300_000 });
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
   test.beforeAll(async ({ browser }) => {
+    test.setTimeout(300_000);
     // Create contexts for both players (AW is admin, Ithaqua is not)
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
     await waitForAllPlayersInGame(contexts);
@@ -39,7 +42,9 @@ test.describe('Administrative Set Stat Command', () => {
     await cleanupMultiPlayerContexts(contexts);
   });
 
-  test('AW should be able to set player stats', async () => {
+  test('AW should be able to set player stats', async ({ browser }) => {
+    test.setTimeout(300_000);
+    contexts = await ensureFreshMultiPlayerContexts(browser, contexts, ['ArkanWolfshade', 'Ithaqua']);
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 

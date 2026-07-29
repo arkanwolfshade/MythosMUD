@@ -17,12 +17,12 @@ import {
   ensurePlayerInGame,
   ensurePlayersInSameRoom,
   getPlayerMessages,
+  reopenPlayerPageIfClosed,
   waitForAllPlayersInGame,
   waitForCrossPlayerMessage,
   type PlayerContext,
 } from '../fixtures/multiplayer';
-import { ensureStanding } from '../fixtures/player';
-import { EASTERN_HALLWAY_LOOK_CUE } from '../fixtures/test-data';
+import { ensureStanding, goEastFromFoyer } from '../fixtures/player';
 
 async function returnAwToFoyerIfInHallway(aw: PlayerContext, contexts: PlayerContext[]): Promise<void> {
   const awAlreadyHallway = await aw.page
@@ -69,19 +69,28 @@ async function primeBothForCoLocate(contexts: PlayerContext[]): Promise<void> {
   }
 }
 
+async function softCommand(page: Page, command: string): Promise<void> {
+  await executeCommand(page, command).catch(() => {});
+}
+
+async function pageShowsEasternHallway(page: Page): Promise<boolean> {
+  return page.evaluate(() => /Eastern Hallway/i.test(document.body?.innerText ?? '')).catch(() => false);
+}
+
+async function leaveEasternHallwayWest(page: Page): Promise<void> {
+  await softCommand(page, 'go west');
+  await waitForMessage(page, /You (move|go) west|Main Foyer/i, 15000).catch(() => {});
+}
+
 /** Park Ithaqua in Main Foyer so AW's east hop creates a real local-scope split. */
 async function ensureIthaquaInFoyer(ithaqua: PlayerContext): Promise<void> {
   await ithaqua.page.bringToFront().catch(() => {});
   await ensureStanding(ithaqua.page, 5000).catch(() => {});
-  await executeCommand(ithaqua.page, 'look').catch(() => {});
-  const inHallway = await ithaqua.page
-    .evaluate(() => /Eastern Hallway/i.test(document.body?.innerText ?? ''))
-    .catch(() => false);
-  if (inHallway) {
-    await executeCommand(ithaqua.page, 'go west').catch(() => {});
-    await waitForMessage(ithaqua.page, /You (move|go) west|Main Foyer/i, 15000).catch(() => {});
+  await softCommand(ithaqua.page, 'look');
+  if (await pageShowsEasternHallway(ithaqua.page)) {
+    await leaveEasternHallwayWest(ithaqua.page);
   }
-  await executeCommand(ithaqua.page, 'look').catch(() => {});
+  await softCommand(ithaqua.page, 'look');
   await expect(ithaqua.page.getByText(/Main Foyer/i).first()).toBeVisible({ timeout: 20000 });
 }
 
@@ -102,6 +111,10 @@ test.describe('Local Channel Isolation', () => {
   });
 
   async function prepareLocalIsolationPair(): Promise<void> {
+    for (const c of contexts) {
+      await reopenPlayerPageIfClosed(c);
+      await ensurePlayerInGame(c, 45000);
+    }
     const [awContext, ithaquaContext] = contexts;
     // Match whisper prepare: co-locate only. Avoid sync DB reset + SPA re-login (blocks the worker / poisons pair).
     await ensureStanding(awContext.page, 8000).catch(() => {});
@@ -186,28 +199,9 @@ test.describe('Local Channel Isolation', () => {
     // Keep Ithaqua in foyer; only AW walks east (co-locate can leave both mid-hallway).
     await ensureIthaquaInFoyer(ithaquaContext);
 
-    // Foyer east -> Eastern Hallway (server copy is "You go east.", not "You move east").
+    // Foyer east -> Eastern Hallway (combat leftover from prior specs blocks go as "can't go that way").
     await awContext.page.bringToFront().catch(() => {});
-    await ensureStanding(awContext.page, 5000);
-    await executeCommand(awContext.page, 'go east');
-    await waitForMessage(awContext.page, /You (move|go) east|Eastern Hallway/i, 20000).catch(() => {});
-    await new Promise(r => setTimeout(r, 2000));
-
-    await awContext.page.bringToFront().catch(() => {});
-    await executeCommand(awContext.page, 'stand');
-    await new Promise(r => setTimeout(r, 1000));
-
-    await ensurePlayerInGame(awContext, 30000);
-    await expect(awContext.page.getByText(/Player:\s*ArkanWolfshade\b/i)).toBeVisible({ timeout: 15000 });
-    await awContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
-    await executeCommand(awContext.page, 'look');
-    try {
-      await waitForLookReflected(awContext.page);
-    } catch {
-      // Fall through to hallway assertion below.
-    }
-    // Hard proof of room split — bare Exits: matches foyer too and caused false isolation failures.
-    await expect(awContext.page.getByText(EASTERN_HALLWAY_LOOK_CUE).first()).toBeVisible({ timeout: 20000 });
+    await goEastFromFoyer(awContext.page);
     await ensureIthaquaInFoyer(ithaquaContext);
 
     // AW sends local message from different room; Ithaqua stays put.

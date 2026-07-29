@@ -16,7 +16,8 @@ class AttackCommand(BaseCommand):
     """Command for attacking a target."""
 
     command_type: Literal[CommandType.ATTACK] = CommandType.ATTACK
-    target: str | None = Field(None, min_length=1, max_length=50, description="Target to attack")
+    # Instance IDs (e.g. cultist_of_the_yellow_sign_...) exceed 50 chars.
+    target: str | None = Field(None, min_length=1, max_length=200, description="Target to attack")
 
     @field_validator("target")
     @classmethod
@@ -31,7 +32,7 @@ class PunchCommand(BaseCommand):
     """Command for punching a target."""
 
     command_type: Literal[CommandType.PUNCH] = CommandType.PUNCH
-    target: str | None = Field(None, min_length=1, max_length=50, description="Target to punch")
+    target: str | None = Field(None, min_length=1, max_length=200, description="Target to punch")
 
     @field_validator("target")
     @classmethod
@@ -46,7 +47,7 @@ class KickCommand(BaseCommand):
     """Command for kicking a target."""
 
     command_type: Literal[CommandType.KICK] = CommandType.KICK
-    target: str | None = Field(None, min_length=1, max_length=50, description="Target to kick")
+    target: str | None = Field(None, min_length=1, max_length=200, description="Target to kick")
 
     @field_validator("target")
     @classmethod
@@ -61,7 +62,7 @@ class StrikeCommand(BaseCommand):
     """Command for striking a target."""
 
     command_type: Literal[CommandType.STRIKE] = CommandType.STRIKE
-    target: str | None = Field(None, min_length=1, max_length=50, description="Target to strike")
+    target: str | None = Field(None, min_length=1, max_length=200, description="Target to strike")
 
     @field_validator("target")
     @classmethod
@@ -76,7 +77,7 @@ class TauntCommand(BaseCommand):
     """Command for taunting an NPC to draw aggro (ADR-016). Room-local only."""
 
     command_type: Literal[CommandType.TAUNT] = CommandType.TAUNT
-    target: str | None = Field(None, min_length=1, max_length=50, description="NPC to taunt")
+    target: str | None = Field(None, min_length=1, max_length=200, description="NPC to taunt")
 
     @field_validator("target")
     @classmethod

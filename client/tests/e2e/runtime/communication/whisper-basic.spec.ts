@@ -13,7 +13,6 @@ import { ensureE2eRuntimeReady } from '../fixtures/e2e-runtime-ready';
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
-  ensureMultiplayerCoLocated,
   ensurePlayerInGame,
   getPlayerMessages,
   waitForAllPlayersInGame,
@@ -62,13 +61,13 @@ test.describe('Whisper Basic', () => {
   });
 
   test('Ithaqua should receive AW whisper message', async () => {
-    test.setTimeout(300_000);
+    test.setTimeout(180_000);
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    await ensurePlayerInGame(awContext, 30000);
-    await ensurePlayerInGame(ithaquaContext, 30000);
-    await ensureMultiplayerCoLocated(contexts, { timeoutMs: 60000, coLocateTimeoutMs: 45000 });
+    await ensurePlayerInGame(awContext, 45000);
+    await ensurePlayerInGame(ithaquaContext, 45000);
+    // Whisper is not room-scoped; skip Occupants(2) co-locate (burns budget / kills Firefox tabs).
     await waitForPlayableUi(contexts);
     await nudgeStandBothPlayers(awContext, ithaquaContext);
     // Best-effort: linkdead clients may omit command_response on [data-message-text]; `look` below still primes UI.
@@ -120,13 +119,12 @@ test.describe('Whisper Basic', () => {
   });
 
   test('AW should receive Ithaqua whisper reply', async () => {
-    test.setTimeout(300_000);
+    test.setTimeout(180_000);
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    await ensurePlayerInGame(awContext, 30000);
-    await ensurePlayerInGame(ithaquaContext, 30000);
-    await ensureMultiplayerCoLocated(contexts, { timeoutMs: 60000, coLocateTimeoutMs: 45000 });
+    await ensurePlayerInGame(awContext, 45000);
+    await ensurePlayerInGame(ithaquaContext, 45000);
     await waitForPlayableUi(contexts);
     await nudgeStandBothPlayers(awContext, ithaquaContext);
     await ithaquaContext.page

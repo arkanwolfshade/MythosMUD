@@ -1,6 +1,8 @@
 """
 Extracted methods from ConnectionManager for better code organization.
 
+group: ConnectionManager facade impls (thin wrappers over trackers/delegates).
+
 This module contains methods that were extracted from ConnectionManager
 to reduce file complexity and improve maintainability.
 """
@@ -96,7 +98,8 @@ def get_error_statistics_impl(manager: Any) -> dict[str, Any]:
     result: dict[str, Any] = cast(
         dict[str, Any],
         manager.error_handler.get_error_statistics(
-            online_players=manager.online_players, player_websockets=manager.player_websockets
+            online_players=manager.online_players,
+            player_websockets=manager.player_websockets,
         ),
     )
     return result
@@ -182,7 +185,7 @@ def has_websocket_connection_impl(manager: Any, player_id: UUID) -> bool:
 
 def get_player_websocket_connection_id_impl(manager: Any, player_id: UUID) -> str | None:
     """Get the first WebSocket connection ID for a player (backward compatibility)."""
-    if player_id in manager.player_websockets and manager.player_websockets[player_id]:
+    if manager.player_websockets.get(player_id):
         result: str = cast(str, manager.player_websockets[player_id][0])
         return result
     return None
@@ -203,7 +206,10 @@ def get_connection_id_from_websocket_impl(manager: Any, websocket: WebSocket) ->
 
 
 async def broadcast_to_room_impl(
-    manager: Any, room_id: str, event: dict[str, Any], exclude_player: UUID | str | None = None
+    manager: Any,
+    room_id: str,
+    event: dict[str, Any],
+    exclude_player: UUID | str | None = None,
 ) -> dict[str, Any]:
     """Broadcast a message to all players in a room."""
     from .connection_delegates import delegate_message_broadcaster
@@ -247,7 +253,12 @@ async def broadcast_room_event_impl(
         result = await broadcast_to_room_impl(manager, room_id, event)
         return result
     except (DatabaseError, AttributeError) as e:
-        logger.error("Error broadcasting room event", error=str(e), event_type=event_type, room_id=room_id)
+        logger.error(
+            "Error broadcasting room event",
+            error=str(e),
+            event_type=event_type,
+            room_id=room_id,
+        )
         return {
             "room_id": room_id,
             "total_targets": 0,
@@ -287,14 +298,33 @@ async def broadcast_global_event_impl(manager: Any, event_type: str, data: dict[
 async def force_disconnect_player_impl(manager: Any, player_id: UUID) -> None:
     """Force disconnect a player from all connections (WebSocket only)."""
     from ..exceptions import DatabaseError
+    from .connection_disconnection import (
+        _cleanup_player_data,
+        _cleanup_room_subscriptions,
+        _track_disconnect_if_needed,
+    )
 
     try:
         logger.info("Force disconnecting player from all connections", player_id=player_id)
-        if player_id in manager.player_websockets:
+        has_sockets = bool(manager.player_websockets.get(player_id))
+        if has_sockets:
             await manager.disconnect_websocket(player_id, is_force_disconnect=True)
+        elif player_id in getattr(manager, "intentional_disconnects", set()):
+            # On-close may clear player_websockets before logout's force_disconnect runs.
+            # Still emit player_left_game and clear Occupants for intentional logout.
+            should_track = await _track_disconnect_if_needed(player_id, manager, True)
+            _cleanup_room_subscriptions(player_id, manager, True)
+            _cleanup_player_data(player_id, manager)
+            if should_track:
+                await manager._track_player_disconnected(player_id)  # pylint: disable=protected-access  # Reason: intentional logout must reuse presence leave path when sockets already gone
         logger.info("Player force disconnected from all connections", player_id=player_id)
     except (DatabaseError, AttributeError) as e:
-        logger.error("Error force disconnecting player", player_id=player_id, error=str(e), exc_info=True)
+        logger.error(
+            "Error force disconnecting player",
+            player_id=player_id,
+            error=str(e),
+            exc_info=True,
+        )
 
 
 async def disconnect_websocket_connection_impl(manager: Any, player_id: UUID, connection_id: str) -> bool:
@@ -401,7 +431,11 @@ def stop_health_checks_impl(manager: Any) -> None:
 
 
 async def detect_and_handle_error_state_impl(
-    manager: Any, player_id: UUID, error_type: str, error_details: str, connection_id: str | None = None
+    manager: Any,
+    player_id: UUID,
+    error_type: str,
+    error_details: str,
+    connection_id: str | None = None,
 ) -> dict[str, Any]:
     """Detect when a client is in an error state and handle it appropriately."""
     from .connection_delegates import delegate_error_handler
@@ -423,7 +457,11 @@ async def detect_and_handle_error_state_impl(
 
 
 async def handle_websocket_error_impl(
-    manager: Any, player_id: UUID, connection_id: str, error_type: str, error_details: str
+    manager: Any,
+    player_id: UUID,
+    connection_id: str,
+    error_type: str,
+    error_details: str,
 ) -> dict[str, Any]:
     """Handle WebSocket-specific errors."""
     from .connection_delegates import delegate_error_handler
@@ -431,7 +469,11 @@ async def handle_websocket_error_impl(
     return await delegate_error_handler(
         manager.error_handler,
         "handle_websocket_error",
-        {"player_id": player_id, "success": False, "errors": ["Error handler not initialized"]},
+        {
+            "player_id": player_id,
+            "success": False,
+            "errors": ["Error handler not initialized"],
+        },
         player_id,
         connection_id,
         error_type,
@@ -448,7 +490,11 @@ async def handle_authentication_error_impl(
     return await delegate_error_handler(
         manager.error_handler,
         "handle_authentication_error",
-        {"player_id": player_id, "success": False, "errors": ["Error handler not initialized"]},
+        {
+            "player_id": player_id,
+            "success": False,
+            "errors": ["Error handler not initialized"],
+        },
         player_id,
         error_type,
         error_details,
@@ -464,7 +510,11 @@ async def handle_security_violation_impl(
     return await delegate_error_handler(
         manager.error_handler,
         "handle_security_violation",
-        {"player_id": player_id, "success": False, "errors": ["Error handler not initialized"]},
+        {
+            "player_id": player_id,
+            "success": False,
+            "errors": ["Error handler not initialized"],
+        },
         player_id,
         violation_type,
         violation_details,
@@ -478,7 +528,11 @@ async def recover_from_error_impl(manager: Any, player_id: UUID, recovery_type: 
     return await delegate_error_handler(
         manager.error_handler,
         "recover_from_error",
-        {"player_id": player_id, "success": False, "errors": ["Error handler not initialized"]},
+        {
+            "player_id": player_id,
+            "success": False,
+            "errors": ["Error handler not initialized"],
+        },
         player_id,
         recovery_type,
     )
@@ -514,7 +568,10 @@ async def convert_room_players_uuids_to_names_impl(manager: Any, room_data: dict
     result: dict[str, Any] = cast(
         dict[str, Any],
         await delegate_game_state_provider(
-            manager.game_state_provider, "convert_room_uuids_to_names", room_data, room_data
+            manager.game_state_provider,
+            "convert_room_uuids_to_names",
+            room_data,
+            room_data,
         ),
     )
     return result
@@ -575,7 +632,11 @@ async def cleanup_dead_connections_impl(manager: Any, player_id: UUID | None = N
     return await delegate_connection_cleaner(
         manager.connection_cleaner,
         "cleanup_dead_connections",
-        {"players_checked": 0, "connections_cleaned": 0, "errors": ["Connection cleaner not initialized"]},
+        {
+            "players_checked": 0,
+            "connections_cleaned": 0,
+            "errors": ["Connection cleaner not initialized"],
+        },
         player_websockets=manager.player_websockets,
         active_websockets=manager.active_websockets,
         player_id=player_id,
@@ -619,7 +680,9 @@ def cleanup_ghost_players_impl(manager: Any) -> None:
     from .connection_delegates import delegate_connection_cleaner_sync
 
     delegate_connection_cleaner_sync(
-        manager.connection_cleaner, "cleanup_ghost_players", online_players=manager.online_players
+        manager.connection_cleaner,
+        "cleanup_ghost_players",
+        online_players=manager.online_players,
     )
 
 
@@ -705,7 +768,10 @@ def is_websocket_open_impl(_manager: Any, websocket: WebSocket) -> bool:
 
 
 async def safe_close_websocket_impl(
-    manager: Any, websocket: WebSocket, code: int = 1000, reason: str = "Connection closed"
+    manager: Any,
+    websocket: WebSocket,
+    code: int = 1000,
+    reason: str = "Connection closed",
 ) -> None:
     """Safely close a WebSocket connection."""
     import asyncio
@@ -782,13 +848,17 @@ def get_next_sequence_impl(manager: Any) -> int:
 
 async def subscribe_to_room_events_impl(manager: Any) -> None:
     """Subscribe to room movement events for occupant broadcasting."""
-    from .connection_event_helpers import subscribe_to_room_events_impl as subscribe_impl
+    from .connection_event_helpers import (
+        subscribe_to_room_events_impl as subscribe_impl,
+    )
 
     await subscribe_impl(manager)
 
 
 async def unsubscribe_from_room_events_impl(manager: Any) -> None:
     """Unsubscribe from room movement events."""
-    from .connection_event_helpers import unsubscribe_from_room_events_impl as unsubscribe_impl
+    from .connection_event_helpers import (
+        unsubscribe_from_room_events_impl as unsubscribe_impl,
+    )
 
     await unsubscribe_impl(manager)

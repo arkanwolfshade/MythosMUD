@@ -99,6 +99,26 @@ def test_chat_message_schema_content_validation():
         )
 
 
+def test_chat_message_schema_accepts_speaker_kind_and_party_id():
+    """DLQ-shaped system chat payloads must validate (speaker_kind / party_id)."""
+    timestamp = datetime.now(UTC).isoformat()
+    message = ChatMessageSchema(
+        message_id="msg_quest_complete",
+        timestamp=timestamp,
+        sender_id=None,
+        sender_name="System",
+        channel="system",
+        content="Quest completed: Collect Daisies",
+        room_id="earth_arkhamcity_sanitarium_room_foyer_001",
+        speaker_kind="system",
+        party_id=None,
+    )
+
+    assert message.speaker_kind == "system"
+    assert message.party_id is None
+    assert message.channel == "system"
+
+
 def test_event_message_schema():
     """Test EventMessageSchema can be instantiated."""
     timestamp = datetime.now(UTC).isoformat()

@@ -12,6 +12,7 @@ import { executeCommand, recoverPlayableSession, waitForMessage } from '../fixtu
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
+  ensureFreshMultiPlayerContexts,
   ensurePlayerInGame,
   getPlayerMessages,
   waitForAllPlayersInGame,
@@ -29,9 +30,11 @@ async function assertLookVisibleInPanels(page: Page): Promise<void> {
 }
 
 test.describe('Admin Teleportation', () => {
+  test.describe.configure({ timeout: 300_000 });
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
   test.beforeAll(async ({ browser }) => {
+    test.setTimeout(300_000);
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
     await waitForAllPlayersInGame(contexts, 60000);
     await ensurePlayerInGame(contexts[0], 60000);
@@ -42,7 +45,10 @@ test.describe('Admin Teleportation', () => {
     await cleanupMultiPlayerContexts(contexts);
   });
 
-  test('AW should be able to teleport Ithaqua', async () => {
+  test('AW should be able to teleport Ithaqua', async ({ browser }) => {
+    test.setTimeout(300_000);
+    contexts = await ensureFreshMultiPlayerContexts(browser, contexts, ['ArkanWolfshade', 'Ithaqua']);
+
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 

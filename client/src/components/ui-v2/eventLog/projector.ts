@@ -18,13 +18,38 @@ export { getInitialGameState };
 /**
  * Project a single event onto previous state. Pure function; no refs or side effects.
  */
+/** Keep connected self in room.players so Occupants never looks empty after settle. */
+function ensureSelfListedInRoomPlayers(state: GameState): GameState {
+  const name = state.player?.name?.trim();
+  const room = state.room;
+  if (!name || !room?.id) {
+    return state;
+  }
+  const players = room.players ?? [];
+  if (players.some(p => p.toLowerCase() === name.toLowerCase())) {
+    return state;
+  }
+  const nextPlayers = [...players, name];
+  const npcs = room.npcs ?? [];
+  return {
+    ...state,
+    room: {
+      ...room,
+      players: nextPlayers,
+      occupants: [...nextPlayers, ...npcs],
+      occupant_count: nextPlayers.length + npcs.length,
+    },
+  };
+}
+
 export function projectEvent(prevState: GameState, event: GameEvent): GameState {
   const eventType = (event.event_type ?? '').toString().trim().toLowerCase();
   if (!PROJECTED_EVENT_TYPES.has(eventType)) {
     return prevState;
   }
   const handler = HANDLERS[eventType];
-  return handler ? handler(prevState, event) : prevState;
+  const next = handler ? handler(prevState, event) : prevState;
+  return ensureSelfListedInRoomPlayers(next);
 }
 
 /**

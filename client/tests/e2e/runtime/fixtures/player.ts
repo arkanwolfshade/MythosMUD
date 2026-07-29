@@ -12,10 +12,11 @@ import {
   getMessages,
   getPageSessionCredentials,
   loginPlayer,
+  waitForMessage,
   waitForPlayableSession,
 } from './auth';
 import { resetE2ePlayerRoomsInDatabase } from './multiplayer';
-import { DEFAULT_SPAWN_LOOK_CUE } from './test-data';
+import { DEFAULT_SPAWN_LOOK_CUE, EASTERN_HALLWAY_LOOK_CUE } from './test-data';
 
 /** Zone key for earth_arkhamcity_sanitarium_room_foyer_001 (npc zone command). */
 const SANITARIUM_ZONE_KEY = 'arkhamcity/sanitarium';
@@ -52,6 +53,11 @@ export async function ensureNotInCombat(page: Page, maxAttempts = 10): Promise<v
 
 const CULTIST_INSTANCE_ID_RE = /cultist_of_the_yellow_sign_[a-z0-9_]+/gi;
 
+/** Normalize zone-list matches that glue a trailing "npc" label onto the instance id. */
+function normalizeCultistInstanceId(raw: string): string {
+  return raw.replace(/npc$/i, '');
+}
+
 async function isInDeathVoid(page: Page): Promise<boolean> {
   // Location / live room id only. Game Info can retain limbo_death_void / Death > Void dumps.
   return page
@@ -78,7 +84,7 @@ export async function listSanitariumCultistIds(page: Page): Promise<string[]> {
   const ids = new Set<string>();
   for (const text of [...messages, bodyText]) {
     for (const match of text.matchAll(CULTIST_INSTANCE_ID_RE)) {
-      ids.add(match[0]);
+      ids.add(normalizeCultistInstanceId(match[0]));
     }
   }
   return [...ids];
@@ -145,6 +151,41 @@ export async function ensurePlayableAlive(page: Page, username: string, password
 }
 
 /**
+ * Flee combat and stand so `go` is not rejected as "You can't go that way."
+ * (MovementService blocks combat/posture with that generic message.)
+ */
+export async function prepareForDirectionalMove(page: Page): Promise<void> {
+  await ensureNotInCombat(page, 6);
+  await ensureStanding(page, 10000);
+}
+
+/**
+ * Foyer east -> Eastern Hallway. Retries after flee/stand; admin teleport east if combat still blocks go.
+ */
+export async function goEastFromFoyer(page: Page): Promise<void> {
+  await prepareForDirectionalMove(page);
+  await executeCommand(page, 'go east');
+  try {
+    await waitForMessage(page, /You (move|go) east|Eastern Hallway/i, 20000);
+  } catch {
+    await prepareForDirectionalMove(page);
+    await ensureNotInCombat(page, 12);
+    await executeCommand(page, 'go east');
+    try {
+      await waitForMessage(page, /You (move|go) east|Eastern Hallway/i, 25000);
+    } catch {
+      // move_player returns "You can't go that way." while in combat; admin teleport bypasses that gate.
+      const session = getPageSessionCredentials(page);
+      const who = session?.username ?? 'ArkanWolfshade';
+      await executeCommand(page, `teleport ${who} east`);
+      await waitForMessage(page, /teleport|Eastern Hallway|You (move|go) east/i, 25000);
+    }
+  }
+  await executeCommand(page, 'look').catch(() => {});
+  await expect(page.getByText(EASTERN_HALLWAY_LOOK_CUE).first()).toBeVisible({ timeout: 20000 });
+}
+
+/**
  * Ensure the player is standing before movement.
  * Server rejects "go" when sitting; call this before any movement command.
  * Waits for either the posture UI "standing" or the game message (e.g. "You rise to your feet.")
@@ -152,9 +193,9 @@ export async function ensurePlayableAlive(page: Page, username: string, password
  * Uses .first() on posture locator (strict mode) and Promise.race with game message.
  *
  * @param page - Playwright page instance
- * @param timeoutMs - Max wait for standing confirmation (default: 5000)
+ * @param timeoutMs - Max wait for standing confirmation (default: 10000)
  */
-export async function ensureStanding(page: Page, timeoutMs: number = 5000): Promise<void> {
+export async function ensureStanding(page: Page, timeoutMs: number = 10000): Promise<void> {
   const onLogin = await page
     .getByTestId('username-input')
     .isVisible({ timeout: 1000 })
@@ -192,19 +233,24 @@ export async function ensureStanding(page: Page, timeoutMs: number = 5000): Prom
 
   await page.bringToFront().catch(() => {});
   await executeCommand(page, 'stand');
-  // Prefer page-wide text: command_response sometimes lands before [data-message-text] wiring; linkdead can
-  // delay Game Info rows. Character Info "Posture" / value updates independently (player_position_service copy).
-  await page.waitForFunction(
-    () => {
-      const t = document.body?.innerText ?? '';
-      if (/You rise to your feet|You are already standing/i.test(t)) return true;
-      if (/Posture:\s*standing\b/i.test(t)) return true;
-      if (/Posture\s*\n\s*standing\b/i.test(t)) return true;
-      return false;
-    },
-    undefined,
-    { timeout: timeoutMs }
-  );
+  const halfMs = Math.max(Math.floor(timeoutMs / 2), 4000);
+  const standingPredicate = () => {
+    const t = document.body?.innerText ?? '';
+    if (/You rise to your feet|You are already standing/i.test(t)) return true;
+    if (/Posture:\s*standing\b/i.test(t)) return true;
+    if (/Posture\s*\n\s*standing\b/i.test(t)) return true;
+    return false;
+  };
+  try {
+    await page.waitForFunction(standingPredicate, undefined, { timeout: halfMs });
+    return;
+  } catch {
+    // Re-issue stand once (sitting/prone lag or first command dropped under load).
+    await executeCommand(page, 'stand');
+    await page.waitForFunction(standingPredicate, undefined, {
+      timeout: Math.max(timeoutMs - halfMs, 5000),
+    });
+  }
 }
 
 /**

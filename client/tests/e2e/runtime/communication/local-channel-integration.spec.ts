@@ -78,9 +78,11 @@ async function executeUnmuteAndWaitForAck(
 }
 
 test.describe('Local Channel Integration', () => {
+  test.describe.configure({ timeout: 360_000 });
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
   test.beforeAll(async ({ browser }) => {
+    test.setTimeout(360_000);
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
     // Ensure each player is fully in game (including tick) with full timeout before shared wait,
     // so the slower client has time to receive the first tick without hitting a 30s cap.

@@ -152,13 +152,23 @@ class NPCInstanceService:
             Dictionary with despawn result information
 
         Raises:
-            ValueError: If NPC not found
             RuntimeError: If despawning fails
         """
         try:
-            # Check if NPC exists
+            # Idempotent: missing instance is success (E2E races / double despawn).
             if npc_id not in self.lifecycle_manager.active_npcs:
-                raise ValueError(f"NPC instance {npc_id} not found")
+                logger.debug(
+                    "Despawn requested for missing NPC instance (already gone)",
+                    npc_id=npc_id,
+                    reason=reason,
+                )
+                return {
+                    "success": True,
+                    "npc_id": npc_id,
+                    "npc_name": "Unknown",
+                    "room_id": "Unknown",
+                    "message": f"NPC instance {npc_id} already despawned or not found",
+                }
 
             # Get NPC info before despawning
             npc_instance = self.lifecycle_manager.active_npcs[npc_id]
@@ -318,7 +328,11 @@ class NPCInstanceService:
                 if npc_id in self.lifecycle_manager.lifecycle_records:
                     record = self.lifecycle_manager.lifecycle_records[npc_id]
                     spawn_time = getattr(record, "spawn_time", getattr(record, "created_at", None))
-                    last_activity = getattr(record, "last_activity", getattr(record, "last_active_time", None))
+                    last_activity = getattr(
+                        record,
+                        "last_activity",
+                        getattr(record, "last_active_time", None),
+                    )
                     instance_info.update(
                         {
                             "lifecycle_state": record.current_state.value,
@@ -520,7 +534,11 @@ class NPCInstanceService:
                 "last_update": "2025-01-01T12:00:00Z",  # Could be made dynamic
             }
 
-            logger.info("Retrieved NPC system stats", active_npcs=active_npcs, system_status=system_status)
+            logger.info(
+                "Retrieved NPC system stats",
+                active_npcs=active_npcs,
+                system_status=system_status,
+            )
             return stats
 
         except Exception as e:
@@ -553,7 +571,12 @@ class NPCInstanceService:
             return "unknown/unknown"
 
         except (OSError, ValueError, TypeError) as e:
-            logger.error("Error getting NPC location", room_id=room_id, error=str(e), error_type=type(e).__name__)
+            logger.error(
+                "Error getting NPC location",
+                room_id=room_id,
+                error=str(e),
+                error_type=type(e).__name__,
+            )
             return "unknown/unknown"
 
 

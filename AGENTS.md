@@ -330,13 +330,18 @@ Use uv for Python dependency management (required)
 
 ## Git workflow
 
-### Branch management protocol
+### Branch and worktree management protocol
 
-1. **Session Start**: Run `git branch --show-current` and commit to memory
-2. **Pre-Operation Check**: Before ANY git command, verify current branch
-3. **Permission Required**: Never switch branches without explicit user permission
-4. **Error Recovery**: If drift detected, immediately switch back and apologize
-5. **Verification**: After any branch operation, confirm we're on correct branch
+1. **Session Start**: Run `git branch --show-current` (and note repo root / worktree
+   path) and commit to memory
+2. **Pre-Operation Check**: Before ANY git command, verify current branch and that
+   edits target the approved working tree
+3. **Permission Required**: Never switch branches **or** create / remove / change
+   Git worktrees without explicit user permission. Never redirect work into another
+   worktree than the active Cursor root unless the user explicitly directed that.
+4. **Error Recovery**: If branch or worktree drift is detected, immediately return to
+   the approved branch/tree and apologize
+5. **Verification**: After any branch or worktree operation, confirm branch and path
 
 ### Commit message style
 
@@ -646,9 +651,9 @@ jobs:
 - In design docs: use snake_case (underscores) for technical names, not asterisks
 - When branch coverage is hard to reach (optional chaining, debug paths): lowering the per-file threshold (e.g.
   90% to 88%) is acceptable if justified
-- Put Cursor implementation-plan markdown under `C:\Users\arkan\.cursor\plans` when the user asks for that location; for
-  substantial implementation plans, include step 0 to create a new git worktree from the current branch for the work
-  when the user wants that workflow
+- Put Cursor implementation-plan markdown under `C:\Users\arkan\.cursor\plans` when the user asks for that location
+- Never create, remove, or switch Git worktrees without explicit user permission (same bar as branch switches); plans may
+  _propose_ a worktree step, but do not execute it unless the user approves; default is stay on the current working tree
 - For basedpyright `reportAny` in Python tests without file-level `reportAny` suppression, prefer typed locals (for
   example `svc: AsyncMock = AsyncMock()` or `persistence: MagicMock = MagicMock()`) assigned onto handler-shaped mocks
   instead of only `handler.svc = AsyncMock()`

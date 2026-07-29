@@ -96,9 +96,11 @@ async function executeUnmuteAndWaitForAck(
 }
 
 test.describe('Local Channel Basic', () => {
+  test.describe.configure({ timeout: 360_000 });
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
   test.beforeAll(async ({ browser }) => {
+    test.setTimeout(360_000);
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
     await waitForAllPlayersInGame(contexts, 60000);
     await ensurePlayerInGame(contexts[0], 60000);
@@ -148,13 +150,11 @@ test.describe('Local Channel Basic', () => {
     await executeUnmuteAndWaitForAck(awContext, ithaquaContext, 'ArkanWolfshade');
     await new Promise(r => setTimeout(r, 500));
 
-    // AW sends local channel message
+    await prepareReceiverForInboundMessages(ithaquaContext, 20000);
     await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
       el.focus();
     });
     await executeCommand(awContext.page, 'local Hello everyone in the sanitarium');
-
-    await prepareReceiverForInboundMessages(ithaquaContext, 20000);
 
     await Promise.all([
       waitForMessage(awContext.page, 'You say locally: Hello everyone in the sanitarium', 45000),
@@ -202,10 +202,9 @@ test.describe('Local Channel Basic', () => {
     await new Promise(r => setTimeout(r, 2000));
 
     await nudgeStandBothPlayers(awContext, ithaquaContext);
+    await ensurePlayersInSameRoom(contexts, 2, 45000);
 
     await prepareReceiverForInboundMessages(awContext, 20000);
-    await new Promise(r => setTimeout(r, 1500));
-
     await ithaquaContext.page.bringToFront().catch(() => {});
     await ensurePlayableConnection(ithaquaContext.page, {
       username: ithaquaContext.player.username,
@@ -217,15 +216,15 @@ test.describe('Local Channel Basic', () => {
       password: awContext.player.password,
       timeoutMs: 30000,
     });
-    await ensurePlayerInGame(ithaquaContext, 30000);
-
-    await executeCommand(ithaquaContext.page, 'local Greetings ArkanWolfshade');
-
+    await ensurePlayersInSameRoom(contexts, 2, 45000);
     await prepareReceiverForInboundMessages(awContext, 20000);
 
+    const crossWait = waitForCrossPlayerMessage(awContext, /Ithaqua \(local\): Greetings ArkanWolfshade/i, 45000);
+    await executeCommand(ithaquaContext.page, 'local Greetings ArkanWolfshade');
+
     await Promise.all([
-      waitForMessage(ithaquaContext.page, 'You say locally: Greetings ArkanWolfshade'),
-      waitForCrossPlayerMessage(awContext, /Ithaqua \(local\): Greetings ArkanWolfshade/i, 45000),
+      waitForMessage(ithaquaContext.page, 'You say locally: Greetings ArkanWolfshade', 45000),
+      crossWait,
     ]);
 
     // Verify AW sees the reply

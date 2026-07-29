@@ -16,11 +16,15 @@ import { expect, type Browser, type BrowserContext, type Page } from '@playwrigh
 import { E2E_PROJECT_ROOT, loadE2eEnv } from '../../../../src/test/e2e-bootstrap';
 import { MotdPage } from '../pages';
 import {
+  assertNoRestDisconnectPollution,
   ensurePlayableConnection,
   executeCommand,
   executeCommandTrusted,
+  getLivePageForUsername,
   loginPlayer,
   logoutPlayer,
+  rememberPageSession,
+  reopenClosedPage,
   waitForPlayableSession,
 } from './auth';
 import type { OccupantsSnapshot } from './multiplayer-browser-helpers';
@@ -73,6 +77,31 @@ export interface PlayerContext {
   context: BrowserContext;
   page: Page;
   player: TestPlayer;
+}
+
+/**
+ * If the Firefox page/context died mid-suite, open a fresh page on the same context and re-login.
+ * Mutates playerContext.page so callers holding the context object see the new page.
+ */
+export async function reopenPlayerPageIfClosed(playerContext: PlayerContext): Promise<void> {
+  const live = getLivePageForUsername(playerContext.player.username);
+  if (live) {
+    playerContext.page = live;
+    playerContext.context = live.context();
+    rememberPageSession(live, playerContext.player.username, playerContext.player.password);
+    return;
+  }
+  if (!playerContext.page.isClosed()) {
+    rememberPageSession(playerContext.page, playerContext.player.username, playerContext.player.password);
+    return;
+  }
+  playerContext.page = await reopenClosedPage(
+    playerContext.page,
+    playerContext.player.username,
+    playerContext.player.password,
+    45000
+  );
+  playerContext.context = playerContext.page.context();
 }
 
 /**
@@ -137,6 +166,9 @@ export async function cleanupMultiPlayerContexts(contexts: PlayerContext[] | und
     return;
   }
   for (const { page } of contexts) {
+    if (page.isClosed()) {
+      continue;
+    }
     // spaFallback: afterAll must not hang 90s when Exit is disabled in void/ward.
     await logoutPlayer(page, 25000, { spaFallback: true }).catch(() => {});
     await page
@@ -149,6 +181,38 @@ export async function cleanupMultiPlayerContexts(contexts: PlayerContext[] | und
       // Ignore errors during cleanup
     });
   }
+}
+
+/**
+ * Recreate multiplayer contexts when pages/browsers died or a player landed on login.
+ * Keeps conditionals out of Playwright test bodies (playwright/no-conditional-in-test).
+ */
+export async function ensureFreshMultiPlayerContexts(
+  browser: Browser,
+  contexts: PlayerContext[],
+  playerUsernames: string[],
+  waitMs: number = 60000
+): Promise<PlayerContext[]> {
+  let needsFresh = contexts.some(c => c.page.isClosed()) || contexts.some(c => !c.context.browser()?.isConnected());
+  if (!needsFresh) {
+    for (const c of contexts) {
+      const onLogin = await c.page
+        .getByTestId('username-input')
+        .isVisible({ timeout: 1500 })
+        .catch(() => false);
+      if (onLogin) {
+        needsFresh = true;
+        break;
+      }
+    }
+  }
+  if (!needsFresh) {
+    return contexts;
+  }
+  await cleanupMultiPlayerContexts(contexts).catch(() => {});
+  const next = await createMultiPlayerContexts(browser, playerUsernames);
+  await waitForAllPlayersInGame(next, waitMs);
+  return next;
 }
 
 async function waitForPlayerGameUi(page: Page, username: string, timeoutMs: number): Promise<void> {
@@ -316,8 +380,16 @@ export async function waitForAllPlayersInGame(
  * @param timeoutMs - Max wait in milliseconds (default: 60000)
  */
 export async function ensurePlayerInGame(playerContext: PlayerContext, timeoutMs: number = 60000): Promise<void> {
-  const { page, player } = playerContext;
-  await waitForPlayableSession(page, Math.min(timeoutMs, 30000)).catch(() => {});
+  await reopenPlayerPageIfClosed(playerContext);
+  const { player } = playerContext;
+  // Relogin when still on the login screen; waiting alone leaves AW stuck after prior serial teardown.
+  playerContext.page = await ensurePlayableConnection(playerContext.page, {
+    username: player.username,
+    password: player.password,
+    timeoutMs: Math.min(timeoutMs, 45000),
+  });
+  playerContext.context = playerContext.page.context();
+  const { page } = playerContext;
   await waitForPlayerGameUi(page, player.username, timeoutMs);
   await waitForPlayerWebSocket(page, player.username, timeoutMs);
   await waitForPlayerRoomSubscription(page, player.username, timeoutMs);
@@ -361,8 +433,10 @@ export async function prepareReceiverForInboundMessages(
   playerContext: PlayerContext,
   timeoutMs: number = 20000
 ): Promise<void> {
+  await reopenPlayerPageIfClosed(playerContext);
   const { page, player } = playerContext;
   await page.bringToFront().catch(() => {});
+  await assertNoRestDisconnectPollution(page);
 
   const onLogin = await page
     .getByTestId('username-input')
@@ -371,6 +445,7 @@ export async function prepareReceiverForInboundMessages(
   if (onLogin) {
     await loginPlayer(page, player.username, player.password);
     await ensurePlayerInGame(playerContext, timeoutMs);
+    await assertNoRestDisconnectPollution(page);
     return;
   }
 
@@ -380,6 +455,7 @@ export async function prepareReceiverForInboundMessages(
     password: player.password,
     timeoutMs,
   }).catch(() => {});
+  await assertNoRestDisconnectPollution(page);
 }
 
 /**
@@ -483,28 +559,41 @@ export async function ensurePlayersInSameRoom(
   expectedOccupants: number = contexts.length,
   timeoutMs: number = 45000
 ): Promise<void> {
+  for (const ctx of contexts) {
+    await reopenPlayerPageIfClosed(ctx);
+    await assertNoRestDisconnectPollution(ctx.page);
+  }
+
   // Step 0: Wait for all players' header connection status to show "Connected" (same as waitForAllPlayersInGame).
   // Do not require absence of "(linkdead)" in the whole body: the Occupants panel can show "Name (linkdead)"
   // even when the header already shows "Connected", which would otherwise block this step forever.
   const linkdeadWaitMs = Math.min(25000, timeoutMs);
   await Promise.all(
-    contexts.map(({ page, player }) =>
-      ensurePlayableConnection(page, {
-        username: player.username,
-        password: player.password,
-        timeoutMs: linkdeadWaitMs,
-      }).catch(err => {
+    contexts.map(async ctx => {
+      await reopenPlayerPageIfClosed(ctx);
+      try {
+        ctx.page = await ensurePlayableConnection(ctx.page, {
+          username: ctx.player.username,
+          password: ctx.player.password,
+          timeoutMs: linkdeadWaitMs,
+        });
+        ctx.context = ctx.page.context();
+      } catch (err) {
         const msg =
-          `[instrumentation] ensurePlayersInSameRoom failed: Player ${player.username} - ` +
+          `[instrumentation] ensurePlayersInSameRoom failed: Player ${ctx.player.username} - ` +
           `Step 0: header still not Connected within ${linkdeadWaitMs}ms`;
         console.error(msg, err);
-        throw new Error(msg);
-      })
-    )
+        throw new Error(msg, { cause: err });
+      }
+    })
   );
 
+  for (const ctx of contexts) {
+    await assertNoRestDisconnectPollution(ctx.page);
+  }
+
   // Step 1: Wait for all players to see the expected number of occupants in their room
-  // Detection supports: OccupantsPanel title "Occupants (n)", content "Players (n)", or RoomInfoPanel "Occupants (n):"
+  // Detection supports: OccupantsPanel title "Occupants (n)", content "Players (n)", or RoomInfoPane "Occupants (n):"
   await Promise.all(
     contexts.map(({ page, player }) =>
       page
@@ -540,6 +629,29 @@ export async function ensurePlayersInSameRoom(
     })
   );
 
+  // Step 3: look-based mutual presence (server look text) — catches Occupants UI vs room mismatch.
+  await Promise.all(
+    contexts.map(async ctx => {
+      const expectedNames = getOtherUsernames(ctx);
+      if (expectedNames.length === 0) return;
+      await executeCommandTrusted(ctx.page, 'look');
+      await ctx.page
+        .waitForFunction(
+          (names: string[]) => {
+            const t = document.body?.innerText ?? '';
+            return names.every(n => t.toLowerCase().includes(n.toLowerCase()));
+          },
+          expectedNames,
+          { timeout: Math.min(15000, timeoutMs) }
+        )
+        .catch(() => {
+          throw new Error(
+            `ensurePlayersInSameRoom: Player ${ctx.player.username} look did not list ${expectedNames.join(', ')}`
+          );
+        });
+    })
+  );
+
   // Brief stability wait after all players see each other and are connected
   await new Promise(resolve => setTimeout(resolve, 1000));
 }
@@ -552,7 +664,7 @@ export interface EnsureMultiplayerCoLocatedOptions {
 }
 
 const TELEPORT_SETTLE_BASE_MS = 6000;
-const MAX_COLOCATE_ATTEMPTS = 5;
+const MAX_COLOCATE_ATTEMPTS = 3;
 
 /**
  * Reset E2E player rows in mythos_e2e (same script as global-teardown).
@@ -603,8 +715,10 @@ export async function waitForLookReflectedInUi(page: Page, timeoutMs: number = 4
 
 async function resyncE2ePlayersAfterDatabaseReset(contexts: PlayerContext[], timeoutMs: number): Promise<void> {
   for (const ctx of contexts) {
+    await reopenPlayerPageIfClosed(ctx);
     await ctx.page.bringToFront().catch(() => {});
     await logoutPlayer(ctx.page, Math.min(timeoutMs, 60000)).catch(() => {});
+    await reopenPlayerPageIfClosed(ctx);
     await loginPlayer(ctx.page, ctx.player.username, ctx.player.password);
     await ensurePlayerInGame(ctx, timeoutMs);
 
@@ -670,17 +784,22 @@ async function runCoLocateTeleportAttempt(
   attempt: number,
   timeoutMs: number
 ): Promise<void> {
-  if (attempt >= 1) {
+  if (attempt >= 2) {
     resetE2ePlayerRoomsInDatabase();
     await resyncE2ePlayersAfterDatabaseReset(contexts, timeoutMs);
   }
 
+  for (const ctx of contexts) {
+    await reopenPlayerPageIfClosed(ctx);
+  }
+
   await awContext.page.bringToFront().catch(() => {});
-  await ensurePlayableConnection(awContext.page, {
+  awContext.page = await ensurePlayableConnection(awContext.page, {
     username: awContext.player.username,
     password: awContext.player.password,
     timeoutMs: 30000,
   });
+  awContext.context = awContext.page.context();
   // Admin-only: move AW to the other character before bringing them together (Ithaqua cannot teleport).
   await executeCommand(awContext.page, `goto ${otherCharName}`);
   await new Promise(r => setTimeout(r, 2000));
@@ -688,36 +807,42 @@ async function runCoLocateTeleportAttempt(
   await new Promise(r => setTimeout(r, TELEPORT_SETTLE_BASE_MS + attempt * 2000));
 
   for (const ctx of contexts) {
+    await reopenPlayerPageIfClosed(ctx);
     await ctx.page.bringToFront().catch(() => {});
-    await ensurePlayableConnection(ctx.page, {
+    ctx.page = await ensurePlayableConnection(ctx.page, {
       username: ctx.player.username,
       password: ctx.player.password,
       timeoutMs: 30000,
     });
+    ctx.context = ctx.page.context();
     await executeCommandTrusted(ctx.page, 'look');
     await new Promise(r => setTimeout(r, 2000));
   }
 
   // Wait until grace-period copy clears from Game Info (helper returns true when absent).
   await Promise.all(
-    contexts.map(({ page, player }) =>
-      page
+    contexts.map(async ctx => {
+      await reopenPlayerPageIfClosed(ctx);
+      await ctx.page
         .waitForFunction(() => window.__mythosE2eIsDisconnectedBannerVisible?.() === true, undefined, {
           timeout: 15_000,
         })
-        .catch(() => {})
-        .then(() =>
-          ensurePlayableConnection(page, {
-            username: player.username,
-            password: player.password,
-            timeoutMs: 35_000,
-          })
-        )
-        .catch(() => {})
-    )
+        .catch(() => {});
+      try {
+        ctx.page = await ensurePlayableConnection(ctx.page, {
+          username: ctx.player.username,
+          password: ctx.player.password,
+          timeoutMs: 35_000,
+        });
+        ctx.context = ctx.page.context();
+      } catch {
+        // Co-locate retry handles residual linkdead.
+      }
+    })
   );
 
   for (const ctx of contexts) {
+    await reopenPlayerPageIfClosed(ctx);
     await ctx.page.bringToFront().catch(() => {});
     await executeCommandTrusted(ctx.page, 'look');
     await new Promise(r => setTimeout(r, 500));
@@ -777,14 +902,19 @@ export async function ensureMultiplayerCoLocated(
 
   await retryCoLocateUntilSameRoom(awContext, otherContext, contexts, otherCharName, coLocateTimeoutMs, timeoutMs);
 
+  for (const c of contexts) {
+    await reopenPlayerPageIfClosed(c);
+  }
+
   await Promise.all(
-    contexts.map(c =>
-      ensurePlayableConnection(c.page, {
+    contexts.map(async c => {
+      c.page = await ensurePlayableConnection(c.page, {
         username: c.player.username,
         password: c.player.password,
         timeoutMs: coLocateTimeoutMs,
-      })
-    )
+      });
+      c.context = c.page.context();
+    })
   );
 
   await new Promise(r => setTimeout(r, 1000));

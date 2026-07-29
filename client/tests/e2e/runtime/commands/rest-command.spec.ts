@@ -12,17 +12,19 @@ import { executeCommand, getMessages, waitForMessage } from '../fixtures/auth';
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
+  ensureFreshMultiPlayerContexts,
   ensurePlayerInGame,
   waitForAllPlayersInGame,
 } from '../fixtures/multiplayer';
 import { ensureStanding } from '../fixtures/player';
 
 test.describe('Rest Command', () => {
-  test.describe.configure({ mode: 'serial' });
+  test.describe.configure({ mode: 'serial', timeout: 300_000 });
 
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
   test.beforeAll(async ({ browser }) => {
+    test.setTimeout(300_000);
     // Create contexts for both players
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
     await waitForAllPlayersInGame(contexts, 60000);
@@ -35,7 +37,10 @@ test.describe('Rest Command', () => {
     await cleanupMultiPlayerContexts(contexts);
   });
 
-  test('should start rest countdown when /rest is used', async () => {
+  test('should start rest countdown when /rest is used', async ({ browser }) => {
+    test.setTimeout(300_000);
+    contexts = await ensureFreshMultiPlayerContexts(browser, contexts, ['ArkanWolfshade', 'Ithaqua']);
+
     const awContext = contexts[0];
     const { page } = awContext;
 

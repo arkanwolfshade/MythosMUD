@@ -10,7 +10,11 @@ import pytest
 
 from server.events.event_bus import EventBus
 from server.models.npc import NPCDefinition
-from server.npc.lifecycle_manager import NPCLifecycleManager, NPCLifecycleRecord, NPCLifecycleState
+from server.npc.lifecycle_manager import (
+    NPCLifecycleManager,
+    NPCLifecycleRecord,
+    NPCLifecycleState,
+)
 from server.npc.population_control import NPCPopulationController
 from server.npc.spawning_service import NPCSpawningService
 from server.services.npc_instance_service import (
@@ -52,7 +56,12 @@ def mock_event_bus():
 
 
 @pytest.fixture
-def npc_instance_service(mock_lifecycle_manager, mock_spawning_service, mock_population_controller, mock_event_bus):
+def npc_instance_service(
+    mock_lifecycle_manager,
+    mock_spawning_service,
+    mock_population_controller,
+    mock_event_bus,
+):
     """Create NPCInstanceService instance."""
     return NPCInstanceService(
         lifecycle_manager=mock_lifecycle_manager,
@@ -101,7 +110,10 @@ def sample_lifecycle_record():
 
 @pytest.mark.asyncio
 async def test_npc_instance_service_init(
-    mock_lifecycle_manager, mock_spawning_service, mock_population_controller, mock_event_bus
+    mock_lifecycle_manager,
+    mock_spawning_service,
+    mock_population_controller,
+    mock_event_bus,
 ):
     """Test NPCInstanceService initialization."""
     service = NPCInstanceService(
@@ -203,11 +215,14 @@ async def test_despawn_npc_instance_success(npc_instance_service, sample_npc_ins
 
 @pytest.mark.asyncio
 async def test_despawn_npc_instance_not_found(npc_instance_service):
-    """Test despawn_npc_instance() raises ValueError when NPC not found."""
+    """Test despawn_npc_instance() is idempotent when NPC not found."""
     npc_instance_service.lifecycle_manager.active_npcs = {}
 
-    with pytest.raises(ValueError, match="NPC instance npc_123 not found"):
-        await npc_instance_service.despawn_npc_instance("npc_123")
+    result = await npc_instance_service.despawn_npc_instance("npc_123")
+
+    assert result["success"] is True
+    assert result["npc_id"] == "npc_123"
+    npc_instance_service.lifecycle_manager.despawn_npc.assert_not_called()
 
 
 @pytest.mark.asyncio
@@ -494,13 +509,19 @@ def test_get_npc_instance_service_not_initialized():
 
 def test_get_npc_instance_service_success(npc_instance_service):
     """Test get_npc_instance_service() returns service when initialized."""
-    with patch("server.services.npc_instance_service._npc_instance_service_storage", [npc_instance_service]):
+    with patch(
+        "server.services.npc_instance_service._npc_instance_service_storage",
+        [npc_instance_service],
+    ):
         result = get_npc_instance_service()
         assert result == npc_instance_service
 
 
 def test_initialize_npc_instance_service(
-    mock_lifecycle_manager, mock_spawning_service, mock_population_controller, mock_event_bus
+    mock_lifecycle_manager,
+    mock_spawning_service,
+    mock_population_controller,
+    mock_event_bus,
 ):
     """Test initialize_npc_instance_service() initializes service."""
     with patch("server.services.npc_instance_service._npc_instance_service_storage", [None]):

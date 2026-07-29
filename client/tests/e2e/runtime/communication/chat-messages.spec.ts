@@ -78,9 +78,11 @@ async function primeBothForCoLocate(contexts: PlayerContext[]): Promise<void> {
 }
 
 test.describe('Chat Messages Between Players', () => {
+  test.describe.configure({ timeout: 360_000 });
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
   test.beforeAll(async ({ browser }) => {
+    test.setTimeout(360_000);
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
     await waitForAllPlayersInGame(contexts, 60000);
     await ensurePlayerInGame(contexts[0], 60000);

@@ -201,6 +201,11 @@ async def cleanup_websocket_disconnect(
             )
 
             if player_id not in manager.player_websockets:
+                # Intentional logout can race with on-close clearing sockets; still track leave.
+                if player_id in getattr(manager, "intentional_disconnects", set()):
+                    should_track_disconnect = await _track_disconnect_if_needed(player_id, manager, is_force_disconnect)
+                    _cleanup_room_subscriptions(player_id, manager, is_force_disconnect)
+                    _cleanup_player_data(player_id, manager)
                 return should_track_disconnect
 
             connection_ids = manager.player_websockets[player_id].copy()

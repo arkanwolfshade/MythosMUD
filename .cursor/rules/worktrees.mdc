@@ -57,6 +57,17 @@ Branches and worktrees should have matching, predictable names:
 
 This makes it trivial to see which directory belongs to which branch and task.
 
+## Permission Required (same bar as branch switches)
+
+- **Never** create, add, remove, force-remove, or otherwise change Git worktrees
+  without **explicit user permission** in the current conversation.
+- **Never** redirect edits into a different worktree path than the user's active
+  Cursor window / stated task root unless they explicitly told you to work there.
+- Plans and skills that mention "step 0: create a worktree" are **proposals only**
+  until the user approves creating that worktree. Default: stay on the current tree.
+- If drift into another worktree is detected: stop, return to the approved tree,
+  and apologize.
+
 ## Behavioral Conventions
 
 - **One task per worktree**:
@@ -88,7 +99,8 @@ This makes it trivial to see which directory belongs to which branch and task.
 
 ## Creating a New Worktree
 
-When starting a new task:
+Only after the user explicitly asks to create a worktree (or explicitly approves
+a plan step that creates one). Then:
 
 1. Choose a kind and slug:
    - `kind`: `feature`, `bugfix`, `refactor`, `spike`, or `chore`.
@@ -118,9 +130,9 @@ work.
 
 ### Create
 
-- Create a worktree when:
+- Create a worktree **only with explicit user permission**, and when:
   - You start work on a new feature, bugfix, refactor, spike, or chore that
-    merits its own branch.
+    merits its own branch **and** the user asked for a separate worktree.
 - Use the naming rules above to create:
   - A new branch on the canonical repo.
   - A new worktree under `f:/MythosMUD-worktrees/`.

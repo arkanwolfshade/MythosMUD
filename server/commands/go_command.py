@@ -67,7 +67,11 @@ async def _setup_go_command(
     room_id = player.current_room_id
     room = persistence.get_room_by_id(room_id)
     if not room:
-        logger.warning("Go command failed - current room not found", player=player_name, room_id=room_id)
+        logger.warning(
+            "Go command failed - current room not found",
+            player=player_name,
+            room_id=room_id,
+        )
         return None
 
     room_id = _canonical_room_id_for_go(room_id, room, player_name)
@@ -81,7 +85,11 @@ def _validate_player_posture(player: Any, player_name: str, room_id: str) -> tup
         try:
             stats = player.get_stats() or {}
             position = str(stats.get("position", "standing") or "standing").lower()
-        except (AttributeError, TypeError, ValueError) as exc:  # pragma: no cover - defensive logging path
+        except (
+            AttributeError,
+            TypeError,
+            ValueError,
+        ) as exc:  # pragma: no cover - defensive logging path
             logger.warning(
                 "Failed to read player stats during go command",
                 player=player_name,
@@ -129,13 +137,19 @@ def _validate_exit(direction: str, room: Any, persistence: Any, player_name: str
 
     # Validate that target room exists
     if not persistence.get_room_by_id(target_room_id):
-        logger.warning("Go command failed - target room not found", player=player_name, target_room_id=target_room_id)
+        logger.warning(
+            "Go command failed - target room not found",
+            player=player_name,
+            target_room_id=target_room_id,
+        )
         return None
 
     return cast(str | None, target_room_id)
 
 
-def _movement_combat_and_event_bus_from_go_app(app: Any) -> tuple[Any | None, Any | None]:
+def _movement_combat_and_event_bus_from_go_app(
+    app: Any,
+) -> tuple[Any | None, Any | None]:
     """Resolve player_combat_service and event_bus from DI container or legacy app.state."""
     if not app:
         return (None, None)
@@ -154,7 +168,11 @@ def _movement_service_for_go_command(app: Any, persistence: Any) -> Any:
     if app and hasattr(app.state, "container") and app.state.container:
         return app.state.container.movement_service
     player_combat_service, event_bus = _movement_combat_and_event_bus_from_go_app(app)
-    return MovementService(event_bus, player_combat_service=player_combat_service, async_persistence=persistence)
+    return MovementService(
+        event_bus,
+        player_combat_service=player_combat_service,
+        async_persistence=persistence,
+    )
 
 
 async def _execute_movement(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Movement execution requires many parameters for complex movement logic
@@ -172,16 +190,33 @@ async def _execute_movement(  # pylint: disable=too-many-arguments,too-many-posi
         success = await movement_service.move_player(player.player_id, room_id, target_room_id)
 
         if success:
-            logger.info("Player moved successfully", player=player_name, from_room=room_id, to_room=target_room_id)
+            logger.info(
+                "Player moved successfully",
+                player=player_name,
+                from_room=room_id,
+                to_room=target_room_id,
+            )
             return {
                 "result": f"You go {direction}.",
                 "room_changed": True,
                 "room_id": target_room_id,
             }
-        logger.warning("Movement service failed", player=player_name, from_room=room_id, to_room=target_room_id)
+        logger.warning(
+            "Movement service failed",
+            player=player_name,
+            from_room=room_id,
+            to_room=target_room_id,
+        )
         return {"result": "You can't go that way."}
 
-    except (ValidationError, ValueError, RuntimeError, DatabaseError, AttributeError, TypeError) as e:
+    except (
+        ValidationError,
+        ValueError,
+        RuntimeError,
+        DatabaseError,
+        AttributeError,
+        TypeError,
+    ) as e:
         logger.error(
             "Go command error",
             player=player_name,
@@ -191,14 +226,18 @@ async def _execute_movement(  # pylint: disable=too-many-arguments,too-many-posi
             error_message=str(e),
             exc_info=True,
         )
-        return {"result": f"Error during movement: {str(e)}"}
+        return {"result": f"Error during movement: {e!s}"}
 
 
 def _resolved_direction_for_go_command(command_data: dict[str, Any], player_name: str) -> str | None:
     """Return normalized direction string, or None if missing (after logging)."""
     raw_direction = command_data.get("direction")
     if not raw_direction:
-        logger.warning("Go command failed - no direction specified", player=player_name, command_data=command_data)
+        logger.warning(
+            "Go command failed - no direction specified",
+            player=player_name,
+            command_data=command_data,
+        )
         return None
     if not isinstance(raw_direction, str):
         logger.warning(
@@ -222,13 +261,13 @@ def _connection_manager_from_go_app(app: Any) -> Any | None:
     return getattr(state, "connection_manager", None)
 
 
-async def _rest_interrupt_payload_if_moving(
+async def _cancel_rest_if_moving(
     app: Any,
     player: Any,
     player_name: str,
     direction: str,
-) -> dict[str, str] | None:
-    """If the player is resting, cancel rest and return an early client payload; else None."""
+) -> str | None:
+    """Cancel rest if active; return interrupt note so movement can continue in the same command."""
     connection_manager = _connection_manager_from_go_app(app)
     if not connection_manager:
         return None
@@ -237,8 +276,13 @@ async def _rest_interrupt_payload_if_moving(
     if not is_player_resting(player_id, connection_manager):
         return None
     await cancel_rest_countdown(player_id, connection_manager)
-    logger.info("Rest interrupted by movement", player_id=player_id, player_name=player_name, direction=direction)
-    return {"result": "Your rest is interrupted as you begin to move."}
+    logger.info(
+        "Rest interrupted by movement",
+        player_id=player_id,
+        player_name=player_name,
+        direction=direction,
+    )
+    return "Your rest is interrupted as you begin to move."
 
 
 async def handle_go_command(  # pylint: disable=too-many-arguments  # Reason: Standard command handler signature
@@ -278,12 +322,14 @@ async def handle_go_command(  # pylint: disable=too-many-arguments  # Reason: St
     if not valid_posture:
         return {"result": posture_message}
 
-    rest_payload = await _rest_interrupt_payload_if_moving(app, player, player_name, direction)
-    if rest_payload is not None:
-        return rest_payload
+    # Cancel rest but continue into the move (early return left players stuck mid-rest).
+    rest_note = await _cancel_rest_if_moving(app, player, player_name, direction)
 
     target_room_id = _validate_exit(direction, room, persistence, player_name, room_id)
     if not target_room_id:
         return {"result": "You can't go that way"}
 
-    return await _execute_movement(player, room_id, target_room_id, app, persistence, player_name, direction)
+    result = await _execute_movement(player, room_id, target_room_id, app, persistence, player_name, direction)
+    if rest_note and isinstance(result.get("result"), str):
+        result = {**result, "result": f"{rest_note}\n{result['result']}"}
+    return result
