@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import uuid
 from datetime import UTC, datetime
-from typing import Any
+from typing import NotRequired, TypedDict
 
 from ..realtime.circuit_breaker import CircuitBreakerOpen
 from ..realtime.dead_letter_queue import DeadLetterMessage
@@ -21,10 +21,54 @@ from .nats_message_handler_base import NATSMessageHandlerMixinBase
 logger = get_logger("communications.nats_message_handler")
 
 
+class _ChatMessageFields(TypedDict, total=False):
+    """Extracted chat fields before required-field validation."""
+
+    channel: str | None
+    room_id: str | None
+    party_id: str | None
+    target_player_id: str | None
+    sender_id: str | None
+    sender_name: str | None
+    content: str | None
+    message_id: str | None
+    timestamp: object | None
+    target_id: str | None
+    target_name: str | None
+    speaker_kind: str | None
+
+
+class _ValidatedChatFields(TypedDict):
+    """Chat fields after required string fields are validated."""
+
+    channel: str
+    sender_id: str
+    sender_name: str
+    content: str
+    message_id: str
+    room_id: NotRequired[str | None]
+    party_id: NotRequired[str | None]
+    target_player_id: NotRequired[str | None]
+    timestamp: NotRequired[object | None]
+    target_id: NotRequired[str | None]
+    target_name: NotRequired[str | None]
+    speaker_kind: NotRequired[str | None]
+
+
+def _optional_str(value: object) -> str | None:
+    """Narrow a message field to str | None."""
+    return value if isinstance(value, str) else None
+
+
+def _str_field(value: object, default: str) -> str:
+    """Narrow a message field to str with a default."""
+    return value if isinstance(value, str) else default
+
+
 class NATSMessageProcessingMixin(NATSMessageHandlerMixinBase):
     """Mixin: NATS message ingest, retry, chat field extract/validate, channel broadcast."""
 
-    async def _handle_nats_message(self, message_data: dict[str, Any]) -> None:
+    async def _handle_nats_message(self, message_data: dict[str, object]) -> None:
         """
         Handle incoming NATS message with error boundaries.
 
@@ -36,32 +80,18 @@ class NATSMessageProcessingMixin(NATSMessageHandlerMixinBase):
 
         AI: Entry point with full error boundary protection.
         """
-        logger.debug(
-            "NATS message received", message_keys=list(message_data.keys()) if isinstance(message_data, dict) else None
-        )
-        channel = message_data.get("channel", "unknown")
-        message_id = message_data.get("message_id", "unknown")
+        logger.debug("NATS message received", message_keys=list(message_data.keys()))
+        channel = _str_field(message_data.get("channel"), "unknown")
+        message_id = _str_field(message_data.get("message_id"), "unknown")
 
         try:
-            # Validate incoming message schema
-            # Determine message type from channel or data structure
-            message_type = "chat"
-            if "event_type" in message_data or "event_data" in message_data:
-                message_type = "event"
-            # Validate message - fail if validation fails
-            validate_message(message_data, message_type=message_type)
-
-            # Process through circuit breaker
-            # AI: Circuit breaker fails fast when service is degraded
+            message_type = "event" if ("event_type" in message_data or "event_data" in message_data) else "chat"
+            _ = validate_message(message_data, message_type=message_type)
             await self.circuit_breaker.call(self._process_message_with_retry, message_data)
-
-            # Record successful processing
             self.metrics.record_message_processed(channel)
 
         except CircuitBreakerOpen as e:
-            # Circuit is open, add to DLQ immediately
             logger.error("Circuit breaker open, message added to DLQ", message_id=message_id, error=str(e))
-
             dlq_message = DeadLetterMessage(
                 subject=channel,
                 data=message_data,
@@ -70,13 +100,10 @@ class NATSMessageProcessingMixin(NATSMessageHandlerMixinBase):
                 retry_count=0,
                 original_headers={"reason": "circuit_open"},
             )
-            self.dead_letter_queue.enqueue(dlq_message)
-
+            _ = self.dead_letter_queue.enqueue(dlq_message)
             self.metrics.record_message_dlq(channel)
 
         except (ValueError, NATSError, RuntimeError, AttributeError) as e:
-            # Handle validation errors and other unexpected errors
-            # Validation errors from validate_message should be caught and handled gracefully
             logger.error(
                 "Error in message processing",
                 message_id=message_id,
@@ -84,8 +111,6 @@ class NATSMessageProcessingMixin(NATSMessageHandlerMixinBase):
                 error_type=type(e).__name__,
                 exc_info=True,
             )
-
-            # Add to DLQ as last resort (use async version to avoid blocking)
             dlq_message = DeadLetterMessage(
                 subject=channel,
                 data=message_data,
@@ -94,11 +119,10 @@ class NATSMessageProcessingMixin(NATSMessageHandlerMixinBase):
                 retry_count=0,
                 original_headers={"reason": "unhandled_exception"},
             )
-            await self.dead_letter_queue.enqueue_async(dlq_message)
-
+            _ = await self.dead_letter_queue.enqueue_async(dlq_message)
             self.metrics.record_message_failed(channel, type(e).__name__)
 
-    async def _process_message_with_retry(self, message_data: dict[str, Any]) -> None:
+    async def _process_message_with_retry(self, message_data: dict[str, object]) -> None:
         """
         Process message with retry logic.
 
@@ -113,36 +137,37 @@ class NATSMessageProcessingMixin(NATSMessageHandlerMixinBase):
 
         AI: This method is called by circuit breaker, retries on transient failures.
         """
-        channel = message_data.get("channel", "unknown")
+        channel = _str_field(message_data.get("channel"), "unknown")
 
         # Attempt processing with retry
         success, result = await self.retry_handler.retry_with_backoff(self._process_single_message, message_data)
 
         if not success:
+            error: BaseException = result if isinstance(result, BaseException) else RuntimeError(str(result))
             # All retries exhausted, add to DLQ
             logger.error(
                 "Message failed after all retries, adding to DLQ",
-                message_id=message_data.get("message_id"),
-                error=str(result),
+                message_id=_optional_str(message_data.get("message_id")),
+                error=str(error),
             )
 
             dlq_message = DeadLetterMessage(
                 subject=channel,
                 data=message_data,
-                error=str(result),
+                error=str(error),
                 timestamp=datetime.now(UTC),
                 retry_count=self.retry_handler.max_retries,
                 original_headers={"channel": channel},
             )
-            await self.dead_letter_queue.enqueue_async(dlq_message)
+            _ = await self.dead_letter_queue.enqueue_async(dlq_message)
 
             self.metrics.record_message_dlq(channel)
-            self.metrics.record_message_failed(channel, type(result).__name__)
+            self.metrics.record_message_failed(channel, type(error).__name__)
 
             # Re-raise to trigger circuit breaker
-            raise result
+            raise error
 
-    async def _process_single_message(self, message_data: dict[str, Any]) -> None:
+    async def _process_single_message(self, message_data: dict[str, object]) -> None:
         """
         Process a single NATS message (original logic, can raise exceptions).
 
@@ -160,7 +185,7 @@ class NATSMessageProcessingMixin(NATSMessageHandlerMixinBase):
             "NATS message received",
             message_data=message_data,
             message_type=type(message_data).__name__,
-            message_keys=list(message_data.keys()) if isinstance(message_data, dict) else None,
+            message_keys=list(message_data.keys()),
         )
 
         # Check if this is an event message (either event_type or event_data indicates event message)
@@ -170,31 +195,29 @@ class NATSMessageProcessingMixin(NATSMessageHandlerMixinBase):
 
         # Handle chat messages
         chat_fields = self._extract_chat_message_fields(message_data)
-        self._validate_chat_message_fields(chat_fields, message_data)
+        validated = self._validate_chat_message_fields(chat_fields, message_data)
 
         # Format message content based on channel type
-        formatted_message = format_message_content(
-            chat_fields["channel"], chat_fields["sender_name"], chat_fields["content"]
-        )
+        formatted_message = format_message_content(validated["channel"], validated["sender_name"], validated["content"])
 
         # Create WebSocket event
-        chat_event = self._build_chat_event(chat_fields, formatted_message)
+        chat_event = self._build_chat_event(validated, formatted_message)
 
         # Convert IDs to UUIDs and broadcast
         sender_id_uuid, target_player_id_uuid = self._convert_ids_to_uuids(
-            chat_fields["sender_id"], chat_fields["target_player_id"]
+            validated["sender_id"], validated.get("target_player_id")
         )
 
         await self._broadcast_by_channel_type(
-            chat_fields["channel"],
+            validated["channel"],
             chat_event,
-            chat_fields["room_id"] or "",
-            chat_fields["party_id"] or "",
+            validated.get("room_id") or "",
+            validated.get("party_id") or "",
             target_player_id_uuid,
             sender_id_uuid,
         )
 
-    def _extract_chat_message_fields(self, message_data: dict[str, Any]) -> dict[str, Any]:
+    def _extract_chat_message_fields(self, message_data: dict[str, object]) -> _ChatMessageFields:
         """
         Extract and normalize chat message fields from message data.
 
@@ -204,9 +227,9 @@ class NATSMessageProcessingMixin(NATSMessageHandlerMixinBase):
         Returns:
             Dictionary containing extracted and normalized fields
         """
-        channel = message_data.get("channel")
-        target_player_id = message_data.get("target_player_id")
-        target_id = message_data.get("target_id")
+        channel = _optional_str(message_data.get("channel"))
+        target_player_id = _optional_str(message_data.get("target_player_id"))
+        target_id = _optional_str(message_data.get("target_id"))
 
         # Whisper / personal system publish "target_id"; broadcasting expects "target_player_id".
         if channel in ("whisper", "system") and target_id and not target_player_id:
@@ -214,20 +237,22 @@ class NATSMessageProcessingMixin(NATSMessageHandlerMixinBase):
 
         return {
             "channel": channel,
-            "room_id": message_data.get("room_id"),
-            "party_id": message_data.get("party_id"),
+            "room_id": _optional_str(message_data.get("room_id")),
+            "party_id": _optional_str(message_data.get("party_id")),
             "target_player_id": target_player_id,
-            "sender_id": message_data.get("sender_id"),
-            "sender_name": message_data.get("sender_name"),
-            "content": message_data.get("content"),
-            "message_id": message_data.get("message_id"),
+            "sender_id": _optional_str(message_data.get("sender_id")),
+            "sender_name": _optional_str(message_data.get("sender_name")),
+            "content": _optional_str(message_data.get("content")),
+            "message_id": _optional_str(message_data.get("message_id")),
             "timestamp": message_data.get("timestamp"),
             "target_id": target_id,
-            "target_name": message_data.get("target_name"),
-            "speaker_kind": message_data.get("speaker_kind"),
+            "target_name": _optional_str(message_data.get("target_name")),
+            "speaker_kind": _optional_str(message_data.get("speaker_kind")),
         }
 
-    def _validate_chat_message_fields(self, chat_fields: dict[str, Any], message_data: dict[str, Any]) -> None:
+    def _validate_chat_message_fields(
+        self, chat_fields: _ChatMessageFields, message_data: dict[str, object]
+    ) -> _ValidatedChatFields:
         """
         Validate that all required chat message fields are present.
 
@@ -238,27 +263,43 @@ class NATSMessageProcessingMixin(NATSMessageHandlerMixinBase):
         Raises:
             ValueError: If required fields are missing
         """
-        channel = chat_fields["channel"]
-        sender_id = chat_fields["sender_id"]
-        sender_name = chat_fields["sender_name"]
-        content = chat_fields["content"]
-        message_id = chat_fields["message_id"]
-
-        if not channel or not sender_id or not sender_name or not content or not message_id:
+        required = ("channel", "sender_id", "sender_name", "content", "message_id")
+        if any(not chat_fields.get(key) for key in required):
             logger.warning("Invalid NATS message - missing required fields", message_data=message_data)
             raise ValueError("Missing required message fields")
 
-        # Type narrowing for mypy - validate fields
+        channel = chat_fields.get("channel")
+        sender_id = chat_fields.get("sender_id")
+        sender_name = chat_fields.get("sender_name")
+        content = chat_fields.get("content")
+        message_id = chat_fields.get("message_id")
         if not isinstance(channel, str):
             raise TypeError("channel must be str")
+        if not isinstance(sender_id, str):
+            raise TypeError("sender_id must be str")
         if not isinstance(sender_name, str):
             raise TypeError("sender_name must be str")
         if not isinstance(content, str):
             raise TypeError("content must be str")
-        if not isinstance(sender_id, str):
-            raise TypeError("sender_id must be str")
+        if not isinstance(message_id, str):
+            raise TypeError("message_id must be str")
 
-    def _build_chat_event(self, chat_fields: dict[str, Any], formatted_message: str) -> dict[str, Any]:
+        return {
+            "channel": channel,
+            "room_id": chat_fields.get("room_id"),
+            "party_id": chat_fields.get("party_id"),
+            "target_player_id": chat_fields.get("target_player_id"),
+            "sender_id": sender_id,
+            "sender_name": sender_name,
+            "content": content,
+            "message_id": message_id,
+            "timestamp": chat_fields.get("timestamp"),
+            "target_id": chat_fields.get("target_id"),
+            "target_name": chat_fields.get("target_name"),
+            "speaker_kind": chat_fields.get("speaker_kind"),
+        }
+
+    def _build_chat_event(self, chat_fields: _ValidatedChatFields, formatted_message: str) -> dict[str, object]:
         """
         Build a WebSocket chat event from chat fields and formatted message.
 
@@ -269,15 +310,15 @@ class NATSMessageProcessingMixin(NATSMessageHandlerMixinBase):
         Returns:
             WebSocket chat event dictionary
         """
-        event_data = {
+        event_data: dict[str, object] = {
             "sender_id": str(chat_fields["sender_id"]),
             "player_name": chat_fields["sender_name"],
             "channel": chat_fields["channel"],
             "message": formatted_message,
             "message_id": chat_fields["message_id"],
-            "timestamp": chat_fields["timestamp"],
-            "target_id": chat_fields["target_id"],
-            "target_name": chat_fields["target_name"],
+            "timestamp": chat_fields.get("timestamp"),
+            "target_id": chat_fields.get("target_id"),
+            "target_name": chat_fields.get("target_name"),
             # Store original content for communication dampening processing
             "original_content": chat_fields["content"],
         }
@@ -290,7 +331,9 @@ class NATSMessageProcessingMixin(NATSMessageHandlerMixinBase):
             player_id=str(chat_fields["sender_id"]),
         )
 
-    def _convert_ids_to_uuids(self, sender_id: str, target_player_id: str | None) -> tuple[uuid.UUID, uuid.UUID | None]:
+    def _convert_ids_to_uuids(
+        self, sender_id: str | uuid.UUID, target_player_id: str | uuid.UUID | None
+    ) -> tuple[uuid.UUID, uuid.UUID | None]:
         """
         Convert string IDs to UUIDs for broadcasting.
 
@@ -301,18 +344,18 @@ class NATSMessageProcessingMixin(NATSMessageHandlerMixinBase):
         Returns:
             Tuple of (sender_id_uuid, target_player_id_uuid)
         """
-        sender_id_uuid = uuid.UUID(sender_id) if isinstance(sender_id, str) else sender_id
+        sender_id_uuid = sender_id if isinstance(sender_id, uuid.UUID) else uuid.UUID(sender_id)
         target_player_id_uuid: uuid.UUID | None = None
         if target_player_id:
             target_player_id_uuid = (
-                uuid.UUID(target_player_id) if isinstance(target_player_id, str) else target_player_id
+                target_player_id if isinstance(target_player_id, uuid.UUID) else uuid.UUID(target_player_id)
             )
         return sender_id_uuid, target_player_id_uuid
 
     async def _broadcast_by_channel_type(
         self,
         channel: str,
-        chat_event: dict[str, Any],
+        chat_event: dict[str, object],
         room_id: str,
         party_id: str,
         target_player_id: uuid.UUID | None,

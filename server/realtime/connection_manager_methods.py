@@ -40,21 +40,19 @@ logger = get_logger(__name__)
 
 def get_memory_stats_impl(manager: ConnectionManager) -> dict[str, object]:
     """Get comprehensive memory and connection statistics."""
-    result: dict[str, object] = cast(
-        dict[str, object],
-        manager.statistics_aggregator.get_memory_stats(
-            active_websockets=manager.active_websockets,
-            player_websockets=manager.player_websockets,
-            connection_timestamps=manager.connection_timestamps,
-            cleanup_stats=manager.cleanup_stats,
-            player_sessions=manager.player_sessions,
-            session_connections=manager.session_connections,
-            online_players=manager.online_players,
-            last_seen=manager.last_seen,
-            closed_websockets_count=manager.get_closed_websockets_count(),
-            connection_metadata=manager.connection_metadata,
-        ),
-    )
+    snap = {
+        "active_websockets": manager.active_websockets,
+        "player_websockets": manager.player_websockets,
+        "connection_timestamps": manager.connection_timestamps,
+        "cleanup_stats": manager.cleanup_stats,
+        "player_sessions": manager.player_sessions,
+        "session_connections": manager.session_connections,
+        "online_players": manager.online_players,
+        "last_seen": manager.last_seen,
+        "closed_websockets_count": manager.get_closed_websockets_count(),
+        "connection_metadata": manager.connection_metadata,
+    }
+    result: dict[str, object] = cast(dict[str, object], manager.statistics_aggregator.get_memory_stats(snap))
     return result
 
 

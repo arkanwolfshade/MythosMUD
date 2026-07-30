@@ -162,6 +162,78 @@ describe('projector', () => {
       expect(next.room?.occupant_count).toBe(5);
     });
 
+    it('does not duplicate self when already listed with different case', () => {
+      const prev = {
+        ...getInitialGameState(),
+        player: { name: 'ArkanWolfshade', id: 'p1' },
+        room: {
+          id: 'room1',
+          name: 'Foyer',
+          description: '',
+          exits: {},
+          players: ['arkanwolfshade'],
+          npcs: [],
+          occupants: ['arkanwolfshade'],
+          occupant_count: 1,
+        },
+      };
+      const next = projectEvent(prev, {
+        event_type: 'chat_message',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { message: 'hello', channel: 'say' },
+      });
+      expect(next.room?.players).toEqual(['arkanwolfshade']);
+    });
+
+    it('does not inject self when player name is empty', () => {
+      const prev = {
+        ...getInitialGameState(),
+        player: { name: '   ', id: 'p1' },
+        room: {
+          id: 'room1',
+          name: 'Foyer',
+          description: '',
+          exits: {},
+          players: [],
+          npcs: [],
+          occupants: [],
+          occupant_count: 0,
+        },
+      };
+      const next = projectEvent(prev, {
+        event_type: 'chat_message',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { message: 'hello', channel: 'say' },
+      });
+      expect(next.room?.players).toEqual([]);
+    });
+
+    it('does not inject self when room id is missing', () => {
+      const prev = {
+        ...getInitialGameState(),
+        player: { name: 'ArkanWolfshade', id: 'p1' },
+        room: {
+          id: '',
+          name: 'Foyer',
+          description: '',
+          exits: {},
+          players: [],
+          npcs: [],
+          occupants: [],
+          occupant_count: 0,
+        },
+      };
+      const next = projectEvent(prev, {
+        event_type: 'chat_message',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { message: 'hello', channel: 'say' },
+      });
+      expect(next.room?.players).toEqual([]);
+    });
+
     it('game_state with empty room then room_occupants results in occupants', () => {
       const log: EventLog = [
         {

@@ -11,11 +11,14 @@ AI Agent: Extracted from ConnectionManager to centralize statistics reporting lo
 
 import time
 import uuid
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, TypedDict
 
 from ...structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
+    from fastapi import WebSocket
+
+    from ..connection_models import ConnectionMetadata
     from ..memory_monitor import MemoryMonitor
     from ..message_queue import MessageQueue
     from ..rate_limiter import RateLimiter
@@ -23,6 +26,21 @@ if TYPE_CHECKING:
     from .performance_tracker import PerformanceTracker
 
 logger = get_logger(__name__)
+
+
+class MemoryStatsSnapshot(TypedDict):
+    """Connection-manager snapshot consumed by get_memory_stats."""
+
+    active_websockets: dict[str, "WebSocket"]
+    player_websockets: dict[uuid.UUID, list[str]]
+    connection_timestamps: dict[str, float]
+    cleanup_stats: dict[str, object]
+    player_sessions: dict[uuid.UUID, str]
+    session_connections: dict[str, list[str]]
+    online_players: dict[uuid.UUID, dict[str, object]]
+    last_seen: dict[uuid.UUID, float]
+    closed_websockets_count: int
+    connection_metadata: dict[str, "ConnectionMetadata"]
 
 
 class StatisticsAggregator:
@@ -53,65 +71,70 @@ class StatisticsAggregator:
             room_manager: RoomSubscriptionManager instance
             performance_tracker: PerformanceTracker instance
         """
-        self.memory_monitor = memory_monitor
-        self.rate_limiter = rate_limiter
-        self.message_queue = message_queue
-        self.room_manager = room_manager
-        self.performance_tracker = performance_tracker
+        self.memory_monitor: MemoryMonitor = memory_monitor
+        self.rate_limiter: RateLimiter = rate_limiter
+        self.message_queue: MessageQueue = message_queue
+        self.room_manager: RoomSubscriptionManager = room_manager
+        self.performance_tracker: PerformanceTracker = performance_tracker
 
-    def get_memory_stats(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Memory stats retrieval requires many parameters and intermediate variables for complex statistics processing
-        self,
-        active_websockets: dict[str, Any],
-        player_websockets: dict[uuid.UUID, list[str]],
-        connection_timestamps: dict[str, float],
-        cleanup_stats: dict[str, object],
-        player_sessions: dict[uuid.UUID, str],
-        session_connections: dict[str, list[str]],
-        online_players: dict[uuid.UUID, dict[str, Any]],
-        last_seen: dict[uuid.UUID, float],
-        closed_websockets_count: int,
-        connection_metadata: dict[str, Any],
-    ) -> dict[str, Any]:
+    def get_memory_stats(self, snap: MemoryStatsSnapshot) -> dict[str, object]:
         """
         Get comprehensive memory and connection statistics.
 
         Args:
-            active_websockets: Active WebSocket connections
-            player_websockets: Player to WebSocket connection mapping
-            connection_timestamps: Connection timestamp tracking
-            cleanup_stats: Cleanup statistics
-            player_sessions: Player to session mapping
-            session_connections: Session to connection mapping
-            online_players: Online player tracking
-            last_seen: Last seen timestamps
-            closed_websockets_count: Count of closed WebSocket IDs being tracked
-            connection_metadata: Connection metadata dictionary
+            snap: Connection-manager snapshot with keys active_websockets,
+                player_websockets, connection_timestamps, cleanup_stats,
+                player_sessions, session_connections, online_players, last_seen,
+                closed_websockets_count, and connection_metadata.
 
         Returns:
             dict: Comprehensive memory and connection statistics
         """
         try:
-            return self._build_memory_stats_payload(
-                active_websockets=active_websockets,
-                player_websockets=player_websockets,
-                connection_timestamps=connection_timestamps,
-                cleanup_stats=cleanup_stats,
-                player_sessions=player_sessions,
-                session_connections=session_connections,
-                online_players=online_players,
-                last_seen=last_seen,
-                closed_websockets_count=closed_websockets_count,
-                connection_metadata=connection_metadata,
-            )
+            return self._compose_memory_stats(snap)
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Memory stats retrieval errors unpredictable, must return empty dict
             logger.error("Error getting memory stats", error=str(e), exc_info=True)
             return {}
 
+    def _compose_memory_stats(self, snap: MemoryStatsSnapshot) -> dict[str, object]:
+        """Assemble memory stats from a snapshot dict (keeps call sites param-stable)."""
+        total_ws = sum(len(conn_ids) for conn_ids in snap["player_websockets"].values())
+        connections = self._memory_connections_section(
+            snap["active_websockets"],
+            snap["player_websockets"],
+            snap["connection_timestamps"],
+            snap["online_players"],
+            snap["closed_websockets_count"],
+            snap["connection_metadata"],
+            total_ws,
+        )
+        return {
+            "memory": self.memory_monitor.get_memory_stats(),
+            "connections": connections,
+            "sessions": self._memory_sessions_section(
+                snap["player_sessions"],
+                snap["session_connections"],
+                total_ws,
+            ),
+            "data_structures": {
+                "online_players": len(snap["online_players"]),
+                "last_seen": len(snap["last_seen"]),
+                "room_occupants": len(self.room_manager.room_occupants),
+                "connection_attempts": len(self.rate_limiter.connection_attempts),
+                "pending_messages": len(self.message_queue.pending_messages),
+            },
+            "cleanup_stats": snap["cleanup_stats"],
+            "memory_monitor": self._memory_monitor_config_section(),
+            "rate_limiter": self.rate_limiter.get_stats(),
+            "message_queue": self.message_queue.get_stats(),
+            "room_manager": self.room_manager.get_stats(),
+        }
+
     @staticmethod
     def _count_orphaned_connections(
-        active_websockets: dict[str, Any],
+        active_websockets: dict[str, "WebSocket"],
         player_websockets: dict[uuid.UUID, list[str]],
-        online_players: dict[uuid.UUID, dict[str, Any]],
+        online_players: dict[uuid.UUID, dict[str, object]],
     ) -> int:
         """Count active connections not tied to any online player."""
         orphaned = 0
@@ -125,15 +148,15 @@ class StatisticsAggregator:
 
     def _memory_connections_section(
         self,
-        active_websockets: dict[str, Any],
+        active_websockets: dict[str, "WebSocket"],
         player_websockets: dict[uuid.UUID, list[str]],
         connection_timestamps: dict[str, float],
-        online_players: dict[uuid.UUID, dict[str, Any]],
+        online_players: dict[uuid.UUID, dict[str, object]],
         closed_websockets_count: int,
-        connection_metadata: dict[str, Any],
-    ) -> dict[str, Any]:
+        connection_metadata: dict[str, "ConnectionMetadata"],
+        total_ws: int,
+    ) -> dict[str, object]:
         """Build the connections subsection of memory stats."""
-        total_ws = sum(len(conn_ids) for conn_ids in player_websockets.values())
         active_count = len(active_websockets)
         return {
             "active_websockets": active_count,
@@ -158,7 +181,7 @@ class StatisticsAggregator:
         player_sessions: dict[uuid.UUID, str],
         session_connections: dict[str, list[str]],
         total_websocket_connections: int,
-    ) -> dict[str, Any]:
+    ) -> dict[str, object]:
         """Build the sessions subsection of memory stats."""
         total_sessions = len(player_sessions)
         total_session_connections = sum(len(conn_ids) for conn_ids in session_connections.values())
@@ -169,7 +192,7 @@ class StatisticsAggregator:
             "session_connection_ratio": self._safe_ratio(total_session_connections, total_websocket_connections),
         }
 
-    def _memory_monitor_config_section(self) -> dict[str, Any]:
+    def _memory_monitor_config_section(self) -> dict[str, object]:
         """Expose memory monitor configuration knobs for stats payload."""
         monitor = self.memory_monitor
         return {
@@ -179,48 +202,6 @@ class StatisticsAggregator:
             "max_connection_age": monitor.max_connection_age,
             "max_pending_messages": monitor.max_pending_messages,
             "max_rate_limit_entries": monitor.max_rate_limit_entries,
-        }
-
-    def _build_memory_stats_payload(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Assembles multi-section memory stats from several subsystems
-        self,
-        active_websockets: dict[str, Any],
-        player_websockets: dict[uuid.UUID, list[str]],
-        connection_timestamps: dict[str, float],
-        cleanup_stats: dict[str, object],
-        player_sessions: dict[uuid.UUID, str],
-        session_connections: dict[str, list[str]],
-        online_players: dict[uuid.UUID, dict[str, Any]],
-        last_seen: dict[uuid.UUID, float],
-        closed_websockets_count: int,
-        connection_metadata: dict[str, Any],
-    ) -> dict[str, Any]:
-        """Compose memory statistics payload (extracted to keep get_memory_stats CCN low)."""
-        connections = self._memory_connections_section(
-            active_websockets,
-            player_websockets,
-            connection_timestamps,
-            online_players,
-            closed_websockets_count,
-            connection_metadata,
-        )
-        return {
-            "memory": self.memory_monitor.get_memory_stats(),
-            "connections": connections,
-            "sessions": self._memory_sessions_section(
-                player_sessions, session_connections, connections["total_websocket_connections"]
-            ),
-            "data_structures": {
-                "online_players": len(online_players),
-                "last_seen": len(last_seen),
-                "room_occupants": len(self.room_manager.room_occupants),
-                "connection_attempts": len(self.rate_limiter.connection_attempts),
-                "pending_messages": len(self.message_queue.pending_messages),
-            },
-            "cleanup_stats": cleanup_stats,
-            "memory_monitor": self._memory_monitor_config_section(),
-            "rate_limiter": self.rate_limiter.get_stats(),
-            "message_queue": self.message_queue.get_stats(),
-            "room_manager": self.room_manager.get_stats(),
         }
 
     @staticmethod
@@ -249,10 +230,10 @@ class StatisticsAggregator:
     def _build_connection_stats(  # pylint: disable=too-many-locals  # Reason: Assembles multi-section stats payload from several subsystems
         self,
         player_websockets: dict[uuid.UUID, list[str]],
-        connection_metadata: dict[str, Any],
+        connection_metadata: dict[str, "ConnectionMetadata"],
         session_connections: dict[str, list[str]],
         player_sessions: dict[uuid.UUID, str],
-    ) -> dict[str, Any]:
+    ) -> dict[str, object]:
         """Compose connection statistics payload (extracted to keep get_connection_stats CCN low)."""
         now = time.time()
         total_players = len(player_websockets)
@@ -299,10 +280,10 @@ class StatisticsAggregator:
     def get_connection_stats(
         self,
         player_websockets: dict[uuid.UUID, list[str]],
-        connection_metadata: dict[str, Any],
+        connection_metadata: dict[str, "ConnectionMetadata"],
         session_connections: dict[str, list[str]],
         player_sessions: dict[uuid.UUID, str],
-    ) -> dict[str, Any]:
+    ) -> dict[str, object]:
         """
         Get comprehensive connection statistics.
 
@@ -323,7 +304,7 @@ class StatisticsAggregator:
             logger.error("Error getting connection stats", error=str(e), exc_info=True)
             return {"error": f"Failed to get connection stats: {e}", "timestamp": time.time()}
 
-    def _analyze_connection_health(self, connection_metadata: dict[str, Any]) -> tuple[int, int]:
+    def _analyze_connection_health(self, connection_metadata: dict[str, "ConnectionMetadata"]) -> tuple[int, int]:
         """
         Analyze connection health distribution.
 
@@ -344,7 +325,7 @@ class StatisticsAggregator:
 
         return healthy_connections, unhealthy_connections
 
-    def _analyze_connection_types(self, connection_metadata: dict[str, Any]) -> int:
+    def _analyze_connection_types(self, connection_metadata: dict[str, "ConnectionMetadata"]) -> int:
         """
         Analyze connection types.
 
@@ -362,7 +343,9 @@ class StatisticsAggregator:
 
         return websocket_connections
 
-    def _analyze_connection_ages(self, connection_metadata: dict[str, Any], now: float) -> tuple[list[float], int]:
+    def _analyze_connection_ages(
+        self, connection_metadata: dict[str, "ConnectionMetadata"], now: float
+    ) -> tuple[list[float], int]:
         """
         Analyze connection ages.
 
@@ -373,7 +356,7 @@ class StatisticsAggregator:
         Returns:
             Tuple of (connection_ages list, stale_connections count)
         """
-        connection_ages = []
+        connection_ages: list[float] = []
         stale_connections = 0
 
         for _connection_id, metadata in connection_metadata.items():
@@ -384,7 +367,9 @@ class StatisticsAggregator:
 
         return connection_ages, stale_connections
 
-    def _analyze_session_health(self, connection_metadata: dict[str, Any]) -> dict[str, dict[str, int]]:
+    def _analyze_session_health(
+        self, connection_metadata: dict[str, "ConnectionMetadata"]
+    ) -> dict[str, dict[str, int]]:
         """
         Analyze session health.
 
@@ -394,7 +379,7 @@ class StatisticsAggregator:
         Returns:
             Dictionary mapping session_id to health stats
         """
-        session_health = {}
+        session_health: dict[str, dict[str, int]] = {}
 
         for _connection_id, metadata in connection_metadata.items():
             if metadata.session_id:
@@ -459,7 +444,7 @@ class StatisticsAggregator:
         healthy_sessions: int,
         unhealthy_sessions: int,
         now: float,
-    ) -> dict[str, Any]:
+    ) -> dict[str, object]:
         """
         Build connection health statistics response.
 
@@ -509,7 +494,7 @@ class StatisticsAggregator:
             "timestamp": now,
         }
 
-    def get_connection_health_stats(self, connection_metadata: dict[str, Any]) -> dict[str, Any]:
+    def get_connection_health_stats(self, connection_metadata: dict[str, "ConnectionMetadata"]) -> dict[str, object]:
         """
         Get comprehensive connection health statistics.
 

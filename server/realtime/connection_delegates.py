@@ -20,21 +20,20 @@ from .rate_limiter import RateLimiter
 logger = get_logger(__name__)
 
 
-class _PlayerIdCarrier(Protocol):
+class _PlayerIdCarrier(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
     """Minimal player shape for token validation."""
 
     player_id: uuid.UUID
 
 
-class _TokenPersistence(Protocol):
+class _TokenPersistence(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
     """Persistence surface used by validate_token_impl."""
 
     async def get_player_by_user_id(self, user_id: str) -> _PlayerIdCarrier | None:
         """Look up a player by auth user id."""
-        ...
 
 
-class _WebsocketCleanupManager(Protocol):
+class _WebsocketCleanupManager(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
     """ConnectionManager surface used by cleanup_dead_websocket_impl."""
 
     active_websockets: dict[str, WebSocket]
@@ -43,7 +42,7 @@ class _WebsocketCleanupManager(Protocol):
     rate_limiter: RateLimiter
 
 
-class _TokenValidateManager(Protocol):
+class _TokenValidateManager(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
     """ConnectionManager surface used by validate_token_impl."""
 
     async_persistence: object | None

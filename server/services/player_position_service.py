@@ -49,20 +49,23 @@ class PositionChangeResponse(TypedDict):
     player_display_name: str
 
 
-class SupportsPlayerPersistence(Protocol):
+class SupportsPlayerPersistence(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
     """Persistence surface required for posture updates."""
 
-    async def get_player_by_name(self, name: str) -> Player | None: ...
+    async def get_player_by_name(self, name: str) -> Player | None:
+        """Look up a player by name."""
 
-    async def save_player(self, player: Player) -> None: ...
+    async def save_player(self, player: Player) -> None:
+        """Persist player posture and related state."""
 
 
-class SupportsConnectionManager(Protocol):
+class SupportsConnectionManager(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
     """Live presence surface used to mirror posture into online player records."""
 
     online_players: dict[str, dict[str, object]]
 
-    def get_online_player_by_display_name(self, display_name: str) -> dict[str, object] | None: ...
+    def get_online_player_by_display_name(self, display_name: str) -> dict[str, object] | None:
+        """Return the online player record for a display name, if present."""
 
 
 class PlayerPositionService:

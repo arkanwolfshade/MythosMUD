@@ -13,6 +13,7 @@ import pytest
 
 from server.events.event_types import NPCEnteredRoom, PlayerEnteredRoom
 from server.game.follow_service import FOLLOW_REQUEST_TTL_SECONDS, FollowService
+from server.tests.unit.realtime.envelope_assertions import assert_event_envelope
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
 # pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
@@ -108,6 +109,25 @@ async def test_request_follow_player_creates_pending(follow_service, user_manage
     assert data["requestor_id"] == requestor_id
     assert data["target_id"] == target_id
     assert data["requestor_name"] == "Alice"
+
+
+@pytest.mark.asyncio
+async def test_follow_request_event_envelope_shape(event_bus, movement_service, user_manager):
+    """follow_request producer emits a build_event-shaped envelope."""
+    conn_mgr = MagicMock()
+    conn_mgr.send_personal_message = AsyncMock()
+    service = FollowService(
+        event_bus=event_bus,
+        movement_service=movement_service,
+        user_manager=user_manager,
+        connection_manager=conn_mgr,
+    )
+    target_id = str(uuid.uuid4())
+    requestor_id = str(uuid.uuid4())
+    await service._send_follow_request_to_target(target_id, "req-1", "Alice", requestor_id)
+    conn_mgr.send_personal_message.assert_awaited_once()
+    event = conn_mgr.send_personal_message.await_args.args[1]
+    assert_event_envelope(event, event_type="follow_request")
 
 
 @pytest.mark.asyncio

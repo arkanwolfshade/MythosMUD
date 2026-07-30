@@ -3,7 +3,11 @@
     "jcodemunch": {
       "type": "stdio",
       "command": "uvx",
-      "args": ["--from", "git+https://github.com/jgravelle/jcodemunch-mcp", "jcodemunch-mcp"]
+      "args": ["--from", "git+https://github.com/jgravelle/jcodemunch-mcp", "jcodemunch-mcp"],
+      "envFile": "${workspaceFolder}/.env.mcp.local",
+      "env": {
+        "JCODEMUNCH_MAX_FOLDER_FILES": "4000"
+      }
     },
     "codacy": {
       "type": "stdio",

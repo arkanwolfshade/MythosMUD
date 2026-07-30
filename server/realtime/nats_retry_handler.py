@@ -8,7 +8,7 @@ AI: Exponential backoff prevents overwhelming a recovering service.
 """
 
 import random
-from collections.abc import Callable
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, cast
@@ -185,7 +185,9 @@ class NATSRetryHandler:
             "max_delay": self.max_delay,
         }
 
-    async def retry_with_backoff(self, func: Callable[..., Any], *args: Any, **kwargs: Any) -> tuple[bool, Any]:
+    async def retry_with_backoff(
+        self, func: Callable[..., Awaitable[object]], *args: object, **kwargs: object
+    ) -> tuple[bool, object]:
         """
         Retry async function with exponential backoff.
 
@@ -198,7 +200,7 @@ class NATSRetryHandler:
             **kwargs: Keyword arguments for func
 
         Returns:
-            Tuple of (success: bool, result/error: Any)
+            Tuple of (success: bool, result/error: object)
             - If successful: (True, function_result)
             - If all retries fail: (False, last_exception)
 
