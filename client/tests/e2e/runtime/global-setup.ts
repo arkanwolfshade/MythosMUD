@@ -47,9 +47,9 @@ function runEnsureE2eDatabase(): void {
 
 function runE2ePlayerRoomReset(): void {
   const seedEnv = { ...process.env, ...loadE2eEnv() };
+  // shell:false — DEP0190; also honors timeout on Windows (see multiplayer-colocated.ts).
   const resetResult = spawnSync('uv', ['run', 'python', 'scripts/e2e_reset_players.py'], {
     cwd: E2E_PROJECT_ROOT,
-    shell: true,
     stdio: 'pipe',
     encoding: 'utf-8',
     env: seedEnv,
@@ -65,7 +65,6 @@ function runE2eSeed(): void {
   const seedEnv = { ...process.env, ...loadE2eEnv() };
   const seedResult = spawnSync('uv', ['run', 'python', 'scripts/seed_e2e_users.py'], {
     cwd: E2E_PROJECT_ROOT,
-    shell: true,
     stdio: 'pipe',
     encoding: 'utf-8',
     env: seedEnv,
@@ -82,7 +81,6 @@ function verifyE2eUsersInDatabase(): void {
   const seedEnv = { ...process.env, ...loadE2eEnv() };
   const verifyResult = spawnSync('uv', ['run', 'python', 'scripts/verify_e2e_users_seeded.py'], {
     cwd: E2E_PROJECT_ROOT,
-    shell: true,
     stdio: 'pipe',
     encoding: 'utf-8',
     env: seedEnv,

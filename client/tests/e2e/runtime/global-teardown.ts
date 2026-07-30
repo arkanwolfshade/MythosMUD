@@ -23,9 +23,9 @@ async function globalTeardown(_config: FullConfig): Promise<void> {
   console.log('Starting global teardown for E2E runtime tests...');
 
   const scriptPath = path.join(projectRoot, 'scripts', 'e2e_reset_players.py');
+  // shell:false — DEP0190; matches global-setup / multiplayer-colocated.
   const result = spawnSync('uv', ['run', 'python', scriptPath], {
     cwd: projectRoot,
-    shell: true,
     stdio: 'inherit',
   });
 
