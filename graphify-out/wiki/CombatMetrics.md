@@ -29,7 +29,7 @@
 - [test combat monitoring service](test_combat_monitoring_service.md) (5 shared connections)
 - [CombatConfiguration](CombatConfiguration.md) (2 shared connections)
 - [Coord](Coord.md) (1 shared connections)
-- [close db()](close_db%28%29.md) (1 shared connections)
+- [process dead players()](process_dead_players%28%29.md) (1 shared connections)
 - [FeatureFlagService](FeatureFlagService.md) (1 shared connections)
 
 ## Source Files

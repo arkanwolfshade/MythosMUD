@@ -11,7 +11,7 @@
 
 ## Relationships
 
-- [close db()](close_db%28%29.md) (1 shared connections)
+- [process dead players()](process_dead_players%28%29.md) (1 shared connections)
 - [RateLimiter](RateLimiter.md) (1 shared connections)
 - [. init ()](_init_%28%29.md) (1 shared connections)
 - [NPCEventHandler](NPCEventHandler.md) (1 shared connections)

@@ -36,8 +36,7 @@
 - [message handler factory](message_handler_factory.md) (13 shared connections)
 - [. init ()](_init_%28%29.md) (8 shared connections)
 - [Any](Any.md) (2 shared connections)
-- [. initialize handlers()](_initialize_handlers%28%29.md) (1 shared connections)
-- [close db()](close_db%28%29.md) (1 shared connections)
+- [. initialize handlers()](_initialize_handlers%28%29.md) (2 shared connections)
 
 ## Source Files
 

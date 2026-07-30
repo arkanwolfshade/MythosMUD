@@ -1,52 +1,52 @@
 # Any
 
-> 49 nodes
+> 53 nodes
 
 ## Key Concepts
 
-- **RoomDataValidator** (18 connections) — `server/services/room_data_validator.py`
-- **test_room_data_validator.py** (16 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **.validate_room_data()** (10 connections) — `server/services/room_data_validator.py`
-- **Any** (8 connections)
-- **.validate_room_consistency()** (7 connections) — `server/services/room_data_validator.py`
-- **.validate_required_fields()** (6 connections) — `server/services/room_data_validator.py`
-- **.validate_field_types()** (6 connections) — `server/services/room_data_validator.py`
-- **.check_duplicate_occupants()** (6 connections) — `server/services/room_data_validator.py`
-- **.is_valid_room_id()** (5 connections) — `server/services/room_data_validator.py`
-- **.check_occupant_count_consistency()** (5 connections) — `server/services/room_data_validator.py`
-- **.check_empty_room_with_occupants()** (5 connections) — `server/services/room_data_validator.py`
-- **.validate_occupant_consistency()** (4 connections) — `server/services/room_data_validator.py`
-- **test_validate_required_fields()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_validate_required_fields_all_present()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_validate_field_types()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_validate_field_types_valid()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_validate_room_data_valid()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_validate_room_data_invalid()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_validate_room_data_room_id()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_is_valid_room_id()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_check_occupant_count_consistency()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_check_duplicate_occupants()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_check_duplicate_occupants_no_duplicates()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_check_empty_room_with_occupants()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_validate_room_consistency()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- *... and 24 more nodes in this community*
+- **TestRoomDataFixer** (20 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **RoomDataFixer** (14 connections) — `server/services/room_data_fixer.py`
+- **.apply_room_data_fixes()** (13 connections) — `server/services/room_data_fixer.py`
+- **.fix_missing_name()** (7 connections) — `server/services/room_data_fixer.py`
+- **.fix_occupant_count_mismatch()** (7 connections) — `server/services/room_data_fixer.py`
+- **.fix_missing_description()** (6 connections) — `server/services/room_data_fixer.py`
+- **.fix_missing_timestamp()** (6 connections) — `server/services/room_data_fixer.py`
+- **Any** (5 connections)
+- **.count_applied_fixes()** (5 connections) — `server/services/room_data_fixer.py`
+- **.test_apply_room_data_fixes_exception_handling()** (5 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **test_room_data_fixer.py** (4 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_name()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_name_no_error()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_name_unknown_id()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_description()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_description_no_error()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_occupant_count_mismatch()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_occupant_count_mismatch_no_error()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_occupant_count_mismatch_no_occupants()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_timestamp()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_timestamp_existing()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_count_applied_fixes()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_count_applied_fixes_no_fixable()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_apply_room_data_fixes_all_fixes()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_apply_room_data_fixes_no_errors()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (4 shared connections)
 - [world](world.md) (2 shared connections)
 - [combat taunt](combat_taunt.md) (2 shared connections)
 - [Any](Any.md) (1 shared connections)
+- [create access token()](create_access_token%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/room_data_validator.py`
-- `server/tests/unit/services/test_room_data_validator.py`
+- `server/services/room_data_fixer.py`
+- `server/tests/unit/services/test_room_data_fixer.py`
 
 ## Audit Trail
 
-- EXTRACTED: 156 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 160 (96%)
+- INFERRED: 6 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

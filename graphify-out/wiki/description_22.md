@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **properties** (12 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **sub_zone** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **id** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 - **field1** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 - **field2** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 - **field3** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
@@ -20,7 +20,7 @@
 
 - [description](description.md) (5 shared connections)
 - [additionalProperties](additionalProperties.md) (1 shared connections)
-- [id](id.md) (1 shared connections)
+- [Test load room cache logs](Test_load_room_cache_logs.md) (1 shared connections)
 - [Test add rule() handles exceptions](Test_add_rule%28%29_handles_exceptions.md) (1 shared connections)
 
 ## Source Files

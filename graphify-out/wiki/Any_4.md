@@ -33,13 +33,14 @@
 
 ## Relationships
 
-- [fetch container items()](fetch_container_items%28%29.md) (9 shared connections)
+- [fetch container items()](fetch_container_items%28%29.md) (7 shared connections)
 - [PerformanceStats](PerformanceStats.md) (7 shared connections)
 - [.shutdown()](shutdown%28%29.md) (4 shared connections)
 - [init](init.md) (4 shared connections)
 - [world](world.md) (3 shared connections)
 - [test memory leak metrics](test_memory_leak_metrics.md) (3 shared connections)
-- [NATSMessageSubscriptionMixin](NATSMessageSubscriptionMixin.md) (2 shared connections)
+- [SafeHtml](SafeHtml.md) (2 shared connections)
+- [Any](Any.md) (2 shared connections)
 - [monitoring](monitoring.md) (1 shared connections)
 - [get current tick()](get_current_tick%28%29.md) (1 shared connections)
 - [NPCLifecycleManager](NPCLifecycleManager.md) (1 shared connections)

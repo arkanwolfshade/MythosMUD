@@ -34,7 +34,8 @@
 ## Relationships
 
 - [CombatService](CombatService.md) (9 shared connections)
-- [close db()](close_db%28%29.md) (8 shared connections)
+- [close db()](close_db%28%29.md) (6 shared connections)
+- [test combat attack handler](test_combat_attack_handler.md) (2 shared connections)
 - [Player](Player.md) (1 shared connections)
 - [. init ()](_init_%28%29.md) (1 shared connections)
 

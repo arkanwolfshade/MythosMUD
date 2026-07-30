@@ -1,48 +1,25 @@
 # Any
 
-> 60 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **test_combat_attack_handler.py** (37 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **attack_handler()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **mock_combat()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **mock_attacker()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **mock_target_player()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **mock_target_npc()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_apply_damage_player_no_death_room_caps_damage()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_apply_damage_player_no_death_room_zero_damage_when_at_zero()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **mock_combat_service()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_attack_handler_init()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_validate_attack_active()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_validate_attack_inactive()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_apply_damage_player()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_apply_damage_player_kills()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_apply_damage_player_mortally_wounded()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_apply_damage_player_negative_cap()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_apply_damage_npc()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_apply_damage_npc_kills()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_apply_damage_npc_zero_cap()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_apply_damage_player_grace_period()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_apply_damage_player_grace_period_no_app()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_apply_damage_player_grace_period_no_connection_manager()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_apply_damage_player_grace_period_error()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_apply_attack_damage()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_validate_and_get_combat_participants_success()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- *... and 35 more nodes in this community*
+- **test_evaluate_equality_not_equality()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_equality() returns None for non-equality condition.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [close db()](close_db%28%29.md) (14 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test behavior engine](test_behavior_engine.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_attack_handler.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 128 (97%)
-- INFERRED: 4 (3%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

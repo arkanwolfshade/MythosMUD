@@ -32,10 +32,10 @@
 ## Relationships
 
 - [Protocol](Protocol.md) (5 shared connections)
-- [close db()](close_db%28%29.md) (3 shared connections)
+- [. initialize handlers()](_initialize_handlers%28%29.md) (3 shared connections)
 - [append unique valid occupant()](append_unique_valid_occupant%28%29.md) (2 shared connections)
 - [.shutdown()](shutdown%28%29.md) (1 shared connections)
-- [Test process exit rows with](Test_process_exit_rows_with.md) (1 shared connections)
+- [process all status effects()](process_all_status_effects%28%29.md) (1 shared connections)
 
 ## Source Files
 

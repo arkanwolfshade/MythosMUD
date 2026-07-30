@@ -37,7 +37,7 @@
 - [CommandExecutionRequest](CommandExecutionRequest.md) (4 shared connections)
 - [PlayerIdCarrier](PlayerIdCarrier.md) (2 shared connections)
 - [world](world.md) (2 shared connections)
-- [close db()](close_db%28%29.md) (1 shared connections)
+- [process dead players()](process_dead_players%28%29.md) (1 shared connections)
 - [.initialize()](initialize%28%29.md) (1 shared connections)
 - [Validate an expanded command for](Validate_an_expanded_command_for.md) (1 shared connections)
 - [ContainerDataCore](ContainerDataCore.md) (1 shared connections)

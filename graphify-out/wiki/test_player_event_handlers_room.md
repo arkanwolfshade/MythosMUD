@@ -33,12 +33,13 @@
 
 ## Relationships
 
-- [close db()](close_db%28%29.md) (23 shared connections)
 - [CombatService](CombatService.md) (21 shared connections)
+- [close db()](close_db%28%29.md) (16 shared connections)
+- [. initialize handlers()](_initialize_handlers%28%29.md) (7 shared connections)
 - [Any](Any.md) (6 shared connections)
-- [. initialize handlers()](_initialize_handlers%28%29.md) (6 shared connections)
+- [test combat attack handler](test_combat_attack_handler.md) (5 shared connections)
 - [combat](combat.md) (3 shared connections)
-- [get health service()](get_health_service%28%29.md) (1 shared connections)
+- [.validate target()](validate_target%28%29.md) (2 shared connections)
 - [test player cache](test_player_cache.md) (1 shared connections)
 
 ## Source Files

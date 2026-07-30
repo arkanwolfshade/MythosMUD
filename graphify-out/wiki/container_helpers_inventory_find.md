@@ -1,6 +1,6 @@
 # container helpers inventory find
 
-> 86 nodes
+> 87 nodes
 
 ## Key Concepts
 
@@ -29,13 +29,13 @@
 - **_resolve_inner_uuid()** (4 connections) — `server/commands/container_helpers_inventory_find.py`
 - **_container_from_equip_dict()** (4 connections) — `server/commands/container_helpers_inventory_find.py`
 - **_fallback_create_equipment_container()** (4 connections) — `server/commands/container_helpers_inventory_find.py`
-- *... and 61 more nodes in this community*
+- *... and 62 more nodes in this community*
 
 ## Relationships
 
 - [container helpers inventory](container_helpers_inventory.md) (15 shared connections)
 - [Any](Any.md) (9 shared connections)
-- [chat send with room bundle()](chat_send_with_room_bundle%28%29.md) (6 shared connections)
+- [chat send with room bundle()](chat_send_with_room_bundle%28%29.md) (5 shared connections)
 - [world](world.md) (1 shared connections)
 - [main()](main%28%29.md) (1 shared connections)
 - [. init ()](_init_%28%29.md) (1 shared connections)
@@ -50,8 +50,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 410 (96%)
-- INFERRED: 15 (4%)
+- EXTRACTED: 412 (96%)
+- INFERRED: 16 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

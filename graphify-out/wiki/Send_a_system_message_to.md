@@ -1,12 +1,11 @@
 # Send a system message to
 
-> 54 nodes
+> 44 nodes
 
 ## Key Concepts
 
 - **fastapi_integration.py** (27 connections) — `docs/examples/logging/fastapi_integration.py`
 - **measure_performance()** (20 connections) — `server/monitoring/performance_monitor.py`
-- **websocket_endpoint()** (9 connections) — `docs/examples/logging/fastapi_integration.py`
 - **update_player_background_task()** (8 connections) — `docs/examples/logging/fastapi_integration.py`
 - **HTTPException** (6 connections)
 - **upload_avatar()** (6 connections) — `docs/examples/logging/fastapi_integration.py`
@@ -16,25 +15,26 @@
 - **general_exception_handler()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
 - **update_player_background()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
 - **list_players()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
-- **WebSocket** (5 connections) — `docs/examples/logging/fastapi_integration.py`
 - **Request** (4 connections)
 - **get_player()** (4 connections) — `docs/examples/logging/fastapi_integration.py`
 - **get_current_user()** (4 connections) — `docs/examples/logging/fastapi_integration.py`
 - **log_api_requests()** (3 connections) — `docs/examples/logging/fastapi_integration.py`
 - **auth_service()** (3 connections) — `docs/examples/logging/fastapi_integration.py`
-- **process_websocket_message()** (3 connections) — `docs/examples/logging/fastapi_integration.py`
 - **.verify_token()** (3 connections) — `docs/examples/logging/fastapi_integration.py`
 - **BackgroundTasks** (3 connections) — `docs/examples/logging/fastapi_integration.py`
 - **UploadFile** (3 connections) — `docs/examples/logging/fastapi_integration.py`
 - **Exception** (2 connections)
 - **.create_player()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
 - **.get_player()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
-- *... and 29 more nodes in this community*
+- **.list_players()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
+- **.update_player()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
+- **.upload_avatar()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
 - [. init ()](_init_%28%29.md) (9 shared connections)
-- [fastapi integration](fastapi_integration.md) (6 shared connections)
+- [fastapi integration](fastapi_integration.md) (7 shared connections)
 - [PerformanceStats](PerformanceStats.md) (4 shared connections)
 - [testing examples](testing_examples.md) (3 shared connections)
 - [websocket integration](websocket_integration.md) (3 shared connections)
@@ -52,8 +52,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 175 (95%)
-- INFERRED: 10 (5%)
+- EXTRACTED: 150 (95%)
+- INFERRED: 8 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

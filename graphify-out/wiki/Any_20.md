@@ -1,62 +1,53 @@
 # Any
 
-> 89 nodes
+> 45 nodes
 
 ## Key Concepts
 
-- **SubjectValidationError** (29 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **SubjectValidator** (23 connections) — `server/services/nats_subject_manager/validation.py`
-- **PatternNotFoundError** (21 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **manager.py** (20 connections) — `server/services/nats_subject_manager/manager.py`
-- **MissingParameterError** (17 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **InvalidPatternError** (17 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **NATSSubjectError** (16 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **test_nats_subject_exceptions.py** (16 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **test_subscription_patterns.py** (14 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
-- **exceptions.py** (13 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **__init__.py** (12 connections) — `server/services/nats_subject_manager/__init__.py`
-- **get_subscription_pattern()** (12 connections) — `server/services/nats_subject_manager/subscription_patterns.py`
-- **subscription_patterns.py** (10 connections) — `server/services/nats_subject_manager/subscription_patterns.py`
-- **get_chat_subscription_patterns()** (10 connections) — `server/services/nats_subject_manager/subscription_patterns.py`
-- **get_event_subscription_patterns()** (10 connections) — `server/services/nats_subject_manager/subscription_patterns.py`
-- **validation.py** (7 connections) — `server/services/nats_subject_manager/validation.py`
-- **test_exception_hierarchy()** (7 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **test_exceptions_can_be_raised()** (6 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **metrics.py** (5 connections) — `server/services/nats_subject_manager/metrics.py`
-- **.validate_parameter_value()** (5 connections) — `server/services/nats_subject_manager/validation.py`
-- **test_exceptions_can_be_caught_by_base()** (5 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **.validate_pattern_params()** (4 connections) — `server/services/nats_subject_manager/validation.py`
-- **test_pattern_not_found_error()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **test_missing_parameter_error_single()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **test_invalid_pattern_error()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- *... and 64 more nodes in this community*
+- **test_combat_schema.py** (20 connections) — `server/tests/unit/schemas/test_combat_schema.py`
+- **CombatSchemaValidationError** (17 connections) — `server/schemas/combat/combat_schema.py`
+- **combat_schema.py** (13 connections) — `server/schemas/combat/combat_schema.py`
+- **validate_npc_combat_data()** (13 connections) — `server/schemas/combat/combat_schema.py`
+- **validate_base_stats_combat_data()** (11 connections) — `server/schemas/combat/combat_schema.py`
+- **validate_combat_messages()** (11 connections) — `server/schemas/combat/combat_schema.py`
+- **__init__.py** (10 connections) — `server/schemas/combat/__init__.py`
+- **validate_behavior_config_combat_data()** (9 connections) — `server/schemas/combat/combat_schema.py`
+- **add_default_combat_data_to_stats()** (9 connections) — `server/schemas/combat/combat_schema.py`
+- **get_combat_stats_summary()** (6 connections) — `server/schemas/combat/combat_schema.py`
+- **Any** (5 connections)
+- **validate_message_template_variables()** (4 connections) — `server/schemas/combat/combat_schema.py`
+- **Draft7Validator** (4 connections)
+- **test_validate_base_stats_combat_data_missing_required()** (4 connections) — `server/tests/unit/schemas/test_combat_schema.py`
+- **test_validate_base_stats_combat_data_invalid_type()** (4 connections) — `server/tests/unit/schemas/test_combat_schema.py`
+- **test_validate_combat_messages_missing_required()** (4 connections) — `server/tests/unit/schemas/test_combat_schema.py`
+- **test_validate_base_stats_combat_data_valid()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
+- **test_validate_behavior_config_combat_data_valid()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
+- **test_validate_combat_messages_valid()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
+- **test_add_default_combat_data_to_stats()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
+- **test_add_default_combat_data_to_stats_preserves_existing()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
+- **test_validate_npc_combat_data()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
+- **test_get_combat_stats_summary()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
+- **Combat domain schemas: combat JSON schema validation and defaults.** (1 connections) — `server/schemas/combat/__init__.py`
+- **Exception** (1 connections)
+- *... and 20 more nodes in this community*
 
 ## Relationships
 
-- [get subject manager dependency()](get_subject_manager_dependency%28%29.md) (15 shared connections)
-- [test validation](test_validation.md) (15 shared connections)
-- [test corpse lifecycle service](test_corpse_lifecycle_service.md) (14 shared connections)
-- [Any](Any.md) (6 shared connections)
-- [test clear corrupted cache entry](test_clear_corrupted_cache_entry.md) (4 shared connections)
-- [. init ()](_init_%28%29.md) (3 shared connections)
-- [ChatMessage](ChatMessage.md) (2 shared connections)
+- [NATS Anti Patterns Review 2026](NATS_Anti_Patterns_Review_2026.md) (14 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [. init ()](_init_%28%29.md) (2 shared connections)
+- [lifespan](lifespan.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/nats_subject_manager/__init__.py`
-- `server/services/nats_subject_manager/exceptions.py`
-- `server/services/nats_subject_manager/manager.py`
-- `server/services/nats_subject_manager/metrics.py`
-- `server/services/nats_subject_manager/patterns.py`
-- `server/services/nats_subject_manager/subscription_patterns.py`
-- `server/services/nats_subject_manager/validation.py`
-- `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
+- `server/schemas/combat/__init__.py`
+- `server/schemas/combat/combat_schema.py`
+- `server/tests/unit/schemas/test_combat_schema.py`
 
 ## Audit Trail
 
-- EXTRACTED: 355 (91%)
-- INFERRED: 36 (9%)
+- EXTRACTED: 172 (92%)
+- INFERRED: 15 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

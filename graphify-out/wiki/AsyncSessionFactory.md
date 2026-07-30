@@ -34,17 +34,17 @@
 ## Relationships
 
 - [Connection Manager](Connection_Manager.md) (11 shared connections)
-- [close db()](close_db%28%29.md) (9 shared connections)
 - [NPCLifecycleManager](NPCLifecycleManager.md) (9 shared connections)
 - [world](world.md) (8 shared connections)
+- [close db()](close_db%28%29.md) (7 shared connections)
 - [.shutdown()](shutdown%28%29.md) (7 shared connections)
 - [HolidayCollection](HolidayCollection.md) (5 shared connections)
 - [parse jsonb column()](parse_jsonb_column%28%29.md) (5 shared connections)
 - [Protocol](Protocol.md) (4 shared connections)
+- [process dead players()](process_dead_players%28%29.md) (3 shared connections)
 - [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
 - [get health status()](get_health_status%28%29.md) (3 shared connections)
 - [get current tick()](get_current_tick%28%29.md) (3 shared connections)
-- [init](init.md) (2 shared connections)
 
 ## Source Files
 

@@ -35,16 +35,16 @@
 
 - [TerminalButtonProps](TerminalButtonProps.md) (54 shared connections)
 - [world](world.md) (28 shared connections)
-- [Any](Any.md) (20 shared connections)
+- [Any](Any.md) (22 shared connections)
 - [parse jsonb column()](parse_jsonb_column%28%29.md) (18 shared connections)
-- [close db()](close_db%28%29.md) (15 shared connections)
+- [close db()](close_db%28%29.md) (12 shared connections)
 - [. init ()](_init_%28%29.md) (9 shared connections)
 - [datetime](datetime.md) (9 shared connections)
 - [Lock](Lock.md) (8 shared connections)
 - [Test check all command blocks](Test_check_all_command_blocks.md) (7 shared connections)
+- [test combat attack handler](test_combat_attack_handler.md) (7 shared connections)
 - [test statistics aggregator](test_statistics_aggregator.md) (6 shared connections)
 - [NPCLifecycleManager](NPCLifecycleManager.md) (5 shared connections)
-- [CombatService](CombatService.md) (4 shared connections)
 
 ## Source Files
 

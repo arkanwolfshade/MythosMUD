@@ -39,12 +39,12 @@
 - [test player event handlers room](test_player_event_handlers_room.md) (21 shared connections)
 - [Player](Player.md) (17 shared connections)
 - [parse jsonb column()](parse_jsonb_column%28%29.md) (17 shared connections)
+- [. initialize handlers()](_initialize_handlers%28%29.md) (16 shared connections)
 - [.end combat()](end_combat%28%29.md) (16 shared connections)
-- [Any](Any.md) (14 shared connections)
+- [Any](Any.md) (15 shared connections)
 - [TerminalButtonProps](TerminalButtonProps.md) (12 shared connections)
-- [close db()](close_db%28%29.md) (12 shared connections)
 - [chat nats publisher](chat_nats_publisher.md) (11 shared connections)
-- [. initialize handlers()](_initialize_handlers%28%29.md) (11 shared connections)
+- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (11 shared connections)
 
 ## Source Files
 

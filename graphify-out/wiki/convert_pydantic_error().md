@@ -40,9 +40,9 @@
 - [world](world.md) (4 shared connections)
 - [help content](help_content.md) (4 shared connections)
 - [.is required()](is_required%28%29.md) (4 shared connections)
+- [MessageHandlerFactory](MessageHandlerFactory.md) (4 shared connections)
 - [real time](real_time.md) (3 shared connections)
 - [AbstractContextManager](AbstractContextManager.md) (3 shared connections)
-- [MessageHandlerFactory](MessageHandlerFactory.md) (3 shared connections)
 - [NATS](NATS.md) (2 shared connections)
 - [generate invites db](generate_invites_db.md) (2 shared connections)
 

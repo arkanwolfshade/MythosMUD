@@ -1,52 +1,35 @@
 # Any
 
-> 53 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **TestRoomDataFixer** (20 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **RoomDataFixer** (14 connections) — `server/services/room_data_fixer.py`
-- **.apply_room_data_fixes()** (13 connections) — `server/services/room_data_fixer.py`
-- **.fix_missing_name()** (7 connections) — `server/services/room_data_fixer.py`
-- **.fix_occupant_count_mismatch()** (7 connections) — `server/services/room_data_fixer.py`
-- **.fix_missing_description()** (6 connections) — `server/services/room_data_fixer.py`
-- **.fix_missing_timestamp()** (6 connections) — `server/services/room_data_fixer.py`
-- **Any** (5 connections)
-- **.count_applied_fixes()** (5 connections) — `server/services/room_data_fixer.py`
-- **.test_apply_room_data_fixes_exception_handling()** (5 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **test_room_data_fixer.py** (4 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_fix_missing_name()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_fix_missing_name_no_error()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_fix_missing_name_unknown_id()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_fix_missing_description()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_fix_missing_description_no_error()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_fix_occupant_count_mismatch()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_fix_occupant_count_mismatch_no_error()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_fix_occupant_count_mismatch_no_occupants()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_fix_missing_timestamp()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_fix_missing_timestamp_existing()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_count_applied_fixes()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_count_applied_fixes_no_fixable()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_apply_room_data_fixes_all_fixes()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_apply_room_data_fixes_no_errors()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- *... and 28 more nodes in this community*
+- **Any** (6 connections)
+- **.merge_room_data()** (4 connections) — `server/services/room_data_cache.py`
+- **._is_newer_data()** (4 connections) — `server/services/room_data_cache.py`
+- **.is_room_data_fresh()** (3 connections) — `server/services/room_data_cache.py`
+- **.get_cache()** (3 connections) — `server/services/room_data_cache.py`
+- **.set_cache()** (3 connections) — `server/services/room_data_cache.py`
+- **.get_cache_stats()** (3 connections) — `server/services/room_data_cache.py`
+- **Check if room data is fresh enough to use.          Args:             room_data:** (1 connections) — `server/services/room_data_cache.py`
+- **Get room data from cache.          Args:             room_id: Room ID to retriev** (1 connections) — `server/services/room_data_cache.py`
+- **Store room data in cache.          Args:             room_id: Room ID to store** (1 connections) — `server/services/room_data_cache.py`
+- **Get statistics about the room data cache.          Args:             is_room_dat** (1 connections) — `server/services/room_data_cache.py`
+- **Merge room data with proper conflict resolution.          Args:             old_** (1 connections) — `server/services/room_data_cache.py`
+- **Check if new data is newer than old data for a specific key.          Args:** (1 connections) — `server/services/room_data_cache.py`
 
 ## Relationships
 
-- [world](world.md) (2 shared connections)
-- [combat taunt](combat_taunt.md) (2 shared connections)
-- [Any](Any.md) (1 shared connections)
-- [create access token()](create_access_token%28%29.md) (1 shared connections)
+- [Manages room data caching and](Manages_room_data_caching_and.md) (6 shared connections)
 
 ## Source Files
 
-- `server/services/room_data_fixer.py`
-- `server/tests/unit/services/test_room_data_fixer.py`
+- `server/services/room_data_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 160 (96%)
-- INFERRED: 6 (4%)
+- EXTRACTED: 32 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -2054,8 +2054,6 @@
   "2052": "test_mute_global_success",
   "2053": "test_normalize_command_no_slash",
   "2054": "test_parse_command_parts_basic",
-  "2055": "test_is_channel_muted_false",
-  "2056": "test_is_globally_muted_true",
   "2057": "test_parse_command_parts_no_args",
   "2058": "test_parse_command_parts_empty_string",
   "2059": "test_parse_command_parts_mock_object_detection",

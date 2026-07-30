@@ -20,13 +20,12 @@
 
 - [login grace period](login_grace_period.md) (4 shared connections)
 - [Player](Player.md) (3 shared connections)
-- [get health service()](get_health_service%28%29.md) (3 shared connections)
+- [test combat attack handler](test_combat_attack_handler.md) (3 shared connections)
+- [process dead players()](process_dead_players%28%29.md) (2 shared connections)
 - [world](world.md) (2 shared connections)
 - [combat](combat.md) (2 shared connections)
-- [process dead players()](process_dead_players%28%29.md) (1 shared connections)
-- [close db()](close_db%28%29.md) (1 shared connections)
 - [.state()](state%28%29.md) (1 shared connections)
-- [NATSMessageSubscriptionMixin](NATSMessageSubscriptionMixin.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
 
 ## Source Files
 

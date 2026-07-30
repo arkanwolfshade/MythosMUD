@@ -1,52 +1,57 @@
 # Any
 
-> 80 nodes
+> 57 nodes
 
 ## Key Concepts
 
-- **test_npc_utils.py** (30 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **get_zone_key_from_room_id()** (17 connections) — `server/npc/npc_utils.py`
-- **extract_npc_metadata()** (12 connections) — `server/npc/npc_utils.py`
-- **extract_definition_id_from_npc()** (12 connections) — `server/npc/npc_utils.py`
-- **extract_room_id_from_npc()** (11 connections) — `server/npc/npc_utils.py`
-- **npc_utils.py** (8 connections) — `server/npc/npc_utils.py`
-- **.despawn_npc()** (8 connections) — `server/npc/population_control.py`
-- **._get_active_npcs_from_lifecycle_manager()** (6 connections) — `server/npc/population_control.py`
-- **._get_zone_key_from_room_id()** (5 connections) — `server/npc/population_control.py`
-- **._should_remove_inactive_npc()** (5 connections) — `server/npc/population_control.py`
-- **.cleanup_inactive_npcs()** (5 connections) — `server/npc/population_control.py`
-- **.is_required()** (4 connections) — `server/models/npc.py`
-- **._update_population_stats_for_despawn()** (4 connections) — `server/npc/population_control.py`
+- **NATSMessageBroker** (30 connections) — `server/infrastructure/nats_broker.py`
+- **nats_broker.py** (17 connections) — `server/infrastructure/nats_broker.py`
+- **MessageBrokerError** (13 connections) — `server/infrastructure/message_broker.py`
+- **message_broker.py** (11 connections) — `server/infrastructure/message_broker.py`
+- **PublishError** (9 connections) — `server/infrastructure/message_broker.py`
+- **SubscribeError** (9 connections) — `server/infrastructure/message_broker.py`
+- **RequestError** (9 connections) — `server/infrastructure/message_broker.py`
+- **MessageBrokerConnectionError** (8 connections) — `server/infrastructure/message_broker.py`
+- **UnsubscribeError** (8 connections) — `server/infrastructure/message_broker.py`
+- **.publish()** (6 connections) — `server/infrastructure/nats_broker.py`
+- **.connect()** (5 connections) — `server/infrastructure/nats_broker.py`
+- **.disconnect()** (5 connections) — `server/infrastructure/nats_broker.py`
+- **.is_connected()** (5 connections) — `server/infrastructure/nats_broker.py`
+- **.subscribe()** (5 connections) — `server/infrastructure/nats_broker.py`
+- **.request()** (5 connections) — `server/infrastructure/nats_broker.py`
+- **._start_health_monitoring()** (5 connections) — `server/infrastructure/nats_broker.py`
+- **._configure_tls()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **.unsubscribe()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **._error_callback()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **._handle_error_async()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **._handle_reconnect_async()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **._health_check_loop()** (4 connections) — `server/infrastructure/nats_broker.py`
 - **Any** (3 connections)
-- **_stable_room_id_for_zone()** (3 connections) — `server/npc/npc_utils.py`
-- **.get_zone_population_summary()** (3 connections) — `server/npc/population_control.py`
-- **test_extract_room_id_from_npc_current_room()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_room_id_from_npc_current_room_id()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_room_id_from_npc_room_id()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_room_id_from_npc_not_found()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_room_id_from_npc_non_string()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_npc_metadata_valid()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_npc_metadata_defaults()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_npc_metadata_non_string_type()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_npc_metadata_truthy_required()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- *... and 55 more nodes in this community*
+- **._disconnected_callback()** (3 connections) — `server/infrastructure/nats_broker.py`
+- **._handle_disconnect_async()** (3 connections) — `server/infrastructure/nats_broker.py`
+- *... and 32 more nodes in this community*
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (16 shared connections)
-- [Test check all command blocks](Test_check_all_command_blocks.md) (2 shared connections)
+- [message broker](message_broker.md) (20 shared connections)
+- [init](init.md) (2 shared connections)
+- [BaseModel](BaseModel.md) (2 shared connections)
+- [get subject manager dependency()](get_subject_manager_dependency%28%29.md) (2 shared connections)
+- [world](world.md) (2 shared connections)
+- [BaseUserManager](BaseUserManager.md) (1 shared connections)
+- [FollowTargetValue](FollowTargetValue.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
+- [. init ()](_init_%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/npc.py`
-- `server/npc/npc_utils.py`
-- `server/npc/population_control.py`
-- `server/tests/unit/npc/test_npc_utils.py`
+- `server/infrastructure/message_broker.py`
+- `server/infrastructure/nats_broker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 244 (98%)
-- INFERRED: 4 (2%)
+- EXTRACTED: 201 (91%)
+- INFERRED: 21 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

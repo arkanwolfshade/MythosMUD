@@ -41,7 +41,7 @@
 - [close db()](close_db%28%29.md) (4 shared connections)
 - [chat nats publisher](chat_nats_publisher.md) (3 shared connections)
 - [init](init.md) (2 shared connections)
-- [fetch container items()](fetch_container_items%28%29.md) (2 shared connections)
+- [SafeHtml](SafeHtml.md) (2 shared connections)
 - [.reset instance()](reset_instance%28%29.md) (2 shared connections)
 - [get current tick()](get_current_tick%28%29.md) (2 shared connections)
 - [.state()](state%28%29.md) (2 shared connections)

@@ -28,7 +28,7 @@
 ## Relationships
 
 - [world](world.md) (3 shared connections)
-- [close db()](close_db%28%29.md) (2 shared connections)
+- [process dead players()](process_dead_players%28%29.md) (2 shared connections)
 - [test statistics aggregator](test_statistics_aggregator.md) (1 shared connections)
 - [test connection cleaner](test_connection_cleaner.md) (1 shared connections)
 

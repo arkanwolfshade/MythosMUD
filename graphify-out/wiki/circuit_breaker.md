@@ -1,6 +1,6 @@
 # circuit breaker
 
-> 584 nodes
+> 605 nodes
 
 ## Key Concepts
 
@@ -29,22 +29,22 @@
 - **NATSMessageProcessingMixin** (15 connections) — `server/realtime/nats_message_handler_processing.py`
 - **CircuitBreakerOpen** (14 connections) — `server/realtime/circuit_breaker.py`
 - **MetricsCollector** (13 connections) — `server/middleware/metrics_collector.py`
-- *... and 559 more nodes in this community*
+- *... and 580 more nodes in this community*
 
 ## Relationships
 
 - [Any](Any.md) (56 shared connections)
 - [world](world.md) (29 shared connections)
 - [Player](Player.md) (19 shared connections)
+- [. init ()](_init_%28%29.md) (18 shared connections)
 - [UUID](UUID.md) (9 shared connections)
-- [. init ()](_init_%28%29.md) (8 shared connections)
 - [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (7 shared connections)
-- [time commands](time_commands.md) (7 shared connections)
 - [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (6 shared connections)
 - [.check and interrupt rest()](check_and_interrupt_rest%28%29.md) (6 shared connections)
 - [.reset instance()](reset_instance%28%29.md) (5 shared connections)
 - [get current tick()](get_current_tick%28%29.md) (4 shared connections)
-- [close db()](close_db%28%29.md) (4 shared connections)
+- [test command factories inventory](test_command_factories_inventory.md) (4 shared connections)
+- [.cleanup dead connections()](cleanup_dead_connections%28%29.md) (4 shared connections)
 
 ## Source Files
 
@@ -61,17 +61,17 @@
 - `server/realtime/nats_message_handler_processing.py`
 - `server/realtime/nats_message_handler_subscriptions.py`
 - `server/realtime/nats_retry_handler.py`
+- `server/services/combat_messaging/combat_broadcasts.py`
 - `server/services/lucidity_communication_dampening.py`
 - `server/tests/unit/realtime/test_circuit_breaker.py`
 - `server/tests/unit/realtime/test_dead_letter_queue.py`
 - `server/tests/unit/realtime/test_envelope.py`
 - `server/tests/unit/realtime/test_event_handlers_combat.py`
 - `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- `server/tests/unit/realtime/test_nats_retry_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1980 (96%)
+- EXTRACTED: 2039 (96%)
 - INFERRED: 77 (4%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,12 +1,11 @@
 # Path
 
-> 65 nodes
+> 63 nodes
 
 ## Key Concepts
 
 - **NPCCombatUUIDMapping** (39 connections) — `server/services/npc_combat_uuid_mapping.py`
 - **TestNPCCombatUUIDMapping** (22 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **npc_combat_uuid_mapping.py** (8 connections) — `server/services/npc_combat_uuid_mapping.py`
 - **UUID** (8 connections)
 - **.is_valid_uuid()** (4 connections) — `server/services/npc_combat_uuid_mapping.py`
 - **.convert_to_uuid()** (4 connections) — `server/services/npc_combat_uuid_mapping.py`
@@ -29,14 +28,14 @@
 - **.test_get_original_string_id_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
 - **.test_get_original_string_id_not_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
 - **.test_get_uuid_for_string_id_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- *... and 40 more nodes in this community*
+- **.test_get_uuid_for_string_id_not_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (5 shared connections)
+- [test combat attack handler](test_combat_attack_handler.md) (6 shared connections)
 - [combat](combat.md) (2 shared connections)
-- [get health service()](get_health_service%28%29.md) (2 shared connections)
-- [world](world.md) (2 shared connections)
+- [. init ()](_init_%28%29.md) (2 shared connections)
 - [Test despawn npc handles NPC](Test_despawn_npc_handles_NPC.md) (1 shared connections)
 
 ## Source Files
@@ -47,7 +46,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 193 (97%)
+- EXTRACTED: 184 (97%)
 - INFERRED: 5 (3%)
 - AMBIGUOUS: 0 (0%)
 

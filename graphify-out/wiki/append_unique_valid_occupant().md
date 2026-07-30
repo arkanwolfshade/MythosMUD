@@ -38,7 +38,7 @@
 - [Player](Player.md) (21 shared connections)
 - [real time](real_time.md) (15 shared connections)
 - [message handler factory](message_handler_factory.md) (14 shared connections)
-- [close db()](close_db%28%29.md) (12 shared connections)
+- [close db()](close_db%28%29.md) (9 shared connections)
 - [login grace period](login_grace_period.md) (7 shared connections)
 - [admin shutdown command](admin_shutdown_command.md) (5 shared connections)
 - [QuestCompleted](QuestCompleted.md) (5 shared connections)

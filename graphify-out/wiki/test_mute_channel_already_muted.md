@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_mute_channel_already_muted()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test mute_channel() when channel is already muted.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_remove_admin_success()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test remove_admin() successfully removes admin.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
 
 ## Relationships
 

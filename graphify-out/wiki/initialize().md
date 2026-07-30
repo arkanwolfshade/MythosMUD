@@ -34,7 +34,7 @@
 ## Relationships
 
 - [Spell Targeting](Spell_Targeting.md) (113 shared connections)
-- [close db()](close_db%28%29.md) (76 shared connections)
+- [close db()](close_db%28%29.md) (72 shared connections)
 - [real time](real_time.md) (53 shared connections)
 - [. init ()](_init_%28%29.md) (47 shared connections)
 - [test command parser helpers](test_command_parser_helpers.md) (30 shared connections)

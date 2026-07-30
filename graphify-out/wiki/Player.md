@@ -1,6 +1,6 @@
 # Player
 
-> 360 nodes
+> 355 nodes
 
 ## Key Concepts
 
@@ -29,11 +29,11 @@
 - **_weapon_from_prototype_registry()** (12 connections) — `server/game/player_schema_converter.py`
 - **.create_player_read_from_object()** (12 connections) — `server/game/player_schema_converter.py`
 - **PlayerStateService** (12 connections) — `server/game/player_state_service.py`
-- *... and 335 more nodes in this community*
+- *... and 330 more nodes in this community*
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (35 shared connections)
+- [. init ()](_init_%28%29.md) (36 shared connections)
 - [world](world.md) (25 shared connections)
 - [.initialize()](initialize%28%29.md) (25 shared connections)
 - [message handler factory](message_handler_factory.md) (22 shared connections)
@@ -43,7 +43,7 @@
 - [Spell Targeting](Spell_Targeting.md) (14 shared connections)
 - [test command parser](test_command_parser.md) (10 shared connections)
 - [real time](real_time.md) (10 shared connections)
-- [main()](main%28%29.md) (9 shared connections)
+- [main()](main%28%29.md) (8 shared connections)
 - [.validate spell name()](validate_spell_name%28%29.md) (8 shared connections)
 
 ## Source Files
@@ -71,7 +71,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 1365 (94%)
+- EXTRACTED: 1349 (94%)
 - INFERRED: 84 (6%)
 - AMBIGUOUS: 0 (0%)
 

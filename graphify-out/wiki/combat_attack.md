@@ -35,7 +35,7 @@
 
 - [emit close container event()](emit_close_container_event%28%29.md) (3 shared connections)
 - [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
-- [close db()](close_db%28%29.md) (2 shared connections)
+- [process dead players()](process_dead_players%28%29.md) (2 shared connections)
 - [world](world.md) (2 shared connections)
 - [CombatService](CombatService.md) (2 shared connections)
 - [test player cache](test_player_cache.md) (1 shared connections)

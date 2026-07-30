@@ -39,7 +39,7 @@
 - [append unique valid occupant()](append_unique_valid_occupant%28%29.md) (2 shared connections)
 - [.validate spell name()](validate_spell_name%28%29.md) (2 shared connections)
 - [real time](real_time.md) (1 shared connections)
-- [NATSMessageSubscriptionMixin](NATSMessageSubscriptionMixin.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
 
 ## Source Files
 

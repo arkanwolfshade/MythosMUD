@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_load_player_mutes_invalid_uuid_in_data()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test load_player_mutes() handles invalid UUID in data.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_load_player_mutes_invalid_json()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test load_player_mutes() handles invalid JSON.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
 
 ## Relationships
 

@@ -37,14 +37,14 @@
 - [init](init.md) (8 shared connections)
 - [AsyncSessionFactory](AsyncSessionFactory.md) (7 shared connections)
 - [PerformanceStats](PerformanceStats.md) (7 shared connections)
-- [Any](Any.md) (4 shared connections)
+- [Any](Any.md) (7 shared connections)
 - [world](world.md) (4 shared connections)
 - [test command parser](test_command_parser.md) (4 shared connections)
 - [Protocol](Protocol.md) (3 shared connections)
 - [Connection Manager](Connection_Manager.md) (3 shared connections)
 - [aggregate log entry()](aggregate_log_entry%28%29.md) (3 shared connections)
-- [NATSMessageSubscriptionMixin](NATSMessageSubscriptionMixin.md) (3 shared connections)
 - [ConnectionsComponent](ConnectionsComponent.md) (2 shared connections)
+- [. initialize handlers()](_initialize_handlers%28%29.md) (1 shared connections)
 
 ## Source Files
 

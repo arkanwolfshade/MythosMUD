@@ -1,41 +1,53 @@
 # Any
 
-> 17 nodes
+> 49 nodes
 
 ## Key Concepts
 
-- **Any** (7 connections)
-- **.__init__()** (6 connections) — `server/services/room_sync_service.py`
-- **._handle_stale_room_data()** (6 connections) — `server/services/room_sync_service.py`
-- **._process_room_update_with_validation()** (4 connections) — `server/services/room_sync_service.py`
-- **._fetch_fresh_room_data()** (4 connections) — `server/services/room_sync_service.py`
-- **.set_room_service()** (3 connections) — `server/services/room_sync_service.py`
-- **._invalidate_stale_cache()** (3 connections) — `server/services/room_sync_service.py`
-- **._process_room_transition()** (3 connections) — `server/services/room_sync_service.py`
-- **.get_room_data_cache_stats()** (3 connections) — `server/services/room_sync_service.py`
-- **Initialize the room synchronization service.          Args:             room_ser** (1 connections) — `server/services/room_sync_service.py`
-- **Set the room service for fetching fresh room data.          Args:             ro** (1 connections) — `server/services/room_sync_service.py`
-- **Process room update with comprehensive validation.          Args:             ro** (1 connections) — `server/services/room_sync_service.py`
-- **Invalidate stale room cache entry.          Args:             room_id: Room ID t** (1 connections) — `server/services/room_sync_service.py`
-- **Fetch fresh room data from room service.          Args:             room_id: Roo** (1 connections) — `server/services/room_sync_service.py`
-- **Handle stale room data by requesting fresh data.          Args:             room** (1 connections) — `server/services/room_sync_service.py`
-- **Process room transition with proper ordering and validation.          Args:** (1 connections) — `server/services/room_sync_service.py`
-- **Get statistics about the room data cache.          Returns:             Dict[str** (1 connections) — `server/services/room_sync_service.py`
+- **RoomDataValidator** (18 connections) — `server/services/room_data_validator.py`
+- **test_room_data_validator.py** (16 connections) — `server/tests/unit/services/test_room_data_validator.py`
+- **.validate_room_data()** (10 connections) — `server/services/room_data_validator.py`
+- **Any** (8 connections)
+- **.validate_room_consistency()** (7 connections) — `server/services/room_data_validator.py`
+- **.validate_required_fields()** (6 connections) — `server/services/room_data_validator.py`
+- **.validate_field_types()** (6 connections) — `server/services/room_data_validator.py`
+- **.check_duplicate_occupants()** (6 connections) — `server/services/room_data_validator.py`
+- **.is_valid_room_id()** (5 connections) — `server/services/room_data_validator.py`
+- **.check_occupant_count_consistency()** (5 connections) — `server/services/room_data_validator.py`
+- **.check_empty_room_with_occupants()** (5 connections) — `server/services/room_data_validator.py`
+- **.validate_occupant_consistency()** (4 connections) — `server/services/room_data_validator.py`
+- **test_validate_required_fields()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
+- **test_validate_required_fields_all_present()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
+- **test_validate_field_types()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
+- **test_validate_field_types_valid()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
+- **test_validate_room_data_valid()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
+- **test_validate_room_data_invalid()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
+- **test_validate_room_data_room_id()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
+- **test_is_valid_room_id()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
+- **test_check_occupant_count_consistency()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
+- **test_check_duplicate_occupants()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
+- **test_check_duplicate_occupants_no_duplicates()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
+- **test_check_empty_room_with_occupants()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
+- **test_validate_room_consistency()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [combat taunt](combat_taunt.md) (8 shared connections)
-- [Any](Any.md) (2 shared connections)
-- [Manages room data caching and](Manages_room_data_caching_and.md) (1 shared connections)
+- [test combat attack handler](test_combat_attack_handler.md) (2 shared connections)
+- [. init ()](_init_%28%29.md) (2 shared connections)
+- [world](world.md) (2 shared connections)
+- [combat taunt](combat_taunt.md) (2 shared connections)
+- [Any](Any.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/room_sync_service.py`
+- `server/services/room_data_validator.py`
+- `server/tests/unit/services/test_room_data_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 47 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 156 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

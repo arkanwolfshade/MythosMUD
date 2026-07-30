@@ -44,7 +44,7 @@
 - [AsyncSessionFactory](AsyncSessionFactory.md) (2 shared connections)
 - [AdminActionsLogger](AdminActionsLogger.md) (2 shared connections)
 - [handle global command()](handle_global_command%28%29.md) (1 shared connections)
-- [close db()](close_db%28%29.md) (1 shared connections)
+- [process dead players()](process_dead_players%28%29.md) (1 shared connections)
 
 ## Source Files
 

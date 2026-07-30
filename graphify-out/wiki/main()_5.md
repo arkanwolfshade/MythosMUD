@@ -40,10 +40,10 @@
 - [CommandHandler](CommandHandler.md) (17 shared connections)
 - [Any](Any.md) (16 shared connections)
 - [local channel isolation.spec](local_channel_isolation.spec.md) (16 shared connections)
-- [close db()](close_db%28%29.md) (15 shared connections)
-- [Player](Player.md) (11 shared connections)
+- [close db()](close_db%28%29.md) (14 shared connections)
 - [bench cache npc](bench_cache_npc.md) (11 shared connections)
 - [test player preferences service](test_player_preferences_service.md) (11 shared connections)
+- [Player](Player.md) (10 shared connections)
 - [chat nats publisher](chat_nats_publisher.md) (10 shared connections)
 
 ## Source Files

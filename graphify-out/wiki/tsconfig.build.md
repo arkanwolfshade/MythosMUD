@@ -1,17 +1,19 @@
 # tsconfig.build
 
-> 4 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **plane** (4 connections) — `schemas/unified_room_schema.json`
+- **capacity_slots** (6 connections) — `schemas/unified_room_schema.json`
 - **type** (1 connections) — `schemas/unified_room_schema.json`
-- **pattern** (1 connections) — `schemas/unified_room_schema.json`
+- **minimum** (1 connections) — `schemas/unified_room_schema.json`
+- **maximum** (1 connections) — `schemas/unified_room_schema.json`
+- **default** (1 connections) — `schemas/unified_room_schema.json`
 - **description** (1 connections) — `schemas/unified_room_schema.json`
 
 ## Relationships
 
-- [description](description.md) (1 shared connections)
+- [type](type.md) (1 shared connections)
 
 ## Source Files
 
@@ -19,7 +21,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

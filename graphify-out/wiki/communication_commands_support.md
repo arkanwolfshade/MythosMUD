@@ -35,7 +35,7 @@
 
 - [world](world.md) (3 shared connections)
 - [src/**/*.spec](src-__-_.spec.md) (2 shared connections)
-- [get health service()](get_health_service%28%29.md) (1 shared connections)
+- [test combat attack handler](test_combat_attack_handler.md) (1 shared connections)
 - [combat](combat.md) (1 shared connections)
 - [Test despawn npc handles NPC](Test_despawn_npc_handles_NPC.md) (1 shared connections)
 

@@ -1,60 +1,37 @@
 # Any
 
-> 32 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **EventPublisher** (23 connections) — `server/realtime/event_publisher.py`
-- **RealtimeBundle** (17 connections) — `server/container/bundles/realtime.py`
-- **realtime.py** (12 connections) — `server/container/bundles/realtime.py`
-- **.initialize()** (8 connections) — `server/container/bundles/realtime.py`
-- **._create_event_message()** (7 connections) — `server/realtime/event_publisher.py`
-- **._setup_nats_dependent_services()** (6 connections) — `server/container/bundles/realtime.py`
-- **Any** (6 connections)
-- **._get_async_persistence()** (6 connections) — `server/realtime/event_publisher.py`
-- **._connect_nats()** (5 connections) — `server/container/bundles/realtime.py`
-- **.publish_player_entered_event()** (5 connections) — `server/realtime/event_publisher.py`
-- **.publish_player_left_event()** (5 connections) — `server/realtime/event_publisher.py`
-- **._require_core_services()** (4 connections) — `server/container/bundles/realtime.py`
-- **.__init__()** (4 connections) — `server/realtime/event_publisher.py`
-- **.publish_game_tick_event()** (4 connections) — `server/realtime/event_publisher.py`
-- **.get_next_sequence_number()** (3 connections) — `server/realtime/event_publisher.py`
-- **.reset_sequence_number()** (2 connections) — `server/realtime/event_publisher.py`
-- **Any** (1 connections)
-- **Realtime bundle: NATS, connection manager, event handler, event publisher.  Depe** (1 connections) — `server/container/bundles/realtime.py`
-- **Real-time communication: NATS, connection manager, event handler.** (1 connections) — `server/container/bundles/realtime.py`
-- **Raise if any core dependency is missing.** (1 connections) — `server/container/bundles/realtime.py`
-- **Connect to NATS if enabled and not unit_test. Returns NATSService or None.** (1 connections) — `server/container/bundles/realtime.py`
-- **Attach event publisher and message handler when NATS is available.** (1 connections) — `server/container/bundles/realtime.py`
-- **Initialize real-time services. Requires CoreBundle attributes on container.** (1 connections) — `server/container/bundles/realtime.py`
-- **Service for publishing real-time game events to NATS subjects.      This service** (1 connections) — `server/realtime/event_publisher.py`
-- **Initialize EventPublisher service.          Args:             nats_service: NATS** (1 connections) — `server/realtime/event_publisher.py`
-- *... and 7 more nodes in this community*
+- **_get_profession_info()** (10 connections) — `server/commands/status_commands.py`
+- **test_get_profession_info_error_handling()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **test_get_profession_info_no_profession_id()** (3 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **test_get_profession_info_player_dict_no_profession_id()** (3 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **test_get_profession_info_with_profession()** (3 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **test_get_profession_info_profession_not_found()** (3 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **Get profession information for a player.      Args:         player: Player objec** (1 connections) — `server/commands/status_commands.py`
+- **Test _get_profession_info returns None values when profession_id is 0.** (1 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **Test _get_profession_info handles player as dict with no profession_id.** (1 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **Test _get_profession_info returns profession info when profession exists.** (1 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **Test _get_profession_info returns None values when profession not found.** (1 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **Test _get_profession_info handles errors gracefully.** (1 connections) — `server/tests/unit/commands/test_status_commands.py`
 
 ## Relationships
 
-- [test command parser](test_command_parser.md) (6 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (6 shared connections)
-- [Player](Player.md) (5 shared connections)
-- [world](world.md) (4 shared connections)
-- [event publisher()](event_publisher%28%29.md) (4 shared connections)
-- [UUID](UUID.md) (3 shared connections)
-- [circuit breaker](circuit_breaker.md) (3 shared connections)
-- [FollowTargetValue](FollowTargetValue.md) (3 shared connections)
-- [handle explore command()](handle_explore_command%28%29.md) (2 shared connections)
-- [test connection cleaner](test_connection_cleaner.md) (1 shared connections)
-- [get subject manager dependency()](get_subject_manager_dependency%28%29.md) (1 shared connections)
-- [NATSMessageSubscriptionMixin](NATSMessageSubscriptionMixin.md) (1 shared connections)
+- [status commands](status_commands.md) (6 shared connections)
+- [logging utilities](logging_utilities.md) (3 shared connections)
+- [create access token()](create_access_token%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/container/bundles/realtime.py`
-- `server/realtime/event_publisher.py`
+- `server/commands/status_commands.py`
+- `server/tests/unit/commands/test_status_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 124 (93%)
-- INFERRED: 9 (7%)
+- EXTRACTED: 31 (97%)
+- INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

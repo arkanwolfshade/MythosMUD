@@ -34,17 +34,17 @@
 ## Relationships
 
 - [TerminalButtonProps](TerminalButtonProps.md) (10 shared connections)
+- [test combat attack handler](test_combat_attack_handler.md) (9 shared connections)
 - [CombatService](CombatService.md) (8 shared connections)
-- [get health service()](get_health_service%28%29.md) (8 shared connections)
-- [. initialize handlers()](_initialize_handlers%28%29.md) (5 shared connections)
-- [. init ()](_init_%28%29.md) (5 shared connections)
+- [. initialize handlers()](_initialize_handlers%28%29.md) (4 shared connections)
+- [. init ()](_init_%28%29.md) (4 shared connections)
 - [test player event handlers room](test_player_event_handlers_room.md) (3 shared connections)
 - [Test despawn npc handles NPC](Test_despawn_npc_handles_NPC.md) (3 shared connections)
 - [Any](Any.md) (2 shared connections)
 - [src/**/*.spec](src-__-_.spec.md) (2 shared connections)
 - [look container](look_container.md) (2 shared connections)
 - [Path](Path.md) (2 shared connections)
-- [chat nats publisher](chat_nats_publisher.md) (2 shared connections)
+- [process dead players()](process_dead_players%28%29.md) (2 shared connections)
 
 ## Source Files
 

@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_can_send_message_player_muted()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test can_send_message() behavior when target player is muted.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_get_system_stats()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test get_system_stats() returns system statistics.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
 
 ## Relationships
 

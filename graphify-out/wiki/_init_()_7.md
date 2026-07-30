@@ -44,7 +44,7 @@
 - [TerminalButtonProps](TerminalButtonProps.md) (6 shared connections)
 - [admin shutdown command](admin_shutdown_command.md) (5 shared connections)
 - [.initialize()](initialize%28%29.md) (4 shared connections)
-- [close db()](close_db%28%29.md) (4 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (4 shared connections)
 
 ## Source Files
 

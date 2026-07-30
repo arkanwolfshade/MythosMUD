@@ -1,6 +1,6 @@
 # . init ()
 
-> 363 nodes
+> 368 nodes
 
 ## Key Concepts
 
@@ -23,28 +23,28 @@
 - **test_game_enums.py** (11 connections) — `server/tests/unit/models/test_game_enums.py`
 - **.respawn_player_from_delirium()** (10 connections) — `server/services/player_respawn_service.py`
 - **.respawn_player_from_sanitarium()** (10 connections) — `server/services/player_respawn_service.py`
+- **AttributeType** (8 connections) — `server/models/game.py`
 - **Player** (8 connections)
 - **._clear_respawn_combat_state()** (8 connections) — `server/services/player_respawn_service.py`
 - **._publish_standard_respawn_event()** (8 connections) — `server/services/player_respawn_service.py`
 - **._prepare_delirium_respawn()** (8 connections) — `server/services/player_respawn_service.py`
 - **_utc_now()** (7 connections) — `server/services/player_respawn_service.py`
-- **AsyncSession** (7 connections)
-- *... and 338 more nodes in this community*
+- *... and 343 more nodes in this community*
 
 ## Relationships
 
-- [main()](main%28%29.md) (76 shared connections)
+- [main()](main%28%29.md) (77 shared connections)
 - [chat nats publisher](chat_nats_publisher.md) (24 shared connections)
+- [Player](Player.md) (20 shared connections)
 - [Any](Any.md) (19 shared connections)
 - [real time](real_time.md) (19 shared connections)
-- [Player](Player.md) (18 shared connections)
 - [ConnectionsComponent](ConnectionsComponent.md) (12 shared connections)
 - [.set player combat service()](set_player_combat_service%28%29.md) (10 shared connections)
 - [UUID](UUID.md) (9 shared connections)
 - [TerminalButtonProps](TerminalButtonProps.md) (9 shared connections)
+- [. initialize handlers()](_initialize_handlers%28%29.md) (6 shared connections)
 - [Tests for get profession service](Tests_for_get_profession_service.md) (6 shared connections)
-- [close db()](close_db%28%29.md) (5 shared connections)
-- [make mock row()](make_mock_row%28%29.md) (5 shared connections)
+- [. init ()](_init_%28%29.md) (5 shared connections)
 
 ## Source Files
 
@@ -65,8 +65,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 1175 (90%)
-- INFERRED: 124 (10%)
+- EXTRACTED: 1191 (91%)
+- INFERRED: 124 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

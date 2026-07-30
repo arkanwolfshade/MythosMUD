@@ -32,17 +32,17 @@
 ## Relationships
 
 - [test container persistence sql injection](test_container_persistence_sql_injection.md) (11 shared connections)
-- [process all status effects()](process_all_status_effects%28%29.md) (9 shared connections)
+- [process all status effects()](process_all_status_effects%28%29.md) (11 shared connections)
 - [Calculate max magic points (MP)](Calculate_max_magic_points_%28MP%29.md) (8 shared connections)
-- [close db()](close_db%28%29.md) (7 shared connections)
 - [login grace period](login_grace_period.md) (7 shared connections)
 - [calendar](calendar.md) (5 shared connections)
+- [Any](Any.md) (5 shared connections)
 - [AsyncSessionFactory](AsyncSessionFactory.md) (4 shared connections)
 - [append unique valid occupant()](append_unique_valid_occupant%28%29.md) (3 shared connections)
-- [Test process exit rows with](Test_process_exit_rows_with.md) (3 shared connections)
 - [rename invites columns](rename_invites_columns.md) (3 shared connections)
-- [Any](Any.md) (3 shared connections)
+- [close db()](close_db%28%29.md) (3 shared connections)
 - [.shutdown()](shutdown%28%29.md) (3 shared connections)
+- [test combat attack handler](test_combat_attack_handler.md) (2 shared connections)
 
 ## Source Files
 

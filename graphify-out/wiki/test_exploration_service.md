@@ -1,6 +1,6 @@
 # test exploration service
 
-> 76 nodes
+> 74 nodes
 
 ## Key Concepts
 
@@ -17,7 +17,6 @@
 - **_build_participant()** (5 connections) — `server/services/combat_initialization.py`
 - **_compute_turn_order()** (5 connections) — `server/services/combat_initialization.py`
 - **.start_combat()** (5 connections) — `server/services/combat_service.py`
-- **validate_combat_can_start()** (5 connections) — `server/services/combat_service_start.py`
 - **_build_combat_instance()** (4 connections) — `server/services/combat_initialization.py`
 - **test_get_player_combat_data_uses_get_combat_stats()** (4 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
 - **test_get_npc_combat_data_uses_get_combat_stats()** (4 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
@@ -29,16 +28,18 @@
 - **.test_create_combat_instance_turn_order_lower_dexterity_first()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
 - **.test_create_combat_instance_turn_order_equal_dexterity()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
 - **.test_create_combat_instance_auto_progression_disabled()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
-- *... and 51 more nodes in this community*
+- **.test_create_combat_instance_different_turn_interval()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- *... and 49 more nodes in this community*
 
 ## Relationships
 
-- [close db()](close_db%28%29.md) (31 shared connections)
-- [. initialize handlers()](_initialize_handlers%28%29.md) (7 shared connections)
-- [get health service()](get_health_service%28%29.md) (3 shared connections)
+- [test combat attack handler](test_combat_attack_handler.md) (15 shared connections)
+- [. initialize handlers()](_initialize_handlers%28%29.md) (13 shared connections)
+- [close db()](close_db%28%29.md) (6 shared connections)
+- [Any](Any.md) (5 shared connections)
 - [world](world.md) (2 shared connections)
 - [PlayerPositionService](PlayerPositionService.md) (2 shared connections)
-- [NATSMessageSubscriptionMixin](NATSMessageSubscriptionMixin.md) (1 shared connections)
+- [process dead players()](process_dead_players%28%29.md) (1 shared connections)
 - [login grace period](login_grace_period.md) (1 shared connections)
 - [. init ()](_init_%28%29.md) (1 shared connections)
 - [get current tick()](get_current_tick%28%29.md) (1 shared connections)
@@ -55,7 +56,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 253 (94%)
+- EXTRACTED: 247 (94%)
 - INFERRED: 16 (6%)
 - AMBIGUOUS: 0 (0%)
 

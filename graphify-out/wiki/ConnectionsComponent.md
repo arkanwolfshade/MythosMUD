@@ -34,9 +34,9 @@
 ## Relationships
 
 - [. init ()](_init_%28%29.md) (15 shared connections)
+- [. initialize handlers()](_initialize_handlers%28%29.md) (4 shared connections)
 - [test command parser](test_command_parser.md) (3 shared connections)
 - [NPCLifecycleManager](NPCLifecycleManager.md) (3 shared connections)
-- [. initialize handlers()](_initialize_handlers%28%29.md) (3 shared connections)
 - [cfg bool()](cfg_bool%28%29.md) (3 shared connections)
 - [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
 - [combat initialization](combat_initialization.md) (2 shared connections)

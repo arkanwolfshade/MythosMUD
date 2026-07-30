@@ -1,26 +1,24 @@
 # Test ContainerLockState enum contains expected
 
-> 5 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **durability** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **integer** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **null** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **minimum** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **8. Error Handling and Debugging** (3 connections) — `.cursor/commands/server-test-remediation.md`
+- **Test Debugging** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **Common Debug Commands** (1 connections) — `.cursor/commands/server-test-remediation.md`
 
 ## Relationships
 
-- [type](type.md) (1 shared connections)
+- [10. Final Verification](10._Final_Verification.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/items/item_prototype.schema.json`
+- `.cursor/commands/server-test-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -35,7 +35,7 @@
 
 - [combat](combat.md) (3 shared connections)
 - [world](world.md) (3 shared connections)
-- [get health service()](get_health_service%28%29.md) (2 shared connections)
+- [test combat attack handler](test_combat_attack_handler.md) (2 shared connections)
 - [src/**/*.spec](src-__-_.spec.md) (2 shared connections)
 - [chat nats publisher](chat_nats_publisher.md) (1 shared connections)
 - [. init ()](_init_%28%29.md) (1 shared connections)

@@ -35,16 +35,16 @@
 
 - [message handler factory](message_handler_factory.md) (58 shared connections)
 - [CombatService](CombatService.md) (49 shared connections)
-- [. initialize handlers()](_initialize_handlers%28%29.md) (26 shared connections)
-- [Player](Player.md) (13 shared connections)
-- [close db()](close_db%28%29.md) (12 shared connections)
+- [. initialize handlers()](_initialize_handlers%28%29.md) (28 shared connections)
+- [Player](Player.md) (12 shared connections)
 - [world](world.md) (10 shared connections)
 - [.end combat()](end_combat%28%29.md) (8 shared connections)
 - [command execution request](command_execution_request.md) (8 shared connections)
 - [main()](main%28%29.md) (8 shared connections)
 - [ASGIApp](ASGIApp.md) (7 shared connections)
+- [test combat attack handler](test_combat_attack_handler.md) (6 shared connections)
+- [. init ()](_init_%28%29.md) (5 shared connections)
 - [login grace period](login_grace_period.md) (5 shared connections)
-- [. init ()](_init_%28%29.md) (4 shared connections)
 
 ## Source Files
 

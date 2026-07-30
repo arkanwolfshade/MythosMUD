@@ -35,7 +35,7 @@
 
 - [TerminalButtonProps](TerminalButtonProps.md) (18 shared connections)
 - [.initialize()](initialize%28%29.md) (2 shared connections)
-- [close db()](close_db%28%29.md) (1 shared connections)
+- [process dead players()](process_dead_players%28%29.md) (1 shared connections)
 - [.state()](state%28%29.md) (1 shared connections)
 - [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (1 shared connections)
 - [Any](Any.md) (1 shared connections)

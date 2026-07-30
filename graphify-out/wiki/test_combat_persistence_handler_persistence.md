@@ -33,14 +33,12 @@
 
 ## Relationships
 
-- [Any](Any.md) (10 shared connections)
+- [Any](Any.md) (12 shared connections)
 - [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (4 shared connections)
+- [. initialize handlers()](_initialize_handlers%28%29.md) (3 shared connections)
 - [Test get room environment() treats](Test_get_room_environment%28%29_treats.md) (3 shared connections)
 - [world](world.md) (2 shared connections)
-- [close db()](close_db%28%29.md) (2 shared connections)
-- [NATSMessageSubscriptionMixin](NATSMessageSubscriptionMixin.md) (2 shared connections)
 - [NPCLifecycleManager](NPCLifecycleManager.md) (1 shared connections)
-- [. initialize handlers()](_initialize_handlers%28%29.md) (1 shared connections)
 
 ## Source Files
 

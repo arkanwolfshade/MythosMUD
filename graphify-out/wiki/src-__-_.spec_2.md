@@ -22,13 +22,13 @@
 
 ## Relationships
 
-- [get health service()](get_health_service%28%29.md) (3 shared connections)
+- [test combat attack handler](test_combat_attack_handler.md) (3 shared connections)
 - [Test despawn npc handles NPC](Test_despawn_npc_handles_NPC.md) (2 shared connections)
 - [communication commands support](communication_commands_support.md) (2 shared connections)
 - [look container](look_container.md) (2 shared connections)
 - [combat](combat.md) (2 shared connections)
 - [test npc combat handlers](test_npc_combat_handlers.md) (2 shared connections)
-- [NATSMessageSubscriptionMixin](NATSMessageSubscriptionMixin.md) (2 shared connections)
+- [Any](Any.md) (2 shared connections)
 - [world](world.md) (1 shared connections)
 
 ## Source Files

@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [close db()](close_db%28%29.md) (12 shared connections)
 - [CombatService](CombatService.md) (8 shared connections)
-- [. initialize handlers()](_initialize_handlers%28%29.md) (5 shared connections)
+- [close db()](close_db%28%29.md) (8 shared connections)
+- [. initialize handlers()](_initialize_handlers%28%29.md) (6 shared connections)
+- [test combat attack handler](test_combat_attack_handler.md) (3 shared connections)
 - [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (2 shared connections)
 - [Test health check endpoint returns](Test_health_check_endpoint_returns.md) (2 shared connections)
 - [Player](Player.md) (1 shared connections)

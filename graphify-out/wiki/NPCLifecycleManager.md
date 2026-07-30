@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [test command parser](test_command_parser.md) (52 shared connections)
+- [test command parser](test_command_parser.md) (50 shared connections)
 - [TerminalButtonProps](TerminalButtonProps.md) (22 shared connections)
 - [message handler factory](message_handler_factory.md) (18 shared connections)
 - [.shutdown()](shutdown%28%29.md) (17 shared connections)
+- [Any](Any.md) (13 shared connections)
 - [world](world.md) (11 shared connections)
 - [. init ()](_init_%28%29.md) (11 shared connections)
-- [Any](Any.md) (10 shared connections)
 - [parse jsonb column()](parse_jsonb_column%28%29.md) (9 shared connections)
 - [AsyncSessionFactory](AsyncSessionFactory.md) (9 shared connections)
-- [close db()](close_db%28%29.md) (6 shared connections)
 - [test admin commands](test_admin_commands.md) (6 shared connections)
 - [.get instance()](get_instance%28%29.md) (6 shared connections)
+- [. initialize handlers()](_initialize_handlers%28%29.md) (5 shared connections)
 
 ## Source Files
 

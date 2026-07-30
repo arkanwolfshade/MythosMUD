@@ -34,7 +34,7 @@
 ## Relationships
 
 - [TerminalButtonProps](TerminalButtonProps.md) (7 shared connections)
-- [close db()](close_db%28%29.md) (4 shared connections)
+- [process dead players()](process_dead_players%28%29.md) (4 shared connections)
 - [login grace period](login_grace_period.md) (4 shared connections)
 - [chat nats publisher](chat_nats_publisher.md) (3 shared connections)
 - [real time](real_time.md) (3 shared connections)
@@ -42,7 +42,7 @@
 - [.initialize()](initialize%28%29.md) (2 shared connections)
 - [world](world.md) (2 shared connections)
 - [Any](Any.md) (2 shared connections)
-- [MessageHandlerFactory](MessageHandlerFactory.md) (1 shared connections)
+- [. init ()](_init_%28%29.md) (1 shared connections)
 - [create access token()](create_access_token%28%29.md) (1 shared connections)
 
 ## Source Files

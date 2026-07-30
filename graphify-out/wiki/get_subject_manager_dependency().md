@@ -33,17 +33,16 @@
 
 ## Relationships
 
-- [Any](Any.md) (22 shared connections)
+- [Any](Any.md) (23 shared connections)
 - [test corpse lifecycle service](test_corpse_lifecycle_service.md) (9 shared connections)
 - [test clear corrupted cache entry](test_clear_corrupted_cache_entry.md) (6 shared connections)
 - [BaseUserManager](BaseUserManager.md) (3 shared connections)
 - [world](world.md) (2 shared connections)
 - [. init ()](_init_%28%29.md) (2 shared connections)
 - [circuit breaker](circuit_breaker.md) (1 shared connections)
-- [close db()](close_db%28%29.md) (1 shared connections)
-- [NATSMessageSubscriptionMixin](NATSMessageSubscriptionMixin.md) (1 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (1 shared connections)
+- [. initialize handlers()](_initialize_handlers%28%29.md) (1 shared connections)
 - [FollowTargetValue](FollowTargetValue.md) (1 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (1 shared connections)
 
 ## Source Files
 

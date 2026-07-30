@@ -1,6 +1,6 @@
 # container helpers inventory
 
-> 84 nodes
+> 85 nodes
 
 ## Key Concepts
 
@@ -29,7 +29,7 @@
 - **test_transfer_item_from_container_no_transfer_from()** (4 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
 - **test_transfer_item_from_container_inventory_rows_fallback_non_dict_result()** (4 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
 - **_ensure_item_instance_for_put()** (3 connections) — `server/commands/container_helpers_inventory_ops.py`
-- *... and 59 more nodes in this community*
+- *... and 60 more nodes in this community*
 
 ## Relationships
 
@@ -37,7 +37,7 @@
 - [Any](Any.md) (13 shared connections)
 - [container helpers inventory display](container_helpers_inventory_display.md) (4 shared connections)
 - [DeadLetterMessage](DeadLetterMessage.md) (3 shared connections)
-- [chat send with room bundle()](chat_send_with_room_bundle%28%29.md) (3 shared connections)
+- [chat send with room bundle()](chat_send_with_room_bundle%28%29.md) (2 shared connections)
 - [world](world.md) (1 shared connections)
 - [main()](main%28%29.md) (1 shared connections)
 - [. init ()](_init_%28%29.md) (1 shared connections)
@@ -51,8 +51,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 411 (97%)
-- INFERRED: 13 (3%)
+- EXTRACTED: 413 (97%)
+- INFERRED: 14 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -33,7 +33,6 @@
 
 ## Relationships
 
-- [close db()](close_db%28%29.md) (11 shared connections)
 - [world](world.md) (10 shared connections)
 - [append unique valid occupant()](append_unique_valid_occupant%28%29.md) (7 shared connections)
 - [Protocol](Protocol.md) (7 shared connections)
@@ -41,10 +40,11 @@
 - [look player](look_player.md) (6 shared connections)
 - [look room](look_room.md) (6 shared connections)
 - [.check and interrupt rest()](check_and_interrupt_rest%28%29.md) (6 shared connections)
+- [test combat attack handler](test_combat_attack_handler.md) (6 shared connections)
 - [.state()](state%28%29.md) (6 shared connections)
 - [test combat persistence handler](test_combat_persistence_handler.md) (6 shared connections)
 - [. init ()](_init_%28%29.md) (5 shared connections)
-- [PanelManager](PanelManager.md) (4 shared connections)
+- [Any](Any.md) (5 shared connections)
 
 ## Source Files
 

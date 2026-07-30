@@ -1,55 +1,58 @@
 # Any
 
-> 21 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **track_player_connected_impl()** (16 connections) — `server/realtime/player_presence_tracker.py`
-- **Any** (9 connections)
-- **_resolve_room_id()** (9 connections) — `server/realtime/player_presence_tracker.py`
-- **_get_instance_manager_from_manager()** (6 connections) — `server/realtime/player_presence_tracker.py`
-- **_resolve_room_id_for_tutorial_reconnect()** (5 connections) — `server/realtime/player_presence_tracker.py`
-- **instance_manager()** (4 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **test_resolve_room_id_no_room_id()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
-- **test_resolve_room_id_success()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
-- **test_track_player_connected_impl_new_connection()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
-- **test_track_player_connected_impl_existing_connection()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
-- **test_track_player_connected_impl_no_room_id()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
-- **Resolve canonical room ID from player's current_room_id.      Args:         play** (1 connections) — `server/realtime/player_presence_tracker.py`
-- **For players with tutorial_instance_id, ensure instance exists and return first r** (1 connections) — `server/realtime/player_presence_tracker.py`
-- **Extract InstanceManager from ConnectionManager via app.container.** (1 connections) — `server/realtime/player_presence_tracker.py`
-- **Track when a player connects.      Args:         player_id: The player's ID** (1 connections) — `server/realtime/player_presence_tracker.py`
-- **Create InstanceManager with tutorial template in cache.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test _resolve_room_id() returns None when no room_id.** (1 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
-- **Test _resolve_room_id() resolves canonical room ID.** (1 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
-- **Test track_player_connected_impl() tracks new connection.** (1 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
-- **Test track_player_connected_impl() tracks additional connection.** (1 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
-- **Test track_player_connected_impl() handles player with no room_id.** (1 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **player_connection_setup.py** (24 connections) — `server/realtime/player_connection_setup.py`
+- **handle_new_connection_setup()** (17 connections) — `server/realtime/player_connection_setup.py`
+- **_broadcast_player_entered_game()** (9 connections) — `server/realtime/player_connection_setup.py`
+- **_trigger_quests_for_room_on_spawn()** (8 connections) — `server/realtime/player_connection_setup.py`
+- **UUID** (7 connections)
+- **_send_room_occupants_update_after_connection()** (7 connections) — `server/realtime/player_connection_setup.py`
+- **_update_player_last_active()** (6 connections) — `server/realtime/player_connection_setup.py`
+- **Any** (6 connections)
+- **_add_player_to_room_silently()** (5 connections) — `server/realtime/player_connection_setup.py`
+- **test_player_connection_setup_grace_period.py** (5 connections) — `server/tests/unit/realtime/test_player_connection_setup_grace_period.py`
+- **_stable_room_id_for_quest()** (3 connections) — `server/realtime/player_connection_setup.py`
+- **test_reconnection_cancels_grace_period()** (3 connections) — `server/tests/unit/realtime/test_player_connection_setup_grace_period.py`
+- **test_reconnection_no_grace_period()** (3 connections) — `server/tests/unit/realtime/test_player_connection_setup_grace_period.py`
+- **Player** (2 connections)
+- **Player connection setup functions.  This module handles the setup tasks when a p** (1 connections) — `server/realtime/player_connection_setup.py`
+- **Update last_active timestamp in database when player connects.      Args:** (1 connections) — `server/realtime/player_connection_setup.py`
+- **Return stable room id for quest_offers lookup; strip instance_<uuid>_ prefix if** (1 connections) — `server/realtime/player_connection_setup.py`
+- **On spawn, explicitly start quests offered by this room (e.g. Leave the Tutorial)** (1 connections) — `server/realtime/player_connection_setup.py`
+- **Add player to the Room object without triggering PlayerEnteredRoom.      Movemen** (1 connections) — `server/realtime/player_connection_setup.py`
+- **Broadcast a structured entry event to other occupants (excluding the newcomer).** (1 connections) — `server/realtime/player_connection_setup.py`
+- **Send room_occupants update so other players see the new occupant.      Args:** (1 connections) — `server/realtime/player_connection_setup.py`
+- **Handle setup tasks for a new player connection.      Args:         player_id: Th** (1 connections) — `server/realtime/player_connection_setup.py`
+- **Unit tests for player connection setup grace period integration.  Tests that rec** (1 connections) — `server/tests/unit/realtime/test_player_connection_setup_grace_period.py`
+- **Test that reconnection cancels grace period.** (1 connections) — `server/tests/unit/realtime/test_player_connection_setup_grace_period.py`
+- **Test that reconnection does nothing if player not in grace period.** (1 connections) — `server/tests/unit/realtime/test_player_connection_setup_grace_period.py`
 
 ## Relationships
 
-- [get asyncpg server settings for](get_asyncpg_server_settings_for.md) (9 shared connections)
 - [player disconnect handlers](player_disconnect_handlers.md) (6 shared connections)
-- [player presence tracker](player_presence_tracker.md) (3 shared connections)
-- [Player](Player.md) (3 shared connections)
-- [Enhanced Logging Migration Report](Enhanced_Logging_Migration_Report.md) (1 shared connections)
-- [test_resolve_room_id_room_no_id](test_resolve_room_id_room_no_id.md) (1 shared connections)
+- [real time](real_time.md) (5 shared connections)
+- [circuit breaker](circuit_breaker.md) (3 shared connections)
+- [login grace period](login_grace_period.md) (3 shared connections)
+- [command admin](command_admin.md) (2 shared connections)
+- [world](world.md) (2 shared connections)
+- [main()](main%28%29.md) (1 shared connections)
 - [.state()](state%28%29.md) (1 shared connections)
-- [real time](real_time.md) (1 shared connections)
+- [test quest service](test_quest_service.md) (1 shared connections)
+- [.is required()](is_required%28%29.md) (1 shared connections)
 - [Any](Any.md) (1 shared connections)
-- [test command parser](test_command_parser.md) (1 shared connections)
-- [spawn defaults](spawn_defaults.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/player_presence_tracker.py`
-- `server/tests/unit/game/test_instance_manager.py`
-- `server/tests/unit/realtime/test_player_presence_tracker.py`
+- `server/realtime/player_connection_setup.py`
+- `server/tests/unit/realtime/test_player_connection_setup_grace_period.py`
 
 ## Audit Trail
 
-- EXTRACTED: 70 (95%)
-- INFERRED: 4 (5%)
+- EXTRACTED: 110 (95%)
+- INFERRED: 6 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

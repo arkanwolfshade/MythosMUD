@@ -34,17 +34,17 @@
 ## Relationships
 
 - [Connection Manager](Connection_Manager.md) (7 shared connections)
-- [close db()](close_db%28%29.md) (4 shared connections)
 - [Tests for get container dependency](Tests_for_get_container_dependency.md) (4 shared connections)
 - [.shutdown()](shutdown%28%29.md) (3 shared connections)
 - [CombatDPSync](CombatDPSync.md) (3 shared connections)
 - [Response](Response.md) (3 shared connections)
 - [Remove sensitive data from log](Remove_sensitive_data_from_log.md) (3 shared connections)
+- [close db()](close_db%28%29.md) (2 shared connections)
+- [process dead players()](process_dead_players%28%29.md) (2 shared connections)
 - [world](world.md) (2 shared connections)
 - [equipment helpers](equipment_helpers.md) (2 shared connections)
 - [APIRouter](APIRouter.md) (1 shared connections)
 - [AsyncSessionFactory](AsyncSessionFactory.md) (1 shared connections)
-- [ExitStack](ExitStack.md) (1 shared connections)
 
 ## Source Files
 

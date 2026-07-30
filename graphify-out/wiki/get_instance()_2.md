@@ -35,7 +35,7 @@
 
 - [.get population stats()](get_population_stats%28%29.md) (9 shared connections)
 - [NPCLifecycleManager](NPCLifecycleManager.md) (6 shared connections)
-- [NATSMessageSubscriptionMixin](NATSMessageSubscriptionMixin.md) (3 shared connections)
+- [Any](Any.md) (3 shared connections)
 - [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
 - [test admin commands](test_admin_commands.md) (1 shared connections)
 - [get current tick()](get_current_tick%28%29.md) (1 shared connections)

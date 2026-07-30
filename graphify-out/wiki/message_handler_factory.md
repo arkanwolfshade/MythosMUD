@@ -44,7 +44,7 @@
 - [test magic commands](test_magic_commands.md) (17 shared connections)
 - [append unique valid occupant()](append_unique_valid_occupant%28%29.md) (14 shared connections)
 - [command execution request](command_execution_request.md) (13 shared connections)
-- [test command parser](test_command_parser.md) (8 shared connections)
+- [. initialize handlers()](_initialize_handlers%28%29.md) (12 shared connections)
 
 ## Source Files
 

@@ -1,13 +1,12 @@
 # Test BehaviorEngine initialization.
 
-> 4 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Structured Logging Patterns** (4 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Basic Logging** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Error Logging with Context** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Performance Logging** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Testing Logging** (3 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Unit Tests for Logging** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Integration Tests** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Relationships
 
@@ -19,7 +18,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

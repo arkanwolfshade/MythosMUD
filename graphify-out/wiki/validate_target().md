@@ -1,48 +1,53 @@
 # .validate target()
 
-> 94 nodes
+> 68 nodes
 
 ## Key Concepts
 
-- **test_combat.py** (60 connections) — `server/tests/unit/models/test_combat.py`
-- **test_combat_instance_get_queued_actions()** (4 connections) — `server/tests/unit/models/test_combat.py`
-- **test_combat_instance_clear_queued_actions()** (4 connections) — `server/tests/unit/models/test_combat.py`
-- **test_combat_instance_clear_queued_actions_specific_round()** (4 connections) — `server/tests/unit/models/test_combat.py`
-- **test_get_default_damage_from_config()** (3 connections) — `server/tests/unit/models/test_combat.py`
-- **test_get_default_damage_fallback_on_error()** (3 connections) — `server/tests/unit/models/test_combat.py`
-- **test_combat_participant_is_alive_player_positive_dp()** (3 connections) — `server/tests/unit/models/test_combat.py`
-- **test_combat_participant_is_alive_player_zero_dp()** (3 connections) — `server/tests/unit/models/test_combat.py`
-- **test_combat_participant_is_alive_player_negative_dp_above_threshold()** (3 connections) — `server/tests/unit/models/test_combat.py`
-- **test_combat_participant_is_alive_player_negative_dp_at_threshold()** (3 connections) — `server/tests/unit/models/test_combat.py`
-- **test_combat_participant_is_alive_player_negative_dp_below_threshold()** (3 connections) — `server/tests/unit/models/test_combat.py`
-- **test_combat_participant_is_alive_player_inactive()** (3 connections) — `server/tests/unit/models/test_combat.py`
-- **test_combat_participant_is_alive_npc_positive_dp()** (3 connections) — `server/tests/unit/models/test_combat.py`
-- **test_combat_participant_is_alive_npc_zero_dp()** (3 connections) — `server/tests/unit/models/test_combat.py`
-- **test_combat_participant_is_alive_npc_negative_dp()** (3 connections) — `server/tests/unit/models/test_combat.py`
-- **test_combat_participant_is_alive_npc_inactive()** (3 connections) — `server/tests/unit/models/test_combat.py`
-- **test_combat_participant_is_dead_player_positive_dp()** (3 connections) — `server/tests/unit/models/test_combat.py`
-- **test_combat_participant_is_dead_player_at_zero()** (3 connections) — `server/tests/unit/models/test_combat.py`
-- **test_combat_participant_is_dead_player_at_negative_10()** (3 connections) — `server/tests/unit/models/test_combat.py`
-- **test_combat_participant_is_mortally_wounded_player_at_zero()** (3 connections) — `server/tests/unit/models/test_combat.py`
-- **test_combat_participant_is_mortally_wounded_player_npc_always_false()** (3 connections) — `server/tests/unit/models/test_combat.py`
-- **test_combat_participant_apply_damage_player_reduces_dp()** (3 connections) — `server/tests/unit/models/test_combat.py`
-- **test_combat_participant_apply_damage_player_mortally_wounded()** (3 connections) — `server/tests/unit/models/test_combat.py`
-- **test_combat_participant_apply_damage_player_dies()** (3 connections) — `server/tests/unit/models/test_combat.py`
-- **test_combat_participant_apply_damage_player_caps_at_negative_10()** (3 connections) — `server/tests/unit/models/test_combat.py`
-- *... and 69 more nodes in this community*
+- **test_aggro_threat.py** (29 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **_make_combat()** (23 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **add_damage_threat()** (20 connections) — `server/services/aggro_threat.py`
+- **get_or_create_hate_list()** (19 connections) — `server/services/aggro_threat.py`
+- **test_aggro_flow.py** (14 connections) — `server/tests/integration/test_aggro_flow.py`
+- **_make_participant()** (13 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **apply_taunt()** (12 connections) — `server/services/aggro_threat.py`
+- **_make_participant()** (9 connections) — `server/tests/integration/test_aggro_flow.py`
+- **_make_combat()** (8 connections) — `server/tests/integration/test_aggro_flow.py`
+- **test_aggro_healer_overpull_switches_target()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
+- **test_aggro_taunt_from_next_room_no_effect()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
+- **test_aggro_stealth_wipe_switches_to_next()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
+- **test_aggro_passive_mob_no_damage_threat_taunt_switches()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
+- **test_aggro_nightgaunt_like_damage_and_heal_threat()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
+- **test_aggro_tank_swap_taunt_sequence()** (6 connections) — `server/tests/integration/test_aggro_flow.py`
+- **test_update_aggro_one_entity_sets_target()** (6 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_update_aggro_stability_no_switch_when_below_threshold()** (6 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_update_aggro_stability_switch_when_at_or_above_threshold()** (6 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_update_aggro_excludes_dead_from_candidate()** (6 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_on_player_entered_stealth_wipes_from_all_npcs()** (6 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_apply_taunt_same_room_sets_threat_above_top()** (5 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_apply_taunt_different_room_no_op()** (5 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_apply_stealth_wipe_removes_entity()** (5 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_update_aggro_no_hate_list_clears_target()** (5 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_add_damage_threat_passive_mob_skipped()** (5 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- *... and 43 more nodes in this community*
 
 ## Relationships
 
-- [close db()](close_db%28%29.md) (54 shared connections)
-- [test combat attack handler](test_combat_attack_handler.md) (4 shared connections)
+- [close db()](close_db%28%29.md) (45 shared connections)
+- [test combat attack handler](test_combat_attack_handler.md) (6 shared connections)
+- [. initialize handlers()](_initialize_handlers%28%29.md) (3 shared connections)
+- [. init ()](_init_%28%29.md) (2 shared connections)
+- [test player event handlers room](test_player_event_handlers_room.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/models/test_combat.py`
+- `server/services/aggro_threat.py`
+- `server/tests/integration/test_aggro_flow.py`
+- `server/tests/unit/services/test_aggro_threat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 244 (100%)
+- EXTRACTED: 322 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

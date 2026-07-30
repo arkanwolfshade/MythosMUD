@@ -37,7 +37,7 @@
 - [real time](real_time.md) (7 shared connections)
 - [circuit breaker](circuit_breaker.md) (3 shared connections)
 - [world](world.md) (3 shared connections)
-- [close db()](close_db%28%29.md) (2 shared connections)
+- [process dead players()](process_dead_players%28%29.md) (2 shared connections)
 - [UUID](UUID.md) (2 shared connections)
 - [create access token()](create_access_token%28%29.md) (2 shared connections)
 - [PayloadOptimizer](PayloadOptimizer.md) (1 shared connections)

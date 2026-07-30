@@ -25,10 +25,9 @@
 
 ## Relationships
 
+- [. init ()](_init_%28%29.md) (6 shared connections)
 - [nudgeStandBothPlayers()](nudgeStandBothPlayers%28%29.md) (6 shared connections)
-- [. init ()](_init_%28%29.md) (5 shared connections)
 - [MessageHandlerFactory](MessageHandlerFactory.md) (3 shared connections)
-- [Test handle player movement handles](Test_handle_player_movement_handles.md) (1 shared connections)
 - [convert pydantic error()](convert_pydantic_error%28%29.md) (1 shared connections)
 
 ## Source Files

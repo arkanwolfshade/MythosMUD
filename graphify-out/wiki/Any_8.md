@@ -1,53 +1,55 @@
 # Any
 
-> 23 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **handle_emote_command()** (15 connections) — `server/commands/emote_commands.py`
-- **emote_commands.py** (14 connections) — `server/commands/emote_commands.py`
-- **_get_emote_services()** (7 connections) — `server/commands/emote_commands.py`
-- **test_emote_commands.py** (6 connections) — `server/tests/unit/commands/test_emote_commands.py`
-- **Any** (5 connections)
-- **_extract_emote_action()** (4 connections) — `server/commands/emote_commands.py`
-- **_validate_player_for_emote()** (4 connections) — `server/commands/emote_commands.py`
-- **_format_emote_messages()** (4 connections) — `server/commands/emote_commands.py`
-- **_handle_emote_result()** (4 connections) — `server/commands/emote_commands.py`
-- **test_handle_emote_command()** (3 connections) — `server/tests/unit/commands/test_emote_commands.py`
-- **test_handle_emote_command_no_message()** (3 connections) — `server/tests/unit/commands/test_emote_commands.py`
-- **test_handle_emote_command_no_chat_service()** (3 connections) — `server/tests/unit/commands/test_emote_commands.py`
-- **Emote command handlers for MythosMUD.  This module contains handlers for the emo** (1 connections) — `server/commands/emote_commands.py`
-- **Extract action from command_data.      Args:         command_data: Command data** (1 connections) — `server/commands/emote_commands.py`
-- **Get chat service and player service from app state.      Args:         request:** (1 connections) — `server/commands/emote_commands.py`
-- **Validate player and extract required information for emote.      Args:         p** (1 connections) — `server/commands/emote_commands.py`
-- **Format emote messages for predefined or custom emotes.      Args:         action** (1 connections) — `server/commands/emote_commands.py`
-- **Handle the result from chat service after sending emote.      Args:         resu** (1 connections) — `server/commands/emote_commands.py`
-- **Handle the emote command for performing emotes.      Args:         command_data:** (1 connections) — `server/commands/emote_commands.py`
-- **Unit tests for emote command handlers.  Tests the emote command functionality.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
-- **Test handle_emote_command() processes emote.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
-- **Test handle_emote_command() handles missing message.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
-- **Test handle_emote_command() handles missing chat service.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **test_communication_commands_support.py** (21 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **communication_commands_support.py** (15 connections) — `server/commands/communication_commands_support.py`
+- **get_services_from_container()** (15 connections) — `server/commands/communication_commands_support.py`
+- **message_id_from_result()** (11 connections) — `server/commands/communication_commands_support.py`
+- **app_from_request()** (10 connections) — `server/commands/communication_commands_support.py`
+- **get_pose_persistence()** (9 connections) — `server/commands/communication_commands_support.py`
+- **UserManagerProtocol** (7 connections) — `server/commands/communication_commands_support.py`
+- **AsyncPersistenceForPose** (6 connections) — `server/commands/communication_commands_support.py`
+- **Protocol** (5 connections)
+- **PlayerWithPose** (4 connections) — `server/commands/communication_commands_support.py`
+- **test_app_from_request_with_app()** (3 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_get_services_from_container_via_container()** (3 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_get_services_from_container_state_fallback()** (3 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_get_pose_persistence_from_container()** (3 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_get_pose_persistence_state_fallback()** (3 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **.get_player_by_name()** (2 connections) — `server/commands/communication_commands_support.py`
+- **.save_player()** (2 connections) — `server/commands/communication_commands_support.py`
+- **test_app_from_request_none()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_primary_id_prefers_id()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_primary_id_falls_back_to_player_id()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_get_services_from_container_no_app()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_chat_result_map_dict()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_chat_result_map_non_dict()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_message_id_from_result_nested()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_message_id_from_result_no_id()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (3 shared connections)
-- [PlayerIdCarrier](PlayerIdCarrier.md) (2 shared connections)
-- [world](world.md) (2 shared connections)
-- [disconnect player connections()](disconnect_player_connections%28%29.md) (2 shared connections)
+- [chat send with room bundle()](chat_send_with_room_bundle%28%29.md) (34 shared connections)
+- [handle global command()](handle_global_command%28%29.md) (6 shared connections)
+- [Any](Any.md) (2 shared connections)
+- [.state()](state%28%29.md) (2 shared connections)
+- [admin setstat command](admin_setstat_command.md) (1 shared connections)
 - [. init ()](_init_%28%29.md) (1 shared connections)
 - [websocket integration](websocket_integration.md) (1 shared connections)
-- [.state()](state%28%29.md) (1 shared connections)
-- [Player Position Service](Player_Position_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/emote_commands.py`
-- `server/tests/unit/commands/test_emote_commands.py`
+- `server/commands/communication_commands_support.py`
+- `server/tests/unit/commands/test_communication_commands_support.py`
 
 ## Audit Trail
 
-- EXTRACTED: 79 (95%)
-- INFERRED: 4 (5%)
+- EXTRACTED: 135 (92%)
+- INFERRED: 12 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

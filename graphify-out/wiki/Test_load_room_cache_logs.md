@@ -1,26 +1,25 @@
 # Test load room cache logs
 
-> 5 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **3. Systematic Investigation Approach** (5 connections) — `.cursor/commands/server-test-remediation.md`
-- **For Database-Related Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **For Authentication Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **For WebSocket Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **For Game Logic Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **sub_zone** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **pattern** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Relationships
 
-- [10. Final Verification](10._Final_Verification.md) (1 shared connections)
+- [description](description.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/commands/server-test-remediation.md`
+- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

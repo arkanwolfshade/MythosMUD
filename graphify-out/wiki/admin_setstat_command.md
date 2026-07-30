@@ -34,7 +34,7 @@
 ## Relationships
 
 - [test command factories inventory](test_command_factories_inventory.md) (13 shared connections)
-- [Any](Any.md) (7 shared connections)
+- [Any](Any.md) (8 shared connections)
 - [real time](real_time.md) (4 shared connections)
 - [circuit breaker](circuit_breaker.md) (3 shared connections)
 - [Player Position Service](Player_Position_Service.md) (2 shared connections)
@@ -42,7 +42,6 @@
 - [world](world.md) (2 shared connections)
 - [admin setlucidity command](admin_setlucidity_command.md) (1 shared connections)
 - [AsyncSessionFactory](AsyncSessionFactory.md) (1 shared connections)
-- [chat send with room bundle()](chat_send_with_room_bundle%28%29.md) (1 shared connections)
 - [AttributeError](AttributeError.md) (1 shared connections)
 
 ## Source Files

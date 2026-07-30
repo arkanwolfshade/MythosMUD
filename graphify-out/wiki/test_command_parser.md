@@ -1,6 +1,6 @@
 # test command parser
 
-> 150 nodes
+> 142 nodes
 
 ## Key Concepts
 
@@ -29,22 +29,22 @@
 - **monitoring.py** (11 connections) — `server/container/bundles/monitoring.py`
 - **NPCBundle** (11 connections) — `server/container/bundles/npc.py`
 - **ItemFactory** (11 connections) — `server/game/items/item_factory.py`
-- *... and 125 more nodes in this community*
+- *... and 117 more nodes in this community*
 
 ## Relationships
 
-- [NPCLifecycleManager](NPCLifecycleManager.md) (52 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (50 shared connections)
 - [emit close container event()](emit_close_container_event%28%29.md) (23 shared connections)
 - [world](world.md) (21 shared connections)
-- [Any](Any.md) (14 shared connections)
+- [Any](Any.md) (15 shared connections)
 - [real time](real_time.md) (12 shared connections)
 - [parse jsonb column()](parse_jsonb_column%28%29.md) (11 shared connections)
 - [Player](Player.md) (10 shared connections)
 - [HolidayCollection](HolidayCollection.md) (9 shared connections)
 - [test command base](test_command_base.md) (9 shared connections)
 - [message handler factory](message_handler_factory.md) (8 shared connections)
-- [close db()](close_db%28%29.md) (8 shared connections)
 - [TerminalButtonProps](TerminalButtonProps.md) (8 shared connections)
+- [. init ()](_init_%28%29.md) (7 shared connections)
 
 ## Source Files
 
@@ -71,7 +71,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 714 (90%)
+- EXTRACTED: 695 (90%)
 - INFERRED: 79 (10%)
 - AMBIGUOUS: 0 (0%)
 

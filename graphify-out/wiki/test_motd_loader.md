@@ -1,25 +1,29 @@
 # test motd loader
 
-> 4 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **enabled** (4 connections) — `schemas/unified_room_schema.json`
-- **type** (1 connections) — `schemas/unified_room_schema.json`
-- **default** (1 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **.load_player_mutes_async()** (7 connections) — `server/services/user_manager.py`
+- **.load_player_mutes_batch()** (6 connections) — `server/services/user_manager.py`
+- **.is_player_muted_async()** (5 connections) — `server/services/user_manager.py`
+- **._is_cache_valid()** (5 connections) — `server/services/user_manager.py`
+- **Async version of is_player_muted using async mute loading.          Args:** (1 connections) — `server/services/user_manager.py`
+- **Check if cached mute data is still valid.          Args:             player_i** (1 connections) — `server/services/user_manager.py`
+- **Async version of load_player_mutes using asyncio.to_thread for file I/O.** (1 connections) — `server/services/user_manager.py`
+- **Batch load mute data for multiple players concurrently.          Args:** (1 connections) — `server/services/user_manager.py`
 
 ## Relationships
 
-- [type](type.md) (1 shared connections)
+- [UUID](UUID.md) (11 shared connections)
 
 ## Source Files
 
-- `schemas/unified_room_schema.json`
+- `server/services/user_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 27 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

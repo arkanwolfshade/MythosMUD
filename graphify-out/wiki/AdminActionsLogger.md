@@ -31,7 +31,7 @@
 
 - [test command factories inventory](test_command_factories_inventory.md) (2 shared connections)
 - [Any](Any.md) (1 shared connections)
-- [close db()](close_db%28%29.md) (1 shared connections)
+- [process dead players()](process_dead_players%28%29.md) (1 shared connections)
 
 ## Source Files
 

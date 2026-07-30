@@ -1,72 +1,60 @@
 # Any
 
-> 251 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **NATSError** (101 connections) — `server/services/nats_exceptions.py`
-- **test_combat_event_publisher.py** (37 connections) — `server/tests/unit/services/test_combat_event_publisher.py`
-- **nats_exceptions.py** (33 connections) — `server/services/nats_exceptions.py`
-- **NATSPublishError** (32 connections) — `server/services/nats_exceptions.py`
-- **CombatEventPublisher** (27 connections) — `server/services/combat_event_publisher.py`
-- **NATSSubscribeError** (27 connections) — `server/services/nats_exceptions.py`
-- **nats_service.py** (23 connections) — `server/services/nats_service.py`
-- **combat_event_publisher.py** (21 connections) — `server/services/combat_event_publisher.py`
-- **combat_events.py** (20 connections) — `server/events/combat_events.py`
-- **NPCDiedEvent** (18 connections) — `server/events/combat_events.py`
-- **NATSConnectionError** (18 connections) — `server/services/nats_exceptions.py`
-- **combat_event_handler.py** (17 connections) — `server/services/combat_event_handler.py`
-- **CombatEventHandler** (17 connections) — `server/services/combat_event_handler.py`
-- **NATSHealthCheckError** (17 connections) — `server/services/nats_exceptions.py`
-- **test_message_formatters.py** (16 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **CombatStartedEvent** (15 connections) — `server/events/combat_events.py`
-- **PlayerAttackedEvent** (15 connections) — `server/events/combat_events.py`
-- **NPCTookDamageEvent** (15 connections) — `server/events/combat_events.py`
-- **combat_service_events.py** (14 connections) — `server/services/combat_service_events.py`
-- **test_nats_exceptions.py** (13 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **CombatEndedEvent** (12 connections) — `server/events/combat_events.py`
-- **NATSUnsubscribeError** (12 connections) — `server/services/nats_exceptions.py`
-- **combat_cleanup_handler.py** (11 connections) — `server/services/combat_cleanup_handler.py`
-- **._create_event_message()** (11 connections) — `server/services/combat_event_publisher.py`
-- **NATSRequestError** (11 connections) — `server/services/nats_exceptions.py`
-- *... and 226 more nodes in this community*
+- **EventPublisher** (23 connections) — `server/realtime/event_publisher.py`
+- **RealtimeBundle** (17 connections) — `server/container/bundles/realtime.py`
+- **realtime.py** (12 connections) — `server/container/bundles/realtime.py`
+- **.initialize()** (8 connections) — `server/container/bundles/realtime.py`
+- **._create_event_message()** (7 connections) — `server/realtime/event_publisher.py`
+- **._setup_nats_dependent_services()** (6 connections) — `server/container/bundles/realtime.py`
+- **Any** (6 connections)
+- **._get_async_persistence()** (6 connections) — `server/realtime/event_publisher.py`
+- **._connect_nats()** (5 connections) — `server/container/bundles/realtime.py`
+- **.publish_player_entered_event()** (5 connections) — `server/realtime/event_publisher.py`
+- **.publish_player_left_event()** (5 connections) — `server/realtime/event_publisher.py`
+- **._require_core_services()** (4 connections) — `server/container/bundles/realtime.py`
+- **.__init__()** (4 connections) — `server/realtime/event_publisher.py`
+- **.publish_game_tick_event()** (4 connections) — `server/realtime/event_publisher.py`
+- **.get_next_sequence_number()** (3 connections) — `server/realtime/event_publisher.py`
+- **.reset_sequence_number()** (2 connections) — `server/realtime/event_publisher.py`
+- **Any** (1 connections)
+- **Realtime bundle: NATS, connection manager, event handler, event publisher.  Depe** (1 connections) — `server/container/bundles/realtime.py`
+- **Real-time communication: NATS, connection manager, event handler.** (1 connections) — `server/container/bundles/realtime.py`
+- **Raise if any core dependency is missing.** (1 connections) — `server/container/bundles/realtime.py`
+- **Connect to NATS if enabled and not unit_test. Returns NATSService or None.** (1 connections) — `server/container/bundles/realtime.py`
+- **Attach event publisher and message handler when NATS is available.** (1 connections) — `server/container/bundles/realtime.py`
+- **Initialize real-time services. Requires CoreBundle attributes on container.** (1 connections) — `server/container/bundles/realtime.py`
+- **Service for publishing real-time game events to NATS subjects.      This service** (1 connections) — `server/realtime/event_publisher.py`
+- **Initialize EventPublisher service.          Args:             nats_service: NATS** (1 connections) — `server/realtime/event_publisher.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [close db()](close_db%28%29.md) (51 shared connections)
-- [circuit breaker](circuit_breaker.md) (44 shared connections)
-- [BaseUserManager](BaseUserManager.md) (18 shared connections)
-- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (15 shared connections)
-- [FollowTargetValue](FollowTargetValue.md) (14 shared connections)
-- [. initialize handlers()](_initialize_handlers%28%29.md) (12 shared connections)
-- [world](world.md) (12 shared connections)
-- [combat initialization](combat_initialization.md) (11 shared connections)
-- [test combat persistence handler persistence](test_combat_persistence_handler_persistence.md) (10 shared connections)
-- [test nats message handler subzone](test_nats_message_handler_subzone.md) (8 shared connections)
-- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (6 shared connections)
-- [NATSMessageSubscriptionMixin](NATSMessageSubscriptionMixin.md) (6 shared connections)
+- [test command parser](test_command_parser.md) (6 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (6 shared connections)
+- [Player](Player.md) (5 shared connections)
+- [world](world.md) (4 shared connections)
+- [event publisher()](event_publisher%28%29.md) (4 shared connections)
+- [UUID](UUID.md) (3 shared connections)
+- [circuit breaker](circuit_breaker.md) (3 shared connections)
+- [FollowTargetValue](FollowTargetValue.md) (3 shared connections)
+- [handle explore command()](handle_explore_command%28%29.md) (2 shared connections)
+- [test connection cleaner](test_connection_cleaner.md) (1 shared connections)
+- [get subject manager dependency()](get_subject_manager_dependency%28%29.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
 
 ## Source Files
 
-- `server/events/combat_events.py`
-- `server/npc/combat_integration_protocols.py`
-- `server/realtime/message_filtering.py`
-- `server/realtime/message_formatters.py`
-- `server/realtime/nats_message_handler.py`
-- `server/services/combat_cleanup_handler.py`
-- `server/services/combat_event_handler.py`
-- `server/services/combat_event_publisher.py`
-- `server/services/combat_service_events.py`
-- `server/services/nats_exceptions.py`
-- `server/services/nats_service.py`
-- `server/tests/unit/realtime/test_message_formatters.py`
-- `server/tests/unit/services/test_combat_event_publisher.py`
-- `server/tests/unit/services/test_nats_exceptions.py`
+- `server/container/bundles/realtime.py`
+- `server/realtime/event_publisher.py`
 
 ## Audit Trail
 
-- EXTRACTED: 945 (85%)
-- INFERRED: 168 (15%)
+- EXTRACTED: 124 (93%)
+- INFERRED: 9 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

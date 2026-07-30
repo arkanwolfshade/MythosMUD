@@ -33,11 +33,12 @@
 
 ## Relationships
 
-- [close db()](close_db%28%29.md) (24 shared connections)
+- [close db()](close_db%28%29.md) (19 shared connections)
+- [test combat attack handler](test_combat_attack_handler.md) (5 shared connections)
 - [main()](main%28%29.md) (4 shared connections)
 - [world](world.md) (4 shared connections)
 - [ASGIApp](ASGIApp.md) (3 shared connections)
-- [test combat attack handler](test_combat_attack_handler.md) (2 shared connections)
+- [. initialize handlers()](_initialize_handlers%28%29.md) (2 shared connections)
 - [combat flee](combat_flee.md) (2 shared connections)
 - [CombatService](CombatService.md) (1 shared connections)
 

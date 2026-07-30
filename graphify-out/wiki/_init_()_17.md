@@ -1,6 +1,6 @@
 # . init ()
 
-> 75 nodes
+> 78 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,7 @@
 - **setup_enhanced_file_logging()** (20 connections) — `server/structured_logging/logging_file_setup.py`
 - **rotate_log_files()** (18 connections) — `server/structured_logging/logging_utilities.py`
 - **test_logging_file_setup.py** (14 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **load_player_guid_formatter_class()** (11 connections) — `server/structured_logging/logging_utilities.py`
 - **_setup_aggregator_handlers()** (9 connections) — `server/structured_logging/logging_file_setup.py`
 - **_setup_console_handler()** (9 connections) — `server/structured_logging/logging_file_setup.py`
 - **_prepare_log_environment()** (9 connections) — `server/structured_logging/logging_file_setup.py`
@@ -28,17 +29,16 @@
 - **_restore_root_handlers()** (6 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
 - **test_aggregator_handlers_on_root_when_async()** (6 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
 - **_get_or_create_log_queue()** (5 connections) — `server/structured_logging/logging_file_setup.py`
-- **_get_handler_class()** (5 connections) — `server/structured_logging/logging_file_setup.py`
-- *... and 50 more nodes in this community*
+- *... and 53 more nodes in this community*
 
 ## Relationships
 
-- [logging handlers](logging_handlers.md) (19 shared connections)
+- [logging handlers](logging_handlers.md) (15 shared connections)
 - [Path](Path.md) (14 shared connections)
-- [world](world.md) (5 shared connections)
+- [world](world.md) (7 shared connections)
+- [PlayerGuidFormatter](PlayerGuidFormatter.md) (7 shared connections)
 - [windows safe rotation](windows_safe_rotation.md) (4 shared connections)
 - [get current tick()](get_current_tick%28%29.md) (3 shared connections)
-- [PlayerGuidFormatter](PlayerGuidFormatter.md) (2 shared connections)
 - [aggregate log entry()](aggregate_log_entry%28%29.md) (1 shared connections)
 
 ## Source Files
@@ -49,8 +49,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 301 (97%)
-- INFERRED: 9 (3%)
+- EXTRACTED: 313 (97%)
+- INFERRED: 10 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

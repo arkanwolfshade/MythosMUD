@@ -1,24 +1,24 @@
 # Test get player lucidity tier
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.__init__()** (3 connections) — `server/services/combat_attack_handler.py`
-- **Any** (1 connections)
-- **Initialize the attack handler.          Args:             combat_service: Refere** (1 connections) — `server/services/combat_attack_handler.py`
+- **user_manager()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Create a UserManager instance.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
 
 ## Relationships
 
-- [close db()](close_db%28%29.md) (1 shared connections)
+- [UUID](UUID.md) (1 shared connections)
+- [test user manager](test_user_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/combat_attack_handler.py`
+- `server/tests/unit/services/test_user_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

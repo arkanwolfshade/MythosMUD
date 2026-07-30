@@ -34,7 +34,7 @@
 ## Relationships
 
 - [APIRouter](APIRouter.md) (30 shared connections)
-- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (13 shared connections)
+- [Any](Any.md) (13 shared connections)
 - [real time](real_time.md) (10 shared connections)
 - [. init ()](_init_%28%29.md) (2 shared connections)
 - [world](world.md) (2 shared connections)

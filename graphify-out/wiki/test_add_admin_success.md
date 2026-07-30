@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_add_admin_success()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test add_admin() successfully adds admin.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_cleanup_player_mutes_with_delete_file()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test cleanup_player_mutes() with delete_file=True.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
 
 ## Relationships
 

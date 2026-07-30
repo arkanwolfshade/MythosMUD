@@ -1,52 +1,62 @@
 # Any
 
-> 67 nodes
+> 89 nodes
 
 ## Key Concepts
 
-- **test_metrics.py** (27 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **SubjectManagerMetrics** (16 connections) — `server/services/nats_subject_manager/metrics.py`
-- **._calculate_percentile()** (6 connections) — `server/services/nats_subject_manager/metrics.py`
-- **.get_metrics()** (4 connections) — `server/services/nats_subject_manager/metrics.py`
-- **.__init__()** (3 connections) — `server/services/nats_subject_manager/metrics.py`
-- **metrics()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_subject_manager_metrics_init()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_calculate_percentile_empty()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_calculate_percentile_single_value()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_calculate_percentile_multiple_values()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **.record_validation()** (2 connections) — `server/services/nats_subject_manager/metrics.py`
-- **.record_build()** (2 connections) — `server/services/nats_subject_manager/metrics.py`
-- **.record_error()** (2 connections) — `server/services/nats_subject_manager/metrics.py`
-- **.reset()** (2 connections) — `server/services/nats_subject_manager/metrics.py`
-- **test_record_validation_success()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_validation_failure()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_validation_cache_hit()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_validation_multiple()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_validation_stores_times()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_build_success()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_build_failure()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_build_multiple()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_build_stores_times()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_error_pattern_not_found()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_error_missing_parameter()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- *... and 42 more nodes in this community*
+- **SubjectValidationError** (29 connections) — `server/services/nats_subject_manager/exceptions.py`
+- **SubjectValidator** (23 connections) — `server/services/nats_subject_manager/validation.py`
+- **PatternNotFoundError** (21 connections) — `server/services/nats_subject_manager/exceptions.py`
+- **manager.py** (20 connections) — `server/services/nats_subject_manager/manager.py`
+- **MissingParameterError** (17 connections) — `server/services/nats_subject_manager/exceptions.py`
+- **InvalidPatternError** (17 connections) — `server/services/nats_subject_manager/exceptions.py`
+- **NATSSubjectError** (16 connections) — `server/services/nats_subject_manager/exceptions.py`
+- **test_nats_subject_exceptions.py** (16 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
+- **test_subscription_patterns.py** (14 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
+- **exceptions.py** (13 connections) — `server/services/nats_subject_manager/exceptions.py`
+- **__init__.py** (12 connections) — `server/services/nats_subject_manager/__init__.py`
+- **get_subscription_pattern()** (12 connections) — `server/services/nats_subject_manager/subscription_patterns.py`
+- **subscription_patterns.py** (10 connections) — `server/services/nats_subject_manager/subscription_patterns.py`
+- **get_chat_subscription_patterns()** (10 connections) — `server/services/nats_subject_manager/subscription_patterns.py`
+- **get_event_subscription_patterns()** (10 connections) — `server/services/nats_subject_manager/subscription_patterns.py`
+- **validation.py** (7 connections) — `server/services/nats_subject_manager/validation.py`
+- **test_exception_hierarchy()** (7 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
+- **test_exceptions_can_be_raised()** (6 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
+- **metrics.py** (5 connections) — `server/services/nats_subject_manager/metrics.py`
+- **.validate_parameter_value()** (5 connections) — `server/services/nats_subject_manager/validation.py`
+- **test_exceptions_can_be_caught_by_base()** (5 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
+- **.validate_pattern_params()** (4 connections) — `server/services/nats_subject_manager/validation.py`
+- **test_pattern_not_found_error()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
+- **test_missing_parameter_error_single()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
+- **test_invalid_pattern_error()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
+- *... and 64 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (4 shared connections)
-- [get subject manager dependency()](get_subject_manager_dependency%28%29.md) (1 shared connections)
-- [. init ()](_init_%28%29.md) (1 shared connections)
-- [Coord](Coord.md) (1 shared connections)
+- [get subject manager dependency()](get_subject_manager_dependency%28%29.md) (15 shared connections)
+- [test validation](test_validation.md) (15 shared connections)
+- [test corpse lifecycle service](test_corpse_lifecycle_service.md) (14 shared connections)
+- [Any](Any.md) (6 shared connections)
+- [test clear corrupted cache entry](test_clear_corrupted_cache_entry.md) (4 shared connections)
+- [. init ()](_init_%28%29.md) (3 shared connections)
+- [ChatMessage](ChatMessage.md) (2 shared connections)
 
 ## Source Files
 
+- `server/services/nats_subject_manager/__init__.py`
+- `server/services/nats_subject_manager/exceptions.py`
+- `server/services/nats_subject_manager/manager.py`
 - `server/services/nats_subject_manager/metrics.py`
-- `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- `server/services/nats_subject_manager/patterns.py`
+- `server/services/nats_subject_manager/subscription_patterns.py`
+- `server/services/nats_subject_manager/validation.py`
+- `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
+- `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
 
 ## Audit Trail
 
-- EXTRACTED: 149 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 355 (91%)
+- INFERRED: 36 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---
